@@ -7,13 +7,12 @@ use LCG_Platforms v*
 
 macro_remove LCG_Platforms_project_release "CMT"
 
-macro LCG_releases    "$(LCG_Platforms_root)/../../../$(LCG_Platforms_project_release)" \
-      ATLAS&NIGHTLIES "/afs/cern.ch/sw/lcg/app/nightlies/$(LCG_NGT_SLT_NAME)/$(LCG_NGT_DAY_NAME)" \
-      ATLAS           "${SITEROOT}/sw/lcg/app/releases"
+macro LCG_releases       "$(LCG_Platforms_root)/../../../$(LCG_Platforms_project_release)" \
+      lcg-nightlies      "$(LCG_Platforms_root)/../../.." \
+      ATLAS&experimental "$(LCG_Platforms_root)/../../.." \
+      ATLAS              "${SITEROOT}/sw/lcg/app/releases/$(LCG_Platforms_project_release)"
 
-macro LCG_external       "$(LCG_releases)" \
-      ATLAS&experimental "${SITEROOT}/sw/lcg/experimental" \
-      ATLAS              "${SITEROOT}/sw/lcg/external"
+macro LCG_external       "$(LCG_releases)"
 
 # ==== pattern to express optional dependencies =====
 pattern use_optional \
@@ -21,12 +20,6 @@ pattern use_optional \
          <package>_use_<pkg> "<pkg> v* LCG_Interfaces -no_auto_imports" \
          USE_ALL_OPT_PKGS    "<pkg> v* LCG_Interfaces -no_auto_imports" ;\
    use $(use_pkg)
-
-
-# ==== pattern to announce include dir to ROOT =====
-pattern set_root_include_path \
-  path_prepend ROOT_INCLUDE_PATH $(<package>_include) ; \
-  include_dirs $(<package>_include) 
 
 # ==== pattern for declaring container packages ====
 pattern composite_package \
@@ -144,11 +137,13 @@ macro gcc_config_version       "" \
       target-gcc46             "4.6.3" \
       target-gcc47             "4.7.2" \
       target-gcc48             "4.8.1" \
+      target-gcc49             "4.9.1" \
       target-gccmax            "max" \
       target-g11max            "g11" \
       target-icc11             "4.3.6" \
-      target-icc13             "4.7.2" \
+      target-icc13             "4.6.3" \
       target-clang33           "4.8.1" \
+      target-clang34           "4.8.1" \
       target-clang             "4.6.3" 
 macro gcc_native_version       "$(gcc_config_version)"
 macro gcc_home                 "$(LCG_external)/gcc/$(gcc_native_version)/$(LCG_hostos)"
@@ -158,7 +153,8 @@ macro clang_config_version      "" \
       target-clang30            "3.0" \
       target-clang31            "3.1" \
       target-clang32            "3.2" \
-      target-clang33            "3.3"
+      target-clang33            "3.3" \
+      target-clang34            "3.4" 
 macro clang_native_version      "$(clang_config_version)"
 macro clang_home                "$(LCG_external)/llvm/$(clang_native_version)/$(LCG_hostos)"
 

@@ -4,6 +4,11 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v14r1 2014-12-19 ==========================
+! 2014-12-08 - Gloria Corti
+ - Change version of Herwig++ to 2.7.1, ThePeg to 1.9.2p1 and Rivet to 1.9.0
+   to be compatible with LCG_71(root6)
+
 !========================= GENSER v14r0p1 2014-08-21 =========================
 ! 2013-08-21 - Gloria Corti
  - Require dummy release for building distribution with LCG 68

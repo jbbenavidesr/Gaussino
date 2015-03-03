@@ -4,6 +4,16 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================== Gauss v47r1 2015-02-04 ===========================
+! 2015-02-04 - Gloria Corti
+ - Port from trunk r183059, update for cmake by Marco Cl.
+
+!========================= Gauss v47r0p1 2014-10-28 ==========================
+! 2014-10-28 - Gloria Corti
+ - Modifiy options for 2011 and 2012 to pick up the same dbase tags as in
+   production
+ - Introduce new options for 2015
+
 !========================== Gauss v47r0 2014-10-07 ===========================
 ! 2014-10-08 - Gloria Corti
  - Introduce changes for Upgrade RICH in configurable, requires GaussCherenkov

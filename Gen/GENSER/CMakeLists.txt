@@ -1,7 +1,7 @@
 ################################################################################
 # Package: GENSER
 ################################################################################
-gaudi_subdir(GENSER v14r0p1)
+gaudi_subdir(GENSER v14r1)
 
 find_package(LHAPDF)
 find_package(Pythia6)

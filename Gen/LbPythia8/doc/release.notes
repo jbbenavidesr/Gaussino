@@ -4,6 +4,10 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!======================== LbPythia8 v8r0p1 2014-12-17 ========================
+! 2014-12-17 - Gloria Corti
+ - Try to fix compilation warning with --pedantic
+
 !======================== LbPythia8 v8r0 2014-07-24 ========================
 ! 2014-07-14 - Gloria Corti
  - Fix to be able to store all non-gluon gauge boson mediators (e.g. Z, W, ...)

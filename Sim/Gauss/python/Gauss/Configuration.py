@@ -1779,7 +1779,8 @@ class Gauss(LHCbConfigurableUser):
         gen_t0.FixedNInteractions.NInteractions = 1
     
         # Special signal  (Bc with BcVegPy)
-        pInGeV   = beamMom*SystemOfUnits.GeV/SystemOfUnits.TeV
+        pInGeV   = beamMom*SystemOfUnits.MeV/SystemOfUnits.GeV
+        print 'pInGeV' , pInGeV
         ecmInGeV = 2*pInGeV
         txtECM = "upcom ecm "+str(ecmInGeV)
         gen_t0.addTool(Special,name="Special")
@@ -1827,6 +1828,16 @@ class Gauss(LHCbConfigurableUser):
         gen_t0.MinimumBias.addTool(HijingProduction,name="HijingProduction")
         gen_t0.MinimumBias.HijingProduction.Commands += [ txtP ]
     #--For beam gas events (with hijing) only the energy of the beams is set
+    
+    #--Set location for histogram particle guns based on beam energy
+        from Configurables import ParticleGun, MomentumSpectrum
+        pgun = ParticleGun("ParticleGun")
+        pgun.addTool( MomentumSpectrum , name = "MomentumSpectrum" )
+        txtPInGeV = str(pInGeV).split(".")[0]
+        hFileName = pgun.MomentumSpectrum.getProp("InputFile")
+        hFileName = hFileName.replace("Ebeam4000GeV","Ebeam"+txtPInGeV+"GeV")
+        pgun.MomentumSpectrum.InputFile = hFileName
+
     ## end of functions to set beam paramters and propagate them
     ##########################################################################
 

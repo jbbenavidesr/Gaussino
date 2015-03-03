@@ -4,6 +4,13 @@
 ! Responsible : G.Corti
 ! -----------------------------------------------------------------------------
 
+!======================= GaussAlgs v8r0p1 2015-01-16 ==========================
+! 2014-11-26 - Gloria Corti
+ - Fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
 !======================== GaussAlgs v8r0 2014-02-02 ===========================
 ! 2013-12-20 - Marco Clemencic
  - Removed obsolete file (not working with Gaudi >= v25).

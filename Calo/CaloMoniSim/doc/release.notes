@@ -5,6 +5,13 @@
 ! Purpose     : 
 ! -----------------------------------------------------------------------------
 
+!====================== CaloMoniSim v5r0p1 2015-01-16 =========================
+! 2014-11-21 - Gloria Corti
+ - Fix compilation warning with --pedantic on
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
 !======================= CaloMoniSim v5r0 2014-01-30 =-========================
 ! 2013-12-20 - Marco Clemencic
  - Removed obsolete file (not working with Gaudi >= v25).

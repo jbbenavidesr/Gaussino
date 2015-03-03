@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v14r0p1
+version v14r1
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -23,8 +23,8 @@ use LHAPDFSets v*
 #-- Herwig++ and ThePeg
 # Set native versions of required software.
 #============================================================================
-macro herwigpp_native_version "2.6.1b"
-macro thepeg_native_version   "1.8.1"
+macro herwigpp_native_version "2.7.1"
+macro thepeg_native_version   "1.9.2p1"
 
 
 #-- AlpGen
@@ -60,7 +60,7 @@ macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
 #-- Rivet for reference analysis with comparison with published data and
 #-- Professor for tuning
 #============================================================================
-macro rivet_native_version "1.8.3"
+macro rivet_native_version "1.9.0"
 
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6
