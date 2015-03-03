@@ -4,6 +4,32 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+! 2013-10-28 - Paul Szczypka
+ - Corrections to Configuration.py to safely access GenInit's properties after
+   PowHeg additions.
+
+!========================== Gauss v46r5 2013-10-24 ===========================
+! 2013-10-24 - Gloria Corti
+ - Port from v45b branch chnages by Patrick Robbe (r163031)
+   . Configuration.py: add options to generate events with Powheg
+ - Add use of LbPowheg
+
+! 2013-10-11 - Paul Szczypka
+ - Added Baseline qmtest and references.
+ - Added db tags directly to baseline qmtest.
+
+! 2013-10-06 - Paul Szczypka
+ - Added qmtest and options for Muon_NoM1 test.
+
+! 2013-09-24 - Marco Clemencic
+ - Added (empty) __init__.py to the Gauss Python module.
+
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2013-09-02 - Paul Szczypka
+ - Updated Gauss Pythia Config references.
+
 !========================== Gauss v46r4 2013-07-24 ===========================
 ! 2013-07-24 - Paul Szczypka
  - Added gauss-upgrade-ft_mono, reverted gauss-upgrade-ft to use FT_BiLayer.

@@ -72,11 +72,17 @@ GiGaPhysConstructorOpCkv::GiGaPhysConstructorOpCkv
     m_RichApplyScintillationYieldScaleFactor(true),
     m_RichScintillationYieldScaleFactor(1.0),
     m_PmtQESource(0),
+    m_PmtQEScaleFactor(1.0),
     m_activateTorchTestBeamSimulation(false),
     m_activatePmtModuleSupSet3(false),
     m_activatePmtModuleSupSet4(false),
     m_activatePmtModuleSupSet5(false),
-    m_activatePmtModuleSupSet6(false)
+    m_activatePmtModuleSupSet6(false),
+    //
+    m_activatePmtSupSet0(false),
+    m_activatePmtSupSet1(false),
+    m_activatePmtSupSet2(false)
+
 {
   // in the above 3 is for the three radiators.
 
@@ -93,7 +99,7 @@ GiGaPhysConstructorOpCkv::GiGaPhysConstructorOpCkv
   declareProperty("RichMaxPhotonsPerCherenkovStepInRichQuartzLikeRadiators",
                   m_MaxPhotonsPerRichCherenkovStepInRichQuartzLikeRadiator);  
 
-    declareProperty("RichPmtUseNominalQETable", m_PmtQEUseNominalTable);
+  declareProperty("RichPmtUseNominalQETable", m_PmtQEUseNominalTable);
   declareProperty("RichOpticalPhysicsProcessActivate", m_ActivateRICHOpticalPhysProc);
   declareProperty("RichPmtPhotoElectricPhysicsProcessActivate", m_ActivatePmtPhotoElectricPhysProc);
 
@@ -105,7 +111,7 @@ GiGaPhysConstructorOpCkv::GiGaPhysConstructorOpCkv
   //  declareProperty("RichActivateCF4ScintHisto" , m_activateRICHCF4ScintillationHisto);
   
   declareProperty("RichPmtQESource", m_PmtQESource);
-  
+  declareProperty("RichPmtQEOverallScaling", m_PmtQEScaleFactor);  // overall scaling
 
   // Now for the TORCH Testebeam
 
@@ -118,7 +124,9 @@ GiGaPhysConstructorOpCkv::GiGaPhysConstructorOpCkv
   declareProperty("ActivatePmtModuleSuppressSet5",m_activatePmtModuleSupSet5);
   declareProperty("ActivatePmtModuleSuppressSet6",m_activatePmtModuleSupSet6);
 
-  
+  declareProperty("ActivatePmtSuppressSet0", m_activatePmtSupSet0 );
+  declareProperty("ActivatePmtSuppressSet1", m_activatePmtSupSet1 );
+  declareProperty("ActivatePmtSuppressSet2", m_activatePmtSupSet2 );  
   
 }
 
@@ -312,15 +320,21 @@ void GiGaPhysConstructorOpCkv::ConstructOp() {
     //  theRichPmtPhotoElectricProcess->setPSFPreDc06Flag(m_IsPSFPreDc06Flag);
     theRichPmtPhotoElectricProcess->setPmtQEUsingNominalTable(m_PmtQEUseNominalTable);
     theRichPmtPhotoElectricProcess->SetPmtQESourceTable(m_PmtQESource);
+    theRichPmtPhotoElectricProcess->SetPmtQEOverallScaling(m_PmtQEScaleFactor); 
     theRichPmtPhotoElectricProcess->setPmtModuleSupFlag3(m_activatePmtModuleSupSet3);
     theRichPmtPhotoElectricProcess->setPmtModuleSupFlag4(m_activatePmtModuleSupSet4);
     theRichPmtPhotoElectricProcess->setPmtModuleSupFlag5(m_activatePmtModuleSupSet5);
     theRichPmtPhotoElectricProcess->setPmtModuleSupFlag6(m_activatePmtModuleSupSet6);
+    //
+    theRichPmtPhotoElectricProcess->setPmtSupFlag0(m_activatePmtSupSet0);
+    theRichPmtPhotoElectricProcess->setPmtSupFlag1(m_activatePmtSupSet1);
+    theRichPmtPhotoElectricProcess->setPmtSupFlag2(m_activatePmtSupSet2);
 
     theRichPmtPhotoElectricProcess->setPmtPhElecParam();
-
  
     msg << MSG::INFO <<"Current PMT QE source "<<m_PmtQESource<<endreq;
+    msg << MSG::INFO <<"Overall PMT QE scaling: " << m_PmtQEScaleFactor <<endreq;
+
   }
   
   // Now for the TORCH TestBeam

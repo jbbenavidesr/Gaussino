@@ -3,6 +3,13 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+
+!=========================== XmlVis v1r18 ====================================
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2013-09-18 - Jianchun Wang
+ - Modify UT visualization
 !=========================== XmlVis v1r17 ====================================
 ! 2013-07-14 - Thomas Ruf
   more support for upgrade detectors

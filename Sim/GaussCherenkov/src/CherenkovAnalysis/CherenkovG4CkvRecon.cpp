@@ -27,6 +27,7 @@
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichSolveQuarticEqn.h"
 #include <math.h>
+#include "GaussCherenkov/CkvGeometrySetupUtil.h"
 
 // modification made on 30-8-2004 to make windows compatible.
 
@@ -83,7 +84,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
   IDataProviderSvc* detSvc = CkvG4SvcLocator::RichG4detSvc();
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
   MsgStream CherenkovG4CkvReconlog( msgSvc,"CherenkovG4CkvRecon");
-  //     CherenkovG4CkvReconlog << MSG::VERBOSE
+  //      CherenkovG4CkvReconlog << MSG::VERBOSE
   //             << "Now creating CherenkovG4CkvRecon "
   //             << endreq;
 
@@ -96,24 +97,19 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
 
   if( !Rich1DE ){
+
     CherenkovG4CkvReconlog << MSG::ERROR
-                      << "Can't retrieve " + Rich1DeStructurePathName+ " for CkvRecon"
-                      << endreq;
+                           << "Can't retrieve " + Rich1DeStructurePathName+ " for CkvRecon"
+                           << endreq;
   }else {
 
+    m_NumRichDet = Rich1DE->param<int>("RichNumberOfDetectors");
 
+    m_NumPmtRich[0] = Rich1DE->param<int>("Rich1TotNumPmt");
+    
+    m_NumPmtRich[1] = Rich1DE->param<int>("Rich2TotNumPmt");
 
-    m_NumRichDet =
-      Rich1DE->param<int>("RichNumberOfDetectors");
-
-
-    m_NumPmtRich[0] =
-      Rich1DE->param<int>("Rich1TotNumPmt");
-
-    m_NumPmtRich[1] =
-      Rich1DE->param<int>("Rich2TotNumPmt");
-
-    m_NumPmtInModule= Rich1DE->param<int>("RichTotNumPmtInModule") ;
+    m_NumPmtInModule = Rich1DE->param<int>("RichTotNumPmtInModule") ;
 
 
     //    m_NumModulesInRich[0]= Rich1DE->param<int>("Rich1TotNumModules");
@@ -139,8 +135,8 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
     m_Rich1_PmtTransforms.resize(m_NumPmtRich[0]);
     m_Rich2_PmtTransforms.resize(m_NumPmtRich[1]);
     
-    // CherenkovG4CkvReconlog <<MSG::INFO<<" Size of pmt transforms "
-    //                       << (int) m_Rich1_PmtTransforms.size()<<"  "<<(int) m_Rich2_PmtTransforms.size()<<endreq;
+     CherenkovG4CkvReconlog <<MSG::INFO<<" Size of pmt transforms "
+                           << (int) m_Rich1_PmtTransforms.size()<<"  "<<(int) m_Rich2_PmtTransforms.size()<<endreq;
     
     //    std::vector<double> r1NominalCoC = Rich1DE->param<std::vector<double> >("Rich1NominalCoC");
     std::vector<double> r1NominalCoC = Rich1DE->param<std::vector<double> >("NominalSphMirrorCoC");
@@ -177,13 +173,12 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
     
 
-    m_SphMirrRad [0] =
-      Rich1DE->param<double>( "Rich1Mirror1NominalRadiusC");
-
+    m_SphMirrRad [0] = Rich1DE->param<double>( "Rich1Mirror1NominalRadiusC");
+    
 
     CherenkovG4CkvReconlog << MSG::DEBUG
-         << "Rich1 Spherical Mirror1 top  COC and Rad "<< m_SphMirrCC [0] [0]<<"  "<< m_SphMirrCC [0] [1]
-		      <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
+                           << "Rich1 Spherical Mirror1 top  COC and Rad "<< m_SphMirrCC [0] [0]<<"  "<< m_SphMirrCC [0] [1]
+                           <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
 
 
 
@@ -203,28 +198,60 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
     m_SphMirrCC [1] [2]=   m_SphMirrCC [0] [2];
 
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich1 Spherical Mirror1 bottom  COC and Rad "
-         << m_SphMirrCC [1] [0]<<"  "<< m_SphMirrCC [1] [1]
-		      <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
-
-
-
-
-      m_PmtAnodeThickness= Rich1DE->param<double> ("RichPmtAnodeZSize" );
+                           << m_SphMirrCC [1] [0]<<"  "<< m_SphMirrCC [1] [1]
+                           <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
     
-      m_PmtAnodeXSize= Rich1DE->param<double> ("RichPmtAnodeXSize" );
-      m_PmtAnodeYSize= Rich1DE->param<double> ("RichPmtAnodeYSize" );
-      m_PmtNumPixelX=Rich1DE->param<int>("RichPmtNumPixelRow" );
-      
-      m_PmtNumPixelY=Rich1DE->param<int>("RichPmtNumPixelCol" );
-
-      m_PmtAnodePixelXSize=Rich1DE->param<double> ("RichPmtPixelXsize" );
-      m_PmtAnodePixelYSize=Rich1DE->param<double> ("RichPmtPixelYsize" );
-      m_PmtAnodePixelGap=Rich1DE->param<double> ("RichPmtPixelGap"  );
-      m_PmtPhCathZFromPMTCenter=10.0;
-      if( Rich1DE->exists("RichPmtQwToCenterZDist"))
-           m_PmtPhCathZFromPMTCenter= Rich1DE->param<double>("RichPmtQwToCenterZDist");
 
 
+
+    m_PmtAnodeThickness= Rich1DE->param<double> ("RichPmtAnodeZSize" );
+    
+    m_PmtAnodeXSize= Rich1DE->param<double> ("RichPmtAnodeXSize" );
+    m_PmtAnodeYSize= Rich1DE->param<double> ("RichPmtAnodeYSize" );
+    m_PmtNumPixelX=Rich1DE->param<int>("RichPmtNumPixelRow" );
+    
+    m_PmtNumPixelY=Rich1DE->param<int>("RichPmtNumPixelCol" );
+    
+    m_PmtAnodePixelXSize=Rich1DE->param<double> ("RichPmtPixelXsize" );
+    m_PmtAnodePixelYSize=Rich1DE->param<double> ("RichPmtPixelYsize" );
+    m_PmtAnodePixelGap=Rich1DE->param<double> ("RichPmtPixelGap"  );
+    m_NumPmtInModule=Rich1DE->param<int> ("RichTotNumPmtInModule"  );
+    
+    m_PmtPhCathZFromPMTCenter=10.0;
+    if( Rich1DE->exists("RichPmtQwToCenterZDist"))
+      m_PmtPhCathZFromPMTCenter= Rich1DE->param<double>("RichPmtQwToCenterZDist");
+    
+     CkvGeometrySetupUtil * aCkvGeometrySetup=CkvGeometrySetupUtil::getCkvGeometrySetupUtilInstance() ;
+     if(aCkvGeometrySetup-> Rich2_UseGrandPmt()) {
+       if(Rich1DE->exists("RichGrandPmtAnodeXSize") )    {
+           
+           m_GrandPmtAnodeThickness= Rich1DE->param<double> ("RichGrandPmtAnodeZSize" );
+           m_GrandPmtAnodeXSize= Rich1DE->param<double> ("RichGrandPmtAnodeXSize" );
+           m_GrandPmtAnodeYSize= Rich1DE->param<double> ("RichGrandPmtAnodeYSize" );
+           m_GrandPmtAnodePixelXSize=Rich1DE->param<double> ("RichGrandPmtPixelXSize" );
+           m_GrandPmtAnodePixelYSize=Rich1DE->param<double> ("RichGrandPmtPixelYSize" );
+           m_GrandPmtAnodePixelGap=Rich1DE->param<double> ("RichGrandPmtPixelGap"  );
+           m_NumGrandPmtInModule=Rich1DE->param<int> ("RichTotNumGrandPmtInModule" );
+          
+       }
+       
+          
+          
+       
+     }else {
+       m_GrandPmtAnodeThickness=m_PmtAnodeThickness;
+       m_GrandPmtAnodeXSize = m_PmtAnodeXSize;
+       m_GrandPmtAnodeYSize = m_PmtAnodeYSize ;
+       m_GrandPmtAnodePixelXSize = m_PmtAnodePixelXSize;
+       m_GrandPmtAnodePixelYSize = m_PmtAnodePixelYSize;
+       m_GrandPmtAnodePixelGap  = m_PmtAnodePixelGap;
+       m_NumGrandPmtInModule = m_NumPmtInModule;
+       
+     }
+     
+     
+       
+    
       
     //    m_HpdSiDetThickness =   Rich1DE->
     //  userParameterAsDouble("RichHpdSiliconDetectorZSize");
@@ -257,8 +284,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
     //    m_SphMirrRad [1]=
     //  Rich2DE->param<double>( "Rich2SphMirrorRadius");
 
-    m_SphMirrRad [1]=
-      Rich2DE->param<double>( "SphMirrorRadius");
+    m_SphMirrRad [1]= Rich2DE->param<double>( "SphMirrorRadius");
 
 
     m_SphMirrCC [3] [0]= -1.0* m_SphMirrCC [2] [0];
@@ -266,14 +292,14 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
     m_SphMirrCC [3] [2]= m_SphMirrCC [2] [2];
 
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 left  COC and Rad "<< m_SphMirrCC [2] [0]
-          <<"  "<< m_SphMirrCC [2] [1]
-		      <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+                           <<"  "<< m_SphMirrCC [2] [1]
+                           <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 right  COC and Rad "<< m_SphMirrCC [3] [0]<<"  "
-                      << m_SphMirrCC [3] [1]
-		                  <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
-
+                           << m_SphMirrCC [3] [1]
+                           <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+    
   }
-
+  
   //  CherenkovG4CkvReconlog << MSG::INFO<<
   //  "Si pixel x size ysize zsize num pix X Y "
   //                  <<  m_HpdSiPixelXSize <<"  "
@@ -308,9 +334,19 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
           m_Rich1_PmtTransforms[ih]= new RichG4ReconTransformPmt (idet, aPmtVV[0], aPmtVV[1] );
 
         } else if ( idet == 1 ) {
- 
-          m_Rich2_PmtTransforms[ih]=  new RichG4ReconTransformPmt (idet, aPmtVV[0], aPmtVV[1]);
+          bool getR2Transform=true;
+          CkvGeometrySetupUtil * aCkvGeometrySetup=CkvGeometrySetupUtil::getCkvGeometrySetupUtilInstance() ;     
+          if(aCkvGeometrySetup-> Rich2_UseGrandPmt()) {
+            if( aPmtVV[1] >=  m_NumGrandPmtInModule ) getR2Transform=false;
+          }
+          if(getR2Transform  ) {
+                
+            m_Rich2_PmtTransforms[ih]=  new RichG4ReconTransformPmt (idet, aPmtVV[0], aPmtVV[1]);
+          }
+          
+          
         }
+        
 
         // CherenkovG4CkvReconlog <<MSG::INFO<<"Transform for idet ih "<< idet <<"  "<< ih<<"  "
         //                             <<m_Rich1_PmtTransforms[idet][ih]  <<endreq;
@@ -360,13 +396,13 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
   //  CherenkovG4CkvReconlog << MSG::INFO
   //             << "Num richdet numPmtIn r1 r2  "<<
   //      m_NumRichDet<<"    "<< m_NumPmtRich[0]
-  //                      <<"   "<< m_NumPmtRich[1]
-  //             << endreq;
+  //                         <<"   "<< m_NumPmtRich[1]<<endmsg;
+  //
+     
 
-}
-
-
-CherenkovG4CkvRecon::~CherenkovG4CkvRecon(  ) { }
+  
+ }
+CherenkovG4CkvRecon::~CherenkovG4CkvRecon(){}
 
 
 std::vector<int> CherenkovG4CkvRecon::GetPmtModuleNumber(int aPmtNum) {
@@ -378,6 +414,20 @@ std::vector<int> CherenkovG4CkvRecon::GetPmtModuleNumber(int aPmtNum) {
 return aPmtV;
 }
 
+Gaudi::XYZPoint CherenkovG4CkvRecon::GetSiHitCoordFromPixelNumRDet(int aPXNum,
+                                                                   int aPYNum, int aRichDetNum ) 
+{
+     CkvGeometrySetupUtil * aCkvGeometrySetup=CkvGeometrySetupUtil::getCkvGeometrySetupUtilInstance() ;
+     if((aRichDetNum ==1) && (aCkvGeometrySetup-> Rich2_UseGrandPmt()) ) {
+       return GetSiHitCoordFromGrandPixelNum(aPXNum,aPYNum);
+       
+     }else {
+       return   GetSiHitCoordFromPixelNum(aPXNum,aPYNum);
+     }
+}
+
+
+
 Gaudi::XYZPoint CherenkovG4CkvRecon::GetSiHitCoordFromPixelNum(int aPXNum,
                                                      int aPYNum )
 {
@@ -385,6 +435,21 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::GetSiHitCoordFromPixelNum(int aPXNum,
   const double zhitc=   m_PmtAnodeThickness/2.0;
   const double EffectivePixelXSize= m_PmtAnodePixelXSize+m_PmtAnodePixelGap;
   const double EffectivePixelYSize= m_PmtAnodePixelYSize+m_PmtAnodePixelGap;
+  
+  const double xhit= (aPXNum - (m_PmtNumPixelX-1)*0.5  ) * EffectivePixelXSize;
+  const double yhit= (aPYNum - (m_PmtNumPixelY-1)*0.5  ) * EffectivePixelYSize;
+
+
+  return  Gaudi::XYZPoint(xhit,yhit,zhitc);
+}
+
+Gaudi::XYZPoint CherenkovG4CkvRecon::GetSiHitCoordFromGrandPixelNum(int aPXNum,
+                                                     int aPYNum )
+{
+
+  const double zhitc=   m_GrandPmtAnodeThickness/2.0;
+  const double EffectivePixelXSize= m_GrandPmtAnodePixelXSize+m_GrandPmtAnodePixelGap;
+  const double EffectivePixelYSize= m_GrandPmtAnodePixelYSize+m_GrandPmtAnodePixelGap;
   
   const double xhit= (aPXNum - (m_PmtNumPixelX-1)*0.5  ) * EffectivePixelXSize;
   const double yhit= (aPYNum - (m_PmtNumPixelY-1)*0.5  ) * EffectivePixelYSize;
@@ -586,7 +651,8 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::LensCoordFromPeOrigin (const Gaudi::XYZPoin
 
 Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoord,
                                                                          int aLensFlag , 
-                                  int aRegReconFlag,const Gaudi::XYZPoint & aLensSurfaceCoord  ) {
+                                                                         int aRegReconFlag,
+                                                                         const Gaudi::XYZPoint & aLensSurfaceCoord  ) {
 
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
   MsgStream CherenkovG4CkvReconlog( msgSvc,"CherenkovG4CkvRecon");
@@ -703,7 +769,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
 
 
 Gaudi::XYZPoint CherenkovG4CkvRecon::getPhotAgelExitZ( double ex, double ey, double ez,
-                                             CkvG4Hit* bHit )
+                                                       CkvG4Hit* bHit )
 {
   const Gaudi::XYZPoint aPhotTrueEmitPt(ex,ey,ez);
 
@@ -738,11 +804,12 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::getPhotAgelExitZ( double ex, double ey, dou
   return aPhotTrueEmitPt + PhotonDir;
 }
 
-Gaudi::XYZPoint
-CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaudi::XYZPoint & aDetectionPoint,
-                                                 const Gaudi::XYZPoint & aEmissionPoint,
-                                                      const Gaudi::XYZPoint & aQwPoint, G4int aRichDetNum, 
-                                                      G4int aFlatMirrNum , int TFlag )
+Gaudi::XYZPoint CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaudi::XYZPoint & aDetectionPoint,
+                                                                      const Gaudi::XYZPoint & aEmissionPoint,
+                                                                      const Gaudi::XYZPoint & aQwPoint, 
+                                                                      G4int aRichDetNum, 
+                                                                      G4int aFlatMirrNum , 
+                                                                      int TFlag )
 {
 
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
@@ -751,8 +818,8 @@ CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaudi::XYZPoint & aD
 
   //  CherenkovG4CkvReconlog<<MSG::INFO <<" Now in  ReconReflectionPointOnSPhMirror  " << endreq;
 
-  m_curEmisPt=aEmissionPoint;
-  m_curDetPoint=aDetectionPoint;
+  m_curEmisPt   = aEmissionPoint;
+  m_curDetPoint = aDetectionPoint;
   
   //  CherenkovG4CkvReconlog<<MSG::INFO <<" current richdet and flat mirror "<<aRichDetNum<<"  "<<aFlatMirrNum
   //                << endreq;
@@ -772,33 +839,30 @@ CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaudi::XYZPoint & aD
 
   // for now 5 iterations
 
-  if(TFlag == 0 ) {
+  if( TFlag == 0 ) {
     
-  for (int aItr=0; aItr<5 ; ++aItr) {
+    for (int aItr=0; aItr<5 ; ++aItr) {
 
-    Gaudi::XYZPoint aFlatMirrReflPt =  m_CurReconFlatMirr->FlatMirrorIntersection(aSphReflPt,
-										 m_curDetPoint ,
-										  aRichDetNum,
-										  aFlatMirrNum);
-
-    
-    // create a plane at the flat mirr refl point
-
-
-    const Gaudi::Plane3D aPlane(Gaudi::XYZVector( curFlatMCoC - aFlatMirrReflPt ).unit(), aFlatMirrReflPt);
-    // find the detection pt wrt this plane
-
+      Gaudi::XYZPoint aFlatMirrReflPt =  m_CurReconFlatMirr->FlatMirrorIntersection( aSphReflPt,
+                                                                                     m_curDetPoint ,
+                                                                                     aRichDetNum,
+                                                                                     aFlatMirrNum );
 
     
-    double adist = aPlane.Distance(aQwPoint);
+      // create a plane at the flat mirr refl point
 
-    Gaudi::XYZPoint  afrelPt = aQwPoint - 2.0*adist * aPlane.Normal();
-    m_curDetPoint =  afrelPt;
-    aSphReflPt = ReconReflectionPointOnSPhMirrorStdInput() ;
-    ++aItr;
-  
+
+      const Gaudi::Plane3D aPlane(Gaudi::XYZVector( curFlatMCoC - aFlatMirrReflPt ).unit(), aFlatMirrReflPt);
+      // find the detection pt wrt this plane
+    
+      double adist = aPlane.Distance(aQwPoint);
+
+      Gaudi::XYZPoint  afrelPt = aQwPoint - 2.0*adist * aPlane.Normal();
+      m_curDetPoint =  afrelPt;
+      aSphReflPt = ReconReflectionPointOnSPhMirrorStdInput() ;
+      ++aItr;   
      
-  }
+    }
   }
   
 
@@ -815,9 +879,9 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirrorStdInput()
 
   Gaudi::XYZPoint ReflPt = Gaudi::XYZPoint (0.0,0.0,0.0);
   const Gaudi::XYZPoint & aEmisPt = m_curEmisPt;
-
+  
   const Gaudi::XYZPoint & aDetPt = m_curDetPoint ;
-
+  
   // use  best coc if the rich1 sph mirror has rotated wrt Y axis by large amount.
   double aMirrCCX = m_SphMirrCC[m_CurrentRichSector][0];
   
@@ -831,110 +895,100 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirrorStdInput()
       if (( m_CurrentRichSector==1) && (aDetPt.x() > 0.0) )  aMirrCCX =  m_SphMirrR1CCX [2];
       if (( m_CurrentRichSector==1) && (aDetPt.x() <= 0.0) )  aMirrCCX =  m_SphMirrR1CCX [3];
       
-    }
-    
+    }   
     
   }
   
   const Gaudi::XYZPoint aMirrCC (aMirrCCX,
-                            m_SphMirrCC[m_CurrentRichSector][1],
-                            m_SphMirrCC[m_CurrentRichSector][2]) ;
-
-  
-
-
-
+                                 m_SphMirrCC[m_CurrentRichSector][1],
+                                 m_SphMirrCC[m_CurrentRichSector][2]) ;
 
   Gaudi::XYZVector evec =  aEmisPt -  aMirrCC;
   const double e2 = evec.Mag2();
-    double e  = pow(e2,0.5);
+  double e  = pow(e2,0.5);
 
   Gaudi::XYZVector dvec = aDetPt  - aMirrCC ;
   const  double d2 = dvec.Mag2();
-    double d  = pow(d2,0.5);
+  double d  = pow(d2,0.5);
 
-    if( (e*d) != 0.0 ) {  
-
-  double gamma     = acos( evec.Dot(dvec) / (e*d) );
-
-  double r  =  m_SphMirrRad[m_CurrentRichDetNum];
-  if( r != 0.0 ) {
-
-    double r2 = r*r;
-    double dx = d * cos(gamma);
-    double dy = d * sin(gamma);
-
-    double denom =  4.0 * e2 * d2;
-
-    if( denom != 0.0 ) {
-
-      double a[4]=
-        {  - 4 * e2 * dy * r ,
-           dy * dy * r2 + (e+dx) * (e+dx) * r2 - denom,
-           2 * e * dy * (e-dx) * r,
-           ( e2 - r2 ) * dy * dy
-        };
-      gsl_complex qsol[4];
-
-      //     std::vector<std::complex<double> >
-      //   qsol(4, std::complex<double> (0.0,100000.0));
-      SolveQuartic (qsol, denom, a);
-      int nrealsolnum=-1;
-      Gaudi::XYZVector nvec = evec.Cross(dvec); // normal vector to reflection plane
-      Gaudi::XYZVector delta[2] = { Gaudi::XYZVector(0.0,0.0,0.0),
-                               Gaudi::XYZVector(0.0,0.0,0.0) };
-
+  if( (e*d) != 0.0 ) {  
       
+    double gamma     = acos( evec.Dot(dvec) / (e*d) );
+  
+    double r  =  m_SphMirrRad[m_CurrentRichDetNum];
+    if( r != 0.0 ) {
+      
+      double r2 = r*r;
+      double dx = d * cos(gamma);
+      double dy = d * sin(gamma);
+      
+      double denom =  4.0 * e2 * d2;
+      
+      if( denom != 0.0 ) {
+        
+        double a[4]=
+          {  - 4 * e2 * dy * r ,
+             dy * dy * r2 + (e+dx) * (e+dx) * r2 - denom,
+             2 * e * dy * (e-dx) * r,
+             ( e2 - r2 ) * dy * dy
+          };
+        gsl_complex qsol[4];
+        
+        //     std::vector<std::complex<double> >
+        //   qsol(4, std::complex<double> (0.0,100000.0));
+        SolveQuartic (qsol, denom, a);
+        int nrealsolnum=-1;
+        Gaudi::XYZVector nvec = evec.Cross(dvec); // normal vector to reflection plane
+        Gaudi::XYZVector delta[2] = { Gaudi::XYZVector(0.0,0.0,0.0),
+                                      Gaudi::XYZVector(0.0,0.0,0.0) };
+        
+        
         for (int isol=0 ; isol< 4; isol++ ) {
           // now require real and physical solutions.
           if(GSL_IMAG (qsol[isol] ) == 0.0 && GSL_REAL(qsol[isol]) <= 1.0  ) {
             nrealsolnum++;
             if(nrealsolnum < 2) {
               double beta = asin(GSL_REAL(qsol[isol]));                   
-	      Gaudi::XYZVector aa = evec;
+              Gaudi::XYZVector aa = evec;
               aa *= (r/e);
-	      const Gaudi::Rotation3D rotn( Gaudi::AxisAngle(nvec, beta));
- 	      Gaudi::XYZVector bb = rotn(aa);             
-	      delta[ nrealsolnum] = bb;
-	    }
-
-            
-	  }
-          
+              const Gaudi::Rotation3D rotn( Gaudi::AxisAngle(nvec, beta));
+              Gaudi::XYZVector bb = rotn(aa);             
+              delta[ nrealsolnum] = bb;
+            }            
+          }  
         }
-  
+        
         if( nrealsolnum >= 0 ) {
-
+          
           const Gaudi::XYZVector deltaF =
             ( (nrealsolnum == 0) ||
               (delta[0].z() > delta[1].z()))? delta[0]:delta[1];
-
+          
           ReflPt = aMirrCC  + deltaF;
-
+          
         }
-
+        
         // now verify that the reflection pt is in the
         // same sector (half) as the detection pt.
         double proda =0.0;
-
+        
         if(   m_CurrentRichDetNum == 0 ) {
           proda = ReflPt.y() * aDetPt.y();
-
+          
         } else if (  m_CurrentRichDetNum == 1 ) {
-          proda = ReflPt.x() * aDetPt.x();
-
-
+          proda = ReflPt.x() * aDetPt.x();  
         }
-
+        
         if( proda == 0.0 ) {
           ReflPt = Gaudi::XYZPoint (0.0,0.0,0.0);
-
+          
         }
-
+        
+      }
     }
+    
   }
-
-    }
+  
 
   return ReflPt;
 
@@ -944,13 +998,14 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirrorStdInput()
 
 
 void CherenkovG4CkvRecon::SolveQuartic(  gsl_complex z[4],
-                                   double denom,double a[4])
+                                         double denom,
+                                         double a[4])
 {
   double b[4] =    {0.0,0.0,0.0,0.0  };
   //  double c[8] =  {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
   //  int ierr=0;
   // double resolv=0.0;
-  //  int asol=0;
+  //int asol=0;
 
 
   if( denom != 0.0 ) {
@@ -960,11 +1015,13 @@ void CherenkovG4CkvRecon::SolveQuartic(  gsl_complex z[4],
 
     //    drteq4_(&b[0],&b[1],&b[2],&b[3],c,&resolv,&ierr);
 
-    //   asol = gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
-    // 				       &z[0], &z[1], &z[2], &z[3]);
+    // asol = gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
+    //				       &z[0], &z[1], &z[2], &z[3]);
+    
 
-     gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
+    gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
 					       &z[0], &z[1], &z[2], &z[3]);
+
 
     //    int j=0;
     //  for(int ii=0; ii< 4 ; ++ii) {
@@ -977,10 +1034,8 @@ void CherenkovG4CkvRecon::SolveQuartic(  gsl_complex z[4],
 
 }
 
-
-
 double  CherenkovG4CkvRecon::CherenkovThetaFromReflPt(const Gaudi::XYZPoint & aReflPoint ,
-                                                 const Gaudi::XYZPoint & aEmisPt )
+                                                      const Gaudi::XYZPoint & aEmisPt )
 {
   m_curEmisPt = aEmisPt;
 
@@ -1007,7 +1062,7 @@ double  CherenkovG4CkvRecon::CherenkovThetaFromReflPt(const Gaudi::XYZPoint & aR
 }
 
 double CherenkovG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aReflPoint,
-                                               const Gaudi::XYZPoint & aEmisPt  )
+                                                    const Gaudi::XYZPoint & aEmisPt  )
 {
 
   m_curEmisPt = aEmisPt;
@@ -1073,10 +1128,10 @@ double CherenkovG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aRef
 }
 
 void  CherenkovG4CkvRecon::SetChTrackPreStepPosition( double xprepos,
-                                                 double yprepos,double zprepos)
+                                                      double yprepos,
+                                                      double zprepos)
 {
-  m_ChTrackPreStepPosition=
-    Gaudi::XYZPoint( xprepos,yprepos,zprepos);
+  m_ChTrackPreStepPosition= Gaudi::XYZPoint( xprepos,yprepos,zprepos);
 
 }
 
@@ -1084,9 +1139,45 @@ void CherenkovG4CkvRecon::SetChTrackPostStepPosition(double xpostpos,
                                                 double ypostpos,
                                                 double zpostpos)
 {
-  m_ChTrackPostStepPosition=
-    Gaudi::XYZPoint( xpostpos, ypostpos,zpostpos);
+  m_ChTrackPostStepPosition=Gaudi::XYZPoint( xpostpos, ypostpos,zpostpos);
 
 }
+
+
+double CherenkovG4CkvRecon::DistFromSphMirror( const Gaudi::XYZPoint & aSphRefPoint )
+{
+
+  const Gaudi::XYZPoint & aDetPt = m_curDetPoint ;
+  
+  // use  best coc if the rich1 sph mirror has rotated wrt Y axis by large amount.
+  double aMirrCCX = m_SphMirrCC[m_CurrentRichSector][0];
+  
+  if( (m_CurrentRichSector==0) ||( m_CurrentRichSector==1 ) ){
+    
+    if(m_SphMirrR1CCX[0] != 0.0  && m_SphMirrR1CCX[1] != 0.0  ) {
+      
+      if (( m_CurrentRichSector==0) && (aDetPt.x() > 0.0) )  aMirrCCX =  m_SphMirrR1CCX [1];
+      if (( m_CurrentRichSector==0) && (aDetPt.x() <= 0.0) )  aMirrCCX =  m_SphMirrR1CCX [0];
+      
+      if (( m_CurrentRichSector==1) && (aDetPt.x() > 0.0) )  aMirrCCX =  m_SphMirrR1CCX [2];
+      if (( m_CurrentRichSector==1) && (aDetPt.x() <= 0.0) )  aMirrCCX =  m_SphMirrR1CCX [3];
+      
+    }    
+  }
+  
+  const Gaudi::XYZPoint aMirrCC (aMirrCCX,
+                                 m_SphMirrCC[m_CurrentRichSector][1],
+                                 m_SphMirrCC[m_CurrentRichSector][2]) ;
+
+  double r  =  m_SphMirrRad[m_CurrentRichDetNum];
+  
+  Gaudi::XYZVector oMc =  aSphRefPoint - aMirrCC;
+  
+  return sqrt( oMc.Mag2() ) - r ;
+  
+}
+
+
+
 
 //=============================================================================

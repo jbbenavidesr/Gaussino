@@ -30,10 +30,15 @@ RichPmtPhotoElectricEffect::RichPmtPhotoElectricEffect(const GiGaBase* /*gigabas
   : G4VDiscreteProcess(processName, aType ),
     m_numTotPmt(std::vector<int>(2)),
     m_PmtQESourceTable(0),
+    m_PmtQEScaleFactor(1.0),
     m_PmtModuleSupFlag3(false),
     m_PmtModuleSupFlag4(false),
     m_PmtModuleSupFlag5(false),
-    m_PmtModuleSupFlag6(false)
+    m_PmtModuleSupFlag6(false),
+    //
+    m_PmtSupFlag0(false),
+    m_PmtSupFlag1(false),
+    m_PmtSupFlag2(false)
 {
     //  G4cout << GetProcessName() << " is created " << G4endl;
 }
@@ -48,16 +53,21 @@ void RichPmtPhotoElectricEffect::setPmtPhElecParam()
 	//     <<m_UsePmtMagDistortions<<std::endl;
   //   std::cout<< "RichPmtPhotoElectricEffect PsfPreDc06Flag       = "
 	//     << m_PSFPreDc06Flag <<std::endl;
-     std::cout<< "RichPmtPhotoElectricEffect UseNominalPmtQE =   "<<m_PmtQEUsingNominalTable<<std::endl;
+  //   std::cout<< "RichPmtPhotoElectricEffect UseNominalPmtQE =   "<<m_PmtQEUsingNominalTable<<std::endl;
 
     RichPmtProperties*  m_PmtProperty = PmtProperty();
     //    m_PmtProperty -> setUsingPmtMagneticFieldDistortion((bool) m_UsePmtMagDistortions );
      m_PmtProperty -> setUseNominalPmtQE( (bool) m_PmtQEUsingNominalTable );
      m_PmtProperty -> SetCurQETableSourceOption ( m_PmtQESourceTable);
+     m_PmtProperty -> SetPmtQEOverallScaling( m_PmtQEScaleFactor );
      m_PmtProperty ->setActivatePmtModuleSuppressSet3(m_PmtModuleSupFlag3);
      m_PmtProperty ->setActivatePmtModuleSuppressSet4(m_PmtModuleSupFlag4);
      m_PmtProperty ->setActivatePmtModuleSuppressSet5(m_PmtModuleSupFlag5);
      m_PmtProperty ->setActivatePmtModuleSuppressSet6(m_PmtModuleSupFlag6);
+     //
+     m_PmtProperty ->setActivatePmtSuppressSet0(m_PmtSupFlag0);
+     m_PmtProperty ->setActivatePmtSuppressSet1(m_PmtSupFlag1);
+     m_PmtProperty ->setActivatePmtSuppressSet2(m_PmtSupFlag2);
      
     m_PmtProperty -> InitializePmtProperties( );
 
@@ -67,6 +77,13 @@ void RichPmtPhotoElectricEffect::setPmtPhElecParam()
     m_PostPhotoElectricLogVolName=m_PmtProperty->PmtPhCathodeLogVolName();
     m_PrePhotoElectricLogVolNameWLens=m_PmtProperty->LPmtQWLogVolName();
     m_PostPhotoElectricLogVolNameWLens=m_PmtProperty->LPmtPhCathodeLogVolName();
+
+    m_PrePhotoElectricLogVolNameWGrandPM=m_PmtProperty->GrandPmtQWLogVolName();
+    m_PostPhotoElectricLogVolNameWGrandPM=m_PmtProperty->GrandPmtPhCathodeLogVolName();
+
+    //            std::cout<< "RichPmtPhotoElectricEffect GrandPMTVolNames "
+    //          << m_PrePhotoElectricLogVolNameWGrandPM<<"  "<< m_PostPhotoElectricLogVolNameWGrandPM<<std::endl;
+
     m_PrePhotoElectricMatNameSec= RichPmtVacName;
     m_NumRichDet=m_PmtProperty->numberOfRichDetectors();
     if((int) m_numTotPmt.size() != m_NumRichDet )
@@ -111,7 +128,7 @@ RichPmtPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
   G4String PostPhName= pPostStepPoint -> GetPhysicalVolume() ->
     GetLogicalVolume() -> GetName();
 
-  //    G4cout<<" Pmt Ph elec Proc PrePh PostPh Names "<<PrePhName<<"  "
+  //        G4cout<<" Pmt Ph elec Proc PrePh PostPh Names "<<PrePhName<<"  "
   //      <<PostPhName<<G4endl;
   
   //   if(( (PrePhName == m_PrePhotoElectricLogVolName) &&
@@ -126,13 +143,19 @@ RichPmtPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
         ( (PrePhName == m_PrePhotoElectricLogVolNameWLens) &&
           (PostPhName == m_PostPhotoElectricLogVolNameWLens) ) ||   
         ( (PrePhName == m_PrePhotoElectricMatNameSec )  &&
-          (PostPhName == m_PostPhotoElectricLogVolNameWLens) ))  {
+          (PostPhName == m_PostPhotoElectricLogVolNameWLens) ) || 
+        ( (PrePhName == m_PrePhotoElectricLogVolNameWGrandPM) &&
+          (PostPhName == m_PostPhotoElectricLogVolNameWGrandPM) ) ||
+        ( (PrePhName == m_PrePhotoElectricMatNameSec ) &&
+          (PostPhName == m_PostPhotoElectricLogVolNameWGrandPM) ) )
+     {
+       
   // temporary test with only qw-pc photons allowed to convert
   //if  if(( PostPhName == m_PostPhotoElectricLogVolName ) ) {
     // end of temporary test
-
-       //       G4cout<<"RichPmtPhElec effect PreVol Post Vol "<<PrePhName
-       //  <<"   "<<PostPhName<<G4endl;
+       //
+       //         G4cout<<"RichPmtPhElec effect PreVol Post Vol "<<PrePhName
+       //   <<"   "<<PostPhName<<G4endl;
   }else {
 
 
@@ -207,7 +230,7 @@ RichPmtPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
   }
   
   
-  // G4cout<<"Pmt phot elec effect Z coord RichDetnum  "<< CurrentZCoord <<"  "<<currentRichDetNumber<<G4endl;
+  //   G4cout<<"Pmt phot elec effect Z coord RichDetnum  "<< CurrentZCoord <<"  "<<currentRichDetNumber<<G4endl;
   
   // now make extra tests for the detector number.
   // These tests can be removed in the future for optimization.

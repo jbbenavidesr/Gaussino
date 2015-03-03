@@ -35,6 +35,9 @@
 <VisAtt name="VeloBerylliumCopper">
   <Color B="0.20" G="0.45" R="0.72"/>
 </VisAtt>
+<VisAtt name="VeloTestAluminium">
+  <Color B="0.87" G="0.85" R="0.67"/>
+</VisAtt>
 
 
 <!-- This part contains definitions of visualization attributes for

@@ -4,6 +4,28 @@
 ! Purpose     : cut tools for Gauss
 !-----------------------------------------------------------------------------
 
+!========================== GenCuts v3r7 2013-10-23 ========================== 
+! 2013-10-16 - Marc Olivier Bettler
+ - Lowered the verbosity of BcDaughtersInLHCbAndMassCut.cpp to debug
+ - Corrected treatment of cases with more than one Bc in the event.
+
+!========================== GenCuts v3r6 2013-10-10 ========================== 
+! 2013-09-17 - Liang Zhong
+ - Move XiccDaughtersInLHCb tool from LbGenXicc package to GenCuts
+ - Add XiccDaughtersInLHCbAndWithMinPT tool, which apply a minimum PT
+   cut on the Xicc
+
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2013-09-03 - Maurizio Martinelli
+ - Added DaughtersInLHCbAndCutsForDinSLBdecays, to generate D0 candidates from
+  SL B decays with cuts on D0 daughters and muon momentum. All the final state
+  particles are required to fall in the acceptance.
+
+! 2013-08-23 - Patrick Robbe
+ - Ask that pz(Bc) and pz(Upsilon) are positive in the generator cuts
+
 !========================== GenCuts v3r5 2013-06-27 ========================== 
 ! 2013-05-15 - Jibo He
  - Added BcNoCut, to generate Bc in full phase space

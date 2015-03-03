@@ -64,8 +64,8 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
 
   SmartDataPtr<IHistogram1D>hNumTotHitRich1Large(CurrentHistoSvc,
                                                  "RICHG4HISTOSET2/106");
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelRich1Large(CurrentHistoSvc,
-                                                     "RICHG4HISTOSET2/123");
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelRich1Large(CurrentHistoSvc,
+  //                                                   "RICHG4HISTOSET2/123");
   SmartDataPtr<IHistogram1D>hNumTotHitGasRich1Large(CurrentHistoSvc,
                                                     "RICHG4HISTOSET2/153");
 
@@ -76,9 +76,9 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
   SmartDataPtr<IHistogram1D>hNumTotHitRich2Large(CurrentHistoSvc,
                                                  "RICHG4HISTOSET2/173");
 
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelRich1(CurrentHistoSvc,
-                                                "RICHG4HISTOSET2/125");
-  SmartDataPtr<IHistogram1D>hNumTotHitC4F10Rich1(CurrentHistoSvc,
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelRich1(CurrentHistoSvc,
+  //                                              "RICHG4HISTOSET2/125");
+    SmartDataPtr<IHistogram1D>hNumTotHitC4F10Rich1(CurrentHistoSvc,
                                                  "RICHG4HISTOSET2/155");
   SmartDataPtr<IHistogram1D>hNumTotHitCF4Rich2(CurrentHistoSvc,
                                                "RICHG4HISTOSET2/175");
@@ -96,8 +96,8 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
                                             "RICHG4HISTOSET2/511");
 
 
-  SmartDataPtr<IHistogram2D>hCkvProdAgelRich1(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/600");
+  //  SmartDataPtr<IHistogram2D>hCkvProdAgelRich1(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/600");
   SmartDataPtr<IHistogram2D>hCkvProdC4F10Rich1(CurrentHistoSvc,
                                                "RICHG4HISTOSET2/610");
   SmartDataPtr<IHistogram2D>hCkvProdCF4Rich2(CurrentHistoSvc,
@@ -201,11 +201,11 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
             NumtotAgel++;
 
 
-            if( ChtkId <= 1 ) {
-              NumAgelPrim++;
-            }
+            //            if( ChtkId <= 1 ) {
+            //  NumAgelPrim++;
+            //  }
 
-            if(hCkvProdAgelRich1) hCkvProdAgelRich1->fill(aChTrackTotMom,CkvTheta*1.0);
+            //            if(hCkvProdAgelRich1) hCkvProdAgelRich1->fill(aChTrackTotMom,CkvTheta*1.0);
             
 
 
@@ -282,13 +282,13 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
   }
   
 
-  if( NumtotAgel > 0 )  {
+  //  if( NumtotAgel > 0 )  {
 
 
-    if(hNumTotHitAgelRich1) hNumTotHitAgelRich1->fill(NumtotAgel*1.0, 1.0);
-    if(hNumTotHitAgelRich1Large)
-      hNumTotHitAgelRich1Large->fill(NumtotAgel*1.0, 1.0);
-  }
+    //    if(hNumTotHitAgelRich1) hNumTotHitAgelRich1->fill(NumtotAgel*1.0, 1.0);
+    // if(hNumTotHitAgelRich1Large)
+    //  hNumTotHitAgelRich1Large->fill(NumtotAgel*1.0, 1.0);
+  //  }
 
 
   if(Numtotc4f10 > 0 ){
@@ -303,10 +303,10 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2( const G4Event* anEvent,
     if(hNumTotHitCF4Rich2) hNumTotHitCF4Rich2->fill( Numtotcf4*1.0,1.0);
   }
 
-  if( NumAgelPrim > 0 ){
+  //  if( NumAgelPrim > 0 ){
 
-    if(hNumHitAgelPrim) hNumHitAgelPrim->fill(NumAgelPrim*1.0,1.0);
-  }
+  //    if(hNumHitAgelPrim) hNumHitAgelPrim->fill(NumAgelPrim*1.0,1.0);
+  // }
 
   if( NumC4F10Prim > 0 )  {
 
@@ -436,14 +436,14 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2A()
   //  IHistogramSvc* CurrentHistoSvc;
   IHistogramSvc* CurrentHistoSvc = CkvG4SvcLocator::RichG4HistoSvc();
 
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelWithRlySat(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/128");
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelWithRlySat(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/128");
 
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelSat(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/129");
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelSat(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/129");
 
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelSatNoRefl(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/130");
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelSatNoRefl(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/130");
 
   SmartDataPtr<IHistogram1D>hNumTotHitC4F10Sat(CurrentHistoSvc,
                                                "RICHG4HISTOSET2/159");
@@ -478,14 +478,14 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2A()
   const std::vector<int> & NumRich1GasSatHitNoReflHighMom =
     aRichCounter->NumHitSaturatedPerTrackRich1GasNoHpdReflHighMom();
 
-  const std::vector<int> & NumRich1AgelSatHit =
-    aRichCounter->NumHitSaturatedPerTrackRich1Agel();
+  //  const std::vector<int> & NumRich1AgelSatHit =
+  //  aRichCounter->NumHitSaturatedPerTrackRich1Agel();
 
-  const std::vector<int> & NumRich1AgelSatHitNoRefl =
-    aRichCounter->NumHitSaturatedPerTrackRich1AgelNoHpdRefl();
+  //  const std::vector<int> & NumRich1AgelSatHitNoRefl =
+  //  aRichCounter->NumHitSaturatedPerTrackRich1AgelNoHpdRefl();
 
-  const std::vector<int> & NumRich1AgelSatWithRlyHit =
-    aRichCounter->NumHitSaturatedPerTrackRich1WithRlyAgel();
+  //  const std::vector<int> & NumRich1AgelSatWithRlyHit =
+  //  aRichCounter->NumHitSaturatedPerTrackRich1WithRlyAgel();
 
   const std::vector<int> & NumRich2GasSatHit =
     aRichCounter->NumHitSaturatedPerTrackRich2Gas();
@@ -504,8 +504,8 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2A()
     aRichCounter->NumHitSaturatedPerTrackRich2GasNoHpdReflNoScintHighMom();
 
 
-  int NumSatTrajRich1Gas =  (int) NumRich1GasSatHit.size();
-  int  NumSatTrajRich1Agel = (int) NumRich1AgelSatHit.size();
+  int NumSatTrajRich1Gas  = (int) NumRich1GasSatHit.size();
+  //  int NumSatTrajRich1Agel = (int) NumRich1AgelSatHit.size();
   //int  NumSatTrajRich1WithRlyAgel = (int) NumRich1AgelSatWithRlyHit.size();
   int NumSatTrajRich2Gas =  (int) NumRich2GasSatHit.size();
 
@@ -535,22 +535,22 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2A()
   }
 
 
-  for(int ihtrb=0; ihtrb< NumSatTrajRich1Agel; ++ihtrb){
-    int nhitb= NumRich1AgelSatHit[ihtrb];
-    if(nhitb >0 ) {
-      if(hNumTotHitAgelSat) hNumTotHitAgelSat->fill(nhitb,1.0);
-    }
-    int nhitb1= NumRich1AgelSatWithRlyHit[ihtrb];
-    if(nhitb1 >0 ) {
-      if(hNumTotHitAgelWithRlySat) hNumTotHitAgelWithRlySat->fill(nhitb1,1.0);
-    }
-    int nhitb2= NumRich1AgelSatHitNoRefl[ihtrb];
-    if(nhitb1 >0 ) {
-      if(hNumTotHitAgelSatNoRefl) hNumTotHitAgelSatNoRefl->fill(nhitb2,1.0);
-    }
-
-
-  }
+  // for(int ihtrb=0; ihtrb< NumSatTrajRich1Agel; ++ihtrb){
+    //int nhitb= NumRich1AgelSatHit[ihtrb];
+    //    if(nhitb >0 ) {
+    //  if(hNumTotHitAgelSat) hNumTotHitAgelSat->fill(nhitb,1.0);
+    //  }
+    // int nhitb1= NumRich1AgelSatWithRlyHit[ihtrb];
+    // if(nhitb1 >0 ) {
+    //  if(hNumTotHitAgelWithRlySat) hNumTotHitAgelWithRlySat->fill(nhitb1,1.0);
+    // }
+    //  int nhitb2= NumRich1AgelSatHitNoRefl[ihtrb];
+    // if(nhitb1 >0 ) {
+    //  if(hNumTotHitAgelSatNoRefl) hNumTotHitAgelSatNoRefl->fill(nhitb2,1.0);
+    // }
+  //
+  //
+  //  }
 
 
   for(int ihtrc=0; ihtrc < NumSatTrajRich2Gas; ++ihtrc ) {
@@ -592,8 +592,8 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
   IHistogramSvc* CurrentHistoSvc = CkvG4SvcLocator::RichG4HistoSvc();
 
 
-  SmartDataPtr<IHistogram1D>hNumTotHitAgelFullAcceptSat(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/329");
+  //  SmartDataPtr<IHistogram1D>hNumTotHitAgelFullAcceptSat(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/329");
 
   SmartDataPtr<IHistogram1D>hNumTotHitC4F10FullAcceptSat(CurrentHistoSvc,
                                                "RICHG4HISTOSET2/359");
@@ -605,14 +605,21 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
   SmartDataPtr<IHistogram1D>hNumTotSignalHitCF4FullAcceptSat(CurrentHistoSvc,
                                              "RICHG4HISTOSET2/378");
 
-  SmartDataPtr<IHistogram2D>hNumHitVsAngAgelFullAcceptSat(CurrentHistoSvc,
-                                              "RICHG4HISTOSET2/322");
+  //  SmartDataPtr<IHistogram2D>hNumHitVsAngAgelFullAcceptSat(CurrentHistoSvc,
+  //                                            "RICHG4HISTOSET2/322");
 
   SmartDataPtr<IHistogram2D>hNumHitVsAngC4F10FullAcceptSat(CurrentHistoSvc,
-                                               "RICHG4HISTOSET2/352");
+                                                           "RICHG4HISTOSET2/352");
+  
+  SmartDataPtr<IHistogram2D>hNumHitVsTrPhiC4F10FullAcceptSat(CurrentHistoSvc,
+                                                             "RICHG4HISTOSET2/353");
+  
 
   SmartDataPtr<IHistogram2D>hNumHitVsAngCF4FullAcceptSat(CurrentHistoSvc,
-                                             "RICHG4HISTOSET2/372");
+                                                         "RICHG4HISTOSET2/372");
+
+  SmartDataPtr<IHistogram2D>hNumHitVsTrPhiCF4FullAcceptSat(CurrentHistoSvc,
+                                                           "RICHG4HISTOSET2/373"); 
 
 
   RichG4Counters* aRichCounter = RichG4Counters::getInstance();
@@ -620,8 +627,8 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
 
   const std::vector<int> & NumRich1GasFullAcceptSatHit =
     aRichCounter->NumHitFullAcceptSatPerTrackR1Gas();
-  const std::vector<int> & NumRich1AgelFullAcceptSatHit =
-    aRichCounter->NumHitFullAcceptSatPerTrackR1Agel() ;
+  //  const std::vector<int> & NumRich1AgelFullAcceptSatHit =
+  //  aRichCounter->NumHitFullAcceptSatPerTrackR1Agel() ;
   const std::vector<int> & NumRich2GasFullAcceptSatHit =
     aRichCounter->NumHitFullAcceptSatPerTrackR2Gas();
 
@@ -631,16 +638,15 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
     aRichCounter->NumSignalHitFullAcceptSatPerTrackR2Gas();
   
   // The following not used for now and hence commented out.
-  //  const std::vector<G4ThreeVector> & NumRich1GasFullAcceptTrackMom =
-  //  aRichCounter->TrackMomFullAcceptRich1Gas();
+
+  const std::vector<G4ThreeVector> & NumRich1GasFullAcceptTrackMom = aRichCounter->TrackMomFullAcceptRich1Gas();
   //  const std::vector<G4ThreeVector> & NumRich1AgelFullAcceptTrackMom =
   //  aRichCounter->TrackMomFullAcceptRich1Agel() ;
-  // const std::vector<G4ThreeVector> & NumRich2GasFullAcceptTrackMom =
-  //  aRichCounter->TrackMomFullAcceptRich2Gas();
+  const std::vector<G4ThreeVector> & NumRich2GasFullAcceptTrackMom = aRichCounter->TrackMomFullAcceptRich2Gas();
 
 
   int NumSatTrajFullAcceptRich1Gas =  (int) NumRich1GasFullAcceptSatHit.size();
-  int NumSatTrajFullAccceptRich1Agel = (int) NumRich1AgelFullAcceptSatHit.size();
+  //  int NumSatTrajFullAccceptRich1Agel = (int) NumRich1AgelFullAcceptSatHit.size();
   int NumSatTrajFullAcceptRich2Gas =  (int) NumRich2GasFullAcceptSatHit.size();
 
   int NumSignalSatTrajFullAcceptRich1Gas =  (int) NumRich1GasFullAcceptSatSignalHit.size();
@@ -655,12 +661,17 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
 
     if( nhita > 0) {
       if(hNumTotHitC4F10FullAcceptSat )hNumTotHitC4F10FullAcceptSat ->fill(nhita,1.0);
-      //  G4ThreeVector r1gasTrkMom=NumRich1GasFullAcceptTrackMom[ihtra];
-      //  double trackTheta1= r1gasTrkMom.theta();
-      // G4cout<<" track mom theta "<<  r1gasTrkMom <<"  "<<trackTheta1<<G4endl;
 
-      // if(hNumHitVsAngC4F10FullAcceptSat) hNumHitVsAngC4F10FullAcceptSat->fill(trackTheta1,nhita);
+      G4ThreeVector r1gasTrkMom=NumRich1GasFullAcceptTrackMom[ihtra];
+      double trackTheta1= r1gasTrkMom.theta();
       
+      // G4cout<<" track mom theta "<<  r1gasTrkMom <<"  "<<trackTheta1<<G4endl;
+      
+      //G4cout<<" track mom phi "<<  r1gasTrkMom <<"  "<<r1gasTrkMom.phi() <<G4endl;
+
+      if(hNumHitVsAngC4F10FullAcceptSat) hNumHitVsAngC4F10FullAcceptSat->fill(trackTheta1,nhita);
+
+      if(hNumHitVsTrPhiC4F10FullAcceptSat) hNumHitVsTrPhiC4F10FullAcceptSat->fill( r1gasTrkMom.phi(), nhita);
       
     }   
     
@@ -679,17 +690,17 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
 
 
 
-  for(int ihtrb=0; ihtrb<NumSatTrajFullAccceptRich1Agel ; ++ihtrb){
-    int nhitb= NumRich1AgelFullAcceptSatHit[ihtrb];
-    if(nhitb >0 ) {
-      if( hNumTotHitAgelFullAcceptSat)hNumTotHitAgelFullAcceptSat->fill(nhitb,1.0);
+  //  for(int ihtrb=0; ihtrb<NumSatTrajFullAccceptRich1Agel ; ++ihtrb){
+  //  int nhitb= NumRich1AgelFullAcceptSatHit[ihtrb];
+  //  if(nhitb >0 ) {
+  //    if( hNumTotHitAgelFullAcceptSat)hNumTotHitAgelFullAcceptSat->fill(nhitb,1.0);
       // G4ThreeVector r1agelTrkMom=NumRich1AgelFullAcceptTrackMom[ihtrb];
 
       //  double trackThetaagel= r1agelTrkMom.theta();
       // if(hNumHitVsAngAgelFullAcceptSat) hNumHitVsAngAgelFullAcceptSat
       //      ->fill(trackThetaagel,nhitb);
-    }  
-  }
+  //    }  
+  //  }
   
 
   for(int ihtrc=0; ihtrc <  NumSatTrajFullAcceptRich2Gas ; ++ihtrc ) {
@@ -697,9 +708,11 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
     int nhitc = NumRich2GasFullAcceptSatHit[ihtrc];
     if( nhitc > 0) {
       if(hNumTotHitCF4FullAcceptSat ) hNumTotHitCF4FullAcceptSat->fill(nhitc,1.0);
-      // G4ThreeVector r2gasTrkMom=NumRich2GasFullAcceptTrackMom[ihtrc];
-      //  double trackTheta2= r2gasTrkMom.theta();
-      // if(hNumHitVsAngCF4FullAcceptSat) hNumHitVsAngCF4FullAcceptSat->fill(trackTheta2,nhitc);
+      G4ThreeVector r2gasTrkMom=NumRich2GasFullAcceptTrackMom[ihtrc];
+      double trackTheta2= r2gasTrkMom.theta();
+
+      if(hNumHitVsAngCF4FullAcceptSat) hNumHitVsAngCF4FullAcceptSat->fill(trackTheta2,nhitc);
+      if(hNumHitVsTrPhiCF4FullAcceptSat) hNumHitVsTrPhiCF4FullAcceptSat->fill( r2gasTrkMom.phi(), nhitc);
 
     }
 

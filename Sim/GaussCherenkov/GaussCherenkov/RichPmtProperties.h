@@ -77,6 +77,10 @@ public:
     m_PmtQWLogVolName=  hpdqwLvolname;
   }
 
+  const std::string &  GrandPmtQWLogVolName(){  return m_GrandPmtQWLogVolName ;}
+  const std::string &  GrandPmtPhCathodeLogVolName(){  return m_GrandPmtPhCathodeLogVolName;}
+  
+
   const std::string & LPmtPhCathodeLogVolName() const {return  m_LPmtPhCathodeLogVolName; }
   const std::string & LPmtLensLogVolName() const {return m_LPmtLensLogVolName;}
 
@@ -155,6 +159,10 @@ public:
     m_CurQETableSourceOption=aOpt;
     
   }
+  void SetPmtQEOverallScaling( double scaleFactor )
+  {
+    m_PmtQEScaleFactor = scaleFactor ;
+  }
 
   void setPmtPropertiesVerboseLevel(int aLevel );
 
@@ -178,6 +186,13 @@ public:
   void setActivatePmtModuleSuppressSet6(bool aAct6)
   { m_ActivatePmtModuleSuppressSet6=aAct6; }
 
+  //
+  void setActivatePmtSuppressSet0(bool aSet0) 
+  { m_ActivatePmtSuppressSet0 = aSet0;  }
+  void setActivatePmtSuppressSet1(bool aSet1)
+  { m_ActivatePmtSuppressSet1 = aSet1; }
+  void setActivatePmtSuppressSet2(bool aSet2)
+  { m_ActivatePmtSuppressSet2 = aSet2; }
 
   bool getSuperRichFlag();
 
@@ -218,6 +233,9 @@ private:
   std::string m_LPmtQWLogVolName;
   std::string m_LPmtPhCathodeLogVolName;
   std::string m_LPmtLensLogVolName;
+
+  std::string  m_GrandPmtQWLogVolName ;
+  std::string  m_GrandPmtPhCathodeLogVolName;
   
 
   int m_numberOfRichDetectors;
@@ -246,12 +264,17 @@ private:
   int m_CurQETableSourceOption; // 0 default means Borosilicate
                                 // 1 means the UV glass
                                 // 2 means nominal HPD like
+  double m_PmtQEScaleFactor;
 
   //  bool m_UsePmtMagDistortions;
   bool m_ActivatePmtModuleSuppressSet3;
   bool m_ActivatePmtModuleSuppressSet4;
   bool m_ActivatePmtModuleSuppressSet5;
-  bool m_ActivatePmtModuleSuppressSet6;  
+  bool m_ActivatePmtModuleSuppressSet6; 
+
+  bool m_ActivatePmtSuppressSet0;
+  bool m_ActivatePmtSuppressSet1;
+  bool m_ActivatePmtSuppressSet2;
 
   bool m_SuperRichFlag;
   

@@ -147,14 +147,16 @@ private:
   bool m_RichApplyScintillationYieldScaleFactor;
   double m_RichScintillationYieldScaleFactor;
   int m_PmtQESource;
+  double m_PmtQEScaleFactor;
   bool m_activateTorchTestBeamSimulation;
   bool m_activatePmtModuleSupSet3;
   bool m_activatePmtModuleSupSet4;
   bool m_activatePmtModuleSupSet5;
   bool m_activatePmtModuleSupSet6;
-  
-  
-    
+  //
+  bool m_activatePmtSupSet0;
+  bool m_activatePmtSupSet1;
+  bool m_activatePmtSupSet2;  
   
 };
 // ============================================================================

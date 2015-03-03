@@ -4,15 +4,42 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v13r0 2013-10-10 ==========================
+! 2013-10-03 - Gloria Corti
+ - Put v1r* in version of LHAPDFSet to be used
+
+! 2013-09-24 - Marco Clemencic
+ - Added missing piece to CMake configuration.
+
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2013-08-29 - Gloria Corti
+ - Use herwig++ 2.6.1b for Gauss v46 as needed by MCGenerators_lcgcmt65 and 
+   higher. Will only be used by Gauss >= v46r5 and not for Sim08
+
+!========================== GENSER v12r7 2013-08-29 ==========================
+! 2013-08-29 - Gloria Corti
+ - Need to revert to herwig++ 2.6.1a for Gauss v45 since 2.6.1b does not exists
+   in MCGenerators_lcgcmt64c
+
+! 2013-08-07 - Gloria Corti
+ - Adapt to change in interface package name for powhegbox instead of 
+   powheg-box that causes problems on bash
+
+! 2013-08-06 - Gloria Corti
+ - Introduce use of new LHAPDFSets data package where the PDF used by LHCb now
+   reside
+
 !========================= GENSER v12r6g1 2013-07-24 =========================
 ! 2013-07-24 - Gloria Corti
- - Identical to v12r4 but with 'g1' tag to allow to pick up the generators
+ - Identical to v12r6 but with 'g1' tag to allow to pick up the generators
    distributions from the MCGenerators_lcgcmt65a area as needed by LHCB v36r1
    and Gaudi v23r9
 
 !========================== GENSER v12r6 2013-07-24 ==========================
 ! 2013-07-24 - Gloria Corti
- - Introduce new macro for powheg_box native version and set it to r2092
+ - Introduce new macro for powheg-box native version and set it to r2092
 
 !========================== GENSER v12r5 2013-06-27 ==========================
 ! 2013-06-27 - Gloria Corti

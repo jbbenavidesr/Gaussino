@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v12r6g1
+version v13r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -17,8 +17,8 @@ use GaudiPolicy  v*
 #-- LHAPDF
 #============================================================================
 macro lhapdf_native_version "5.8.8"
-use lhapdf v* LCG_GeneratorsInterfaces
-
+use lhapdf     v* LCG_GeneratorsInterfaces
+use LHAPDFSets v1r*
 
 #-- Herwig++ and ThePeg
 # Set native versions of required software.
@@ -34,7 +34,7 @@ macro alpgen_native_version "2.1.4"
 
 #-- Powheg-box
 #============================================================================
-macro powheg-box_native_version "r2092"
+macro powhegbox_native_version "r2092"
 
 #-- Photos++ and Taula++ 
 #============================================================================

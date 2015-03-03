@@ -4,6 +4,18 @@
 ! Purpose     : Implementation of the powheg-box in Gauss
 !-----------------------------------------------------------------------------
 
+!========================= LbPowheg v1r0p2 2013-10-10 ========================
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+!========================= LbPowheg v1r0p1 2013-08-08 ========================
+! 2013-08-08 - Gloria Corti
+ - Use powhegbox instead of powheg-box interface that cannot be used on bash
+
+! 2013-07-31 - Gloria Corti
+ - Fix setting of POWHEGEXE to match change in interface that did not resolve 
+   correctly in tcsh
+
 !========================== LbPowheg v1r0 2013-07-24 =========================
 ! 2013-07-16 - Patrick Robbe
  - Remove code which is already in Gen/LbPythia

@@ -131,6 +131,8 @@ public:
   G4bool PSFPreDc06Flag() {return m_PSFPreDc06Flag;}
   G4bool PmtQEUsingNominalTable()  {  return m_PmtQEUsingNominalTable;}
   void  SetPmtQESourceTable(int asou);
+  void SetPmtQEOverallScaling( double scaleFactor );
+
   void setPmtModuleSupFlag3(G4bool aFlag3) 
   { m_PmtModuleSupFlag3=aFlag3;}
   void setPmtModuleSupFlag4(G4bool aFlag4)
@@ -139,6 +141,15 @@ public:
   { m_PmtModuleSupFlag5=aFlag5;}
   void setPmtModuleSupFlag6(G4bool aFlag6)
   { m_PmtModuleSupFlag6=aFlag6;}
+
+  //
+  void setPmtSupFlag0(G4bool aSet0)
+  { m_PmtSupFlag0 = aSet0;}
+  void setPmtSupFlag1(G4bool aSet1)
+  { m_PmtSupFlag1 = aSet1;}
+  void setPmtSupFlag2(G4bool aSet2)
+  { m_PmtSupFlag2 = aSet2;}
+
   
 private:
 
@@ -152,6 +163,8 @@ private:
   G4String m_PrePhotoElectricLogVolName;
   G4String m_PostPhotoElectricLogVolName;
   G4String m_PrePhotoElectricMatNameSec;
+  G4String m_PrePhotoElectricLogVolNameWGrandPM;
+  G4String m_PostPhotoElectricLogVolNameWGrandPM;
 
   G4String m_PrePhotoElectricLogVolNameWLens;
   G4String m_PostPhotoElectricLogVolNameWLens;
@@ -180,11 +193,16 @@ private:
   G4bool m_PmtQEUsingNominalTable; // if true using old Nominal QE Table for all pmts from sqldddb
                                    // if false using the new measured QE tables for the Pmts. 
   G4int m_PmtQESourceTable;
+  double m_PmtQEScaleFactor;
 
   G4bool m_PmtModuleSupFlag3;
   G4bool m_PmtModuleSupFlag4;
   G4bool m_PmtModuleSupFlag5;
   G4bool m_PmtModuleSupFlag6;
+
+  G4bool m_PmtSupFlag0;
+  G4bool m_PmtSupFlag1;
+  G4bool m_PmtSupFlag2;
 
          
 };
@@ -257,6 +275,11 @@ inline void RichPmtPhotoElectricEffect::SetPmtQESourceTable(int asou)
 {  
   m_PmtQESourceTable=asou;
 }
+inline void RichPmtPhotoElectricEffect::SetPmtQEOverallScaling(double scaleFactor) 
+{  
+  m_PmtQEScaleFactor = scaleFactor ;
+}
+
 
 
 #endif

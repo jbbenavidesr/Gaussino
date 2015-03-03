@@ -30,6 +30,7 @@
   <!ENTITY RichMaterials SYSTEM "RichMaterials.xml">
   <!ENTITY VeloMaterials SYSTEM "VeloMaterials.xml">
   <!ENTITY TTMaterials SYSTEM "TTMaterials.xml">
+  <!ENTITY UTMaterials SYSTEM "UTMaterials.xml">
   <!ENTITY ITMaterials SYSTEM "ITMaterials.xml">
   <!ENTITY OTMaterials SYSTEM "OTMaterials.xml">
 
@@ -82,6 +83,7 @@
     &RichMaterials;
     &VeloMaterials;
     &TTMaterials;
+    &UTMaterials;
     &ITMaterials;
     &OTMaterials;
   </Materials>
