@@ -1,4 +1,4 @@
-// $Id: Color.h,v 1.3 2003-04-16 17:50:35 sponce Exp $
+// $Id: Color.h,v 1.4 2009-06-03 14:21:06 jonrob Exp $
 #ifndef VISSVC_COLOR_H 
 #define VISSVC_COLOR_H 1
 
@@ -25,10 +25,10 @@ public:
   Color (const float [4]);
 
   const float* value() const;
-  const float red () const;
-  const float green () const;
-  const float blue () const;
-  const float alpha () const;
+  float red () const;
+  float green () const;
+  float blue () const;
+  float alpha () const;
 
   bool isValid() const;
   bool operator== (const Color& c) const;
@@ -63,19 +63,19 @@ inline const float* Color::value() const {
   return vec;
 }
 
-inline const float Color::red () const {
+inline float Color::red () const {
   return vec[0];
 }
 
-inline const float Color::green () const {
+inline float Color::green () const {
   return vec[1];
 }
 
-inline const float Color::blue () const {
+inline float Color::blue () const {
   return vec[2];
 }
 
-inline const float Color::alpha () const {
+inline float Color::alpha () const {
   return vec[3];
 }
 

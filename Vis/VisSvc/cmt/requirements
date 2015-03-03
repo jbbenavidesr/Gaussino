@@ -3,7 +3,7 @@
 # Maintainer : Gloria CORTI
 #============================================================================
 package           VisSvc
-version           v5r3
+version           v5r5
 
 # Structure, i.e. directories to process.
 #============================================================================
@@ -20,7 +20,7 @@ apply_pattern install_more_includes more=VisSvc
 
 # Component library building rule
 #============================================================================
-library          VisSvc    *.cpp
+library          VisSvc    ../src/*.cpp
 
 # define component library link options
 #============================================================================

@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti, Florence Ranjard
 #============================================================================
 package Gauss
-version v37r3p1
+version v37r4
 
 #============================================================================
 #-- Structure
@@ -17,7 +17,7 @@ branches src doc options cmt job python
 use DDDB               v*     Det            -no_auto_imports
 use ParamFiles         v8r0                  -no_auto_imports
 use FieldMap           v5r*                  -no_auto_imports
-use DecFiles           v18r*  Gen            -no_auto_imports
+use DecFiles           v19r*  Gen            -no_auto_imports
 use Geant4Files	       v91r0	             -no_auto_imports
 use MIBData            v2r0                  -no_auto_imports
 use MCatNLOData        v1r1                  -no_auto_imports
@@ -54,8 +54,8 @@ use SimComponents      v*     Sim            -no_auto_imports
 #== From GAUSS project =====================================================
 
 #-- Generator
-#use ParticleGuns       v*     Gen            -no_auto_imports # TEMPORARLY OFF
-#use LbMIB              v*     Gen            -no_auto_imports # TEMPORARLY OFF
+use LbPGuns            v*     Gen            -no_auto_imports # TEMPORARLY OFF
+use LbMIB              v*     Gen            -no_auto_imports # TEMPORARLY OFF
 use LbPythia           v*     Gen            -no_auto_imports
 
 #-- Not built on Windows
@@ -119,6 +119,8 @@ path_remove    PATH  "" Linux&Vis "/david/"
 path_append    PATH  "" Linux&Vis "$(DAVID_HOME)/$(LCG_system)/bin"
 
 #===========================================================================
+apply_pattern install_scripts
+
 #== Install configurable
 apply_pattern install_python_modules
 

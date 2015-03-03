@@ -1,9 +1,16 @@
-! $Id: release.notes,v 1.152 2009-07-15 09:51:29 gcorti Exp $
+! $Id: release.notes,v 1.154 2009-09-18 14:23:01 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v10r3 2009-09-18 ==========================
+! 2009-09-09 - Thomas BLAKE
+ - DiLeptonInAcceptance.cpp: Fix bug in mass calculation
+
+! 2009-08-10 - Thomas BLAKE
+ - DiLeptonInAcceptance.cpp: Updated code to allow for same sign combinations.
 
 !====================== Generators v10r2 2009-07-15 ==========================
 ! 2009-06-19 - Patrick Robbe

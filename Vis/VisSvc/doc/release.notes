@@ -3,6 +3,14 @@
 ! Responsible : Gloria CORTI (originally Sebastien Ponce)
 ! Purpose     : 
 !-----------------------------------------------------------------------------
+!======================== VisSvc v5r5 ===========================
+! 2009-08-25 - Thomas Ruf
+ - requirements, match to new CMT version
+!======================== VisSvc v5r4 2009-06-04 =============================
+
+! 2009-06-03 - Chris Jones
+ - Fix gcc 4.3 warnings
+ - Remove obsolete load file
 
 !======================== VisSvc v5r3 2008-08-08 =============================
 ! 2008-08-01 - Guy Barrand

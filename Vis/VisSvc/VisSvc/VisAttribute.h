@@ -1,4 +1,4 @@
-// $Id: VisAttribute.h,v 1.2 2003-04-16 17:50:35 sponce Exp $
+// $Id: VisAttribute.h,v 1.3 2009-06-03 14:21:06 jonrob Exp $
 #ifndef VISATTRIBUTE_H 
 #define VISATTRIBUTE_H 1
 
@@ -56,7 +56,7 @@ public:
    * Get accessor to member m_visible
    * @return the current value of m_visible
    */
-  const Visibility visible() const {
+  Visibility visible() const {
     return m_visible;
   }
 
@@ -64,7 +64,7 @@ public:
    * Get accessor to member m_openStatus
    * @return the current value of m_openStatus
    */
-  const OpenStatus openStatus() const {
+  OpenStatus openStatus() const {
     return m_openStatus;
   }
 
@@ -72,7 +72,7 @@ public:
    * Get accessor to member m_displayMode
    * @return the current value of m_displayMode
    */
-  const DisplayMode displayMode() const {
+  DisplayMode displayMode() const {
     return m_displayMode;
   }
 
