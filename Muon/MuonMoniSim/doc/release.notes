@@ -4,6 +4,12 @@
 ! Purpose       : Monitoring for the muon system for simulated data
 !-----------------------------------------------------------------------------
 
+!======================= MuonMoniSim v2r5p1 2009-07-15 =======================
+! 2009-06-15 - Gloria CORTI
+ - Fix compilation warning for unused variables, commenting out line where
+   defined.
+   . MuonHitChecker.cpp
+
 !======================== MuonMoniSim v2r5 2009-05-28 ========================
 ! 2009-04-27  - Stefania Vecchi
  - added Algorithm MuonMultipleScatteringChecher: provide histograms to check 
