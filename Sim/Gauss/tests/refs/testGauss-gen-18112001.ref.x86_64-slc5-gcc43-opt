@@ -1,21 +1,21 @@
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/Gauss-2012.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/Gauss-2012.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/18112001.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/Upsilon.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/SwitchOffAllPythiaProcesses.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/SwitchOffAllPythiaProcesses.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/Upsilon.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/18112001.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/LbPythia/options/Pythia.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Mon/GAUSS/GAUSS_v45r1/Gen/LbPythia/options/Pythia.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/GenStandAlone.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/GenStandAlone.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-NoOutput.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-NoOutput.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/Gauss-2012.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/Gauss-2012.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/18112001.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/Upsilon.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/SwitchOffAllPythiaProcesses.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/SwitchOffAllPythiaProcesses.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/Upsilon.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/18112001.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/GAUSS/GAUSS_v45r1/Gen/LbPythia/options/Pythia.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/GAUSS/GAUSS_v45r1/Gen/LbPythia/options/Pythia.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/GenStandAlone.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/GenStandAlone.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-NoOutput.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-NoOutput.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
 # applying configuration of Gauss
 Ecut value = 5.0
 # WARNING: No simulation phase.
@@ -38,8 +38,8 @@ Ecut value = 5.0
 # |                     (default: [0.45900000000000002, -0.014999999999999999, 0.5])
 # |-BeamLineAngles      = [0.0, 0.0]  (default: [-7.4999999999999993e-05, 3.5000000000000004e-05])
 # |-BeamHCrossingAngle  = -0.00023599999999999999  (default: -0.00052000000000000006)
-# |-PhysicsList         = {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'LHEP', 'LHCbPhys': True}
-# |                     (default: {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'LHEP', 'LHCbPhys': True})
+# |-PhysicsList         = {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'FTFP_BERT', 'LHCbPhys': True}
+# |                     (default: {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'FTFP_BERT', 'LHCbPhys': True})
 # |-OutputType          = 'NONE'  (default: 'SIM')
 # |-DetectorMoni        = {'Detectors': ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet']}
 # |                     (default: {'Detectors': ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet']})
@@ -66,7 +66,7 @@ Ecut value = 5.0
 ApplicationMgr    SUCCESS
 ====================================================================================================================================
                                                    Welcome to Gauss version v45r0
-                                          running on lxplus432.cern.ch on Mon Mar 25 21:51:25 2013
+                                          running on lxplus421.cern.ch on Mon May 20 20:43:11 2013
 ====================================================================================================================================
 ApplicationMgr       INFO Application Manager Configured successfully
 DetectorPersistencySvc     INFO Added successfully Conversion service:XmlCnvSvc
@@ -80,14 +80,16 @@ ChronoStatSvc              INFO  Number of skipped events for MemStat-1
                             WWW : http://cern.ch/geant4
 *************************************************************
 
-SimulationSvc              INFO Loading simulation attributes file "/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/xml/Simulation.xml" ...
+SimulationSvc              INFO Loading simulation attributes file "/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/xml/Simulation.xml" ...
 GiGa.ModularPL             INFO GiGaPhysListModular initializing
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmOpt1NoCutsPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.DecayPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmExtraPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.IonPhysics
-GiGa.ModularPL             INFO Registered GiGa.ModularPL.ElasticPhysicsLHEP
-GiGa.ModularPL             INFO Registered GiGa.ModularPL.LHEPPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.ElasticPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.FTFP_BERTPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.QStoppingPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.NeutronTrkCut
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorOp
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorHpd
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysUnknownParticles
@@ -104,10 +106,10 @@ GiGa                       INFO Stacking Action Object is not required to be loa
 COOLConfSvc                INFO CORAL Connection Retrial Period set to 60s
 COOLConfSvc                INFO CORAL Connection Retrial Time-Out set to 900s
 DDDB                       INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/db/DDDB.db/DDDB"
-DDDB                       INFO Using TAG "dddb-20130312-1"
+DDDB                       INFO Using TAG "Sim08-20130503-1"
 EventClockSvc.FakeEve...   INFO Event times generated from 0 with steps of 0
 SIMCOND                    INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/db/SIMCOND.db/SIMCOND"
-SIMCOND                    INFO Using TAG "sim-20130222-1-vc-md100"
+SIMCOND                    INFO Using TAG "Sim08-20130503-1-vc-md100"
 RichG4TrackActionPhotOpt   INFO  Rich HPD Max QE from DB and UsedInThisRun are  0.45    0.45
 GiGa                       INFO Used Tracking Action Object is GiGaTrackActionSequence/GiGa.TrackSeq
 GiGa                       INFO Used  Stepping Action Object is GiGaStepActionSequence/GiGa.StepSeq
@@ -123,7 +125,7 @@ RndmGenSvc.Engine          INFO This is the GEANT4 engine!
 RndmGenSvc                 INFO Using Random engine:HepRndm::Engine<CLHEP::RanluxEngine>
 TimingAuditor.TIMER        INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 GaussSequencer             INFO Member list: GaudiSequencer/Generator, GaudiSequencer/SkipGeant4
-ToolSvc.SequencerTime...   INFO This machine has a speed about   1.69 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 Generator                  INFO Member list: GaudiSequencer/GeneratorSlotMainSeq
 GeneratorSlotMainSeq       INFO Member list: GenInit/GaussGen, Generation, GaudiSequencer/GenMonitor
 GaussGen                SUCCESS ==================================================================
@@ -186,7 +188,7 @@ Generation.FixedLumin...   INFO Poisson distribution with fixed luminosity.
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.175      |  |
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 18 Feb 2013  |  |
  |  |   P       Y      T    H   H   I   A   A                                      |  |
- |  |   P       Y      T    H   H  III  A   A    Now is 25 Mar 2013 at 21:51:38    |  |
+ |  |   P       Y      T    H   H  III  A   A    Now is 20 May 2013 at 20:43:23    |  |
  |  |                                                                              |  |
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  |
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  |
@@ -241,7 +243,7 @@ Generation.FixedLumin...   INFO Poisson distribution with fixed luminosity.
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.175      |  |
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 18 Feb 2013  |  |
  |  |   P       Y      T    H   H   I   A   A                                      |  |
- |  |   P       Y      T    H   H  III  A   A    Now is 25 Mar 2013 at 21:51:38    |  |
+ |  |   P       Y      T    H   H  III  A   A    Now is 20 May 2013 at 20:43:23    |  |
  |  |                                                                              |  |
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  |
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  |
@@ -534,9 +536,9 @@ GaussGen                   INFO Evt 98,  Run 1082,  Nr. in job = 98 with seeds [
 MainEventGaussSkipGeant4   INFO Evt 98,  Run 1082,  Nr. in job = 98 with seeds [1082, 98, 807237393, 0]
 GaussGen                   INFO Evt 99,  Run 1082,  Nr. in job = 99 with seeds [1082, 99, 431091388, 0]
 MainEventGaussSkipGeant4   INFO Evt 99,  Run 1082,  Nr. in job = 99 with seeds [1082, 99, 712228368, 0]
-GaussGen                   INFO Memory has changed from 1032968 to 1036880 KB (3912KB, 0.378715%) in last 100 events
+GaussGen                   INFO Memory has changed from 1034984 to 1038896 KB (3912KB, 0.377977%) in last 100 events
 GaussGen                   INFO Evt 100,  Run 1082,  Nr. in job = 100 with seeds [1082, 100, 467237978, 0]
-MainEventGaussSkipGeant4   INFO Memory has changed from 1035780 to 1036880 KB (1100KB, 0.1062%) in last 100 events
+MainEventGaussSkipGeant4   INFO Memory has changed from 1037792 to 1038896 KB (1104KB, 0.10638%) in last 100 events
 MainEventGaussSkipGeant4   INFO Evt 100,  Run 1082,  Nr. in job = 100 with seeds [1082, 100, 744341988, 0]
 ApplicationMgr             INFO Application Manager Stopped successfully
 GaussGen                SUCCESS ==================================================================
@@ -545,21 +547,21 @@ GaussGen                SUCCESS ================================================
 GenMonitorAlg              INFO
 ======================== Generators Statistics ====================
 =                                                                 =
-= Number of particles generated: 96974
+= Number of particles generated: 96985
 = Number of events: 100
-= Mean multiplicity: 969.74
+= Mean multiplicity: 969.85
 =                                                                 =
-= Number of pseudo stable particles generated: 83084
+= Number of pseudo stable particles generated: 83095
 = Number of events: 100
-= Mean pseudo stable multiplicity: 830.84
+= Mean pseudo stable multiplicity: 830.95
 =                                                                 =
-= Number of charged stable particles generated: 25360
+= Number of charged stable particles generated: 25376
 = Number of events: 100
-= Mean charged stable multiplicity: 253.6
+= Mean charged stable multiplicity: 253.76
 =                                                                 =
-= Number of charged stable particles in LHCb eta 5637
+= Number of charged stable particles in LHCb eta 5652
 = Number of events: 100
-= Mean charged stable multiplicity in LHCb eta: 56.37
+= Mean charged stable multiplicity in LHCb eta: 56.52
 =                                                                 =
 ===================================================================
 GenMonitorAlg           SUCCESS Booked 21 Histogram(s) : 1D=19 2D=2
@@ -572,20 +574,20 @@ ToolSvc                    INFO Removing all tools created by ToolSvc
 MainEventGaussSkipGea...SUCCESS Booked 4 Histogram(s) : 1D=4
 MainEventGaussSkipGea...SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Delta Memory/MB"                               |        90 |      0.432 |  0.0048000 |   0.031890 |      0.0000 |     0.22800 |
- | "Total Memory/MB"                               |       100 |   103647.7 |     1036.5 |    0.14674 |      1035.8 |      1036.9 |
+ | "Delta Memory/MB"                               |        90 |      0.364 |  0.0040444 |   0.027549 |      0.0000 |     0.22400 |
+ | "Total Memory/MB"                               |       100 |   103855.1 |     1038.6 |    0.13753 |      1037.8 |      1038.9 |
 MainEventGaussSkipGea...SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/2/0
 MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 2        Message = 'Delta Memory for the event exceeds 3*sigma'
-MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 7        Message = 'Total Memory for the event exceeds 3*sigma'
+MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 4        Message = 'Total Memory for the event exceeds 3*sigma'
 GaussGen.GaussGenMemory SUCCESS Booked 4 Histogram(s) : 1D=4
 GaussGen.GaussGenMemory SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Delta Memory/MB"                               |        90 |      0.432 |  0.0048000 |   0.031890 |      0.0000 |     0.22800 |
- | "Total Memory/MB"                               |       100 |   103644.9 |     1036.4 |    0.37284 |      1033.0 |      1036.9 |
+ | "Delta Memory/MB"                               |        90 |      0.364 |  0.0040444 |   0.027549 |      0.0000 |     0.22400 |
+ | "Total Memory/MB"                               |       100 |   103852.3 |     1038.5 |    0.37360 |      1035.0 |      1038.9 |
 GaussGen.GaussGenMemory SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/1/0
 GaussGen.GaussGenMemory SUCCESS  #WARNINGS   = 2        Message = 'Delta Memory for the event exceeds 3*sigma'
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
-ToolSvc.SequencerTime...   INFO This machine has a speed about   1.69 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 ToolSvc.SequencerTime...   INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
@@ -596,37 +598,37 @@ TimingAuditor.TIMER        INFO ------------------------------------------------
 TimingAuditor.TIMER        INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 TimingAuditor.TIMER        INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
-TimingAuditor.TIMER        INFO EVENT LOOP                    |   346.767 |   347.637 |   13.191    3434.9 |     100 |    34.764 |
-TimingAuditor.TIMER        INFO  GaussSequencer               |   346.757 |   347.606 |   13.159    3434.8 |     100 |    34.761 |
-TimingAuditor.TIMER        INFO   Generator                   |   345.358 |   346.173 |   12.461    3429.9 |     100 |    34.617 |
-TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |   345.348 |   346.169 |   12.459    3429.9 |     100 |    34.617 |
-TimingAuditor.TIMER        INFO     GaussGen                  |     0.100 |     0.159 |    0.118       1.2 |     100 |     0.016 |
-TimingAuditor.TIMER        INFO     Generation                |   344.878 |   345.651 |   12.181    3427.8 |     100 |    34.565 |
-TimingAuditor.TIMER        INFO     GenMonitor                |     0.350 |     0.350 |    0.085       0.8 |     100 |     0.035 |
-TimingAuditor.TIMER        INFO      GenMonitorAlg            |     0.350 |     0.348 |    0.083       0.8 |     100 |     0.035 |
-TimingAuditor.TIMER        INFO   SkipGeant4                  |     1.400 |     1.430 |    0.653       4.9 |     100 |     0.143 |
-TimingAuditor.TIMER        INFO    MainEventSeq               |     1.400 |     1.428 |    0.652       4.9 |     100 |     0.143 |
-TimingAuditor.TIMER        INFO     MainEventGaussSkipGeant4  |     0.280 |     0.274 |    0.149       1.2 |     100 |     0.027 |
-TimingAuditor.TIMER        INFO     MainSkipGeant4            |     1.120 |     1.148 |    0.407       3.6 |     100 |     0.115 |
-TimingAuditor.TIMER        INFO      MakeMainSkipGeant4       |     1.110 |     1.146 |    0.405       3.6 |     100 |     0.115 |
-TimingAuditor.TIMER        INFO       GenToSim                |     0.730 |     0.695 |    0.168       2.4 |     100 |     0.069 |
-TimingAuditor.TIMER        INFO       MainEventDataPacking    |     0.380 |     0.446 |    0.233       1.2 |     100 |     0.045 |
-TimingAuditor.TIMER        INFO        PackMCParticle         |     0.120 |     0.146 |    0.041       0.5 |     100 |     0.015 |
-TimingAuditor.TIMER        INFO        PackMCVertex           |     0.070 |     0.133 |    0.036       0.4 |     100 |     0.013 |
-TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     0.000 |     0.012 |    0.010       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.020 |     0.011 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.020 |     0.011 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.020 |     0.011 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.020 |     0.012 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCMuonHitPacker        |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.020 |     0.011 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.030 |     0.012 |    0.009       0.2 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO EVENT LOOP                    |   344.118 |   344.211 |   14.530    3366.2 |     100 |    34.421 |
+TimingAuditor.TIMER        INFO  GaussSequencer               |   344.078 |   344.178 |   14.507    3366.1 |     100 |    34.418 |
+TimingAuditor.TIMER        INFO   Generator                   |   342.648 |   342.746 |   13.731    3362.1 |     100 |    34.275 |
+TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |   342.648 |   342.744 |   13.729    3362.1 |     100 |    34.274 |
+TimingAuditor.TIMER        INFO     GaussGen                  |     0.140 |     0.156 |    0.120       1.3 |     100 |     0.016 |
+TimingAuditor.TIMER        INFO     Generation                |   342.168 |   342.231 |   13.468    3359.9 |     100 |    34.223 |
+TimingAuditor.TIMER        INFO     GenMonitor                |     0.330 |     0.347 |    0.086       0.8 |     100 |     0.035 |
+TimingAuditor.TIMER        INFO      GenMonitorAlg            |     0.330 |     0.344 |    0.085       0.8 |     100 |     0.034 |
+TimingAuditor.TIMER        INFO   SkipGeant4                  |     1.430 |     1.429 |    0.586       4.0 |     100 |     0.143 |
+TimingAuditor.TIMER        INFO    MainEventSeq               |     1.430 |     1.427 |    0.584       4.0 |     100 |     0.143 |
+TimingAuditor.TIMER        INFO     MainEventGaussSkipGeant4  |     0.260 |     0.283 |    0.157       1.9 |     100 |     0.028 |
+TimingAuditor.TIMER        INFO     MainSkipGeant4            |     1.160 |     1.137 |    0.415       3.3 |     100 |     0.114 |
+TimingAuditor.TIMER        INFO      MakeMainSkipGeant4       |     1.160 |     1.135 |    0.413       3.3 |     100 |     0.114 |
+TimingAuditor.TIMER        INFO       GenToSim                |     0.720 |     0.694 |    0.179       2.3 |     100 |     0.069 |
+TimingAuditor.TIMER        INFO       MainEventDataPacking    |     0.440 |     0.437 |    0.217       1.0 |     100 |     0.044 |
+TimingAuditor.TIMER        INFO        PackMCParticle         |     0.130 |     0.146 |    0.043       0.4 |     100 |     0.015 |
+TimingAuditor.TIMER        INFO        PackMCVertex           |     0.130 |     0.133 |    0.035       0.3 |     100 |     0.013 |
+TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     0.020 |     0.013 |    0.010       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.020 |     0.011 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.000 |     0.009 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCMuonHitPacker        |     0.010 |     0.009 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.010 |     0.010 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.030 |     0.012 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     0.000 |     0.010 |    0.008       0.0 |     100 |     0.001 |
 TimingAuditor.TIMER        INFO        MCHcalHitPacker        |     0.000 |     0.009 |    0.008       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichHitPacker        |     0.000 |     0.009 |    0.008       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     0.030 |     0.013 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichHitPacker        |     0.020 |     0.010 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |     0.000 |     0.009 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     0.010 |     0.009 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.030 |     0.010 |    0.008       0.1 |     100 |     0.001 |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
 GiGa.GiGaMgr               INFO GiGaRunManager:: GiGaRunManager Finalization
 GiGa.RunSeq.TrCuts      WARNING TrCutsRunAction:: EndOfRunAction:: G4Run* points to NULL! StatusCode=FAILURE
@@ -635,7 +637,7 @@ GiGa.RunSeq.RichG4Run   WARNING RichG4RunAction:: EndOfRunAction:: G4Run* points
 *****Chrono*****           INFO ****************************************************************************************************
 *****Chrono*****           INFO  The Final CPU consumption ( Chrono ) Table (ordered)
 *****Chrono*****           INFO ****************************************************************************************************
-ChronoStatSvc              INFO Time User   : Tot= 47.9  [s]                                             #=  1
+ChronoStatSvc              INFO Time User   : Tot= 46.9  [s]                                             #=  1
 *****Chrono*****           INFO ****************************************************************************************************
 ChronoStatSvc.finalize()   INFO  Service finalized successfully
 ApplicationMgr             INFO Application Manager Finalized successfully

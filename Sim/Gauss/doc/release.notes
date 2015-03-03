@@ -4,8 +4,16 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+
+!========================= Gauss v45r3 2013-05-20 ============================
+ - on v45b branch
+
+! 2013-05-16 - Gloria Corti
+ - Update options for Sim08 to use the same tags as those used in production
+
 !========================= Gauss v45r2 2013-04-10 ============================
  - on v45b branch
+
 ! 2013-03-27 - Gloria Corti
  - Remove use of MCatNLOData that is no longer in use since a while
 

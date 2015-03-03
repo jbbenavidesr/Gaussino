@@ -1,17 +1,17 @@
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/Gauss-2012.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/Gauss-2012.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Thu/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/10000000.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Thu/GAUSS/GAUSS_v45r1/Gen/DecFiles/options/10000000.py'
-# --> Including file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Thu/GAUSS/GAUSS_v45r1/Gen/LbPythia8/options/Pythia8.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/nightlies/lhcb-patches/Thu/GAUSS/GAUSS_v45r1/Gen/LbPythia8/options/Pythia8.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/GenStandAlone.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/options/GenStandAlone.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-NoOutput.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-NoOutput.py'
-# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
-# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/Gauss-2012.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/AppConfig/options/Gauss/Sim08-Beam4000GeV-md100-2012-nu2.5.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/Gauss-2012.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/10000000.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v27r5/options/10000000.py'
+# --> Including file '/afs/cern.ch/lhcb/software/releases/GAUSS/GAUSS_v45r1/Gen/LbPythia8/options/Pythia8.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/releases/GAUSS/GAUSS_v45r1/Gen/LbPythia8/options/Pythia8.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/GenStandAlone.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/options/GenStandAlone.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-NoOutput.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-NoOutput.py'
+# --> Including file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
+# <-- End of file '/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/tests/options/testGauss-gen-100evts-defaults.py'
 # applying configuration of Gauss
 Ecut value = 5.0
 # WARNING: No simulation phase.
@@ -34,8 +34,8 @@ Ecut value = 5.0
 # |                     (default: [0.45900000000000002, -0.014999999999999999, 0.5])
 # |-BeamLineAngles      = [0.0, 0.0]  (default: [-7.4999999999999993e-05, 3.5000000000000004e-05])
 # |-BeamHCrossingAngle  = -0.00023599999999999999  (default: -0.00052000000000000006)
-# |-PhysicsList         = {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'LHEP', 'LHCbPhys': True}
-# |                     (default: {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'LHEP', 'LHCbPhys': True})
+# |-PhysicsList         = {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'FTFP_BERT', 'LHCbPhys': True}
+# |                     (default: {'Em': 'NoCuts', 'GeneralPhys': True, 'Other': '', 'Hadron': 'FTFP_BERT', 'LHCbPhys': True})
 # |-OutputType          = 'NONE'  (default: 'SIM')
 # |-DetectorMoni        = {'Detectors': ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet']}
 # |                     (default: {'Detectors': ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet']})
@@ -62,7 +62,7 @@ Ecut value = 5.0
 ApplicationMgr    SUCCESS
 ====================================================================================================================================
                                                    Welcome to Gauss version v45r0
-                                          running on lxplus420.cern.ch on Sat Mar 23 00:00:05 2013
+                                          running on lxplus421.cern.ch on Mon May 20 20:49:48 2013
 ====================================================================================================================================
 ApplicationMgr       INFO Application Manager Configured successfully
 DetectorPersistencySvc     INFO Added successfully Conversion service:XmlCnvSvc
@@ -76,14 +76,16 @@ ChronoStatSvc              INFO  Number of skipped events for MemStat-1
                             WWW : http://cern.ch/geant4
 *************************************************************
 
-SimulationSvc              INFO Loading simulation attributes file "/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45r1/Sim/Gauss/xml/Simulation.xml" ...
+SimulationSvc              INFO Loading simulation attributes file "/afs/cern.ch/lhcb/software/DEV/GAUSS/Gauss_v45b/Sim/Gauss/xml/Simulation.xml" ...
 GiGa.ModularPL             INFO GiGaPhysListModular initializing
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmOpt1NoCutsPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.DecayPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmExtraPhysics
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.IonPhysics
-GiGa.ModularPL             INFO Registered GiGa.ModularPL.ElasticPhysicsLHEP
-GiGa.ModularPL             INFO Registered GiGa.ModularPL.LHEPPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.ElasticPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.FTFP_BERTPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.QStoppingPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.NeutronTrkCut
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorOp
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorHpd
 GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysUnknownParticles
@@ -100,10 +102,10 @@ GiGa                       INFO Stacking Action Object is not required to be loa
 COOLConfSvc                INFO CORAL Connection Retrial Period set to 60s
 COOLConfSvc                INFO CORAL Connection Retrial Time-Out set to 900s
 DDDB                       INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/db/DDDB.db/DDDB"
-DDDB                       INFO Using TAG "dddb-20130312-1"
+DDDB                       INFO Using TAG "Sim08-20130503-1"
 EventClockSvc.FakeEve...   INFO Event times generated from 0 with steps of 0
 SIMCOND                    INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/db/SIMCOND.db/SIMCOND"
-SIMCOND                    INFO Using TAG "sim-20130222-1-vc-md100"
+SIMCOND                    INFO Using TAG "Sim08-20130503-1-vc-md100"
 RichG4TrackActionPhotOpt   INFO  Rich HPD Max QE from DB and UsedInThisRun are  0.45    0.45
 GiGa                       INFO Used Tracking Action Object is GiGaTrackActionSequence/GiGa.TrackSeq
 GiGa                       INFO Used  Stepping Action Object is GiGaStepActionSequence/GiGa.StepSeq
@@ -117,9 +119,9 @@ RndmGenSvc.Engine          INFO Generator engine type:CLHEP::RanluxEngine
 RndmGenSvc.Engine          INFO Current Seed:1234567 Luxury:3
 RndmGenSvc.Engine          INFO This is the GEANT4 engine!
 RndmGenSvc                 INFO Using Random engine:HepRndm::Engine<CLHEP::RanluxEngine>
-TimingAuditor.TIMER        INFO This machine has a speed about   1.96 times the speed of a 2.8 GHz Xeon.
+TimingAuditor.TIMER        INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 GaussSequencer             INFO Member list: GaudiSequencer/Generator, GaudiSequencer/SkipGeant4
-ToolSvc.SequencerTime...   INFO This machine has a speed about   1.78 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 Generator                  INFO Member list: GaudiSequencer/GeneratorSlotMainSeq
 GeneratorSlotMainSeq       INFO Member list: GenInit/GaussGen, Generation, GaudiSequencer/GenMonitor
 GaussGen                SUCCESS ==================================================================
@@ -181,7 +183,7 @@ GaussGen                   INFO Luminous region = ( 0.0377647, 0.0377647, 52.000
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.175      |  |
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 18 Feb 2013  |  |
  |  |   P       Y      T    H   H   I   A   A                                      |  |
- |  |   P       Y      T    H   H  III  A   A    Now is 23 Mar 2013 at 00:00:18    |  |
+ |  |   P       Y      T    H   H  III  A   A    Now is 20 May 2013 at 20:50:00    |  |
  |  |                                                                              |  |
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  |
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  |
@@ -236,7 +238,7 @@ GaussGen                   INFO Luminous region = ( 0.0377647, 0.0377647, 52.000
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.175      |  |
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 18 Feb 2013  |  |
  |  |   P       Y      T    H   H   I   A   A                                      |  |
- |  |   P       Y      T    H   H  III  A   A    Now is 23 Mar 2013 at 00:00:18    |  |
+ |  |   P       Y      T    H   H  III  A   A    Now is 20 May 2013 at 20:50:00    |  |
  |  |                                                                              |  |
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  |
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  |
@@ -330,15 +332,17 @@ ApplicationMgr             INFO Application Manager Initialized successfully
 ApplicationMgr             INFO Application Manager Started successfully
 GaussGen                   INFO Evt 1,  Run 1082,  Nr. in job = 1 with seeds [1082, 1, 2119103972, 0]
  PYTHIA Error in BeamRemnants::setKinematics: kinematics construction failed
- PYTHIA Error in Pythia::next: partonLevel failed; try again
 MainEventGaussSkipGeant4   INFO Evt 1,  Run 1082,  Nr. in job = 1 with seeds [1082, 1, 572120362, 0]
 GaussGen                   INFO Evt 2,  Run 1082,  Nr. in job = 2 with seeds [1082, 2, 1474865432, 0]
- PYTHIA Warning in SpaceShower::pT2nextQCD: weight above unity
+ PYTHIA Warning in StringFragmentation::fragmentToJunction: bad convergence junction rest frame
 MainEventGaussSkipGeant4   INFO Evt 2,  Run 1082,  Nr. in job = 2 with seeds [1082, 2, 70492510, 0]
 GaussGen                   INFO Evt 3,  Run 1082,  Nr. in job = 3 with seeds [1082, 3, 645125023, 0]
- PYTHIA Warning in StringFragmentation::fragmentToJunction: bad convergence junction rest frame
+ PYTHIA Error in StringFragmentation::fragment: stuck in joining
+ PYTHIA Error in Pythia::next: hadronLevel failed; try again
+ PYTHIA Error in HadronLevel::traceFromCol: colour tracing failed
 MainEventGaussSkipGeant4   INFO Evt 3,  Run 1082,  Nr. in job = 3 with seeds [1082, 3, 184745231, 0]
 GaussGen                   INFO Evt 4,  Run 1082,  Nr. in job = 4 with seeds [1082, 4, 1010630449, 0]
+ PYTHIA Warning in SpaceShower::pT2nextQCD: weight above unity
 MainEventGaussSkipGeant4   INFO Evt 4,  Run 1082,  Nr. in job = 4 with seeds [1082, 4, 1750002067, 0]
 GaussGen                   INFO Evt 5,  Run 1082,  Nr. in job = 5 with seeds [1082, 5, 1094777801, 0]
 MainEventGaussSkipGeant4   INFO Evt 5,  Run 1082,  Nr. in job = 5 with seeds [1082, 5, 349016228, 0]
@@ -355,10 +359,10 @@ MainEventGaussSkipGeant4   INFO Evt 10,  Run 1082,  Nr. in job = 10 with seeds [
 GaussGen                   INFO Evt 11,  Run 1082,  Nr. in job = 11 with seeds [1082, 11, 900588775, 0]
 MainEventGaussSkipGeant4   INFO Evt 11,  Run 1082,  Nr. in job = 11 with seeds [1082, 11, 2113213651, 0]
 GaussGen                   INFO Evt 12,  Run 1082,  Nr. in job = 12 with seeds [1082, 12, 1359158161, 0]
- PYTHIA Error in StringFragmentation::fragment: stuck in joining
- PYTHIA Error in Pythia::next: hadronLevel failed; try again
 MainEventGaussSkipGeant4   INFO Evt 12,  Run 1082,  Nr. in job = 12 with seeds [1082, 12, 997252594, 0]
 GaussGen                   INFO Evt 13,  Run 1082,  Nr. in job = 13 with seeds [1082, 13, 1660010350, 0]
+ PYTHIA Warning in MultipartonInteractions::pTfirst: weight above unity
+ PYTHIA Warning in MultipartonInteractions::pTnext: weight above unity
 MainEventGaussSkipGeant4   INFO Evt 13,  Run 1082,  Nr. in job = 13 with seeds [1082, 13, 495493666, 0]
 GaussGen                   INFO Evt 14,  Run 1082,  Nr. in job = 14 with seeds [1082, 14, 1820316298, 0]
 MainEventGaussSkipGeant4   INFO Evt 14,  Run 1082,  Nr. in job = 14 with seeds [1082, 14, 926615392, 0]
@@ -373,6 +377,7 @@ MainEventGaussSkipGeant4   INFO Evt 18,  Run 1082,  Nr. in job = 18 with seeds [
 GaussGen                   INFO Evt 19,  Run 1082,  Nr. in job = 19 with seeds [1082, 19, 932144966, 0]
 MainEventGaussSkipGeant4   INFO Evt 19,  Run 1082,  Nr. in job = 19 with seeds [1082, 19, 744832043, 0]
 GaussGen                   INFO Evt 20,  Run 1082,  Nr. in job = 20 with seeds [1082, 20, 633455531, 0]
+ PYTHIA Error in Pythia::next: partonLevel failed; try again
 MainEventGaussSkipGeant4   INFO Evt 20,  Run 1082,  Nr. in job = 20 with seeds [1082, 20, 445814918, 0]
 GaussGen                   INFO Evt 21,  Run 1082,  Nr. in job = 21 with seeds [1082, 21, 163846944, 0]
 MainEventGaussSkipGeant4   INFO Evt 21,  Run 1082,  Nr. in job = 21 with seeds [1082, 21, 1071178514, 0]
@@ -403,21 +408,20 @@ MainEventGaussSkipGeant4   INFO Evt 33,  Run 1082,  Nr. in job = 33 with seeds [
 GaussGen                   INFO Evt 34,  Run 1082,  Nr. in job = 34 with seeds [1082, 34, 421411644, 0]
 MainEventGaussSkipGeant4   INFO Evt 34,  Run 1082,  Nr. in job = 34 with seeds [1082, 34, 1075963076, 0]
 GaussGen                   INFO Evt 35,  Run 1082,  Nr. in job = 35 with seeds [1082, 35, 1875826332, 0]
- PYTHIA Warning in MultipartonInteractions::pTnext: weight above unity
 MainEventGaussSkipGeant4   INFO Evt 35,  Run 1082,  Nr. in job = 35 with seeds [1082, 35, 435198050, 0]
 GaussGen                   INFO Evt 36,  Run 1082,  Nr. in job = 36 with seeds [1082, 36, 1568682495, 0]
 MainEventGaussSkipGeant4   INFO Evt 36,  Run 1082,  Nr. in job = 36 with seeds [1082, 36, 749616605, 0]
 GaussGen                   INFO Evt 37,  Run 1082,  Nr. in job = 37 with seeds [1082, 37, 1110576483, 0]
+ PYTHIA Error in StringFragmentation::fragmentToJunction: caught in junction flavour loop
 MainEventGaussSkipGeant4   INFO Evt 37,  Run 1082,  Nr. in job = 37 with seeds [1082, 37, 1503055531, 0]
 GaussGen                   INFO Evt 38,  Run 1082,  Nr. in job = 38 with seeds [1082, 38, 1340582094, 0]
 MainEventGaussSkipGeant4   INFO Evt 38,  Run 1082,  Nr. in job = 38 with seeds [1082, 38, 128035522, 0]
 GaussGen                   INFO Evt 39,  Run 1082,  Nr. in job = 39 with seeds [1082, 39, 647316522, 0]
 MainEventGaussSkipGeant4   INFO Evt 39,  Run 1082,  Nr. in job = 39 with seeds [1082, 39, 152106659, 0]
 GaussGen                   INFO Evt 40,  Run 1082,  Nr. in job = 40 with seeds [1082, 40, 345546801, 0]
-SIMCOND.TimeOutChecker     INFO Disconnect from database after being idle for 120s (will reconnect if needed)
-DDDB.TimeOutChecker        INFO Disconnect from database after being idle for 120s (will reconnect if needed)
 MainEventGaussSkipGeant4   INFO Evt 40,  Run 1082,  Nr. in job = 40 with seeds [1082, 40, 489641437, 0]
 GaussGen                   INFO Evt 41,  Run 1082,  Nr. in job = 41 with seeds [1082, 41, 307207071, 0]
+ PYTHIA Warning in SpaceShower::pT2nextQCD: small daughter PDF
 MainEventGaussSkipGeant4   INFO Evt 41,  Run 1082,  Nr. in job = 41 with seeds [1082, 41, 1744090297, 0]
 GaussGen                   INFO Evt 42,  Run 1082,  Nr. in job = 42 with seeds [1082, 42, 1271046360, 0]
 MainEventGaussSkipGeant4   INFO Evt 42,  Run 1082,  Nr. in job = 42 with seeds [1082, 42, 2134893435, 0]
@@ -440,18 +444,22 @@ MainEventGaussSkipGeant4   INFO Evt 50,  Run 1082,  Nr. in job = 50 with seeds [
 GaussGen                   INFO Evt 51,  Run 1082,  Nr. in job = 51 with seeds [1082, 51, 1844667425, 0]
 MainEventGaussSkipGeant4   INFO Evt 51,  Run 1082,  Nr. in job = 51 with seeds [1082, 51, 30469635, 0]
 GaussGen                   INFO Evt 52,  Run 1082,  Nr. in job = 52 with seeds [1082, 52, 1552531790, 0]
+SIMCOND.TimeOutChecker     INFO Disconnect from database after being idle for 120s (will reconnect if needed)
 MainEventGaussSkipGeant4   INFO Evt 52,  Run 1082,  Nr. in job = 52 with seeds [1082, 52, 263828754, 0]
 GaussGen                   INFO Evt 53,  Run 1082,  Nr. in job = 53 with seeds [1082, 53, 608124998, 0]
+DDDB.TimeOutChecker        INFO Disconnect from database after being idle for 120s (will reconnect if needed)
 MainEventGaussSkipGeant4   INFO Evt 53,  Run 1082,  Nr. in job = 53 with seeds [1082, 53, 563009724, 0]
 GaussGen                   INFO Evt 54,  Run 1082,  Nr. in job = 54 with seeds [1082, 54, 974220266, 0]
 MainEventGaussSkipGeant4   INFO Evt 54,  Run 1082,  Nr. in job = 54 with seeds [1082, 54, 873758151, 0]
 GaussGen                   INFO Evt 55,  Run 1082,  Nr. in job = 55 with seeds [1082, 55, 921826847, 0]
+ PYTHIA Warning in Pythia::check: energy-momentum not quite conserved
 MainEventGaussSkipGeant4   INFO Evt 55,  Run 1082,  Nr. in job = 55 with seeds [1082, 55, 920421203, 0]
 GaussGen                   INFO Evt 56,  Run 1082,  Nr. in job = 56 with seeds [1082, 56, 623137412, 0]
 MainEventGaussSkipGeant4   INFO Evt 56,  Run 1082,  Nr. in job = 56 with seeds [1082, 56, 1583589167, 0]
 GaussGen                   INFO Evt 57,  Run 1082,  Nr. in job = 57 with seeds [1082, 57, 2136798844, 0]
 MainEventGaussSkipGeant4   INFO Evt 57,  Run 1082,  Nr. in job = 57 with seeds [1082, 57, 1514818094, 0]
 GaussGen                   INFO Evt 58,  Run 1082,  Nr. in job = 58 with seeds [1082, 58, 1392258615, 0]
+ PYTHIA Error in MiniStringFragmentation::fragment: no 1- or 2-body state found above mass threshold
 MainEventGaussSkipGeant4   INFO Evt 58,  Run 1082,  Nr. in job = 58 with seeds [1082, 58, 2126025458, 0]
 GaussGen                   INFO Evt 59,  Run 1082,  Nr. in job = 59 with seeds [1082, 59, 1688818065, 0]
 MainEventGaussSkipGeant4   INFO Evt 59,  Run 1082,  Nr. in job = 59 with seeds [1082, 59, 1873922531, 0]
@@ -504,12 +512,10 @@ MainEventGaussSkipGeant4   INFO Evt 82,  Run 1082,  Nr. in job = 82 with seeds [
 GaussGen                   INFO Evt 83,  Run 1082,  Nr. in job = 83 with seeds [1082, 83, 1787237884, 0]
 MainEventGaussSkipGeant4   INFO Evt 83,  Run 1082,  Nr. in job = 83 with seeds [1082, 83, 529114936, 0]
 GaussGen                   INFO Evt 84,  Run 1082,  Nr. in job = 84 with seeds [1082, 84, 2033824134, 0]
- PYTHIA Error in HadronLevel::traceFromCol: colour tracing failed
 MainEventGaussSkipGeant4   INFO Evt 84,  Run 1082,  Nr. in job = 84 with seeds [1082, 84, 1976468342, 0]
 GaussGen                   INFO Evt 85,  Run 1082,  Nr. in job = 85 with seeds [1082, 85, 587106024, 0]
 MainEventGaussSkipGeant4   INFO Evt 85,  Run 1082,  Nr. in job = 85 with seeds [1082, 85, 2012665877, 0]
 GaussGen                   INFO Evt 86,  Run 1082,  Nr. in job = 86 with seeds [1082, 86, 826811259, 0]
- PYTHIA Warning in SpaceShower::pT2nextQCD: small daughter PDF
 MainEventGaussSkipGeant4   INFO Evt 86,  Run 1082,  Nr. in job = 86 with seeds [1082, 86, 1723118993, 0]
 GaussGen                   INFO Evt 87,  Run 1082,  Nr. in job = 87 with seeds [1082, 87, 1333419999, 0]
 MainEventGaussSkipGeant4   INFO Evt 87,  Run 1082,  Nr. in job = 87 with seeds [1082, 87, 428591858, 0]
@@ -537,9 +543,9 @@ GaussGen                   INFO Evt 98,  Run 1082,  Nr. in job = 98 with seeds [
 MainEventGaussSkipGeant4   INFO Evt 98,  Run 1082,  Nr. in job = 98 with seeds [1082, 98, 807237393, 0]
 GaussGen                   INFO Evt 99,  Run 1082,  Nr. in job = 99 with seeds [1082, 99, 431091388, 0]
 MainEventGaussSkipGeant4   INFO Evt 99,  Run 1082,  Nr. in job = 99 with seeds [1082, 99, 712228368, 0]
-GaussGen                   INFO Memory has changed from 975392 to 1049380 KB (73988KB, 7.58546%) in last 100 events
+GaussGen                   INFO Memory has changed from 971824 to 1045760 KB (73936KB, 7.60796%) in last 100 events
 GaussGen                   INFO Evt 100,  Run 1082,  Nr. in job = 100 with seeds [1082, 100, 467237978, 0]
-MainEventGaussSkipGeant4   INFO Memory has changed from 978736 to 1049380 KB (70644KB, 7.21788%) in last 100 events
+MainEventGaussSkipGeant4   INFO Memory has changed from 976460 to 1045760 KB (69300KB, 7.09706%) in last 100 events
 MainEventGaussSkipGeant4   INFO Evt 100,  Run 1082,  Nr. in job = 100 with seeds [1082, 100, 744341988, 0]
 ApplicationMgr             INFO Application Manager Stopped successfully
 GaussGen                SUCCESS ==================================================================
@@ -548,21 +554,21 @@ GaussGen                SUCCESS ================================================
 GenMonitorAlg              INFO
 ======================== Generators Statistics ====================
 =                                                                 =
-= Number of particles generated: 187296
+= Number of particles generated: 205840
 = Number of events: 100
-= Mean multiplicity: 1872.96
+= Mean multiplicity: 2058.4
 =                                                                 =
-= Number of pseudo stable particles generated: 90280
+= Number of pseudo stable particles generated: 99945
 = Number of events: 100
-= Mean pseudo stable multiplicity: 902.8
+= Mean pseudo stable multiplicity: 999.45
 =                                                                 =
-= Number of charged stable particles generated: 27352
+= Number of charged stable particles generated: 30288
 = Number of events: 100
-= Mean charged stable multiplicity: 273.52
+= Mean charged stable multiplicity: 302.88
 =                                                                 =
-= Number of charged stable particles in LHCb eta 6437
+= Number of charged stable particles in LHCb eta 6888
 = Number of events: 100
-= Mean charged stable multiplicity in LHCb eta: 64.37
+= Mean charged stable multiplicity in LHCb eta: 68.88
 =                                                                 =
 ===================================================================
 GenMonitorAlg           SUCCESS Booked 21 Histogram(s) : 1D=19 2D=2
@@ -575,24 +581,24 @@ ToolSvc                    INFO Removing all tools created by ToolSvc
 MainEventGaussSkipGea...SUCCESS Booked 4 Histogram(s) : 1D=4
 MainEventGaussSkipGea...SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Delta Memory/MB"                               |        90 |     67.924 |    0.75471 |     6.8700 |    -0.99200 |      65.536 |
- | "Total Memory/MB"                               |       100 |   102310.3 |     1023.1 |     32.870 |      978.74 |      1049.4 |
+ | "Delta Memory/MB"                               |        90 |     68.128 |    0.75698 |     6.8698 |      0.0000 |      65.536 |
+ | "Total Memory/MB"                               |       100 |   101183.5 |     1011.8 |     33.267 |      976.46 |      1045.8 |
 MainEventGaussSkipGea...SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/2/0
-MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 2        Message = 'Delta Memory for the event exceeds 3*sigma'
-MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 4        Message = 'Total Memory for the event exceeds 3*sigma'
+MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 1        Message = 'Delta Memory for the event exceeds 3*sigma'
+MainEventGaussSkipGea...SUCCESS  #WARNINGS   = 6        Message = 'Total Memory for the event exceeds 3*sigma'
 Generation.Inclusive    WARNING Inclusive:: releaseSvc(IInterface):: IInterface* is not active StatusCode=FAILURE
 Generation.Inclusive    SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/1/0
 Generation.Inclusive    SUCCESS  #WARNINGS   = 1        Message = 'releaseSvc(IInterface):: IInterface* is not active'
 GaussGen.GaussGenMemory SUCCESS Booked 4 Histogram(s) : 1D=4
 GaussGen.GaussGenMemory SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Delta Memory/MB"                               |        90 |     67.924 |    0.75471 |     6.8709 |    -0.99200 |      65.536 |
- | "Total Memory/MB"                               |       100 |   102235.4 |     1022.4 |     33.114 |      975.39 |      1049.4 |
+ | "Delta Memory/MB"                               |        90 |     68.128 |    0.75698 |     6.8709 |      0.0000 |      65.536 |
+ | "Total Memory/MB"                               |       100 |   101110.1 |     1011.1 |     33.321 |      971.82 |      1045.8 |
 GaussGen.GaussGenMemory SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/2/0
-GaussGen.GaussGenMemory SUCCESS  #WARNINGS   = 3        Message = 'Delta Memory for the event exceeds 3*sigma'
-GaussGen.GaussGenMemory SUCCESS  #WARNINGS   = 4        Message = 'Total Memory for the event exceeds 3*sigma'
+GaussGen.GaussGenMemory SUCCESS  #WARNINGS   = 1        Message = 'Delta Memory for the event exceeds 3*sigma'
+GaussGen.GaussGenMemory SUCCESS  #WARNINGS   = 5        Message = 'Total Memory for the event exceeds 3*sigma'
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
-ToolSvc.SequencerTime...   INFO This machine has a speed about   1.78 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 ToolSvc.SequencerTime...   INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
@@ -604,13 +610,13 @@ ToolSvc.SequencerTime...   INFO ------------------------------------------------
  |                                                    |                                   |                        |
  |-----------------------------------------------------------------------------------------------------------------|
  |                                                    |                                   |                        |
- | minimum bias                                   101 |       13760      13760      13760 |   5.212e+01  2.861e-07 |
- | A B -> A B elastic                             102 |        5250       5250       5250 |   1.989e+01  5.001e-08 |
- | A B -> X B single diffractive                  103 |        1644       1644       1644 |   6.240e+00  2.140e-08 |
- | A B -> A X single diffractive                  104 |        1604       1604       1604 |   6.240e+00  1.835e-08 |
- | A B -> X X double diffractive                  105 |        2130       2130       2130 |   8.254e+00  2.192e-08 |
+ | minimum bias                                   101 |       10033      10033      10033 |   5.212e+01  2.199e-07 |
+ | A B -> A B elastic                             102 |        3693       3693       3693 |   1.989e+01  1.172e-07 |
+ | A B -> X B single diffractive                  103 |        1151       1151       1151 |   6.240e+00  0.000e+00 |
+ | A B -> A X single diffractive                  104 |        1196       1196       1196 |   6.240e+00  0.000e+00 |
+ | A B -> X X double diffractive                  105 |        1478       1478       1478 |   8.254e+00  4.352e-08 |
  |                                                    |                                   |                        |
- | sum                                                |       24388      24388      24388 |   9.274e+01  2.926e-07 |
+ | sum                                                |       17551      17551      17551 |   9.274e+01  2.530e-07 |
  |                                                                                                                 |
  *-------  End PYTHIA Event and Cross Section Statistics ----------------------------------------------------------*
 
@@ -618,54 +624,58 @@ ToolSvc.SequencerTime...   INFO ------------------------------------------------
  |                                                                                                                 |
  |  times   message                                                                                                |
  |                                                                                                                 |
- |    961   Error in BeamRemnants::setKinematics: kinematics construction failed                                   |
- |      1   Error in HadronLevel::traceFromCol: colour tracing failed                                              |
- |      6   Error in Pythia::next: hadronLevel failed; try again                                                   |
- |     21   Error in Pythia::next: partonLevel failed; try again                                                   |
- |      5   Error in StringFragmentation::fragment: stuck in joining                                               |
+ |    603   Error in BeamRemnants::setKinematics: kinematics construction failed                                   |
+ |      4   Error in HadronLevel::traceFromCol: colour tracing failed                                              |
+ |      2   Error in MiniStringFragmentation::fragment: no 1- or 2-body state found above mass threshold           |
+ |     21   Error in Pythia::next: hadronLevel failed; try again                                                   |
+ |     12   Error in Pythia::next: partonLevel failed; try again                                                   |
+ |     14   Error in StringFragmentation::fragment: stuck in joining                                               |
+ |      1   Error in StringFragmentation::fragmentToJunction: caught in junction flavour loop                      |
  |      3   Warning in MultipartonInteractions::init: maximum increased                                            |
- |      3   Warning in MultipartonInteractions::pTnext: weight above unity                                         |
+ |      1   Warning in MultipartonInteractions::pTfirst: weight above unity                                        |
+ |      4   Warning in MultipartonInteractions::pTnext: weight above unity                                         |
  |      2   Warning in ParticleDataEntry::initBWmass: switching off width                                          |
- |     20   Warning in SpaceShower::pT2nextQCD: small daughter PDF                                                 |
- |    265   Warning in SpaceShower::pT2nextQCD: weight above unity                                                 |
- |     14   Warning in StringFragmentation::fragmentToJunction: bad convergence junction rest frame                |
+ |      1   Warning in Pythia::check: energy-momentum not quite conserved                                          |
+ |      1   Warning in SpaceShower::pT2nextQCD: small daughter PDF                                                 |
+ |    209   Warning in SpaceShower::pT2nextQCD: weight above unity                                                 |
+ |     10   Warning in StringFragmentation::fragmentToJunction: bad convergence junction rest frame                |
  |                                                                                                                 |
  *-------  End PYTHIA Error and Warning Messages Statistics  ------------------------------------------------------*
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
-TimingAuditor.TIMER        INFO This machine has a speed about   1.96 times the speed of a 2.8 GHz Xeon.
+TimingAuditor.TIMER        INFO This machine has a speed about   1.98 times the speed of a 2.8 GHz Xeon.
 TimingAuditor.TIMER        INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
-TimingAuditor.TIMER        INFO EVENT LOOP                    |  2137.645 |  2138.518 |   43.826    9578.5 |     100 |   213.852 |
-TimingAuditor.TIMER        INFO  GaussSequencer               |  2137.625 |  2138.480 |   43.783    9578.5 |     100 |   213.848 |
-TimingAuditor.TIMER        INFO   Generator                   |  2135.845 |  2136.624 |   42.371    9577.1 |     100 |   213.662 |
-TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |  2135.845 |  2136.622 |   42.370    9577.1 |     100 |   213.662 |
-TimingAuditor.TIMER        INFO     GaussGen                  |     0.120 |     0.176 |    0.118       1.5 |     100 |     0.018 |
-TimingAuditor.TIMER        INFO     Generation                |  2135.205 |  2135.942 |   41.853    9576.6 |     100 |   213.594 |
-TimingAuditor.TIMER        INFO     GenMonitor                |     0.500 |     0.489 |    0.148       1.2 |     100 |     0.049 |
-TimingAuditor.TIMER        INFO      GenMonitorAlg            |     0.490 |     0.485 |    0.145       1.2 |     100 |     0.049 |
-TimingAuditor.TIMER        INFO   SkipGeant4                  |     1.780 |     1.852 |    0.886       4.2 |     100 |     0.185 |
-TimingAuditor.TIMER        INFO    MainEventSeq               |     1.780 |     1.850 |    0.883       4.2 |     100 |     0.185 |
-TimingAuditor.TIMER        INFO     MainEventGaussSkipGeant4  |     0.470 |     0.491 |    0.222       1.5 |     100 |     0.049 |
-TimingAuditor.TIMER        INFO     MainSkipGeant4            |     1.310 |     1.351 |    0.539       3.0 |     100 |     0.135 |
-TimingAuditor.TIMER        INFO      MakeMainSkipGeant4       |     1.310 |     1.348 |    0.533       3.0 |     100 |     0.135 |
-TimingAuditor.TIMER        INFO       GenToSim                |     0.880 |     0.872 |    0.267       2.2 |     100 |     0.087 |
-TimingAuditor.TIMER        INFO       MainEventDataPacking    |     0.420 |     0.470 |    0.262       0.9 |     100 |     0.047 |
-TimingAuditor.TIMER        INFO        PackMCParticle         |     0.160 |     0.162 |    0.058       0.4 |     100 |     0.016 |
-TimingAuditor.TIMER        INFO        PackMCVertex           |     0.090 |     0.140 |    0.048       0.3 |     100 |     0.014 |
-TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     0.030 |     0.013 |    0.011       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.000 |     0.011 |    0.010       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.010 |     0.011 |    0.009       0.1 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.020 |     0.011 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO EVENT LOOP                    |  1641.140 |  1641.050 |   45.255    8109.9 |     100 |   164.105 |
+TimingAuditor.TIMER        INFO  GaussSequencer               |  1641.110 |  1641.010 |   45.216    8109.9 |     100 |   164.101 |
+TimingAuditor.TIMER        INFO   Generator                   |  1639.131 |  1639.071 |   43.791    8107.6 |     100 |   163.907 |
+TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |  1639.131 |  1639.069 |   43.789    8107.6 |     100 |   163.907 |
+TimingAuditor.TIMER        INFO     GaussGen                  |     0.130 |     0.172 |    0.117       1.6 |     100 |     0.017 |
+TimingAuditor.TIMER        INFO     Generation                |  1638.501 |  1638.364 |   43.211    8106.7 |     100 |   163.836 |
+TimingAuditor.TIMER        INFO     GenMonitor                |     0.460 |     0.517 |    0.098       1.2 |     100 |     0.052 |
+TimingAuditor.TIMER        INFO      GenMonitorAlg            |     0.460 |     0.513 |    0.094       1.2 |     100 |     0.051 |
+TimingAuditor.TIMER        INFO   SkipGeant4                  |     1.960 |     1.935 |    0.668       5.4 |     100 |     0.194 |
+TimingAuditor.TIMER        INFO    MainEventSeq               |     1.960 |     1.933 |    0.667       5.4 |     100 |     0.193 |
+TimingAuditor.TIMER        INFO     MainEventGaussSkipGeant4  |     0.530 |     0.477 |    0.191       1.1 |     100 |     0.048 |
+TimingAuditor.TIMER        INFO     MainSkipGeant4            |     1.420 |     1.448 |    0.467       4.3 |     100 |     0.145 |
+TimingAuditor.TIMER        INFO      MakeMainSkipGeant4       |     1.420 |     1.445 |    0.464       4.3 |     100 |     0.145 |
+TimingAuditor.TIMER        INFO       GenToSim                |     0.880 |     0.939 |    0.200       3.0 |     100 |     0.094 |
+TimingAuditor.TIMER        INFO       MainEventDataPacking    |     0.540 |     0.502 |    0.231       1.3 |     100 |     0.050 |
+TimingAuditor.TIMER        INFO        PackMCParticle         |     0.230 |     0.178 |    0.047       0.5 |     100 |     0.018 |
+TimingAuditor.TIMER        INFO        PackMCVertex           |     0.160 |     0.156 |    0.038       0.5 |     100 |     0.016 |
+TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     0.020 |     0.013 |    0.010       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.000 |     0.009 |    0.008       0.0 |     100 |     0.001 |
 TimingAuditor.TIMER        INFO        MCMuonHitPacker        |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.000 |     0.011 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCHcalHitPacker        |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichHitPacker        |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.000 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.010 |     0.010 |    0.009       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.000 |     0.010 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     0.010 |     0.009 |    0.008       0.0 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCHcalHitPacker        |     0.010 |     0.010 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichHitPacker        |     0.010 |     0.011 |    0.008       0.2 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |     0.010 |     0.011 |    0.008       0.2 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     0.030 |     0.011 |    0.008       0.1 |     100 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.010 |     0.011 |    0.008       0.1 |     100 |     0.001 |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
 GiGa.GiGaMgr               INFO GiGaRunManager:: GiGaRunManager Finalization
 GiGa.RunSeq.TrCuts      WARNING TrCutsRunAction:: EndOfRunAction:: G4Run* points to NULL! StatusCode=FAILURE
@@ -674,7 +684,7 @@ GiGa.RunSeq.RichG4Run   WARNING RichG4RunAction:: EndOfRunAction:: G4Run* points
 *****Chrono*****           INFO ****************************************************************************************************
 *****Chrono*****           INFO  The Final CPU consumption ( Chrono ) Table (ordered)
 *****Chrono*****           INFO ****************************************************************************************************
-ChronoStatSvc              INFO Time User   : Tot=  249  [s]                                             #=  1
+ChronoStatSvc              INFO Time User   : Tot=  201  [s]                                             #=  1
 *****Chrono*****           INFO ****************************************************************************************************
 ChronoStatSvc.finalize()   INFO  Service finalized successfully
 ApplicationMgr             INFO Application Manager Finalized successfully
