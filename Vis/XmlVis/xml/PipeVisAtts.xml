@@ -13,6 +13,9 @@
 <VisAtt name="VisPipeBakeOut">
   <Color B="0.4" G="0.8" R="1.0"/>
 </VisAtt>
+<VisAtt name="VisPipeCuOFE">
+  <Color B="0.8706" G="0.77" R="0.4"/>
+</VisAtt>
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes

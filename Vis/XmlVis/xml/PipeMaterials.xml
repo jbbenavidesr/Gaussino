@@ -13,3 +13,5 @@
       attr="VisPipeSteel"/>
 <Item name="/dd/Materials/Pipe/BakeOutAerogel"
       attr="VisPipeBakeOut"/>
+<Item name="/dd/Materials/Pipe/PipeCuOFE"
+      attr="VisPipeCuOFE"/>

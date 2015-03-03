@@ -1,9 +1,13 @@
-! $Id: release.notes,v 1.35 2007-12-07 18:12:44 gcorti Exp $
+! $Id: release.notes,v 1.37 2008-07-18 15:42:28 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================== LbHerwig v5r3 2008-07-18 ==========================
+! 2008-07-10 - Patrick Robbe
+ - HerwigProduction: remove SEAL functions
 
 !======================== LbHerwig v5r2 2007-12-07 ==========================
 ! 2007-12-04 - Gloria CORTI

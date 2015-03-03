@@ -3,6 +3,9 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r6 =====================================
+! 2008-07-10 - Thomas Ruf
+ - match to latest changes in infrastructure, beampipe, beam magnets
 !=========================== XmlVis v1r5 =====================================
 
 !=========================== XmlVis v1r4 =====================================

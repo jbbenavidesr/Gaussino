@@ -1,9 +1,10 @@
-// $Id: Generation.cpp,v 1.27 2007-10-10 20:07:24 robbep Exp $
+// $Id: Generation.cpp,v 1.29 2008-07-18 11:22:46 robbep Exp $
 // Include files 
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/RndmGenerators.h"
+#include "GaudiKernel/SystemOfUnits.h"
 
 // from Event
 #include "Event/GenHeader.h"
@@ -175,7 +176,7 @@ StatusCode Generation::execute() {
     theGenHeader -> setEvType( m_eventType );  
   }
 
-  unsigned int  nPileUp ;
+  unsigned int  nPileUp( 0 ) ;
   double        currentLuminosity ;
   
   LHCb::HepMCEvents::iterator itEvents ;
@@ -198,7 +199,7 @@ StatusCode Generation::execute() {
     else { 
       // default set to 1 pile and 2.10^32 luminosity
       nPileUp = 1 ;
-      currentLuminosity = 2.e32/cm2/s ;
+      currentLuminosity = 2.e32/Gaudi::Units::cm2/Gaudi::Units::s ;
     }
     // generate a set of Pile up interactions according to the requested type
     // of event

@@ -1,4 +1,4 @@
-! $Id: release.notes,v 1.71 2008-06-09 17:45:20 gcorti Exp $
+! $Id: release.notes,v 1.73 2008-07-18 15:53:55 gcorti Exp $
 ! -----------------------------------------------------------------------------
 ! Package          : Sim/GaussCalo
 ! Contributors     : Vanya Belyaev, Grigori Rybkine, Alexei Berdiouguine,
@@ -7,6 +7,10 @@
 ! Purpose          : collection of sensitive detectors, converters, 
 !                  : G4 actions, etc for LHCb calorimeters
 ! -----------------------------------------------------------------------------
+
+!========================= GaussCalo v9r2 2008-07-18 ==========================
+! 2008-07-11 - Patrick Robbe
+ - Fix compilation warnings in SensDet classes (constructors)
 
 !========================= GaussCalo v9r1 2008-06-09 ==========================
 ! 2008-05-29 - Gloria CORTI

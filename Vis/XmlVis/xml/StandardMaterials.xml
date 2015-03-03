@@ -23,3 +23,13 @@
       attr="Water"/>
 <Item name="/dd/Materials/Copper"
       attr="Copper"/>
+<Item name="/dd/Materials/MBXW/CoilCopper"
+      attr="VisCoilCopper"/>
+<Item name="/dd/Materials/BlockWall/Concrete"
+      attr="VisConcrete"/>
+<Item name="/dd/Materials/Iron"
+      attr="VisIron"/>
+<Item name="/dd/Materials/MBXW/YokeIron"
+      attr="VisYokeIron"/>
+<Item name="/dd/Materials/MBXW/G10"
+      attr="VisG10"/>

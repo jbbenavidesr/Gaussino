@@ -1,11 +1,12 @@
-// $Id: HerwigProduction.cpp,v 1.13 2007-04-25 12:45:15 karl Exp $
+// $Id: HerwigProduction.cpp,v 1.15 2008-07-11 10:01:31 robbep Exp $
 // Include files 
 
 // local
 #include "HerwigProduction.h"
 
-// SEAL
-#include "SealBase/StringOps.h"
+// boost
+#include "boost/tokenizer.hpp"
+#include "boost/algorithm/string/erase.hpp"
 
 // from Gaudi
 #include "GaudiKernel/Algorithm.h"
@@ -132,14 +133,24 @@ StatusCode HerwigProduction::initialize( )
   unsigned int j;
 
   // Set flags for using Jimmy and/or MC@NLO on basis of tool name
-  std::string toolName = seal::StringOps::split( name(), "." ).back();
-  m_hepMCName = seal::StringOps::remove( toolName, "Production" );
-  if ( 0 != seal::StringOps::contains( m_hepMCName, "Jimmy", true ) )
+  boost::char_separator<char> sep(".");
+  boost::tokenizer< boost::char_separator<char> > 
+    strList( name() , sep ) ;
+  
+  std::string result = "" ;
+  for ( boost::tokenizer< boost::char_separator<char> >::iterator 
+          tok_iter = strList.begin();
+        tok_iter != strList.end(); ++tok_iter)
+    result = (*tok_iter) ;
+  m_hepMCName = boost::algorithm::ierase_last_copy( result , "Production" ) ;
+
+  if ( std::string::npos != m_hepMCName.find( "Jimmy" ) )
     m_jimmy = true;
-  if ( 0 != seal::StringOps::contains( m_hepMCName, "MCatNLO", true ) )
+  if ( std::string::npos != m_hepMCName.find( "MCatNLO" ) )
     m_mcatnlo = true;
 
-  info() << "Production engine called with name " << toolName << endmsg;
+  info() << "Production engine called with name " << result << endmsg;
+
   if ( m_jimmy ) info() << "Use of Jimmy requested" << endmsg;
   if ( m_mcatnlo ) info() << "Use of MC@NLO requested" << endmsg;
 

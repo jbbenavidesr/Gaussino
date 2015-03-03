@@ -1,11 +1,11 @@
-// $Id: ParticleGun.cpp,v 1.6 2008-05-19 10:09:49 robbep Exp $
+// $Id: ParticleGun.cpp,v 1.7 2008-07-11 09:00:37 robbep Exp $
 // Include files 
 
 // local
 #include "ParticleGun.h"
 
 // from SEAL
-#include "SealBase/StringOps.h"
+#include "boost/tokenizer.hpp"
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
@@ -120,10 +120,17 @@ StatusCode ParticleGun::initialize() {
   m_particleGunTool = 
     tool< IParticleGunTool >( m_particleGunToolName , this ) ;
     
-  seal::StringList strList = 
-    seal::StringOps::split( m_particleGunTool -> name() , "." ) ;  
-  m_particleGunName = strList.back() ; 
-    
+  boost::char_separator<char> sep(".");
+  boost::tokenizer< boost::char_separator<char> > 
+    strList( m_particleGunTool -> name() , sep ) ;
+  
+  std::string result = "" ;
+  for ( boost::tokenizer< boost::char_separator<char> >::iterator 
+          tok_iter = strList.begin();
+        tok_iter != strList.end(); ++tok_iter)
+    result = (*tok_iter) ;
+  m_particleGunName = result ;
+  
   // Retrieve generation method tool
   if ( "" != m_vertexSmearingToolName ) 
     m_vertexSmearingTool = 

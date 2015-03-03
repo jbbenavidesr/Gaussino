@@ -1,10 +1,10 @@
-# $Id: requirements,v 1.26 2007-12-04 16:01:02 gcorti Exp $ 
+# $Id: requirements,v 1.27 2008-07-16 17:08:42 gcorti Exp $ 
 #============================================================================
 # Created    : 2006-07-03
 # Maintainer : Karl Harrison
 #============================================================================
 package       LbHerwig
-version       v5r2
+version       v5r3
 
 #============================================================================
 # Structure, i.e. directories to process. 

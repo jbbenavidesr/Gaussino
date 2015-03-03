@@ -38,6 +38,34 @@
 <VisAtt name="Copper">
   <Color R="0.8" G="0.68" B="0.0"/>
 </VisAtt>
+<VisAtt name="VisCoilCopper">
+  <Color R="0.8" G="0.68" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisConcrete">
+  <Color R="0.7" G="0.7" B="0.7"/>
+</VisAtt>
+<VisAtt name="VisIron">
+  <Color R="0.3" G="0.3" B="0.3"/>
+</VisAtt>
+<VisAtt name="VisYokeIron">
+  <Color R="0.8" G="0.25" B="0.1"/>
+</VisAtt>
+<VisAtt name="VisG10">
+  <Color R="0.8" G="0.1" B="0.0"/>
+</VisAtt>
+<VisAtt name="Lead">
+  <Color R="0.1" G="0.1" B="0.1"/>
+</VisAtt>
+<VisAtt name="Lead">
+  <Color R="0.1" G="0.1" B="0.1"/>
+</VisAtt>
+<VisAtt name="Steel">
+  <Color R="0.4" G="0.4" B="0.4"/>
+</VisAtt>
+<VisAtt name="Tungsten">
+  <Color R="0.2" G="0.2" B="0.2"/>
+</VisAtt>
+
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes

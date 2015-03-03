@@ -4,6 +4,11 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!====================== GaussMonitor v5r3 2008-07-18 =========================
+! 2008-07-14 - Patrick Robbe
+ - Correct GeneratorAnalysis histograms to remove b quarks from analysis
+ - GeneratorFullMonitor: add pThat variable
+
 !====================== GaussMonitor v5r2 2008-06-27 =========================
 ! 2008-06-24 - Vanya BELYAEV
  - new algorithms to perform the checks for particle lifetiems both on HepMC

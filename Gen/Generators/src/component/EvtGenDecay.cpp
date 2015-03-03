@@ -1,4 +1,4 @@
-// $Id: EvtGenDecay.cpp,v 1.14 2007-10-10 20:07:24 robbep Exp $
+// $Id: EvtGenDecay.cpp,v 1.16 2008-07-10 18:20:11 robbep Exp $
 // Header file
 #include "EvtGenDecay.h"
 
@@ -6,11 +6,11 @@
 #include <iostream>
 #include <fstream>
 
-// from SEAL
-#include "SealBase/ShellEnvironment.h"
-#include "SealBase/TempFile.h"
+// from boost
+#include "boost/filesystem.hpp"
 
 // from Gaudi
+#include "GaudiKernel/System.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/IRndmGen.h"
@@ -21,7 +21,7 @@
 // from LHCb
 #include "Kernel/ParticleID.h"
 #include "GaudiKernel/SystemOfUnits.h"
-
+#include "GaudiKernel/PhysicalConstants.h"
 // from Event
 #include "Event/HepMCEvent.h"
 
@@ -80,7 +80,9 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     m_maxctau( 1.e+16 * Gaudi::Units::mm ) ,
     // Minimum value for Gamma in particle property data.
     // Below, it is set to 0
-    m_minwidth( 1.5e-6 * Gaudi::Units::GeV ) {
+    m_minwidth( 1.5e-6 * Gaudi::Units::GeV ) ,
+    // Name of temp output file for PHOTOS
+    m_photosTempFilename( "phtmp001" ) {
     // Declare IEvtGenDecay interface
     declareInterface<IDecayTool>( this ) ;
     // Declare properties for EvtGen
@@ -114,20 +116,18 @@ StatusCode EvtGenDecay::initialize( ) {
   // Default location (if not specified in job options is
   // $DECFILESROOT/dkfiles/DECAY.DEC
   if ( m_decayFile.empty() || "empty" == m_decayFile )
-    if ( seal::ShellEnvironment().has("DECFILESROOT") ) 
-      m_decayFile  = seal::ShellEnvironment().get( "DECFILESROOT" ) + 
+    if ( "UNKNOWN" != System::getEnv("DECFILESROOT") ) 
+      m_decayFile  = System::getEnv( "DECFILESROOT" ) + 
         "/dkfiles/DECAY.DEC" ;
   
   // Check if file exists:
-  seal::Filename decayFile( m_decayFile ) ;
-  if ( ! decayFile.exists() ) 
+  if ( ! boost::filesystem::exists( m_decayFile ) ) 
     return Error( "The specified generic decay table does not exist" ) ;
-  if ( ! decayFile.isReadable() ) 
-    return Error( "The specified generic decay table is not readable" ) ;
 
   // create temporary evt.pdl file filled with Gaudi ParticlePropertySvc
-  seal::Filename evtPdlFile( "tempPdlFile.txt" ) ;
-  if ( evtPdlFile.exists() ) seal::Filename::remove( evtPdlFile ) ;
+  boost::filesystem::path evtPdlFile( "tempPdlFile.txt" );
+  if ( boost::filesystem::exists( evtPdlFile ) ) 
+    boost::filesystem::remove( evtPdlFile ) ;
   sc = createTemporaryEvtFile( evtPdlFile ) ;
   if ( ! sc.isSuccess() ) return sc ;
 
@@ -144,24 +144,21 @@ StatusCode EvtGenDecay::initialize( ) {
   release( randSvc ) ;
 
   // create EvtGen engine from decay file, evt.pdl file and random engine
-  m_gen = new EvtGen ( m_decayFile.c_str() , evtPdlFile.name() ,
+  m_gen = new EvtGen ( m_decayFile.c_str() , evtPdlFile.string().c_str() ,
                        m_randomEngine ) ;
 
   // Remove temporary file if not asked to keep it
-  if ( ! m_keepTempEvtFile ) seal::Filename::remove( evtPdlFile ) ;
+  if ( ! m_keepTempEvtFile ) boost::filesystem::remove( evtPdlFile ) ;
 
   // Read the optional signal decay file
   if ( ! m_userDecay.empty() && "empty" != m_userDecay ) {
-    seal::Filename userDecayFile( m_userDecay ) ;
-    if ( ! userDecayFile.exists() ) 
+    if ( ! boost::filesystem::exists( m_userDecay ) ) 
       return Error( "The specified user decay file does not exist" ) ;
-    if ( ! userDecayFile.isReadable() ) 
-      return Error( "The specified user decay file is not readable" ) ;
     m_gen -> readUDecay( m_userDecay.c_str() ) ; 
   }
 
-  m_photosTempFile = seal::TempFile::file( m_photosTempFilename ) ;
-  m_photosTempFile -> close() ;
+  if ( boost::filesystem::exists( m_photosTempFilename ) ) 
+    boost::filesystem::remove( m_photosTempFilename ) ;
   
   int arg ;
   if ( msgLevel( MSG::DEBUG ) ) {
@@ -175,12 +172,12 @@ StatusCode EvtGenDecay::initialize( ) {
     arg = 1 ;
 #ifdef WIN32
     PYTHIAOUTPUT_INIT( &arg ) ;
-    PHOTOS_INIT( m_photosTempFilename.name() , 
-                 strlen( m_photosTempFilename.name() ) ) ;
+    PHOTOS_INIT( m_photosTempFilename.string().c_str() , 
+                 strlen( m_photosTempFilename.string().c_str() ) ) ;
 #else
     pythiaoutput_init__( &arg ) ;
-    photos_init__( m_photosTempFilename.name() , 
-                   strlen( m_photosTempFilename.name() ) ) ;
+    photos_init__( m_photosTempFilename.string().c_str() , 
+                   strlen( m_photosTempFilename.string().c_str() ) ) ;
 #endif
   }
   
@@ -209,8 +206,7 @@ StatusCode EvtGenDecay::finalize() {
 #endif
   }  
  
-  delete m_photosTempFile ;
-  seal::Filename::remove( m_photosTempFilename , false , true ) ;
+  boost::filesystem::remove( m_photosTempFilename ) ;
 	
   delete StreamForGenerator::getStream() ;
   StreamForGenerator::getStream() = 0 ;
@@ -434,10 +430,10 @@ bool EvtGenDecay::isKnownToDecayTool( const int pdgId ) const {
 // Create a temporary evt.pdl file taking available informations
 // from the Particle Property Service
 //=============================================================================
-StatusCode EvtGenDecay::createTemporaryEvtFile( const seal::Filename & 
+StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path & 
                                                 newFile ) const {
   // Create temporary file
-  std::ofstream g( newFile.name() ) ;
+  std::ofstream g( newFile.string().c_str() ) ;
   if ( ! g.is_open() ) return Error( "Cannot create evt.pdl file" ) ;
 
   // Write description of the file columns
@@ -488,7 +484,7 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const seal::Filename &
       ctau = 0. ;
     // Width in GeV 
     if ( (*i) -> lifetime() > 0. ) {
-      pwidth = ( hbarc / ( (*i) -> lifetime() * c_light ) ) / Gaudi::Units::GeV ; 
+      pwidth = ( Gaudi::Units::hbarc / ( (*i) -> lifetime() * Gaudi::Units::c_light ) ) / Gaudi::Units::GeV ; 
     } else {
       pwidth = 0. ;
     }

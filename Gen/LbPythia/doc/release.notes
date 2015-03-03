@@ -4,6 +4,18 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia v7r4 2008-07-18 ==========================
+! 2008-07-11 - Patrick Robbe
+ - options/Pythia64.opts: add COM charmonium processes
+
+! 2008-07-10 - Patrick Robbe
+ - Remove usage of SEAL for file: 
+   . src/Lib/PythiaProduction.cpp
+
+! 2008-07-09 - Patrick ROBBE and Gloria CORTI
+ - Use Gaudi units intsead of implecetely those of CLHEP vias HepMC
+   (prepared for migration to HepMC 2)
+
 !========================= LbPythia v7r3 2008-07-06 ==========================
 ! 2008-06-24 - Vanya  BELYAEV
  - PythiaProduction

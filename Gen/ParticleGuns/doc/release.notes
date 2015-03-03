@@ -4,6 +4,10 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v5r2 2008-07-18 =======================
+! 2008-07-11 - Patrick Robbe
+ - Remove SEAL functions from ParticleGun.cpp
+
 !======================= ParticleGuns v5r1 2008-06-26 =======================
 ! 2008-06-12 - Patrick Robbe
  - Add optical photon particle gun for RICH
