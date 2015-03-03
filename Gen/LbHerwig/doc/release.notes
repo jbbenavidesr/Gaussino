@@ -1,9 +1,45 @@
-! $Id: release.notes,v 1.29 2007-03-23 10:52:28 gcorti Exp $
+! $Id: release.notes,v 1.32 2007-06-22 12:47:38 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================== LbHerwig v5r1 2007-06-22 ==========================
+! 2007-05-07 - Karl Harrison
+ - LbHerwig/herwig6510.h modified to reflect changes in sizes of
+  HERWIG common-block arrays
+  In terms of HERWIG parameters, the new settings correspond to:
+     NMXHEP = 10000
+     NMXDKS = 4000
+     NMXCDK = 4000
+ - Subroutines BSDATE and BSTIME of src/Lib/mcatnlo/mcatnlo_date.f
+   rewritten, to avoid dependencies on C functions that caused crashes
+   => Contents of src/Lib/mcatnlo modified:
+      - Removed: mcatnlo_date.f, mcatnlo_uxdate.c, mcatnlo_uxdate.ph
+      - Added: mcatnlo_date.F
+
+! 2007-04-25 - Karl Harrison
+ - Changes made to treatment of decays, to be compatible with procedure
+   used in Herwig for determining multiplicities for underlying event.
+
+   Previously, decays known to the decay tool (e.g. EvtGen) were switched
+   of in Herwig.  Since Herwig counts final-state (i.e. non-decaying)
+   particles when determining multiplicities, this means that multiplicities
+   after the decay tool were too high - approximately by a factor of 2.
+
+   The procedure now is to enable all decays in Herwig, then remove from
+   the event record all particles resulting from decays that should be
+   handled by the decay tool, and update status codes.
+
+   => Changes made in:
+      LbHerwig/herwig6510.h
+      LbHerwig/Herwig.h
+      src/component/HerwigProduction.cpp
+      src/Lib/utility/Herwig.cpp
+
+      Added Fortran routine for removing decay products from event record:
+      src/Lib/herwig/hwrmdk.F
 
 !======================== LbHerwig v5r0 2007-03-23 ==========================
 ! 2007-03-23 - Gloria Corti

@@ -1,9 +1,48 @@
-! $Id: release.notes,v 1.96 2007-03-13 13:55:43 gcorti Exp $
+! $Id: release.notes,v 1.102 2007-07-03 16:31:36 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v7r2 2007-07-03 ===========================
+! 2007-07-03 - Gloria Corti
+ - Allow possibility of running different instances of Generation algorithm 
+   (ex. pp collisions and p-gas) in the same job. To do this the collisions
+   and hepmc events are kept in temporary containers and contents added to
+   containers in TES that are created in case they do not already exist.
+   The header information is updated accordingly.
+   . src/component/Generation.cpp
+
+! 2007-06-29 - Vanya BELYAEV
+ - Generators/F77Utils.h, src/Lib/F77Utils.h
+     a) add  new function F77Utils::getUnit to obtain free FORTRAN unit
+        trrough scan of all available units between 99 and 10
+     b) for other function add optional argument "verbose" 
+        with the default value equal to "false"(backward compatible).
+        It is *VERY* convinient for debugging...
+ - src/Lib/f77units.F 
+     add new function: INTEGER FUNCITON F77GETUNIT
+
+!====================== Generators v7r1 2007-05-08 ===========================
+! 2007-05-08 - Patrick Robbe
+ - Clean cut tools to remove unused functions: 
+    . src/component/DaughtersInLHCb.cpp
+    . src/component/DaughtersInLHCb.h
+    . src/component/ListOfDaughtersInLHCb.cpp
+    . src/component/ListOfDaughtersInLHCb.h
+    . src/component/SelectedDaughterInLHCb.cpp
+    . src/component/SelectedDaughterInLHCb.h
+
+! 2007-05-03 - Gloria CORTI
+ - Slighlty change message levels at initialization to see in info() 
+   primary interation vertex for flat vertex ( FlatZSmearVertex.cpp )
+ - Explicitely use LHCbDefinitions so that package is compatible with 
+   Gauss version using latest Gaudi v19r3 as well as DC06 version.
+
+! 2007-04-01 - Patrick Robbe
+ - Add new tool (RepeatDecay) to re-use the same event several times,
+   calling only the decay phase.
 
 !====================== Generators v7r0 2007-03-13 ===========================
 ! 2007-03-08 - Patrick Robbe

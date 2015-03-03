@@ -1,4 +1,4 @@
-// $Id: Herwig.h,v 1.4 2006-09-05 12:36:47 karl Exp $
+// $Id: Herwig.h,v 1.5 2007-04-25 12:45:14 karl Exp $
 #ifndef LBHERWIG_HERWIG_H 
 #define LBHERWIG_HERWIG_H 1
 
@@ -33,6 +33,7 @@ public:
    static void hwefin();
    static void hweini();
    static void hwepro();
+   static void hwrmdk();
    static void hwigin();
    static void hwmevt();
 

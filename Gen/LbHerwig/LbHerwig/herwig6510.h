@@ -1,4 +1,4 @@
-// $Id: herwig6510.h,v 1.2 2006-09-05 12:36:47 karl Exp $
+// $Id: herwig6510.h,v 1.4 2007-05-07 14:03:40 karl Exp $
 #ifndef __HERWIG65_HH__
 #define __HERWIG65_HH__ 1
 
@@ -12,9 +12,9 @@ const int m_nmxhep = 10000;
 const int m_nmxpar = 500;
 const int m_modmax = 50;
 const int m_nmxres = 500;
-const int m_nmxdks = m_nmxhep;
+const int m_nmxdks = 4000;
 const int m_nmxmod = 200;
-const int m_nmxcdk = m_nmxhep;
+const int m_nmxcdk = 4000;
 const int m_nmxqdk = 20;
 const int m_nmxsud = 1024;
 //const int m_nmxjet = 200;
@@ -406,6 +406,14 @@ struct Hw6510_t
 };
 extern Hw6510_t* gHw6510;
 
+// Common block for flagging particles known to LHCb decay tool
+struct Hwdktl_t
+{
+    logical dktl[1+m_nmxres];
+};
+extern Hwdktl_t* gHwdktl;
+
+
 // Declare pointers for accessing the common blocks
 
 Hwbeam_t* gHwbeam;
@@ -464,5 +472,8 @@ Hw6506_t* gHw6506;
 
 // new 6510
 Hw6510_t* gHw6510;
+
+// for flagging particles known to LHCb decay tool
+Hwdktl_t* gHwdktl;
 
 #endif

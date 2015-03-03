@@ -1,4 +1,4 @@
-C $Id: herwig_common_block_address.F,v 1.1 2006-09-05 12:36:48 karl Exp $
+C $Id: herwig_common_block_address.F,v 1.2 2007-04-25 13:40:23 karl Exp $
 
 C-----------------------------------------------------------------------
 C
@@ -17,6 +17,8 @@ c-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 
 #include "HERWIG65.INC"
+      LOGICAL DKTL
+      COMMON/HWDKTL/DKTL(0:NMXRES)
       EXTERNAL HWUDAT
       CHARACTER*(*) COMMON_BLOCK_NAME
       INTEGER HERWIG_COMMON_BLOCK_ADDRESS
@@ -50,6 +52,9 @@ C-----------------------------------------------------------------------
  
       ELSE IF (COMMON_BLOCK_NAME.EQ.'HWDIST') THEN
         HERWIG_COMMON_BLOCK_ADDRESS = ADRESSF( EXAG )
+
+      ELSE IF (COMMON_BLOCK_NAME.EQ.'HWDKTL') THEN
+        HERWIG_COMMON_BLOCK_ADDRESS = ADRESSI( DKTL( 0 ) )
 
       ELSE IF (COMMON_BLOCK_NAME.EQ.'HWDSPB') THEN
         HERWIG_COMMON_BLOCK_ADDRESS = ADRESSF( ABMODE( 1, 1 ) )

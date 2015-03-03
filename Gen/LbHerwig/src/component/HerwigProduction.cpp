@@ -1,4 +1,4 @@
-// $Id: HerwigProduction.cpp,v 1.12 2007-03-13 19:09:20 gcorti Exp $
+// $Id: HerwigProduction.cpp,v 1.13 2007-04-25 12:45:15 karl Exp $
 // Include files 
 
 // local
@@ -35,9 +35,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-
 DECLARE_TOOL_FACTORY( HerwigProduction );
-
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -129,6 +127,10 @@ StatusCode HerwigProduction::initialize( )
     << "=================================================================="
     << endmsg;
 
+  // Declare loop indices
+  unsigned int i;
+  unsigned int j;
+
   // Set flags for using Jimmy and/or MC@NLO on basis of tool name
   std::string toolName = seal::StringOps::split( name(), "." ).back();
   m_hepMCName = seal::StringOps::remove( toolName, "Production" );
@@ -176,6 +178,12 @@ StatusCode HerwigProduction::initialize( )
   // Main initialisation of Herwig common blocks
   Herwig::hwigin();
 
+  // Initially decalre all Herwig particles as unknown to decay tool
+  for ( i = 0; i < 1 + m_nmxres; i++ )
+    {
+      gHwdktl->dktl[ i ] = false;
+    } 
+
   // Set default values for Jimmy
   if ( m_jimmy ) Herwig::jimmin();
 
@@ -191,8 +199,6 @@ StatusCode HerwigProduction::initialize( )
 
   // Set default values for prefix of BASES file
   std::string basesPrefix;
-  unsigned int i;
-  unsigned int j;
   basesPrefix = "bases";
   if ( ( gMcnlopar->it1 <= 0 ) || ( gMcnlopar->it2 <= 0 ) )
   {
@@ -441,6 +447,9 @@ StatusCode HerwigProduction::generateEvent( HepMC::GenEvent * theEvent ,
       // Add soft underlying event
       Herwig::hwmevt();
 
+      // Remove from event record decays of particles known to decay tool
+      Herwig::hwrmdk();
+                                                                                
       // Finish event
       Herwig::hwufne();
     }
@@ -451,7 +460,7 @@ StatusCode HerwigProduction::generateEvent( HepMC::GenEvent * theEvent ,
       gHwevnt->ierror = 0;
     }
   }
-                                                                                
+
   // Perform user event analysis
   Herwig::hwanal();
   
@@ -524,9 +533,10 @@ void HerwigProduction::setStable( const ParticleProperty * thePP )
         partName[ i ] = gHwunam->rname[ ihw ][ i ];
       } 
       partName[ 8 ] = '\0';
-      Herwig::hwusta( * partName );
+//    Herwig::hwusta( * partName );
+      gHwdktl->dktl[ ihw ] = true;
       debug() << partName <<" (PDG id " << pdgId << ", Herwig id " << ihw
-        << ") set stable" << endmsg;
+        << ") declared as known to decay tool" << endmsg;
     }
     else
     {
@@ -1414,10 +1424,10 @@ void HerwigProduction::setGenerationEventType()
 // Dummy method
 //=============================================================================
 StatusCode HerwigProduction::initializeGenerator() {
-
+                                                                                
   return StatusCode::SUCCESS;
-
+                                                                                
 }
-
-
+                                                                                
+                                                                                
 //=============================================================================

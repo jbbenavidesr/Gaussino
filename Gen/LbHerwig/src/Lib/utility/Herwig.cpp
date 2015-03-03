@@ -1,4 +1,4 @@
-// $Id: Herwig.cpp,v 1.1 2006-09-05 12:36:51 karl Exp $
+// $Id: Herwig.cpp,v 1.2 2007-04-25 12:45:15 karl Exp $
 
 // Include files
 
@@ -43,6 +43,7 @@ void Herwig::initHerwigCommonBlocks()
   gHwcirc    = (Hwcirc_t*   ) herwig_common_block_address_("HWCIRC",6);
   gHwclus    = (Hwclus_t*   ) herwig_common_block_address_("HWCLUS",6);
   gHwdist    = (Hwdist_t*   ) herwig_common_block_address_("HWDIST",6); 
+  gHwdktl    = (Hwdktl_t*   ) herwig_common_block_address_("HWDKTL",6); 
   gHwdspb    = (Hwdspb_t*   ) herwig_common_block_address_("HWDSPB",6);
   gHwdspn    = (Hwdspn_t*   ) herwig_common_block_address_("HWDSPN",6);
   gHwdsp2    = (Hwdsp2_t*   ) herwig_common_block_address_("HWDSP2",6);
@@ -260,6 +261,25 @@ void Herwig::hwdhvy()
   HWDHVY( ) ;
 #else
   hwdhvy_ ( ) ;
+#endif
+}
+
+// HWRMDK Fortran function
+extern "C"
+{
+#ifdef WIN32
+  void __stdcall HWRMDK( ) ;
+#else
+  void hwrmdk_( ) ;
+#endif
+}
+
+void Herwig::hwrmdk()
+{
+#ifdef WIN32
+  HWRMDK( ) ;
+#else
+  hwrmdk_ ( ) ;
 #endif
 }
 
