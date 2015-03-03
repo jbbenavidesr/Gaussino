@@ -3,8 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v7r0
-
+version v8r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -33,6 +32,7 @@ macro jimmy_native_version "4.31.3"
 
 #-- Hijing
 #============================================================================
+#macro hijing_native_version "1.36.a.2"
 macro hijing_native_version "1.383bs.2"
 
 #-- AlpGen (until interface package exist in LCG)
@@ -49,13 +49,13 @@ macro alpgen_name "alpgen"
 
 #-- Pythia 8
 #============================================================================
-macro pythia8_native_version "130"
+macro pythia8_native_version "145"
 macro_append pythia8_linkopts " -lhepmcinterface "
 
 
 #-- Pythia 6
 #============================================================================
-macro pythia6_native_version "421.2"
+macro pythia6_native_version "424.2"
 use pythia6  v* LCG_GeneratorsInterfaces -no_auto_imports
 macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
                         WIN32 " pythia6_pdfdummy.lib "

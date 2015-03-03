@@ -1,4 +1,4 @@
-C $Id: rlu.F,v 1.1 2009-03-06 13:24:00 robbep Exp $
+C $Id: rlu.F,v 1.2 2010-09-17 16:25:00 gcorti Exp $
 C Random number function for HIJING
 C
       REAL FUNCTION RLU(DUMMY)
