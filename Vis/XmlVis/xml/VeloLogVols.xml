@@ -468,3 +468,36 @@
       attr="VeloCopper"/>
 <Item name="/dd/Geometry/BeforeMagnetRegion/Velo/WFCone/lvCone2"
       attr="VeloCopper"/>
+
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSup"
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloVacTankUpEnd" 
+      attr="VeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloVacTankDownEnd" 
+      attr="VeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloVacTankTop"
+      attr="VeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupTrim"
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupBack"
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupSide"
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloVacTankSide"
+      attr="VeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupBase"     
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupSide"
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVelo2Rich1Gas2"   
+      attr="Rich1Gas"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVelo2Rich1Gas1"  
+      attr="Rich1Gas"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloVacTankDSExitWindow"
+      attr="VeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/VacTank/lvVeloDetSupTop"  
+      attr="VeloDetSup"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Velo/Supports/lvVeloPUSupport"  
+      attr="VeloDetSup"/> 
+
+

@@ -17,14 +17,31 @@
 <VisAtt name="VeloCopper">
   <Color B="0.0" G="0.5" R="1.0"/>
 </VisAtt>
+<VisAtt name="VeloKaptonCable">
+  <Color B="0.12" G="0.41" R="0.82"/>
+</VisAtt>
+<VisAtt name="VeloStainlessSteel">
+  <Color B="0.80" G="0.78" R="0.69"/>
+</VisAtt>
+<VisAtt name="VeloTPG">
+  <Color B="0.30" G="0.30" R="0.19"/>
+</VisAtt>
+<VisAtt name="VeloLCP">
+  <Color B="0.0" G="0.0" R="0.80"/>
+</VisAtt>
+<VisAtt name="VeloBrass">
+  <Color B="0.26" G="0.65" R="0.71"/>
+</VisAtt>
+<VisAtt name="VeloBerylliumCopper">
+  <Color B="0.20" G="0.45" R="0.72"/>
+</VisAtt>
+
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes
      and complete them. That's why they don't define colors : the color
      are taken from the material. -->
-<VisAtt name="VisVeloMaster" mode="WireFrame" opened="Yes">
-  <Color B="0.8706" G="0.7686" R="0.6902"/>
-</VisAtt>
+<VisAtt name="VisVeloMaster" visible="No" mode="WireFrame" opened="Yes"/>
 <VisAtt name="VisVeloStation" mode="WireFrame" opened="Yes"/>
 <VisAtt name="VisVeloRDetector" opened="No">
   <Color B="1.0" G="0.0" R="0.5"/>
@@ -46,7 +63,7 @@
   <Color B="0.3" G="0.0" R="0.5"/>
 </VisAtt>
 <VisAtt name="VisVeloRFFoil" mode="WireFrame" opened="Yes"/>
-<VisAtt name="VisVeloVacTank" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloVacTank" visible="No" mode="WireFrame" opened="Yes"/>
 <VisAtt name="VisVeloVacTankComp" mode="WireFrame" opened="Yes">  
   <Color B="0.75" G="0.0" R="0.5"/>
 </VisAtt>
@@ -54,10 +71,11 @@
   <Color B="0.75" G="0.0" R="0.5"/>
 </VisAtt>
 <VisAtt name="VisVeloRFBox" mode="WireFrame" opened="Yes"/>  
-<VisAtt name="VisVeloRFBoxComp" mode="WireFrame" opened="Yes">  
-  <Color B="0.0" G="0.0" R="0.75"/>
-</VisAtt>
+<VisAtt name="VisVeloRFBoxComp" mode="WireFrame" opened="Yes"/>  
 <VisAtt name="VisVeloPipe" mode="WireFrame" opened="Yes"/>
 <VisAtt name="VisVeloPipeCuCylinder">
   <Color B="0.0" G="0.5" R="1.0"/>
 </VisAtt>
+<VisAtt name="VeloDetSup"  visible="No" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VeloVacTank" visible="Yes" opened="No"/>
+<VisAtt name="Rich1Gas"  visible="No" opened="Yes"/>

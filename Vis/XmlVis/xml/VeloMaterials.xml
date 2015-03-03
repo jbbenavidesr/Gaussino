@@ -5,3 +5,17 @@
       attr="VeloCF"/>
 <Item name="/dd/Materials/Velo/VeloInvar"
       attr="VeloInvar"/>
+<Item name="/dd/Materials/Velo/VeloKaptonCable"
+      attr="VeloKaptonCable"/>
+<Item name="/dd/Materials/Velo/VeloStainlessSteel"
+      attr="VeloStainlessSteel"/>
+<Item name="/dd/Materials/Velo/VeloTPG"
+      attr="VeloTPG"/>
+<Item name="/dd/Materials/Velo/VeloLCP"
+      attr="VeloLCP"/>
+<Item name="/dd/Materials/Velo/VeloBrass"
+      attr="VeloBrass"/>
+<Item name="/dd/Materials/Velo/VeloBerylliumCopper"
+      attr="VeloBerylliumCopper"/>
+
+

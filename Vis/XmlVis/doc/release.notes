@@ -3,7 +3,9 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
-
+!=========================== XmlVis v1r12 ====================================
+! 2009-12-05 - Thomas Ruf
+- Added visual attributes for new implementation of Velo materials
 !=========================== XmlVis v1r11 ====================================
 ! 2009-03-26 - Gloria CORTI
  - Added visual attributes for new implementation of beam pipe supports, made
