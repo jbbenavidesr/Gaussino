@@ -1,7 +1,31 @@
-! $Id: release.notes,v 1.12 2009-05-26 17:07:56 gcorti Exp $
-! Package     : Gen/LbBcGen
+! $Id: release.notes,v 1.16 2009-10-02 13:08:08 jhe Exp $
+! Package     : Gen/LbBcVegPy
 ! Responsible : Patrick ROBBE
 !=====================================================================
+
+
+!===================== LbBcVegPy v3r0 2009-10-02 =====================
+! 2009-10-02 - Jibo He
+ - Correct the Initialize/Finalize (mis)balance of BcDaughtersInLHCb.
+   . src/component/BcDaughtersInLHCb.cpp
+
+! 2009-09-29 - Jibo He
+ - Specify Cteq6LL and leading order running alpha_s in BcVegPy.opts.
+
+! 2009-09-28 - Jibo He
+ - Update to use PDFs in LHAPDF (ioutpdf=0) by default.
+   . src/BcVegPyProduction.cpp
+
+! 2009-07-23 - Jibo He
+ - Update the Bc mass to 6276 MeV, change the c and b quark's masses
+   accordingly.
+   . src/BcVegPyProduction.cpp
+ - Add one variable IUSECURDIR accordingly (as BcVegPy) in
+   . src/Lib/gloggrade.F
+   . src/Lib/Loggrade.cpp 
+   . LbBcVegPy/Loggrade.h
+ - This version should use BcVegPy data v2r0 or above. 
+
 
 !===================== LbBcVegPy v2r1 2009-05-26 =====================
 ! 2009-05-26 - Gloria CORTI

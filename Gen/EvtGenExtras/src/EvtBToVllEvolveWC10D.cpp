@@ -17,16 +17,11 @@
  * Gorbahn, Haisch, Nucl. Phys. B 713 (2005) 291-332
  */
 
-qcd::EvtBToVllEvolveWC10D::EvtBToVllEvolveWC10D(const WilsonCoefficients<WilsonType>& _c, const WilsonCoefficients<WilsonType>& _cr):
-	C(_c),CR(_cr){
+qcd::EvtBToVllEvolveWC10D::EvtBToVllEvolveWC10D(const WilsonCoefficients<WilsonType>& _c,
+		const WilsonCoefficients<WilsonType>& _cnp,
+		const WilsonCoefficients<WilsonType>& _cr):
+	C(_c),CNP(_cnp),CR(_cr){
 }
-
-using constants::CF;
-using constants::Lqcd;
-using constants::Nc;
-using constants::mt;
-using constants::MW;
-using constants::Pi;
 
 /**
  * Wilson Coefficient format is
@@ -41,10 +36,71 @@ using constants::Pi;
  * currently the code only deals with C'_{7-10}.
  */
 
+qcd::WilsonType qcd::EvtBToVllEvolveWC10D::runC7(const qcd::WilsonType C7h, const qcd::WilsonType C8h, const argument_type& scale){
+	switch(scale){
+	case MU_MW:
+	{
+		DEBUGPRINT("RunC7_MW: ", C7h);
+		return C7h;
+	}
+	case MU_MB:
+	case MU_MBP:
+	{
+		const qcd::WilsonType result = 0.6277390019256378*C7h + 0.10032280455435938*C8h;
+		DEBUGPRINT("RunC71: ", result);
+		DEBUGPRINT("C7h: ", C7h);
+		DEBUGPRINT("C8h: ", C8h);
+		return result;
+	}
+	case MU_H:
+	{
+		const qcd::WilsonType result = 0.5074850407598744*C7h + 0.11974496886416888*C8h;
+		DEBUGPRINT("RunC73: ", result);
+		DEBUGPRINT("C7h: ", C7h);
+		DEBUGPRINT("C8h: ", C8h);
+		return result;
+	}
+	default:
+	{
+		DEBUGPRINT("RunC7_DEF: ", C7h);
+		return C7h;//no running
+	}
+	}
+}
+qcd::WilsonType qcd::EvtBToVllEvolveWC10D::runC8(const qcd::WilsonType C8h, const argument_type& scale){
+	switch(scale){
+	case MU_MW:
+	{
+		DEBUGPRINT("RunC8_MW: ", C8h);
+		return C8h;
+	}
+	case MU_MB:
+	case MU_MBP:
+	{
+		const qcd::WilsonType result = 0.6653600536335226*C8h;
+		DEBUGPRINT("RunC81: ", result);
+		DEBUGPRINT("C8h: ", C8h);
+		return result;
+	}
+	case MU_H:
+	{
+		const qcd::WilsonType result = 0.5523894040839378*C8h;
+		DEBUGPRINT("RunC83: ", result);
+		DEBUGPRINT("C8h: ", C8h);
+		return result;
+	}
+	default:
+	{
+		DEBUGPRINT("RunC8_DEF: ", C8h);
+		return C8h;//no running
+	}
+	}
+}
+
 /**
  * Method that actually does the scaling.
  */
-qcd::EvtBToVllEvolveWC10D::result_type qcd::EvtBToVllEvolveWC10D::operator()(const qcd::EvtBToVllEvolveWC10D::argument_type& _scale){
+qcd::EvtBToVllEvolveWC10D::result_type qcd::EvtBToVllEvolveWC10D::operator()(const qcd::EvtBToVllEvolveWC10D::argument_type& scale){
 	
 	//these large arrays are just extracted from mathematica. They are calculated from the
 	//three loop anomalous dimension matrix
@@ -175,22 +231,24 @@ qcd::EvtBToVllEvolveWC10D::result_type qcd::EvtBToVllEvolveWC10D::operator()(con
 	}
 	assert(CmwR.getOperatorBasis() == dimension);
 
-	const EvtBToVllEvolveWC10D::argument_type& mu = _scale;
+	const double mu = WilsonCoefficients<WilsonType>::getScaleValue(scale);
 	const unsigned int nfl = 5;
 	const unsigned int nf = nfl;
 	const unsigned int nfl_MW = 5;
 	
-	const double as1MW = qcd::as1(MW,nf);
+	const double as1MW = qcd::as1(constants::MW,nf);
 	const double _B0 = qcd::B0(nf);
 	const double _B1 = qcd::B1(nf);
 	const double _B2 = qcd::B2(nf);
-	const double et = qcd::alpha_s(mu,nfl_MW)/qcd::alpha_s(MW,nfl_MW);
+	const double et = qcd::alpha_s(mu,nfl_MW)/qcd::alpha_s(constants::MW,nfl_MW);
 	
 	DEBUGPRINT("as1MW: ", as1MW);//V
 	DEBUGPRINT("B0[nf]: ", _B0);//V
 	DEBUGPRINT("B1[nf]: ", _B1);//V
 	DEBUGPRINT("B2[nf]: ", _B2);//V
 	DEBUGPRINT("et: ", et);//V
+	DEBUGPRINT("scale: ", scale);
+	DEBUGPRINT("mu: ", mu);
 	
 	class inner{
 	
@@ -281,12 +339,15 @@ qcd::EvtBToVllEvolveWC10D::result_type qcd::EvtBToVllEvolveWC10D::operator()(con
 	DEBUGPRINT("CmwL: ", CmwL);//V
 
 	const qcd::WilsonCoefficients<qcd::WilsonType> CmL = U * CmwL;
-	const qcd::WilsonCoefficients<qcd::WilsonType> CmR = U0 * CmwR;//notice order here
 	DEBUGPRINT("CmL: ", CmL);//V
-	DEBUGPRINT("CmR: ", CmR);//V
 		
-	WilsonCoefficients<WilsonType>* C_barred = new WilsonCoefficients<WilsonType>(mu,12,dimension);
-	WilsonCoefficients<WilsonType>* CR_barred = new WilsonCoefficients<WilsonType>(mu,12,dimension);
+	WilsonCoefficients<WilsonType>* C_barred = new WilsonCoefficients<WilsonType>(scale,12,dimension);
+	WilsonCoefficients<WilsonType>* CR_barred = new WilsonCoefficients<WilsonType>(scale,12,dimension);
+	DEBUGPRINT("RunC7[c7,c8]: ", runC7(CNP(7),CNP(8),scale));//V
+	DEBUGPRINT("RunC8[c7]: ", runC8(CNP(8),scale));//V
+	
+	const EvtComplex Ceff_7 = (CmL(7)/as1 - CmL(3)/3. - 4*CmL(4)/9. - 20*CmL(5)/3. - 80*CmL(6)/9.);
+	const EvtComplex Ceff_8 = (CmL(8)/as1 + CmL(3) - CmL(4)/6. + 20*CmL(5) - 10*CmL(6)/3.);
 	
 	//this is the final result
 	//see Appendix A of hep-ph/0106067
@@ -296,19 +357,27 @@ qcd::EvtBToVllEvolveWC10D::result_type qcd::EvtBToVllEvolveWC10D::operator()(con
 	(*C_barred)(4) = 0.5*CmL(4) + 8*CmL(6);
 	(*C_barred)(5) = CmL(3) - (1/6.)*CmL(4) + 4*CmL(5) - (2/3.)*CmL(6);
 	(*C_barred)(6) = 0.5*CmL(4) + 2*CmL(6);
-	(*C_barred)(7) = CmL(7)/as1 - CmL(3)/3. - 4*CmL(4)/9. - 20*CmL(5)/3. - 80*CmL(6)/9.;
-	(*C_barred)(8) = CmL(8)/as1 + CmL(3) - CmL(4)/6. + 20*CmL(5) - 10*CmL(6)/3.;
-	(*C_barred)(9) = CmL(9)/as1;
-	(*C_barred)(10) = CmL(10)/as1;
-	(*C_barred)(11) = C(11);
-	(*C_barred)(12) = C(12);
+	(*C_barred)(7) = Ceff_7 + runC7(CNP(7),CNP(8),scale);
+	(*C_barred)(8) = Ceff_8 + runC8(CNP(8),scale);
+	(*C_barred)(9) = (CmL(9)/as1) + CNP(9);
+	(*C_barred)(10) = (CmL(10)/as1) + CNP(10);
+	(*C_barred)(11) = CNP(11);
+	(*C_barred)(12) = CNP(12);
+	
+	DEBUGPRINT("Ceff[7]: ",Ceff_7);
+	DEBUGPRINT("Ceff[8]: ", Ceff_8);
+	DEBUGPRINT("Cb[9]: ", (CmL(9)/as1));
+	DEBUGPRINT("Cb[10]: ", (CmL(10)/as1));
 
 	//now the right handed terms - we neglect CR(1-6) as they will be v. small
-	(*CR_barred)(7) = CmR(7)/as1;
-	(*CR_barred)(8) = CmR(8)/as1;
-	(*CR_barred)(9) = CmR(9)/as1;
-	(*CR_barred)(10) = CmR(10)/as1;	                     
+	const double mb_scale = (scale == MU_MBP) ? WilsonCoefficients<WilsonType>::getScaleValue(scale) : constants::mb;
+	(*CR_barred)(7) = (constants::ms/mb_scale)*(*C_barred)(7) + runC7(CR(7),CR(8),scale);
+	(*CR_barred)(8) = (constants::ms/mb_scale)*(*C_barred)(8) + runC8(CR(8),scale);
+	(*CR_barred)(9) = CR(9);
+	(*CR_barred)(10) = CR(10);
 
+	DEBUGPRINT("End of Evolution: C_barred: ", *C_barred);
+	DEBUGPRINT("End of Evolution: CR_barred: ", *CR_barred);
 	return new qcd::WilsonPair(C_barred,CR_barred);
 }
 

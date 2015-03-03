@@ -6,6 +6,7 @@
 #include "CLHEP/Matrix/Vector.h"
 #include "EvtGenBase/EvtComplex.hh"
 #include "EvtGenModels/EvtBToVllConstants.hh"
+#include "EvtGenModels/EvtBToVllPoleMass.hh"
 
 #include <algorithm>
 #include <cassert>
@@ -20,6 +21,9 @@ typedef CLHEP::HepMatrix Matrix;
 typedef CLHEP::HepVector Vector;
 typedef EvtComplex WilsonType;
 
+enum Scale {MU_MW = 0, MU_MB = 1, MU_H = 3, MU_MBP = 4};
+
+
 /**
  * Simple class for holding the value of the Wilson Coefficients at a
  * particular value of mu.
@@ -29,7 +33,7 @@ class WilsonCoefficients{
 	
 public:
 	
-	explicit WilsonCoefficients(const double& _scale, const unsigned int _operatorBasis, const unsigned int _dimension);
+	explicit WilsonCoefficients(const Scale& _scale, const unsigned int _operatorBasis, const unsigned int _dimension);
 	WilsonCoefficients(const WilsonCoefficients<T>& other);
 
 	static std::auto_ptr<WilsonCoefficients<T> > conjugate(const WilsonCoefficients<T>& other);
@@ -42,13 +46,15 @@ public:
 	
 	unsigned int getDimension() const;
 	
-	double getScale() const;
+	Scale getScale() const;
+	static double getScaleValue(const Scale _scale);
+	double getScaleValue() const;
 
 private:
 	
 	WilsonCoefficients<T>& operator=(const WilsonCoefficients<T>&);
 	
-	const double scale;
+	const Scale scale;
 	std::auto_ptr<std::vector<T> > wc;
 	unsigned int operatorBasis;
 	unsigned int dimension;
@@ -64,7 +70,7 @@ typedef const WilsonCoefficients<WilsonType>* WCPtrNaked;
 typedef std::auto_ptr<const WilsonCoefficients<WilsonType> > WCPtr;
 
 template<typename T>
-WilsonCoefficients<T>::WilsonCoefficients(const double& _scale, const unsigned int _operatorBasis, const unsigned int _dimension):
+WilsonCoefficients<T>::WilsonCoefficients(const Scale& _scale, const unsigned int _operatorBasis, const unsigned int _dimension):
 	scale(_scale), wc(new std::vector<T>(_operatorBasis)),operatorBasis(_operatorBasis),dimension(_dimension)
 {
 }
@@ -115,8 +121,36 @@ unsigned int WilsonCoefficients<T>::getDimension() const{
  * The renormalisation scale being used.
  */
 template<typename T>
-double WilsonCoefficients<T>::getScale() const{
+Scale WilsonCoefficients<T>::getScale() const{
 	return scale;
+}
+
+/**
+ * The renormalisation scale being used.
+ */
+template<typename T>
+double WilsonCoefficients<T>::getScaleValue(const Scale _scale){
+	switch(_scale){
+	case MU_MW:
+		return constants::mu_mw;
+	case MU_MB:
+		return constants::mu_mb;
+	case MU_MBP:
+		//value of mbp when evaluated at the pole mass scale
+		return qcd::mb_pole(constants::mb, constants::mbp);//value at scale mbp
+	case MU_H:
+		return constants::mu_h;
+	default:
+		return constants::mu_mw;
+	}
+}
+
+/**
+ * The renormalisation scale being used.
+ */
+template<typename T>
+double WilsonCoefficients<T>::getScaleValue() const{
+	return WilsonCoefficients<T>::getScaleValue(scale);
 }
 
 /**

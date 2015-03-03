@@ -1,8 +1,9 @@
-#include "EvtGenModels/EvtBToVllConstants.hh"
 #include "EvtGenBase/EvtMathematicaFn.hh"
 #include "EvtGenModels/EvtBToVllQCDUtils.hh"
 
 #include <cmath>
+#include <ctime>
+#include <iostream>
 
 using qcd::alpha_s;
 using qcd::B0;
@@ -41,9 +42,10 @@ double qcd::as1(const double mu, const int nflav){
 	return alpha_s(mu, nflav)/(4*constants::Pi);
 }
 
-double qcd::mb_pole(const double mb){
-	//magic number 2 is 2GeV of PS mass - see eqn 45 of Beneke
-	return mb + ((4*alpha_s(mb,5))/(3*constants::Pi)*2);
+double qcd::mb_pole(const double mb, const double scale){
+	const double _scale = (scale < 0) ? mb : scale;//use mb for unphysical negative scales
+	//see eqn 45 of Beneke
+	return mb + ((4*alpha_s(_scale,5))/(3*constants::Pi)*constants::muf);
 }
 
 EvtComplex qcd::h(const double& s, const double& mq, const double& mu){
@@ -68,11 +70,11 @@ EvtComplex qcd::h(const double& s, const double& mq, const double& mu){
 }
 
 //Used for C9_eff
-EvtComplex qcd::Y(const double& s, const WilsonCoefficients<EvtComplex>& C){
-	const double mu = C.getScale();
+EvtComplex qcd::Y(const double& s, const WilsonCoefficients<EvtComplex>& C, const double mb, const double mc){
+	const double mu = C.getScaleValue();
 	//eqn 10 of hep-ph/0106067
-	const double mbp = mb_pole(constants::mb);
-	return (h(s,constants::mc, mu)*( (3*C(1)) + C(2) + (3*C(3)) + C(4) + (3*C(5)) + C(6))) - 
+	const double mbp = mb_pole(mb);
+	return (h(s,mc, mu)*( (3*C(1)) + C(2) + (3*C(3)) + C(4) + (3*C(5)) + C(6))) - 
 		(0.5*h(s,mbp,mu)*((4*(C(3) + C(4))) + (3*C(5)) + C(6))) - (0.5*h(s,0.0,mu)*(C(3) + (3*C(4)))) + 
 		((2/9.)*(((2/3.)*C(3)) + (2*C(4)) + ((16/3.)*C(5)) ));
 	
@@ -87,5 +89,10 @@ double qcd::xt(const int& nfl){
 			pow(1 + ((-alpha_s(constants::mt,nfl) + alpha_s(constants::MW,nfl))*
 					(gam1/(2.*B0(nfl)) - (gam0*B1(nfl))/(2.*pow(B0(nfl),2))))/(4.*constants::Pi),2))/(constants::MW*constants::MW);
 	return xt;
+}
+
+void qcd::printTime(const std::string& msg){
+	time_t tm = time(NULL);
+	std::cout << msg << ": " << ctime(&tm);
 }
 

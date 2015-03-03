@@ -31,8 +31,15 @@ public:
 		return "BTOKSTARLLDURHAM07_MODEL";
 	}
 	virtual void command(std::string cmd);
+
+	static const std::string constraintsCommand;
+	static const std::string formFactorCommand;
+	static const std::string probablityProfileCommand;
+	static const std::string highq2CutCommand;
+	static const std::string lowq2CutCommand;
+	static const std::string modelCommand;
+
 	
-	static void printTime(const std::string& msg);
 
 private:
 	
@@ -46,7 +53,8 @@ private:
 	static double _lowq2Cut;
 	static double _highq2Cut;
 	static bdkszmm::PARAMETERIZATIONS _ffModel;
-	static bool _calcAFBZero;
+	static bool _calcConstraints;
+	static bool _writeProbProfile;
 	
 protected:
 	

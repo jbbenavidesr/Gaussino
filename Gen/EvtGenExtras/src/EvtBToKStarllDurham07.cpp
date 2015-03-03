@@ -27,6 +27,7 @@
 
 #include "EvtGenModels/EvtBToVllPhysicsModel.hh"
 #include "EvtGenModels/EvtBToVllBenchMarkPhysicsModels.hh"
+#include "EvtGenModels/EvtBToVllGenericModel.hh"
 #include "EvtGenModels/EvtBToVllParameterisedFFCalc.hh"
 
 #include "EvtGenBase/EvtPatches.hh"
@@ -43,39 +44,47 @@
 #include "EvtGenBase/EvtVectorParticle.hh"
 #include "EvtGenBase/EvtDiLog.hh"
 
+//for controlling the error handling
+#include "gsl/gsl_errno.h"
+
 
 qcd::IPhysicsModel* EvtBToKStarllDurham07::_model = 0;
 QCDFactorisation* EvtBToKStarllDurham07::_calculator = 0;
 double EvtBToKStarllDurham07::_poleSize = 0;
 
 double EvtBToKStarllDurham07::_lowq2Cut = 0.5;
-double EvtBToKStarllDurham07::_highq2Cut = 18;
+double EvtBToKStarllDurham07::_highq2Cut = 17;
 bdkszmm::PARAMETERIZATIONS EvtBToKStarllDurham07::_ffModel = bdkszmm::BALL07PRIVATE;
-bool EvtBToKStarllDurham07::_calcAFBZero = false;
+bool EvtBToKStarllDurham07::_calcConstraints = false;
+bool EvtBToKStarllDurham07::_writeProbProfile = false;
+
+//strings to be parsed from the decay file
+const std::string EvtBToKStarllDurham07::constraintsCommand = "calcConstraints";
+const std::string EvtBToKStarllDurham07::formFactorCommand = "formFactorModel";
+const std::string EvtBToKStarllDurham07::probablityProfileCommand = "writeProbProfile";
+const std::string EvtBToKStarllDurham07::highq2CutCommand = "highq2Cut";
+const std::string EvtBToKStarllDurham07::lowq2CutCommand = "lowq2Cut";
+const std::string EvtBToKStarllDurham07::modelCommand = "physicsModel";
+
 
 EvtBToKStarllDurham07::EvtBToKStarllDurham07():
 	EvtDecayAmp::EvtDecayAmp()
 {
+	//disable the GSL default error handling
+	gsl_set_error_handler_off();
 }
 
 EvtDecayBase* EvtBToKStarllDurham07::clone(){
-	//TODO: Implement copy constructor so scaling is only done *once*
 	return new EvtBToKStarllDurham07;
 }
 
 EvtBToKStarllDurham07::~EvtBToKStarllDurham07(){
 }
-
-void EvtBToKStarllDurham07::printTime(const std::string& msg){
-	time_t tm = time(NULL);
-	std::cout << msg << ": " << ctime(&tm);
-}
-
 void EvtBToKStarllDurham07::decay( EvtParticle *parent ){
 	/**
 	 * set the MC weight and decay the particle
 	 */
-	setWeight(parent->initializePhaseSpace(getNDaug(),getDaugs(),getPoleSize(),1,2));
+	setWeight(parent->initializePhaseSpace(getNDaug(),getDaugs(),false,getPoleSize(),1,2));
 	_calculator->getAmp(parent,_amp2);
 }
 
@@ -87,8 +96,6 @@ void EvtBToKStarllDurham07::initProbMax(){
 		//only set the polesize once
 		return;
 	}
-	
-	//printTime("Beginning of initProbMax");
 
 	const EvtId parent = getParentId();
 	const EvtId meson = getDaug(0);
@@ -196,8 +203,6 @@ void EvtBToKStarllDurham07::initProbMax(){
 		const int maxq2Iter = 25;
 		for (i=0; i < maxq2Iter; i++) {
 			//sample in 25 bins over q2 spectrum
-			//TODO: Understand why whole spectrum is required vs low q2 region
-
 			q2 =  q2low + ((i*(q2max-q2low))/26.0);
 
 			erho = (m*m + mass[0]*mass[0] - q2 )/(2.0*m);
@@ -272,8 +277,10 @@ void EvtBToKStarllDurham07::initProbMax(){
 				}
 
 			}
-			//std::cout << "q2 : " << q2 << " Prob: " << prob << std::endl;
-			q2values.push_back(std::make_pair(q2, prob));
+			//store the probablity if we are going to write it out
+			if(_writeProbProfile){
+				q2values.push_back(std::make_pair(q2, prob));
+			}
 
 			if (i==0) {
 				maxpole=prob;
@@ -299,12 +306,21 @@ void EvtBToKStarllDurham07::initProbMax(){
 
 	poleSize=0.04*(maxpole/maxfoundprob)*4*(mass[1]*mass[1]);
 
-	std::ofstream outputdata("q2values.dat");
-	for (std::vector<std::pair<double,double> >::iterator it = q2values.begin(); it
-			!= q2values.end(); ++it) {
-		outputdata << it->first << "\t" << it->second << std::endl;
+	//write out a file showing the probability profile if requested
+	//this can be used for choosing q2cuts to get the MC efficiency up
+	if(_writeProbProfile){
+		
+		std::ostringstream os;
+		os << "Prob_Profile_" << _model->getModelName() << ".dat";
+		const std::string outFile = os.str();
+		std::ofstream outputdata(outFile.c_str());
+
+		for (std::vector<std::pair<double,double> >::iterator it = q2values.begin(); it
+		!= q2values.end(); ++it) {
+			outputdata << it->first << "\t" << it->second << std::endl;
+		}
+		outputdata.close();
 	}
-	outputdata.close();
 
 	maxfoundprob *=1.15;
 	
@@ -313,11 +329,8 @@ void EvtBToKStarllDurham07::initProbMax(){
 		report(WARNING,"EvtGen") << "The ratio between the maximum and minimum probabilities is large. Generation will not be efficient. " <<
 		"Consider setting lowq2Cut and highq2Cut in your decay file." << std::endl;
 	}
-	
 	setProbMax(maxfoundprob);
 	setPoleSize(poleSize);
-	
-	//printTime("End of initProbMax");
 }
 
 /** Set up the physics model to use */
@@ -398,23 +411,23 @@ void EvtBToKStarllDurham07::getOptions(const std::string& cmd, std::map<std::str
 
 void EvtBToKStarllDurham07::handleCommand(const std::string& key, const std::string& value){
 	
-	if (key == "physicsModel") {
+	if (key == modelCommand) {
 		handleModelCommand(value);
-	} else if (key == "lowq2Cut") {
+	} else if (key == lowq2CutCommand) {
 
 		double val = _lowq2Cut;
 		std::istringstream in(value);
 		in >> val;
 		_lowq2Cut = val;
 
-	} else if (key == "highq2Cut") {
+	} else if (key == highq2CutCommand) {
 
 		double val = _highq2Cut;
 		std::istringstream in(value);
 		in >> val;
 		_highq2Cut = val;
 
-	} else if (key == "formFactorModel") {
+	} else if (key == formFactorCommand) {
 
 		int val = 0;
 		std::istringstream in(value);
@@ -422,12 +435,19 @@ void EvtBToKStarllDurham07::handleCommand(const std::string& key, const std::str
 		//set the form factor model to use
 		_ffModel = static_cast<bdkszmm::PARAMETERIZATIONS>(val);
 
-	} else if (key == "calcAFBZero") {
-		//allow AFB to be calculated
+	} else if (key == constraintsCommand) {
+		//allow AFB zero and other constraints to be calculated
 		bool val = false;
 		std::istringstream in(value);
 		in >> val;
-		_calcAFBZero = val;
+		_calcConstraints = val;
+
+	} else if (key == probablityProfileCommand) {
+		//write out a probablity profile for testing
+		bool val = false;
+		std::istringstream in(value);
+		in >> val;
+		_writeProbProfile = val;
 
 	}else if (key == qcd::GenericModel::modelCommand) {
 		//the model parameters are set in the main command method
@@ -450,9 +470,6 @@ void EvtBToKStarllDurham07::handleModelCommand(const std::string& modelName){
 	models.push_back(new qcd::FBMSSMPhysicsModel);
 	models.push_back(new qcd::GMSSMPhysicsModel);
 	models.push_back(new qcd::LHTPhysicsModel);
-	models.push_back(new qcd::MSSMLowTanBeta);
-	models.push_back(new qcd::MSSMHighTanBeta);
-	models.push_back(new qcd::NegC7PhysicsModel);
 	models.push_back(new qcd::SMPhysicsModel);
 	models.push_back(new qcd::UEDPhysicsModel);
 
@@ -522,7 +539,7 @@ void EvtBToKStarllDurham07::init(){
 	}
 	report(INFO,"EvtGen") << "formFactorModel is " << _ffModel << "." << std::endl;
 	if(!_calculator){
-		_calculator = new QCDFactorisation(*_model,_ffModel,_calcAFBZero);
+		_calculator = new QCDFactorisation(*_model,_ffModel,_calcConstraints);
 	}
 
 }

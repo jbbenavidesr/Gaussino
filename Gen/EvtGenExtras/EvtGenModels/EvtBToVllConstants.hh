@@ -8,44 +8,66 @@
 #define DEBUGPRINT(L,W)
 #endif
 
+#include "EvtGenBase/EvtComplex.hh"
+
 /**
  * These input constants are taken from Table 2 of
  * M. Beneke, Th. Feldmann and D. Seidel. hep-ph/0106067v2
  * and also Altmannshoffer et al, hep-ph/0811.1214.
  */
 
-namespace constants{
-
+class constants{
+public:
 	//general
-	static const double E = 2.7182818284590452354;
-	static const double Pi = 3.1415926535897932385;
+	static const double E;
+	static const double Pi;
 
 	//physics
-	static const double alphaEM = 1/137.0;
-	static const double alphaMZ = 0.1176;
-	static const double CF = 4/3.;
-	static const double ed = -1/3.;
-	static const double eq = -2/3.;
-	static const double eu = 2/3.;
-	static const double fB = 0.18;//GeV +- 0.03
-	static const double fKpar = 0.225;//GeV
-	static const double fKperp = 0.185;//GeV
-	static const double Lqcd = 0.220;//GeV +-0.04 -> nF = 5
-	static const int Nc = 3;
-	static const double mB = 5.27953;//GeV
-	static const double mb = 4.8;//GeV
-	static const double mc = 1.27;//GeV
-	static const double mmu = 0.106;
-	static const double mKstar = 0.892;//GeV
-	static const double ms = 0.104;//GeV
-	static const double mt = 162.3;
-	static const double mu_h = 2.2;//GeV
-	static const double mu_mb = 4.8;//GeV
-	static const double MW =  80.4;//GeV
-	static const double MZ =  91.1876;//GeV
-	static const double sw2 = 0.23;//Weak mixing angle
-	static const double Vts = -0.0416310;//+-0.003
+	static const double alphaEM;
+	static const double alphaMZ;
+	static const double CF;
+	static const double ed;
+	static const double eq;
+	static const double eu;
+	static const double fB;
+	static const double fKpar;//GeV
+	static const double fKperp;//GeV
+	static const double Lqcd;//GeV +-0.04 -> nF = 5
+	static const int Nc;
+	static const double mB;//GeV
+	static const double mb;//GeV
+	static const double mbp;//GeV
+	static const double mc;//GeV
+	static const double mme;//GeV
+	static const double mmu;//GeV
+	static const double mKstar;//GeV
+	static const double ms;//GeV
+	static const double mt;
+	static const double mu_h;//GeV
+	static const double mu_mb;//GeV
+	static const double mu_mw;//GeV
+	static const double MW;//GeV
+	static const double MZ;//GeV
+	static const double sw2;//Weak mixing angle
+	static const double muf;
+	static const double LambdaB;
+	//used in the Constraints
+	static const double fBs;
+	static const double mBs;
+	static const double pstoinvGev;
+	static const double tauBs;
+	static const double gamma;
+	static const double GF;
 
-}
+	static const double Vus;
+	static const double Vcb;
+	static const double AbsVub;
+	static const EvtComplex I;
+	static const EvtComplex Vub;
+	static const EvtComplex Vts;
+	static const EvtComplex Vtb;
+	static const EvtComplex Vtstb;
+
+};
 
 #endif /*EVTBTOVLLCONSTANTS_H_*/

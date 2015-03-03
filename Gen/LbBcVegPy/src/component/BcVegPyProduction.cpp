@@ -1,4 +1,4 @@
-// $Id: BcVegPyProduction.cpp,v 1.3 2007-01-12 15:18:51 ranjard Exp $
+// $Id: BcVegPyProduction.cpp,v 1.5 2009-09-28 19:40:14 jhe Exp $
 // Include files 
 
 // local
@@ -44,9 +44,9 @@ BcVegPyProduction::BcVegPyProduction( const std::string& type,
   m_defaultBcVegPySettings.push_back( "mixevnt imix 0");
   m_defaultBcVegPySettings.push_back( "mixevnt imixtype 1");
   m_defaultBcVegPySettings.push_back( "counter ibcstate 1");  //Bc state
-  m_defaultBcVegPySettings.push_back( "upcom pmb 5.0");       //mass of b quark
-  m_defaultBcVegPySettings.push_back( "upcom pmc 1.4");   //mass of c quark 
-  m_defaultBcVegPySettings.push_back( "upcom pmbc 6.4");  
+  m_defaultBcVegPySettings.push_back( "upcom pmb 4.95");       //mass of b quark
+  m_defaultBcVegPySettings.push_back( "upcom pmc 1.326");   //mass of c quark 
+  m_defaultBcVegPySettings.push_back( "upcom pmbc 6.276");  
   //mass of B_c, note that pmBc=pmB+pmC
   m_defaultBcVegPySettings.push_back( "upcom ecm 14000.0");   //E.C.M. of LHC
   m_defaultBcVegPySettings.push_back( "confine ptcut 0.0");
@@ -57,6 +57,8 @@ BcVegPyProduction::BcVegPyProduction( const std::string& type,
   m_defaultBcVegPySettings.push_back( "loggrade igenerate 0");
   m_defaultBcVegPySettings.push_back( "loggrade ivegasopen 0");
   m_defaultBcVegPySettings.push_back( "loggrade igrade 1");
+  m_defaultBcVegPySettings.push_back( "loggrade iusecurdir 0");
+  //
   m_defaultBcVegPySettings.push_back( "subopen subenergy 100.0");
   m_defaultBcVegPySettings.push_back( "subopen isubonly 0");
   m_defaultBcVegPySettings.push_back( "usertran ishower 1");
@@ -67,7 +69,7 @@ BcVegPyProduction::BcVegPyProduction( const std::string& type,
   //should be fixed to 0
   m_defaultBcVegPySettings.push_back( "qqbar iqqbar 0");
   m_defaultBcVegPySettings.push_back( "qqbar iqcode 2");
-  m_defaultBcVegPySettings.push_back( "outpdf ioutpdf 1");     
+  m_defaultBcVegPySettings.push_back( "outpdf ioutpdf 0");     
   m_defaultBcVegPySettings.push_back( "outpdf ipdfnum 300");   
   //should be fixed to 300 for this version
   m_defaultBcVegPySettings.push_back( "coloct ioctet 0");
@@ -166,59 +168,60 @@ StatusCode BcVegPyProduction::parseBcVegPyCommands( const CommandVector &
       else return Error (std::string("BcVegPy error, upcom"));
 
     else if ( "confine" == block )
-	if      ( "ptcut" == entry  ) BcVegPy::confine().ptcut() = fl1;
-	else if ( "etacut" == entry ) BcVegPy::confine().etacut()= fl1;
-	else return Error (std::string("BcVegPy error, confine"));
+      if      ( "ptcut" == entry  ) BcVegPy::confine().ptcut() = fl1;
+      else if ( "etacut" == entry ) BcVegPy::confine().etacut()= fl1;
+      else return Error (std::string("BcVegPy error, confine"));
     
     else if ( "funtrans"== block )
-	if      ("nq2"  ==entry)BcVegPy::funtrans().nq2()           =int1;
-	else if ("npdfu"==entry)BcVegPy::funtrans().npdfu()         =int1;
-	else return Error (std::string("BcVegPy error, funtrans"));
- 
+      if      ("nq2"  ==entry)BcVegPy::funtrans().nq2()           =int1;
+      else if ("npdfu"==entry)BcVegPy::funtrans().npdfu()         =int1;
+      else return Error (std::string("BcVegPy error, funtrans"));
+    
     else if ( "loggrade"==block )
-        if      ("ievntdis"  ==entry ) BcVegPy::loggrade().ievntdis()   =int1;
-        else if ("igenerate" ==entry ) BcVegPy::loggrade().igenerate()  =int1;
-	else if ("ivegasopen"==entry ) BcVegPy::loggrade().ivegasopen() =int1;
-	else if ("igrade"    ==entry ) BcVegPy::loggrade().igrade()     =int1;
-	else return Error (std::string("BcVegPy error, loggrade"));
-
+      if      ("ievntdis"  ==entry ) BcVegPy::loggrade().ievntdis()   =int1;
+      else if ("igenerate" ==entry ) BcVegPy::loggrade().igenerate()  =int1;
+      else if ("ivegasopen"==entry ) BcVegPy::loggrade().ivegasopen() =int1;
+      else if ("igrade"    ==entry ) BcVegPy::loggrade().igrade()     =int1;
+      else if ("iusecurdir"==entry ) BcVegPy::loggrade().iusecurdir() =int1;
+      else return Error (std::string("BcVegPy error, loggrade"));
+    
     else if ( "subopen"==block )
-	if       ( "subenergy"==entry)BcVegPy::subopen().subenergy()   =fl1;
-        else if  ( "isubonly" ==entry)BcVegPy::subopen().isubonly()    =int1; 
-	else return Error (std::string("BcVegPy error, subopen"));
-			
+      if       ( "subenergy"==entry)BcVegPy::subopen().subenergy()   =fl1;
+      else if  ( "isubonly" ==entry)BcVegPy::subopen().isubonly()    =int1; 
+      else return Error (std::string("BcVegPy error, subopen"));
+    
     else if ( "usertran"==block )
-	if       ( "ishower"==entry)BcVegPy::usertran().ishower()=int1;
-        else if  ( "idpp"   ==entry)BcVegPy::usertran().idpp()=int1; 
-	else return Error (std::string("BcVegPy error, usertran"));
-			
+      if       ( "ishower"==entry)BcVegPy::usertran().ishower()=int1;
+      else if  ( "idpp"   ==entry)BcVegPy::usertran().idpp()=int1; 
+      else return Error (std::string("BcVegPy error, usertran"));
+    
     else if ( "vegasinf"==block )
-	if      ( "number"==entry )BcVegPy::vegasinf().number()         =int1;
-	else if ( "nitmx" ==entry )BcVegPy::vegasinf().nitmx()          =int1;
-	else return Error (std::string("BcVegPy error, vagasinf"));
-	
+      if      ( "number"==entry )BcVegPy::vegasinf().number()         =int1;
+      else if ( "nitmx" ==entry )BcVegPy::vegasinf().nitmx()          =int1;
+      else return Error (std::string("BcVegPy error, vagasinf"));
+    
     else if ( "vegcross"==block )
-	if ("iveggrade"==entry)BcVegPy::vegcross().iveggrade()          =int1;
-	else return Error (std::string("BcVegPy error, vegcross"));
-
+      if ("iveggrade"==entry)BcVegPy::vegcross().iveggrade()          =int1;
+      else return Error (std::string("BcVegPy error, vegcross"));
+    
     else if ( "qqbar"==block )
-	if       ( "iqqbar"==entry)BcVegPy::qqbar().iqqbar()     =int1;
-        else if  ( "iqcode"==entry)BcVegPy::qqbar().iqcode()     =int1; 
-	else return Error (std::string("BcVegPy error, qqbar"));
-
+      if       ( "iqqbar"==entry)BcVegPy::qqbar().iqqbar()     =int1;
+      else if  ( "iqcode"==entry)BcVegPy::qqbar().iqcode()     =int1; 
+      else return Error (std::string("BcVegPy error, qqbar"));
+    
     else if ( "outpdf"==block )
-	if       ( "ioutpdf"==entry)BcVegPy::outpdf().ioutpdf()  =int1;
-        else if  ( "ipdfnum"==entry)BcVegPy::outpdf().ipdfnum()  =int1; 
-	else return Error (std::string("BcVegPy error, outpdf"));
-
+      if       ( "ioutpdf"==entry)BcVegPy::outpdf().ioutpdf()  =int1;
+      else if  ( "ipdfnum"==entry)BcVegPy::outpdf().ipdfnum()  =int1; 
+      else return Error (std::string("BcVegPy error, outpdf"));
+    
     else if ( "coloct" == block)
       if      ( "ioctet"    == entry ) BcVegPy::coloct().ioctet()    = int1 ;
       else return Error(std::string("BcVegPy error, coloct"));
-
+    
     else if ( "octmatrix" == block)
       if      ( "coeoct"    == entry ) BcVegPy::octmatrix().coeoct() = fl1 ;
       else return Error(std::string("BcVegPy error, octmatrix"));
- 
+    
     else return Error (std::string("BcVegPy error in parse parameters"));
   }
   

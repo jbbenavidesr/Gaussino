@@ -21,13 +21,18 @@ typedef qcd::WilsonCoefficients<qcd::WilsonType> WilsonCoefficientsD;
 typedef std::pair<const EvtComplex, const EvtComplex> ComplexPair;
 typedef std::list<ComplexPair> ComplexPairList;
 
+class EvtBToVllConstraints;
+
 class EvtBToVllParameters{
 
+	friend class EvtBToVllConstraints;
+	
 public:
 	
-	EvtBToVllParameters(bool _includeRHC,
+	EvtBToVllParameters(
 			qcd::WCPtr _C_mb, qcd::WCPtr _C_mb3,
-			qcd::WCPtr _CR_mb, qcd::WCPtr _CR_mb3);
+			qcd::WCPtr _CR_mb, qcd::WCPtr _CR_mb3,
+			qcd::WCPtr _CNP_mw, qcd::WCPtr _CR_mw);
 	
 	//must be called to get correct WC sets
 	void setParentID(const EvtId parentID);
@@ -53,9 +58,15 @@ public:
 	qcd::WCPtrNaked getCR_mb3() const{
 		return isBbar ? CR_mb3.get() : CR_mb3_conj.get();
 	}
+	qcd::WCPtrNaked getCNP_mw() const{
+			return CNP_mw.get();
+	}
+	qcd::WCPtrNaked getCR_mw() const{
+			return CR_mw.get();
+	}
+	
+	
 	std::string flavourString() const;
-
-	const bool includeRHC;
 	
 private:
 	
@@ -69,6 +80,9 @@ private:
 	const qcd::WCPtr C_mb3_conj;
 	const qcd::WCPtr CR_mb_conj;
 	const qcd::WCPtr CR_mb3_conj;
+	//
+	const qcd::WCPtr CNP_mw;
+	const qcd::WCPtr CR_mw;
 	
 	bool isBbar;
 };
@@ -76,9 +90,12 @@ private:
 
 class QCDFactorisation
 {
+	
+	friend class EvtBToVllConstraints;
+	
 public:
 	
-	QCDFactorisation(const qcd::IPhysicsModel& _model, const bdkszmm::PARAMETERIZATIONS _ffModel, bool _calcAFBZero = false);
+	QCDFactorisation(const qcd::IPhysicsModel& _model, const bdkszmm::PARAMETERIZATIONS _ffModel, bool _calcConstraints = false);
 	virtual ~QCDFactorisation();
 	
 	virtual  void getTnAmplitudes(const double q2, const double MB, const double mK, std::vector<EvtComplex>* tensors) const;
@@ -87,26 +104,33 @@ public:
 	
 	void init();
 	
-	//physics related utility functions
-	double getAFB(const double q2) const;
-	double findAFBZero() const;
-	double getDstar(const double q2, const std::vector<EvtComplex>& tensors) const;
-	double getGammaKstar(const double q2) const;
-	
 	enum TensorLabels {A = 0, B, C, D, E, F, G, H, S2, NUMBER_OF_TENSORS};//NUMBER_OF_TENSORS needs to be last
 	const static std::string bquark;
 	const static std::string antibquark;
+	
+	class inner{
+	public:
+		static EvtComplex getC0(const double& s);
+		static EvtComplex B10(const double& s, const double& mq, const double& reg);
+		static std::auto_ptr<ComplexPairList> getKFactor(const double re[4][2], const double im[4][2]);
+		static EvtComplex f_x_y(const ComplexPairList& coeffs, const double& s2, const double& Ls);
+		static EvtComplex get_t(const int& a, const std::pair<double,double> xi);
+		static EvtComplex get_F_1_9(const double Lc, const double Lm, const double Ls, const double mc1, const double s2);
+		static EvtComplex get_F_2_9(const double Lc, const double Lm, const double Ls, const double mc1, const double s2);
+		static EvtComplex get_F_1_7(const double Lc, const double Lm, const double Ls, const double mc1, const double s2);
+		static EvtComplex get_F_2_7(const double Lc, const double Lm, const double Ls, const double mc1, const double s2);
+	};
 	
 private:
 	
 	const qcd::IPhysicsModel& model;
 	const std::auto_ptr<bdkszmm::FFCalc> ffModel;
 	
-	const bool calcAFBZero;
+	const bool calcConstraints;
 
 protected:
 	
-	virtual const qcd::IPhysicsModel& getModel(){
+	virtual const qcd::IPhysicsModel& getModel() const{
 		return model;
 	}
 	
@@ -119,6 +143,17 @@ protected:
 	
 	static EvtBToVllParameters* parameters;
 	
+	static const double re_f_1_7[4][2];
+	static const double re_f_1_9[4][2];
+	static const double re_f_2_7[4][2];
+	static const double re_f_2_9[4][2];
+	
+	static const double im_f_1_7[4][2];
+	static const double im_f_1_9[4][2];
+	static const double im_f_2_7[4][2];
+	static const double im_f_2_9[4][2];
+
 };
+
 
 #endif /*IQCDFACTO_H_*/
