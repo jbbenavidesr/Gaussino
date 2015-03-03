@@ -1,5 +1,5 @@
 package GaussSys
-version v40r2p1
+version v40r2p3
 
 branches cmt doc
 
@@ -8,7 +8,7 @@ branches cmt doc
 #==================================================================
 
 # Gauss application: the application is not built on Win32
-use Gauss               v40r2   Sim
+use Gauss               v40r2p3 Sim
 
 # Generator packages: Basic configuration
 use GenCuts             v1r0    Gen
