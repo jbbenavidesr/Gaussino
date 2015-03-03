@@ -25,7 +25,7 @@
 #------------------------------------------------------------------------------
 # Define the version of Gauss to use
 #------------------------------------------------------------------------------
-GaussVersion = 'v31r2'
+GaussVersion = 'v32r2'
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ myApplication.version = GaussVersion
 # since ganga takes care of the book-keeping for you :)
 myApplication.optsfile = File ( myApplication.cmt_user_path
    + '/Gauss_' + GaussVersion  + '/Sim/Gauss/' + GaussVersion
-   + '/options/lhcb-200801.opts' )
+   + '/options/lhcb-2008.opts' )
 # Extra options
 # Appended to the end of the main options to override default settings
 #myApplication.extraopts = ''

@@ -4,6 +4,20 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v32r2 2008-06-29 =============================
+! 2008-06-29 - Gloria CORTI for Magnus LIENG
+ - Fix name of algorithm for BCM monitoring to agree to what in included
+   options from BcmMoniSim
+   . BCMSimulation.opts
+
+! 2008-06-27 - Gloria CORTI
+ - Use Geant4Files for G4 9.0
+   . requirements
+ - Adapt options to changes in name of Geant4 physics for EM physics
+   . PhysList-{LHEP,QGSP}.opts
+ - Increase version number to v32r2
+   . requirements, lhcb-2008.py, Gauss_Ganga.py
+
 !======================== Gauss v31r2 2008-06-16 =============================
 ! 2008-06-16 - Gloria CORTI
  - Build with latest LHCb and geometry. 

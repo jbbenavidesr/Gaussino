@@ -4,6 +4,12 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v5r1 2008-06-26 =======================
+! 2008-06-12 - Patrick Robbe
+ - Add optical photon particle gun for RICH
+ - Add Gaussian theta angle distribution around axis possibility for
+   particle gun tool
+
 !======================= ParticleGuns v5r0 2008-06-09 =======================
 ! 2008-06-09 - Patrick ROBBE
  - Add example options for generation of a resonance particle gun
