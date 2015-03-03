@@ -5,6 +5,24 @@
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!====================== Generators v10r10 2011-03-17 =========================
+! 2011-03-16 - Alex Shires
+ - Rename tool from DaughtersInLHCbAcceptance to DaughtersInLHCbAndWithMinP
+
+! 2011-03-15 - Alex Shires
+ - Add in DaughtersInLHCbAcceptance tool to src/components. 
+   Allows both DecProdCut and a momentum cut to be made on tracks - 
+   default values are 3 GeV for muons and 1 GeV for other charged tracks
+
+! 2011-03-10 - Paolo Gandini
+ - Introdude a new cut for applying a cut on minimum value on invariant mass 
+   of D0 mu in Bu->D0 mu nu decay. The value can be set via the property 
+   "MassMin" with default value at 4600 MeV. 
+   Cuts on acceptance of charged and neutral particle are also applied:
+   "ChargedThetaMin" (default = 10mrad), "ChargedThetaMax" (default = 400mrad),
+   "NeutralThetaMin" (defalut = 5mrad), "NeutralThetaMax" (default = 400mrad)
+   . src/component/SemilepCutForADS.{h,cpp}
+
 !====================== Generators v10r9 2010-12-10 ==========================
 ! 2010-12-10 - Gloria Corti
  - Allow for a rotation of the beam line with respect to the nominal one.
