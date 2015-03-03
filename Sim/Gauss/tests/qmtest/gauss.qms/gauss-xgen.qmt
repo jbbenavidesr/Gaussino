@@ -18,9 +18,7 @@
     LineSkipper([&quot;MainEventGaussSkipGea...SUCCESS  #WARNINGS&quot;]) + \
     LineSkipper([&quot;GaussGen.GaussGenMemory SUCCESS Exceptions/Errors/Warnings/Infos Statistics&quot;]) + \
     LineSkipper([&quot;GaussGen.GaussGenMemory SUCCESS  #WARNINGS&quot;]) + \
-    LineSkipper([&quot;ChronoStatSvc.f...   INFO  Service finalized succes&quot;]) + \
-    LineSkipper([&quot;GaussGen                   INFO Memory has changed from&quot;])  + \
-    LineSkipper([&quot;MainEventGaussSkipGeant4   INFO Memory has changed from&quot;]) 
+    LineSkipper([&quot;ChronoStatSvc.f...   INFO  Service finalized succes&quot;]) 
 strippedOutput = []
 skipping = False
 firstLineToSkip = &quot;Voxelisation: top CPU users:&quot;

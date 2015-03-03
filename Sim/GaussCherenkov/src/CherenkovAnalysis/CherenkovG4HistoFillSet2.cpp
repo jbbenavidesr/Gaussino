@@ -3,11 +3,11 @@
 
 // local
 #include "CherenkovG4HistoFillSet2.h"
-#include "RichG4Counters.h"
+#include "GaussRICH/RichG4Counters.h"
 // GiGa
 //#include "GiGa/GiGaMACROs.h"
 // local
-#include "CkvG4Hit.h"
+#include "GaussCherenkov/CkvG4Hit.h"
 //GEANT4
 #include "G4Event.hh"
 #include "G4EventManager.hh"
@@ -25,7 +25,7 @@
 // Histogramming
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
-#include "CkvG4SvcLocator.h"
+#include "GaussCherenkov/CkvG4SvcLocator.h"
 #include <vector>
 //-----------------------------------------------------------------------------
 // Implementation file for class : CherenkovG4HistoFillSet1
@@ -630,13 +630,13 @@ void CherenkovG4HistoFillSet2:: FillRichG4HistoSet2B( )
   const std::vector<int> & NumRich2GasFullAcceptSatSignalHit =
     aRichCounter->NumSignalHitFullAcceptSatPerTrackR2Gas();
   
-  
-  const std::vector<G4ThreeVector> & NumRich1GasFullAcceptTrackMom =
-    aRichCounter->TrackMomFullAcceptRich1Gas();
-  const std::vector<G4ThreeVector> & NumRich1AgelFullAcceptTrackMom =
-    aRichCounter->TrackMomFullAcceptRich1Agel() ;
-  const std::vector<G4ThreeVector> & NumRich2GasFullAcceptTrackMom =
-    aRichCounter->TrackMomFullAcceptRich2Gas();
+  // The following not used for now and hence commented out.
+  //  const std::vector<G4ThreeVector> & NumRich1GasFullAcceptTrackMom =
+  //  aRichCounter->TrackMomFullAcceptRich1Gas();
+  //  const std::vector<G4ThreeVector> & NumRich1AgelFullAcceptTrackMom =
+  //  aRichCounter->TrackMomFullAcceptRich1Agel() ;
+  // const std::vector<G4ThreeVector> & NumRich2GasFullAcceptTrackMom =
+  //  aRichCounter->TrackMomFullAcceptRich2Gas();
 
 
   int NumSatTrajFullAcceptRich1Gas =  (int) NumRich1GasFullAcceptSatHit.size();

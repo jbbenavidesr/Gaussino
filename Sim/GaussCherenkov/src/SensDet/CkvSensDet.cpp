@@ -29,10 +29,10 @@
 
 // local
 #include "CkvSensDet.h"
-#include "RichInfo.h"
-#include "RichPEInfo.h"
-#include "RichPhotoElectron.h"
-#include "CkvG4Hit.h"
+#include "GaussRICH/RichInfo.h"
+#include "GaussRICH/RichPEInfo.h"
+#include "GaussRICH/RichPhotoElectron.h"
+#include "GaussCherenkov/CkvG4Hit.h"
 
 
 
@@ -475,10 +475,10 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
     int NumHitsInCurHC =m_RichHC[CurrentRichCollectionSet] ->insert( newHit );
 
 
-    //    log << MSG::VERBOSE
-    //    << "CkvSensdet: Current collection set AuxSet and Hit number stored = "
-    //    << CurrentRichCollectionSet << "  " 
-    //    <<NumHitsInCurHC << "   " <<endreq;
+        log << MSG::VERBOSE
+        << "CkvSensdet: Current collection set AuxSet and Hit number stored = "
+        << CurrentRichCollectionSet << "  " 
+        <<NumHitsInCurHC << "   " <<endreq;
 
   }
 

@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v10r4
+version v11r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -22,22 +22,16 @@ use photos v* LCG_GeneratorsInterfaces
 
 #-- LHAPDF
 #============================================================================
-macro lhapdf_native_version "5.8.5"
+macro lhapdf_native_version "5.8.8"
 use lhapdf v* LCG_GeneratorsInterfaces
 set LHAPATH $(lhapdf_path)/share/lhapdf/PDFsets
-
-
-#-- Herwig and Jimmy
-#============================================================================
-macro herwig_native_version "6.510.3"
-macro jimmy_native_version "4.31.3"
 
 
 #-- Herwig++ and ThePeg
 # Set native versions of required software.
 #============================================================================
-macro herwigpp_native_version "2.5.1"
-macro thepeg_native_version   "1.7.1"
+macro herwigpp_native_version "2.6.1a"
+macro thepeg_native_version   "1.8.1"
 
 
 #-- AlpGen (until interface package exist in LCG)
@@ -53,14 +47,15 @@ macro_append pythia8_linkopts " -lhepmcinterface "
 
 #-- Pythia 6
 #============================================================================
-macro pythia6_native_version "425.2"
+macro pythia6_native_version "426.2"
 use pythia6  v* LCG_GeneratorsInterfaces -no_auto_imports
 macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
                         WIN32 " pythia6_pdfdummy.lib "
+
 #-- Rivet for reference analysis with comparison with published data and
 #-- Professor for tuning
 #============================================================================
-macro rivet_native_version "1.8.0.b"
+macro rivet_native_version "1.8.1"
 
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6
@@ -89,14 +84,26 @@ macro_append GENSER_linkopts " $(photos_linkopts) "
 
 #-- Hijing
 #============================================================================
-macro hijing_native_version "1.383bs.2"
+macro hijing_native_version "1.36.a.2"
+use  hijing      v*  LCG_GeneratorsInterfaces    
+macro         hijingforgaussSrc    " hijing/*.F "
+macro_append  hijingforgaussSrc   "" \
+                      Darwin       "-x=ran.F"
+library      hijingforgauss   $(hijingforgaussSrc)
+
+apply_pattern linker_library library=hijingforgauss
+macro_append hijingforgauss_shlibflags "$(hijing_home)/lib/hidata.o $(hijing_home)/lib/pydata_hijing.o $(hijing_home)/lib/ludata_hijing.o"
+
+# force the order of link for hijing
+macro_append GENSER_linkopts " $(hijing_linkopts) "
+macro_append hijing_linkopts " -lpythia_hijing "
 
 
-#-- linkopts
-#============================================================================
 private
 macro_remove libraryshr_linkopts "-Wl,--no-undefined"
 
+#-- linkopts
+#============================================================================
 public
 macro GENSER_linkopts "-lnsl -lcrypt -ldl -lg2c" \
       target-gcc4     "-lnsl -lcrypt -ldl -lgfortran" \

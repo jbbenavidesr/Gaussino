@@ -18,8 +18,7 @@ bool bigDbg=false;
 
 bool PDGWithReco=false;
 
-bool DoAsLaurenDid = false;
-bool compareToOldRooFit = DoAsLaurenDid;
+bool compareToOldRooFit=false;
 
 BW_BW::BW_BW( const AssociatedDecayTree& decay
 	      , IDalitzEventAccess* events)
@@ -846,10 +845,8 @@ double BW_BW::prSq() const{
 }
 double BW_BW::prSqForGofM() const{
   bool dbThis=false;
-  if(DoAsLaurenDid) return prSq();
-
   if(_prSqForGofM <  0){
-    _prSqForGofM = fabs(twoBody_recodgtPsq_in_MumsPDGFrame()); // forces > 0.
+    _prSqForGofM = fabs(twoBody_recodgtPsq_in_MumsPDGFrame());
   }
   if(dbThis || _prSqForGofM < 0){ //dbg
     cout << " compare : " << _prSqForGofM
@@ -866,7 +863,7 @@ double BW_BW::prSqForGofM() const{
 	 << " will return 0 "
 	 << endl;
   }
-  if(_prSqForGofM < 0) _prSqForGofM = 0; // can not happen as I'm using fabs above...
+  if(_prSqForGofM < 0) _prSqForGofM = 0;
   return _prSqForGofM;
 }
 double BW_BW::pABSq(){
@@ -1033,7 +1030,7 @@ std::complex<double> BW_BW::getVal(){
       }
       return 1;
     }
-    double returnVal = Fr(); // this is where Lauren's is different, I think.
+    double returnVal = Fr();
     if(dbThis && (returnVal > 2 || returnVal < 0.5)){
       cout << " BW_BW for " 
 	   << _theDecay.oneLiner() << endl; // dbg

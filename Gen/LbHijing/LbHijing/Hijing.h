@@ -18,7 +18,8 @@ public:
                          const std::string l_proj, const std::string l_targ,
                          int l_iap, int l_izp, int l_iat, int l_izt) ;
   static void HijingEvnt(const std::string l_frame, double l_bmin, double l_bmax) ;
-  static void LunHep( int mode ) ;
+  static void LuHepc( int mode ) ;
+  static void LuList( int mode ) ;
 
 private:
 

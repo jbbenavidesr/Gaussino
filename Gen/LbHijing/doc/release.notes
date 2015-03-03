@@ -1,40 +1,8 @@
 !-----------------------------------------------------------------------------
 ! Package     : Gen/LbHijing
-! Responsible : Zhenwei Yang   
+! Responsible : Vincenzo VAGNONI 
 ! Purpose     : "Interface" to Hijing 
 !-----------------------------------------------------------------------------
-
-!========================= LbHijing v8r1 2013-02-14 ==========================
-! 2013-02-12 - Zhenwei Yang
- - Removed line 229 in src/Lib/hijing.F, which is a screen print line
-   during private debug
-
-! 2013-02-11 - Gloria Corti
- - Introduce hijing 1.383bs.2 routines modified by Zhenwei to replace call to
-   "rlu" and "ran" functions by "hijing_rlu" and "hijing_ran" to avoid conflicts
-   with system calls that seems to be call anyway instead of our implementation.
- - Move from GENSER/hijing the routines "rlu" and "ran" and rename them 
-   "hijing_rlu" and hijing_ran"
-
-! 2013-02-07 - Patrick Robbe
- - cmt/requirements: remove link statement to absent library and 
-   put it back
-
-!========================= LbHijing v8r0 2013-02-06 ==========================
-! 2013-02-06 - Gloria Corti
- - Add file hilunhep.F that was forgotten and remove LoadHiData.F that is not
-   needed.
-
-! 2013-02-05 - Gloria Corti
- - Port changes needed for hijing 1.383bs.2
-   . modify requirement to have use of hijing and special linking only here
-   . LbHijing/Hijing.h, remove definition of function not needed and put the
-     one now necessary
-   . LbHijing/HijingCB.h, adapt to common block variables
-   . src/component/HijingProduction.cpp, use Hijing::LunHep for convertion to
-     HepEvt
-   . src/Lib/Hijing.cpp, use hilunhep in Hijing::LunHep and remove LuList that
-     is not used
 
 !========================= LbHijing v7r0 2012-07-23 ==========================
 ! 2012-05-29 - Patrick Robbe  

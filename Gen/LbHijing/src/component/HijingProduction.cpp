@@ -12,6 +12,7 @@
 
 // HepMC
 #include "HepMC/IO_HEPEVT.h"
+//#include "HepMC/IO_Ascii.h"
 #include "HepMC/HEPEVT_Wrapper.h"
 
 
@@ -116,7 +117,7 @@ StatusCode HijingProduction::generateEvent( HepMC::GenEvent * theEvent ,
   Hijing::HijingEvnt(m_frame, m_bmin, m_bmax);
   
   // Convert to HepEvt format
-  Hijing::LunHep( m_beam_to_use ) ;
+  Hijing::LuHepc( 1 ) ;
   
   // Convert event in HepMC Format
   HepMC::IO_HEPEVT theHepIO ;

@@ -19,7 +19,7 @@ gen.addTool( Special , name = "Special" )
 gen.Special.ProductionTool = "BcVegPyProduction"
 gen.Special.addTool( BcVegPyProduction , name = "BcVegPyProduction" )
 gen.Special.BcVegPyProduction.BcVegPyCommands += BcVegPyListOfCommands
-gen.PileUpTool = "FixedLuminosityForRareProcess"
+gen.PileUpTool = "FixedLuminosityForRareProcess";
 
 gen.Special.BcVegPyProduction.Commands += [
     "pysubs msub 11 0" ,

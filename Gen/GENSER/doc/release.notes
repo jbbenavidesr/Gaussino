@@ -4,25 +4,17 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
-!========================== GENSER v10r4 2013-02-14 ==========================
- - on v10r2b branch
+!========================== GENSER v11r0 2012-11-26 ==========================
+ - on v9r3b branch
 
-! 2013-02-14 - Gloria Corti
- - Now physically remove the line commented in the requirement and the rlu.F 
-   and ran.F code from src/hijing since the tests are successful
-
-! 2013-02-11 - Gloria Corti
- - Comment out making the library for hijing, since the code is now in 
-   LbHijing itself
-
-!========================== GENSER v10r3 2013-02-05 ==========================
- - on v10r2b branch
-
-! 2013-02-05 - Gloria Corti
- - Put back the version of hijing as in MC10 1.383bs.2 and change the rlu.F 
-   function in src/hijing to adapt back to it. 
-   Remove all linking appended to those of GENSER from here to remove tying
-   all generators to hijing as in link library symbols
+! 2012-11-13 - Gloria Corti
+ - Use latest version of external generators packages (with builds also
+   available for gcc 4.6
+   . pythia6   426.2
+   . lhapdf    5.8.8
+   . rivet     1.8.1
+   . herwigpp  2.6.1a
+   . thepeg    1.8.1
 
 !========================== GENSER v10r2 2012-10-19 ==========================
  - on v9r3b branch

@@ -161,23 +161,6 @@ double ScpBoxSet::weightedData() const{
   }
   return sum;
 }
-
-double ScpBoxSet::weightedBkg() const{
-  double sum=0;
-  for(unsigned int i=0; i < this->size(); i++){
-    sum += (*this)[i].weightedBkg();
-  }
-  return sum;
-}
-
-double ScpBoxSet::weightedBkgCC() const{
-  double sum=0;
-  for(unsigned int i=0; i < this->size(); i++){
-    sum += (*this)[i].weightedBkgCC();
-  }
-  return sum;
-}
-
 int ScpBoxSet::nMC() const{
   int sum=0;
   for(unsigned int i=0; i < this->size(); i++){
@@ -262,14 +245,8 @@ std::ostream& operator<<(std::ostream& os, const ScpBoxSet& c2bs){
 double ScpBoxSet::scp(double normFactorPassed) const{
 
 
-  double n_data =  this->weightedData();
+  int n_data =  this->weightedData();
   double n_dataCC = this->weightedMC(); //replaced with weighted data
-
-  double n_Bkg =  this->weightedBkg();
-  double n_BkgCC = this->weightedBkgCC();
-
-  double ErrDataSq = n_data+n_Bkg;
-  double ErrDataCCSq = n_dataCC+n_BkgCC;
 
   bool db = false;
 
@@ -285,8 +262,7 @@ double ScpBoxSet::scp(double normFactorPassed) const{
   double alpha = (normFactorPassed);
 
 //  alpha = normFactorPassed;
-//  double scp = (n_data-(alpha*n_dataCC))/sqrt(n_data+(alpha*alpha*n_dataCC));
-  double scp = ((n_data-n_Bkg)-(alpha*(n_dataCC-n_BkgCC)))/sqrt(ErrDataSq+(alpha*alpha*ErrDataCCSq));
+  double scp = (n_data-(alpha*n_dataCC))/sqrt(n_data+(alpha*alpha*n_dataCC));
 
 
   if (n_data == 0 || n_dataCC == 0)

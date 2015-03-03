@@ -1,6 +1,6 @@
-#include "RichHpdProperties.h"
-#include "RichG4AnalysisConstGauss.h"
-#include "RichG4GaussPathNames.h"
+#include "GaussRICH/RichHpdProperties.h"
+#include "GaussRICH/RichG4AnalysisConstGauss.h"
+#include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/SmartDataPtr.h"
 
@@ -8,14 +8,12 @@
 #include "DetDesc/IGeometryInfo.h"
 #include "DetDesc/TabulatedProperty.h"
 #include "boost/lexical_cast.hpp"
-#include "RichG4SvcLocator.h"
+#include "GaussRICH/RichG4SvcLocator.h"
 #include "G4Material.hh"
 
 #include "RichDet/DeRichSystem.h"
 #include "RichDet/DeRichHPD.h"
 #include "RichDet/DeRichPD.h"
-
-
 // create with a large number of hpds and then adjust
 // the size to the correct number of hpds in the constructer
 // after reading from the number of hpds from the xml db.
@@ -451,7 +449,7 @@ double RichHpdProperties::getHpdCorrectedQEFromPhotonEnergy(double photonenergy,
         G4MaterialPropertyVector* RindexPC=
                       aMatPC->GetMaterialPropertiesTable()->GetProperty("RINDEX");
           if(   RindexPC ) {
-            thisPCRI= RindexPC->GetProperty(photonenergy);
+            thisPCRI= RindexPC->Value(photonenergy); //G4.95 onwards
           } 
           matafound=true;    
       }      
@@ -464,7 +462,7 @@ double RichHpdProperties::getHpdCorrectedQEFromPhotonEnergy(double photonenergy,
         G4MaterialPropertyVector* RindexQW=
                       aMatQW->GetMaterialPropertiesTable()->GetProperty("RINDEX");
         if(   RindexQW ) {
-            thisQWRI= RindexQW->GetProperty(photonenergy);
+          thisQWRI= RindexQW->Value(photonenergy); //G4.95 onwards
         } 
 
         matbfound=true;        

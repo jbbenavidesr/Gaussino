@@ -4,18 +4,17 @@ include ../../Makefile.arch
 HdrSuf = h
 SrcSuf = cpp
 
-MOREINCS := $(wildcard $(PWD)/../../../../)
+MOREINCS := $(wildcard $(PWD)/../../*/src)
 MOREINCSFLAGS := $(patsubst %,-I%,$(MOREINCS))
 CXXFLAGS += $(MOREINCSFLAGS)
 
 LIBS += -lMinuit
 
-PROG = $(shell grep -l main *.cpp | sed 's/\.cpp//g')
+PROG = $(shell grep -l main *.C | sed 's/\.C//g')
 
 SRCS := $(wildcard ../../*/src/*.$(SrcSuf))
 SRCS += $(wildcard *.$(SrcSuf))
 HDRS := $(wildcard ../../*/src/*.$(HdrSuf))
-HDRS += $(wildcard ../../../../Mint/*.$(HdrSuf))
 HDRS += $(wildcard *.$(HdrSuf))
 OBJS := $(patsubst %.$(SrcSuf),%.$(ObjSuf),$(SRCS))
 ##OBJS := $(shell echo $(OBJS) | sed 's/\/src\//\/bin\//g')

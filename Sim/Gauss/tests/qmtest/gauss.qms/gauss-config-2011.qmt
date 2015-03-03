@@ -69,8 +69,6 @@ preprocessor = (normalizeExamples +
      LineSkipper(["GaussGen.GaussGenMemory"]) + 
      LineSkipper(["PDFset"]) + 
      LineSkipper(["ChronoStatSvc.f...   INFO  from GaudiConf.QMTesService finalized succes"])  + 
-     LineSkipper(["RFileCnv                   INFO opening Root file"]) + 
-     LineSkipper(["HistogramDataSvc           INFO Added stream file"]) +
      LineSkipper(regexps=[r"GiGaGeo.HpdSiliconSen...\s*DEBUG Now in ProcessHits().*",
                          r"MainEventGaussSim\s*DEBUG event.*",
                          r"GaussGen\s*DEBUG event.*"]) + 

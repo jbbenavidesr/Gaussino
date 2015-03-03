@@ -13,4 +13,4 @@
 
 from Gauss.Configuration import *
 
-Gauss().Phases = ["Generator","GenToMCTree"] 
+Gauss().Phases = ["Generator"] 

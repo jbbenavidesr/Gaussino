@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti (Patrick Robbe, Paul Szczypka) 
 #============================================================================
 package Gauss
-version v42r4
+version v43r3
 
 #============================================================================
 #-- Structure
@@ -18,13 +18,12 @@ use DDDB               v*     Det            -no_auto_imports
 use ParamFiles         v8r*                  -no_auto_imports
 use FieldMap           v5r*                  -no_auto_imports
 use DecFiles           v26r*  Gen            -no_auto_imports
-use Geant4Files	       v94r*	             -no_auto_imports
+use Geant4Files	       v95r*	             -no_auto_imports
 use MIBData            v3r*                  -no_auto_imports
 use MCatNLOData        v1r*                  -no_auto_imports
 use BcVegPyData        v2r*                  -no_auto_imports
 use GenXiccData        v2r*                  -no_auto_imports
 use XmlVis             v*     Vis            -no_auto_imports
-use GDMLData           v1r*   Det            -no_auto_imports
 
 #-- Package to run the application with different configurations
 use AppConfig          v3r*                  -no_auto_imports
