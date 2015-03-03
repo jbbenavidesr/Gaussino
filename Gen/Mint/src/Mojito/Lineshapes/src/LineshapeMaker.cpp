@@ -12,6 +12,8 @@
 #include "Mint/Lass.h"
 #include "Mint/Flatte.h"
 #include "Mint/CrystalBarrelFOCUS.h"
+#include "Mint/Rho0Omega.h"
+#include "Mint/NonRes.h"
 
 #include <iostream>
 
@@ -22,8 +24,11 @@ using namespace MINT;
    possible options
    AWAYS_BW
    RHO_OMEGA
+   WRONG_RHOOMEGA
    Flatte
    GS
+   ExpNonRes
+   PowNonRes
 */
 
 ILineshape* LineshapeMaker(const AssociatedDecayTree* tree
@@ -58,10 +63,18 @@ ILineshape* LineshapeMaker(const AssociatedDecayTree* tree
     if(abs(tree->getVal().pdg()) == 113 && A_is_in_B("RHO_OMEGA", lopt)){
       if(dbThis)cout << "LineshapeMaker returning rho-omega lineshape"
 		     << endl;
-      
+
+      return new Rho0Omega(*tree, events);
+    }else if(abs(tree->getVal().pdg()) == 113 && A_is_in_B("WRONG_RHOOMEGA", lopt)){
+      if(dbThis)cout << "LineshapeMaker returning rho-omega lineshape"
+		     << endl;
+
+      std::cout << "OIII!!!  WARNING!!!!" << std::endl;
+      std::cout << "CrystalBarrelFOCUS has many known issues" << std::endl;
+      std::cout << "Use at your own risk" << std::endl << std::endl;
+
       return new CrystalBarrelFOCUS(*tree, events);
-      //return new BW_BW(*tree, events);
-    }else if((abs(tree->getVal().pdg())%1000)==113 && A_is_in_B("GS", lopt)){
+    }else if(abs(tree->getVal().pdg()) == 113 && A_is_in_B("GS", lopt)){
       if(dbThis) cout << "LineshapeMaker: return GS lineshape" << endl;
       return new GounarisSakurai(*tree, events);
     }else{
@@ -91,6 +104,29 @@ ILineshape* LineshapeMaker(const AssociatedDecayTree* tree
     }else{
       cout << "WARNING: LineshapeMaker:"
 	   << " returning plain Breit-Wigner (BW_BW) for f0(980)"
+	   << endl;
+      return new BW_BW(*tree, events);
+    }
+  }else if( abs(tree->getVal().pdg()) == 9981 ||
+	    abs(tree->getVal().pdg()) == 9991 ||
+	    abs(tree->getVal().pdg()) == 9983 ||
+	    abs(tree->getVal().pdg()) == 9993 ||
+	    abs(tree->getVal().pdg()) == 9985 ||
+	    abs(tree->getVal().pdg()) == 9975 ){ //Non-resonant
+    std::cout << "asdfasdfasdf " << lopt << std::endl;
+    if( A_is_in_B("NonRes", lopt) ){
+      cout << "LineshapeMaker: "
+	   << "\n\t> returning Non-resonant lineshape"
+	   << endl;
+      if( A_is_in_B("Exp", lopt) )
+	return new NonRes(*tree, events, "Exp");
+      else if( A_is_in_B("Pow", lopt) )
+	return new NonRes(*tree, events, "Pow");
+      else
+	return new NonRes(*tree, events);
+    }else{
+      cout << "WARNING: LineshapeMaker:"
+	   << " returning plain Breit-Wigner (BW_BW) for non-resonant"
 	   << endl;
       return new BW_BW(*tree, events);
     }

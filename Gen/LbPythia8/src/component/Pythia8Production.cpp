@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( Pythia8Production );
+DECLARE_TOOL_FACTORY( Pythia8Production )
 
 //=============================================================================
 // Standard constructor, initializes variables

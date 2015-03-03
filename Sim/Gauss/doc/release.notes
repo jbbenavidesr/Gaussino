@@ -4,6 +4,18 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v45r9 2014-12-18 ============================
+ - on v45b branch
+
+! 2014-12-18 - Gloria Corti
+ - Introduced setting of histogram path for signal particle gun replacing 
+   momentum value from default Beam4000GeV as in decays files to that of 
+   Gauss().BeamMomentum
+ - New update of qmtest references
+
+! 2014-12-17 - Gloria Corti
+ - Update qmtests reference files
+
 !========================= Gauss v45r8 2014-07-28 ============================
  - on v45b branch
 

@@ -4,6 +4,28 @@
 ! Purpose     : Holds code for generaion of particle guns
 !-----------------------------------------------------------------------------
 
+!========================== LbPGuns v6r0 2014-12-17 ==========================
+! 2014-11-28 - Gloria Corti
+ - Try to fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-04 - Gloria Corti
+ - Move to Generators package smearing vertex tools
+
+! 2014-10-13 - Angelo Di Canto
+ - Modified MomentumSpectrum to improve logic and accept also pt-eta (TH2D)
+   input spectra
+ - Modified ParticleGun to handle signal decays, fixed usage of GenCutTools
+
+! 2014-10-03 - Angelo Di Canto
+ - Added HistoSmearVertex
+
+! 2014-10-01 - Stefanie Reichert
+ - Modified ParticleGun.cpp and ParticleGun.h to enable usage of GenCutTools
+   like DaughtersInLHCb.
+
 !========================== LbPGuns v5r0 2014-07-03 ==========================
 ! 2014-07-03 - Gloria Corti
  - Use new data package with v*. Exact version to be set in Gauss itself.

@@ -4,6 +4,403 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v45r9">2014-12-18 - GaussSys v45r9</A></H1><PRE>
+<H2><A NAME="Note"For Sim08 production for Run I (2010-2013) data.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v35r4 (and Gaudi v23r6)
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5, 
+   photos++ 3.52 and tauola++ 1.1.1a,
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.05 (via LCG_Interfaces),
+   Geant4 v95r2p7 (based on geant4.9.5.p02) and Geant4Files v95r0, 
+   XmlVis v1r15,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.3 (via LCG_GeneratorsInterfaces),
+   powheg-box r2092 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v13r14, EvtGenExtras v3r11</b> and <b>Mint v3r2</b>
+   (private LHCb versions),
+   <b>BcVegPy v3r3</b> + BcVegPyData v2r*, <b>GenXicc v2r1p1</b> + GenXiccData v3r*and 
+   HidValley v3r2p1 (private LHCb versions)
+   PGunsData v1r*
+</A></H3>
+
+! 2014-12-18 - Gloria Corti
+ - On v45b branch
+
+!========================= Gauss v45r9 2014-12-18 ============================
+ - on v45b branch
+
+! 2014-12-18 - Gloria Corti
+ - Introduced setting of histogram path for signal particle gun replacing 
+   momentum value from default Beam4000GeV as in decays files to that of 
+   Gauss().BeamMomentum
+ - New update of qmtest references
+
+! 2014-12-17 - Gloria Corti
+ - Update qmtests reference files
+
+!========================== GenCuts v3r10 2014-12-16 ========================= 
+! 2014-11-26 - Gloria Corti
+ - Fix warning when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-10-27 - Xabier Cid Vidal
+ - Correct problem in LoKi for InvariantMassQQMCJets tool, that was breaking
+   the nightlies for Gauss v45
+
+
+! 2014-10-20 - Sean Benson
+ - Added PhotonDaughtersInLHCb tool, to make sure photon daughters of the B
+   are in the acceptance.
+
+! 2014-10-08 - Xabier Cid Vidal
+ - Add InvariantMassQQMCJets tool, to apply gen cuts in the invariant mass of
+   dijets
+
+!========================== EvtGen v13r14 2014-11-21 ==========================
+! 2014-11-21 - Michal Kreps
+ - Added new EvtRareLbToLll model based on arXiv:1108.6129
+  - Implement form factors from Gutsche et al. (1301.3737) for Lb --> L
+    transitions.
+  - Implement form factors from LQCD (1212.4827) for Lb --> L transitions.
+
+! 2014-11-18 - Michal Kreps
+  - Removing semicolons from wrong places to clear warnings when compiled
+    with -pedantic option.
+
+! 2014-10-23 - Andrew Crocombe
+  - Implement Bs --> K* form factors from Ball-Zwicky
+  - z-parametrization for form factors from 1006.4945.
+
+! 2014-10-20 - C Langenbruch
+ - Fix for the form factors of the Bs->phill modes in EvtbTosllBallFF.cc.  
+   T3 showed a non-physical pole at very low q2 which significantly affected the electron mode.
+
+! 2014-10-14 - Michal Kreps
+ - Update Lb2Lll decay model to correctly compare IDs of particles to allow
+   use of aliases. 
+
+!=========================== Mint v3r2 2014-12-17 ============================
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-10-15 - Jeremy
+ - Added spin factor for wKs added
+
+!=========================== Mint v3r1 2014-09-02 ============================
+! 2014-07-24 - Jeremy
+ - Minor bug fixes
+
+! 2014-07-22 - Jeremy
+ - Added two new lineshapes for the non-resonant component
+  . Exponential and power law
+  . At present, their shape parameters cannot be floated
+ - In steering file, indicate with ExpNonResD0 or PowNonResD0 keyword
+ - Lineshapes need to be manually added NamedDecayTreeList.cpp to each isobar
+  . add(AmpInitialiser(*dk, "ExpNonRes"));
+  . add(AmpInitialiser(*dk, "PowNonRes"));
+
+! 2014-05-16 - Jeremy
+ - Restore ability to use normalised barrier factors in amplitudes
+  . Control in steering file by setting "NormBF" to 1
+  . Default behaviour is to use unnormalised barrier factors
+  . Note that normalised barrier factors violate conservation of total angular momentum x-(
+
+! 2014-05-16 - Jeremy
+ - root 5.34.18 compatibility updates
+
+! 2014-03-04 - Claire
+ - added method getP() to DalitzEvent which gives back the vector of the four-momenta of all particles in the event
+ - build an automatic rejection factor into DalitzMCMC generation
+ - added different constructors to DalitzMCMC
+ - new class DalitzMCMC_corrPairs that generates correlated events
+ - new class DalitzEventPairList that stores std::pair of events
+
+! 2014-02-07 - Jeremy
+ - Bug fix in Gounaris-Sakurai function
+ - Treat GS in the same way as other lineshapes
+  . Deprecate GSSpinFactor
+
+! 2014-02-05 - Jeremy
+ - Deprecate CrystalBallRhoOmega
+ - Create new Rho0Omega lineshape to describe rho-omega mixing
+  . Now the default rho-omega lineshape used by calling RHO_OMEGA in the steering file
+ - Warning added to CrystalBarrelFOCUS
+  . Contains many issues and bugs, only kept for backwards compatibility
+  . Keyword for usage changed to WRONG_RHOOMEGA in the steering file
+  . Hope to deprecate one day
+
+!======================= EvtGenExtras v3r11 2014-12-16 =======================
+! 2014-12-12 - Nikolai Nikitin
+ - Added new model BSTOGLLISRFSR for rare radiative leptonic B-decays
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-18 - Michal Kreps
+  - Removing semicolons from wrong places to clear warnings when compiled
+    with -pedantic option.
+
+! 2014-11-17 - Gloria Corti
+ - Fix compilation errors with --pedantic for missing std:: in front of
+   {i,o}fstream
+   
+!======================= Generators v14r7 2014-12-16 =========================
+! 20014-11-28 - Gloria Corti
+ - Try to fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-04 - Gloria Corti
+ - Move here HistoSmearVertex and FlatSmearVertex tools from LbPGuns
+
+!======================== LbPythia v14r2p1 2014-12-16 ========================
+! 2014-11-28 - Gloria Corti
+ - Try to fix fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================= BcVegPy v3r3 2014-12-16 ===========================
+! 2014-11-19 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-10-13 - Jibo He
+ - Added 13 TeV as it is supported now
+   . src/bcvegpy_upinit.f
+   . src/bcvegpy_upevnt.f
+
+!======================== GenXicc v2r1p1 2014-12-16 ==========================
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================== LbBcVegPy v5r1p1 2014-12-16 ========================
+! 2014-12-01 - Gloria Corti
+ - Fixes for compilation warnings with --pedantic'
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================== LbGenXicc v4r0p1 2014-12-16 ========================
+! 2014-11-28 - Gloria Corti
+ - Try to fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================= LbOniaPairs v2r1p1 2014-10-16 ========================
+! 2014-12-02 - Gloria Corti
+ - Try to fix compilation warnings with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================= LbPowheg v1r0p4 2014-12-16 ========================
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+
+!======================== LbPythia8 v8r0p1 2014-12-17 ========================
+! 2014-12-17 - Gloria Corti
+ - Try to fix compilation warning with --pedantic
+
+!======================= LbHerwigpp v3r0p1 2014-12-17 ========================
+! 2014-11-28 - Gloria Corti
+ - Try to fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================== LbHerwigpp v3r0 2014-01-30 =========================
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
+!=========================== LbMIB v7r0p2 2014-12-17 =========================
+! 2014-11-20 - Gloria Corti
+ - Fixes for warnings with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================== LbPGuns v6r0 2014-12-17 ==========================
+! 2014-11-28 - Gloria Corti
+ - Try to fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-04 - Gloria Corti
+ - Move to Generators package smearing vertex tools
+
+! 2014-10-13 - Angelo Di Canto
+ - Modified MomentumSpectrum to improve logic and accept also pt-eta (TH2D)
+   input spectra
+ - Modified ParticleGun to handle signal decays, fixed usage of GenCutTools
+
+! 2014-10-03 - Angelo Di Canto
+ - Added HistoSmearVertex
+
+! 2014-10-01 - Stefanie Reichert
+ - Modified ParticleGun.cpp and ParticleGun.h to enable usage of GenCutTools
+   like DaughtersInLHCb.
+
+!============================ ClhepTools v2r1p3 ===============================
+! 2014-11-20 - Gloria Corti
+ - Fixes for warning when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================== GaussKine v6r4p1 2014-12-18 ========================
+! 2014-11-26 - Gloria Corti
+ - Fix warning when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================= GaussTools v19r2p2 2014-11-18 =======================
+! 2014-11-19 - Marco Clemencic
+ - Fixed a (new?) problem with GaussToolsGenConfHelperLib.
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-18 - Gloria Corti
+ - Removed many ";" causing warnings. Almost all files had them.
+
+!======================= GaussTools v19r2p1 2014-10-27 =======================
+! 2014-10-24 - Gloria Corti
+ - Set macro for loading genConf library from Install area so that it can be
+   used with new RPM installation by packages needing the genConf library
+
+!======================== GaussTools v19r2 2014-10-08 ========================
+! 2014-10-07 - Luca Pescatore
+ - GaussTargetMultiplicity.cpp modified adding new properties to store 
+   projectile and target features in the produced tree
+
+! 2014-09-06 - Luca Pescatore
+ - Modified RadLengthColl.cpp to reflect the new naming of the planes
+   in the xml files which are now officially released.
+
+!===================== GaussPhysics v11r1p1 2014-12-18 =======================
+! 2014-12-01 - Gloria Corti
+ - Try to fix compilation warning with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================= GaussMonitor v8r2 2014-12-18 ========================
+! 2014-12-01 Peter Griffith
+ - Cleaned up BremVeloCheck code, removed std::cout's.
+
+! 2014-12-01 - Gloria Corti
+ - Fix compilatin warning with --pedantic
+ 
+! 2014-11-21 - Marco Clemencic
+ - Fixed CNake configuration.
+
+! 2014-11-20 - Peter Griffith
+- Committed two new tools for the study of EM physics in the Velo;
+  BremVeloCheck (tool) and EMGaussMoni (algorithm)
+
+
+! 2014-11-20 - Gloria Corti
+ - Introduce dependency to VeloDet for code to be committed for dE/dx and 
+   Brem in thin silicon layers
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!======================== LbGDML v1r0p2 2014-12-18 ===========================
+! 2014-11-26 - Gloria Corti
+ - Fix warnings when compiling with --pedantic
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================= GenTests v1r6p2 2014-12-18 ========================
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================== SimChecks v1r4 2014-12-18 ========================
+! 2014-12-01 - Peter Griffith
+ - Improved output format of EmValidation. EmValidation now also  gives single 
+   FOM value derived from chi^2 calculations for comparison of EM physics lists
+   with reference data, i.e PL/Gauss version used in current productions. 
+   This can be used for automatic alarm to alert users in LHCbPR's scheduled 
+   checks.    
+
+! 2014-11-26 - Peter Griffith
+ - Cleaned up and improved readability of analysis.py in EmValidation scripts 
+
+! 2014-11-25 - Peter Griffith
+ - Added analysis package and options files for EM physics validator tools
+
+! 2014-11-25 - Luca Pescatore
+ - Put parallelisation as an option. Off by default. 
+   Also default physics lists used changed from FTFP_BERT to FTFP_BERT 
+  and QGSP_BERT
+
+! 2014-11-24 - Luca Pescatore
+ - Bug fix in Target_CreateEvents.py (was due to parallelisation)
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+!========================== SimChecks v1r3 2014-10-08 ========================
+
+! 2014-11-19 - Luca Pescatore
+- Partial parallelization of the Targets tool to speed up the events generation
+
+! 2014-11-12 - Luca Pescatore
+- Fixed bug that cause the plotter to not separate data of different particle guns.
+
+! 2014-11-11 - Luca Pescatore
+- Added new python option files for the Targets Tools.
+  These allow to create definite sets of events without need to change any option:
+  1mm Al, 1mm all materials, all thicknesses Al, all thicknesses and materials.
+
+! 2014-10-30 - Luca Pescatore
+ - Improved readability for Target and Radlength tools output
+
+! 2014-10-07 - Luca Pescatore
+ - Scripts for post-job analysis for the RadLength and Target tools have been
+   converted from c++ to python. All scripts are updated to reflect the new 
+   structure. RadLengthAna.py scripts updated to use the last tag of the 
+   geometry 
+
+! 2014-09-29 - Luca Pescatore
+ - Updated RadLength scripts to get the database from the offical
+   location, since it is not released. Also added eta-phi plots as final output.
+
+! 2014-09-06 - Luca Pescatore
+ - Added cpp file to extract radiation length profile plots from the output 
+   files of the gauss jobs.
+
+! 2014-09-04 - Luca Pescatore
+ - Changed default number of events
+
+!=============================================================================
 </PRE><H1><A NAME="v45r8">2014-07-28 - GaussSys v45r8</A></H1><PRE>
 <H2><A NAME="Note"For Sim08 production for Run I (2010-2013) data.
     </A></H2>

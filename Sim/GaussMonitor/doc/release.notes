@@ -4,6 +4,28 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!======================= GaussMonitor v8r2 2014-12-18 ========================
+! 2014-12-01 Peter Griffith
+ - Cleaned up BremVeloCheck code, removed std::cout's.
+
+! 2014-12-01 - Gloria Corti
+ - Fix compilatin warning with --pedantic
+ 
+! 2014-11-21 - Marco Clemencic
+ - Fixed CNake configuration.
+
+! 2014-11-20 - Peter Griffith
+- Committed two new tools for the study of EM physics in the Velo;
+  BremVeloCheck (tool) and EMGaussMoni (algorithm)
+
+
+! 2014-11-20 - Gloria Corti
+ - Introduce dependency to VeloDet for code to be committed for dE/dx and 
+   Brem in thin silicon layers
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
 !======================= GaussMonitor v8r1 2014-07-03 ========================
 ! 2014-06-11 - James Mccarthy
  - Added options file to run timing monitor code in options/MonitorTiming.py
