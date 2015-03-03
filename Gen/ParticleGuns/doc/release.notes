@@ -4,6 +4,10 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v6r0 2008-08-25 =======================
+! 2008-07-25 - Patrick Robbe
+ - Move to HEPMc2
+
 !======================= ParticleGuns v5r2 2008-07-18 =======================
 ! 2008-07-11 - Patrick Robbe
  - Remove SEAL functions from ParticleGun.cpp

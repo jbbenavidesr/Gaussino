@@ -1,9 +1,13 @@
-!=! $Id: release.notes,v 1.8 2008-07-06 16:01:56 gcorti Exp $
+!=! $Id: release.notes,v 1.10 2008-08-25 12:28:20 gcorti Exp $
 ! Package     : GenTests
 ! Responsible : Patrick ROBBE
 ! Purpose     : Package holding options and scripts to run generator level
 !               tests with Gauss
 !=============================================================================
+
+!========================= GenTests v1r3 2008-08-25 ==========================
+! 2008-07-14 - Patrick Robbe
+ - Add B0 decay test (Bd -> D0 K*) 
 
 !========================= GenTests v1r2 2008-07-06 ==========================
 ! 2008-07-01 - Patrick Robbe

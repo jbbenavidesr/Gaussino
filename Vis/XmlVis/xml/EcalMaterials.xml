@@ -11,4 +11,5 @@
       attr="EcalSteel"/>
 <Item name="/dd/Materials/Ecal/EcalDrilledAluminium"
       attr="EcalDrilledAluminium"/>
-
+<Item name="/dd/Materials/Ecal/EcalPb"
+      attr="HcalPb"/>

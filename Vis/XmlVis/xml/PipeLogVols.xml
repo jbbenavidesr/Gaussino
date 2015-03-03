@@ -32,3 +32,5 @@
 <Item name="/dd/Geometry/MagnetRegion/PipeSupportsInMagnet/lvUX853FixCollarBigBase"
       attr="VisPipeCollar"/>
 
+<Item name="/dd/Geometry/DownstreamRegion/AfterMuon/PipeAfterMuon/PipeInMBXWS/lvMBXWSPipeBody"
+      attr="VisPipeMBXWS"/>

@@ -5,12 +5,8 @@
           attr="MuonC4_H10"/>-->
 <!--<Item name="/dd/Materials/Muon/Epoxy" 
           attr="MuonEpoxy"/>-->
-<!--<Item name="/dd/Materials/Muon/G10" 
-          attr="MuonG10"/>-->
 <!--<Item name="/dd/Materials/Muon/Honeycomb" 
           attr="MuonHoneycomb"/>-->
-<!--<Item name="/dd/Materials/Muon/MuonFilterIron" 
-          attr="MuonFilterIron"/>-->
 <!--<Item name="/dd/Materials/Muon/Phenolic" 
           attr="MuonPhenolic"/>-->
 <!--<Item name="/dd/Materials/Muon/Polystyrene_Foam" 
@@ -21,3 +17,14 @@
           attr="MuonS_CPC_gas"/>-->
 <!--<Item name="/dd/Materials/Muon/S_MRPC_gas" 
           attr="MuonS_MRPC_gas"/>-->
+
+<Item name="/dd/Materials/Muon/MuonCopper" 
+          attr="MuonCopper"/>
+<Item name="/dd/Materials/Muon/G10Air" 
+          attr="MuonG10"/>
+<Item name="/dd/Materials/Muon/Steel" 
+          attr="MuonSteel"/>
+<Item name="/dd/Materials/Muon/MuonFilterIron" 
+          attr="MuonFilterIron"/>
+<Item name="/dd/Materials/Muon/Concrete"
+      attr="MuonConcrete"/>

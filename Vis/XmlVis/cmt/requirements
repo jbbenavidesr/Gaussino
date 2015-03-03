@@ -3,10 +3,10 @@
 # Maintainer : Gloria Corti, Thomas Ruf
 #============================================================================
 package           XmlVis
-version           v1r6
+version           v1r7
 
 #============================================================================
-# Structure, i.e. directories to process. 
+# Structure, i.e. directories to process.
 #============================================================================
 branches          cmt doc xml DTD
 

@@ -1,9 +1,13 @@
-! $Id: release.notes,v 1.37 2008-07-18 15:42:28 gcorti Exp $
+! $Id: release.notes,v 1.39 2008-08-25 12:33:51 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================== LbHerwig v6r0 2008-08-25 ==========================
+! 2008-07-27 - Patrick Robbe
+ - Move to HepMC2
 
 !======================== LbHerwig v5r3 2008-07-18 ==========================
 ! 2008-07-10 - Patrick Robbe

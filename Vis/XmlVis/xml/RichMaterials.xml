@@ -20,14 +20,14 @@
 
 <!--<Item name="/dd/Materials/RichMaterials/MirrorQuartz" 
           attr="RichMirrorQuartz"/>-->
-<!--
+
 <Item name="/dd/Materials/RichMaterials/Rich1Nitrogen"
       attr="Rich1Nitrogen"/>
 <Item name="/dd/Materials/RichMaterials/RichAir"
       attr="RichAir"/>
 <Item name="/dd/Materials/RichMaterials/RichAntimony"
       attr="RichAntimony"/>
--->
+
 <!--<Item name="/dd/Materials/RichMaterials/RichBeamGasMaterial" 
           attr="RichBeamGasMaterial"/>-->
 <!--<Item name="/dd/Materials/RichMaterials/RichBeamPipeMaterial" 
@@ -48,6 +48,11 @@
 <Item name="/dd/Materials/RichMaterials/C4F10"
       attr="C4F10"/>
 -->
+
+<Item name="/dd/Materials/RichMaterials/Rich1Mirror2SupportMaterial"
+      attr="VisRich1Mirror2SupportMaterial"/>
+<Item name="/dd/Materials/RichMaterials/Rich1MirrorGlassSimex" 
+          attr="VisRich1MirrorGlass"/>
 
 <!-- Rich2 materials -->
 

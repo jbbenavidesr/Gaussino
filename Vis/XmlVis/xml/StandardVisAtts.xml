@@ -2,7 +2,8 @@
      the materials used in the Standard materials.
      The only attribute defined here is the color of the material -->
 <VisAtt name="Air">
-  <Color B="1" G="1" R="1"/>
+  <Color R="1" G="1" B="1"/>
+  <!--<Color R="1" G="1" B="1" A="1.0"/>/-->
 </VisAtt>
 <!--<VisAtt name="ArgonGas">
   <Color R="0" G="0" B="0"/>
@@ -17,23 +18,23 @@
   <Color R="0" G="0" B="0"/>
 </VisAtt>-->
 <VisAtt name="Silicon">
-  <Color B="0.9" G="0.9" R="0.9"/>
+  <Color R="0.9" G="0.9" B="0.9"/>
 </VisAtt>
 <VisAtt name="Aluminium">
-  <Color B="0.8196" G="0.8196" R="0.8196"/>
+  <Color R="0.8196" G="0.8196" B="0.8196"/>
 </VisAtt>
 <VisAtt name="PureCarbon">
-  <Color B="0" G="0" R="0"/>
+  <Color R="0" G="0" B="0"/>
 </VisAtt>
 <!--<VisAtt name="SiO2">
   <Color R="0" G="0" B="0"/>
 </VisAtt>-->
 <VisAtt name="Vacuum">
-  <Color B="0.2902" G="0.2902" R="0.2902"/>
+  <Color R="0.2902" G="0.2902" B="0.2902"/>
   <!--Color B="0" G="1" R="0" A="1.0"/-->
 </VisAtt>
 <VisAtt name="Water">
-  <Color B="0.9333" G="0.6980" R="0"/>
+  <Color R="0" G="0.6980" B="0.9333"/>
 </VisAtt>
 <VisAtt name="Copper">
   <Color R="0.8" G="0.68" B="0.0"/>
@@ -52,9 +53,6 @@
 </VisAtt>
 <VisAtt name="VisG10">
   <Color R="0.8" G="0.1" B="0.0"/>
-</VisAtt>
-<VisAtt name="Lead">
-  <Color R="0.1" G="0.1" B="0.1"/>
 </VisAtt>
 <VisAtt name="Lead">
   <Color R="0.1" G="0.1" B="0.1"/>
@@ -79,3 +77,4 @@
 <VisAtt name="VisUpstreamRegion"     visible="No" opened="Yes"/>
 <VisAtt name="VisMuon"  	     visible="No" opened="Yes"/>
 <VisAtt name="VisT"     	     visible="No" opened="Yes"/>
+

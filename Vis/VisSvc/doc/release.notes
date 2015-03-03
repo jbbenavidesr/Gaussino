@@ -4,6 +4,10 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!======================== VisSvc v5r3 2008-08-08 =============================
+! 2008-08-01 - Guy Barrand
+ - In VisualizationSvc::visAttribute, handle <Item regex="" .../>.
+
 !======================== VisSvc v5r2 2008-02-08 =============================
 ! 2007-01-18 - Jeroen van Tilburg
  - Get the name of the material from registry()->identifier(). Since this

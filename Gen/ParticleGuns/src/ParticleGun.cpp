@@ -1,4 +1,4 @@
-// $Id: ParticleGun.cpp,v 1.7 2008-07-11 09:00:37 robbep Exp $
+// $Id: ParticleGun.cpp,v 1.8 2008-07-25 12:36:17 robbep Exp $
 // Include files 
 
 // local
@@ -208,15 +208,15 @@ StatusCode ParticleGun::execute() {
       
       // create HepMC Vertex
       HepMC::GenVertex * v = 
-        new HepMC::GenVertex( HepLorentzVector( origin.X() , 
-                                                origin.Y() , 
-                                                origin.Z() , 
-                                                origin.T() ) ) ;
+        new HepMC::GenVertex( HepMC::FourVector( origin.X() , 
+                                                 origin.Y() , 
+                                                 origin.Z() , 
+                                                 origin.T() ) ) ;
       // create HepMC particle
       HepMC::GenParticle * p = 
-        new HepMC::GenParticle( HepLorentzVector( theFourMomentum.Px() , 
-                                                  theFourMomentum.Py() ,
-                                                  theFourMomentum.Pz() , 
+        new HepMC::GenParticle( HepMC::FourVector( theFourMomentum.Px() , 
+                                                   theFourMomentum.Py() ,
+                                                   theFourMomentum.Pz() , 
                                                   theFourMomentum.E()  ) , 
                                                   thePdgId , 
                                                   LHCb::HepMCEvent::StableInProdGen ) ; 

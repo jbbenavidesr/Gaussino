@@ -9,6 +9,8 @@
 #include <xercesc/dom/DOMNodeList.hpp>
 #include <xercesc/dom/DOMNode.hpp>
 
+#include <boost/regex.hpp>
+
 using namespace xercesc;
 
 #include "XmlTools/IXmlSvc.h"
@@ -78,6 +80,7 @@ void VisualizationSvc::clear () {
   m_attributeSet.clear();
   m_material2Vis.clear();
   m_logvol2Vis.clear();
+  m_logvol_regex_2Vis.clear();
 }
 
 // -----------------------------------------------------------------------
@@ -269,7 +272,11 @@ void VisualizationSvc::reload () {
       DOMElement* logvol = (DOMElement*) logvolNode;
 
       xs = xercesc::XMLString::transcode("name");
-      std::string name = dom2Std (logvol->getAttribute (xs));
+      std::string sname = dom2Std (logvol->getAttribute (xs));
+      xercesc::XMLString::release(&xs);
+
+      xs = xercesc::XMLString::transcode("regex");
+      std::string sregex = dom2Std (logvol->getAttribute (xs));
       xercesc::XMLString::release(&xs);
 
       xs = xercesc::XMLString::transcode("attr");
@@ -277,7 +284,15 @@ void VisualizationSvc::reload () {
       xercesc::XMLString::release(&xs);
     
       // register the association
-      m_logvol2Vis[name] = attr;
+      if(sname.size()) {
+        m_logvol2Vis[sname] = attr;
+      } else if(sregex.size()) {
+        m_logvol_regex_2Vis[sregex] = attr;
+      } else { 
+        MsgStream log(msgSvc(), name());
+        log << MSG::WARNING << "LogVol with empty name or regex attribute." 
+            << endmsg;
+      }
     }
   }
 
@@ -312,6 +327,7 @@ VisualizationSvc::visAttribute (const Material* mat) const {
 // -----------------------------------------------------------------------
 //  visAttribute
 // -----------------------------------------------------------------------
+
 const VisAttribute
 VisualizationSvc::visAttribute (const ILVolume* vol) const {
   VisAttribute attr;
@@ -319,6 +335,7 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
   if (0 != vol) {
     // try first to find an attribute associated directly to the logical volume
     std::string bnn = vol->name();
+
     Dictionnary::const_iterator it = m_logvol2Vis.find (bnn);
     if (it != m_logvol2Vis.end()) {
       AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
@@ -333,11 +350,42 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
         }
       } else {
         MsgStream log(msgSvc(), name());
-        log << MSG::WARNING << "VisAttribute " << it->second << " unknown but"
+        log << MSG::WARNING << "VisAttribute " << it->second 
+            << " unknown but"
             << " used for logical volume " << vol->name() << "." << endmsg;
         return attr;
       }
     }
+
+    // look in LogVol Vis XMLs with regular expression :
+   {Dictionnary::const_iterator it;
+    for(it=m_logvol_regex_2Vis.begin();it!=m_logvol_regex_2Vis.end();it++) {
+      boost::regex re(it->first);
+      if(boost::regex_search(bnn,re)) {
+        //printf("debug : for \"%s\", found \"%s\" with value \"%s\"\n",
+	//       bnn.c_str(),it->first.c_str(),it->second.c_str());
+
+        AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
+        if (it2 != m_attributeSet.end()) {
+          attr = it2->second;
+          // If the attribute is complete, just return
+          if (attr.color().isValid() &&
+              VisAttribute::NO_VISIBILITY != attr.visible() &&
+              VisAttribute::NO_STATUS != attr.openStatus() &&
+              VisAttribute::NO_MODE != attr.displayMode()) {
+            return attr;
+          }
+        } else {
+          MsgStream log(msgSvc(), name());
+          log << MSG::WARNING << "VisAttribute " << it->second 
+              << " unknown but"
+              << " used for logical volume " << vol->name() << "." << endmsg;
+          return attr;
+        }
+
+        break;
+      }
+    }}
     
     // either we don't have an attribute or it may be interesting to
     // complete it using the material

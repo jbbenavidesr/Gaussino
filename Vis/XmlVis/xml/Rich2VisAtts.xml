@@ -57,3 +57,7 @@
 <VisAtt name="VisRich2QuartzWindow" mode="WireFrame" opened="Yes"  >
   <Color R="0.9" G="0.4" B="0.5"/>
 </VisAtt>
+
+<VisAtt name="VisRich2SuperStructCont" mode="WireFrame" opened="Yes"  >
+  <Color R="0.9" G="0.9" B="0.9"/>
+</VisAtt>

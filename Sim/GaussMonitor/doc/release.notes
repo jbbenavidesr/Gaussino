@@ -4,6 +4,10 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!====================== GaussMonitor v6r0 2008-08-25 =========================
+! 2008-07-26 - Patrick Robbe
+ - Move to HEPMC2
+
 !====================== GaussMonitor v5r3 2008-07-18 =========================
 ! 2008-07-14 - Patrick Robbe
  - Correct GeneratorAnalysis histograms to remove b quarks from analysis

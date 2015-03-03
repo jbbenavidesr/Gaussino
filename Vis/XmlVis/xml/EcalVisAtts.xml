@@ -29,8 +29,8 @@
 <VisAtt name="VisEcalInnBlock2">
   <Color R="0.9" G="0.3" B="0.0"/>
 </VisAtt>
-<VisAtt name="VisEcalShield">
-  <Color R="0.8" G="0.3" B="0.0"/>
+<VisAtt name="VisEcalShield" mode="WireFrame" visible="Yes">
+  <Color R="0.78" G="0.78" B="0.78"/>
 </VisAtt>
 <VisAtt name="VisEcalPlug">
   <Color R="0.48" G="0.54" B="0.54"/>
@@ -54,11 +54,11 @@
 <!--***********************-->
 <VisAtt name="EcalMiddleModule" mode="WireFrame" visible="No" opened="Yes"/>
 <VisAtt name="EcalMiddleStack" mode="WireFrame" visible="No" opened="Yes"/>
-	<VisAtt name="EcalMiddleCell" mode="WireFrame" visible="Yes" opened="Yes"/>
-	<VisAtt name="EcalMiddleCellSteel" mode="Plain" visible="Yes"/>
-	<VisAtt name="EcalMiddleCellPlastic" mode="Plain" visible="Yes"/>
-	<VisAtt name="EcalMiddleCellPb" mode="WireFrame" visible="Yes" opened="No"/>
-	<VisAtt name="EcalMiddleFiberPb" mode="Plain" visible="No"/>
+<VisAtt name="EcalMiddleCell" mode="WireFrame" visible="Yes" opened="Yes"/>
+<VisAtt name="EcalMiddleCellSteel" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalMiddleCellPlastic" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalMiddleCellPb" mode="WireFrame" visible="Yes" opened="No"/>
+<VisAtt name="EcalMiddleFiberPb" mode="Plain" visible="No"/>
 <VisAtt name="EcalMiddleFrontCover" mode="Plain" visible="Yes"/>
 <VisAtt name="EcalMiddleBackCover" mode="Plain" visible="Yes"/>
 <VisAtt name="EcalMiddleReadOut" mode="Plain" visible="Yes"/>
@@ -66,9 +66,36 @@
 <VisAtt name="EcalOuterModule" mode="WireFrame" visible="No" opened="Yes"/>
 <VisAtt name="EcalOuterStack" mode="WireFrame" visible="No" opened="Yes"/>
 <VisAtt name="EcalOuterCell" mode="WireFrame" visible="Yes" opened="Yes"/>
-	<VisAtt name="EcalOuterCellSteel" mode="Plain" visible="Yes"/>
-	<VisAtt name="EcalOuterCellPlastic" mode="Plain" visible="Yes"/>
-	<VisAtt name="EcalOuterCellPb" mode="WireFrame" visible="Yes" opened="No"/>
+<VisAtt name="EcalOuterCellSteel" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalOuterCellPlastic" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalOuterCellPb" mode="WireFrame" visible="Yes" opened="No"/>
 <VisAtt name="EcalOuterFrontCover" mode="Plain" visible="Yes"/>
 <VisAtt name="EcalOuterBackCover" mode="Plain" visible="Yes"/>
 <VisAtt name="EcalOuterReadOut" mode="Plain" visible="Yes"/>
+
+<!--the following attributes are for SPD and PRS -->
+<VisAtt name="VisSpd" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="SpdInnSection" visible="Yes" opened="No">
+  <Color R="0.27" G="0.54" B="0.0"/>
+</VisAtt>
+<VisAtt name="SpdMidSection"  visible="Yes" opened="No">
+  <Color R="0.29" G="0.78" B="0.2"/>
+</VisAtt>
+<VisAtt name="SpdOutSection"  visible="Yes" opened="No">
+  <Color R="0.33" G="0.41" B="0.2"/>
+</VisAtt>
+<VisAtt name="SpdSensitivePlan"  mode="WireFrame" visible="Yes" opened="No">
+  <Color R="0.9" G="0.9" B="0.9"/>
+</VisAtt>
+
+
+<VisAtt name="VisPrs" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="PrsInnSection" visible="Yes" opened="No">
+  <Color R="0.54" G="0.27" B="0.0"/>
+</VisAtt>
+<VisAtt name="PrsMidSection"  visible="Yes" opened="No">
+  <Color R="0.68" G="0.29" B="0.2"/>
+</VisAtt>
+<VisAtt name="PrsOutSection"  visible="Yes" opened="No">
+  <Color R="0.41" G="0.33" B="0.2"/>
+</VisAtt>

@@ -1,4 +1,4 @@
-// $Id: HerwigProduction.cpp,v 1.15 2008-07-11 10:01:31 robbep Exp $
+// $Id: HerwigProduction.cpp,v 1.16 2008-07-27 13:35:14 robbep Exp $
 // Include files 
 
 // local
@@ -13,6 +13,8 @@
 #include "GaudiKernel/IAlgManager.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/ParticleProperty.h"
+#include "GaudiKernel/SystemOfUnits.h"
+#include "GaudiKernel/PhysicalConstants.h"
 
 // from Event
 #include "Event/GenCollision.h"
@@ -487,17 +489,21 @@ StatusCode HerwigProduction::generateEvent( HepMC::GenEvent * theEvent ,
   // Convert momenta from GeV to MeV
   for ( HepMC::GenEvent::particle_iterator p = theEvent->particles_begin();
         p != theEvent->particles_end(); ++p ) 
-    (*p)->set_momentum( (*p)->momentum() * GeV );
+    (*p)->set_momentum( HepMC::FourVector( (*p)->momentum().x() * Gaudi::Units::GeV , 
+                                           (*p)->momentum().y() * Gaudi::Units::GeV , 
+                                           (*p)->momentum().z() * Gaudi::Units::GeV , 
+                                           (*p)->momentum().t() * Gaudi::Units::GeV ));
 
   // Convert 
   for ( HepMC::GenEvent::vertex_iterator v = theEvent -> vertices_begin();
         v != theEvent->vertices_end(); ++v )
   {
-    CLHEP::HepLorentzVector newPos;
+    HepMC::FourVector newPos;
     newPos.setX( (*v)->position().x() );
     newPos.setY( (*v)->position().y() );
     newPos.setZ( (*v)->position().z() );
-    newPos.setT( ( (*v)->position().t() * mm ) / CLHEP::c_light );
+    newPos.setT( ( (*v)->position().t() * Gaudi::Units::mm ) / 
+                 Gaudi::Units::c_light );
     
     (*v) -> set_position( newPos );
   }
@@ -661,8 +667,8 @@ StatusCode HerwigProduction::setHerwigParameters( )
   // and set values (GeV/c) for Herwig and MCNLO
   Gaudi::XYZVector pBeam1, pBeam2;
   m_beamTool -> getMeanBeams( pBeam1 , pBeam2 );
-  gHwproc->pbeam1 = sqrt( pBeam1.mag2() )/GeV;
-  gHwproc->pbeam2 = sqrt( pBeam2.mag2() )/GeV;
+  gHwproc->pbeam1 = sqrt( pBeam1.mag2() )/Gaudi::Units::GeV;
+  gHwproc->pbeam2 = sqrt( pBeam2.mag2() )/Gaudi::Units::GeV;
   
   gMcnlopar->ecm = gHwproc->pbeam1 + gHwproc->pbeam2 ;
 
@@ -1146,7 +1152,7 @@ void HerwigProduction::updateParticleProperties
       if ( gHwprop->rltim[ ihw ] > 1.e16 )
          lifetime = gHwprop->rltim[ ihw ];
       else
-         lifetime = thePP -> lifetime() / second;
+        lifetime = thePP -> lifetime() / Gaudi::Units::second;
 
       if ( abs( pdgId ) <= 6 )
       {
@@ -1155,7 +1161,7 @@ void HerwigProduction::updateParticleProperties
       }
       else
       {
-         mass = thePP -> mass() / GeV;
+        mass = thePP -> mass() / Gaudi::Units::GeV;
       }
       
       verbose() << "Change particle property of ihw = " << ihw 
@@ -1355,7 +1361,7 @@ double HerwigProduction::getMass( const int thePdgId, double value )
   }
   else
   {
-    mass = m_ppSvc->findByStdHepID( thePdgId )->mass() / GeV;
+    mass = m_ppSvc->findByStdHepID( thePdgId )->mass() / Gaudi::Units::GeV;
   }
 
   debug() << "PDG identifier = " << thePdgId << endmsg;

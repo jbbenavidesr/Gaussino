@@ -1,9 +1,25 @@
-! $Id: release.notes,v 1.130 2008-07-18 15:37:53 gcorti Exp $
+! $Id: release.notes,v 1.136 2008-08-25 12:13:20 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v9r0 2008-08-25 ===========================
+! 2008-07-24 - Patrick Robbe
+ - Move to HEPMC2
+
+! 2008-07-23 - Marco Cattaneo
+ - Removed DumpHepMCTree, DumpMC, DumpMCDecay algorithms, moved to 
+   Sim/SimComponents, last two renamed DumpHepMC and DumpHepMCDecay
+ - Generator/HepMCUtils.h has been moved to GenEvent package. A dummy file is
+   kept for backwards compatibility, forwarding to the new include 
+
+! 2008-07-21 - Patrick Robbe 
+ - EvtGenDecay.cpp: add possibility to generate polarized charmonium
+
+! 2008-07-20 - Patrick Robbe
+ - Special.cpp: suppress LHAPDF output
 
 !====================== Generators v8r2 2008-07-18 ===========================
 ! 2008-07-18 - Patrick Robbe

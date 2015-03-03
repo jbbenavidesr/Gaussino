@@ -110,6 +110,7 @@ private:
 
   /// a dictionnary linking logical volumes and VisAttributes
   Dictionnary m_logvol2Vis;
+  Dictionnary m_logvol_regex_2Vis;
 
   /// The location of the Xml file containing all definitions
   std::string m_colorDbLocation;

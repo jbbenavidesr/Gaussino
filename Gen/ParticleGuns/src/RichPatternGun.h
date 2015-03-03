@@ -1,4 +1,4 @@
-// $Id: RichPatternGun.h,v 1.1 2008-06-12 18:43:08 robbep Exp $
+// $Id: RichPatternGun.h,v 1.2 2008-07-25 12:36:17 robbep Exp $
 
 #ifndef PARTICLEGUNS_RICHPATTERNGUN_H
 #define PARTICLEGUNS_RICHPATTERNGUN_H 1

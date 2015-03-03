@@ -41,4 +41,25 @@
       attr="VisITBalcony"/>
 <Item name="/dd/Materials/IT/LadderTop"
       attr="VisITLadderTop"/>
+<Item name="/dd/Materials/IT/SVBox"
+      attr="VisITSVBox"/>
+<Item name="/dd/Materials/IT/ElecCable"
+      attr="VisITElecCable"/>
+<Item name="/dd/Materials/IT/HVCable"
+      attr="VisITHVCable"/>
+<Item name="/dd/Materials/IT/XElecCable"
+      attr="VisITXElecCable"/>
+<Item name="/dd/Materials/IT/G10"
+      attr="VisG10"/>
+<Item name="/dd/Materials/IT/Pipe"
+      attr="VisITPipe"/>
+<Item name="/dd/Materials/IT/CoolingRodCenter"
+      attr="VisITCoolingRod"/>
+<Item name="/dd/Materials/IT/CoolingRodSide"
+      attr="VisITCoolingRod"/>
+<Item name="/dd/Materials/IT/USteelConnector-Side"
+      attr="VisITUSteel"/>
+<Item name="/dd/Materials/IT/USteelConnector-Center"
+      attr="VisITUSteel"/>
+
 

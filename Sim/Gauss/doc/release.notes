@@ -4,6 +4,61 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v35r0 2008-09-11 =============================
+! 2008-09-11 - Gloria CORTI
+ - Fix bug (mistying) for Beam energy at 5 TeV, where for collision it was
+   given 10 TeV (as in CM) rather that 5 TeV.
+   . BeamCond-5TeV.opts
+
+! 2008-09-09 - Gloria CORTI
+ - New python options for stearing a default Gauss job with 2008 geometry 
+   setup, for 450GeV, 5TeV, Velo open/close and magnetic field on/off
+   steered by SIMCOND (for velo and magnet). Various combinations are provided
+   (as requested by Wouter for alignment studies).
+   Initial Gauss python configuration.
+   . python/Gauss/Configuration.py
+   . Beam450GeV-VeloOpen-BfieldZero.py 
+   . Beam5TeV-VeloClosed-BfieldNeg.py 
+   . Beam5TeV-VeloClosed-BfieldZero.py 
+   . Beam5TeV-VeloOpen-BfieldNeg.py 
+   . Beam5TeV-VeloOpen-BfieldZero.py 
+   . Gauss-2008.py
+ - New generic options for what need to be set for a job: random seed and
+   output histogram and data files names.
+   . Gauss-Job.py
+ - Take away VELO and Magnet configuration from PilotRun.opts and set zero
+   crossing angle as for magnet off as likely all 450 GeV runs will be in 2008
+   . PilotRun.opts
+ - Pick up dawn in path from LCG_external
+   . requirements
+ - Simplify options and remove options for windows since they do not work
+   . GaussVis.opts
+
+! 2008-09-03 - Gloria CORTI
+ - Fix options for magnetic field to use with Magnet v5r0 (LHCb v25r0)
+   . SimGeometry.opts
+   . MeasuredFieldMap.opts
+ - Fix options for CondDBDispatcherSvc to use with Gaudi v20r1
+   . lhcb-2008.opts
+
+! 2008-07-28 - Gloria CORTI
+ - Add few steering options for alignment production:
+   450 GeV with magnet off, 5 TeV with magnet off and on (leave in this case
+   the spread of the beam as for 450 GeV, same beta*, but z lenght of
+   bunche and crossing angle as in 7 TeV)
+   . lhcb-2008-{450GeV,5TeV}-{BOff}.opts
+
+!======================== Gauss v34r0 2008-07-22 =============================
+! 2008-07-20 - Gloria CORTI
+ - Remove list of external services ( ToolSvc, ParticlePropertySvc, 
+   EventSelector, EventClockSvc ) that are anayway taken as necessary.
+   . Common.opts
+ - Use SIMCOND dbase and latest tags: head-20080702
+   . lhcb-2008.opts
+ - Use macro to fix application version and number in python automatically
+   . requirements
+   . lhcb-2008.py
+
 !======================== Gauss v33r2 2008-07-06 =============================
 ! 2008-07-06 - Gloria CORTI
  - Use Gean4Files for G4 9.1

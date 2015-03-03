@@ -29,7 +29,9 @@
   <!ENTITY OTMaterials SYSTEM "OTMaterials.xml">
 
   <!ENTITY EcalLogVols SYSTEM "EcalLogVols.xml">
+  <!ENTITY HcalLogVols SYSTEM "HcalLogVols.xml">
   <!ENTITY MagnetLogVols SYSTEM "MagnetLogVols.xml">
+  <!ENTITY MuonLogVols SYSTEM "MuonLogVols.xml">
   <!ENTITY PipeLogVols SYSTEM "PipeLogVols.xml">
   <!ENTITY Rich1LogVols SYSTEM "Rich1LogVols.xml">
   <!ENTITY Rich2LogVols SYSTEM "Rich2LogVols.xml">
@@ -70,6 +72,8 @@
   </Materials>
   <LogVols>
     &EcalLogVols;
+    &HcalLogVols;
+    &MuonLogVols;
     &MagnetLogVols;
     &PipeLogVols;
     &Rich1LogVols;

@@ -61,3 +61,13 @@
 
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2QuartzWindow"
       attr="VisRich2QuartzWindow"/>
+
+<!-- SuperStructure volumes -->
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2AirBoxTop"
+      attr="VisRich2SuperStructCont"/>
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2AirBoxBot"
+      attr="VisRich2SuperStructCont"/>
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2AirTrapRight"
+      attr="VisRich2SuperStructCont"/>
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2AirTrapLeft"
+      attr="VisRich2SuperStructCont"/>

@@ -1,4 +1,4 @@
-// $Id: FlatSmearVertex.cpp,v 1.2 2008-05-29 16:57:22 gcorti Exp $
+// $Id: FlatSmearVertex.cpp,v 1.3 2008-07-25 12:36:17 robbep Exp $
 // Include files 
 
 // local
@@ -84,8 +84,8 @@ StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
         ++vit ) {
     Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
     pos += dpos ;
-    (*vit) -> set_position( HepLorentzVector( pos.x() , pos.y() , pos.z() ,
-                                              pos.t() ) ) ;
+    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
+                                               pos.t() ) ) ;
   }
 
   return StatusCode::SUCCESS ;      

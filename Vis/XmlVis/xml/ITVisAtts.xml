@@ -285,4 +285,25 @@
 <VisAtt name="VisITPCBBig">
   <Color R="0.07" G="0.5" B="0.07"/>
 </VisAtt>
+<VisAtt name="VisITSVBox">
+  <Color R="0.51" G="0.54" B="0.54"/>
+</VisAtt>
+<VisAtt name="VisITElecCable">
+  <Color R="0.99" G="0.75" B="0.14"/>
+</VisAtt>
+<VisAtt name="VisITHVCable">
+  <Color R="0.80" G="0.07" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisITXElecCable">
+  <Color R="0.35" G="0.35" B="0.67"/>
+</VisAtt>
+<VisAtt name="VisITPipe">
+  <Color R="0.84" G="0.53" B="0.10"/>
+</VisAtt>
+<VisAtt name="VisITCoolingRod">
+  <Color R="0.78" G="0.78" B="0.78"/>
+</VisAtt>
+<VisAtt name="VisITUSteel">
+  <Color R="0.43" G="0.48" B="0.54"/>
+</VisAtt>
 

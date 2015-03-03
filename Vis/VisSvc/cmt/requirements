@@ -3,13 +3,13 @@
 # Maintainer : Gloria CORTI
 #============================================================================
 package           VisSvc
-version           v5r2
+version           v5r3
 
-# Structure, i.e. directories to process. 
+# Structure, i.e. directories to process.
 #============================================================================
 branches          cmt doc src VisSvc
 
-# Used packages. 
+# Used packages.
 #============================================================================
 use   XmlTools     v*      Tools
 use   DetDesc      v*      Det
@@ -20,7 +20,7 @@ apply_pattern install_more_includes more=VisSvc
 
 # Component library building rule
 #============================================================================
-library          VisSvc    *.cpp 
+library          VisSvc    *.cpp
 
 # define component library link options
 #============================================================================

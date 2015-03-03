@@ -3,7 +3,28 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r7 =====================================
+
+! 2008-08-08 - Thomas Ruf
+ - changes for infrastructure, beampipe
+
+! 2008-07-28 - Antonis Papanestis
+ - Added visual attributes for the Rich2 superstructure
+
 !=========================== XmlVis v1r6 =====================================
+! 2008-07-28 - Thomas Ruf
+ - imported all forgotten modifications of Sajan
+! 2008-04-01 - Sajan Easo
+ -Modified the attributes for Rich1 Flat mirrors in accordance
+  with the geometry changes for these mirrors.
+! 2008-03-22 - Sajan Easo
+ - Added attributes for RichHpds in Rich1LogVols.xml
+   such that there is one log vol per hpd. The old naming is
+   also kept for backward compatibitly.
+
+! 2008-01-21 - Sajan Easo
+   Added the atributes for RICH1 CMA Spheirical Mirror
+
 ! 2008-07-10 - Thomas Ruf
  - match to latest changes in infrastructure, beampipe, beam magnets
 !=========================== XmlVis v1r5 =====================================

@@ -13,3 +13,20 @@
 <VisAtt name="HcalSupportSteel">
   <Color B="0.8039" G="0.7098" R="0.6353"/>
 </VisAtt>
+<VisAtt name="HcalPb">
+  <Color R="0.75" G="0.75" B="0.75"/>
+</VisAtt>
+<VisAtt name="VisHcalPlug">
+  <Color R="0.48" G="0.54" B="0.54"/>
+</VisAtt>
+
+<VisAtt name="Hcal" mode="WireFrame" visible="No" opened="Yes">
+  <Color R="0.75" G="0.75" B="0.0"/>
+</VisAtt>
+<VisAtt name="HcalInnSection" mode="WireFrame" visible="Yes" opened="No">
+  <Color R="0.75" G="0.0" B="0.0"/>
+</VisAtt>
+<VisAtt name="HcalOutSection" mode="WireFrame" visible="Yes" opened="No">
+  <Color R="0.0" G="0.75" B="0.0"/>
+</VisAtt>
+

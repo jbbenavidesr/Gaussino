@@ -1,4 +1,4 @@
-// $Id: RichPatternGun.cpp,v 1.2 2008-06-12 18:45:40 robbep Exp $
+// $Id: RichPatternGun.cpp,v 1.3 2008-07-25 12:36:17 robbep Exp $
 
 // local
 #include "RichPatternGun.h"
@@ -42,9 +42,9 @@ RichPatternGun::RichPatternGun(const std::string& name,
   declareProperty("Peak"   , m_peak = 1 ) ;
   
   declareProperty( "NParticles" , m_nParticles = 1 ) ;
-  declareProperty( "xPatternCentre" , m_xvtx = 0. * mm ) ;
-  declareProperty( "yPatternCentre" , m_yvtx = 0. * mm ) ;
-  declareProperty( "zPatternCentre" , m_zvtx = 5000. * mm ) ;
+  declareProperty( "xPatternCentre" , m_xvtx = 0. * Gaudi::Units::mm ) ;
+  declareProperty( "yPatternCentre" , m_yvtx = 0. * Gaudi::Units::mm ) ;
+  declareProperty( "zPatternCentre" , m_zvtx = 5000. * Gaudi::Units::mm ) ;
 }
 
 //===========================================================================
@@ -140,22 +140,22 @@ StatusCode RichPatternGun::callParticleGun( HepMC::GenEvent * evt ) {
     double py = 0. ;
     double pz = 4.*Gaudi::Units::eV ;
     
-    HepLorentzVector fourMom;
-    fourMom.setVectM( Hep3Vector(px,py,pz), 0. );
+    double energy = sqrt( px*px + py*py + pz*pz ) ;
+    HepMC::FourVector fourMom( px , py , pz , energy ) ;
     
-    const HepLorentzVector vtx( m_curx+m_xvtx ,
-                                m_cury+m_yvtx,
-                                m_zvtx,
-                                CLHEP::Tcomponent(0.));
-                                
+    const HepMC::FourVector vtx( m_curx+m_xvtx ,
+                                 m_cury+m_yvtx,
+                                 m_zvtx,
+                                 0.);
+    
     HepMC::GenVertex * v1 = new HepMC::GenVertex( vtx );
     evt -> add_vertex( v1 );
-    v1  -> add_particle_out( 
-                new HepMC::GenParticle( fourMom , 10000022 , //optical photon 
-                                        LHCb::HepMCEvent::StableInProdGen ) );    
+    v1  -> add_particle_out( new HepMC::GenParticle( fourMom , 
+                                                     10000022 , 
+                                                     LHCb::HepMCEvent::StableInProdGen ) );    
   } 
-
+  
   evt -> set_signal_process_id( m_nParticles ) ;
-
+  
   return StatusCode::SUCCESS ;
 }

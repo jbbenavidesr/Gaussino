@@ -9,10 +9,10 @@
   <Color R="0.53" G="0.80" B="0.98"/>
 </VisAtt>
 <VisAtt name="VisCavern">
-  <Color R="0.06" G="0.30" B="0.54"/>
+  <Color R="0.7" G="0.7" B="0.7"/>
 </VisAtt>
 <VisAtt name="VisTunnel">
-  <Color R="0.00" G="0.00" B="0.54"/>
+  <Color R="0.50" G="0.50" B="0.54"/>
 </VisAtt>
 <VisAtt name="VisBunker">
   <Color R="0.86" G="0.86" B="0.86"/>
@@ -36,5 +36,5 @@
      are taken from the material. -->
 <VisAtt name="VisInfrastructure" mode="WireFrame" visible="No" opened="Yes"/>
 <VisAtt name="VisAfterMuon" visible="No" opened="Yes"/>
-<VisAtt name="VisTunnel"    mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="VisTunnel"    mode="WireFrame" visible="Yes" opened="Yes"/>
 
