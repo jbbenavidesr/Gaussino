@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================= GENSER v12r7p1 2013-10-03 =========================
+! 2013-10-03 - Gloria Corti
+ - Put v1r* in version of LHAPDFSet to be used
+
 !========================== GENSER v12r7 2013-08-29 ==========================
 ! 2013-08-29 - Gloria Corti
  - Need to revert to herwig++ 2.6.1a for Gauss v45 since 2.6.1b does not exists

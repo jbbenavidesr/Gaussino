@@ -3,8 +3,12 @@
 ! Responsible : Gloria CORTI (originally Sebastien Ponce)
 ! Purpose     : 
 !-----------------------------------------------------------------------------
-!========================= VisSvc v5r7 2012-01-26 ============================
 
+!======================== VisSvc v5r7p1 2013-10-10 ===========================
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
+!========================= VisSvc v5r7 2012-01-26 ============================
 ! 2012-01-26 - Marco Cattaneo
  - Fix missing Boost linkopts for Gaudi v23
  - Remove obsolete VisSvc_dll.cpp

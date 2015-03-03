@@ -4,6 +4,10 @@
 ! Purpose     : Adaptor package for Herwig++
 !-----------------------------------------------------------------------------
 
+!======================== LbHerwig v2r0p1 2013-10-10 =========================
+! 2013-09-23 - Marco Clemencic
+ - Added CMake configuration file.
+
 !========================= LbHerwig v2r0 2012-10-19 ==========================
 ! 2012-10-19 - Gloria Corti
  - Fix bug in naming of ParticlePropertySvc that was stillpointing to Gaudi

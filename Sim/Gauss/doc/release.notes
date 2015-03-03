@@ -4,6 +4,12 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v45r5 2013-10-10 ============================
+ - on v45b branch
+
+! 2013-10-01 - Patrick Robbe
+ - Configuration.py: add options to generate events with Powheg
+
 !========================= Gauss v45r4 2013-07-24 ============================
  - on v45b branch
 

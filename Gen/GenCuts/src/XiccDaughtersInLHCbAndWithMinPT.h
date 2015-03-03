@@ -1,36 +1,33 @@
 #ifndef GENERATORS_XICCDAUGHTERSINLHCB_H 
 #define GENERATORS_XICCDAUGHTERSINLHCB_H 1
 
-// Include files
-#include "LbGenXicc/QQqBaryons.h"
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/Transform4DTypes.h"
 
-#include "Generators/ExternalGenerator.h"
 #include "MCInterfaces/IGenCutTool.h"
 
 // Forward declaration
 class IDecayTool ;
 
-/** @class XiccDaughtersInLHCb XiccDaughtersInLHCb.h 
+/** @class XiccDaughtersInLHCbAndWithMinPT XiccDaughtersInLHCbAndWithMinPT.h 
  *  
- *  Tool to keep events with daughters from Xi_cc 
- *  in LHCb acceptance.
+ *  Tool to keep events with daughters from Xi_cc+
+ *  in LHCb acceptance and cut on Xi_cc+ PT
  *  Concrete implementation of IGenCutTool.
  * 
- *  @author F. Zhang     
- *  @date   2011-04-22
+ *  @author L.Zhong, based on XiccDaughtersInLHCbAndWithMinPT.h
+ *  @date   2013-08-19
  */
 
-class XiccDaughtersInLHCb : public GaudiTool, public QQqBaryons, virtual public IGenCutTool {
+class XiccDaughtersInLHCbAndWithMinPT : public GaudiTool, virtual public IGenCutTool {
  public:
   /// Standard constructor
-  XiccDaughtersInLHCb( const std::string& type, 
+  XiccDaughtersInLHCbAndWithMinPT( const std::string& type, 
                      const std::string& name,
                      const IInterface* parent);
   
-  virtual ~XiccDaughtersInLHCb( ); ///< Destructor
+  virtual ~XiccDaughtersInLHCbAndWithMinPT( ); ///< Destructor
 
   virtual StatusCode initialize( );   ///< Initialize method
 
@@ -82,6 +79,9 @@ private:
 
   std::string m_BaryonState;  ///< double heavy baryon to be looked for
   int  m_sigXiccPID        ;  ///< PDG Id of the double heavy baryon
+
+  // Minimum value of Xicc+ PT
+  double m_minXiccPT;
 
 };
 #endif // GENERATORS_XICCDAUGHTERSINLHCB_H
