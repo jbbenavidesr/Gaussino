@@ -4,6 +4,15 @@
 ! Purpose     : Holds code for generaion of particle guns
 !-----------------------------------------------------------------------------
 
+
+!========================== LbPGuns v4r2 2014-01-23 ==========================
+! 2014-01-20 - Sajan Easo
+ - Added two options files TargetMaterialGun.py for Target studies,
+   ParticleGunRich.py for RICH studies
+
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
 !========================= LbPGuns v4r1p1 2013-12-02 =========================
 ! 2013-11-15 - Michel De Cian
  - Added MomentumSpectrum.py and BSpectrum.root as example files for the class 

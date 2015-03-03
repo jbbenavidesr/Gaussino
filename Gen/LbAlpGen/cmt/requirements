@@ -4,7 +4,7 @@
 # Maintainer : Vanya BELYAEV ibelyaev@physics.syr.edu
 # =============================================================================
 package           LbAlpGen
-version           v3r1
+version           v3r1p1
 
 # =============== structure ===================================================
 branches          cmt doc src options scripts 
@@ -15,7 +15,8 @@ include_dirs      $(LBALPGENROOT)
 # =============== environment =================================================
 set               LBALPGENOPTS $(LBALPGENROOT)/options 
 set               ALPGENPDFPATH $(alpgen_author_dir)/alplib/pdfdat
-
+#when alpgen pdf files will be copied to $LHAPDFSETSROOT directory, use instead:
+#set               ALPGENPDFPATH $(LHAPDFSETSROOT)/alpgen
 
 # =============== dependencies ================================================
 use               alpgen       v* LCG_GeneratorsInterfaces

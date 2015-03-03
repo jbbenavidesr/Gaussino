@@ -4,6 +4,81 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v45r7">2014-01-23 - GaussSys v45r7</A></H1><PRE>
+<H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v35r4 (and Gaudi v23r6)
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5, 
+   photos++ 2.6.1a and tauola++ 1.0.7,
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.05 (via LCG_Interfaces),
+   Geant4 v95r2p5 (based on geant4.9.5.p02) and Geant4Files v95r0, 
+   XmlVis v1r15,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.3 (via LCG_GeneratorsInterfaces),
+   powheg-box r2092 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v13r11</b>, EvtGenExtras v3r10 and Mint v2r2 
+   (private LHCb versions),
+   BcVegPy v3r2 + BcVegPyData v2r*, GenXicc v2r0p1 + GenXiccData v2r0 and 
+   HidValley v3r2p1 (private LHCb versions)
+</A></H3>
+
+! 2013-12-02 - Gloria Corti
+ - On v45b branch
+
+!========================= Gauss v45r6 2013-12-02 ============================
+ - on v45b branch
+ - No changes vs v45r5
+
+!========================== EvtGen v13r11 2014-01-10 ==========================
+! 2014-01-08 - John Back
+ - Corrected parameter checks in EvtSVSCPiso and EvtBto2piCPiso.
+   Added getPDGId() to EvtParticle. Added Blatt-Weisskopf barrier factors up 
+   to L=5 in EvtBlattWeisskopf.
+
+! 2013-12-21 - Jack Wimberley
+ - Modified EvtBCVFF again; one of the corrections was incorrect
+
+! 2013-12-21 - Jack Wimberley
+ - Modified EvtBCVFF to correct the Kiselev form factors
+
+!========================= LbAlpGen v3r1p1 2014-01-23 =========================
+! 2014-01-13 - Stephane Tourneur
+- Fix for Gaussv45rx : Fix the way files were opened and closed in alpsho.F
+
+!========================= LbPowheg v1r0p3 2014-01-23 ========================
+! 2013-12-18 - Marcin Kucharczyk
+ - Add Powheg.py file
+
+!========================= LbPythia8 v7r7 2014-01-23 =========================
+! 2014-01-22 - Paul Szczypka
+ - Minor change to Pythia8Gun.cpp (using size_t as loop var now)
+
+! 2014-01-21 - Paul Szczypka
+ - Changes to remove warnings:
+   . Pythia8Gun.cpp: (un)signed comparison, loop var type change
+   . Pythia8Production.h: reordering of declarations in class definition
+
+! 2014-01-08 - Paul Szczypka
+ - Removed loop from Pythia8Production.cpp which did nothing.
+
+!========================== LbPGuns v4r2 2014-01-23 ==========================
+! 2014-01-20 - Sajan Easo
+ - Added two options files TargetMaterialGun.py for Target studies,
+   ParticleGunRich.py for RICH studies
+
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
+!=============================================================================
 </PRE><H1><A NAME="v45r6">2013-12-02 - GaussSys v45r6</A></H1><PRE>
 <H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
     </A></H2>
