@@ -1,0 +1,38 @@
+!-----------------------------------------------------------------------------
+! Package     : Geant4/G4LHCblists
+! Responsible : Gloria CORTI
+! Purpose     : Private LHCb physics lists
+!-----------------------------------------------------------------------------
+
+!======================== G4LHCblists v2r2 2011-10-03 ========================
+! 2011-10-03 - Gloria Corti
+ - Add new list with suggestion from Matt Reid for improvement of Multiple 
+   scattering. It has the same options as the LHCb list.
+   . G4EmStandardPhysics_LHCbTest.{hh,cc}
+
+!======================== G4LHCblists v2r1 2011-09-19 ========================
+! 2011-09-18 - Gloria Corti
+ - Add options in contructor to apply or not the cuts, as to have the
+   possibility to have a physics list with old EM behaviour and new MS and to
+   apply simple MS to e+/- as provided by A.Dotti to address CMS calorimeter
+   issues with this physics list
+
+!======================== G4LHCblists v2r0 2011-07-13 ========================
+! 2011-07-13 - Gloria Corti
+ - Fix renaming in G4EmStandardPhysics_option1NoApplyCuts.cc 
+
+! 2011-07-12 - Gloria Corti
+ - Remove old physics list, that are obsolete.
+ - Introduce new physics lists for LHCb Em physics set up by V.Ivanchenko
+   (G4EmStandardPhysics_option1LHCb.{hh,cc}) with Wentzel model for all
+   particles types.
+ - Introduce modified version of option1 that does not apply cuts to reproduce
+   behaviour as in G4 9.2. (G4EmStandardPhysics_option1NoApplyCuts.{hh,cc})
+
+!============================= G4LHCblists ===================================
+
+! 2005-11-09 - Gloria CORTI
+ - New package to hold private LHCb physics lists. It has the QGSP_BERT_HP
+   list provided by H-P Wellish for low energy neutron studies
+
+!=============================================================================

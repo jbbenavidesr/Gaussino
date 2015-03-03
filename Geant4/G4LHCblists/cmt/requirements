@@ -1,25 +1,27 @@
 #============================================================================
-# Created    : 2002-12-12
-# Maintainer : Gloria Corti
+# Created    : 2008-02-20
+# Maintainer : Gloria CORTI
 #============================================================================
-package GaussPhysics
-version v7r2
+package G4LHCblists
+version v2r2
 
-# Structure, i.e. directories to process. 
+# Structure, i.e. directories to process.
 #============================================================================
-branches          cmt src doc
+branches cmt doc G4LHCblists src
 
-# Used packages. 
-#============================================================================
-use GaussTools         v*	Sim
-use G4physics_lists    v*	Geant4  
-use G4LHCblists        v*	Geant4  
 
-# Component library building rule
+# Dependencies
 #============================================================================
-library          GaussPhysics      *.cpp
+use            G4physics_lists	v* Geant4
 
-# define component library link options
+include_dirs $(G4LHCblists_root)/G4LHCblists
+
+# Library
 #============================================================================
-apply_pattern    component_library library=GaussPhysics
+library		G4LHCblists $(G4LibraryFlags) ../src/*.cc
+		 
+
+# Patterns
+#============================================================================
+apply_pattern  G4AllCMTpatterns
 
