@@ -8,7 +8,7 @@ branches cmt doc
 #==================================================================
 
 # Gauss application: the application is not built on Win32
-macro Gauss_use         "Gauss        v31r1   Sim"  WIN32 ""
+macro Gauss_use         "Gauss        v31r2   Sim"  WIN32 ""
 use ${Gauss_use} 
 
 # Generator packages: only a fraction available for release on Win32
@@ -35,12 +35,12 @@ use ${LbPythia8_use}
 #OFF use ${LbAlpGen_use}
 #OFF use ${BcVegPy_use}
 #OFF use ${LbBcVegPy_use}
-use ${LbHerwig_use}
 #OFF use ${LbHidValley_use}
+use ${LbHerwig_use}
 use ${LbHijing_use}
 #
 use LbMIB               v2r2      Gen
-use ParticleGuns	v5r0      Gen
+use ParticleGuns        v5r0      Gen
 
 # Simulation basic packages
 use GiGa        	v19r2	  Sim     
@@ -74,6 +74,9 @@ use BcmMoniSim          v1r1      Bcm
 # Visualization configuration
 use XmlVis              v1r5      Vis
 
+# Test packages for new releases or installations on new platforms
+use GenTests            v1r0      Gen
 
 # Allow the generation of QMTest summary 
 apply_pattern QMTestSummarize
+
