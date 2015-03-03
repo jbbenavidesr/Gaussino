@@ -1,11 +1,11 @@
-// $Id: LHCbAcceptance.cpp,v 1.4 2005-12-31 17:32:39 robbep Exp $
+// $Id: LHCbAcceptance.cpp,v 1.7 2007-02-22 13:30:24 robbep Exp $
 // Include files 
 
 // local
 #include "LHCbAcceptance.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from HepMC
 #include "HepMC/GenParticle.h"
@@ -17,8 +17,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<LHCbAcceptance>          s_factory ;
-const        IToolFactory& LHCbAcceptanceFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( LHCbAcceptance );
 
 
 //=============================================================================
@@ -49,7 +49,7 @@ bool LHCbAcceptance::applyCut( ParticleVector & theParticleVector ,
          fabs( sin( m_thetaMax ) ) ) 
       it = theParticleVector.erase( it ) ;
     else ++it ;
-  
+
   return ( ! theParticleVector.empty() ) ;
 }
 

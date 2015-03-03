@@ -1,4 +1,4 @@
-// $Id: LHCbAcceptance.h,v 1.4 2005-12-31 17:32:39 robbep Exp $
+// $Id: LHCbAcceptance.h,v 1.6 2007-02-22 13:30:24 robbep Exp $
 #ifndef GENERATORS_LHCBACCEPTANCE_H 
 #define GENERATORS_LHCBACCEPTANCE_H 1
 

@@ -1,19 +1,23 @@
-# $Id: requirements,v 1.5 2006-07-04 11:59:39 gcorti Exp $ 
+# $Id: requirements,v 1.8 2007-02-08 18:15:08 gcorti Exp $ 
 #============================================================================
 package       LbBcVegPy
-version       v1r2
+version       v1r4
 
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
 branches      LbBcVegPy doc cmt src
-include_dirs  $(LBBCVEGPYROOT)
 
 #============================================================================
 # Used packages. Specify the version, * at the end specifies 'any revision'
 #============================================================================
 use           BcVegPy         v*          Gen
 use           LbPythia        v*          Gen
+
+#============================================================================
+# include files shared between linker and component library
+#============================================================================
+include_dirs  $(LBBCVEGPYROOT)
 
 #============================================================================
 # Linker and Component library building rule
@@ -27,3 +31,6 @@ library       LbBcVegPy          component/*.cpp
 apply_pattern component_library library=LbBcVegPy 
 apply_pattern linker_library    library=LbBcVegPyLib 
 apply_pattern library_stamps    library=LbBcVegPyLib 
+
+
+ 

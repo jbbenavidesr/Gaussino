@@ -1,85 +1,82 @@
-// $Id: GaussPhysics_load.cpp,v 1.8 2006-07-21 08:02:36 ranjard Exp $ 
-// ============================================================================
-// CVS tag $Name: not supported by cvs2svn $ 
-// ============================================================================
-// $Log: not supported by cvs2svn $
-// Revision 1.7  2006/01/09 20:52:22  robbep
-// Adapt to Geant4.8
-//
-// Revision 1.6  2005/11/09 18:10:26  gcorti
-// add QGSP_BERT_HP from G4LHCblists
-//
-// Revision 1.5  2005/10/25 18:59:47  gcorti
-// new physics lists
-//
-// Revision 1.4  2004/02/18 13:52:54  ibelyaev
-//  new version with usage of 'external' physics lists
-// 
-// ============================================================================
-#define GAUSSPHYSICS_GAUSSPHYSICS_LOAD_CPP 1 
-// ============================================================================
-// include 
-// ============================================================================
-// GaudiKernel 
-// ============================================================================
+// $Id: GaussPhysics_load.cpp,v 1.12 2007-03-26 10:07:08 gcorti Exp $
+// Include files 
+
 #include "GaudiKernel/DeclareFactoryEntries.h" 
-// ============================================================================
-// GiGa 
-// ============================================================================
 #include "GiGa/GiGaExtPhysics.h"
-// ============================================================================
-#include "GiGa/GiGaMACROs.h"
-// ============================================================================
 
 
 /** @file 
  *  The mandatory file for declaration of component library entries 
- *  @author Witold Pokorsky Witold.Pokorsky@cern.ch 
- *  @author Vanya Belyaev Ivan.Belyaev@itep.ru
- *  @date 2002-09-26
+ *  @author Witold Pokorsky
+ *  @author Vanya Belyaev
+ *  @author Gloria Corti, port to Gaudi v19
+ *  @date 2002-09-26, last modified 2007-01-19
  */
 
-// Packaging
-#include "G4hadlists/G4EmStandardPhysics.hh"
-IMPLEMENT_ExtPhysics( G4EmStandardPhysics          ) ;
-#include "G4hadlists/G4EmExtraPhysics.hh"
-IMPLEMENT_ExtPhysics( G4EmExtraPhysics       ) ;
-#include "G4hadlists/G4IonPhysics.hh"
-IMPLEMENT_ExtPhysics( G4IonPhysics         ) ;
+// Geant4 physics lists
+#include "G4DecayPhysics.hh"
 
-#include "G4hadlists/HadronPhysicsLHEP.hh"
-IMPLEMENT_ExtPhysics( HadronPhysicsLHEP    ) ;
-#include "G4hadlists/HadronPhysicsLHEP_BERT_HP.hh"
-IMPLEMENT_ExtPhysics( HadronPhysicsLHEP_BERT_HP ) ;
+#// EM physics 
+#include "G4EmStandardPhysics71.hh"
+#include "G4EmStandardPhysics72.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4EmExtraPhysics.hh"
 
-#include "G4hadlists/HadronPhysicsQGSP.hh"
-IMPLEMENT_ExtPhysics( HadronPhysicsQGSP    ) ;
-#include "G4hadlists/HadronPhysicsQGSP_HP.hh"
-IMPLEMENT_ExtPhysics( HadronPhysicsQGSP_HP ) ;
+// Ion and hadrons
+#include "G4IonPhysics.hh"
+#include "G4QStoppingPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4NeutronTrackingCut.hh"
 
-//#include "G4LHCblists/HadronPhysicsQGSP_BERT_HP.hh"
-#include "G4hadlists/HadronPhysicsQGSP_BERT_HP.hh"
-IMPLEMENT_ExtPhysics( HadronPhysicsQGSP_BERT_HP ) ;
+// LHEP hadrons
+#include "HadronPhysicsLHEP.hh"
 
-void GaussPhysics_load() 
-{ 
-  /// Physics Lists 
-  DECLARE_GiGaFactory     (    G4EmStandardPhysics               ) ;
-  DECLARE_GiGaFactory     (    G4EmExtraPhysics            ) ;
-  DECLARE_GiGaFactory     (    G4IonPhysics              ) ;
-  DECLARE_GiGaFactory     (    HadronPhysicsLHEP       ) ;
-  DECLARE_GiGaFactory     (    HadronPhysicsLHEP_BERT_HP  ) ;
-  DECLARE_GiGaFactory     (    HadronPhysicsQGSP       ) ;
-  DECLARE_GiGaFactory     (    HadronPhysicsQGSP_HP    ) ;
-  DECLARE_GiGaFactory     (    HadronPhysicsQGSP_BERT_HP  ) ;
+// QGSP hadrons
+#include "HadronPhysicsQGSP.hh"
+#include "HadronPhysicsQGSP_BERT_HP.hh"
+
+// QGSC hadrons
+#include "HadronPhysicsQGSC.hh"
+#include "HadronPhysicsQGSC_EFLOW.hh"
+
+
+// Declaration of the External Physics list Factories
+typedef GiGaExtPhysics< G4DecayPhysics > DecayFactory;
+DECLARE_TOOL_FACTORY( DecayFactory );
+
+typedef GiGaExtPhysics< G4EmStandardPhysics71 > EmStd71PhysFactory;
+DECLARE_TOOL_FACTORY( EmStd71PhysFactory );
+typedef GiGaExtPhysics< G4EmStandardPhysics72 > EmStd72PhysFactory;
+DECLARE_TOOL_FACTORY( EmStd72PhysFactory );
+typedef GiGaExtPhysics< G4EmStandardPhysics > EmStdPhysFactory;
+DECLARE_TOOL_FACTORY( EmStdPhysFactory );
+
+typedef GiGaExtPhysics< G4EmExtraPhysics > EmExtraPhysFactory;
+DECLARE_TOOL_FACTORY( EmExtraPhysFactory );
+
+typedef GiGaExtPhysics< G4IonPhysics > IonPhysFactory;
+DECLARE_TOOL_FACTORY( IonPhysFactory );
+typedef GiGaExtPhysics< G4QStoppingPhysics > QStopPhysFactory;
+DECLARE_TOOL_FACTORY( QStopPhysFactory );
+typedef GiGaExtPhysics< G4HadronElasticPhysics > HadElPhysFactory;
+DECLARE_TOOL_FACTORY( HadElPhysFactory );
+typedef GiGaExtPhysics< G4NeutronTrackingCut > NeuTrkCutFactory;
+DECLARE_TOOL_FACTORY( NeuTrkCutFactory );
+
+typedef GiGaExtPhysics< HadronPhysicsLHEP > HadPhysLHEPFactory;
+DECLARE_TOOL_FACTORY( HadPhysLHEPFactory );
+
+typedef GiGaExtPhysics< HadronPhysicsQGSP > HadPhysQGSPFactory;
+DECLARE_TOOL_FACTORY( HadPhysQGSPFactory );
+typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_HP > HadPhysQGSP_BERT_HPFactory;
+DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_HPFactory );
+
+typedef GiGaExtPhysics< HadronPhysicsQGSC > HadPhysQGSCFactory;
+DECLARE_TOOL_FACTORY( HadPhysQGSCFactory );
+typedef GiGaExtPhysics< HadronPhysicsQGSC_EFLOW > HadPhysQGSC_EFLOWFactory;
+DECLARE_TOOL_FACTORY( HadPhysQGSC_EFLOWFactory );
+
+DECLARE_FACTORY_ENTRIES(GaussPhysics) { 
 
 };
-// ============================================================================
 
-// ============================================================================
-extern "C" void GaussPhysics_loadRef() { GaussPhysics_load(); } ; 
-// ============================================================================
-
-// ============================================================================
-// The END 
-// ============================================================================

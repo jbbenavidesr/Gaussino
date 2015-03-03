@@ -1,0 +1,20 @@
+// $Id: HerwigJimmy.opts,v 1.1 2006-10-06 15:45:38 gcorti Exp $ 
+
+/** @file 
+ * 
+ *  Options to be reset when running with Herwig using Jimmy
+ * 
+ *  Works with sample-generation tools MinimumBias (Herwig alone),
+ *  Inclusive and SignalPlain
+ *
+ *  @author K.Harrison, G.Corti
+ *  @date 2006-09-05
+ *
+ */
+
+ApplicationMgr.DLLs += { "LbHerwig" };
+Generation.MinimumBias.ProductionTool                 = "HerwigProduction";
+Generation.Inclusive.ProductionTool                   = "HerwigProduction/HerwigJimmyProduction";
+Generation.SignalRepeatedHadronization.ProductionTool = "HerwigProduction/HerwigJimmyProduction";
+Generation.SignalForcedFragmentation.ProductionTool   = "HerwigProductionHerwigJimmyProduction";
+Generation.SignalPlain.ProductionTool                 = "HerwigProduction/HerwigJimmyProduction";

@@ -1,9 +1,8 @@
-C $Id: upevnt.F,v 1.4 2006-05-03 08:19:31 robbep Exp $  
+C $Id: upevnt.F,v 1.7 2007-01-12 15:21:18 ranjard Exp $  
 C*********************************************************************
 
       BLOCK DATA GAUSSDATA
-      INTEGER PYTHIAGAUSSPROCESS
-      COMMON /GAUSSUSERPROCESS/ PYTHIAGAUSSPROCESS
+#include "GaussUserProcess.inc"
       SAVE /GAUSSUSERPROCESS/      
       DATA PYTHIAGAUSSPROCESS /0/
       END
@@ -35,11 +34,10 @@ C...User process event common block.
      &ISTUP(MAXNUP),MOTHUP(2,MAXNUP),ICOLUP(2,MAXNUP),PUP(5,MAXNUP),
      &VTIMUP(MAXNUP),SPINUP(MAXNUP)
       SAVE /HEPEUP/
- 
-      INTEGER PYTHIAGAUSSPROCESS
-      COMMON /GAUSSUSERPROCESS/ PYTHIAGAUSSPROCESS
       
-      IF ( PYTHIAGAUSSPROCESS .EQ. 0 ) THEN
+#include "GaussUserProcess.inc"
+      
+      IF ( PYTHIAGAUSSPROCESS .EQ. LHAREADPROCESS ) THEN
 C...Read info from file.
       	IF(MSTP(162).GT.0) THEN
           READ(MSTP(162),*,END=110,ERR=110) NUP,IDPRUP,XWGTUP,SCALUP,
@@ -57,10 +55,14 @@ C...Else not implemented.
       	ELSE
           GOTO 999
       	ENDIF
-      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. 1 ) THEN
+      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. ACERMCPROCESS    ) THEN
         CALL ACERMC_UPEVNT
-      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. 2 ) THEN
+      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. BCVEGPYPROCESS   ) THEN
         CALL BCVEGPY_UPEVNT
+      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. LHEREADPROCESS   ) THEN
+        CALL LHEUPEVNT
+      ELSEIF ( PYTHIAGAUSSPROCESS .EQ. HIDVALLEYPROCESS ) THEN
+        CALL HIDVALLEY_UPEVNT 
       ENDIF
       
  999  RETURN
@@ -72,4 +74,9 @@ C...Else not implemented.
 
       SUBROUTINE BCVEGPY_UPEVNT
       PRINT*, 'WARNING ..... Dummy Routine to redefine !'
+      END
+      
+      SUBROUTINE HIDVALLEY_UPEVNT
+      PRINT*,
+     &  'WARNING ..... Dummy Routine HIDVALLEY_UPEVNT to redefine !'
       END

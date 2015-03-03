@@ -1,11 +1,9 @@
-// $Id: RichG4HistoFillSet2.cpp,v 1.7 2006-02-10 09:36:04 seaso Exp $
+// $Id: RichG4HistoFillSet2.cpp,v 1.9 2007-01-12 15:32:10 ranjard Exp $
 // Include files
 
 // local
 #include "RichG4HistoFillSet2.h"
 #include "RichG4Counters.h"
-// GiGa
-#include "GiGa/GiGaMACROs.h"
 // local
 #include "../SensDet/RichG4Hit.h"
 //GEANT4
@@ -402,6 +400,8 @@ void RichG4HistoFillSet2:: FillRichG4HistoSet2A( const G4Event* anEvent,
   //  IHistogramSvc* CurrentHistoSvc;
   IHistogramSvc* CurrentHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
 
+  SmartDataPtr<IHistogram1D>hNumTotHitAgelWithRlySat(CurrentHistoSvc,
+                                              "RICHG4HISTOSET2/128");
 
   SmartDataPtr<IHistogram1D>hNumTotHitAgelSat(CurrentHistoSvc,
                                               "RICHG4HISTOSET2/129");
@@ -421,11 +421,15 @@ void RichG4HistoFillSet2:: FillRichG4HistoSet2A( const G4Event* anEvent,
   const std::vector<int> & NumRich1AgelSatHit =
     aRichCounter->NumHitSaturatedPerTrackRich1Agel();
 
+  const std::vector<int> & NumRich1AgelSatWithRlyHit =
+    aRichCounter->NumHitSaturatedPerTrackRich1WithRlyAgel();
+
   const std::vector<int> & NumRich2GasSatHit =
     aRichCounter->NumHitSaturatedPerTrackRich2Gas();
 
   int NumSatTrajRich1Gas =  (int) NumRich1GasSatHit.size();
   int  NumSatTrajRich1Agel = (int) NumRich1AgelSatHit.size();
+  int  NumSatTrajRich1WithRlyAgel = (int) NumRich1AgelSatWithRlyHit.size();
   int NumSatTrajRich2Gas =  (int) NumRich2GasSatHit.size();
 
   // cout<< "Fill histo2A : NumHitSatRich1Gas NumHitSatAgel "
@@ -449,6 +453,11 @@ void RichG4HistoFillSet2:: FillRichG4HistoSet2A( const G4Event* anEvent,
     if(nhitb >0 ) {
       if(hNumTotHitAgelSat) hNumTotHitAgelSat->fill(nhitb,1.0);
     }
+    int nhitb1= NumRich1AgelSatWithRlyHit[ihtrb];
+    if(nhitb1 >0 ) {
+      if(hNumTotHitAgelWithRlySat) hNumTotHitAgelWithRlySat->fill(nhitb1,1.0);
+    }
+
 
   }
 

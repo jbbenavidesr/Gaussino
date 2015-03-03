@@ -1,4 +1,4 @@
-// $Id: GiGaSensDetTracker.h,v 1.3 2006-07-27 12:59:08 gcorti Exp $
+// $Id: GiGaSensDetTracker.h,v 1.5 2007-03-18 18:39:07 gcorti Exp $
 #ifndef GIGASENSDETTRACKER_H
 #define GIGASENSDETTRACKER_H 1 
 
@@ -25,10 +25,8 @@ class G4TouchableHistory;
  */
 class GiGaSensDetTracker: virtual public GiGaSensDetBase
 {
-  /// friend factory 
-  friend class GiGaFactory<GiGaSensDetTracker>;
 
-protected:
+public:
 
   /// Standard constructor
   GiGaSensDetTracker( const std::string& type   ,
@@ -38,7 +36,6 @@ protected:
   /// destructor (virtual and protected)
   virtual ~GiGaSensDetTracker();
   
-public: 
 
   /** Initialize method (Geant4).
    *  Called at the beginning of each event
@@ -69,8 +66,6 @@ private:
   GiGaSensDetTracker(); ///< no default constructor
   GiGaSensDetTracker( const GiGaSensDetTracker& ); ///< no copy constructor 
   GiGaSensDetTracker& operator=( const GiGaSensDetTracker& ) ; ///< no = 
-
-private:
 
   /// Pointer to G4 collection for this sensitive detector
   TrackerHitsCollection* m_trackerCol;

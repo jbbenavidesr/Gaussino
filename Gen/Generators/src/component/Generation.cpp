@@ -1,11 +1,11 @@
-// $Id: Generation.cpp,v 1.23 2006-08-28 21:27:28 robbep Exp $
+// $Id: Generation.cpp,v 1.25 2007-01-12 15:17:37 ranjard Exp $
 // Include files 
 
 // local
 #include "Generation.h"
 
 // from Gaudi
-#include "GaudiKernel/AlgFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/RndmGenerators.h"
 
 // from Event
@@ -37,8 +37,8 @@ extern Rndm::Numbers randgaudi ;
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<Generation>          s_factory ;
-const        IAlgFactory& GenerationFactory = s_factory ;
+
+DECLARE_ALGORITHM_FACTORY( Generation );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -84,7 +84,6 @@ Generation::Generation( const std::string& name,
     // Reset counters
     m_intC.assign( 0 ) ;
     m_intCAccepted.assign( 0 ) ;
-
     // setup counter names
     m_intCName[ Oneb ] = "generated interactions with >= 1b" ;    
     m_intCName[ Threeb ] = "generated interactions with >= 3b" ;
@@ -265,7 +264,7 @@ StatusCode Generation::finalize() {
   debug( ) << "==> Finalize" << endmsg ;
   // Print the various counters
   info() << "**************************************************" << endmsg ;
-  m_pileUpTool -> printPileUpCounters( ) ; 
+  if ( 0 != m_pileUpTool ) { m_pileUpTool -> printPileUpCounters( ) ; }
   info() << "***********   Generation counters   **************" << std::endl ;
   printCounter( info() , "generated events" , m_nEvents ) ;
   printCounter( info() , "generated interactions" , m_nInteractions ) ;

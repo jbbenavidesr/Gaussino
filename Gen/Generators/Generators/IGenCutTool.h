@@ -1,4 +1,4 @@
-// $Id: IGenCutTool.h,v 1.4 2005-12-31 17:30:37 robbep Exp $
+// $Id: IGenCutTool.h,v 1.6 2007-02-22 13:30:24 robbep Exp $
 #ifndef GENERATORS_IGENCUTTOOL_H 
 #define GENERATORS_IGENCUTTOOL_H 1
 
@@ -19,6 +19,8 @@ namespace LHCb {
   class GenCollision ;
 }
 
+class IDecayTool ;
+
 /** @class IGenCutTool IGenCutTool.h "Generators/IGenCutTool.h"
  *  
  *  Abstract interface to generator level cut. This type of cut is applied
@@ -29,7 +31,7 @@ namespace LHCb {
  *  @date   2005-08-17
  */
 
-static const InterfaceID IID_IGenCutTool( "IGenCutTool" , 2 , 0 ) ;
+static const InterfaceID IID_IGenCutTool( "IGenCutTool" , 5 , 0 ) ;
 
 class IGenCutTool : virtual public IAlgTool {
 public:
@@ -54,6 +56,7 @@ public:
    */
   virtual bool applyCut( ParticleVector & theParticleVector , 
                          const HepMC::GenEvent * theGenEvent ,
-                         const LHCb::GenCollision * theCollision ) const = 0 ;
+                         const LHCb::GenCollision * theCollision ) 
+    const = 0 ;
 };
 #endif // GENERATORS_ICUTTOOL_H

@@ -1,13 +1,12 @@
 package VisSvc
-version v3r3
+version v5r0
 
 branches VisSvc doc cmt src
 
-include_dirs $(VISSVCROOT)
-
 use XmlTools v* Tools
-
 use DetDesc v* Det
+
+apply_pattern install_more_includes more=VisSvc
 
 # build a component library
 library VisSvc     *.cpp

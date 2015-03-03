@@ -1,7 +1,7 @@
 // $ID: $
 
 // Include Files
-#include "GaudiKernel/SvcFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
 #include <xercesc/dom/DOMElement.hpp>
@@ -17,8 +17,10 @@
 // Instantiation of a static factory class used by clients to create
 // instances of this service
 // -----------------------------------------------------------------------
-static SvcFactory<SimulationSvc> xmlparsersvc_factory;
-const ISvcFactory& SimulationSvcFactory = xmlparsersvc_factory;
+
+// Declaration of the Service Factory
+DECLARE_SERVICE_FACTORY( SimulationSvc );
+
 
 
 // -----------------------------------------------------------------------
@@ -110,10 +112,17 @@ void SimulationSvc::reload () {
       << m_simDbLocation << "\" ..." << endmsg;
 
   // parses the file containing the simatt definitions
-  xercesc::DOMDocument* document = xmlSvc->parse (m_simDbLocation.c_str());
+  IOVDOMDocument* iovDoc = xmlSvc->parse(m_simDbLocation.c_str());
+  if (!iovDoc) {
+    msg << MSG::ERROR << "Unable to parse file " << m_simDbLocation
+        << ". The simulation attributes will not be loaded." << endmsg;
+    return;
+  }
+  xercesc::DOMDocument* document = iovDoc->getDOM();
   if (0 == document) {
     msg << MSG::ERROR << "Unable to parse file " << m_simDbLocation
         << ". The simulation attributes will not be loaded." << endmsg;
+    xmlSvc->releaseDoc(iovDoc);
     return;
   }
 
@@ -360,6 +369,9 @@ void SimulationSvc::reload () {
   xercesc::XMLString::release((XMLCh**) &RegStr);
   xercesc::XMLString::release((XMLCh**) &VolStr);
   xercesc::XMLString::release((XMLCh**) &ProdStr);
+
+  xmlSvc->releaseDoc(iovDoc);
+
 }
  
 

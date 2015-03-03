@@ -1,4 +1,4 @@
-// $Id: Monitor.opts,v 1.21 2006-05-29 08:48:13 gcorti Exp $ 
+// $Id: Monitor.opts,v 1.24 2007-03-26 11:41:05 gcorti Exp $ 
 
 /** @file 
  * 
@@ -39,16 +39,19 @@ SimMonitor.Members   += { "GiGaGetHitsAlg" };
 SimMonitor.Members   += { "GaudiSequencer/DetectorsMonitor" };
 
 // VELO
-ApplicationMgr.DLLs      += { "VeloGauss" };
 DetectorsMonitor.Members += { "VeloGaussMoni" };
 
 // Silicon tracker
 DetectorsMonitor.Members += { "MCHitMonitor/TTHitMonitor" };
 TTHitMonitor.mcPathString = "/Event/MC/TT/Hits";
-TTHitMonitor.zStations    = { 2350.0, 2620.0 };
+TTHitMonitor.zStations    = { 2350.0*mm, 2620.0*mm };
+TTHitMonitor.xMax         = 150.0*cm;
+TTHitMonitor.yMax         = 150.0*cm;
 DetectorsMonitor.Members += { "MCHitMonitor/ITHitMonitor" };
 ITHitMonitor.mcPathString = "/Event/MC/IT/Hits";
-ITHitMonitor.zStations    = { 7780.0, 8460.0, 9115.0 };
+ITHitMonitor.zStations    = { 7780.0*mm, 8460.0*mm, 9115.0*mm };
+ITHitMonitor.xMax         = 100.0*cm;
+ITHitMonitor.yMax         = 100.0*cm;
  
 // Outer tracker
 DetectorsMonitor.Members += { "MCHitMonitor/OTHitMonitor" };
@@ -71,7 +74,6 @@ EcalMonitor.OutputLevel = 4;
 HcalMonitor.OutputLevel = 4;
 
 // Muon system
-ApplicationMgr.DLLs      += { "MuonMoniSim" };
 DetectorsMonitor.Members += { "MuonHitChecker" };
 MuonHitChecker.FullDetail = true;
 

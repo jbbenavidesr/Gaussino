@@ -1,4 +1,4 @@
-// $Id: Hijing.opts,v 1.1 2006-07-03 18:01:11 gcorti Exp $
+// $Id: Hijing.opts,v 1.2 2006-11-15 10:25:36 gcorti Exp $
  
 /** @file
  *
@@ -13,6 +13,8 @@ ApplicationMgr.Dlls += { "LbHijing" };
 Generation.MinimumBias.ProductionTool = "HijingProduction";
 
 //To change default settings modify any of the following
+// NOTE that the default produce event of p-Xenon (gas not normally in
+// the beam pipe)
 // Generation.MinimumBias.HijingProduction.Commands = {
 //   "hijinginit efrm 7000.",  // energy in GeV
 //   "hijinginit frame LAB",   // LAB or CMS
@@ -24,7 +26,6 @@ Generation.MinimumBias.ProductionTool = "HijingProduction";
 //   "hijinginit iap 1",       // mass number of the projectile
 //   "hijinginit izp 1",       // atomic number of the projectile
 //   "hijinginit iat 131",     // mass number of the target
-//   "hijinginit iaz 54",     // atomic number of the target
+//   "hijinginit izt 54"       // atomic number of the target
 // };
- 
 

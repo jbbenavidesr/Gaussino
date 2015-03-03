@@ -1,20 +1,17 @@
-// $Id: GiGaTrackActionBase.h,v 1.10 2002-05-07 12:21:30 ibelyaev Exp $ 
-// ============================================================================
-// CVS tag $Name: not supported by cvs2svn $ 
-// ============================================================================
-// $Log: not supported by cvs2svn $
-// ============================================================================
+// $Id: GiGaTrackActionBase.h,v 1.12 2007-03-18 18:25:05 gcorti Exp $ 
 #ifndef     GIGA_GiGaTrackActionBase_H
 #define     GIGA_GiGaTrackActionBase_H 1 
-// ============================================================================
+
+// Include files
 // from STL
 #include <vector> 
 // base class 
 #include "GiGa/IGiGaTrackAction.h" 
 #include "GiGa/GiGaBase.h" 
-//
+
+// Forward declaration
 class G4Track;
-//
+
 
 /** @class GiGaTrackActionBase GiGaTrackActionBase.h
  *  
@@ -28,7 +25,8 @@ class GiGaTrackActionBase:
   public virtual IGiGaTrackAction ,
   public         GiGaBase
 {
-protected:
+
+public:
 
   /** standard constructor 
    *  @see GiGaBase 
@@ -42,10 +40,8 @@ protected:
     const std::string& name   , 
     const IInterface*  parent ) ;
 
-  virtual ~GiGaTrackActionBase();
+  virtual ~GiGaTrackActionBase();  ///< Destructor
 
-public:
-  
   /** initialize the track action  
    *  @see GiGaBase 
    *  @see  AlgTool 
@@ -74,21 +70,15 @@ protected:
   { return G4UserTrackingAction::fpTrackingManager; }
   
 private:
-  ///
+
   GiGaTrackActionBase (); ///< no default constructor 
   GiGaTrackActionBase           ( const GiGaTrackActionBase& ); ///< no copy
   GiGaTrackActionBase& operator=( const GiGaTrackActionBase& ); ///< no =
-  ///
-private:
-  ///
+
 };
-// ============================================================================
- 
-// ============================================================================
-// The END 
-// ============================================================================
+
 #endif   ///< GIGA_GiGaTrackActionBase_H 
-// ============================================================================
+
 
 
 

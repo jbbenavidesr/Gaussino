@@ -1,4 +1,4 @@
-C $Id: mcatnlo_qqxsec.f,v 1.1 2006-09-05 12:36:50 karl Exp $
+C $Id: mcatnlo_qqxsec.F,v 1.2 2007-03-13 19:08:57 gcorti Exp $
 
 C-----------------------------------------------------------------------
 C
@@ -369,16 +369,27 @@ C
       VLPM = DLOG(LP/LM)
       VLSM = DLOG(4/RO)
       VLWM = DLOG(4*AW/RO)
-      VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
-      VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
-      VDMP = DDILOG(-LM/LP)
+C--KH modification: start
+C     VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+C     VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+C     VDMP = DDILOG(-LM/LP)
+      VDW = MCATNLO_DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+      VDT = MCATNLO_DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+      VDMP = MCATNLO_DDILOG(-LM/LP)
+C--KH modification: end
       AUINV = 1/(RO/ 4.D0-AW)
       ATINV = 1/(RO/ 4.D0-AT)
       SRLGPR = DLOG((1-B)*T2/((B+1)*T1))*DLOG((B+1)*T2/((1-B)*T1))
-      SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
-      SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
-      SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
-      SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+C--KH modification: start
+C     SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
+C     SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
+C     SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
+C     SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+      SRL21P = MCATNLO_DDILOG(1-(B+1)*T1/((1-B)*T2))
+      SRL21M = MCATNLO_DDILOG(1-(1-B)*T1/((B+1)*T2))
+      SRL22P = MCATNLO_DDILOG(1-(B+1)*T2/((1-B)*T1))
+      SRL22M = MCATNLO_DDILOG(1-(1-B)*T2/((B+1)*T1))
+C--KH modification: end
       SRLG1 = DLOG((B+1)/(1-B))/B
       SL3515 = SRLGPR+B**2*SRLG1**2+SRL21P+SRL21M
       SL3525 = SRLGPR+B**2*SRLG1**2+SRL22P+SRL22M
@@ -666,20 +677,37 @@ C
       VLSM = DLOG(4/RO)
       VLWM = DLOG(4*AW/RO)
       VLBL = DLOG(B/LM)
-      VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
-      VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
-      VDMP = DDILOG(-LM/LP)
-      VDMB = VLBL**2/ 2.D0+DDILOG(-LM/B)
+C--KH modification: start
+C     VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+C     VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+C     VDMP = DDILOG(-LM/LP)
+C     VDMB = VLBL**2/ 2.D0+DDILOG(-LM/B)
+      VDW = MCATNLO_DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+      VDT = MCATNLO_DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+      VDMP = MCATNLO_DDILOG(-LM/LP)
+      VDMB = VLBL**2/ 2.D0+MCATNLO_DDILOG(-LM/B)
+C--KH modification: end
       AUINV = 1/(RO/ 4.D0-AW)
       ATINV = 1/(RO/ 4.D0-AT)
       SRLGPR = DLOG((1-B)*T2/((B+1)*T1))*DLOG((B+1)*T2/((1-B)*T1))
-      SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
-      SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
-      SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
-      SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+C--KH modification: start
+C     SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
+C     SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
+C     SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
+C     SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+C     SRLG1 = DLOG((B+1)/(1-B))/B
+C     SRL2L = (DDILOG(-4*B/(1-B)**2)-DDILOG(4*B/(B+1)**2))/B
+C     SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0+DDILOG(1-RO/( 4.D0*T1*T2))
+      SRL21P = MCATNLO_DDILOG(1-(B+1)*T1/((1-B)*T2))
+      SRL21M = MCATNLO_DDILOG(1-(1-B)*T1/((B+1)*T2))
+      SRL22P = MCATNLO_DDILOG(1-(B+1)*T2/((1-B)*T1))
+      SRL22M = MCATNLO_DDILOG(1-(1-B)*T2/((B+1)*T1))
       SRLG1 = DLOG((B+1)/(1-B))/B
-      SRL2L = (DDILOG(-4*B/(1-B)**2)-DDILOG(4*B/(B+1)**2))/B
-      SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0+DDILOG(1-RO/( 4.D0*T1*T2))
+      SRL2L = (MCATNLO_DDILOG(-4*B/(1-B)**2)
+     &  -MCATNLO_DDILOG(4*B/(B+1)**2))/B
+      SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0
+     &  +MCATNLO_DDILOG(1-RO/( 4.D0*T1*T2))
+C--KH modification: end
       SL3515 = SRLGPR+B**2*SRLG1**2+SRL21P+SRL21M
       SL3525 = SRLGPR+B**2*SRLG1**2+SRL22P+SRL22M
       DD = -(RO**2*(36*T1**3-112*T1**2+107*T1-39)-8*(T1-1)**2*(9*T1**3-1
@@ -821,20 +849,37 @@ C
       VLSM = DLOG(4/RO)
       VLWM = DLOG(4*AW/RO)
       VLBL = DLOG(B/LM)
-      VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
-      VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
-      VDMP = DDILOG(-LM/LP)
-      VDMB = VLBL**2/ 2.D0+DDILOG(-LM/B)
+C--KH modification: start
+C     VDW = DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+C     VDT = DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+C     VDMP = DDILOG(-LM/LP)
+C     VDMB = VLBL**2/ 2.D0+DDILOG(-LM/B)
+      VDW = MCATNLO_DDILOG((AW-RO/ 4.D0)/AW)-VLWM**2/ 2.D0
+      VDT = MCATNLO_DDILOG((AT-RO/ 4.D0)/AT)-VLTM**2/ 2.D0
+      VDMP = MCATNLO_DDILOG(-LM/LP)
+      VDMB = VLBL**2/ 2.D0+MCATNLO_DDILOG(-LM/B)
+C--KH modification: end
       AUINV = 1/(RO/ 4.D0-AW)
       ATINV = 1/(RO/ 4.D0-AT)
       SRLGPR = DLOG((1-B)*T2/((B+1)*T1))*DLOG((B+1)*T2/((1-B)*T1))
-      SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
-      SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
-      SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
-      SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+C--KH modification: start
+C     SRL21P = DDILOG(1-(B+1)*T1/((1-B)*T2))
+C     SRL21M = DDILOG(1-(1-B)*T1/((B+1)*T2))
+C     SRL22P = DDILOG(1-(B+1)*T2/((1-B)*T1))
+C     SRL22M = DDILOG(1-(1-B)*T2/((B+1)*T1))
+C     SRLG1 = DLOG((B+1)/(1-B))/B
+C     SRL2L = (DDILOG(-4*B/(1-B)**2)-DDILOG(4*B/(B+1)**2))/B
+C     SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0+DDILOG(1-RO/( 4.D0*T1*T2))
+      SRL21P = MCATNLO_DDILOG(1-(B+1)*T1/((1-B)*T2))
+      SRL21M = MCATNLO_DDILOG(1-(1-B)*T1/((B+1)*T2))
+      SRL22P = MCATNLO_DDILOG(1-(B+1)*T2/((1-B)*T1))
+      SRL22M = MCATNLO_DDILOG(1-(1-B)*T2/((B+1)*T1))
       SRLG1 = DLOG((B+1)/(1-B))/B
-      SRL2L = (DDILOG(-4*B/(1-B)**2)-DDILOG(4*B/(B+1)**2))/B
-      SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0+DDILOG(1-RO/( 4.D0*T1*T2))
+      SRL2L = (MCATNLO_DDILOG(-4*B/(1-B)**2)-
+     &         MCATNLO_DDILOG(4*B/(B+1)**2))/B
+      SRL212 = DLOG(4*T1*T2/RO)**2/ 2.D0+
+     &         MCATNLO_DDILOG(1-RO/( 4.D0*T1*T2))
+C--KH modification: end
       SL3515 = SRLGPR+B**2*SRLG1**2+SRL21P+SRL21M
       SL3525 = SRLGPR+B**2*SRLG1**2+SRL22P+SRL22M
       DD = -(2*(28*T1**2-46*T1+23)+5*RO)*VLSM*VLWM/ 27.D0
@@ -2334,17 +2379,30 @@ c
       vlsmu = dlog(s/mu2)
       vlwm = dlog(aw/m2)
       vlbl = dlog(b/lm)
-      vdw = ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
-      vdt = ddilog((at-m2)/at)-vltm**2/ 2.d0
-      vdmp = ddilog(-lm/lp)
-      vdmb = vlbl**2/ 2.d0+ddilog(-lm/b)
+C--KH modification: start
+C     vdw = ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
+C     vdt = ddilog((at-m2)/at)-vltm**2/ 2.d0
+C     vdmp = ddilog(-lm/lp)
+C     vdmb = vlbl**2/ 2.d0+ddilog(-lm/b)
+      vdw = mcatnlo_ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
+      vdt = mcatnlo_ddilog((at-m2)/at)-vltm**2/ 2.d0
+      vdmp = mcatnlo_ddilog(-lm/lp)
+      vdmb = vlbl**2/ 2.d0+mcatnlo_ddilog(-lm/b)
+C--KH modification: end
       auinv = 1/(m2-aw)
       atinv = 1/(m2-at)
-      softt1 = ddilog(1-2*t1/(b+1))+ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))
-     1   *log(2*t1/(b+1))
-      softt2 = ddilog(1-2*t2/(b+1))+ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))
-     1   *log(2*t2/(b+1))
-      softb = ddilog(2*b/(b+1))-ddilog(-2*b/(1-b))
+C--KH modification: start
+C     softt1 = ddilog(1-2*t1/(b+1))+ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))
+C    1   *log(2*t1/(b+1))
+C     softt2 = ddilog(1-2*t2/(b+1))+ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))
+C    1   *log(2*t2/(b+1))
+C     softb = ddilog(2*b/(b+1))-ddilog(-2*b/(1-b))
+      softt1 = mcatnlo_ddilog(1-2*t1/(b+1))
+     1   +mcatnlo_ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))*log(2*t1/(b+1))
+      softt2 = mcatnlo_ddilog(1-2*t2/(b+1))
+     1   +mcatnlo_ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))*log(2*t2/(b+1))
+      softb = mcatnlo_ddilog(2*b/(b+1))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       lt1 = log(t1)
       lt2 = log(t2)
       lb = log(b*betfac)
@@ -3044,17 +3102,30 @@ c
       vlsmu = dlog(s/mu2)
       vlwm = dlog(aw/m2)
       vlbl = dlog(b/lm)
-      vdw = ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
-      vdt = ddilog((at-m2)/at)-vltm**2/ 2.d0
-      vdmp = ddilog(-lm/lp)
-      vdmb = vlbl**2/ 2.d0+ddilog(-lm/b)
+C--KH modification: start
+C     vdw = ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
+C     vdt = ddilog((at-m2)/at)-vltm**2/ 2.d0
+C     vdmp = ddilog(-lm/lp)
+C     vdmb = vlbl**2/ 2.d0+ddilog(-lm/b)
+      vdw = mcatnlo_ddilog((aw-m2)/aw)-vlwm**2/ 2.d0
+      vdt = mcatnlo_ddilog((at-m2)/at)-vltm**2/ 2.d0
+      vdmp = mcatnlo_ddilog(-lm/lp)
+      vdmb = vlbl**2/ 2.d0+mcatnlo_ddilog(-lm/b)
+C--KH modification: end
       auinv = 1/(m2-aw)
       atinv = 1/(m2-at)
-      softt1 = ddilog(1-2*t1/(b+1))+ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))
-     1   *log(2*t1/(b+1))
-      softt2 = ddilog(1-2*t2/(b+1))+ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))
-     1   *log(2*t2/(b+1))
-      softb = ddilog(2*b/(b+1))-ddilog(-2*b/(1-b))
+C--KH modification: start
+C     softt1 = ddilog(1-2*t1/(b+1))+ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))
+C    1   *log(2*t1/(b+1))
+C     softt2 = ddilog(1-2*t2/(b+1))+ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))
+C    1   *log(2*t2/(b+1))
+C     softb = ddilog(2*b/(b+1))-ddilog(-2*b/(1-b))
+      softt1 = mcatnlo_ddilog(1-2*t1/(b+1))
+     1   +mcatnlo_ddilog(1-2*t1/(1-b))+log(2*t1/(1-b))*log(2*t1/(b+1))
+      softt2 = mcatnlo_ddilog(1-2*t2/(b+1))
+     1   +mcatnlo_ddilog(1-2*t2/(1-b))+log(2*t2/(1-b))*log(2*t2/(b+1))
+      softb = mcatnlo_ddilog(2*b/(b+1))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       lt1 = log(t1)
       lt2 = log(t2)
       lb = log(b*betfac)
@@ -3407,9 +3478,14 @@ c
       rho2 = rho*rho
       b = sqrt(1-rho)
       b2 = b*b
+C--KH modification: start
+C     h1 = log((1+b)/2)**2-log((1-b)/2)**2
+C    #     +2*ddilog((1+b)/2)-2*ddilog((1-b)/2)
+C     h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
       h1 = log((1+b)/2)**2-log((1-b)/2)**2
-     #     +2*ddilog((1+b)/2)-2*ddilog((1-b)/2)
-      h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+     #     +2*mcatnlo_ddilog((1+b)/2)-2*mcatnlo_ddilog((1-b)/2)
+      h2 = mcatnlo_ddilog(2*b/(1+b))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       fbgg = 1/(8*pi2)*( pi/192 * (
      #   2*rho * (59*rho2+198*rho-288) * log((1+b)/(1-b)) +
      #   12*rho * (rho2+16*rho+16)*h2 - 6*rho * (rho2-16*rho+32)*h1
@@ -3425,9 +3501,14 @@ c
       rho2 = rho*rho
       b = sqrt(1-rho)
       b2 = b*b
+C--KH modification: start
+C     h1 = log((1+b)/2)**2-log((1-b)/2)**2
+C    #     +2*ddilog((1+b)/2)-2*ddilog((1-b)/2)
+C     h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
       h1 = log((1+b)/2)**2-log((1-b)/2)**2
-     #     +2*ddilog((1+b)/2)-2*ddilog((1-b)/2)
-      h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+     #     +2*mcatnlo_ddilog((1+b)/2)-2*mcatnlo_ddilog((1-b)/2)
+      h2 = mcatnlo_ddilog(2*b/(1+b))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       fbqg = 1/(8*pi2) * pi/192 * (
      #   (4*rho)/9 * (14*rho2+27*rho-136) * log((1+b)/(1-b)) -
      #   (32*rho)/3*(2-rho)*h1 - (8*b)/135 * (1319*rho2-3468*rho+724)
@@ -3506,7 +3587,10 @@ c
       rho2 = rho*rho
       b = sqrt(1-rho)
       b2 = b*b
-      h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+C--KH modification: start
+C     h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+      h2 = mcatnlo_ddilog(2*b/(1+b))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       xlrob2 = log(rho/(4*b2))
       cqqq = 1/(8*pi2) * (8.d0/3.d0*f0qq(rho)*
      # (13.d0/18.d0+2*pi2/3-xlrob2**2-25.d0/6*xlrob2)
@@ -3522,7 +3606,10 @@ c
       rho2 = rho*rho
       b = sqrt(1-rho)
       b2 = b*b
-      h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+C--KH modification: start
+C     h2 = ddilog(2*b/(1+b))-ddilog(-2*b/(1-b))
+      h2 = mcatnlo_ddilog(2*b/(1+b))-mcatnlo_ddilog(-2*b/(1-b))
+C--KH modification: end
       xlrob2 = log(rho/(4*b2))
       xlbp1  = log((1+b)/(1-b))
       cqqg = 1/(8*pi2)*(pi*rho)/27*(

@@ -4,7 +4,49 @@
 ! Purpose     : "Interface" to Hijing 
 !-----------------------------------------------------------------------------
 
+!========================= LbHijing v3r0 2007-03-23 ==========================
+! 2007-03-23 - Gloria Corti
+ - Make package compatible with use of LCGCMT/MCGenerators, using
+   hijing interface package provided. Adapt linkopts.
+   The use of Generators has to follow that of herwig, otherwise the
+   executable complains about process with vanishing cross section and
+   stops
+ - Fix compilation warning for unused variables as argumnets of methods
+   . HijingProduction.cpp
+ 
+!========================= LbHijing v2r0 2007-03-09 =======================
+! 2007-03-09 - Gloria CORTI
+ - Adapt to changes in IProduction interface. Implementation of new method
+   initializeGenerator() is empty
+   . HijingProduction.{h,cpp}
+
+!========================= LbHijing v1r2 2007-02-08 =======================
+! 2007-02-08 - Gloria Corti
+ - modify requirements to be compatible with GENSER 1_4_1 and without
+   install area (for Gauss v25 series)
+
+! 2007-01-08 - Florence Ranjard
+ - update HijingProduction.cpp to use new FACTORY
+
+! 2006-11-15 - Gloria CORTI for Daniele GREGORI
+ - Fix bug in example options were there is an extra "," before closing brakets
+
+!========================= LbHijing v1r1 2006-10-06 ======================
+
+! 2006-10-06 - Gloria CORTI
+ - Move options to switch on use of Hijing from Gauss package.
+ - Fix bug in example of options for specifying atomic number of the target 
+   (iaz --> izt) as pointed out by D.Gregori
+
+! 2006-10-03 - Vincenzo VAGNONI
+ - HijingProduction.cpp - don't retain event history, all particles come
+   now from the primary collision vertex
+ - HijingProduction.cpp - added conversion of vertex coordinates to LHCb units
+ - hilunhep.F - energy recalculated in double precision in order to avoid
+   problems in EvtGen decays for extremely energetic particles.
+
 !========================= LbHijing v1r0p1 2006-09-20 ======================
+
 ! 2006-09-20 - Florence RANJARD
  - requirements - take the include files from $(GENSER_path)/include
 

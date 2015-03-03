@@ -1,20 +1,11 @@
-// $Id: GiGaExtPhysics.h,v 1.1 2004-02-17 18:26:50 ibelyaev Exp $
-// ============================================================================
-// CVS tag $Name: not supported by cvs2svn $
-// ============================================================================
-// $Log: not supported by cvs2svn $
-// Revision 1.1  2003/04/06 18:49:45  ibelyaev
-//  see $GIGAROOT/doc/release.notes
-// 
-// ============================================================================
+// $Id: GiGaExtPhysics.h,v 1.4 2007-03-26 09:01:39 gcorti Exp $
 #ifndef GIGA_GIGAEXTERNALPHYSICSCONSTRUCTOR_H 
 #define GIGA_GIGAEXTERNALPHYSICSCONSTRUCTOR_H 1
-// ============================================================================
+
 // Include files
 #include "GiGa/GiGaPhysicsConstructorBase.h"
-#include "GiGa/GiGaFactory.h"
 
-/** @class GiGaExternalPhysicsConstructor GiGaExternalPhysicsConstructor.h
+/** @class GiGaExtPhysics GiGaExtPhysics.h
  *  
  *
  *  @author Vanya BELYAEV Ivan.Belyaev@itep.ru
@@ -26,10 +17,6 @@ class GiGaExtPhysics : public GiGaPhysicsConstructorBase
 {
   /// actual type of Physics Constructor 
   typedef PHYSCONSTR PhysConstr ;
-  /// owntype 
-  typedef GiGaExtPhysics<PhysConstr> OwnType ;
-  /// friend factory for instantiation
-  friend class GiGaFactory<OwnType> ;
   
 public:
   
@@ -48,8 +35,6 @@ public:
     }
     return m_phys ;
   };
-  
-protected:
   
   /** Standard constructor
    *  @see GiGaPhysicsConstructorBase 
@@ -72,38 +57,9 @@ protected:
   
 private:
   
-  // the default constructor is disabled 
-  GiGaExtPhysics () ;
-  // the copy  constructor is disabled 
-  GiGaExtPhysics           ( const GiGaExtPhysics& ) ;
-  // the assigenement operator is disabled 
-  GiGaExtPhysics& operator=( const GiGaExtPhysics& ) ;
-  
-private:
-  
   // physics constructor itself 
   mutable G4VPhysicsConstructor* m_phys ;
 
 };
-// ============================================================================
 
-// ============================================================================
-/** @def IMPLEMENT_ExtPhysics
- *  useful macro to implement a static factory for
- *  instantiation of external("imported") physics list
- *  @see IMPLEMENT_GiGaPhysList
- *  @author Vanya Belyaev Ivan.Belyaev@itep.ru
- *  @date   25/04/2002
- */
-// ============================================================================
-#define IMPLEMENT_ExtPhysics( PC )                         \
- static const GiGaFactory<GiGaExtPhysics<PC> > s_##PC##F ; \
- const           IFactory&PC##Factory        = s_##PC##F ;
-// ============================================================================
-
-
-// ============================================================================
-// The END 
-// ============================================================================
 #endif // GIGA_GIGAEXTERNALPHYSICSCONSTRUCTOR_H
-// ============================================================================

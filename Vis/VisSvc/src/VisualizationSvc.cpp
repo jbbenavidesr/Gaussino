@@ -1,7 +1,7 @@
 // $ID: $
 
 // Include Files
-#include "GaudiKernel/SvcFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
 #include <xercesc/dom/DOMElement.hpp>
@@ -24,9 +24,8 @@ using namespace xercesc;
 // Instantiation of a static factory class used by clients to create
 // instances of this service
 // -----------------------------------------------------------------------
-static SvcFactory<VisualizationSvc> xmlparsersvc_factory;
-const ISvcFactory& VisualizationSvcFactory = xmlparsersvc_factory;
 
+DECLARE_SERVICE_FACTORY(VisualizationSvc);
 
 // -----------------------------------------------------------------------
 // build a standard string from a DOMString
@@ -95,23 +94,35 @@ void VisualizationSvc::reload () {
   StatusCode status = serviceLocator()->service("XmlCnvSvc", xmlSvc, true);
   if (status.isFailure()) {
     log << MSG::ERROR << "Unable to get XmlCnvSvc. The visualization "
-        << "attributes will not be loaded." << endreq;
+        << "attributes will not be loaded." << endmsg;
     return;
   }
-  log << MSG::INFO << "Loading visualization attributes file \"" << m_colorDbLocation << "\" ..." <<endreq;
+  log << MSG::INFO << "Loading visualization attributes file \"" 
+      << m_colorDbLocation << "\" ..." << endmsg;
 
   // parses the file containing the color definitions
-  DOMDocument* document = xmlSvc->parse (m_colorDbLocation.c_str());
-  if (!document) {
+  IOVDOMDocument* iovDoc = xmlSvc->parse(m_colorDbLocation.c_str());
+  if (!iovDoc) {
     log << MSG::ERROR << "Unable to parse file " << m_colorDbLocation
-        << ". The visualization attributes will not be loaded." << endreq;
+        << ". The visualization attributes will not be loaded." << endmsg;
+    return;
+  }
+  DOMDocument* document = iovDoc->getDOM();
+  if (!document) {
+    log << MSG::ERROR << "Document does not exist " << m_colorDbLocation
+        << ". The visualization attributes will not be loaded." << endmsg;
+    xmlSvc->releaseDoc(iovDoc);
     return;
   }
 
   // go through the tree of elements and fill in the attribute sets
   XMLCh* xs = xercesc::XMLString::transcode("VisAtt");
   DOMNodeList* domAttrList = document->getElementsByTagName(xs);
-  if(!domAttrList) return;
+  if(!domAttrList) {
+    xmlSvc->releaseDoc(iovDoc);
+    return;
+  }
+  
   xercesc::XMLString::release(&xs);
   unsigned int i;
   for (i = 0; i < domAttrList->getLength(); i++) {
@@ -270,6 +281,8 @@ void VisualizationSvc::reload () {
     }
   }
 
+  xmlSvc->releaseDoc(iovDoc);
+
 }
 
 // -----------------------------------------------------------------------
@@ -288,7 +301,7 @@ VisualizationSvc::visAttribute (const Material* mat) const {
       } else {
         MsgStream log(msgSvc(), name());
         log << MSG::WARNING << "VisAttribute " << it->second << " unknown but"
-            << " used for material " << mat->name() << "." << endreq;
+            << " used for material " << mat->name() << "." << endmsg;
       }
     }
   }
@@ -320,7 +333,7 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
       } else {
         MsgStream log(msgSvc(), name());
         log << MSG::WARNING << "VisAttribute " << it->second << " unknown but"
-            << " used for logical volume " << vol->name() << "." << endreq;
+            << " used for logical volume " << vol->name() << "." << endmsg;
         return attr;
       }
     }
@@ -336,10 +349,10 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
       MsgStream log (msgSvc(), "VisualizationSvc");
       log << MSG::WARNING
           << "Exception received in VisualizationSvc::logvolColor : "
-          << endreq;
+          << endmsg;
       ex.printOut (log);
       log << MSG::WARNING << "Visualization attribute will be corrupted."
-          << endreq;
+          << endmsg;
     }
   }
   
@@ -354,10 +367,10 @@ StatusCode
 VisualizationSvc::queryInterface(const InterfaceID& riid, void** ppvInterface) {
   if (IID_IVisualizationSvc.versionMatch(riid))  {
     *ppvInterface = (IVisualizationSvc*)this;
+    addRef();
+    return StatusCode::SUCCESS;
   } else {
     // Interface is not directly availible: try out a base class
     return Service::queryInterface(riid, ppvInterface);
   }
-  addRef();
-  return StatusCode::SUCCESS;
 }

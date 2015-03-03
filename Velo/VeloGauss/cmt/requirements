@@ -6,7 +6,7 @@
 # http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
 #============================================================================
 package           VeloGauss
-version           v2r0
+version           v2r1
 
 #============================================================================
 # This template is an example for a standard Algorithm package
@@ -27,7 +27,7 @@ use  GaudiAlg       v*
 #============================================================================
 # Component library building rule
 #============================================================================
-library          VeloGauss    ../src/*.cpp -import=VeloAlgorithms
+library          VeloGauss    ../src/*.cpp 
 
 #============================================================================
 # define component library link options

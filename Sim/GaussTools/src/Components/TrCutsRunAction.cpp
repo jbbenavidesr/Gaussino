@@ -1,16 +1,21 @@
-/// GaudiKernel
+// $Id: TrCutsRunAction.cpp,v 1.14 2007-01-12 15:36:58 ranjard Exp $
+// Include files 
+
+// from Gaudi
+#include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/PropertyMgr.h"
 /// GiGa 
-#include "GiGa/GiGaMACROs.h"
-/// G4
+//#include "GiGa/GiGaMACROs.h"
+
+// G4
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ProcessManager.hh"
-/// GaussTools
+
+// local
 #include "MinEkineCuts.h"
 #include "LoopCuts.h"
 #include "WorldCuts.h"
-/// Local 
 #include "TrCutsRunAction.h"
 
 // ============================================================================
@@ -23,11 +28,8 @@
  */
 // ============================================================================
 
-// ============================================================================
-/// Factory business
-// ============================================================================
-IMPLEMENT_GiGaFactory( TrCutsRunAction ) ;
-// ============================================================================
+// Declaration of the Tool Factory
+DECLARE_TOOL_FACTORY( TrCutsRunAction );
 
 // ============================================================================
 /** standard constructor 
@@ -85,7 +87,7 @@ TrCutsRunAction::~TrCutsRunAction()
 void TrCutsRunAction::BeginOfRunAction( const G4Run* run )
 {
   if ( 0 == run ) 
-  { Warning ("BeginOfRunAction:: G4Run* points to NULL!") ; }
+  { Warning ( "BeginOfRunAction:: G4Run* points to NULL!" ) ; }
   
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   if ( 0 == particleTable ) 
@@ -96,6 +98,12 @@ void TrCutsRunAction::BeginOfRunAction( const G4Run* run )
   for(ii = 0; ii < ptbSiz; ii++)
     {
       G4ParticleDefinition* particle = particleTable->GetParticle( ii );
+      
+      if ( 0 == particle ) 
+      {
+        Warning ( "G4ParticleDefinition* points to NULL, skip it" ) ;
+        continue ;
+      }
       
       int particleCode = particle->GetPDGEncoding();
       double acut;
@@ -138,6 +146,12 @@ void TrCutsRunAction::BeginOfRunAction( const G4Run* run )
       if ( (pname!="opticalphoton") && ( ! particle->IsShortLived() ) )
         {          
           G4ProcessManager* procMgr = particle->GetProcessManager();
+          if ( 0 == procMgr ) 
+          {
+            Error("G4ProcessManager* points to NULL!") ;
+            return ;
+          }
+          
           procMgr->AddDiscreteProcess(new MinEkineCuts("MinEkineCut",acut) );
           procMgr->AddDiscreteProcess(new WorldCuts("WorldCut",
                                                     m_minx,m_miny,m_minz,
@@ -145,6 +159,7 @@ void TrCutsRunAction::BeginOfRunAction( const G4Run* run )
           if ( (pname=="e-" || pname=="gamma" ) && m_killloops)  
             procMgr->
               AddDiscreteProcess(new LoopCuts("LoopCuts",m_maxsteps,m_minstep));
+          
         }
     }
 };
@@ -159,7 +174,6 @@ void TrCutsRunAction::EndOfRunAction( const G4Run* run )
 {
   if( 0 == run ) 
     { Warning("EndOfRunAction:: G4Run* points to NULL!") ; }
-
 
 };
 // ============================================================================

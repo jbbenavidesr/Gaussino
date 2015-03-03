@@ -1,0 +1,20 @@
+// $Id: HerwigMCatNLO.opts,v 1.1 2006-10-06 15:45:38 gcorti Exp $ 
+
+/** @file 
+ * 
+ *  Options to be reset when running with Herwig using MC@NLO
+ * 
+ *  Works with sample-generation tools MinimumBias (Herwig alone),
+ *  Inclusive and SignalPlain
+ *
+ *  @author K.Harrison, G.Corti
+ *  @date 2006-09-05
+ *
+ */
+
+ApplicationMgr.DLLs += { "LbHerwig" };
+Generation.MinimumBias.ProductionTool                 = "HerwigProduction";
+Generation.Inclusive.ProductionTool                   = "HerwigProduction/HerwigMCatNLOProduction";
+Generation.SignalRepeatedHadronization.ProductionTool = "HerwigProduction/HerwigMCatNLOProduction";
+Generation.SignalForcedFragmentation.ProductionTool   = "HerwigProductionHerwigMCatNLOProduction";
+Generation.SignalPlain.ProductionTool                 = "HerwigProduction/HerwigMCatNLOProduction";

@@ -1,4 +1,4 @@
-// $Id: BiasedBB.h,v 1.1 2006-06-07 12:47:50 robbep Exp $
+// $Id: BiasedBB.h,v 1.3 2007-02-22 13:30:24 robbep Exp $
 #ifndef GENERATORS_BIASEDBB_H 
 #define GENERATORS_BIASEDBB_H 1
 

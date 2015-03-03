@@ -1,4 +1,4 @@
-C $Id: mcatnlo_qqmain.F,v 1.1 2006-09-05 12:36:50 karl Exp $
+C $Id: mcatnlo_qqmain.F,v 1.2 2006-11-29 13:41:46 karl Exp $
 
 C-----------------------------------------------------------------------
 C
@@ -700,6 +700,10 @@ c
          nwild=5
 c double differential
          if(iseld.eq.1)then
+C--KH addition: start
+C--Ensure integration is performed only once
+           iseld=0
+C--KH addition: end
            xtotal=0.d0
            ytotal=0.d0
 C--KH addition: start

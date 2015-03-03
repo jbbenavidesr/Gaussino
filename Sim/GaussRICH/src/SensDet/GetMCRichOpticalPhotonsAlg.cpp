@@ -1,4 +1,8 @@
-// $Id: GetMCRichOpticalPhotonsAlg.cpp,v 1.8 2006-03-15 16:27:31 jonrob Exp $
+// $Id: GetMCRichOpticalPhotonsAlg.cpp,v 1.11 2007-03-18 19:54:57 gcorti Exp $
+// Include files 
+
+// from Gaudi
+#include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // local
 #include "GetMCRichOpticalPhotonsAlg.h"
@@ -10,11 +14,11 @@ using namespace LHCb;
 // Implementation file for class : GetMCRichOpticalPhotonsAlg
 //
 // 2005-12-06 : Sajan EASO
+// 2007-01-11 : Gloria Corti, adapt to Gaudi v19 (also compatible with v18)
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<GetMCRichOpticalPhotonsAlg>          s_factory ;
-const        IAlgFactory& GetMCRichOpticalPhotonsAlgFactory = s_factory ;
+DECLARE_ALGORITHM_FACTORY( GetMCRichOpticalPhotonsAlg );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -24,7 +28,6 @@ GetMCRichOpticalPhotonsAlg::GetMCRichOpticalPhotonsAlg( const std::string& name,
   : GetMCRichInfoBase ( name , pSvcLocator )
   , m_nEvts           ( 0 )
 {
-  declareProperty( "MCRichHitsLocation", m_richHitsLocation = MCRichHitLocation::Default );
   declareProperty( "MCRichOpticalPhotonsLocation",
                    m_dataToFill = MCRichOpticalPhotonLocation::Default );
 }
@@ -176,7 +179,7 @@ StatusCode GetMCRichOpticalPhotonsAlg::execute()
 //=============================================================================
 StatusCode GetMCRichOpticalPhotonsAlg::finalize()
 {
-  const RichStatDivFunctor occ;
+  const Rich::StatDivFunctor occ;
 
   for ( RadMap::const_iterator iM = m_hitTally.begin(); iM != m_hitTally.end(); ++iM )
   {

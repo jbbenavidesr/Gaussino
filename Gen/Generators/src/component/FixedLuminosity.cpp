@@ -1,15 +1,13 @@
-// $Id: FixedLuminosity.cpp,v 1.3 2006-02-07 21:46:12 robbep Exp $
+// $Id: FixedLuminosity.cpp,v 1.5 2007-03-08 13:39:36 robbep Exp $
 // Include files 
 
 // local
 #include "FixedLuminosity.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
-
-// From LHCb
-#include "Kernel/SystemOfUnits.h"
+#include "GaudiKernel/SystemOfUnits.h"
 
 // From Generators
 #include "Generators/GenCounters.h"
@@ -21,8 +19,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<FixedLuminosity>          s_factory ;
-const        IToolFactory& FixedLuminosityFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( FixedLuminosity );
 
 
 //=============================================================================
@@ -35,9 +33,9 @@ FixedLuminosity::FixedLuminosity( const std::string& type,
     m_numberOfZeroInteraction( 0 ) ,
     m_nEvents( 0 ) {
     declareInterface< IPileUpTool >( this ) ;
-    declareProperty ( "Luminosity"    , m_luminosity    = 2.e32 /cm2/s      ) ;
-    declareProperty ( "CrossingRate"  , m_crossingRate  = 30.0 * megahertz  ) ;
-    declareProperty ( "TotalXSection" , m_totalXSection = 102.4 * millibarn ) ;
+    declareProperty ( "Luminosity"    , m_luminosity    = 2.e32 /Gaudi::Units::cm2/Gaudi::Units::s      ) ;
+    declareProperty ( "CrossingRate"  , m_crossingRate  = 30.0 * Gaudi::Units::megahertz  ) ;
+    declareProperty ( "TotalXSection" , m_totalXSection = 102.4 * Gaudi::Units::millibarn ) ;
 }
 
 //=============================================================================
@@ -57,11 +55,13 @@ StatusCode FixedLuminosity::initialize( ) {
 
   info() << "Poisson distribution with fixed luminosity. " << endmsg ;
   info() << "Luminosity (10^32 / cm^2 s): " 
-         << m_luminosity / 1.e32 * cm2 * s << endmsg ;
-  info() << "Bunch crossing rate (MHz): " << m_crossingRate / megahertz 
+         << m_luminosity / 1.e32 * Gaudi::Units::cm2 * Gaudi::Units::s << endmsg ;
+  info() << "Bunch crossing rate (MHz): " << m_crossingRate / Gaudi::Units::megahertz 
          << endmsg ;
-  info() << "Total cross section (mbarn): " << m_totalXSection / millibarn 
+  info() << "Total cross section (mbarn): " << m_totalXSection / Gaudi::Units::millibarn 
          << endreq ;
+
+  m_mean = m_luminosity * m_totalXSection / m_crossingRate ;
 
   return sc ;
 }
@@ -72,11 +72,9 @@ StatusCode FixedLuminosity::initialize( ) {
 unsigned int FixedLuminosity::numberOfPileUp( double & currentLuminosity ) {
   currentLuminosity = m_luminosity ;
   unsigned int result = 0 ;
-  double mean ;
   while ( 0 == result ) {
     m_nEvents++ ;
-    mean = m_luminosity * m_totalXSection / m_crossingRate ;
-    Rndm::Numbers poissonGenerator( m_randSvc , Rndm::Poisson( mean ) ) ;
+    Rndm::Numbers poissonGenerator( m_randSvc , Rndm::Poisson( m_mean ) ) ;
     result = (unsigned int) poissonGenerator() ;
     if ( 0 == result ) m_numberOfZeroInteraction++ ;
   }

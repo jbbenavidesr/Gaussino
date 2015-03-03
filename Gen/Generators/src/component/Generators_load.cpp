@@ -1,4 +1,4 @@
-// $Id: Generators_load.cpp,v 1.2 2006-07-04 10:09:37 gcorti Exp $
+// $Id: Generators_load.cpp,v 1.9 2007-03-08 19:56:40 robbep Exp $
 // Include files 
 
 //
@@ -23,6 +23,7 @@ DECLARE_FACTORY_ENTRIES(Generators) {
   
   DECLARE_ALGORITHM( DumpMC );
   DECLARE_ALGORITHM( DumpMCDecay );
+  DECLARE_ALGORITHM( DumpHepMCTree );
 
   // New structure:
  
@@ -32,6 +33,7 @@ DECLARE_FACTORY_ENTRIES(Generators) {
   // Luminosity Tools
   DECLARE_TOOL( VariableLuminosity ) ;
   DECLARE_TOOL( FixedLuminosity ) ;
+  DECLARE_TOOL( FixedLuminosityForRareProcess ) ;
   DECLARE_TOOL( FixedNInteractions ) ;
  
   // Sample Generation tools
@@ -51,11 +53,19 @@ DECLARE_FACTORY_ENTRIES(Generators) {
   DECLARE_TOOL( EvtGenDecay ) ;
  
   // Cut Tools
-  DECLARE_TOOL( LHCbAcceptance ) ;
-  DECLARE_TOOL( BiasedBB       ) ;
- 
+  DECLARE_TOOL( LHCbAcceptance         ) ;
+  DECLARE_TOOL( BiasedBB               ) ;
+  DECLARE_TOOL( DaughtersInLHCb        ) ;
+  DECLARE_TOOL( SelectedDaughterInLHCb ) ;
+  DECLARE_TOOL( ListOfDaughtersInLHCb  ) ;
+  
+  // "pseudo-production tool"
+  DECLARE_TOOL ( ReadHepMCAsciiFile ) ;
+  // helper algorithm
+  DECLARE_ALGORITHM ( WriteHepMCAsciiFile ) ;
+  
   // Full event cut tools
-  DECLARE_TOOL( LeptonInAcceptance ) ; 
-  DECLARE_TOOL( MuXMaxBias         ) ;
-
+  DECLARE_TOOL( LeptonInAcceptance   ) ; 
+  DECLARE_TOOL( MuXMaxBias           ) ;
+  DECLARE_TOOL( DiLeptonInAcceptance ) ;
 }

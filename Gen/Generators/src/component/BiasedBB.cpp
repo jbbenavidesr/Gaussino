@@ -1,11 +1,11 @@
-// $Id: BiasedBB.cpp,v 1.1 2006-06-07 12:47:50 robbep Exp $
+// $Id: BiasedBB.cpp,v 1.4 2007-02-22 13:30:24 robbep Exp $
 // Include files 
 
 // local
 #include "BiasedBB.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from LHCb
 #include "Kernel/Point4DTypes.h"
@@ -21,8 +21,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<BiasedBB>          s_factory ;
-const        IToolFactory& BiasedBBFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( BiasedBB );
 
 
 //=============================================================================

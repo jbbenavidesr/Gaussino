@@ -1,4 +1,4 @@
-// $Id: HerwigProduction.cpp,v 1.9 2006-09-05 12:36:51 karl Exp $
+// $Id: HerwigProduction.cpp,v 1.12 2007-03-13 19:09:20 gcorti Exp $
 // Include files 
 
 // local
@@ -10,7 +10,7 @@
 // from Gaudi
 #include "GaudiKernel/Algorithm.h"
 #include "GaudiKernel/IAlgManager.h"
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/ParticleProperty.h"
 
 // from Event
@@ -35,8 +35,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<HerwigProduction>          s_factory ;
-const        IToolFactory& HerwigProductionFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( HerwigProduction );
 
 
 //=============================================================================
@@ -402,9 +402,6 @@ StatusCode HerwigProduction::generateEvent( HepMC::GenEvent * theEvent ,
     {
       Herwig::mcatnlo_qqgen();
       Herwig::hwupinit();
-      // Ensure integration step is omitted for subsequent calls
-      gMcnlopar->it1 = 0;
-      gMcnlopar->it2 = 0;
     }
 
     // Initialise event
@@ -1412,3 +1409,15 @@ void HerwigProduction::setGenerationEventType()
 
   return;
 }
+
+//=============================================================================
+// Dummy method
+//=============================================================================
+StatusCode HerwigProduction::initializeGenerator() {
+
+  return StatusCode::SUCCESS;
+
+}
+
+
+//=============================================================================

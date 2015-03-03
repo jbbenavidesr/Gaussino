@@ -1,4 +1,8 @@
-// $Id: GetMCRichHitsAlg.cpp,v 1.22 2006-09-01 14:06:00 jonrob Exp $
+// $Id: GetMCRichHitsAlg.cpp,v 1.25 2007-03-18 19:54:57 gcorti Exp $
+// Include files 
+
+// from Gaudi
+#include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // local
 #include "GetMCRichHitsAlg.h"
@@ -11,11 +15,11 @@ using namespace LHCb;
 // Implementation file for class : GetMCRichHitsAlg
 //
 // 2005-12-06 : Sajan EASO
+// 2007-01-11 : Gloria Corti, adapt to Gaudi v19 (also compatible with v18)
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<GetMCRichHitsAlg>          s_factory ;
-const        IAlgFactory& GetMCRichHitsAlgFactory = s_factory ;
+DECLARE_ALGORITHM_FACTORY( GetMCRichHitsAlg );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -24,6 +28,7 @@ GetMCRichHitsAlg::GetMCRichHitsAlg( const std::string& name,
                                     ISvcLocator* pSvcLocator)
   : GetMCRichInfoBase     ( name , pSvcLocator      )
   , m_nEvts               ( 0                       )
+  , m_invalidRichHits     ( 0                       )
   , m_richDets            ( Rich::NRiches           )
 {
   declareProperty( "MCRichHitsLocation",
@@ -135,6 +140,10 @@ StatusCode GetMCRichHitsAlg::execute()
 
         // Rich detector information
         const Rich::DetectorType rich = g4hit->detectorType();
+        if ( mchit->richInfoValid() )
+        {
+          Warning( "Invalid RICH detector from G4Hit" );
+        }
         mchit->setRich( rich );
 
         // radiator information
@@ -284,9 +293,10 @@ StatusCode GetMCRichHitsAlg::execute()
 //=============================================================================
 StatusCode GetMCRichHitsAlg::finalize()
 {
-  const RichStatDivFunctor occ;
+  const Rich::StatDivFunctor occ;
 
-  info() << "Av. # Invalid RICH flags            = " << occ(m_invalidRichHits,m_nEvts)
+  info() << "Av. # Invalid RICH flags            = " 
+         << occ(m_invalidRichHits,m_nEvts)
          << endmsg;
 
   info() << "Av. # MCRichHits            : Rich1 = "
@@ -340,7 +350,8 @@ StatusCode GetMCRichHitsAlg::finalize()
 
   // number of hits in each aerogel tile
   info() << "Av. # Aero hits per tile   :" << endreq;
-  const int maxTileID = Rich1AgelTile15CkvRadiatorNum-Rich1AgelTile0CkvRadiatorNum;
+  const int maxTileID = 
+    Rich1AgelTile15CkvRadiatorNum-Rich1AgelTile0CkvRadiatorNum;
   for ( int iTile = 0; iTile <= maxTileID; ++iTile )
   {
     info() << "          tile = "; if (iTile<10) { info() << " "; }

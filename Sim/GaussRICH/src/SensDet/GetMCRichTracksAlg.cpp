@@ -1,5 +1,8 @@
-// $Id: GetMCRichTracksAlg.cpp,v 1.5 2006-03-15 15:07:16 jonrob Exp $
+// $Id: GetMCRichTracksAlg.cpp,v 1.7 2007-03-18 19:54:57 gcorti Exp $
 // Include files
+
+// from Gaudi
+#include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // local
 #include "GetMCRichTracksAlg.h"
@@ -11,11 +14,12 @@ using namespace LHCb;
 // Implementation file for class : GetMCRichTracksAlg
 //
 // 2005-12-06 : Sajan EASO
+// 2007-01-11 : Gloria Corti, adapt to Gaudi v19 (also compatible with v18)
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<GetMCRichTracksAlg>          s_factory ;
-const        IAlgFactory& GetMCRichTracksAlgFactory = s_factory ;
+DECLARE_ALGORITHM_FACTORY( GetMCRichTracksAlg );
+
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -199,7 +203,7 @@ StatusCode GetMCRichTracksAlg::execute()
 //=============================================================================
 StatusCode GetMCRichTracksAlg::finalize()
 {
-  const RichStatDivFunctor occ;
+  const Rich::StatDivFunctor occ;
 
   info() << "Av. # MCRichTracks         : Overall = "
          << occ(m_hitTally,m_nEvts) << endreq;

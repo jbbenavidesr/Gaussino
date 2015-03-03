@@ -1,4 +1,4 @@
-// $Id: SingleParticleGun.cpp,v 1.2 2006-03-22 23:03:05 robbep Exp $
+// $Id: SingleParticleGun.cpp,v 1.3 2007-01-12 15:22:04 ranjard Exp $
 // -------------------------------------------------------------
 // File:  ParticleGuns/SingleParticleGun.cpp
 // Description:
@@ -16,7 +16,7 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/AlgFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 
@@ -27,8 +27,7 @@
 // From Event
 #include "Event/HepMCEvent.h"
 
-static const AlgFactory<SingleParticleGun>    Factory;
-const IAlgFactory& SingleParticleGunFactory = Factory;
+DECLARE_ALGORITHM_FACTORY( SingleParticleGun );
 
 //==========================================================================
 // Constructor

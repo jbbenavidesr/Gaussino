@@ -1,4 +1,8 @@
-// $Id: GetMCRichSegmentsAlg.cpp,v 1.10 2006-03-22 14:53:07 jonrob Exp $
+// $Id: GetMCRichSegmentsAlg.cpp,v 1.12 2007-03-18 19:54:57 gcorti Exp $
+// Include files 
+
+// from Gaudi
+#include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // local
 #include "GetMCRichSegmentsAlg.h"
@@ -10,11 +14,12 @@ using namespace LHCb;
 // Implementation file for class : GetMCRichSegmentsAlg
 //
 // 2005-12-06 : Sajan EASO
+// 2007-01-11 : Gloria Corti, adapt to Gaudi v19 (also compatible with v18)
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<GetMCRichSegmentsAlg>          s_factory ;
-const        IAlgFactory& GetMCRichSegmentsAlgFactory = s_factory ;
+DECLARE_ALGORITHM_FACTORY( GetMCRichSegmentsAlg );
+
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -249,7 +254,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
 //=============================================================================
 StatusCode GetMCRichSegmentsAlg::finalize()
 {
-  const RichStatDivFunctor occ;
+  const Rich::StatDivFunctor occ;
 
   for ( RadMap::const_iterator iM = m_hitTally.begin(); iM != m_hitTally.end(); ++iM )
   {

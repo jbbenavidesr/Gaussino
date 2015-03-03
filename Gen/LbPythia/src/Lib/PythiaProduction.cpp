@@ -1,35 +1,41 @@
-// $Id: PythiaProduction.cpp,v 1.16 2006-06-28 15:47:22 gcorti Exp $
-// Include files 
+// $Id: PythiaProduction.cpp,v 1.2 2007-03-08 13:51:47 robbep Exp $
+
+// Include files
 
 // local
+#include "LbPythia/Pythia.h"
 #include "LbPythia/PythiaProduction.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/ParticleProperty.h"
 
 // from Event
 #include "Event/GenCollision.h"
+
+// Generators 
+#include "Generators/StringParse.h"
+#include "Generators/IBeamTool.h"
+#include "Generators/F77Utils.h"
 
 // HepMC
 #include "HepMC/IO_HEPEVT.h"
 #include "HepMC/IO_Ascii.h"
 #include "HepMC/HEPEVT_Wrapper.h"
 
-// local
-#include "Generators/StringParse.h"
-#include "Generators/IBeamTool.h"
-#include "LbPythia/Pythia.h"
 
-//-----------------------------------------------------------------------------
-// Implementation file for class : PythiaProduction
-//
-// 2005-08-16 : Patrick Robbe
+// ============================================================================
+/** @file 
+ *  Implementation file for class PythiaProduction
+ *
+ *  @date 2005-08-16 
+ *  @author Patrick Robbe
+ */
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<PythiaProduction>          s_factory ;
-const        IToolFactory& PythiaProductionFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( PythiaProduction );
 
 
 //=============================================================================
@@ -44,55 +50,85 @@ PythiaProduction::PythiaProduction( const std::string& type,
     m_beam( "p+" )     ,
     m_target( "p+" )   ,
     m_win( 0. )        ,
-    m_eventListingLevel( -1 ) ,
-    m_initializationListingLevel( 1 ) ,
-    m_finalizationListingLevel( 1 ) ,
-    m_pythiaListingFileName( "" ) ,
-    m_pythiaListingUnit( 0 ) ,
-    m_variableEnergy( false ) {
-    declareInterface< IProductionTool >( this ) ;
-    declareProperty( "Commands" , m_commandVector ) ;
-    declareProperty( "BeamToolName" , m_beamToolName = "CollidingBeams" ) ;
-    // Set the default settings for Pythia here:
-    m_defaultSettings.clear() ;
-    m_defaultSettings.push_back( "pysubs msel 0" ) ;
-    m_defaultSettings.push_back( "pysubs msub 11 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 12 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 13 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 28 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 53 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 68 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 91 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 92 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 93 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 94 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 95 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 86 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 87 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 88 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 89 1" ) ;
-    m_defaultSettings.push_back( "pysubs msub 106 1" ) ;
-    m_defaultSettings.push_back( "pypars mstp 2 2" ) ;
-    m_defaultSettings.push_back( "pypars mstp 33 3" ) ;
-    m_defaultSettings.push_back( "pypars mstp 128 2" ) ;
-    m_defaultSettings.push_back( "pypars mstp 82 3" ) ;
-    m_defaultSettings.push_back( "pypars mstp 52 2" ) ;
-    m_defaultSettings.push_back( "pypars mstp 51 10042" ) ;
-    m_defaultSettings.push_back( "pypars parp 67 1.0" ) ;
-    m_defaultSettings.push_back( "pypars parp 82 3.41" ) ;
-    m_defaultSettings.push_back( "pypars parp 89 14000" ) ;
-    m_defaultSettings.push_back( "pypars parp 90 0.162" ) ;
-    m_defaultSettings.push_back( "pypars parp 85 0.33" ) ;
-    m_defaultSettings.push_back( "pypars parp 86 0.66" ) ;
-    m_defaultSettings.push_back( "pypars parp 91 1.0" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 13 0.750" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 14 0.162" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 15 0.018" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 16 0.054" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 17 0.090" ) ;
-    m_defaultSettings.push_back( "pydat1 mstj 26 0" ) ;
-    m_defaultSettings.push_back( "pydat1 parj 33 0.4" ) ;
-}
+    //
+    m_defaultSettings () ,
+    m_commandVector   () ,
+    m_pygive          () ,
+    //
+    m_variableEnergy( false ) ,
+    //
+    m_eventListingLevel          ( -1 ) ,
+    m_eventListingLevel2         ( -1 ) ,
+    m_initializationListingLevel ( 1  ) ,
+    m_finalizationListingLevel   ( 1  ) ,
+    m_pythiaListingFileName      ( "" ) ,
+    m_pythiaListingUnit          ( 0  ) ,
+    //
+    m_particleDataUnit   ( 59 ) ,
+    // no default value!
+    m_particleDataOutput () , 
+    // no default value!
+    m_particleDataInput  () , 
+    // no default value! 
+    m_particleDataLevel  ( 0 ) ,
+    // MSTU(1)/MSTU(2) for initialization PYLIST
+    m_ini_mstu_1 ( 0 ) , 
+    m_ini_mstu_2 ( 0 ) , 
+    // MSTU(1)/MSTU(2) for "generateEvent" PYLIST
+    m_eve_mstu_1 ( 0 ) , 
+    m_eve_mstu_2 ( 0 ) , 
+    // MSTU(1)/MSTU(2) for "hadronize" PYLIST
+    m_had_mstu_1 ( 0 ) , 
+    m_had_mstu_2 ( 0 ) , 
+    // list of particles to be printed using PyList(12) 
+    m_pdtlist    (   )    
+{
+  declareInterface< IProductionTool >( this ) ;
+  declareProperty( "Commands" , m_commandVector ) ;
+  declareProperty( "PygiveCommands" , m_pygive  ) ;
+  declareProperty( "PDTList"        , m_pdtlist ) ;
+  declareProperty( "BeamToolName" , m_beamToolName = "CollidingBeams" ) ;
+  // Set the default settings for Pythia here:
+  m_defaultSettings.clear() ;
+  m_defaultSettings.push_back( "pysubs msel 0" ) ;
+  m_defaultSettings.push_back( "pysubs msub 11 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 12 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 13 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 28 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 53 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 68 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 91 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 92 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 93 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 94 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 95 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 86 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 87 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 88 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 89 1" ) ;
+  m_defaultSettings.push_back( "pysubs msub 106 1" ) ;
+  m_defaultSettings.push_back( "pypars mstp 2 2" ) ;
+  m_defaultSettings.push_back( "pypars mstp 33 3" ) ;
+  m_defaultSettings.push_back( "pypars mstp 128 2" ) ;
+  m_defaultSettings.push_back( "pypars mstp 82 3" ) ;
+  m_defaultSettings.push_back( "pypars mstp 52 2" ) ;
+  m_defaultSettings.push_back( "pypars mstp 51 10042" ) ;
+  m_defaultSettings.push_back( "pypars parp 67 1.0" ) ;
+  m_defaultSettings.push_back( "pypars parp 82 3.41" ) ;
+  m_defaultSettings.push_back( "pypars parp 89 14000" ) ;
+  m_defaultSettings.push_back( "pypars parp 90 0.162" ) ;
+  m_defaultSettings.push_back( "pypars parp 85 0.33" ) ;
+  m_defaultSettings.push_back( "pypars parp 86 0.66" ) ;
+  m_defaultSettings.push_back( "pypars parp 91 1.0" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 13 0.750" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 14 0.162" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 15 0.018" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 16 0.054" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 17 0.090" ) ;
+  m_defaultSettings.push_back( "pydat1 mstj 26 0" ) ;
+  m_defaultSettings.push_back( "pydat1 parj 33 0.4" ) ;
+} ;
+
 
 //=============================================================================
 // Destructor 
@@ -118,8 +154,23 @@ StatusCode PythiaProduction::initialize( ) {
 
   // Obtain beam tool
   m_beamTool = tool< IBeamTool >( m_beamToolName , this ) ;
+
+
+  // Set size of common blocks in HEPEVT: note these correspond to stdhep
+  HepMC::HEPEVT_Wrapper::set_sizeof_int( 4 ) ;
+  HepMC::HEPEVT_Wrapper::set_sizeof_real( 8 ) ;
+  HepMC::HEPEVT_Wrapper::set_max_number_entries( 10000 ) ;  
+
+  return initializeGenerator() ;
+}
+
+//=============================================================================
+// Part specific to generator initialization
+//=============================================================================
+StatusCode PythiaProduction::initializeGenerator( ) {
+  StatusCode sc = StatusCode::SUCCESS ;
   
-  // Initialize output
+    // Initialize output
   if ( msgLevel( MSG::DEBUG ) ) {
     Pythia::pydat1().mstu( 12 ) = 1 ;
     Pythia::pydat1().mstu( 13 ) = 1 ;
@@ -163,18 +214,52 @@ StatusCode PythiaProduction::initialize( ) {
   sc = parsePythiaCommands( m_commandVector ) ;
   if ( ! sc.isSuccess( ) ) 
     return Error( "Unable to read Pythia commands" , sc ) ;
+  
+  // read input decay table (if needed)
+  if ( 0 != m_particleDataUnit && !m_particleDataInput.empty() ) {
+
+    if ( 2 != m_particleDataLevel && 3 != m_particleDataLevel ) { 
+      return Error ( "Illegal value for pdtlevel ( should be [2-3])" ) ; 
+    }
+
+    //
+    StatusCode sc = F77Utils::openOld( m_particleDataUnit , 
+                                       m_particleDataInput ) ;
+
+    if ( sc.isFailure() ) { 
+      return Error ( "Could not open input PDT file '" + 
+                      m_particleDataInput+"'" , sc ) ; 
+    }
+
+    // update the table
+    info() << " CALL PYUPDA(" << m_particleDataLevel 
+           << ","  << m_particleDataUnit
+           << "/'" << m_particleDataInput <<"') " << endreq ;
+    Pythia::PyUpda( m_particleDataLevel  , m_particleDataUnit ) ;
+
+    // close the file 
+    F77Utils::close ( m_particleDataUnit ) ;
+    always() <<" Particle Data Table  has been read from the file '" 
+             << m_particleDataInput << "'" << endreq ;  
+  }
+  
+  // use PYGIVE commands (if any) (as THE LAST action)
+  for ( CommandVector::const_iterator item = m_pygive.begin() ; 
+        m_pygive.end() != item ; ++item ) {
+    // use FORTRAN PYGIVE routine
+    debug() << " CALL PYGIVE(' " << (*item) << "')" << endreq ;
+    const int mstu_13 = Pythia::pydat1().mstu(13) ;
+    Pythia::pydat1().mstu(13) =1   ;
+    Pythia::PyGive( *item ) ;
+    Pythia::pydat1().mstu(13) = mstu_13 ;
+  }
 
   // Now call pyinit and set listing
   // if file already exist, delete it
   std::remove( m_pythiaListingFileName.c_str() ) ;
   Pythia::InitPyBlock( m_pythiaListingUnit , m_pythiaListingFileName ) ;
-
-  Pythia::PyInit( m_frame, m_beam, m_target, m_win ) ;
-
-  // Set size of common blocks in HEPEVT: note these correspond to stdhep
-  HepMC::HEPEVT_Wrapper::set_sizeof_int( 4 ) ;
-  HepMC::HEPEVT_Wrapper::set_sizeof_real( 8 ) ;
-  HepMC::HEPEVT_Wrapper::set_max_number_entries( 10000 ) ; 
+  
+  Pythia::PyInit( m_frame, m_beam, m_target, m_win ) ;  
 
   // Reset forced fragmentation flag
   Pythia::pydat1().mstu( 150 ) = 0 ;
@@ -199,43 +284,23 @@ StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent ,
   
   // Generate Event
   Pythia::PyEvnt( ) ;
-
+  
   // Update event counter
   ++m_nEvents ;
   
   // Debugging output: print each event if required
-  if ( m_eventListingLevel >= 0 ) Pythia::PyList( m_eventListingLevel ) ;
-
-  // Convert to HepEvt format
-  Pythia::LunHep( 1 ) ;
-  
-  // Convert event in HepMC Format
-  HepMC::IO_HEPEVT theHepIO ;
-  if ( ! theHepIO.fill_next_event( theEvent ) )
-    return Error( "Could not fill HepMC event" ) ;
-
-  // Now convert to LHCb units:
-  for ( HepMC::GenEvent::particle_iterator p = theEvent -> particles_begin() ;
-        p != theEvent -> particles_end() ; ++p ) 
-    (*p) -> set_momentum( (*p) -> momentum() * GeV ) ;
-  
-  for ( HepMC::GenEvent::vertex_iterator v = theEvent -> vertices_begin() ;
-        v != theEvent -> vertices_end() ; ++v ) {
-    CLHEP::HepLorentzVector newPos ;
-    newPos.setX( (*v) -> position() . x() ) ;
-    newPos.setY( (*v) -> position() . y() ) ;
-    newPos.setZ( (*v) -> position() . z() ) ;
-    newPos.setT( ( (*v) -> position() . t() * mm ) / CLHEP::c_light ) ;
-    
-    (*v) -> set_position( newPos ) ;
+  if ( m_eventListingLevel >= 0 ) 
+  { 
+    const int mstu_1 =  Pythia::pydat1().mstu(1) ;
+    const int mstu_2 =  Pythia::pydat1().mstu(2) ;    
+    Pythia::pydat1().mstu(1) = m_eve_mstu_1 ;
+    Pythia::pydat1().mstu(2) = m_eve_mstu_2 ;
+    Pythia::PyList( m_eventListingLevel ) ;
+    Pythia::pydat1().mstu(1) = mstu_1 ;
+    Pythia::pydat1().mstu(2) = mstu_2 ;
   }
   
-  theEvent -> set_signal_process_id( Pythia::pypars().msti( 1 ) ) ;
-  
-  // Retrieve hard process information
-  hardProcessInfo( theCollision ) ;
-
-  return StatusCode::SUCCESS ;
+  return toHepMC( theEvent , theCollision ) ;
 }
 
 //=============================================================================
@@ -353,8 +418,24 @@ StatusCode PythiaProduction::parsePythiaCommands( const CommandVector &
     if ( "pyinit" == block ) 
       if      ( "pbar"    == entry ) m_beam                       = "pbar-" ; 
       else if ( "win"     == entry ) m_win                        = fl0   ; 
-      else if ( "pylisti" == entry ) m_initializationListingLevel = int1  ; 
-      else if ( "pyliste" == entry ) m_eventListingLevel          = int1  ; 
+      else if ( "pylisti" == entry ) 
+      { 
+        m_initializationListingLevel   = int1 ;
+        if ( 0 < int2 ) { m_ini_mstu_1 = int2 ; }
+        if ( 0 < int3 ) { m_ini_mstu_2 = int3 ; }
+      }
+      else if ( "pyliste" == entry ) 
+      {
+        m_eventListingLevel          = int1  ; 
+        if ( 0 < int2 ) { m_eve_mstu_1 = int2 ; }
+        if ( 0 < int3 ) { m_eve_mstu_2 = int3 ; }
+      }
+      else if ( "pylisth" == entry ) 
+      {
+        m_eventListingLevel2         = int1  ; 
+        if ( 0 < int2 ) { m_had_mstu_1 = int2 ; }
+        if ( 0 < int3 ) { m_had_mstu_2 = int3 ; }
+      }
       else if ( "pystatf" == entry ) m_finalizationListingLevel   = int1  ; 
       else if ( "output"  == entry ) {
         m_pythiaListingFileName         = str                 ;
@@ -365,6 +446,12 @@ StatusCode PythiaProduction::parsePythiaCommands( const CommandVector &
         Pythia::pydat1().mstu( 25 )     = 1                   ;
         Pythia::pypars().mstp( 122 )    = 1                   ;
       }
+    //
+      else if (  "pdtunit"   == entry ) { m_particleDataUnit   = int1 ; }
+      else if (  "pdtoutput" == entry ) { m_particleDataOutput = str  ; }
+      else if (  "pdtlevel"  == entry ) { m_particleDataLevel  = int1 ; }
+      else if (  "pdtinput"  == entry ) { m_particleDataInput  = str  ; }
+    //
       else return Error(std::string("PYTHIA ERROR, entry PYINIT has PBAR ")+
                         std::string("PYLISTI PYLISTE OUTPUT DUMPR AND WIN: ")+ 
                         std::string("YOU HAVE SPECIFIED ") + 
@@ -489,6 +576,7 @@ void PythiaProduction::printPythiaParameter( ) {
     debug() << "** --- Process " << i << endmsg ;
   debug() << "**                                                  " << endmsg ;
   debug() << "****************************************************" << endmsg ;
+  
 }
 
 //=============================================================================
@@ -515,7 +603,8 @@ void PythiaProduction::savePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
 //=============================================================================
 // Load parton event
 //=============================================================================
-void PythiaProduction::retrievePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
+void PythiaProduction::retrievePartonEvent( HepMC::GenEvent * /* theEvent */ )
+{
   Pythia::PyEdit( 22 ) ;
 }
 
@@ -525,41 +614,82 @@ void PythiaProduction::retrievePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
 StatusCode PythiaProduction::hadronize( HepMC::GenEvent * theEvent , 
                                         LHCb::GenCollision * theCollision ) {
   Pythia::PyExec( ) ;
-
+  
   // Debugging output: print each event if required
-  if ( m_eventListingLevel >= 0 ) Pythia::PyList( m_eventListingLevel ) ;
-  
-  // Convert to HepEvt format
-  Pythia::LunHep( 1 ) ;
-  
-  // Convert to HepMC format
-  HepMC::IO_HEPEVT theHepIO ;
-  if ( ! theHepIO.fill_next_event( theEvent ) ) 
-    return Error( "Could not fill HepMC event" ) ;
+  if ( m_eventListingLevel2 >= 0 ) {
+    const int mstu_1 = Pythia::pydat1().mstu(1) ;
+    const int mstu_2 = Pythia::pydat1().mstu(2) ;
+    Pythia::pydat1().mstu(1) = m_had_mstu_1 ;
+    Pythia::pydat1().mstu(2) = m_had_mstu_2 ;
+    Pythia::PyList ( m_eventListingLevel2 ) ;
+    Pythia::pydat1().mstu(1) = mstu_1 ;
+    Pythia::pydat1().mstu(2) = mstu_2  ;
+  }
 
-  // Now convert to LHCb units:                                                   
-  for ( HepMC::GenEvent::particle_iterator p = theEvent -> particles_begin() ;
-        p != theEvent -> particles_end() ; ++p )
-    (*p) -> set_momentum( (*p) -> momentum() * GeV ) ;
-  
-  theEvent -> set_signal_process_id( Pythia::pypars().msti( 1 ) ) ;
-  
-  // Retrieve hard process information
-  hardProcessInfo( theCollision ) ;
-  
-  return StatusCode::SUCCESS ;
-}
+  return toHepMC ( theEvent , theCollision ) ;  
+} ;
+
+
 //=============================================================================
 // Debug print out to be printed after all initializations
 //=============================================================================
-void PythiaProduction::printRunningConditions( ) {
+void PythiaProduction::printRunningConditions( ) 
+{
   // PYLIST call is managed by Pythia job options
-  if ( m_initializationListingLevel != -1 ) 
+  if ( m_initializationListingLevel >= 0 ) {
+    info() << " CALL PYLIST(" <<  m_initializationListingLevel << ") " 
+           << " using MSTU(1/2)=" << m_ini_mstu_1 << "/" << m_ini_mstu_2 
+           << endreq ;
+    //
+    const int mstu_1 = Pythia::pydat1().mstu(1) ;
+    const int mstu_2 = Pythia::pydat1().mstu(2) ;
+    //
+    Pythia::pydat1().mstu(1) = m_ini_mstu_1 ;
+    Pythia::pydat1().mstu(2) = m_ini_mstu_2 ; 
     Pythia::PyList( m_initializationListingLevel ) ;
+    Pythia::pydat1().mstu(1) = mstu_1 ;
+    Pythia::pydat1().mstu(2) = mstu_2 ; 
+  }
 
   // print out Pythia settings
   printPythiaParameter() ;
+
+  // print particle properties (if needed)
+  for ( std::vector<int>::const_iterator ip = m_pdtlist.begin() ; 
+        m_pdtlist.end() != ip ; ++ip ) {
+    const int i = *ip ;
+    if ( 0 > i ) { continue ; } 
+    const int mstu_1 = Pythia::pydat1().mstu(1) ;
+    const int mstu_2 = Pythia::pydat1().mstu(2) ;      
+    Pythia::pydat1().mstu(1) = i ;
+    Pythia::pydat1().mstu(2) = i ;
+    Pythia::PyList( 12 ) ;      
+    Pythia::pydat1().mstu(1) = mstu_1 ;
+    Pythia::pydat1().mstu(2) = mstu_2 ; 
+  }
+  
+  // write output decay table (if needed)
+  if ( 0 != m_particleDataUnit && !m_particleDataOutput.empty() ) {
+    StatusCode sc = F77Utils::open ( m_particleDataUnit , 
+                                     m_particleDataOutput ) ;
+    if ( sc.isFailure() ) { 
+      Error ( "Could not open output PDS file '" + 
+              m_particleDataOutput + "'" , sc ) ; 
+      return ;
+    }
+    
+    // update the table 
+    info() << " CALL PYUPDA(1," 
+           << m_particleDataUnit<<"/'" << m_particleDataOutput << "') " 
+           << endreq ;
+    Pythia::PyUpda( 1 , m_particleDataUnit ) ;
+    // close the file 
+    F77Utils::close ( m_particleDataUnit ) ;
+    always() <<" Particle Data Table  has been dump to  the file '" 
+             << m_particleDataOutput << "'" << endreq;
+  }
 }
+
 //=============================================================================
 // TRUE if the particle is a special particle which must not be modify
 //=============================================================================
@@ -579,11 +709,11 @@ bool PythiaProduction::isSpecialParticle( const ParticleProperty * thePP )
   case 21:
   case 110:
   case 990:
-  case 32:
+    //case 32:
   case 33:
   case 34:
-  case 35:
-  case 36:
+    //case 35:
+    //case 36:
   case 37:
   case 39:
   case 41:
@@ -691,5 +821,49 @@ StatusCode PythiaProduction::setupForcedFragmentation( const int thePdgId ) {
 
   return StatusCode::SUCCESS ;  
 }
-
+// ============================================================================
+/// PYTHIA -> HEPEVT -> HEPMC 
+// ============================================================================
+StatusCode PythiaProduction::toHepMC
+( HepMC::GenEvent*     theEvent    , 
+  LHCb::GenCollision * theCollision )
+{
   
+  // Convert to HepEvt format
+  Pythia::LunHep( 1 ) ;
+  
+  // Convert event in HepMC Format
+  HepMC::IO_HEPEVT theHepIO ;
+  if ( ! theHepIO.fill_next_event( theEvent ) )
+    return Error( "Could not fill HepMC event" ) ;
+  
+  // Now convert to LHCb units:
+  for ( HepMC::GenEvent::particle_iterator p = theEvent -> particles_begin() ;
+        p != theEvent -> particles_end() ; ++p ) 
+    (*p) -> set_momentum( (*p) -> momentum() * GeV ) ;
+  
+  for ( HepMC::GenEvent::vertex_iterator v = theEvent -> vertices_begin() ;
+        v != theEvent -> vertices_end() ; ++v ) {
+    CLHEP::HepLorentzVector newPos ;
+    newPos.setX( (*v) -> position() . x() ) ;
+    newPos.setY( (*v) -> position() . y() ) ;
+    newPos.setZ( (*v) -> position() . z() ) ;
+    newPos.setT( ( (*v) -> position() . t() * mm ) / CLHEP::c_light ) ;
+    
+    (*v) -> set_position( newPos ) ;
+  }
+  
+  theEvent -> set_signal_process_id( Pythia::pypars().msti( 1 ) ) ;
+  
+  // Retrieve hard process information
+  hardProcessInfo( theCollision ) ;
+  
+  return StatusCode::SUCCESS ;
+} ;
+// ============================================================================
+
+
+// ============================================================================
+/// The END 
+// ============================================================================
+

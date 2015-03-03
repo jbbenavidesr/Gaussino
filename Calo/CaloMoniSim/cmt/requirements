@@ -1,9 +1,9 @@
-# $Id: requirements,v 1.5 2006-06-23 15:27:35 gcorti Exp $ 
+# $Id: requirements,v 1.8 2007-02-08 19:20:14 gcorti Exp $ 
 # Created    : 2004-10-25
 # Maintainer : Olivier Deschamps
 # ============================================================================
 package           CaloMoniSim
-version           v3r0
+version           v3r1
 
 # =============== structure ==================================================
 branches          cmt doc src options 
@@ -20,7 +20,6 @@ library           CaloMoniSim    -import=AIDA *.cpp
 
 # =============== patterns ===================================================
 apply_pattern     component_library library=CaloMoniSim
-
 # ============================================================================
 # The END 
 # ============================================================================

@@ -1,20 +1,17 @@
-// $Id: GiGaStepActionBase.h,v 1.10 2002-05-07 12:21:30 ibelyaev Exp $ 
-// ============================================================================
-// CVS tag $Name: not supported by cvs2svn $ 
-// ============================================================================
-// $Log: not supported by cvs2svn $
-// ============================================================================
+// $Id: GiGaStepActionBase.h,v 1.12 2007-03-18 18:25:05 gcorti Exp $ 
 #ifndef     GIGA_GiGaStepActionBase_H
 #define     GIGA_GiGaStepActionBase_H 1 
-// ============================================================================
+
+// Include files
 // STL
 #include <vector> 
 // GiGa
 #include "GiGa/IGiGaStepAction.h" 
 #include "GiGa/GiGaBase.h" 
-//
+
+// Forward declarations
 class G4Step;
-//
+
 
 /** @class GiGaStepActionBase GiGaStepActionBase.h
  *
@@ -28,8 +25,8 @@ class GiGaStepActionBase:
   public virtual IGiGaStepAction ,
   public          GiGaBase
 {
-protected:
-  
+
+public:  
   /** standard constructor 
    *  @see GiGaBase 
    *  @see AlgTool 
@@ -42,10 +39,8 @@ protected:
     const std::string& name   , 
     const IInterface*  parent ) ;
   
-  virtual ~GiGaStepActionBase();
+  virtual ~GiGaStepActionBase();  ///< Destructor
 
-public:
-  
   /** initialize the step action  
    *  @see GiGaBase 
    *  @see  AlgTool 
@@ -63,21 +58,17 @@ public:
   virtual StatusCode         finalize   () ; 
 
 protected:
-  ///
+
   GiGaStepActionBase ();///< no default constructor!
   GiGaStepActionBase           ( const GiGaStepActionBase& ); ///< no copy 
   GiGaStepActionBase& operator=( const GiGaStepActionBase& ); ///< no = 
-  ///
-private:
-  ///
-};
-// ============================================================================
 
-// ============================================================================
-// The END 
-// ============================================================================
+private:
+
+};
+
 #endif   // GIGA_GiGaStepActionBase_H
-// ============================================================================
+
 
 
 

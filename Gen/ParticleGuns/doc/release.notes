@@ -1,6 +1,11 @@
-! $Id: release.notes,v 1.9 2006-07-04 12:15:51 gcorti Exp $
+! $Id: release.notes,v 1.11 2007-02-08 18:29:22 gcorti Exp $
 ! Package     : Gen/ParticleGuns
 ! Responsible : Gloria CORTI, Patrick ROBBE
+
+!====================== ParticleGuns v3r2 2007-02-08 =====================
+! 2007-01-08 - Florence Ranjard
+ - update SingleParticleGuns.cpp, ParticlrGuns.cpp, MaterialEvalGun.cpp
+   to use new FACTORY
 
 ! ==================== ParticleGuns v3r1 2006-07-04 =======================
 ! 2006-07-04 - Gloria CORTI

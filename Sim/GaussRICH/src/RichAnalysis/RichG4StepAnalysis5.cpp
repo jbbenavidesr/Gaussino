@@ -1,4 +1,4 @@
-// $Id: RichG4StepAnalysis5.cpp,v 1.4 2006-02-15 11:10:49 seaso Exp $
+// $Id: RichG4StepAnalysis5.cpp,v 1.6 2007-01-17 17:49:14 ranjard Exp $
 // Include files 
 
 #include "G4Track.hh"
@@ -22,8 +22,8 @@
 #include "GaudiKernel/IHistogramSvc.h"
 #include "GaudiKernel/SmartDataPtr.h"
 #include "GaudiKernel/Bootstrap.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 // GiGa
-#include "GiGa/GiGaMACROs.h"
 #include <math.h>
 #include "GaussTools/GaussTrackInformation.h"
 
@@ -39,7 +39,7 @@
 //
 // 2004-05-27 : Sajan EASO
 //-----------------------------------------------------------------------------
-IMPLEMENT_GiGaFactory(RichG4StepAnalysis5);
+DECLARE_TOOL_FACTORY(RichG4StepAnalysis5);
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -137,21 +137,33 @@ void RichG4StepAnalysis5::UserSteppingAction( const G4Step* aStep )
             postPos.z() <= ZDnsRich2Analysis  )
             // now for mirror1 in rich2.    
          {
+           //           G4cout<<"step analysis5  rich2 post vol name "<< aPostVolName<<G4endl;
+           // G4cout<<"step analysis5  rich2 pre vol name "<< aPreVolName<<G4endl;
+
            CurrentRichDetnum=1;
            G4String  aPostVolNameM2 =std::string(aPostVolName,0,53);
            if(aPreVolName ==  LogVolCF4NameAnalysis &&
                aPostVolNameM2 == LogVolRich2Mirror1NameAnalysis ){
               // the reflection happened at mirror1 at this point.
-	      RichG4MirrorReflPointTag(aTrack,  postPos, 1,0, aCurrentCopyNum);
+       	      RichG4MirrorReflPointTag(aTrack,  postPos, 1,0, aCurrentCopyNum);
+            // G4cout<<"G4stepanalysis5 : Now at rich2 mirror1  "<< aPreVolName<<"   "
+            //         <<aPostVolName<< G4endl;
+              
            }
+           
             // now for Mirror2 in rich2
            G4String  aPreVolNameSC =std::string(aPreVolName,0,57);
+           G4String  aPostVolNameMS =std::string(aPostVolName,0,56);
             if(aPreVolNameSC == LogVolRich2Mirror2ContainerAnalysis &&
-               aPostVolName == LogVolRich2Mirror2NameAnalysis ){
+               aPostVolNameMS == LogVolRich2Mirror2NameAnalysis ){
               // the reflection  happened at mirror2 at this point.
-	      RichG4MirrorReflPointTag(aTrack,  postPos, 1,1, aCurrentCopyNum);
 
+     	      RichG4MirrorReflPointTag(aTrack,  postPos, 1,1, aCurrentCopyNum);
+            //  G4cout<<"G4stepanalysis5 : Now at rich2 mirror2  "<< aPreVolName<<"   "
+            //       <<aPostVolName<< G4endl;
+            
             }
+            
 	 }
 	}              
 	}

@@ -3,24 +3,1421 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
-</PRE><H1><A NAME="v30r1">2006-07-21 - GaussSys v30r1</A></H1><PRE>
-<H2><A NAME="Note"> based on Geant4 8.*version.
-   built on v25r0b branch </A></H2>
+</PRE><H1><A NAME="v30r2">2007-03-27 - GaussSys v30r2</A></H1><PRE>
+<H2><A NAME="Note">DEVELOPEMENT version. Incompatible with DC06.</A></H2>
 <H3><A NAME="Use">This version uses:
-   Pythia 6_325.2, photos 215.2, hapdf 4.2 (via GENSER 1_3_0)
+   LHCb v22r1 (and Gaudi v19r1)
+   Pythia6 410.2, photos 215.2, lhapdf 5.2.3 (via LCG_GeneratorsInterfaces)
    HepMC 1.26 (via LCG external)
-   DecFiles v12r3, ParamFiles v4r3 
-   Geant4 v81r0 (based on geant4.8.1)
-   LHCb v21r1 (and Gaudi v18r5)
-   XmlDDDB v30r8, XmlConditions v1r6, FieldMap v4r7</A></H3>
+   Geant4 v82r1 (based on geant4.8.2.p01)
+   DecFiles v13r9, ParamFiles v6r0 
+   XmlDDDB v40r1, XmlConditions v2r5, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2 (via LCG_GeneratorsInterfaces)</A></H3>
+<H3><A NAME="Details">
+   This version is the basis for post-DC06. 
+   Everything is new: Gaudi, Install area, new distribution and versions
+   of generators, latest version of Geant4.
+</A></H3>
 
-!===================== GaussPhysics v4r0 ================================
+!======================== Gauss v30r2 2007-03-26 =============================
+! 2007-03-26 - Gloria Corti
+ - DEVELOPMENT VERSION INCOMPATIBLE WITH DC06
+     based on LHCb v22r1, Gaudi v19r1, Install Area, new MCGenerators,
+     Geant4 8.2.p01
+ - Replace MeV with mm in cuts since that is the unit used internally
+   in the code. Since MeV = 1 and mm = 1, there is no effect but the
+   xml is consistent with the code.
+   . Simulation.xml
+ - Use GaudiMain.cpp from $GAUDICONF and no longer special GaussMain
+   . requirements
+   . GaussMain.cpp (for the moment = to GaudiMain.cpp)
+ - Remove loading of DLLs not necessary with Gaudi v19rX
+   . Common.opts
+   . GaussVis.opts
+   . SimGeometry.opts
+   . Monitor.opts
+   . Simulation.opts
+ - Adapt options to physics lists of Geant4 8.2.p01 as declared in
+   GaussPhysics v5r0
+   . Simulation.opts
+   . PhysList-LHPP.opts  - NEW
+   . PhysList-QGSP.opts  - NEW
+ - New version of packages adapted to both Gaudi and Geant4 8.2.p01:
+   GiGa v19r0, GiGaCnv v18r0, GaussTools v13r0, GaussPhysics v5r0,
+   GaussTracker v6r0, GaussRICh v7r0, GaussCalo v9r0, GiGaVisUI v4r0
+ - New version of packages to adapt to new MCGenerators distribution:
+   LbHijing v3r0, LbHerwig v5r0. Note the other generator packages are
+   identical to Gauss v25r9 and all difference are handled by GENSER v3r0.
+ - Use new version of ParamFiles v6r0 with new ParticleData
+ - Use new version of Geant4Files v82r0 for new version of Geant4 8.2.p01
+ - Use new XmlDDDB v40r0 and XmlConditions v2r5 to adapt to changes in
+   LHCb v22r1
+ 
+!====================== GaussPhysics v5r0 2007-03-26 =========================
+! 2007-03-26 - Gloria Corti
+ - Remove special hadronic physics (EMV and EMX) not necessary for use of
+   LHEP/QGSP with Em71 and Em72.
+   Remove LHEP_QGSP_BERT that is listed as obolete from G4
+   Introduce QGSC_EFLOW that has the CHIPs model for nuclear interactions.
+ 
+! 2007-03-19 - Gloria Corti
+ - Fix mispelling
+   . src/GaussPhysics_load.cpp
+ 
+! 2007-03-18 - Gloria CORTI
+ - Adapt to new factory declarations from Gaudi v19r1 having removed
+   special GiGaFactories and IMPLEMENT_ExtPhysics macro (GiGa v19r0).
+   Add new physics list from Geant4 8.2.
+   . src/GaussPhysics_load.cpp
+   The physics lists that can be instanciated from options are:
+     - For general processes (i.e. Decays)
+       GiGaExtPhysics< G4DecayPhysics >
+     - For EM physics
+       GiGaExtPhysics< G4EmStandardPhysics >     - 8.2
+       GiGaExtPhysics< G4EmStandardPhysics72 >   - similar to that of G4 7.2
+       GiGaExtPhysics< G4EmStandardPhysics71 >   - similar to that of G4 7.1
+       GiGaExtPhysics< G4EmExtraPhysics >        - synchroton radiation &
+                                                   gamma-nuclear physics
+     - For hadronic physics
+       GiGaExtPhysics< HadronPhysicsLHEP >   - Low High Energy Parametrized
+       GiGaExtPhysics< HadronPhysicsQGSP >   - Quark Gluon String Precompound
+       GiGaExtPhysics< HadronPhysicsQGSP_BERT_HP > - and Bertini cascade in
+                                                     intermediate E range and
+                                                     High precision (low energy
+                                                     neutrons, < 1 keV)
+       GiGaExtPhysics< HadronPhysicsLHEP_BERT_HP > - similar but for LHEP
+       GiGaExtPhysics< G4HadronElasticPhysics >    - hadron elactic scattering
+       GiGaExtPhysics< G4QStoppingPhysics >        - stopping physics
+       GiGaExtPhysics< G4NeutronTrackingCut >      - neutron tracking cuts
+       GiGaExtPhysics< HadronPhysicsLHEP_EMV >  - To be used with EM 7.1
+       GiGaExtPhysics< HadronPhysicsQGSP_EMV >  - To be used with EM 7.1
+       GiGaExtPhysics< HadronPhysicsQGSP_EMX >  - To be used with EM 7.2
+     - For ion physics
+       GiGaExtPhysics< G4IonPhysics >
+ 
+! 2007-01-17 - Florence RANJARD
+ - Use new internal physics lists of Geant4 8.2 (G4physics_lists instead
+   of G4hadlists)
+ 
+!======================= GaussPhysics v4r0 2006-01-09 ========================
 ! 2006-01-09 - Patrick Robbe
- - Adapt particle definitions to Geant4.8
- - Use new physics lists in G4hadlists of Geant4.8 (has to be checked !)
+ - Adapt particle definitions to Geant4 8.1
+ - Use new physics lists from Geant4 8.1 (has to be checked !)
+ 
+!===================== GaussCalo v9r0 2007-03-18 ============================
+! 2007-03-18 - Gloria Corti
+ - Modify requirements to put back creation of rootmap
+ - Remove commented lines of code
+   . CaloSensDet.h
+   . EHCalSensDet.h
+   . EcalSensDet.h
+   . GaussSensPlaneDet.h
+ 
+! 2007-01-18 - Florence RANJARD for Gloria CORTI
+ - Remove GiGaCaloHitCnv.{h,cpp} that is obsolete and prevents creation of
+   rootmap.
+ 
+! 2007-01-12 - Gloria CORTI
+ - Update code to cope with Gaudi v19r0. Replace GiGaFactory with ToolFactory
+    and use Gaudi macros for factory declarations. Remove friend declaration
+    of GiGaFactory no longer in use and make public the standard LHCb
+    constructor and destructor
+    . CaloSensDet.h
+    . EcalSensDet.{h,cpp}
+    . EHCalSensDet.h
+    . GaussSensPlaneDet.{h,cpp}
+    . HcalSensDet.{h,cpp}
+    . SpdPrsSensDet.{h,cpp}
+    . GaussCalo_load.cpp
+    . GetCaloHitsAlg.cpp
+ 
+!======================== GaussTracker v6r0 2007-03-18 =======================
+! 2007-03-18 - Gloria Corti
+ - Clean up, removing commented lines of code
+   . GiGaSensDetTracker.{h,cpp}
+ 
+! 2007-01-12 - Gloria Corti
+ - Update code to cope with Gaudi v19r0. Replace GiGaFactory with Tool factory
+   and use Gaudi macros for factory declarations. Remove GiGaMACROs.h no
+   longer existing.
+   . GaussTracker_load.cpp
+   . GetTrackerHitsAlg.cpp
+   . GiGaSensDetTracker.{h,cpp}
+ - Make standard constructor and destructor public
+   . GiGaSensDetTracker.h
+ 
+! 2007-01-12 - Florence RANJARD
+ - Introduce pattern packageOpts
+ 
+!======================== GaussRICH v7r0 2007-03-18 ========================
+! 2007-03-18 - Gloria Corti
+ - Adapt to changes in RichStatDivFunctor.h with introduction of "Rich"
+   namespace (RichKernel v7r1 in LHCb v22r1)
+   . src/SensDet/GetMCRichHitsAlg.cpp
+   .             GetMCRichOpticalPhotonsAlg.cpp
+   .             GetMCRichSegmentsAlg.cpp
+   .             GetMCRichTracksAlg.cpp
+ 
+! 2007-01-12 - Florence RANJARD
+ - Use pattern packageOpts
+ - Replace obsolete "CLHEP/Units/PhysicalConstants.h" with
+   "Kernel/SystemOfUnits.h" (Gaudi v19r0)
+   . src/RichAnalysis/RichG4HistoDefineSet1.cpp
+   .                  RichG4HistoDefineSet2.cpp
+   .                  RichG4HistoDefineSet3.cpp
+   .                  RichG4HistoDefineSet4.cpp
+   .                  RichG4HistoDefineTimer.cpp
+   .                  RichG4ReconFlatMirr.cpp
+                                                                                      
+! 2007-01-12 - Gloria CORTI, Florence RANJARD
+ - Adapt code to Gaudi v19r0
+   Remove GiGaFactory and use ToolFactory instead. Use Gaudi macros for
+   factory declarations. Remove GiGaMACROs.h no longer existing.
+   . src/GaussRICH_load.cpp
+   . src/PhysProcess/GiGaPhysConstructorHpd.cpp
+   .                 GiGaPhysConstructorOp.cpp
+   . src/RichAction/Rich1G4TrackActionUpstrPhoton.{h,cpp}
+   .                RichG4EventAction.{h,cpp}
+   .                RichG4RunAction.{h,cpp}
+   .                RichG4TrackActionAerogelPhoton.{h,cpp}
+   .                RichG4TrackAction.{h,cpp}
+   .                RichG4TrackActionPhotOpt.{h,cpp}
+   . src/RichAnalysis/RichG4StepAnalysis3.cpp
+   .                  RichG4StepAnalysis4.cpp
+   .                  RichG4StepAnalysis5.cpp
+   . src/SensDet/GetMCRichHitsAlg.cpp
+   .             GetMCRichOpticalPhotonsAlg.cpp
+   .             GetMCRichSegmentsAlg.cpp
+   .             GetMCRichTracksAlg.cpp
+   .             RichG4GeomProp.cpp
+   .             RichSensDet.{h,cpp}
+ - Make standard constructor and destructor public.
+   . src/RichAction/Rich1G4TrackActionUpstrPhoton.h
+   .                RichG4EventAction.h
+   .                RichG4RunAction.h
+   .                RichG4TrackActionAerogelPhoton.h
+   .                RichG4TrackAction.{h,cpp}
+   . src/SensDet/RichSensDet.{h,cpp}
+ - Remove no longer existing include GiGaMACROs.h
+   . src/RichAnalysis/RichG4EventHitCount.cpp
+   .                  RichG4HistoFillSet1.cpp
+   .                  RichG4HistoFillSet2.cpp
+   .                  RichG4HistoFillSet3.cpp
+   .                  RichG4HistoFillSet4.cpp
+ 
+!======================== GaussTools v13r0 2007-03-18 ========================
+! 2007-03-18 - Gloria Corti
+ - Clean up of left over commented lines of code
+   . GaussTrackActionBase.h
+   . GaussTrackActionZ.h
+ 
+! 2007-01-12 - Gloria CORTI
+ - Use install area for public include files
+   . requirements
+ - Update code to cope with Gaudi v19r0
+   Remove GiGaFactory and use ToolFactory instead. Use Gaudi macros for
+   factory declarations. Remove GiGaMACROs.h no longer existing. Make
+   standard constructor and destructor public . Also remove CVS Log and Name
+   . GaussTrackActionBase.h - Constructor still protected
+   . GaussTrackActionZ.h - Constructor still protected
+   . CommandTrackAction.{h,cpp}
+   . CutsStepAction.{h,cpp}
+   . GaussEventActionHepMC.{h,cpp}
+   . GaussPostTrackAction.{h,cpp}
+   . GaussPreTrackAction.{h,cpp}
+   . GaussStepAction.{h,cpp}
+   . GaussTools_load.cpp
+   . GaussTrackActionByEnergy.{h,cpp}
+   . GaussTrackActionByEnergyProcess.{h,cpp}
+   . GaussTrackActionByEnergyType.{h,cpp}
+   . GaussTrackActionByProcess.{h,cpp}
+   . GaussTrackActionByType.{h,cpp}
+   . GaussTrackActionFinal.{h,cpp}
+   . GaussTrackActionGeneral.{h,cpp}
+   . GaussTrackActionHepMC.{h,cpp}
+   . GaussTrackActionStart.{h,cpp}
+   . GiGaEventActionCommand.{h,cpp}
+   . GiGaEventActionDraw.{h,cpp}
+   . GiGaEventActionSequence.{h,cpp}
+   . GiGaFieldMgr.{h,cpp}
+   . GiGaInputStream.{h,cpp}
+   . GiGaMagFieldGlobal.{h,cpp}
+   . GiGaMagFieldUniform.{h,cpp}
+   . GiGaOutputStream.{h,cpp}
+   . GiGaPhysListGeantino.{h,cpp}
+   . GiGaPhysListModular.{h,cpp}
+   . GiGaRegionsTool.{h,cpp}
+   . GiGaRegionTool.{h,cpp}
+   . GiGaRunActionCommand.{h,cpp}
+   . GiGaRunActionSequence.{h,cpp}
+   . GiGaSensDetBudget.{h,cpp}
+   . GiGaSensDetSequence.{h,cpp}
+   . GiGaSetSimAttributes.{h,cpp}
+   . GiGaStepActionDraw.{h,cpp}
+   . GiGaStepActionSequence.{h,cpp}
+   . GiGaTrackActionSequence.{h,cpp}
+   . TrCutsRunAction.{h,cpp}
+   . ZeroFieldMgr.{h,cpp}
+ 
+!======================= GiGaVisUI v4r0 2007-03-16 ===========================
+! 2007-01-12 - Gloria Corti
+ - Remove making public includes directory that does not exist
+   . requirements
+ - Replace GiGaFactory with ToolFactory and use Gaudi macros, also make
+   contructor public
+   . GiGaSetVisAttributes.{h,cpp}
+   . GiGaUISession.cpp.{h,cpp}
+   . GiGaVisManager.{h,cpp}
+   . GiGaVisUI_load.cpp
+ 
+!====================== VisSvc v5r0 2007-03-05 =============================
+! 2007-03-05 - Marco Clemencic
+ - Updated following the changes in LHCb v22r1 XmlTools
+ 
+!====================== VisSvc v4r0 2007-01-12 =============================
+! 2007-01-12 - Florence RANJARD
+ - install include files on InstallArea
+ 
+! 2006-12-21 - Guy Barrand
+ - VisSvc_load.cpp : use standard Gaudi cpp macros.
+ - Det_[dll,load].cpp -> VisSvc_[dll,load].cpp.
+ 
+ 
+!==================== SimSvc v5r0 2007-03-16 =================================
+! 2007-03-16 - Gloria Corti
+ - Modified to follow the changes in LHCb v22r1 XmlTools
+   . SimulationSvc.cpp
+ 
+! 2007-01-12 - Gloria Corti
+ - Use install area for includes for Gaudi v19r0
+   . requirements
+ - Use Gaudi macros for factory declarations (Gaudi v19r0)
+   . SimSvc_load.cpp
+   . SimulationSvc.cpp
+ 
+!========================= GiGaCnv v18r0 2007-03-16 ==========================
+! 2007-03-16 - Gloria Corti
+ - Remove left-over commented lines related to remove method
+   . GiGaCnvSvcBase.cpp
+ 
+! 2007-01-12 - Gloria CORTI
+ - update *.cpp to cope with GAUDI_v19r0
+ - Remove method locateOwnCnv() from base class since check not necessary
+   and preventing compilation with Gaudi v19r0
+   . GiGaCnvSvcBase.{h,cpp}
+ - Use Gaudi macros for factory declaration
+   . GiGaCatalogCnv.cpp
+   . GiGaDataStoreAlgorithm.cpp
+   . GiGaDetectorElementCnv.cpp
+   . GiGaElementCnv.cpp
+   . GiGaGeo.cpp
+   . GiGaIsotopeCnv.cpp
+   . GiGaKine.cpp
+   . GiGaLAssemblyCnv.cpp
+   . GiGaLVolumeCnv.cpp
+   . GiGaMixture.cpp
+   . GiGaSurfaceCnv.cpp
+ 
+! 2007-01-12 - Florence RANJARD
+ - install include files on InstallArea
+ 
+! 2006-07-10 - Florence RANJARD
+ - GiGaElementCnv.cpp, GiGaMixtureCnv.cpp, GiGaGeo.cpp, GiGaIsotopeCnv.cpp -
+   call G4Material::GetMaterial and G4Element::GetElement with warning=false
+   to avoid printout as possible with Geant4 8.1
+ 
+!======================= GiGa v19r0 2007-03-26 ===============================
+! 2007-03-26 - Gloria Corti
+ - Remove use of GiGaFactory no longer existing, and macros using it.
+   Since these templated classes do not seem to be used they are candidate
+   for removal in next release
+   . GiGa/GiGaExternalPhC.h
+   . GiGa/GiGaExternalPhysList.h
+   . GiGa/GiGaExternalPhysicsList.h
+ 
+! 2007-03-18 - Gloria Corti
+ - Remove GiGaFactory no longer existing and special macro for implementation
+   of GiGaExtPhysics that are done with new Gauss factory implemenations in
+   package GaussPhysics v4r0
+ - Remove commented include of GiGaFactory or GiGaMACROs, clean CVS $Name
+   and $Log, commented "protected" or "private" declarations
+   . GiGa/GiGaBase.h
+   . GiGa/GiGaFieldMgrBase.h
+   . GiGa/GiGaPhysicsListBase.h
+   . GiGa/GiGaSensDetBase.h
+   . GiGa/GiGaStepActionBase.h
+   . GiGa/GiGaTrackActionBase.h
+   . src/component/GiGaRunManager.{h,cpp}
+ 
+! 2007-01-12 - Gloria CORTI
+ - Remove header of GiGaFactory no longer necessary since replaced by
+   ToolFactory and remove its include from files that were using it.
+   Remove also GiGaMACROs.h with macros for implementation and declaration
+   of GiGa-factories. Use Gaudi macros for ToolFactory declarations.
+   . GiGa/GiGaFactory.h - REMOVED
+   . GiGa/GiGaMACROs.h  - REMOVED
+   . GiGa/GiGaBase.h
+   . GiGa/GiGaFieldMgrBase.h
+   . GiGa/GiGaPhysicsListBase.h
+   . src/component/GiGa.cpp
+   . src/component/GiGa_load.cpp
+   . src/component/GiGaRunManager.{h,cpp}
+ - Make standard contructor and destructor public
+   . GiGa/GiGaBase.h
+   . GiGa/GiGaSensDetBase.h
+   . GiGa/GiGaStepActionBase.h
+   . GiGa/GiGaTrackActionBase.h
+   . src/component/GiGaRunManager.h
+ - Remove include of IObjManager.h (from GaudiKernel) no longer existing
+   . src/component/GiGa.cpp
+   . src/component/GiGaIGiGaSvc.cpp
+   . src/Lib/GiGaUtil.cpp (remove also ISvcLocator.h}
+ - Clean up of CVS Name and Log
+   . src/component/GiGa_dll.cpp
+   . src/component/GiGaIGiGaSvc.cpp
+   . src/component/GiGa_load.cpp
+   . src/component/GiGaRunManager.cpp
+ - Remove loading of dll from example options no longer necessary with
+   Gaudi v19r1
+   . GiGaOptions.txt
+ 
+! 2007-01-12 - Florence RANJARD
+ - update for Gaudi v19r0 and InstallArea
+ 
+!============================ ClhepTools v2r0 ===============================
+! 2007-01-12 - Florence Ranjard
+ - install include files on InstallArea
+ 
+!========================= LbHijing v3r0 2007-03-23 ==========================
+! 2007-03-23 - Gloria Corti
+ - Make package compatible with use of LCGCMT/MCGenerators, using
+   hijing interface package provided. Adapt linkopts.
+   The use of Generators has to follow that of herwig, otherwise the
+   executable complains about process with vanishing cross section and
+   stops
+ - Fix compilation warning for unused variables as argumnets of methods
+   . HijingProduction.cpp
+  
+!======================== LbHerwig v5r0 2007-03-23 ==========================
+! 2007-03-23 - Gloria Corti
+ - Make package compatible with use of LCGCMT/MCGenerators, using
+   herwig and jimmy interface package provides. Adapt linkopts.
+   The use of Generators has to precede that of herwig, otherwise the
+   executable complains about PHOINI and stops at initialization
+ 
+!========================== GENSER v3r0 2007-03-27 ==========================
+! 2007-03-27 - Gloria Corti
+ - requirements - Use latest version of Pythia 6.410.2 from LCG installation
+ 
+! 2007-03-23 - Gloria Corti
+ - requirements - Introduce here the setting of native versions for all
+                  generators used
+                  Redefine macro lhapdf_linkopts to add lhapdf_dummy missing
+                  from LCGCMT_49 generators interface
+                  Set LHAPATH variable also missing in LCGCMT_49 generators
+                  interface
+                  Remove cernlib.f since now all LHCb generators package
+                  define the necessary subroutines
+                  Remove packages linkopts from GENSER_linkopts otherwise
+                  present twice (already used via interface packages)
+ 
+!======================= GENSER v2r49p0 2007-01-17 ===========================
+! 2007-01-17 - Florence Ranjard
+ - requirements - use the interface packages from 
+                  LCGCMT/LCG_GeneratorsInterfaces
+                  fix the native versions beforehand
+ 
+!=============================================================================
+!</PRE><H1><A NAME="v25r9">2007-03-13 - GaussSys v25r9</A></H1><PRE>
+<H2><A NAME="Note">DC06 version</A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v21r12 (and Gaudi v18r11)
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_4_1)
+   HepMC 1.26 (via LCG external)
+   Geant4 v71r0p16 (based on geant4.7.1.p01a)
+   DecFiles v13r9, ParamFiles v5r0 
+   XmlDDDB v30r14, XmlConditions v2r4, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Details">
+   Introduced generation of new events types.
+   Algorithm for detailed generator studies and comparison available.
+</A></H3>
 
-!============================================================================
+!======================== Gauss v25r9 2007-03-13 =============================
+! 2007-03-13 - Gloria Corti
+ - Introduce new algorithm for detailed generator studies (GaussMonitor v4r4).
+   Not used in production!
+   . MonitorInDetail.opts (problem when running Herwig)
+ 
+! 2007-03-09 - Gloria CORTI
+ - Allow generation of new event types (Z, W, top, Higgs, beam gas in VELO,
+   min bias and b events with new cuts applied at generator level).
+   Also possible to generate rare events with pileup.
+   Use:
+   . DecFiles    v3r9 - new event types
+   . Generators  v7r0 - new tools, modified IProductionTool and IGenCutTool
+                        interfaces
+   . LbPythia    v5r0 - new tool, adapt to change in IProductionTool and
+                        IGenCutTool
+   . LbHidValley v2r0 - adapt to change in IGenCutTool
+   . LbHijing    v2r0 - adapt to change in IProductionTool
+   . LbHerwig    v4r0 - adapt to change in IProductionTool and prepare code
+                        for compatibility with Gauss v30
+ 
+! 2007-03-08 - Gloria Corti
+ - Introduce settings for special events pileup
+   . FixedLumi-5.opts
+ 
+! 2007-03-02 - Gloria CORTI
+ - Introduce configuration for Hijing at 450 GeV
+   . PilotRun.opts
+ 
+!====================== Generators v7r0 2007-03-13 ===========================
+! 2007-03-08 - Patrick Robbe
+ - IProductionTool: Add new function "initializeGenerator()" which will
+   contain the generator specific initialization procedure.
+ - ReadHepMCAsciiFile: adapt for new production tool interface
+ - Special: Add the possibility to generate pile-up for special production
+ - FixedLuminosityForRareProcess: new pile-up tool to generate correctly
+   pile-up distributions for rare process events
+ 
+! 2007-03-08 - Patrick Robbe for Thomas Blake
+ - DiLeptonInAcceptance: new FullEventGenCutTool to accept events with dimuons.
+ 
+! 2007-02-27 - Patrick Robbe
+ - Fix output level of Special production tool
+ 
+! 2007-02-23 - Gloria Corti
+ - Increase major version due to change in IGenCutTool interface
+ 
+! 2007-02-22 - Gloria CORTI
+ - Change default values of ZMin and ZMax of flat primary vertex according
+   to what chosen for Luminosity studies for beam gas (+/- 1500 mm) as
+   communicated by Daniele GREGORI
+   . FlatZSmearVertex.cpp
+ 
+! 2007-02-20 - Patrick Robbe
+ - Fix efficiency counters for CP violation decay modes (=> change IGenCutTool
+   applyCut function arguments). The signal decay is now always performed
+   before applying any generator cut.
+ 
+!===================== LbPythia v5r00 2007-03-13 ============================
+! 2007-03-08 - Patrick Robbe
+ - Adapt PythiaProduction to new IProductionTool interface
+ 
+! 2007-03-07 - Gloria CORTI
+ - Increase major version number due to change in interface used
+ 
+! 2007-02-27 - Patrick Robbe for Victor Coco
+ - Add new tool PythiaHiggsType to generate Higgs, W, Z, and top events
+ 
+! 2007-02-26 - Patrick Robbe
+ - PythiaHiggs: adapt to new generator cut tool.
+ 
+!======================== LbHerwig v4r0 2007-03-13 ==========================
+! 2007-03-13 - Gloria CORTI
+ - Fix compilation errors in modified Fortran routines
+   . mcatnlo_uti.F - reduce lenght of line not to exceed 72 characters,
+                     fix lenght of characters to respect modification
+   . mcatnlo_qqxsec.F - replace some left-over DDILOG calls with MCATNLO_DDILOG
+ - Adapt to changes in IProduction interface. Implementation of new method
+   initializeGenerator() is empty
+   . HeprwigProduction.{h,cpp}
+                      
+! 2007-02-09 - Karl Harrison
+ - modified src/Lib/mcatnlo to include copies of CERNLIB subroutines/functions
+   => Added file mcatnlo_uti.f (renamed to mcatnlo_uti.F)
+      from MC@NLO 3.2 distribution
+      * File defines: ABEND, DDILOG, DIVDIF, FINT, KERMTR, KERSET
+      * Each name prefixed by "MCATNLO_" to avoid possible name clashes
+        with other packages
+   => Deleted file mcatnlo_lhauti.f, which contains another copy of DIVDIF
+   => Modified files mcatnlo_qqxsec.f (renamed mcatnlo_qqxsec.F) to
+      take into account change in function name from DDILOG to
+      MCATNLO_DDILOG
+ 
+!========================= LbHijing v2r0 2007-03-09 =======================
+! 2007-03-09 - Gloria CORTI
+ - Adapt to changes in IProduction interface. Implementation of new method
+   initializeGenerator() is empty
+   . HijingProduction.{h,cpp}
+ 
+!========================= LbHidValley v2r0 2007-03-07 ========================
+! 2007-03-07 - Gloria CORTI
+ - src/Components/NbQuarks.cpp
+    adapt to change in interface in IGenCutTool
+ 
+!=================== GaussMonitor v4r4 2007-03-13 ===========================
+! 2007-03-13 - Gloria Corti
+ - Remove un-necessary include of EvtConst.hh
+   . GeneratorAnalysis.cpp
+ - Set return value of lifetime to -1.0 when not possible to calculate it
+   . GaussGenUtil.cpp
+ - Put boundary of lifetime histogram to include bin at -1.0
+   . GeneratorAnalysis.cpp
+ 
+! 2007-03-08 - Patrick Robbe
+ - GaussGenUtil.cpp: fix lifetime computation
+ - GeneratorAnalysis.cpp: change histogram number 101 (conflict with another
+   histogram with the same number), adapt lifetime range to mm.
+ 
+! 2007-03-07 - Gloria CORTI
+ - Introduce algorithm with detailed histograms for generators studies and
+   validation from Paul SZCZYPKA. Some clean up with respect to its code.
+   . GeneratorAnalysis.{h,cpp} - NEW
+ - Introduce function extracted from GeneratorAnalysis to provide lifetime
+   (c*tau) in GaussGenUtil namespace
+   . GaussGenUtil.{h,cpp}
+ - Add hard interaction information to ntuple (from Paul SZCZYPKA)
+   . GeneratorFullMonitor.{h,cpp}
+ - Add declaration of new algorithm GeneratorAnalysis. Necessary for the
+   package to be compatible with both Gaudi v18 (DC06) and v19.
+   . GaussMonitor_load.cpp
+ 
+!=============================================================================
+</PRE><H1><A NAME="v25r8">2007-02-09 - GaussSys v25r8</A></H1><PRE>
+<H2><A NAME="Note">DC06 version</A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v21r12 (and Gaudi v18r11)
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_4_1)
+   HepMC 1.26 (via LCG external)
+   Geant4 v71r0p16 (based on geant4.7.1.p01a)
+   DecFiles v13r8, ParamFiles v5r0 
+   XmlDDDB v30r14, XmlConditions v2r4, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Details">
+   Possibility to generate various Engeeering Run configurations in production.
+   Fix in Generators for problems observed in production of signal events.
+   Technical modifications to be compatible also with Gaudi v19r1.
+</A></H3>
 
+!======================== Gauss v25r8 2007-02-09 =============================
+! 2007-02-08 - Gloria Corti
+ - Make v25r8 version: DC06 compatible.
+ - Use version of GENSER v1r141p2 with compilation flag for 32 bits fortran
+   compatibility on slc4.
+ - Use new versions for packages with technical modifications that are
+   compatible with Gaudi v18r11 and v19r1: factories or similar changes
+   (LbPythia v4r10, LbHerwig v3r4, BcVegPy v1r0p1, LbBcVegPy v1r4,
+    LbHijing v1r2, ParticleGuns v3r2, GaussKine v1r5, GaussAlgs v2r4,
+    GaussMonitor v4r3, CaloMoniSim v3r1, VeloGauss v2r1, MuonMoniSim v2r2)
+ - Use new version of Hidden Valley with options for production and compatible
+   with both Gaudi v18r11 and v19r1 (LbHidValley v1r2)
+ - Use latest version of DecFiles v13r8 with new event types
+ - Use new version of Generators v6r8 with fixes for bugs observed in
+   production of signals (see release notes for details) and changes for
+   factories
+ - Introduce options for various configurations of 2007 Engeneering Run
+   (aka Pilot Run) to be used by production instead of v200601.opts
+   . v200601-450GeV-CloseVelo-BOff.opts     - NEW
+   . v200601-450GeV-CloseVelo-BOn.opts      - NEW
+   . v200601-450GeV-OpenVelo-BOff.opts      - NEW
+   . v200601-450GeV-OpenVelo-BOn.opts       - NEW
+   . v200601-450GeV-SemiOpenVelo-BOff.opts  - NEW
+   . v200601-450GeV-SemiOpenVelo-BOn.opts   - NEW
+   . Gauss.opts                             - Modify comments
+   . PilotRun.opts                          - Simplify options for field off
+ - Introduce loading of dll of CaloMoniSim that has been removed from
+   options in package (only necessary for Gauss v25rX series)
+ 
+!====================== MuonMoniSim v2r2 2007-02-08 =======================
+! 2007-01-12 - Gloria CORTI
+ - update code to cope with Gaudi v19r0: use macro for factory (also
+   compatible with v18)
+   . MuonHitChecker
+! 2007-01-12 - Florence RANJARD
+ - Use single pattern for compenent library instead of two
+   . requirements
+ 
+!========================== VeloGauss v2r1 2007-02-08 ========================
+! 2007-02-08 - Gloria Corti
+ - Remove import of VeloAlgorithms not necessary and preventing compilation
+   with Gaudi v19
+   . requirements
+ - Use Gaudi macro for factory necessary for Gaudi v19 and also compatible
+   with v18
+ 
+!===================== CaloMoniSim v3r1 2007-02-08 ==========================
+! 2007-01-12 - Gloria Corti
+ - update code to cope with Gaudi v19r0. Use Gaudi macro for factory (also
+   compatible with v18)
+   . MCCaloMonitor.cpp
+ - Remove loading of dll in options.
+   . MoniSim.opts
+ 
+!=================== GaussMonitor v4r3 2007-02-08 ===========================
+! 2007-01-12 - Gloria Corti
+ - adapt code to Gaudi v19r0, use Gaudi macro for factory (also compatible
+   with Gaud v18):
+   . MCDecayCounter.cpp
+ 
+!===================== GaussAlgs v2r4 2007-02-08 =========================
+ 2007-02-08 - Gloria Corti
+ - Re-introduce include of GaudiKernel/MsgStream.h otherwise it does not
+   compile with Gaudi v18
+   . GiGaFlushAlgorithm.cpp
+ 
+! 2007-01-12 - Gloria Corti
+ - update code to cope with Gaudi v19r0 (compatible with v18 as well):
+   use Gaudi macro for factories, constructors are public (remove friend
+   factory), some clean up:
+   . PrintEventAlg.{h,cpp}
+   . GiGaGetEventAlg.{h,cpp}
+   . GiGaFlushAlgorithm.{h,cpp}
+   . GiGaCheckEventStatus.cpp
+ 
+!========================== GaussKine v1r5 2007-02-08 ========================
+! 2007-01-12 - Gloria Corti
+ - Use Gaudi macro for factories so to be comaptible with both Gaudi v18
+   and v19:
+   . G4HepMCToMCTruth.cpp
+   . GeneratorToG4
+ 
+!====================== ParticleGuns v3r2 2007-02-08 =====================
+! 2007-01-08 - Florence Ranjard
+ - update SingleParticleGuns.cpp, ParticleGuns.cpp, MaterialEvalGun.cpp
+   to use new FACTORY
+ 
+!========================= LbHidValley v1r2 2007-02-08 ========================
+! 2007-01-26 - Vanya BELYAEV
+ - src/Lib/lenocchv.F
+    new function ( copy of lenocc.F from CERNLIB)
+ - src/Lib/hvgetpar.F
+   src/Lib/hvsetpar.F
+    make use of LENOCCHV instead of LENOCC
+ 
+! 2007-01-19 - Vanya BELYAEV
+   - remove the obsolete *.opts file
+   - options/HidValley.opts
+       new file, required to minimize the modification in production tools
+   - cmt/requirements
+       version increment to v1r2
+ 
+!===================== LbBcVegPy v1r4 2007-02-08 =====================
+! 2007-02-08 - Gloria Corti
+ - include files are private, so use include_dirs. This makes it
+   usable both with/without install area
+ 
+! 2007-01-08 - Florence Ranjard
+ - update BcVegPyProduction.cpp to use new FACTORY.
+ 
+! ====================== BcVegPy v1r0p1 2007-01-22 ========================
+! 2007-01-22 - Florence RANJARD
+ - Remove compilation of *.F in requirements (not existing in src)
+ 
+!========================= LbHijing v1r2 2007-02-08 =======================
+! 2007-02-08 - Gloria Corti
+ - modify requirements to be compatible with GENSER 1_4_1 and without
+   install area (for Gauss v25 series)
+ 
+! 2007-01-08 - Florence Ranjard
+ - update HijingProduction.cpp to use new FACTORY
+ 
+! 2006-11-15 - Gloria CORTI for Daniele GREGORI
+ - Fix bug in example options were there is an extra "," before closing brakets
+ 
+!======================== LbHerwig v3r4 2007-02-08 ==========================
+! 2007-02-08 - Gloria Corti
+ - modify requirements to use with Gauss v25 series
+ 
+! 2007-01-08 - Florence Ranjard
+ - update HerwigProduction.cpp to use new FACTORY
+ 
+!===================== LbPythia v4r10 2007-02-08 ===========================
+! 2007-02-08 - Gloria Corti
+ - to use with Gauss v25 series use include_dir in requirements
+ 
+! 2007-01-08 - Florence Ranjard
+ - move GaussUserProcess.inc from LbPythia/ to src/Lib
+ - move PythiaProduction.cpp from src/component to src/Lib
+ - update PythiaHiggs.cpp and PythiaProduction.cpp to use new FACTORY
+ 
+!====================== Generators v6r8 2007-02-08 ===========================
+! 2007-02-08 - Gloria Corti
+ - Slighlty change message levels at initialization to see beam energy and
+   primary interation vertex ( CollidingBeams.cpp, FixedTarget.cpp,
+   BeamSpotSmearVertex.cpp, FixedNInteractions.cpp)
+ 
+! 2007-02-06 - Patrick Robbe
+ - Fix problem with biased hadron fractions (SignalPlain and
+   SignalRepeatedHadronization)
+ 
+! 2007-01-30 - Patrick Robbe
+ - Fix problem with flip by EvtGen in Cut tools (DaughtersInLHCb,
+   SelectedDaughtersInLHCb and ListOfDaughtersInLHCb)
+ 
+! 2007-01-23 - Gloria Corti
+ - Modify requirements to have a version with all changes in code but
+   compatible with DC06.
+ - Change default for flat smearing of primary vertex, to have correct values
+   at 7 TeV for beam gas, i.e. 100 microns in x and y
+ 
+! 2007-01-08 - Florence Ranjard
+ - update in many *.cpp to use new FACTORY and SystemOfUnits from GaudiKernel
+ 
+!======================== EvtGen v8r15 2007-02-08 =========================
+! 2007-01-24 - Patrick Robbe
+ - Add new class EvtDiLog to replace di-logarithm function DDILOG from
+   the CERNLIB.
+ - Modify code to use this new class:
+   . EvtGenModels/EvtbTosllAmp.hh
+   . src/EvtBtoXsllUtil.cpp
+   . src/EvtVubdGamma.cpp
+   . src/EvtbTosllAmp.cpp
+ 
+!===================== GENSER v1r141p2 2007-02-08 ==========================
+                     built on v1r130p1b branch to use GENSER_1_4_1
+! 2007-02-08 - Gloria Corti
+ - requirements - use -m32 flag for compatibility with 32 bits on slc4
+ 
+!=============================================================================
+</PRE><H1><A NAME="v25r7">2006-12-05 - GaussSys v25r7</A></H1><PRE>
+<H2><A NAME="Note">DC06 version</A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v21r12 (and Gaudi v18r11)
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_4_1)
+   HepMC 1.26 (via LCG external)
+   Geant4 v71r0p16 (based on geant4.7.1.p01a)
+   DecFiles v13r3, ParamFiles v5r0 
+   XmlDDDB v30r14, XmlConditions v2r4, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Details">
+   Use Geant4 compiled without -sse2 flag
+</A></H3>
+
+!======================== Gauss v25r7 2006-12-05 =============================
+! 2006-12-05 - Gloria Corti
+ - Set value of luminosity in PilotRun.opts to 1 x 10^27 cm-2 s-1 as presented
+   by T.Nakada in Plenary of LHCb Week in Sept.2007
+ - Add example for switching on PilotRun in Gauss.opts: note that it MUST be
+   included AFTER the EventType options.
+ 
+! 2006-12-04 - Gloria Corti
+ - Use latest available version of XmlDDDB v30r14
+ - Use latest version of DecFiles v13r3 with some modified decays.
+ - Use latest version of ParamFiles v5r0 with modifications not affecting
+   Gauss
+ - Use newer version of LbHerwig with fix for using it with MCatNLO
+ - Introduce optional use of new generator LbHidValley from V.Belyaev, to
+   use it:
+     1. > source setup.csh -tag_add=HidValley
+     2. > make CMTEXTRATAGS=HidValley
+     3. modify options as shown in commented example in Gauss.opts
+     4. run the executable GaussHidValley.exe
+   Example in Gauss.opts for event type with Hidden Valley generator.
+ - Remove use of AcerMC no longer in the Gauss project
+ - Set luminous region for pp collision in PilotRun conditions with magnet OFF
+   . PilotRun.opts
+ 
+!======================== EvtGen v8r14 2006-12-05 =========================
+! 2006-12-05 - Patrick Robbe
+ - Fix sign convention in EvtPVVCPLH
+ 
+! 2006-11-26 - Patrick Robbe
+ - Fix bug in EvtSSDCP when generating Bs decays.
+
+!====================== Generators v6r7p1 2006-12-04 =========================
+! 2006-11-30 - Vanya BELYAEV
+ - src/componet/Generation.cpp
+   add a guard for "0 != m_pileUpTool" in
+   Generation::finalize method
+ 
+!!======================== LbHerwig v3r3 2006-11-29 ==========================
+! 2006-11-29 - Karl Harrison
+ - Correction for bug that affected generation with MC@NLO
+   => Integration with BASES package was performed for each event,
+      and gave correct results only for the first event
+      (cumulative variables used)
+   => Small changes to:
+      src/component/HerwigProduction.cpp
+      src/Lib/mcatnlo/mcatnlo_qqmain.cpp
+ 
+!========================= LbHidValley v1r1 2006-12-04 ========================
+! 2006-11-30 - Vanya BELYAEV
+ - verify configuetaion files for productions:
+ 
+Multi v-particle:
+ 
+  at least 3 b-quarks in acceptance
+ 
+ * ===========================================
+ * "Hidden Valley: multi v-pions production"
+ * ===========================================
+ * event type  m(Z')  m(vp0)  t(vpi0) t(vpi+)
+ * ===========================================
+ * 44900001    3000    35      100.0ps   inf
+ * 44900002    3000    50       10.0ps   inf
+ * 44900003    3000    70        1.0ps   inf
+ * 44900004    3000   120        0.1ps   10ps
+ * ===========================================
+ 
+Higgses, at least 4 b-quarks in acceptance
+ 
+ *  ==================================
+ *  "Hidden Valley through Higgses"
+ *  ==================================
+ *  event type   m(H0)  m(A0)    t(A0)
+ *  ==================================
+ *  43900001     120     35       1ps
+ *  43900002     120     35      10ps
+ *  43900003     120     35     100ps
+ *  43900004     180     35     100ps
+ *  43900005     180     50      10ps
+ *  43900006     180     70       1ps
+ *  ==================================
+ 
+ 
+ - add a proper comments from Matt Strassler to all files
+ - option/HidValleyPI.opts
+    remove the pile-up tool
+ - cmt/requirements
+   version increment to v1r1
+ 
+! -----------------------------------------------------------------------------
+ 
+! 2006-10-28 - Vanya BELYAEV
+ - new package.
+ 
+   The actual lines are extracted from the original code HV4.403 by
+   Matt Strassler <strasslr@noether.phys.washington.edu>
+ 
+  Short description by Matt Strassler:
+  ====================================
+  """
+ 
+   My new program is aimed at the types of events that occur in
+ 
+   Echoes of a hidden valley at hadron colliders.
+   Matthew J. Strassler, Kathryn M. Zurek (Washington U., Seattle) . Apr
+   2006. 5pp.  e-Print Archive: hep-ph/0604261
+ 
+   These events are much richer in structure -- the number of displaced vertices
+   per event can be much larger than two, though the total number
+   of events might be quite abit smaller.
+ 
+   The experimental techniques you are developing would ideally be
+   sensitive to many types of new physics, including both the physics of
+   these two papers above, and the physics discussed (and earlier
+   papers briefly reviewed) in
+ 
+   Possible effects of a hidden valley on supersymmetric phenomenology.
+   Matthew J. Strassler (Washington U., Seattle) . Jul 2006. 10pp.
+   e-Print Archive: hep-ph/0607160
+ 
+   whereby LHCb can discover supersymmetry.
+ 
+   """
+ 
+   The package contains 2 constitients
+ 
+   - standalone executable HidValley.exe  [depends only on Pythia]
+     with comman-dline interfaces,
+     which is able to produce the partonic events in
+     new LHE-output (xml-like) format
+ 
+   - Gaudi component "HidValleyProduction" to perform the actual
+     simulation within Gauss framework
+     
+!=============================================================================
+</PRE><H1><A NAME="v25r6">2006-11-13 - GaussSys v25r6</A></H1><PRE>
+<H2><A NAME="Note">DC06 version</A></H2>
+<H3><A NAME="Use">This version uses:
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_4_1)
+   HepMC 1.26 (via LCG external)
+   DecFiles v13r1, ParamFiles v4r5 
+   Geant4 v71r0p15 (based on geant4.7.1.p01a)
+   LHCb v21r11 (and Gaudi v18r10)
+   XmlDDDB v30r12, XmlConditions v2r4, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Detail">
+   Possibility of new event types with cuts at generator level and new
+   decay models
+   Easier way to run with open VELO in options in Pilot Run is shown.
+   Possibility to do new studies with RICH, ex. Magnetic field distortions in
+   HPDs: default is identical to DC06.
+</A></H3>
+
+!======================== Gauss v25r6 2006-11-13 =============================
+! 2006-11-13 - Gloria Corti
+ - Use units rad now available in GaudiConf in ParticleGuns.opts
+ - Use unit "Lumi" corresponding to 10^32 cm-2 s-1 in FixedLumi-5.opts
+ - Modify SimVeloGeometry.opts so that it is enough to include it to use it
+   and it does not require commenting anything in Simulation.opts
+ - Add in default configuration for PilotRun.opts to have open VELO (also
+   examples for other VELO positions)
+ - Reset boundaries of Y vs X histograms for TT and IT so that they are
+   better adjusted to detectors sizes.
+ - In GaussVis.opts switch off some detectors
+ 
+! 2006-11-10 - Gloria Corti
+ - Use newer versions of generators package with new features (Generators v6r8
+   LbPythia v4r9)
+ - Use newer version of GaussRICH v6r8 with additional features. Default
+   setup is DC06 behaviour.
+ 
+!======================== EvtGen v8r13 2006-11-09 =========================
+! 2006-11-09 - Patrick Robbe
+ - Add new decay model EvtSSD_DirectCP to generate direct CP violation.
+ - Fix EvtSSDCP to also accept Bs decays.
+ 
+!======================= Generators v6r7 2006-11-09 ==========================
+! 2006-10-31 - Patrick Robbe
+ - src/Lib/Signal.cpp: fix unitialized variable.
+ 
+! 2006-10-25 - Vanya BELYAEV
+ - src/component/DumpHepMCTree.cpp
+     simple algorithm to dump the HepMC-tree in readable format
+ - src/component/DumpMCDecay.h, src/component/DumpMCDecay.cpp
+     reshuffling of lines to allow the reuse functionality
+     in DumpHepMCTree algorithm
+ - src/component/Generators_load.cpp
+     add a factory for new algorithm
+ 
+! ==================== LbPythia v4r9 2006-11-09 ===========================
+! 2006-10-26 - Vanya Belyaev
+ - src/component/PythiaProduction.cpp
+      exclude Z' from the hardcoded list of "special" particles
+      [Needed for Hidden Valley production]
+ 
+! 2006-10-25 - Vanya BELYAEV
+ - src/component/PythiaProduction.cpp
+    remove stupid bug, introduced in a rush
+     during merging procedure
+ 
+! 2006-10-25 - Vanya BELYAEV
+  - LbPythia/PythiaProduction.h
+  - src/component/PythiaProduction.cpp
+      1) move few members from private to protected area
+      2) introduce new method (protected) toHepMC
+         to allow an easy reimplementation of generateEvent
+         method for derived classes
+      3) make use of this new method in
+              PythiaProduction::generateEvent
+              PythiaProduction::hadronize
+  - LbPythia/GaussUserProcess.inc
+      add new process type:
+      C*    Use Hidden Valley production
+            INTEGER HIDVALLEYPROCESS
+            PARAMETER(HIDVALLEYPROCESS=4)
+  - src/Lib/upevnt.F, src/Lib/upinit.F
+      take care about existence of HIDVALLEYPROCESS generator
+ 
+!======================== GaussRICH v6r8 2006-11-09 ===========================
+! 2006-11-02 - Sajan Easo
+ - For aerogel the Rayleigh scattering has a check on how many times a photon
+   gets scattered and if this is above a cut value from the options file,
+   the photon gets killed.
+   Added a PreUsertrackaction in RichG4TrackActionAerogelPhoton which checks
+   the momentum of the photons from aerogel and if above a cutoff value then
+   kill those photons.
+   This is so that in the xmldddb can be set to  produce the photons in the
+   full momentum range which is from 1.5 to 6.5 eV and depending upon the
+   filter is used or not, the photons to be filtered out are killed in
+   GaussRICH to save cpu time from going through the Rayleigh scattering.
+ 
+! 2006-10-30 - Sajan Easo
+ - Integrated the Hpd Magnetic field Distortion implementations from M.Musy
+   The parameters for this are read in from the XmlConditions DB.
+   This can be activated from a switch in Rich.opts, named
+   RichUseHpdMagDistortions
+   The current default is to switch this off. To activate this the Rich xml
+   parameter UseHpdMagDistortions need to be set to 1.0  as well.
+ - For the HPD PSF , made a switch in Rich.opts named RichPSFPreDc06Flag.
+   The default is 'true' which is to set to the parametrization set at the
+   beginning of DC06.
+   When it is set to false, the new parametrization is activated which
+   worsens the resolution by a small amount as shown from recent testbeam
+   results.
+ - The RichAnalysis is fixed for the test reconstruction . The fixes included
+   changing the names of userparameters for the mirrors and the hpd numbering
+   scheme in accordance with the xmldddb.
+
+!=============================================================================
+</PRE><H1><A NAME="v25r5">2006-10-11 - GaussSys v25r5</A></H1><PRE>
+<H2><A NAME="Note">DC06 version.</A></H2>
+<H3><A NAME="Use">This version uses:
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_4_1)
+   HepMC 1.27 (via LCG external)
+   DecFiles v13r1, ParamFiles v4r5 
+   Geant4 v71r0p15 (based on geant4.7.1.p01a)
+   LHCb v21r10 (and Gaudi v18r9)
+   XmlDDDB v30r12, XmlConditions v2r4, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Detail">
+   Possibility of new event types with cuts at generator level
+</A></H3>
+
+!======================== Gauss v25r5 2006-11-02 =============================
+! 2006-11-02 - Gloria CORTI
+ - Use options for standard DC06 from GaudiConf (LHCb v21r10)
+   . v200601.opts, v200601-SimPhase.opts
+ - Use new version of LbHerwig v3r2 adapted to GENSER_1_4_1
+ - Use new version of GaussMonitor v4r2 with fix for full monitor with
+   Herwig
+ 
+! 2006-10-26 - Gloria Corti
+ - Use new version of XmlDDDB v30r12 and XmlConditions v2r4. The use of the
+   new RICHDet from LHCb requires modified GaussRICH v6r7
+ 
+! 2006-10-24 - Gloria Corti
+ - Use new version of Generators v6r6 and LbPythia v4r8 to allow production
+   of new event types
+ 
+! 2006-10-23 - Gloria Corti
+ - Use new version of DecFiles v13r1 with new event types
+ 
+!======================== GaussRICH v6r7 2006-10-11 ===========================
+! 2006-10-26 - Sajan Easo
+ - Hpd Numbering scheme made compatible with the recent changes for RICH2
+   in XMLDDDB v30r11 in RichHpdPhotoElectricEffect.cpp
+
+!=================== GaussMonitor v4r2 2006-11-01 ============================
+! 2006-10-31 - Patrick Robbe
+ - GenMonitorAlg.cpp: protect against off-shell particles with negative
+   invariant mass.
+ 
+! ==================== LbPythia v4r8 2006-10-23 ===========================
+! 2006-10-22 - Vanya BELYAEV
+ - LbPythia/PythiaProduction.h
+ - src/component/PythiaProduction.cpp
+    introduce new property "PDTlist" (default is empty list)
+    to print (using PYLIST(12)) the particle data tables for
+    certain particles
+ -  move few lines from "initialize" to "printRunningConditions"
+ 
+!======================= Generators v6r6 2006-10-23 ==========================
+! 2006-10-23 - Patrick Robbe
+ - src/component/ListOfDaugthersInLHCb.h/.cpp: cut on a list of
+   daughters of the signal to be in the acceptance.
+ 
+! 2006-10-19 - Vanya BELYAEV
+ - src/component/DumpMCDecay.cpp
+     - improve the printout
+     - introduce benw property "MaxLevels" to represent the maximal
+       printout level pit is much more easier to debug now!]
+     - reshuffle the lines a bit
+ - src/component/DumpMCDecay.h  - remove the file
+ 
+!======================== EvtGen v8r12 2006-10-23 =========================
+! 2006-10-16 - Patrick Robbe
+ - Add new decay model EvtPVVCPLH for Bs -> J/psi phi decays (correct
+   time dependant angular distributions).
+ 
+!======================== LbHerwig v3r2 2006-10-31 ==========================
+! 2006-10-30 - Gloria Corti
+ - Adapt to change of dummy library names in GENSER 1_4_1
+ 
+! 2006-10-23 - Karl Harrison
+ - Usage notes for LbHerwig v3r0 and later: see LbHerwig release notes
+ 
+!===================== GENSER v1r141p1 2006-11-02 ==========================
+                     built on v1r130p1b branch to use GENSER_1_4_1
+! 2006-11-02 - Florence RANJARD
+ - requirements - use GENSER 1_4_1
+ 
+!=============================================================================
+</PRE><H1><A NAME="v25r4">2006-10-11 - GaussSys v25r4</A></H1><PRE>
+<H2><A NAME="Note">DC06 version.</A></H2>
+<H3><A NAME="Use">This version uses:
+   Pythia 6_325.2, photos 215.2, lhapdf 4.2 (via GENSER 1_3_0)
+   HepMC 1.26 (via LCG external)
+   DecFiles v13r0, ParamFiles v4r5 
+   Geant4 v71r0p14 (based on geant4.7.1.p01a)
+   LHCb v21r8 (and Gaudi v18r7)
+   XmlDDDB v30r10, XmlConditions v2r2, FieldMap v4r7</A></H3>
+<H3><A NAME="Exe">Used by GaussXXX executables:
+   Herwig 6_510.2, Jimmy 4_2.2
+   Hijing 1_383bs.2</A></H3>
+<H3><A NAME="Detail">
+   Possibility of new event types with cuts at generator level
+</A></H3>
+
+!======================== Gauss v25r4 2006-10-11 =============================
+! 2006-10-11 - Gloria Corti
+ - Use newer version of GaussRICH v6r6 to fix uninitialezed counter showing as
+   randomly bizarre number in log file
+ 
+! 2006-10-10 - Gloria Corti
+ - Use newer version of Generators v6r5 to allow generation of new event type
+ - Take options files for additional generators from specific packages
+   Remove from this package BcVegPy.opts, Herwig.opts, Hijing.opts and
+   take them from LbBcVegPy v1r3, LbHerwig v3r1, LbHijing v1r1
+   . example in Gauss.opts
+ - For production reduce printout of options leaving only the alphabetically
+   ordered list
+   . v200601.opts, v200601-SimPhase.opts, Common.opts, DebugG4Track.opts
+ - Remove intermediate notes to write to Pesistency when running in generator
+   stand alone as modified in GaudiConf
+   . GenStandAlone.opts
+ - Adapt to changes in options for EventClockSvc (as in DetDescSvc v1r6 in
+   LHCb v21r8)
+   . Gauss.opts
+ - Add commented the options to produce with magnet on in Pilot run
+   configuration
+   . PilotRun.opts
+ 
+! 2006-10-05 - Gloria CORTI
+ - Use new version of XmlDDDB v30r10, XmlConditions v2r2 (DC06 compatible)
+ - Use new version of DecFiles v12r5
+ - Use new version of Generators v6r4 and LbPythia v4r7 to allow generation
+   of new event types
+ - Use new version of LbHijing to fix problems with Pythia common blocks
+   internally used.
+ 
+!======================= Generators v6r5 2006-10-10 ==========================
+! 2006-10-09 - Patrick Robbe
+ - SelectedDaughterInLHCb: modify to be able to give more than
+   1 PID in list of daughters to select on.
+ 
+! 2006-10-06 - Vanya BELYAEV
+ - src/component/ReadHepMCAsciiFile.cpp
+ 
+    Simple "production tool", which actually reads HepMC events
+    from  ascii input file. The tool could be useful to read
+    information from external generators, if their integration
+   into Gauss is impossible, difficult or not needed.
+    
+   The tool has 2 properties:
+  
+     - <c>Input</c>  : The name of input fiel in HepMC Ascii format
+                     ( the default value is <c>""</c> (empty string))
+     - <c>Rescale<c> : Boolean flag to rescal the input event from
+                      Pythia units to LHCb units.
+                      The default value is <c>true</c>.
+ - src/component/WriteHepMCAsciiFile.cpp
+ 
+    Simple class to dump generators events in plain
+    output file in HepMC Ascii format. It coudl be used for portable
+    cross-transitions of events inbetween different degerators
+  
+    The algorithm has 3 properties:
+   
+     - <c>Input</c>  : The TES location of LHCb::HepMCEvent::Container
+               ( the default value is <c>LHCb::HepMCEventLocation::Default</c>)
+     - <c>Ouput</c>  : The name of output HepMC Ascii file.
+                      The file is opened in "new/overwrite" mode.
+                      ( the default value is <c>""</c> (empty string)
+     - <c>Rescale<c> : Boolean flag to rescal the event from
+                       LHCb units to Pythia units.
+                       The default value is <c>true</c>.
+  
+ - src/components/Generators_load.cpp
+      declare 2 new componenst
+ 
+ - Generators/Scale.h, src/Lib/Scale.cpp
+     simple utility to scale HepMC event inbetween Pythia and LHCb units
+ 
+!======================= Generators v6r4 2006-10-05 ==========================
+! 2006-10-04 - Patrick Robbe
+ - Add a new tool (SelectedDaughterInLHCb) to cut only on the daughters
+  of a single daughter of the signal particle (for example daughter
+ from a J/psi, Ds, ...), and require they are in the LHCb acceptance.
+ 
+! 2006-10-04 - Vanya BELYAEV
+ 
+ - Generators/F77Utils.h
+       new file with few C++ utilities to manipulate(open&close) FORTRAN file
+      (Old/New/Unknown & their "Formatted" counterpartters)
+ - src/Lib/F77Utils.cpp
+ - src/Lib/f77units.F
+      Implementation of the functions from the file Generators/F77Utils.h
+ - cmt/requirements
+      version incrmeent to v6r4
+ 
+! 2006-10-01 - Patrick Robbe
+ - Add possibility to cut on daughters of signal particle (New
+   DaughtersInLHCb cut tool). Change of IGenCutTool interface to
+   allow this.
+ 
+! ==================== LbPythia v4r7 2006-10-09 ===========================
+! 2006-10-04 - Patrick Robbe
+ - src/component/PythiaProduction.cpp: fix bug, uninitialized variable.
+ 
+! 2006-10-04 - Patrick Robbe
+ - src/component/ReadLHEfile.cpp: rename as ReadLHEfileProduction
+   to follow Gauss production generators naming conventions.
+ 
+! 2006-10-04 - Vanya BELYAEV
+ - src/component/PythiaProduction.cpp
+ 
+     Fix bugs, kindly pointed by Patrick ROBBE:
+ 
+     PythiaProduction::hadronize
+      - fix a stupid bug (duplication of lines for rescaling of momentum)
+      - fix a listing level for PyList call from PythiaProdyction::hadronize
+ 
+ 
+! 2006-10-04 - Vanya BELYAEV
+ - LbPythia/GaussUserProcess.inc
+      common block /GAUSSUSERPROCESS/ + numerical defintion of processes
+      as fortran PARAMETERS, in particular LHEREADPROCESS=3
+  
+    Modification to read LHE (Les Houches Event) parton level file:
+ 
+ - src/Lib/upevnt.F,  src/Lib/upinit.F
+      - modification to use LHEUPINIT and LHEUPEVNT in the case
+        of LHEREADPROCESS
+      - make use of common block fomr include-file
+ - src/Lib/lheupevnt.F, src/Lib/lheupinit.F
+      new routines to be used to reading of LHE file
+ - src/component/ReadLHEfile.cpp
+      new "production tool" for reading LHE file
+ - src/Lib/SetUserProcess.F
+      make use of common block fomr include-file
+ 
+ 
+ - LbPythia/Pythia.h,src/Lib/Pythia.cpp
+      1) add function PyUpda   ( interface to fortran function PYUPDA)
+      2) add function PyGive   ( interface to fortran function PYGIVE)
+ 
+ 
+ - LbPythia/PythiaProduction.h, src/component/PythiaProduction.cpp
+     1) Add new property "PYTHIA", which includes the PYTHIA commands
+        in a format used by PYGIVE routine, e.g.
+      
+          XXX.YYY.ZZZ.PythiaProduction.PYGIVE = {
+            "MSTP(10)=10;MSPT(20)=20:MSTP(30)=30" ,
+            "MSTP(10)=10;MSPT(20)=20:MSTP(30)=30" } ;
+        Note: program PYGIVE prints the changed/modified variables.
+ 
+     2) add possibility to read and write particle decay data:
+      
+        A) to write particle decay data:
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtoutput pdt.out" } ;
+           It will dump the whole particle decay data
+          (Using PYUPDA(1,LUN) routine) into the file pdt.out
+ 
+        B1) to read the whole particle data table
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtinput pdt.in" ,
+               "pyinit pdtlevel 2" } ; // PYUPDA(2,LUN)
+        B2) to read only modified partice data entries:
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtinput pdt.in" ,
+               "pyinit pdtlevel 3" } ; // PYUPDA(3,LUN)
+         
+          The default unit(LUN) for A&B is 59 could be changed
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtunit 15" } ;
+    
+          As ususla setting unit to 0 switches off both input
+         and output of the PYUPDA)
+   
+       3) "Event" listing is split into 2 parts
+           "Event" listing and "Hanronization" listing and could
+           be controlled independently
+          "event" listing corresponds to directive:
+ 
+         XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pyliste 3" } ;
+ 
+          and "hadronize" listing corresponds to directive
+ 
+         XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisth 3" } ;
+ 
+         (The first listing is perfored in PythiaProduction::generateEvent
+          method and the second one in PythisProduction::hadronize)
+          
+         4) For "initialize/event/hadronize" listings one can specify a
+            range of the entries to be used, e.g.
+          
+           - print the whole table:
+ 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12" } ;
+          
+           - print only properties of particles from 1 to 10:
+ 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12 1 10" } ;
+ 
+           - print only properties of H0
+ 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12 35 35" } ;
+ 
+           - print only first 4 partons (inclusing iniial protons):
+  
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pyliste 3 1 4" } ;
+ 
+           - print only first 100 entries:
+  
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisth 1 1 100" } ;
+  
+   Just for clarity (ordering rule):
+ 
+   Pythia parameters are set in the following order
+ 
+      - default setting
+      - explict command vector (property "Commamds")
+      - read the table         (command   "pyinit pdtinput pdt.in" )
+      - commands  from PYGIVE  (property "PYGIVE")
+      - any possible configuration done through UPINIT
+    
+   The dump of the output particle data table
+   (command "pyinit pdtoutput pdt.out")
+   is performed *AFTER* call for PYINIT, and includes *ALL*
+   possible modifications, *EXCEPT* for modification done
+   for particle property service
+ 
+ 
+! 2006-10-03 - Patrick Robbe
+ - PythiaProduction: change also time units to ns in the hadronize
+   function.
+ 
+! 2006-10-01 - Patrick Robbe
+ - PythiaHiggs: adapt to new IGenCutTool interface.
+
+!========================= LbHijing v1r1 2006-10-06 ======================
+! 2006-10-06 - Gloria CORTI
+ - Move options to switch on use of Hijing from Gauss package.
+ - Fix bug in example of options for specifying atomic number of the target
+   (iaz --> izt) as pointed out by D.Gregori
+ 
+! 2006-10-03 - Vincenzo VAGNONI
+ - HijingProduction.cpp - don't retain event history, all particles come
+   now from the primary collision vertex
+ - HijingProduction.cpp - added conversion of vertex coordinates to LHCb units
+ - hilunhep.F - energy recalculated in double precision in order to avoid
+   problems in EvtGen decays for extremely energetic particles.
+
+!======================== LbHerwig v3r1 2006-10-06 ==========================
+! 2006-10-06 - Gloria CORTI
+ - Move here options to produce events with Herwing from the Gauss package.
+ - Add options to produce event with Herwig and Jimmy, Herwig and MC@NLO,
+   Herwig and both Jimmy and MC@NLO as provided by K.Harrison
+ 
+!====================== LbBcGen v1r3 2006-10-06 ======================
+! 2006-10-06 - Gloria CORTI
+ - Move here options to produce events with BcVegPy
+ 
+!======================== GaussRICH v6r6 2006-10-11 ===========================
+! 2006-10-10 - Chris Jones
+ - Fix uninitialised data member m_invalidRichHits in GetMCRichHitsAlg
+ 
+!======================== GaussTools v12r5 2006-10-05 =======================
+! 2006-09-25 - Vanya Belyaev
+ - src/Components/TrCutsRunAction.cpp
+   make a fix, preventing the segmentation fault
+   at the end of the "pure generator" job.
+ 
+!=============================================================================
 </PRE><H1><A NAME="v25r3">2006-09-20 - GaussSys v25r3</A></H1><PRE>
 <H2><A NAME="Note"> DC06 version. </A></H2>
 <H3><A NAME="Use">This version uses:

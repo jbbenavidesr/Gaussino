@@ -1,4 +1,4 @@
-// $Id: MaterialEvalGun.cpp,v 1.3 2006-03-22 23:03:05 robbep Exp $
+// $Id: MaterialEvalGun.cpp,v 1.4 2007-01-12 15:22:03 ranjard Exp $
 // -------------------------------------------------------------
 // Description:
 //   Allows the user to "shoot" Monte Carlo particles and store the result
@@ -13,7 +13,7 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/AlgFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 
@@ -23,8 +23,7 @@
 // From HepMC
 #include "HepMC/GenEvent.h"
 
-static const AlgFactory<MaterialEvalGun>    Factory;
-const IAlgFactory& MaterialEvalGunFactory = Factory;
+DECLARE_ALGORITHM_FACTORY( MaterialEvalGun );
 
 //============================================================================
 // Constructor

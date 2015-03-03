@@ -1,4 +1,4 @@
-// $Id: VeloGaussMoni.h,v 1.2 2006-02-09 17:35:45 szumlat Exp $
+// $Id: VeloGaussMoni.h,v 1.4 2007-02-08 19:25:45 gcorti Exp $
 #ifndef VELOGAUSSMONI_H 
 #define VELOGAUSSMONI_H 1
 

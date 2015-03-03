@@ -1,4 +1,4 @@
-// $Id: ParticleGun.cpp,v 1.3 2006-03-22 23:03:05 robbep Exp $
+// $Id: ParticleGun.cpp,v 1.4 2007-01-12 15:22:04 ranjard Exp $
 
 // This class
 #include "ParticleGun.h"
@@ -7,7 +7,7 @@
 #include <cmath>
 
 // FromGaudi
-#include "GaudiKernel/AlgFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 
@@ -18,8 +18,7 @@
 // From Event
 #include "Event/HepMCEvent.h"
 
-static const AlgFactory<ParticleGun>    Factory;
-const IAlgFactory& ParticleGunFactory = Factory;
+DECLARE_ALGORITHM_FACTORY( ParticleGun );
 
 //===========================================================================
 // Constructor

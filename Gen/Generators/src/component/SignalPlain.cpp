@@ -1,11 +1,11 @@
-// $Id: SignalPlain.cpp,v 1.10 2006-03-22 22:56:40 robbep Exp $
+// $Id: SignalPlain.cpp,v 1.16 2007-02-22 13:30:24 robbep Exp $
 // Include files 
 
 // local
 #include "SignalPlain.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // Event 
 #include "Event/HepMCEvent.h"
@@ -15,6 +15,7 @@
 #include "Generators/IProductionTool.h"
 #include "Generators/IGenCutTool.h"
 #include "Generators/IDecayTool.h"
+#include "Generators/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalPlain
@@ -23,8 +24,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<SignalPlain>          s_factory ;
-const        IToolFactory& SignalPlainFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( SignalPlain );
 
 
 //=============================================================================
@@ -47,6 +48,9 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
                             LHCb::GenCollisions * theCollisions ) {
   StatusCode sc ;
   bool result = false ;
+  // Memorize if the particle is inverted
+  bool isInverted = false ;
+  bool hasFlipped = false ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
   
@@ -67,54 +71,67 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
 
         // establish correct multiplicity of signal
         if ( ensureMultiplicity( theParticleList.size() ) ) {
-          
-          m_nEventsBeforeCut++ ;
 
-          updateCounters( theParticleList , m_nParticlesBeforeCut , 
-                          m_nAntiParticlesBeforeCut , false ) ;          
-          
-          bool passCut = true ;
-          if ( 0 != m_cutTool ) 
-            passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
-                                             theGenCollision ) ;
-          
-          if ( passCut && ( ! theParticleList.empty() ) ) {
-            m_nEventsAfterCut++ ;
-            
-            updateCounters( theParticleList , m_nParticlesAfterCut , 
-                            m_nAntiParticlesAfterCut , true ) ;
-            
-            HepMC::GenParticle * theSignal = 
-              chooseAndRevert( theParticleList ) ;
-            
-            bool flip ;
-            if ( m_cpMixture ) m_decayTool -> enableFlip( ) ;
-            m_decayTool -> generateSignalDecay( theSignal , flip ) ;
+          // choose randomly one particle and force the decay
+          hasFlipped = false ;
+          isInverted = false ;
+          HepMC::GenParticle * theSignal =
+            chooseAndRevert( theParticleList , isInverted , hasFlipped ) ;
+          theParticleList.clear() ;
+          theParticleList.push_back( theSignal ) ;
 
-            if ( flip ) continue ;
-            if ( m_cleanEvents ) {
-              sc = isolateSignal( theSignal ) ;
-              if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
+          if ( ! hasFlipped ) {
+
+            m_nEventsBeforeCut++ ;
+            // count particles in 4pi
+            updateCounters( theParticleList , m_nParticlesBeforeCut , 
+                            m_nAntiParticlesBeforeCut , false , false ) ;
+            
+            bool passCut = true ;
+            if ( 0 != m_cutTool ) 
+              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
+                                               theGenCollision ) ;
+            
+            if ( passCut && ( ! theParticleList.empty() ) ) {
+              m_nEventsAfterCut++ ;
+              
+              if ( isInverted ) ++m_nInvertedEvents ;
+              
+              // Count particles passing the generator level cut with pz > 0     
+              updateCounters( theParticleList , m_nParticlesAfterCut , 
+                              m_nAntiParticlesAfterCut , true , isInverted ) ;              
+              
+              if ( m_cleanEvents ) {
+                sc = isolateSignal( theSignal ) ;
+                if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
+              }
+              theGenEvent -> 
+                set_signal_process_vertex( theSignal -> end_vertex() ) ;
+              
+              theGenCollision -> setIsSignal( true ) ;
+              
+              // Count signal B and signal Bbar
+              if ( theSignal -> pdg_id() > 0 ) ++m_nSig ;
+              else ++m_nSigBar ;
+              
+              // Update counters
+              GenCounters::updateHadronCounters( theGenEvent , m_bHadC , 
+                                                 m_antibHadC , m_cHadC , 
+                                                 m_anticHadC , m_bbCounter ,
+                                                 m_ccCounter ) ;
+              GenCounters::updateExcitedStatesCounters( theGenEvent , 
+                                                        m_bExcitedC , 
+                                                        m_cExcitedC ) ;
+              
+              result = true ;
+            } else {
+              // event does not pass cuts
+              HepMCUtils::RemoveDaughters( theSignal ) ;
             }
-            theGenEvent -> 
-              set_signal_process_vertex( theSignal -> end_vertex() ) ;
-
-            theGenCollision -> setIsSignal( true ) ;
-
-            // Count signal B and signal Bbar
-            if ( theSignal -> pdg_id() > 0 ) ++m_nSig ;
-            else ++m_nSigBar ;
-            
-            // Update counters
-            GenCounters::updateHadronCounters( theGenEvent , m_bHadC , 
-                                               m_antibHadC , m_cHadC , 
-                                               m_anticHadC , m_bbCounter ,
-                                               m_ccCounter ) ;
-            GenCounters::updateExcitedStatesCounters( theGenEvent , 
-                                                      m_bExcitedC , 
-                                                      m_cExcitedC ) ;
-            
-            result = true ;
+          } else {
+            // has flipped:
+            HepMCUtils::RemoveDaughters( theSignal ) ;
+            theSignal -> set_pdg_id( - ( theSignal -> pdg_id() ) ) ;
           }
         }
       }
@@ -123,3 +140,4 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   
   return result ;
 }
+

@@ -1,9 +1,151 @@
-! $Id: release.notes,v 1.19 2006-09-20 11:41:43 ranjard Exp $
+! $Id: release.notes,v 1.29 2007-03-23 10:52:28 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================== LbHerwig v5r0 2007-03-23 ==========================
+! 2007-03-23 - Gloria Corti
+ - Make package compatible with use of LCGCMT/MCGenerators, using 
+   herwig and jimmy interface package provides. Adapt linkopts.
+   The use of Generators has to precede that of herwig, otherwise the
+   executable complains about PHOINI and stops at initialization
+
+!======================== LbHerwig v4r0 2007-03-13 ==========================
+! 2007-03-13 - Gloria CORTI
+ - Fix compilation errors in modified Fortran routines 
+   . mcatnlo_uti.F - reduce lenght of line not to exceed 72 characters,
+                     fix lenght of characters to respect modification
+   . mcatnlo_qqxsec.F - replace some left-over DDILOG calls with MCATNLO_DDILOG
+ - Adapt to changes in IProduction interface. Implementation of new method
+   initializeGenerator() is empty
+   . HeprwigProduction.{h,cpp}  
+                     
+! 2007-02-09 - Karl Harrison
+ - modified src/Lib/mcatnlo to include copies of CERNLIB subroutines/functions
+   => Added file mcatnlo_uti.f (renamed to mcatnlo_uti.F)
+      from MC@NLO 3.2 distribution
+      * File defines: ABEND, DDILOG, DIVDIF, FINT, KERMTR, KERSET
+      * Each name prefixed by "MCATNLO_" to avoid possible name clashes
+        with other packages 
+   => Deleted file mcatnlo_lhauti.f, which contains another copy of DIVDIF
+   => Modified files mcatnlo_qqxsec.f (renamed mcatnlo_qqxsec.F) to
+      take into account change in function name from DDILOG to
+      MCATNLO_DDILOG
+
+!======================== LbHerwig v3r4 2007-02-08 ==========================
+! 2007-02-08 - Gloria Corti
+ - modify requirements to use with Gauss v25 series
+
+! 2007-01-08 - Florence Ranjard
+ - update HerwigProduction.cpp to use new FACTORY
+
+!======================== LbHerwig v3r3 2006-11-29 ==========================
+! 2006-11-29 - Karl Harrison
+ - Correction for bug that affected generation with MC@NLO
+   => Integration with BASES package was performed for each event,
+      and gave correct results only for the first event
+      (cumulative variables used)
+   => Small changes to:
+      src/component/HerwigProduction.cpp
+      src/Lib/mcatnlo/mcatnlo_qqmain.cpp
+
+!======================== LbHerwig v3r2 2006-10-31 ==========================
+! 2006-10-30 - Gloria Corti
+ - Adapt to change of dummy library names in GENSER 1_4_1
+
+! 2006-10-23 - Karl Harrison
+
+  Usage notes for LbHerwig v3r0 and later
+  =======================================
+
+  - LbHerwig allows Herwig to be used by itself or in conjunction
+    with MC@NLO and/or Jimmy.  MC@NLO can be used only when generating
+    events with heavy-flavour production.  Jimmy can be used when
+    generating anything except minimum-bias events.  The generator
+    package(s) to be used are defined by creating an instance of
+    the HerwigProduction tool with a name that includes the package
+    name.  Examples of the job-options syntax can be found in
+    options/Herwig.opts (Herwig alone), options/HerwigMCatNLO.opts
+    (Herwig and MC@NLO), options/HerwigJimmy.opts (Herwig and Jimmy),
+    and options/HerwigJimmyMCatNLO.opts (Herwig, MCatNLO and Jimmy).
+
+  - A number of parameters used by Herwig, MC@NLO and Jimmy can
+    be set at the level of job options, using the "Commands" option of the
+    HerwigProduction tool.  The general syntax is:
+
+    HerwigProduction.Commands( "<parameter> [<element>] <value>" )
+
+    where <parameter> is the name, in lower case, of a variable used
+    in Herwig, MC@NLO or Jimmy, <element> is the element considered
+    in the case where the variable is a vector, and <value> is the value
+    to be assigned.  The available parameter names and their default
+    settings, can be found in the HerwigProduction constructor.
+
+  - The Herwig parameter IPROC specifies the type of event to be
+    generated.  The list of valid IPROC values can be found in the
+    Herwig manual.  Values of interest in LHCb include:
+
+       8000 : Minimum-bias soft interaction
+       1704 : cc_bar production
+       1705 : bb_bar production
+       
+    For standard event types generated in LHCb, the user doesn't generally
+    need to set the value of IPROC explicitly, as this is done on the
+    basis of the LHCb event type:
+
+       [LHCb event type]/10000          IPROC
+                 1                       1705
+                 2                       1704
+             Not 1 or 2                  8000
+
+    For non-standard event types, IPROC should be set via the Commands
+    option, for example:
+
+       HerwigProduction.Commands( "iproc 1600" ); // Higgs production
+  
+  - At initialisation, MC@NLO performs cross section integrations
+    corresponding to the input parameter values - a process that
+    typically takes 15-30 minutes) - or alternatively may read previously
+    calculated integration results from file.  Results files corresponding
+    to the LbHerwig defaults for MC@NLO are stored in the package
+    PARAM/MCatNLOData, and the default behaviour is to read from these.
+    
+    If the values of MC@NLO parameters are changed via the Commands
+    option, then new integration results are required.  This is done
+    by setting the number of iterations for each of the integration steps
+    to 10 (compared with the default of 0):
+
+       HerwigMCatNLOProduction.Commands( "it1 10", "it2 10" );
+
+    Results files with prefix "bases" (the integration package used by
+    MC@NLO) are produced in the directory when the event generation is
+    run.
+
+    To make use of results files produced with non-default values for
+    MC@NLO parameters, the easiest solution is to make a copy of
+    the MCatNLOData package in your CMT area, and replace the files
+    in the data subdirectory with your own.
+
+  Implementation notes for LbHerwig v3r0 and later
+  ================================================
+  - LbHerwig uses GENSER releases of Herwig (version 6.510.2) and Jimmy
+    (version 4.2.2), but currently includes its own copy of MC@NLO
+    (version 3.2) for heavy-quark production, src/Lib/mcatnlo.  A number
+    of the MC@NLO files have been modified for compatibility with Gauss,
+    in particular to allow each MC@NLO event to be processed by Herwig
+    before proceeding to the next, to change the mechanism for specifying
+    input parameters, and to have a less verbose output.  Fortran files
+    modified or added compared with the standard MC@NLO release have suffix
+    .F, whereas unmodified files have suffix .f.  An include file
+    (mcatnlo_qq.inc) has also been added.
+   
+!======================== LbHerwig v3r1 2006-10-06 ==========================
+! 2006-10-06 - Gloria CORTI
+ - Move here options to produce events with Herwig from the Gauss package.
+ - Add options to produce event with Herwig and Jimmy, Herwig and MC@NLO,
+   Herwig and both Jimmy and MC@NLO as provided by K.Harrison
 
 !======================== LbHerwig v3r0p1 2006-09-20 ========================
 ! 2006-09-20 - Florence RANJARD

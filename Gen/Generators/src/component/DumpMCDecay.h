@@ -1,19 +1,36 @@
-// $Id: DumpMCDecay.h,v 1.1.1.1 2005-06-20 21:42:17 robbep Exp $
+// $Id: DumpMCDecay.h,v 1.3 2006-10-25 11:23:11 ibelyaev Exp $
 // ============================================================================
-// CVS tag $Name: not supported by cvs2svn $ 
+// CVS tag $Name: not supported by cvs2svn $, version $Revision: 1.3 $
 // ============================================================================
-// 
+// $Log: not supported by cvs2svn $ 
 // ============================================================================
 #ifndef GENERATORS_DUMPMCDECAY_H 
 #define GENERATORS_DUMPMCDECAY_H 1
 // ============================================================================
-// Include files
+// GaudiKernel
+// ============================================================================
+#include "GaudiKernel/AlgFactory.h"
+#include "GaudiKernel/MsgStream.h" 
+#include "GaudiKernel/IParticlePropertySvc.h" 
+#include "GaudiKernel/ParticleProperty.h" 
 // ============================================================================
 // GaudiAlg 
 // ============================================================================
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/GaudiAlgorithm.h" 
 // ============================================================================
-
+// HepMC 
+// ============================================================================
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+// ============================================================================
+// Kernel
+// ============================================================================
+#include "Kernel/ParticleID.h"
+// ============================================================================
+// Event 
+// ============================================================================
+#include "Event/HepMCEvent.h"
+// ============================================================================
 
 /** @class DumpMCDecay DumpMCDecay.h Algorithms/DumpMCDecay.h
  *
@@ -25,33 +42,27 @@
 class DumpMCDecay : public GaudiAlgorithm 
 {  
   // factory for instantiation 
-  friend class AlgFactory<DumpMCDecay> ;
-  
+  friend class AlgFactory<DumpMCDecay> ;  
 public:
   
   /// the actual type of container with addresses 
   typedef std::vector<std::string> Addresses ;
   /// the actual type of list of PIDs 
   typedef std::vector<int>         PIDs      ;
-  
 public:
-  
   /** initialization of the algoritm
    *  @see GaudiAlgorithm
    *  @see      Algorithm
    *  @see     IAlgorithm 
    *  @return status code 
    */
-  virtual StatusCode initialize ();
-  
+  virtual StatusCode initialize () ;
   /** execution of the algoritm
    *  @see IAlgorithm 
    *  @return status code 
    */
   virtual StatusCode execute    ();
-
-protected:
-  
+public:
   /** print the decay tree of the particle 
    *  @param particle pointer to teh particle to be printed 
    *  @param stream   output stream 
@@ -62,16 +73,13 @@ protected:
   ( const HepMC::GenParticle* particle              , 
     std::ostream&             stream    = std::cout , 
     unsigned int              level     = 0         ) const ;
-  
   /** get the particle name in the string fixed form
    *  @param particle pointer to the particle
    *  @param particle name 
    */
   std::string particleName 
   ( const HepMC::GenParticle* particle ) const ;
-  
-protected:
-  
+protected:  
   /** standard constructor 
    *  @see GaudiAlgorithm
    *  @see      Algorithm
@@ -80,38 +88,31 @@ protected:
    *  @param name algorithm instance's name 
    *  @param iscv pointer to Service Locator 
    */
-  DumpMCDecay( const std::string& name , 
-               ISvcLocator*       isvc ) ;
-  
+  DumpMCDecay
+  ( const std::string& name , 
+    ISvcLocator*       isvc ) ;
   /// dectructor 
-  virtual ~DumpMCDecay();
-
+  virtual ~DumpMCDecay(){};
 private:
-  
   // default constructor   is disabled 
   DumpMCDecay();
   // copy constructor      is disabled 
   DumpMCDecay           ( const DumpMCDecay& );
   // assigenemtn operator  is disabled 
   DumpMCDecay& operator=( const DumpMCDecay& );
-  
-private:
-  
+protected:
   // addresses of HepMC events
   Addresses                     m_addresses ;
-  
   // particles to be printed
   PIDs                          m_particles ;
-  
   // quarks to be printes
   PIDs                          m_quarks    ;
-  
+  // maximal number of levels 
+  int                           m_levels    ;
+private:
   // pointer to particle property service 
   mutable IParticlePropertySvc* m_ppSvc     ;
-  
-};
-
-
+} ;
 // ============================================================================
 // The END 
 // ============================================================================

@@ -1,6 +1,208 @@
-! $Id: release.notes,v 1.34 2006-07-04 11:32:55 gcorti Exp $
+!-----------------------------------------------------------------------------
 ! Package     : Gen/LbPythia
-! Responsible : 
+! Responsible : Patrick Robbe
+! Purpose     : 
+!-----------------------------------------------------------------------------
+
+!===================== LbPythia v5r00 2007-03-13 ============================
+! 2007-03-08 - Patrick Robbe
+ - Adapt PythiaProduction to new IProductionTool interface
+
+! 2007-03-07 - Gloria CORTI
+ - Increase major version number due to change in interface used
+
+! 2007-02-27 - Patrick Robbe for Victor Coco
+ - Add new tool PythiaHiggsType to generate Higgs, W, Z, and top events
+
+! 2007-02-26 - Patrick Robbe
+ - PythiaHiggs: adapt to new generator cut tool.
+
+!===================== LbPythia v4r10 2007-02-08 ===========================
+! 2007-02-08 - Gloria Corti
+ - to use with Gauss v25 series use include_dir in requirements 
+
+! 2007-01-08 - Florence Ranjard
+ - move GaussUserProcess.inc from LbPythia/ to src/Lib
+ - move PythiaProduction.cpp from src/component to src/Lib
+ - update PythiaHiggs.cpp and PythiaProduction.cpp to use new FACTORY
+
+! ==================== LbPythia v4r9 2006-11-09 ===========================
+! 2006-10-26 - Vanya Belyaev
+ - src/component/PythiaProduction.cpp
+      exclude Z' from the hardcoded list of "special" particles
+      [Needed for Hidden Valley production]
+
+! 2006-10-25 - Vanya BELYAEV
+ - src/component/PythiaProduction.cpp
+    remove stupid bug, introduced in a rush
+     during merging procedure 
+
+! 2006-10-25 - Vanya BELYAEV
+  - LbPythia/PythiaProduction.h
+  - src/component/PythiaProduction.cpp
+      1) move few members from private to protected area 
+      2) introduce new method (protected) toHepMC 
+         to allow an easy reimplementation of generateEvent 
+         method for derived classes
+      3) make use of this new method in 
+              PythiaProduction::generateEvent
+              PythiaProduction::hadronize 
+  - LbPythia/GaussUserProcess.inc
+      add new process type: 
+      C*    Use Hidden Valley production
+            INTEGER HIDVALLEYPROCESS
+            PARAMETER(HIDVALLEYPROCESS=4)
+  - src/Lib/upevnt.F, src/Lib/upinit.F
+      take care about existence of HIDVALLEYPROCESS generator 
+
+! ==================== LbPythia v4r8 2006-10-23 ===========================
+! 2006-10-22 - Vanya BELYAEV
+ - LbPythia/PythiaProduction.h
+ - src/component/PythiaProduction.cpp
+    introduce new property "PDTlist" (default is empty list)
+    to print (using PYLIST(12)) the particle data tables for 
+    certain particles
+ -  move few lines from "initialize" to "printRunningConditions"
+
+! ==================== LbPythia v4r7 2006-10-09 ===========================
+! 2006-10-04 - Patrick Robbe
+ - src/component/PythiaProduction.cpp: fix bug, uninitialized variable. 
+
+! 2006-10-04 - Patrick Robbe
+ - src/component/ReadLHEfile.cpp: rename as ReadLHEfileProduction
+   to follow Gauss production generators naming conventions.
+
+! 2006-10-04 - Vanya BELYAEV
+ - src/component/PythiaProduction.cpp 
+     Fix bugs, kindly pointed by Patrick ROBBE:
+     PythiaProduction::hadronize 
+      - fix a stupid bug (duplication of lines for rescaling of momentum)
+      - fix a listing level for PyList call from PythiaProdyction::hadronize
+
+! 2006-10-04 - Vanya BELYAEV
+ - LbPythia/GaussUserProcess.inc
+      common block /GAUSSUSERPROCESS/ + numerical defintion of processes
+      as fortran PARAMETERS, in particular LHEREADPROCESS=3  
+ 
+    Modification to read LHE (Les Houches Event) parton level file:
+
+ - src/Lib/upevnt.F,  src/Lib/upinit.F
+      - modification to use LHEUPINIT and LHEUPEVNT in the case 
+        of LHEREADPROCESS 
+      - make use of common block fomr include-file 
+ - src/Lib/lheupevnt.F, src/Lib/lheupinit.F
+      new routines to be used to reading of LHE file
+ - src/component/ReadLHEfile.cpp
+      new "production tool" for reading LHE file 
+ - src/Lib/SetUserProcess.F
+      make use of common block fomr include-file 
+
+
+ - LbPythia/Pythia.h,src/Lib/Pythia.cpp
+      1) add function PyUpda   ( interface to fortran function PYUPDA)
+      2) add function PyGive   ( interface to fortran function PYGIVE)
+
+
+ - LbPythia/PythiaProduction.h, src/component/PythiaProduction.cpp
+     1) Add new property "PYTHIA", which includes the PYTHIA commands 
+        in a format used by PYGIVE routine, e.g.
+     
+          XXX.YYY.ZZZ.PythiaProduction.PYGIVE = {
+            "MSTP(10)=10;MSPT(20)=20:MSTP(30)=30" , 
+            "MSTP(10)=10;MSPT(20)=20:MSTP(30)=30" } ;
+        Note: program PYGIVE prints the changed/modified variables.
+
+     2) add possibility to read and write particle decay data:
+     
+        A) to write particle decay data:
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtoutput pdt.out" } ;
+           It will dump the whole particle decay data 
+          (Using PYUPDA(1,LUN) routine) into the file pdt.out
+
+        B1) to read the whole particle data table 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtinput pdt.in" , 
+               "pyinit pdtlevel 2" } ; // PYUPDA(2,LUN)
+        B2) to read only modified partice data entries: 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtinput pdt.in" , 
+               "pyinit pdtlevel 3" } ; // PYUPDA(3,LUN)
+        
+          The default unit(LUN) for A&B is 59 could be changed 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pdtunit 15" } ;
+   
+          As ususla setting unit to 0 switches off both input 
+         and output of the PYUPDA)
+  
+       3) "Event" listing is split into 2 parts 
+           "Event" listing and "Hanronization" listing and could 
+           be controlled independently 
+          "event" listing corresponds to directive: 
+
+         XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pyliste 3" } ;
+
+          and "hadronize" listing corresponds to directive 
+
+         XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisth 3" } ;
+
+         (The first listing is perfored in PythiaProduction::generateEvent 
+          method and the second one in PythisProduction::hadronize"
+         
+         4) For "initialize/event/hadronize" listings one can specify a 
+            range of the entries to be used, e.g.
+         
+           - print the whole table:
+
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12" } ;
+         
+           - print only properties of particles from 1 to 10:
+
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12 1 10" } ;
+
+           - print only properties of H0
+
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisti 12 35 35" } ;
+
+           - print only first 4 partons (inclusing iniial protons):
+ 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pyliste 3 1 4" } ;
+
+           - print only first 100 entries:
+ 
+           XXX.YYY.ZZZ.PythiaProduction.Commands +=
+             { "pyinit pylisth 1 1 100" } ;
+ 
+   Just for clarity (ordering rule):
+
+   Pythia parameters are set in the following order
+
+      - default setting 
+      - explict command vector (property "Commamds") 
+      - read the table         (command   "pyinit pdtinput pdt.in" ) 
+      - commands  from PYGIVE  (property "PYGIVE") 
+      - any possible configuration done through UPINIT 
+   
+   The dump of the output particle data table 
+   (command "pyinit pdtoutput pdt.out")
+   is performed *AFTER* call for PYINIT, and includes *ALL* 
+   possible modifications, *EXCEPT* for modification done 
+   for particle property service        
+
+
+! 2006-10-03 - Patrick Robbe
+ - PythiaProduction: change also time units to ns in the hadronize
+   function.
+
+! 2006-10-01 - Patrick Robbe
+ - PythiaHiggs: adapt to new IGenCutTool interface.
 
 ! ==================== LbPythia v4r6 2006-07-04 ======================
 ! 2006-07-04 - Gloria CORTI

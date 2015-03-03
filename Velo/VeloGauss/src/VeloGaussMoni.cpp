@@ -1,15 +1,15 @@
-// $Id: VeloGaussMoni.cpp,v 1.11 2006-07-04 16:22:20 gcorti Exp $
-
+// $Id: VeloGaussMoni.cpp,v 1.12 2007-01-12 15:56:24 ranjard Exp $
 // Include files 
-// velo
-#include "VeloDet/DeVelo.h"
 
 // from Gaudi
-#include "GaudiKernel/AlgFactory.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiAlg/Tuples.h"
 #include "Event/MCParticle.h"
 #include "Kernel/LHCbMath.h"
 #include "Kernel/Vector4DTypes.h"
+
+// velo
+#include "VeloDet/DeVelo.h"
 
 // local
 #include "VeloGaussMoni.h"
@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-static const  AlgFactory<VeloGaussMoni>          s_factory ;
-const        IAlgFactory& VeloGaussMoniFactory = s_factory ; 
+DECLARE_ALGORITHM_FACTORY( VeloGaussMoni );
 
 
 //=============================================================================

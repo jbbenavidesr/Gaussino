@@ -1,4 +1,4 @@
-# $Id: requirements,v 1.25 2006-06-23 15:24:58 gcorti Exp $ 
+# $Id: requirements,v 1.28 2007-03-18 21:33:36 gcorti Exp $ 
 #============================================================================
 # Created    : 2005-12-08
 # Maintainer : Patrick ROBBE
@@ -7,14 +7,14 @@
 # http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
 #============================================================================
 package           GaussCalo
-version           v8r4
+version           v9r0
 
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
 branches          cmt src doc
-include_dirs      $(GAUSSCALOROOT)
-set GAUSSCALOOPTS ${GAUSSCALOROOT}/options 
+
+apply_pattern packageOpts
 
 #============================================================================
 # Used packages. Specify the version, * at the end specifies 'any revision'
@@ -25,7 +25,6 @@ use MCEvent       v*     Event
 use CaloDet       v*     Det 
 use CaloDetXmlCnv v*     Det 
 use LHCbKernel    v*     Kernel
-
 
 #============================================================================
 # Component library building rule

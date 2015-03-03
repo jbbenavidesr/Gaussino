@@ -1,9 +1,159 @@
-! $Id: release.notes,v 1.69 2006-09-19 21:41:43 gcorti Exp $
+! $Id: release.notes,v 1.96 2007-03-13 13:55:43 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v7r0 2007-03-13 ===========================
+! 2007-03-08 - Patrick Robbe
+ - IProductionTool: Add new function "initializeGenerator()" which will
+   contain the generator specific initialization procedure.
+ - ReadHepMCAsciiFile: adapt for new production tool interface
+ - Special: Add the possibility to generate pile-up for special production
+ - FixedLuminosityForRareProcess: new pile-up tool to generate correctly
+   pile-up distributions for rare process events
+
+! 2007-03-08 - Patrick Robbe for Thomas Blake
+ - DiLeptonInAcceptance: new FullEventGenCutTool to accept events with dimuons.
+
+! 2007-02-27 - Patrick Robbe
+ - Fix output level of Special production tool
+
+! 2007-02-23 - Gloria Corti
+ - Increase major version due to change in IGenCutTool interface 
+
+! 2007-02-22 - Gloria CORTI
+ - Change default values of ZMin and ZMax of flat primary vertex according
+   to what chosen for Luminosity studies for beam gas (+/- 1500 mm) as
+   communicated by Daniele GREGORI
+   . FlatZSmearVertex.cpp
+
+! 2007-02-20 - Patrick Robbe
+ - Fix efficiency counters for CP violation decay modes (=> change IGenCutTool
+   applyCut function arguments). The signal decay is now always performed
+   before applying any generator cut.
+
+!====================== Generators v6r8 2007-02-08 ===========================
+! 2007-02-08 - Gloria Corti
+ - Slighlty change message levels at initialization to see beam energy and
+   primary interation vertex ( CollidingBeams.cpp, FixedTarget.cpp,
+   BeamSpotSmearVertex.cpp, FixedNInteractions.cpp)
+
+! 2007-02-06 - Patrick Robbe
+ - Fix problem with biased hadron fractions (SignalPlain and
+   SignalRepeatedHadronization)
+
+! 2007-01-30 - Patrick Robbe
+ - Fix problem with flip by EvtGen in Cut tools (DaughtersInLHCb, 
+   SelectedDaughtersInLHCb and ListOfDaughtersInLHCb)
+
+! 2007-01-23 - Gloria Corti
+ - Modify requirements to have a version with all changes in code but 
+   compatible with DC06.
+ - Change default for flat smearing of primary vertex, to have correct values
+   at 7 TeV for beam gas, i.e. 100 microns in x and y
+
+! 2007-01-08 - Florence Ranjard
+ - update in many *.cpp to use new FACTORY and SystemOfUnits from GaudiKernel
+
+!====================== Generators v6r7p1 2006-12-04 =========================
+! 2006-11-30 - Vanya BELYAEV
+ - src/componet/Generation.cpp
+   add a guard for "0 != m_pileUpTool" in 
+   Generation::finalize method 
+
+!======================= Generators v6r7 2006-11-09 ==========================
+! 2006-10-31 - Patrick Robbe
+ - src/Lib/Signal.cpp: fix unitialized variable.
+
+! 2006-10-25 - Vanya BELYAEV
+ - src/component/DumpHepMCTree.cpp
+     simple algorithm to dump the HepMC-tree in readable format 
+ - src/component/DumpMCDecay.h, src/component/DumpMCDecay.cpp
+     reshuffling of lines to allow the reuse functionality 
+     in DumpHepMCTree algorithm 
+ - src/component/Generators_load.cpp 
+     add a factory for new algorithm 
+
+!======================= Generators v6r6 2006-10-23 ==========================
+! 2006-10-23 - Patrick Robbe
+ - src/component/ListOfDaugthersInLHCb.h/.cpp: cut on a list of
+   daughters of the signal to be in the acceptance.
+
+! 2006-10-19 - Vanya BELYAEV
+ - src/component/DumpMCDecay.cpp
+     - improve the printout
+     - introduce benw property "MaxLevels" to represent the maximal 
+       printout level pit is much more easier to debug now!]
+     - reshuffle the lines a bit 
+ - src/component/DumpMCDecay.h  - remove the file 
+
+!======================= Generators v6r5 2006-10-10 ==========================
+! 2006-10-09 - Patrick Robbe
+ - SelectedDaughterInLHCb: modify to be able to give more than 
+   1 PID in list of daughters to select on.
+
+! 2006-10-06 - Vanya BELYAEV
+ - src/component/ReadHepMCAsciiFile.cpp
+
+    Simple "production tool", which actually reads HepMC events 
+    from  ascii input file. The tool could be useful to read 
+    information from external generators, if their integration 
+   into Gauss is impossible, difficult or not needed. 
+   
+   The tool has 2 properties:
+ 
+     - <c>Input</c>  : The name of input fiel in HepMC Ascii format 
+                     ( the default value is <c>""</c> (empty string))
+     - <c>Rescale<c> : Boolean flag to rescal the input event from 
+                      Pythia units to LHCb units.
+                      The default value is <c>true</c>.
+ - src/component/WriteHepMCAsciiFile.cpp    
+
+    Simple class to dump generators events in plain 
+    output file in HepMC Ascii format. It coudl be used for portable 
+    cross-transitions of events inbetween different degerators 
+ 
+    The algorithm has 3 properties:
+  
+     - <c>Input</c>  : The TES location of LHCb::HepMCEvent::Container
+               ( the default value is <c>LHCb::HepMCEventLocation::Default</c>)
+     - <c>Ouput</c>  : The name of output HepMC Ascii file. 
+                      The file is opened in "new/overwrite" mode.
+                      ( the default value is <c>""</c> (empty string)
+     - <c>Rescale<c> : Boolean flag to rescal the event from 
+                       LHCb units to Pythia units.
+                       The default value is <c>true</c>.
+ 
+ - src/components/Generators_load.cpp
+      declare 2 new componenst 
+
+ - Generators/Scale.h, src/Lib/Scale.cpp
+     simple utility to scale HepMC event inbetween Pythia and LHCb units
+
+!======================= Generators v6r4 2006-10-05 ==========================
+! 2006-10-04 - Patrick Robbe
+ - Add a new tool (SelectedDaughterInLHCb) to cut only on the daughters
+  of a single daughter of the signal particle (for example daughter 
+ from a J/psi, Ds, ...), and require they are in the LHCb acceptance.
+
+! 2006-10-04 - Vanya BELYAEV
+
+ - Generators/F77Utils.h
+       new file with few C++ utilities to manipulate(open&close) FORTRAN file
+      (Old/New/Unknown & their "Formatted" counterpartters)
+ - src/Lib/F77Utils.cpp
+ - src/Lib/f77units.F
+      Implementation of the functions from the file Generators/F77Utils.h
+ - cmt/requirements 
+      version incrmeent to v6r4
+ 
+
+! 2006-10-01 - Patrick Robbe
+ - Add possibility to cut on daughters of signal particle (New
+   DaughtersInLHCb cut tool). Change of IGenCutTool interface to 
+   allow this.
 
 !======================= Generators v6r3 2006-09-19 ==========================
 ! 2006-09-06 - Gloria Corti

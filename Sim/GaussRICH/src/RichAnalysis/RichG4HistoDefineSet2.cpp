@@ -15,9 +15,7 @@
 // Histogramming
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
-// CLHEP
-// #include "CLHEP/Units/PhysicalConstants.h"
-#include "Kernel/SystemOfUnits.h"
+
 #include "globals.hh"
 //
 //   Author SE 21-8-2002 
@@ -113,6 +111,15 @@ void RichG4HistoDefineSet2::bookRichG4HistogramsSet2() {
   m_hNumHitAgelPrim= CurHistoSvc->book(m_RichG4HistoPathSet2+"127",
                               title,100,0.0,50.0);
   if(! m_hNumHitAgelPrim) {
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Number of  saturated(beta gt 0.999)  Rich1 Hits inluding Rayleigh in Aerogel per track ";
+
+  m_hNumHitAgelWithRlySat= CurHistoSvc->book(m_RichG4HistoPathSet2+"128",
+                              title,100,0.0,50.0);
+  if(! m_hNumHitAgelWithRlySat) {
   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
 
   }

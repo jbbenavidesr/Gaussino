@@ -1,17 +1,11 @@
-// $Id: GaussTrackActionZ.h,v 1.1 2004-02-20 19:35:25 ibelyaev Exp $
-// ============================================================================
-// CVS tag $Name: not supported by cvs2svn $
-// ============================================================================
-// $Log: not supported by cvs2svn $ 
-// ============================================================================
+// $Id: GaussTrackActionZ.h,v 1.3 2007-03-18 19:16:12 gcorti Exp $
 #ifndef GAUSSTOOLS_GAUSSTRACKACTIONZ_H 
 #define GAUSSTOOLS_GAUSSTRACKACTIONZ_H 1
-// ============================================================================
-// Include files
-// ============================================================================
-#include "GaussTrackActionBase.h"
-// ============================================================================
 
+// Include files
+#include "GaussTrackActionBase.h"
+
+// Forward declaration
 class GaussTrajectory       ;
 class GaussTrackInformation ;
 
@@ -24,8 +18,6 @@ class GaussTrackInformation ;
  */
 class GaussTrackActionZ : public GaussTrackActionBase 
 {
-  /// friend factory for instantiation 
-  friend class GiGaFactory<GaussTrackActionZ> ;
 public:
   
   /** initialize the track action  
@@ -85,8 +77,6 @@ private:
   
 };
 
-// ============================================================================
-// The END 
-// ============================================================================
+
 #endif // GAUSSTOOLS_GAUSSTRACKACTIONZ_H
-// ============================================================================
+

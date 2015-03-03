@@ -1,4 +1,4 @@
-// $Id: Signal.cpp,v 1.16 2006-05-03 08:14:14 robbep Exp $
+// $Id: Signal.cpp,v 1.19 2007-02-22 13:30:24 robbep Exp $
 // Include files 
 
 // local
@@ -62,7 +62,7 @@ Signal::Signal( const std::string& type,
     m_sigBarName     ( "" ) ,
     m_cpMixture       ( true ) { 
     declareProperty( "SignalPIDList" , m_pidVector ) ;
-    declareProperty( "Clean" , m_cleanEvents ) ;    
+    declareProperty( "Clean" , m_cleanEvents = false ) ;    
     
     m_bHadC.assign( 0 ) ;  m_antibHadC.assign( 0 ) ;
     m_cHadC.assign( 0 ) ;  m_anticHadC.assign( 0 ) ;
@@ -138,8 +138,9 @@ StatusCode Signal::initialize( ) {
   release( ppSvc ) ;
 
   if ( 0. == m_signalBr ) 
-    warning() << "The signal decay mode is not defined in the main DECAY.DEC table"
-              << std::endl << "Please add it there !" << endmsg ;
+    warning() 
+      << "The signal decay mode is not defined in the main DECAY.DEC table"
+      << std::endl << "Please add it there !" << endmsg ;
   else 
     info() << "The signal decay mode has visible branching fractions of :"
            << m_signalBr << endmsg ;
@@ -287,24 +288,38 @@ StatusCode Signal::fillHepMCEvent( HepMC::GenParticle * theNewParticle ,
 }
 
 //=============================================================================
-// Choose one particle in acceptance and revert if necessary
+// Choose one particle in acceptance 
 //=============================================================================
 HepMC::GenParticle * Signal::chooseAndRevert( const ParticleVector & 
-                                              theParticleList ) {
+                                              theParticleList , 
+                                              bool & isInverted ,
+                                              bool & hasFlipped ) {
   HepMC::GenParticle * theSignal ;
-  
+  isInverted = false ;
+  hasFlipped = false ;
+
   unsigned int nPart = theParticleList.size() ;
   if ( nPart > 1 ) {
     unsigned int iPart = 
       (unsigned int) floor( nPart * m_flatGenerator() ) ;
     theSignal = theParticleList[ iPart ] ;
+
+    // Now erase daughters of the other particles in particle list
+    for ( unsigned int i = 0 ; i < nPart ; ++i ) {
+      if ( i != iPart ) 
+        HepMCUtils::RemoveDaughters( theParticleList[ i ] ) ;
+    }
   } else if ( 1 == nPart ) theSignal = theParticleList.front() ;
   else return 0 ;
-  
+
   if ( theSignal -> momentum().pz() < 0 ) {
     revertEvent( theSignal -> parent_event() ) ;
-    m_nInvertedEvents++ ;
+    isInverted = true ;
   }
+
+  // now force the particle to decay
+  if ( m_cpMixture ) m_decayTool -> enableFlip() ;
+  m_decayTool -> generateSignalDecay( theSignal , hasFlipped ) ;
   
   return theSignal ;
 }
@@ -325,18 +340,23 @@ bool Signal::ensureMultiplicity( const unsigned int nSignal ) {
 void Signal::updateCounters( const ParticleVector & particleList , 
                              unsigned int & particleCounter , 
                              unsigned int & antiparticleCounter ,
-                             bool onlyForwardParticles ) const {
+                             bool onlyForwardParticles , 
+                             bool isInverted ) const {
   int nP( 0 ) , nAntiP( 0 ) ;
   ParticleVector::const_iterator from = particleList.begin() ;
   ParticleVector::const_iterator to = particleList.end() ;
   
   if ( onlyForwardParticles ) {
-    nP = std::count_if( from , to , isForwardParticle() ) ;
-    nAntiP = std::count_if( from , to , isForwardAntiParticle() ) ;
+    // if the particle has been inverted z -> -z, do not count it
+    if ( ! isInverted ) {
+      nP = std::count_if( from , to , isForwardParticle() ) ;
+      nAntiP = std::count_if( from , to , isForwardAntiParticle() ) ;
+    }
   } else {
     nP = std::count_if( from , to , isParticle() ) ;
     nAntiP = particleList.size() - nP ;
   }
+
   particleCounter += nP ;
   antiparticleCounter += nAntiP ;
 }

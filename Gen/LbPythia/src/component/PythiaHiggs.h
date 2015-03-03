@@ -1,4 +1,4 @@
-// $Id: PythiaHiggs.h,v 1.2 2005-12-31 17:35:36 robbep Exp $
+// $Id: PythiaHiggs.h,v 1.4 2007-02-26 16:44:19 robbep Exp $
 #ifndef LBPYTHIA_PYTHIAHIGGS_H 
 #define LBPYTHIA_PYTHIAHIGGS_H 1
 

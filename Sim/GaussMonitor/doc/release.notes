@@ -4,6 +4,44 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!=================== GaussMonitor v4r4 2007-03-13 ===========================
+! 2007-03-13 - Gloria Corti
+ - Remove un-necessary include of EvtConst.hh
+   . GeneratorAnalysis.cpp
+ - Set return value of lifetime to -1.0 when not possible to calculate it
+   . GaussGenUtil.cpp
+ - Put boundary of lifetime histogram to include bin at -1.0
+   . GeneratorAnalysis.cpp
+
+! 2007-03-08 - Patrick Robbe
+ - GaussGenUtil.cpp: fix lifetime computation
+ - GeneratorAnalysis.cpp: change histogram number 101 (conflict with another
+   histogram with the same number), adapt lifetime range to mm. 
+
+! 2007-03-07 - Gloria CORTI
+ - Introduce algorithm with detailed histograms for generators studies and
+   validation from Paul SZCZYPKA. Some clean up with respect to its code.
+   . GeneratorAnalysis.{h,cpp} - NEW
+ - Introduce function extracted from GeneratorAnalysis to provide lifetime
+   (c*tau) in GaussGenUtil namespace
+   . GaussGenUtil.{h,cpp} 
+ - Add hard interaction information to ntuple (from Paul SZCZYPKA)
+   . GeneratorFullMonitor.{h,cpp}
+ - Add declaration of new algorithm GeneratorAnalysis. Necessary for the
+   package to be compatible with both Gaudi v18 (DC06) and v19.
+   . GaussMonitor_load.cpp 
+
+!=================== GaussMonitor v4r3 2007-02-08 ===========================
+! 2007-01-12 - Gloria Corti
+ - adapt code to Gaudi v19r0, use Gaudi macro for factory (also compatible
+   with Gaud v18):
+   . MCDecayCounter.cpp
+
+!=================== GaussMonitor v4r2 2006-11-01 ============================
+! 2006-10-31 - Patrick Robbe
+ - GenMonitorAlg.cpp: protect against off-shell particles with negative
+   invariant mass.
+
 !=================== GaussMonitor v4r1 2006-09-19 ============================
 ! 2006-09-05 - Gloria CORTI
  - Fill histograms with units, since there was mismatch (in container MeV,

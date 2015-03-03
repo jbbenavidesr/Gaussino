@@ -1,9 +1,103 @@
------------------------------------------------------------------------------
-! Package          : Sim/GaussRICH
-! Main contributor : Sajan Easo
-! Responsible	     : Gloria Corti
-! Purpose          : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
+! Package     : Sim/GaussRICH
+! Responsible	: Sajan Easo 
+! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
+!-----------------------------------------------------------------------------
+
+!======================== GaussRICH v7r0 2007-03-18 ========================
+! 2007-03-18 - Gloria Corti
+ - Adapt to changes in RichStatDivFunctor.h with introduction of "Rich" 
+   namespace (RichKernel v7r1 in LHCb v22r1) 
+   . src/SensDet/GetMCRichHitsAlg.cpp
+   .             GetMCRichOpticalPhotonsAlg.cpp
+   .             GetMCRichSegmentsAlg.cpp
+   .             GetMCRichTracksAlg.cpp
+
+! 2007-01-12 - Florence RANJARD
+ - Use pattern packageOpts
+ - Replace obsolete "CLHEP/Units/PhysicalConstants.h" with 
+   "Kernel/SystemOfUnits.h" (Gaudi v19r0)
+   . src/RichAnalysis/RichG4HistoDefineSet1.cpp
+   .                  RichG4HistoDefineSet2.cpp
+   .                  RichG4HistoDefineSet3.cpp
+   .                  RichG4HistoDefineSet4.cpp
+   .                  RichG4HistoDefineTimer.cpp
+   .                  RichG4ReconFlatMirr.cpp
+
+! 2007-01-12 - Gloria CORTI, Florence RANJARD
+ - Adapt code to Gaudi v19r0
+   Remove GiGaFactory and use ToolFactory instead. Use Gaudi macros for
+   factory declarations. Remove GiGaMACROs.h no longer existing.
+   . src/GaussRICH_load.cpp
+   . src/PhysProcess/GiGaPhysConstructorHpd.cpp
+   .                 GiGaPhysConstructorOp.cpp
+   . src/RichAction/Rich1G4TrackActionUpstrPhoton.{h,cpp}
+   .                RichG4EventAction.{h,cpp}
+   .                RichG4RunAction.{h,cpp}
+   .                RichG4TrackActionAerogelPhoton.{h,cpp}             
+   .                RichG4TrackAction.{h,cpp}
+   .                RichG4TrackActionPhotOpt.{h,cpp}
+   . src/RichAnalysis/RichG4StepAnalysis3.cpp
+   .                  RichG4StepAnalysis4.cpp   
+   .                  RichG4StepAnalysis5.cpp
+   . src/SensDet/GetMCRichHitsAlg.cpp
+   .             GetMCRichOpticalPhotonsAlg.cpp
+   .             GetMCRichSegmentsAlg.cpp
+   .             GetMCRichTracksAlg.cpp
+   .             RichG4GeomProp.cpp 
+   .             RichSensDet.{h,cpp}
+ - Make standard constructor and destructor public. 
+   . src/RichAction/Rich1G4TrackActionUpstrPhoton.h
+   .                RichG4EventAction.h
+   .                RichG4RunAction.h
+   .                RichG4TrackActionAerogelPhoton.h             
+   .                RichG4TrackAction.{h,cpp}
+   . src/SensDet/RichSensDet.{h,cpp}
+ - Remove no longer existing include GiGaMACROs.h
+   . src/RichAnalysis/RichG4EventHitCount.cpp
+   .                  RichG4HistoFillSet1.cpp
+   .                  RichG4HistoFillSet2.cpp
+   .                  RichG4HistoFillSet3.cpp
+   .                  RichG4HistoFillSet4.cpp
+
+!======================== GaussRICH v6r8 2006-11-09 ===========================
+! 2006-11-02 - Sajan Easo
+ - For aerogel the Rayleigh scattering has a check on how many times a photon
+   gets scattered and if this is above a cut value from the options file, 
+   the photon gets killed.
+   Added a PreUsertrackaction in RichG4TrackActionAerogelPhoton which checks
+   the momentum of the photons from aerogel and if above a cutoff value then
+   kill those photons.
+   This is so that in the xmldddb can be set to  produce the photons in the
+   full momentum range which is from 1.5 to 6.5 eV and depending upon the
+   filter is used or not, the photons to be filtered out are killed in
+   GaussRICH to save cpu time from going through the Rayleigh scattering.
+
+! 2006-10-30 - Sajan Easo
+ - Integrated the Hpd Magnetic field Distortion implementations from M.Musy
+   The parameters for this are read in from the XmlConditions DB.
+   This can be activated from a switch in Rich.opts, named 
+   RichUseHpdMagDistortions
+   The current default is to switch this off. To activate this the Rich xml 
+   parameter UseHpdMagDistortions need to be set to 1.0  as well. 
+ - For the HPD PSF , made a switch in Rich.opts named RichPSFPreDc06Flag. 
+   The default is 'true' which is to set to the parametrization set at the
+   beginning of DC06.
+   When it is set to false, the new parametrization is activated which
+   worsens the resolution by a small amount as shown from recent testbeam
+   results.
+ - The RichAnalysis is fixed for the test reconstruction . The fixes included 
+   changing the names of userparameters for the mirrors and the hpd numbering
+   scheme in accordance with the xmldddb. 
+
+!======================== GaussRICH v6r7 2006-10-11 ===========================
+! 2006-10-26 - Sajan Easo
+ - Hpd Numbering scheme made compatible with the recent changes for RICH2 
+   in XMLDDDB v30r11 in RichHpdPhotoElectricEffect.cpp              
+
+!======================== GaussRICH v6r6 2006-10-11 ===========================
+! 2006-10-10 - Chris Jones
+ - Fix uninitialised data member m_invalidRichHits in GetMCRichHitsAlg
 
 !======================== GaussRICH v6r5 2006-09-19 ===========================
 ! 2006-09-01 - Chris Jones

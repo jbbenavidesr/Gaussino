@@ -11,6 +11,8 @@
 // They should be inside the 'DECLARE_FACTORY_ENTRIES' body.
 
 DECLARE_FACTORY_ENTRIES(VeloGauss) {
+
   DECLARE_ALGORITHM( VeloGaussMoni );
+
 }
 

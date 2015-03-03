@@ -1,15 +1,15 @@
-// $Id: FlatZSmearVertex.cpp,v 1.4 2006-07-04 10:12:03 gcorti Exp $
+// $Id: FlatZSmearVertex.cpp,v 1.7 2007-02-22 14:38:14 gcorti Exp $
 // Include files 
 
 // local
 #include "FlatZSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/ToolFactory.h"
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h" 
+#include "GaudiKernel/SystemOfUnits.h"
 
 // from LHCb
-#include "Kernel/SystemOfUnits.h"
 #include "Kernel/Vector4DTypes.h"
 
 // from Event
@@ -22,8 +22,8 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-static const  ToolFactory<FlatZSmearVertex>          s_factory ;
-const        IToolFactory& FlatZSmearVertexFactory = s_factory ; 
+
+DECLARE_TOOL_FACTORY( FlatZSmearVertex );
 
 
 //=============================================================================
@@ -34,10 +34,10 @@ FlatZSmearVertex::FlatZSmearVertex( const std::string& type,
                                     const IInterface* parent )
   : GaudiTool ( type, name , parent ) {
     declareInterface< IVertexSmearingTool >( this ) ;
-    declareProperty( "SigmaX" , m_sigmaX = 0.07 * Gaudi::Units::mm ) ;
-    declareProperty( "SigmaY" , m_sigmaY = 0.07 * Gaudi::Units::mm ) ;
-    declareProperty( "ZMin"   , m_zmin   = -800. * Gaudi::Units::mm ) ;
-    declareProperty( "ZMax"   , m_zmax   =  900. * Gaudi::Units::mm ) ;
+    declareProperty( "SigmaX" , m_sigmaX = 0.100 * Gaudi::Units::mm ) ;
+    declareProperty( "SigmaY" , m_sigmaY = 0.100 * Gaudi::Units::mm ) ;
+    declareProperty( "ZMin"   , m_zmin   = -1500. * Gaudi::Units::mm ) ;
+    declareProperty( "ZMax"   , m_zmax   =  1500. * Gaudi::Units::mm ) ;
     
     declareProperty( "Xcut" , m_xcut = 4. ) ; // times SigmaX 
     declareProperty( "Ycut" , m_ycut = 4. ) ; // times SigmaY

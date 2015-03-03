@@ -1,10 +1,23 @@
 ! =============================================================================
 ! CVS tag $Name: not supported by cvs2svn $ 
 ! =============================================================================
-! $Id: release.notes,v 1.9 2004-08-02 13:23:32 gcorti Exp $ 
+! $Id: release.notes,v 1.14 2007-03-05 14:55:32 ranjard Exp $ 
 ! =============================================================================
 package VisSvc
 package manager : Sebastien Ponce
+
+!====================== VisSvc v5r0 2007-03-05 =============================
+! 2007-03-05 - Marco Clemencic
+ - Updated following the changes in LHCb v22r1 XmlTools
+
+!====================== VisSvc v4r0 2007-01-12 =============================
+! 2007-01-12 - Florence RANJARD
+ - install include files on InstallArea
+
+! 2006-12-21 - Guy Barrand
+ - VisSvc_load.cpp : use standard Gaudi cpp macros.
+ - Det_[dll,load].cpp -> VisSvc_[dll,load].cpp.
+
 
 !====================== VisSvc v3r3 2004-08-02 =============================
 ! 2004-08-02 - Gloria CORTI

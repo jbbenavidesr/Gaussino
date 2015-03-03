@@ -1,4 +1,4 @@
-// $Id: HerwigProduction.h,v 1.4 2006-09-05 12:36:51 karl Exp $
+// $Id: HerwigProduction.h,v 1.5 2007-03-13 19:09:20 gcorti Exp $
 #ifndef LBHERWIG_HERWIGPRODUCTION_H 
 #define LBHERWIG_HERWIGPRODUCTION_H 1
 
@@ -36,6 +36,8 @@ class HerwigProduction : public GaudiTool, virtual public IProductionTool {
   
   virtual StatusCode generateEvent( HepMC::GenEvent * theEvent , 
                                     LHCb::GenCollision * theCollision ) ;
+  
+  virtual StatusCode initializeGenerator( ) ;
   
   virtual void setStable( const ParticleProperty * thePP ) ;
 
