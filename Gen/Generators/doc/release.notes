@@ -5,6 +5,15 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!======================= Generators v11r4 2012-02-12 =========================
+! 2012-02-12 - Gloria Corti
+ - Few changes in Generation.cpp and GenCounters for counting in Pythia8 and 
+   excited particles in November by Aureliens Martens
+
+! 2012-02-04 - Patrick Robbe
+ - Fix decayHeavyParticle function in ExternalGenerator for generation
+   of signal Ks.
+
 !======================= Generators v11r3 2011-11-11 =========================
 ! 2011-11-08 - Patrick Robbe
  - cleanup of Generator code

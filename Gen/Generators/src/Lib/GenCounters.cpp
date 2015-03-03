@@ -44,7 +44,7 @@ struct isRootB : std::unary_function< const HepMC::GenParticle * , bool > {
     for ( parent = thePV -> particles_in_const_begin() ;
           parent != thePV -> particles_in_const_end() ; ++parent ) {
       LHCb::ParticleID parentID( (*parent) -> pdg_id() ) ;
-      if ( parentID.hasBottom() ) return false ;
+      if ( parentID.hasBottom() && (thePid.abspid()==5 || parentID.abspid()!=5)) return false ;
     }
 
     // If no parent is a B, then it is a root B
@@ -78,7 +78,7 @@ struct isRootD : std::unary_function< const HepMC::GenParticle * , bool > {
     for ( parent = thePV -> particles_in_const_begin() ;
           parent != thePV -> particles_in_const_end() ; ++parent ) {
       LHCb::ParticleID parentID( (*parent) -> pdg_id() ) ;
-      if ( parentID.hasCharm() ) return false ;
+      if ( parentID.hasCharm()  && (parentID.abspid()!=4 || thePid.abspid()==4)) return false ;
     }
 
     // If no parent is a D, then it is a root D
@@ -203,9 +203,9 @@ void GenCounters::setupDHadronCountersNames( DHadronCNames & DC ,
 //=============================================================================
 void GenCounters::setupExcitedCountersNames( ExcitedCNames & B , 
                                              const std::string & root ) {
-    B[ _0star ] = root ;
-    B[ _1star ] = root + "*" ;
-    B[ _2star ] = root + "**" ;
+  B[ _0star ] = root + "(L=0,J=0)";
+    B[ _1star ] = root + "* (L=0, J=1)" ;
+    B[ _2star ] = root + "** (L=1, J=0,1,2)" ;
 }
 
 //=============================================================================
@@ -221,7 +221,7 @@ void GenCounters::updateExcitedStatesCounters
   std::vector< HepMC::GenParticle * > rootB ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( rootB ) , isRootB() ) ;
-  
+
   std::vector< HepMC::GenParticle * >::const_iterator iter ;
 
   for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter ) {
@@ -230,7 +230,6 @@ void GenCounters::updateExcitedStatesCounters
                                       (*iter) -> end_vertex() ) ) 
         continue ;
     }
-
     LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
 
     if ( thePid.isMeson() ) {
@@ -258,7 +257,7 @@ void GenCounters::updateExcitedStatesCounters
       if ( 0 == thePid.lSpin() ) {
         if ( 1 == thePid.jSpin() ) ++thecExcitedC[ _0star ] ;
         else ++thecExcitedC[ _1star ] ;
-      } else ++thecExcitedC[ _2star ] ;
+        } else ++thecExcitedC[ _2star ] ;
     }
   }       
 }

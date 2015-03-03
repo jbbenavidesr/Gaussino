@@ -194,7 +194,7 @@ EvtSpinDensity EvtAmp::getSpinDensity(){
 	int kk;
 
         int allloop = 1;
-        for (kk=0;kk<(_nontrivial-1); kk++ ) {
+        for (kk=0;kk<_ndaug; kk++ ) {
 	  allloop *= dstates[kk];
 	}
         
@@ -413,13 +413,9 @@ EvtSpinDensity EvtAmp::contract(int k,const EvtAmp& amp2){
 }
 
 
-EvtAmp EvtAmp::contract(int i, const EvtAmp& a1,const EvtAmp& a2){
+EvtAmp EvtAmp::contract(int , const EvtAmp& ,const EvtAmp& ){
   
   //Do we need this method?
-
-  assert(a2._pstates>1&&a2._nontrivial==1); _unused( a2 ) ;
-  assert(i<=a1._nontrivial); _unused( i ) ; _unused( a1 ) ;
-
   EvtAmp tmp;
   report(DEBUG,"EvtGen") << "EvtAmp::contract not written yet" << endl;
   return tmp;
@@ -430,6 +426,7 @@ EvtAmp EvtAmp::contract(int i, const EvtAmp& a1,const EvtAmp& a2){
 void EvtAmp::dump(){
 
   int i,list[10];
+  for (i = 0; i < 10; i++) {list[i] = 0;}
 
   report(DEBUG,"EvtGen") << "Number of daugthers:"<<_ndaug<<endl;
   report(DEBUG,"EvtGen") << "Number of states of the parent:"<<_pstates<<endl;
@@ -456,6 +453,8 @@ void EvtAmp::dump(){
   }
 
   int allloop[10];
+  for (i = 0; i < 10; i++) {allloop[i] = 0;}
+
   allloop[0]=1;
   for (i=0;i<_nontrivial;i++) {
     if (i==0){
