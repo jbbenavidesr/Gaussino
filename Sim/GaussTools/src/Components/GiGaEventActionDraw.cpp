@@ -3,6 +3,8 @@
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h" 
+// GiGa 
+//#include "GiGa/GiGaMACROs.h"
 
 // local
 #include "GiGaEventActionDraw.h"
@@ -19,7 +21,7 @@
  */
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaEventActionDraw )
+DECLARE_TOOL_FACTORY( GiGaEventActionDraw );
 
 // ============================================================================
 /** standard constructor 
@@ -36,14 +38,14 @@ GiGaEventActionDraw::GiGaEventActionDraw
   const std::string& name   ,
   const IInterface*  parent ) 
   : GiGaEventActionBase( type , name , parent  ) 
-{}
-
+{};
+// ============================================================================
 
 // ============================================================================
 // destructor 
 // ============================================================================
-GiGaEventActionDraw::~GiGaEventActionDraw(){}
-
+GiGaEventActionDraw::~GiGaEventActionDraw(){};
+// ============================================================================
 
 // ============================================================================
 // G4 
@@ -57,8 +59,8 @@ void GiGaEventActionDraw::EndOfEventAction( const G4Event* event )
   else if ( 0 == event     ) { Error("G4Event* points to NULL!"          ) ; } 
   else    { event->Draw(); }
   ///
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The End 

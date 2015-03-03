@@ -124,8 +124,7 @@ CaloSensDet::CaloSensDet
   declareProperty ( "dT0"                  ,  m_dT0               ) ;
   // input histograms(parametrization)
   declareProperty ( "Histograms"           ,  m_histoNames        ) ;
-}
-
+} ;
 // ============================================================================
 /** standard initialization (Gaudi) 
  *  @see GiGaSensDetBase
@@ -167,8 +166,7 @@ StatusCode CaloSensDet::initialize   ()
   }
   ///
   return StatusCode::SUCCESS ;
-}
-
+};
 // ============================================================================
 /** standard finalization (Gaudi) 
  *  @see GiGaSensDetBase
@@ -192,8 +190,7 @@ StatusCode CaloSensDet::finalize    ()
   m_histos .clear () ;
   // finalize the base class 
   return GiGaSensDetBase::finalize();
-}
-
+};
 // ============================================================================
 /** helpful method to locate start and end volumes 
  *  @return status code
@@ -220,8 +217,7 @@ StatusCode  CaloSensDet::locateVolumes()
   m_volumesLocated = true ;
   //
   return StatusCode::SUCCESS ;
-}
-
+};
 // ============================================================================
 /** method from G4 
  *  (Called at the begin of each event)
@@ -257,8 +253,7 @@ void CaloSensDet::Initialize( G4HCofThisEvent* HCE )
   }
   //
   m_hitmap.clear() ;
-}
-
+};
 // ============================================================================
 /** method from G4 
  *  (Called at the end of each event)
@@ -311,8 +306,7 @@ void CaloSensDet::EndOfEvent ( G4HCofThisEvent* /* HCE */ )
       % nhits % nshits % nslots % energy << endreq ;
   }
   
-}
-
+};
 // ============================================================================
 /** process the hit
  *  @param step     pointer to current Geant4 step 
@@ -394,6 +388,5 @@ bool CaloSensDet::ProcessHits
   if ( sc.isFailure() ){ Error("The SubHit information is not filled!",sc) ; }
   
   return true ;
-}
+};
 
-// ============================================================================

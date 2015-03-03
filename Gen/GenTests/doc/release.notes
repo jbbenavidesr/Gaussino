@@ -5,10 +5,6 @@
 !               tests with Gauss
 !=============================================================================
 
-!========================= GenTests v1r6p2 2014-12-18 ========================
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !========================= GenTests v1r6p1 2013-10-10 ========================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

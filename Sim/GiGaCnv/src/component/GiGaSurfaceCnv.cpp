@@ -38,7 +38,7 @@
 /** mandatory factory busines 
  */
 // ============================================================================
-DECLARE_CONVERTER_FACTORY( GiGaSurfaceCnv )
+DECLARE_CONVERTER_FACTORY( GiGaSurfaceCnv );
 
 // ============================================================================
 /** constructor 
@@ -51,26 +51,24 @@ GiGaSurfaceCnv::GiGaSurfaceCnv( ISvcLocator* Locator )
 {
   setNameOfGiGaConversionService( IGiGaCnvSvcLocation::Geo ) ; 
   setConverterName              ( "GiGaSurfaceCnv"         ) ; 
-}
+}; 
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-GiGaSurfaceCnv::~GiGaSurfaceCnv(){}
+GiGaSurfaceCnv::~GiGaSurfaceCnv(){}; 
 
 // ============================================================================
 /// Class ID //
 // ============================================================================
-const CLID&  GiGaSurfaceCnv::classID() { 
-  return Surface::classID() ; 
-}
+const CLID&  GiGaSurfaceCnv::classID            () 
+{ return Surface::classID() ; }
 
 // ============================================================================
 /// StorageType
 // ============================================================================
-unsigned char GiGaSurfaceCnv::storageType () { 
-  return GiGaGeom_StorageType; 
-} 
+unsigned char GiGaSurfaceCnv::storageType () 
+{ return GiGaGeom_StorageType; } 
 
 // ============================================================================
 /// Create representation 
@@ -107,7 +105,7 @@ StatusCode GiGaSurfaceCnv::createRep
   ///
   return updateRep( Object , Address ) ; 
   /// 
-}
+}; 
 
 // ============================================================================
 /** update the representation
@@ -169,7 +167,7 @@ StatusCode GiGaSurfaceCnv::updateRep
   ///
   ///
   return StatusCode::SUCCESS;
-}
+};
 
 // ============================================================================
 //
@@ -204,7 +202,7 @@ StatusCode GiGaSurfaceCnv::createSkinSurface
     { logsurf = surf ; }  
   ///
   return StatusCode::SUCCESS;
-}
+};
 
 // ============================================================================
 //
@@ -242,7 +240,7 @@ StatusCode GiGaSurfaceCnv::createBorderSurface
     { logsurf = surf ; }  
   ///  
   return StatusCode::SUCCESS;
-}
+};
 
 // ============================================================================
 // The End 

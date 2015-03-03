@@ -51,7 +51,7 @@
 // Declaration of the Tool Factory
 // ============================================================================
 
-DECLARE_TOOL_FACTORY( MonitorStepAction )
+DECLARE_TOOL_FACTORY( MonitorStepAction );
 
 // ============================================================================
 // Standard constructor, initialize variables
@@ -79,7 +79,7 @@ MonitorStepAction::MonitorStepAction( const std::string& type,
   oldTrack = 0;   // sign of an old track
   old_name = " "; // old_name (name of current particle) is empty
 
-}
+};
 
 // ============================================================================
 // Destructor
@@ -88,12 +88,13 @@ MonitorStepAction::MonitorStepAction( const std::string& type,
 MonitorStepAction::~MonitorStepAction()
 {
   Vmsgr.close();
-}
+};
 
 //============================================================================
 // Initialize
 //============================================================================
-StatusCode MonitorStepAction::initialize()
+
+ StatusCode MonitorStepAction::initialize()
 {
 
   // book histograms
@@ -107,12 +108,12 @@ StatusCode MonitorStepAction::initialize()
   StatusCode status =  GiGaStepActionBase::initialize();
   return Print("Initialized successfully" , 
                StatusCode::SUCCESS         , MSG::VERBOSE);  
-}
+};
 
 //============================================================================
 // Finalize
 //============================================================================
-StatusCode MonitorStepAction::finalize()
+ StatusCode MonitorStepAction::finalize()
 {
 
   // fill one last time nstep histogram
@@ -121,7 +122,7 @@ StatusCode MonitorStepAction::finalize()
 
   return GiGaStepActionBase::finalize();
   //  return StatusCode::SUCCESS;
-}
+};
 			
 // ============================================================================
 // ============================================================================
@@ -252,7 +253,7 @@ void MonitorStepAction::UserSteppingAction ( const G4Step* theStep )
        
   } 
  
-}
+};
 
 // ============================================================================
 // The END 

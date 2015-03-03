@@ -129,7 +129,7 @@ namespace GiGaVisManagerLocal
       ///
     };
   };
-}
+};  
 
 
 
@@ -143,7 +143,7 @@ namespace GiGaVisManagerLocal
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaVisManager )
+DECLARE_TOOL_FACTORY( GiGaVisManager );
 
 
 // ============================================================================
@@ -159,22 +159,15 @@ GiGaVisManager::GiGaVisManager
   const IInterface* parent )
   : GiGaBase( type, name , parent )
   , m_visMgr ( 0 )
-{ 
-  declareInterface <IGiGaVisManager> ( this ); 
-}
-
+{ declareInterface <IGiGaVisManager> ( this ); };
+// ============================================================================
 
 // ============================================================================
 /// destructor (virtual and protected)
 // ============================================================================
 GiGaVisManager::~GiGaVisManager()
-{ 
-  if( 0 != m_visMgr ) { 
-    delete m_visMgr ; 
-    m_visMgr = 0 ; 
-  } 
-}
-
+{ if( 0 != m_visMgr ) { delete m_visMgr ; m_visMgr = 0 ; } };
+// ============================================================================
 
 // ============================================================================
 /** get the pointer to G4 visual manager
@@ -186,8 +179,8 @@ G4VVisManager* GiGaVisManager::visMgr () const
 {
   if( 0 == m_visMgr ) { Warning("G4VVisManager* points to NULL!"); }
   return m_visMgr ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** initialization method 
@@ -213,8 +206,8 @@ StatusCode GiGaVisManager::initialize  ()
     { Warning ( "initialize(): static G4VVisManager* points to NULL!" ) ; }
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** finalization method 
@@ -231,7 +224,8 @@ StatusCode GiGaVisManager::finalize    ()
   if( 0 != m_visMgr ) { delete m_visMgr ; m_visMgr = 0 ; }
   // finalize the base class 
   return GiGaBase::finalize ();
-}
+};
+// ============================================================================
   
 
 

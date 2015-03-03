@@ -51,6 +51,36 @@
 #include "G4SteppingManager.hh"
 #include "G4ParticleDefinition.hh"
 
+
+// ============================================================================
+/** @file 
+ *  iplementation of class GiGaTrajectory
+ *  @author Vanya Belyaev Ivan.Belyaev@itep.ru
+ *  @date    22/02/2001 
+ */
+// ============================================================================
+
+
+// ============================================================================
+#if  defined (__GNUG__) || defined (__GNUC__)
+// Problem with -ansi option of g++: those prototypes are not taken.
+extern "C" {
+  int isnan  ( double );
+  int finite ( double );
+};
+#elif defined (WIN32)
+#include <float.h>
+#endif
+// ============================================================================
+
+#if defined (WIN32)
+  inline int lfin ( double x ) { return _finite( x ) ; }
+  inline int lnan ( double x ) { return _isnan ( x ) ; }
+#else
+  inline int lfin ( double x ) { return  finite( x ) ; }
+  inline int lnan ( double x ) { return  isnan ( x ) ; }
+#endif
+
 // ============================================================================
 namespace GiGaTrajectoryLocal
 {
@@ -69,7 +99,7 @@ namespace GiGaTrajectoryLocal
   static GiGaUtil::InstanceCounter<GiGaTrajectory> s_Counter ;
 #endif 
   // ==========================================================================
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -92,7 +122,7 @@ GiGaTrajectory::GiGaTrajectory (   )
 #ifdef GIGA_DEBUG
   GiGaTrajectoryLocal::s_Counter.increment () ;
 #endif 
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -116,7 +146,7 @@ GiGaTrajectory::GiGaTrajectory   ( const G4Track* aTrack )
 {
   ///
   double time = aTrack->GetGlobalTime() ;
-  if( !finite( time ) ) 
+  if( !lfin( time ) ) 
   {
     std::cout << " GiGaTrajectory  GetGlobalTime ERROR " 
               << std::string( 65 , '*' )     << std::endl << std::flush ;
@@ -138,7 +168,7 @@ GiGaTrajectory::GiGaTrajectory   ( const G4Track* aTrack )
 #ifdef GIGA_DEBUG
   GiGaTrajectoryLocal::s_Counter.increment () ;
 #endif
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -166,7 +196,7 @@ GiGaTrajectory::GiGaTrajectory ( const GiGaTrajectory & right )
 #ifdef GIGA_DEBUG
   GiGaTrajectoryLocal::s_Counter.increment () ;
 #endif
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -183,7 +213,7 @@ GiGaTrajectory::~GiGaTrajectory()
 #ifdef GIGA_DEBUG
   GiGaTrajectoryLocal::s_Counter.decrement () ;
 #endif
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -199,18 +229,14 @@ GiGaTrajectory* GiGaTrajectory::clone() const
 /// overloaded new  operator 
 // ============================================================================
 void* GiGaTrajectory::operator new(size_t)
-{ 
-  return (void*) GiGaTrajectoryLocal::s_Allocator.MallocSingle(); 
-}
+{ return (void*) GiGaTrajectoryLocal::s_Allocator.MallocSingle(); };
 // ============================================================================
 
 // ============================================================================
 /// overloaded delete operator 
 // ============================================================================
 void  GiGaTrajectory::operator delete(void* traj )
-{ 
-  GiGaTrajectoryLocal::s_Allocator.FreeSingle( (GiGaTrajectory*) traj ); 
-}
+{ GiGaTrajectoryLocal::s_Allocator.FreeSingle( (GiGaTrajectory*) traj ); };
 // ============================================================================
 
 // ============================================================================
@@ -254,7 +280,7 @@ void GiGaTrajectory::DrawTrajectory  ( G4int i_mode ) const
           if(pVVisManager) { pVVisManager->Draw( circle ); } 
         } 
     }
-}
+};
 // ============================================================================
 
 
@@ -271,7 +297,7 @@ bool GiGaTrajectory::appendStep ( const G4Step* step )
   const G4StepPoint* point = step  -> GetPostStepPoint () ;
   double             time  = point -> GetGlobalTime    () ;
   
-  if( !finite( time ) ) 
+  if( !lfin( time ) ) 
   {
     std::cout << " GiGaTrajectory appendStep ERROR " 
               << std::string( 65 , '*' )     << std::endl ;
@@ -302,7 +328,7 @@ bool GiGaTrajectory::appendStep ( const G4Step* step )
   
   ///
   return true ;
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -321,7 +347,7 @@ void GiGaTrajectory::AppendStep      ( const G4Step*  step )
             G4OpticalPhoton::OpticalPhoton         ()    ) { append = true ; }
   ///
   if ( append ) { appendStep ( step ) ; }
-}
+};
 
 // ============================================================================
 void GiGaTrajectory::ShowTrajectory  ( std::ostream& stream ) const
@@ -363,7 +389,7 @@ void GiGaTrajectory::ShowTrajectory  ( std::ostream& stream ) const
     stream << std::endl ;
   }
   
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -381,7 +407,7 @@ void GiGaTrajectory::MergeTrajectory ( G4VTrajectory* st )
   /// remove copied points   
   gt->erase( it , gt->end() );
   ///
-}
+};
 // ============================================================================
 
 
@@ -393,7 +419,7 @@ G4String      GiGaTrajectory::GetParticleName () const
   if( 0 == partDef() ) 
     { throw GiGaException(" GiGaTrajectory: G4ParticleDefinition is NULL"); }
   return partDef()->GetParticleName();
-}
+};
 // ============================================================================
 
 
@@ -405,7 +431,7 @@ G4double      GiGaTrajectory::GetCharge       () const
   if( 0 == partDef() ) 
     { throw GiGaException(" GiGaTrajectory: G4ParticleDefinition is NULL"); }
   return partDef()->GetPDGCharge();
-}
+};
 
 // ============================================================================
 /// get particle encoding
@@ -415,14 +441,12 @@ G4int         GiGaTrajectory::GetPDGEncoding  () const
   if( 0 == partDef() ) 
     { throw GiGaException(" GiGaTrajectory: G4ParticleDefinition is NULL"); }
   return partDef()->GetPDGEncoding();
-}
+};
 // ============================================================================
 
 // ============================================================================
 G4ThreeVector GiGaTrajectory::GetInitialMomentum () const 
-{ 
-  return momentum(); 
-}
+{ return momentum(); };
 // ============================================================================
 
 // ============================================================================

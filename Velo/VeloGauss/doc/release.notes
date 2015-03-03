@@ -4,13 +4,6 @@
 ! Purpose     : VeloGauss monitoring
 !-----------------------------------------------------------------------------
 
-!========================= VeloGauss v3r0p1 2015-01-16 =======================
-! 2014-11-26 - Gloria Corti
- - fixes for warning when compiling with --pedantic
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !========================== VeloGauss v3r0 2014-01-30 ========================
 ! 2013-12-31 - Marco Clemencic
  - Removed obsolete files.

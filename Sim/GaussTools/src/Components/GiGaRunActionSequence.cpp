@@ -8,6 +8,7 @@
 #include "GaudiKernel/PropertyMgr.h"
 /// GiGa 
 #include "GiGa/IGiGaSvc.h"
+//#include "GiGa/GiGaMACROs.h"
 #include "GiGa/GiGaUtil.h"
 /// local 
 #include "GiGaRunActionSequence.h"
@@ -23,7 +24,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaRunActionSequence )
+DECLARE_TOOL_FACTORY( GiGaRunActionSequence );
 
 // ============================================================================
 /** standard constructor 
@@ -42,10 +43,8 @@ GiGaRunActionSequence::GiGaRunActionSequence
   : GiGaRunActionBase( type , name , parent )
   , m_members ( ) ///< empty default lst!
   , m_actions ( ) 
-{ 
-  declareProperty( "Members" , m_members ); 
-}
-
+{ declareProperty( "Members" , m_members ); };
+// ============================================================================
 
 // ============================================================================
 /// destructor 
@@ -54,8 +53,8 @@ GiGaRunActionSequence::~GiGaRunActionSequence()
 {
   m_members.clear () ;
   m_actions.clear () ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** initialization method 
@@ -87,8 +86,8 @@ StatusCode GiGaRunActionSequence::initialize  ()
   ///
   return StatusCode::SUCCESS ;
   
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform begin-of-run action
@@ -104,8 +103,8 @@ void GiGaRunActionSequence::BeginOfRunAction ( const G4Run* run )
       IGiGaRunAction* action = *iaction ;
       if( 0 != action ) { action->BeginOfRunAction( run ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform end-of-run action
@@ -122,8 +121,8 @@ void GiGaRunActionSequence::EndOfRunAction ( const G4Run* run )
       //   if( 0 != action ) { action->BeginOfRunAction( run ) ; }
       if( 0 != action ) { action->EndOfRunAction( run ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The END 

@@ -4,13 +4,6 @@
 ! Purpose     : Package for Pythia 6 in Gauss
 !-----------------------------------------------------------------------------
 
-!======================== LbPythia v14r2p1 2014-12-16 ========================
-! 2014-11-28 - Gloria Corti
- - Try to fix fix warnings when compiling with --pedantic
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !========================= LbPythia v14r2 2013-10-21 =========================
 ! 2013-10-10 - Gloria Corti
  - Add lines in Pythia.py and Pythia_CT09MCS.py to set use of PythiaProduction

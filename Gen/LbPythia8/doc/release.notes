@@ -4,9 +4,22 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
-!======================== LbPythia8 v8r0p1 2014-12-17 ========================
-! 2014-12-17 - Gloria Corti
- - Try to fix compilation warning with --pedantic
+! 2014-09-08 - Alex Grecu
+ - correct access to codesHard hard process id vector in Pythia8::Pythia which 
+   is now in Pythia8::Pythia.info Info object. Patched Pythia8Production.cpp. 
+
+! 2014-09-03 - Philip Ilten
+ - Significant clean-up of code. Removed unnecessary HEPEVT checking. Utilizing
+   new Pythia features for cross-section names and values.
+
+! 2014-09-01 - John Back
+ - Updated the Pythia8 includes in various classes for Pythia 8.18x.
+   The conversion of the Pythia event to HepMC format within 
+   src/component/Pythia8Production.cpp must now use HepMC::Pythia8ToHepMC
+   instead of HepMC::I_Pythia, which no longer exists. Also, the virtual 
+   LbLHAupFortran::setEvent() function, which overloads that in 
+   Pythia8::LHAup, requires an additional 2nd argument (double mRecalculate) 
+   which does nothing.
 
 !======================== LbPythia8 v8r0 2014-07-24 ========================
 ! 2014-07-14 - Gloria Corti

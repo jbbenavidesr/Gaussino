@@ -83,7 +83,6 @@
 
 #include "EvtGenModels/EvtSVVHelCPMix.hh"
 #include "EvtGenModels/EvtLb2Lll.hh"
-#include "EvtGenModels/EvtRareLbToLll.hh"
 #include "EvtGenModels/EvtHypNonLepton.hh"
 
 #include "EvtGenModels/EvtbTosllAli.hh"
@@ -252,7 +251,6 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtBToKpipiCP);
 
     modelist.registerModel(new EvtLb2Lll);
-    modelist.registerModel(new EvtRareLbToLll);
     modelist.registerModel(new EvtHypNonLepton);
     modelist.registerModel(new EvtSVVHelCPMix);
 

@@ -37,13 +37,13 @@ GiGaStackActionBase::GiGaStackActionBase
   , GiGaBase             ( type , name , parent ) 
 { 
   declareInterface<IGiGaStackAction> (this) ; 
-}
+};
 // ============================================================================
 
 // ============================================================================
 // Destructor 
 // ============================================================================
-GiGaStackActionBase::~GiGaStackActionBase() {}
+GiGaStackActionBase::~GiGaStackActionBase() {};
 // ============================================================================
 
 // ============================================================================
@@ -55,10 +55,7 @@ GiGaStackActionBase::~GiGaStackActionBase() {}
  */
 // ============================================================================
 StatusCode GiGaStackActionBase::initialize() 
-{ 
-  return GiGaBase::initialize () ; 
-} 
-
+{ return GiGaBase::initialize () ; }; 
 // ============================================================================
 
 // ============================================================================
@@ -70,9 +67,7 @@ StatusCode GiGaStackActionBase::initialize()
  */
 // ============================================================================
 StatusCode GiGaStackActionBase::finalize() 
-{ 
-  return GiGaBase::finalize(); 
-}
+{ return GiGaBase::finalize(); };
 // ============================================================================
 
 // ============================================================================
@@ -102,7 +97,7 @@ GiGaStackActionBase::ClassifyNewTrack ( const G4Track* /* track */ )
 { 
   Print("'ClassiftNewTrack' is invoked" , StatusCode::SUCCESS , MSG::DEBUG );
   return fUrgent; 
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -133,7 +128,7 @@ GiGaStackActionBase::ClassifyNewTrack ( const G4Track* /* track */ )
     UImanager->ApplyCommand("/event/abort");
 */
 // ============================================================================
-void GiGaStackActionBase::NewStage         () {}
+void GiGaStackActionBase::NewStage         () {};
 // ============================================================================
 
 // ============================================================================
@@ -150,12 +145,15 @@ void GiGaStackActionBase::NewStage         () {}
  *
  */ 
 // ============================================================================
-void GiGaStackActionBase::PrepareNewEvent  () {}
+void GiGaStackActionBase::PrepareNewEvent  () {};
 // ============================================================================
 
 // ============================================================================
 // The END 
 // ============================================================================
+
+
+
 
 
 

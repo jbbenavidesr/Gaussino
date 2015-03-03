@@ -13,6 +13,7 @@
 #include "G4ProcessType.hh"
 
 // GiGa
+//#include "GiGa/GiGaMACROs.h"
 #include "GiGa/DumpG4Track.h"
 
 // GaussTools 
@@ -31,7 +32,7 @@
  */
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GaussTrackActionStart )
+DECLARE_TOOL_FACTORY( GaussTrackActionStart );
 
 // ============================================================================
 /** standard constructor 
@@ -51,14 +52,14 @@ GaussTrackActionStart::GaussTrackActionStart
   //
   , m_store ( false )
   , m_first ( true  )
-{}
-
+{};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
 // ============================================================================
 GaussTrackActionStart::~GaussTrackActionStart() {}
-
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -82,8 +83,8 @@ void GaussTrackActionStart::PreUserTrackingAction
   if( 0 == info ) 
   { Error ( "Pre...: GaussTrackInformation* points to NULL" ) ; }
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -103,8 +104,8 @@ void GaussTrackActionStart::PostUserTrackingAction
   if( 0 == info ) 
   { Error ( "Post...: GaussTrackInformation* points to NULL" ) ; }
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** restore G4 initial policy for 
@@ -136,8 +137,8 @@ StatusCode GaussTrackActionStart::restoreG4setting()
   manager -> SetStoreTrajectory( true ) ; 
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 
 // ============================================================================

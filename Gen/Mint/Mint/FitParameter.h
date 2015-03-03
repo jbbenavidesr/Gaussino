@@ -125,10 +125,6 @@ namespace MINT{
   void setCurrentValToInit(); // resets only mean value, leaves errors etc alone
   void resetToInit(); // resets all
 
-  void setMeanInit(double setToVal){_meanInit=setToVal;}
-  void setStepInit(double setToVal){_stepInit=setToVal;}
-  void setMinMaxInit(double mi, double ma){_minInit=mi; _maxInit=ma;}
-
   //  virtual bool updateResults();
 
   //  const TMinuit* getMinuit() const;

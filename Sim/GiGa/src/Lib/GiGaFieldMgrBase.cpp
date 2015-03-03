@@ -57,7 +57,7 @@ namespace GiGaFieldMgrBaseLocal
    */
   static GiGaUtil::InstanceCounter<GiGaFieldMgrBase> s_Counter ;
 #endif   
-}
+};
 // ============================================================================
 
 
@@ -103,7 +103,7 @@ GiGaFieldMgrBase::GiGaFieldMgrBase
   //
 #endif
   //
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -118,7 +118,7 @@ GiGaFieldMgrBase::~GiGaFieldMgrBase()
   //
 #endif
   //
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -130,9 +130,7 @@ GiGaFieldMgrBase::~GiGaFieldMgrBase()
  */
 // ============================================================================
 StatusCode   GiGaFieldMgrBase::initialize     ()
-{ 
-  return GiGaBase::initialize () ; 
-}
+{ return GiGaBase::initialize () ; }
 // ============================================================================
 
 // ============================================================================
@@ -144,9 +142,7 @@ StatusCode   GiGaFieldMgrBase::initialize     ()
  */
 // ============================================================================
 StatusCode   GiGaFieldMgrBase::finalize       () 
-{ 
-  return GiGaBase::finalize  () ; 
-}
+{ return GiGaBase::finalize  () ; }
 // ============================================================================
 
 // ============================================================================
@@ -162,7 +158,7 @@ G4MagIntegratorStepper* GiGaFieldMgrBase::stepper  () const
   StatusCode sc = createStepper() ;
   if( sc.isFailure() ) { Error("stepper(): Stepper is not created!" , sc ) ; }
   return m_stepper ;
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -253,7 +249,7 @@ G4FieldManager* GiGaFieldMgrBase::fieldMgr () const
   if( sc.isFailure() ) 
     { Error ( " fieldMgr(): error from createFieldManager () " , sc ) ; }
   return m_manager ;
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -312,7 +308,7 @@ StatusCode GiGaFieldMgrBase::createFieldMgr () const
       << endmsg;
   
   return StatusCode::SUCCESS ;
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -320,10 +316,7 @@ StatusCode GiGaFieldMgrBase::createFieldMgr () const
  *  the tool field manager  
  */
 // ============================================================================
-bool GiGaFieldMgrBase::global   () const 
-{ 
-  return m_global ; 
-}
+bool GiGaFieldMgrBase::global   () const { return m_global ; }
 // ============================================================================
 
 // ============================================================================

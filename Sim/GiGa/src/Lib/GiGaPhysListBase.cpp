@@ -39,7 +39,7 @@ namespace GiGaPhysListBaseLocal
    */
   static GiGaUtil::InstanceCounter<GiGaPhysListBase> s_Counter ;
 #endif   
-}
+};
 
 // ============================================================================
 /** standard constructor
@@ -63,7 +63,7 @@ GiGaPhysListBase::GiGaPhysListBase
   GiGaPhysListBaseLocal::s_Counter.increment () ;
 #endif
   //
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -76,7 +76,7 @@ GiGaPhysListBase::~GiGaPhysListBase()
   GiGaPhysListBaseLocal::s_Counter.decrement () ;
 #endif
   //
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -98,7 +98,7 @@ StatusCode GiGaPhysListBase::initialize ()
   m_self = this ;
   
   return StatusCode::SUCCESS ;
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -131,7 +131,7 @@ void GiGaPhysListBase::SetCuts ()
       << " The cut for positron     is set to \t" 
       << cutForPositron    () / mm << " mm " << endreq ; 
   
-}
+};
 // ============================================================================
 
 // ============================================================================
@@ -143,9 +143,7 @@ void GiGaPhysListBase::SetCuts ()
  */
 // ============================================================================
 StatusCode GiGaPhysListBase::finalize   ()  
-{ 
-  return GiGaPhysicsListBase::finalize () ; 
-}
+{ return GiGaPhysicsListBase::finalize () ; };
 // ============================================================================
 
 // ============================================================================
@@ -167,7 +165,7 @@ G4VUserPhysicsList* GiGaPhysListBase::physicsList ()  const
     { Error("physicsList(): G4VUserPhysicsList* invalid!"); }
   //
   return m_self ;
-}
+};
 // ============================================================================
 
 unsigned long GiGaPhysListBase::release()
@@ -178,7 +176,7 @@ unsigned long GiGaPhysListBase::release()
     return AlgTool::release() ;
   }
   return 0 ;
-}
+};
 
 // ============================================================================
 // The END 

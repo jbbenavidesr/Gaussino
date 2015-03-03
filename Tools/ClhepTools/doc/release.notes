@@ -7,13 +7,6 @@
 !               these aren't defined.
 !-----------------------------------------------------------------------------
 
-!============================ ClhepTools v2r1p3 ===============================
-! 2014-11-20 - Gloria Corti
- - Fixes for warning when compiling with --pedantic
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !============================ ClhepTools v2r1p2 ===============================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

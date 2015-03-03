@@ -59,7 +59,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( EcalSensDet )
+DECLARE_TOOL_FACTORY( EcalSensDet );
 
 // ============================================================================
 /** standard constructor 
@@ -107,7 +107,8 @@ EcalSensDet::EcalSensDet
   declareProperty ( "a_reflection_height"  , m_a_reflection_height ) ;
   declareProperty ( "a_reflection_width"   , m_a_reflection_width  ) ;
   //
-}
+};
+// ============================================================================
 
 
 // ============================================================================
@@ -180,7 +181,8 @@ StatusCode    EcalSensDet::fillHitInfo
   }
   
   return StatusCode::SUCCESS ;
-}
+};
+// ============================================================================
 
 
 // ============================================================================

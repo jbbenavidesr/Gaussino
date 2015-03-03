@@ -1,7 +1,7 @@
 ################################################################################
 # Package: LbOniaPairs
 ################################################################################
-gaudi_subdir(LbOniaPairs v2r1p1)
+gaudi_subdir(LbOniaPairs v1r2)
 
 gaudi_depends_on_subdirs(Gen/GENSER
                          Gen/LbPythia)
@@ -20,4 +20,3 @@ gaudi_add_module(LbOniaPairs
                  INCLUDE_DIRS Boost
                  LINK_LIBRARIES Boost pythia6forgauss LbPythiaLib LbOniaPairsLib)
 
-gaudi_env(SET LBONIAPAIRSOPTS \${LBONIAPAIRSROOT}/options)

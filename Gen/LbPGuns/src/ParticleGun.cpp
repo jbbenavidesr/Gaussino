@@ -24,7 +24,6 @@
 #include "MCInterfaces/IDecayTool.h"
 #include "Generators/IVertexSmearingTool.h"
 #include "MCInterfaces/IFullGenEventCutTool.h"
-#include "MCInterfaces/IGenCutTool.h"
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 
@@ -40,7 +39,7 @@
 
 // Declaration of the Algorithm Factory
 
-DECLARE_ALGORITHM_FACTORY( ParticleGun )
+DECLARE_ALGORITHM_FACTORY( ParticleGun );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -54,15 +53,12 @@ ParticleGun::ParticleGun( const std::string& name,
     m_sampleGenerationTool  ( 0 ) ,
     m_vertexSmearingTool    ( 0 ) ,
     m_fullGenEventCutTool   ( 0 ) ,
-    m_genCutTool            ( 0 ) ,
     m_nEvents               ( 0 ) ,
     m_nAcceptedEvents       ( 0 ) ,
     m_nParticles            ( 0 ) ,
     m_nAcceptedParticles    ( 0 ) ,
     m_nBeforeFullEvent      ( 0 ) ,
-    m_nAfterFullEvent       ( 0 ) ,
-    m_nBeforeCut            ( 0 ) ,
-    m_nAfterCut             ( 0 ) {
+    m_nAfterFullEvent       ( 0 ) {
   // Generation Method
   declareProperty ( "ParticleGunTool" ,
                     m_particleGunToolName = "GenericGun" ) ;
@@ -87,17 +83,12 @@ ParticleGun::ParticleGun( const std::string& name,
   // Tool name to cut on full event
   declareProperty( "FullGenEventCutTool" ,
                    m_fullGenEventCutToolName = "" ) ;
-  // Tool name to cut on generator-level
-  declareProperty( "GenCutTool" ,
-                   m_genCutToolName = "" ) ;
-  // Flag to generate signal
-  declareProperty( "SignalPdgCode" , m_sigPdgCode = 0) ;
 }
 
 //=============================================================================
 // Destructor
 //=============================================================================
-ParticleGun::~ParticleGun() {}
+ParticleGun::~ParticleGun() {};
 
 //=============================================================================
 // Initialisation. Check parameters
@@ -105,7 +96,6 @@ ParticleGun::~ParticleGun() {}
 StatusCode ParticleGun::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize( ) ; // Initialize base class
   if ( sc.isFailure() ) return sc ;
-
   debug() << "==> Initialise" << endmsg ;
 
   // Initialization of the Common Flat Random generator if not already done
@@ -122,10 +112,8 @@ StatusCode ParticleGun::initialize() {
     m_numberOfParticlesTool = tool< IPileUpTool >( m_numberOfParticlesToolName , this ) ;
 
   // Retrieve decay tool
-  if ( "" != m_decayToolName ) {
-    m_decayTool = tool< IDecayTool >( m_decayToolName ) ;
-    if ( m_decayTool && m_sigPdgCode!=0 ) m_decayTool -> setSignal( m_sigPdgCode ) ;
-  }
+  if ( "" != m_decayToolName ) m_decayTool =
+                                 tool< IDecayTool >( m_decayToolName ) ;
 
   // Retrieve generation method tool
   if ( "" == m_particleGunToolName )
@@ -152,10 +140,6 @@ StatusCode ParticleGun::initialize() {
   // Retrieve full gen event cut tool
   if ( "" != m_fullGenEventCutToolName ) m_fullGenEventCutTool =
                                            tool< IFullGenEventCutTool >( m_fullGenEventCutToolName , this ) ;
-
-  // Retrieve gen cut tool
-  if ( "" != m_genCutToolName ) m_genCutTool =
-                                           tool< IGenCutTool >( m_genCutToolName , this ) ;
 
   // Message relative to event type
   always()
@@ -191,7 +175,7 @@ StatusCode ParticleGun::execute() {
   // Create temporary containers for this event
   LHCb::HepMCEvents* theEvents = new LHCb::HepMCEvents( );
   LHCb::GenCollisions* theCollisions = new LHCb::GenCollisions( );
-
+  
   // Working set of pointers
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -252,28 +236,9 @@ StatusCode ParticleGun::execute() {
       unsigned short iPart( 0 ) ;
       for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
             ++itEvents ) {
-        ParticleVector theParticleList ;
-        theParticleList.clear();
-
-        HepMC::GenParticle *theSignal = decayEvent( *itEvents, theParticleList, sc) ;
-        if ( ! sc.isSuccess() ) return sc;
-
+        sc = decayEvent( *itEvents ) ;
         (*itEvents) -> pGenEvt() -> set_event_number( ++iPart ) ;
-
-        // Add Cut tool
-        bool passCut(true);
-        if ( m_genCutTool && theSignal ) {
-          ++m_nBeforeCut;
-          passCut = m_genCutTool -> applyCut( theParticleList , theGenEvent ,
-                                              theGenCollision ) ;
-          // event does not pass cuts
-          if ( !passCut || theParticleList.empty() ){
-            
-            HepMCUtils::RemoveDaughters( theSignal ) ;
-            goodEvent = false;
-          }
-          else ++m_nAfterCut;
-        }
+        if ( ! sc.isSuccess() ) return sc ;
       }
     }
 
@@ -370,8 +335,6 @@ StatusCode ParticleGun::finalize() {
 
   printEfficiency( info() , "full event cut" , m_nAfterFullEvent ,
                    m_nBeforeFullEvent ) ;
-  printEfficiency( info() , "signal cut" , m_nAfterCut ,
-                   m_nBeforeCut ) ;
   info() << endmsg ;
 
   m_particleGunTool -> printCounters() ;
@@ -381,7 +344,6 @@ StatusCode ParticleGun::finalize() {
   if ( 0 != m_particleGunTool ) release( m_particleGunTool ) ;
   if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ) ;
   if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ) ;
-  if ( 0 != m_genCutTool ) release( m_genCutTool ) ;
 
   return GaudiAlgorithm::finalize( ) ; // Finalize base class
 }
@@ -390,13 +352,10 @@ StatusCode ParticleGun::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC::GenParticle *ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent,
-                                             ParticleVector & theParticleList,
-                                             StatusCode & sc) {
+StatusCode ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent ) {
   using namespace LHCb;
   m_decayTool -> disableFlip() ;
-  sc = StatusCode::SUCCESS ;
-  HepMC::GenParticle *theSignal(0);
+  StatusCode sc = StatusCode::SUCCESS ;
 
   HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
 
@@ -423,20 +382,12 @@ HepMC::GenParticle *ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent,
             set_status( HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
         else thePart -> set_status( HepMCEvent::DecayedByDecayGen ) ;
 
-        if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
-          bool hasFlipped(false);
-          sc = m_decayTool -> generateSignalDecay( thePart, hasFlipped ) ;
-          theSignal = thePart;
-        } else
-          sc = m_decayTool -> generateDecay( thePart ) ;
-
-        theParticleList.push_back( thePart );
-
-        if ( ! sc.isSuccess() ) return 0 ;
+        sc = m_decayTool -> generateDecay( thePart ) ;
+        if ( ! sc.isSuccess() ) return sc ;
       }
     }
   }
-  return theSignal ;
+  return sc ;
 }
 
 //=============================================================================
@@ -453,7 +404,7 @@ void ParticleGun::prepareInteraction( LHCb::HepMCEvents * theEvents ,
 
   theGenCollision = new LHCb::GenCollision() ;
   theGenCollision -> setEvent( theHepMCEvent ) ;
-  theGenCollision -> setIsSignal( (m_sigPdgCode!=0) ) ;
+  theGenCollision -> setIsSignal( false ) ;
 
   theEvents -> insert( theHepMCEvent ) ;
   theCollisions -> insert( theGenCollision ) ;

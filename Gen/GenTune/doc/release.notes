@@ -5,10 +5,6 @@
 !               using Professor/Rivet system. 
 !-----------------------------------------------------------------------------
 
-!========================== GenTune v2r2p1 2014-12-19 ========================
-! 2014-12-01 - Gloria Corti
- - Fixes for compilation warnings with --pedantic
-
 !=========================== GenTune v2r2 2014-08-21 =========================
 ! 2014-07-28 - Alex Grecu
  - modified qmtest to ignore -Wunused-local-typedefs warnings for BOOST 1.53 

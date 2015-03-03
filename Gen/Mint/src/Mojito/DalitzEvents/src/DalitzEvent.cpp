@@ -27,11 +27,6 @@ const char DalitzEvent::prtNameChars[] = { '+', '-','(', ')', '\0' };
 const char DalitzEvent::ntpNameChars[] = { '#', '~', '{', '}', '\0' };
 
 long int DalitzEvent::_eventCounter=0;
-long int DalitzEvent::_rememberVectorCounter=0;
-
-long int  DalitzEvent::assignUniqueRememberNumber(){
-  return _rememberVectorCounter++;
-}
 
 DalitzEvent::DalitzEvent()
   : _rememberPhaseSpace(-9999.)
@@ -181,7 +176,6 @@ DalitzEvent::DalitzEvent(const IDalitzEvent* other)
     //  , _p(other.)
   , _rememberPhaseSpace(other->phaseSpace())
   , _rememberAmps()
-  , _rememberAmpsFast()
   , _aValue(other->getAValue())
   , _weight(other->getWeight())
   , _generatorPdfRelativeToPhaseSpace(other->getGeneratorPdfRelativeToPhaseSpace())
@@ -203,7 +197,6 @@ DalitzEvent::DalitzEvent(const DalitzEvent* other)
   , _p(other->_p)
   , _rememberPhaseSpace(other->_rememberPhaseSpace)
   , _rememberAmps(other->_rememberAmps)
-  , _rememberAmpsFast(other->_rememberAmpsFast)
   , _aValue(other->_aValue)
   , _weight(other->_weight)
   , _generatorPdfRelativeToPhaseSpace(other->_generatorPdfRelativeToPhaseSpace)
@@ -226,7 +219,6 @@ DalitzEvent::DalitzEvent(const DalitzEvent& other)
   , _p(other._p)
   , _rememberPhaseSpace(other._rememberPhaseSpace)
   , _rememberAmps(other._rememberAmps)
-  , _rememberAmpsFast(other._rememberAmpsFast)
   , _aValue(other._aValue)
   , _weight(other._weight)
   , _generatorPdfRelativeToPhaseSpace(other._generatorPdfRelativeToPhaseSpace)

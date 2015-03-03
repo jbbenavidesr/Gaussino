@@ -12,6 +12,9 @@
 #include "G4VProcess.hh"
 #include "G4ProcessType.hh"
 
+// GiGa
+//#include "GiGa/GiGaMACROs.h"
+
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
@@ -28,7 +31,7 @@
  */
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GaussTrackActionByProcess )
+DECLARE_TOOL_FACTORY( GaussTrackActionByProcess );
 
 // ============================================================================
 /** standard constructor 
@@ -55,14 +58,14 @@ GaussTrackActionByProcess::GaussTrackActionByProcess
   declareProperty ( "ChildProcesses"    , m_childProcs  ) ;  
   declareProperty ( "OwnProcessTypes"   , m_ownPTypes   ) ;
   declareProperty ( "ChildProcessTypes" , m_childPTypes ) ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
 // ============================================================================
 GaussTrackActionByProcess::~GaussTrackActionByProcess() {}
-
+// ============================================================================
 
 // ============================================================================
 /// perform initialization
@@ -78,8 +81,9 @@ StatusCode GaussTrackActionByProcess::initialize ()
   std::sort ( m_childPTypes  .begin () , m_childPTypes .end () ) ;
   
   return StatusCode::SUCCESS ;
-}
+};
 
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -117,8 +121,8 @@ void GaussTrackActionByProcess::PreUserTrackingAction  ( const G4Track* track )
    
   if ( storeByOwnProcess() ) { mark( info ) ; }
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -157,8 +161,11 @@ void GaussTrackActionByProcess::PostUserTrackingAction
  
   if ( storeByChildProcess() ) { mark( info ) ; }
   
-}
+};
+// ============================================================================
 
+
+// ============================================================================
 
 // ============================================================================
 // The END 

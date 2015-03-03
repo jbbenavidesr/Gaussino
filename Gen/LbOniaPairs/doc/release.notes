@@ -1,17 +1,10 @@
-! $Id:$ 
+nk! $Id:$ 
 ! -----------------------------------------------------------------------------
 ! Package     : Gen/LbOniaPairs
 ! Author      : Alexey Novoselov Alexey.Novoselov@cern.ch
 ! Responsible : Vanya Belyaev    Ivan.Belyaev@cern.ch
 ! Purpose     : Generator for onia pairs production 
 ! -----------------------------------------------------------------------------
-
-!======================= LbOniaPairs v2r1p1 2014-10-16 ========================
-! 2014-12-02 - Gloria Corti
- - Try to fix compilation warnings with --pedantic
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
 
 !======================== LbOniaPairs v2r1 2014-08-01 =========================
 ! 2014-06-24 - Gloria Corti

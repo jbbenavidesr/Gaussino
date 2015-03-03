@@ -25,8 +25,7 @@ extern "C"
 #define opgetpar     oniapairsgetpar_ 
 #define opprintx     oniapairsprintx_ 
 #endif
-} 
-
+} ;
 // ============================================================================
 bool OniaPairs::SetPar ( std::string n , double value )
 {
@@ -36,8 +35,7 @@ bool OniaPairs::SetPar ( std::string n , double value )
   // jump into FORTRAN
   opsetpar ( &value , n.c_str() , n.size() ) ;
   return _value == OniaPairs::GetPar ( n ) ;
-}
-
+} ;
 // ============================================================================
 double OniaPairs::GetPar ( std::string n ) 
 {

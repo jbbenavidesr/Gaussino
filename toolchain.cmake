@@ -5,16 +5,16 @@ find_file(inherit_heptools_module InheritHEPTools.cmake)
 # FIXME: generator versions must be moved to another file
 set(generators_versions
     alpgen      2.1.4
-    herwig++    2.7.1
+    herwig++    2.7.0a
     hijing      1.383bs.2
-    lhapdf      5.8.8
+    lhapdf      5.9.1
     photos++    3.56
     powheg-box  r2092
-    pythia6     427.2
-    pythia8     175
+    pythia6     428.2
+    pythia8     186
     rivet       1.9.0
-    tauola++    1.1.1a
-    thepeg      1.9.2p1
+    tauola++    1.1.4
+    thepeg      1.9.0a
     )
 
 # Process the lines of LCG_generators_*.txt file to extract the

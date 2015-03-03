@@ -3,7 +3,6 @@
 #include "EvtGenModels/EvtBToKStarllDurham07.hh"
 #include "EvtGenModels/EvtbTosllMS.hh"
 #include "EvtGenModels/Evtbs2llGammaMNT.hh"
-#include "EvtGenModels/Evtbs2llGammaISRFSR.hh"
 #include "EvtGenModels/EvtDTohhhh.hh"
 #include "EvtGenModels/EvtbsToLLLL.hh"
 #include "EvtGenModels/EvtbTosllMSExt.hh"
@@ -22,7 +21,6 @@ std::auto_ptr<const EvtModelList> EvtModelRegExtras::getModels(){
 	models->push_back(new EvtBToKStarllDurham07);
         models -> push_back( new EvtbTosllMS() );
         models -> push_back( new Evtbs2llGammaMNT() );
-        models -> push_back( new Evtbs2llGammaISRFSR() );
         models -> push_back( new EvtDTohhhh() );
         models -> push_back( new EvtbsToLLLL() );
         models -> push_back( new EvtbTosllMSExt() );

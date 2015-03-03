@@ -5,19 +5,6 @@
 !               etc for RICH Upgrade
 !----------------------------------------------------------------------------- 
 
-!===================== GaussCherenkov v4r5 2014-10-08 ========================
-! 2014-12-04 - Sajan Easo
- - Fixes to avoid pedantic warnings during compilation.
-
-! 2014-11-16 -Sajan Easo
- -Further modifications to histogram filling for Rich1 occupancy
-
-! 2014-10-15 - Sajan Easo
- - Minor change in the histogram filling for Rich1 occupancy histogram during analysis
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !===================== GaussCherenkov v4r4 2014-10-08 ========================
 ! 2014-10-07 - Sajan Easo
  - Minor modifications to the Cherenkov analysis in booking and filling 

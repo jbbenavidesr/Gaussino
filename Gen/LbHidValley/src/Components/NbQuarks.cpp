@@ -97,13 +97,11 @@ private:
   unsigned int m_nb ; ///< number of b-quarks in acceptance 
   // "acceptance": max theta 
   double m_thetaMax ; ///< "acceptance": max theta
-};
-
+} ;
 // ============================================================================
 /// Declaration of the Tool Factory
 // ============================================================================
-DECLARE_TOOL_FACTORY ( NbQuarks )
-
+DECLARE_TOOL_FACTORY ( NbQuarks ) ;
 // ============================================================================
 /** Applies the cut on the signal interaction.
  *  @param[in,out] theParticleVector  List of signal particles. The 
@@ -147,7 +145,10 @@ bool NbQuarks::applyCut
   if ( msgLevel ( MSG::DEBUG ) || statPrint() ) { counter ("#bacc") += nBq ; }
   
   return m_nb <= nBq ;
-}
+} ;
+// ============================================================================
+
+
 
 
 // ============================================================================

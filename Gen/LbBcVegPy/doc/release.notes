@@ -3,13 +3,6 @@
 ! Responsible : Patrick ROBBE
 !=============================================================================
 
-!======================== LbBcVegPy v5r1p1 2014-12-16 ========================
-! 2014-12-01 - Gloria Corti
- - Fixes for compilation warnings with --pedantic'
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
 !========================= LbBcVegPy v5r1 2013-10-10 =========================
 ! 2013-10-01 - Patrick Robbe
  - remove setting of cut tool in BcVegPy Pythia8 option 

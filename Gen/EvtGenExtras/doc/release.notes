@@ -1,24 +1,9 @@
 !-----------------------------------------------------------------------------
 ! Package     : EvtGenExtra
-! Responsible : Michal Kreps, Tom Latham, John Back
+! Responsible : Mark WHITEHEAD, Patrick ROBBE
 ! Purpose     : Repository of EvtGen models with external linkages
 !-----------------------------------------------------------------------------
 
-!======================= EvtGenExtras v3r11 2014-12-16 =======================
-! 2014-12-12 - Nikolai Nikitin
- - Added new model BSTOGLLISRFSR for rare radiative leptonic B-decays
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
-! 2014-11-18 - Michal Kreps
-  - Removing semicolons from wrong places to clear warnings when compiled
-    with -pedantic option.
-
-! 2014-11-17 - Gloria Corti
- - Fix compilation errors with --pedantic for missing std:: in front of
-   {i,o}fstream
-   
 !======================= EvtGenExtras v3r10 2013-12-02 =======================
 ! 2013-11-27 - William Sutcliffe
  - Fix in EvtLb2BaryonlnuFF for warning message.

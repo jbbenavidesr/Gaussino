@@ -18,9 +18,11 @@
 #include "GaudiKernel/PropertyMgr.h"
 #include "GaudiAlg/Tuple.h"
 #include "GaudiAlg/GaudiHistoAlg.h"
+//#include "GaudiKernel/NTuple.h"
 #include "GaudiKernel/INTupleSvc.h"
 #include "AIDA/IHistogram1D.h"
 /// GiGa 
+//#include "GiGa/GiGaMACROs.h"
 #include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 // GaussTools
 #include "GaussTools/GaussTrajectory.h"
@@ -40,8 +42,8 @@
 // ============================================================================
 /// factory business 
 // ============================================================================
-DECLARE_TOOL_FACTORY( GaussTargetMultiplicity )
-
+DECLARE_TOOL_FACTORY( GaussTargetMultiplicity );
+// ============================================================================
 
 // ============================================================================
 /** standard constructor 
@@ -53,7 +55,7 @@ DECLARE_TOOL_FACTORY( GaussTargetMultiplicity )
  *  @param parent  pointer to parent object
  */
 // ============================================================================
-GaussTargetMultiplicity::GaussTargetMultiplicity
+	GaussTargetMultiplicity::GaussTargetMultiplicity
 ( const std::string& type   ,
   const std::string& name   ,
   const IInterface*  parent ) 
@@ -68,14 +70,14 @@ GaussTargetMultiplicity::GaussTargetMultiplicity
 	declareProperty( "TargetThickness" , mp_targThick ) ;
 	declareProperty( "TargetMaterial" , mp_targMat ) ;
 	declareProperty( "PhysicsList" , mp_physList ) ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-GaussTargetMultiplicity::~GaussTargetMultiplicity(){}
-
+GaussTargetMultiplicity::~GaussTargetMultiplicity(){};
+// ============================================================================
 
 // ============================================================================
 /** initialize the track action  
@@ -94,8 +96,7 @@ StatusCode GaussTargetMultiplicity::initialize ()
 	{ return Error("Could not intialize base class GiGaTrackActionBase!",
 			status ) ; }
 	///
-	info() << "********** Initialize GaussTargetMultiplicity tool **********"
-         << endmsg;
+	info() << "********** Initialize GaussTargetMultiplicity tool **********"<<endmsg;
 
 	std::string filename = "/NTUPLES/FILE1";
 	NTupleFilePtr ntfile(ntupleSvc(), filename);
@@ -197,8 +198,8 @@ StatusCode GaussTargetMultiplicity::initialize ()
 
 	///
 	return StatusCode::SUCCESS;
-}
-
+} ;
+// ============================================================================
 
 // ============================================================================
 /** finalize the action object 
@@ -213,8 +214,8 @@ StatusCode GaussTargetMultiplicity::finalize   ()
 { 
 	// finilize the base 
 	return GiGaTrackActionBase::finalize() ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /**  perform action 
@@ -226,8 +227,7 @@ void GaussTargetMultiplicity::PreUserTrackingAction ( const G4Track* track )
 {
 	// Is the track valid? Is tracking manager valid? 
 	if( 0 == track || 0 == trackMgr() ) return;
-}
-
+};
 
 // ============================================================================
 /**  perform action 
@@ -466,7 +466,7 @@ void GaussTargetMultiplicity::PostUserTrackingAction ( const G4Track* track )
 
 	return;
 
-}
+};
 
 
 // ==============================================================================

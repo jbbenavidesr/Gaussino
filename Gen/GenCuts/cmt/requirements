@@ -4,7 +4,7 @@
 # Maintainer : Patrick ROBBE
 #============================================================================
 package       GenCuts
-version       v3r10
+version       v3r9
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -18,7 +18,6 @@ branches      doc cmt src
 use           GaudiAlg          v*
 use           MCInterfaces      v*                Kernel
 use           LoKiGen           v*                Phys 
-use           fastjet           v*                LCG_Interfaces
 
 #============================================================================
 # Component and linker libraries building rule
