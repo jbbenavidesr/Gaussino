@@ -249,16 +249,7 @@ def lcg_install():
       list_bins = os.listdir(os.path.join(package_home,'bin'))
       print 'list_bins %s %s '%(len(list_bins),list_bins)
       for bin in list_bins:
-        linktgt = os.path.join(package_home,'bin',bin)
-        linkname = bin
-        try:
-           os.symlink(linktgt,linkname)
-        except OSError, e:
-           if e.errno == 17: # exists already
-              print 'Exists already.%s'% bin
-           else:
-              raise
-
+        os.symlink(os.path.join(package_home,'bin',bin),bin)
 
     # FIXME: should rely on some CMT pattern picked up from the requirement
     #        file.

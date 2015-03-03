@@ -1,7 +1,7 @@
 ################################################################################
 # Package: GaussSys
 ################################################################################
-gaudi_subdir(GaussSys v47r1)
+gaudi_subdir(GaussSys v47r1p1)
 
 gaudi_depends_on_subdirs(Bcm/BcmMoniSim
                          Bls/BlsMoniSim
