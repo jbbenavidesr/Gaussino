@@ -44,11 +44,18 @@ protected:
 			 , int maxPerBin
 			 ) const;
   int mergeBoxes(ScpBoxSet& boxes, int minPerBin);
+
+  bool m_useWeights;
 //  int mergeAdjacentBoxes(IDalitzEventList* events,
 //		  	  	  	  	  ScpBoxSet& boxes, int maxPerBin, int minPerBin);
 
  public:
   ScpBinning();
+
+  void useWeights(bool weights=1)
+  {
+    m_useWeights = weights;
+  }
 
 
   void resetEventCounts();
@@ -114,6 +121,9 @@ protected:
   int NEntires();
   int NData();
   int NDataCC();
+
+  double weightedData() const;
+  double weightedMC() const;
 
   int SetBinning(const char*);
 

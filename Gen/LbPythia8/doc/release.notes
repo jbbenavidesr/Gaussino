@@ -4,6 +4,31 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia8 v5r1 2012-12-06 =========================
+! 2012-12-05 - Aurelien Martens
+ - fix options for new pdf
+
+! 2012-12-04 - Aurelien Martens
+ - Reorder the reading of options so that user options are always overwritting
+other options.
+ - add LHAup.cmd to be read when using LHA user processes (see below)
+
+! 2012-12-03 - Patrick Robbe
+ - Add classes to interface to Pythia User Processes written in Fortran
+   in the Les Houches accord format. 
+
+! 2012-12-03 - Aurelien Martens
+ - update options
+ - cleanup in src file
+ - added new option file for new LHAPDF CT09MCS
+
+! 2012-11-30 - Aurelien Martens
+ - Reviewed handling of options to pythia8 instance
+ - Added interface between LHCb's BeamTool and Pythia8 BeamShape
+ - Cleanup of commented code.
+ - Keep the good old CommandVector as possible option
+ (processed last so that it overwrites any previous setting).
+
 !========================= LbPythia8 v5r0 2012-10-19 =========================
 ! 2012-10-08 - Aurelien Martens
  - Reduce verbosity

@@ -10,7 +10,7 @@ include_path none
 include_dirs $(herwigpp_home)/include/Herwig++
 
 macro herwigpp_name "herwigpp"
-apply_pattern set_ext_lib_path windir=Herwig++ unixdir=Herwig++
+apply_pattern set_ext_lib_path windir=lib\Herwig++ unixdir=lib/Herwig++
 
 macro herwigpp_export_paths "$(herwigpp_home)/include/Herwig++ $(herwigpp_home)/lib/Herwig++"
 

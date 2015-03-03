@@ -13,6 +13,7 @@
 // Forward declaration
 class IBeamTool ;
 class GaudiRandomForPythia8 ;
+class ILHAupFortranTool ;
 
 /** @class Pythia8Production Pythia8Production.h 
  *  
@@ -90,34 +91,35 @@ private:
   /// retrieve the processCode
   int processCode( ) ;
     
-  CommandVector m_defaultSettings ;
-  CommandVector m_commandVector ; ///< Commands to setup pythia
-
-	std::string m_beamToolName ;
+  std::string m_beamToolName ;
   
-	int m_id1 , m_id2;
-	double m_engCM ;
-	
-	IBeamTool * m_beamTool ; ///< Beam tool to use
+  IBeamTool * m_beamTool ; ///< Beam tool to use
+  
+  Pythia8::Pythia * m_pythia; ///< Pythia8 engine
+  Pythia8::Event m_event; ///<  generated event
+  
+  std::vector<int> m_pdtlist ;
+  int m_nEvents ;
+  
+  GaudiRandomForPythia8 * m_randomEngine ; ///< Random Generator for Pythia8
+  ILHAupFortranTool *     m_fortranUPTool ; ///< Tool to access Fortran User Processes
+  std::string             m_fortranUPToolName ;
+  BeamToolForPythia8 * m_pythiaBeamTool; ///< beam tool for Pythia8
 
-	Pythia8::Pythia * m_pythia; ///< Pythia8 engine
-	Pythia8::Event m_event; ///<  generated event
-
-	std::vector<int> m_pdtlist ;
-	int m_nEvents ;
-
-	GaudiRandomForPythia8 * m_randomEngine ; ///< Random Generator for Pythia8
-
-   // ==========================================================================
-   bool m_validate_HEPEVT ; // force the valiadation of IO_HEPEVT 
   // ==========================================================================
-   std::string   m_inconsistencies ; // the file to dump the HEPEVT incinsistencies 
+  bool m_validate_HEPEVT ; // force the valiadation of IO_HEPEVT 
   // ==========================================================================
-   std::ostream* m_HEPEVT_errors ;
-   // ==========================================================================
-
-   bool m_listAllParticles ; ///list particles.
-
-
+  std::string   m_inconsistencies ; // the file to dump the HEPEVT incinsistencies 
+  // ==========================================================================
+  std::ostream* m_HEPEVT_errors ;
+  // ==========================================================================
+  
+  bool m_listAllParticles ; ///list particles.
+  
+  std::string m_tuningFile;
+  std::string m_tuningUserFile;
+  std::string m_LHAupOptionFile;
+  //kept for backward compatibilit for the time being
+  CommandVector m_commandVector;
 } ;
 #endif // LBPYTHIA8_PYTHIA8PRODUCTION_H

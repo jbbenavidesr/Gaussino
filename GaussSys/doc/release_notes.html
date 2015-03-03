@@ -4,6 +4,139 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v42r3">2012-12-06 - GaussSys v42r3</A></H1><PRE>
+<H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v35r3 (and Gaudi v23r5)</b>
+   AppConfig v3r*,
+   <b>DecFiles v26r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   pythia 6.425.2, photos 215.4, lhapdf 5.8.5 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.06.05 (via LCG_Interfaces)
+   <b>Geant4 v94r2p6 (based on geant4.9.4.p02)</b> and Geant4Files v94r*
+   XmlVis v1r15,
+   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
+   pythia8 170 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.5.1 and thepeg 1.7.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.0.b (via LCG_GeneratorsInterfaces),
+   EvtGen v12r11(private LHCb version),
+   BcVegPy v3r1, <b>GenXicc v2r0</b> and HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+ - on branch v42b
+
+! 2012-12-06 - Gloria Corti
+ - Take GaudiConf v17r2 to take a fix in SimConf
+
+! 2012-11-30 - Gloria Corti
+ - Remove LoKiGen since changes needed are in version in LHCb v35r3
+ - New version of LCG_Setting private copy based on LCGCMT_64b, the version
+   of LCG_Generators_Interfaces are also tagged with the same version.
+   LCG_Generators_Interfaces/rivet and thepeg did not change while a fix in
+   a macro was put in herwigpp
+
+!========================= Gauss v42r3 2012-11-30 ============================
+! 2012-11-30 - Gloria Corti (from trunk r149254)
+ - Pick version v2r* of GenXiccData for support to 8 TeV collisions
+
+! 2012-11-30 - Gloria Corti
+ - Put * for minor version of Geant4Files (v94r0->v94r*)
+
+! 2012-11-30 - Gloria Corti
+ - Port change post v42r2 in trunk not related to Geant4 changes: r147336 (see
+   below)
+
+! 2012-10-24 - Paul Szczypka (r147336)
+ - Small changes to gauss-config-2011.qmt
+
+! 2012-11-30 - Gloria Corti
+ - Port changes from trunk as in v42r2: r142579, r142745, r143132, from r144690
+   to r146549 included, from r146633 to r147318 (see below)
+
+!========================= Gauss v42r1 2012-07-24 ============================
+ - on branch v42b
+
+! 2012-07-24 - Gloria Corti
+ - Remove spill-over from Gauss-MC11a.py
+ - Remove use of GaudiPartProp from Gauss() since all code has been migrated
+    to the LHCb::ParticlePropertySvc
+ - Remove use of GaudiPartProp since code has been migrated to LHCb
+   ParticleProperty and ParticlePropertySvc
+ - Remove use of LbHerwig that is obsolete.
+ - Modify Gauss-Upgrade.py to pick up beam conditions as in the upgrade for
+   nu=2.6 (and show how to pick others) but remove spill-over explicitely and
+   use the new Upgrade Database (DDDB and SIMCOND). The first available global
+   tags are used.
+
+! 2012-07-24 - Gloria Corti
+ - Port changes from trunk from r140339 to r140826 (see below)
+   and r142646: update of QMTests from Patrick Robbe
+
+! 2012-06-06 - Gloria Corti (r140765 to r140826)
+ - Introduce new script by Emmanouil Kiagias to make qmtest files from a
+   template. The script is added as a make action so that they will be made
+   in the nighlty and used to check newly committed event types in DecFiles
+   . cmt/makeQMTests.py
+
+! 2012-05-21 - Paul Szczypka (r140339)
+ - Small corrections to RunTimeError execptions in Configuration.py
+
+!=========================== Mint v1r6 2012-11-28 ============================
+! 14-11-12 - Matt Coombes
+ - Added background subtraction to Miranda binning.
+
+!========================= LbPythia v12r1 2012-11-30 =========================
+! 2012-11-29 - Patrick Robbe
+ - Add option for Pythia6 to use the CT09MCS PDF from LHAPDF
+
+!========================= LbPythia8 v5r1 2012-12-06 =========================
+! 2012-12-05 - Aurelien Martens
+ - fix options for new pdf
+
+! 2012-12-04 - Aurelien Martens
+ - Reorder the reading of options so that user options are always overwritting
+other options.
+ - add LHAup.cmd to be read when using LHA user processes (see below)
+
+! 2012-12-03 - Patrick Robbe
+ - Add classes to interface to Pythia User Processes written in Fortran
+   in the Les Houches accord format.
+
+! 2012-12-03 - Aurelien Martens
+ - update options
+ - cleanup in src file
+ - added new option file for new LHAPDF CT09MCS
+
+! 2012-11-30 - Aurelien Martens
+ - Reviewed handling of options to pythia8 instance
+ - Added interface between LHCb's BeamTool and Pythia8 BeamShape
+ - Cleanup of commented code.
+ - Keep the good old CommandVector as possible option
+ (processed last so that it overwrites any previous setting).
+
+!========================= GenXicc v2r0 2012-11-29 ===========================
+! 2012-10-23 Feng ZHANG
+ - (1) FULLPATHNAME for the grid files modified and new path for different
+   energy point added
+   (2) FIVE source files changed
+   evntinit.F  outerpdf.F  parameter.F  upopenfile.F  vagas.F
+   (3) obsolete some initial values in "setxiccdefaultparameters".
+   All parameters controlled by LBGENXICC now in need.
+
+!========================= GenTune v1r0p1 2012-11-26 =========================
+! 2012-10-22 - Alex Grecu
+ - disable "unused parameter" warnings from Rivet library
+
+!======================== GaussTools v18r1 2012-11-27 ========================
+! 2012-11-15 - Nigel Watson
+ - Include G4PrimaryParticle.hh to GaussTrackActionHepMC.cpp, following changes
+   to G4DynamicParticle in G4 9.5.p02. Put here since it is backward compatible
+
+!=============================================================================
 </PRE><H1><A NAME="v42r2">2012-10-22 - GaussSys v42r2</A></H1><PRE>
 <H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
     </A></H2>
@@ -21,6 +154,8 @@ Purpose: LHCb Simulation program
    hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
    <b>pythia8 170</b> (via LCG_GeneratorsInterfaces),
    alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   <b>herwig++ 2.5.1 and thepeg 1.7.1</b> (via LCG_GeneratorsInterfaces),
+   <b>rivet 1.8.0.b</b> (via LCG_GeneratorsInterfaces),
    EvtGen v12r11, <b>BcVegPy v3r1</b>, HidValley and GenXicc private 
    LHCb versions 
 </A></H3>
@@ -44,11 +179,17 @@ Purpose: LHCb Simulation program
      description
    . VL/VLMoniSim: monitoring for Velo Lite Strips for Upgrade 
 
-!========================= Gauss v42r2 2012-10-22 ============================
-! 2012-10-22 - Paul Szczypka
+!========================= Gauss v42r2 2012-10-24 ============================
+! 2012-10-24 - Gloria Corti (r147318)
+ - Change options for upgrade detector combination to make them directly
+   usable in production
+ - Modify example overall stearing options for upgrade, Gauss-Upgrade.py, to
+   pick latest database tags and show how to combine necessary options
+
+! 2012-10-22 - Paul Szczypka (r147229)
  - Modified (corrected) gauss-config reference file.
 
-! 2012-10-22 - Paul Szczypka
+! 2012-10-22 - Paul Szczypka (r147223)
  - added Upgrade options files:
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT.py
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT-noRich1.py
@@ -56,50 +197,50 @@ Purpose: LHCb Simulation program
  - $GAUSSOPTS/Gauss-Upgrade-VP-UT-FT-noRich1.py
  - $GAUSSOPTS/Gauss-Upgrade-Reference.py
 
-! 2012-10-21 - Paul Szczypka
+! 2012-10-21 - Paul Szczypka (r147200)
  - made corrections to config references and test
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147091)
  - tinkering with the qmtest config
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147078)
  - Added expected err stream for config qmtest.
  - Edited config qmtest to refer to the expected error stream.
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147074)
  - Remove some upstream and downstream parts of the beampipe which aren't
    normally simulated in GeoStream.
  - Add T/PipeInT beampipe section to GeoStream.
  - Only list Velo once in GeoStream.
 
-! 2012-10-15 - Gloria Corti
+! 2012-10-15 - Gloria Corti (r146918)
  - Rename qmtest gauss-config-MC11a.qmt to gauss-config-2011.qmt otherwise it
    is not run.
  - Put latest CondDb tags as in Sim05d for MC2011 (aka MC11a)
 
-! 2012-10-12 - Paul Szczypka
+! 2012-10-12 - Paul Szczypka (r146857)
  - Added limit of one event to:
    Sim/Gauss/tests/options/testGauss-config-defaults.py
    and changed reference file accordingly.
 
-! 2012-10-12 - Paul Szczypka
+! 2012-10-12 - Paul Szczypka (r146854)
  - Added first version of configuration qmtest, files:
    Sim/Gauss/tests/qmtest/gauss.qms/gauss-config-MC11a.qmt
    Sim/Gauss/tests/refs/testGauss-config-10000000.ref.x86_64-slc5-gcc43-opt
    Sim/Gauss/tests/options/testGauss-config-defaults.py
 
-! 2012-10-09 - Paul Szczypka
+! 2012-10-09 - Paul Szczypka (r146682)
  - Corrected a bug in the PuVeto configuration whereby the test used to check
    if either the VL or VP was also requested meant that it would configure
    whichever detector it found instead.
 
-! 2012-10-08 - Aurelien Martens
+! 2012-10-08 - Aurelien Martens (r146661)
  - Update qmtests for pythia8
 
-! 2012-10-08 - Gloria Corti
+! 2012-10-08 - Gloria Corti (r146649)
  - Put r* in requirements file for generator and LHCb data packages
 
-! 2012-10-08 - Paul Szczypka
+! 2012-10-08 - Paul Szczypka (r146633)
  - Corrected a bug in the Configuration whereby all detectors defined in the
    "T" volume would be loaded irrespective of detector choice if any of the
    IT, OT or FT detectors were chosen.
@@ -114,53 +255,44 @@ Purpose: LHCb Simulation program
  - Remove use of GaudiPartProp from Gauss() since all code has been migrated
    to the LHCb::ParticlePropertySvc
 
-! 2012-10-05 - Paul Szczypka
+! 2012-10-05 - Paul Szczypka (r146549)
  - Added Gauss-Debug.py option file.
 
-! 2012-10-02 - Aurelien Martens
+! 2012-10-02 - Aurelien Martens (r146344)
  - Added few qmtests for pythia8
 
-! 2012-10-02 - Paul Szczypka
+! 2012-10-02 - Paul Szczypka (r146337)
  - Removed most debug statements from Configuration.
  - Added Debug flag to Configuration.
 
-! 2012-09-24 - Gloria Corti
+! 2012-09-24 - Gloria Corti (r145816)
  - Remove use of LbHerwig that is obsolete since v42r1.
    Put use of LbAlpGen and LbHerwigpp that are new
    Change version of DecFiles to v26r* for compatibility with new LHCb
    ParticlePropertySvc and remove use of the Gaudi old one.
 
-! 2012-09-23 - Paul Szczypka
+! 2012-09-23 - Paul Szczypka (r145801)
  - Minor edits to BeamPipe code fixing typos.
 
-! 2012-09-21 - Paul Szczypka
+! 2012-09-21 - Paul Szczypka (r145752)
  - Minor edits to BeamPipe configuration for UT
 
-! 2012-09-20 - Paul Szczypka
+! 2012-09-20 - Paul Szczypka (r145673)
  - Temporary fix in Configurable.py for non-schema VL path in DDDB
 
-! 2012-09-20 - Paul Szczypka
+! 2012-09-20 - Paul Szczypka (r145660)
  - Modifications to Configurable.py to fix FT typo
 
-! 2012-08-30 - Paul Szczypka
+! 2012-08-30 - Paul Szczypka (r144690)
  - Modifications to Configurable.py to accommodate VP and VL
 
-! 2012-07-23 - Gloria Corti
+! 2012-07-23 - Gloria Corti (r143132)
  - Remove use of GaudiPartProp from Gauss() since all code has been migrated
    to the LHCb::ParticlePropertySvc
 
-! 2012-07-11 - Paul Szczypka
+! 2012-07-11 - Paul Szczypka (r142579)
   - Rewrite of python/Gauss/Configurable.py in order to more easily replace
     detectors with upgrade versions.
-
-! 2012-06-06 - Gloria Corti
- - Introduce new script by Emmanouil Kiagias to make qmtest files from a
-   template. The script is added as a make action so that they will be made
-   in the nighlty and used to check newly committed event types in DecFiles
-   . cmt/makeQMTests.py
-
-! 2012-05-21 - Paul Szczypka
- - Small corrections to RunTimeError execptions in Configuration.py
 
 !========================== GenCuts v3r1 2012-10-19 ==========================
 ! 2012-09-27 - Aurelien Martens

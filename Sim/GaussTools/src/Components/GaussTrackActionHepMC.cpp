@@ -15,11 +15,11 @@
 
 // G4
 #include "G4TrackingManager.hh"
+#include "G4PrimaryParticle.hh"
 
 // GiGa 
 #include "GiGa/IGiGaSvc.h"
 #include "GiGa/GiGaUtil.h"
-//#include "GiGa/GiGaMACROs.h"
 #include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 
 // LHCb

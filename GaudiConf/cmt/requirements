@@ -1,0 +1,24 @@
+package           GaudiConf
+version           v17r2
+
+branches doc cmt options python src tests
+include_path none
+
+use LHCbKernel     v* Kernel # For LHCbConfigurableUser dependency
+use GaudiPolicy    v*
+
+ignore_pattern package_stamps
+
+set STDOPTS    $(GaudiConf_root)/options
+
+macro_append cppflags ' -DAPPNAME=\"${package}\" -DAPPVERS=\"${version}\" '
+
+macro GaudiConfConfUserModules "GaudiConf.SimConf GaudiConf.DigiConf GaudiConf.CaloPackingConf GaudiConf.DstConf"
+apply_pattern install_python_modules
+
+#QM tests
+private
+  macro MDF_use   "" QMTest "MDF   v*  DAQ      -no_auto_imports"
+  use $(MDF_use)
+  apply_pattern QMTest
+end_private

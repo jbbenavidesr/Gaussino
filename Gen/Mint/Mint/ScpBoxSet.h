@@ -42,16 +42,16 @@ class ScpBoxSet : public std::vector<ScpBox>{
 
   void resetEventCounts();
 
-  bool addData(const IDalitzEvent& evt);
-  bool addData(const IDalitzEvent* evt);
+  bool addData(const IDalitzEvent& evt, double weight = 1.0);
+  bool addData(const IDalitzEvent* evt, double weight = 1.0);
   bool addData(int);
 
   bool addMC(IDalitzEvent& evt, double weight);
   bool addMC(IDalitzEvent* evt, double weight);
   bool addMC(int);
 
-  bool subtractData(const IDalitzEvent& evt);
-  bool subtractData(const IDalitzEvent* evt);
+  bool subtractData(const IDalitzEvent& evt, double weight);
+  bool subtractData(const IDalitzEvent* evt, double weight);
   bool subtractMC(IDalitzEvent& evt, double weight);
   bool subtractMC(IDalitzEvent* evt, double weight);
 
@@ -60,6 +60,7 @@ class ScpBoxSet : public std::vector<ScpBox>{
   void print(std::ostream& os = std::cout)const{ printBoxInfo(os); }
 
   int nData() const;
+  double weightedData() const;
 
   int nMC() const;  
   double weightedMC() const;
