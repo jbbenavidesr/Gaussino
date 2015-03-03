@@ -1,4 +1,4 @@
-// $Id: HerwigProduction.cpp,v 1.16 2008-07-27 13:35:14 robbep Exp $
+// $Id: HerwigProduction.cpp,v 1.17 2009-01-29 12:33:47 cattanem Exp $
 // Include files 
 
 // local
@@ -1382,31 +1382,26 @@ void HerwigProduction::setGenerationEventType()
   std::string theName = "Generation";
   const std::string propName = "EventType";
   std::string propValue;
-  IAlgManager* theAlgMgr;
 
-  StatusCode sc;
-  sc = serviceLocator()->getService( "ApplicationMgr", IID_IAlgManager,
-    ( IInterface*& ) theAlgMgr );
+  IAlgManager* theAlgMgr = svc<IAlgManager>("ApplicationMgr");
+  IAlgorithm* theIAlg;
 
+  StatusCode sc = theAlgMgr->getAlgorithm( theName, theIAlg );
+  releaseSvc(theAlgMgr).ignore();
   if ( sc.isSuccess() )
   {
-    IAlgorithm* theIAlg;
     Algorithm* theAlgorithm;
-    sc = theAlgMgr->getAlgorithm( theName, theIAlg );
+    try
+    {
+      theAlgorithm = dynamic_cast<Algorithm*>( theIAlg );
+    }
+    catch( ... )
+    {
+      sc = StatusCode::FAILURE;
+    }
     if ( sc.isSuccess() )
     {
-      try
-      {
-        theAlgorithm = dynamic_cast<Algorithm*>( theIAlg );
-      }
-      catch( ... )
-      {
-        sc = StatusCode::FAILURE;
-      }
-      if ( sc.isSuccess() )
-      {
-        sc = theAlgorithm->getProperty( propName, propValue );
-      }
+      sc = theAlgorithm->getProperty( propName, propValue );
     }
   }
 

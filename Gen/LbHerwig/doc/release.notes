@@ -1,9 +1,13 @@
-! $Id: release.notes,v 1.39 2008-08-25 12:33:51 gcorti Exp $
+! $Id: release.notes,v 1.41 2009-02-09 08:12:23 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================= LbHerwig v6r0p1 2008-02-09 =========================
+! 2009-01-29 - Marco Cattaneo
+ - Backward compatible fix for Gaudi v21
 
 !======================== LbHerwig v6r0 2008-08-25 ==========================
 ! 2008-07-27 - Patrick Robbe
