@@ -1,12 +1,13 @@
-// $Id: VeloGaussMoni.cpp,v 1.13 2007-11-27 16:22:07 mtobin Exp $
+// $Id: VeloGaussMoni.cpp,v 1.14 2008-05-30 13:57:15 gcorti Exp $
 // Include files 
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiAlg/Tuples.h"
+#include "GaudiKernel/Vector4DTypes.h"
+
+// from LHcb
 #include "Event/MCParticle.h"
-#include "Kernel/LHCbMath.h"
-#include "Kernel/Vector4DTypes.h"
 
 // velo
 #include "VeloDet/DeVelo.h"

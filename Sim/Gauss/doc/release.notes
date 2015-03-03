@@ -1,8 +1,59 @@
 !-----------------------------------------------------------------------------
 ! Package     : Sim/Gauss
-! Responsible : Gloria CORTI, Florence RANJARD 
+! Responsible : Gloria CORTI
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
+
+!======================== Gauss v31r1 2008-06-11 =============================
+! 2008-06-11 - Gloria CORTI
+ - Introduce generic example for generator and simulation phase stand-alone
+   with latest DB tags
+   . lhcb-2008-{GenPhase,SimPhase}.opts
+ - Modify generator and simulation stand alone options to be used as modifier
+   options for standard one
+   . GenStandAlone.opts
+   . GaussSimPhase.opts
+ - Modify EvtGenAlone.opts to be used in combination with GenStandAlone.opts
+   . EvtGenAlone.opts
+
+! 2008-06-10 - Gloria CORTI
+ - Adapt to changes in geometry structure upstream of Velo and downstream of
+   muon system for BCM simulation and BeamScintillators
+   . BCMSimulation.opts
+   . BeamScintillators.opts
+ - Pick latest geometry options
+   . GaussVis.opts
+ - Remove "older" geometry no longer working 
+   . lhcb-200801.{py,opts}
+   . lhcb-200802.{py,opts}
+   . lhcb-200802-{BOff,450GeV-OpenVelo-BOff,SimPhase}.opts
+ - Introduce generic example for BOff and collisions at 450 GeV with Velo
+   open and magnetic field off
+   . lhcb-2008-{BOff,450GeV-OpenVelo-BOff}.opts
+
+! 2008-06-05 - Gloria CORTI from Marco CLEMENCIC
+ - Put comment on separate line, otherwise gaudirun.py does not work, because
+   it ignores the options in following lines in particular 
+   "EventDataSvc.ForceLeaves         = true ;"
+   so that data cannot be written in TES
+
+! 2008-06-02 - Gloria CORTI
+ - New steering options to pick up latest version of geometry
+   ( tag=head-20080516 ).
+   . options/lhcb-2008.{opts,py}
+
+! 2008-05-30 - Gloria CORTI
+ - Use latest version of FieldMap DB (v5r0) with measured field
+ - Use latest version of DecFiles (v14r4) with new event types
+ - Use latest version of MIBData (v2r0) with beam gas in LSS sources and 
+   compatible with both 32-bit and 64-bit
+ - Use ParticleTable with corrected PDG for D(2S), D*(2640) and Lambda_c(2625)
+   . options/Common.opts
+ - Introduce options to run with measured magnetic field map
+   . options/MeasuredFieldMap.opts
+ - Move in item list the "RIchHpdSurfaces" after "RICH2Surfaces" otherwise
+   simulation does NOT work with latest geometry
+   . options/SimGeometry.opts
 
 !======================== Gauss v31r0 2008-05-08 =============================
 ! 2008-05-08 - Gloria CORTI

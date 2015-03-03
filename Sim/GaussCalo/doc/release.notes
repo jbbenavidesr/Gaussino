@@ -1,4 +1,4 @@
-! $Id: release.notes,v 1.69 2007-10-05 07:24:42 gcorti Exp $
+! $Id: release.notes,v 1.71 2008-06-09 17:45:20 gcorti Exp $
 ! -----------------------------------------------------------------------------
 ! Package          : Sim/GaussCalo
 ! Contributors     : Vanya Belyaev, Grigori Rybkine, Alexei Berdiouguine,
@@ -7,6 +7,14 @@
 ! Purpose          : collection of sensitive detectors, converters, 
 !                  : G4 actions, etc for LHCb calorimeters
 ! -----------------------------------------------------------------------------
+
+!========================= GaussCalo v9r1 2008-06-09 ==========================
+! 2008-05-29 - Gloria CORTI
+ - Adapt to removal of LHCbDefinitions from GAUSS, header files are now from
+   GaudiKernel
+   . src/CaloSensDet.cpp
+   . src/EcalSensDet.{h,cpp}
+   . src/HcalSensDet.cpp
 
 !===================== GaussCalo v9r0p1 2007-10-02 ============================
 ! 2007-10-02 - Gloria Corti for Karl Harrison

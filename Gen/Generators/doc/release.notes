@@ -1,9 +1,28 @@
-! $Id: release.notes,v 1.121 2008-05-06 08:28:26 gcorti Exp $
+! $Id: release.notes,v 1.124 2008-06-09 16:46:45 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v8r1 2008-06-09 ===========================
+! 2008-05-29 - Gloria CORTI
+ - Modify code to pick Vector{3D,4D}Types, etc. from GaudiKernel since 
+   LHCbDefinitions has been removed from GAUSS, given that the package 
+   will no longer be used with Gauss DC06.
+   . Generators/IBeamTool.h
+   . src/component/BiasedBB.cpp
+   . src/component/DaughtersInLHCb.{h,cpp}
+   . src/component/EvtGenDecay.h
+   . src/component/FlatZSmearVertex.cpp
+   . src/component/ListOfDaughtersInLHCb.{h,cpp}
+   . src/component/SelectedDaughterInLHCb.{h,cpp}
+   . src/component/SignalForcedFragmentation.{h,cpp}
+   . src/component/UniformSmearVertex.cpp
+
+! 2008-05-23 - Patrick Robbe
+ - Move Photos fortran files to GENSER
+ - Remove unnecessary LHAPDF routines
 
 !====================== Generators v8r0 2008-05-06 ===========================
 ! 2008-05-06 - Gloria CORTI

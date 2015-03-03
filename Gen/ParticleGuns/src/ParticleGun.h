@@ -1,94 +1,121 @@
-// $Id: ParticleGun.h,v 1.2 2006-03-22 23:03:05 robbep Exp $
-#ifndef PARTICLEGUNS_PARTICLEGUN_H
+// $Id: ParticleGun.h,v 1.3 2008-05-19 10:09:49 robbep Exp $
+#ifndef PARTICLEGUNS_PARTICLEGUN_H 
 #define PARTICLEGUNS_PARTICLEGUN_H 1
 
-#include "ParticleGunBaseAlg.h"
-#include "GaudiKernel/RndmGenerators.h"
+#include "GaudiAlg/GaudiAlgorithm.h"
+#include "Event/GenHeader.h"
+#include "Event/GenCollision.h"
 
-class ParticleGun : public ParticleGunBaseAlg {
+// Forward declarations
+class IParticleGunTool       ;
+class IPileUpTool            ;
+class IDecayTool             ;
+class ISampleGenerationTool  ;
+class IVertexSmearingTool    ;
+class IFullGenEventCutTool   ;
+
+namespace HepMC {
+class GenEvent ;
+}
+
+/** @class ParticleGun ParticleGun.h "ParticleGun.h"
+ *  
+ *  Main algorithm to generate particle gun events.
+ *
+ *  @author Patrick Robbe
+ *  @date   2008-05-18
+ */
+class ParticleGun : public GaudiAlgorithm {
  public:
-  
-  /// Constructor
-  ParticleGun(const std::string& name, ISvcLocator* pSvcLocator);
-  
-  /// Destructor
-  virtual ~ParticleGun();
-  
-  /// Initialize particle gun parameters
+  /// Standard constructor
+  ParticleGun( const std::string& name, ISvcLocator* pSvcLocator );
+
+  virtual ~ParticleGun( ); ///< Destructor
+
+  /** Algorithm initialization.
+   *  -# Initializes the common Gaudi random number generator used in all 
+   *     generators,
+   *  -# Retrieve particle gun tool, decay tool, vertex smearing tool and 
+   *     full event cut tool used in the generation of events.
+   */
   virtual StatusCode initialize();
 
-  /// Generation of particles
-  virtual StatusCode callParticleGun( HepMC::GenEvent * evt ) ;
+  /** Algorithm execution.
+   *  Repeat the following sequence until a good set of interactions is 
+   *  generated.
+   *  -# 
+   */
+  virtual StatusCode execute   ();
 
- private:
+  /** Algorithm finalization.
+   *  Print generation counters.
+   */
+  virtual StatusCode finalize  ();
+
+protected:
+  /// Decay the event with the IDecayTool.
+  StatusCode decayEvent( LHCb::HepMCEvent * theEvent ) ;
+
+  /// Perpare the particle containers
+  void prepareInteraction( LHCb::HepMCEvents * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,
+    LHCb::GenCollision * & theGenCollision ) const ;
+
+private:
+  int          m_eventType ; ///< Event type (set by options)
+
+  /// Location where to store generator events (set by options)
+  std::string  m_hepMCEventLocation ; 
+
+  /// Location where to store the Header of the events (set by options)
+  std::string  m_genHeaderLocation ;
+
+  /// Location where to store HardInfo (set by options)
+  std::string  m_genCollisionLocation ;
   
-  /// Setable Properties:-
+  IParticleGunTool         * m_particleGunTool        ; ///< Particle gun tool
   
-  /// Minimum momentum
-  double m_minMom;
+  IPileUpTool              * m_numberOfParticlesTool  ; ///< Number of particles tool
+
+  IDecayTool               * m_decayTool              ; ///< Decay tool
+
+  ISampleGenerationTool    * m_sampleGenerationTool   ; ///< Sample tool
+
+  IVertexSmearingTool      * m_vertexSmearingTool     ; ///< Smearing tool
+
+  IFullGenEventCutTool     * m_fullGenEventCutTool    ; ///< Cut tool
+
+  /// Name of the IParticleGunTool (set by options)
+  std::string m_particleGunToolName ;
+
+  /// Name of the tool to set number of particles per event (set by options)
+  std::string m_numberOfParticlesToolName ;
   
-  /// Minimum theta angle
-  double m_minTheta;
+  /// Name of the IDecayTool (set by options)
+  std::string m_decayToolName            ;
 
-  /// Minimum phi angle
-  double m_minPhi;
+  /// Name of the IVertexSmearingTool (set by options)
+  std::string m_vertexSmearingToolName   ;
 
-  /// Maximum momentum
-  double m_maxMom;
+  /// Name of the IFullGenEventCutTool (set by options)
+  std::string m_fullGenEventCutToolName  ;
+  
+  /// Name to put in the event
+  std::string m_particleGunName ;
 
-  /// Maximum theta Angle
-  double m_maxTheta;
+  unsigned int m_nEvents ; ///< Number of generated events
 
-  /// Maximum phi angle
-  double m_maxPhi;
+  unsigned int m_nAcceptedEvents ; ///< Number of accepted events
 
-  /// Minimum x position of vertex
-  double m_minxvtx;
+  unsigned int m_nParticles ; ///< Number of generated particles
 
-  /// Maximum x position of vertex
-  double m_maxxvtx;
+  /// Number of particles in accepted events
+  unsigned int m_nAcceptedParticles ;
 
-  /// Minimum y position of vertex
-  double m_minyvtx;
+  /// Counter of events before the full event generator level cut  
+  unsigned int m_nBeforeFullEvent ;
 
-  /// Maximum y position of vertex
-  double m_maxyvtx;
-
-  /// Minimum z position of vertex
-  double m_minzvtx;
-
-  /// Maximum z position of vertex
-  double m_maxzvtx;
-
-  /// px
-  double m_px;
-
-  /// py
-  double m_py;
-
-  /// pz
-  double m_pz;
-
-  /// Gun mode
-  bool m_gmode;
-
-  /// Minimum number of particles
-  unsigned int m_minParts;
-
-  /// Maximum number of particles
-  unsigned int m_maxParts;
-
-  /// Pdg Codes of particles to generate
-  std::vector<int>         m_pdgCodes;
-
-  /// Masses of particles to generate
-  std::vector<double>      m_masses;
-
-  /// Names of particles to generate
-  std::vector<std::string> m_names;
-
-  /// Flat random number generator
-  Rndm::Numbers m_flatGenerator ;
+  /// Counter of events after the full event generator level cut
+  unsigned int m_nAfterFullEvent ;
 };
-
 #endif // PARTICLEGUNS_PARTICLEGUN_H

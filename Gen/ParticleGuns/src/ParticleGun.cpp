@@ -1,205 +1,400 @@
-// $Id: ParticleGun.cpp,v 1.5 2007-08-24 17:27:16 gcorti Exp $
+// $Id: ParticleGun.cpp,v 1.6 2008-05-19 10:09:49 robbep Exp $
+// Include files 
 
-// This class
+// local
 #include "ParticleGun.h"
 
-// From STL
-#include <cmath>
+// from SEAL
+#include "SealBase/StringOps.h"
 
-// FromGaudi
+// from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IParticlePropertySvc.h"
-#include "GaudiKernel/ParticleProperty.h"
+#include "GaudiKernel/RndmGenerators.h"
 
-// From HepMC
-#include "HepMC/GenVertex.h"
-#include "HepMC/GenEvent.h"
+// from Event
+#include "Event/GenHeader.h"
+#include "Event/GenCollision.h"
 
-// From Event
-#include "Event/HepMCEvent.h"
+// from LHCb
+#include "Kernel/ParticleID.h"
+
+// from Generators
+#include "Generators/IPileUpTool.h"
+#include "ParticleGuns/IParticleGunTool.h"
+#include "Generators/IDecayTool.h" 
+#include "Generators/IVertexSmearingTool.h"
+#include "Generators/IFullGenEventCutTool.h"
+#include "Generators/GenCounters.h"
+#include "Generators/HepMCUtils.h"
+
+// Gaudi Common Flat Random Number generator
+#include "Generators/RandomForGenerator.h"
+
+
+//-----------------------------------------------------------------------------
+// Implementation file for class : ParticleGun
+//
+// 2008-05-18 : Patrick Robbe
+//-----------------------------------------------------------------------------
+
+// Declaration of the Algorithm Factory
 
 DECLARE_ALGORITHM_FACTORY( ParticleGun );
 
-//===========================================================================
-// Constructor
-//===========================================================================
-ParticleGun::ParticleGun ( const std::string& name, ISvcLocator* pSvcLocator )
-  : ParticleGunBaseAlg ( name, pSvcLocator ) {  
-    declareProperty( "MomentumMin" , m_minMom = 100.0 * GeV ) ;
-    declareProperty( "ThetMin"     , m_minTheta = 0.1 * rad ) ;
-    declareProperty( "PhiMin"      , m_minPhi = 0. * rad ) ;
+//=============================================================================
+// Standard constructor, initializes variables
+//=============================================================================
+ParticleGun::ParticleGun( const std::string& name,
+                          ISvcLocator* pSvcLocator)
+  : GaudiAlgorithm ( name , pSvcLocator ) ,
+    m_particleGunTool       ( 0 ) ,
+    m_numberOfParticlesTool ( 0 ) ,
+    m_decayTool             ( 0 ) ,
+    m_vertexSmearingTool    ( 0 ) ,
+    m_fullGenEventCutTool   ( 0 ) ,
+    m_nEvents               ( 0 ) , 
+    m_nAcceptedEvents       ( 0 ) ,
+    m_nParticles            ( 0 ) , 
+    m_nAcceptedParticles    ( 0 ) ,
+    m_nBeforeFullEvent      ( 0 ) ,
+    m_nAfterFullEvent       ( 0 ) {
+    // Generation Method
+    declareProperty ( "ParticleGunTool" , 
+                      m_particleGunToolName = "GenericGun" ) ;
+    declareProperty ( "EventType"          , m_eventType = 50000000 ) ;
+
+    // Location of the output of the generation
+    declareProperty ( "HepMCEventLocation" , m_hepMCEventLocation = 
+                      LHCb::HepMCEventLocation::Default ) ;
+    declareProperty ( "GenHeaderLocation"  , m_genHeaderLocation = 
+                      LHCb::GenHeaderLocation::Default ) ;
+    declareProperty ( "GenCollisionLocation" , m_genCollisionLocation = 
+                      LHCb::GenCollisionLocation::Default ) ;
     
-    declareProperty( "MomentumMax" , m_maxMom   = 100.0 * GeV ) ;
-    declareProperty( "ThetMax"     , m_maxTheta = 0.4 * rad ) ;
-    declareProperty( "PhiMax"      , m_maxPhi   = twopi * rad ) ;
-
-    m_pdgCodes.push_back( -211 ); // default pi-
-    declareProperty("PdgCodes",m_pdgCodes);
-
-    declareProperty("xVertexMin", m_minxvtx = 0.0 * mm ) ;
-    declareProperty("yVertexMin", m_minyvtx = 0.0 * mm ) ;
-    declareProperty("zVertexMin", m_minzvtx = 0.0 * mm ) ;
-    declareProperty("xVertexMax", m_maxxvtx = 0.0 * mm ) ;
-    declareProperty("yVertexMax", m_maxyvtx = 0.0 * mm ) ;
-    declareProperty("zVertexMax", m_maxzvtx = 0.0 * mm ) ;
-
-    declareProperty("px", m_px = 1.0 * GeV ) ;
-    declareProperty("py", m_py = 1.0 * GeV ) ;
-    declareProperty("pz", m_pz = 1.0 * GeV ) ;
-
-    declareProperty("GunMode", m_gmode = 1 ) ;
-
-    declareProperty("MinNumParticles", m_minParts = 1 ) ;
-    declareProperty("MaxNumParticles", m_maxParts = 1 ) ;  
+    // Tool name to generate the event
+    declareProperty( "NumberOfParticlesTool" , 
+                     m_numberOfParticlesToolName = "FixedNInteractions/FixedNParticles" ) ;
+    // Tool name to decay particles in the event
+    declareProperty( "DecayTool"  , m_decayToolName = "" ) ;
+    // Tool name to smear vertex
+    declareProperty( "VertexSmearingTool" , 
+                     m_vertexSmearingToolName = "" ) ;
+    // Tool name to cut on full event
+    declareProperty( "FullGenEventCutTool" , 
+                     m_fullGenEventCutToolName = "" ) ;
 }
 
-//===========================================================================
+//=============================================================================
 // Destructor
-//===========================================================================
-ParticleGun::~ParticleGun() { }
+//=============================================================================
+ParticleGun::~ParticleGun() {}; 
 
-//===========================================================================
-// Initialize Particle Gun parameters
-//===========================================================================
+//=============================================================================
+// Initialisation. Check parameters
+//=============================================================================
 StatusCode ParticleGun::initialize() {
-  StatusCode sc = ParticleGunBaseAlg::initialize() ;
-  if ( ! sc.isSuccess() ) return sc ;
+  StatusCode sc = GaudiAlgorithm::initialize( ) ; // Initialize base class
+  if ( sc.isFailure() ) return sc ;
+  debug() << "==> Initialise" << endmsg ;
 
-  sc = m_flatGenerator.initialize( randSvc() , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize flat generator" ) ;
-  
-  // Get the mass of the particle to be generated
-  //
-  IParticlePropertySvc* ppSvc = 
-    svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
-
-  // check momentum and angles
-  if ( ( 0 != m_gmode ) && 
-       ( ( m_minMom   > m_maxMom   ) || 
-         ( m_minTheta > m_maxTheta ) || 
-         ( m_minPhi   > m_maxPhi   ) ) )
-    return Error( "Incorrect values for momentum, theta or phi!" ) ;
-  
-  // sanity checks on particle numbers
-  if ( m_minParts > m_maxParts ) 
-    return Error( "Max number of particles < Min number of particles !" ) ;
-  else if ( 0 == m_maxParts ) 
-    return Error( "Number of particles to generate set to zero !" ) ;
-
-  // This is odd, so issue a warning
-  if ( ( 0 == m_gmode ) && ( m_maxParts > 1 ) ) 
-    warning() << "Generating multiple particles with the identical momenta !" 
-              << endmsg ;
-
-  info() << "Number of particles per event chosen randomly between "
-         << m_minParts << " and " << m_maxParts << endmsg ;
-
-  // setup particle information
-  m_masses.clear();
-
-  info() << "Particle type chosen randomly from :";
-  PIDs::iterator icode ;
-  for ( icode = m_pdgCodes.begin(); icode != m_pdgCodes.end(); ++icode ) {
-    ParticleProperty * particle = ppSvc->findByStdHepID( *icode );
-    m_masses.push_back( ( particle->mass() ) ) ;
-    m_names.push_back( particle->particle() ) ;
-    info() << " " << particle->particle() ;
-  }
-  
-  info() << endmsg ;
-
-  // printout vertex information
-  info() << "Origin vertex at : ( " 
-         << m_minxvtx / mm << " mm < x < " << m_maxxvtx / mm << " mm"
-         << ", " << m_minyvtx / mm << " mm < y < " << m_maxyvtx / mm << " mm"
-         << ", " << m_minzvtx / mm << " mm < z < " << m_maxzvtx / mm << " mm"
-         << " )" << endmsg ;
-
-  if ( m_gmode ) {
-    info() << "Momentum range: " << m_minMom / GeV << " GeV <-> " 
-           << m_maxMom / GeV << " GeV" << endmsg ;
-    info() << "Theta range: " << m_minTheta / rad << " rad <-> " 
-           << m_maxTheta / rad << " rad" << endmsg ;
-    info() << "Phi range: " << m_minPhi / rad << " rad <-> " 
-           << m_maxPhi / rad << " rad" << endmsg ;
-  } else {
-    info() << "Momentum: (" << m_px / GeV << " GeV, " 
-           << m_py / GeV << " GeV, " << m_pz / GeV << " GeV)" 
-           << endmsg ;
+  // Initialization of the Common Flat Random generator if not already done
+  // This generator must be used by all external MC Generator
+  if ( ! ( RandomForGenerator::getNumbers() ) ) {
+    sc = RandomForGenerator::getNumbers().initialize( randSvc( ) , 
+                                                      Rndm::Flat( 0 , 1 ) ) ;
+    if ( ! sc.isSuccess( ) )
+      return Error( "Could not initialize Rndm::Flat" , sc ) ;
   }
 
-  release( ppSvc ) ;
+  // Retrieve pile up tool
+  if ( "" != m_numberOfParticlesToolName )
+    m_numberOfParticlesTool = tool< IPileUpTool >( m_numberOfParticlesToolName , this ) ;
 
+  // Retrieve decay tool
+  if ( "" != m_decayToolName ) m_decayTool = 
+    tool< IDecayTool >( m_decayToolName ) ;
+
+  // Retrieve generation method tool
+  if ( "" == m_particleGunToolName ) 
+    return Error( "No ParticleGun Generation Tool is defined. This is mandatory" ) ;
+  m_particleGunTool = 
+    tool< IParticleGunTool >( m_particleGunToolName , this ) ;
+    
+  seal::StringList strList = 
+    seal::StringOps::split( m_particleGunTool -> name() , "." ) ;  
+  m_particleGunName = strList.back() ; 
+    
+  // Retrieve generation method tool
+  if ( "" != m_vertexSmearingToolName ) 
+    m_vertexSmearingTool = 
+      tool< IVertexSmearingTool >( m_vertexSmearingToolName , this ) ;
+  
+  // Retrieve full gen event cut tool
+  if ( "" != m_fullGenEventCutToolName ) m_fullGenEventCutTool =
+    tool< IFullGenEventCutTool >( m_fullGenEventCutToolName , this ) ;
+
+  // Message relative to event type
+  always()
+    << "=================================================================="
+    << endmsg;
+  always()
+    << "Requested to generate EventType " << m_eventType << endmsg;
+  always()
+    << "=================================================================="
+    << endmsg;
+  
+  return StatusCode::SUCCESS;
+}
+
+//=============================================================================
+// Main execution
+//=============================================================================
+StatusCode ParticleGun::execute() {
+
+  debug() << "Processing event type " << m_eventType << endmsg ;
+  StatusCode sc = StatusCode::SUCCESS ;
+
+  // Get the header and update the information
+  LHCb::GenHeader* theGenHeader = get<LHCb::GenHeader> ( m_genHeaderLocation );
+  if( !theGenHeader->evType() ){
+    theGenHeader -> setEvType( m_eventType );  
+  }
+
+  unsigned int  nParticles( 0 ) ;
+  double        currentLuminosity ; // not used, always set to 0
+  
+  LHCb::HepMCEvents::iterator itEvents ;
+
+  // Create temporary containers for this event
+  LHCb::HepMCEvents* theEvents = new LHCb::HepMCEvents( );
+  LHCb::GenCollisions* theCollisions = new LHCb::GenCollisions( );\
+  
+  // Working set of pointers
+  LHCb::GenCollision * theGenCollision( 0 ) ;
+  HepMC::GenEvent * theGenEvent( 0 ) ;
+
+  Gaudi::LorentzVector theFourMomentum ;
+  Gaudi::LorentzVector origin ;
+  int thePdgId ;
+    
+  // Generate sets of particles until a good one is found
+  bool goodEvent = false ;
+  
+  while ( ! goodEvent ) {
+    theEvents->clear() ;
+    theCollisions->clear() ;
+    
+    // Compute the number of pile-up interactions to generate 
+    if ( 0 != m_numberOfParticlesTool ) 
+      nParticles = m_numberOfParticlesTool -> numberOfPileUp( currentLuminosity ) ;
+    // default set to 1 pile and 0 luminosity  
+    else nParticles = 1 ;
+        
+    // generate a set of particles according to the requested type
+    // of particle gun
+    for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
+      // Prepare event container
+      prepareInteraction( theEvents , theCollisions , theGenEvent , theGenCollision ) ;    
+      
+      // generate one particle
+      m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId );
+      
+      // create HepMC Vertex
+      HepMC::GenVertex * v = 
+        new HepMC::GenVertex( HepLorentzVector( origin.X() , 
+                                                origin.Y() , 
+                                                origin.Z() , 
+                                                origin.T() ) ) ;
+      // create HepMC particle
+      HepMC::GenParticle * p = 
+        new HepMC::GenParticle( HepLorentzVector( theFourMomentum.Px() , 
+                                                  theFourMomentum.Py() ,
+                                                  theFourMomentum.Pz() , 
+                                                  theFourMomentum.E()  ) , 
+                                                  thePdgId , 
+                                                  LHCb::HepMCEvent::StableInProdGen ) ; 
+      
+      v -> add_particle_out( p ) ;
+      theGenEvent -> add_vertex( v ) ;
+      theGenEvent -> set_signal_process_id( nParticles ) ;
+      theGenEvent -> set_signal_process_vertex( v ) ;
+    }
+
+    goodEvent = true ;
+    // increase event and interactions counters
+    ++m_nEvents ;    m_nParticles += nParticles ;
+
+    // Decay the event if it is a good event
+    if ( 0 != m_decayTool ) {
+      unsigned short iPart( 0 ) ;
+      for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
+            ++itEvents ) {
+        sc = decayEvent( *itEvents ) ;
+        (*itEvents) -> pGenEvt() -> set_event_number( ++iPart ) ;
+        if ( ! sc.isSuccess() ) return sc ;
+        if ( 0 != m_vertexSmearingTool ) 
+          sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
+        if ( ! sc.isSuccess() ) return sc ;
+      }
+    }
+
+    // Apply generator level cut on full event
+    if ( m_fullGenEventCutTool ) {
+      if ( goodEvent ) {
+        ++m_nBeforeFullEvent ;
+        goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
+                                                             theCollisions );
+        if ( goodEvent ) ++m_nAfterFullEvent ;
+      }
+    }
+  }  
+
+  ++m_nAcceptedEvents ;
+  m_nAcceptedParticles += nParticles ;
+
+  // Now either create the info in the TES or add it to the existing one
+  LHCb::HepMCEvents* eventsInTES = 
+    getOrCreate<LHCb::HepMCEvents,LHCb::HepMCEvents>( m_hepMCEventLocation );
+
+  LHCb::GenCollisions* collisionsInTES = 
+    getOrCreate<LHCb::GenCollisions,LHCb::GenCollisions>( m_genCollisionLocation );
+  
+  // Copy the HepMCevents and Collisions from the temporary containers to 
+  // those in TES and update the header information
+  theGenHeader->setLuminosity( 0. );
+
+  // Check that number of temporary HepMCEvents is the same as GenCollisions
+  if( theEvents->size() != theCollisions->size() ) {
+    return Error("Number of HepMCEvents and GenCollisions do not match" );
+  }
+
+  itEvents = theEvents->begin();
+  for( LHCb::GenCollisions::const_iterator it = theCollisions->begin();
+       theCollisions->end() != it; ++it ) {
+    
+    // HepMCEvent
+    LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
+    theHepMCEvent->setGeneratorName( (*itEvents)->generatorName() );
+    (*theHepMCEvent->pGenEvt()) = (*(*itEvents)->pGenEvt());
+    eventsInTES->insert( theHepMCEvent );
+    ++itEvents;
+    
+    // GenCollision
+    LHCb::GenCollision* theGenCollision = new LHCb::GenCollision();
+    theGenCollision->setIsSignal( (*it)->isSignal() );
+    theGenCollision->setProcessType( (*it)->processType() );
+    theGenCollision->setSHat( (*it)->sHat() );
+    theGenCollision->setTHat( (*it)->tHat() );
+    theGenCollision->setUHat( (*it)->uHat() );
+    theGenCollision->setPtHat( (*it)->ptHat() );
+    theGenCollision->setX1Bjorken( (*it)->x1Bjorken() );
+    theGenCollision->setX2Bjorken( (*it)->x2Bjorken() );
+    theGenCollision->setEvent( theHepMCEvent );
+    collisionsInTES->insert( theGenCollision );
+    
+    // GenHeader
+    theGenHeader->addToCollisions( theGenCollision );
+    
+  }
+
+  // Clear and delete the temporary containers
+  theEvents->clear();
+  theCollisions->clear();
+  delete(theEvents);
+  delete(theCollisions);
+  
   return sc ;
 }
 
-//===========================================================================
-// Generate the particles
-//===========================================================================
-StatusCode ParticleGun::callParticleGun( HepMC::GenEvent * evt ) {  
-  // randomly choose number of particles
-  unsigned currentparts = ( m_minParts + 
-                            (unsigned int)( m_flatGenerator() 
-                                            * (1+m_maxParts-m_minParts) ) ) ;
+//=============================================================================
+//  Finalize
+//=============================================================================
+StatusCode ParticleGun::finalize() {
+  using namespace GenCounters ;
+  debug( ) << "==> Finalize" << endmsg ;
+  // Print the various counters
+  info() << "**************************************************" << endmsg ;
+  if ( 0 != m_numberOfParticlesTool ) 
+    m_numberOfParticlesTool -> printPileUpCounters( ) ; 
+  info() << "***********   Generation counters   **************" << std::endl ;
+  printCounter( info() , "generated events" , m_nEvents ) ;
+  printCounter( info() , "generated particles" , m_nParticles ) ;
+  
+  printCounter( info() , "accepted events" , m_nAcceptedEvents ) ;
+  printCounter( info() , "particles in accepted events" , 
+                m_nAcceptedParticles ) ;
+  
+  printEfficiency( info() , "full event cut" , m_nAfterFullEvent , 
+                   m_nBeforeFullEvent ) ;
+  info() << endmsg ;
 
-  if ( currentparts > m_maxParts ) currentparts = m_maxParts;
+  m_particleGunTool -> printCounters() ;
 
-  unsigned int iPart ;
-  for ( iPart = 0; iPart < currentparts; ++iPart ) {
+  if ( 0 != m_numberOfParticlesTool ) release( m_numberOfParticlesTool ) ;
+  if ( 0 != m_decayTool ) release( m_decayTool ) ;
+  if ( 0 != m_particleGunTool ) release( m_particleGunTool ) ;
+  if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ) ;
+  if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ) ;
+  
+  return GaudiAlgorithm::finalize( ) ; // Finalize base class
+}
 
-    double px(0.), py(0.), pz(0.) ;
+//=============================================================================
+// Decay in the event all particles which have been left stable by the
+// production generator
+//=============================================================================
+StatusCode ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent ) {
+  using namespace LHCb;
+  m_decayTool -> disableFlip() ;
+  StatusCode sc ;
+  
+  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
+
+  // We must use particles_begin to obtain an ordered iterator of GenParticles
+  // according to the barcode: this allows to reproduce events !
+  HepMCUtils::ParticleSet pSet( pEvt -> particles_begin() , 
+                                pEvt -> particles_end() ) ;
+
+  HepMCUtils::ParticleSet::iterator itp ;
+
+  for ( itp = pSet.begin() ; itp != pSet.end() ; ++itp ) {
     
-    if ( m_gmode ) {
+    HepMC::GenParticle * thePart = (*itp) ;
+    unsigned int status = thePart -> status() ;
+    
+    if ( ( HepMCEvent::StableInProdGen  == status ) || 
+         ( ( HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status )
+           && ( 0 == thePart -> end_vertex() ) ) ) {
       
-      // Generate values for energy, theta and phi
-      const double momentum = m_minMom   + m_flatGenerator() * 
-        (m_maxMom-m_minMom);
-      const double theta    = m_minTheta + 
-        m_flatGenerator() * ( m_maxTheta - m_minTheta ) ;
-      const double phi      = m_minPhi   + m_flatGenerator() * 
-        (m_maxPhi-m_minPhi);
-
-      // Transform to x,y,z coordinates
-      const double pt = momentum*sin(theta);
-      px              = pt*cos(phi);
-      py              = pt*sin(phi);
-      pz              = momentum*cos(theta);
-    } else {
-      px = m_px ;
-      py = m_py ;
-      pz = m_pz ;
-    }
-
-    // randomly choose a particle type
-    unsigned int currentType = 
-      (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
-    // protect against funnies
-    if ( currentType >= m_pdgCodes.size() ) currentType = 0; 
-
-    HepLorentzVector fourMom;
-    fourMom.setVectM( Hep3Vector(px,py,pz), m_masses[currentType] );
-
-    // new vertex at the position specified by jobOptions
-    const double x = m_minxvtx + m_flatGenerator()*(m_maxxvtx - m_minxvtx);
-    const double y = m_minyvtx + m_flatGenerator()*(m_maxyvtx - m_minyvtx);
-    const double z = m_minzvtx + m_flatGenerator()*(m_maxzvtx - m_minzvtx);
-
-    // new vertex
-    const HepLorentzVector vtx(x,y,z,CLHEP::Tcomponent(0.));
-    HepMC::GenVertex * v1 = new HepMC::GenVertex( vtx );
-    evt->add_vertex( v1 );
-    v1 -> 
-      add_particle_out( new HepMC::GenParticle
-                        ( fourMom , m_pdgCodes[ currentType ] ,
-                          LHCb::HepMCEvent::StableInProdGen ) ) ;
-    debug() << " -> " << m_names[ currentType ] << endmsg 
-            << "   P   = " << fourMom << endmsg 
-            << "   Vtx = " << vtx << endmsg ;
-  } // end loop over particles
-
-  evt -> set_signal_process_id( currentparts ) ;
-
+      if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
+        
+        if ( HepMCEvent::StableInProdGen == status ) 
+          thePart -> 
+            set_status( HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( HepMCEvent::DecayedByDecayGen ) ;
+        
+        sc = m_decayTool -> generateDecay( thePart ) ;
+        if ( ! sc.isSuccess() ) return sc ;
+      }
+    } 
+  }  
   return StatusCode::SUCCESS ;
 }
 
+//=============================================================================
+// Set up event
+//=============================================================================
+void ParticleGun::prepareInteraction( LHCb::HepMCEvents * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,
+    LHCb::GenCollision * & theGenCollision ) const {
+  LHCb::HepMCEvent * theHepMCEvent = new LHCb::HepMCEvent( ) ;
+  theHepMCEvent -> setGeneratorName( m_particleGunName ) ;
+  theGenEvent = theHepMCEvent -> pGenEvt() ;
+
+  theGenCollision = new LHCb::GenCollision() ;
+  theGenCollision -> setEvent( theHepMCEvent ) ;
+  theGenCollision -> setIsSignal( false ) ;
+
+  theEvents -> insert( theHepMCEvent ) ;
+  theCollisions -> insert( theGenCollision ) ;
+}

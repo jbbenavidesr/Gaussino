@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti
 #============================================================================
 package GaussPhysics
-version v5r1
+version v5r2
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -16,7 +16,7 @@ use G4physics_lists    v*	Geant4
 
 # Component library building rule
 #============================================================================
-library          GaussPhysics      *.cpp  
+library          GaussPhysics      *.cpp
 
 # define component library link options
 #============================================================================

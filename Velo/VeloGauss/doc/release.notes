@@ -4,6 +4,12 @@
 ! Purpose     : VeloGauss monitoring
 !-----------------------------------------------------------------------------
 
+!========================== VeloGauss v2r3 2008-06-09 ========================
+! 2008-05-30 - Gloria CORTI
+ - Adapt to removal of LHCbDefinitions from GAUSS. Now take the header files
+   from GaudiKernel
+   . src/VeloGaussMoni.cpp
+
 !========================== VeloGauss v2r2 2007-12-07 ========================
 ! 2007-11-27 - Mark Tobin
  - Give all histograms names rather than numerical identifiers in 

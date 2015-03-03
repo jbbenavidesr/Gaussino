@@ -1,5 +1,0 @@
-<lcgdict>
-  <class name="DeBcmSens"             />
-  <class name="DeBcm"                 />
-  <variable pattern="DeBcmLocation::*"/>
-</lcgdict>
