@@ -4,6 +4,32 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v11r2 2013-02-20 ==========================
+ - on v11b branch
+
+! 2013-02-20 - Gloria Corti
+ - Merge changes to remove hijing code from v10r2b branch. See below.
+
+! 2013-02-14 - Gloria Corti (merged r152263)
+ - Now physically remove the line commented in the requirement and the rlu.F 
+   and ran.F code from src/hijing since the tests are successful
+
+! 2013-02-11 - Gloria Corti (merged r151897, r151988)
+ - Comment out making the library for hijing, since the code is now in 
+   LbHijing itself
+
+!========================== GENSER v11r1 2013-02-07 ==========================
+ - on v11b branch
+
+! 2013-02-07 - Gloria Corti
+ - Put back the version of hijing as in MC10 1.383bs.2 and change the rlu.F 
+   function in src/hijing to adapt back to it. 
+   Remove all linking appended to those of GENSER from here to remove tying
+   all generators to hijing as in link library symbols
+
+! 2013-01-17 - Gloria Corti
+ - New version of pythia6 427.2
+
 !========================== GENSER v11r0 2012-11-26 ==========================
  - on v9r3b branch
 

@@ -5,6 +5,27 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!======================= Generators v12r3 2013-02-12 =========================
+ - on v12b branch
+
+! 2013-02-11 - Gloria Corti
+ - Porting chnages from trunk. See below.
+
+! 2013-02-01 - Aurelien Martens (r151449)
+ - ExternalGenerator.cpp: add call to initializeGenerator, so that
+   particle properties are set before initialization of the pythia instance
+
+! 2013-01-21 - Patrick Robbe (r150972)
+ - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
+
+! 2013-01-16 - Patrick Robbe (r150831, r150832)
+ - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
+   files the counters that allow to compute the generator level cut 
+   efficiencies.
+
+! 2012-12-19 - Aurelien Martens (from trunk r150293)
+ - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
+
 !======================= Generators v12r2 2012-10-19 =========================
  - on v12b branch with the following changes ported from the trunk
 ! 2012-09-27 - Patrick Robbe

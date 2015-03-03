@@ -26,7 +26,9 @@ class ScpBinning {
 protected:
   std::vector<ScpBoxSet> _boxSets;
   int _nData;
+  int _nBkg;
   int _nDataCC;
+  int _nBkgCC;
   double _totalMCWeight;
   double m_norm;
 //
@@ -52,7 +54,7 @@ protected:
  public:
   ScpBinning();
 
-  void useWeights(bool weights=1)
+  void useWeights(bool weights)
   {
     m_useWeights = weights;
   }
@@ -85,26 +87,27 @@ protected:
   double Err_ofBin(unsigned int i) const;
   double Entries_ofBin(unsigned int i) const;
 
+  double rawAsym_ofBin(unsigned int i) const;
+
+  double rawAsymErr_ofBin(unsigned int i) const;
+
   double getScp_perBin() const;
   double getScpErr_perBin(double mean) const;
   double scp_ofBin(unsigned int i) const;
   double getMaxScp() const;
   double getMinScp() const;
+  double getMeanScp() const;
+  double getMeanErrScp() const;
 
   double Prob() const;
   double Prob(double chi2) const;
-
   double Chi2() const;
-
   int ndof() const;
 
   void SubtractBin(unsigned int i);
-
-
   int Diff_ofBin(unsigned int i) const;
 
   void print(std::ostream& os = std::cout) const;
-
   void setNorm(double norm)
   {
 	  m_norm = norm;
@@ -125,6 +128,9 @@ protected:
   double weightedData() const;
   double weightedMC() const;
 
+  double weightedBKG() const;
+  double weightedBKGCC() const;
+
   int SetBinning(const char*);
 
   void saveBinning(const char*);
@@ -132,6 +138,8 @@ protected:
   double getMinEntries() const;
 
   void saveAsNTuple(const char* tuplsFileName, IDalitzEventList* data);
+
+  void saveNTuple(const char* tuplsFileName);
 
   double Scp(const IDalitzEvent* Devt);
 
