@@ -1,0 +1,55 @@
+<!-- This part of the file contains definitions of visualization attributes for
+     the materials used in the Ecal description.
+     The only attribute defined here is the color of the material -->
+<VisAtt name="EcalFiber">
+  <Color B="0.4392" G="0.5373" R="0.5451"/>
+</VisAtt>
+<VisAtt name="EcalPaper">
+  <Color B="0.8784" G="0.9333" R="0.9333"/>
+</VisAtt>
+<VisAtt name="EcalPlastic">
+  <Color B=".7059" G="0.4118" R="1"/>
+</VisAtt>
+<VisAtt name="EcalSc">
+  <Color B="0.9216" G="0.9216" R="0.9216"/>
+</VisAtt>
+<VisAtt name="EcalSteel">
+  <!--Color B="0.6" G="0.5333" R="0.4667"/-->
+  <Color B="1" G="0" R="0" />				
+</VisAtt>
+
+<!-- This part contains definitions of visualization attributes for
+     logical volumes. These take precedence on the material attributes
+     and complete them. That's why they don't define colors : the color
+     are taken from the material. -->
+<!-- the following volumes aren't visible-->
+<!-- they're only carriers for embedded volumes and consist of vacuum-->
+<!--***********************-->
+<VisAtt name="Ecal" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalInnSection" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalMidSection" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalOutSection" mode="WireFrame" visible="No" opened="Yes"/>
+<!--***********************-->
+
+<!--the following attributes allow visible access to the inner module structure-->
+<!--***********************-->
+<VisAtt name="EcalMiddleModule" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalMiddleStack" mode="WireFrame" visible="No" opened="Yes"/>
+	<VisAtt name="EcalMiddleCell" mode="WireFrame" visible="Yes" opened="Yes"/>
+	<VisAtt name="EcalMiddleCellSteel" mode="Plain" visible="Yes"/>
+	<VisAtt name="EcalMiddleCellPlastic" mode="Plain" visible="Yes"/>
+	<VisAtt name="EcalMiddleCellPb" mode="WireFrame" visible="Yes" opened="No"/>
+	<VisAtt name="EcalMiddleFiberPb" mode="Plain" visible="No"/>
+<VisAtt name="EcalMiddleFrontCover" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalMiddleBackCover" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalMiddleReadOut" mode="Plain" visible="Yes"/>
+
+<VisAtt name="EcalOuterModule" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalOuterStack" mode="WireFrame" visible="No" opened="Yes"/>
+<VisAtt name="EcalOuterCell" mode="WireFrame" visible="Yes" opened="Yes"/>
+	<VisAtt name="EcalOuterCellSteel" mode="Plain" visible="Yes"/>
+	<VisAtt name="EcalOuterCellPlastic" mode="Plain" visible="Yes"/>
+	<VisAtt name="EcalOuterCellPb" mode="WireFrame" visible="Yes" opened="No"/>
+<VisAtt name="EcalOuterFrontCover" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalOuterBackCover" mode="Plain" visible="Yes"/>
+<VisAtt name="EcalOuterReadOut" mode="Plain" visible="Yes"/>

@@ -4,6 +4,13 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v3r4 2007-12-07 =======================
+! 2007-11-21 - Gloria Corti
+ - Add use of DetDesc to compile new OTCosmicGenerator
+
+! 2007-10-16 Wouter Hulsbergen
+ - Added OTCosmicGenerator
+
 !======================= ParticleGuns v3r3 2007-08-24 =======================
 ! 2007-08-24 - Gloria CORTI
  - Introduce in "MaterialEvalGun" uniform production in eta-phi and regular

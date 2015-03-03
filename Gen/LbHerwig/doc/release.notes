@@ -1,9 +1,20 @@
-! $Id: release.notes,v 1.32 2007-06-22 12:47:38 gcorti Exp $
+! $Id: release.notes,v 1.35 2007-12-07 18:12:44 gcorti Exp $
 !----------------------------------------------------------------------------
 ! Package     : Gen/LbHerwig
 ! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
+
+!======================== LbHerwig v5r2 2007-12-07 ==========================
+! 2007-12-04 - Gloria CORTI
+ - Remove from options 'ApplicationMgr.DLLs += { "LbHerwig" }' that in not
+   necessary with the Gauss v30 series and that causes a crash (as reported
+   by R.Lambert Bug# 31927 )
+   . options/Herwig.opts
+   . options/HerwigJimmy.opts
+   . options/HerwigMCatNLO.opts
+   . options/HerwigJimmyMCatNLO.opts
+ - Remove also obsolete LbHerwig_load.cpp
 
 !======================== LbHerwig v5r1 2007-06-22 ==========================
 ! 2007-05-07 - Karl Harrison

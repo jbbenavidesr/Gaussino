@@ -1,10 +1,14 @@
-! =============================================================================
-! CVS tag $Name: not supported by cvs2svn $ 
-! =============================================================================
-! $Id: release.notes,v 1.14 2007-03-05 14:55:32 ranjard Exp $ 
-! =============================================================================
-package VisSvc
-package manager : Sebastien Ponce
+!-----------------------------------------------------------------------------
+! Package     : Vis/VisSvc
+! Responsible : Gloria CORTI (originally Sebastien Ponce)
+! Purpose     : 
+!-----------------------------------------------------------------------------
+
+!======================== VisSvc v5r1 2007-12-07 =============================
+! 2007-12-04 - Gloria CORTI
+ - Adapt default name of xml file to new package Vis/XmlVis that need to
+   be used when running
+   . VisualizationSvc.cpp
 
 !====================== VisSvc v5r0 2007-03-05 =============================
 ! 2007-03-05 - Marco Clemencic

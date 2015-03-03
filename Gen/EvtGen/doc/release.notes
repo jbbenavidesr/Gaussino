@@ -4,6 +4,17 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!======================== EvtGen v8r17 2007-12-07 =========================
+! 2007-10-30 - Patrick Robbe
+ - EvtPVVCPLH.cpp: corrections by Tristan du Pree
+
+! 2007-10-14 - Patrick Robbe
+ - Adapt static classes to windows compilation
+
+! 2007-10-11 - Patrick Robbe
+ - EvtIncoherentMixing: move inline access functions to static member 
+   variables to .cpp files
+
 !======================== EvtGen v8r16 2007-10-04 =========================
 ! 2007-09-21 - Patrick Robbe
  - EvtBtoXsgammaKagan.cpp: modifications by Peter Richardson, see

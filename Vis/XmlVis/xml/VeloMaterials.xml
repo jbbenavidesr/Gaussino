@@ -1,0 +1,7 @@
+<!-- This file is where visualization attributes are mapped to materials -->
+<Item name="/dd/Materials/Velo/VeloKapton"
+      attr="VeloKapton"/>
+<Item name="/dd/Materials/Velo/VeloCarbonFibre"
+      attr="VeloCF"/>
+<Item name="/dd/Materials/Velo/VeloInvar"
+      attr="VeloInvar"/>

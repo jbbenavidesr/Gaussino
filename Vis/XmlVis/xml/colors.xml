@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Visualization SYSTEM "../DTD/colors.dtd"[
+
+  <!ENTITY StandardVisAtts SYSTEM "StandardVisAtts.xml">
+  <!ENTITY EcalVisAtts SYSTEM "EcalVisAtts.xml">
+  <!ENTITY HcalVisAtts SYSTEM "HcalVisAtts.xml">
+  <!ENTITY MagnetVisAtts SYSTEM "MagnetVisAtts.xml">
+  <!ENTITY MuonVisAtts SYSTEM "MuonVisAtts.xml">
+  <!ENTITY PipeVisAtts SYSTEM "PipeVisAtts.xml">
+  <!ENTITY Rich1VisAtts SYSTEM "Rich1VisAtts.xml">
+  <!ENTITY Rich2VisAtts SYSTEM "Rich2VisAtts.xml">
+  <!ENTITY VeloVisAtts SYSTEM "VeloVisAtts.xml">
+
+  <!ENTITY StandardMaterials SYSTEM "StandardMaterials.xml">
+  <!ENTITY EcalMaterials SYSTEM "EcalMaterials.xml">
+  <!ENTITY HcalMaterials SYSTEM "HcalMaterials.xml">
+  <!ENTITY MagnetMaterials SYSTEM "MagnetMaterials.xml">
+  <!ENTITY MuonMaterials SYSTEM "MuonMaterials.xml">
+  <!ENTITY PipeMaterials SYSTEM "PipeMaterials.xml">
+  <!ENTITY RichMaterials SYSTEM "RichMaterials.xml">
+  <!ENTITY VeloMaterials SYSTEM "VeloMaterials.xml">
+
+  <!ENTITY EcalLogVols SYSTEM "EcalLogVols.xml">
+  <!ENTITY MagnetLogVols SYSTEM "MagnetLogVols.xml">
+  <!ENTITY PipeLogVols SYSTEM "PipeLogVols.xml">
+  <!ENTITY Rich1LogVols SYSTEM "Rich1LogVols.xml">
+  <!ENTITY Rich2LogVols SYSTEM "Rich2LogVols.xml">
+  <!ENTITY VeloLogVols SYSTEM "VeloLogVols.xml">
+]>
+<Visualization>
+  <VisAtts>
+    &StandardVisAtts;
+    &EcalVisAtts;
+    &HcalVisAtts;
+    &MagnetVisAtts;
+    &MuonVisAtts;
+    &PipeVisAtts;
+    &Rich1VisAtts;
+    &Rich2VisAtts;
+    &VeloVisAtts;
+  </VisAtts>
+  <Materials>
+    &StandardMaterials;
+    &EcalMaterials;
+    &HcalMaterials;
+    &MagnetMaterials;
+    &MuonMaterials;
+    &PipeMaterials;
+    &RichMaterials;
+    &VeloMaterials;
+  </Materials>
+  <LogVols>
+    &EcalLogVols;
+    &MagnetLogVols;
+    &PipeLogVols;
+    &Rich1LogVols;
+    &Rich2LogVols;
+    &VeloLogVols;
+  </LogVols>
+</Visualization>

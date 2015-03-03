@@ -1,0 +1,63 @@
+<!-- This part of the file contains definitions of visualization attributes for
+     the materials used in the Velo description.
+     The only attribute defined here is the color of the material -->
+<!-- Velo materials -->
+<VisAtt name="VeloKapton">
+  <Color B="0.0" G="1.0" R="0.0"/>
+</VisAtt>
+<VisAtt name="VeloCF">
+  <Color B="0.75" G="0.0" R="0.0"/>
+</VisAtt>
+<VisAtt name="VeloStainlessSteel">
+  <Color B="0.75" G="0.75" R="0.75"/>
+</VisAtt>
+<VisAtt name="VeloInvar">
+  <Color B="0.75" G="0.80" R="0.85"/>
+</VisAtt>
+<VisAtt name="VeloCopper">
+  <Color B="0.0" G="0.5" R="1.0"/>
+</VisAtt>
+
+<!-- This part contains definitions of visualization attributes for
+     logical volumes. These take precedence on the material attributes
+     and complete them. That's why they don't define colors : the color
+     are taken from the material. -->
+<VisAtt name="VisVeloMaster" mode="WireFrame" opened="Yes">
+  <Color B="0.8706" G="0.7686" R="0.6902"/>
+</VisAtt>
+<VisAtt name="VisVeloStation" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloRDetector" opened="No">
+  <Color B="1.0" G="0.0" R="0.5"/>
+</VisAtt>
+<VisAtt name="VisVeloPhiDetector" opened="No">
+  <Color B="0.5" G="0.0" R="1.0"/>
+</VisAtt>
+<VisAtt name="VisVeloPuRDetector" opened="No">
+  <Color B="0.9" G="0.0" R="0.6"/>
+</VisAtt>
+<VisAtt name="VisVeloSupport" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloHybCopper">
+  <Color B="0.0" G="0.5" R="1.0"/>
+</VisAtt>
+<VisAtt name="VisVeloHybFanout">
+  <Color B="0.5" G="0.3" R="0.1"/>
+</VisAtt>
+<VisAtt name="VisVeloHybChips">
+  <Color B="0.3" G="0.0" R="0.5"/>
+</VisAtt>
+<VisAtt name="VisVeloRFFoil" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloVacTank" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloVacTankComp" mode="WireFrame" opened="Yes">  
+  <Color B="0.75" G="0.0" R="0.5"/>
+</VisAtt>
+<VisAtt name="VisVeloVacTankWindow" mode="WireFrame" opened="Yes">  
+  <Color B="0.75" G="0.0" R="0.5"/>
+</VisAtt>
+<VisAtt name="VisVeloRFBox" mode="WireFrame" opened="Yes"/>  
+<VisAtt name="VisVeloRFBoxComp" mode="WireFrame" opened="Yes">  
+  <Color B="0.0" G="0.0" R="0.75"/>
+</VisAtt>
+<VisAtt name="VisVeloPipe" mode="WireFrame" opened="Yes"/>
+<VisAtt name="VisVeloPipeCuCylinder">
+  <Color B="0.0" G="0.5" R="1.0"/>
+</VisAtt>

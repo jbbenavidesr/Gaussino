@@ -58,9 +58,9 @@ StatusCode VisualizationSvc::initialize() {
     return status;  
   }
   if( m_colorDbLocation.empty() || "empty" == m_colorDbLocation ) { 
-    if ( 0 != getenv("XMLDDDBROOT") ) {
-      m_colorDbLocation  = getenv("XMLDDDBROOT");
-      m_colorDbLocation += "/DDDB/Visualization/colors.xml";
+    if ( 0 != getenv("XMLVISROOT") ) {
+      m_colorDbLocation  = getenv("XMLVISROOT");
+      m_colorDbLocation += "/xml/colors.xml";
     } else {
       m_colorDbLocation = "";
     }

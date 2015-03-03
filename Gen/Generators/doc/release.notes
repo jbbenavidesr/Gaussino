@@ -1,9 +1,29 @@
-! $Id: release.notes,v 1.111 2007-10-11 11:55:20 gcorti Exp $
+! $Id: release.notes,v 1.115 2007-11-30 15:15:56 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+! 2007-11-30 - Gloria Corti
+ - On Win32 put Signal and ExternalGenerators base classes in component
+   library rather then linker to allow compilation.
+   . requirements
+
+! 2007-11-26 - Chris Jones
+ - Add three new Signal selection 'Cut' tools
+  + SignalIsFromBDecay      : Selects only decays that originate from a b
+  + LHCbAcceptanceAndFromB  : The AND of the SignalIsFromBDecay and 
+    LHCbAcceptance selections
+  + DaughtersInLHCbAndFromB : The AND of the SignalIsFromBDecay and 
+    DaughtersInLHCb selections
+
+! 2007-11-08 - Gloria Corti for Karl Harrison
+ - Linking of HepMCfio for WIN32
+
+! 2007-10-11 - Patrick Robbe
+ - Move inline functions in StreamForGenerator and RandomForGenerator in 
+   the .cpp files
 
 !====================== Generators v7r5 2007-10-11 ===========================
 ! 2007-10-11 - Gloria Corti

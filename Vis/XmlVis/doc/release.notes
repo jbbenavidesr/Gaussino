@@ -1,0 +1,20 @@
+!-----------------------------------------------------------------------------
+! Package     : Vis/XmlVis
+! Responsible : Gloria CORTI, Thomas RUF
+! Purpose     : Holds visualization attributes for a geometry
+!-----------------------------------------------------------------------------
+
+!=========================== XmlVis v1r0 2007-12-03 ==========================
+
+! 2007-12-03 - Gloria CORTI
+ - Use names of volumes as in DC06 geometry.
+ - First version of the package copying DTD and Visualization directory from
+   XmlDDDB v30r4.
+
+   To use it give as file for the visualization $XMLVISROOT/xml/colors.xml, 
+   for example for Panoramix you should do:
+
+     VisualizationSvc.ColorDbLocation = "$XMLVISROOT/xml/colors.xml
+
+ - Modify visualization for beam pipe materials and supports
+!=============================================================================

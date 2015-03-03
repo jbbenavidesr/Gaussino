@@ -1,4 +1,4 @@
-// $Id: HerwigJimmy.opts,v 1.1 2006-10-06 15:45:38 gcorti Exp $ 
+// $Id: HerwigJimmy.opts,v 1.2 2007-12-04 16:01:03 gcorti Exp $ 
 
 /** @file 
  * 
@@ -12,7 +12,6 @@
  *
  */
 
-ApplicationMgr.DLLs += { "LbHerwig" };
 Generation.MinimumBias.ProductionTool                 = "HerwigProduction";
 Generation.Inclusive.ProductionTool                   = "HerwigProduction/HerwigJimmyProduction";
 Generation.SignalRepeatedHadronization.ProductionTool = "HerwigProduction/HerwigJimmyProduction";

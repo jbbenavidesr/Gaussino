@@ -1,4 +1,4 @@
-// $Id: VeloGaussMoni.cpp,v 1.12 2007-01-12 15:56:24 ranjard Exp $
+// $Id: VeloGaussMoni.cpp,v 1.13 2007-11-27 16:22:07 mtobin Exp $
 // Include files 
 
 // from Gaudi
@@ -66,7 +66,7 @@ StatusCode VeloGaussMoni::initialize() {
   debug() << "==> Initialize" << endmsg;
   //
   m_veloDet=( getDet<DeVelo>(m_veloDetLocation ) );
-  setHistoTopDir("VeloGaussMoni");
+  setHistoTopDir("Velo/");
   //
   return StatusCode::SUCCESS;
 };
@@ -157,7 +157,7 @@ StatusCode VeloGaussMoni::veloMCHitMonitor()
   m_nMCH+=size;
   m_nMCH2+=size*size;
   //
-  plot(size, 100, 
+  plot(size, "nMCHits", 
        "Number of hits in Velo per event",
        0., 3000., 100);
   //
@@ -179,26 +179,26 @@ StatusCode VeloGaussMoni::veloMCHitMonitor()
     }
     //
     if(m_detailedMonitor){
-    plot((*It)->energy()/Gaudi::Units::eV, 101,
+    plot((*It)->energy()/Gaudi::Units::eV, "eDepSi",
          "Energy deposited in Si [eV]",
          0., 300000., 100);
     plot2D((*It)->entry().z()/Gaudi::Units::cm,
-           (*It)->entry().x()/Gaudi::Units::cm, 102,
+           (*It)->entry().x()/Gaudi::Units::cm, "entryZX",
            "Particle entry point in Si [cm] - ZX plane",
            -20., 80., -5., 5., 1000, 50);
     plot2D((*It)->entry().x()/Gaudi::Units::cm,
-           (*It)->entry().y()/Gaudi::Units::cm, 103,
+           (*It)->entry().y()/Gaudi::Units::cm, "entryXY",
            "Particle entry point in Si [cm] - XY plane",
            -5., 5., -5., 5., 50, 50);
     plot2D((*It)->exit().z()/Gaudi::Units::cm,
-           (*It)->exit().x()/Gaudi::Units::cm, 104,
+           (*It)->exit().x()/Gaudi::Units::cm, "exitZX",
            "Particle exit point in Si [cm] - ZX plane",
            -20., 80., -5., 5., 1000, 50);
     plot2D((*It)->exit().x()/Gaudi::Units::cm,
-           (*It)->exit().y()/Gaudi::Units::cm, 105,
+           (*It)->exit().y()/Gaudi::Units::cm, "exitXY",
            "Particle exit point in Si [cm] - XY plane",
            -5., 5., -5., 5., 50, 50);
-    plot((*It)->time()/Gaudi::Units::ns, 106,
+    plot((*It)->time()/Gaudi::Units::ns, "TOF",
          "Time Of Flight [ns]", 
          0., 50., 100);
     //
@@ -209,38 +209,38 @@ StatusCode VeloGaussMoni::veloMCHitMonitor()
     //
     if(sensor->isRight()){
       if(sensor->isR()){
-        plot2D(x, y, 107,
+        plot2D(x, y, "entryRRXY",
                "Particle entry point in RRight [cm] - XY plane",
                -5., 5., -5., 5., 50, 50);
-        plot2D(z, x, 108,
+        plot2D(z, x, "entryRRZX",
                "Particle entry point in RRight [cm] - ZX plane",
                -20., 80., -5., 5., 1000, 50);
       }else if(sensor->isPhi()){
         if(sensor->isDownstream()){
-          plot2D(x, y, 109,
+          plot2D(x, y, "entryPDRXY",
                  "Particle entry point in PhiDR [cm] - XY plane",
                  -5., 5., -5., 5., 50, 50);
         }else{
-          plot2D(x, y, 110,
+          plot2D(x, y, "entryPURXY",
                  "Particle entry point in PhiUR [cm] - XY plane",
                  -5., 5., -5., 5., 50, 50);
         }
       }
     }else{
       if(sensor->isR()){
-        plot2D(x, y, 111,
+        plot2D(x, y, "entryRLXY",
                "Particle entry point in RLeft [cm] - XY plane",
                -5., 5., -5., 5., 50, 50);
-        plot2D(z, x, 112,
+        plot2D(z, x, "entryRLZX",
                "Particle entry point in RLeft [cm] - ZX plane",
                -20, 80, -5., 5., 1000, 50);
       }else if(sensor->isPhi()){
         if(sensor->isDownstream()){
-          plot2D(x, y, 113,
+          plot2D(x, y, "entryPDLXY",
                  "Particle entry point in PhiDR [cm] - XY plane",
                  -5., 5., -5., 5., 50, 50);
         }else{    
-          plot2D(x, y, 114,
+          plot2D(x, y, "entryPULXY",
                  "Particle entry point in PhiUL [cm] - XY plane",
                  -5., 5., -5., 5., 50, 50);
        }
@@ -251,7 +251,7 @@ StatusCode VeloGaussMoni::veloMCHitMonitor()
     const LHCb::MCParticle* myMCParticle=(*It)->mcParticle();
     if(0!=myMCParticle){
       Gaudi::LorentzVector fMom=myMCParticle->momentum();
-      plot(fMom.e()/Gaudi::Units::GeV, 115,
+      plot(fMom.e()/Gaudi::Units::GeV, "eMCPart",
            "Particle energy [GeV]",
            0., 50., 100);        
       if(m_printInfo){
@@ -274,7 +274,7 @@ StatusCode VeloGaussMoni::veloPileUpMCHitMonitor()
   m_nPUMCH+=size;
   m_nPUMCH2+=size*size;
   //
-  plot(size, 120,
+  plot(size, "nMCPUHits",
        "Number of PileUp hits per event",
        0., 3000., 100);
   //
@@ -296,26 +296,26 @@ StatusCode VeloGaussMoni::veloPileUpMCHitMonitor()
     }
     //
     if(m_detailedMonitor){
-    plot((*It)->energy()/Gaudi::Units::eV, 121,
+    plot((*It)->energy()/Gaudi::Units::eV, "eDepSiPU",
          "PileUp: Energy deposited in Si [eV]",
          0., 300000., 100);
     plot2D((*It)->entry().x()/Gaudi::Units::cm,
-           (*It)->entry().y()/Gaudi::Units::cm, 122,
+           (*It)->entry().y()/Gaudi::Units::cm, "entryXYPU",
            "PileUp: Particle entry point in Si [cm] - XY plane",
            -5., 5., -5., 5., 50, 50);
     plot2D((*It)->entry().z()/Gaudi::Units::cm,
-           (*It)->entry().x()/Gaudi::Units::cm, 123,
+           (*It)->entry().x()/Gaudi::Units::cm, "entryXYPU",
            "PileUp: Particle entry point in Si [cm] - ZX plane",
            -40., -10., -5., 5., 1000, 50);
     plot2D((*It)->exit().x()/Gaudi::Units::cm,
-           (*It)->exit().y()/Gaudi::Units::cm, 124,
+           (*It)->exit().y()/Gaudi::Units::cm, "exitXYPU",
            "PileUp: Particle exit point in Si [cm] - XY plane",
            -5., 5., -5., 5., 50, 50);
     plot2D((*It)->exit().z()/Gaudi::Units::cm,
-           (*It)->exit().x()/Gaudi::Units::cm, 125,
+           (*It)->exit().x()/Gaudi::Units::cm, "exitZXPU",
            "PileUp: Particle exit point in Si [cm] - ZX plane",
            -40., -10., -5., 5., 1000, 50);
-    plot((*It)->time()/Gaudi::Units::ns, 126,
+    plot((*It)->time()/Gaudi::Units::ns, "TOFPU",
          "PileUp: Time Of Flight [ns]",
          0., 50., 100);
     }
@@ -323,7 +323,7 @@ StatusCode VeloGaussMoni::veloPileUpMCHitMonitor()
    const LHCb::MCParticle* myMCParticle=(*It)->mcParticle();
    if(0!=myMCParticle){
      Gaudi::LorentzVector fMom=myMCParticle->momentum();
-     plot(fMom.e()/Gaudi::Units::GeV, 127,
+     plot(fMom.e()/Gaudi::Units::GeV, "eMCPartPU",
           "Particle energy [GeV]",
           0., 50., 100);        
       if(m_printInfo){
@@ -354,7 +354,7 @@ StatusCode VeloGaussMoni::basicMonitor()
     size=m_veloMCHits->size();    
     m_nMCH+=size;
     m_nMCH2+=size*size;
-    plot(size, 200, "Number of MCHits per event" , 0., 3000., 100);
+    plot(size, "nMCHits", "Number of MCHits per event" , 0., 3000., 100);
   }
   //
   if(m_testPileUpMCHit){
@@ -367,7 +367,7 @@ StatusCode VeloGaussMoni::basicMonitor()
     size=m_veloPileUpMCHits->size();
     m_nPUMCH+=size;
     m_nPUMCH2+=size*size;
-    plot(size, 201, "Number of PileUp MCHits per event" , 0., 3000., 100);
+    plot(size, "nMCHitsPU", "Number of PileUp MCHits per event" , 0., 3000., 100);
   }
   //
   return StatusCode::SUCCESS;

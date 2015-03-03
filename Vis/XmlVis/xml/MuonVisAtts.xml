@@ -1,0 +1,36 @@
+<!-- This part of the file contains definitions of visualization attributes for
+     the materials used in the Muon description.
+     The only attribute defined here is the color of the material -->
+<!--<VisAtt name="MuonC2_H2_F4">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonC4_H10">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonEpoxy">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonG10">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonHoneycomb">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonFilterIron">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonPhenolic">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonPolystyrene_Foam">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonSF6">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonS_CPC_gas">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
+<!--<VisAtt name="MuonS_MRPC_gas">
+  <Color R="0" G="0" B="0"/>
+</VisAtt>-->
