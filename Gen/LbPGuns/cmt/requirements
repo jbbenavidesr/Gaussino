@@ -7,7 +7,7 @@
 #============================================================================
 
 package          LbPGuns
-version          v1r2
+version          v2r0
 
 # Structure
 #============================================================================
@@ -32,3 +32,8 @@ library          LbPGuns    *.cpp
 # define component library link options
 #============================================================================
 apply_pattern    component_library library=LbPGuns
+
+# do not build on windows
+#============================================================================
+apply_pattern disable_package_on platform=target-winxp
+

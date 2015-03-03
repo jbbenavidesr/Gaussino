@@ -11,11 +11,13 @@
 // from HepMC
 #include "HepMC/GenEvent.h"
 
+// from Kernel
+#include "MCInterfaces/IGenCutTool.h"
+#include "MCInterfaces/IDecayTool.h"
+
 // from Generators
-#include "Generators/IDecayTool.h"
 #include "Generators/IProductionTool.h"
-#include "Generators/IGenCutTool.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 // local
 #include "SignalForcedFragmentation.h"

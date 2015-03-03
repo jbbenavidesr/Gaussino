@@ -22,6 +22,8 @@
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4EmStandardPhysics.hh"
 #include "G4EmExtraPhysics.hh"
+#include "G4EmStandardPhysics_option1LHCb.hh"
+#include "G4EmStandardPhysics_option1NoApplyCuts.hh"
 
 // Ion and hadrons
 #include "G4IonPhysics.hh"
@@ -36,13 +38,10 @@
 #include "HadronPhysicsQGSP.hh"
 #include "HadronPhysicsQGSP_BERT.hh"
 #include "HadronPhysicsQGSP_BERT_HP.hh"
+#include "HadronPhysicsQGSP_BERT_CHIPS.hh"
 
 // FTFP hadrons
 #include "HadronPhysicsFTFP_BERT.hh"
-
-// QGSC hadrons
-#include "HadronPhysicsQGSC.hh"
-#include "HadronPhysicsQGSC_EFLOW.hh"
 
 // The DECLARE_NAMED_TOOL_FACTORY macro should be added to Gaudi
 #ifndef DECLARE_NAMED_TOOL_FACTORY
@@ -63,6 +62,11 @@ typedef GiGaExtPhysics< G4EmStandardPhysics_option3 > EmStdOpt3PhysFactory;
 DECLARE_TOOL_FACTORY( EmStdOpt3PhysFactory );
 typedef GiGaExtPhysics< G4EmStandardPhysics > EmStdPhysFactory;
 DECLARE_TOOL_FACTORY( EmStdPhysFactory );
+
+typedef GiGaExtPhysics< G4EmStandardPhysics_option1LHCb > EmStdLHCbPhysFactory;
+DECLARE_TOOL_FACTORY( EmStdLHCbPhysFactory );
+typedef GiGaExtPhysics< G4EmStandardPhysics_option1NoApplyCuts > EmStdOpt1NoCutsPhysFactory;
+DECLARE_TOOL_FACTORY( EmStdOpt1NoCutsPhysFactory );
 
 typedef GiGaExtPhysics< G4EmExtraPhysics > EmExtraPhysFactory;
 DECLARE_TOOL_FACTORY( EmExtraPhysFactory );
@@ -85,14 +89,12 @@ typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT > HadPhysQGSP_BERTFactory;
 DECLARE_TOOL_FACTORY( HadPhysQGSP_BERTFactory );
 typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_HP > HadPhysQGSP_BERT_HPFactory;
 DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_HPFactory );
+typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_CHIPS > HadPhysQGSP_BERT_CHIPSFactory;
+DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_CHIPSFactory );
 
 typedef GiGaExtPhysics< HadronPhysicsFTFP_BERT > HadPhysFTFP_BERTFactory;
 DECLARE_TOOL_FACTORY( HadPhysFTFP_BERTFactory );
 
-typedef GiGaExtPhysics< HadronPhysicsQGSC > HadPhysQGSCFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSCFactory );
-typedef GiGaExtPhysics< HadronPhysicsQGSC_EFLOW > HadPhysQGSC_EFLOWFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSC_EFLOWFactory );
 
 // =========== Specialized extensions to GiGaExtPhysics ===========
 
@@ -140,6 +142,27 @@ public:
   }
 };
 
+template <>
+class GiGaExtPhysicsExtender<G4EmStandardPhysics_option1NoApplyCuts> {
+public:
+  inline void addPropertiesTo(AlgTool */*tool*/) {
+    // No specific properties
+  }
+  inline G4EmStandardPhysics_option1NoApplyCuts *newInstance(const std::string &name, int verbosity) const {
+    return new G4EmStandardPhysics_option1NoApplyCuts(verbosity, name);
+  }
+};
+
+template <>
+class GiGaExtPhysicsExtender<G4EmStandardPhysics_option1LHCb> {
+public:
+  inline void addPropertiesTo(AlgTool */*tool*/) {
+    // No specific properties
+  }
+  inline G4EmStandardPhysics_option1LHCb *newInstance(const std::string &/*name*/, int verbosity) const {
+    return new G4EmStandardPhysics_option1LHCb(verbosity);
+  }
+};
 
 template <>
 class GiGaExtPhysicsExtender<G4DecayPhysics> {
@@ -193,7 +216,7 @@ public:
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP");
   }
-  inline HadronPhysicsQGSP *newInstance(const std::string &name, int verbosity) const {
+  inline HadronPhysicsQGSP *newInstance(const std::string &name, int /*verbosity*/) const {
     return new HadronPhysicsQGSP(name, m_quasiElastic);
   }
 private:
@@ -207,7 +230,7 @@ public:
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT");
   }
-  inline HadronPhysicsQGSP_BERT *newInstance(const std::string &name, int verbosity) const {
+  inline HadronPhysicsQGSP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
     return new HadronPhysicsQGSP_BERT(name, m_quasiElastic);
   }
 private:
@@ -221,8 +244,22 @@ public:
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT_HP");
   }
-  inline HadronPhysicsQGSP_BERT_HP *newInstance(const std::string &name, int verbosity) const {
+  inline HadronPhysicsQGSP_BERT_HP *newInstance(const std::string &name, int /*verbosity*/) const {
     return new HadronPhysicsQGSP_BERT_HP(name, m_quasiElastic);
+  }
+private:
+  bool m_quasiElastic;
+};
+
+template <>
+class GiGaExtPhysicsExtender<HadronPhysicsQGSP_BERT_CHIPS> {
+public:
+  inline void addPropertiesTo(AlgTool *tool) {
+    tool->declareProperty("QuasiElastic", m_quasiElastic = true,
+                          "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT_HP");
+  }
+  inline HadronPhysicsQGSP_BERT_CHIPS *newInstance(const std::string &name, int /*verbosity*/) const {
+    return new HadronPhysicsQGSP_BERT_CHIPS(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
@@ -235,7 +272,7 @@ public:
     tool->declareProperty("QuasiElastic", m_quasiElastic = false,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsFTFP_BERT");
   }
-  inline HadronPhysicsFTFP_BERT *newInstance(const std::string &name, int verbosity) const {
+  inline HadronPhysicsFTFP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
     return new HadronPhysicsFTFP_BERT(name, m_quasiElastic);
   }
 private:

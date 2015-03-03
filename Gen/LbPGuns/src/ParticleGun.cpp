@@ -21,11 +21,11 @@
 // from Generators
 #include "Generators/IPileUpTool.h"
 #include "LbPGuns/IParticleGunTool.h"
-#include "Generators/IDecayTool.h"
+#include "MCInterfaces/IDecayTool.h"
 #include "Generators/IVertexSmearingTool.h"
-#include "Generators/IFullGenEventCutTool.h"
+#include "MCInterfaces/IFullGenEventCutTool.h"
 #include "Generators/GenCounters.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 // Gaudi Common Flat Random Number generator
 #include "Generators/RandomForGenerator.h"
@@ -192,7 +192,7 @@ StatusCode ParticleGun::execute() {
 
     // Compute the number of pile-up interactions to generate
     if ( 0 != m_numberOfParticlesTool )
-      nParticles = m_numberOfParticlesTool -> numberOfPileUp( theGenHeader ) ;
+      nParticles = m_numberOfParticlesTool -> numberOfPileUp( ) ;
     // default set to 1 pile and 0 luminosity
     else nParticles = 1 ;
 
@@ -270,10 +270,6 @@ StatusCode ParticleGun::execute() {
 
   LHCb::GenCollisions* collisionsInTES =
     getOrCreate<LHCb::GenCollisions,LHCb::GenCollisions>( m_genCollisionLocation );
-
-  // Copy the HepMCevents and Collisions from the temporary containers to
-  // those in TES and update the header information
-  theGenHeader->setLuminosity( 0. );
 
   // Check that number of temporary HepMCEvents is the same as GenCollisions
   if( theEvents->size() != theCollisions->size() ) {

@@ -9,9 +9,11 @@
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 
+// from Kernel
+#include "MCInterfaces/IGenCutTool.h"
+
 // from Generators
 #include "Generators/IProductionTool.h"
-#include "Generators/IGenCutTool.h"
 #include "Generators/GenCounters.h"
 
 //-----------------------------------------------------------------------------
@@ -30,6 +32,7 @@ DECLARE_TOOL_FACTORY( Inclusive );
 Inclusive::Inclusive( const std::string& type, const std::string& name,
                       const IInterface* parent )
   : ExternalGenerator  ( type, name , parent ) ,
+    m_lightestQuark( LHCb::ParticleID::down ) ,
     m_nEventsBeforeCut ( 0 ) , m_nEventsAfterCut ( 0 ) ,
     m_nInvertedEvents  ( 0 ) ,
     m_ccCounter        ( 0 ) , m_bbCounter( 0 ) ,

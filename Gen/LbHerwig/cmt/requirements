@@ -4,7 +4,7 @@
 # Maintainer : Karl Harrison
 #============================================================================
 package       LbHerwig
-version       v6r0p1
+version       v6r1
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -41,4 +41,12 @@ apply_pattern library_stamps    library=LbHerwigLib
 
 macro LbHerwig_fflags "-Wall -fno-second-underscore -fno-automatic" \
       WIN32 ""
+
+# remove annoying boost warnings
+private
+macro LbHerwig_cppflags "-isystem $(Boost_home)/include/boost-$(Boost_file_version)" 
+
+# do not build on windows
+#============================================================================
+apply_pattern disable_package_on platform=target-winxp
 

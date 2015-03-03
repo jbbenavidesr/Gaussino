@@ -4,7 +4,7 @@
 # Maintainer : Patrick ROBBE
 #============================================================================
 package       Generators
-version       v10r10
+version       v11r0
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -17,9 +17,9 @@ branches      Generators doc cmt src
 #============================================================================
 use           GaudiAlg          v*
 use           GenEvent          v*                Event
+use           MCInterfaces      v*                Kernel
 use           EvtGen            v*                Gen
 use           EvtGenExtras      v*                Gen
-use           LoKiGen           v*                Phys 
 
 #============================================================================
 # Include directories
@@ -52,9 +52,7 @@ apply_pattern library_stamps    library=GeneratorsLib
 macro_prepend HepMC_linkopts "-L$(HepMC_home)/lib -lHepMCfio " \
                        WIN32 "/LIBPATH:$(HepMC_home)/lib HepMCfio.lib"
 
+# do not build on windows
+#============================================================================
+apply_pattern disable_package_on platform=target-winxp
 
-private 
-
-macro_append ROOT_linkopts " -lHist " \
-              target-winxp " libHist.lib " \
-             target-mac104 " -lHist -lMatrix "

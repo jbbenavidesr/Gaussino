@@ -11,11 +11,13 @@
 #include "Event/HepMCEvent.h"
 #include "Event/GenCollision.h"
 
+// Kernel
+#include "MCInterfaces/IGenCutTool.h"
+#include "MCInterfaces/IDecayTool.h"
+
 // from Generators
 #include "Generators/IProductionTool.h"
-#include "Generators/IGenCutTool.h"
-#include "Generators/IDecayTool.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalPlain

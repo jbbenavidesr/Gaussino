@@ -5,6 +5,16 @@
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
 
+!======================== LbHerwig v6r1 2011-07-24 ==========================
+! 2011-07-24 - Gloria Corti
+ - Apply pattern not to build on windows, so that conditional use can be
+   removed from GaussSys
+
+! 2011-06-18 - Patrick Robbe
+ - HerwigProduction.cpp: remove #include "HepMC/IO_Ascii.h"
+ - cmt/requirements: ignore warnings from BOOST
+ - src/Lib/utility/Herwig.cpp: fix warnings
+
 !======================= LbHerwig v6r0p1 2008-02-09 =========================
 ! 2009-01-29 - Marco Cattaneo
  - Backward compatible fix for Gaudi v21

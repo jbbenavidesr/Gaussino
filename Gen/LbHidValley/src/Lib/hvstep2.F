@@ -44,7 +44,7 @@ C =====================================================================
 C =====================================================================
 C- Local Variables
 C ======================================================================
-      INTEGER IDUMMY,I
+      INTEGER IDUMMY,I, IREPEAT
       DOUBLE  PRECISION ECMHAT,ECM,VQSCALE  
 C ======================================================================
       INTEGER  MDCYBACK(500)
@@ -58,7 +58,7 @@ C ======================================================================
       
 C...Scale factor for converting from QCD to vQCD is the ratio
 C... of the V-pion mass PIMASS to the ordinary pion mass 135 MeV
-      
+
       VQSCALE=PIMASS/0.135D0
       
       ECMHAT = HVACTION ( IDUMMY )
@@ -69,7 +69,7 @@ C... of the V-pion mass PIMASS to the ordinary pion mass 135 MeV
 C - Set up "brute-force" low-mass q-qbar system and hadronize it.
       ECM = ECMHAT/VQSCALE      ! v-quark pair invt mass is Z'* mass
                                 ! scale the energy down by VQSCALE
-      
+
 C*    modify the decay:
       DO I = 1, 500
         
@@ -89,11 +89,19 @@ C*    modify the decay:
       
       MDCY(PYCOMP(111),1)=0 
       MDCY(PYCOMP(211),1)=0 
+
+      IREPEAT = 0 
+
+ 10   CONTINUE 
       
       CALL PY2ENT(-1,1,-1,ECM)  ! set up a pair of u-ubar quarks
+
+      
+      MINT(33) = 0 
       CALL PYSHOW(1,2,ECM)      ! shower them -- note QED radiation has not
                                 ! yet been turned off, but it should be
       
+      MSTP(112) = 0 
       CALL PYEXEC               ! hadronize them
       
 C*    restore the original decay flags 
@@ -104,7 +112,7 @@ C*    restore the original decay flags
 C...Process the event to extract vpions, combine them with STAGE 1
 C... initial stage and fake neutrinos into a consistent parton-level
 C... event, stored in output file hH.lhf.dat in LHA-like format
-      
+
       IF ( SUCCESS .NE. HVMAKE( IDUMMY )  ) THEN
         WRITE(*,*)'HVSTEP2: error from HVMAKE'
         GO TO 999

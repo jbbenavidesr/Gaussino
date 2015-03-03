@@ -56,7 +56,7 @@ Index EvtCyclic3::permute(Index i, Perm p)
 
 Perm EvtCyclic3::permutation(Index i1,Index i2,Index i3)
 {
-  assert(i1 != i2  && i2 != i3 && i3 != i1);
+  assert(i1 != i2  && i2 != i3 && i3 != i1); _unused( i3 ) ;
   if(i1 == A) return (i2 == B) ? ABC : ACB;
   if(i1 == B) return (i2 == C) ? BCA : BAC;
   if(i1 == C) return (i2 == A) ? CAB : CBA;
@@ -239,6 +239,7 @@ Index EvtCyclic3::strToIndex(const char* str)
   else if(strcmp(str,"B")) return B;
   else if(strcmp(str,"C")) return C;
   else assert(0);
+  return A ;
 }
 
 
@@ -248,6 +249,7 @@ Pair EvtCyclic3::strToPair(const char* str)
   else if(!strcmp(str,"BC") || !strcmp(str,"CB")) return BC;
   else if(!strcmp(str,"CA") || !strcmp(str,"AC")) return CA;
   else assert(0);
+  return AB ;
 }
 
 

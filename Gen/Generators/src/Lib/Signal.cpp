@@ -10,9 +10,9 @@
 #include "GaudiKernel/IRndmGenSvc.h"
 
 // from Generators
-#include "Generators/IDecayTool.h"
+#include "MCInterfaces/IDecayTool.h"
 #include "Generators/GenCounters.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 // Function to test if a HepMC::GenParticle is Particle (or antiParticle) 
 struct isParticle : std::unary_function< const HepMC::GenParticle * , bool > {
@@ -53,6 +53,7 @@ Signal::Signal( const std::string& type,
     m_nParticlesBeforeCut( 0 ) , m_nAntiParticlesBeforeCut( 0 ) ,
     m_nParticlesAfterCut ( 0 ) , m_nAntiParticlesAfterCut ( 0 ) ,
     m_nInvertedEvents ( 0 ) ,
+    m_signalQuark     ( LHCb::ParticleID::down ) ,
     m_signalPID       ( 0 ) ,
     m_bbCounter       ( 0 ) ,
     m_ccCounter       ( 0 ) ,
@@ -60,7 +61,8 @@ Signal::Signal( const std::string& type,
     m_nSigBar         ( 0 ) ,
     m_sigName        ( "" ) ,
     m_sigBarName     ( "" ) ,
-    m_cpMixture       ( true ) { 
+    m_cpMixture       ( true ) , 
+    m_signalBr ( 0.0 ) { 
     declareProperty( "SignalPIDList" , m_pidVector ) ;
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
     

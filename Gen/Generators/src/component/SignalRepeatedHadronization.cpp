@@ -9,6 +9,8 @@
 
 // from Kernel
 #include "Kernel/ParticleID.h"
+#include "MCInterfaces/IGenCutTool.h"
+#include "MCInterfaces/IDecayTool.h"
 
 // From HepMC
 #include "HepMC/GenParticle.h"
@@ -16,9 +18,7 @@
 
 // from Generators
 #include "Generators/IProductionTool.h"
-#include "Generators/IGenCutTool.h"
-#include "Generators/IDecayTool.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalRepeatedHadronization

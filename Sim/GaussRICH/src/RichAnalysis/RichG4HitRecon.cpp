@@ -21,6 +21,7 @@
 #include "RichG4AnalysisConstGauss.h"
 #include "RichG4Counters.h"
 #include "RichG4HitCoordResult.h"
+#include "RichG4RadiatorMaterialIdValues.h"
 
 // local
 #include "RichG4SvcLocator.h"
@@ -42,7 +43,14 @@ RichG4HitRecon::RichG4HitRecon( ):  m_RichG4CkvRec (0) ,
   m_agelnominalrefindex = 1.03;
   m_c4f10nominalrefindex = 1.0014;
   m_chtkBetaSaturatedCut =0.9999;
-
+  m_activateMinMomForTrackRecon=false;
+  //  m_minMomTracksForReconR1Gas=10000.0;
+  //  m_minMomTracksForReconR1Gas=30000.0;
+  // m_minMomTracksForReconR2Gas=30000.0;
+  // for test try 5 GeV
+  m_minMomTracksForReconR1Gas=5000.0;
+  m_minMomTracksForReconR2Gas=5000.0;
+  
   m_MidRich1GasZ = (C4F10ZBeginAnalysis+C4F10ZEndAnalysis)*0.5;
 
   m_MidRich1AgelZ  = (AgelZBeginAnalysis+AgelZEndAnalysis)*0.5;
@@ -54,7 +62,7 @@ RichG4HitRecon::RichG4HitRecon( ):  m_RichG4CkvRec (0) ,
   m_useOnlyStdRadiatorHits = true;
   m_RichG4ReconResult= new RichG4ReconResult();
   m_RichG4HitCoordResult = new RichG4HitCoordResult();
-  
+  m_useOnlySignalHitsInRecon=false; 
 
 }
 RichG4HitRecon::~RichG4HitRecon(  ) {
@@ -88,8 +96,8 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
   MsgStream RichG4HitReconlog( msgSvc,"RichG4HitRecon");
   RichG4Counters* aRichCounter =  RichG4Counters::getInstance();
 
-  //  RichG4HitReconlog<<MSG::INFO<<
-  //  "Now reconstruting ckv angle"<<endreq;
+    RichG4HitReconlog<<MSG::VERBOSE<<
+    "Now reconstruting ckv angle"<<endreq;
 
   const std::vector<int> & TkIdVectRich1Gas =
     aRichCounter -> TrackIdTraverseRich1Gas();
@@ -101,6 +109,12 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
   int NumTkIdRich1Agel = TkIdVectRich1Agel.size();
   int NumTkIdRich1Gas  = TkIdVectRich1Gas.size();
   int NumTkIdRich2Gas =  TkIdVectRich2Gas.size();
+
+  //  G4cout<<" NumTk in Agel r1g r2g "<<NumTkIdRich1Agel<<"  "<< NumTkIdRich1Gas<<"   "
+  //      <<NumTkIdRich2Gas<<G4endl;
+  
+  RichG4RadiatorMaterialIdValues* aRMIdValues =
+      RichG4RadiatorMaterialIdValues::RichG4RadiatorMaterialIdValuesInstance();
 
   const std::vector<int> aNumHpdInRich =  m_RichG4CkvRec->NumHpdRich();
   int irichdet=-1;
@@ -198,7 +212,8 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
           const G4ThreeVector & GlobalQwExtCoord  =   
                                 aHit ->HpdQuartzWindowExtSurfPhotIncidentPosition ();
           const G4ThreeVector CurLocalPeOrigin =  aHit->GetLocalPEOriginPos();
-
+          //  G4cout<<" G4HitRecon Current col hit radiator num  "<< ihcol<<"  "<<iha <<"   "<< aRadiatornum <<G4endl;
+          
           //G4cout<<" G4HitRecon Local PeOrigin "<< CurLocalPeOrigin <<G4endl;
           // G4cout<<" G4HitRecon Global Peorigin "<<GlobalPhcathCoord <<G4endl;
           // G4cout<<" G4HitRecon Global Qw ext point " <<GlobalQwExtCoord <<G4endl;
@@ -207,19 +222,32 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
           const Gaudi::XYZPoint CurLocalPeOriginPoint= 
             Gaudi::XYZPoint(CurLocalPeOrigin.x(), CurLocalPeOrigin.y(),CurLocalPeOrigin.z());
           
+          G4int aPhotSource = aHit->PhotonSourceProcessInfo();
+          std::vector<bool> aHpdRefl = aHit->DecodeRichHpdReflectionFlag();
+          bool areflectedInHpd= aHit->ElectronBackScatterFlag(); //plot without any bsc or refl
+             for(int ii=0; ii<(int)aHpdRefl.size() ; ++ii)
+             {
+                  if( aHpdRefl [ii]) areflectedInHpd=true;
+             }
+
+          
 
           // in case saturated hits are needed, first
           // check if the current hit is a saturated hit.
 
           bool SelectThisHit = false;
+
+
+          
           if(!(m_useOnlySaturatedHits) ) {
          	    if( ! m_useOnlyStdRadiatorHits ) {
                 SelectThisHit= true;
                }else {
-	            if( ( aRadiatornum == 1 ) || ( aRadiatornum == 2 ) || 
-                  ( aRadiatornum >= 10 && aRadiatornum <= 25 ) ) {
+                if( ( aRadiatornum == (aRMIdValues-> Rich1GaseousCkvRadiatorNum() )   ) || 
+                    ( aRadiatornum ==  (aRMIdValues-> Rich2GaseousCkvRadiatorNum() )   ) || 
+                    (  aRMIdValues -> IsRich1AerogelAnyTileRad(aRadiatornum)) ) {
 
-                SelectThisHit= true;
+                 SelectThisHit= true;
 
               }
             }
@@ -228,9 +256,14 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
             // first for agel saturated  hits
             int itagel=0;
+            
+            while ( (aRMIdValues-> IsRich1AerogelAnyTileRad(aRadiatornum))  && (itagel < NumTkIdRich1Agel) ) {
 
-            while ( aRadiatornum >= 10 && aRadiatornum <= 25  && itagel < NumTkIdRich1Agel ) {
-
+              // RichG4HitReconlog<<MSG::INFO<<"test for agel hit recon "<<aRadiatornum
+              //                 <<"  "<<itagel<<"   "<<NumTkIdRich1Agel<<"   "<<  TkIdVectRich1Agel[itagel]<<"   "
+              //                 << ChtkId <<"   "<<aPhotRayleighFlag<<endreq;
+              //  RichG4HitReconlog<<MSG::INFO<<"agel hit beta "<<ChTkBeta<<"  "<<m_chtkBetaSaturatedCut<<endreq;
+              
               if( TkIdVectRich1Agel[itagel] ==  ChtkId ) {
                 // select only those are not rayleigh scattered.
 
@@ -241,46 +274,61 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
                   }
                 }
+                
 
                 // skip out
                 itagel = NumTkIdRich1Agel+1;
               }
+              
 
 
-              itagel++;
-
-
+              itagel++;              
+              
             }
+            
 
             // now  for rich1gas saturated  hits
             int itr1s=0;
 
-            while (aRadiatornum == 1 && itr1s < NumTkIdRich1Gas ) {
+            while ( (aRadiatornum == (aRMIdValues-> Rich1GaseousCkvRadiatorNum() )) && (itr1s < NumTkIdRich1Gas) ) {
               if( TkIdVectRich1Gas[itr1s] ==  ChtkId ) {
 
                 if( ChTkBeta >   m_chtkBetaSaturatedCut ) {
-                  SelectThisHit= true;
 
+                 
+                  SelectThisHit= true;
+                  if(m_activateMinMomForTrackRecon ) {
+                    if( aChTrackTotMom <  m_minMomTracksForReconR1Gas )  SelectThisHit= false;
+                    
+                  }
+                  
                 }
 
                 // skip out
                 itr1s = NumTkIdRich1Gas+1;
               }
+              
 
 
               itr1s++;
 
-
+              
             }
+            
 
             // now  for rich2gas saturated  hits
             int itr2s=0;
 
-            while (aRadiatornum == 2 && itr2s < NumTkIdRich2Gas ) {
+            while ((aRadiatornum == (aRMIdValues-> Rich2GaseousCkvRadiatorNum() ))  && (itr2s < NumTkIdRich2Gas) ) {
               if( TkIdVectRich2Gas[itr2s] ==  ChtkId ) {
 
                 if( ChTkBeta >   m_chtkBetaSaturatedCut ) {
                   SelectThisHit= true;
+                  
+                  if(m_activateMinMomForTrackRecon ) {
+                    if( aChTrackTotMom <  m_minMomTracksForReconR2Gas )  SelectThisHit= false;
+                    
+                  }
 
                 }
 
@@ -303,6 +351,9 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
           if( aPrimaryMirrCopyInfo < 0 || aSecMirrCopyInfo < 0 ) {
             SelectThisHit=false;
             
+          }
+          if(m_useOnlySignalHitsInRecon) {
+              if(areflectedInHpd || (aPhotSource == 2 ) ) SelectThisHit =false;
           }
           
 
@@ -332,7 +383,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             //                  <<EmissPt.x()<<"   "
             //                  <<EmissPt.y()<<"   "
             //                  <<EmissPt.z()<<endreq;
-
+            //
             //  RichG4HitReconlog<<MSG::INFO<<" Rich1 Mid radiator for 0 1 2 rad is "
             //                  << m_MidRich1AgelZ<<"  "
             //                  <<   m_MidRich1GasZ<<"   "
@@ -406,11 +457,11 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
               aslpLocalY =aYdiff/aZDiff; 
             }
 
-              if(aRadiatornum == 1) {
+            if(aRadiatornum ==(aRMIdValues-> Rich1GaseousCkvRadiatorNum() )  ) {
                 aZdiffWrtRich1MidZ= m_MidRich1GasZ- aChTrackPreStepPos.z();
                 aMidRadX =  aChTrackPreStepPos.x() + aslpLocalX *  aZdiffWrtRich1MidZ;
                 aMidRadY = aChTrackPreStepPos.y() +  aslpLocalY * aZdiffWrtRich1MidZ;
-              } else if ( aRadiatornum == 2 ) {
+            } else if ( aRadiatornum ==(aRMIdValues-> Rich2GaseousCkvRadiatorNum() )  ) {
                 
                aZdiffWrtRich2MidZ=  m_MidRich2GasZ- aChTrackPreStepPos.z();
                aMidRadX =  aChTrackPreStepPos.x() + aslpLocalX *  aZdiffWrtRich2MidZ;
@@ -427,7 +478,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
 
 
-            if( (aRadiatornum >= 10) &&  (aRadiatornum <= 25)   ) {
+              if(  aRMIdValues -> IsRich1AerogelAnyTileRad(aRadiatornum)  ) {
                 emisptReconZ =  m_MidRich1AgelZ;
 
               if( PhotonAerogelExitPosition.z() > 0.0 ) {
@@ -438,8 +489,11 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
                 //      <<"   " <<EmisPtUseAgelExit.y()
                 //      <<"    "<< EmisPtUseAgelExit.z()<<endreq;
 
-
-
+                // RichG4HitReconlog<<MSG::INFO<<
+                //  "Agel True emis pt "<<EmisPtUseTrueEmissPt.x()<<"   "
+                //                 <<EmisPtUseTrueEmissPt.y()<<"   "
+                //                 <<EmisPtUseTrueEmissPt.z()<<"   "<<endreq;
+                
 
                 // EmisPtUseAgelExit  =  m_RichG4CkvRec->
                 // getPhotAgelExitZ(EmissPt.x(),EmissPt.y(),EmissPt.z(),
@@ -447,7 +501,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
               }
 
-            }else if( aRadiatornum == 1 ) {
+              }else if( aRadiatornum ==  ( aRMIdValues ->  Rich1GaseousCkvRadiatorNum() )   ) {
               emisptReconZ =   m_MidRich1GasZ;
               emisptReconX  =  aMidRadX;
               emisptReconY  =  aMidRadY;
@@ -458,7 +512,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
               //      << emisptReconY<<"  "<<testmidy<<G4endl;
               
               
-            } else if ( aRadiatornum == 2 ) {
+              } else if ( aRadiatornum ==  ( aRMIdValues ->  Rich2GaseousCkvRadiatorNum() ) ) {
               emisptReconZ = m_MidRich2GasZ;
               emisptReconX  =  aMidRadX;
               emisptReconY  =  aMidRadY;
@@ -566,15 +620,15 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
             //  G4cout<<" det point at HPDQW D2XYZ "<< aHitOnQwFromTrueLocalHit.x()<<"   "
             //      << aHitOnQwFromTrueLocalHit.y()<<"  "<< aHitOnQwFromTrueLocalHit.z()<<G4endl;
-            // G4cout<<" det point at HPDQW D3XYZ "<<GlobalPhcathCoord.x() <<"   "
-            //      << GlobalPhcathCoord.y()<<"  "<< GlobalPhcathCoord.z()<<G4endl;
-            // G4cout <<" det point at HPD QW D4XYZ "<< GlobalQwExtCoord.x() <<"    "
-	          //         <<GlobalQwExtCoord.y()<<"  "<<GlobalQwExtCoord.z()<<G4endl;
+            //  G4cout<<" det point at HPDQW D3XYZ "<<GlobalPhcathCoord.x() <<"   "
+            //       << GlobalPhcathCoord.y()<<"  "<< GlobalPhcathCoord.z()<<G4endl;
+            //   G4cout <<" det point at HPD QW D4XYZ "<< GlobalQwExtCoord.x() <<"    "
+            //         <<GlobalQwExtCoord.y()<<"  "<<GlobalQwExtCoord.z()<<G4endl;
 
             //  G4cout<<" det point HpdQw TrueWithCorr  D6XYZ" << aHitOnQwFromTrueLocalHitWithQwCorr.x()<<"  "
             //      <<aHitOnQwFromTrueLocalHitWithQwCorr.y()<<"  "<<aHitOnQwFromTrueLocalHitWithQwCorr.z()<<G4endl;
-            //  G4cout<<" det point HpdQw TrueWithCorr  D7XYZ" << aHitOnQwFromGlobalPhCathodeWithQwCorr.x()<<"  "
-            //      <<aHitOnQwFromGlobalPhCathodeWithQwCorr.y()<<"  "<<aHitOnQwFromGlobalPhCathodeWithQwCorr.z()<<G4endl;
+              //   G4cout<<" det point HpdQw TrueWithCorr  D7XYZ  " << aHitOnQwFromGlobalPhCathodeWithQwCorr.x()<<"  "
+              //    <<aHitOnQwFromGlobalPhCathodeWithQwCorr.y()<<"  "<<aHitOnQwFromGlobalPhCathodeWithQwCorr.z()<<G4endl;
        
 
             // end of test printout
@@ -652,7 +706,8 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
             m_RichG4ReconResult-> setradiatorForCkv(aRadiatornum);
 
-            if( aRadiatornum == 1 ||  aRadiatornum == 2 ) {
+            if( ( aRadiatornum ==  ( aRMIdValues ->  Rich1GaseousCkvRadiatorNum() ) )  ||  
+                ( aRadiatornum == ( aRMIdValues ->  Rich2GaseousCkvRadiatorNum() ) )) {
 
 
               aReflPointD1E1 =  m_RichG4CkvRec->
@@ -801,7 +856,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
               m_RichG4ReconResult->
                 setckvAngleD7E1(m_RichG4CkvRec->CherenkovThetaFromReflPt(aReflPointD7E1,EmisPtUseTrueEmissPt));
 
-           }else if(  aRadiatornum >= 10 && aRadiatornum <= 25 ) {
+            }else if(aRMIdValues-> IsRich1AerogelAnyTileRad(aRadiatornum) ) {
 
 
 
@@ -830,12 +885,12 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
               aReflPointD3E2= m_RichG4CkvRec->
                 ReconReflectionPointOnSPhMirror(  aDetPointFromGlobalPhCathode,
-                                                  EmisPtUseMidPtRadiatorZ,aHitOnQwFromGlobalPhCathode,aRichDetNum, aSecMirrCopyNum );
+                                         EmisPtUseMidPtRadiatorZ,aHitOnQwFromGlobalPhCathode,aRichDetNum, aSecMirrCopyNum );
 
 
               aReflPointD3E4= m_RichG4CkvRec->
                 ReconReflectionPointOnSPhMirror(  aDetPointFromGlobalPhCathode,
-                                                  EmisPtUseMidPtRadiator,aHitOnQwFromGlobalPhCathode,aRichDetNum, aSecMirrCopyNum );
+                                     EmisPtUseMidPtRadiator,aHitOnQwFromGlobalPhCathode,aRichDetNum, aSecMirrCopyNum );
 
 
 
@@ -893,7 +948,13 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
                                               EmisPtUseAgelExit ,aHitOnQwFromGlobalPhCathodeWithQwCorr,
                                                aRichDetNum, aSecMirrCopyNum  );
 
-              // calculate the cherenkov angle in aerogel
+ 
+            // RichG4HitReconlog << MSG::INFO<<" Reflection pt D3E3, D4E3 D7E3  D4E1  "<< aReflPointD3E3 <<"     "
+            //      <<aReflPointD4E3<< "   "<<aReflPointD7E3<< "  "<<aReflPointD4E1<<endreq;
+            
+                   
+
+             // calculate the cherenkov angle in aerogel
 
               m_RichG4ReconResult->setckvAngleD1E3(
                                                    m_RichG4CkvRec->CherenkovThetaInAerogel(aReflPointD1E3,
@@ -937,15 +998,23 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
                                                                                             EmisPtUseMidPtRadiator ));
 
               m_RichG4ReconResult->
-                    setckvAngleD5E4 (m_RichG4CkvRec->CherenkovThetaFromReflPt(aReflPointD5E4,
+                    setckvAngleD5E4 (m_RichG4CkvRec->CherenkovThetaInAerogel(aReflPointD5E4,
                                                                                              EmisPtUseMidPtRadiator));
               m_RichG4ReconResult->
-                    setckvAngleD5E3(m_RichG4CkvRec->CherenkovThetaFromReflPt(aReflPointD5E1, EmisPtUseAgelExit));
+                    setckvAngleD5E3(m_RichG4CkvRec->CherenkovThetaInAerogel(aReflPointD5E3, EmisPtUseAgelExit));
               
               m_RichG4ReconResult->
-                  setckvAngleD6E3(m_RichG4CkvRec->CherenkovThetaFromReflPt(aReflPointD6E1, EmisPtUseAgelExit));
+                  setckvAngleD6E3(m_RichG4CkvRec->CherenkovThetaInAerogel(aReflPointD6E3, EmisPtUseAgelExit));
               m_RichG4ReconResult->
-                setckvAngleD7E3(m_RichG4CkvRec->CherenkovThetaFromReflPt(aReflPointD7E1,EmisPtUseAgelExit));
+                setckvAngleD7E3(m_RichG4CkvRec->CherenkovThetaInAerogel(aReflPointD7E3,EmisPtUseAgelExit));
+
+
+
+              // test print 
+              // RichG4HitReconlog << MSG::INFO<<" Ckv angle D3E3 D4E3 D7E3  D4E1  "<<m_RichG4ReconResult-> ckvAngleD3E3()<<"   "
+              //                   <<m_RichG4ReconResult-> ckvAngleD4E3()<<"   "<<m_RichG4ReconResult-> ckvAngleD7E3()<<"    "
+              //                  <<m_RichG4ReconResult-> ckvAngleD4E1()<<endreq;
+              
 
             }
 

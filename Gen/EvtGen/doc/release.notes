@@ -1,8 +1,24 @@
 !-----------------------------------------------------------------------------
 ! Package     : EvtGen
-! Responsible : Patrick Robbe, Mark Whitehead 
+! Responsible : Patrick Robbe, Mark Whitehead, John Back
 ! Purpose     : 
 !-----------------------------------------------------------------------------
+
+!========================== EvtGen v12r1 2011-07-15 ==========================
+! 2011-07-15 - Gloria Corti
+ - Apply pattern not to build on windows, so that conditional use can be
+   removed from GaussSys
+
+! 2011-06-24 - Patrick Robbe
+ - Try to get rid of unused variables warning in assert
+
+! 2011-06-19 - Patrick Robbe
+ - src/EvtBaryonPCRFF.cpp
+   src/EvtBlattWeisskopf.cpp
+   src/EvtDalitzResPdf.cpp
+   src/EvtCyclic3.cpp
+   src/EvtPto3PAmpFactory.cpp
+      fix compilation warnings
 
 !========================== EvtGen v12r0 2011-04-13 ==========================
 ! 2011-02-28 - John Back

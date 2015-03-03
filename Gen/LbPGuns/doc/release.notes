@@ -4,6 +4,18 @@
 ! Purpose     : Holds code for generaion of particle guns
 !-----------------------------------------------------------------------------
 
+!========================== LbPGuns v2r0 2011-07-23 ==========================
+! 2011-07-15 - Gloria Corti
+ - Apply pattern not to build on windows, so that conditional use can be
+   removed from GaussSys
+
+! 2011-06-24 - Patrick Robbe
+ - ParticleGun.cpp: use tool headers from MCInterfaces
+
+! 2011-05-31 - Patrick Robbe
+ - FlatNParticles, ParticleGun, FlatNParticles, RichPatternGun: adapt to use
+   the new BeamParameters class.
+
 !========================== LbPGuns v1r2 2009-11-04 ==========================
 ! 2009-11-04 - Magnus Lieng
  - Changed .opts files into .py files

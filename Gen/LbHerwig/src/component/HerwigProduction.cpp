@@ -21,7 +21,6 @@
 
 // HepMC
 #include "HepMC/IO_HERWIG.h"
-#include "HepMC/IO_Ascii.h"
 #include "HepMC/HEPEVT_Wrapper.h"
 
 // local

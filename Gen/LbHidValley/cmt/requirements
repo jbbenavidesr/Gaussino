@@ -4,7 +4,7 @@
 # Maintainer : Vanya BELYAEV ibelyaev@physics.syr.edu
 # =============================================================================
 package           LbHidValley
-version           v2r4
+version           v3r0
 
 # =============== structure ===================================================
 branches          cmt doc src options LbHidValley 
@@ -19,6 +19,7 @@ set               LBHIDVALLEYOPTS $(LBHIDVALLEYROOT)/options
 use               LbPythia     v* Gen 
 use               Boost        v* LCG_Interfaces 
 use               GENSER       v* Gen 
+use               LoKiGen      v* Phys
 
 # =============== constituents ================================================
 library           LbHidValleyLib Lib/*.cpp  Lib/*.F  
@@ -30,15 +31,18 @@ apply_pattern     component_library library=LbHidValley
 apply_pattern     linker_library    library=LbHidValleyLib
 apply_pattern     application_path 
 
-macro HepMC_linkopts '-L$(HepMC_home)/lib -lHepMC '
 macro_append      HidValley_dependencies " LbHidValleyLib " 
 
 # =============================================================================
 macro_append      HidValleylinkopts  " $(use_linkopts) " 
 macro_append      HidValleylinkopts  " $(Boost_linkopts_program_options) " 
 
-private 
-macro_prepend fincludes $(ppcmd)"$(GENSER_path)/include/pythia/$(pythia_native_version)/include"
+# private 
+# macro_prepend fincludes $(ppcmd)"$(GENSER_path)/include/pythia/$(pythia_native_version)/include"
+
+# do not build on windows
+#============================================================================
+apply_pattern disable_package_on platform=target-winxp
 
 # =============================================================================
 # The END 

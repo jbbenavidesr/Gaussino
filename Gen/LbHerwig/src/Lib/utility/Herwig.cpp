@@ -36,60 +36,67 @@ void Herwig::initHerwigCommonBlocks()
   herwigCommonBlocksInitialized = 1;
 
   // Herwig
-  gHwbeam    = (Hwbeam_t*   ) herwig_common_block_address_("HWBEAM",6); 
-  gHwbmch    = (Hwbmch_t*   ) herwig_common_block_address_("HWBMCH",6); 
-  gHwbosc    = (Hwbosc_t*   ) herwig_common_block_address_("HWBOSC",6);
-  gHwbrch    = (Hwbrch_t*   ) herwig_common_block_address_("HWBRCH",6);
-  gHwcirc    = (Hwcirc_t*   ) herwig_common_block_address_("HWCIRC",6);
-  gHwclus    = (Hwclus_t*   ) herwig_common_block_address_("HWCLUS",6);
-  gHwdist    = (Hwdist_t*   ) herwig_common_block_address_("HWDIST",6); 
-  gHwdktl    = (Hwdktl_t*   ) herwig_common_block_address_("HWDKTL",6); 
-  gHwdspb    = (Hwdspb_t*   ) herwig_common_block_address_("HWDSPB",6);
-  gHwdspn    = (Hwdspn_t*   ) herwig_common_block_address_("HWDSPN",6);
-  gHwdsp2    = (Hwdsp2_t*   ) herwig_common_block_address_("HWDSP2",6);
-  gHwdsp3    = (Hwdsp3_t*   ) herwig_common_block_address_("HWDSP3",6);
-  gHwdsp4    = (Hwdsp4_t*   ) herwig_common_block_address_("HWDSP4",6);
-  gHwevnt    = (Hwevnt_t*   ) herwig_common_block_address_("HWEVNT",6); 
-  gHwgupr    = (Hwgupr_t*   ) herwig_common_block_address_("HWGUPR",6);
-  gHwgrav    = (Hwgrav_t*   ) herwig_common_block_address_("HWGRAV",6);
-  gHwhard    = (Hwhard_t*   ) herwig_common_block_address_("HWHARD",6); 
-  gHwminb    = (Hwminb_t*   ) herwig_common_block_address_("HWMINB",6);
-  gHwparc    = (Hwparc_t*   ) herwig_common_block_address_("HWPARC",6);
-  gHwparp    = (Hwparp_t*   ) herwig_common_block_address_("HWPARP",6);
-  gHwpart    = (Hwpart_t*   ) herwig_common_block_address_("HWPART",6);
-  gHwpmrs    = (Hwpmrs_t*   ) herwig_common_block_address_("HWPMRS",6);
-  gHwpram    = (Hwpram_t*   ) herwig_common_block_address_("HWPRAM",6);
-  gHwprch    = (Hwprch_t*   ) herwig_common_block_address_("HWPRCH",6);
-  gHwproc    = (Hwproc_t*   ) herwig_common_block_address_("HWPROC",6);
-  gHwprop    = (Hwprop_t*   ) herwig_common_block_address_("HWPROP",6); 
-  gHwqdks    = (Hwqdks_t*   ) herwig_common_block_address_("HWQDKS",6); 
-  gHwrpar    = (Hwrpar_t*   ) herwig_common_block_address_("HWRPAR",6);
-  gHwspin    = (Hwspin_t*   ) herwig_common_block_address_("HWSPIN",6);
-  gHwstau    = (Hwstau_t*   ) herwig_common_block_address_("HWSTAU",6);
-  gHwsusy    = (Hwsusy_t*   ) herwig_common_block_address_("HWSUSY",6);
-  gHwuclu    = (Hwuclu_t*   ) herwig_common_block_address_("HWUCLU",6); 
-  gHwunam    = (Hwunam_t*   ) herwig_common_block_address_("HWUNAM",6);  
-  gHwupdt    = (Hwupdt_t*   ) herwig_common_block_address_("HWUPDT",6); 
-  gHwusud    = (Hwusud_t*   ) herwig_common_block_address_("HWUSUD",6);
-  gHwuwts    = (Hwuwts_t*   ) herwig_common_block_address_("HWUWTS",6); 
-  gHw6202    = (Hw6202_t*   ) herwig_common_block_address_("HW6202",6);
-  gHw6203    = (Hw6203_t*   ) herwig_common_block_address_("HW6203",6);
-  gHw6300    = (Hw6300_t*   ) herwig_common_block_address_("HW6300",6);
-  gHw6500    = (Hw6500_t*   ) herwig_common_block_address_("HW6500",6);
-  gHw6504    = (Hw6504_t*   ) herwig_common_block_address_("HW6504",6);
-  gHw6506    = (Hw6506_t*   ) herwig_common_block_address_("HW6506",6);
-  gHw6510    = (Hw6510_t*   ) herwig_common_block_address_("HW6510",6);
+  gHwbeam    = (Hwbeam_t*) herwig_common_block_address_((char *)"HWBEAM",6);  
+  gHwbmch    = (Hwbmch_t*) herwig_common_block_address_((char *)"HWBMCH",6); 
+  gHwbosc    = (Hwbosc_t*) herwig_common_block_address_((char *)"HWBOSC",6);
+  gHwbrch    = (Hwbrch_t*) herwig_common_block_address_((char *)"HWBRCH",6);
+  gHwcirc    = (Hwcirc_t*) herwig_common_block_address_((char *)"HWCIRC",6);
+  gHwclus    = (Hwclus_t*) herwig_common_block_address_((char *)"HWCLUS",6);
+  gHwdist    = (Hwdist_t*) herwig_common_block_address_((char *)"HWDIST",6); 
+  gHwdktl    = (Hwdktl_t*) herwig_common_block_address_((char *)"HWDKTL",6); 
+  gHwdspb    = (Hwdspb_t*) herwig_common_block_address_((char *)"HWDSPB",6);
+  gHwdspn    = (Hwdspn_t*) herwig_common_block_address_((char *)"HWDSPN",6);
+  gHwdsp2    = (Hwdsp2_t*) herwig_common_block_address_((char *)"HWDSP2",6);
+  gHwdsp3    = (Hwdsp3_t*) herwig_common_block_address_((char *)"HWDSP3",6);
+  gHwdsp4    = (Hwdsp4_t*) herwig_common_block_address_((char *)"HWDSP4",6);
+  gHwevnt    = (Hwevnt_t*) herwig_common_block_address_((char *)"HWEVNT",6); 
+  gHwgupr    = (Hwgupr_t*) herwig_common_block_address_((char *)"HWGUPR",6);
+  gHwgrav    = (Hwgrav_t*) herwig_common_block_address_((char *)"HWGRAV",6);
+  gHwhard    = (Hwhard_t*) herwig_common_block_address_((char *)"HWHARD",6); 
+  gHwminb    = (Hwminb_t*) herwig_common_block_address_((char *)"HWMINB",6);
+  gHwparc    = (Hwparc_t*) herwig_common_block_address_((char *)"HWPARC",6);
+  gHwparp    = (Hwparp_t*) herwig_common_block_address_((char *)"HWPARP",6);
+  gHwpart    = (Hwpart_t*) herwig_common_block_address_((char *)"HWPART",6);
+  gHwpmrs    = (Hwpmrs_t*) herwig_common_block_address_((char *)"HWPMRS",6);
+  gHwpram    = (Hwpram_t*) herwig_common_block_address_((char *)"HWPRAM",6);
+  gHwprch    = (Hwprch_t*) herwig_common_block_address_((char *)"HWPRCH",6);
+  gHwproc    = (Hwproc_t*) herwig_common_block_address_((char *)"HWPROC",6);
+  gHwprop    = (Hwprop_t*) herwig_common_block_address_((char *)"HWPROP",6); 
+  gHwqdks    = (Hwqdks_t*) herwig_common_block_address_((char *)"HWQDKS",6); 
+  gHwrpar    = (Hwrpar_t*) herwig_common_block_address_((char *)"HWRPAR",6);
+  gHwspin    = (Hwspin_t*) herwig_common_block_address_((char *)"HWSPIN",6);
+  gHwstau    = (Hwstau_t*) herwig_common_block_address_((char *)"HWSTAU",6);
+  gHwsusy    = (Hwsusy_t*) herwig_common_block_address_((char *)"HWSUSY",6);
+  gHwuclu    = (Hwuclu_t*) herwig_common_block_address_((char *)"HWUCLU",6); 
+  gHwunam    = (Hwunam_t*) herwig_common_block_address_((char *)"HWUNAM",6);  
+  gHwupdt    = (Hwupdt_t*) herwig_common_block_address_((char *)"HWUPDT",6); 
+  gHwusud    = (Hwusud_t*) herwig_common_block_address_((char *)"HWUSUD",6);
+  gHwuwts    = (Hwuwts_t*) herwig_common_block_address_((char *)"HWUWTS",6); 
+  gHw6202    = (Hw6202_t*) herwig_common_block_address_((char *)"HW6202",6);
+  gHw6203    = (Hw6203_t*) herwig_common_block_address_((char *)"HW6203",6);
+  gHw6300    = (Hw6300_t*) herwig_common_block_address_((char *)"HW6300",6);
+  gHw6500    = (Hw6500_t*) herwig_common_block_address_((char *)"HW6500",6);
+  gHw6504    = (Hw6504_t*) herwig_common_block_address_((char *)"HW6504",6);
+  gHw6506    = (Hw6506_t*) herwig_common_block_address_((char *)"HW6506",6);
+  gHw6510    = (Hw6510_t*) herwig_common_block_address_((char *)"HW6510",6);
 
   // MC@NLO
-  gCetacut   = (Cetacut_t*  ) mcatnlo_common_block_address_("CETACUT",7); 
-  gCiwgtnorm = (Ciwgtnorm_t*) mcatnlo_common_block_address_("CIWGTNORM",9); 
-  gFixvar    = (Fixvar_t*   ) mcatnlo_common_block_address_("FIXVAR",6); 
-  gMcnlopar  = (Mcnlopar_t* ) mcatnlo_common_block_address_("MCNLOPAR",8); 
-  gParmass   = (Parmass_t*  ) mcatnlo_common_block_address_("PARMASS",7); 
-  gVvjin     = (Vvjin_t*    ) mcatnlo_common_block_address_("VVJIN",5); 
+  gCetacut   = 
+    (Cetacut_t*  ) mcatnlo_common_block_address_((char *)"CETACUT",7); 
+  gCiwgtnorm = 
+    (Ciwgtnorm_t*) mcatnlo_common_block_address_((char *)"CIWGTNORM",9); 
+  gFixvar    = 
+    (Fixvar_t*   ) mcatnlo_common_block_address_((char *)"FIXVAR",6); 
+  gMcnlopar  = 
+    (Mcnlopar_t* ) mcatnlo_common_block_address_((char *)"MCNLOPAR",8); 
+  gParmass   = 
+    (Parmass_t*  ) mcatnlo_common_block_address_((char *)"PARMASS",7); 
+  gVvjin     = 
+    (Vvjin_t*    ) mcatnlo_common_block_address_((char *)"VVJIN",5); 
 
   // Jimmy
-  gJmparm    = (Jmparm_t*   ) jimmy_common_block_address_("JMPARM",6);
+  gJmparm    = 
+    (Jmparm_t*   ) jimmy_common_block_address_((char *)"JMPARM",6);
 
 }
 

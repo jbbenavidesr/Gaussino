@@ -10,14 +10,15 @@
 // Gaudi
 #include "GaudiKernel/IParticlePropertySvc.h" 
 #include "GaudiKernel/ParticleProperty.h"
+// Kernal
+#include "MCInterfaces/IGenCutTool.h"
+#include "MCInterfaces/IDecayTool.h"
 
 // from Generators
 #include "Generators/IProductionTool.h"
-#include "Generators/IDecayTool.h"
-#include "Generators/IGenCutTool.h"
 #include "Generators/LhaPdf.h"
 #include "Generators/StringParse.h"
-#include "Generators/HepMCUtils.h"
+#include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -32,6 +33,7 @@ ExternalGenerator::ExternalGenerator( const std::string& type,
                                       const std::string& name,
                                       const IInterface* parent )
   : GaudiTool ( type, name , parent ) , 
+    m_productionTool( 0 ) ,
     m_decayTool( 0 ) , 
     m_cutTool  ( 0 ) , 
     m_ppSvc    ( 0 ) { 
