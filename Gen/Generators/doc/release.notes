@@ -1,9 +1,50 @@
-! $Id: release.notes,v 1.102 2007-07-03 16:31:36 gcorti Exp $
+! $Id: release.notes,v 1.111 2007-10-11 11:55:20 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v7r5 2007-10-11 ===========================
+! 2007-10-11 - Gloria Corti
+ - Really add src/component/UniforSmearVertex.{h,cpp}
+
+! 2007-10-10 - Patrick Robbe
+ - Add static class to hold external Gaudi random generator and message 
+   stream to interface with Pythia and EvtGen
+   . Generators/StreamForGenerator.h, src/Lib/StreamForGenerator.cpp
+   . Generators/RandomForGenerator.h, src/Lib/RandomForGenerator.cpp
+   . src/Lib/EvtReport.cpp
+   . src/component/EvtGenDecay.cpp
+   . src/component/Generation.cpp
+
+!====================== Generators v7r4 2007-09-27 ===========================
+! 2007-09-27 - Gloria Corti for Massimiliano Ferro-Luzzi
+ - Add new tool for uniform distribution in z and xy (within max radius)
+   of primary vertex
+   . src/component/UniformSmearVertex.{h,cpp} - NEW
+   . src/component/Generators_load.cpp - add factory also for other vertex
+                                         smearing tools that were missing
+                                         (Necessary for DC06 compatibility)
+
+! 2007-09-11 - Patrick Robbe
+ - src/Lib/GenCounters.cpp: fix problem with D counters
+
+! 2007-09-09 - Patrick Robbe
+ - src/component/SignalForcedFragmentation: fix problem with particles
+   already decayed (bug introduced when fixing CP violation with other
+   generation methods).
+ - src/Lib/Signal.cpp: change name of iterators in nested loops for Windows
+   compilation.
+ - src/Lib/LHAPDFCommonBlocks.cpp, LHAPDFUtils.F: rename routine whose names
+   are used in the new LHAPDF version
+ - Various fixes for Windows compilation:
+   . StandAloneDecayTool.h
+   . EvtGenDecay.{h,cpp}
+
+!====================== Generators v7r3 2007-08-22 ===========================
+! 2007-07-17 - Patrick Robbe
+ - src/Lib/Signal.cpp: fix generation of clean events
 
 !====================== Generators v7r2 2007-07-03 ===========================
 ! 2007-07-03 - Gloria Corti

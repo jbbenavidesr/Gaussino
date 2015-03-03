@@ -1,6 +1,26 @@
-! $Id: release.notes,v 1.11 2007-02-08 18:29:22 gcorti Exp $
+!-----------------------------------------------------------------------------
 ! Package     : Gen/ParticleGuns
 ! Responsible : Gloria CORTI, Patrick ROBBE
+! Purpose     : Holds code for generaion of particle guns
+!----------------------------------------------------------------------------
+
+!======================= ParticleGuns v3r3 2007-08-24 =======================
+! 2007-08-24 - Gloria CORTI
+ - Introduce in "MaterialEvalGun" uniform production in eta-phi and regular
+   grid in both eta-phi and on a plane at given distance (default at 10*m).
+   New properties have been introduce to chose eta-phi or x-y plane, randomly
+   uniform or regular grid, and min/max in eta-phi, plus steps in x-y and
+   eta-phi. 
+ - Introduce example options for both ParticleGun (moved from Gauss) and
+   MaterialEvalGrid. Look there for specific list of available properties
+   and default values.
+ - Code changes
+   . MaterialEvalGun.{h,cpp}      - modified
+   . options/MaterialEvalGun.opts - NEW
+   . options/ParticleGun.opts     - NEW  
+ - Change default of ParticleGun to uniform distributions in abs(P), theta,
+   phi instead of fiex px,py,pz values.
+   . ParticleGun.cpp              - modified
 
 !====================== ParticleGuns v3r2 2007-02-08 =====================
 ! 2007-01-08 - Florence Ranjard

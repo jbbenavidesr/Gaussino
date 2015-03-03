@@ -1,4 +1,4 @@
-// $Id: ParticleGun.cpp,v 1.4 2007-01-12 15:22:04 ranjard Exp $
+// $Id: ParticleGun.cpp,v 1.5 2007-08-24 17:27:16 gcorti Exp $
 
 // This class
 #include "ParticleGun.h"
@@ -47,7 +47,7 @@ ParticleGun::ParticleGun ( const std::string& name, ISvcLocator* pSvcLocator )
     declareProperty("py", m_py = 1.0 * GeV ) ;
     declareProperty("pz", m_pz = 1.0 * GeV ) ;
 
-    declareProperty("GunMode", m_gmode = 0 ) ;
+    declareProperty("GunMode", m_gmode = 1 ) ;
 
     declareProperty("MinNumParticles", m_minParts = 1 ) ;
     declareProperty("MaxNumParticles", m_maxParts = 1 ) ;  

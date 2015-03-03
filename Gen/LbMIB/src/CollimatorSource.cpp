@@ -1,47 +1,44 @@
-// $Id: CollimatorSourceAlg.cpp,v 1.2.2.2 2007-08-17 13:16:27 gcorti Exp $
+// $Id: CollimatorSource.cpp,v 1.3 2007-10-02 09:26:04 gcorti Exp $
 // Include files
  
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
+#include "GaudiKernel/ToolFactory.h" 
 #include "GaudiKernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
+#include "GaudiKernel/IRndmGenSvc.h"
  
 // STL
 #include <fstream>
-//#include <cmath>
 
 // LHCb
 #include "Event/GenHeader.h"
  
 // local
-#include "CollimatorSourceAlg.h"
+#include "CollimatorSource.h"
 
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : CollimatorSourceAlg
+// Implementation file for class : CollimatorSource
 //
 // 2007-01-31 : Magnus Lieng
+// 2007-08-10 : Gloria Corti, modify in a tool
 //-----------------------------------------------------------------------------
  
-// Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( CollimatorSourceAlg );
+// Declaration of the Tool Factory
+DECLARE_TOOL_FACTORY( CollimatorSource );
  
  
 //===========================================================================
 // Constructor
 //===========================================================================
-CollimatorSourceAlg::CollimatorSourceAlg(const std::string& name, 
-                                       ISvcLocator* pSvcLocator) 
-  : GaudiHistoAlg(name, pSvcLocator) 
+CollimatorSource::CollimatorSource(const std::string& type,
+                                   const std::string& name,
+                                   const IInterface* parent )
+  : GaudiHistoTool ( type, name , parent ) 
 {
-  // TS locations
-  declareProperty("HepMCEvents", 
-                  m_eventLoc = LHCb::HepMCEventLocation::Default );
-  declareProperty("GenHeader", 
-                  m_headerLoc = LHCb::GenHeaderLocation::Default );
-  declareProperty("GenCollisions", 
-                  m_collLoc = LHCb::GenCollisionLocation::Default );
 
+  declareInterface<IMIBSource>(this);
+  
   // Particle input file
   declareProperty("ParticleSourceFile", m_pSourceFile = "");
 
@@ -54,11 +51,7 @@ CollimatorSourceAlg::CollimatorSourceAlg(const std::string& name,
   declareProperty("ScalingFactor", m_scalingFactor = 1.0);
   declareProperty("BunchFrequency", m_bunchFreq = 31.6*1000000);
 
-  // Value to save in header
-  declareProperty("Luminosity", 
-                  m_luminosity = 2.e32 /Gaudi::Units::cm2/Gaudi::Units::s);
-
-  // Historgram generation
+  // Histogram generation
   declareProperty("GenerationHist", m_genHist = false);
 
   //  -1 : Use weight to find number of particles in event.
@@ -76,24 +69,22 @@ CollimatorSourceAlg::CollimatorSourceAlg(const std::string& name,
   declareProperty("ZParticleOrigin", m_zOrigin = -1.0*m);
   declareProperty("ZDirection", m_dz = 1);
 
-  // Event type
-  declareProperty("EventType", m_evtType = 0);
 }
 
 //===========================================================================
 // Destructor
 //===========================================================================
-CollimatorSourceAlg::~CollimatorSourceAlg() { } 
+CollimatorSource::~CollimatorSource() { } 
 
 //===========================================================================
 // Initialization
 //===========================================================================
-StatusCode CollimatorSourceAlg::initialize() {
+StatusCode CollimatorSource::initialize() {
 
   debug() << "Initialize" << endmsg;
 
   // Initialize the base class
-  StatusCode sc = GaudiAlgorithm::initialize( ) ;  
+  StatusCode sc = GaudiHistoTool::initialize( ) ;  
   if ( sc.isFailure( ) ) return sc ;
 
   // Get Particle property service
@@ -107,14 +98,6 @@ StatusCode CollimatorSourceAlg::initialize() {
   // Check if particle direction is set correctly
   if ( m_dz != 1 && m_dz != -1) {
     return Error( "Z direction of flight must be +/-1" );
-  }
-
-  // Check if event type has been set
-  if ( m_evtType == 0 ) {
-    warning() << "Event type not set. For stand-alone use 6xx5xxxx."
-              << endmsg;
-  } else {
-    info() << "Event type " << m_evtType << endmsg;
   }
 
   // Book histograms
@@ -139,12 +122,15 @@ StatusCode CollimatorSourceAlg::initialize() {
   }
 
   // Load random number generators
-  sc = m_flatGenerator.initialize( randSvc() , Rndm::Flat( 0. , 1. ) ) ;
+  IRndmGenSvc* rSvc =  svc<IRndmGenSvc> ( "RndmGenSvc", true );
+
+  sc = m_flatGenerator.initialize( rSvc, Rndm::Flat( 0. , 1. ) ) ;
   if ( ! sc.isSuccess() ) {
     return Error( "Cannot initialize flat generator", sc ) ;
   }
-  sc = m_poissonGenerator.initialize( randSvc() ,
-         Rndm::Poisson( m_sumOfWeights * m_scalingFactor / m_bunchFreq ) ) ;
+
+  sc = m_poissonGenerator.initialize( rSvc,
+       Rndm::Poisson( m_sumOfWeights * m_scalingFactor / m_bunchFreq ) ) ;
   if ( ! sc.isSuccess() ) {
     return Error( "Cannot initialize Poisson generator", sc ) ;
   }
@@ -152,152 +138,197 @@ StatusCode CollimatorSourceAlg::initialize() {
   return sc ;
 }
 
+
 //===========================================================================
-// Execute method (Generate one event)
+// Generate one event with given source
 //===========================================================================
-StatusCode CollimatorSourceAlg::execute() {
-
-  debug() << "Execute" << endmsg;
-
-  // Variables needed
-  int numPart;
-  std::string textLine;
-
-  // MC Event
-  LHCb::HepMCEvents* hepMCVector = 
-    getOrCreate<LHCb::HepMCEvents,LHCb::HepMCEvents>( m_eventLoc );
-
-  // Collisions
-  LHCb::GenCollisions* collVector = 
-    getOrCreate<LHCb::GenCollisions,LHCb::GenCollisions>( m_collLoc );
-
-  // Update the GenHeader
-  LHCb::GenHeader* genHead = get< LHCb::GenHeader >( m_headerLoc ) ;
-  if( !genHead->evType() ){
-    genHead->setEvType( m_evtType );
-    genHead->setLuminosity( m_luminosity );
-  }
-
-
+StatusCode CollimatorSource::generateEvent( LHCb::GenHeader* theHeader,
+                                            LHCb::GenCollisions* theCollisions,
+                                            LHCb::HepMCEvents* theEvents,
+                                            int& numPart) {
+  
+  debug() << "generateEvent" << endmsg;
+  counter("NCalls") += 1;
+  
+  StatusCode sc = StatusCode::SUCCESS;
+  
   // Choose amount of particles in event
+  numPart = 0;
   if( m_pPerEvt <= -1 ){
     numPart = (int)floor(m_poissonGenerator());
   }
   else{
     numPart = m_pPerEvt;
   }
+  
+  counter("NParticles") += numPart;
+  if( numPart == 0 ) {
+    counter("NEmptyEvents") += 1;
+  } else {
+    counter("NNoEmptyEvents") +=1;
+  }
 
-  for(int i=0;i<numPart;i++){
-
+  
+  for( int i=0; i<numPart; i++) {
+    
     // Create MC event
     LHCb::HepMCEvent* mcevt = new LHCb::HepMCEvent();
-    mcevt -> setGeneratorName( name() ) ;
-    HepMC::GenEvent* evt = mcevt -> pGenEvt() ;
-
-
+    mcevt->setGeneratorName( name() );
+    HepMC::GenEvent* evt = mcevt->pGenEvt();
+      
     // Randomly choose particle (If not, the particles are taken sequentially
     // from file offset.)
-    ParticleData* rawPart = new ParticleData();
-    if( m_fileOffset <= -1 ){
-      StatusCode sc = getRandPart( rawPart );
-      if( ! sc.isSuccess() ) {
-        return Error("Random particle selection failure", sc);
-      } 
-    }
-    else {
-      StatusCode sc = getPart( rawPart );
-      if( ! sc.isSuccess() ) return Error("Particle selection failure", sc);
-    }
-
-    // Find Vertex and four momentum
-    const HepLorentzVector vtx = getVertex( rawPart->ekin*GeV, rawPart->pid, 
-                                            rawPart->x*cm, rawPart->y*cm, 
-                                            m_zOrigin, rawPart->dx, 
-                                            rawPart->dy );
-    HepLorentzVector fourMom = getMomentum( rawPart->ekin*GeV, 
-                                            rawPart->pid, rawPart->dx, 
-                                            rawPart->dy );
-
-    // Make vertex
-    HepMC::GenVertex* mcvtx;
-    if( m_fileOffset >= 0 ){
-      // Keep weights when reading sequentially from file
-      const HepMC::WeightContainer weights( 1, rawPart->weight );
-      mcvtx = new HepMC::GenVertex( vtx, 0, weights );
-    }
-    else{
-      mcvtx = new HepMC::GenVertex( vtx );
-    }
-    evt -> add_vertex( mcvtx );
-
-    // Make the spesific particle
-    mcvtx -> add_particle_out( new HepMC::GenParticle( fourMom,
-                   rawPart->pid, LHCb::HepMCEvent::StableInProdGen ) );
-
-    // Generate plots (x and y are in cm)
-    if( m_genHist ){
-      double r = sqrt( rawPart->x*rawPart->x + rawPart->y*rawPart->y );
-      m_xyDistGen->fill( rawPart->x, rawPart->y );
-      m_pxVSrGen->fill( r, fourMom.px()/GeV );
-      m_pyVSrGen->fill( r, fourMom.py()/GeV );
-      m_pzVSrGen->fill( r, fourMom.pz()/GeV );
-      m_absPGen->fill( ( rawPart->dx==0 && rawPart->dy==0 ? fourMom.pz() : 
-                         ( rawPart->dx!=0 ? fourMom.px()/rawPart->dx : 
-                           fourMom.py()/rawPart->dy ) )/GeV );
-      m_thetaGen->fill( ( fourMom.pz()==0 ? pi/2 : 
-                          atan(sqrt(fourMom.px()*fourMom.px()+fourMom.py()*fourMom.py())/
-                               fourMom.pz()) )/degree );
-
-      if( m_fileOffset >= 0 ){
-        m_xyDistGenWeight->fill( rawPart->x, rawPart->y, rawPart->weight );
-        m_pxVSrGenWeight->fill( r, fourMom.px()/GeV, rawPart->weight );
-        m_pyVSrGenWeight->fill( r, fourMom.py()/GeV, rawPart->weight );
-        m_pzVSrGenWeight->fill( r, fourMom.pz()/GeV, rawPart->weight );
-        m_absPGenWeight->fill( ( rawPart->dx==0 && rawPart->dy==0 ? fourMom.pz() :
-                                 ( rawPart->dx!=0 ? fourMom.px()/rawPart->dx : 
-                                   fourMom.py()/rawPart->dy ) ) /GeV, rawPart->weight );
-        m_thetaGenWeight->fill( ( fourMom.pz()==0 ? pi/2 : 
-                                  atan(sqrt(fourMom.px()*fourMom.px()+fourMom.py()*fourMom.py())/
-                                       fourMom.pz()) )/degree, rawPart->weight );
-      }
+    sc = generateParticle( evt );
+    if ( ! sc.isSuccess() ) {
+      return Error("Particle generation failure", sc);
     }
     
     // Number of parts in event
-    evt -> set_signal_process_id( numPart );
+    evt->set_signal_process_id( numPart );
 
     // Add event to event store
-    hepMCVector -> insert( mcevt );
-
+    theEvents->insert( mcevt );
+      
     // Create the GenCollision, fill it and put it in the TES
     LHCb::GenCollision* coll = new LHCb::GenCollision();
     coll->setIsSignal( false ) ;
     coll->setProcessType( 999999 ) ;
     coll->setEvent( mcevt ) ;
-    collVector->insert( coll ) ;
-
+    theCollisions->insert( coll ) ;
+    
     // Add this collision to GenHeader
-    genHead->addToCollisions( coll );
-
-    delete rawPart;
+    theHeader->addToCollisions( coll );
+    
   }
 
+  return StatusCode::SUCCESS;
+  
+}
+
+
+//===========================================================================
+// Generate one particle from source
+//===========================================================================
+StatusCode CollimatorSource::generateParticle( HepMC::GenEvent* evt ) {
+
+  verbose() << "generateParticle" << endmsg;
+
+  // Randomly choose particle (If not, the particles are taken sequentially
+  // from file offset.)
+  ParticleData* rawPart = new ParticleData();
+  if( m_fileOffset <= -1 ){
+    StatusCode sc = getRandPart( rawPart );
+    if( ! sc.isSuccess() ) {
+      return Error("Random particle selection failure", sc);
+    } 
+  }
+  else {
+    StatusCode sc = getPart( rawPart );
+    if( ! sc.isSuccess() ) return Error("Particle selection failure", sc);
+  }
+
+  // Find Vertex and four momentum
+  const HepLorentzVector vtx = getVertex( rawPart->ekin*GeV, rawPart->pid, 
+                                          rawPart->x*cm, rawPart->y*cm, 
+                                          m_zOrigin, rawPart->dx, 
+                                          rawPart->dy );
+  HepLorentzVector fourMom = getMomentum( rawPart->ekin*GeV, 
+                                          rawPart->pid, rawPart->dx, 
+                                          rawPart->dy );
+
+  // Make vertex
+  HepMC::GenVertex* mcvtx;
+  if( m_fileOffset >= 0 ){
+    // Keep weights when reading sequentially from file
+    const HepMC::WeightContainer weights( 1, rawPart->weight );
+    mcvtx = new HepMC::GenVertex( vtx, 0, weights );
+  }
+  else{
+    mcvtx = new HepMC::GenVertex( vtx );
+  }
+  evt -> add_vertex( mcvtx );
+  
+  // Make the spesific particle
+  mcvtx->add_particle_out( new HepMC::GenParticle( fourMom,
+                                                   rawPart->pid, 
+                                                   LHCb::HepMCEvent::StableInProdGen ) );
+
+  // Generate plots (x and y are in cm)
+  if( m_genHist ){
+    double r = sqrt( rawPart->x*rawPart->x + rawPart->y*rawPart->y );
+    m_xyDistGen->fill( rawPart->x, rawPart->y );
+    m_pxVSrGen->fill( r, fourMom.px()/GeV );
+    m_pyVSrGen->fill( r, fourMom.py()/GeV );
+    m_pzVSrGen->fill( r, fourMom.pz()/GeV );
+    m_absPGen->fill( ( rawPart->dx==0 && rawPart->dy==0 ? fourMom.pz() : 
+                       ( rawPart->dx!=0 ? fourMom.px()/rawPart->dx : 
+                         fourMom.py()/rawPart->dy ) )/GeV );
+    m_thetaGen->fill( ( fourMom.pz()==0 ? pi/2 : 
+                        atan(sqrt(fourMom.px()*fourMom.px()+fourMom.py()*fourMom.py())/
+                             fourMom.pz()) )/degree );
+
+    if( m_fileOffset >= 0 ){
+      m_xyDistGenWeight->fill( rawPart->x, rawPart->y, rawPart->weight );
+      m_pxVSrGenWeight->fill( r, fourMom.px()/GeV, rawPart->weight );
+      m_pyVSrGenWeight->fill( r, fourMom.py()/GeV, rawPart->weight );
+      m_pzVSrGenWeight->fill( r, fourMom.pz()/GeV, rawPart->weight );
+      m_absPGenWeight->fill( ( rawPart->dx==0 && rawPart->dy==0 ? fourMom.pz() :
+                               ( rawPart->dx!=0 ? fourMom.px()/rawPart->dx : 
+                                 fourMom.py()/rawPart->dy ) ) /GeV, rawPart->weight );
+      m_thetaGenWeight->fill( ( fourMom.pz()==0 ? pi/2 : 
+                                atan(sqrt(fourMom.px()*fourMom.px()+fourMom.py()*fourMom.py())/
+                                     fourMom.pz()) )/degree, rawPart->weight );
+    }
+  }
+  
+  delete rawPart;
+
   return StatusCode::SUCCESS ;  
+
 }
 
 
 //===========================================================================
 // Finalize
 //===========================================================================
-StatusCode CollimatorSourceAlg::finalize() {
+StatusCode CollimatorSource::finalize() {
+
   debug() << "Finalize" << endmsg;
-  release(m_ppSvc);
   
   // Keep or delete temporary binary file.
   if ( (!m_saveBinFile) && (!m_binaryFile) ){
     remove( m_tempFileName.c_str() );
   }
 
-  return StatusCode::SUCCESS;
+  // Print counters of how many times particle called and how many
+  // empty + summary of conditions
+  // Print conditions of generation
+  info() << "********************************************************" 
+         << endmsg;
+  info() << " Used as input file " << m_pSourceFile << endmsg;
+  info() << " With particle at z = " << m_zOrigin/Gaudi::Units::m << " m" 
+         << " and with direction dz = " << m_dz << endmsg;
+  if( m_pPerEvt == -1 ) {
+    info() << "  using weight to find number of particles in event" << endmsg;
+    info() << "  Sum(weights) in file is " << m_sumOfWeights 
+           << " Hz (i.e. per 1 sec of LHC running)" << endmsg;
+    info() << "  Events are generate per bunch with frequency " << m_bunchFreq
+           << " and scaling factor " << m_scalingFactor << endmsg;
+    info() << "  === Sum(weights) for generated event is "
+           <<  m_sumOfWeights * m_scalingFactor / m_bunchFreq << endmsg;
+  } else {
+    info() << "forcing " << m_pPerEvt << " to be generated in each event" 
+           << endmsg;
+  }
+  if( m_fileOffset == -1 ) {
+    info() << "and choosing envelope method to chose particles" << endmsg;
+  } else {
+    info() << "picking particles from file starting from particle number "
+           << m_fileOffset << endmsg;
+  }
+  
+  return GaudiHistoTool::finalize();  ///< Finalize base class
+
 } 
 
 
@@ -305,7 +336,7 @@ StatusCode CollimatorSourceAlg::finalize() {
 // Create Binary File
 //===========================================================================
 
-StatusCode CollimatorSourceAlg::createBinFile(){
+StatusCode CollimatorSource::createBinFile(){
 
   debug() << "createBinFile" << endmsg;
 
@@ -371,7 +402,7 @@ StatusCode CollimatorSourceAlg::createBinFile(){
 //===========================================================================
 // Create Envelopes
 //===========================================================================
-StatusCode CollimatorSourceAlg::createEnvelopes() {
+StatusCode CollimatorSource::createEnvelopes() {
 
   verbose() << "createEnvelopes " << m_pSourceFile << endmsg;
 
@@ -407,7 +438,7 @@ StatusCode CollimatorSourceAlg::createEnvelopes() {
          << " particles. The sum of particle weights is " 
          << m_sumOfWeights << endmsg;
   info() << "Envelopes will consume " 
-         << floor(sizeof(double)*m_envelopeHolders.size()/1024) 
+         << floor(double(sizeof(double)*m_envelopeHolders.size()/1024)) 
          << "kB memory" << endmsg;
 
   inFile.clear();
@@ -422,18 +453,22 @@ StatusCode CollimatorSourceAlg::createEnvelopes() {
 //===========================================================================
 // Book Histograms
 //===========================================================================
-StatusCode CollimatorSourceAlg::bookHistos() {
+StatusCode CollimatorSource::bookHistos() {
 
   debug() << "bookHistos" << endmsg;
 
-  m_xyDistInput  = book2D( 100, "Input: XY distribution of particle origin (cm)", 
-                           -500., 500., 200, -500., 500., 200 );
-  m_eKinInput    = book1D( 104, "Input: Ekin of particles (GeV)", 
-                           0., 100., 100 );
-  m_logEKinInput = book1D( 114, "Input: log10(Ekin) of particles (GeV)", 
-                           -2., 4., 100 );
-  m_thetaInput   = book1D( 105, "Input: Angular distribution particle momentum (degree)",
-                           0., 360., 180 );
+  if( ! m_binaryFile ) {
+    m_xyDistInput  = book2D( 100, 
+                             "Input: XY distribution of particle origin (cm)", 
+                             -500., 500., 200, -500., 500., 200 );
+    m_eKinInput    = book1D( 104, "Input: Ekin of particles (GeV)", 
+                             0., 100., 100 );
+    m_logEKinInput = book1D( 114, "Input: log10(Ekin) of particles (GeV)", 
+                             -2., 4., 100 );
+    m_thetaInput   = book1D( 105, 
+                     "Input: Angular distribution particle momentum (degree)",
+                             0., 360., 180 );
+  }
 
   m_xyDistGen = book2D( 200, "Generated: XY distribution of particle origin (cm)", 
                         -500., 500., 200, -500., 500., 200 );
@@ -469,8 +504,8 @@ StatusCode CollimatorSourceAlg::bookHistos() {
 // Get Momentum four vector
 //===========================================================================
 
-HepLorentzVector CollimatorSourceAlg::getMomentum(double ekin, int pid, 
-                                                  double dx, double dy) {
+HepLorentzVector CollimatorSource::getMomentum(double ekin, int pid, 
+                                               double dx, double dy) {
   
   verbose() << " getMomentum" << endmsg;
 
@@ -504,9 +539,9 @@ HepLorentzVector CollimatorSourceAlg::getMomentum(double ekin, int pid,
 // Get vertex four vector
 //===========================================================================
 
-HepLorentzVector CollimatorSourceAlg::getVertex(double ekin, int pid, 
-                                                double x, double y, double z, 
-                                                double dx, double dy) {
+HepLorentzVector CollimatorSource::getVertex(double ekin, int pid, 
+                                             double x, double y, double z, 
+                                             double dx, double dy) {
 
   verbose() << " getVertex" << endmsg;
 
@@ -531,7 +566,7 @@ HepLorentzVector CollimatorSourceAlg::getVertex(double ekin, int pid,
 // Get random particle
 //===========================================================================
 
-StatusCode CollimatorSourceAlg::getRandPart( ParticleData* target ){
+StatusCode CollimatorSource::getRandPart( ParticleData* target ){
 
   verbose() << " getRandPart " << m_pSourceFile << endmsg;
 
@@ -652,7 +687,7 @@ StatusCode CollimatorSourceAlg::getRandPart( ParticleData* target ){
 // Get sequencial particle
 //===========================================================================
 
-StatusCode CollimatorSourceAlg::getPart( ParticleData* target ){
+StatusCode CollimatorSource::getPart( ParticleData* target ){
 
   verbose() << " getPart " << m_pSourceFile << endmsg;
 
@@ -683,6 +718,8 @@ StatusCode CollimatorSourceAlg::getPart( ParticleData* target ){
 
   return StatusCode::SUCCESS;
 }
+
+ 
 
 
 

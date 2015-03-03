@@ -4,6 +4,17 @@
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
 
+!========================= GaussRICH v7r2 2007-10-02 =========================
+! 2007-10-02 - Gloria Corti
+ - Adapt to changes in method names in IGeometryInfo.h as in DetDesc v18r0
+   (LHCb v22r9)
+   . src/RichAnalysis/RichG4ReconTransformHpd.cpp
+   . src/RichAnalysis/RichG4TransformPhDet.cpp 
+
+!========================= GaussRICH v7r1p1 2007-09-18 =======================
+! 2007-09-04 - Sajan Easo
+ - Modified a line in GetMCRichHitsAlg.cpp to compile on Windows.
+
 !========================= GaussRICH v7r1 2007-07-03 =========================
 ! 2007-04-30 - Sajan Easo
  - In RichPhotoelectric effect,now creating normal G4electron instead

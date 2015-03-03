@@ -1,4 +1,4 @@
-// $Id: EvtGenDecay.cpp,v 1.12 2007-01-12 15:17:36 ranjard Exp $
+// $Id: EvtGenDecay.cpp,v 1.14 2007-10-10 20:07:24 robbep Exp $
 // Header file
 #include "EvtGenDecay.h"
 
@@ -37,6 +37,8 @@
 #include "EvtGenBase/EvtDecayTable.hh"
 #include "EvtGenBase/EvtDecayBase.hh"
 
+#include "Generators/StreamForGenerator.h"
+
 // Calls to FORTRAN routines
 #ifdef WIN32
 extern "C" {
@@ -60,8 +62,6 @@ extern "C" {
 // Declaration of the Tool Factory
 
 DECLARE_TOOL_FACTORY( EvtGenDecay );
-
-extern MsgStream * evtgenStream ;
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -107,8 +107,8 @@ StatusCode EvtGenDecay::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
 
-  MsgStream msg ( msgSvc() , name() ) ;
-  evtgenStream = new MsgStream( msg ) ;
+  MsgStream * msg = new MsgStream( msgSvc() , name() ) ;
+  StreamForGenerator::getStream() = msg ;
 
   // Find Generic DECAY.DEC file
   // Default location (if not specified in job options is
@@ -212,7 +212,8 @@ StatusCode EvtGenDecay::finalize() {
   delete m_photosTempFile ;
   seal::Filename::remove( m_photosTempFilename , false , true ) ;
 	
-  delete evtgenStream ;
+  delete StreamForGenerator::getStream() ;
+  StreamForGenerator::getStream() = 0 ;
 
   return GaudiTool::finalize( ) ;
 }
@@ -311,7 +312,7 @@ StatusCode EvtGenDecay::generateSignalDecay( HepMC::GenParticle * theMother ,
 // or is of the type targetId
 //=============================================================================
 StatusCode EvtGenDecay::generateDecayWithLimit( HepMC::GenParticle * theMother ,
-                                                int targetId ) const {
+                                                const int targetId ) const {
   checkParticle( theMother ) ;
 
   EvtParticle * part( 0 ) ;
@@ -422,7 +423,7 @@ StatusCode EvtGenDecay::makeHepMC( EvtParticle * theEvtGenPart ,
 //=============================================================================
 // Check if given Pdg Id is defined in the decay table
 //=============================================================================
-bool EvtGenDecay::isKnownToDecayTool( int pdgId ) const {
+bool EvtGenDecay::isKnownToDecayTool( const int pdgId ) const {
   EvtId id = EvtPDL::evtIdFromStdHep( pdgId ) ;
   if ( id == EvtId(-1,-1) ) return false ;
   if ( 0  == EvtDecayTable::getNMode( id.getAlias() ) ) return false ;

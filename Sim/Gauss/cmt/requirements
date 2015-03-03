@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti, Florence Ranjard
 #============================================================================
 package Gauss
-version v30r3
+version v30r4
 
 #============================================================================
 #-- Structure
@@ -14,11 +14,10 @@ branches src doc options cmt job
 #============================================================================
 
 #-- Databases
-use XmlDDDB             v40r0   Det   -no_auto_imports
 use DDDB                v1r*    Det   -no_auto_imports
-use ParamFiles          v6r1          -no_auto_imports
+use ParamFiles          v7r0          -no_auto_imports
 use FieldMap            v4r7          -no_auto_imports
-use DecFiles            v13r10  Gen   -no_auto_imports
+use DecFiles            v13r14  Gen   -no_auto_imports
 use Geant4Files		v82r0	      -no_auto_imports
 
 #===========================================================================
@@ -32,18 +31,17 @@ use Python             v*    LCG_Interfaces -no_auto_imports
 use HepMC              v*    LCG_Interfaces -no_auto_imports
  
 # From GAUDI project
-use GaudiSvc           v*              -no_auto_imports
-#use GaudiAud           v8r1                 -no_auto_imports
+use GaudiSvc           v*                   -no_auto_imports
+use GaudiAud           v*                   -no_auto_imports
 use GaudiPoolDb        v*                   -no_auto_imports
 use GaudiPython        v*                   -no_auto_imports 
 use RootHistCnv        v*                   -no_auto_imports
  
 # From LHCB project
-#use GaudiObjDesc     v9r9           -no_auto_imports
-use KernelSys          v*     Kernel         -no_auto_imports
-use DetSys             v*     Det            -no_auto_imports
-use LHCbAlgs           v*     Kernel         -no_auto_imports
-use SimComponents      v*     Sim            -no_auto_imports
+use KernelSys          v*     Kernel        -no_auto_imports
+use DetSys             v*     Det           -no_auto_imports
+use LHCbAlgs           v*     Kernel        -no_auto_imports
+use SimComponents      v*     Sim           -no_auto_imports
  
 #===========================================================================
 
@@ -65,21 +63,25 @@ use $(LbBcVegPy_use)
 macro LbHidValley_use "" Linux&HidValley "LbHidValley v* Gen"
 use $(LbHidValley_use)
 
+#-- Optional AlpGen
+macro LbAlpGen_use "" Linux&AlpGen "LbAlpGen v* Gen"
+use $(LbAlpGen_use)
+
 #-- Generator
-use ParticleGuns         v*    Gen
-use LbMIB                v*    Gen
-use LbPythia             v*    Gen
-use Generators           v*    Gen
+use ParticleGuns         v*    Gen  -no_auto_imports 
+use LbMIB                v*    Gen  -no_auto_imports
+use LbPythia             v*    Gen  -no_auto_imports
+use Generators           v*    Gen  -no_auto_imports
 
 #-- Simulation
-use GiGaCnv              v*    Sim
-use GaussTools           v*    Sim
-use GaussAlgs		 v*    Sim
-use GaussKine            v*    Sim
-use GaussPhysics         v*    Sim
-use GaussTracker         v*    Sim
-use GaussRICH            v*    Sim
-use GaussCalo            v*    Sim
+use GiGaCnv              v*    Sim  -no_auto_imports
+use GaussTools           v*    Sim  -no_auto_imports
+use GaussAlgs		 v*    Sim  -no_auto_imports
+use GaussKine            v*    Sim  -no_auto_imports
+use GaussPhysics         v*    Sim  -no_auto_imports
+use GaussTracker         v*    Sim  -no_auto_imports
+use GaussRICH            v*    Sim  -no_auto_imports
+use GaussCalo            v*    Sim  -no_auto_imports
 
 #-- Optional visualisation and UI
 macro GiGaVisUI_use "" Linux&Vis "GiGaVisUI v* Sim"
@@ -90,10 +92,10 @@ macro GDMLG4Writer_use "" Linux&GDML "GDMLG4Writer v* Sim"
 use $(GDMLG4Writer_use)
 
 #-- Monitoring
-use GaussMonitor        v*    Sim
-use CaloMoniSim         v*    Calo
-use VeloGauss           v*    Velo
-use MuonMoniSim         v*    Muon
+use GaussMonitor        v*    Sim   -no_auto_imports
+use CaloMoniSim         v*    Calo  -no_auto_imports
+use VeloGauss           v*    Velo  -no_auto_imports
+use MuonMoniSim         v*    Muon  -no_auto_imports
 
 #===========================================================================
 #== Necessary enviroment variables
@@ -112,11 +114,15 @@ application GaussHijing    $(GAUDICONFROOT)/src/GaudiMain.cpp
 application GaussHerwig    $(GAUDICONFROOT)/src/GaudiMain.cpp
 application GaussBcVegPy   $(GAUDICONFROOT)/src/GaudiMain.cpp
 application GaussHidValley $(GAUDICONFROOT)/src/GaudiMain.cpp
+application GaussAlpGen    $(GAUDICONFROOT)/src/GaudiMain.cpp
+application GaussPythia8   $(GAUDICONFROOT)/src/GaudiMain.cpp
 
-macro_remove constituents "GaussHijing" Linux&Hijing "Gauss"
-macro_remove constituents "GaussHerwig" Linux&Herwig "Gauss"
-macro_remove constituents "GaussBcVegPy" Linux&BcVegPy "Gauss"
+macro_remove constituents "GaussHijing"    Linux&Hijing "Gauss"
+macro_remove constituents "GaussHerwig"    Linux&Herwig "Gauss"
+macro_remove constituents "GaussBcVegPy"   Linux&BcVegPy "Gauss"
 macro_remove constituents "GaussHidValley" Linux&HidValley "Gauss"
+macro_remove constituents "GaussAlpGen"    Linux&AlpGen "Gauss"
+macro_remove constituents "GaussPythia8"   Linux&Pythia8 "Gauss"
 
 #===========================================================================
 #-- Set macros
@@ -138,11 +144,7 @@ path_remove    PATH  "" Linux&Vis "/DAWN/"
 path_append    PATH  "" Linux&Vis "${OSC_release_area}/DAWN/bin/Linux"
 
 #===========================================================================
-#-- Set usefull alias : for tests only - use vXXXXXX.opts for geometry
-#                       dependent options
-alias gauss " ${GAUSSROOT}/${BINDIR}/Gauss.exe ${GAUSSOPTS}/Gauss.opts "
-alias gaussvis " ${GAUSSROOT}/${BINDIR}/Gauss.exe ${GAUSSOPTS}/GaussVis.opts "
-alias gausshijing " ${GAUSSROOT}/${BINDIR}/GaussHijing.exe ${GAUSSOPTS}/Gauss.opts "
-alias gaussherwig " ${GAUSSROOT}/${BINDIR}/GaussHerwig.exe ${GAUSSOPTS}/Gauss.opts "
-alias gaussbcvegy " ${GAUSSROOT}/${BINDIR}/GaussBcVeqPy.exe ${GAUSSOPTS}/Gauss.opts "
-alias gausshidvalley " ${GAUSSROOT}/${BINDIR}/GaussHidValley.exe ${GAUSSOPTS}/Gauss.opts "
+#-- Alias for exacutable have been removed: use instead script
+#    SetupProject Gauss <version>
+#   that includes the binary directory in the PATH so that you can type
+#    Gauss.exe (GaussHerwig.exe) 

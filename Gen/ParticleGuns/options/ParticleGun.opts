@@ -1,0 +1,68 @@
+// $Id: ParticleGun.opts,v 1.1 2007-08-24 17:29:04 gcorti Exp $
+ 
+/** @file
+ *
+ *  Example options to generate particle guns with flat random distribution in
+ *  momentum, theta and phi originating from a flat vertx distribution.
+ *
+ *  This example will generate one pi+ or pi- per event originating at
+ *  (0,0,0) in the LHCb reference system, with 1 GeV < abs(P) < 100 GeV,
+ *  0.15 mrad < theta < 0.300 mrad and 0 < phi < 2pi
+ *    
+ *  Include this file instead of the EVENTTYPE.opts after all you other 
+ *  options.
+ *
+ *  @author : G.Corti
+ *  @date   : last modified on 2007-08-24
+ *
+ */
+ 
+//- Steering of algorithms to execute, remove physics generation and resequence
+//- Monitor
+Generator.Members -= { "Generation", "GaudiSequencer/GenMonitor" };
+Generator.Members += { "ParticleGun", "GaudiSequencer/GenMonitor" };
+
+//- Control of the ParticleGun
+//
+//- Event type is set as described in LHCb-2005-034 : G=5! (Def = 0)
+ParticleGun.EventType = 53210205;
+
+//- GunMode flag: (def = 1)
+//-    if = 1 uses parameters below within random values generated
+//-    if = 0 need to set fix values of px, py, pz via specific properties
+// ParticleGun.GunMode = 1;
+
+//- Set min and max number of particles to produce in an event
+//- defaults are = 1, i.e. always one particle
+// ParticleGun.MinNumParticles = 1
+// ParticleGun.MaxNumParticles = 1
+
+//- PDG code of a list of possible particles to be generated, default = {-211})
+ParticleGun.PdgCodes    = {-211, 211};
+
+//- The vertex of each particle gun is randomly generated in a flat
+//- distributionwithin the given limits, when min=max the vertex is in the
+//- given point. Default is 0.0*mm for all.
+// ParticleGun.xVertexMin = 0.0*mm;  
+// ParticleGun.xVertexMax = 0.0*mm;
+// ParticleGun.yVertexMin = 0.0*mm;
+// ParticleGun.yVertexMax = 0.0*mm;
+// ParticleGun.zVertexMin = 0.0*mm;
+// ParticleGun.zVertexMax = 0.0*mm;
+
+//- The momentum of the particle is derived from randomly generated value
+//- of abs(P) (default for both min and max = 100 GeV), theta (default 
+//- min = 0.1*rad and max = 0.4*rad) and phi (default min = 0, max = twopi*rad)
+ParticleGun.MomentumMin =   1.0*GeV;
+ParticleGun.MomentumMax = 100.0*GeV;
+ParticleGun.ThetMin     = 0.015*rad;
+ParticleGun.ThetMax     = 0.300*rad;
+// ParticleGun.PhiMin      =   0.0*rad;
+// ParticleGun.PhiMax      =   6.28*rad;
+
+//- When GunMode = 0, the specific options for setting px, py and pz are
+//- the following with default values listed
+// ParticleGun.px = 1.0 * GeV;
+// ParticleGun.py = 1.0 * GeV;
+// ParticleGun.pz = 1.0 * GeV;
+

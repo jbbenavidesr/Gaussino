@@ -1,18 +1,20 @@
-// $Id: CollimatorSourceAlg.h,v 1.2.2.2 2007-08-17 13:16:28 gcorti Exp $
-#ifndef COLLIMATORSOURCEALG_H
-#define COLLIMATORSOURCEALG_H 1
+// $Id: CollimatorSource.h,v 1.1 2007-08-17 12:54:14 gcorti Exp $
+#ifndef COLLIMATORSOURCE_H
+#define COLLIMATORSOURCE_H 1
 
 // Include files
 // from Gaudi
-#include "GaudiAlg/GaudiHistoAlg.h"
+#include "GaudiAlg/GaudiHistoTool.h"
 #include "GaudiKernel/RndmGenerators.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
 
-/** @class CollimatorSourceBaseAlg CollimatorSourceBaseAlg.h 
+#include "IMIBSource.h"            // Interface
+
+/** @class CollimatorSource CollimatorSource.h 
  *  
- *  Algorithm to read file containing particles reaching LHCb cavern
+ *  Tool to read file containing particles reaching LHCb cavern
  *  and due to halo impinging on the Tertiary Collimators.
  *  The source can be re-weighted according to the options selected
  *  and produces particles from it.
@@ -20,20 +22,31 @@
  *  @author Magnus Lieng
  *  @date   2006-10-10
  */
-class CollimatorSourceAlg : public GaudiHistoAlg {
+class CollimatorSource : public         GaudiHistoTool, 
+                         virtual public IMIBSource    {
+  
 public:
   
   /// Standard constructor
-  CollimatorSourceAlg(const std::string& name, ISvcLocator* pSvcLocator);
+  CollimatorSource(const std::string& type, 
+                   const std::string& name,
+                   const IInterface* parent);
 
-  virtual ~CollimatorSourceAlg();; ///< Destructor
+  virtual ~CollimatorSource(); ///< Destructor
  
-  virtual StatusCode initialize();    ///< Algorithm initialization
-  virtual StatusCode execute   ();    ///< Algorithm execution
-  virtual StatusCode finalize  ();    ///< Algorithm finalization
+  virtual StatusCode initialize();    ///< Tool initialization
+  virtual StatusCode finalize  ();    ///< Tool finalization
+
+  virtual StatusCode generateEvent( LHCb::GenHeader* theHeader,
+                                    LHCb::GenCollisions* theCollisions,
+                                    LHCb::HepMCEvents* theEvents,
+                                    int& numParts);
 
 protected:
 
+  /// Make particles
+  StatusCode generateParticle( HepMC::GenEvent* evt );
+  
   /// Make Envelopes
   StatusCode createEnvelopes();
 
@@ -52,11 +65,6 @@ protected:
 
 private:
 
-  /// Locations
-  std::string m_eventLoc;
-  std::string m_headerLoc;
-  std::string m_collLoc;
-
   /// The particle source file
   std::string m_pSourceFile;
   bool m_binaryFile;
@@ -67,7 +75,7 @@ private:
   double m_bunchFreq;
   double m_luminosity;
 
-  /// Historgram generation
+  /// Histogram generation
   bool m_genHist;
 
   /// Mode modifiers
@@ -97,16 +105,12 @@ private:
     double sumOfWeights;
   };
 
-  /// Mark for direct read
-  std::istream::pos_type m_mark;
-
-  /// Z particle origin and direction
-  double m_zOrigin;
-  int m_dz;
-
-  /// Event Type
-  int m_evtType;
-
+  
+  std::istream::pos_type m_mark;     ///< Mark for direct read
+  
+  double m_zOrigin;                  ///< Z particle origin
+  int m_dz;                          ///< Z particle direction 
+  
   /// Histograms
   AIDA::IHistogram2D* m_xyDistInput;
   AIDA::IHistogram1D* m_eKinInput;
@@ -127,8 +131,7 @@ private:
   AIDA::IHistogram1D* m_absPGenWeight;
   AIDA::IHistogram1D* m_thetaGenWeight;
 
-  /// Particle Property Service
-  IParticlePropertySvc* m_ppSvc;
+  IParticlePropertySvc* m_ppSvc;   ///< Pointer to Particle Property Service
 
 protected:
 
