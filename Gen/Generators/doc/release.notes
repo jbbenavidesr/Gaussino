@@ -5,6 +5,25 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!======================= Generators v12r1 2012-07-23 =========================
+ - on v12b branch
+! 2012-07-13 - Patrick Robbe
+ - Use LHCb::ParticlePropertySvc for the new particle property service
+   name
+
+ - build on v12b branch built starting from v12r0
+   and with the following changes ported from the trunk
+
+! 2012-07-22 - Gloria Corti
+ - Fix bug in FlatZSmearVertex where the location where to take the beam
+   parameters was empty.
+
+! 2012-06-11 - Alex Shires
+ - update EvtGenInPhSpDecay to allow a configurable input file name
+
+! 2012-05-27 - Patrick Robbe
+ - use new ParticlePropertySvc
+
 !======================= Generators v12r0 2012-05-14 =========================
  - on v11r4b branch
 

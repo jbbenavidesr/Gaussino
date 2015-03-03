@@ -133,7 +133,11 @@ void EvtbTosllScalarAmpNewExt::CalcAmp( EvtParticle *parent,
      (idparent == EvtPDL::getId(std::string("B_s0"))&&
       iddaught == EvtPDL::getId(std::string("eta'")))||
      (idparent == EvtPDL::getId(std::string("anti-B_s0"))&&
-      iddaught == EvtPDL::getId(std::string("eta'")))){
+      iddaught == EvtPDL::getId(std::string("eta'")))||
+     (idparent == EvtPDL::getId(std::string("B_s0"))&&
+      iddaught == EvtPDL::getId(std::string("f_0")))||
+     (idparent == EvtPDL::getId(std::string("anti-B_s0"))&&
+      iddaught == EvtPDL::getId(std::string("f_0")))){
      ms = formFactors->getQuarkMass(3); // m_s mass from the dispersion QM 
      // V_{ts}
      Vtq = unit1*(1.0-0.5*pow(CKM_lambda,2.0)) + 
@@ -447,7 +451,7 @@ double EvtbTosllScalarAmpNewExt::CalcMaxProb(EvtId parnum, EvtId mesnum,
 
      // The maximum probability calculation
      // from s_min to s_max
-     for(j=0; j<=max_j; j++){ 
+     for(j=max_j/2; j<max_j; j++){ 
 
         s = s_min +ds*((double)j);
 
@@ -482,7 +486,7 @@ double EvtbTosllScalarAmpNewExt::CalcMaxProb(EvtId parnum, EvtId mesnum,
         }
 
         // from t_minus to t_plus
-        for(k=0; k<=max_k; k++){ 
+        for(k=0; k<max_k; k++){ 
 
           t_for_s = t_minus + dt*((double) k);
 
@@ -656,6 +660,8 @@ double EvtbTosllScalarAmpNewExt::CalcMaxProb(EvtId parnum, EvtId mesnum,
 //                    << std::endl;
           }
 
+          delete scalar_part;
+
         } // for(k=0; k<=max_k; k++)
      } // for(j=0; j<=max_j; j++)
     
@@ -684,7 +690,7 @@ double EvtbTosllScalarAmpNewExt::CalcMaxProb(EvtId parnum, EvtId mesnum,
      dt = (t_plus-t_minus)/1000.0;
 
      // The maximum probability calculation
-     for(k=0; k<=1000; k++){ 
+     for(k=0; k<1000; k++){ 
 
        t_for_s = t_minus + dt*((double) k);
 
@@ -851,6 +857,8 @@ double EvtbTosllScalarAmpNewExt::CalcMaxProb(EvtId parnum, EvtId mesnum,
 //                 << "\n k =" << k
 //                 << std::endl;
        }
+
+       delete scalar_part;
 
     } // for(k=0; k<=1000; k++)
 

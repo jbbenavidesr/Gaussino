@@ -38,9 +38,9 @@ public:
 
   virtual StatusCode initializeGenerator( ) ;
   
-  virtual void setStable( const ParticleProperty * thePP ) ;
+  virtual void setStable( const LHCb::ParticleProperty * thePP ) ;
 
-  virtual void updateParticleProperties( const ParticleProperty * thePP ) ;
+  virtual void updateParticleProperties( const LHCb::ParticleProperty * thePP ) ;
 
   virtual void turnOnFragmentation( ) ;
   
@@ -55,7 +55,7 @@ public:
 
   virtual void printRunningConditions( ) ;
 
-  virtual bool isSpecialParticle( const ParticleProperty * thePP ) const ;
+  virtual bool isSpecialParticle( const LHCb::ParticleProperty * thePP ) const ;
 
   virtual StatusCode setupForcedFragmentation( const int thePdgId ) ;
 
@@ -113,6 +113,8 @@ protected:
   std::string m_particleDataOutput ;
   std::string m_particleDataInput  ;
   int         m_particleDataLevel  ;
+
+  IBeamTool * m_beamTool ;
   
 private:
   
@@ -128,8 +130,6 @@ private:
   // list of particles to be printed 
   std::vector<int> m_pdtlist ;
   int m_nEvents ; ///< Internal event counter
-  
-  IBeamTool * m_beamTool ;
 
   double m_widthLimit ; ///< Limit to consider a particle with no lifetime
   

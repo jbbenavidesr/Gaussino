@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v10r0
+version v10r1
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -36,13 +36,13 @@ macro jimmy_native_version "4.31.3"
 #-- Herwig++ and ThePeg
 # Set native versions of required software.
 #============================================================================
-macro herwig++_native_version "2.5.1"
+macro herwigpp_native_version "2.5.1"
 macro thepeg_native_version   "1.7.1"
 
 
 #-- AlpGen (until interface package exist in LCG)
 #============================================================================
-macro alpgen_native_version "2.1.3d"
+macro alpgen_native_version "2.1.4"
 
 
 #-- Pythia 8
@@ -98,12 +98,6 @@ macro_append hijingforgauss_shlibflags "$(hijing_home)/lib/hidata.o $(hijing_hom
 # force the order of link for hijing
 macro_append GENSER_linkopts " $(hijing_linkopts) "
 macro_append hijing_linkopts " -lpythia_hijing "
-
-macro_prepend tauola++_linkopts "-Wl,--no-as-needed "
-macro_append tauola++_linkopts "-Wl,--as-needed "
-
-macro_prepend photos++_linkopts "-Wl,--no-as-needed "
-macro_append photos++_linkopts "-Wl,--as-needed "
 
 
 private

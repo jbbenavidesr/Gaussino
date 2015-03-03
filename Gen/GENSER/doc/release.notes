@@ -4,6 +4,15 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v10r1 2012-05-14 ==========================
+ - on v9r3b branch
+
+! 2012-07-23 - Patrick Robbe
+ - Add UPVETO function (mainly for ALPGEN)
+
+! 2012-07-11 - Gloria Corti
+ - Add macro to pick native version of alpgen 2.1.4
+
 !========================== GENSER v10r0 2012-05-14 ==========================
  - on v9r3b branch
 

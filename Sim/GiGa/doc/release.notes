@@ -6,6 +6,13 @@
 !               for G4 <-> Gaudi applications 
 !-----------------------------------------------------------------------------
 
+!========================== GiGa v20r0 2012-07-23 ============================
+! 2012-07-23 - Gloria Corti
+ - Adapt to LHCb::ParticlePropertySvc
+
+! 2012-07-12 - Gloria Corti from Heinrich Schindler
+ - Interface for GDML reader tool
+
 !========================= GiGa v19r8p1 2011-07-25 ===========================
 ! 2010-11-13 - Chris Jones
  - Fix printing in GiGaFieldMgrBase.cpp

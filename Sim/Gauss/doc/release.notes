@@ -4,6 +4,34 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v42r1 2012-07-24 ============================
+ - on branch v42b 
+
+! 2012-07-24 - Gloria Corti
+ - Remove spill-over from Gauss-MC11a.py
+ - Remove use of GaudiPartProp from Gauss() since all code has been migrated
+    to the LHCb::ParticlePropertySvc
+ - Remove use of GaudiPartProp since code has been migrated to LHCb
+   ParticleProperty and ParticlePropertySvc
+ - Remove use of LbHerwig that is obsolete.
+ - Modify Gauss-Upgrade.py to pick up beam conditions as in the upgrade for
+   nu=2.6 (and show how to pick others) but remove spill-over explicitely and
+   use the new Upgrade Database (DDDB and SIMCOND). The first available global
+   tags are used.
+
+! 2012-07-24 - Gloria Corti
+ - Port changes from trunk from r140339 to r140826 (see below)
+   and r142646: update of QMTests from Patrick Robbe
+
+! 2012-06-06 - Gloria Corti (r140765 to r140826)
+ - Introduce new script by Emmanouil Kiagias to make qmtest files from a 
+   template. The script is added as a make action so that they will be made
+   in the nighlty and used to check newly committed event types in DecFiles
+   . cmt/makeQMTests.py
+
+! 2012-05-21 - Paul Szczypka (r140339)
+ - Small corrections to RunTimeError execptions in Configuration.py
+
 !========================= Gauss v42r0 2012-05-15 ============================
 ! 2012-05-12 - Gloria Corti
  - Modify reference files for qmtests after running them with v41r3.

@@ -4,6 +4,30 @@
 ! Purpose     : Package for Pythia 6 in Gauss
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia v12r0 2012-07-23 =========================
+! 2012-07-23 - Patrick Robbe
+ - Add interface to HEPEUP common block (ghepeup.F, Hepeup.cpp, Hepeup.h)
+ - Move Beam tool to protected PythiaProduction section
+
+! 2012-07-20 - Gloria Corti
+ - Also remove the factory declaration that was in PythiaProduction itself, 
+   otherwise it will be found twice
+
+! 2012-07-19 - Gloria Corti
+ - Add factory declaration for PythiaProduction in component library to force 
+   its loading since the tool is in the linker library (it is specialized by
+   other tools in other libraries). This is needed otherwise the class cannot 
+   be instanciated as configurable.
+
+! 2012-07-13 - Patrick Robbe
+ - Fix ParticlePropertySvc name
+
+! 2012-07-12 - Patrick Robbe
+ - Clean obsolete files
+
+! 2012-05-27 - Patrick Robbe
+ - Start migration to new ParticlePropertySvc
+
 !========================= LbPythia v11r0 2012-05-14 =========================
 ! 2012-05-09 - Gloria Corti
  - Fix run time problem with finding of ParticlePropertySvc that in Gaudi

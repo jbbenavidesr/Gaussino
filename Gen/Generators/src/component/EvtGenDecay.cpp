@@ -14,8 +14,8 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/IRndmGen.h"
-#include "GaudiKernel/IParticlePropertySvc.h"
-#include "GaudiKernel/ParticleProperty.h"
+#include "Kernel/IParticlePropertySvc.h"
+#include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/GaudiException.h"
 
 // from LHCb
@@ -149,6 +149,8 @@ StatusCode EvtGenDecay::initialize( ) {
   if ( boost::filesystem::exists( evtPdlFile ) ) 
     boost::filesystem::remove( evtPdlFile ) ;
   sc = createTemporaryEvtFile( evtPdlFile ) ;
+  if ( m_keepTempEvtFile ) 
+    always() << "Keep the file: " << evtPdlFile << endmsg ;
   if ( ! sc.isSuccess() ) return sc ;
 
   // create random engine for EvtGen
@@ -224,16 +226,17 @@ StatusCode EvtGenDecay::initialize( ) {
     tool< IProductionTool >( "PythiaProduction" , this ) ;
 
   // update the particle properties of Pythia
-  IParticlePropertySvc * ppSvc( 0 ) ;
+  LHCb::IParticlePropertySvc * ppSvc( 0 ) ;
   try { ppSvc = 
-      svc< IParticlePropertySvc > ( "Gaudi::ParticlePropertySvc" , true ) ; }
+      svc< LHCb::IParticlePropertySvc > ( "LHCb::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
-    Exception( "Cannot open Gaudi::ParticlePropertySvc" , exc ) ;
+    Exception( "Cannot open LHCb::ParticlePropertySvc" , exc ) ;
   }
-  IParticlePropertySvc::const_iterator iter ;
-  for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter )
+  LHCb::IParticlePropertySvc::iterator iter ;
+  for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter ) {
     if ( ! pythiaTool -> isSpecialParticle( *iter ) ) 
       pythiaTool -> updateParticleProperties( *iter ) ;
+  }
 
   release( pythiaTool ) ;
   release( ppSvc ) ;
@@ -502,9 +505,9 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
   g << std::left << std::fixed ;
   
   // retrieve Gaudi particle property service  
-  IParticlePropertySvc * ppSvc( 0 ) ;
+  LHCb::IParticlePropertySvc * ppSvc( 0 ) ;
   try { ppSvc = 
-          svc< IParticlePropertySvc > ( "Gaudi::ParticlePropertySvc" , true ) ; }
+      svc< LHCb::IParticlePropertySvc > ( "LHCb::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
     Exception( "Cannot open Gaudi::ParticlePropertySvc to fill EvtGen" , exc ) ;
   }
@@ -517,7 +520,7 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
   double      mass , ctau , pwidth ;
   int         charge , spin2 ;
   
-  for ( IParticlePropertySvc::const_iterator i = ppSvc->begin() ;
+  for ( LHCb::IParticlePropertySvc::iterator i = ppSvc->begin() ;
         i != ppSvc->end() ; ++i ) {
     if ( 0 == *i ) continue ;
     // if particle is not known to EvtGen, skip it
@@ -527,7 +530,7 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
     // Particle Name (EvtGen Name)
     g << std::setw( 22 ) << std::left << (*i) -> evtGenName ( ) << " " ;
     // PDG Id
-    g << std::right << std::setw( 13 ) << (*i)->jetsetID() << " " ;
+    g << std::right << std::setw( 13 ) << (*i) -> pid().pid() << " " ;
     // Mass in GeV 
     mass   = (*i) -> mass() / Gaudi::Units::GeV ;
     // ctau in mm 
@@ -557,7 +560,7 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
     charge = (int) floor( 3 * (*i) -> charge( ) + 0.5 ) ;
     g << std::setw( 5 ) << charge << " " ;
     // 2 times particle spin
-    LHCb::ParticleID pid ( (*i)->jetsetID() ) ;
+    LHCb::ParticleID pid ( (*i) -> pid() ) ;
     if ( pid.jSpin() > 0 ) spin2 = pid.jSpin() - 1 ;
     else spin2 = getParticleSpin( pid ) - 1 ;
     g << std::setw( 5 ) << spin2 << " " ;
@@ -588,7 +591,8 @@ const EvtId EvtGenDecay::getSignalAlias( int pdgId ) const {
   else if ( EvtPDL::getStdHep( trueId ) == 
             EvtPDL::getStdHep( EvtPDL::chargeConj( m_signalId ) ) )
     return EvtPDL::chargeConj( m_signalId ) ;
-  debug() << m_signalId << '\t' << trueId << '\t' << EvtPDL::getStdHep( trueId ) << '\t' << EvtPDL::getStdHep( m_signalId ) << endmsg ; 
+  debug() << m_signalId << '\t' << trueId << '\t' << EvtPDL::getStdHep( trueId ) 
+          << '\t' << EvtPDL::getStdHep( m_signalId ) << endmsg ; 
   Exception( "There is no signal ID corresponding to the pdgId" ) ;
   return m_signalId ;
 }
