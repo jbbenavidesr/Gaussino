@@ -1,4 +1,4 @@
-// $Id: GetMCRichInfoBase.cpp,v 1.2 2006-03-01 09:31:26 jonrob Exp $
+// $Id: GetMCRichInfoBase.cpp,v 1.4 2009-10-23 10:47:46 jonrob Exp $
 // Include files
 
 // local
@@ -16,13 +16,16 @@
 GetMCRichInfoBase::GetMCRichInfoBase( const std::string& name,
                                       ISvcLocator* pSvcLocator)
   : RichAlgBase               ( name , pSvcLocator )
-  , m_gigaSvc                 ( 0 )
-  , m_gigaKineCnvSvc          ( 0 )
-  , m_RichG4HitCollectionName ( 0 )
-  , m_colRange                ( std::vector<int>(2) )
+  , m_gigaSvc                 ( NULL )
+  , m_gigaKineCnvSvc          ( NULL )
+  , m_RichG4HitCollectionName ( NULL )
+  , m_colRange                ( 2 )
+  , m_RICHes                  ( Rich::NRiches, true )
+  , m_relationTable           ( NULL )
 {
   declareProperty( "GiGaService",    m_gigaSvcName = "GiGa" );
   declareProperty( "KineCnvService", m_kineSvcName = IGiGaCnvSvcLocation::Kine );
+  declareProperty( "RichDetectors",  m_RICHes );
 }
 
 //=============================================================================
@@ -36,12 +39,17 @@ StatusCode GetMCRichInfoBase::initialize()
   // initialise
   getRichG4CollectionRange();
 
-  info() << "Filling " << dataLocationInTES() << " from G4 collections";
+  info() << "Filling '" << rootInTES() << dataLocationInTES() << "' from G4 collections";
   for ( int iii = colRange()[0]; iii < colRange()[1]+1 ; ++iii )
   {
     info() << " '" << RichG4HitCollectionName()->RichHCName(iii) << "'";
   }
   info() << endreq;
+
+  info() << "Using";
+  if ( richIsActive(Rich::Rich1) ) info() << " Rich1";
+  if ( richIsActive(Rich::Rich2) ) info() << " Rich2";
+  info() << " Detectors" << endmsg;
 
   return sc;
 }
@@ -79,16 +87,57 @@ void GetMCRichInfoBase::getRichG4CollectionRange()
 }
 
 //=============================================================================
+//  sysExecute
+//=============================================================================
+StatusCode GetMCRichInfoBase::sysExecute()
+{
+  // reset pointers
+  m_relationTable = NULL;
+  // execute
+  return RichAlgBase::sysExecute();
+} 
+
+//=============================================================================
 //  Finalize
 //=============================================================================
 StatusCode GetMCRichInfoBase::finalize()
 {
-  debug() << "Finalize" << endmsg;
-
   // clean up
   delete m_RichG4HitCollectionName;
-
+  // return
   return RichAlgBase::finalize();
+}
+
+//=============================================================================
+//  getMCRichHit
+//=============================================================================
+const LHCb::MCRichHit * GetMCRichInfoBase::getMCRichHit( const RichG4Hit* g4hit )
+{
+  // load the RichG4Hit -> MCRichHit relations table
+  if ( !m_relationTable )
+  {
+    m_relationTable = get<G4HitTable>( g4HitToMCRichHitRelLoc() );
+  }
+
+  // Find associated MCRichHit using relations table
+  const LHCb::MCRichHit * mchit(NULL);
+  
+  // get relations
+  const G4HitTable::Range range = m_relationTable->relations(g4hit);
+  // If empty, this just means no MCRichHit was created for this G4 hit, so skip
+  if ( !range.empty() )
+  {
+    // If not empty, size should be precisely one
+    if ( range.size() != 1 ) 
+    {
+      Warning("More than one MCRichHit associated to a given RichG4Hit").ignore();
+    }
+    mchit = range.begin()->to();
+    if ( !mchit ) { Error( "Null MCRichHit pointer" ); }
+  }
+  
+  // return
+  return mchit;
 }
 
 //=============================================================================

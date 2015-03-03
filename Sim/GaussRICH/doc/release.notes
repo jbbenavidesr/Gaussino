@@ -4,6 +4,34 @@
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !----------------------------------------------------------------------------- 
 
+!========================= GaussRICH v10r0 2009-11-04 =========================
+! 2009-10-23 - Chris Jones
+ - Some minor fixes to better support spillover locations
+
+! 2009-10-19 - Silvia Miglioranzi
+   - Fixed an error in compilation on slc5 (extra qualification 
+     'RichG4ReconFlatMirr::' on member 'FlatMirrorIntersection') for the:
+     RichG4ReconFlatMirr.h
+
+! 2009-09-13 - Sajan Easo
+ - In order to be compatible with the recent G4.9.2, in RichG4Cerenkov.cc
+   and RichG4OpRayleigh.cc, the names of some G4 methods 
+   with '..PhotonMomentum' are changed to '..PhotonEnergy'. 
+   These changes are backward incompatible.
+   These modifications fix the compilation problems seen recently 
+   from using the new G4.
+ - In order to be compatible with recent Gaudi, ITime.h is changed to
+   Time.h in the include statements in some of the cpp files in RichAnalysis
+   are Misc subdirectories.
+
+!========================= GaussRICH v9r5 2009-09-11 =========================
+! 2009-07-17 - Chris Jones
+ - Update the algorithms that create the various output data outputs to no
+   longer rely on the implicit ordering of the RichG4Hits to assoicate them
+   to MCRichHits. Instead, an explicit Relations object is created and used.
+ - Add job option "RichDetectors" to allow hits in a given Rich to be 
+   suppressed.
+
 !======================== GaussRICH v9r4p2 2009-07-15 ========================
 ! 2009-07-03 - Sajan Easo
     - Compilation warnings from several 'unused variables' fixed . 

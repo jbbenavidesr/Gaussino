@@ -4,6 +4,18 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+
+!========================== GENSER v6r0 2009-11-04 ===========================
+! 2009-10-22 - Hubert Degaudenzi 
+ - changed the target-slc5 switching into target-gcc4 for the gfortran flags 
+
+! 2009-10-22 - Patrick Robbe
+ - Add "-fsecond-underscore" for slc5 gFortran compilation
+
+! 2009-10-08 - Gloria Corti
+ - Change versions of external packages to pick up those with slc5 libraries
+ - Remove fflags "-ff90" and linking "-lg2c" on slc5
+
 !========================== GENSER v5r2 2009-10-05 ===========================
 ! 2009-10-05 - Gloria CORTI
   - Fix consistency of HepMC used for Pythia8, by using version 107 instead

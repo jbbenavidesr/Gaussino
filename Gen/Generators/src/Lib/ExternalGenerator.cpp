@@ -1,4 +1,4 @@
-// $Id: ExternalGenerator.cpp,v 1.27 2009-12-03 15:32:49 robbep Exp $
+// $Id: ExternalGenerator.cpp,v 1.26 2008-09-20 20:03:40 robbep Exp $
 // Include files 
 
 // local
@@ -33,8 +33,7 @@ ExternalGenerator::ExternalGenerator( const std::string& type,
                                       const IInterface* parent )
   : GaudiTool ( type, name , parent ) , 
     m_decayTool( 0 ) , 
-    m_cutTool  ( 0 ) , 
-    m_ppSvc    ( 0 ) { 
+    m_cutTool  ( 0 ) { 
     m_defaultLhaPdfSettings.clear() ;
     declareInterface< ISampleGenerationTool >( this ) ;
     declareProperty( "ProductionTool" , 
@@ -75,7 +74,8 @@ StatusCode ExternalGenerator::initialize( ) {
     return Error( "Unable to read LHAPDF commands" , sc ) ;
 
   // retrieve the particle property service
-  m_ppSvc = svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
+  IParticlePropertySvc * ppSvc = 
+    svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
 
   // obtain the Decay Tool 
   // (ATTENTION: it has to be initialized before the production tool)
@@ -89,7 +89,7 @@ StatusCode ExternalGenerator::initialize( ) {
   // update the particle properties of the production tool
   if ( 0 != m_productionTool ) {
     IParticlePropertySvc::const_iterator iter ;
-    for ( iter = m_ppSvc -> begin() ; iter != m_ppSvc -> end() ; ++iter ) {
+    for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter ) {
       if ( ( ! m_productionTool -> isSpecialParticle( *iter ) ) && 
            ( ! m_keepOriginalProperties ) ) 
         m_productionTool -> updateParticleProperties( *iter ) ;
@@ -100,6 +100,8 @@ StatusCode ExternalGenerator::initialize( ) {
           m_productionTool -> setStable( *iter ) ;    
     }
   }
+
+  release( ppSvc ) ;
 
   // obtain the cut tool
   if ( "" != m_cutToolName ) 
@@ -176,14 +178,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
     }
     else 
     {
-      // decay all what is heavier than the signal
-      for ( it = theEvent -> particles_begin() ;
-            it != theEvent -> particles_end() ; ++it ) {
-        LHCb::ParticleID pid( (*it) -> pdg_id() ) ;
-        if ( (*it) -> generated_mass() > 
-             m_ppSvc -> findByStdHepID( signalPid ) -> mass() )
-          particleSet.insert( *it ) ;
-      }      
+      return Error ( "decayHeavyParticles:This case in not implemented yet" ) ; 
     }
     break ; 
   }
@@ -197,7 +192,9 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
       if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
         sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid ) ;
         if ( ! sc.isSuccess() ) return sc ;
-      } 
+        // if excited particle is unknown to EvtGen give error to oblige
+        // us to define it in EvtGen decay table
+      } else return Error( "Unknown undecayed excited particle !" ) ;
     }
   
   return StatusCode::SUCCESS ;
@@ -329,7 +326,6 @@ StatusCode ExternalGenerator::finalize( ) {
   if ( 0 != m_decayTool ) release( m_decayTool ) ;
   if ( 0 != m_productionTool ) release( m_productionTool ) ;
   if ( 0 != m_cutTool ) release( m_cutTool ) ;
-  if ( 0 != m_ppSvc ) release( m_ppSvc ) ;
 
   return GaudiTool::finalize() ;
 }

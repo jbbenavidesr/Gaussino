@@ -1,14 +1,16 @@
 """
 High level configuration tools for Gauss
 """
-__version__ = "$Id: Configuration.py,v 1.13.2.1 2009-11-18 17:14:54 gcorti Exp $"
+__version__ = "$Id: Configuration.py,v 1.22 2009-11-25 10:17:23 silviam Exp $"
 __author__  = "Gloria Corti <Gloria.Corti@cern.ch>"
 
 from Gaudi.Configuration import *
 import GaudiKernel.ProcessJobOptions
 from GaudiKernel import SystemOfUnits
-from Configurables import LHCbConfigurableUser, LHCbApp
+from Configurables import LHCbConfigurableUser, LHCbApp, SimConf
 
+# CRJ - Its un-neccessary to import everythting by default. Better to
+#       import as and when you need it ...
 from Configurables import ( CondDBCnvSvc, EventClockSvc, FakeEventTime,
                             CondDBEntityResolver )
 from Configurables import ( GenInit, Generation, MinimumBias, Inclusive,
@@ -27,7 +29,7 @@ from Configurables import ( SimInit, GiGaGeo, GiGaInputStream, GiGa,
                             GiGaTrackActionSequence, GaussPostTrackAction,
                             GiGaStepActionSequence, SimulationSvc,
                             GiGaFieldMgr, GiGaRunManager, GiGaSetSimAttributes,
-                            GiGaPhysConstructorOp, 
+                            GiGaPhysConstructorOp, GiGaPhysConstructorHpd,
                             SpdPrsSensDet, EcalSensDet, HcalSensDet,
                             GaussSensPlaneDet )
 from Configurables import ( GenerationToSimulation, GiGaFlushAlgorithm,
@@ -45,6 +47,8 @@ from Configurables import ( PackMCParticle, PackMCVertex,
                             UnpackMCParticle, UnpackMCVertex,
                             CompareMCParticle, CompareMCVertex )
 
+from DetCond.Configuration import CondDB
+
 ## @class Gauss
 #  Configurable for Gauss application
 #  @author Gloria Corti <Gloria.Corti@cern.ch>
@@ -52,18 +56,21 @@ from Configurables import ( PackMCParticle, PackMCVertex,
 
 class Gauss(LHCbConfigurableUser):
 
-
     ## Possible used Configurables
-    __used_configurables__ = [ LHCbApp ]
+    __used_configurables__ = [ LHCbApp, SimConf ]
 
     ## Steering options
     __slots__ = {
         "Histograms"        : "DEFAULT"
        ,"DatasetName"       : "Gauss"
        ,"DataType"          : ""
+       ,"DetectorGeo"       : {"VELO":['Velo','PuVeto'], "TT":['TT'], "IT":['IT'], "OT":['OT'], "RICH":['Rich1','Rich2'], "CALO":['Spd','Prs','Ecal','Hcal'], "MUON":['Muon'],"MAGNET": True }
+       ,"DetectorSim"       : {"VELO":['Velo','PuVeto'], "TT":['TT'], "IT":['IT'], "OT":['OT'], "RICH":['Rich1','Rich2'], "CALO":['Spd','Prs','Ecal','Hcal'], "MUON":['Muon'],"MAGNET": True }
+       ,"DetectorMoni"      : {"VELO":['Velo','PuVeto'], "TT":['TT'], "IT":['IT'], "OT":['OT'], "RICH":['Rich1','Rich2'], "CALO":['Spd','Prs','Ecal','Hcal'], "MUON":['Muon'],"MAGNET": True }
        ,"SpilloverPaths"    : []
        ,"PhysicsList"       : "LHEP"
-       ,"GenStandAlone"     : False
+       ,"DeltaRays"         : True
+       ,"Phases"            : ["Generator","Simulation"] # The Gauss phases to include in the SIM file
        ,"BeamMomentum"      : 5.0*SystemOfUnits.TeV
        ,"BeamCrossingAngle" : 0.329*SystemOfUnits.mrad
        ,"BeamEmittance"     : 0.704*(10**(-9))*SystemOfUnits.rad*SystemOfUnits.m
@@ -76,19 +83,47 @@ class Gauss(LHCbConfigurableUser):
        ,"TotalCrossSection" : 97.2*SystemOfUnits.millibarn
        ,"Output"            : 'SIM'
        ,"Production"        : 'PHYS'
+       ,"EnablePack"        : True
+       ,"DataPackingChecks" : True
       }
     
     _propertyDocDct = { 
         'Histograms'     : """ Type of histograms: ['NONE','DEFAULT'] """
        ,'DatasetName'    : """ String used to build output file names """
        ,"DataType"       : """ Must specify 'Upgrade' for upgrade simulations, otherwise not used """
+       ,"DetectorGeo"    : """ Dictionary specifying the detectors to take into account in Geometry """
+       ,"DetectorSim"    : """ Dictionary specifying the detectors to simulated (should be in geometry): """
+       ,"DetectorMoni"   : """ Dictionary specifying the detectors to monitor (should be simulated) :"""
        ,'SpilloverPaths' : """ Spillover paths to fill: [] means no spillover, otherwise put ['Next', 'Prev', 'PrevPrev'] """
        ,'PhysicsList'    : """ Name of physics list to be passed ['LHEP','QGSP'] """
-       ,'GenStandAlone'  : """ Flag to indicate that only generator phase is run"""
+       ,"DeltaRays"      : """ Simulation of delta rays enabled (default True) """
+       ,'Phases'         : """ List of phases to run (Generator, Simulation) """
        ,'Output'         : """ Output: [ 'NONE', 'SIM'] (default 'SIM') """
        ,'Production'     : """ Generation type : ['PHYS', 'PGUN', 'MIB' (default 'PHYS')"""
+       ,'EnablePack'     : """ Flag to turn on or off the packing of the SIM data """
+       ,'DataPackingChecks' : """ Flag to turn on or off the running of some test algorithms to check the quality of the data packing """
        }
     KnownHistOptions = ['NONE','DEFAULT']
+    TrackingSystem   = ['VELO','TT','IT','OT']
+    PIDSystem        = ['RICH','CALO','MUON']
+
+        
+    ## Raise an error if DetectorGeo/DetectorSim/DetectorMoni are not compatible
+    def checkGeoSimMoniDictionnary(self) :
+        for subdet in self.TrackingSystem + self.PIDSystem:
+            for det in self.getProp('DetectorSim')[subdet]:
+                if self.getProp('DetectorGeo')[subdet].count(det) == 0 :
+                    raise RuntimeError("Simulation have been required for '%s' sub-detector but it have been removed of Geometry",det)
+            for det in self.getProp('DetectorMoni')[subdet]:
+                if self.getProp('DetectorSim')[subdet].count(det) == 0 :
+                    raise RuntimeError("Monitoring have been required for '%s' sub-detector but it have been removed of Simulations",det)
+    
+    ##
+    ##
+    def slotName(self,slot) :
+        name = slot
+        if slot == '' : name = "Main"
+        return name
     
     ##
     ## Helper functions for spill-over
@@ -106,10 +141,6 @@ class Gauss(LHCbConfigurableUser):
         alg.Detectors = ['/dd/Structure/LHCb/'+dd]
 
     ##
-    def tapeLocation( self, slot , root , item ):
-        return '/Event/' + self.slot_(slot) + root + '/' + item + '#1'
-
-    ##
     def evtMax(self):
         return LHCbApp().evtMax()
 
@@ -119,63 +150,6 @@ class Gauss(LHCbConfigurableUser):
         if Generation("Generation").isPropertySet("EventType"):
             evtType = str( Generation("Generation").EventType )
         return evtType
-
-    ##
-    ## Function to definewhat to write on output
-    ## takes as input list of spill over slots ('' for main event)
-    def setOutputContent( self, SpillOverSlots ):
-
-        tape = OutputStream("GaussTape", Preload=False, OutputLevel=3 )
-
-        # output content
-        for slot in SpillOverSlots:
-            tape.ItemList += [ self.tapeLocation( slot, 'Gen', 'Header' ) ]
-            if not self.getProp("GenStandAlone"):
-                tape.ItemList += [ self.tapeLocation( slot, 'MC', 'Header' ) ]
-                
-            generatorList = [ self.tapeLocation( slot, 'Gen', 'Collisions' ),
-                              self.tapeLocation( slot, 'Gen', 'HepMCEvents' ) ]
-            if slot != '':
-                tape.OptItemList += generatorList
-            else:
-                tape.ItemList += generatorList
-
-            if self.getProp("GenStandAlone"):
-                continue
-                
-            mcTruthList = [ self.tapeLocation( slot, 'MC', 'Particles' ),
-                            self.tapeLocation( slot, 'MC', 'Vertices' ) ]
-            mcTruthPackedList = [ self.tapeLocation( slot, 'pSim', 'MCParticles' ),
-                                 self.tapeLocation( slot, 'pSim', 'MCVertices' ) ]
-            simulationList = [ self.tapeLocation( slot, 'MC', 'Velo/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'PuVeto/Hits' ), 
-                               self.tapeLocation( slot, 'MC', 'TT/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'IT/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'OT/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Rich/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Spd/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Prs/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Ecal/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Hcal/Hits' ),
-                               self.tapeLocation( slot, 'MC', 'Muon/Hits' ) ]
-
-            if slot != '':
-                tape.OptItemList += mcTruthList
-                tape.OptItemList += simulationList
-            else:
-                tape.ItemList += mcTruthPackedList
-                tape.ItemList += simulationList
-
-            tape.OptItemList += [ self.tapeLocation( slot, 'MC', 'Rich/OpticalPhotons' ),
-                                  self.tapeLocation( slot, 'MC', 'Rich/Tracks' ), 
-                                  self.tapeLocation( slot, 'MC', 'Rich/Segments' ),
-                                  self.tapeLocation( slot, 'Link/MC', 'Particles2MCRichTracks' ),
-                                  self.tapeLocation( slot, 'Link/MC', 'Rich/Hits2MCRichOpticalPhotons' ) ]
-
-
-
-    ## end of output function
-
 
     ##
     ## Functions to configuration various services that are used
@@ -234,9 +208,6 @@ class Gauss(LHCbConfigurableUser):
         # POOL persistency 
         importOptions("$GAUDIPOOLDBROOT/options/GaudiPoolDbRoot.opts")
 
-        # Objects to be written on output file
-        self.setOutputContent( SpillOverSlots )
-
         #
         knownOptions = ['NONE','SIM']
         output = self.getProp("Output").upper()
@@ -244,8 +215,7 @@ class Gauss(LHCbConfigurableUser):
             log.warning("No event data output produced")
             return
 
-        writerName = "GaussTape"
-        simWriter = OutputStream( writerName, Preload=False )
+        simWriter = SimConf().writer()
         if not simWriter.isPropertySet( "Output" ):
             simWriter.Output = "DATAFILE='PFN:" + self.outputName() + ".sim' TYP='POOL_ROOTTREE' OPT='RECREATE'"
         simWriter.RequireAlgs.append( 'GaussSequencer' )
@@ -253,8 +223,6 @@ class Gauss(LHCbConfigurableUser):
         ApplicationMgr().OutStream = [ simWriter ]
         if not FileCatalog().isPropertySet("Catalogs"):
             FileCatalog().Catalogs = [ "xmlcatalog_file:NewCatalog.xml" ]
-
-            
 
 
 
@@ -332,7 +300,7 @@ class Gauss(LHCbConfigurableUser):
         EvtGenDecay().DecayFile = "$DECFILESROOT/dkfiles/DECAY.DEC"
 
         for slot in SpillOverSlots:
-            genSequence = GaudiSequencer("GeneratorSlot"+slot )
+            genSequence = GaudiSequencer("GeneratorSlot"+self.slotName(slot)+"Seq" )
             gaussGeneratorSeq.Members += [ genSequence ]
 
             TESNode = "/Event/"+self.slot_(slot)
@@ -389,162 +357,229 @@ class Gauss(LHCbConfigurableUser):
 #                                                   OutputLevel=1,
 #                                                   Addresses = [TESLocation] ) ]
 
-
-        # Monitors for the MCTruth
+        # Monitors for simulation
         for slot in SpillOverSlots:
 
-            TESNode = "/Event/"+self.slot_(slot)+"MC/"
-            simSequence = GaudiSequencer( "SimulationSlot" + slot )
-            simMoniSeq = GaudiSequencer( "SimMonitor" + slot, 
-                                         RequireObjects = [ TESNode+"Particles"] )
+            TESNode = "/Event/"+self.slot_(slot)
+     
+            simSequence = GaudiSequencer( self.slotName(slot)+"Simulation" )
+            simMoniSeq = GaudiSequencer( "SimMonitor" + slot )
             simSequence.Members += [ simMoniSeq ]
 
+            # CRJ : Set RootInTES - Everything down stream will then use the correct location
+            #       (assuming they use GaudiAlg get and put) so no need to set data locations
+            #       by hand any more ...
+            if slot != '' : simMoniSeq.RootInTES = slot
+
+            # Basic monitors
             simMoniSeq.Members += [
-                GiGaGetEventAlg( "GiGaGetEventAlg"+slot,
-                                 Vertices = "",
-                                 Particles = TESNode+"Particles" ), 
-                MCTruthMonitor( "MCTruthMonitor"+slot,
-                                MCParticles = TESNode+"Particles" ,
-                                MCVertices  = TESNode+"Vertices" ) ]
-
-
-        # Monitors for the various detectors
-        for slot in SpillOverSlots:
-
-            simMoniSeq = GaudiSequencer( "SimMonitor" + slot ) 
+                GiGaGetEventAlg("GiGaGet"+self.slotName(slot)+"Event"), 
+                MCTruthMonitor( self.slotName(slot)+"MCTruthMonitor" ) ]
+            
             # can switch off detectors, or rather switch them on (see options
             # of algorithm)
             checkHits = GiGaGetHitsAlg( "GiGaGetHitsAlg" + slot )
             simMoniSeq.Members += [ checkHits ]
 
-            TESNode = "/Event/"+self.slot_(slot)+"MC/"
-
-            # Monitors for the detectors
+            ## in case of a non default detector, need to be overwritten
+            if self.getProp('DetectorSim')['VELO'].count('VeloPix')>0:    
+                checkHits.VeloHits =  'MC/VeloPix/Hits'
+                checkHits.PuVetoHits = ''             
+                  
             #if moniOpt == 'Debug':
             #    checkHits.OutputLevel = DEBUG
-
-            checkHits.VeloHits   = TESNode + 'Velo/Hits'
-            checkHits.PuVetoHits = TESNode + 'PuVeto/Hits'
-            checkHits.TTHits     = TESNode + 'TT/Hits'
-            checkHits.ITHits     = TESNode + 'IT/Hits'
-            checkHits.OTHits     = TESNode + 'OT/Hits'
-            checkHits.CaloHits   = [ TESNode + 'Spd/Hits',
-                                     TESNode + 'Prs/Hits', 
-                                     TESNode + 'Ecal/Hits',
-                                     TESNode + 'Hcal/Hits' ]
-            checkHits.MuonHits   =  TESNode + 'Muon/Hits' 
-            checkHits.RichHits   =  TESNode + 'Rich/Hits' 
-            checkHits.RichOpticalPhotons = TESNode +'Rich/OpticalPhotons'
-            checkHits.RichSegments       = TESNode + 'Rich/Segments'
-            checkHits.RichTracks         = TESNode + 'Rich/Tracks'
 
             detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot ) 
             simMoniSeq.Members += [ detMoniSeq ]
 
-            detMoniSeq.Members += [
-                VeloGaussMoni( "VeloGaussMoni" + slot,
-                               VeloMCHits   = TESNode + 'Velo/Hits',
-                               PuVetoMCHits = TESNode + 'PuVeto/Hits' ) ]
+            # velo
+            
+            ## Set the VeloMonitor
+            if len(self.getProp('DetectorMoni')['VELO'])> 0:
+                if self.getProp('DetectorMoni')['VELO'].count('VeloPix') > 0 : 
+                    ## ONLY FOR GAUSS v38r0
+                    ## from Configurables import   VeloPixGaussMoni
+                    ## detMoniSeq.Members += [ VeloPixGaussMoni( "VeloPixGaussMoni" + slot ) ]
+                    print 'Wait for Gauss v38r0'
+                else :
+                    detMoniSeq.Members += [ VeloGaussMoni( "VeloGaussMoni" + slot ) ]
+                    
 
-            ttHitMoni = MCHitMonitor( "TTHitMonitor" + slot )
-            detMoniSeq.Members += [ ttHitMoni ]
-            ttHitMoni.mcPathString = TESNode + "TT/Hits"
-            ttHitMoni.zStations = [ 2350.*SystemOfUnits.mm,
-                                    2620.*SystemOfUnits.mm ]
-            ttHitMoni.xMax = 150.*SystemOfUnits.cm 
-            ttHitMoni.yMax = 150.*SystemOfUnits.cm 
 
-            itHitMoni = MCHitMonitor( "ITHitMonitor" + slot )
-            detMoniSeq.Members += [ itHitMoni ]
-            itHitMoni.mcPathString = TESNode + "IT/Hits"
+            ## Hit monitoring for the other tracking subsystem
+            TrackingSystemZStation = {'TT':[2350.*SystemOfUnits.mm, 2620.*SystemOfUnits.mm],
+                                      'IT':[ 7780.0*SystemOfUnits.mm,8460.0*SystemOfUnits.mm,9115.0*SystemOfUnits.mm ],
+                                      'OT':[ 7938.0*SystemOfUnits.mm, 8625.0*SystemOfUnits.mm,9315.0*SystemOfUnits.mm ] }
+
+            TrackingSystemZStationXYMax = {'TT':[150.*SystemOfUnits.cm,150.*SystemOfUnits.cm],
+                                           'IT':[150.*SystemOfUnits.cm ,150.*SystemOfUnits.cm ],
+                                           'OT':[100.*SystemOfUnits.cm,100.*SystemOfUnits.cm]}
+
             if self.getProp("DataType") == "Upgrade" :
-                itHitMoni.zStations = [ 8015.0*SystemOfUnits.mm,
-                                        8697.0*SystemOfUnits.mm,
-                                        9363.0*SystemOfUnits.mm ]
-            else :
-                itHitMoni.zStations = [ 7780.0*SystemOfUnits.mm,
-                                        8460.0*SystemOfUnits.mm,
-                                        9115.0*SystemOfUnits.mm ]
-            itHitMoni.xMax = 100.*SystemOfUnits.cm 
-            itHitMoni.yMax = 100.*SystemOfUnits.cm 
+                TrackingSystemZStation = {'TT':[2350.*SystemOfUnits.mm, 2620.*SystemOfUnits.mm],
+                                          'IT':[8015.0*SystemOfUnits.mm,8697.0*SystemOfUnits.mm,9363.0*SystemOfUnits.mm ],
+                                          'OT':[7672.0*SystemOfUnits.mm,8354.0*SystemOfUnits.mm,9039.0*SystemOfUnits.mm ]}
 
-            otHitMoni = MCHitMonitor( "OTHitMonitor" + slot )
-            detMoniSeq.Members += [ otHitMoni ]
-            otHitMoni.mcPathString = TESNode + "OT/Hits"
-            if self.getProp("DataType") == "Upgrade" :
-                otHitMoni.zStations = [ 7672.0*SystemOfUnits.mm,
-                                        8354.0*SystemOfUnits.mm,
-                                        9039.0*SystemOfUnits.mm ]
-            else :
-                otHitMoni.zStations = [ 7938.0*SystemOfUnits.mm,
-                                        8625.0*SystemOfUnits.mm,
-                                        9315.0*SystemOfUnits.mm ]                
-            spdmoni = MCCaloMonitor( "SpdMonitor" + slot,
-                                     OutputLevel = 4,
-                                     Detector = "Spd",
-                                     Regions = True,
-                                     MaximumEnergy = 10.*SystemOfUnits.MeV,
-                                     Threshold = 1.5*SystemOfUnits.MeV,
-                                     MCHits = TESNode+"Spd/Hits",
-                                     MCParticles = TESNode+"Particles", 
-                                     Slot = self.slot_(slot) ) 
-            prsmoni = MCCaloMonitor( "PrsMonitor" + slot,
-                                     OutputLevel = 4,
-                                     Detector = "Prs", Regions = True,
-                                     MaximumEnergy = 10.*SystemOfUnits.MeV,
-                                     Threshold = 1.5*SystemOfUnits.MeV, 
-                                     MCHits = TESNode + "Prs/Hits",
-                                     MCParticles = TESNode + "Particles", 
-                                     Slot = self.slot_(slot) ) 
-            ecalmoni = MCCaloMonitor( "EcalMonitor" + slot ,
-                                      OutputLevel = 4,
-                                      Detector = "Ecal",
-                                      Regions = True,
-                                      MaximumEnergy = 1000.*SystemOfUnits.MeV,
-                                      Threshold = 10.*SystemOfUnits.MeV,
-                                      MCHits = TESNode + "Ecal/Hits",
-                                      MCParticles = TESNode + "Particles",
-                                      Slot = self.slot_(slot) ) 
-            hcalmoni = MCCaloMonitor( "HcalMonitor" + slot,
-                                      OutputLevel = 4,
-                                      Detector = "Hcal",
-                                      Regions = True,
-                                      MaximumEnergy = 1000.*SystemOfUnits.MeV,
-                                      Threshold = 5.*SystemOfUnits.MeV, 
-                                      MCHits = TESNode + "Hcal/Hits",
-                                      MCParticles = TESNode + "Particles",
-                                      Slot = self.slot_(slot) ) 
-            detMoniSeq.Members += [ spdmoni , prsmoni , ecalmoni , hcalmoni ]
+            for sub in self.TrackingSystem:
+                if sub == 'VELO' : continue
+                for det in self.getProp('DetectorMoni')[sub]:
+                    detMoniSeq.Members += [ MCHitMonitor( det+ "HitMonitor" + slot ,
+                                                          mcPathString = "MC/" + det +"/Hits",
+                                                          zStations = TrackingSystemZStation[sub],
+                                                          xMax = TrackingSystemZStationXYMax[sub][0],
+                                                          yMax = TrackingSystemZStationXYMax[sub][1])]
 
+            ## Hit monitoring for the PID system
+            CaloThreshold = {'Spd' :1.5*SystemOfUnits.MeV,
+                             'Prs' :1.5*SystemOfUnits.MeV,
+                             'Ecal':10.*SystemOfUnits.MeV,
+                             'Hcal':5.*SystemOfUnits.MeV}
+            CaloMaxEnergy = {'Spd' :10.*SystemOfUnits.MeV,
+                             'Prs' :10.*SystemOfUnits.MeV,
+                             'Ecal':1000.*SystemOfUnits.MeV,
+                             'Hcal':1000.*SystemOfUnits.MeV }
 
-            detMoniSeq.Members += [
-                MuonHitChecker( "MuonHitChecker" + slot,
-                                FullDetail = True,
-                                MCHeader = TESNode + "Header",
-                                MuonHits = TESNode + "Muon/Hits" ) ]
-            from Configurables import MuonMultipleScatteringChecker
-            detMoniSeq.Members += [
-                MuonMultipleScatteringChecker( "MuonMultipleScatteringChecker"+ slot )]
+            for sub in self.PIDSystem:
+                if sub == 'CALO' :
+                    for det in self.getProp('DetectorMoni')[sub]:
+                        detMoniSeq.Members += [ MCCaloMonitor( det + "Monitor" + slot,
+                                                               OutputLevel = 4,
+                                                               Detector = det,
+                                                               Regions = True,
+                                                               MaximumEnergy = CaloMaxEnergy[det],
+                                                               Threshold = CaloThreshold[det] ) ]
+                if sub == 'MUON' :
+                    for det in self.getProp('DetectorMoni')[sub]:
+                        detMoniSeq.Members += [ MuonHitChecker( det + "HitChecker" + slot,
+                                                                FullDetail = True )]
+                        from Configurables import MuonMultipleScatteringChecker
+                        detMoniSeq.Members += [
+                            MuonMultipleScatteringChecker( "MuonMultipleScatteringChecker"+ slot )]
 
+            # Data packing checks
+            if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
+                
+                packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
+                simMoniSeq.Members += [packCheckSeq]
+
+                upMCV = UnpackMCVertex("UnpackMCVertex"+slot,
+                                       OutputName = "MC/VerticesTest" )
+                upMCP = UnpackMCParticle( "UnpackMCParticle"+slot,
+                                          OutputName = "MC/ParticlesTest" )
+                packCheckSeq.Members += [ upMCV, upMCP ]
+
+                compMCV = CompareMCVertex( "CompareMCVertex"+slot,
+                                           TestName = "MC/VerticesTest" )
+                compMCP = CompareMCParticle( "CompareMCParticle"+slot,
+                                             TestName = "MC/ParticlesTest" )
+                packCheckSeq.Members += [ compMCV, compMCP ]
+
+                from Configurables import DataPacking__Unpack_LHCb__MCVeloHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCPuVetoHitPacker_
+                
+                from Configurables import DataPacking__Unpack_LHCb__MCVeloPixHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCTTHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCITHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCOTHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCMuonHitPacker_
+                
+                if self.getProp('DetectorSim')['VELO'].count('VeloPix')>0:
+                    upVeloPix = DataPacking__Unpack_LHCb__MCVeloPixHitPacker_("UnpackVeloPixHits"+slot,
+                                                                        OutputName = "MC/VeloPix/HitsTest" )
+                    packCheckSeq.Members += [upVeloPix]
+                else :
+                    upVelo = DataPacking__Unpack_LHCb__MCVeloHitPacker_("UnpackVeloHits"+slot,
+                                                                        OutputName = "MC/Velo/HitsTest" )
+                    upPuVe = DataPacking__Unpack_LHCb__MCPuVetoHitPacker_("UnpackPuVetoHits"+slot,
+                                                                          OutputName = "MC/PuVeto/HitsTest" )
+                    packCheckSeq.Members += [upVelo,upPuVe]
+                upTT   = DataPacking__Unpack_LHCb__MCTTHitPacker_("UnpackTTHits"+slot,
+                                                                  OutputName = "MC/TT/HitsTest" )
+                upIT   = DataPacking__Unpack_LHCb__MCITHitPacker_("UnpackITHits"+slot,
+                                                                  OutputName = "MC/IT/HitsTest" )
+                upOT   = DataPacking__Unpack_LHCb__MCOTHitPacker_("UnpackOTHits"+slot,
+                                                                  OutputName = "MC/OT/HitsTest" )
+                upMu   = DataPacking__Unpack_LHCb__MCMuonHitPacker_("UnpackMuonHits"+slot,
+                                                                    OutputName = "MC/Muon/HitsTest" )
+                packCheckSeq.Members += [upTT,upIT,upOT,upMu]
+                
+                from Configurables import DataPacking__Check_LHCb__MCVeloHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCPuVetoHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCVeloPixHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCTTHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCITHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCOTHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCMuonHitPacker_
+
+                                
+                if self.getProp('DetectorSim')['VELO'].count('VeloPix')>0:
+                    cVeloPix = DataPacking__Check_LHCb__MCVeloPixHitPacker_("CheckVeloPixHits"+slot)
+                    packCheckSeq.Members += [cVeloPix]
+                else :
+                    cVelo = DataPacking__Check_LHCb__MCVeloHitPacker_("CheckVeloHits"+slot)
+                    cPuVe = DataPacking__Check_LHCb__MCPuVetoHitPacker_("CheckPuVetoHits"+slot)
+                    packCheckSeq.Members += [cVelo,cPuVe]
+                cTT   = DataPacking__Check_LHCb__MCTTHitPacker_("CheckTTHits"+slot )
+                cIT   = DataPacking__Check_LHCb__MCITHitPacker_("CheckITHits"+slot )
+                cOT   = DataPacking__Check_LHCb__MCOTHitPacker_("CheckOTHits"+slot )
+                cMu   = DataPacking__Check_LHCb__MCMuonHitPacker_("CheckMuonHits"+slot )
+                packCheckSeq.Members += [cTT,cIT,cOT,cMu]
+
+                from Configurables import DataPacking__Unpack_LHCb__MCPrsHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCSpdHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCEcalHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCHcalHitPacker_
+                upPrs  = DataPacking__Unpack_LHCb__MCPrsHitPacker_("UnpackPrsHits"+slot,
+                                                                  OutputName = "MC/Prs/HitsTest" )
+                upSpd  = DataPacking__Unpack_LHCb__MCSpdHitPacker_("UnpackSpdHits"+slot,
+                                                                   OutputName = "MC/Spd/HitsTest" )
+                upEcal = DataPacking__Unpack_LHCb__MCEcalHitPacker_("UnpackEcalHits"+slot,
+                                                                    OutputName = "MC/Ecal/HitsTest" )
+                upHcal = DataPacking__Unpack_LHCb__MCHcalHitPacker_("UnpackHcalHits"+slot,
+                                                                    OutputName = "MC/Hcal/HitsTest" )
+                packCheckSeq.Members += [upPrs,upSpd,upEcal,upHcal]
+
+                from Configurables import DataPacking__Check_LHCb__MCPrsHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCSpdHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCEcalHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCHcalHitPacker_
+                cPrs  = DataPacking__Check_LHCb__MCPrsHitPacker_("CheckPrsHits"+slot)
+                cSpd  = DataPacking__Check_LHCb__MCSpdHitPacker_("CheckSpdHits"+slot)
+                cEcal = DataPacking__Check_LHCb__MCEcalHitPacker_("CheckEcalHits"+slot)
+                cHcal = DataPacking__Check_LHCb__MCHcalHitPacker_("CheckHcalHits"+slot)
+                packCheckSeq.Members += [cPrs,cSpd,cEcal,cHcal]
+
+                from Configurables import DataPacking__Unpack_LHCb__MCRichHitPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCRichOpticalPhotonPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCRichSegmentPacker_
+                from Configurables import DataPacking__Unpack_LHCb__MCRichTrackPacker_
+                upRichHit  = DataPacking__Unpack_LHCb__MCRichHitPacker_("UnpackRichHits"+slot,
+                                                                        OutputName = "MC/Rich/HitsTest" )
+                upRichOpPh = DataPacking__Unpack_LHCb__MCRichOpticalPhotonPacker_("UnpackRichOpPhot"+slot,
+                                                                                  OutputName = "MC/Rich/OpticalPhotonsTest" )
+                upRichSeg  = DataPacking__Unpack_LHCb__MCRichSegmentPacker_("UnpackRichSegments"+slot,
+                                                                            OutputName = "MC/Rich/SegmentsTest" )
+                upRichTrk  = DataPacking__Unpack_LHCb__MCRichTrackPacker_("UnpackRichTracks"+slot,
+                                                                          OutputName = "MC/Rich/TracksTest" )
+                packCheckSeq.Members += [upRichHit,upRichOpPh,upRichSeg,upRichTrk]
+
+                from Configurables import DataPacking__Check_LHCb__MCRichHitPacker_
+                from Configurables import DataPacking__Check_LHCb__MCRichOpticalPhotonPacker_
+                from Configurables import DataPacking__Check_LHCb__MCRichSegmentPacker_
+                from Configurables import DataPacking__Check_LHCb__MCRichTrackPacker_
+                cRichHit  = DataPacking__Check_LHCb__MCRichHitPacker_("CheckRichHits"+slot )
+                cRichOpPh = DataPacking__Check_LHCb__MCRichOpticalPhotonPacker_("CheckRichOpPhot"+slot )
+                cRichSeg  = DataPacking__Check_LHCb__MCRichSegmentPacker_("CheckRichSegments"+slot )
+                cRichTrk  = DataPacking__Check_LHCb__MCRichTrackPacker_("CheckRichTracks"+slot )
+                packCheckSeq.Members += [cRichHit,cRichOpPh,cRichSeg,cRichTrk]
+                
+                             
         #if histOpt == 'Expert':
         #    # For the moment do nothing
         #    log.Warning("Not yet implemented")
 
-
-        importOptions("$GAUSSRICHROOT/options/RichAnalysis.opts")
-
-        # Check packing and unpacking only for 'main' event
-        simMoniSeq = GaudiSequencer( "SimMonitor" )
-        testMCV = UnpackMCVertex( "TestMCVertex",
-                                  OutputName = "MC/VerticesTest" )
-        testMCP = UnpackMCParticle( "TestMCParticle",
-                                    OutputName = "MC/ParticlesTest" )
-        compareMCV = CompareMCVertex( "CompareMCVertex",
-                                      TestName = "MC/VerticesTest" )
-        compareMCP = CompareMCParticle( "CompareMCParticle",
-                                        TestName = "MC/ParticlesTest" )
-        simMoniSeq.Members += [ testMCV, testMCP,
-                                compareMCV, compareMCP ]
+        if len(self.getProp('DetectorSim')['RICH'])> 0 :
+            importOptions("$GAUSSRICHROOT/options/RichAnalysis.opts")
 
 
     ##
@@ -569,41 +604,76 @@ class Gauss(LHCbConfigurableUser):
     ##     # GiGaGeo.ZsizeOfWorldVolume = 50.0*m; 
 
         # Detector geometry to simulate
-        geo.StreamItems += ["/dd/Structure/LHCb/BeforeMagnetRegion/Velo"]
-        geo.StreamItems += ["/dd/Structure/LHCb/BeforeMagnetRegion/Velo2Rich1"]
-        geo.StreamItems += ["/dd/Structure/LHCb/BeforeMagnetRegion/Rich1"]
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces"]
-        geo.StreamItems += ["/dd/Structure/LHCb/BeforeMagnetRegion/TT"]
+        DetPiecies = {'BeforeMagnetRegion':[],'AfterMagnetRegion':[],'DownstreamRegion':[],'MagnetRegion':['Magnet','BcmDown']}
+        BasePiecies = {}
+        # check if the new velo geometry is required with the chosen DDDB tags
+        VeloPostMC09 = False
+        VeloP = self.checkVeloDDDB(VeloPostMC09)
+        if VeloP:
+            BasePiecies['BeforeMagnetRegion']=[]
+        else:
+            BasePiecies['BeforeMagnetRegion']=['Velo2Rich1']
+        BasePiecies['MagnetRegion']=['PipeInMagnet','PipeSupportsInMagnet']
+        BasePiecies['AfterMagnetRegion']=['PipeAfterT','PipeSupportsAfterMagnet']
+        BasePiecies['DownstreamRegion']=['PipeDownstream','PipeSupportsDownstream','PipeBakeoutDownstream']
 
-        geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/PipeInMagnet"]
-        geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/PipeSupportsInMagnet"]
-        geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/Magnet"]
-        geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/BcmDown"]
+        for sub in self.TrackingSystem:
+            if sub == 'VELO' or sub == 'TT':
+                region = 'BeforeMagnetRegion'
+                for det in self.getProp('DetectorGeo')[sub]:
+                    if det!= 'PuVeto': DetPiecies[region]+=[det]
+            if sub == 'IT' or sub == 'OT':
+                region = 'AfterMagnetRegion'
+                if 'T' not in DetPiecies[region]: 
+                    DetPiecies[region]+=['T']
+                
 
-        geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/T"]
-        geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/Rich2"]
-        geo.StreamItems += ["/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces"]
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/RichHPDSurfaces"]
-        geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/PipeAfterT"]
-        geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/PipeSupportsAfterMagnet"]
+        for sub in self.PIDSystem:
+            if sub == 'RICH':
+                for det in self.getProp('DetectorGeo')[sub]:
+                    region = ''
+                    if det == 'Rich1':  region = 'BeforeMagnetRegion'
+                    else :  region = 'AfterMagnetRegion'
+                    DetPiecies[region]+=[det]
+            if sub == 'CALO' or sub == 'MUON':
+                region = 'DownstreamRegion'
+                for det in self.getProp('DetectorGeo')[sub]:
+                    DetPiecies[region]+=[det]
+                    if det == 'Spd': DetPiecies[region]+=['Converter']
 
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Spd"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Converter"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Prs"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Ecal"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Hcal"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Muon"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/PipeDownstream"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/PipeSupportsDownstream"]
-        geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/PipeBakeoutDownstream"]
 
-        importOptions("$GAUSSCALOROOT/options/Calo.opts")
+        for region in BasePiecies.keys():
+            path = "/dd/Structure/LHCb/"+region+"/"
+            if region == 'MagnetRegion':
+                for element in BasePiecies[region]:
+                        geo.StreamItems += [ path + element ]
+                if self.getProp('DetectorGeo')['MAGNET']==True:
+                    for element in DetPiecies[region]:
+                        geo.StreamItems += [ path + element ]
+            else:
+                if len(DetPiecies[region])==0 : continue
+                for element in BasePiecies[region]:
+                    geo.StreamItems += [ path + element ]
+                for element in DetPiecies[region]:
+                    geo.StreamItems += [ path + element ]
+
+        if len(self.getProp('DetectorGeo')['RICH'])>0:
+            geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces"]
+            geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/RichHPDSurfaces"]
+            geo.StreamItems += ["/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces"]
+
+
+        if len(self.getProp('DetectorGeo')['CALO'])>0:
+            importOptions("$GAUSSCALOROOT/options/Calo.opts")
 
         # Use information from SIMCOND and GeometryInfo
         giGaGeo = GiGaGeo()
         giGaGeo.UseAlignment      = True
         giGaGeo.AlignAllDetectors = True
-        importOptions('$GAUSSOPTS/SimVeloGeometry.py')  # -- To misalign VELO
+        if self.getProp("DataType") != "Upgrade" :
+            if len(self.getProp('DetectorGeo')['VELO'])>0:
+#                importOptions('$GAUSSOPTS/SimVeloGeometry.py')  # To misalign VELO
+                 self.veloGeometry(VeloP) # To misalign VELO
 
     ##     #if "VELO" in geoDets: configureGeoVELO( )
     ##     #if "TT  " in geoDets: configureGeoTT( )
@@ -613,13 +683,14 @@ class Gauss(LHCbConfigurableUser):
     ##     #if "MUON" in geoDets: etc.
 
         ## Set up the magnetic field
-        GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
-        GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
-        GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
-        GiGaGeo().FieldMgr.Global        = True
-        GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
-        GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" ) 
-        GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
+        if self.getProp('DetectorSim')['MAGNET']==True:
+            GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
+            GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
+            GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
+            GiGaGeo().FieldMgr.Global        = True
+            GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
+            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" ) 
+            GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
 
 
     ##
@@ -634,9 +705,13 @@ class Gauss(LHCbConfigurableUser):
          giga = GiGa()
          giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" ) 
          giga.PhysicsList = "GiGaPhysListModular/ModularPL"
-         giga.ModularPL.CutForElectron = 10000.0 * SystemOfUnits.m
+         ecut = 5.0 * SystemOfUnits.mm
+         if not self.getProp("DeltaRays"):
+             ecut = 10000.0 * SystemOfUnits.m
+         print 'Ecut value =', ecut
+         giga.ModularPL.CutForElectron = ecut
          giga.ModularPL.CutForPositron = 5.0 * SystemOfUnits.mm 
-         giga.ModularPL.CutForGamma    = 10.0 * SystemOfUnits.mm
+         giga.ModularPL.CutForGamma    = 5.0 * SystemOfUnits.mm
 
          ## Check here that the physics list is allowed
          physListOpts = "$GAUSSOPTS/PhysList-"+physList+".opts"
@@ -663,9 +738,16 @@ class Gauss(LHCbConfigurableUser):
          giga.TrackSeq.Members += [ "GaussPreTrackAction/PreTrack" ]
 
          giga.SteppingAction =   "GiGaStepActionSequence/StepSeq"
-         giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" ) 
-         importOptions("$GAUSSRICHROOT/options/Rich.opts")
+         giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
 
+         if len(self.getProp('DetectorSim')['RICH'])>0:
+             importOptions("$GAUSSRICHROOT/options/Rich.opts")
+         if len(self.getProp('DetectorSim')['RICH']) == 0:
+             giga.ModularPL.addTool( GiGaPhysConstructorOp, name = "GiGaPhysConstructorOp" )
+             giga.ModularPL.addTool( GiGaPhysConstructorHpd, name = "GiGaPhysConstructorHpd" )
+             giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+             giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+             
          giga.TrackSeq.Members += [ "GaussPostTrackAction/PostTrack" ]
          giga.TrackSeq.Members += [ "GaussTrackActionHepMC/HepMCTrack" ]
          giga.TrackSeq.addTool( GaussPostTrackAction("PostTrack") , name = "PostTrack" ) 
@@ -690,12 +772,13 @@ class Gauss(LHCbConfigurableUser):
          giga.GiGaMgr.addTool( GiGaSetSimAttributes() , name = "GiGaSetSimAttributes" )
          giga.GiGaMgr.GiGaSetSimAttributes.OutputLevel = 4
 
-         # switch off when rich reduced
-         giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                 name="GiGaPhysConstructorOp" )
-         giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
-         giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
-         giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
+         # switch off when rich reduced, should not go into monitor?
+         if len(self.getProp('DetectorSim')['RICH'])>0:
+             giga.ModularPL.addTool( GiGaPhysConstructorOp,
+                                     name="GiGaPhysConstructorOp" )
+             giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
+             giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
+             giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
 
 
     ##
@@ -706,7 +789,7 @@ class Gauss(LHCbConfigurableUser):
         Set up the simulation sequence
         """
         
-        if self.getProp("GenStandAlone"):
+        if "Simulation" not in self.getProp("Phases"):
             log.warning("No simulation phase.")
             return
         
@@ -730,114 +813,90 @@ class Gauss(LHCbConfigurableUser):
         for slot in SpillOverSlots:
 
             TESNode = "/Event/"+self.slot_(slot)
-            simSequence = GaudiSequencer( "SimulationSlot" + slot )
-            gaussSimulationSeq.Members += [ simSequence ]
+            
+            mainSimSequence = GaudiSequencer( self.slotName(slot)+"EventSeq" )
 
-            simSlotSeq = GaudiSequencer( "SimMake" + slot ,
-                                         RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
-            simSequence.Members += [ SimInit( "GaussSim" + slot,
-                                              GenHeader = TESNode + "Gen/Header" ,
-                                              MCHeader = TESNode + "MC/Header" ) ,
-                                     simSlotSeq ]
+            gaussSimulationSeq.Members += [ mainSimSequence ]
 
-            genToSim = GenerationToSimulation( "GenerationToSimulation" + slot,
-                                               LookForUnknownParticles = True, 
-                                               HepMCEventLocation = TESNode + "Gen/HepMCEvents" ,
-                                               Particles = TESNode + "MC/Particles" ,
-                                               Vertices = TESNode+"MC/Vertices" ,
-                                               MCHeader = TESNode+"MC/Header" ) 
+            mainSimSequence.Members +=  [ SimInit( self.slotName(slot)+"EventGaussSim",
+                                                   GenHeader = TESNode + "Gen/Header" ,
+                                                   MCHeader = TESNode + "MC/Header" ) ]
+
+            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
+                                     RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
+            mainSimSequence.Members += [ simSeq ]
+
+            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim" )
+            simSeq.Members += [simSlotSeq]
+
+            # CRJ : Set RootInTES - Everything down stream will then use the correct location
+            #       (assuming they use GaudiAlg get and put) so no need to set data locations
+            #       by hand any more ...
+            if slot != '' : simSlotSeq.RootInTES = slot
+
+            genToSim = GenerationToSimulation( "GenToSim" + slot,
+                                               LookForUnknownParticles = True )
             simSlotSeq.Members += [ genToSim ]
-            simSlotSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlushAlgorithm"+slot ) ]
-            simSlotSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEventStatus"+slot ) ]
-            simSlotSeq.Members += [ SimulationToMCTruth( "SimulationToMCTruth"+slot  ,
-                                                         Particles = TESNode+"MC/Particles",
-                                                         Vertices = TESNode+"MC/Vertices" ,
-                                                         MCHeader = TESNode+"MC/Header" ) ]
+            
+            simSlotSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
+            simSlotSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
+            simToMC = SimulationToMCTruth( "SimToMCTruth"+slot )
+            simSlotSeq.Members += [ simToMC ]
 
             ## Detectors hits
             TESNode = TESNode + "MC/"
-            detHits = GaudiSequencer( "DetectorsHits" + slot ) 
-            detHits.MeasureTime = True 
+            detHits = GaudiSequencer( "DetectorsHits" + slot )  
             simSlotSeq.Members += [ detHits ]
 
-            veloHits   = GetTrackerHitsAlg( "GetVeloHits" + slot,
-                                            MCParticles = TESNode + "Particles" )
-            puvetoHits = GetTrackerHitsAlg( "GetPuVetoHits" + slot,
-                                            MCParticles = TESNode + "Particles" ) 
-            self.setTrackersHitsProperties( veloHits, 'Velo', slot, 'BeforeMagnetRegion/Velo' )         
-            self.setTrackersHitsProperties( puvetoHits, 'PuVeto', slot, 'BeforeMagnetRegion/Velo' )
-            detHits.Members += [ veloHits, puvetoHits ]
+            detRegion = {}
+            for sub in self.TrackingSystem:
+                if sub == 'VELO' or sub == 'TT':
+                    detRegion[sub] = 'BeforeMagnetRegion'
+                if sub == 'IT' or sub == 'OT':
+                    detRegion[sub] = 'AfterMagnetRegion/T'
 
-            ttHits     = GetTrackerHitsAlg( "GetTTHits" + slot,
-                                            MCParticles = TESNode + "Particles" ) 
-            self.setTrackersHitsProperties( ttHits, 'TT', slot, 'BeforeMagnetRegion/TT' ) 
-            detHits.Members += [ ttHits ]
+            for sub in self.TrackingSystem:
+                for det in self.getProp('DetectorSim')[sub]:
+                    detextra,detextra1 = det,det
+                    if det == 'PuVeto' : detextra,detextra1 = 'VeloPu','Velo'
+                    moni = GetTrackerHitsAlg( "Get"+det+"Hits"+slot,
+                                              MCHitsLocation = 'MC/' + det + '/Hits',
+                                              CollectionName = detextra + 'SDet/Hits',
+                                              Detectors = ['/dd/Structure/LHCb/'+detRegion[sub]+'/'+detextra1] )
+                    detHits.Members += [ moni ]
 
-            itHits     = GetTrackerHitsAlg( "GetITHits" + slot,
-                                            MCParticles = TESNode + "Particles" ) 
-            self.setTrackersHitsProperties( itHits, 'IT', slot, 'AfterMagnetRegion/T/IT' ) 
-            detHits.Members += [ itHits ]
+            if len(self.getProp('DetectorSim')['MUON'])>0:
+                for det in self.getProp('DetectorSim')['MUON']:
+                    moni = GetTrackerHitsAlg( "Get"+det+"Hits"+slot,
+                                              MCHitsLocation = 'MC/' + det + '/Hits',
+                                              CollectionName = det + 'SDet/Hits',
+                                              Detectors = ['/dd/Structure/LHCb/DownstreamRegion/'+det] )
+                    detHits.Members += [ moni ]
 
-            otHits     = GetTrackerHitsAlg( "GetOTHits" + slot,
-                                            MCParticles = TESNode + "Particles" ) 
-            self.setTrackersHitsProperties( otHits, 'OT', slot, 'AfterMagnetRegion/T/OT' ) 
-            detHits.Members += [ otHits ]
+            if len(self.getProp('DetectorSim')['CALO'])>0:
+                for det in self.getProp('DetectorSim')['CALO']:
+                    moni = GetCaloHitsAlg( "Get"+det+"Hits"+slot,
+                                           #MCParticles = TESNode + "Particles",
+                                           MCHitsLocation = 'MC/' + det + '/Hits',
+                                           CollectionName = det + 'Hits' )
+                    detHits.Members += [ moni ]
 
-            muonHits   = GetTrackerHitsAlg( "GetMuonHits" + slot,
-                                            MCParticles = TESNode + "Particles" ) 
-            self.setTrackersHitsProperties( muonHits, 'Muon', slot, 'DownstreamRegion/Muon' ) 
-            detHits.Members += [ muonHits ]
+            if len(self.getProp('DetectorSim')['RICH'])>0:
+                richHitsSeq = GaudiSequencer( "RichHits" + slot )
+                detHits.Members += [ richHitsSeq ]
+                richHitsSeq.Members = [ GetMCRichHitsAlg( "GetRichHits"+slot),
+                                        GetMCRichOpticalPhotonsAlg("GetRichPhotons"+slot),
+                                        GetMCRichSegmentsAlg("GetRichSegments"+slot), 
+                                        GetMCRichTracksAlg("GetRichTracks"+slot), 
+                                        Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot), 
+                                        Rich__MC__MCRichHitToMCRichOpPhotAlg("MCRichHitToMCRichOpPhot"+slot) ]
 
-            spdHits    = GetCaloHitsAlg( "GetSpdHits" + slot,
-                                         MCParticles = TESNode + "Particles" ) 
-            spdHits.MCHitsLocation = TESNode + "Spd/Hits"
-            spdHits.CollectionName = "SpdHits"
-            prsHits    = GetCaloHitsAlg( "GetPrsHits" + slot,
-                                         MCParticles = TESNode + "Particles" ) 
-            prsHits.MCHitsLocation = TESNode + "Prs/Hits"
-            prsHits.CollectionName = "PrsHits"
-            ecalHits   = GetCaloHitsAlg( "GetEcalHits" + slot,
-                                         MCParticles = TESNode + "Particles" ) 
-            ecalHits.MCHitsLocation = TESNode + "Ecal/Hits"
-            ecalHits.CollectionName = "EcalHits"
-            hcalHits   = GetCaloHitsAlg( "GetHcalHits" + slot,
-                                         MCParticles = TESNode + "Particles" ) 
-            hcalHits.MCHitsLocation = TESNode + "Hcal/Hits"
-            hcalHits.CollectionName = "HcalHits"
-            detHits.Members += [ spdHits, prsHits, ecalHits, hcalHits ]
+            # Data packing ...
+            if self.getProp("EnablePack") :
 
-            richHits = GetMCRichHitsAlg( "GetRichHits" + slot,
-                                         MCParticles = TESNode + "Particles" ,
-                                         MCRichHitsLocation = TESNode + "Rich/Hits") 
-            richHitsSeq = GaudiSequencer( "RichHits" + slot )
-            detHits.Members += [ richHitsSeq ]
-            richHitsSeq.Members += [ richHits ]
-
-            TESRich = TESNode + 'Rich/'
-            richPhotons  = GetMCRichOpticalPhotonsAlg("GetRichPhotons" + slot,
-                                                      MCRichOpticalPhotonsLocation = TESRich+"OpticalPhotons",
-                                                      MCRichHits = TESRich+"Hits" )
-            richSegments = GetMCRichSegmentsAlg("GetRichSegments" + slot,
-                                                MCRichOpticalPhotonsLocation = TESRich+"OpticalPhotons",
-                                                MCRichHitsLocation = TESRich+"Hits", 
-                                                MCRichSegmentsLocation = TESRich + "Segments" ) 
-            richTracks = GetMCRichTracksAlg("GetRichTracks" + slot,
-                                            MCRichTracksLocation = TESRich + "Tracks",
-                                            MCParticles = TESNode+"Particles",
-                                            MCRichSegments = TESRich+"Segments" )
-
-
-            richHitsSeq.Members += [ richPhotons, richSegments, richTracks ] 
-            richHitsSeq.Members += [ Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot) ]
-            richHitsSeq.Members += [ Rich__MC__MCRichHitToMCRichOpPhotAlg("MCRichHitToMCRichOpPhot"+slot) ]  
-
-
-        # Packing only for main event
-        simSlotSeq = GaudiSequencer( "SimMake" )
-        packMCP = PackMCParticle( "PackMCParticle" )
-        packMCV = PackMCVertex( "PackMCVertex" )
-        simSlotSeq.Members += [ packMCP, packMCV ]
-
+                packing = GaudiSequencer(self.slotName(slot)+"EventDataPacking")
+                simSlotSeq.Members += [ packing ]
+                SimConf().PackingSequencers[slot] = packing
 
     ##########################################################################
     ## Functions to set beam conditions and propagate them
@@ -1070,9 +1129,78 @@ class Gauss(LHCbConfigurableUser):
         self.configureMoni( SpillOverSlots ) #(expert or default)
         
 
+    ##
+    ##
+    def veloGeometry( self, VeloPostMC09 ):
+        """
+        File containing the list of detector element to explicitely set
+        to have misalignement in the VELO.
+        """
+        print 'VeloPostMC09',VeloPostMC09
+        Geo = GiGaInputStream('Geo')
+        Geo.StreamItems.remove("/dd/Structure/LHCb/BeforeMagnetRegion/Velo")
+
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU00")
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU02")
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU01")
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU03")
+
+        txt = "/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModuleXX"
+        import math
+        for i in range(42):
+            nr = str(i)
+            if len(nr) == 1 : nr = '0'+str(i)
+            temp1 = txt.replace('XX',nr)
+            if math.modf(float(nr)/2.)[0] > 0.1 :  temp1 = temp1.replace('Left','Right')
+            Geo.StreamItems.append(temp1)
+
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamWakeFieldCone")
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamWakeFieldCone")
+        # new description postMC09 of Velo:  
+        if VeloPostMC09:
+            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
+        else:
+            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamVacTank")
+            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamVacTank")
+        
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFFoilRight")
+        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFFoilLeft")
+    ##
+    ##         
+    def checkVeloDDDB( self , VeloPostMC09):
+        """
+        Check if the Velo geometry is compatible with the chosen tags
+        """
+
+        # set validity limit for new Velo geometry      
+        GTagLimit = "head-20091120"       
+        GTagLimit = GTagLimit.split('-')[1].strip()
+        VeloLTagLimit = "velo-20091116"       
+        VeloLTagLimit = VeloLTagLimit.split('-')[1].strip()
+        
+        # DDDB global tag used
+        DDDBDate = LHCbApp().DDDBtag
+        DDDBDate = DDDBDate.split('-')[1].strip()
+
+        # check if/which local tag is used for Velo
+        cdb = CondDB()
+        cdbVeloDate = 0
+        for p in cdb.LocalTags:
+            if p == "DDDB":
+                taglist = list(cdb.LocalTags[p])
+                for ltag in taglist:
+                    if ltag.find("velo")!=-1 :
+                        cdbVeloDate = ltag.split('-')[1].strip()
+
+        # check if the selected tags require the new Velo geometry 
+        if (DDDBDate >= GTagLimit) or (cdbVeloDate >= VeloLTagLimit):
+            VeloPostMC09 = True
+
+        return VeloPostMC09
+    ##
+    ##
     ## Apply the configuration
     def __apply_configuration__(self):
-        
         
         GaudiKernel.ProcessJobOptions.PrintOff()
 
@@ -1085,6 +1213,32 @@ class Gauss(LHCbConfigurableUser):
         #--Define sequences: generator, simulation
         #  each with its init, make, moni
         #  in the sim phase define the geometry to simulate and the settings
+
+        self.checkGeoSimMoniDictionnary() ## raise an error if DetectorGeo/Sim/Moni dictionnaries are incompatible
+
+        # Propagate properties to SimConf
+        SimConf().setProp("Writer","GaussTape")
+        self.setOtherProps( SimConf(), ["SpilloverPaths","EnablePack","Phases"] )
+        
+        # CRJ : Propagate detector list to SimConf. Probably could be simplified a bit
+        #       by sychronising the options in Gauss() and SimConf()
+        detlist = []
+        if 'Velo'   in self.getProp('DetectorSim')['VELO'] : detlist += ['Velo']
+        if 'PuVeto' in self.getProp('DetectorSim')['VELO'] : detlist += ['PuVeto']
+        if 'TT'     in self.getProp('DetectorSim')['TT']   : detlist += ['TT']
+        if 'IT'     in self.getProp('DetectorSim')['IT']   : detlist += ['IT']
+        if 'OT'     in self.getProp('DetectorSim')['OT']   : detlist += ['OT']
+        if len(self.getProp('DetectorSim')['RICH'])>0      : detlist += ['Rich']
+        if len(self.getProp('DetectorSim')['MUON'])>0      : detlist += ['Muon']
+        if 'Spd'    in self.getProp('DetectorSim')['CALO'] : detlist += ['Spd']
+        if 'Prs'    in self.getProp('DetectorSim')['CALO'] : detlist += ['Prs']
+        if 'Ecal'   in self.getProp('DetectorSim')['CALO'] : detlist += ['Ecal']
+        if 'Hcal'   in self.getProp('DetectorSim')['CALO'] : detlist += ['Hcal']
+        SimConf().setProp("Detectors",detlist)
+
+        # Don't want SIM data unpacking enabled in DoD service
+        SimConf().EnableUnpack = False
+        
         crossingList = [ '' ]
         spillOverList = self.getProp("SpilloverPaths")
         if '' in spillOverList : spillOverList.remove('')
@@ -1094,10 +1248,10 @@ class Gauss(LHCbConfigurableUser):
         self.setBeamSize( crossingList )
         self.setBeamParameters( crossingList )
         self.configurePhases( crossingList )  # in Boole, defineOptions() in Brunel
-        
+
         #--Configuration of output files and 'default' outputs files that can/should
         #--be overwritten in Gauss-Job.py
-        self.defineOutput( crossingList ) # in Boole, in Brunel where?
+        self.defineOutput( crossingList )
 
         self.defineMonitors()
         self.saveHistos()
@@ -1105,3 +1259,8 @@ class Gauss(LHCbConfigurableUser):
         GaudiKernel.ProcessJobOptions.PrintOn()
         log.info( self )
         GaudiKernel.ProcessJobOptions.PrintOff()
+
+        # Print out TES contents at the end of each event
+        #from Configurables import StoreExplorerAlg
+        #GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
+    

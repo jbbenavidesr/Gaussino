@@ -4,31 +4,96 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================= Gauss v37r8 2010-01-26 ============================
-! 2010-01-26 - Gloria CORTI
- - Make new version to activate direct CPV and fix bug for CPV in B->3pi
+!========================= Gauss v38r0 2009-11-25 ============================
+! 2009-11-25 - Silvia Miglioranzi
+ - Modified the Configuration.py in order to check the compatibility of the 
+   DDDB tags chosen and the Velo geometry to be simulated (after the global 
+   head-20091120 or the local velo-20091116 the new Velo geometry needs to be 
+   used).
+ - Put latest head-20091120 in Gauss-DEV.py
 
-!========================= Gauss v37r7 2009-12-18 ============================
-! 2009-12-18 - Gloria CORTI
- - Make new version to deploy changes to activate CP violation
+! 2009-11-20 - Gloria CORTI
+ - Do not call SimVeloGeometry.py is VELO is not on the list of detectors to
+   simulate
+ - Put the Geo.StreamItems += ['/dd/Structure/LHCb/AfterMagnetRegion/T']
+   only once if both OT and IT are selected.
 
-!======================== Gauss v37r6p1 2009-12-03 ===========================
-! 2009-12-03 - Gloria CORTI
- - Make patch version to re-deploy on the grid for production as there was
-   a problem in the deployment of v37r6
-
-!========================= Gauss v37r6 2009-11-18 ============================
 ! 2009-11-18 - Gloria CORTI
  - Fix bug reported in production of not being able to set anymore the format
    of the MessageSvc
    . python/Gauss/Configuration.py
+ - Put in Gauss-DEV.py latest tags of DDDB and SIMCOND
 
-! 2009-11-13 - Gloria CORTI
- - Change version of DecFiles to pick up v20r* series
- - Take latest version of MIBData v3r0
- - Remove GDML as it will not be re-commissioned for MC09
- - Reactivate LbHidValley
- - also LbBcVegPy in this requirements
+! 2009-11-18 - Silvia Miglioranzi
+ - Update ref files for QMTests onslc4_ia32_gcc34_dbg. 
+
+! 2009-11-16 - Silvia MIGLIORANZI
+ - Update ref files for QMTests on slc4_amd64_gcc34_dbg. Increased the time 
+   limit for gauss-up.qmt.
+
+! 2009-11-12 - Silvia Miglioranzi
+ - Added two new QMTests: gauss-dev.qmt and gauss-up.qmt (running with 
+   Gauss-DEV.py and Gauss-Upgrade.py options respectively). Added their ref 
+   files for platform slc432 and slc464.
+
+! 2009-11-11 - Silvia Miglioranzi
+ - Update of QMTest ref files (slc5). Update of gauss-gen-mc09 test.
+
+! 2009-11-09 - Silvia Miglioranzi
+ - Update of QMTest ref files (platforms slc4 64 and 32) for the nightly slot 
+   lhcb3.
+
+! 2009-11-07 - Silvia Miglioranzi
+ - Added BlsMoniSim to the packages list and changed version in 
+   Sim/Gauss/cmt/requirements
+ - Added the option Gauss-DEV.py (to run with the latest DDDB and SIMCOND) 
+
+! 2009-11-05 - Silvia Miglioranzi
+ - Configuration.py was modified: DRays configurable was added and "SimPhases"
+   configurable was renamed "Phases".
+ - GenStandAlone.py was modified to use the new "Phases" configurable
+ - In BeamScintillators.py a comment was added to inform that it is valid 
+   only in combination with the MC09 geometry.
+ - DRaysON-LT.opts and DRaysON-HT.py were removed. Kine-LT.py was added to steer
+   the lowering of the kinetic tresholds.
+ 
+! 2009-11-05 - Gloria Corti
+ - Change version of database packages
+ - Introduce new packages GaussUMC and BlsMoniSim
+
+! 2009-11-03 - Gloria CORTI
+ - Change version number of Geant4Files to pick the latest as from 9.2.
+
+! 2009-11-03 - Christopher Rob Jones
+ - Move knowledge of the output SIM file content to new SimConf() Configurable
+   in the gaudiConf package
+
+! 2009-10-23 - Chris Jones
+ - Add packing of MC data in output SIM file. Controlled by new Configurable 
+   option "DataPacking". In additional some optional checking of the packing
+   can be turned on/off via the option "DataPackingChecks"
+
+! 2009-10-23 - Victor COCO
+ - Changes to Gauss configurables to be able to selectively choose the list
+   of predefined detectors to simulate. Two new properties of Gauss() have
+   been introduced:
+   . DetectorGeoDict 
+   . DetectorSimDict
+   dictionaries specifying detector and subset
+   The default configuration for MC09 is
+   "DetectorGeoDict" : {"VELO":['Velo','PuVeto'], "TT":['TT'], "IT":['IT'], 
+	                      "OT":['OT'], "RICH":['Rich1','Rich2'], 
+                        "CALO":['Spd','Prs','Ecal','Hcal'], 
+                        "MUON":['Muon'],"MAGNET": True }
+	 "DetectorSimDict" : {"VELO":['Velo','PuVeto'], "TT":['TT'], "IT":['IT'], 
+                        "OT":['OT'], "RICH":['Rich1','Rich2'], 
+                        "CALO":['Spd','Prs', 'Ecal','Hcal'], 
+                        "MUON":['Muon'], "MAGNET": True }
+
+! 2009-10-13 - Silvia MIGLIORANZI
+ - In all QMTests running on signal events, the option "testGauss-NoOutput.py"
+   (the Output files are not produced) is used. The reference stdoutput files
+   for slc4_amd64_gcc34 have been updated.
 
 !========================= Gauss v37r5 2009-10-05 ============================
 ! 2009-10-05 - Gloria CORTI

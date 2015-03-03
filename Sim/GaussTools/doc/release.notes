@@ -1,8 +1,30 @@
 !-----------------------------------------------------------------------------
 ! Package       : Sim/GaussTools
-! Responsible	  : Gloria Corti
+! Responsible	  : Gloria Corti, Silvia MIGLIORANZI
 ! Purpose       : G4 actions and some miscellaneous algs for Gauss
 !-----------------------------------------------------------------------------
+
+!======================== GaussTools v15r4 2009-11-04 ========================
+! 2009-10-21 - Silvia Miglioranzi
+ - Fix the warning message text (see previous entry in releases.notes) in order 
+   not to be counted as error in the nightlies.
+   Fix warning in compilation on slc5 ("warning: suggest parentheses around && 
+   within ||") for:
+   - GaussPostTrackAction.cpp
+
+! 2009-10-20 - Silvia Miglioranzi
+ - Added a #warning message (to appear in compilation) for the temporary fix 
+   for the operator<< 
+
+! 2009-10-16 - Silvia Miglioranzi
+ - *** Temporary*** fix for error in compilation on slc5 
+   (error: no match for operator<<) in:
+   - GaussEventActionHepMC.cpp
+   - MCTruthManager.cpp
+ - Fix warning in compilation on slc5 "type qualifiers ignored on function return
+   type" in:
+   - GaussTrackInformation.h
+   - GiGaSetSimAttributes.h
 
 !======================== GaussTools v15r3 2009-05-26 ========================
 ! 2009-05-26 - Gloria CORTI

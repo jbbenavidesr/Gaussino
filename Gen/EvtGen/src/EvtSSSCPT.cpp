@@ -64,7 +64,7 @@ void EvtSSSCPT::decay( EvtParticle *p){
   double t;
   EvtId other_b;
 
-  EvtCPUtil::OtherB(p,t,other_b,0.5);
+  EvtCPUtil::OtherB(p,t,other_b);
 
   p->initializePhaseSpace(getNDaug(),getDaugs());
 
