@@ -4,6 +4,13 @@
 ! Purpose     : cut tools for Gauss
 !-----------------------------------------------------------------------------
 
+!========================== GenCuts v1r3 2011-11-11 ========================== 
+! 2011-11-11 - Vanya Belyaev
+ - minor fix in GenericGenCutTool 
+
+! 2011-10-20 - Patrick Robbe
+ - Fix coverity warnings
+
 !========================== GenCuts v1r2 2011-10-17 ========================== 
 ! 2011-10-14 - Patrick Robbe
  - UpsilonDaughtersInLHCb.cpp: skip event in case of failure in EvtGen

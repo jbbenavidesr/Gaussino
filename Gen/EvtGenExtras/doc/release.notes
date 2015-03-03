@@ -4,6 +4,19 @@
 ! Purpose     : Repository of EvtGen models with external linkages
 !-----------------------------------------------------------------------------
 
+!======================= EvtGenExtras v3r1 2011-11-11 ========================
+! 2011-10-04 - Nikolai Nikitn
+ - Added a new decay Bd->Omega Mu Mu
+ - Minor bug fix in the pseudoscalar matrix elementx
+
+! 2011-10-25 - Nikolai Nikitin
+ - Added a model for simulation of the rare semileptonic decays. The model is
+   based on the BSTOLLMS decay model, but includes a possibility to simulate
+   different New Physics scenarios by varying of the Wilson Coefficients.
+
+! 2011-10-24 - Nikolai Nikitin
+ - Added new QED-based model for the B(d,s) -> 4 leptons decays (BQTOLLLL)
+
 !======================= EvtGenExtras v3r0 2011-09-19 ========================
 ! 2011-09-19 - Gloria Corti
  - Increase major version because of new dependency introduced.

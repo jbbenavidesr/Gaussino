@@ -147,6 +147,10 @@ void EvtbTosllVectorAmpNew::CalcAmp( EvtParticle *parent,
       iddaught == EvtPDL::getId(std::string("rho0")))||
      (idparent == EvtPDL::getId(std::string("anti-B0"))&&
       iddaught == EvtPDL::getId(std::string("rho0")))||
+     (idparent == EvtPDL::getId(std::string("B0"))&&
+      iddaught == EvtPDL::getId(std::string("omega")))||
+     (idparent == EvtPDL::getId(std::string("anti-B0"))&&
+      iddaught == EvtPDL::getId(std::string("omega")))||
      (idparent == EvtPDL::getId(std::string("B_s0"))&&
       iddaught == EvtPDL::getId(std::string("anti-K*0")))||
      (idparent == EvtPDL::getId(std::string("anti-B_s0"))&&
@@ -232,17 +236,17 @@ void EvtbTosllVectorAmpNew::CalcAmp( EvtParticle *parent,
 //      << "\n Re(c10a)  = " << real(c10a)  << " Im(c10a)  = " << imag(c10a)
 //      << std::endl;
 
-  mytest = fopen("output.txt","a");
-
-  if(mytest != NULL){									
-     fprintf(mytest,"%lf\n",q2);	
-     fclose(mytest);						
-  } 
-  else{
-     report(ERROR,"EvtGen") << "\n Error in writing to file.\n"
-     << std::endl;
-     return;					
-  }
+//  mytest = fopen("output.txt","a");
+//
+//  if(mytest != NULL){									
+//     fprintf(mytest,"%lf\n",q2);	
+//     fclose(mytest);						
+//  } 
+//  else{
+//     report(ERROR,"EvtGen") << "\n Error in writing to file.\n"
+//     << std::endl;
+//     return;					
+//  }
 
 
 

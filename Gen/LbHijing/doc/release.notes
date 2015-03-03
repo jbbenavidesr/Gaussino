@@ -4,6 +4,10 @@
 ! Purpose     : "Interface" to Hijing 
 !-----------------------------------------------------------------------------
 
+!========================= LbHijing v6r2 2011-11-11 ==========================
+! 2011-10-20 - Patrick Robbe
+ - HijingProduction.cpp: fix coverity warnings
+
 !========================= LbHijing v6r1 2011-07-15 ==========================
 ! 2011-07-15 - Gloria Corti
  - Apply pattern not to build on windows, so that conditional use can be
