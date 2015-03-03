@@ -1,4 +1,4 @@
-// $Id: GiGa.h,v 1.6 2006-07-27 09:31:52 gcorti Exp $ 
+// $Id: GiGa.h,v 1.8 2008-11-28 15:09:05 robbep Exp $ 
 #ifndef GIGA_GIGASVC_H
 #define GIGA_GIGASVC_H   1 
 

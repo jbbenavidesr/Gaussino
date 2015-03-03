@@ -1,4 +1,4 @@
-// $Id: MCTruthManager.cpp,v 1.7 2008-07-26 15:43:15 robbep Exp $
+// $Id: MCTruthManager.cpp,v 1.10 2008-11-04 21:14:15 robbep Exp $
 // Include files 
 
 // local
@@ -20,6 +20,7 @@ MCTruthManager::MCTruthManager(  ): event(0)
   creators.clear();
   oscillated.clear();
   segmentations.clear();
+  m_mcparticles.clear() ;
 }
 
 //-----------------------------------------------------------------------------
@@ -33,7 +34,7 @@ MCTruthManager::~MCTruthManager()
 //-----------------------------------------------------------------------------
 MCTruthManager* MCTruthManager::GetInstance()
 {
-  if (instance == 0 )
+  if ( instance == 0 )
   {
     instance = new MCTruthManager();
   }
@@ -56,6 +57,9 @@ void MCTruthManager::NewEvent()
 
   // clear the map of segmentation of tracks
   segmentations.clear();
+  
+  // clear the map of links to MCParticles
+  m_mcparticles.clear() ;
 
   // we delete the old event  
   delete event;
@@ -85,7 +89,6 @@ const std::vector<int>& MCTruthManager::GetOscillatedBarcodes()
 //-----------------------------------------------------------------------------
 int MCTruthManager::GetCreatorID(int barcode)
 {
-
   int id = 0;
   std::map<int,int>::const_iterator i = creators.find( barcode );
   if ( i != creators.end() ) id = (*i).second;
@@ -100,11 +103,15 @@ void MCTruthManager::AddParticle(HepMC::FourVector& momentum,
                                  HepMC::FourVector& endpos, 
                                  int pdg_id, int partID, int motherID,
                                  bool directParent, int creatorID,
+                                 LHCb::MCParticle * motherMCP ,
                                  bool hasOscillated)
 {
   // we create a new particle with barcode = partID
   HepMC::GenParticle* particle = new HepMC::GenParticle(momentum, pdg_id);
   particle->suggest_barcode(partID);
+  // fill link particle -> MCParticle
+  if ( 0 != motherMCP ) m_mcparticles[ partID ] = motherMCP ;
+  
   // we initialize the 'segmentations' map
   // for the moment particle is not 'segmented' 
   segmentations[partID] = 1;
@@ -119,7 +126,7 @@ void MCTruthManager::AddParticle(HepMC::FourVector& momentum,
   
   // barcode of the endvertex = - barcode of the track
   endvertex->suggest_barcode(-partID);  
-  creators[-partID] = creatorID; 
+//  creators[-partID] = creatorID; 
   endvertex->add_particle_in(particle);
   event->add_vertex(endvertex);
   
@@ -200,8 +207,10 @@ void MCTruthManager::AddParticle(HepMC::FourVector& momentum,
           // the barcode of the new particle is split barcode  + the original barcode 
           HepMC::GenParticle* mothertwo = new HepMC::GenParticle(*mother);
           mothertwo->suggest_barcode(SplitBarCode + mother->barcode());
-          // we also reset the barcodes of the vertices
+          // we also reset the barcodes of the vertices but save previous creatorID
+          int saveCID = GetCreatorID( motherendvtx -> barcode() ) ;
           motherendvtx->suggest_barcode(-SplitBarCode - mother->barcode());
+          creators[ motherendvtx -> barcode() ] = saveCID ;
           childvtx->suggest_barcode(-mother->barcode());
           creators[-mother->barcode()] = creatorID;
           // we attach it to the new vertex where interaction took place
@@ -231,6 +240,13 @@ void MCTruthManager::AddParticle(HepMC::FourVector& momentum,
     primarybarcodes.push_back(partID);
     
   } 
+  // Sets now the creator process using the barcode of the production vertex:
+  int vbarcode = particle -> production_vertex() -> barcode() ;
+  int creatorCode = GetCreatorID( vbarcode ) ;
+  if ( 0 == creatorCode ) creators[ vbarcode ] = creatorID ;
+  else if ( creatorCode != creatorID ) 
+    std::cerr << "barcode : " << vbarcode << " has two different creator types " 
+              << creatorCode << " and " << creatorID << std::endl ;
 }
 
 //-----------------------------------------------------------------------------
@@ -269,3 +285,14 @@ void MCTruthManager::printTree(HepMC::GenParticle* particle, std::string offset)
     printTree((*it), offset + deltaoffset);
   } 
 }
+
+//=================================================================================
+// Retrieve pre-filled MCParticle from the G4 particle
+//=================================================================================
+LHCb::MCParticle * MCTruthManager::GetMotherMCParticle( const int barcode ) {
+  std::map< int , LHCb::MCParticle * >::iterator it = 
+    m_mcparticles.find( barcode ) ;
+  if ( m_mcparticles.end() == it ) return 0 ;
+  return ( (*it).second ) ;
+}
+

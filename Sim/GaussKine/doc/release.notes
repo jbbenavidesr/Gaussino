@@ -4,6 +4,34 @@
 ! Purpose     : Code to exchange kinematic information with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= GaussKine v3r2 2008-12-08 ========================= 
+! 2008-11-28 - Patrick Robbe
+ - GenerationToSimulation: update G4 particles from ppSvc (moved
+   from GiGa)
+
+! 2008-11-05 - Patrick Robbe
+ - SimulationToMCTruth: removes extra status from the list of particles
+   to convert.
+
+! 2008-11-04 - Patrick Robbe
+ - SimulationToMCTruth: gives correct vertex type to MCVertex
+
+! 2008-10-29 - Patrick Robbe
+ - SimulationToMCTruth: remove particles which are left with 
+   null production vertex after Geant4, because of interactions
+   (mainly Lambda interactions) which destroyed the particle
+
+! 2008-10-23 - Patrick Robbe
+ - In SimulationToMCTruth: check if pdg code from Geant4 is unknown
+   and don't create a vertex for a particle reaching Geant4 'world'
+   volume
+
+! 2008-10-20 - Patrick Robbe
+ - Add new algorithms to send and retrieve MCTruth to/from G4
+   . GenerationToSimulation: generator HepMC -> Geant4 
+   . SimulationToMCTruth: Geant4 -> MCParticles/MCVertices
+
+!========================= GaussKine v3r1 2008-10-08 ========================= 
 ! 2008-10-08 - Gloria CORTI
  - Move printout to debug level
    . G4HepMCToMCTruth.cpp

@@ -4,6 +4,23 @@
 ! Purpose       : G4 actions and some miscellaneous algs for Gauss
 !-----------------------------------------------------------------------------
 
+!======================== GaussTools v15r1 2008-12-08 ========================
+! 2008-11-04 - Patrick Robbe
+ - MCTruthManager: saves creator process before resetting the vertex barcode
+ - SpecialCuts.cpp: now sets step to StopAndKill except for LoopCuts
+
+! 2008-10-23 - Patrick Robbe
+ - GaussPostTrackAction: Simplify code
+ - MCTruthManager.cpp: bug fix (clear map of links to MCParticles 
+   at beginning of new event)
+
+! 2008-10-20 - Patrick Robbe
+ - Use new algorithms to transfer MCTruth (from GaussKine)
+   All changes are backward compatible 
+    . MCTruthManager: maintains a map of HepMC to MCParticle links 
+    . GaussPostTrackAction: transfer link to MCParticle in GaussUserInfo
+    . GaussPostTrackActionHepMC: fill MCTruthManager informations
+
 !======================= GaussTools v15r0p1 2008-10-10 =======================
 ! 2008-10-08 - Gloria CORTI
  - Add printout in initialization of physics contructor registered for the 

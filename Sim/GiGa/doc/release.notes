@@ -1,10 +1,24 @@
-! $Id: release.notes,v 1.124 2008-10-10 13:42:00 gcorti Exp $
+! $Id: release.notes,v 1.128 2008-12-08 10:16:33 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Sim/GiGa
 ! Responsible : Gloria CORTI, Vanya BELYAEV
 ! Purpose     : Holds interfaces and base classes plus generic implementation
 !               for G4 <-> Gaudi applications 
 !-----------------------------------------------------------------------------
+
+!======================= GiGa v19r4 2008-12-08 ===============================
+! 2008-11-28 - Patrick Robbe
+ - GiGa.cpp: remove update of G4 particles to do it in GaussKine (to be
+   sure it is done after generator initializations)
+
+! 2008-11-04 - Patrick Robbe
+ - GiGa.cpp: update also particle lifetime from ParticlePropertySvc
+
+! 2008-10-20 - Patrick Robbe
+ - GiGa.h/cpp: add possibility via job options to update particle 
+   properties (mass for the moment) of Geant4 using ParticlePropertySvc
+ - GiGaTrajectory: add link to mother generator HepMC particle via user
+   GaussTrackInformation
 
 !======================= GiGa v19r3 2008-10-10 ===============================
 ! 2008-10-10 - Gloria CORTI for Marco PAPPAGALLO

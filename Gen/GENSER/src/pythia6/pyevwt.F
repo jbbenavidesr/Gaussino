@@ -1,4 +1,4 @@
- 
+C $Id: pyevwt.F,v 1.4 2008-11-25 14:30:51 robbep Exp $  
 C*********************************************************************
  
 C...PYEVWT
@@ -32,7 +32,7 @@ C...Set default weight for WTXS.
 C...Read out subprocess number.
       ISUB=MINT(1)
       IF ((ISUB.LT.421).OR.((ISUB.GT.439).AND.(ISUB.LT.461)).OR.
-     +    (ISUB.GT.479)) THEN
+     +    (ISUB.GT.484)) THEN
         RETURN
       ENDIF
  

@@ -1,14 +1,14 @@
 # File for setting SIMCOND settings from python promt for a given
 # configuration: Beam energy, Velo Status, Magnetic Field Status 
 #
-# Beam5TeV-VeloClosed-BfieldZero 
+# Beam450GeV-VeloClosed-MagOff
 #
 # Syntax is: 
 #  gaudirun.py $GAUSSOPTS/Gauss-2008.py
-#              $GAUSSOPTS/Beam5TeV-VeloClosed-BfieldZero.py
+#              $GAUSSOPTS/Beam450GeV-VeloClosed-MagOff.py
 #              $DECFILESROOT/options/30000000.opts (ie. event type)
-#              $GAUSSOPTS/Gauss-JobExample.py (ie. job specific: random seed,
-#                                                  output file names...)
+#              $GAUSSOPTS/Gauss-Job.py (ie. job specific: random seed,
+#                                                         output file names...)
 #
 from Gauss.Configuration import *
 
@@ -19,10 +19,11 @@ UpdateManagerSvc().ConditionsOverride += [
  "Conditions/HardwareProperties/LHCb/Magnet/ScaleDown := double_v Coeffs = 0 0;"
 ]
 
-#--Tell to use 5 TeV beams for collisions and beam gas, with corresponding
-#--beam size and luminous region
-importOptions("$GAUSSOPTS/BeamCond-5TeV.opts")
+#--Tell to use 450 GeV beams for collisions and beam gas, with corresponding
+#--beam size and luminous region, the options already set zero crossing angle
+#--as for BfieldOff
+importOptions("$GAUSSOPTS/PilotRun.opts")
 
 #--Starting time
 ec = EventClockSvc()
-ec.EventTimeDecoder.StartTime = 201000*ns
+ec.EventTimeDecoder.StartTime = 101000*SystemOfUnits.ns

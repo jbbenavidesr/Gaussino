@@ -4,6 +4,18 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v5r0 2008-12-08 ===========================
+! 2008-25-11 - Patrick Robbe
+ - Add xsection.F (Nick Brook) which computes cross section for psi(3770)
+   production.
+ - Add production of psi(3770) (Colo singlet, Nick Brook)
+
+! 2008-11-11 - Patrick Robbe
+ - Add new routines to overwrite in Pythia, to generate extra charmonium states:
+   pyscat.F, pysghf.F pysigh.F
+ - pyevwt.F: add new process numbers for extra charmonium states
+ - pyinit.F: add description of the extra charmonium processes
+
 !========================== GENSER v4r3 2008-10-10 ===========================
 ! 2008-09-23 - Patrick Robbe
  - pyevwt.F: reweight events only if quarkonium

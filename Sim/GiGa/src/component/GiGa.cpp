@@ -1,4 +1,4 @@
-// $Id: GiGa.cpp,v 1.14 2007-03-26 09:02:22 gcorti Exp $ 
+// $Id: GiGa.cpp,v 1.17 2008-11-28 15:09:05 robbep Exp $ 
 #define GIGA_GIGASVC_CPP 1 
 
 // Include files 
@@ -15,7 +15,6 @@
 #include    "GaudiKernel/IToolSvc.h"
 #include    "GaudiKernel/SvcFactory.h"
 #include    "GaudiKernel/MsgStream.h"
-#include    "GaudiKernel/ParticleProperty.h"
 #include    "GaudiKernel/Bootstrap.h"
 #include    "GaudiKernel/MsgStream.h"
 #include    "GaudiKernel/Stat.h"
@@ -26,6 +25,7 @@
 #include    "G4UIsession.hh"
 #include    "G4VVisManager.hh"
 #include    "G4ParticleTable.hh"
+#include    "G4ParticlePropertyTable.hh"  
 
 // from GiGa
 #include    "GiGa/IGiGaPhysicsList.h"
@@ -331,6 +331,7 @@ StatusCode GiGa::initialize()
         { return Error("Unable to locate Random Number service '"
                        + m_rndmSvcName + "'" , sc ) ; }
     }
+    
   /// Dump all particles known to Geant4 
   if( m_printParticles ) {
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();

@@ -1,4 +1,4 @@
-// $Id: FlatSmearVertex.h,v 1.1 2008-05-19 10:11:24 robbep Exp $
+// $Id: FlatSmearVertex.h,v 1.2 2008-12-02 10:14:58 gcorti Exp $
 #ifndef PARTICLEGUNS_FLATSMEARVERTEX_H 
 #define PARTICLEGUNS_FLATSMEARVERTEX_H 1
 
@@ -50,6 +50,11 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
 
   /// Maximum value for the z coordinate of the vertex (set by options)
   double m_zmax   ;
+
+  /// Direction of the beam to take into account TOF vs nominal IP8, can have
+  /// only values -1 or 1, or 0 to switch off the TOF and set time of 
+  /// interaction to zero (default = 1, as for beam 1)
+  int m_zDir;
 
   Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };

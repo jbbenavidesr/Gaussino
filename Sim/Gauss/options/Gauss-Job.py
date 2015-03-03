@@ -14,10 +14,11 @@ GaussGen.RunNumber        = 1082
 nEvts = 5
 ApplicationMgr( EvtMax     = nEvts )
 
-#--Set name of output files for given job and read in options
+#--Set name of output files for given job
 idFile = 'GaussExample'
 HistogramPersistencySvc().OutputFile = idFile+'-histos.root'
 
 tape = OutputStream("GaussTape")
 tape.Output = "DATAFILE='PFN:%s.sim' TYP='POOL_ROOTTREE' OPT='RECREATE'"%idFile
 ApplicationMgr( OutStream = [tape] )
+

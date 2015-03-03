@@ -1,4 +1,4 @@
-// $Id: PythiaProduction.cpp,v 1.12 2008-09-23 16:18:58 robbep Exp $
+// $Id: PythiaProduction.cpp,v 1.22 2008-12-03 15:58:48 gcorti Exp $
 
 // Include files
 // STD * STL 
@@ -14,6 +14,7 @@
 // from Gaudi
 #include "GaudiKernel/System.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
+#include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
@@ -37,7 +38,7 @@
  *  Implementation file for class PythiaProduction
  *
  *  @date 2005-08-16 
- *  @author Patrick Robbe
+ *  @author Patrick Robbe, modified by Neal Gueissaz for supersymmetry
  */
 //-----------------------------------------------------------------------------
 
@@ -86,7 +87,8 @@ PythiaProduction::PythiaProduction( const std::string& type,
     m_had_mstu_2 ( 0 ) , 
     // list of particles to be printed using PyList(12) 
     m_pdtlist    (   ) , 
-    m_widthLimit ( 1.5e-6 * Gaudi::Units::GeV ) 
+    m_widthLimit ( 1.5e-6 * Gaudi::Units::GeV ) ,
+    m_pdecaylist (   )
   /// boolean flag to force the valiadation of IO_HEPEVT 
   , m_validate_HEPEVT ( false ) // force the valiadation of IO_HEPEVT 
   /// the file to dump the HEPEVT inconsistencies 
@@ -100,6 +102,8 @@ PythiaProduction::PythiaProduction( const std::string& type,
   declareProperty( "BeamToolName" , m_beamToolName = "CollidingBeams" ) ;
   declareProperty( "WidthLimit" , m_widthLimit = 1.5e-6 * Gaudi::Units::GeV ) ;
   declareProperty( "SLHADecayFile" , m_slhaDecayFile = "empty" ) ;
+  declareProperty( "PDecayList" , m_pdecaylist ) ;
+  declareProperty( "SLHASpectrumFile" , m_slhaSpectrumFile = "empty" ) ;
 
   declareProperty 
     ( "ValidateHEPEVT"  , 
@@ -172,9 +176,9 @@ PythiaProduction::PythiaProduction( const std::string& type,
   m_defaultSettings.push_back( "pypars mstp 51 10042" ) ;
   m_defaultSettings.push_back( "pypars mstp 142 2" ) ;
   m_defaultSettings.push_back( "pypars parp 67 1.0" ) ;
-  m_defaultSettings.push_back( "pypars parp 82 4.50" ) ;
+  m_defaultSettings.push_back( "pypars parp 82 4.28" ) ;
   m_defaultSettings.push_back( "pypars parp 89 14000" ) ;
-  m_defaultSettings.push_back( "pypars parp 90 0.116" ) ;
+  m_defaultSettings.push_back( "pypars parp 90 0.119" ) ;
   m_defaultSettings.push_back( "pypars parp 85 0.33" ) ;
   m_defaultSettings.push_back( "pypars parp 86 0.66" ) ;
   m_defaultSettings.push_back( "pypars parp 91 1.0" ) ;
@@ -222,12 +226,29 @@ StatusCode PythiaProduction::initialize( ) {
     if ( "UNKNOWN" != System::getEnv( "DECFILESROOT" ) ) {
       std::string temp = m_slhaDecayFile ;
       m_slhaDecayFile = System::getEnv( "DECFILESROOT" ) +
-        "/dkfiles/" + temp ;
+	"/lhafiles/" + temp ;
     }
     // Check if file exists
     boost::filesystem::path slhaDecayFile( m_slhaDecayFile ) ;
-    if ( ! boost::filesystem::exists( slhaDecayFile ) ) 
-      return Error( "The SLHA decay file does not exist" ) ;
+    if ( ! boost::filesystem::exists( slhaDecayFile ) ){ 
+      return Error("The SLHA decay file does not exist : " +  m_slhaDecayFile);
+    }
+  }
+
+  // Name of PYSLHA mass spectrum file to read
+  if ( "empty" != m_slhaSpectrumFile ) {
+
+    if ( "UNKNOWN" != System::getEnv( "DECFILESROOT" ) ) {
+      std::string temp = m_slhaSpectrumFile ;
+      m_slhaSpectrumFile = System::getEnv( "DECFILESROOT" ) +
+	"/lhafiles/" + temp ;
+    }
+
+    // Check if file exists
+    boost::filesystem::path shlaSpectrumFile( m_slhaSpectrumFile ) ;
+    if ( ! boost::filesystem::exists( shlaSpectrumFile ) ) 
+      return Error( "The SLHA mass spectrum file does not exist : " + 
+		    m_slhaSpectrumFile ) ;
   }
 
   // Set size of common blocks in HEPEVT: note these correspond to stdhep
@@ -235,7 +256,25 @@ StatusCode PythiaProduction::initialize( ) {
   HepMC::HEPEVT_Wrapper::set_sizeof_real( 8 ) ;
   HepMC::HEPEVT_Wrapper::set_max_number_entries( 10000 ) ;  
 
-  return initializeGenerator() ;
+  sc = initializeGenerator() ;
+  if ( ! sc.isSuccess() ) return sc ;
+  
+  // Now that Pythia is initialized, update the mass of the special particles
+  // in the particle property service (it is because Pythia may have changed
+  // these masses after computation from its internal parameters)
+  // retrieve the particle property service
+  IParticlePropertySvc * ppSvc = 
+    svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
+  IParticlePropertySvc::const_iterator iter ;
+  for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter ) {
+    if ( isSpecialParticle( *iter ) ) {
+      int pythiaId = (*iter) -> pythiaID() ;
+      int kc = Pythia::PyComp( pythiaId ) ;
+      (*iter) -> setMass( Pythia::pydat2().pmas( kc , 1 ) * Gaudi::Units::GeV ) ;
+    }
+  }
+  release( ppSvc ) ;
+  return StatusCode::SUCCESS ;
 }
 
 //=============================================================================
@@ -257,6 +296,28 @@ StatusCode PythiaProduction::initializeGenerator( ) {
     Pythia::pypars().mstp( 122 ) = 0 ;
     m_initializationListingLevel = -1 ;
   }
+  
+  // Add extra processes for LHCb pythia
+  // Process 480: g + g -> Psi(2S) + g Color Singlet
+  Pythia::pyint2().iset(480) = 2 ;
+  Pythia::pyint2().kfpr(480,1) = 100443 ;
+  Pythia::pyint2().kfpr(480,2) = 21 ;
+  // Process 481: g + g -> Upsilon(2S) + g Color Singlet
+  Pythia::pyint2().iset(481) = 2 ;
+  Pythia::pyint2().kfpr(481,1) = 100553 ;
+  Pythia::pyint2().kfpr(481,2) = 21 ;
+  // Process 482: g + g -> Upsilon(3S) + g Color Singlet
+  Pythia::pyint2().iset(482) = 2 ;
+  Pythia::pyint2().kfpr(482,1) = 200553 ;
+  Pythia::pyint2().kfpr(482,2) = 21 ;
+  // Process 483: g + g -> Upsilon(4S) + g Color Singlet
+  Pythia::pyint2().iset(483) = 2 ;
+  Pythia::pyint2().kfpr(483,1) = 300553 ;
+  Pythia::pyint2().kfpr(483,2) = 21 ;
+  // Process 484: g + g -> Upsilon(5S) + g Color Singlet
+  Pythia::pyint2().iset(484) = 2 ;
+  Pythia::pyint2().kfpr(484,1) = 9000553 ;
+  Pythia::pyint2().kfpr(484,2) = 21 ;
 
   // Set User process to 0 for normal Pythia to be overriden for
   // specific generation
@@ -337,28 +398,63 @@ StatusCode PythiaProduction::initializeGenerator( ) {
   std::remove( m_pythiaListingFileName.c_str() ) ;
   Pythia::InitPyBlock( m_pythiaListingUnit , m_pythiaListingFileName ) ;
 
-  // if specified, read SHLA decay file
-  if ( "empty" != m_slhaDecayFile ) {
-    int lunUnit = F77Utils::getUnit( msgLevel( MSG::DEBUG ) ) ;
-    if ( 0 >= lunUnit ) 
+ // if specified, read SHLA mass spectrum file
+  int lunUnit = -1;
+  if ( "empty" != m_slhaSpectrumFile ) {
+    lunUnit = F77Utils::getUnit( msgLevel( MSG::DEBUG ) ) ;
+    if ( 0 >= lunUnit )
       return Error( "No Fortran Unit available" ) ;
-    sc = F77Utils::openOld( lunUnit , m_slhaDecayFile , 
-                                       msgLevel( MSG::INFO ) ) ;
-    if ( sc.isFailure() ) 
+    sc = F77Utils::openOld( lunUnit , m_slhaSpectrumFile ,
+                            msgLevel( MSG::INFO ) ) ;
+    if ( sc.isFailure() )
+      return Error( "Cannot open SLHA mass spectrum file" ) ;
+    Pythia::pymssm().imss(21) = lunUnit ;
+    //If no decay file provided, assume it is in the spectrum file
+    if ( "empty" == m_slhaDecayFile ) Pythia::pymssm().imss(22) = lunUnit ;
+  }
+
+  // if specified, read SHLA decay file
+  int lunUnit2 = -1;
+  if ( "empty" != m_slhaDecayFile ) {
+    lunUnit2 = F77Utils::getUnit( msgLevel( MSG::DEBUG ) ) ;
+    if ( 0 >= lunUnit2 )
+      return Error( "No Fortran Unit available" ) ;
+    sc = F77Utils::openOld( lunUnit2 , m_slhaDecayFile ,
+                            msgLevel( MSG::INFO ) ) ;
+    if ( sc.isFailure() )
       return Error( "Cannot open SLHA decay file" ) ;
 
-    Pythia::pymssm().imss(22) = lunUnit ;
-    // KSUSY1 = 1000000
-    int KSUSY1 = 1000000 ;
+    Pythia::pymssm().imss(22) = lunUnit2 ;
     int status = 0 ;
-    Pythia::PySlha( 2 , KSUSY1+22 , status ) ;
-
-    sc = F77Utils::close( lunUnit , msgLevel( MSG::INFO ) ) ;
-    if ( sc.isFailure() ) 
-      return Error( "Cannot close SLHA decay file" ) ;
+    if( m_pdecaylist.size() != 0 ){
+      for( std::vector<int>::const_iterator i = m_pdecaylist.begin();
+	   i != m_pdecaylist.end(); i++ ){
+	Pythia::PySlha( 2 , *i , status ) ;
+	debug() << "Updating Particle "<< *i <<", Status " << status <<endreq;
+	if(status != 0) return Error( "Could not update particle " ) ;
+      }
+      sc = F77Utils::close( lunUnit2 , msgLevel( MSG::INFO ) ) ;
+      if ( sc.isFailure() )
+	return Error( "Cannot close SLHA decay file" ) ;
+    }
   }
   
   Pythia::PyInit( m_frame, m_beam, m_target, m_win ) ;  
+
+  //Close mass spectrum file
+  if ( "empty" != m_slhaSpectrumFile ) {
+    sc = F77Utils::close( lunUnit , msgLevel( MSG::INFO ) ) ;
+    if ( sc.isFailure() )
+      return Error( "Cannot close SLHA mass spectrum file" ) ;
+  }
+
+ 
+  //Close decay file
+   if ( "empty" != m_slhaDecayFile && 0 == m_pdecaylist.size() ) {  
+     sc = F77Utils::close( lunUnit2 , msgLevel( MSG::INFO ) ) ;
+     if ( sc.isFailure() )
+       return Error( "Cannot close SLHA decay file" ) ;
+   }
 
   // Reset forced fragmentation flag
   Pythia::pydat1().mstu( 150 ) = 0 ;
@@ -423,14 +519,30 @@ void PythiaProduction::setStable( const ParticleProperty * thePP ) {
 void PythiaProduction::updateParticleProperties( const ParticleProperty * 
                                                  thePP ) {
   int pythiaId = thePP -> pythiaID() ;
+
+  //If MSSM mass spectrum is provided, no need to update susy particles.
+  if( m_slhaSpectrumFile != "empty" ){
+    if( abs(pythiaId)>1000000 && abs(pythiaId)<1001000 ) return;
+    if( abs(pythiaId)>2000000 && abs(pythiaId)<2001000 ) return;
+    if( pythiaId == 25 || pythiaId == 35 || pythiaId == 36 ||
+        abs(pythiaId) == 37 ) return;
+  }
+
+  //If MSSM decay file is provided, do not update particles from PDecayList.
+  if( m_slhaDecayFile != "empty" ){
+    for( std::vector<int>::const_iterator i = m_pdecaylist.begin();
+	 i != m_pdecaylist.end(); i++ ){
+      if( pythiaId == *i ) return;
+    }
+  }
+
   double pwidth , lifetime ;
   if ( 0 != pythiaId ) {
     int kc = Pythia::PyComp( pythiaId ) ;
     if ( kc > 0 ) {
       if ( 0 == thePP -> lifetime() ) pwidth = 0. ;
       else pwidth = ( Gaudi::Units::hbarc / 
-                      ( thePP -> lifetime() * Gaudi::Units::c_light ) ) ;
-      //      if ( pwidth < ( 1.5e-6 * GeV ) ) pwidth = 0. ;
+		      ( thePP -> lifetime() * Gaudi::Units::c_light ) ) ;
       if ( pwidth < m_widthLimit ) pwidth = 0. ;
 
       lifetime =  thePP -> lifetime() * Gaudi::Units::c_light ;
@@ -909,6 +1021,8 @@ bool PythiaProduction::isSpecialParticle( const ParticleProperty * thePP )
   case 5403:
   case 5501:
   case 5503:
+  case 1000022:
+  case 1000024:
     return true ;
     break ;
   default:
@@ -1001,13 +1115,16 @@ StatusCode PythiaProduction::toHepMC
   
   // Now convert to LHCb units:
   for ( HepMC::GenEvent::particle_iterator p = theEvent -> particles_begin() ;
-        p != theEvent -> particles_end() ; ++p ) 
+        p != theEvent -> particles_end() ; ++p ) {
     (*p) -> 
       set_momentum(
-HepMC::FourVector( (*p) -> momentum().px() * Gaudi::Units::GeV ,
-                   (*p) -> momentum().py() * Gaudi::Units::GeV , 
-                   (*p) -> momentum().pz() * Gaudi::Units::GeV , 
-                   (*p) -> momentum().e() * Gaudi::Units::GeV ) ) ;
+        HepMC::FourVector( (*p) -> momentum().px() * Gaudi::Units::GeV ,
+                           (*p) -> momentum().py() * Gaudi::Units::GeV , 
+                           (*p) -> momentum().pz() * Gaudi::Units::GeV , 
+			   (*p) -> momentum().e() * Gaudi::Units::GeV ) ) ;
+    // Since HepMC 2, the generated mass is also stored
+    (*p) -> set_generated_mass( (*p)-> generated_mass() * Gaudi::Units::GeV ) ;
+  }
   
   for ( HepMC::GenEvent::vertex_iterator v = theEvent -> vertices_begin() ;
         v != theEvent -> vertices_end() ; ++v ) {
