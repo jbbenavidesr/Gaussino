@@ -4,6 +4,56 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v44r3p1">2013-01-15 - GaussSys v44r3p1</A></H1><PRE>
+<H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
+   To commission new version of EvtGen.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v35r3 (and Gaudi v23r5)</b>
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   pythia 6.425.2, photos 215.4, lhapdf 5.8.5 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.06.05 (via LCG_Interfaces)
+   Geant4 v94r2p6 (based on geant4.9.4.p02) and Geant4Files v94r*
+   XmlVis v1r15,
+   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
+   pythia8 170 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.1 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v13r1</b> (private LHCb version),
+   BcVegPy v3r1, GenXicc v2r0 and HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+ - on branch v44b
+
+!======================== Gauss v44r3p1 2013-01-15 ===========================
+ - on v44b branch
+
+! 2013-01-15 - Gloria Corti
+ - Change major version of DecFiles to v27 to be compatible with changes in
+   EvtGen v13r1 to use Pythia 8 codes in decay files.
+
+!========================== EvtGen v13r1 2012-12-20 ==========================
+! 2012-12-20 - John Back
+ - Created new tag containing the recent changes to the Dalitz decay models.
+
+! 2012-12-18 - John Back
+ - Corrected some wrong daughter assignments for EvtDDalitz modes 5 
+   (D0 -> K0 K+ K-) and 12 (D0 -> pi- pi+ pi0).
+
+! 2012-12-17 - John Back
+ - Updated some of the xml generic Dalitz plot code to incorporate extra
+   additions from Daniel Craik. 
+   Make EvtSimpleRandomEngine inherit from EvtRandomEngine.
+
+! 2012-12-14 - John Back
+ - Changed the EvtGen constructor to use Pythia 8 codes in decay files.
+
+!=============================================================================
 </PRE><H1><A NAME="v44r3">2012-12-04 - GaussSys v44r3</A></H1><PRE>
 <H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
     </A></H2>

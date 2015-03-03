@@ -4,6 +4,13 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v44r3p1 2013-01-15 ===========================
+ - on v44b branch
+
+! 2013-01-15 - Gloria Corti
+ - Change major version of DecFiles to v27 to be compatible with changes in
+   EvtGen v13r1 to use pythia8 decay codes in DECAY.DEC
+
 !========================= Gauss v44r3 2012-12-04 ============================
  - on v44b branch
 
