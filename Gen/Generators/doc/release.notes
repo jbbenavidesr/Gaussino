@@ -5,34 +5,6 @@
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
-
-!====================== Generators v10r12 2011-08-16 =========================
-! 2011-08-15 - Adam Webber
- - Add in DMuCascadeInAcc filter tool to src/components. This is filters events 
-   with Xb->XcXc, where one of the charm daughters goes to a muon, and another 
-   goes to 3 charged K/pi. Used to make an inclusive background sample for 
-   semileptonic B decay analysis.
-
-! 2011-08-14 - Gloria Corti
- - Backport fixes by I.Belyaev to GenericCutTool from GenCuts package
-
-! 2011-06-20 - Patrick Robbe
- - src/component/ApplyPhotos.cpp: add the possibility to use it for more
-   than one particle type.
-
-! 2011-06-16 - Patrick Robbe
- - src/component/ApplyPhotos.cpp: new algorithm to be able to apply Photos 
-   on Z0 decays.
-
-!====================== Generators v10r11 2011-05-31 =========================
-! 2011-05-31 - Victor Coco
- - BiasedBB: add some cuts on number of stable charged daugthers of the B and on 
-   minimal R displacement. By default gives the same result than without those cuts
-
-! 2011-05-23 - Alex T. Grecu
- - Replace HepMC::IO_Ascii with HepMC::IO_GenEvent in WriteHepMCAsciiFile 
-   algorithm. This way Gauss may be used as MC generator for rivet analyses.
-
 !====================== Generators v10r10 2011-03-17 =========================
 ! 2011-03-16 - Alex Shires
  - Rename tool from DaughtersInLHCbAcceptance to DaughtersInLHCbAndWithMinP

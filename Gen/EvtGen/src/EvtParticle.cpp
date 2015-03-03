@@ -45,6 +45,7 @@
 #include "EvtGenBase/EvtCPUtil.hh"
 #include "EvtGenBase/EvtParticleFactory.hh"
 #include "EvtGenBase/EvtIdSet.hh"
+#include "EvtGenBase/EvtStatus.hh"
 
 using std::endl;
 
@@ -287,7 +288,7 @@ void EvtParticle::initDecay(bool useMinMass) {
   if ( (getNDaug()==0 && !hasBorUps) && (thisId==BS0||thisId==BSB||thisId==BD0||thisId==BDB)){
     double t;
     int mix;
-    EvtCPUtil::incoherentMix(getId(), t, mix);
+    EvtCPUtil::getInstance()->incoherentMix(getId(), t, mix);
     setLifetime(t);
     
     if (mix) {
@@ -477,7 +478,7 @@ void EvtParticle::generateMassTree() {
 	}
 	else {
 	  report(INFO,"EvtGen") << "Sorry, no luck finding a valid set of masses.  This may be a pathological combo\n";
-	  assert(0);
+	  break;
 	}
       }
     }

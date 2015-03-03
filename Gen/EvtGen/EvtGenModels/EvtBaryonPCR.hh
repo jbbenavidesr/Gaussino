@@ -17,38 +17,38 @@
 // Modification history:
 //
 //    R.J. Tesarek     May 28, 2004     Module created
-//    Karen Gibson     1/20/2006        Module updated for 1/2+->1/2+
-//    Zhou Xing        Nov 2010         1/2+->1/2-, 1/2+->3/2- Lambda decays
+//    Karen Gibson     1/20/2006        Module updated for 1/2+->1/2+,
+//                                      1/2+->1/2-, 1/2+->3/2- Lambda decays
 //
 //------------------------------------------------------------------------
 
 #ifndef EVTBARYONPCR_HH
 #define EVTBARYONPCR_HH
- 
+
 #include "EvtGenBase/EvtDecayAmp.hh"
 #include "EvtGenBase/EvtSemiLeptonicFF.hh"
 #include "EvtGenBase/EvtSemiLeptonicBaryonAmp.hh"
-#include <string>
- class EvtParticle;
- 
- class EvtBaryonPCR:public  EvtDecayAmp  {
- 
- public:
- 
-   EvtBaryonPCR();
-   virtual ~EvtBaryonPCR();
- 
-   std::string getName();
-   EvtDecayBase* clone();
-   
-   void decay(EvtParticle *p);
-   void initProbMax();
-   void init();
- 
- private:
-   EvtSemiLeptonicFF *baryonpcrffmodel;
-   EvtSemiLeptonicBaryonAmp *calcamp;
- };
+
+class EvtParticle;
+
+class EvtBaryonPCR:public  EvtDecayAmp  {
+
+public:
+
+  EvtBaryonPCR();
+  virtual ~EvtBaryonPCR();
+
+  std::string getName();
+  EvtDecayBase* clone();
+
+  void decay(EvtParticle *p);
+  void initProbMax();
+  void init();
+
+private:
+  EvtSemiLeptonicFF *baryonpcrffmodel;
+  EvtSemiLeptonicBaryonAmp *calcamp;
+};
 
 #endif
 

@@ -4,16 +4,16 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================= Gauss v39r4 2011-08-17 ============================
-! 2011-08-16 - Patrick Robbe
- - Configuration.py: add empty sequence in the generation sequence as a 
-   place to add extra algorithms for the generation.
+!========================= Gauss v40r0 2011-04-15 ============================
+! 2011-04-15 - Gloria Corti
+ - Fix error in Gauss-DEV.py that was picking up DDDB tag for 2010 instead of
+   2011.
 
-!========================= Gauss v39r3 2010-05-31 ============================
-! 2011-05-31 - Gloria Corti
- - Increase minor version
+! 2011-04-13 - Gloria Corti
+ - New options for Gauss-MC10.py with standard options as in production.
+ - Modify options in Gauss-DEV.py to pick up 2011 tags.
 
-!========================= Gauss v39r2 2010-03-15 ============================
+!========================= Gauss v39r2 2011-03-15 ============================
 ! 2011-02-07 - Silvia Miglioranzi
  - Updated ref files for QMTests gauss-dev, gauss-mc09 and gauss-up (on slc4 
    64,32 and slc5 platforms).

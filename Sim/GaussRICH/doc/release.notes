@@ -4,8 +4,41 @@
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !----------------------------------------------------------------------------- 
 
+!========================= GaussRICH v11r3 2011-04-13 ========================
+!2011-04-12 - Sajan Easo
+  - Added a few histograms to the RichAnalysis and updated the Counters used 
+    histograms
+!2011-03-28 - Sajan Easo
+ - Added couple of counters to plot few histograms for analysis and monitoring. This is done in
+   RichG4Counters.h,icpp and cpp.
+ -Added a material name path for future monitoring using pmts. This is not
+  used at the moment. Modification in  RichG4GaussPathNames.h and RichG4MatRadIdentifier.cpp
+! 2011-02-10 - Sajan Easo
+ - Update the gas radiator names to be R2RadiatorGas in addition to be CF4
+   and R1RadiatorGas in addition to be C4F10. The old and new names are kept
+   active for backward compatibility with older versions of the DDDB database.
+   The CF4 Scintillation process is also activated when the gas in RICH2 is R2RadiatorGas,
+   but the amount of effective scintillation depends onthe gas mixture. This amount of
+   scintilation can be changed using the options file parameter in Rich.opts, namely
+   GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor
+
+ - Update the RichHpdProperties.cpp in order to account for the disabled HPDs in DB. The
+   update uses the full list of HPDs (instead of the active HPD list) so that the
+   effect of all the HPDs are simulated. When copying the output hits to MCHit, only the
+   hits from the active HPDs are copied.
+
+
+! 2011-02-09 - Chris Jones
+ - Adapt to removal of typedef RichAlgBase -> Use Rich::AlgBase
+
+! 2010-12-15 - Chris Jones
+ - Update GetMCRichHitsAlg to specifically check with DeRichSystem if the HPD
+   associated to each hit is active, and only to make persistent hits for those
+   which are.
+
 !========================= GaussRICH v11r2 2010-12-12 ========================
-!2010-12-02  - Sajan Easo
+
+! 2010-12-02  - Sajan Easo
  - Add the capability to smear the hit location smearing to match the real data
    which has misalignments. This can be activated in Rich.opts. The default in
    the C++ code is to switch this off, but in Rich.opts it is now switch on.
@@ -20,8 +53,8 @@
    amount of scintillation photons.  
 
 ! 2010-11-13 - Chris Jones
- + Remove usage of G4cout from RichG4GeomProp. Use Gaudi MsgStream instead.
- + Fix compilation warning in RichG4Hit on SLC5.
+ - Remove usage of G4cout from RichG4GeomProp. Use Gaudi MsgStream instead.
+ - Fix compilation warning in RichG4Hit on SLC5.
 
 !========================= GaussRICH v11r1 2010-07-09 ========================
 ! 2010-06-11 - Sajan EASO

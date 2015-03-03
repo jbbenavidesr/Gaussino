@@ -2,13 +2,6 @@
 ! Package     : Gen/BcVegPy
 ! Responsible : 
 
-!========================= BcVegPy v3r0 2011-07-15 ===========================
-! 2011-07-15 - Gloria Corti
- - Apply pattern not to build on windows, so that conditional use can be
-   removed from GaussSys
-
-! 2011-06-17 - Patrick Robbe
- - bcvegpy_upinit.F: generate weighted events.
 
 ! ====================== BcVegPy v2r1 2009-11-04 ===========================
 ! 2009-10-01 - Hubert Degaudenzi

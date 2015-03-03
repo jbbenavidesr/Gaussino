@@ -330,7 +330,7 @@ class Gauss(LHCbConfigurableUser):
             if genType not in KnownGenTypes:
                 raise RuntimeError("Unknown Generation type '%s'"%genType)
             if genType == 'PHYS':
-                genProc = Generation("Generation"+slot)
+                genProc = Generation("Generation"+slot) 
             elif genType == 'PGUN':
                 genProc = ParticleGun("ParticleGun"+slot)
             else:
@@ -344,8 +344,7 @@ class Gauss(LHCbConfigurableUser):
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver' 
 
             genSequence.Members += [ genInit , genProc ]
-            # add also an empty sequence for later additions
-            genSequence.Members += [ GaudiSequencer("GeneratorSlot" + self.slotName(slot) + "UserExtraSeq" ) ]
+
 
     ##
     ##
