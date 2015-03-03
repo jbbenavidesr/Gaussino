@@ -8,6 +8,10 @@
 
 from Gaudi.Configuration import *
 
+# Run the application!
+from Configurables import Gauss
+theApp = Gauss()
+
 ##############################################################################
 # latest database tags 
 ##############################################################################

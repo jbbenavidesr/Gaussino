@@ -1,5 +1,5 @@
 package GaussSys
-version v41r3
+version v41r4
 
 branches cmt doc
 
@@ -8,19 +8,21 @@ branches cmt doc
 #==================================================================
 
 # Take latest version of GaudiConf and GenEvent
+# and a more recent version of LoKiGen
 use  GenEvent           v6r2    Event
+use  LoKiGen            v10r4   Phys
 use  GaudiConf          v15r2
 
 # Gauss application: the application is not built on Win32
-use Gauss               v41r3   Sim
+use Gauss               v41r4   Sim
 
 # Generator packages: Basic configuration
-use GenCuts             v1r4    Gen
+use GenCuts             v1r5    Gen
 use GENSER              v9r3    Gen
-use EvtGen              v12r9   Gen
+use EvtGen              v12r11  Gen
 use Mint                v1r2    Gen    # Additions to EvtGen
-use EvtGenExtras        v3r2    Gen
-use Generators          v11r4   Gen
+use EvtGenExtras        v3r3    Gen
+use Generators          v11r5   Gen
 use LbPythia            v10r3   Gen
 
 

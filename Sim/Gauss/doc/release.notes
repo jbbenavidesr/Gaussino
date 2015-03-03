@@ -4,6 +4,22 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v41r4 2012-07-13 ============================
+
+ - on branch v41r3b
+
+! 2012-07-11 - Gloria Corti
+ - Remove spill-over from Gauss-MC11a.py
+ - Add the Gauss() configurable to Gauss-DEV.py to be able to run it by itself,
+   otherwise it is a generic gaudi application. It fixes the running of the 
+   development qmtest.
+
+! 2012-06-06 - Gloria Corti
+ - Introduce new script by Emmanouil Kiagias to make qmtest files from a 
+   template. The script is added as a make action so that they will be made
+   in the nighlty and used to check newly committed event types in DecFiles
+   . cmt/makeQMTests.py
+
 !========================= Gauss v41r3 2012-04-03 ============================
 ! 2012-04-02 - Gloria Corti
  - Add use of GenXiccData v1r1

@@ -5,6 +5,17 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!======================= Generators v11r5 2012-07-13 =========================
+ - build on v11b branch built starting from v11r4
+   and with the following changes ported from the trunk
+ 
+! 2012-07-22 - Gloria Corti
+ - Fix bug in FlatZSmearVertex where the location where to take the beam
+   parameters was empty. 
+
+! 2012-06-11 - Alex Shires
+ - update EvtGenInPhSpDecay to allow a configurable input file name
+
 !======================= Generators v11r4 2012-02-12 =========================
 ! 2012-02-12 - Gloria Corti
  - Few changes in Generation.cpp and GenCounters for counting in Pythia8 and 

@@ -4,6 +4,129 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v41r4">2012-07-13 - GaussSys v41r4</A></H1><PRE>
+<H2><A NAME="Note">Release for MC for 2011 data - Sim05b </br>
+Some event types will behave differently that those produced with previous 
+version of Gauss in v41 series (Sim05/Sim05a) due to bug fixes.
+</A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v33r0 (and Gaudi v22r4)</b>
+   AppConfig v3r*,
+   <b>DecFiles v25r*</b>, 
+   ParamFiles v8r5, 
+   SQLDDDB v6r*, FieldMap v5r*,
+   pythia 6.425.2, photos 215.4, lhapdf 5.8.5 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.06.05 (via LCG_Interfaces)
+   <b>Geant4 v94r2p2 (based on geant4.9.4.p02)</b> and Geant4Files v94r0
+   XmlVis v1r13,
+   herwig 6.510.3, jimmy 4.31.3 (via LCG_GeneratorsInterfaces)
+   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
+   pythia8 153< (via LCG_GeneratorsInterfaces)
+   EvtGen, BcVegPy, HidValley and <b>GenXicc</b> private LHCb versions 
+</A></H3>
+
+! 2012-07-13 - Gloria Corti
+ - Use Phys/LoKiGen to pick up bug fix 
+
+!========================= LoKiGen v10r4 2011-12-14 =========================
+! 2011-12-13 - Vanya Belyaev
+ - add GCHILD/GCHILDFUN and GCHILDCUT functors on Jibo's request
+
+! 2011-11-11 - Vanya Belyaev
+ - fix the oscillation flags in decay tree matching functions
+
+!========================= Gauss v41r4 2012-07-13 ============================
+
+ - on branch v41r3b
+
+! 2012-07-11 - Gloria Corti
+ - Remove spill-over from Gauss-MC11a.py
+ - Add the Gauss() configurable to Gauss-DEV.py to be able to run it by itself,
+   otherwise it is a generic gaudi application. It fixes the running of the
+   development qmtest.
+
+! 2012-06-06 - Gloria Corti
+ - Introduce new script by Emmanouil Kiagias to make qmtest files from a
+   template. The script is added as a make action so that they will be made
+   in the nighlty and used to check newly committed event types in DecFiles
+   . cmt/makeQMTests.py
+
+!========================== GenCuts v1r5 2012-07-13 ==========================
+ - on v1r4b branch
+
+! 2012-07-12 - Gloria Corti
+ - Backport r142618 and r142634
+
+! 2012-07-12 - Aurelien Martens
+ - Added a new class to allow to cut both on KS/Lambda's, the other daughters
+   of a Hb and the Hb itself, mainly for BnoC decays
+ - Added a bug fix also
+
+! 2012-06-29 - Gloria Corti
+ - Backport r141464 and r140652
+
+! 2012-06-22 - Marc Olivier Bettler (r141464)
+ - With Alessio Sarti, modified DiLeptonInAcceptance.cpp to allow for cut on
+   DOCA of leptons and cut on product of leptons' pT.
+
+! 2012-06-03 - Chris Thomas (r140652)
+ - DaughtersInLHCbAndCutsForDACP: generator-level cuts on:
+   . (Dst p, D0 pT) plane
+   . (Dst p - D0 p, Dst pT - D0 pT) plane
+   . D0 tau
+   . D0 flight distance from origin vertex
+   . D0 daughter p and pT
+
+!======================= EvtGen v12r11 2012-07-11 =========================
+! 2012-07-11 - John Back
+ - Additional corrections to D0->pi+pi-pi0 decay model in EvtDDalitz from
+   Marco Gersabeck and Frederic Dreyer.
+
+! 2012-07-09 - John Back
+ - Added new decay models/classes from Alexey Luchinsky:
+   EvtBcVMuNu, EvtTVP, EvtWnPi, EvtSVP, EvtXPsiGamma, EvtBcVNpi
+
+! 2012-06-29 - John Back
+ - Added D0->pi+pi-pi0 decay model to EvtDDalitz, from Frederic Dreyer.
+
+!======================== EvtGen v12r10 2012-05-14 =========================
+! 2012-04-24 - Jordi Garra Tico
+ - Solved two bugs in the EvtD0gammaDalitz model:
+   configuration of the conjugated model, and using only the B charge
+   to determine the model used, not the D flavour.
+
+!======================= EvtGenExtras v3r3 2012-07-13 ========================
+! 2012-07-11 - Aurelien Martens
+ - remove spin checking for EvtFlatSqDalitz
+
+! 2012-07-10 - Aurelien Martens
+ - Added new model for 3body decays to be generated flat on the so-called
+   square Dalitz plot (see PRD72 052002 (2005))
+
+! 2012-07-09 - Nikolai Nikitin
+ - Added new model for Bq -> 4 leptons decay (BQTOLLLLHYPERCP) with light sgoldstino
+
+! 2012-06-20 - Nikolai Nikitin
+ - cout deleting
+
+! 2012-06-20 - Nikolai Nikitin
+ - Optimization of memory allocation in the matrix element calculation.
+
+! 2012-05-22 - Nikolai Nikitin
+ - Added a new decay Bs -> f0(980) Mu Mu in the BTOSLLMS and BTOSLLMSEXT models.
+!======================= Generators v11r5 2012-07-13 =========================
+ - build on v11b branch built starting from v11r4
+   and with the following changes ported from the trunk
+
+! 2012-07-22 - Gloria Corti
+ - Fix bug in FlatZSmearVertex where the location where to take the beam
+   parameters was empty.
+
+! 2012-06-11 - Alex Shires
+ - update EvtGenInPhSpDecay to allow a configurable input file name
+
+!=============================================================================
 </PRE><H1><A NAME="v41r3">2012-04-03 - GaussSys v41r3</A></H1><PRE>
 <H2><A NAME="Note">Release for MC11a, new generator.</A></H2>
 <H3><A NAME="Use">This version uses:
