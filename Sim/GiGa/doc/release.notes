@@ -1,10 +1,29 @@
-! $Id: release.notes,v 1.128 2008-12-08 10:16:33 gcorti Exp $
+! $Id: release.notes,v 1.133 2009-12-17 17:36:53 gcorti Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Sim/GiGa
 ! Responsible : Gloria CORTI, Vanya BELYAEV
 ! Purpose     : Holds interfaces and base classes plus generic implementation
 !               for G4 <-> Gaudi applications 
 !-----------------------------------------------------------------------------
+
+!======================= GiGa v19r6 2009-12-17 ===============================
+! 2009-12-17 - Marco Clemencic
+ - Modified GiGa::finalize() to avoid segmentation faults when called after
+   the finalization of the ToolSvc (fix to bug #60331).
+
+!======================= GiGa v19r5 2009-11-04 ===============================
+! 2009-10-20 - Silvia Miglioranzi
+ - Fix compilation warnings on slc5 (type qualifiers ignored on function 
+   return type):
+   - GiGaTrajectoryPoint.h
+
+! 2009-10-14 - Gloria Corti
+ - Fix compilation errors on slc5
+   . GiGa.h, include IToolSvc rather than forward declaration
+ - Fix compilation warnings on slc5
+   . GiGaIGiGaSvc.cpp, put std::string around "blabla" in
+                       ___GIGA_CATCH_PRINT_AND_RETURN___(...)
+   . GiGaHitsByID.h,v, remove const from return type of id() 
 
 !======================= GiGa v19r4 2008-12-08 ===============================
 ! 2008-11-28 - Patrick Robbe

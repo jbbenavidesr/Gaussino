@@ -4,6 +4,10 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v37r7 2009-12-18 ============================
+! 2009-12-18 - Gloria CORTI
+ - Make new version to deploy changes to activate CP violation
+
 !======================== Gauss v37r6p1 2009-12-03 ===========================
 ! 2009-12-03 - Gloria CORTI
  - Make patch version to re-deploy on the grid for production as there was

@@ -1,5 +1,5 @@
 package GaussSys
-version v37r6p1
+version v37r7
 
 branches cmt doc
 
@@ -8,14 +8,14 @@ branches cmt doc
 #==================================================================
 
 # Gauss application: the application is not built on Win32
-macro Gauss_use         "Gauss        v37r6p1 Sim"  WIN32 ""
+macro Gauss_use         "Gauss        v37r7   Sim"  WIN32 ""
 use ${Gauss_use} 
 
 # Generator packages: Basic configuration
 macro GENSER_use        "GENSER       v5r2    Gen"  WIN32 ""
-macro EvtGen_use        "EvtGen       v11r6   Gen"  WIN32 ""
+macro EvtGen_use        "EvtGen       v11r7   Gen"  WIN32 ""
 macro EvtGenExtras_use  "EvtGenExtras v2r2    Gen"  WIN32 ""
-macro Generators_use    "Generators   v10r5   Gen"  WIN32 ""
+macro Generators_use    "Generators   v10r6   Gen"  WIN32 ""
 macro LbPythia_use      "LbPythia     v8r6    Gen"  WIN32 ""
 use ${GENSER_use}
 use ${EvtGen_use}
@@ -51,7 +51,7 @@ macro LbPGuns_use       "LbPGuns v1r2    Gen"  WIN32 ""
 use ${LbPGuns_use}
 
 # Simulation basic packages
-use GiGa        	v19r4	  Sim     
+use GiGa        	v19r6	  Sim     
 use GiGaCnv     	v18r6p1	  Sim
 use SimSvc              v5r1      Sim
 macro GiGaVisUI_use     "GiGaVisUI    v5r1    Sim"  WIN32 ""

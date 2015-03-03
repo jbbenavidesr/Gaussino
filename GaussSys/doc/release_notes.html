@@ -4,6 +4,69 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v37r7">2009-12-18 - GaussSys v37r7</A></H1><PRE>
+<H2><A NAME="Note">MC09 version: to deploy CP violation for all decays and
+fix finalization problem in production.
+   </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v26r3 (and Gaudi v20r4)
+   <b>AppConfig v3r* </b>,
+   DecFiles v20r* (<b>latest v20r1</b>), 
+   ParamFiles v8r0, 
+   SQLDDDB v5r*, FieldMap v5r*,
+   pythia6 418.2, photos 215.2, lhapdf 5.3.1 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.03.09 (via LCG_Interfaces)
+   Geant4 v91r3 (based on geant4.9.1.p03) and Geant4Files v91r0
+   XmlVis v1r11,
+   herwig 6.510.2, jimmy 4.31.2 (via LCG_GeneratorsInterfaces),
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   pythia8 107,
+   bcvegpy (LHCb build)
+
+!========================= Gauss v37r7 2009-12-18 ============================
+! 2009-12-18 - Gloria CORTI
+ - Make new version to deploy changes to activate CP violation
+
+!========================== EvtGen v11r7 2009-12-17 ==========================
+! 2009-12-17 - Mark Whitehead
+ - CPV Fix moved from EvtIncoherentMixing.cpp to EvtCPUtil.cpp so
+   calls to the 4 paramater EvtCPUtil::OtherB from all decay models
+   can be tested.
+
+! 2009-11-27 - Mark Whitehead
+ - Fix to EvtIncoherentMixing.cpp for slc5: <stdlib.h> included.
+
+! 2009-11-24 - Mark Whitehead
+ - Reintroduce file EvtIncoherentMixing.cpp to fix CPV problems.
+ - EvtSSDCP.cpp: Swap EvtCPUtils::OtherB for EvtIncoherentMixing::OtherB.
+ - EvtSSDCP.cpp: Changes by Liming to fix CPV behaviour.
+
+!====================== Generators v10r6 2009-12-17 ==========================
+! 2009-12-03 - Patrick Robbe
+ - src/Lib/ExternalGenerator.h/.cpp: remove the contraint that only
+   B and D excited states can be pre-decayed.
+
+!======================= GiGa v19r6 2009-12-17 ===============================
+! 2009-12-17 - Marco Clemencic
+ - Modified GiGa::finalize() to avoid segmentation faults when called after
+   the finalization of the ToolSvc (fix to bug #60331).
+
+!======================= GiGa v19r5 2009-11-04 ===============================
+! 2009-10-20 - Silvia Miglioranzi
+ - Fix compilation warnings on slc5 (type qualifiers ignored on function
+   return type):
+   - GiGaTrajectoryPoint.h
+
+! 2009-10-14 - Gloria Corti
+ - Fix compilation errors on slc5
+   . GiGa.h, include IToolSvc rather than forward declaration
+ - Fix compilation warnings on slc5
+   . GiGaIGiGaSvc.cpp, put std::string around "blabla" in
+                       ___GIGA_CATCH_PRINT_AND_RETURN___(...)
+   . GiGaHitsByID.h,v, remove const from return type of id()
+
+!=============================================================================
 </PRE><H1><A NAME="v37r6p1">2009-12-03 - GaussSys v37r6p1</A></H1><PRE>
 <H2><A NAME="Note">MC09 version: to redeploy v37r6 on grid.
    </A></H2>
