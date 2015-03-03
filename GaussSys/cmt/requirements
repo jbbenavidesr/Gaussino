@@ -1,5 +1,5 @@
 package GaussSys
-version v37r5
+version v37r6
 
 branches cmt doc
 
@@ -8,15 +8,15 @@ branches cmt doc
 #==================================================================
 
 # Gauss application: the application is not built on Win32
-macro Gauss_use         "Gauss        v37r5   Sim"  WIN32 ""
+macro Gauss_use         "Gauss        v37r6   Sim"  WIN32 ""
 use ${Gauss_use} 
 
 # Generator packages: Basic configuration
 macro GENSER_use        "GENSER       v5r2    Gen"  WIN32 ""
-macro EvtGen_use        "EvtGen       v11r5   Gen"  WIN32 ""
-macro EvtGenExtras_use  "EvtGenExtras v2r1    Gen"  WIN32 ""
-macro Generators_use    "Generators   v10r4   Gen"  WIN32 ""
-macro LbPythia_use      "LbPythia     v8r5    Gen"  WIN32 ""
+macro EvtGen_use        "EvtGen       v11r6   Gen"  WIN32 ""
+macro EvtGenExtras_use  "EvtGenExtras v2r2    Gen"  WIN32 ""
+macro Generators_use    "Generators   v10r5   Gen"  WIN32 ""
+macro LbPythia_use      "LbPythia     v8r6    Gen"  WIN32 ""
 use ${GENSER_use}
 use ${EvtGen_use}
 use ${EvtGenExtras_use}
@@ -31,7 +31,7 @@ macro LbHidValley_use   "LbHidValley  v2r2    Gen"  WIN32 ""
 #use ${LbAlpGen_use}
 use ${BcVegPy_use}
 use ${LbBcVegPy_use}
-#use ${LbHidValley_use}
+use ${LbHidValley_use}
 
 # Generators packages: alternative to Pythia6 for pp collisions
 macro LbHerwig_use      "LbHerwig     v6r0p1  Gen"  WIN32 ""
@@ -44,10 +44,10 @@ macro LbHijing_use      "LbHijing     v5r0    Gen"  WIN32 ""
 use ${LbHijing_use}
 
 # Generators packages: LHCb sampling results for Machine Induced Background
-use LbMIB               v3r5      Gen
+use LbMIB               v4r0      Gen
 
 # Generators packages: LHCb particle gun generator: temporarly off on Win32
-macro LbPGuns_use       "LbPGuns v1r1    Gen"  WIN32 ""
+macro LbPGuns_use       "LbPGuns v1r2    Gen"  WIN32 ""
 use ${LbPGuns_use}
 
 # Simulation basic packages
@@ -66,7 +66,7 @@ use GaussTools          v15r3     Sim
 use GaussRICH		v9r4p2    Sim
 use GaussTracker	v6r2p1	  Sim
 use GaussCalo		v9r3	  Sim
-use GaussPhysics	v6r3	  Sim
+use GaussPhysics	v6r4	  Sim
 
 # Monitoring packages
 use GaussMonitor	v6r3      Sim
@@ -74,10 +74,7 @@ use CaloMoniSim         v3r2      Calo
 use VeloGauss           v2r4      Velo
 use MuonMoniSim         v2r5p1    Muon
 use BcmMoniSim          v1r2      Bcm
-
-# GMDL
-#use GDML                v1r240p0  Sim
-#use GDMLG4Writer        v2r0      Sim
+use BlsMoniSim          v1r0      Bls
 
 # Visualization configuration
 use XmlVis              v1r11      Vis

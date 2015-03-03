@@ -4,6 +4,124 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v37r6">2009-11-18 - GaussSys v37r6</A></H1><PRE>
+<H2><A NAME="Note">MC09 version: Reactivate HidValley
+   </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v26r3 (and Gaudi v20r4)
+   <b>AppConfig v3r* </b>,
+   DecFiles v20r* (<b>latest v20r1</b>), 
+   ParamFiles v8r0, 
+   SQLDDDB v5r*, FieldMap v5r*,
+   pythia6 418.2, photos 215.2, lhapdf 5.3.1 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.03.09 (via LCG_Interfaces)
+   Geant4 v91r3 (based on geant4.9.1.p03) and Geant4Files v91r0
+   XmlVis v1r11,
+   herwig 6.510.2, jimmy 4.31.2 (via LCG_GeneratorsInterfaces),
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   pythia8 107,
+   bcvegpy (LHCb build)
+</A></H3>
+
+!========================= Gauss v37r6 2009-11-18 ============================
+! 2009-11-18 - Gloria CORTI
+ - Fix bug reported in production of not being able to set anymore the format
+   of the MessageSvc
+   . python/Gauss/Configuration.py
+
+! 2009-11-13 - Gloria CORTI
+ - Change version of DecFiles to pick up v20r* series
+ - Take latest version of MIBData v3r0
+ - Remove GDML as it will not be re-commissioned for MC09
+ - Reactivate LbHidValley
+ - also LbBcVegPy in this requirements
+
+!========================== EvtGen v11r6 2009-11-04 ==========================
+! 2009-10-19 - Patrick Robbe
+ - Fix gcc4.3 compilation, mainly dealing with scope of friend functions
+
+!====================== Generators v10r5 2009-11-04 ==========================
+! 2009-10-22 - Patrick Robbe
+ - src/Lib/Signal.cpp: remove the constraint that the signal has a b
+   or a c quark. This will allow Sigma+ signal generation for example.
+ - Small fixes for SLC5 compilation
+
+!========================= LbPythia v8r6 2009-11-18 ==========================
+! 2009-11-9 - Neal Gauvin
+ - PythiaHiggsType as a full event cut tool : FullEventHiggsType
+
+! 2009-10-22 - Patrick Robbe
+ - Fixes for SLC5 compilation with GCC4.3
+
+!=========================== LbMIB v4r0 2009-11-04 =========================
+! 2009-11-02 - Magnus LIENG
+ - Removed option files related to CollimatorSource
+   . MIB-BeamGasStartupNoShield.opts
+   . MIB-Example.opts
+   . MIB-Shield.opts
+   . MIB-StagedShield.opts
+ - Removed script files related to CollimatorSource
+   . scripts/beamgas2mib_opts.py
+   . scripts/beamgas2mib.py
+   . scripts/mibplotter.py
+   . python/LbMIB/gasmap.py
+   . python/LbMIB/plotter.py
+ - Removed data files related to CollimatorSource
+   . data/GasEstimates-1996.csv
+   . data/GasEstimates-2001-y3d90.csv
+   . data/GasEstimates-ARossi-2006-07-28-scrubbed.csv
+   . data/GasEstimates-ARossi-2006-07-28-scrubbed-endmap.csv
+   . data/GasEstimates-ARossi-2006-07-28-scrubbed-startmap.csv
+   . data/GasEstimates-ARossi-2006-07-28-startup.csv
+   . data/GasEstimates-ARossi-2006-07-28-startup-endmap.csv
+   . data/GasEstimates-ARossi-2006-07-28-startup-startmap.csv
+ - Changed TimeCorrSource example to python options
+   . TimeCorr-Example.opts -> MIB-Example.py
+
+! 2009-10-29 - Magnus LIENG
+ - Added global time offset option
+   . TimeCorrSource.cpp
+   . TimeCorrSource.cpp
+ - Removed CollimatorSource. Functionality contained in TimeCorrSource
+   . CollimatorSource.cpp
+   . CollimatorSource.h
+
+! 2009-10-08 - Magnus LIENG
+ - Fixed SumOfWeight value
+ - Fixed Timing issue for Beam 2 sources
+   . TimeCorrSource.cpp
+
+!========================== LbPGuns v1r2 2009-11-04 ==========================
+! 2009-11-04 - Magnus Lieng
+ - Changed .opts files into .py files
+   . ParticleGun.opts -> ParticleGun.py
+   . CosmicsGun.opst -> CosmicsGun.py
+   . MaterialEvalGun.opts -> MaterialEvalGun.py
+   . Rich1Cosmics.opts -> Rich1Cosmics.py
+   . UpsilonGun.opts -> UpsilonGun.py
+! 2009-10-28 - Magnus Lieng
+ - Added Beam Shape tool. By defining beam centroid and optics parameters at
+   the generation point a "beam-like" particle distribution (position and
+   momenta) is created.
+   . BeamShape.py
+   . BeamShape.cpp
+   . BeamShape.h
+
+!====================== GaussPhysics v6r4 2009-11-03 =========================
+! 2009-10-20- Marcin Kucharczyk
+ - Add Hidden Valley pion definition (G4HiddenValley.cpp, G4HiddenValley.h)
+ - Add Hidden Valley pion to GiGaPhysUnknownParticles list
+
+!======================= BlsMoniSim v1r0 2009-11-13 ==========================
+! 2009-10-30 - Vadim Talanov
+ - First version for Gauss v37r5
+ - Monitors two BLS counters at negative (BlsA) and positive (BlsC) X side of
+   the beam line
+ - Creates and fills multimap of Particles-Hits separately for each BLS
+ - Fills histograms with hits/tracks spatial, time and per event distributions
+
+!=============================================================================
 </PRE><H1><A NAME="v37r5">2009-10-05 - GaussSys v37r5</A></H1><PRE>
 <H2><A NAME="Note">MC09 version: BcVegPy for production at various energies.
    Support Upgrade simulation. 

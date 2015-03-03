@@ -1,9 +1,15 @@
-! $Id: release.notes,v 1.157 2009-10-05 14:34:34 gcorti Exp $
+! $Id: release.notes,v 1.159 2009-11-04 13:57:03 silviam Exp $
 !-----------------------------------------------------------------------------
 ! Package     : Gen/Generators
 ! Responsible : Patrick ROBBE
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
+
+!====================== Generators v10r5 2009-11-04 ==========================
+! 2009-10-22 - Patrick Robbe
+ - src/Lib/Signal.cpp: remove the constraint that the signal has a b
+   or a c quark. This will allow Sigma+ signal generation for example.
+ - Small fixes for SLC5 compilation
 
 !====================== Generators v10r4 2009-10-05 ==========================
 ! 2009-10-02 - Jibo He
