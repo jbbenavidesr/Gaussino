@@ -1,0 +1,6 @@
+<Item name="/dd/Geometry/BeforeMagnetRegion/UT/lvUT"
+      attr="VisUT"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/UT/lvUTa"
+      attr="VisUTa"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/UT/lvUTb"
+      attr="VisUTb"/>

@@ -65,7 +65,7 @@ class Gauss(LHCbConfigurableUser):
     __knownDetectors__ = [
         'velo', 'puveto', 'vp', 'vl',
         'tt' , 'ut',
-        'it' , 'sit',
+        'it' , 'sl',
         'ot' , 'ft', 
         'rich',  'rich1', 'rich2', 'torch' , 
         'calo',  'spd', 'prs', 'ecal', 'hcal' ,
@@ -1050,6 +1050,70 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
+#
+#     Si IT
+#                
+#"""
+
+    def defineSLGeo( self , detPieces ):
+        self.removeBeamPipeElements( "t" )
+        region = "AfterMagnetRegion"
+        if 'T' not in detPieces[region]:
+            detPieces[region]+=['T/SL']
+        # PSZ - line below might need to go depending on SL definition
+        if 'T/PipeInT' not in detPieces[region]:
+            detPieces[region]+=['T/PipeInT']
+
+
+    def configureSLSim( self, slot, detHits ):
+        region   = "AfterMagnetRegion/T"
+        det = "SL"
+        moni = GetTrackerHitsAlg(
+            'Get' + det + 'Hits' + slot,
+            MCHitsLocation = 'MC/' + det  + '/Hits',
+            CollectionName = det + 'SDet/Hits',
+            Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
+            )
+        detHits.Members += [ moni ]
+        pass
+
+    #def configureSLMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
+    #    pass
+    def configureSLMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
+        # reinstate checkHits default value
+        checkHits.SLHits = 'MC/SL/Hits'
+
+        myZStations = [
+            7780.0*SystemOfUnits.mm,
+            #8460.0*SystemOfUnits.mm,
+            9115.0*SystemOfUnits.mm
+            ]
+        myZStationXMax = 150.*SystemOfUnits.cm
+        myZStationYMax = 150.*SystemOfUnits.cm
+
+        detMoniSeq.Members += [ 
+            MCHitMonitor( 
+                "SLHitMonitor" + slot ,
+                mcPathString = "MC/SL/Hits",
+                zStations = myZStations,
+                xMax = myZStationXMax,
+                yMax = myZStationYMax
+                )
+            ]
+
+        if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
+            
+            packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
+            from Configurables import DataPacking__Unpack_LHCb__MCSLHitPacker_
+            upSL   = DataPacking__Unpack_LHCb__MCSLHitPacker_("UnpackSLHits"+slot,
+                                                              OutputName = "MC/SL/HitsTest" )
+            from Configurables import DataPacking__Check_LHCb__MCSLHitPacker_
+            cSL   = DataPacking__Check_LHCb__MCSLHitPacker_("CheckSLHits"+slot )
+            packCheckSeq.Members += [upSL, cSL]
+
+
+
+#"""
 #   ><<<<<<<< ><<< ><<<<<<
 #   ><<            ><<    
 #   ><<            ><<    
@@ -1694,7 +1758,7 @@ class Gauss(LHCbConfigurableUser):
         if 'VL'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['VL']
         if 'UT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['UT']
         if 'FT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['FT']
-
+        if 'SL'    in self.getProp('DetectorSim')['Detectors'] : detlist += ['SL']
         SimConf().setProp("Detectors",detlist)
 
 
@@ -2159,6 +2223,8 @@ class Gauss(LHCbConfigurableUser):
             self.defineRich2MaPmtGeoDet( detPieces )
         elif lDet == "ut":
             self.defineUTGeo( detPieces )
+        elif lDet == "sl":
+            self.defineSLGeo( detPieces )
         else:
             log.warning("Geo Detector not known : %s" %(det))
             
@@ -2335,6 +2401,8 @@ class Gauss(LHCbConfigurableUser):
                 configuredRichSim[0] = True
         elif det == "ut":
             self.configureUTSim( slot, detHits )
+        elif det == "sl":
+            self.configureSLSim( slot, detHits )
         else:
             log.warning("Sim Detector not known : %s" %(det))
 
@@ -2521,6 +2589,8 @@ class Gauss(LHCbConfigurableUser):
                 configuredRichMoni[0] = True
         elif det == "ut":
             self.configureUTMoni( slot, packCheckSeq, detMoniSeq, checkHits )
+        elif det == "sl":
+            self.configureSLMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         else:
             log.warning("Moni Detector not known : %s" %(det))            
 

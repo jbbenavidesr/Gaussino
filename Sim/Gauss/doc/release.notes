@@ -4,6 +4,13 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================== Gauss v46r2 2013-05-30 ===========================
+! 2013-05-08 - Paul Szczypka
+ - Add IT back into TrackingSystem list.
+
+! 2013-05-02 - Paul Szczypka
+ - Added SL code to configurable.
+
 !========================= Gauss v46r1 2013-04-25 ===========================
 ! 2013-04-23 - Paul Szczypka
  - Updated upgrade qmtest scripts (not references).

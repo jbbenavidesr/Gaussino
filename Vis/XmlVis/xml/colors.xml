@@ -11,7 +11,10 @@
   <!ENTITY Rich2VisAtts SYSTEM "Rich2VisAtts.xml">
   <!ENTITY TorchTBVisAtts SYSTEM "TorchTBVisAtts.xml">
   <!ENTITY VeloVisAtts SYSTEM "VeloVisAtts.xml">
+  <!ENTITY VPVisAtts SYSTEM "VPVisAtts.xml">
+  <!ENTITY VLVisAtts SYSTEM "VLVisAtts.xml">
   <!ENTITY TTVisAtts SYSTEM "TTVisAtts.xml">
+  <!ENTITY UTVisAtts SYSTEM "UTVisAtts.xml">
   <!ENTITY ITVisAtts SYSTEM "ITVisAtts.xml">
   <!ENTITY OTVisAtts SYSTEM "OTVisAtts.xml">
   <!ENTITY InfraStructureVisAtts SYSTEM "InfraStructureVisAtts.xml">
@@ -39,7 +42,10 @@
   <!ENTITY Rich2LogVols SYSTEM "Rich2LogVols.xml">
   <!ENTITY TorchTBLogVols SYSTEM "TorchTBLogVols.xml">
   <!ENTITY VeloLogVols SYSTEM "VeloLogVols.xml">
+  <!ENTITY VPLogVols SYSTEM "VPLogVols.xml">
+  <!ENTITY VLLogVols SYSTEM "VLLogVols.xml">
   <!ENTITY TTLogVols SYSTEM "TTLogVols.xml">
+  <!ENTITY UTLogVols SYSTEM "UTLogVols.xml">
   <!ENTITY ITLogVols SYSTEM "ITLogVols.xml">
   <!ENTITY OTLogVols SYSTEM "OTLogVols.xml">
   <!ENTITY InfraStructureLogVols SYSTEM "InfraStructureLogVols.xml">
@@ -57,7 +63,10 @@
     &Rich2VisAtts;
     &TorchTBVisAtts;
     &VeloVisAtts;
+    &VPVisAtts;
+    &VLVisAtts;
     &TTVisAtts;
+    &UTVisAtts;
     &ITVisAtts;
     &OTVisAtts;
     &InfraStructureVisAtts;
@@ -86,7 +95,10 @@
     &Rich2LogVols;
     &TorchTBLogVols;
     &VeloLogVols;
+    &VPLogVols;
+    &VLLogVols;
     &TTLogVols;
+    &UTLogVols;
     &ITLogVols;
     &OTLogVols;
     &InfraStructureLogVols;  

@@ -17,5 +17,7 @@
       attr="VeloBrass"/>
 <Item name="/dd/Materials/Velo/VeloBerylliumCopper"
       attr="VeloBerylliumCopper"/>
+<Item name="/dd/Materials/Velo/VeloTestAluminium"
+      attr="VeloTestAluminium"/>
 
 

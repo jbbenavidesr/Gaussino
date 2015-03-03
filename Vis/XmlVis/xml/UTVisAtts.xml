@@ -1,0 +1,15 @@
+<!-- This part of the file contains definitions of visualization attributes for
+     the materials used in the Rich1 description.
+     The only attribute defined here is the color of the material -->
+
+<VisAtt name="VisUT" opened="Yes">
+  <Color R="0.93" G="0.79" B="0.0"/>
+</VisAtt>
+
+<VisAtt name="VisUTa" opened="Yes">
+  <Color B="0.9" G="0.9" R="0.9"/>
+</VisAtt>
+
+<VisAtt name="VisUTb" opened="Yes">
+  <Color B="0.9" G="0.9" R="0.9"/>
+</VisAtt>
