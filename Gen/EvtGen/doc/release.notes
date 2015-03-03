@@ -1,10 +1,19 @@
 !-----------------------------------------------------------------------------
 ! Package     : EvtGen
-! Responsible : Patrick Robbe, Mark Whitehead 
+! Responsible : Patrick Robbe, Mark Whitehead, John Back 
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
-!======================== EvtGen v11r10p1 2010-02-28 ========================
+!======================== EvtGen v11r13 2011-08-12 =======================
+! 2011-08-11 - John Back
+ - Added Bc -> V + npi and Bc -> P + npi decay models 
+  (from Alexey Luchinsky et al.)
+
+!======================== EvtGen v11r12 2011-05-23 =======================
+! 2011-05-23 - John Back
+ - Added the EvtBaryonPCR model.
+
+!======================== EvtGen v11r11 2010-02-28 ========================
 ! 2011-02-28 - John Back
  - EvtDDalitz.cpp: Added the D -> KKPi mode.
 

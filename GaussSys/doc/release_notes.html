@@ -3,6 +3,71 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
+-macro Gauss_use         "Gauss        v39r3 Sim"  WIN32 ""
++macro Gauss_use         "Gauss        v39r4 Sim"  WIN32 ""
+
+
+!=============================================================================
+</PRE><H1><A NAME="v39r4">2011-08-17 - GaussSys v39r4</A></H1><PRE>
+<H2><A NAME="Note">FINAL Release for MC10 production. 
+   </A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v31r7 (and Gaudi v21r11)</b>
+   AppConfig v3r*,
+   <b>DecFiles v23r*</b>, 
+   ParamFiles v8r3, 
+   SQLDDDB v5r*, FieldMap v5r*,
+   <b>pythia6 424.2</b>, photos 215.4, lhapdf 5.7.1 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.03.11 (via LCG_Interfaces)
+   Geant4 v92r4 (based on geant4.9.2.p04) and Geant4Files v92r0
+   XmlVis v1r12,
+   herwig 6.510.3, jimmy 4.31.3 (via LCG_GeneratorsInterfaces)
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   <b>pythia8 145</b>
+</A></H3>
+
+!========================= Gauss v39r4 2011-08-17 ============================
+! 2011-08-16 - Patrick Robbe
+ - Configuration.py: add empty sequence in the generation sequence as a
+   place to add extra algorithms for the generation.
+
+!======================== EvtGen v11r13 2011-08-12 =======================
+! 2011-08-11 - John Back
+ - Added Bc -> V + npi and Bc -> P + npi decay models
+  (from Alexey Luchinsky et al.)
+
+!====================== Generators v10r12 2011-08-16 =========================
+! 2011-08-15 - Adam Webber
+ - Add in DMuCascadeInAcc filter tool to src/components. This is filters events
+   with Xb->XcXc, where one of the charm daughters goes to a muon, and another
+   goes to 3 charged K/pi. Used to make an inclusive background sample for
+   semileptonic B decay analysis.
+
+! 2011-08-14 - Gloria Corti
+ - Backport fixes by I.Belyaev to GenericCutTool from GenCuts package
+
+! 2011-06-20 - Patrick Robbe
+ - src/component/ApplyPhotos.cpp: add the possibility to use it for more
+   than one particle type.
+
+! 2011-06-16 - Patrick Robbe
+ - src/component/ApplyPhotos.cpp: new algorithm to be able to apply Photos
+   on Z0 decays.
+
+!===================== LbBcVegPy v3r2 2011-08-15 =====================
+! 2011-06-17 - Patrick Robbe
+ - options/BcVegPy.opts/.py: activate generation of weighted events
+
+!========================= BcVegPy v3r0 2011-07-15 ===========================
+! 2011-07-15 - Gloria Corti
+ - Apply pattern not to build on windows, so that conditional use can be
+   removed from GaussSys
+
+! 2011-06-17 - Patrick Robbe
+ - bcvegpy_upinit.F: generate weighted events.
+
+
 !=============================================================================
 </PRE><H1><A NAME="v39r3">2011-05-31 - GaussSys v39r3</A></H1><PRE>
 <H2><A NAME="Note">Release for MC10 production. 

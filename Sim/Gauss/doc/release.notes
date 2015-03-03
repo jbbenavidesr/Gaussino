@@ -4,6 +4,11 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v39r4 2011-08-17 ============================
+! 2011-08-16 - Patrick Robbe
+ - Configuration.py: add empty sequence in the generation sequence as a 
+   place to add extra algorithms for the generation.
+
 !========================= Gauss v39r3 2010-05-31 ============================
 ! 2011-05-31 - Gloria Corti
  - Increase minor version
