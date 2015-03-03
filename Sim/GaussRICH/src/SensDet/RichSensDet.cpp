@@ -29,9 +29,9 @@
 
 // local
 #include "RichSensDet.h"
-#include "GaussRICH/RichInfo.h"
-#include "GaussRICH/RichPEInfo.h"
-#include "GaussRICH/RichPhotoElectron.h"
+#include "RichInfo.h"
+#include "RichPEInfo.h"
+#include "RichPhotoElectron.h"
 
 using namespace std;
 
@@ -178,13 +178,13 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
 
   MsgStream log( msgSvc() , name() );
 
-  log << MSG::VERBOSE << "Now in ProcessHits() for RichSensDet"
+  log << MSG::DEBUG << "Now in ProcessHits() for RichSensDet"
       << " Pos=("  << CurGlobalPos.x() << "," << CurGlobalPos.y()
       << "," << CurGlobalPos.z() << ")"
       << " PV="    << CurPV->GetName()
       << " LV="    << CurLV->GetName()
       << " edep in MeV ="  << CurEdep << endreq;
-  log << MSG::VERBOSE << " PE Origin X Y Z "<<CurPEOrigin.x()
+  log << MSG::DEBUG << " PE Origin X Y Z "<<CurPEOrigin.x()
       <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endreq;
 
   G4double CurGlobalZ=CurGlobalPos.z();
@@ -223,13 +223,13 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
     GetGlobalToLocalTransform().
     TransformPoint(CurPEOrigin);
 
-  log << MSG::VERBOSE << "Now in ProcessHits() of RichSensDet LocalPos X Y Z "
+  log << MSG::DEBUG << "Now in ProcessHits() of RichSensDet LocalPos X Y Z "
       <<CurLocalPos.x() <<"  "<<CurLocalPos.y()<<"   "<<CurLocalPos.z()<<endreq;
 
 
   G4int CurrentPixelXNum=  PixelXNum(CurLocalPos.x());
   G4int CurrentPixelYNum=  PixelYNum(CurLocalPos.y());
-  log << MSG::VERBOSE <<
+  log << MSG::DEBUG <<
     "Now in ProcessHits() of RichSensDet : PixelX and Y = " <<
     CurrentPixelXNum << "   " << CurrentPixelYNum<<endreq;
 
@@ -304,13 +304,13 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
             CurPhotonSourceProcInfo=aPEInfo->PhotonSourceInformation();
             
    
-            log << MSG::VERBOSE << "Now in ProcessHits()  "
+            log << MSG::DEBUG << "Now in ProcessHits()  "
                 <<" Track id of charged tk opt phot pe "
                 << CurOptPhotMotherChTrackID <<"   "
                 <<  CurOptPhotID<<"   "
                 << aTrack->GetTrackID() << endreq;
             if( CurElectronBackScatFlag > 0) {
-              log << MSG::VERBOSE << "Now in RichSensDet ProcessHits() backscattered eln  "
+              log << MSG::DEBUG << "Now in RichSensDet ProcessHits() backscattered eln  "
                   << CurElectronBackScatFlag << endreq;
             }
             //log<<MSG::INFO<<" Now in processHits Photon source info "<<CurPhotonSourceProcInfo
@@ -558,7 +558,7 @@ void RichSensDet::Initialize(G4HCofThisEvent*  HCE) {
 
   MsgStream log( msgSvc() , name() );
 
-  log << MSG::VERBOSE << "Richsensdet: Initialize. SensDetName, colName: "
+  log << MSG::DEBUG << "Richsensdet: Initialize. SensDetName, colName: "
       <<SensitiveDetectorName<<"  "<<collectionName[0]
       <<"  "<<collectionName[1]<<"  "
       <<collectionName[2]<<"  "<<collectionName[3]<<endreq;

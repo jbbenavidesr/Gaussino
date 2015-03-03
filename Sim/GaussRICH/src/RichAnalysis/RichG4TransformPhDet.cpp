@@ -28,13 +28,13 @@
 #include "GaudiKernel/Vector3DTypes.h"
 #include "GaudiKernel/Transform3DTypes.h"
  
-#include "GaussRICH/RichG4SvcLocator.h"
+#include "RichG4SvcLocator.h"
  
 
 
 
 // local
-#include "GaussRICH/RichG4TransformPhDet.h"
+#include "RichG4TransformPhDet.h"
 
 
 //-----------------------------------------------------------------------------

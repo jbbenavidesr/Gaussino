@@ -1,6 +1,6 @@
 // $Id: MergedEventsFilter.h,v 1.1 2008-05-06 08:27:55 gcorti Exp $
-#ifndef GENERATORS_MERGEDEVENTSFILTER_H 
-#define GENERATORS_MERGEDEVENTSFILTER_H 1
+#ifndef COMPONENT_MERGEDEVENTSFILTER_H 
+#define COMPONENT_MERGEDEVENTSFILTER_H 1
 
 // Include files
 // from Gaudi
@@ -36,4 +36,4 @@ private:
   IFullGenEventCutTool* m_fullGenEventCutTool;     ///< Pointer to event cut tool
 
 };
-#endif // GENERATORS_MERGEDEVENTSFILTER_H
+#endif // COMPONENT_MERGEDEVENTSFILTER_H

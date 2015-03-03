@@ -4,96 +4,44 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================= Gauss v43r4 2013-02-20 ============================
- - on v43b branch
+!========================= Gauss v44r3 2012-12-04 ============================
+ - on v44b branch
 
-! 2013-02-20 - Gloria Corti
- - Merge changes from v42b branch and from trunk. See below
+! 2012-12-04 - Gloria Corti
+ - Change major version in requirements. Minor version indicate synchronization
+   with v42 and v43 series.
 
-! 2013-02-14 - Paul Szczypka (merged r152292 from trunk)
- - Commented out upgrade position of OT in Configuration.py (Removes warnings)
+!========================= Gauss v42r3 2012-11-30 ============================
+ - on v42b branch
 
-! 2013-02-14 - Paul Szczypka ((merged r152290 from trunk)
- - Added qmtests, options and refs, for the upgrade configurations:
- . VL-UT-FT
- . VL-UT-FT
- . Upgrade Reference (Minimal)
-
-! 2013-02-14 - Gloria Corti (merged r152242 from v42b)
- - Port by hand to avoid conflicts the change by Paul Szczypka to the 
-   Configurable such that the velo misalignment (and therefore definiition)
-   is always done even for the upgrade.(correspond to r152031 in trunk)
-
-! 2013-02-12 - Paul Szczypka (merged r152118 from v42b))
- - Correction to the GDML code - tool now added to correct algo.
-
-! 2013-02-12 - Gloria Corti and Paul Szczypka (merged r152070, r152071 from v42b)
- - Introduce in the Gauss() configurable a new property "ReplaceWithGDML" to
-   allow to replace a list of volumes with a GDML description given in a file.
-   The name of the tool is set from the filename.
-
-! 2013-02-11 - Gloria Corti
- - Add use of package GDMLData for import of GDML files
- - Porting changes from trunk: see below
- - Modification for GenStandAlone.py by Patrick Robbe so that it make xgen 
-   output (r151313)
-
-! 2013-02-07 - Gloria Corti (r151840, r151842 to r151844)
- - Update CaloOnly.py to adapt to new geometry control and remove
-   dependency from upgrade
- - Add file from v42b branch for setting simulation conditions when RICHES are
-   not simulated (xml/SimulationRICHesOff.xml)
-
-! 2013-01-08 - Paul Szczypka (r150564)
- - Correction to GaussVis.py options to use new Detector configuration syntax.
-
-! 2012-12-20 - Paul Szczypka (r150332)
- - Removed comments and some unused methods in Configuration.py
-
-! 2012-12-18 - Paul Szczypka (r150263)
- - Removed debug statements in Configuration.py
- - Corrected date of previous edit in release.notes
-
-! 2012-12-17 - Paul Szczypka (r150254)
- - Edited BeamPipe configuration method.
-
-! 2012-12-11 - Paul Szczypka (r149693, r149694)
- - Whitespace editing
- - Added BeamPipe entry to PropertyDocDict
-
-! 2012-12-06 - Paul Szczypka (r149575)
- - Typo, Moun -> Muon in Configuration.py
-
-! 2012-12-04 - Patrick Robbe (r149446)
- - Configuration.py: add options to pass beam energy to BcVegPy in Pythia8
-
-!========================= Gauss v43r3 2012-11-30 ============================
-! 2012-11-30 - Gloria Corti
+! 2012-11-30 - Gloria Corti (from trunk r149254)
  - Pick version v2r* of GenXiccData for support to 8 TeV collisions
 
-! 2012-11-22 - Nigel Watson
- - Updated python/Gauss/Configuration.py for QGSP_FTFP_BERT.
+! 2012-11-30 - Gloria Corti
+ - Put * for minor version of Geant4Files (v94r0->v94r*)
 
-! 2012-11-20 - Nigel Watson
- - Added options for new hadronic list, G4PL_QGSP_FTFP_BERT.py
+! 2012-11-30 - Gloria Corti
+ - Port change post v42r2 in trunk not related to Geant4 changes: r147336 (see
+   below)
 
-! 2012-11-13 - Gloria Corti
- - Use data package for Geant4 9.5, Geant4Files v95r*
-
-! 2012-10-24 - Paul Szczypka
+! 2012-10-24 - Paul Szczypka (r147336)
  - Small changes to gauss-config-2011.qmt
 
+! 2012-11-30 - Gloria Corti
+ - Port changes from trunk as in v42r2: r142579, r142745, r143132, from r144690
+   to r146549 included, from r146633 to r147318 (see below)
+
 !========================= Gauss v42r2 2012-10-24 ============================
-! 2012-10-24 - Gloria Corti
+! 2012-10-24 - Gloria Corti (r147318)
  - Change options for upgrade detector combination to make them directly
    usable in production
  - Modify example overall stearing options for upgrade, Gauss-Upgrade.py, to
    pick latest database tags and show how to combine necessary options
 
-! 2012-10-22 - Paul Szczypka
+! 2012-10-22 - Paul Szczypka (r147229)
  - Modified (corrected) gauss-config reference file.
 
-! 2012-10-22 - Paul Szczypka
+! 2012-10-22 - Paul Szczypka (r147223)
  - added Upgrade options files:
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT.py
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT-noRich1.py
@@ -101,110 +49,119 @@
  - $GAUSSOPTS/Gauss-Upgrade-VP-UT-FT-noRich1.py
  - $GAUSSOPTS/Gauss-Upgrade-Reference.py
 
-! 2012-10-21 - Paul Szczypka
+! 2012-10-21 - Paul Szczypka (r147200)
  - made corrections to config references and test
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147091)
  - tinkering with the qmtest config
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147078)
  - Added expected err stream for config qmtest.
  - Edited config qmtest to refer to the expected error stream.
 
-! 2012-10-18 - Paul Szczypka
+! 2012-10-18 - Paul Szczypka (r147074)
  - Remove some upstream and downstream parts of the beampipe which aren't
    normally simulated in GeoStream.
  - Add T/PipeInT beampipe section to GeoStream.
  - Only list Velo once in GeoStream.
 
-! 2012-10-15 - Gloria Corti
+! 2012-10-15 - Gloria Corti (r146918)
  - Rename qmtest gauss-config-MC11a.qmt to gauss-config-2011.qmt otherwise it
    is not run.
  - Put latest CondDb tags as in Sim05d for MC2011 (aka MC11a)
 
-! 2012-10-12 - Paul Szczypka
+! 2012-10-12 - Paul Szczypka (r146857)
  - Added limit of one event to:
    Sim/Gauss/tests/options/testGauss-config-defaults.py
    and changed reference file accordingly.
 
-! 2012-10-12 - Paul Szczypka
+! 2012-10-12 - Paul Szczypka (r146854)
  - Added first version of configuration qmtest, files:
    Sim/Gauss/tests/qmtest/gauss.qms/gauss-config-MC11a.qmt
    Sim/Gauss/tests/refs/testGauss-config-10000000.ref.x86_64-slc5-gcc43-opt
    Sim/Gauss/tests/options/testGauss-config-defaults.py
 
-! 2012-10-09 - Paul Szczypka
+! 2012-10-09 - Paul Szczypka (r146682)
  - Corrected a bug in the PuVeto configuration whereby the test used to check
    if either the VL or VP was also requested meant that it would configure
    whichever detector it found instead.
    
-! 2012-10-08 - Aurelien Martens 
+! 2012-10-08 - Aurelien Martens (r146661)
  - Update qmtests for pythia8
 
-! 2012-10-08 - Gloria Corti
+! 2012-10-08 - Gloria Corti (r146649)
  - Put r* in requirements file for generator and LHCb data packages
 
-! 2012-10-08 - Paul Szczypka
+! 2012-10-08 - Paul Szczypka (r146633)
  - Corrected a bug in the Configuration whereby all detectors defined in the
    "T" volume would be loaded irrespective of detector choice if any of the
    IT, OT or FT detectors were chosen.
 
-! 2012-10-05 - Gloria Corti
- - Merge changes from the branch v42b
-   . Remove spill-over from Gauss-MC11a.py
-   . Modify Gauss-Upgrade.py to pick up beam conditions as in the upgrade for
-     nu=2.6 (and show how to pick others) but remove spill-over explicitely and
-     use the new Upgrade Database (DDDB and SIMCOND). 
- - Update upgrade example options to use latest global tags
- - Remove use of GaudiPartProp from Gauss() since all code has been migrated 
-   to the LHCb::ParticlePropertySvc 
-
-! 2012-10-05 - Paul Szczypka
+! 2012-10-05 - Paul Szczypka (r146549)
  - Added Gauss-Debug.py option file.
 
-! 2012-10-02 - Aurelien Martens
+! 2012-10-02 - Aurelien Martens (r146344)
  - Added few qmtests for pythia8
 
-! 2012-10-02 - Paul Szczypka
+! 2012-10-02 - Paul Szczypka (r146337)
  - Removed most debug statements from Configuration.
  - Added Debug flag to Configuration.
 
-! 2012-09-24 - Gloria Corti
+! 2012-09-24 - Gloria Corti (r145816)
  - Remove use of LbHerwig that is obsolete since v42r1. 
    Put use of LbAlpGen and LbHerwigpp that are new
    Change version of DecFiles to v26r* for compatibility with new LHCb
    ParticlePropertySvc and remove use of the Gaudi old one. 
 
-! 2012-09-23 - Paul Szczypka
+! 2012-09-23 - Paul Szczypka (r145801)
  - Minor edits to BeamPipe code fixing typos.
 
-! 2012-09-21 - Paul Szczypka
+! 2012-09-21 - Paul Szczypka (r145752)
  - Minor edits to BeamPipe configuration for UT
 
-! 2012-09-20 - Paul Szczypka
+! 2012-09-20 - Paul Szczypka (r145673)
  - Temporary fix in Configurable.py for non-schema VL path in DDDB
 
-! 2012-09-20 - Paul Szczypka
+! 2012-09-20 - Paul Szczypka (r145660)
  - Modifications to Configurable.py to fix FT typo
 
-! 2012-08-30 - Paul Szczypka
+! 2012-08-30 - Paul Szczypka (r144690)
  - Modifications to Configurable.py to accommodate VP and VL
 
-! 2012-07-23 - Gloria Corti
+! 2012-07-23 - Gloria Corti (r143132)
  - Remove use of GaudiPartProp from Gauss() since all code has been migrated 
    to the LHCb::ParticlePropertySvc
 
-! 2012-07-11 - Paul Szczypka
+! 2012-07-11 - Paul Szczypka (r142579)
   - Rewrite of python/Gauss/Configurable.py in order to more easily replace
     detectors with upgrade versions.
 
-! 2012-06-06 - Gloria Corti
+!========================= Gauss v42r1 2012-07-24 ============================
+ - on branch v42b
+
+! 2012-07-24 - Gloria Corti
+ - Remove spill-over from Gauss-MC11a.py
+ - Remove use of GaudiPartProp from Gauss() since all code has been migrated
+    to the LHCb::ParticlePropertySvc
+ - Remove use of GaudiPartProp since code has been migrated to LHCb
+   ParticleProperty and ParticlePropertySvc
+ - Remove use of LbHerwig that is obsolete.
+ - Modify Gauss-Upgrade.py to pick up beam conditions as in the upgrade for
+   nu=2.6 (and show how to pick others) but remove spill-over explicitely and
+   use the new Upgrade Database (DDDB and SIMCOND). The first available global
+   tags are used.
+
+! 2012-07-24 - Gloria Corti
+ - Port changes from trunk from r140339 to r140826 (see below)
+   and r142646: update of QMTests from Patrick Robbe
+
+! 2012-06-06 - Gloria Corti (r140765 to r140826)
  - Introduce new script by Emmanouil Kiagias to make qmtest files from a 
    template. The script is added as a make action so that they will be made
    in the nighlty and used to check newly committed event types in DecFiles
    . cmt/makeQMTests.py
 
-! 2012-05-21 - Paul Szczypka
+! 2012-05-21 - Paul Szczypka (r140339)
  - Small corrections to RunTimeError execptions in Configuration.py
 
 !========================= Gauss v42r0 2012-05-15 ============================

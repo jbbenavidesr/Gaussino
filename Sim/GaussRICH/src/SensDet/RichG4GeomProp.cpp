@@ -3,7 +3,7 @@
 
 //local
 #include "RichG4GeomProp.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
+#include "RichG4GaussPathNames.h"
 
 /// GaudiKernel
 #include "GaudiKernel/Kernel.h"

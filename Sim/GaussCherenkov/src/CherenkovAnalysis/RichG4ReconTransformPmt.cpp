@@ -32,7 +32,7 @@
 
 // local
 #include "RichG4ReconTransformPmt.h"
-#include "GaussCherenkov/CkvG4SvcLocator.h"
+#include "CkvG4SvcLocator.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4ReconTransformPmt
@@ -67,11 +67,8 @@ void RichG4ReconTransformPmt::initialise() {
   // m_Rich2PmtPanelIndex0=0;
   // m_Rich2PmtPanelIndex1=0;
 
-  m_Rich1PmtModuleMaxH0=84;
+  m_Rich1PmtModuleMaxH0=60;
   m_Rich2PmtModuleMaxH0=91;
-
-  //  m_Rich1PmtModuleMaxH0=60;
-  // m_Rich2PmtModuleMaxH0=91;
   m_RichNumPmtInModule=16;
   m_Rich1PmtArrayMaxH0=m_Rich1PmtModuleMaxH0*m_RichNumPmtInModule;  
   m_Rich2PmtArrayMaxH0=m_Rich2PmtModuleMaxH0*m_RichNumPmtInModule;

@@ -3,7 +3,7 @@
 # Maintainer : Sajan Easo
 #============================================================================
 package GaussRICH
-version v13r0
+version v12r1
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -32,9 +32,17 @@ library          GaussRICH    ../src/*.cpp             \
                               ../src/Misc/*.cpp \
                               ../src/Assoc/*.cpp
 
-# Includes used not only internally but exported for GaussCherenkov use
+# Includes used internally
 #============================================================================
-apply_pattern install_more_includes more=GaussRICH
+private 
+include_dirs     $(GAUSSRICHROOT) \
+                 $(GAUSSRICHROOT)/src/SensDet \
+                 $(GAUSSRICHROOT)/src/PhysProcess \
+                 $(GAUSSRICHROOT)/src/RichAction \
+                 $(GAUSSRICHROOT)/src/Misc \
+                 $(GAUSSRICHROOT)/src/RichAnalysis \
+                 $(GAUSSRICHROOT)/src/srcG4
+
         
 # define component library link options
 #============================================================================
@@ -48,16 +56,4 @@ apply_pattern packageOpts
 #============================================================================
 private
 apply_pattern use_genconf_helper_lib pkg=GaussTools
-
-private 
-include_dirs     $(GAUSSRICHROOT) \
-                 $(GAUSSRICHROOT)/src/SensDet \
-                 $(GAUSSRICHROOT)/src/PhysProcess \
-                 $(GAUSSRICHROOT)/src/RichAction \
-                 $(GAUSSRICHROOT)/src/Misc \
-                 $(GAUSSRICHROOT)/src/RichAnalysis \
-                 $(GAUSSRICHROOT)/src/srcG4
-
-
-
 

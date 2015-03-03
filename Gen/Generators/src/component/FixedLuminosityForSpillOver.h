@@ -11,7 +11,6 @@
 
 // forward declaration
 class IRndmGenSvc ;
-class ICounterLogFile ;
 
 /** @class FixedLuminosityForSpillOver FixedLuminosityForSpillOver.h "FixedLuminosityForSpillOver.h"
  *  
@@ -51,8 +50,6 @@ public:
 protected:
 
 private:
-  ICounterLogFile * m_xmlLogTool ; ///< Log file in XML
-  
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
   int    m_numberOfZeroInteraction ; ///< Counter of empty events

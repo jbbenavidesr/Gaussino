@@ -32,10 +32,13 @@
  
 // from EvtGen
 #include "EvtGen/EvtGen.hh"
-#include "EvtGenModels/EvtPythia.hh"
+#include "EvtGenModels/EvtPythia6.hh"
 #include "EvtGenBase/EvtParticleFactory.hh"
 #include "EvtGenBase/EvtDecayTable.hh"
 #include "EvtGenBase/EvtDecayBase.hh"
+#include "EvtGenBase/EvtParticle.hh"
+#include "EvtGenBase/EvtVector4R.hh"
+#include "EvtGenBase/EvtPDL.hh"
 
 // from EvtGenExtras
 #include "EvtGenModels/EvtModelRegExtras.hh"
@@ -49,15 +52,15 @@
 // Calls to FORTRAN routines
 #ifdef WIN32
 extern "C" {
-  void __stdcall PHOTOS_INIT( const char* filename, int length ) ;
+  //void __stdcall PHOTOS_INIT( const char* filename, int length ) ;
   void __stdcall PYTHIAOUTPUT_INIT( int * ) ;
-  void __stdcall PHOTOS_END () ;
+  //void __stdcall PHOTOS_END () ;
 }
 #else
 extern "C" {
-  void photos_init__( const char* filename , int length ) ;
+  //void photos_init__( const char* filename , int length ) ;
   void pythiaoutput_init__( int * ) ;
-  void photos_end__()  ;
+  //void photos_end__()  ;
 }
 #endif
 
@@ -190,9 +193,9 @@ StatusCode EvtGenDecay::initialize( ) {
     m_gen -> readUDecay( m_userDecay.c_str() ) ; 
   }
 
-  m_photosTempFilename = std::string( std::tmpnam( NULL ) ) ;
-  if ( boost::filesystem::exists( m_photosTempFilename ) ) 
-    boost::filesystem::remove( m_photosTempFilename ) ;
+  //m_photosTempFilename = std::string( std::tmpnam( NULL ) ) ;
+  //if ( boost::filesystem::exists( m_photosTempFilename ) ) 
+  //  boost::filesystem::remove( m_photosTempFilename ) ;
   
   int arg ;
   if ( msgLevel( MSG::DEBUG ) ) {
@@ -206,17 +209,17 @@ StatusCode EvtGenDecay::initialize( ) {
     arg = 1 ;
 #ifdef WIN32
     PYTHIAOUTPUT_INIT( &arg ) ;
-    PHOTOS_INIT( m_photosTempFilename.string().c_str() , 
-                 strlen( m_photosTempFilename.string().c_str() ) ) ;
+    //PHOTOS_INIT( m_photosTempFilename.string().c_str() , 
+    //             strlen( m_photosTempFilename.string().c_str() ) ) ;
 #else
     pythiaoutput_init__( &arg ) ;
-    photos_init__( m_photosTempFilename.string().c_str() , 
-                   strlen( m_photosTempFilename.string().c_str() ) ) ;
+    //photos_init__( m_photosTempFilename.string().c_str() , 
+    //               strlen( m_photosTempFilename.string().c_str() ) ) ;
 #endif
   }
   
-  // Initialize Pythia
-  EvtPythia::pythiaInit( 0 ) ;
+  // Initialize Pythia6
+  EvtPythia6::pythiaInit( 0 ) ;
 
   // Need to reinitialize Pythia with the LHCb interface to be
   // sure that the Pythia settings are correct in EvtGen (in 
@@ -230,7 +233,7 @@ StatusCode EvtGenDecay::initialize( ) {
   try { ppSvc = 
       svc< LHCb::IParticlePropertySvc > ( "LHCb::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
-    Exception( "Cannot open LHCb::ParticlePropertySvc" , exc ) ;
+    Exception( "Cannot open ParticlePropertySvc" , exc ) ;
   }
   LHCb::IParticlePropertySvc::iterator iter ;
   for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter ) {
@@ -256,15 +259,15 @@ StatusCode EvtGenDecay::finalize() {
 
   if ( ! msgLevel( MSG::DEBUG ) ) {
 #ifdef WIN32
-    PHOTOS_END() ;
+    //PHOTOS_END() ;
 #else
-    photos_end__() ;
+    //photos_end__() ;
 #endif
   }
  
   release( m_evtgentool ) ;
 
-  boost::filesystem::remove( m_photosTempFilename ) ;
+  //boost::filesystem::remove( m_photosTempFilename ) ;
 	
   delete StreamForGenerator::getStream() ;
   StreamForGenerator::getStream() = 0 ;
@@ -480,7 +483,7 @@ StatusCode EvtGenDecay::makeHepMC( EvtParticle * theEvtGenPart ,
 bool EvtGenDecay::isKnownToDecayTool( const int pdgId ) const {
   EvtId id = EvtPDL::evtIdFromStdHep( pdgId ) ;
   if ( id == EvtId(-1,-1) ) return false ;
-  if ( 0  == EvtDecayTable::getNMode( id.getAlias() ) ) return false ;
+  if ( 0  == EvtDecayTable::getInstance()->getNMode( id.getAlias() ) ) return false ;
   return true ;
 }
 
@@ -509,7 +512,7 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
   try { ppSvc = 
       svc< LHCb::IParticlePropertySvc > ( "LHCb::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
-    Exception( "Cannot open Gaudi::ParticlePropertySvc to fill EvtGen" , exc ) ;
+    Exception( "Cannot open ParticlePropertySvc to fill EvtGen" , exc ) ;
   }
 
   // Loop over particle properties
@@ -641,9 +644,9 @@ double EvtGenDecay::branching( const EvtId& id ) const {
 
   if ( ! id.isAlias( ) ) return 1. ;
 
-  for ( int i = 0 ; i < EvtDecayTable::getNMode( id.getAlias() ) ; ++i ) {
+  for ( int i = 0 ; i < EvtDecayTable::getInstance()->getNMode( id.getAlias() ) ; ++i ) {
     // find corresponding decay mode in generic table
-    EvtDecayBase * theDecAlias = EvtDecayTable::getDecay( id.getAlias() , i ) ;
+    EvtDecayBase * theDecAlias = EvtDecayTable::getInstance()->getDecay( id.getAlias() , i ) ;
     EvtId daugs_scratch[ 50 ] ;
     if ( theDecAlias -> getNDaug( ) > 50 ) return 1. ;
     for ( int k = 0 ; k < theDecAlias -> getNDaug( ) ; ++k ) {
@@ -651,13 +654,13 @@ double EvtGenDecay::branching( const EvtId& id ) const {
                                    theDecAlias -> getDaugs()[ k ].getId() ) ;
     }
     
-    int index = EvtDecayTable::inChannelList( EvtId( id.getId(), id.getId() ),
-                                              theDecAlias -> getNDaug( ) ,
-                                              daugs_scratch ) ;
+    int index = EvtDecayTable::getInstance()->inChannelList( EvtId( id.getId(), id.getId() ),
+							     theDecAlias -> getNDaug( ) ,
+							     daugs_scratch ) ;
     if ( -1 == index ) return 1. ;
 
     EvtDecayBase * theTrueDecay = 
-      EvtDecayTable::getDecay( id.getId() , index ) ;
+      EvtDecayTable::getInstance()->getDecay( id.getId() , index ) ;
 
     double tempBr = 1. ;
     
@@ -687,8 +690,8 @@ bool EvtGenDecay::checkGeneric( const EvtId& id ) const {
   
   if ( ! id.isAlias( ) ) return true ;
   
-  for ( int i = 0 ; i < EvtDecayTable::getNMode( id.getAlias() ) ; ++i ) {
-    EvtDecayBase * theDecAlias = EvtDecayTable::getDecay( id.getAlias() , i ) ;
+  for ( int i = 0 ; i < EvtDecayTable::getInstance()->getNMode( id.getAlias() ) ; ++i ) {
+    EvtDecayBase * theDecAlias = EvtDecayTable::getInstance()->getDecay( id.getAlias() , i ) ;
     
     if ( theDecAlias -> getNDaug( ) > 50 ) return false ;
     EvtId daugs_scratch[ 50 ] ;
@@ -697,9 +700,9 @@ bool EvtGenDecay::checkGeneric( const EvtId& id ) const {
                                    theDecAlias -> getDaugs()[ k ].getId() ) ;
     }
 
-    int index = EvtDecayTable::inChannelList( EvtId( id.getId(), id.getId() ),
-                                              theDecAlias -> getNDaug( ) ,
-                                              daugs_scratch ) ;
+    int index = EvtDecayTable::getInstance()->inChannelList( EvtId( id.getId(), id.getId() ),
+							     theDecAlias -> getNDaug( ) ,
+							     daugs_scratch ) ;
 
     if ( -1 == index ) return false ;
     

@@ -7,9 +7,6 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "Generators/ExternalGenerator.h" 
 
-// forward declarations
-class ICounterLogFile ;
-
 /** @class Special Special.h 
  *  
  *  Tool for special samples (Higgs, W, Z, ...) generation.
@@ -47,9 +44,6 @@ class Special : public ExternalGenerator {
   virtual void printCounters( ) const ;
 
 private:
-  /// XML Log file
-  ICounterLogFile * m_xmlLogTool ;
-  
   /// Counter of events before the generator level cut
   unsigned int m_nEventsBeforeCut ;
 

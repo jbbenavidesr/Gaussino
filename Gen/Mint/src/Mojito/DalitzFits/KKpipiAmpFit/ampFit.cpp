@@ -150,7 +150,7 @@ int ampFit(){
   DalitzEventList eventList;
 
 
-  bool doIntegTest=false;
+  bool doIntegTest=true;
   if(doIntegTest){
     int Ncheck=1000000;
     FitAmpSum fas(pdg);
@@ -174,7 +174,6 @@ int ampFit(){
   
   DalitzHistoSet datH = eventList.histoSet();
   datH.save("plotsFromEventList.root");
-  datH.draw("dataPlots_");
 
   MinuitParameterSet fitMPS;
   DalitzPdfSaveInteg amps(&eventList, integPrecision
@@ -202,6 +201,7 @@ int ampFit(){
   fitH.save("plotsFromIntegrator.root");
   amps.saveEachAmpsHistograms("singleAmpHistos");
 
+  datH.draw("dataPlots_");
   fitH.draw("fitPlots_");
   datH.drawWithFit(fitH, "datFit_");
   

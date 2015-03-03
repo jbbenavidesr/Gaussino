@@ -1,14 +1,14 @@
 // $Id: $
 // Include files 
 #include "GaussTools/GaussTrackInformation.h"
-#include "GaussRICH/RichInfo.h"
-#include "GaussRICH/RichPhotInfo.h"
+#include "RichInfo.h"
+#include "RichPhotInfo.h"
 #include <bitset> 
 
 
 
 // local
-#include "GaussCherenkov/CherenkovG4PmtReflTag.h"
+#include "CherenkovG4PmtReflTag.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : CherenkovG4PmtReflTag

@@ -145,7 +145,6 @@ void EvtDDalitz::init(){
     if ( d2==PIM && d3==PIP && d1==PI0 ) { _flag=12;_d1=1;_d2=2;_d3=0;}
     if ( d3==PIM && d1==PIP && d2==PI0 ) { _flag=12;_d1=2;_d2=0;_d3=1;}
     if ( d3==PIM && d2==PIP && d1==PI0 ) { _flag=12;_d1=2;_d2=1;_d3=0;}
-
   }
   if ( parnum == D0B ) {
     //look for either a K+ pi- pi0 or K0 pi+ pi-
@@ -363,27 +362,25 @@ void EvtDDalitz::init(){
     report(ERROR,"EvtGen") << "EvtDDaltiz: Invalid mode."<<endl;
     assert(0);
   }
-
-  report(INFO,"EvtGen") <<"EvtDDalitz mode = "<<_flag<<endl;
-
 }
 
 void EvtDDalitz::initProbMax() {
 
-//probmax different for different modes!  
+  // probmax different for different modes!  
 
-  if ( _flag==1 ) {setProbMax(1000000);}
-  if ( _flag==2 ) {setProbMax(147.9);}
-  if ( _flag==3 ) {setProbMax(5000.0);}
-  if ( _flag==4 ) {setProbMax(3000.0);}
-  if ( _flag==5 ) {setProbMax(10000000.0);}
-  if ( _flag==6 ) {setProbMax(50000.0);}
-  if ( _flag==7 ) {setProbMax(50000.0);}
-  if ( _flag==8 ) {setProbMax(1000000);}
-  if ( _flag==9 ) {setProbMax(1000000);}
-  if ( _flag==10 ) {setProbMax(1000000);}
-  if ( _flag==11 ) {setProbMax(1000000);}
+  if ( _flag==1 ) {setProbMax(2500.0);}
+  if ( _flag==2 ) {setProbMax(150.0);}
+  if ( _flag==3 ) {setProbMax(3000.0);}
+  if ( _flag==4 ) {setProbMax(600.0);}
+  if ( _flag==5 ) {setProbMax(2500000.0);}
+  if ( _flag==6 ) {setProbMax(45000.0);}
+  if ( _flag==7 ) {setProbMax(35000.0);}
+  if ( _flag==8 ) {setProbMax(2500.0);}
+  if ( _flag==9 ) {setProbMax(1700.0);}
+  if ( _flag==10 ) {setProbMax(1300.0);}
+  if ( _flag==11 ) {setProbMax(2200.0);}
   if ( _flag==12 ) {setProbMax(1000.0);}
+
 }
 
 void EvtDDalitz::decay( EvtParticle *p){
@@ -411,7 +408,7 @@ void EvtDDalitz::decay( EvtParticle *p){
     EvtId parId = p -> getParent()->getId ();                              
     if ( ( BP == parId ) || ( BM == parId ) || ( B0 == parId ) ||              
 	               ( B0B == parId ) )
-      if (EvtDecayTable::getDecayFunc(p->getParent())->getName() == "BTODDALITZCPK") isBToDK=true;   
+      if (EvtDecayTable::getInstance()->getDecayFunc(p->getParent())->getName() == "BTODDALITZCPK") isBToDK=true;   
   }                                                                            
   
 
@@ -494,13 +491,13 @@ void EvtDDalitz::decay( EvtParticle *p){
 
     if ( isBToDK ) {
       // Gamma angle in rad.                                                                       
-      double gamma = EvtDecayTable::getDecayFunc( p->getParent() )
+      double gamma = EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 0 )  ;
       // Strong phase in rad.                                                                      
-      double delta =  EvtDecayTable::getDecayFunc( p->getParent() )
+      double delta =  EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 1 )  ;
       // Ratio between B->D0K and B->D0barK                                                        
-      double A     =  EvtDecayTable::getDecayFunc( p->getParent() )
+      double A     =  EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 2 )  ;
 
       EvtComplex Factor( fabs( A ) * cos ( delta ) ,
@@ -577,13 +574,13 @@ void EvtDDalitz::decay( EvtParticle *p){
 
     if ( isBToDK ){
       // Gamma angle in rad.                                                                       
-      double gamma = EvtDecayTable::getDecayFunc( p->getParent() )
+      double gamma = EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 0 )  ;
       // Strong phase in rad.                                                                      
-      double delta =  EvtDecayTable::getDecayFunc( p->getParent() )
+      double delta =  EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 1 )  ;
       // Ratio between B->D0K and B->D0barK                                                        
-      double A     =  EvtDecayTable::getDecayFunc( p->getParent() )
+      double A     =  EvtDecayTable::getInstance()->getDecayFunc( p->getParent() )
         -> getArg( 2 )  ;
 
       EvtComplex Factor( fabs( A ) * cos ( delta ) ,
@@ -739,6 +736,7 @@ void EvtDDalitz::decay( EvtParticle *p){
         +  (DspipipiRes41.resAmpl() + DspipipiRes42.resAmpl())
         +  (DspipipiRes51.resAmpl() - DspipipiRes52.resAmpl());  //spin1
   } 
+  
   //D0 -> pi+pi-pi0
   //PRL 99, 251801 (2007)
   //arXiv:hep-ex/0703037
@@ -758,16 +756,17 @@ void EvtDDalitz::decay( EvtParticle *p){
     EvtResonance2 DpipipiRes7(p4_p, moms1, moms2, 0.112, 51.0, 0.135, 1.720, 0);//f0(1720)
     EvtResonance2 DpipipiRes8(p4_p, moms1, moms2, 1.04, -171.0, 0.185, 1.275, 2, true);//f2(1270)
     EvtResonance2 DpipipiRes9(p4_p, moms1, moms2, 0.069, 8.0, 0.600, 0.400, 0);//sigma(400)
-
-    double pi180inv = 1.0/EvtConst::radToDegrees;
+    
+    double pi180inv = 1.0/EvtConst::radToDegrees;  
     amp = EvtComplex(0.57*cos(-11.0*pi180inv),0.57*sin(-11.0*pi180inv))
       + DpipipiRes1p.resAmpl() + DpipipiRes1.resAmpl() + DpipipiRes1m.resAmpl()
       + DpipipiRes2p.resAmpl() + DpipipiRes2.resAmpl() + DpipipiRes2m.resAmpl()
       + DpipipiRes3p.resAmpl() + DpipipiRes3.resAmpl() + DpipipiRes3m.resAmpl()
       + DpipipiRes4.resAmpl() + DpipipiRes5.resAmpl() + DpipipiRes6.resAmpl()
       + DpipipiRes7.resAmpl() + DpipipiRes8.resAmpl() + DpipipiRes9.resAmpl();
+    
   } 
-
+  
   vertex(amp);
 
   return ;

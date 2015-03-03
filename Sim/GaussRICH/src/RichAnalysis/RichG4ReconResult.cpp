@@ -2,7 +2,7 @@
 // Include files
 
 // local
-#include "GaussRICH/RichG4ReconResult.h"
+#include "RichG4ReconResult.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4ReconResult

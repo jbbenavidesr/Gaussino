@@ -5,47 +5,24 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
-!======================= Generators v12r3 2013-02-12 =========================
- - on v12b branch
-
-! 2013-02-11 - Gloria Corti
- - Porting chnages from trunk. See below.
-
-! 2013-02-01 - Aurelien Martens (r151449)
- - ExternalGenerator.cpp: add call to initializeGenerator, so that
-   particle properties are set before initialization of the pythia instance
-
-! 2013-01-21 - Patrick Robbe (r150972)
- - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
-
-! 2013-01-16 - Patrick Robbe (r150831, r150832)
- - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
-   files the counters that allow to compute the generator level cut 
-   efficiencies.
-
-! 2012-12-19 - Aurelien Martens (from trunk r150293)
- - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
-
-!======================= Generators v12r2 2012-10-19 =========================
- - on v12b branch with the following changes ported from the trunk
+!======================= Generators v13r0 2012-11-29 =========================
 ! 2012-09-27 - Patrick Robbe
  - Added an option to switch off the reinitialization of the pile-up
    production in the Special method.
  - Fix the bug that events are not smeared (vertex) when there is no
    decay tool.
 
-!======================= Generators v12r1 2012-07-23 =========================
- - on v12b branch
+! 2012-09-11 - John Back
+ - Added the use of the namespace Photospp for src/component/ApplyPhotos.cpp,
+   which is required for Photos++ version 3.5.
+
 ! 2012-07-13 - Patrick Robbe
  - Use LHCb::ParticlePropertySvc for the new particle property service
    name
 
- - build on v12b branch built starting from v12r0
-   and with the following changes ported from the trunk
-
 ! 2012-07-22 - Gloria Corti
  - Fix bug in FlatZSmearVertex where the location where to take the beam
-   parameters was empty.
+   parameters was empty. (merge from v11r4b)
 
 ! 2012-06-11 - Alex Shires
  - update EvtGenInPhSpDecay to allow a configurable input file name
@@ -53,15 +30,22 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! 2012-05-27 - Patrick Robbe
  - use new ParticlePropertySvc
 
-!======================= Generators v12r0 2012-05-14 =========================
- - on v11r4b branch
-
-! 2012-05-09 - Gloria Corti
- - Fix run time problem with finding of ParticlePropertySvc that in Gaudi
-   v23 is in the Gaudi:: namespace. 
-
 ! 2012-05-08 - Gloria Corti
  - Fix linking problems with boost newer version from building with Gaudi v23r2
+
+! 2012-05-04 - John Back
+ - Changed src/component/ApplyPhotos.cpp to use Photos++
+ - Removed src/Lib/photos_utils.F
+
+! 2012-04-16 - John Back
+ - Some changes in EvtGenDecay.cpp to be compatible with the trunk of EvtGen:
+    a) use updated static instance for EvtGen/EvtDecayTable functions
+    b) added EvtPythia6 include header to still allow Pythia6 initialisation
+      (for some reason, this is still needed here for the initial p-p event)
+    c) commented out photos external fortran function calls.
+   Branch v11r4b is a copy of the trunk prior to the above changes.
+
+!==================== Generators v12 series on a branch ======================
 
 !======================= Generators v11r4 2012-02-12 =========================
 ! 2012-02-12 - Gloria Corti

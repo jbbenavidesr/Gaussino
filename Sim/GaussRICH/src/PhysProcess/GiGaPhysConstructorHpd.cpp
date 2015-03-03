@@ -20,9 +20,9 @@
 
 // local
 #include "GiGaPhysConstructorHpd.h"
-#include "GaussRICH/RichPhotoElectron.h"
+#include "RichPhotoElectron.h"
 
-//#include "GaussRICH/RichG4GaussPathNames.h"
+//#include "RichG4GaussPathNames.h"
 //#include "DetDesc/DetectorElement.h"
 //#include "RichDet/DeRichSystem.h"
 
@@ -157,7 +157,7 @@ void GiGaPhysConstructorHpd::ConstructPeGenericProcess() {
 }
 
 //=============================================================================
-#include "GaussRICH/RichHpdSiEnergyLoss.h"
+#include "RichHpdSiEnergyLoss.h"
 
 //=============================================================================
 // ConstructHpdSiEnLoss

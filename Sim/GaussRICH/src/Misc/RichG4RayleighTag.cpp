@@ -2,12 +2,12 @@
 // Include files 
 
 #include "GaussTools/GaussTrackInformation.h"
-#include "GaussRICH/RichInfo.h"
-#include "GaussRICH/RichPhotInfo.h"
+#include "RichInfo.h"
+#include "RichPhotInfo.h"
 
 
 // local
-#include "GaussRICH/RichG4RayleighTag.h"
+#include "RichG4RayleighTag.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4RayleighTag

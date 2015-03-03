@@ -3,7 +3,7 @@
 # Maintainer : Patrick Robbe, John Back
 #============================================================================
 package     EvtGen
-version     v12r11
+version     v13r0
  
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -14,7 +14,10 @@ branches    cmt src doc EvtGen EvtGenModels EvtGenBase
 use         GaudiPolicy  v*
 use         CLHEP        v*  LCG_Interfaces
 use         GENSER       v*  Gen
-
+use         HepMC        v*  LCG_Interfaces
+use         photospp     v*  LCG_GeneratorsInterfaces
+use         tauolapp     v*  LCG_GeneratorsInterfaces
+use         pythia8      v*  LCG_GeneratorsInterfaces
 
 include_dirs  $(EVTGENROOT) 
 

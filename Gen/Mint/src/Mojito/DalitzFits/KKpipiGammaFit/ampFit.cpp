@@ -107,9 +107,7 @@ protected:
   FromFileGenerator* _fileGen;
   IEventGenerator<IDalitzEvent>* _chosenGen;
   NamedParameter<std::string> _integratorSource;
-  std::string _integratorEventFile; // the events
-
-  std::string _integratorOutputFile; // be default same as input
+  std::string _integratorFileName;
 public:
   double un_normalised_noPs(){
     if(0 == getEvent()) return 0;
@@ -121,9 +119,7 @@ public:
 	   , IDalitzEventList* events=0
 	   , double precision=1.e-4
 	   , const std::string& method="efficient"
-	   , const std::string& integInputFiles="sgIntegrator" // comma separated list of saved "fast" integrations.
-	   , const std::string& integEventFile="IntegEventFile.root" // the events generated in the course of the integration
-	   , const std::string& integOutputFile="" // if you want the integration to be saved in a different file than integInputFile
+	   , const std::string& integFileName="IntegFile.root"
 	   )
     : DalitzPdfBaseFastInteg(events, 0, amps.get(), precision)
     , _localRnd(0)
@@ -131,23 +127,17 @@ public:
     , _fileGen(0)
     , _chosenGen(0)
     , _integratorSource("IntegratorSource", (std::string) "new", (char*) 0)
-    , _integratorEventFile(integEventFile)
-    , _integratorOutputFile(integOutputFile)
+    , _integratorFileName(integFileName)
  {
     cout << " AmpsPdf with integ method " << method << endl;
-
-    setIntegratorFileName(integInputFiles);
-
-    if("" == integOutputFile) _integratorOutputFile=integInputFiles;
-    
-    bool nonFlat = ("efficient" == method);
+    bool nonFlat = "efficient" == method;
     bool generateNew = ((string)_integratorSource == (string)"new");
     if(nonFlat){
       cout << "AmpsPdf uses nonFlat integration." << endl;
       if(generateNew){
 	_sgGen =  new SignalGenerator(_amps);
 	_sgGen->setWeighted();
-	_sgGen->setSaveEvents(_integratorEventFile);
+	_sgGen->setSaveEvents(_integratorFileName);
 	_chosenGen = _sgGen;
       }else{
 	// here, SignalGenerator is used by FromFileGenerator, to fill
@@ -159,7 +149,7 @@ public:
 	_sgGen =  new SignalGenerator(_amps, _localRnd);
 	_sgGen->setWeighted();
 	_sgGen->dontSaveEvents();// saving events is done by FromFileGenerator
-	_fileGen   = new FromFileGenerator(_integratorEventFile, _sgGen);
+	_fileGen   = new FromFileGenerator(_integratorFileName, _sgGen);
 	_chosenGen = _fileGen;
       }
       this->setEventGenerator(_chosenGen);
@@ -171,7 +161,6 @@ public:
   IFastAmplitudeIntegrable* getAmpSum(){ return _amps;}
 
   ~AmpsPdf(){
-    saveIntegrator(_integratorOutputFile);
     if(0 != _fileGen)  delete _fileGen;
     if(0 != _sgGen)    delete _sgGen;
     if(0 != _localRnd) delete _localRnd;
@@ -191,11 +180,8 @@ int ampFit(){
   NamedParameter<string> BpSignalFileName("BpSignalFileName", (std::string) "BpSg.root");
   NamedParameter<string> BmSignalFileName("BmSignalFileName", (std::string) "BmSg.root");
 
-  NamedParameter<string> BpIntegFileName("BpIntegFileName", (std::string) "BpIntegrator");
-  NamedParameter<string> BmIntegFileName("BmIntegFileName", (std::string) "BmIntegrator");
-
-  NamedParameter<string> BpIntegEventFile("BpIntegEventFile", (std::string) "BpInteg.root");
-  NamedParameter<string> BmIntegEventFile("BmIntegEventFile", (std::string) "BmInteg.root");
+  NamedParameter<string> BpIntegFileName("BpIntegFileName", (std::string) "BpInteg.root");
+  NamedParameter<string> BmIntegFileName("BmIntegFileName", (std::string) "BmInteg.root");
 
   NamedParameter<int>  Nevents("Nevents", 10000);
   NamedParameter<int>  doScan("doScan", 0);
@@ -236,13 +222,12 @@ int ampFit(){
   DalitzHistoSet datHM = BmEventList.histoSet();
   datHM.save("plotsFromBmEventList.root");
 
-
   AmpsPdf BpPdf(BpAmps, &BpEventList, integPrecision, integMethod
-		, BpIntegFileName, BpIntegEventFile);
+		, BpIntegFileName);
   Neg2LL<IDalitzEvent> fcnP(&BpPdf, &BpEventList);
 
   AmpsPdf BmPdf(BmAmps, &BmEventList, integPrecision, integMethod
-		, BmIntegFileName, BmIntegEventFile);
+		, BmIntegFileName);
   Neg2LL<IDalitzEvent> fcnM(&BmPdf, &BmEventList);
 
   Neg2LLSum fcn(&fcnP, &fcnM);

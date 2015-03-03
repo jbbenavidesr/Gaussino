@@ -6,7 +6,6 @@
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
 #include "Generators/IProductionTool.h"
-#include "Generators/ICounterLogFile.h"
 
 // from Pythia8
 #include "Pythia.h"
@@ -89,16 +88,8 @@ protected:
   
 private:
 
-  ICounterLogFile * m_xmlLogTool ; ///< XML Log file to store cross-sections 
-
-  /// get pythai8Id from the PP
-  int getPythia8ID( const LHCb::ParticleProperty * thePP ) ;
-
   /// retrieve the processCode
   int processCode( ) ;
-
-  /// retrieve the process Name
-  string processName( int i );
     
   std::string m_beamToolName ;
   

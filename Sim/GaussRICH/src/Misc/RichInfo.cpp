@@ -4,7 +4,7 @@
 
 
 // local
-#include "GaussRICH/RichInfo.h"
+#include "RichInfo.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RICHInfo

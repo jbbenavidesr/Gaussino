@@ -66,14 +66,13 @@
 
 #include "G4ios.hh"
 #include "G4Poisson.hh"
-#include "GaussRICH/RichG4Cerenkov.h"
+#include "RichG4Cerenkov.hh"
 // To tag the info regarding photon production.
-#include "GaussRICH/RichG4CherenkovPhotProdTag.h"
-#include "GaussRICH/RichG4MatRadIdentifier.h"
+#include "RichG4CherenkovPhotProdTag.h"
+#include "RichG4MatRadIdentifier.h"
 // local analysis for RichG4.
 //#include "RichG4CherenkovAnalysis.h"
-#include "GaussRICH/RichG4QwAnalysis.h"
-
+#include "RichG4QwAnalysis.h"
 // end of include localanalysis
 
 using namespace std;
@@ -189,7 +188,7 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
        //Change by SE to produce photons only within a limited range of RefIndex.
         //	const G4MaterialPropertyVector* Rindex = 
         //        aMaterialPropertiesTable->GetProperty("RINDEX"); 
-      	 G4MaterialPropertyVector* Rindex = 
+      	const G4MaterialPropertyVector* Rindex = 
                 aMaterialPropertiesTable->GetProperty("CKVRNDX"); 
 
         if (!Rindex)return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
@@ -245,17 +244,12 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	// G4double Pmin = Rindex->GetMinPhotonMomentum(); // for versions until G4.9.1
 	//G4double Pmax = Rindex->GetMaxPhotonMomentum();  // for versions until G4.9.1
 
-        //  G4double Pmin = Rindex->GetMinPhotonEnergy(); //for the  G4 versions after 4.9.1
-        //	G4double Pmax = Rindex->GetMaxPhotonEnergy();   //for the  G4 versions after 4.9.1 
-
-        G4double Pmin = Rindex->GetMinLowEdgeEnergy(); // for G4.95 onwards
-        G4double Pmax = Rindex->GetMaxLowEdgeEnergy();  //for G4.95.onwards
-
+  G4double Pmin = Rindex->GetMinPhotonEnergy(); //for the  G4 versions after 4.9.1
+	G4double Pmax = Rindex->GetMaxPhotonEnergy();   //for the  G4 versions after 4.9.1 
 
 	G4double dp = Pmax - Pmin;
 
-  //	G4double nMax = Rindex->GetMaxProperty(); // for G4.95 onwards
-	G4double nMax = Rindex->GetMaxValue();
+	G4double nMax = Rindex->GetMaxProperty();
 
         G4double BetaInverse = 1./beta;
 
@@ -275,7 +269,7 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 		do {
 			rand = G4UniformRand();	
 			sampledEnergy = Pmin + rand * dp; 
-			sampledRI = Rindex->Value(sampledEnergy);
+			sampledRI = Rindex->GetProperty(sampledEnergy);
 			cosTheta = BetaInverse / sampledRI;  
 
 			sin2Theta = (1.0 - cosTheta)*(1.0 + cosTheta);
@@ -392,7 +386,6 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 // ---------------------------------------------
 //
 
-
 void RichG4Cerenkov::BuildThePhysicsTable()
 {
 	if (thePhysicsTable) return;
@@ -422,9 +415,6 @@ void RichG4Cerenkov::BuildThePhysicsTable()
 
 		if (aMaterialPropertiesTable) {
 
-
-
-
       //Change by SE to produce photons only within a limited range of RefIndex.
 		  // G4MaterialPropertyVector* theRefractionIndexVector = 
 		  //  	   aMaterialPropertiesTable->GetProperty("RINDEX");
@@ -438,15 +428,22 @@ void RichG4Cerenkov::BuildThePhysicsTable()
 		      // Retrieve the first refraction index in vector
 		      // of (photon energy, refraction index) pairs 
 
-                      G4double currentRI = (*theRefractionIndexVector)[0];
+		      theRefractionIndexVector->ResetIterator();
+		      ++(*theRefractionIndexVector);	// advance to 1st entry 
+
+		      G4double currentRI = theRefractionIndexVector->
+		  			   GetProperty();
 
 		      if (currentRI > 1.0) {
 
 			 // Create first (photon energy, Cerenkov Integral)
 			 // pair  
+       // following line modified on Sept-10-2009. 
+			 //G4double currentPM = theRefractionIndexVector->
+			 //			 GetPhotonMomentum(); // for versions until G4.9.1
+       			 G4double currentPM = theRefractionIndexVector->
+			 			 GetPhotonEnergy();  // for G4 versions after G4.9.1
 
-                         G4double currentPM = theRefractionIndexVector->
-                                                 Energy(0);
 			 G4double currentCAI = 0.0;
 
 			 aPhysicsOrderedFreeVector->
@@ -461,12 +458,15 @@ void RichG4Cerenkov::BuildThePhysicsTable()
 			 // loop over all (photon energy, refraction index)
 			 // pairs stored for this material  
 
-                         for (size_t i = 1;
-                              i < theRefractionIndexVector->GetVectorLength();
-                              i++)
+			 while(++(*theRefractionIndexVector))
 			 {
-                                currentRI = (*theRefractionIndexVector)[i];
-                                currentPM = theRefractionIndexVector->Energy(i);
+				currentRI=theRefractionIndexVector->	
+						GetProperty();
+        // following line modified on Sept-10-2009 
+				//currentPM = theRefractionIndexVector->
+				//		GetPhotonMomentum(); // for versions until G4.9.1
+        currentPM = theRefractionIndexVector->
+                  GetPhotonEnergy(); // for G4 versions after G4.9.1
 
 				currentCAI = 0.5*(1.0/(prevRI*prevRI) +
 					          1.0/(currentRI*currentRI));
@@ -523,7 +523,7 @@ G4double RichG4Cerenkov::GetMeanFreePath(const G4Track& aTrack,
        //      const G4MaterialPropertyVector* Rindex =
        //              aMaterialPropertiesTable->GetProperty("RINDEX");
 
-         G4MaterialPropertyVector* Rindex =
+        const G4MaterialPropertyVector* Rindex =
                 aMaterialPropertiesTable->GetProperty("CKVRNDX");
        //end of change by SE
 
@@ -567,11 +567,11 @@ G4double RichG4Cerenkov::GetMeanFreePath(const G4Track& aTrack,
 // GEANT-unit (millimeter) in the current medium. 
 //             ^^^^^^^^^^
 
-
-G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
+G4double 
+RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
                               const G4double beta, 
 			      const G4Material* aMaterial,
-			      G4MaterialPropertyVector* Rindex) const
+			      const G4MaterialPropertyVector* Rindex) const
 {
 	const G4double Rfact = 369.81/(eV * cm);
 
@@ -592,13 +592,16 @@ G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
 
         if(!(CerenkovAngleIntegrals->IsFilledVectorExist()))return 0.0;
 
-	// Min and Max photon energies
-  G4double Pmin = Rindex->GetMinLowEdgeEnergy(); //G4.95 onwards
-  G4double Pmax = Rindex->GetMaxLowEdgeEnergy(); //G4.95 onwards
+	// Min and Max photon energies . Following  lines modified on Sept-10-2009
+	// G4double Pmin = Rindex->GetMinPhotonMomentum(); // for versions until G4.9.1
+	// G4double Pmax = Rindex->GetMaxPhotonMomentum(); // for versins until G4.9.1
+
+  	G4double Pmin = Rindex->GetMinPhotonEnergy(); // for  G4 versions after G4.9.1
+    G4double Pmax = Rindex->GetMaxPhotonEnergy(); // for G4 versions after G4.9.1
 
 	// Min and Max Refraction Indices 
-	G4double nMin = Rindex->GetMinValue();	
-	G4double nMax = Rindex->GetMaxValue();
+	G4double nMin = Rindex->GetMinProperty();	
+	G4double nMax = Rindex->GetMaxProperty();
 
 	// Max Cerenkov Angle Integral 
 	G4double CAImax = CerenkovAngleIntegrals->GetMaxValue();
@@ -621,12 +624,14 @@ G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
 
 	// If n(Pmin) < 1/Beta, and n(Pmax) >= 1/Beta, then
 	// we need to find a P such that the value of n(P) == 1/Beta.
-	// Interpolation is performed by the GetEnergy() and
-	// Value() methods of the G4MaterialPropertiesTable and
+	// Interpolation is performed by the GetPhotonEnergy() and
+	// GetProperty() methods of the G4MaterialPropertiesTable and
 	// the GetValue() method of G4PhysicsVector.  
 
 	else {
-		Pmin = Rindex->GetEnergy(BetaInverse);
+    // following line modified on Sept10 - 2009
+    Pmin = Rindex->GetPhotonEnergy(BetaInverse); // for G4 versions after G4.9.1
+		//Pmin = Rindex->GetPhotonMomentum(BetaInverse);// until G4.9.1
 		dp = Pmax - Pmin;
 
 		// need boolean for current implementation of G4PhysicsVector
@@ -648,6 +653,3 @@ G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
 
 	return NumPhotons;		
 }
-
-
-

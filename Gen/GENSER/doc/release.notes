@@ -4,80 +4,55 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
-!========================== GENSER v11r2 2013-02-20 ==========================
- - on v11b branch
+!========================== GENSER v12r0 2012-11-29 ==========================
+! 2012-11-16 - Gloria Corti
+ - Use private interface packages for photos++ and tauola++ to replace '++'
+   with 'pp' needed on bash to correctly resolve the paths.
 
-! 2013-02-20 - Gloria Corti
- - Merge changes to remove hijing code from v10r2b branch. See below.
+! 2012-11-15 - Gloria Corti
+ - Port by hand changes in v9r2b branches for new versions and new generators
+   . Modify macro to pick native version of alpgen 2.1.4
+   . Add macro to pick up rivet for the first time
+   . Modify macro to pick up pythia8 latest release 170
+     Note from pythia8 release note for 165: 
+     "Bug fix, that 'ParticleDecays:mixB = off' did not switch off B0-B0bar 
+      and Bs0-Bs0bar mixing".
+   . Use interface packages for herwig++ and thepeg privately defined and not
+     from LCG_interfaces to replace '++' with 'pp', needed on bash, and to 
+     redefine linking statements.
+ - Merge change r143057 from v9r3b by Patrick Robbe (2012-07-23)
+   . Add UPVETO function (mainly for ALPGEN)
+ - Remove macros for obsolete generators no longer in use
+   . herwig
+   . jimmy
+ - Remove all linking for photos (fortran)
+ - Modify macros to use latest version of the generators
+   . herwig++ and thepeg native versions 2.6.1a and 1.8.1
+   . rivet native version 1.8.1 (build with fastjet 2.4.4 as in LCGCMT_64a)
+ - Move from EvtGen definition of PYTHIA8DATA
+ - Move from EvtGen macro definitions for tauola++ and photos++
+ - The use of private interfaces to replace those of LCG requires LCG_Settings 
+   that has to be in sync with LCGCMT. The private interfaces will be forwarded
+   to LCG to be included in their release once validated for remote usage
 
-! 2013-02-14 - Gloria Corti (merged r152263)
- - Now physically remove the line commented in the requirement and the rlu.F 
-   and ran.F code from src/hijing since the tests are successful
+! 2012-05-04 - John Back
+ - Remove old photos (v2) from cmt/requirements file.
 
-! 2013-02-11 - Gloria Corti (merged r151897, r151988)
- - Comment out making the library for hijing, since the code is now in 
-   LbHijing itself
+! 2012-05-04 - Gloria Corti
+ - Take the latest version of pythia8 163
 
-!========================== GENSER v11r1 2013-02-07 ==========================
- - on v11b branch
+! 2012-03-28 - Zenwhei Yang
+ - Add two lines for GenChicc in upinit.F, upevnt.F and GaussUserProcesses.inc
 
-! 2013-02-07 - Gloria Corti
- - Put back the version of hijing as in MC10 1.383bs.2 and change the rlu.F 
-   function in src/hijing to adapt back to it. 
-   Remove all linking appended to those of GENSER from here to remove tying
-   all generators to hijing as in link library symbols
+! 2012-01-26 - Gloria Corti
+ - Take the latest version of pythia8 160
+ - Remove temporary patch to link photos++ and tauola++ with missing links
 
-! 2013-01-17 - Gloria Corti
- - New version of pythia6 427.2
-
-!========================== GENSER v11r0 2012-11-26 ==========================
- - on v9r3b branch
-
-! 2012-11-13 - Gloria Corti
- - Use latest version of external generators packages (with builds also
-   available for gcc 4.6
-   . pythia6   426.2
-   . lhapdf    5.8.8
-   . rivet     1.8.1
-   . herwigpp  2.6.1a
-   . thepeg    1.8.1
-
-!========================== GENSER v10r2 2012-10-19 ==========================
- - on v9r3b branch
-
-! 2012-09-27 - Gloria Corti
- - Change version of pythia8 to latest release 170
-
-! 2012-09-18 - Gloria Corti
- - Add macro to pick up rivet for the first time, with native version 1.8.0.b
-
-!========================== GENSER v10r1 2012-05-14 ==========================
- - on v9r3b branch
-
-! 2012-07-23 - Patrick Robbe
- - Add UPVETO function (mainly for ALPGEN)
-
-! 2012-07-11 - Gloria Corti
- - Add macro to pick native version of alpgen 2.1.4
-
-!========================== GENSER v10r0 2012-05-14 ==========================
- - on v9r3b branch
-
-! 2012-05-10 - Gloria Corti
- - Increase version of pythia8 as 165 has been made available on LCG today.
-   From pythia8 release note: "Big fix, that 'ParticleDecays:mixB = off' did
-   not switch off B0-B0bar and Bs0-Bs0bar mixing". 
-
-! 2012-05-07 - Gloria Corti
- - Branch based on v9r3 for first 2012 MC.
- - Change version of pythia8 to latest available 163
- - Introduce macro to set version of Herwig++ 2.5.1 and ThePeg 1.7.1
-   so that they can be distributed on the grid
-
-!========================== GENSER v9r3 2012-04-02 ===========================
-! 2012-03-28 - Gloria Corti
- - Backport changes from Zenwhei Yang:
-   "Add two lines for GenChicc in upinit.F, upevnt.F and GaussUserProcesses.inc
+!========================= GENSER v11r0 on a branch ==========================
+!========================= GENSER v10r2 on a branch ==========================
+!========================= GENSER v10r1 on a branch ==========================
+!========================= GENSER v10r0 on a branch ==========================
+!========================= GENSER v9r3 on a branch ===========================
 
 !========================= GENSER v9r2p1 2011-10-14 ==========================
 ! 2011-10-14 - Gloria Corti

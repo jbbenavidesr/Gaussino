@@ -27,7 +27,6 @@
 #include <assert.h>
 #include "EvtGenBase/EvtModel.hh"
 
-#include "EvtGenModels/EvtEta2MuMuGamma.hh"
 #include "EvtGenModels/EvtTauVectornu.hh"
 #include "EvtGenModels/EvtVVP.hh"
 #include "EvtGenModels/EvtSLN.hh"
@@ -119,7 +118,6 @@
 #include "EvtGenModels/EvtLNuGamma.hh"
 
 #include "EvtGenModels/EvtVub.hh"
-//#include "EvtGenModels/EvtVubAFR.hh"
 #include "EvtGenModels/EvtVubHybrid.hh"
 #include "EvtGenModels/EvtVubNLO.hh"
 #include "EvtGenModels/EvtVubBLNP.hh"
@@ -136,6 +134,13 @@
 
 #include "EvtGenModels/EvtBaryonPCR.hh"
 
+#include "EvtGenModels/EvtPythia.hh"
+
+#include "EvtGenModels/EvtDMix.hh"
+#include "EvtGenModels/EvtD0mixDalitz.hh"
+#include "EvtGenModels/EvtD0gammaDalitz.hh"
+#include "EvtGenModels/EvtEta2MuMuGamma.hh"
+
 #include "EvtGenModels/EvtBcToNPi.hh"
 #include "EvtGenModels/EvtBcPsiNPi.hh"
 #include "EvtGenModels/EvtBcBsNPi.hh"
@@ -147,22 +152,9 @@
 #include "EvtGenModels/EvtTVP.hh"
 #include "EvtGenModels/EvtXPsiGamma.hh"
 
-//#include "EvtGenModels/EvtJetSetCDF.hh"
-//#include "EvtGenModels/EvtJscontCDF.hh"
+#include "EvtGenModels/EvtTauola.hh"
 
-
-#ifndef EVTSTANDALONE
-#include "EvtGenModels/EvtJetSet.hh"
-#include "EvtGenModels/EvtJscont.hh"
-#else
-#include "EvtGenModels/EvtPythia.hh"
-//#include "EvtGenModels/EvtPyGaGa.hh"
-//#include "EvtGenModels/EvtPycont.hh"
-#endif
-
-#include "EvtGenModels/EvtDMix.hh"
-#include "EvtGenModels/EvtD0mixDalitz.hh"
-#include "EvtGenModels/EvtD0gammaDalitz.hh"
+#include "EvtGenModels/EvtGenericDalitz.hh"
 
 #include "EvtGenModels/EvtModelReg.hh"
 using std::fstream;
@@ -266,7 +258,6 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtKstarstargamma);
 
     modelist.registerModel(new EvtVub); 
-    //modelist.registerModel(new EvtVubAFR);
 
     modelist.registerModel(new EvtVubHybrid);
     modelist.registerModel(new EvtVubNLO);
@@ -281,9 +272,6 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtD0mixDalitz);
     modelist.registerModel(new EvtD0gammaDalitz);
     modelist.registerModel(new EvtEta2MuMuGamma);
-
-//    modelist.registerModel(new EvtJetSetCDF);
-//    modelist.registerModel(new EvtJscontCDF);
 
     modelist.registerModel(new EvtbTosllAli);
     modelist.registerModel(new EvtBaryonPCR);
@@ -306,24 +294,9 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtTVP);
     modelist.registerModel(new EvtXPsiGamma);
 
-#ifndef EVTSTANDALONE
-    cout << "Will registerModel EvtJetSet"<<endl;
-    modelist.registerModel(new EvtJetSet);
-    modelist.registerModel(new EvtJscont);
-#else
-//    modelist.registerModel(new EvtPycont);
-//    cout << "Will register EvtPythia"<<endl;
     modelist.registerModel(new EvtPythia);
-//    modelist.registerModel(new EvtPyGaGa);
-#endif
+    modelist.registerModel(new EvtTauola);
 
-    
+    modelist.registerModel(new EvtGenericDalitz());
 
 }
-
-
-
-
-
-
-

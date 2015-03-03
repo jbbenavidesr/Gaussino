@@ -3,7 +3,7 @@
 # Maintainer : Sajan Easo
 #============================================================================
 package GaussCherenkov
-version v3r0p1
+version v2r1
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -36,22 +36,9 @@ library          GaussCherenkov    ../src/*.cpp             \
                               ../src/CherenkovTestBeamSensDet/*.cpp \
                               ../src/TorchTestBeamAnalysis/*.cpp
 
+
 # Includes used internally
 #============================================================================
-include_dirs     $(GAUSSCHERENKOVROOT) 
-
-# define component library link options
-#============================================================================
-apply_pattern    component_library library=GaussCherenkov
-
-# define options directory
-#============================================================================
-macro_append GaussCherenkov_linkopts "-lGaussRICH"
-# special linking for genConf (see GaudiTools)
-#============================================================================
-private
-apply_pattern use_genconf_helper_lib pkg=GaussTools 
-
 private 
 include_dirs     $(GAUSSCHERENKOVROOT) \
                  $(GAUSSCHERENKOVROOT)/src/SensDet \
@@ -63,6 +50,28 @@ include_dirs     $(GAUSSCHERENKOVROOT) \
                  $(GAUSSCHERENKOVROOT)/src/CherenkovAssoc \
                  $(GAUSSCHERENKOVROOT)/src/CherenkovTestBeamPhysProcess \
                  $(GAUSSCHERENKOVROOT)/src/CherenkovTestBeamSensDet  \
-                 $(GAUSSCHERENKOVROOT)/src/TorchTestBeamAnalysis
+                 $(GAUSSCHERENKOVROOT)/src/TorchTestBeamAnalysis \
+                 $(GAUSSRICHROOT) \
+                 $(GAUSSRICHROOT)/src/SensDet \
+                 $(GAUSSRICHROOT)/src/PhysProcess \
+                 $(GAUSSRICHROOT)/src/RichAction \
+                 $(GAUSSRICHROOT)/src/Misc \
+                 $(GAUSSRICHROOT)/src/RichAnalysis \
+                 $(GAUSSRICHROOT)/src/srcG4 
 
+
+                 
+
+        
+# define component library link options
+#============================================================================
+apply_pattern    component_library library=GaussCherenkov
+
+# define options directory
+#============================================================================
+macro_append GaussCherenkov_linkopts "-lGaussRICH"
+# special linking for genConf (see GaudiTools)
+#============================================================================
+private
+apply_pattern use_genconf_helper_lib pkg=GaussTools 
 

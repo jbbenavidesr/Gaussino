@@ -5,10 +5,11 @@
 
 // local
 #include "RichG4HistoFillSet4.h"
-#include "GaussRICH/RichG4Counters.h"
+#include "RichG4Counters.h"
 // local
-#include "GaussRICH/RichG4Hit.h"
-#include "GaussRICH/RichG4ReconResult.h"
+#include "../SensDet/RichG4Hit.h"
+#include "RichG4Hit.h"
+#include "RichG4ReconResult.h"
 
 //GEANT4
 #include "G4Event.hh"
@@ -28,8 +29,8 @@
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
 //#include "AIDA/IProfile.h"
-#include "GaussRICH/RichG4SvcLocator.h"
-#include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
+#include "RichG4SvcLocator.h"
+#include "RichG4RadiatorMaterialIdValues.h"
 
 
 //-----------------------------------------------------------------------------

@@ -12,7 +12,6 @@
 #include "Generators/IProductionTool.h"
 #include "Generators/GenCounters.h"
 #include "Generators/LhaPdf.h"
-#include "Generators/ICounterLogFile.h"
 
 // Event 
 #include "Event/HepMCEvent.h"
@@ -35,7 +34,6 @@ DECLARE_TOOL_FACTORY( Special );
 Special::Special( const std::string & type , const std::string & name ,
                   const IInterface * parent )
   : ExternalGenerator( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
     m_nEventsBeforeCut    (  0 ) ,
     m_nEventsAfterCut     (  0 ) ,
     m_maxInteractions     ( 30 ) ,
@@ -58,9 +56,6 @@ Special::~Special( ) { ; }
 StatusCode Special::initialize( ) {
   info() << "Generating Special events." << endmsg ;
   StatusCode sc = ExternalGenerator::initialize( ) ;
-
-  // Initialize XML Log file
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
 
   // Switch off LHA print out first
   if ( msgLevel( MSG::DEBUG ) ) {
@@ -160,8 +155,13 @@ bool Special::generate( const unsigned int nPileUp ,
 //=============================================================================
 void Special::printCounters( ) const {
   using namespace GenCounters ;
-  printEfficiency( m_xmlLogTool , "generator level cut" , m_nEventsAfterCut , 
+
+  info() << "************* Special generation counters   ***************"
+         << std::endl ;
+
+  printEfficiency( info() , "generator level cut" , m_nEventsAfterCut , 
                    m_nEventsBeforeCut ) ;
+  info() << endmsg ;
 }
 
 //=============================================================================
@@ -215,3 +215,5 @@ void Special::copyCollision( const LHCb::GenCollision * FROM ,
   TO -> setX1Bjorken( FROM -> x1Bjorken() ) ;
   TO -> setX2Bjorken( FROM -> x2Bjorken() ) ;
 }
+
+

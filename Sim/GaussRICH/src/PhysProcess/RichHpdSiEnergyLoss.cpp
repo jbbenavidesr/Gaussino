@@ -1,25 +1,25 @@
-#include "GaussRICH/RichHpdSiEnergyLoss.h"
+#include "RichHpdSiEnergyLoss.h"
 #include "G4Material.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 #include "G4Electron.hh"
-#include "GaussRICH/RichPhotoElectron.h"
-#include "GaussRICH/RichPEInfoAttach.h"
-#include "GaussRICH/RichG4AnalysisPhotElec.h"
-#include "GaussRICH/RichG4AnalysisConstGauss.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
+#include "RichPhotoElectron.h"
+#include "RichPEInfoAttach.h"
+#include "RichG4AnalysisPhotElec.h"
+#include "RichG4AnalysisConstGauss.h"
+#include "RichG4GaussPathNames.h"
 #include "Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
 #include "G4ProcessVector.hh"
 #include "G4ProcessManager.hh"
-#include "GaussRICH/RichHpdProperties.h"
+#include "RichHpdProperties.h"
 #include "GaussTools/GaussTrackInformation.h"
-#include "GaussRICH/RichInfo.h"
-#include "GaussRICH/RichPEInfo.h"
-#include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
+#include "RichInfo.h"
+#include "RichPEInfo.h"
+#include "RichG4RadiatorMaterialIdValues.h"
 
 RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
                                         G4ProcessType   aType )
@@ -67,8 +67,7 @@ RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
 
   }
   if(iMat >= numberOfMat ) {
-    G4Exception("RichHpdSiEnergyLoss: RichHpdSiEnergyLoss", "RichHpdSiEnergyLoss001",FatalException, 
-                "Invalid material Name for HpdAnode in RichHpdSiEnergyLoss constructor" );
+    G4Exception("Invalid material Name in RichHpdSiEnergyLoss constructor" );
   }
 
   for(iMatk=0;iMatk<numberOfMat;++iMatk) {
@@ -83,9 +82,7 @@ RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
 
   }
   if(iMatk >= numberOfMat ) {
-
-    G4Exception( "RichHpdSiEnergyLoss: RichHpdSiEnergyLoss", "RichHpdSiEnergyLoss002",FatalException, 
-               "Invalid material Name for HpdEnvelope in RichHpdSiEnergyLoss constructor" );
+    G4Exception("Invalid material Name in RichHpdSiEnergyLoss constructor" );
   }
    
   //     G4cout<<GetProcessName() <<" is created "<<G4endl;

@@ -1,7 +1,7 @@
 #include "RichPmtProperties.h"
-#include "GaussRICH/RichG4AnalysisConstGauss.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
-#include "GaussCherenkov/CkvG4GaussPathNames.h"
+#include "RichG4AnalysisConstGauss.h"
+#include "RichG4GaussPathNames.h"
+#include "CkvG4GaussPathNames.h"
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/SmartDataPtr.h"
 
@@ -9,7 +9,7 @@
 #include "DetDesc/IGeometryInfo.h"
 #include "DetDesc/TabulatedProperty.h"
 #include "boost/lexical_cast.hpp"
-#include "GaussRICH/RichG4SvcLocator.h"
+#include "RichG4SvcLocator.h"
 #include "G4Material.hh"
 #include "CherenkovG4Counters.h"
 
@@ -490,8 +490,7 @@ double RichPmtProperties::getPmtCorrectedQEFromPhotonEnergy(double photonenergy,
         G4MaterialPropertyVector* RindexPC=
                       aMatPC->GetMaterialPropertiesTable()->GetProperty("RINDEX");
           if(   RindexPC ) {
-            thisPCRI= RindexPC->Value(photonenergy); //G4.95
-            //thisPCRI= RindexPC->GetProperty(photonenergy);
+            thisPCRI= RindexPC->GetProperty(photonenergy);
           } 
           matafound=true;    
       }      
@@ -504,8 +503,7 @@ double RichPmtProperties::getPmtCorrectedQEFromPhotonEnergy(double photonenergy,
         G4MaterialPropertyVector* RindexQW=
                       aMatQW->GetMaterialPropertiesTable()->GetProperty("RINDEX");
         if(   RindexQW ) {
-            thisQWRI= RindexQW->Value(photonenergy); //G4.95
-            //thisQWRI= RindexQW->GetProperty(photonenergy);
+            thisQWRI= RindexQW->GetProperty(photonenergy);
         } 
 
         matbfound=true;        

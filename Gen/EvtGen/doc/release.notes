@@ -4,82 +4,127 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
-!======================= EvtGen v12r11 2012-07-11 =========================
-! 2012-07-11 - John Back
- - Additional corrections to D0->pi+pi-pi0 decay model in EvtDDalitz from
-   Marco Gersabeck and Frederic Dreyer.
+!========================== EvtGen v13r0 2012-11-23 ==========================
+! 2012-11-23 - John Back
+ - Created new tag incorporating all changes below.
 
-! 2012-07-09 - John Back
+! 2012-11-16 - Gloria Corti
+ - Use interface packages for photos++ and tauola++ that replace '++'
+   with 'pp' needed on bash to correctly resolve the paths.
+
+! 2012-11-15 - Gloria Corti
+ - Remove macro definitions for native version of photo++ and taula++ that
+   must be located in GENSER for script to make tarball for remove distribution
+   of the code to work
+
+! 2012-10-08 - John Back
+ - Provide default constructors for EvtVector4R and EvtPhotonParticle.
+   Corrected the t3 vector form factor values for the Ball-Zwicky '05 model 
+   (modelId = 6) in EvtbTosllBallFF::getVectorFF(), which were set to t3tilde 
+   instead.
+
+   From Michal Kreps: fixed the calculation of the angle between decay planes 
+   in the function EvtKine::EvtDecayAngleChi. Fixed typo in the EvtLb2Lll 
+   decay model. Only some NP scenarios could be affected, SM one is definitely 
+   unaffected.
+
+! 2012-09-11 - John Back
+ - Added missing EvtBCVFF class. Updated photos++ and tauola++ required 
+   versions to be 3.51 and 1.0.7, respectively. Added the use of the 
+   namespaces Photospp and Tauolapp in the classes EvtPhotosEngine 
+   and EvtTauolaEngine.
+
+! 2012-07-11 - John Back
  - Added new decay models/classes from Alexey Luchinsky:
    EvtBcVMuNu, EvtTVP, EvtWnPi, EvtSVP, EvtXPsiGamma, EvtBcVNpi
 
-! 2012-06-29 - John Back
- - Added D0->pi+pi-pi0 decay model to EvtDDalitz, from Frederic Dreyer.
+! 2012-07-11 - Frederic Dreyer and Marco Gersabeck
+ - Updated EvtDDalitz to contain Dalitz model for D0-->pi-pi+pi0.
 
-!======================== EvtGen v12r10 2012-05-14 =========================
-! 2012-04-24 - Jordi Garra Tico
- - Solved two bugs in the EvtD0gammaDalitz model:
+! 2012-05-15 - John Back
+ - Updated EvtD0gammaDalitz to deal with D mesons from neutral B->DK, 
+   from Daniel Craik.
+
+! 2012-05-14 - John Back
+ - Replaced BaBar specific configuration for BlattWeisskopf birth factors, 
+   from Daniel Craik.
+
+! 2012-05-04 - John Back
+ - Updated various generic xml Dalitz code from Daniel Craik.
+
+! 2012-04-24 - John Back
+ - From Jordi Tico: Solved two bugs in the EvtD0gammaDalitz model;
    configuration of the conjugated model, and using only the B charge
    to determine the model used, not the D flavour.
 
-!======================== EvtGen v12r9 2012-03-29 ===========================
-! 2012-03-23 - Marcin Chrzaszcz
- - Added the EvtEta2MuMuGamma decay model.
+! 2012-04-21 - John Back
+ - Added code from Daniel Craik to allow the use of xml decay.dec files
+   and to use a more general Dalitz plot model interface, again using
+   xml syntax to specify resonances, dynamics terms and amplitude 
+   coefficients. This will eventually replace the EvtDDalitz model,
+   avoiding the need for hardcoded resonance setttings/parameters.
+
+! 2012-04-02 - John Back
+ - EvtDDalitz.cpp: Updated the maximum probability values in initProbMax().
+
+! 2012-03-23 - John Back
+ - Added EvtEta2MuMuGamma model from Marcin Chrzaszcz.
 
 ! 2012-03-21 - John Back
- - Added brackets around conditional if statements in EvtD0gammaDalitz to 
-   remove compilation warnings.
+ - Added EvtD0gammaDalitz model from Jordi Tico.
+   Added K_1+/- vector modes for EvtbTosllBallFF::getVectorFF. 
+   Added check for null pointers when printing debug info when checking the 
+   spin density matrix rho in EvtDecayAmp.
 
-! 2012-03-02 - Jordi Garra Tico
- - Added EvtD0gammaDalitz decay model: D0 decays with a complete Dalitz plot 
-   description and CPV with CKM angle gamma.
+! 2012-02-10 - John Back
+ - Change EvtTauolaEngine to use the "lab" frame (first mother) for all 
+   4-momentum calculations, since there were problems for 4-momentum 
+   conservation at the HepMC vertex when the mother of the given
+   tau particle was not at rest. 
+   Reinstate PYTHIA8DATA variable in cmt/requirements.
 
-!======================== EvtGen v12r8 2012-01-28 ===========================
-! 2012-01-28 - John Back
- - Add K_1+/- vector modes for EvtbTosllBallFF::getVectorFF. 
-   Check for null pointers when printing debug info when checking the spin 
-   density matrix rho in EvtDecayAmp.
-   Include fix from Anders for EvtAmp::getSpinDensity().
+! 2011-11-18 - John Back
+ - Reinstated the Pythia6 code, now called EvtPythia6, that is needed for the 
+   EvtGenDecay.cpp class within Gen/Generators. Also reinstated the old fortran 
+   routines Pythia.F and EvtPythiaPart.F.
+   EvtGenDecay.cpp needs to use EvtPythia6::pythiaInit(), or needs to be 
+   changed to be fully Pythia8 compliant...
+   EvtGen uses Pythia8 for its own PYTHIA decay model.
+   Added the PYTHIA8DATA environment variable to cmt/requirements
+   for specifying the location of the Pythia8 xml data files.
+   At the moment, the external LCG Photos++ libraries are broken; somehow 
+   they are split up into separate C++ and Fortran parts, which gives memory 
+   corruption; a default installation should only have the one library
+   libPhotosCxxInterface.so (tested OK with a standalone version).
 
-!========================= EvtGen v12r7 2011-10-04 ==========================
-! 2011-10-04 - John Back
- - Use the previous version of EvtMultiChannelParser class, but with the 
-   corrections to the array increment indices in assert calls. For some 
-   unknown reason, conjugate mixing amplitude terms were not getting 
-   propagated correctly if used in the decay file. These were not tested 
-   before (this option is not used in any current decay files in DecFiles).
+! 2011-10-05 - John Back
+ - Update various classes to include recent fixes and changes made to the
+   v12r2b branch (see below). Also update the versions of the external 
+   generators in the cmt/requirements file. 
+  1) Changes to EvtParticle::generateMassTree() to not abort the code if
+     the parent mass is below the threshold to generate the required decay.
+     Now it just stops the particle decay; before there was an abort.
+     This keeps the EvtParticle::isDecayed() boolean set to false.
+  2) Protection against negative square-root values in EvtGenKine p3 momentum 
+     component which was giving NaN values to boost/spin matrix calculations. 
+  3) Fixed array index increments in various initialisation assert checks
+     in the EvtMultiChannelParser and EvtPto3PAmpFactory classes for the
+     Pto3P Dalitz plot model (a specific problem for optimised builds).
+  4) Added getName() to EvtParticle and EvtId classes to help identify 
+     EvtParticles during testing instead of relying on EvtId numbers.
+  5) Updated various D Dalitz decay models in EvtDDalitz.
+  6) Some changes to debug/error output report levels in a few classes.
 
-!========================= EvtGen v12r6 2011-10-04 ===========================
-! 2011-10-04 - John Back
- - Rewrote EvtMultiChannelParser class to use more std::strings, use atof for
-   string to double conversions, and removed various static functions. 
-   Removed the array increment index calls during assert (initialisation) checks 
-   in both EvtMultiChannelParser and EvtPto3PAmpFactory, which were not working 
-   properly for optimised builds; the array index was never incremented, meaning 
-   that the parsing of the Dalitz plot decay file input gets out-of-synch with 
-   what is expected, i.e. values that should be numbers are initialised to
-   strings, etc..
-
-!========================= EvtGen v12r5 2011-09-24 ===========================
-! 2011-09-24 - John Back
- - Return a boolean flag for EvtParticle::generateMassTree() that is set to
-   false (such that EvtParticle::isDecayed() = false) if there is a problem 
-   with the mass generation of the daughters of a given parent particle decay. 
-   This stops further processing of the problematic decay with no code abort.
-   Some changes to EvtAbsLineShape to prevent code aborts when the parent
-   particle mass is not high enough to generate the resonance daughter mass.
-   Also added a EvtParticle::getName() function to return the particle name.
-
-!========================= EvtGen v12r4 2011-09-19 ===========================
-! 2011-09-17 - John Back
- - EvtGenKine.cpp: Protect against negative square roots in the calculation
-   of the z momentum component for 2-body phase space kinematics. 
-   This was generating NaN values, affecting boosts/spin density matrices.
-
-!========================== EvtGen v12r3 2011-09-15 ==========================
-! 2011-09-15 - John Back
- - EvtDDalitz.cpp: Added missing modes D,Ds->3pi; D,Ds->Kpipi WS and updated 
-   D+->Kpipi and D+->KKpi (from C. Gobel and H. Gordon).
+! 2011-08-11 - John Back
+ - Major changes to use Pythia 8 instead of Pythia 6, including the use of
+   the new C++ interfaced packages of Photos and Tauola (with the new model 
+   name TAUOLA available). The Pythia and Photos model names are unchanged 
+   (they are still called PYTHIA and PHOTOS). See doc/Pythia8_README.txt and 
+   doc/Tauola_README.txt for more details about the use of the new external
+   generators. 
+   EvtGen can now also write out generated decay tree(s) as an HepMC event 
+   structure using EvtGenBase/EvtHepMCEvent. Modified the static class 
+   interface of EvtGenBase/EvtDecayTable to use the singleton pattern.
 
 !========================== EvtGen v12r2 2011-08-18 ==========================
 ! 2011-08-11 - John Back

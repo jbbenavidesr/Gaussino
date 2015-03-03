@@ -10,7 +10,7 @@
 
 // local
 #include "CherenkovG4HistoDefineSet5.h"
-#include "GaussRICH/RichG4SvcLocator.h"
+#include "RichG4SvcLocator.h"
 #include "CherenkovG4Counters.h"
 
 // Histogramming
@@ -61,9 +61,7 @@ void CherenkovG4HistoDefineSet5::bookCherenkovG4HistogramsSet5()
 
   title="XY Location of Rich1 Gas PMT hits on PMT Plane";
 
-  //  m_hXYHitLocationRich1Gas=CurHistoSvc->book(m_RichG4HistoPathSet5+"361",
-  //                                           title,1000,-1200.0,1200.0,1000,-1200.0,1200.0);
- m_hXYHitLocationRich1Gas=CurHistoSvc->book(m_RichG4HistoPathSet5+"361",
+  m_hXYHitLocationRich1Gas=CurHistoSvc->book(m_RichG4HistoPathSet5+"361",
                                              title,1000,-900.0,900.0,1000,-900.0,900.0);
   title="XY Location of Rich2 Gas PMT hits on PMT Plane";
 
@@ -84,17 +82,6 @@ void CherenkovG4HistoDefineSet5::bookCherenkovG4HistogramsSet5()
   m_hPmtOccpNoScintRich2 =   CurHistoSvc->book(m_RichG4HistoPathSet5+"386",
                                         title, 6400,0.0,3200.0);
   
-
-  title="XY Location of Rich1 Gas PMT hits on Mirror1 ";
-    
-  m_XYHitLocationRich1GasMirror1 = CurHistoSvc->book(m_RichG4HistoPathSet5+"366",title,
-                                               1000, -1000.0, 1000.0, 1000,-1000.0, 1000.0);
- 
-  title="XY Location of Rich1 Gas PMT hits on Mirror2 ";
-    
-  m_XYHitLocationRich1GasMirror2 = CurHistoSvc->book(m_RichG4HistoPathSet5+"368",title,
-                                                1000, -1000.0, 1000.0,1000,-1000.0, 1000.0);
- 
- 
+  
 }
 

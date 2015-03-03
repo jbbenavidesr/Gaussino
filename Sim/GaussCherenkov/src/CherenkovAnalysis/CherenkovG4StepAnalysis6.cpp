@@ -23,16 +23,16 @@
 #include "GaudiKernel/IHistogramSvc.h"
 #include "GaudiKernel/SmartDataPtr.h"
 #include "GaudiKernel/Bootstrap.h"
-
+#include "GaudiKernel/DeclareFactoryEntries.h"
 // GiGa
 #include <math.h>
 #include "GaussTools/GaussTrackInformation.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
-#include "GaussCherenkov/CkvG4GaussPathNames.h"
-#include "GaussCherenkov/CkvG4AnalysisConstGauss.h"
+#include "RichG4GaussPathNames.h"
+#include "CkvG4GaussPathNames.h"
+#include "CkvG4AnalysisConstGauss.h"
  
 // local
-#include "GaussCherenkov/CherenkovG4PmtReflTag.h"
+#include "CherenkovG4PmtReflTag.h"
 #include "CherenkovG4StepAnalysis6.h"
 
 //-----------------------------------------------------------------------------

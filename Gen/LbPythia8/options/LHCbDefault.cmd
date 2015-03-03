@@ -12,18 +12,16 @@ Beams:allowMomentumSpread = on
 # Particle Decays and mixing
 # -------------------------------
 ParticleDecays:mixB = off
-# HadronLevel:Decay = off
 # -------------------------------
 # control verbosity
 # -------------------------------
 Init:showAllSettings = off                   
 Init:showMultipartonInteractions = off 
 Init:showProcesses = off 
-Init:showChangedSettings = off 
-Init:showChangedParticleData = off
+Init:showChangedSettings = on 
 Next:numberShowInfo = 0 
 Next:numberShowProcess = 0 
-Next:numberShowEvent = 0
+Next:numberShowEvent = 1
 Next:numberCount = 0
 # -------------------------------
 # process selection

@@ -10,7 +10,7 @@
 
 
 // local
-#include "GaussCherenkov/CkvG4Hit.h"
+#include "CkvG4Hit.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : CkvG4Hit

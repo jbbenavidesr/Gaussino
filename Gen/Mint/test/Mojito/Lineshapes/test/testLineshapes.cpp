@@ -34,7 +34,7 @@ public:
   }
 };
 
-int compareDefaultWithCLEO2012(){
+int testFracFit(){
   time_t startTime = time(0);
   FitAmplitude::AutogenerateFitFile();
   NamedParameter<string> PlotName("PlotName", (std::string) "histo");
@@ -42,32 +42,17 @@ int compareDefaultWithCLEO2012(){
   DalitzEventPattern pat(EventPattern);
 
   cout << " making Amps for event patern " << pat << endl;
-  FitAmpSum Amps(pat, "", "NoCLEO2012");
-  FitAmpSum CLEO2012_Amps(pat, "", "OnlyCLEO2012");
+  FitAmpSum Amps(pat);
+  cout << " making AmpsBar" << endl;
   
   SignalGenerator sg(&Amps);
   sg.setWeighted();
 
-  SignalGenerator CLEO2012_sg(&CLEO2012_Amps);
-  CLEO2012_sg.setWeighted();
-
   NamedParameter<double> IntegPrecision("IntegPrecision", 1.e-3);
-  FastAmplitudeIntegrator integ(pat, &Amps, &sg
-				, gRandom, IntegPrecision);
+  FastAmplitudeIntegrator integ(pat, &Amps, &sg, gRandom, IntegPrecision);
   DalitzHistoSet histos = integ.histoSet();
   histos.save((std::string) PlotName + ".root");
   histos.draw((std::string) PlotName +  "_");
-
-  FastAmplitudeIntegrator CLEO2012_integ(pat, &CLEO2012_Amps, &CLEO2012_sg
-					 , gRandom, IntegPrecision);
-  DalitzHistoSet CLEO2012_histos = CLEO2012_integ.histoSet();
-  CLEO2012_histos.save("CLEO2012_" + (std::string) PlotName + ".root");
-  CLEO2012_histos.draw("CLEO2012_" + (std::string) PlotName +  "_");
-  CLEO2012_histos.drawWithFit(histos
-			      , "CLEO2012_compare" 
-			      + (std::string) PlotName 
-			      +  "_");
-
   cout << "total time for this " << difftime(time(0), startTime)/60 << " min"
        << endl;
   return 0;
@@ -76,7 +61,7 @@ int compareDefaultWithCLEO2012(){
 
 int main(){
 
-  return compareDefaultWithCLEO2012();
+  return testFracFit();
 
 }
 //

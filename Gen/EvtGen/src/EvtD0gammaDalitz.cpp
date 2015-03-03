@@ -132,10 +132,11 @@ void EvtD0gammaDalitz::decay( EvtParticle* part )
 {
   // Check if the D is from a B+- -> D0 K+- decay with the appropriate model.
   EvtParticle* parent = part->getParent(); // If there are no mistakes, should be B+ or B-.
-  if (parent != 0 && EvtDecayTable::getDecayFunc( parent )->getName() == "BTODDALITZCPK" )
+  if (parent != 0 && EvtDecayTable::getInstance()->getDecayFunc( parent )->getName() == "BTODDALITZCPK" )
   {
     EvtId parId = parent->getId();
-    if ( ( parId == _BP ) || ( parId == _BM ) )
+    if ( ( parId == _BP ) || ( parId == _BM ) ||
+         ( parId == _B0 ) || ( parId == _B0B) )
     {
       _bFlavor = parId;
     }
@@ -151,11 +152,11 @@ void EvtD0gammaDalitz::decay( EvtParticle* part )
 
   // Read the D decay parameters from the B decay model.
   // Gamma angle in rad.
-  double gamma = EvtDecayTable::getDecayFunc( parent )->getArg( 0 );
+  double gamma = EvtDecayTable::getInstance()->getDecayFunc( parent )->getArg( 0 );
   // Strong phase in rad.
-  double delta = EvtDecayTable::getDecayFunc( parent )->getArg( 1 );
+  double delta = EvtDecayTable::getInstance()->getDecayFunc( parent )->getArg( 1 );
   // Ratio between B->D0K and B->D0barK
-  double rB    = EvtDecayTable::getDecayFunc( parent )->getArg( 2 );
+  double rB    = EvtDecayTable::getInstance()->getDecayFunc( parent )->getArg( 2 );
 
   // Same structure for all of these decays.
   part->initializePhaseSpace( getNDaug(), getDaugs() );
@@ -195,7 +196,7 @@ void EvtD0gammaDalitz::decay( EvtParticle* part )
     ampCnj = dalitzKsKK( pointCnj );
   }
 
-  if ( _bFlavor == _BP )
+  if ( _bFlavor == _BP || _bFlavor == _B0 )
   {
     amp = ampCnj + rB * exp( EvtComplex( 0., delta + gamma ) ) * ampDir;
   }
@@ -293,6 +294,8 @@ void EvtD0gammaDalitz::readPDGValues()
   // Define the EvtIds.
   _BP  = EvtPDL::getId( "B+"      );
   _BM  = EvtPDL::getId( "B-"      );
+  _B0  = EvtPDL::getId( "B0"      );
+  _B0B = EvtPDL::getId( "anti-B0" );
   _D0  = EvtPDL::getId( "D0"      );
   _D0B = EvtPDL::getId( "anti-D0" );
   _KM  = EvtPDL::getId( "K-"      );

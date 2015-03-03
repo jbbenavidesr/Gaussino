@@ -14,7 +14,6 @@
 
 // From Generators
 #include "Generators/GenCounters.h"
-#include "Generators/ICounterLogFile.h" 
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FixedLuminosityForSpillOver
@@ -34,7 +33,6 @@ FixedLuminosityForSpillOver::FixedLuminosityForSpillOver( const std::string& typ
 							  const std::string& name,
 							  const IInterface* parent )
   : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
     m_numberOfZeroInteraction( 0 ) ,
     m_nEvents( 0 ) ,
     m_randSvc( 0 ) {
@@ -56,11 +54,8 @@ StatusCode FixedLuminosityForSpillOver::initialize( ) {
   if ( sc.isFailure() ) return sc ;
 
   // Initialize the number generator
-  m_randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
+  m_randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;  
 
-  // Log file XML
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
-  
   info() << "Poisson distribution with fixed luminosity. " << endmsg ;
 
   return sc ;
@@ -86,9 +81,11 @@ unsigned int FixedLuminosityForSpillOver::numberOfPileUp( ) {
 //=============================================================================
 void FixedLuminosityForSpillOver::printPileUpCounters( ) {
   using namespace GenCounters ;
-  printCounter( m_xmlLogTool , "all events (including empty events)", m_nEvents ) ;
-  printCounter( m_xmlLogTool , "events with 0 interaction" , 
+  info() << "***********   Luminosity counters   **************" << std::endl ;
+  printCounter( info() , "all events (including empty events)", m_nEvents ) ;
+  printCounter( info() , "events with 0 interaction" , 
                 m_numberOfZeroInteraction ) ;
+  info() << endmsg ;
 }
 
 //=============================================================================

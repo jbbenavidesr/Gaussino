@@ -32,11 +32,11 @@
 #include "DetDesc/DetectorElement.h"
 
 // local
-#include "GaussRICH/RichG4AnalysisConstGauss.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
+#include "RichG4AnalysisConstGauss.h"
+#include "RichG4GaussPathNames.h"
 #include "RichG4TrackActionPhotOpt.h"
-#include "GaussRICH/RichG4SvcLocator.h"
-#include "GaussRICH/RichHpdProperties.h"
+#include "RichG4SvcLocator.h"
+#include "RichHpdProperties.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4TrackActionPhotOpt

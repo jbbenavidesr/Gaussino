@@ -8,7 +8,7 @@
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/SmartDataPtr.h"
 
-#include "GaussCherenkov/CkvG4SvcLocator.h"
+#include "CkvG4SvcLocator.h"
 
 
 

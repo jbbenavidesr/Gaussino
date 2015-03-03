@@ -18,8 +18,6 @@ namespace HepMC {
   class GenParticle ;
 }
 
-class ICounterLogFile ;
-
 /** @class Inclusive Inclusive.h "Inclusive.h" 
  *  
  *  Tool for inclusive samples generation. The particles to 
@@ -72,8 +70,6 @@ class Inclusive : public ExternalGenerator {
  protected:
 
  private:
-  ICounterLogFile * m_xmlLogTool ; ///< XML log file for counters
-
   /// Type of lightest quark in list of particles to produce
   LHCb::ParticleID::Quark      m_lightestQuark     ; 
 

@@ -25,7 +25,6 @@
 #include "Generators/StringParse.h"
 #include "Generators/IBeamTool.h"
 #include "Generators/F77Utils.h"
-#include "Generators/ICounterLogFile.h"
 
 // HepMC
 #include "HepMC/IO_HEPEVT.h"
@@ -50,7 +49,6 @@ PythiaProduction::PythiaProduction( const std::string& type,
                                     const std::string& name,
                                     const IInterface* parent )
   : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
     m_userProcess( 0 ) ,
     m_frame( "3MOM" )  ,
     m_beam( "p+" )     ,
@@ -66,7 +64,7 @@ PythiaProduction::PythiaProduction( const std::string& type,
     m_eventListingLevel          ( -1 ) ,
     m_eventListingLevel2         ( -1 ) ,
     m_initializationListingLevel ( 1  ) ,
-    m_finalizationListingLevel   ( -1 ) ,
+    m_finalizationListingLevel   ( 1  ) ,
     m_pythiaListingFileName      ( "" ) ,
     m_pythiaListingUnit          ( 0  ) ,
     //
@@ -293,9 +291,6 @@ StatusCode PythiaProduction::initialize( ) {
   // }
   // }
   //release( ppSvc ) ;
-  // XML log file
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
-
   return StatusCode::SUCCESS ;
 }
 
@@ -644,30 +639,10 @@ void PythiaProduction::hardProcessInfo( LHCb::GenCollision * theCollision ) {
 // Finalize method
 //=============================================================================
 StatusCode PythiaProduction::finalize( ) {
-  if ( -1 != m_finalizationListingLevel ) 
-    Pythia::PyStat( m_finalizationListingLevel ) ;  
-  
-  // Write in the XML file the cross-sections
-  m_xmlLogTool -> addCrossSection( Pythia::pyint6().proc( 0 ) , 
-                                   0 , 
-                                   Pythia::pyint5().ngen(0,3) , 
-                                   Pythia::pyint5().xsec(0,3) ) ;
-  
-  
-  for (int i = 1 ; i <= 500 ; ++i ) {
-    if ( 1 == Pythia::pysubs().msub( i ) ) {
-      m_xmlLogTool -> addCrossSection( Pythia::pyint6().proc( i ) , 
-                                       i , 
-                                       Pythia::pyint5().ngen( i , 3 ) , 
-                                       Pythia::pyint5().xsec( i , 3 ) ) ;
-    }
-  }
+  Pythia::PyStat( m_finalizationListingLevel ) ;  
   
   if ( 0 != m_HEPEVT_errors ) 
-  { 
-    delete m_HEPEVT_errors ; 
-    m_HEPEVT_errors = 0 ; 
-  }
+  { delete m_HEPEVT_errors ; m_HEPEVT_errors = 0 ; }
   
   return GaudiTool::finalize( ) ;
 }  

@@ -1,4 +1,4 @@
-#include "GaussRICH/RichPEInfo.h"
+#include "RichPEInfo.h"
 
 RichPEInfo::RichPEInfo() :
  m_PhotOriginRadiatorNumber(0),

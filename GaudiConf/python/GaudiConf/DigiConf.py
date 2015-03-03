@@ -97,12 +97,9 @@ class DigiConf(LHCbConfigurableUser):
         writer.ItemList += [ "/Event/MC/DigiHeader#1" ]
 
     def addMCDigitSummaries( self, writer ):
+
         simDir = "MC"
-        if (
-            (self.getProp("EnablePack"))
-            and
-            ("Rich" in self.getProp("Detectors"))
-            ):
+        if self.getProp("EnablePack") :
             simDir = "pSim"
             packDigi = self.getProp("PackSequencer")
             from Configurables import DataPacking__Pack_LHCb__MCRichDigitSummaryPacker_
@@ -113,12 +110,12 @@ class DigiConf(LHCbConfigurableUser):
             nodeKiller = EventNodeKiller("MCRichNodeKiller")
             nodeKiller.Nodes += [ "MC/Rich" ]
             packDigi.Members += [ nodeKiller ]
-
-        # Digitization summaries
-        if "Rich" in self.getProp("Detectors"):
-            writer.ItemList += ["/Event/"+simDir+"/Rich/DigitSummaries#1"]
-        if "Muon" in self.getProp("Detectors"):
-            writer.ItemList += ["/Event/MC/Muon/DigitsInfo#1"]
+        
+        writer.ItemList += [ 
+            # Digitization summaries
+            "/Event/"+simDir+"/Rich/DigitSummaries#1"
+            , "/Event/MC/Muon/DigitsInfo#1"
+            ]
 
     def addMCParticleLinks( self, writer ):
         
@@ -149,13 +146,9 @@ class DigiConf(LHCbConfigurableUser):
                     writer.ItemList += ["/Event/Link/Raw/Hcal/Digits#1"]
         if 'Muon' in dets :
                     writer.ItemList += ["/Event/Link/Raw/Muon/Digits#1"]
-
-    def addMCTrackInfo( self, writer ):
-        
-        # Information for Tracking efficiencies and ghost rates
-        dets = self.getProp("Detectors")
         if 'Tr' in dets :
             writer.ItemList += ["/Event/MC/TrackInfo#1"]
+
 
                     
     def addMCHitLinks( self, writer ):
@@ -227,9 +220,6 @@ class DigiConf(LHCbConfigurableUser):
             # MCParticle links
             self.addMCParticleLinks(writer)
 
-            # Reconstructible Info
-            self.addMCTrackInfo(writer)
-
             # MCHit Links
             self.addMCHitLinks(writer)
 
@@ -276,10 +266,10 @@ class DigiConf(LHCbConfigurableUser):
             nodeKiller.Nodes += self.KnownSpillPaths
 
     def _doUnpacking(self):
-        if "Rich" in self.getProp("Detectors"):
-            from Configurables import DataPacking__Unpack_LHCb__MCRichDigitSummaryPacker_
-            unp = DataPacking__Unpack_LHCb__MCRichDigitSummaryPacker_("MCRichDigitSummaryUnpacker")
-            DataOnDemandSvc().AlgMap["MC/Rich/DigitSummaries"] = unp
+
+        from Configurables import DataPacking__Unpack_LHCb__MCRichDigitSummaryPacker_
+        unp = DataPacking__Unpack_LHCb__MCRichDigitSummaryPacker_("MCRichDigitSummaryUnpacker")
+        DataOnDemandSvc().AlgMap["MC/Rich/DigitSummaries"] = unp
 
     def __apply_configuration__(self):
         GaudiKernel.ProcessJobOptions.PrintOn()

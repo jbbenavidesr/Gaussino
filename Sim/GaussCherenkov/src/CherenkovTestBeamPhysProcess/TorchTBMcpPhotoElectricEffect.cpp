@@ -9,8 +9,8 @@
 #include "G4ProcessManager.hh"
 #include "G4GeometryTolerance.hh"
 #include "TorchTBGaussPathNames.h"
-#include "GaussRICH/RichPhotoElectron.h"
-#include "GaussRICH/RichPEInfoAttach.h"
+#include "RichPhotoElectron.h"
+#include "RichPEInfoAttach.h"
 #
 #include "CLHEP/Units/PhysicalConstants.h"
 #include <math.h>
@@ -28,8 +28,8 @@
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-TorchTBMcpPhotoElectricEffect::TorchTBMcpPhotoElectricEffect( const GiGaBase * /*gigabase*/,
-                                                              const G4String& processName,
+TorchTBMcpPhotoElectricEffect::TorchTBMcpPhotoElectricEffect( const GiGaBase* gigabase,
+                                                       const G4String& processName,
                                                               G4ProcessType   aType )
   :G4VDiscreteProcess(processName, aType ),
    m_numTotMcp(1) 

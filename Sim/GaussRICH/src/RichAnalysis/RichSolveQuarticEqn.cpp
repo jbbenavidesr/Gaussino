@@ -16,7 +16,7 @@
  *  @todo switch to GSL version when available
  */
 
-#include "GaussRICH/RichSolveQuarticEqn.h"
+#include "RichSolveQuarticEqn.h"
 
 #define SWAP(a,b) do { gsl_complex tmp = b ; b = a ; a = tmp ; } while(0)
 

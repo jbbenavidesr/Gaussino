@@ -4,31 +4,6 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
-!========================= LbPythia8 v6r1 2013-02-14 =========================
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: cahnge Lc(2625) pythia8 id according to *OLD* table
-
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: Remove useless comments
- - Pythia8Production: Remove unused variable -> was poping up a warning 
-
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: sign of two pythiaId was wrong (30221, 104122)
-
-! 2013-02-11 - Aurelien Martens
- - Pythia8Production: interfacing the particle properties
-
-!========================= LbPythia8 v6r0 2013-02-07 =========================
-! 2013-01-23 - Aurelien Martens
- - update for x-sec names in xml
-
-! 2013-01-22 - Aurelien Martens
- - update for x-sec in xml
- - uniformize usage of processCode in Pythia8
-
-! 2012-12-18 - Aurelien Martens
- - fix options to force using EvtGen to decay particles not only for Signal RH...
-
 !========================= LbPythia8 v5r1 2012-12-06 =========================
 ! 2012-12-05 - Aurelien Martens
  - fix options for new pdf

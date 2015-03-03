@@ -8,7 +8,6 @@
 // ============================================================================
 #include "GaudiAlg/GaudiTool.h"
 #include "Generators/IProductionTool.h"
-#include "Generators/ICounterLogFile.h"
 // ============================================================================
 // Forward declaration
 class IBeamTool ;
@@ -60,10 +59,7 @@ public:
 
   virtual StatusCode setupForcedFragmentation( const int thePdgId ) ;
 
-private:
-  ICounterLogFile * m_xmlLogTool ; ///< XML Log file to store cross-sections
-
-protected:
+ protected:
   /// Parse Pythia commands from a string vector
   StatusCode parsePythiaCommands( const CommandVector & theVector ) ;
   

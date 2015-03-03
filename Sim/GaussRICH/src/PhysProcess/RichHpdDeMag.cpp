@@ -1,6 +1,6 @@
 #include "GaudiKernel/SmartDataPtr.h"
 #include "DetDesc/DetectorElement.h"
-#include "GaussRICH/RichG4GaussPathNames.h"
+#include "RichG4GaussPathNames.h"
 
 #include "RichHpdDeMag.h"
 

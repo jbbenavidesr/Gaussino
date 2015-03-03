@@ -46,7 +46,7 @@
 //#include "g4std/iomanip"
     
 // #include "G4Electron.hh"
-#include "GaussRICH/RichPhotoElectron.h"
+#include "RichPhotoElectron.h"
 #include "G4ParticleTable.hh"
 
  

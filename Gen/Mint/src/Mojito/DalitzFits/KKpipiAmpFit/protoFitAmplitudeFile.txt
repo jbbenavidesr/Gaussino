@@ -90,18 +90,6 @@
 "Dbar0->rho(770)-(->pi-,pi0),K+_Amp"                                                  	 1	0.0	0.0	0.0	0.0
 "Dbar0->rho(770)-(->pi-,pi0),K+_Phase"                                                	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->-999001(->pi-,pi+),K(S)0_Amp"                                       	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->-999001(->pi-,pi+),K(S)0_Phase"                                     	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->-999011(->pi-,pi+),K(S)0_Amp"                                       	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->-999011(->pi-,pi+),K(S)0_Phase"                                     	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->999001(->pi-,pi+),K(S)0_Amp"                                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->999001(->pi-,pi+),K(S)0_Phase"                                      	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->999011(->pi-,pi+),K(S)0_Amp"                                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->999011(->pi-,pi+),K(S)0_Phase"                                      	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->f(0)(1370)0(->pi-,pi+),K(S)0_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(0)(1370)0(->pi-,pi+),K(S)0_Phase"                                 	 1	0.0	0.0	0.0	0.0
 *
@@ -120,17 +108,11 @@
 "BgSpinZeroDbar0->rho(770)0(->pi-,pi+),K(S)0_Amp"                                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->rho(770)0(->pi-,pi+),K(S)0_Phase"                                   	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->-999001(->pi-,pi+),K(S)0_Amp"                                                 	 1	0.0	0.0	0.0	0.0
-"Dbar0->-999001(->pi-,pi+),K(S)0_Phase"                                               	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma10(->pi-,pi+),K(S)0_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma10(->pi-,pi+),K(S)0_Phase"                                     	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->-999011(->pi-,pi+),K(S)0_Amp"                                                 	 1	0.0	0.0	0.0	0.0
-"Dbar0->-999011(->pi-,pi+),K(S)0_Phase"                                               	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->999001(->pi-,pi+),K(S)0_Amp"                                                  	 1	0.0	0.0	0.0	0.0
-"Dbar0->999001(->pi-,pi+),K(S)0_Phase"                                                	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->999011(->pi-,pi+),K(S)0_Amp"                                                  	 1	0.0	0.0	0.0	0.0
-"Dbar0->999011(->pi-,pi+),K(S)0_Phase"                                                	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K(S)0_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K(S)0_Phase"                                     	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->f(0)(1370)0(->pi-,pi+),K(S)0_Amp"                                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(0)(1370)0(->pi-,pi+),K(S)0_Phase"                                           	 1	0.0	0.0	0.0	0.0
@@ -149,6 +131,12 @@
 *
 "Dbar0->rho(770)0(->pi-,pi+),K(S)0_Amp"                                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->rho(770)0(->pi-,pi+),K(S)0_Phase"                                             	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->sigma10(->pi-,pi+),K(S)0_Amp"                                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->sigma10(->pi-,pi+),K(S)0_Phase"                                               	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->sigma20(->pi-,pi+),K(S)0_Amp"                                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->sigma20(->pi-,pi+),K(S)0_Phase"                                               	 1	0.0	0.0	0.0	0.0
 *
 "FlatteBgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K(S)0_Amp"                              	 1	0.0	0.0	0.0	0.0
 "FlatteBgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K(S)0_Phase"                            	 1	0.0	0.0	0.0	0.0
@@ -366,9 +354,6 @@
 "D-->phi(1680)0(->K-,K+),pi-_Amp"                                                     	 1	0.0	0.0	0.0	0.0
 "D-->phi(1680)0(->K-,K+),pi-_Phase"                                                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD-->999041(->K+,pi-),K-_Amp"                                               	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD-->999041(->K+,pi-),K-_Phase"                                             	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD-->K(0)*(1430)0(->K+,pi-),K-_Amp"                                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD-->K(0)*(1430)0(->K+,pi-),K-_Phase"                                       	 1	0.0	0.0	0.0	0.0
 *
@@ -378,8 +363,8 @@
 "BgSpinZeroD-->K*(892)0(->K+,pi-),K-_Amp"                                             	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD-->K*(892)0(->K+,pi-),K-_Phase"                                           	 1	0.0	0.0	0.0	0.0
 *
-"D-->999041(->K+,pi-),K-_Amp"                                                         	 1	0.0	0.0	0.0	0.0
-"D-->999041(->K+,pi-),K-_Phase"                                                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD-->kappa0(->K+,pi-),K-_Amp"                                               	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD-->kappa0(->K+,pi-),K-_Phase"                                             	 1	0.0	0.0	0.0	0.0
 *
 "D-->K(0)*(1430)0(->K+,pi-),K-_Amp"                                                   	 1	0.0	0.0	0.0	0.0
 "D-->K(0)*(1430)0(->K+,pi-),K-_Phase"                                                 	 1	0.0	0.0	0.0	0.0
@@ -390,14 +375,14 @@
 "D-->K*(892)0(->K+,pi-),K-_Amp"                                                       	 1	0.0	0.0	0.0	0.0
 "D-->K*(892)0(->K+,pi-),K-_Phase"                                                     	 1	0.0	0.0	0.0	0.0
 *
+"D-->kappa0(->K+,pi-),K-_Amp"                                                         	 1	0.0	0.0	0.0	0.0
+"D-->kappa0(->K+,pi-),K-_Phase"                                                       	 1	0.0	0.0	0.0	0.0
+*
 "LassBgSpinZeroD-->K(0)*(1430)0(->K+,pi-),K-_Amp"                                     	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroD-->K(0)*(1430)0(->K+,pi-),K-_Phase"                                   	 1	0.0	0.0	0.0	0.0
 *
 "LassD-->K(0)*(1430)0(->K+,pi-),K-_Amp"                                               	 1	0.0	0.0	0.0	0.0
 "LassD-->K(0)*(1430)0(->K+,pi-),K-_Phase"                                             	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD+->-999041(->K-,pi+),K+_Amp"                                              	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD+->-999041(->K-,pi+),K+_Phase"                                            	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD+->K(0)*(1430)bar0(->K-,pi+),K+_Amp"                                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD+->K(0)*(1430)bar0(->K-,pi+),K+_Phase"                                    	 1	0.0	0.0	0.0	0.0
@@ -408,8 +393,8 @@
 "BgSpinZeroD+->K*(892)bar0(->K-,pi+),K+_Amp"                                          	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD+->K*(892)bar0(->K-,pi+),K+_Phase"                                        	 1	0.0	0.0	0.0	0.0
 *
-"D+->-999041(->K-,pi+),K+_Amp"                                                        	 1	0.0	0.0	0.0	0.0
-"D+->-999041(->K-,pi+),K+_Phase"                                                      	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD+->kappabar0(->K-,pi+),K+_Amp"                                            	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD+->kappabar0(->K-,pi+),K+_Phase"                                          	 1	0.0	0.0	0.0	0.0
 *
 "D+->K(0)*(1430)bar0(->K-,pi+),K+_Amp"                                                	 1	0.0	0.0	0.0	0.0
 "D+->K(0)*(1430)bar0(->K-,pi+),K+_Phase"                                              	 1	0.0	0.0	0.0	0.0
@@ -419,6 +404,9 @@
 *
 "D+->K*(892)bar0(->K-,pi+),K+_Amp"                                                    	 1	0.0	0.0	0.0	0.0
 "D+->K*(892)bar0(->K-,pi+),K+_Phase"                                                  	 1	0.0	0.0	0.0	0.0
+*
+"D+->kappabar0(->K-,pi+),K+_Amp"                                                      	 1	0.0	0.0	0.0	0.0
+"D+->kappabar0(->K-,pi+),K+_Phase"                                                    	 1	0.0	0.0	0.0	0.0
 *
 "LassBgSpinZeroD+->K(0)*(1430)bar0(->K-,pi+),K+_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroD+->K(0)*(1430)bar0(->K-,pi+),K+_Phase"                                	 1	0.0	0.0	0.0	0.0
@@ -540,18 +528,6 @@
 "D0->rho(770)-(->pi-,pi0),K+_Amp"                                                     	 1	0.0	0.0	0.0	0.0
 "D0->rho(770)-(->pi-,pi0),K+_Phase"                                                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->-999001(->pi+,pi-),K(S)0_Amp"                                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->-999001(->pi+,pi-),K(S)0_Phase"                                        	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->-999011(->pi+,pi-),K(S)0_Amp"                                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->-999011(->pi+,pi-),K(S)0_Phase"                                        	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->999001(->pi+,pi-),K(S)0_Amp"                                           	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->999001(->pi+,pi-),K(S)0_Phase"                                         	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->999011(->pi+,pi-),K(S)0_Amp"                                           	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->999011(->pi+,pi-),K(S)0_Phase"                                         	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->f(0)(1370)0(->pi+,pi-),K(S)0_Amp"                                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(0)(1370)0(->pi+,pi-),K(S)0_Phase"                                    	 1	0.0	0.0	0.0	0.0
 *
@@ -570,17 +546,11 @@
 "BgSpinZeroD0->rho(770)0(->pi+,pi-),K(S)0_Amp"                                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->rho(770)0(->pi+,pi-),K(S)0_Phase"                                      	 1	0.0	0.0	0.0	0.0
 *
-"D0->-999001(->pi+,pi-),K(S)0_Amp"                                                    	 1	0.0	0.0	0.0	0.0
-"D0->-999001(->pi+,pi-),K(S)0_Phase"                                                  	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma10(->pi+,pi-),K(S)0_Amp"                                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma10(->pi+,pi-),K(S)0_Phase"                                        	 1	0.0	0.0	0.0	0.0
 *
-"D0->-999011(->pi+,pi-),K(S)0_Amp"                                                    	 1	0.0	0.0	0.0	0.0
-"D0->-999011(->pi+,pi-),K(S)0_Phase"                                                  	 1	0.0	0.0	0.0	0.0
-*
-"D0->999001(->pi+,pi-),K(S)0_Amp"                                                     	 1	0.0	0.0	0.0	0.0
-"D0->999001(->pi+,pi-),K(S)0_Phase"                                                   	 1	0.0	0.0	0.0	0.0
-*
-"D0->999011(->pi+,pi-),K(S)0_Amp"                                                     	 1	0.0	0.0	0.0	0.0
-"D0->999011(->pi+,pi-),K(S)0_Phase"                                                   	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma20(->pi+,pi-),K(S)0_Amp"                                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma20(->pi+,pi-),K(S)0_Phase"                                        	 1	0.0	0.0	0.0	0.0
 *
 "D0->f(0)(1370)0(->pi+,pi-),K(S)0_Amp"                                                	 1	0.0	0.0	0.0	0.0
 "D0->f(0)(1370)0(->pi+,pi-),K(S)0_Phase"                                              	 1	0.0	0.0	0.0	0.0
@@ -599,6 +569,12 @@
 *
 "D0->rho(770)0(->pi+,pi-),K(S)0_Amp"                                                  	 1	0.0	0.0	0.0	0.0
 "D0->rho(770)0(->pi+,pi-),K(S)0_Phase"                                                	 1	0.0	0.0	0.0	0.0
+*
+"D0->sigma10(->pi+,pi-),K(S)0_Amp"                                                    	 1	0.0	0.0	0.0	0.0
+"D0->sigma10(->pi+,pi-),K(S)0_Phase"                                                  	 1	0.0	0.0	0.0	0.0
+*
+"D0->sigma20(->pi+,pi-),K(S)0_Amp"                                                    	 1	0.0	0.0	0.0	0.0
+"D0->sigma20(->pi+,pi-),K(S)0_Phase"                                                  	 1	0.0	0.0	0.0	0.0
 *
 "FlatteBgSpinZeroD0->f(0)(980)0(->pi+,pi-),K(S)0_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "FlatteBgSpinZeroD0->f(0)(980)0(->pi+,pi-),K(S)0_Phase"                               	 1	0.0	0.0	0.0	0.0
@@ -831,17 +807,14 @@
 "BgSpinZeroDbar0->K*(1680)bar0(->K-,pi+),NonResV0(->pi-,pi+)_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(1680)bar0(->K-,pi+),NonResV0(->pi-,pi+)_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),999001(->pi-,pi+)_Amp"                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),999001(->pi-,pi+)_Phase"                      	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),999011(->pi-,pi+)_Amp"                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),999011(->pi-,pi+)_Phase"                      	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),omega(782)0(->pi-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),omega(782)0(->pi-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),rho(770)0(->pi-,pi+)_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),rho(770)0(->pi-,pi+)_Phase"                   	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),sigma10(->pi-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->K*(892)bar0(->K-,pi+),sigma10(->pi-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->NonResS0(->K-,pi+),omega(782)0(->pi-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->NonResS0(->K-,pi+),omega(782)0(->pi-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -945,17 +918,14 @@
 "Dbar0->K*(1680)bar0(->K-,pi+),NonResV0(->pi-,pi+)_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(1680)bar0(->K-,pi+),NonResV0(->pi-,pi+)_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->K*(892)bar0(->K-,pi+),999001(->pi-,pi+)_Amp"                                  	 1	0.0	0.0	0.0	0.0
-"Dbar0->K*(892)bar0(->K-,pi+),999001(->pi-,pi+)_Phase"                                	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K*(892)bar0(->K-,pi+),999011(->pi-,pi+)_Amp"                                  	 1	0.0	0.0	0.0	0.0
-"Dbar0->K*(892)bar0(->K-,pi+),999011(->pi-,pi+)_Phase"                                	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K*(892)bar0(->K-,pi+),omega(782)0(->pi-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(892)bar0(->K-,pi+),omega(782)0(->pi-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K*(892)bar0(->K-,pi+),rho(770)0(->pi-,pi+)_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(892)bar0(->K-,pi+),rho(770)0(->pi-,pi+)_Phase"                             	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->K*(892)bar0(->K-,pi+),sigma10(->pi-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->K*(892)bar0(->K-,pi+),sigma10(->pi-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->NonResS0(->K-,pi+),omega(782)0(->pi-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->NonResS0(->K-,pi+),omega(782)0(->pi-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -1053,6 +1023,9 @@
 "BgSpinZeroDbar0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Amp"                 	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Phase"               	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroDbar0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Amp"                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Phase"                     	 1	0.0	0.0	0.0	0.0
+*
 "Dbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Amp"                       	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
@@ -1061,6 +1034,9 @@
 *
 "Dbar0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Amp"                           	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Phase"                         	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Amp"                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
 "LassBgSpinZeroDbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Amp"         	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroDbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Phase"       	 1	0.0	0.0	0.0	0.0
@@ -1419,11 +1395,11 @@
 "BgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                  	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),-999041(->K-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),-999041(->K-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),kappabar0(->K-,pi+)_Amp"                     	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),kappabar0(->K-,pi+)_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->f(2)(1430)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(2)(1430)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
@@ -1431,8 +1407,11 @@
 "BgSpinZeroDbar0->rho(1450)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->rho(1450)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                  	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),-999041(->K-,pi+)_Amp"                         	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),-999041(->K-,pi+)_Phase"                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),kappabar0(->K-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),kappabar0(->K-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0[D]->NonResT0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0[D]->NonResT0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
@@ -1470,11 +1449,11 @@
 "Dbar0->f(0)(980)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                              	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(0)(980)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                            	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->f(2)(1270)0(->pi-,pi+),-999041(->K-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
-"Dbar0->f(2)(1270)0(->pi-,pi+),-999041(->K-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->f(2)(1270)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(2)(1270)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->f(2)(1270)0(->pi-,pi+),kappabar0(->K-,pi+)_Amp"                               	 1	0.0	0.0	0.0	0.0
+"Dbar0->f(2)(1270)0(->pi-,pi+),kappabar0(->K-,pi+)_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->f(2)(1430)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(2)(1430)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
@@ -1482,8 +1461,11 @@
 "Dbar0->rho(1450)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                              	 1	0.0	0.0	0.0	0.0
 "Dbar0->rho(1450)0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                            	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->rho(770)0(->pi-,pi+),-999041(->K-,pi+)_Amp"                                   	 1	0.0	0.0	0.0	0.0
-"Dbar0->rho(770)0(->pi-,pi+),-999041(->K-,pi+)_Phase"                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->rho(770)0(->pi-,pi+),kappabar0(->K-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->rho(770)0(->pi-,pi+),kappabar0(->K-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->sigma20(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
+"Dbar0->sigma20(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0[D]->NonResT0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0[D]->NonResT0(->pi-,pi+),K*(892)bar0(->K-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
@@ -1650,23 +1632,17 @@
 "RHO_OMEGADbar0->rho(770)0(->pi-,pi+),K-,K+_Amp"                                      	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGADbar0->rho(770)0(->pi-,pi+),K-,K+_Phase"                                    	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->-999001(->pi-,pi+),pi-,pi+_Amp"                                     	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->-999001(->pi-,pi+),pi-,pi+_Phase"                                   	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->999001(->pi-,pi+),pi-,pi+_Amp"                                      	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->999001(->pi-,pi+),pi-,pi+_Phase"                                    	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Amp"                      	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Phase"                    	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                  	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Amp"                      	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                 	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Phase"               	 1	0.0	0.0	0.0	0.0
@@ -1680,17 +1656,14 @@
 "BgSpinZeroDbar0->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroDbar0->sigma10(->pi-,pi+),pi-,pi+_Amp"                                     	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma10(->pi-,pi+),pi-,pi+_Phase"                                   	 1	0.0	0.0	0.0	0.0
+*
 "BgSpinZeroDbar0[D]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0[D]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0[P]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0[P]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->-999001(->pi-,pi+),pi-,pi+_Amp"                                               	 1	0.0	0.0	0.0	0.0
-"Dbar0->-999001(->pi-,pi+),pi-,pi+_Phase"                                             	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->999001(->pi-,pi+),pi-,pi+_Amp"                                                	 1	0.0	0.0	0.0	0.0
-"Dbar0->999001(->pi-,pi+),pi-,pi+_Phase"                                              	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -1698,11 +1671,11 @@
 "Dbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Amp"                                	 1	0.0	0.0	0.0	0.0
-"Dbar0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Phase"                              	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                              	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                            	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Amp"                                	 1	0.0	0.0	0.0	0.0
+"Dbar0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                           	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                         	 1	0.0	0.0	0.0	0.0
@@ -1716,47 +1689,20 @@
 "Dbar0->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
+"Dbar0->sigma10(->pi-,pi+),pi-,pi+_Amp"                                               	 1	0.0	0.0	0.0	0.0
+"Dbar0->sigma10(->pi-,pi+),pi-,pi+_Phase"                                             	 1	0.0	0.0	0.0	0.0
+*
 "Dbar0[D]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0[D]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0[P]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0[P]->rho(770)0(->pi-,pi+),rho(770)0(->pi-,pi+)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
-"FlatteBgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                	 1	0.0	0.0	0.0	0.0
-"FlatteBgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"              	 1	0.0	0.0	0.0	0.0
-*
-"FlatteBgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"             	 1	0.0	0.0	0.0	0.0
-"FlatteBgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"           	 1	0.0	0.0	0.0	0.0
-*
-"FlatteDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"FlatteDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"FlatteDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
-"FlatteDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteBgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"           	 1	0.0	0.0	0.0	0.0
-"FocusFlatteBgSpinZeroDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"         	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteBgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"        	 1	0.0	0.0	0.0	0.0
-"FocusFlatteBgSpinZeroDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"      	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                     	 1	0.0	0.0	0.0	0.0
-"FocusFlatteDbar0->NonResV0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Amp"                  	 1	0.0	0.0	0.0	0.0
-"FocusFlatteDbar0->NonResVbar0(->pi-,pi+),f(0)(980)0(->pi-,pi+)_Phase"                	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Phase"                	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Amp"                            	 1	0.0	0.0	0.0	0.0
-"Dbar0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"            	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroDbar0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"          	 1	0.0	0.0	0.0	0.0
@@ -1785,20 +1731,11 @@
 "BgSpinZeroDbar0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Amp"                	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Phase"              	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                  	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                  	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"               	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"             	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->NonResS0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->NonResS0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
@@ -1815,11 +1752,11 @@
 "BgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(0)(980)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),999041(->K+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),999041(->K+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),kappa0(->K+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->f(2)(1270)0(->pi-,pi+),kappa0(->K+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->f(2)(1430)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->f(2)(1430)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -1827,8 +1764,11 @@
 "BgSpinZeroDbar0->rho(1450)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->rho(1450)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),999041(->K+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),999041(->K+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),kappa0(->K+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->rho(770)0(->pi-,pi+),kappa0(->K+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->sigma20(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0[D]->NonResT0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0[D]->NonResT0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -1866,20 +1806,11 @@
 "Dbar0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Amp"                          	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                            	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                          	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                            	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                            	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                          	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                         	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->NonResS0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "Dbar0->NonResS0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -1896,11 +1827,11 @@
 "Dbar0->f(0)(980)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(0)(980)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->f(2)(1270)0(->pi-,pi+),999041(->K+,pi-)_Amp"                                  	 1	0.0	0.0	0.0	0.0
-"Dbar0->f(2)(1270)0(->pi-,pi+),999041(->K+,pi-)_Phase"                                	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->f(2)(1270)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(2)(1270)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->f(2)(1270)0(->pi-,pi+),kappa0(->K+,pi-)_Amp"                                  	 1	0.0	0.0	0.0	0.0
+"Dbar0->f(2)(1270)0(->pi-,pi+),kappa0(->K+,pi-)_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->f(2)(1430)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->f(2)(1430)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -1908,8 +1839,11 @@
 "Dbar0->rho(1450)0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "Dbar0->rho(1450)0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->rho(770)0(->pi-,pi+),999041(->K+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
-"Dbar0->rho(770)0(->pi-,pi+),999041(->K+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
+"Dbar0->rho(770)0(->pi-,pi+),kappa0(->K+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"Dbar0->rho(770)0(->pi-,pi+),kappa0(->K+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->sigma20(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"Dbar0->sigma20(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0[D]->NonResT0(->pi-,pi+),K*(892)0(->K+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0[D]->NonResT0(->pi-,pi+),K*(892)0(->K+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -1962,14 +1896,8 @@
 "BgSpinZeroDbar0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Phase"              	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Phase"                    	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Amp"                   	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Amp"                            	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Phase"                          	 1	0.0	0.0	0.0	0.0
@@ -1983,14 +1911,8 @@
 "Dbar0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                          	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Phase"                              	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Amp"                             	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Amp"         	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Phase"       	 1	0.0	0.0	0.0	0.0
@@ -2010,14 +1932,8 @@
 "BgSpinZeroDbar0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Phase"                 	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Amp"                	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Phase"              	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"              	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"             	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"           	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Amp"                      	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -2031,14 +1947,8 @@
 "Dbar0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Amp"                          	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                          	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                       	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Amp"   	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Phase" 	 1	0.0	0.0	0.0	0.0
@@ -2051,9 +1961,6 @@
 *
 "BgSpinZeroDbar0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Phase"                 	 1	0.0	0.0	0.0	0.0
@@ -2070,20 +1977,11 @@
 "BgSpinZeroDbar0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                  	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Amp"                	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Phase"              	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"               	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"             	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K(1)(1270)+(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)+(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                            	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Phase"                           	 1	0.0	0.0	0.0	0.0
@@ -2099,12 +1997,6 @@
 *
 "Dbar0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                            	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                          	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Amp"                          	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                         	 1	0.0	0.0	0.0	0.0
-"Dbar0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)+(->rho(770)0(->pi+,pi-),K-),pi+_Amp"            	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroDbar0->K(1)(1270)+(->rho(770)0(->pi+,pi-),K-),pi+_Phase"          	 1	0.0	0.0	0.0	0.0
@@ -2133,14 +2025,8 @@
 "BgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Phase"                	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Amp"                            	 1	0.0	0.0	0.0	0.0
-"Dbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"            	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"          	 1	0.0	0.0	0.0	0.0
@@ -2148,20 +2034,20 @@
 "RHO_OMEGADbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                      	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGADbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Amp"                       	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Phase"                     	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                  	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Amp"                      	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                 	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Phase"               	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Amp"                                 	 1	0.0	0.0	0.0	0.0
-"Dbar0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Phase"                               	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                              	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                            	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Amp"                                	 1	0.0	0.0	0.0	0.0
+"Dbar0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                           	 1	0.0	0.0	0.0	0.0
 "Dbar0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                         	 1	0.0	0.0	0.0	0.0
@@ -2412,17 +2298,14 @@
 "BgSpinZeroDbar0->K*(1680)0(->K+,pi-),NonResVbar0(->pi-,pi+)_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(1680)0(->K+,pi-),NonResVbar0(->pi-,pi+)_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroDbar0->K*(892)0(->K+,pi-),-999001(->pi-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K*(892)0(->K+,pi-),-999001(->pi-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroDbar0->K*(892)0(->K+,pi-),-999011(->pi-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroDbar0->K*(892)0(->K+,pi-),-999011(->pi-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroDbar0->K*(892)0(->K+,pi-),omega(782)0(->pi-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(892)0(->K+,pi-),omega(782)0(->pi-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->K*(892)0(->K+,pi-),rho(770)0(->pi-,pi+)_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K*(892)0(->K+,pi-),rho(770)0(->pi-,pi+)_Phase"                      	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroDbar0->K*(892)0(->K+,pi-),sigma10(->pi-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->K*(892)0(->K+,pi-),sigma10(->pi-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroDbar0->K+,pi-,pi-,pi+_Amp"                                                 	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K+,pi-,pi-,pi+_Phase"                                               	 1	0.0	0.0	0.0	0.0
@@ -2529,17 +2412,14 @@
 "Dbar0->K*(1680)0(->K+,pi-),NonResVbar0(->pi-,pi+)_Amp"                               	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(1680)0(->K+,pi-),NonResVbar0(->pi-,pi+)_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
-"Dbar0->K*(892)0(->K+,pi-),-999001(->pi-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
-"Dbar0->K*(892)0(->K+,pi-),-999001(->pi-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
-*
-"Dbar0->K*(892)0(->K+,pi-),-999011(->pi-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
-"Dbar0->K*(892)0(->K+,pi-),-999011(->pi-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
-*
 "Dbar0->K*(892)0(->K+,pi-),omega(782)0(->pi-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(892)0(->K+,pi-),omega(782)0(->pi-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K*(892)0(->K+,pi-),rho(770)0(->pi-,pi+)_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "Dbar0->K*(892)0(->K+,pi-),rho(770)0(->pi-,pi+)_Phase"                                	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->K*(892)0(->K+,pi-),sigma10(->pi-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"Dbar0->K*(892)0(->K+,pi-),sigma10(->pi-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "Dbar0->K+,pi-,pi-,pi+_Amp"                                                           	 1	0.0	0.0	0.0	0.0
 "Dbar0->K+,pi-,pi-,pi+_Phase"                                                         	 1	0.0	0.0	0.0	0.0
@@ -2640,6 +2520,9 @@
 "BgSpinZeroDbar0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroDbar0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroDbar0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroDbar0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Phase"                        	 1	0.0	0.0	0.0	0.0
+*
 "Dbar0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Amp"                             	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
@@ -2648,6 +2531,9 @@
 *
 "Dbar0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "Dbar0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Phase"                               	 1	0.0	0.0	0.0	0.0
+*
+"Dbar0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"Dbar0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "LassBgSpinZeroDbar0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Amp"               	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroDbar0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Phase"             	 1	0.0	0.0	0.0	0.0
@@ -2664,6 +2550,9 @@
 "BgSpinZeroD0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Phase"                  	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroD0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Phase"                        	 1	0.0	0.0	0.0	0.0
+*
 "D0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Amp"                          	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
@@ -2672,6 +2561,9 @@
 *
 "D0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Amp"                              	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1400)bar-(->K*(892)bar0(->K-,pi+),pi-),K+_Phase"                            	 1	0.0	0.0	0.0	0.0
+*
+"D0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"D0->NonResP0(->NonResVbar0(->K-,pi+),pi-),K+_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "LassBgSpinZeroD0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Amp"            	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroD0->K(1)(1270)bar-(->K(0)*(1430)bar0(->K-,pi+),pi-),K+_Phase"          	 1	0.0	0.0	0.0	0.0
@@ -2712,17 +2604,14 @@
 "BgSpinZeroD0->K*(1680)bar0(->K-,pi+),NonResV0(->pi+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(1680)bar0(->K-,pi+),NonResV0(->pi+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K*(892)bar0(->K-,pi+),999001(->pi+,pi-)_Amp"                           	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K*(892)bar0(->K-,pi+),999001(->pi+,pi-)_Phase"                         	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K*(892)bar0(->K-,pi+),999011(->pi+,pi-)_Amp"                           	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K*(892)bar0(->K-,pi+),999011(->pi+,pi-)_Phase"                         	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->K*(892)bar0(->K-,pi+),omega(782)0(->pi+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(892)bar0(->K-,pi+),omega(782)0(->pi+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K*(892)bar0(->K-,pi+),rho(770)0(->pi+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(892)bar0(->K-,pi+),rho(770)0(->pi+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->K*(892)bar0(->K-,pi+),sigma10(->pi+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->K*(892)bar0(->K-,pi+),sigma10(->pi+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K-,pi+,pi+,pi-_Amp"                                                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K-,pi+,pi+,pi-_Phase"                                                  	 1	0.0	0.0	0.0	0.0
@@ -2829,17 +2718,14 @@
 "D0->K*(1680)bar0(->K-,pi+),NonResV0(->pi+,pi-)_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->K*(1680)bar0(->K-,pi+),NonResV0(->pi+,pi-)_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
-"D0->K*(892)bar0(->K-,pi+),999001(->pi+,pi-)_Amp"                                     	 1	0.0	0.0	0.0	0.0
-"D0->K*(892)bar0(->K-,pi+),999001(->pi+,pi-)_Phase"                                   	 1	0.0	0.0	0.0	0.0
-*
-"D0->K*(892)bar0(->K-,pi+),999011(->pi+,pi-)_Amp"                                     	 1	0.0	0.0	0.0	0.0
-"D0->K*(892)bar0(->K-,pi+),999011(->pi+,pi-)_Phase"                                   	 1	0.0	0.0	0.0	0.0
-*
 "D0->K*(892)bar0(->K-,pi+),omega(782)0(->pi+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->K*(892)bar0(->K-,pi+),omega(782)0(->pi+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "D0->K*(892)bar0(->K-,pi+),rho(770)0(->pi+,pi-)_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->K*(892)bar0(->K-,pi+),rho(770)0(->pi+,pi-)_Phase"                                	 1	0.0	0.0	0.0	0.0
+*
+"D0->K*(892)bar0(->K-,pi+),sigma10(->pi+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"D0->K*(892)bar0(->K-,pi+),sigma10(->pi+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "D0->K-,pi+,pi+,pi-_Amp"                                                              	 1	0.0	0.0	0.0	0.0
 "D0->K-,pi+,pi+,pi-_Phase"                                                            	 1	0.0	0.0	0.0	0.0
@@ -3054,20 +2940,20 @@
 "RHO_OMEGAD0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K-),K+_Amp"                       	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGAD0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K-),K+_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Amp"                         	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Phase"                       	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                     	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Amp"                         	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                  	 1	0.0	0.0	0.0	0.0
 *
-"D0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Amp"                                   	 1	0.0	0.0	0.0	0.0
-"D0->a(1)(1260)-(->-999001(->pi-,pi+),pi-),pi+_Phase"                                 	 1	0.0	0.0	0.0	0.0
-*
 "D0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                               	 1	0.0	0.0	0.0	0.0
+*
+"D0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Amp"                                   	 1	0.0	0.0	0.0	0.0
+"D0->a(1)(1260)-(->sigma10(->pi-,pi+),pi-),pi+_Phase"                                 	 1	0.0	0.0	0.0	0.0
 *
 "D0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Amp"                              	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),pi+_Phase"                            	 1	0.0	0.0	0.0	0.0
@@ -3075,14 +2961,8 @@
 "BgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Amp"                     	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
 "D0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"                                	 1	0.0	0.0	0.0	0.0
-*
-"D0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Amp"                               	 1	0.0	0.0	0.0	0.0
-"D0->a(1)(1260)-[D](->rho(770)0(->pi-,pi+),pi-),K+_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Amp"               	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroD0->a(1)(1260)-(->rho(770)0(->pi-,pi+),pi-),K+_Phase"             	 1	0.0	0.0	0.0	0.0
@@ -3111,20 +2991,11 @@
 "BgSpinZeroD0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Amp"                   	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                     	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                	 1	0.0	0.0	0.0	0.0
 *
 "D0->K(1)(1270)+(->NonResS0(->pi-,pi+),K+),pi-_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)+(->NonResS0(->pi-,pi+),K+),pi-_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -3141,20 +3012,11 @@
 "D0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)+(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
-"D0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Amp"                             	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)+[D](->NonResVbar0(->pi-,pi+),K+),pi-_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                               	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)+[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
 "D0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                               	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
 "D0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Amp"                               	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar0(->rho(770)0(->pi-,pi+),K+),pi-_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Amp"                            	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)bar0[D](->rho(770)0(->pi-,pi+),K+),pi-_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)+(->f(0)(1370)0(->pi-,pi+),K+),pi-_Amp"             	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)+(->f(0)(1370)0(->pi-,pi+),K+),pi-_Phase"           	 1	0.0	0.0	0.0	0.0
@@ -3186,14 +3048,8 @@
 "BgSpinZeroD0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                   	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Phase"                       	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Amp"                      	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "D0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Amp"                               	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Phase"                             	 1	0.0	0.0	0.0	0.0
@@ -3207,14 +3063,8 @@
 "D0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)+(->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
-"D0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Amp"                             	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)+[D](->NonResVbar0(->pi-,K+),pi+),pi-_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
 "D0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1400)+(->K*(892)0(->pi-,K+),pi+),pi-_Phase"                                 	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Amp"                                	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1400)+[D](->K*(892)0(->pi-,K+),pi+),pi-_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Amp"            	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)+(->K(0)*(1430)0(->pi-,K+),pi+),pi-_Phase"          	 1	0.0	0.0	0.0	0.0
@@ -3234,14 +3084,8 @@
 "BgSpinZeroD0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Amp"                   	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                   	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"              	 1	0.0	0.0	0.0	0.0
 *
 "D0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Amp"                         	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Phase"                       	 1	0.0	0.0	0.0	0.0
@@ -3255,14 +3099,8 @@
 "D0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->NonResV0(->pi+,K-),pi-),pi+_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
-"D0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Amp"                             	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)bar-[D](->NonResV0(->pi+,K-),pi-),pi+_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
 "D0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                             	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1400)bar-(->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Amp"                          	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1400)bar-[D](->K*(892)bar0(->pi+,K-),pi-),pi+_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Amp"      	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroD0->K(1)(1270)bar-(->K(0)*(1430)bar0(->pi+,K-),pi-),pi+_Phase"    	 1	0.0	0.0	0.0	0.0
@@ -3275,9 +3113,6 @@
 *
 "BgSpinZeroD0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                      	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                     	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -3294,12 +3129,6 @@
 "BgSpinZeroD0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                     	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Amp"                   	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                  	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->NonResS0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->NonResS0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
@@ -3315,11 +3144,11 @@
 "BgSpinZeroD0->f(0)(980)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(0)(980)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),-999041(->K-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),-999041(->K-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),kappabar0(->K-,pi+)_Amp"                        	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),kappabar0(->K-,pi+)_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->f(2)(1430)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(2)(1430)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -3327,8 +3156,11 @@
 "BgSpinZeroD0->rho(1450)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->rho(1450)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                     	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->rho(770)0(->pi+,pi-),-999041(->K-,pi+)_Amp"                            	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->rho(770)0(->pi+,pi-),-999041(->K-,pi+)_Phase"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->rho(770)0(->pi+,pi-),kappabar0(->K-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->rho(770)0(->pi+,pi-),kappabar0(->K-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->sigma20(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                          	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma20(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0[D]->NonResT0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0[D]->NonResT0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                    	 1	0.0	0.0	0.0	0.0
@@ -3357,9 +3189,6 @@
 "D0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)0(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
-"D0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                               	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)0[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
 "D0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->NonResS0(->pi+,pi-),K-),pi+_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
@@ -3374,12 +3203,6 @@
 *
 "D0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Amp"                               	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)bar-(->rho(770)0(->pi+,pi-),K-),pi+_Phase"                             	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Amp"                             	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)bar-[D](->NonResV0(->pi+,pi-),K-),pi+_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
-"D0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Amp"                            	 1	0.0	0.0	0.0	0.0
-"D0->K(1)(1270)bar-[D](->rho(770)0(->pi+,pi-),K-),pi+_Phase"                          	 1	0.0	0.0	0.0	0.0
 *
 "D0->NonResS0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->NonResS0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -3396,11 +3219,11 @@
 "D0->f(0)(980)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "D0->f(0)(980)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
-"D0->f(2)(1270)0(->pi+,pi-),-999041(->K-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
-"D0->f(2)(1270)0(->pi+,pi-),-999041(->K-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
-*
 "D0->f(2)(1270)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->f(2)(1270)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
+*
+"D0->f(2)(1270)0(->pi+,pi-),kappabar0(->K-,pi+)_Amp"                                  	 1	0.0	0.0	0.0	0.0
+"D0->f(2)(1270)0(->pi+,pi-),kappabar0(->K-,pi+)_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
 "D0->f(2)(1430)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->f(2)(1430)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -3408,8 +3231,11 @@
 "D0->rho(1450)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "D0->rho(1450)0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                               	 1	0.0	0.0	0.0	0.0
 *
-"D0->rho(770)0(->pi+,pi-),-999041(->K-,pi+)_Amp"                                      	 1	0.0	0.0	0.0	0.0
-"D0->rho(770)0(->pi+,pi-),-999041(->K-,pi+)_Phase"                                    	 1	0.0	0.0	0.0	0.0
+"D0->rho(770)0(->pi+,pi-),kappabar0(->K-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"D0->rho(770)0(->pi+,pi-),kappabar0(->K-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
+*
+"D0->sigma20(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                    	 1	0.0	0.0	0.0	0.0
+"D0->sigma20(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
 "D0[D]->NonResT0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0[D]->NonResT0(->pi+,pi-),K*(892)bar0(->K-,pi+)_Phase"                              	 1	0.0	0.0	0.0	0.0
@@ -3459,14 +3285,8 @@
 "BgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Amp"                     	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Phase"                   	 1	0.0	0.0	0.0	0.0
-*
 "D0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                                	 1	0.0	0.0	0.0	0.0
-*
-"D0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Amp"                               	 1	0.0	0.0	0.0	0.0
-"D0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),K-_Phase"                             	 1	0.0	0.0	0.0	0.0
 *
 "RHO_OMEGABgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"               	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGABgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"             	 1	0.0	0.0	0.0	0.0
@@ -3474,23 +3294,17 @@
 "RHO_OMEGAD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Amp"                         	 1	0.0	0.0	0.0	0.0
 "RHO_OMEGAD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),K-_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->-999001(->pi+,pi-),pi+,pi-_Amp"                                        	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->-999001(->pi+,pi-),pi+,pi-_Phase"                                      	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->999001(->pi+,pi-),pi+,pi-_Amp"                                         	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->999001(->pi+,pi-),pi+,pi-_Phase"                                       	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Amp"                          	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                     	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Amp"                         	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                    	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                  	 1	0.0	0.0	0.0	0.0
@@ -3504,17 +3318,14 @@
 "BgSpinZeroD0->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroD0->sigma10(->pi+,pi-),pi+,pi-_Amp"                                        	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma10(->pi+,pi-),pi+,pi-_Phase"                                      	 1	0.0	0.0	0.0	0.0
+*
 "BgSpinZeroD0[D]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0[D]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0[P]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                      	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0[P]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                    	 1	0.0	0.0	0.0	0.0
-*
-"D0->-999001(->pi+,pi-),pi+,pi-_Amp"                                                  	 1	0.0	0.0	0.0	0.0
-"D0->-999001(->pi+,pi-),pi+,pi-_Phase"                                                	 1	0.0	0.0	0.0	0.0
-*
-"D0->999001(->pi+,pi-),pi+,pi-_Amp"                                                   	 1	0.0	0.0	0.0	0.0
-"D0->999001(->pi+,pi-),pi+,pi-_Phase"                                                 	 1	0.0	0.0	0.0	0.0
 *
 "D0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -3522,11 +3333,11 @@
 "D0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
-"D0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Amp"                                    	 1	0.0	0.0	0.0	0.0
-"D0->a(1)(1260)+(->999001(->pi+,pi-),pi+),pi-_Phase"                                  	 1	0.0	0.0	0.0	0.0
-*
 "D0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                                 	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)+(->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                               	 1	0.0	0.0	0.0	0.0
+*
+"D0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Amp"                                   	 1	0.0	0.0	0.0	0.0
+"D0->a(1)(1260)+(->sigma10(->pi+,pi-),pi+),pi-_Phase"                                 	 1	0.0	0.0	0.0	0.0
 *
 "D0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Amp"                              	 1	0.0	0.0	0.0	0.0
 "D0->a(1)(1260)+[D](->rho(770)0(->pi+,pi-),pi+),pi-_Phase"                            	 1	0.0	0.0	0.0	0.0
@@ -3540,35 +3351,14 @@
 "D0->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
 *
+"D0->sigma10(->pi+,pi-),pi+,pi-_Amp"                                                  	 1	0.0	0.0	0.0	0.0
+"D0->sigma10(->pi+,pi-),pi+,pi-_Phase"                                                	 1	0.0	0.0	0.0	0.0
+*
 "D0[D]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0[D]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
 "D0[P]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0[P]->rho(770)0(->pi+,pi-),rho(770)0(->pi+,pi-)_Phase"                              	 1	0.0	0.0	0.0	0.0
-*
-"FlatteBgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                   	 1	0.0	0.0	0.0	0.0
-"FlatteBgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                 	 1	0.0	0.0	0.0	0.0
-*
-"FlatteBgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                	 1	0.0	0.0	0.0	0.0
-"FlatteBgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"              	 1	0.0	0.0	0.0	0.0
-*
-"FlatteD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
-"FlatteD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
-"FlatteD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
-"FlatteD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteBgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"              	 1	0.0	0.0	0.0	0.0
-"FocusFlatteBgSpinZeroD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"            	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteBgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"           	 1	0.0	0.0	0.0	0.0
-"FocusFlatteBgSpinZeroD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"         	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
-"FocusFlatteD0->NonResV0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
-*
-"FocusFlatteD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Amp"                     	 1	0.0	0.0	0.0	0.0
-"FocusFlatteD0->NonResVbar0(->pi+,pi-),f(0)(980)0(->pi+,pi-)_Phase"                   	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K(1)(1270)+(->omega(782)0(->pi+,pi-),K+),K-_Amp"                       	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1270)+(->omega(782)0(->pi+,pi-),K+),K-_Phase"                     	 1	0.0	0.0	0.0	0.0
@@ -3729,11 +3519,11 @@
 "BgSpinZeroD0->f(0)(980)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(0)(980)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),999041(->K+,pi-)_Amp"                           	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),999041(->K+,pi-)_Phase"                         	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),kappa0(->K+,pi-)_Amp"                           	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->f(2)(1270)0(->pi+,pi-),kappa0(->K+,pi-)_Phase"                         	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->f(2)(1430)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->f(2)(1430)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
@@ -3741,8 +3531,11 @@
 "BgSpinZeroD0->rho(1450)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                          	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->rho(1450)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->rho(770)0(->pi+,pi-),999041(->K+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->rho(770)0(->pi+,pi-),999041(->K+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->rho(770)0(->pi+,pi-),kappa0(->K+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->rho(770)0(->pi+,pi-),kappa0(->K+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->sigma20(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->sigma20(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0[D]->NonResT0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0[D]->NonResT0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
@@ -3780,11 +3573,11 @@
 "D0->f(0)(980)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
 "D0->f(0)(980)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
-"D0->f(2)(1270)0(->pi+,pi-),999041(->K+,pi-)_Amp"                                     	 1	0.0	0.0	0.0	0.0
-"D0->f(2)(1270)0(->pi+,pi-),999041(->K+,pi-)_Phase"                                   	 1	0.0	0.0	0.0	0.0
-*
 "D0->f(2)(1270)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->f(2)(1270)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
+*
+"D0->f(2)(1270)0(->pi+,pi-),kappa0(->K+,pi-)_Amp"                                     	 1	0.0	0.0	0.0	0.0
+"D0->f(2)(1270)0(->pi+,pi-),kappa0(->K+,pi-)_Phase"                                   	 1	0.0	0.0	0.0	0.0
 *
 "D0->f(2)(1430)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->f(2)(1430)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -3792,8 +3585,11 @@
 "D0->rho(1450)0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                    	 1	0.0	0.0	0.0	0.0
 "D0->rho(1450)0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                  	 1	0.0	0.0	0.0	0.0
 *
-"D0->rho(770)0(->pi+,pi-),999041(->K+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
-"D0->rho(770)0(->pi+,pi-),999041(->K+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
+"D0->rho(770)0(->pi+,pi-),kappa0(->K+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"D0->rho(770)0(->pi+,pi-),kappa0(->K+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
+*
+"D0->sigma20(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"D0->sigma20(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
 *
 "D0[D]->NonResT0(->pi+,pi-),K*(892)0(->K+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0[D]->NonResT0(->pi+,pi-),K*(892)0(->K+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
@@ -4251,6 +4047,9 @@
 "BgSpinZeroD0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Amp"                          	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Phase"                        	 1	0.0	0.0	0.0	0.0
 *
+"BgSpinZeroD0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Amp"                             	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Phase"                           	 1	0.0	0.0	0.0	0.0
+*
 "D0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Amp"                                	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Phase"                              	 1	0.0	0.0	0.0	0.0
 *
@@ -4259,6 +4058,9 @@
 *
 "D0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Amp"                                    	 1	0.0	0.0	0.0	0.0
 "D0->K(1)(1400)+(->K*(892)0(->K+,pi-),pi+),K-_Phase"                                  	 1	0.0	0.0	0.0	0.0
+*
+"D0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"D0->NonResP0(->NonResV0(->K+,pi-),pi+),K-_Phase"                                     	 1	0.0	0.0	0.0	0.0
 *
 "LassBgSpinZeroD0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Amp"                  	 1	0.0	0.0	0.0	0.0
 "LassBgSpinZeroD0->K(1)(1270)+(->K(0)*(1430)0(->K+,pi-),pi+),K-_Phase"                	 1	0.0	0.0	0.0	0.0
@@ -4299,17 +4101,14 @@
 "BgSpinZeroD0->K*(1680)0(->K+,pi-),NonResVbar0(->pi+,pi-)_Amp"                        	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(1680)0(->K+,pi-),NonResVbar0(->pi+,pi-)_Phase"                      	 1	0.0	0.0	0.0	0.0
 *
-"BgSpinZeroD0->K*(892)0(->K+,pi-),-999001(->pi+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K*(892)0(->K+,pi-),-999001(->pi+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
-"BgSpinZeroD0->K*(892)0(->K+,pi-),-999011(->pi+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
-"BgSpinZeroD0->K*(892)0(->K+,pi-),-999011(->pi+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
-*
 "BgSpinZeroD0->K*(892)0(->K+,pi-),omega(782)0(->pi+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(892)0(->K+,pi-),omega(782)0(->pi+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->K*(892)0(->K+,pi-),rho(770)0(->pi+,pi-)_Amp"                           	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->K*(892)0(->K+,pi-),rho(770)0(->pi+,pi-)_Phase"                         	 1	0.0	0.0	0.0	0.0
+*
+"BgSpinZeroD0->K*(892)0(->K+,pi-),sigma10(->pi+,pi-)_Amp"                             	 1	0.0	0.0	0.0	0.0
+"BgSpinZeroD0->K*(892)0(->K+,pi-),sigma10(->pi+,pi-)_Phase"                           	 1	0.0	0.0	0.0	0.0
 *
 "BgSpinZeroD0->NonResS0(->K+,pi-),omega(782)0(->pi+,pi-)_Amp"                         	 1	0.0	0.0	0.0	0.0
 "BgSpinZeroD0->NonResS0(->K+,pi-),omega(782)0(->pi+,pi-)_Phase"                       	 1	0.0	0.0	0.0	0.0
@@ -4413,17 +4212,14 @@
 "D0->K*(1680)0(->K+,pi-),NonResVbar0(->pi+,pi-)_Amp"                                  	 1	0.0	0.0	0.0	0.0
 "D0->K*(1680)0(->K+,pi-),NonResVbar0(->pi+,pi-)_Phase"                                	 1	0.0	0.0	0.0	0.0
 *
-"D0->K*(892)0(->K+,pi-),-999001(->pi+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
-"D0->K*(892)0(->K+,pi-),-999001(->pi+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
-*
-"D0->K*(892)0(->K+,pi-),-999011(->pi+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
-"D0->K*(892)0(->K+,pi-),-999011(->pi+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
-*
 "D0->K*(892)0(->K+,pi-),omega(782)0(->pi+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->K*(892)0(->K+,pi-),omega(782)0(->pi+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
 *
 "D0->K*(892)0(->K+,pi-),rho(770)0(->pi+,pi-)_Amp"                                     	 1	0.0	0.0	0.0	0.0
 "D0->K*(892)0(->K+,pi-),rho(770)0(->pi+,pi-)_Phase"                                   	 1	0.0	0.0	0.0	0.0
+*
+"D0->K*(892)0(->K+,pi-),sigma10(->pi+,pi-)_Amp"                                       	 1	0.0	0.0	0.0	0.0
+"D0->K*(892)0(->K+,pi-),sigma10(->pi+,pi-)_Phase"                                     	 1	0.0	0.0	0.0	0.0
 *
 "D0->NonResS0(->K+,pi-),omega(782)0(->pi+,pi-)_Amp"                                   	 1	0.0	0.0	0.0	0.0
 "D0->NonResS0(->K+,pi-),omega(782)0(->pi+,pi-)_Phase"                                 	 1	0.0	0.0	0.0	0.0
