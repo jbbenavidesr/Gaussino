@@ -4,6 +4,17 @@
 ! Purpose     : Repository of EvtGen models with external linkages
 !-----------------------------------------------------------------------------
 
+!======================= EvtGenExtras v3r7 2013-07-24 ========================
+! 2013-07-10 - Patrick Robbe
+ - Add new EvtGen model to generate decays with PHSP and a flat 
+   lifetime distribution: EvtPhspFlatLifetime
+
+! 2013-07-03 - Patrick Robbe
+ - Fix gcc47 warnings
+
+! 2013-06-28 - Patrick Robbe
+ - Fix coverity warnings
+
 !====================== EvtGenExtras v3r6p1 2013-06-27 =======================
 ! 2013-06-26 - Patrick Robbe
  - Fix coverity warnings

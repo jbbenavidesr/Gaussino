@@ -1,6 +1,7 @@
 <!-- VP volumes -->
 <Item name="/dd/Geometry/BeforeMagnetRegion/VP/lvVP"
-      attr="VisVPMaster"/>
-
-
-
+      attr="VisVeloMaster"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/VP/VacTank/lvVTankUpStream"
+      attr="VisVeloVacTank"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/VP/VacTank/lvVTankDownStream"
+      attr="VisVeloVacTank"/>

@@ -3,6 +3,9 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r17 ====================================
+! 2013-07-14 - Thomas Ruf
+  more support for upgrade detectors
 !=========================== XmlVis v1r16 ====================================
 ! 2013-05-14 - Thomas Ruf
   added minimal support for upgrade detectors

@@ -2,14 +2,8 @@
      the materials used in the VP description.
      The only attribute defined here is the color of the material -->
 <!-- VP materials -->
-<VisAtt name="VeloTestAluminium">
-  <Color R="0.8" G="0.8" B="0.8"/>
-</VisAtt>
-
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes
      and complete them. That's why they don't define colors : the color
      are taken from the material. -->
-<VisAtt name="VisVPMaster" visible="No" mode="WireFrame" opened="Yes"/>
-
