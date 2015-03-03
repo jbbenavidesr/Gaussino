@@ -105,17 +105,17 @@ class Gauss(LHCbConfigurableUser):
                                  ]
         ,"Luminosity"        : 0.247*(10**30)/(SystemOfUnits.cm2*SystemOfUnits.s)
         ,"TotalCrossSection" : 91.1*SystemOfUnits.millibarn
-        ,"Output"            : 'SIM'
+        ,"OutputType"        : 'SIM'
         ,"Production"        : 'PHYS'
         ,"EnablePack"        : True
         ,"DataPackingChecks" : True
         ,"WriteFSR"          : True
         ,"Persistency"       : None
         ,"Debug"             : False
-        ,"BeamPipe" : "BeamPipeOn"
+        ,"BeamPipe" : "BeamPipeOn" # _beamPipeSwitch = 1
         ,"ReplaceWithGDML"   : [ { "volsToReplace" : [], "gdmlFile" : "" } ]
-        #,"BeamPipe" : "BeamPipeOff"
-        #,"BeamPipe" : "BeamPipeInDet"
+        #,"BeamPipe" : "BeamPipeOff"  # _beamPipeSwitch = 0
+        #,"BeamPipe" : "BeamPipeInDet"  # _beamPipeSwitch = -1
       }
     
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
@@ -127,10 +127,10 @@ class Gauss(LHCbConfigurableUser):
        ,"DetectorSim"    : """ Dictionary specifying the detectors to simulated (should be in geometry): """
        ,"DetectorMoni"   : """ Dictionary specifying the detectors to monitor (should be simulated) :"""
        ,'SpilloverPaths' : """ Spillover paths to fill: [] means no spillover, otherwise put ['Next', 'Prev', 'PrevPrev'] """
-       ,'PhysicsList'    : """ Name of physics modules to be passed 'Em':['Std','Opt1,'Opt2','Opt3','NoCuts','LHCb', 'LHCbNoCuts', 'LHCbOldForE', 'LHCbNoCutsOldForE', 'LHCbTest', 'LHCbTestNoCut' ], 'GeneralPhys':[True,False], 'Hadron':['LHEP','QGSP','QGSP_BERT','QGSP_BERT_HP','QGSP_BERT_CHIPS','FTFP_BERT'], 'LHCbPhys': [True,False], 'Other': [''] """
+       ,'PhysicsList'    : """ Name of physics modules to be passed 'Em':['Std','Opt1,'Opt2','Opt3','NoCuts','LHCb', 'LHCbNoCuts', 'LHCbOldForE', 'LHCbNoCutsOldForE', 'LHCbTest', 'LHCbTestNoCut' ], 'GeneralPhys':[True,False], 'Hadron':['LHEP','QGSP','QGSP_BERT','QGSP_BERT_HP','QGSP_BERT_CHIPS','QGSP_FTFP_BERT','FTFP_BERT'], 'LHCbPhys': [True,False], 'Other': [''] """
        ,"DeltaRays"      : """ Simulation of delta rays enabled (default True) """
        ,'Phases'         : """ List of phases to run (Generator, Simulation, GenToMCTree) """
-       ,'Output'         : """ Output: [ 'NONE', 'SIM'] (default 'SIM') """
+       ,'OutputType'     : """ Output: [ 'NONE', 'GEN', 'XGEN', 'RGEN', 'SIM', 'XSIM' ] (default 'SIM') """
        ,'Production'     : """ Generation type : ['PHYS', 'PGUN', 'MIB' (default 'PHYS')"""
        ,'EnablePack'     : """ Flag to turn on or off the packing of the SIM data """
        ,'DataPackingChecks' : """ Flag to turn on or off the running of some test algorithms to check the quality of the data packing """
@@ -242,6 +242,15 @@ class Gauss(LHCbConfigurableUser):
             evtType = str( Generation("Generation").EventType )
         return evtType
 
+    def setLHCbAppDetectors(self):
+        from Configurables import LHCbApp
+        # If detectors set in LHCbApp then use those        
+        if hasattr(LHCbApp(),"Detectors"):
+            if not LHCbApp().Detectors:
+                LHCbApp().Detectors = self.getProp("DetectorGeo")["Detectors"]
+            else:
+                log.warning("Value of 'LHCbApp().Detectors' already set, using that value: %s" %(LHCbApp().Detectors))
+        return
 
 #"""
 ##########################################################################
@@ -829,16 +838,16 @@ class Gauss(LHCbConfigurableUser):
 #                                                               
 #"""
     def defineTorchGeo( self ):
-        print "WARNING: Geo not defined for TORCH"
+        log.warning("Geo not defined for TORCH")
         pass
 
     def configureTorchSim( self, slot, detHits ):
-        print "WARNING: Sim not defined for TORCH"
+        log.warning("Sim not defined for TORCH")
         pass
 
     def configureTorchMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         #detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot ) 
-        print "WARNING: Moni not defined for TORCH"
+        log.warning ("Moni not defined for TORCH")
         pass
 
 
@@ -1014,12 +1023,12 @@ class Gauss(LHCbConfigurableUser):
         myZStationYMax = 150.*SystemOfUnits.cm
 
         # Upgrade
-        if self.getProp("DataType") == "Upgrade" :
-            myZStations = [
-                8015.0*SystemOfUnits.mm,
-                8697.0*SystemOfUnits.mm,
-                9363.0*SystemOfUnits.mm
-                ]
+        #if self.getProp("DataType") == "Upgrade" :
+        #    myZStations = [
+        #        8015.0*SystemOfUnits.mm,
+        #        8697.0*SystemOfUnits.mm,
+        #        9363.0*SystemOfUnits.mm
+        #        ]
 
         detMoniSeq.Members += [ 
             MCHitMonitor( 
@@ -1919,28 +1928,44 @@ class Gauss(LHCbConfigurableUser):
 
     def defineOutput( self, SpillOverSlots ):
         """
-        Set up output stream according to phase processed and spill-over slots
+        Set up output stream according to phase processed, the spill-over slots and the type of output
         """
-        # and in the future extended or reduced DIGI
-        
-        # not required since it is now in LHCb App
-        # POOL persistency 
-        #importOptions("$GAUDIPOOLDBROOT/options/GaudiPoolDbRoot.opts")
-        
+
         #
-        knownOptions = ['NONE','SIM']
-        output = self.getProp("Output").upper()
+        knownOptions = ['NONE','GEN','XGEN','RGEN','SIM','XSIM']
+        output = self.getProp("OutputType").upper()
         if output == 'NONE':
             log.warning("No event data output produced")
             return
         
         simWriter = SimConf().writer()
-        fileExtension = ".gen"
+
+        # define default file extensions depending on the phase that has been run
+        fileDefaultExtension = ".gen"
+        fileAllowedExtension = [fileDefaultExtension]
         if "GenToMCTree" in self.getProp("Phases"):
-            fileExtension = ".xgen"
+            fileDefaultExtension = ".xgen"
+            fileAllowedExtension = [fileDefaultExtension, ".rgen"]
         elif "Simulation" in self.getProp("Phases"):
-            fileExtension = ".sim"
-        
+            fileDefaultExtension = ".sim"
+            fileAllowedExtension = [fileDefaultExtension, ".xsim"]
+
+        # choose the file extension from the one selected compatibly with the phase run
+        if output not in knownOptions:
+            print "WARNING: OutputType not supported. Use default for chosen phases : %s" %(fileDefaultExtension)
+        fileExtension = "." + output.lower()
+        if fileExtension not in fileAllowedExtension:
+            fileExtension = fileDefaultExtension
+            print "WARNING: OutputType not supported for this phase. Use default : %s" %(fileExtension)
+
+        # set saving or not of HepMC depending on chosen file extension
+        if SimConf().isPropertySet( "SaveHepMC" ):
+            print "WARNING: SimConf().SaveHepMC will be ignored. Value set by Gauss()"
+        saveHepMC = False
+        if fileExtension in ['.gen','.xgen','.xsim']:
+            saveHepMC = True
+        SimConf().setProp("SaveHepMC", saveHepMC )
+       
         outputFile=""
         from GaudiConf import IOHelper
         if simWriter.isPropertySet( "Output" ):
@@ -2093,7 +2118,7 @@ class Gauss(LHCbConfigurableUser):
         import string
         lDet = det.lower()
         if lDet not in self.__knownDetectors__:
-            print "WARNING: Geo Detector not known : %s" %(det)
+            log.warning("Geo Detector not known : %s" %(det))
 
         if lDet == "magnet":
             self.defineMagnetGeo( basePieces, detPieces )
@@ -2137,13 +2162,13 @@ class Gauss(LHCbConfigurableUser):
         elif lDet == "ut":
             self.defineUTGeo( detPieces )
         else:
-            print "WARNING: Geo Detector not known : %s" %(det)
+            log.warning("Geo Detector not known : %s" %(det))
             
     def defineDetectorGeoStream ( self, geo, giGaGeo, det ):
         import string
         lDet = det.lower()
         if lDet not in self.__knownDetectors__:
-            print "WARNING: Geo Stream Detector not known : %s" %(det)
+            log.warning("Geo Stream Detector not known : %s" %(det))
 
         if lDet == "rich1":
             self.defineRich1GeoStream( geo )
@@ -2271,11 +2296,11 @@ class Gauss(LHCbConfigurableUser):
         import string
         det = det.lower()
         if det not in self.__knownDetectors__:
-            print "WARNING: Sim Detector not known : %s" %(det)
+            log.warning("Sim Detector not known : %s" %(det))
 
         if det == "puveto":
             self.configurePuVetoSim( slot, detHits )
-        if det == "velo":
+        elif det == "velo":
             self.configureVeloSim( slot, detHits )
         elif det == "tt":
             self.configureTTSim( slot, detHits )
@@ -2312,7 +2337,8 @@ class Gauss(LHCbConfigurableUser):
                 configuredRichSim[0] = True
         elif det == "ut":
             self.configureUTSim( slot, detHits )
-
+        else:
+            log.warning("Sim Detector not known : %s" %(det))
 
     ##
     ##
@@ -2443,11 +2469,11 @@ class Gauss(LHCbConfigurableUser):
         import string
         det = det.lower()
         if det not in self.__knownDetectors__:
-            print "WARNING: Moni Detector not known : %s" %(det)
+            log.warning("Moni Detector not known : %s" %(det))
 
         if det == "puveto":
             self.configurePuVetoMoni( slot, packCheckSeq, detMoniSeq, checkHits )
-        if det == "velo":
+        elif det == "velo":
             self.configureVeloMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         elif det == "tt":
             self.configureTTMoni( slot, packCheckSeq, detMoniSeq, checkHits )
@@ -2497,7 +2523,8 @@ class Gauss(LHCbConfigurableUser):
                 configuredRichMoni[0] = True
         elif det == "ut":
             self.configureUTMoni( slot, packCheckSeq, detMoniSeq, checkHits )
-
+        else:
+            log.warning("Moni Detector not known : %s" %(det))            
 
     def resetCheckHits( self, checkHits ):
         checkHits.TTHits     = ''
@@ -2975,6 +3002,11 @@ class Gauss(LHCbConfigurableUser):
             addConstructor("HadronPhysicsQGSP_BERT_CHIPS", "QGSP_BERT_CHIPSPhysics")
             addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
             addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")            
+        elif(hadronPhys == "QGSP_FTFP_BERT"):
+            addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
+            addConstructor("HadronPhysicsQGSP_FTFP_BERT", "QGSP_FTFP_BERTPhysics")
+            addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
+            addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")            
         elif(hadronPhys == "FTFP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("HadronPhysicsFTFP_BERT", "FTFP_BERTPhysics")
@@ -3035,6 +3067,8 @@ class Gauss(LHCbConfigurableUser):
         self.checkGeoSimMoniDictionary()
 
         self.checkIncompatibleDetectors()
+
+        self.setLHCbAppDetectors()
         
         #propagate info to SimConf
         self.propagateSimConf()

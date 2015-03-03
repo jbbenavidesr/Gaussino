@@ -7,8 +7,8 @@
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 #include "G4Electron.hh"
-#include "RichPhotoElectron.h"
-#include "RichPEInfoAttach.h"
+#include "GaussRICH/RichPhotoElectron.h"
+#include "GaussRICH/RichPEInfoAttach.h"
 #include "TorchTBGaussPathNames.h"
 #include "Randomize.hh"
 #include <algorithm>
@@ -154,7 +154,7 @@ G4VParticleChange*  TorchTBMcpEnergyLoss::PostStepDoIt(const G4Track& aTrack,
 }
 
 G4VParticleChange* TorchTBMcpEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
-                                                      const G4Step& aStep) {
+                                                       const G4Step& /*aStep*/) {
 
   aParticleChange.Initialize(aTrack);
 

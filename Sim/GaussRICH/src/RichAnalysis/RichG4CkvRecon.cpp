@@ -15,15 +15,15 @@
 #include "Math/VectorUtil.h"
 
 // local
-#include "RichG4SvcLocator.h"
+#include "GaussRICH/RichG4SvcLocator.h"
 #include "RichG4CkvRecon.h"
 #include "RichG4ReconHpd.h"
 #include "RichG4ReconTransformHpd.h"
-#include "RichG4TransformPhDet.h"
-#include "RichG4ReconFlatMirr.h"
-#include "RichG4AnalysisConstGauss.h"
-#include "RichG4GaussPathNames.h"
-#include "RichSolveQuarticEqn.h"
+#include "GaussRICH/RichG4TransformPhDet.h"
+#include "GaussRICH/RichG4ReconFlatMirr.h"
+#include "GaussRICH/RichG4AnalysisConstGauss.h"
+#include "GaussRICH/RichG4GaussPathNames.h"
+#include "GaussRICH/RichSolveQuarticEqn.h"
 #include <math.h>
 
 // modification made on 30-8-2004 to make windows compatible.
@@ -695,8 +695,6 @@ void RichG4CkvRecon::SolveQuartic(  gsl_complex z[4],
   //  double c[8] =  {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
   //  int ierr=0;
   // double resolv=0.0;
-  int asol=0;
-
 
   if( denom != 0.0 ) {
 
@@ -705,8 +703,8 @@ void RichG4CkvRecon::SolveQuartic(  gsl_complex z[4],
 
     //    drteq4_(&b[0],&b[1],&b[2],&b[3],c,&resolv,&ierr);
 
-    asol = gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
-					       &z[0], &z[1], &z[2], &z[3]);
+    gsl_poly_complex_solve_quartic_eqn( b[0], b[1], b[2], b[3],
+                                        &z[0], &z[1], &z[2], &z[3]);
 
     //    int j=0;
     //  for(int ii=0; ii< 4 ; ++ii) {

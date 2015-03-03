@@ -4,127 +4,171 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
-</PRE><H1><A NAME="v44r4">2013-02-19 - GaussSys v44r4</A></H1><PRE>
-<H2><A NAME="Note">Release to commission new version of EvtGen and generators.
+</PRE><H1><A NAME="v45r0">2013-03-07 - GaussSys v45r0</A></H1><PRE>
+<H2><A NAME="Note">Candidate for Sim08 production for 2012 and 2011 data.
+    It integrates the changes of Gauss v43 for Geant 9.5.p02 and of Gauss v44
+    for new EvtGen. It used latest available Pythia6 and Pythia8. 
     </A></H2>
 <H3><A NAME="Use">This version uses:
-   <b>LHCb v35r3 (and Gaudi v23r5)</b>
+   <b>LHCb v35r4 (and Gaudi v23r6)</b>
    AppConfig v3r*,
    <b>DecFiles v27r*</b>, 
    ParamFiles v8r*, 
    SQLDDDB v7r*, FieldMap v5r*,
-   <b>NEW GDMLData v1r*</b>,
-   <b>pythia 6.426.2, lhapdf 5.8.5 
+   GDMLData v1r*,
+   <b>pythia 6.427.2</b>, lhapdf 5.8.5, 
+   <b> NEW: photos++ 2.6.1a and tauola++ 1.0.7</b> 
    (via LCG_GeneratorsInterfaces)
+   <b>REMOVED: photos (FORTRAN)</b>
    HepMC 2.06.05 (via LCG_Interfaces)
-   Geant4 v94r2p6 (based on geant4.9.4.p02) and Geant4Files v94r*
+   <b>Geant4 v95r2p2</b> (based on geant4.9.5.p02) and Geant4Files v95r0
    XmlVis v1r15,
-   <b>hijing 1.383bs.2</b> (via LCG_GeneratorsInterfaces),
-   pythia8 170 (via LCG_GeneratorsInterfaces),
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   <b>pythia8 175</b> (via LCG_GeneratorsInterfaces),
    alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
    herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
-   rivet 1.8.1 (via LCG_GeneratorsInterfaces),
-   <b>EvtGen v13r4</b> (private LHCb version),
-   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and HidValley v3r2 (private LHCb versions)
+   <b>rivet 1.8.2</b> (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v13r5</b> (private LHCb version),
+   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and 
+   HidValley v3r2 (private LHCb versions)
 </A></H3>
 
- - on branch v44b
+! 2013-03-07 - Gloria Corti
+ - Use GaudiConf v17r7 for bug fix in SimConf for saving or no HepMC
+ - New version of LCG_Setting and LCG_Generators_Interface to indicate changes
+   with respect to LCGCMT_64c. In reality although the tags are different their
+   content is the same. 
 
-! 2013-02-17 - Gloria Corti
- - Take GaudiConf v17r4p1 to take latest changes
+! 2013-02-27 - Gloria Corti
+ - Add packages needed for new EvtGen as in GaussSys v44r4 as well as newer
+   version of packages
 
-!========================= Gauss v44r4 2013-02-19 ============================
- - on v44b branch
+! 2013-03-06 - Gloria Corti
+ - GaussSys v42r2 and v42r4 made on branch v42b
+   GaussSys v44r3, v44r3p1 and v44r4 made on branch v44b
 
-! 2013-02-14 - Gloria Corti
- - Merge changes from v42b branch. See below
+!========================= Gauss v45r0 2013-04-07 ============================
+! 2013-03-07 - Gloria Corti
+ - Note that Gauss v42r3 and v42r4 are on v42b branch
+   v43r4 on v43b branch
+   v44r3, v44r3p1 and v44r4 on v44b branch
+ - Put in VL qmtest the DB tags for release Upgrade DBASE
+ - Change back VL path in Configurable.py since DB release has not occured 
+   and also requires a new LHCb 
 
-! 2013-02-14 - Paul Szczypka (r152292)
+! 2013-03-07 - Paul Szczypka
+ - Added VL upgrade options for qmtest, uses VL path DB tags now
+ - edited VL qmtest to pick up new options file.
+
+! 2013-03-06 - Gloria Corti
+ - The property Gauss().Output has been renamed Gauss().OutputType to be in
+   line with Brunel and make clear its meaning.
+   The following values can be used:
+   . GEN, forced when running the Generator only phase
+   . RGEN and XGEN (default), when running the Generator phase followed by
+                              filling the MCParticles/MCVertices with the
+                              generator information (i.e. no Geant4 processing)
+   . SIM (default) and XSIM, when running also the Simulation phase
+
+ - By default "MC/Gen/HepMCEvents" in no longer written in SIM files. In order
+   to have it one has to speciy the OutputType to be the new 'XSIM'
+ - "MC/Gen/HepMCEvents" is not written out when specifying the OutputType to 
+   be the new 'RGEN'
+ - "MC/Gen/HepMCEvents" continues to be written out in the GEN and XGEN 
+   filetypes
+ - Adapt the Gauss-Job.py examample and the qmtest to the change from
+   Gauss().Output to Gauss().OutputType
+
+! 2013-03-04 - Paul Szczypka
+ - Change VL path in Configurable.py (assuming DB release)
+
+! 2013-02-27 - Gloria Corti
+ - Use Feb dbase tags in upgrade qmtest
+ - Change version of DecFiles to v27r* for latest EvtGen
+ - Add use of package GDMLData for import of GDML files
+ - Port changes for GDML from v42b branch: see below
+
+! 2013-02-12 - Paul Szczypka (merged r152118)
+ - Correction to the GDML code - tool now added to correct algo.
+
+! 2013-02-12 - Gloria Corti and Paul Szczypka (merged r152070,152071)
+ - Introduce in the Gauss() configurable a new property "ReplaceWithGDML" to
+   allow to replace a list of volumes with a GDML description given in a file.
+   The name of the tool is set from the filename.
+
+! 2013-02-26 - Paul Szczypka
+ - Commented out upgrade position of IT in Configuration.py (Removes warnings)
+
+! 2013-02-14 - Paul Szczypka
  - Commented out upgrade position of OT in Configuration.py (Removes warnings)
 
-! 2013-02-14 - Paul Szczypka (r152290)
+! 2013-02-14 - Paul Szczypka
  - Added qmtests, options and refs, for the upgrade configurations:
  . VL-UT-FT
  . VL-UT-FT
  . Upgrade Reference (Minimal)
 
-! 2013-02-14 - Gloria Corti
- - Merge changes from v42b branch. See below
+! 2013-02-12 - Paul Szczypka
+ - Change to Configurable such that the velo misalignment (and therefore definiition)
+   is always done even for the upgrade. 
 
-! 2013-02-14 - Gloria Corti (r152242)
- - Port by hand to avoid conflicts the change by Paul Szczypka to the 
-   Configurable such that the velo misalignment (and therefore definiition)
-   is always done even for the upgrade.(correspond to r152031 in trunk)
+! 2013-02-11 - Patrick Robbe
+ - Suppress warning output form the script "makeQMTests.py" to avoid 
+   compilation warnings in the nightlies
 
-! 2013-02-12 - Paul Szczypka (r152118)
- - Correction to the GDML code - tool now added to correct algo.
-
-! 2013-02-12 - Gloria Corti and Paul Szczypka (r152070, r152071)
- - Introduce in the Gauss() configurable a new property "ReplaceWithGDML" to
-   allow to replace a list of volumes with a GDML description given in a file.
-   The name of the tool is set from the filename.
+! 2013-02-10 - Paul Szczypka
+ - Uncomment line which prevented the simulation of the Velo in Configuration.py
 
 ! 2013-02-07 - Gloria Corti
- - Add use of package GDMLData for import of GDML files
- - Porting changes from trunk: see below
- - Modification for GenStandAlone.py by Patrick Robbe so that it make xgen 
-   output (r151313)
-
-! 2013-02-07 - Gloria Corti (r151840, r151842-r151844)
  - Replace CaloOnly.py with Gauss-CaloOnly.py and remove dependency from upgrade
- - Add by hand file from v42b branch for setting simulation conditions when 
-   RICHES are not simulated (xml/SimulationRICHesOff.xml)
+ - Add file from v42b branch for setting simulation conditions when RICHES are
+   not simulated (xml/SimulationRICHesOff.xml)
 
-! 2013-01-08 - Paul Szczypka (r150564) 
+! 2013-02-06 - Paul Szczypka
+ - Changed print messages to log.warning.
+ - Cleaned up some if statements.
+
+! 2013-02-04 - Paul Szczypka
+ - Reverted some changes inadvertantly included in last commit.
+
+! 2013-02-04 - Paul Szczypka
+ - Add method to pass detector list to LHCbApp in Configuration.py
+ - Corrected 'Moun' typos in Configuration.py
+
+! 2013-01-08 - Paul Szczypka
  - Correction to GaussVis.py options to use new Detector configuration syntax.
 
-! 2012-12-20 - Paul Szczypka (r150332)
+! 2012-12-20 - Paul Szczypka
  - Removed comments and some unused methods in Configuration.py
 
-! 2012-12-18 - Paul Szczypka (r150263)
+! 2012-12-18 - Paul Szczypka
  - Removed debug statements in Configuration.py
  - Corrected date of previous edit in release.notes
 
-! 2012-12-17 - Paul Szczypka (r150254)
+! 2012-12-17 - Paul Szczypka
+ - Added Gauss-CaloOnly.py options.
  - Edited BeamPipe configuration method.
 
-! 2012-12-11 - Paul Szczypka (r149693, r149694)
+! 2012-12-11 - Paul Szczypka
  - Whitespace editing
  - Added BeamPipe entry to PropertyDocDict
 
-! 2012-12-06 - Paul Szczypka (r149575)
+! 2012-12-06 - Paul Szczypka
  - Typo, Moun -> Muon in Configuration.py
 
-! 2012-12-04 - Patrick Robbe (r149446)
+! 2012-12-04 - Patrick Robbe
  - Configuration.py: add options to pass beam energy to BcVegPy in Pythia8
 
-!========================== GENSER v12r2 2013-02-14 ==========================
-! 2013-02-14 - Gloria Corti
- - Merge changes to remove hijing code from v12r2b branch. See below.
+!========================== GENSER v12r3 2013-03-07 ==========================
+! 2013-03-07 - Gloria Corti
+ - Use latest version of rivet 1.8.2, as verified by A.Grecu
 
-! 2013-02-14 - Gloria Corti (merged r152263)
- - Now physically remove the line commented in the requirement and the rlu.F 
-   and ran.F code from src/hijing since the tests are successful
+! 2013-03-04 - Gloria Corti
+ - Use latest version of Pythia8 175, as suggested by T.Sijostrand
 
-! 2013-02-11 - Gloria Corti (merged r151897, r151988)
- - Comment out making the library for hijing, since the code is now in 
-   LbHijing itself
-
-!========================== GENSER v12r1 2013-02-07 ==========================
-! 2013-02-07 - Gloria Corti
- - Put back the version of hijing as in MC10 1.383bs.2 and change the rlu.F 
-   function in src/hijing to adapt back to it. 
-   Remove all linking appended to those of GENSER from here to remove tying
-   all generators to hijing as in link library symbols
-
-! 2013-01-24 - Patrick Robbe
- - use photos++ 3.52
-
-! 2013-01-21 - Patrick Robbe
- - Remove FORTRAN files for PHOTOS in Gauss
-
-! 2013-01-17 - Gloria Corti
- - Newer version of pythia6 427.2
+!========================== EvtGen v13r5 2013-03-07 ==========================
+! 2013-02-13 - Patrick Robbe
+ - Various fixes to compile with gcc46
 
 !========================== EvtGen v13r4 2013-02-01 ==========================
 ! 2013-02-01 - John Back
@@ -161,171 +205,6 @@ Purpose: LHCb Simulation program
 ! 2013-01-15 - Patrick Robbe
  - EvtDecayBase.cpp : fix compilation warning
 
-!=========================== Mint v1r7 2013-02-05 ============================
-! 2013-02-05 - Gloria Corti
- - Various changes by Matt Coombes
-
-! 15-01-13 - Patrick Robbe
- - Fix compilation problems
-
-!======================= EvtGenExtras v3r5 2013-02-04 ========================
-! 2013-02-04 - by Alexander Luchinski
- - New models for Bc -> psi K K pi, Bc -> psi K pi pi
-
-!======================= Generators v14r0 2013-02-04 =========================
-! 2013-02-01 - Aurelien Martens
- - ExternalGenerator.cpp: add call to initializeGenerator, so that
-particle properties are set before initialization of the pythia instance
-
-
-! 2013-01-31 - Patrick Robbe
- - Use Gaudi random number in ApplyPhotos
-
-! 2013-01-27 - Patrick Robbe
- - ApplyPhotos.cpp: adapt to new photos++ interface
-
-! 2013-01-21 - Patrick Robbe
- - EvtGenInPhSpDecay.cpp: remove Photos functions
- - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
-
-! 2013-01-20 - Patrick Robbe
- - Remove Pythia6 from EvtGenDecay tool
-
-! 2013-01-16 - Patrick Robbe
- - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
-   files the counters that allow to compute the generator level cut 
-   efficiencies.
-
-! 2012-12-19 - Aurelien Martens
- - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
-
-!========================= LbPythia v14r0 2013-02-07 =========================
- - v13r0 is on a branch
-
-! 2013-01-20 - Patrick Robbe
- - Remove Pythia6 from EvtGen
- - Add counters for cross-section
-
-! 2012-12-07 - Patrick Robbe
- - Add option in Pythia_CT09MCS.py to configure PDF also in Pythia of
-   EvtGen
-
-!========================= LbAlpGen v3r0p1 2013-02-04 =========================
-! 2012-12-04 - by Patrick Robbe
- - Fix compilation warnings
-
-!========================= LbBcVegPy v4r4 2013-02-04 =========================
-! 2012-12-04 - Patrick Robbe
- - Added the option options/BcVegPyPythia8.py to configure BcVegPy
-   in Pythia8
-
-!======================== LbGenXicc v2r0p1 2013-02-04 ========================
-! 2013-02-04 - Gloria Corti
- - Comment output level in GenXibc options for production
-
-!========================= LbPythia8 v6r1 2013-02-14 =========================
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: cahnge Lc(2625) pythia8 id according to *OLD* table
-
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: Remove useless comments
- - Pythia8Production: Remove unused variable -> was poping up a warning 
-
-! 2013-02-12 - Aurelien Martens
- - Pythia8Production: sign of two pythiaId was wrong (30221, 104122)
-
-! 2013-02-11 - Aurelien Martens
- - Pythia8Production: interfacing the particle properties
-
-!========================= LbPythia8 v6r0 2013-02-07 =========================
-! 2013-01-23 - Aurelien Martens
- - update for x-sec names in xml
-
-! 2013-01-22 - Aurelien Martens
- - update for x-sec in xml
- - uniformize usage of processCode in Pythia8
-
-! 2012-12-18 - Aurelien Martens
- - fix options to force using EvtGen to decay particles not only for Signal RH..
-.
-!========================= LbHijing v8r1 2013-02-14 ==========================
-! 2013-02-12 - Zhenwei Yang
- - Removed line 229 in src/Lib/hijing.F, which is a screen print line
-   during private debug
-
-! 2013-02-11 - Gloria Corti
- - Introduce hijing 1.383bs.2 routines modified by Zhenwei to replace call to
-   "rlu" and "ran" functions by "hijing_rlu" and "hijing_ran" to avoid conflicts
-   with system calls that seems to be call anyway instead of our implementation.
- - Move from GENSER/hijing the routines "rlu" and "ran" and rename them 
-   "hijing_rlu" and "hijing_ran"
-
-! 2013-02-07 - Patrick Robbe
- - cmt/requirements: remove link statement to absent library and 
-   put it back
-
-!========================= LbHijing v8r0 2013-02-06 ==========================
-! 2013-02-06 - Gloria Corti
- - Add file hilunhep.F that was forgotten and remove LoadHiData.F that is not
-   needed.
-
-! 2013-02-05 - Gloria Corti
- - Port changes needed for hijing 1.383bs.2
-   . modify requirement to have use of hijing and special linking only here
-   . LbHijing/Hijing.h, remove definition of function not needed and put the
-     one now necessary
-   . LbHijing/HijingCB.h, adapt to common block variables
-   . src/component/HijingProduction.cpp, use Hijing::LunHep for convertion to
-     HepEvt
-   . src/Lib/Hijing.cpp, use hilunhep in Hijing::LunHep and remove LuList that
-     is not used
-
-!========================= GiGaCnv v20r1 2013-02-05 ==========================
-! 2013-01-16 - Marco Clemencic
- - Fixed segfault during generation of configurables on gcc 4.6.
-
-!======================= GaussTools v18r1p1 2013-02-04 =======================
-! 2013-01-15 - Patrick Robbe
- - Fix compilation warnings
-
-!====================== GaussMonitor v6r11 2013-02-05 ========================
-! 2013-01-28 - Aurelien Martens
- - update hProcess number of bins and upper limit to cope with Pythia8 processIDs
-
-!=============================================================================
-</PRE><H1><A NAME="v44r3p1">2013-01-15 - GaussSys v44r3p1</A></H1><PRE>
-<H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
-   To commission new version of EvtGen.
-    </A></H2>
-<H3><A NAME="Use">This version uses:
-   <b>LHCb v35r3 (and Gaudi v23r5)</b>
-   AppConfig v3r*,
-   <b>DecFiles v27r*</b>, 
-   ParamFiles v8r*, 
-   SQLDDDB v7r*, FieldMap v5r*,
-   pythia 6.425.2, photos 215.4, lhapdf 5.8.5 
-   (via LCG_GeneratorsInterfaces)
-   HepMC 2.06.05 (via LCG_Interfaces)
-   Geant4 v94r2p6 (based on geant4.9.4.p02) and Geant4Files v94r*
-   XmlVis v1r15,
-   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
-   pythia8 170 (via LCG_GeneratorsInterfaces),
-   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
-   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
-   rivet 1.8.1 (via LCG_GeneratorsInterfaces),
-   <b>EvtGen v13r1</b> (private LHCb version),
-   BcVegPy v3r1, GenXicc v2r0 and HidValley v3r2 (private LHCb versions)
-</A></H3>
-
- - on branch v44b
-
-!======================== Gauss v44r3p1 2013-01-15 ===========================
- - on v44b branch
-
-! 2013-01-15 - Gloria Corti
- - Change major version of DecFiles to v27 to be compatible with changes in
-   EvtGen v13r1 to use Pythia 8 codes in decay files.
-
 !========================== EvtGen v13r1 2012-12-20 ==========================
 ! 2012-12-20 - John Back
  - Created new tag containing the recent changes to the Dalitz decay models.
@@ -341,97 +220,6 @@ particle properties are set before initialization of the pythia instance
 
 ! 2012-12-14 - John Back
  - Changed the EvtGen constructor to use Pythia 8 codes in decay files.
-
-!=============================================================================
-</PRE><H1><A NAME="v44r3">2012-12-04 - GaussSys v44r3</A></H1><PRE>
-<H2><A NAME="Note">Release for first productions for 2012 data and upgrade.
-    </A></H2>
-<H3><A NAME="Use">This version uses:
-   <b>LHCb v35r3 (and Gaudi v23r5)</b>
-   AppConfig v3r*,
-   <b>DecFiles v26r*</b>, 
-   ParamFiles v8r*, 
-   SQLDDDB v7r*, FieldMap v5r*,
-   pythia 6.425.2, photos 215.4, lhapdf 5.8.5 
-   (via LCG_GeneratorsInterfaces)
-   HepMC 2.06.05 (via LCG_Interfaces)
-   <b>Geant4 v94r2p6 (based on geant4.9.4.p02)</b> and Geant4Files v94r*
-   XmlVis v1r15,
-   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
-   pythia8 170 (via LCG_GeneratorsInterfaces),
-   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
-   <b>herwig++ 2.6.1a and thepeg 1.8.1</b> (via LCG_GeneratorsInterfaces),
-   <b>rivet 1.8.1</b> (via LCG_GeneratorsInterfaces),
-   <b>EvtGen v13r0</b> (private LHCb version),
-   BcVegPy v3r1, <b>GenXicc v2r0</b> and HidValley v3r2 (private LHCb versions)
-</A></H3>
-
- - on branch v44b
-
-! 2012-12-06 - Gloria Corti
- - Take GaudiConf v17r2 to take a fix in SimConf
-
-! 2012-11-30 - Gloria Corti
- - Remove LoKiGen since changes needed are in version in LHCb v35r3
- - New version of LCG_Setting private copy based on LCGCMT_64b, the version
-   of LCG_Generators_Interfaces are also tagged with the same version.
-   LCG_Generators_Interfaces/rivet and thepeg did not change while a fix in
-   a macro was put in herwigpp
-
-!========================= Gauss v44r3 2012-12-04 ============================
- - on v44b branch
-
-! 2012-12-04 - Gloria Corti
- - Change major version in requirements. Minor version indicate synchronization
-   with v42 and v43 series.
-
-!========================= Gauss v42r3 2012-11-30 ============================
- - on branch v42b 
-
-! 2012-11-30 - Gloria Corti (from trunk r149254)
- - Pick version v2r* of GenXiccData for support to 8 TeV collisions
-
-! 2012-11-30 - Gloria Corti
- - Put * for minor version of Geant4Files (v94r0->v94r*)
-
-! 2012-11-30 - Gloria Corti
- - Port change post v42r2 in trunk not related to Geant4 changes: r147336 (see
-   below)
-
-! 2012-10-24 - Paul Szczypka (r147336)
- - Small changes to gauss-config-2011.qmt
-
-! 2012-11-30 - Gloria Corti
- - Port changes from trunk as in v42r2: r142579, r142745, r143132, from r144690
-   to r146549 included, from r146633 to r147318 (see below)
-
-!========================= Gauss v42r1 2012-07-24 ============================
- - on branch v42b
-
-! 2012-07-24 - Gloria Corti
- - Remove spill-over from Gauss-MC11a.py
- - Remove use of GaudiPartProp from Gauss() since all code has been migrated
-    to the LHCb::ParticlePropertySvc
- - Remove use of GaudiPartProp since code has been migrated to LHCb
-   ParticleProperty and ParticlePropertySvc
- - Remove use of LbHerwig that is obsolete.
- - Modify Gauss-Upgrade.py to pick up beam conditions as in the upgrade for
-   nu=2.6 (and show how to pick others) but remove spill-over explicitely and
-   use the new Upgrade Database (DDDB and SIMCOND). The first available global
-   tags are used.
-
-! 2012-07-24 - Gloria Corti
- - Port changes from trunk from r140339 to r140826 (see below)
-   and r142646: update of QMTests from Patrick Robbe
-
-! 2012-06-06 - Gloria Corti (r140765 to r140826)
- - Introduce new script by Emmanouil Kiagias to make qmtest files from a
-   template. The script is added as a make action so that they will be made
-   in the nighlty and used to check newly committed event types in DecFiles
-   . cmt/makeQMTests.py
-
-! 2012-05-21 - Paul Szczypka (r140339)
- - Small corrections to RunTimeError execptions in Configuration.py
 
 !========================== EvtGen v13r0 2012-11-23 ==========================
 ! 2012-11-23 - John Back
@@ -555,6 +343,48 @@ particle properties are set before initialization of the pythia instance
    structure using EvtGenBase/EvtHepMCEvent. Modified the static class 
    interface of EvtGenBase/EvtDecayTable to use the singleton pattern.
 
+!=========================== Mint v2r0 2013-03-07 ============================
+! 2013-02-20 - Matthew Coombes
+ - Removed Miranda packages
+
+! 2013-02-13 - Patrick Robbe
+ - Fix gcc46 compilation problems
+
+!======================= EvtGenExtras v3r6 2013-03-07 ========================
+! 2013-02-13 - Patrick Robbe
+ - Fix gcc46 compilation warnings
+
+!======================= Generators v14r1 2013-03-07 =========================
+! 2013-02-13 - Patrick Robbe
+ - Fix compilation warnings with gcc46
+
+!======================= Generators v14r0 2013-02-04 =========================
+! 2013-02-01 - Aurelien Martens
+ - ExternalGenerator.cpp: add call to initializeGenerator, so that
+particle properties are set before initialization of the pythia instance
+
+
+! 2013-01-31 - Patrick Robbe
+ - Use Gaudi random number in ApplyPhotos
+
+! 2013-01-27 - Patrick Robbe
+ - ApplyPhotos.cpp: adapt to new photos++ interface
+
+! 2013-01-21 - Patrick Robbe
+ - EvtGenInPhSpDecay.cpp: remove Photos functions
+ - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
+
+! 2013-01-20 - Patrick Robbe
+ - Remove Pythia6 from EvtGenDecay tool
+
+! 2013-01-16 - Patrick Robbe
+ - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
+   files the counters that allow to compute the generator level cut 
+   efficiencies.
+
+! 2012-12-19 - Aurelien Martens
+ - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
+
 !======================= Generators v13r0 2012-11-29 =========================
 ! 2012-09-27 - Patrick Robbe
  - Added an option to switch off the reinitialization of the pile-up
@@ -593,53 +423,380 @@ particle properties are set before initialization of the pythia instance
     b) added EvtPythia6 include header to still allow Pythia6 initialisation
       (for some reason, this is still needed here for the initial p-p event)
     c) commented out photos external fortran function calls.
-   Branch v11r4b is a copy of the trunk prior to the above changes. Generators 
-   > v11r4 and v12r* were made on the branch
+   Branch v11r4b is a copy of the trunk prior to the above changes.
 
-!========================== GENSER v12r0 2012-11-29 ==========================
-! 2012-11-16 - Gloria Corti
- - Use private interface packages for photos++ and tauola++ to replace '++'
-   with 'pp' needed on bash to correctly resolve the paths.
+!========================= LbBcVegPy v4r5 2013-03-07 =========================
+! 2013-02-20 - Marc-Olivier Bettler
+ - new files to allow to cut on lepton combination for Bc daughters
 
-! 2012-11-15 - Gloria Corti
- - Port by hand changes in v9r2b branches for new versions and new generators
-   . Modify macro to pick native version of alpgen 2.1.4
-   . Add macro to pick up rivet for the first time
-   . Modify macro to pick up pythia8 latest release 170
-     Note from pythia8 release note for 165: 
-     "Bug fix, that 'ParticleDecays:mixB = off' did not switch off B0-B0bar 
-      and Bs0-Bs0bar mixing".
-   . Use interface packages for herwig++ and thepeg privately defined and not
-     from LCG_interfaces to replace '++' with 'pp', needed on bash, and to 
-     redefine linking statements.
- - Merge change r143057 from v9r3b by Patrick Robbe (2012-07-23)
-   . Add UPVETO function (mainly for ALPGEN)
- - Remove macros for obsolete generators no longer in use
-   . herwig
-   . jimmy
- - Remove all linking for photos (fortran)
- - Modify macros to use latest version of the generators
-   . herwig++ and thepeg native versions 2.6.1a and 1.8.1
-   . rivet native version 1.8.1 (build with fastjet 2.4.4 as in LCGCMT_64a)
- - Move from EvtGen definition of PYTHIA8DATA
- - Move from EvtGen macro definitions for tauola++ and photos++
- - The use of private interfaces to replace those of LCG requires LCG_Settings 
-   that has to be in sync with LCGCMT. The private interfaces will be forwarded
-   to LCG to be included in their release once validated for remote usage
+!========================= LbPythia v14r0 2013-02-07 =========================
+ - v13r0 is on a branch
 
-! 2012-05-04 - John Back
- - Remove old photos (v2) from cmt/requirements file.
+! 2013-01-20 - Patrick Robbe
+ - Remove Pythia6 from EvtGen
+ - Add counters for cross-section
 
-! 2012-05-04 - Gloria Corti
- - Take the latest version of pythia8 163
+! 2012-12-07 - Patrick Robbe
+ - Add option in Pythia_CT09MCS.py to configure PDF also in Pythia of
+   EvtGen
 
-! 2012-03-28 - Zenwhei Yang
- - Add two lines for GenChicc in upinit.F, upevnt.F and GaussUserProcesses.inc
+!========================= LbPythia8 v7r0 2013-03-07 =========================
+! 2013-03-06 - Aurelien Martens
+ - fix warning in the nightlies
 
-! 2012-01-26 - Gloria Corti
- - Take the latest version of pythia8 160
- - Remove temporary patch to link photos++ and tauola++ with missing links
- - GENSER v9r3 and v10r* were made on branches
+! 2013-03-05 - Aurelien Martens
+ - for 8.175: remove Pythia8 Banner by default (adding a configurable flag)
+
+! 2013-03-05 - Aurelien Martens
+ - for 8.175: fix a changes in the way HepMC is filled (remove methods not supported anymore)
+ - update the cmd file so that one switches off versobity in one command
+
+! 2013-03-04 - Aurelien Martens
+ - for 8.175: using namespace std was implictely hidden in Pythia8StdLib, not the case anymore.
+Replace  call to max(...) by std::max(...).
+
+! 2013-02-15 - Aurelien Martens
+ - Fix a mistake with Lc(2625) while resolving a conflit
+
+! 2013-02-15 - Aurelien Martens
+ - Pythia8Prodcution: Add a detailed systematic check of the *unchanged* 
+particle properties in pythia8.
+ - found two particles still decayed by pythia and fix this: Lc(2593), K*(1680)+
+
+!========================= LbHijing v8r2 2013-03-07 ==========================
+! 2013-03-05 - Zhenwei Yang
+ - Added some lines in generateEvent function of src/component/HijingProduction.cpp,
+   which performs Lorentz boost for pA run.
+   This will not affect fix-target (LAB) mode, but only CMS mode.
+   The boost is only valid for 2013 pA and Ap run.
+
+!========================= GaussRICH v13r1 2013-03-07 ========================
+! 2013-02-15 - Patrick Robbe
+ - Fix compilation with gcc46
+
+! 2013-02-05 - Patrick Robbe 
+ - Make a linker library for objects used outside GaussRICH like in 
+   GaussCherenkov
+
+!===================== GaussCherenkov v3r1 2013-03-07 ========================
+! 2013-02-15 - Patrick Robbe
+ - Fix compilation with gcc46
+
+!========================= GenTune v1r1 2013-03-05 =========================
+! 2013-03-05 - Alex Grecu
+ - correct particle status id mapping algorithm to PYTHIA/HepMC 2.05 codes
+ - improve internal statistical counters and print-out rules
+ - introduce properties/options to control print-out suppression rules
+ - the example now produces some 2D histograms for neutral pions (unstable) and photons (stable).
+ - regenerated references for QMTests and eliminate i686 ref as arhitecture no longer supported
+
+!=============================================================================
+</PRE><H1><A NAME="v43r4">2013-02-20 - GaussSys v43r4</A></H1><PRE>
+<H2><A NAME="Note">Development release with Geant4 9.5.p02
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v35r3 (and Gaudi v23r5)</b>
+   AppConfig v3r*,
+   <b>DecFiles v26r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   <b>NEW GDMLData v1r*</b>,
+   <b>pythia 6.427.2</b>, photos 215.4, <b>lhapdf 5.8.5</b> 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.06.05 (via LCG_Interfaces)
+   <b>Geant4 v95r2p1</b> (based on geant4.9.5.p02) and Geant4Files v95r0
+   XmlVis v1r15,
+   <b>hijing 1.383bs.2</b> (via LCG_GeneratorsInterfaces),
+   pythia8 170 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.1 (via LCG_GeneratorsInterfaces),
+   EvtGen v12r11 (private LHCb version),
+   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and 
+   HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+! 2013-02-17 - Gloria Corti
+ - Take GaudiConf v17r4p1 to pick latest changes
+
+!========================= Gauss v43r4 2013-02-20 ============================
+ - on v43b branch
+
+! 2013-02-20 - Gloria Corti
+ - Merge changes from v42b branch and from trunk. See below
+
+! 2013-02-14 - Paul Szczypka (merged r152292 from trunk)
+ - Commented out upgrade position of OT in Configuration.py (Removes warnings)
+
+! 2013-02-14 - Paul Szczypka ((merged r152290 from trunk)
+ - Added qmtests, options and refs, for the upgrade configurations:
+ . VL-UT-FT
+ . VL-UT-FT
+ . Upgrade Reference (Minimal)
+
+! 2013-02-14 - Gloria Corti (merged r152242 from v42b)
+ - Port by hand to avoid conflicts the change by Paul Szczypka to the 
+   Configurable such that the velo misalignment (and therefore definiition)
+   is always done even for the upgrade.(correspond to r152031 in trunk)
+
+! 2013-02-12 - Paul Szczypka (merged r152118 from v42b))
+ - Correction to the GDML code - tool now added to correct algo.
+
+! 2013-02-12 - Gloria Corti and Paul Szczypka (merged r152070, r152071 from v42b)
+ - Introduce in the Gauss() configurable a new property "ReplaceWithGDML" to
+   allow to replace a list of volumes with a GDML description given in a file.
+   The name of the tool is set from the filename.
+
+! 2013-02-11 - Gloria Corti
+ - Add use of package GDMLData for import of GDML files
+ - Porting changes from trunk: see below
+ - Modification for GenStandAlone.py by Patrick Robbe so that it make xgen 
+   output (r151313)
+
+! 2013-02-07 - Gloria Corti (r151840, r151842 to r151844)
+ - Update CaloOnly.py to adapt to new geometry control and remove
+   dependency from upgrade
+ - Add file from v42b branch for setting simulation conditions when RICHES are
+   not simulated (xml/SimulationRICHesOff.xml)
+
+! 2013-01-08 - Paul Szczypka (r150564)
+ - Correction to GaussVis.py options to use new Detector configuration syntax.
+
+! 2012-12-20 - Paul Szczypka (r150332)
+ - Removed comments and some unused methods in Configuration.py
+
+! 2012-12-18 - Paul Szczypka (r150263)
+ - Removed debug statements in Configuration.py
+ - Corrected date of previous edit in release.notes
+
+! 2012-12-17 - Paul Szczypka (r150254)
+ - Edited BeamPipe configuration method.
+
+! 2012-12-11 - Paul Szczypka (r149693, r149694)
+ - Whitespace editing
+ - Added BeamPipe entry to PropertyDocDict
+
+! 2012-12-06 - Paul Szczypka (r149575)
+ - Typo, Moun -> Muon in Configuration.py
+
+! 2012-12-04 - Patrick Robbe (r149446)
+ - Configuration.py: add options to pass beam energy to BcVegPy in Pythia8
+
+!========================== GENSER v11r2 2013-02-20 ==========================
+ - on v11b branch
+
+! 2013-02-20 - Gloria Corti
+ - Merge changes to remove hijing code from v10r2b branch. See below.
+
+! 2013-02-14 - Gloria Corti (merged r152263)
+ - Now physically remove the line commented in the requirement and the rlu.F 
+   and ran.F code from src/hijing since the tests are successful
+
+! 2013-02-11 - Gloria Corti (merged r151897, r151988)
+ - Comment out making the library for hijing, since the code is now in 
+   LbHijing itself
+
+!========================== GENSER v11r1 2013-02-07 ==========================
+ - on v11b branch
+
+! 2013-02-07 - Gloria Corti
+ - Put back the version of hijing as in MC10 1.383bs.2 and change the rlu.F 
+   function in src/hijing to adapt back to it. 
+   Remove all linking appended to those of GENSER from here to remove tying
+   all generators to hijing as in link library symbols
+
+! 2013-01-17 - Gloria Corti
+ - New version of pythia6 427.2
+
+!=========================== Mint v1r7 2013-02-05 ============================
+! 2013-02-05 - Gloria Corti
+ - Various changes by Matt Coombes
+
+! 15-01-13 - Patrick Robbe
+ - Fix compilation problems
+
+!======================= EvtGenExtras v3r5 2013-02-04 ========================
+! 2013-02-04 - by Alexander Luchinski
+ - New models for Bc -> psi K K pi, Bc -> psi K pi pi
+
+!======================= Generators v12r3 2013-02-12 =========================
+ - on v12b branch
+
+! 2013-02-11 - Gloria Corti
+ - Porting chnages from trunk. See below.
+
+! 2013-02-01 - Aurelien Martens (r151449)
+ - ExternalGenerator.cpp: add call to initializeGenerator, so that
+   particle properties are set before initialization of the pythia instance
+
+! 2013-01-21 - Patrick Robbe (r150972)
+ - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
+
+! 2013-01-16 - Patrick Robbe (r150831, r150832)
+ - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
+   files the counters that allow to compute the generator level cut 
+   efficiencies.
+
+! 2012-12-19 - Aurelien Martens (from trunk r150293)
+ - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
+
+!========================= LbPythia v13r0 2013-02-12 =========================
+ - on v12b branch
+
+! 2013-01-20 - Patrick Robbe (r150973)
+ - Add counters for cross-section
+
+! 2012-12-07 - Patrick Robbe (r149598, r149600)
+ - Add option in Pythia_CT09MCS.py to configure PDF also in Pythia of
+   EvtGen
+
+!========================= LbAlpGen v3r0p1 2013-02-04 =========================
+! 2012-12-04 - by Patrick Robbe
+ - Fix compilation warnings
+
+!========================= LbBcVegPy v4r4 2013-02-04 =========================
+! 2012-12-04 - Patrick Robbe
+ - Added the option options/BcVegPyPythia8.py to configure BcVegPy
+   in Pythia8
+
+!======================== LbGenXicc v2r0p1 2013-02-04 ========================
+! 2013-02-04 - Gloria Corti
+ - Comment output level in GenXibc options for production
+
+!========================= LbPythia8 v6r1 2013-02-14 =========================
+! 2013-02-12 - Aurelien Martens
+ - Pythia8Production: cahnge Lc(2625) pythia8 id according to *OLD* table
+
+! 2013-02-12 - Aurelien Martens
+ - Pythia8Production: Remove useless comments
+ - Pythia8Production: Remove unused variable -> was poping up a warning 
+
+! 2013-02-12 - Aurelien Martens
+ - Pythia8Production: sign of two pythiaId was wrong (30221, 104122)
+
+! 2013-02-11 - Aurelien Martens
+ - Pythia8Production: interfacing the particle properties
+
+!========================= LbPythia8 v6r0 2013-02-07 =========================
+! 2013-01-23 - Aurelien Martens
+ - update for x-sec names in xml
+
+! 2013-01-22 - Aurelien Martens
+ - update for x-sec in xml
+ - uniformize usage of processCode in Pythia8
+
+! 2012-12-18 - Aurelien Martens
+ - fix options to force using EvtGen to decay particles not only for Signal RH..
+.
+!========================= LbHijing v8r1 2013-02-14 ==========================
+! 2013-02-12 - Zhenwei Yang
+ - Removed line 229 in src/Lib/hijing.F, which is a screen print line
+   during private debug
+
+! 2013-02-11 - Gloria Corti
+ - Introduce hijing 1.383bs.2 routines modified by Zhenwei to replace call to
+   "rlu" and "ran" functions by "hijing_rlu" and "hijing_ran" to avoid conflicts
+   with system calls that seems to be call anyway instead of our implementation.
+ - Move from GENSER/hijing the routines "rlu" and "ran" and rename them 
+   "hijing_rlu" and "hijing_ran"
+
+! 2013-02-07 - Patrick Robbe
+ - cmt/requirements: remove link statement to absent library and 
+   put it back
+
+!========================= LbHijing v8r0 2013-02-06 ==========================
+! 2013-02-06 - Gloria Corti
+ - Add file hilunhep.F that was forgotten and remove LoadHiData.F that is not
+   needed.
+
+! 2013-02-05 - Gloria Corti
+ - Port changes needed for hijing 1.383bs.2
+   . modify requirement to have use of hijing and special linking only here
+   . LbHijing/Hijing.h, remove definition of function not needed and put the
+     one now necessary
+   . LbHijing/HijingCB.h, adapt to common block variables
+   . src/component/HijingProduction.cpp, use Hijing::LunHep for convertion to
+     HepEvt
+   . src/Lib/Hijing.cpp, use hilunhep in Hijing::LunHep and remove LuList that
+     is not used
+
+!========================= GiGaCnv v20r1 2013-02-05 ==========================
+! 2013-01-16 - Marco Clemencic
+ - Fixed segfault during generation of configurables on gcc 4.6.
+
+!======================= GaussTools v18r1p1 2013-02-04 =======================
+! 2013-01-15 - Patrick Robbe
+ - Fix compilation warnings
+
+!======================= GaussCherenkov v3r0p1 2013-02-05 ====================
+! 2013-01-15 - Patrick Robbe
+ - Fix nightly compilation warnings about unused variables
+
+!====================== GaussMonitor v6r11 2013-02-05 ========================
+! 2013-01-28 - Aurelien Martens
+ - update hProcess number of bins and upper limit to cope with Pythia8 processIDs
+
+!=============================================================================
+</PRE><H1><A NAME="v43r3">2012-12-06 - GaussSys v43r3</A></H1><PRE>
+<H2><A NAME="Note">Development release with Geant4 9.5.p02
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v35r3 (and Gaudi v23r5)</b>
+   AppConfig v3r*,
+   <b>DecFiles v26r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   <b>pythia 6.426.2</b>, photos 215.4, <b>lhapdf 5.8.5</b> 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.06.05 (via LCG_Interfaces)
+   <b>Geant4 v95r2 (based on geant4.9.5.p02) and Geant4Files v95r0 </b>
+   XmlVis v1r15,
+   hijing 1.36.a.2 (via LCG_GeneratorsInterfaces),
+   pythia8 170 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   <b>herwig++ 2.6.1a and thepeg 1.8.1</b> (via LCG_GeneratorsInterfaces),
+   <b>rivet 1.8.1</b> (via LCG_GeneratorsInterfaces),
+   EvtGen v12r11(private LHCb version),
+   BcVegPy v3r1, <b>GenXicc v2r0</b> and HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+! 2012-12-06 - Gloria Corti
+ - Take GaudiConf v17r2 to take a fix in SimConf
+
+! 2012-11-27 - Gloria Corti
+ - Remove LoKiGen since changes needed are in version in LHCb v35r3
+ - New version of LCG_Setting private copy based on LCGCMT_64b, the version
+   of LCG_Generators_Interfaces are also tagged with the same version. 
+   LCG_Generators_Interfaces/rivet and thepeg did not change while a fix in 
+   a macro was put in herwigpp
+
+!========================= Gauss v43r3 2012-11-27 ============================
+! 2012-11-30 - Gloria Corti
+ - Pick version v2r* of GenXiccData for support to 8 TeV collisions
+
+! 2012-11-22 - Nigel Watson
+ - Updated python/Gauss/Configuration.py for QGSP_FTFP_BERT.
+
+! 2012-11-20 - Nigel Watson
+ - Added options for new hadronic list, G4PL_QGSP_FTFP_BERT.py
+
+! 2012-11-13 - Gloria Corti
+ - Use data package for Geant4 9.5, Geant4Files v95r*
+
+! 2012-10-24 - Paul Szczypka
+ - Small changes to gauss-config-2011.qmt
+
+!========================== GENSER v11r0 2012-11-26 ==========================
+ - on v9r3b branch
+
+! 2012-11-13 - Gloria Corti
+ - Use latest version of external generators packages (with builds also
+   available for gcc 4.6
+   . pythia6   426.2
+   . lhapdf    5.8.8
+   . rivet     1.8.1
+   . herwigpp  2.6.1a
+   . thepeg    1.8.1
 
 !=========================== Mint v1r6 2012-11-28 ============================
 ! 14-11-12 - Matt Coombes
@@ -690,7 +847,44 @@ other options.
 !======================== GaussTools v18r1 2012-11-27 ========================
 ! 2012-11-15 - Nigel Watson
  - Include G4PrimaryParticle.hh to GaussTrackActionHepMC.cpp, following changes
-   to G4DynamicParticle in G4 9.5.p02. Put here since it is backward compatible
+   to G4DynamicParticle in G4 9.5.p02.
+
+!========================= GaussRICH v13r0 2012-11-27 ========================
+! 2012-11-09 - Sajan Easo
+ - Made some suggestions made at the code review so that Gausscherenkov can be
+   built without warnings. Moved some .h files to a newly created GaussRICH 
+   subdirectory and the requirements file updated
+
+! 2012-10-17 - Sajan Easo
+ - Message verbosity level in RichSensdet changed for print statements.
+
+! 2012-10-02 - Sajan Easo
+ - Adapations for Geant4.95 version in different physics processes,
+   mainly for the methods of G4MaterialPropertyVector. 
+   These are backward incompatible with previous verisons of Geant4 and 
+   hence with previous versions of Gauss which use them.
+
+!====================== GaussPhysics v10r0 2012-11-27 =========================
+! 2012-11-21 - Nigel Watson
+ - Added QGSP_FTFP_BERT to GaussPhysics_load.cpp
+
+!======================== GaussCherenkov v3r0 2012-11-27 =====================
+! 2012-11-09 - Sajan Easo
+ - Made some of the modifications made in the code review. Moved some .h files
+   to a newly created GaussCherenkov subdirectory and requirements file also 
+   updated 
+
+! 2012-10-18 - Sajan Easo
+ - Modified options for scintillation process in RICH2.
+
+! 2012-10-16 - Sajan Easo
+ - Added couple of Step Analysis actions for verifying modified RICH optics. 
+   They are all deactivated by default and are for special studies only.
+
+! 2012-10-03 - Sajan Easo
+ - Made adaptations for Geant 4.95. 
+   These are backward incompatible changes for Geant4 and won't work with
+   previous versions of Geant4 and Gauss which uses these earlier versions.
 
 !=============================================================================
 </PRE><H1><A NAME="v42r2">2012-10-22 - GaussSys v42r2</A></H1><PRE>
@@ -735,17 +929,11 @@ other options.
      description
    . VL/VLMoniSim: monitoring for Velo Lite Strips for Upgrade 
 
-!========================= Gauss v42r2 2012-10-24 ============================
-! 2012-10-24 - Gloria Corti (r147318)
- - Change options for upgrade detector combination to make them directly
-   usable in production
- - Modify example overall stearing options for upgrade, Gauss-Upgrade.py, to
-   pick latest database tags and show how to combine necessary options
-
-! 2012-10-22 - Paul Szczypka (r147229)
+!========================= Gauss v42r2 2012-10-22 ============================
+! 2012-10-22 - Paul Szczypka
  - Modified (corrected) gauss-config reference file.
 
-! 2012-10-22 - Paul Szczypka (r147223)
+! 2012-10-22 - Paul Szczypka
  - added Upgrade options files:
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT.py
  - $GAUSSOPTS/Gauss-Upgrade-VL-UT-FT-noRich1.py
@@ -753,50 +941,50 @@ other options.
  - $GAUSSOPTS/Gauss-Upgrade-VP-UT-FT-noRich1.py
  - $GAUSSOPTS/Gauss-Upgrade-Reference.py
 
-! 2012-10-21 - Paul Szczypka (r147200)
+! 2012-10-21 - Paul Szczypka
  - made corrections to config references and test
 
-! 2012-10-18 - Paul Szczypka (r147091)
+! 2012-10-18 - Paul Szczypka
  - tinkering with the qmtest config
 
-! 2012-10-18 - Paul Szczypka (r147078)
+! 2012-10-18 - Paul Szczypka
  - Added expected err stream for config qmtest.
  - Edited config qmtest to refer to the expected error stream.
 
-! 2012-10-18 - Paul Szczypka (r147074)
+! 2012-10-18 - Paul Szczypka
  - Remove some upstream and downstream parts of the beampipe which aren't
    normally simulated in GeoStream.
  - Add T/PipeInT beampipe section to GeoStream.
  - Only list Velo once in GeoStream.
 
-! 2012-10-15 - Gloria Corti (r146918)
+! 2012-10-15 - Gloria Corti
  - Rename qmtest gauss-config-MC11a.qmt to gauss-config-2011.qmt otherwise it
    is not run.
  - Put latest CondDb tags as in Sim05d for MC2011 (aka MC11a)
 
-! 2012-10-12 - Paul Szczypka (r146857)
+! 2012-10-12 - Paul Szczypka
  - Added limit of one event to:
    Sim/Gauss/tests/options/testGauss-config-defaults.py
    and changed reference file accordingly.
 
-! 2012-10-12 - Paul Szczypka (r146854)
+! 2012-10-12 - Paul Szczypka
  - Added first version of configuration qmtest, files:
    Sim/Gauss/tests/qmtest/gauss.qms/gauss-config-MC11a.qmt
    Sim/Gauss/tests/refs/testGauss-config-10000000.ref.x86_64-slc5-gcc43-opt
    Sim/Gauss/tests/options/testGauss-config-defaults.py
 
-! 2012-10-09 - Paul Szczypka (r146682)
+! 2012-10-09 - Paul Szczypka
  - Corrected a bug in the PuVeto configuration whereby the test used to check
    if either the VL or VP was also requested meant that it would configure
    whichever detector it found instead.
 
-! 2012-10-08 - Aurelien Martens (r146661)
+! 2012-10-08 - Aurelien Martens
  - Update qmtests for pythia8
 
-! 2012-10-08 - Gloria Corti (r146649)
+! 2012-10-08 - Gloria Corti
  - Put r* in requirements file for generator and LHCb data packages
 
-! 2012-10-08 - Paul Szczypka (r146633)
+! 2012-10-08 - Paul Szczypka
  - Corrected a bug in the Configuration whereby all detectors defined in the
    "T" volume would be loaded irrespective of detector choice if any of the
    IT, OT or FT detectors were chosen.
@@ -811,44 +999,53 @@ other options.
  - Remove use of GaudiPartProp from Gauss() since all code has been migrated
    to the LHCb::ParticlePropertySvc
 
-! 2012-10-05 - Paul Szczypka (r146549)
+! 2012-10-05 - Paul Szczypka
  - Added Gauss-Debug.py option file.
 
-! 2012-10-02 - Aurelien Martens (r146344)
+! 2012-10-02 - Aurelien Martens
  - Added few qmtests for pythia8
 
-! 2012-10-02 - Paul Szczypka (r146337)
+! 2012-10-02 - Paul Szczypka
  - Removed most debug statements from Configuration.
  - Added Debug flag to Configuration.
 
-! 2012-09-24 - Gloria Corti (r145816)
+! 2012-09-24 - Gloria Corti
  - Remove use of LbHerwig that is obsolete since v42r1.
    Put use of LbAlpGen and LbHerwigpp that are new
    Change version of DecFiles to v26r* for compatibility with new LHCb
    ParticlePropertySvc and remove use of the Gaudi old one.
 
-! 2012-09-23 - Paul Szczypka (r145801)
+! 2012-09-23 - Paul Szczypka
  - Minor edits to BeamPipe code fixing typos.
 
-! 2012-09-21 - Paul Szczypka (r145752)
+! 2012-09-21 - Paul Szczypka
  - Minor edits to BeamPipe configuration for UT
 
-! 2012-09-20 - Paul Szczypka (r145673)
+! 2012-09-20 - Paul Szczypka
  - Temporary fix in Configurable.py for non-schema VL path in DDDB
 
-! 2012-09-20 - Paul Szczypka (r145660)
+! 2012-09-20 - Paul Szczypka
  - Modifications to Configurable.py to fix FT typo
 
-! 2012-08-30 - Paul Szczypka (r144690)
+! 2012-08-30 - Paul Szczypka
  - Modifications to Configurable.py to accommodate VP and VL
 
-! 2012-07-23 - Gloria Corti (r143132)
+! 2012-07-23 - Gloria Corti
  - Remove use of GaudiPartProp from Gauss() since all code has been migrated
    to the LHCb::ParticlePropertySvc
 
-! 2012-07-11 - Paul Szczypka (r142579)
+! 2012-07-11 - Paul Szczypka
   - Rewrite of python/Gauss/Configurable.py in order to more easily replace
     detectors with upgrade versions.
+
+! 2012-06-06 - Gloria Corti
+ - Introduce new script by Emmanouil Kiagias to make qmtest files from a
+   template. The script is added as a make action so that they will be made
+   in the nighlty and used to check newly committed event types in DecFiles
+   . cmt/makeQMTests.py
+
+! 2012-05-21 - Paul Szczypka
+ - Small corrections to RunTimeError execptions in Configuration.py
 
 !========================== GenCuts v3r1 2012-10-19 ==========================
 ! 2012-09-27 - Aurelien Martens

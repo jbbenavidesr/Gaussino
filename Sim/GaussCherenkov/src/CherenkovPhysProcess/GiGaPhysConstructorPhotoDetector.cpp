@@ -20,9 +20,9 @@
 
 // local
 #include "GiGaPhysConstructorPhotoDetector.h"
-#include "RichPhotoElectron.h"
+#include "GaussRICH/RichPhotoElectron.h"
 
-//#include "RichG4GaussPathNames.h"
+//#include "GaussRICH/RichG4GaussPathNames.h"
 //#include "DetDesc/DetectorElement.h"
 //#include "RichDet/DeRichSystem.h"
 
@@ -186,13 +186,17 @@ void GiGaPhysConstructorPhotoDetector::ConstructPmtSiEnLoss()
   theRichPmtSiEnergyLossProcess->InitializePmtProcParam();
 
 
+  TorchTBMcpEnergyLoss* theTorchTBMcpEnergyLossProcess =0;
+  
+
+  if( m_ActivateTorchTBMcpEnergyLossProc) {
     
-   TorchTBMcpEnergyLoss* theTorchTBMcpEnergyLossProcess =
-     new TorchTBMcpEnergyLoss("TorchTBMcpEnergyLossProcess", fUserDefined  );
+   theTorchTBMcpEnergyLossProcess =  new TorchTBMcpEnergyLoss("TorchTBMcpEnergyLossProcess", fUserDefined  );
    theTorchTBMcpEnergyLossProcess->setMcpAnodeDetEff(m_TorchTBMcpAnodeEfficiency );
    theTorchTBMcpEnergyLossProcess->setMcpAnodePixelChipEff(m_TorchMcpAnodeReadoutChipEfficiency);
    theTorchTBMcpEnergyLossProcess->InitializeMcpProcParam();
    
+  }
   
   
 

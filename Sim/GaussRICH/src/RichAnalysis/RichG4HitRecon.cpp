@@ -16,15 +16,15 @@
 #include "G4TrajectoryPoint.hh"
 #include <vector>
 #include <iterator>
-#include "RichG4Hit.h"
-#include "RichG4ReconFlatMirr.h"
-#include "RichG4AnalysisConstGauss.h"
-#include "RichG4Counters.h"
-#include "RichG4HitCoordResult.h"
-#include "RichG4RadiatorMaterialIdValues.h"
+#include "GaussRICH/RichG4Hit.h"
+#include "GaussRICH/RichG4ReconFlatMirr.h"
+#include "GaussRICH/RichG4AnalysisConstGauss.h"
+#include "GaussRICH/RichG4Counters.h"
+#include "GaussRICH/RichG4HitCoordResult.h"
+#include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
 
 // local
-#include "RichG4SvcLocator.h"
+#include "GaussRICH/RichG4SvcLocator.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4HitRecon
@@ -91,7 +91,6 @@ void RichG4HitRecon::RichG4GetHpdOccupancies(const G4Event* anEvent,
   IMessageSvc*  msgSvc = RichG4SvcLocator::RichG4MsgSvc ();
   MsgStream RichG4HitReconlog( msgSvc,"RichG4HitRecon");
   const std::vector<int> aNumHpdInRich =  m_RichG4CkvRec->NumHpdRich();
-  int irichdet=-1;
 
   bool applyQuartzWindowRefCorr=true;
 
@@ -100,12 +99,7 @@ void RichG4HitRecon::RichG4GetHpdOccupancies(const G4Event* anEvent,
   G4int NumRichCollection= NumRichColl;
   int Current_RichG4CollectionID=0;
   for (int ihcol=0; ihcol<NumRichCollection; ihcol++) {
-    if(ihcol ==0 || ihcol == 1 ){
-      irichdet=0;
-    }else if ( ihcol ==2 || ihcol == 3 ){
-      irichdet =1;
 
-    }
     Current_RichG4CollectionID =RichG4CollectionID[ihcol];
     if(Current_RichG4CollectionID >=0 ) {
       HCE = anEvent->GetHCofThisEvent();
@@ -196,20 +190,11 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
       RichG4RadiatorMaterialIdValues::RichG4RadiatorMaterialIdValuesInstance();
 
   const std::vector<int> aNumHpdInRich =  m_RichG4CkvRec->NumHpdRich();
-  int irichdet=-1;
-
-
 
   G4HCofThisEvent * HCE;
   G4int NumRichCollection= NumRichColl;
   int Current_RichG4CollectionID=0;
   for (int ihcol=0; ihcol<NumRichCollection; ihcol++) {
-    if(ihcol ==0 || ihcol == 1 ){
-      irichdet=0;
-    }else if ( ihcol ==2 || ihcol == 3 ){
-      irichdet =1;
-
-    }
 
     Current_RichG4CollectionID =RichG4CollectionID[ihcol];
     if(Current_RichG4CollectionID >=0 ) {
@@ -732,7 +717,6 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             
             Gaudi::XYZPoint aDetPointFromPixelNumInPhDet = aPhDetGlobalToLocal*aDetPointFromPixelNum;
             
-            Gaudi::XYZPoint aDetPointFromTrueLocalHitInPhDet = aPhDetGlobalToLocal*aDetPointFromTrueLocalHit;
             Gaudi::XYZPoint  aDetPointFromGlobalPhCathodeInPhDet = aPhDetGlobalToLocal*aDetPointFromGlobalPhCathode;
             m_RichG4HitCoordResult->setDetPtInPhDetFromPixelNum(aDetPointFromPixelNumInPhDet);
             m_RichG4HitCoordResult->setDetPtInPhDetFromTrueLocalHit(aDetPointFromGlobalPhCathodeInPhDet);
