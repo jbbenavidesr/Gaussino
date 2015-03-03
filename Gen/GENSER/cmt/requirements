@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v9r2p1
+version v9r3
 
 # Structure, i.e. directories to process. 
 #============================================================================

@@ -4,6 +4,18 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!======================== EvtGen v12r9 2012-03-29 ===========================
+! 2012-03-23 - Marcin Chrzaszcz
+ - Added the EvtEta2MuMuGamma decay model.
+
+! 2012-03-21 - John Back
+ - Added brackets around conditional if statements in EvtD0gammaDalitz to 
+   remove compilation warnings.
+
+! 2012-03-02 - Jordi Garra Tico
+ - Added EvtD0gammaDalitz decay model: D0 decays with a complete Dalitz plot 
+   description and CPV with CKM angle gamma.
+
 !======================== EvtGen v12r8 2012-01-28 ===========================
 ! 2012-01-28 - John Back
  - Add K_1+/- vector modes for EvtbTosllBallFF::getVectorFF. 

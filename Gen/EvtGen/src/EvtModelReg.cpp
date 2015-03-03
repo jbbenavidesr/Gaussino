@@ -27,6 +27,7 @@
 #include <assert.h>
 #include "EvtGenBase/EvtModel.hh"
 
+#include "EvtGenModels/EvtEta2MuMuGamma.hh"
 #include "EvtGenModels/EvtTauVectornu.hh"
 #include "EvtGenModels/EvtVVP.hh"
 #include "EvtGenModels/EvtSLN.hh"
@@ -155,6 +156,7 @@
 
 #include "EvtGenModels/EvtDMix.hh"
 #include "EvtGenModels/EvtD0mixDalitz.hh"
+#include "EvtGenModels/EvtD0gammaDalitz.hh"
 
 #include "EvtGenModels/EvtModelReg.hh"
 using std::fstream;
@@ -271,6 +273,8 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtMultibody);
     modelist.registerModel(new EvtDMix);
     modelist.registerModel(new EvtD0mixDalitz);
+    modelist.registerModel(new EvtD0gammaDalitz);
+    modelist.registerModel(new EvtEta2MuMuGamma);
 
 //    modelist.registerModel(new EvtJetSetCDF);
 //    modelist.registerModel(new EvtJscontCDF);

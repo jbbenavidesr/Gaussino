@@ -1,8 +1,13 @@
-xs!-----------------------------------------------------------------------------
+!-----------------------------------------------------------------------------
 ! Package     : Gen/GENSER
 ! Responsible : Gloria CORTI, Patrick ROBBE
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
+
+!========================== GENSER v9r3 2012-04-02 ===========================
+! 2012-03-28 - Gloria Corti
+ - Backport changes from Zenwhei Yang:
+   "Add two lines for GenChicc in upinit.F, upevnt.F and GaussUserProcesses.inc
 
 !========================= GENSER v9r2p1 2011-10-14 ==========================
 ! 2011-10-14 - Gloria Corti
