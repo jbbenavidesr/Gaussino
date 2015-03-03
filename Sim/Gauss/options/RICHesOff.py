@@ -19,7 +19,6 @@ def switchOffRICH():
     geo.StreamItems.remove("/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces")
     geo.StreamItems.remove("/dd/Geometry/BeforeMagnetRegion/Rich1/RichHPDSurfaces")
 
-
 # Switch off RICH physics
 from Configurables import ( GiGa, GiGaPhysListModular,
                             GiGaPhysConstructorOp, GiGaPhysConstructorHpd )

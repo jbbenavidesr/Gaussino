@@ -4,6 +4,74 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v42r4 2013-02-19 ============================
+! 2013-02-19 - Gloria Corti
+ - Fix CalOnly.py that had a mistyping after my changes
+
+! 2013-02-17 - Gloria Corti
+ - Port from trunk latest changes for upgrade (see below)
+
+! 2013-02-14 - Paul Szczypka (r152292)
+ - Commented out upgrade position of OT in Configuration.py (Removes warnings)
+
+! 2013-02-14 - Paul Szczypka (r152290)
+ - Added qmtests, options and refs, for the upgrade configurations:
+ . VL-UT-FT
+ . VL-UT-FT
+ . Upgrade Reference (Minimal)
+
+! 2013-02-14 - Gloria Corti
+ - Add 'Magnet' to list of detectors in CaloOnly.py options otherwise there
+   in no field simulated and flag to add beam pipe. 
+   Comment lines that are not needed.
+ - Port by hand to avoid conflicts the change by Paul Szczypka to the 
+   Configurable such that the velo misalignment (and therefore definiition)
+   is always done even for the upgrade (correspond to r152031 in trunk)
+
+! 2013-02-12 - Paul Szczypka
+ - Correction to the GDML code - tool now added to correct algo.
+
+! 2013-02-12 - Gloria Corti and Paul Szczypka
+ - Introduce in the Gauss() configurable a new property "ReplaceWithGDML" to
+   allow to replace a list of volumes with a GDML description given in a file.
+   The name of the tool is set from the filename.
+
+! 2013-02-05 - Gloria Corti
+ - Add use of package GDMLData for import of GDML files
+
+! 2013-02-05 - Gloria Corti
+ - Porting changes from trunk: see below
+ - Modification for GenStandAlone.py by Patrick Robbe so that it make xgen 
+   output (r151313)
+
+! 2013-01-08 - Paul Szczypka (r150564)
+ - Correction to GaussVis.py options to use new Detector configuration syntax.
+
+! 2012-12-20 - Paul Szczypka (r150332)
+ - Removed comments and some unused methods in Configuration.py
+
+! 2012-12-18 - Paul Szczypka (r150263)
+ - Removed debug statements in Configuration.py
+ - Corrected date of previous edit in release.notes
+
+! 2012-12-17 - Paul Szczypka (r150254)
+ - Edited BeamPipe configuration method.
+
+! 2012-12-11 - Paul Szczypka (r149693, r149694)
+ - Whitespace editing
+ - Added BeamPipe entry to PropertyDocDict
+
+! 2012-12-06 - Paul Szczypka (r149575)
+ - Typo, Moun -> Muon in Configuration.py
+
+! 2013-01-09 - Patrick Robbe
+ - QMTests: revise them (use 4 TeV beams, ...) 
+ - options for CaloOnly corrected for the new Gauss configurables
+
+! 2012-12-04 - Patrick Robbe
+ - Configuration.py: setup options to pass beam energy to BcVegPy in 
+  Pythia8
+
 !========================= Gauss v42r3 2012-11-30 ============================
 ! 2012-11-30 - Gloria Corti (from trunk r149254)
  - Pick version v2r* of GenXiccData for support to 8 TeV collisions

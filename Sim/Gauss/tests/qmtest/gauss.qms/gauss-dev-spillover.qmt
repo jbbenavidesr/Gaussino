@@ -18,7 +18,8 @@
     LineSkipper([&quot;PDFset&quot;]) + \
     LineSkipper([&quot;RFileCnv&quot;]) + \
     LineSkipper([&quot;HistogramDataSvc           INFO Added stream file:&quot;]) + \
-    LineSkipper([&quot;ChronoStatSvc.f...   INFO  Service finalized succes&quot;]) 
+    LineSkipper([&quot;ChronoStatSvc.f...   INFO  Service finalized succes&quot;]) + \
+    LineSkipper([&quot;GaussGen                   INFO Memory has changed from&quot;])
 strippedOutput = []
 skipping = False
 firstLineToSkip = &quot;Voxelisation: top CPU users:&quot;
