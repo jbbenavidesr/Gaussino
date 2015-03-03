@@ -22,6 +22,15 @@
 <VisAtt name="VisPipeMBXWS">
   <Color R="0.72" G="0.45" B="0.2"/>
 </VisAtt>
+<VisAtt name="VisSintimid15G">
+  <Color R="1.0" G="0.98" B="0.74"/>
+</VisAtt>
+<VisAtt name="VisAW2219">
+  <Color B="0.8667" G="0.8510" R="0.6706"/>
+</VisAtt>
+<VisAtt name="VisTitanium">
+  <Color B="0.505" G="0.505" R="0.505"/>
+</VisAtt>
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes

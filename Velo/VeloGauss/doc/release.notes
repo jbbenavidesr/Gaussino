@@ -4,6 +4,10 @@
 ! Purpose     : VeloGauss monitoring
 !-----------------------------------------------------------------------------
 
+!========================== VeloGauss v2r4 2009-04-06 ========================
+! 2009-03-26 - Patrick Robbe
+ - VeloGaussMoni: add possibility to change location of VeloMCHits 
+
 !========================== VeloGauss v2r3 2008-06-09 ========================
 ! 2008-05-30 - Gloria CORTI
  - Adapt to removal of LHCbDefinitions from GAUSS. Now take the header files

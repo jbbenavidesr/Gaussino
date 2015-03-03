@@ -2,10 +2,60 @@
      the materials used in the OT description.
      The only attribute defined here is the color of the material -->
 
-<!-- oT box encapsulation -->
+<!-- OT box encapsulation -->
 <VisAtt name="VisOTStation" opened="Yes">
   <Color R="0.8" G="0.8" B="0.8"/>
 </VisAtt>
+<VisAtt name="VisOTX1" opened="Yes">
+  <Color R="0.8" G="0.8" B="0.8"/>
+</VisAtt>
+<VisAtt name="VisOTX2" opened="Yes">
+  <Color R="0.8" G="0.8" B="0.8"/>
+</VisAtt>
+<VisAtt name="VisOTU" opened="Yes">
+  <Color R="0.6" G="0.8" B="0.8"/>
+</VisAtt>
+<VisAtt name="VisOTV" opened="Yes">
+  <Color R="0.8" G="0.6" B="0.8"/>
+</VisAtt>
+
+<VisAtt name="VisLModule" mode="WireFrame">
+  <Color R="0.1" G="0.1" B="0.44"/>
+</VisAtt>
+<VisAtt name="VisS1Module" mode="WireFrame">
+  <Color R="0.1" G="0.1" B="0.6"/>
+</VisAtt>
+<VisAtt name="VisS2Module" mode="WireFrame">
+  <Color R="0.1" G="0.1" B="0.6"/>
+</VisAtt>
+<VisAtt name="VisS3Module" mode="WireFrame">
+  <Color R="0.1" G="0.1" B="0.6"/>
+</VisAtt>
+
+<VisAtt name="VisSModCouplings">
+  <Color R="0.28" G="0.28" B="0.54"/>
+</VisAtt>
+
+<VisAtt name="VisOTCFrame" opened="Yes">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+<VisAtt name="VisCSideHorCFramePlate">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+<VisAtt name="VisCSideVerCFramePlate">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+<VisAtt name="VisASideHorCFramePlate">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+<VisAtt name="VisASideVerCFramePlate">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+<VisAtt name="VisVerCFramePlate">
+  <Color R="0.84" G="0.75" B="0.84"/>
+</VisAtt>
+
+<!-- support for old names -->
 <VisAtt name="VisOTX1layer" opened="Yes">
   <Color R="0.8" G="0.8" B="0.8"/>
 </VisAtt>
@@ -60,3 +110,5 @@
 <VisAtt name="VisVerCFramePlate">
   <Color R="0.84" G="0.75" B="0.84"/>
 </VisAtt>
+
+

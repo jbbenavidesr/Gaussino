@@ -47,4 +47,4 @@
 <VisAtt name="VisInfrastructure" mode="WireFrame" visible="No" opened="Yes"/>
 <VisAtt name="VisAfterMuon" visible="No" opened="Yes"/>
 <VisAtt name="VisTunnel"    mode="WireFrame" visible="Yes" opened="Yes"/>
-<VisAtt name="VisUX85"                                visible="Yes" opened="Yes"/>
+<VisAtt name="VisUX85"      mode="WireFrame" visible="No" opened="Yes"/>

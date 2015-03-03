@@ -1,10 +1,10 @@
-# $Id: requirements,v 1.11 2009-01-20 17:09:31 jonrob Exp $ 
+# $Id: requirements,v 1.14 2009-04-06 12:38:17 gcorti Exp $ 
 #============================================================================
 # Created    : 2006-07-03
 # Maintainer : Vincenzo Vagnoni
 #============================================================================
 package       LbHijing
-version       v4r1
+version       v5r0
 
 
 # Structure, i.e. directories to process. 
@@ -18,13 +18,14 @@ include_dirs  $(LBHIJINGROOT)
 
 ### NOTE: the order of these use is important, for the wrong order
 ###       GaussHijing.exe complains about vanishing process and stops
+use  GENSER      v*  Gen
 use  hijing      v*  LCG_GeneratorsInterfaces    
 use  LbPythia    v*  Gen
 
 
 # Component and linker library building rule
 #============================================================================
-library       LbHijingLib       Lib/*.cpp Lib/*.F
+library       LbHijingLib       " Lib/*.cpp Lib/*.F "
 library       LbHijing          component/*.cpp
 
 
@@ -32,7 +33,4 @@ library       LbHijing          component/*.cpp
 #============================================================================
 apply_pattern component_library library=LbHijing 
 apply_pattern linker_library    library=LbHijingLib 
-
-macro LbHijing_fflags " -fno-second-underscore " \
-      WIN32 ""
- 
+apply_pattern library_stamps    library=LbHijingLib 

@@ -1,4 +1,4 @@
-// $Id: ParticleGun.cpp,v 1.8 2008-07-25 12:36:17 robbep Exp $
+// $Id: ParticleGun.cpp,v 1.10 2009-04-07 16:26:10 gcorti Exp $
 // Include files 
 
 // local
@@ -168,7 +168,6 @@ StatusCode ParticleGun::execute() {
   }
 
   unsigned int  nParticles( 0 ) ;
-  double        currentLuminosity ; // not used, always set to 0
   
   LHCb::HepMCEvents::iterator itEvents ;
 
@@ -193,7 +192,7 @@ StatusCode ParticleGun::execute() {
     
     // Compute the number of pile-up interactions to generate 
     if ( 0 != m_numberOfParticlesTool ) 
-      nParticles = m_numberOfParticlesTool -> numberOfPileUp( currentLuminosity ) ;
+      nParticles = m_numberOfParticlesTool -> numberOfPileUp( theGenHeader ) ;
     // default set to 1 pile and 0 luminosity  
     else nParticles = 1 ;
         
@@ -239,8 +238,14 @@ StatusCode ParticleGun::execute() {
         sc = decayEvent( *itEvents ) ;
         (*itEvents) -> pGenEvt() -> set_event_number( ++iPart ) ;
         if ( ! sc.isSuccess() ) return sc ;
-        if ( 0 != m_vertexSmearingTool ) 
-          sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
+      }
+    }
+
+    // Apply smearing of primary vertex
+    if ( 0 != m_vertexSmearingTool ) {
+      for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
+            ++itEvents ) {
+        sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
         if ( ! sc.isSuccess() ) return sc ;
       }
     }

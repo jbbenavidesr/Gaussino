@@ -1,4 +1,4 @@
-// $Id: GenerationToSimulation.cpp,v 1.6 2008-12-12 13:58:32 robbep Exp $
+// $Id: GenerationToSimulation.cpp,v 1.9 2009-03-26 21:42:04 robbep Exp $
 // Include files 
 // local
 #include "GenerationToSimulation.h"
@@ -56,6 +56,7 @@ GenerationToSimulation::GenerationToSimulation( const std::string& name,
   declareProperty( "LookForUnknownParticles" , m_lookForUnknownParticles = false ) ;
   declareProperty( "SkipGeant" , m_skipGeant4 = false ) ;
   declareProperty( "UpdateG4ParticleProperties" , m_updateG4ParticleProperties = true ) ;
+  declareProperty( "MCHeader" , m_mcHeader = LHCb::MCHeaderLocation::Default) ;
 }
 //=============================================================================
 // Destructor
@@ -70,28 +71,30 @@ StatusCode GenerationToSimulation::initialize() {
   if ( sc.isFailure() ) return sc;  // error printed already by GaudiAlgorithm
   
   debug() << "==> Initialize" << endmsg;
-  m_gigaSvc = svc<IGiGaSvc>( m_gigaSvcName, true ); // Create if necessary
+  if ( ! m_skipGeant4 ) {
+    m_gigaSvc = svc<IGiGaSvc>( m_gigaSvcName, true ); // Create if necessary
   
-  // If requested by option, update Geant4 particle properties
-  // from Gaudi/LHCb ParticlePropertySvc
-  if ( m_updateG4ParticleProperties ) {
-    IParticlePropertySvc * ppSvc = 
-      svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
-      
-    G4ParticlePropertyTable* PPT = G4ParticlePropertyTable::GetParticlePropertyTable();
-    G4ParticleTable * particleTable = G4ParticleTable::GetParticleTable() ;
-    for ( int i = 0 ; i < particleTable -> size() ; ++i ) {
-      G4ParticleDefinition * PDef = particleTable -> GetParticle( i ) ;
-      ParticleProperty * pp = ppSvc -> findByStdHepID( PDef -> GetPDGEncoding() ) ;
-      if ( 0 != pp ) {
-        G4ParticlePropertyData * PPData = PPT -> GetParticleProperty( PDef ) ;
-        PPData -> SetPDGMass( pp -> mass() ) ;
-        PPData -> SetPDGLifeTime( pp -> lifetime() ) ;
-        PPT -> SetParticleProperty( *PPData ) ;
+    // If requested by option, update Geant4 particle properties
+    // from Gaudi/LHCb ParticlePropertySvc
+    if ( m_updateG4ParticleProperties ) {
+      IParticlePropertySvc * ppSvc = 
+	svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
+	
+      G4ParticlePropertyTable* PPT = G4ParticlePropertyTable::GetParticlePropertyTable();
+      G4ParticleTable * particleTable = G4ParticleTable::GetParticleTable() ;
+      for ( int i = 0 ; i < particleTable -> size() ; ++i ) {
+	G4ParticleDefinition * PDef = particleTable -> GetParticle( i ) ;
+	ParticleProperty * pp = ppSvc -> findByStdHepID( PDef -> GetPDGEncoding() ) ;
+	if ( 0 != pp ) {
+	  G4ParticlePropertyData * PPData = PPT -> GetParticleProperty( PDef ) ;
+	  PPData -> SetPDGMass( pp -> mass() ) ;
+	  PPData -> SetPDGLifeTime( pp -> lifetime() ) ;
+	  PPT -> SetParticleProperty( *PPData ) ;
+	}
       }
-    }
-    release( ppSvc ) ;
-  }  
+      release( ppSvc ) ;
+    }  
+  }
   
   return StatusCode::SUCCESS;
 }
@@ -118,7 +121,7 @@ StatusCode GenerationToSimulation::execute() {
   }
 
   // Obtain the MCHeader info
-  LHCb::MCHeader * mcHeader = get<LHCb::MCHeader>(LHCb::MCHeaderLocation::Default) ;
+  LHCb::MCHeader * mcHeader = get<LHCb::MCHeader>( m_mcHeader ) ;
 
   // Loop over the events (one for each pile-up interaction)
   for( LHCb::HepMCEvents::const_iterator genEvent = generationEvents -> begin() ; 
@@ -189,7 +192,7 @@ StatusCode GenerationToSimulation::execute() {
         delete *itDel ;
       }
     }
-    *gigaSvc() << origVertex;
+    if ( ! m_skipGeant4 ) *gigaSvc() << origVertex;
   }
 
   return StatusCode::SUCCESS;
@@ -458,13 +461,18 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex( const HepMC::GenEven
     result = V -> position() ;
     return result ;
   } else {
-  // Last option, take the production vertex of the particle with bar code 1
+  // Last option, take the production or end vertex of the particle with bar code 1
     HepMC::GenParticle * P = genEvent -> barcode_to_particle( 1 ) ;
     HepMC::GenVertex   * V = 0 ;
     if ( 0 != P ) {
       V = P -> production_vertex() ;
       if ( 0 != V ) result = V -> position() ;
-      else error() << "The first particle has no produciton vertex !" << endreq ;
+      else {
+        V = P -> end_vertex() ;
+        if ( 0 != V ) result = V -> position() ;
+        else error() << "The first particle has no production vertex and no end vertex !" 
+                     << endreq ;
+      }
     } else error() << "No particle with barcode equal to 1 !" << endreq ;
     return result ;
   }

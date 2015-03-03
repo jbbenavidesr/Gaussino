@@ -19,4 +19,9 @@
       attr="VisPipeBakeOut"/>
 <Item name="/dd/Materials/Pipe/PipeCuOFE"
       attr="VisPipeCuOFE"/>
-
+<Item name="/dd/Materials/Pipe/Sintimid15G"
+      attr="VisSintimid15G"/>
+<Item name="/dd/Materials/Pipe/AW2219"
+      attr="VisAW2219"/>
+<Item name="/dd/Materials/Standart/Titanium"
+      attr="VisTitanium"/>

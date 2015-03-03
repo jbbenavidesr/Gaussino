@@ -3,6 +3,16 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+
+!=========================== XmlVis v1r11 ====================================
+! 2009-03-26 - Gloria CORTI
+ - Added visual attributes for new implementation of beam pipe supports, made
+   by Daria Savrina
+
+!=========================== XmlVis v1r10 ====================================
+! 2009-01-19 - Thomas Ruf
+ - made tunnel around Velo transparent 
+
 !=========================== XmlVis v1r8 =====================================
 ! 2008-10-14 - Thomas Ruf
  - new infrastructure made by Emilie Maurice, summerstudent 2008

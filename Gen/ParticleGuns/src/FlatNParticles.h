@@ -1,4 +1,4 @@
-// $Id: FlatNParticles.h,v 1.1 2008-05-19 10:11:24 robbep Exp $
+// $Id: FlatNParticles.h,v 1.2 2009-04-07 16:26:10 gcorti Exp $
 #ifndef PARTICLEGUNS_FLATNPARTICLES_H 
 #define PARTICLEGUNS_FLATNPARTICLES_H 1
 
@@ -35,7 +35,7 @@ public:
    *  Returns the number of particles in one event. It follows
    *  a flat distribution 
    */
-  virtual unsigned int numberOfPileUp( double & currentLuminosity ) ;
+  virtual unsigned int numberOfPileUp( LHCb::GenHeader* theGenHeader ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) { ; } ; 

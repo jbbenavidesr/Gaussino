@@ -1,4 +1,4 @@
-// $Id: VeloGaussMoni.h,v 1.4 2007-02-08 19:25:45 gcorti Exp $
+// $Id: VeloGaussMoni.h,v 1.5 2009-03-26 22:02:12 robbep Exp $
 #ifndef VELOGAUSSMONI_H 
 #define VELOGAUSSMONI_H 1
 
@@ -53,6 +53,9 @@ private:
   double m_nPUMCH;
   double m_nPUMCH2;
   int m_nEvent;
-
+  /// Location of Velo MCHits 
+  std::string m_veloMCHitsLocation ;
+  /// Location of PuVeto MCHits
+  std::string m_puVetoMCHitsLocation ; 
 };
 #endif // VELOGAUSSMONI_H

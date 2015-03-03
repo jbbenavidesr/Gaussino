@@ -49,8 +49,8 @@ std::string* EvtPythia::commands=0;
 
 #ifdef WIN32
 extern "C" {
-  extern void _stdcall PYCONTINUUM(double *,int *, int *, 
-                            double *,double *,double *,double *);
+//  extern void _stdcall PYCONTINUUM(double *,int *, int *, 
+//                            double *,double *,double *,double *);
   extern void __stdcall EVTPYTHIAINIT(const char* fname, int len);
   extern void __stdcall INIT_CONT();
   extern void __stdcall PYTHIADEC(int *,double *,int *,int *,int *,
@@ -63,8 +63,8 @@ extern "C" {
 }
 #else
 extern "C" {
-  extern void pycontinuum_(double *,int *, int *, 
-                            double *,double *,double *,double *);
+//  extern void pycontinuum_(double *,int *, int *, 
+//                            double *,double *,double *,double *);
 }
 
 extern "C" {
@@ -135,9 +135,9 @@ EvtPythia::~EvtPythia(){
 }
 
 
-void EvtPythia::getName(std::string& model_name){
+std::string EvtPythia::getName( ){
 
-  model_name="PYTHIA";     
+  return "PYTHIA";     
 
 }
 
@@ -212,13 +212,13 @@ void EvtPythia::command(std::string cmd){
 
 }
 
-void EvtPythia::pythiacont(double *energy, int *ndaugjs, int *kf,
-			   double *px, double *py, double *pz, double *e)
+void EvtPythia::pythiacont(double */*energy*/, int */*ndaugjs*/, int */*kf*/,
+			   double */*px*/, double */*py*/, double */*pz*/, double */*e*/)
 {
 #ifdef WIN32
-  PYCONTINUUM(energy,ndaugjs,kf,px,py,pz,e);
+//  PYCONTINUUM(energy,ndaugjs,kf,px,py,pz,e);
 #else
-  pycontinuum_(energy,ndaugjs,kf,px,py,pz,e);
+//  pycontinuum_(energy,ndaugjs,kf,px,py,pz,e);
 #endif
 }
 
@@ -444,18 +444,18 @@ void EvtPythia::fixPolarizations(EvtParticle *p){
   
       EvtSpinDensity rho;
       
-      rho.SetDim(3);
-      rho.Set(0,0,0.5);
-      rho.Set(0,1,0.0);
-      rho.Set(0,2,0.0);
+      rho.setDim(3);
+      rho.set(0,0,0.5);
+      rho.set(0,1,0.0);
+      rho.set(0,2,0.0);
 
-      rho.Set(1,0,0.0);
-      rho.Set(1,1,1.0);
-      rho.Set(1,2,0.0);
+      rho.set(1,0,0.0);
+      rho.set(1,1,1.0);
+      rho.set(1,2,0.0);
 
-      rho.Set(2,0,0.0);
-      rho.Set(2,1,0.0);
-      rho.Set(2,2,0.5);
+      rho.set(2,0,0.0);
+      rho.set(2,1,0.0);
+      rho.set(2,2,0.5);
 
       EvtVector4R p4Psi=p->getDaug(i)->getP4();
 
@@ -1136,10 +1136,11 @@ void EvtPythia::MakePythiaFile(char* fname){
   int nokcentry;
   for(lundkc=1;lundkc<500;lundkc++){
     nokcentry=1;
-    int iipar;
+    unsigned int iipar;
     for(iipar=0;iipar<EvtPDL::entries();iipar++){
       ipar=EvtId(iipar,iipar);
-      if ( EvtDecayTable::isJetSet( ipar ) ) {
+//      if ( EvtDecayTable::isJetSet( ipar ) ) { replace for new EvtGen by
+      if ( EvtDecayTable::decaytable()[ipar.getAlias()].isJetSet() ) {
         //no aliased particles!
         std::string tempStr = EvtPDL::name(ipar);
         EvtId realId = EvtPDL::getId(tempStr);
@@ -1218,10 +1219,11 @@ void EvtPythia::MakePythiaFile(char* fname){
 
   // Write now new Pythia particles
 
-  int iiparNew;
+  unsigned int iiparNew;
   for(iiparNew=0;iiparNew<EvtPDL::entries();iiparNew++){
     ipar = EvtId(iiparNew,iiparNew);
-    if ( EvtDecayTable::isJetSet( ipar ) ) {
+//    if ( EvtDecayTable::isJetSet( ipar ) ) { for new EvtGen:
+    if ( EvtDecayTable::decaytable()[ipar.getAlias()].isJetSet() ) {
       //no aliased particles!
       std::string tempStrNew = EvtPDL::name(ipar);
       EvtId realIdNew = EvtPDL::getId(tempStrNew);
@@ -1288,7 +1290,7 @@ void EvtPythia::pythiaInit(int /*dummy*/){
     // Update masses, width, ... in PYTHIA common
     // Do Not update for diquarks (PR)
     // Do not update for Pythia special codes
-    int iipar ;
+    unsigned int iipar ;
     for ( iipar = 0 ;
           iipar < EvtPDL::entries() ;
           iipar++ ) {

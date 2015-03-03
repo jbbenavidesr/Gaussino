@@ -42,7 +42,7 @@
 #------------------------------------------------------------------------------
 # Make a new job object for Gauss
 #------------------------------------------------------------------------------
-j = Job( application = Gauss( version = 'v36r2' ) )
+j = Job( application = Gauss( version = 'v37r0' ) )
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ j.name = 'MyGauss'
 myOptsPath = ( j.application.user_release_area + '/Gauss_' +
                j.application.version + '/Sim/Gauss/' +
                j.application.version + '/options/' )
-j.application.optsfile = [ File ( myOptsPath + 'Gauss-2008.py' ),
+j.application.optsfile = [ File ( myOptsPath + 'Gauss-MC09.py' ),
                            File ( myOptsPath + 'Gauss-Job.py'  ) ]
 # Extra options
 # Appended to the end of the main options to override default settings

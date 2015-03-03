@@ -4,6 +4,17 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v7r0 2009-04-07 =======================
+! 2009-04-07 - Gloria CORTI
+ - Adapt to changes in IPileUpTool interface.
+   . ParticleGun.cpp
+   . FlatNParticles.{h,cpp}
+
+! 2009-04-03 - Gloria CORTI
+ - Fix bug #48912 reported by Aras Papadelis about smearing of primary vertex
+   being applied only if a DecayTool is used (so not for stable particle
+   guns). 
+
 !======================= ParticleGuns v6r2 2008-12-08 =======================
 ! 2008-12-02 - Gloria CORTI
  - Put ToF based on z of vertex and direction of 'beam'/'particle gun'. By

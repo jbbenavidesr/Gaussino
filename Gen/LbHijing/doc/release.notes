@@ -4,6 +4,27 @@
 ! Purpose     : "Interface" to Hijing 
 !-----------------------------------------------------------------------------
 
+!========================= LbHijing v5r0 2009-04-06 ==========================
+! 2009-03-11 - Patrick Robbe
+ - HijingProduction.cpp: set mass units correctly (GeV -> MeV)
+
+! 2009-03-06 - Patrick Robbe
+ - Move ran.F and rlu.F to GENSER package and update requirements to
+   pick them from there.
+
+! 2009-03-04 - Patrick Robbe
+ - ran.F: set as double precision
+
+! 2009-02-27 - Patrick Robbe
+ - add rlu.F, another random function used in Hijing to override it.
+
+! 2009-02-26 - Patrick Robbe
+ - ran.F: revert to original function name (ran) to allow overriding of 
+   HIJING random generator
+ - requirement: remove ran.F when compiling on OSX
+ - HijingProduction: remove beam particles from HepMC event to prevent wrong
+   primary vertex assignment in Geant4
+
 !========================= LbHijing v4r1 2009-02-09 ==========================
 ! 2009-01-19 - Chris Jones
  - Fix for name conflicit between local ran function and implicit function 

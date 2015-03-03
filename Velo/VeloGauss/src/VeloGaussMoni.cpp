@@ -1,4 +1,4 @@
-// $Id: VeloGaussMoni.cpp,v 1.14 2008-05-30 13:57:15 gcorti Exp $
+// $Id: VeloGaussMoni.cpp,v 1.15 2009-03-26 22:02:12 robbep Exp $
 // Include files 
 
 // from Gaudi
@@ -51,6 +51,10 @@ VeloGaussMoni::VeloGaussMoni( const std::string& name,
   declareProperty("TestPileUpMCHit", m_testPileUpMCHit);
   declareProperty("DetailedMonitor", m_detailedMonitor);
   declareProperty("VeloDetLocation", m_veloDetLocation);
+  declareProperty("VeloMCHits" , 
+                  m_veloMCHitsLocation = LHCb::MCHitLocation::Velo ) ;
+  declareProperty("PuVetoMCHits" , 
+                  m_puVetoMCHitsLocation = LHCb::MCHitLocation::PuVeto ) ;
 }
 //=============================================================================
 // Destructor
@@ -122,18 +126,18 @@ StatusCode VeloGaussMoni::getData()
 {
   debug()<< " ==> VeloGaussMoni::getData" <<endmsg;
 
-  if(!exist<LHCb::MCHits>(LHCb::MCHitLocation::Velo)){
+  if(!exist<LHCb::MCHits>( m_veloMCHitsLocation )){
     error()<< "There is no MCHits at MC/Velo/Hits in TES!" <<endmsg;
     m_testMCHit=false;
   }else{
-    m_veloMCHits=get<LHCb::MCHits>(LHCb::MCHitLocation::Velo);
+    m_veloMCHits=get<LHCb::MCHits>( m_veloMCHitsLocation );
   }
   //
-  if(!exist<LHCb::MCHits>(LHCb::MCHitLocation::PuVeto)){
+  if(!exist<LHCb::MCHits>( m_puVetoMCHitsLocation )){
     error()<< "There is no MCHits at MC/PuVeto/Hits in TES!" <<endmsg;
     m_testPileUpMCHit=false;
   }else{
-    m_veloPileUpMCHits=get<LHCb::MCHits>(LHCb::MCHitLocation::PuVeto);
+    m_veloPileUpMCHits=get<LHCb::MCHits>( m_puVetoMCHitsLocation );
   }
   //  
   if(m_printInfo){

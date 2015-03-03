@@ -4,6 +4,65 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v37r0 2009-04-08 =============================
+! 2009-04-08 - Patrick ROBBE
+ - First version of script to produce spill-over events with Gauss with 'older'
+   database tags, Gauss-2008-WithSpillOver.py
+
+! 2009-04-08 - Gloria CORTI
+ - Set beam conditions for 5 TeV in python options (BeamCond-5TeV.py), for
+   the moment this include BeamCond-5TeV.opts with leftover beam energy
+   as hijing part not yet ready in python. 
+   This is used by all Beam5TeV-Velo{Closed,Open}-Mag{Up,Down,Off}.py
+ - Use global tags for latest version of velo open/closed and mag up/down/off,
+   instead of local tags and update manager.
+   Modified all Beam{5,7}TeV-Velo{Closed,Open}-Mag{Up,Down,Off}.py
+   and Beam450GeV-Velo{Closed,Open}-Mag{Up,Down,Off}.py
+ - Clean up a little the Gauss-Job.py example
+ - Remove setting of masses in Generator.opts as they have been introduced in
+   particle table available with latest tag of DDDB
+
+! 2009-04-07 - Gloria CORTI
+ - New options Gauss-MC09.py uses the latest tags in DDDB (head-20090330)
+   and SIMCOND picking veloclosed and field up (sim-20090402-vc-mu100). 
+   It should be used instead of Gauss-2008.py for stearing
+ - Gauss-2008.py left for backward compatibility only. settings the old
+   tags, it now imports Gauss.py.
+ - Gauss.py new file that has parts common to all jobs and the sequencing 
+   It will be replaced in the future by the Gauss() configurable. 
+ - Remove GaussRead.opts that is no longer working
+ - Move GaussTape configuration and setting in Configuration.py and remove
+   GaussTape.opts file. Modify Gauss.opts to remove this obsolete part.
+
+! 2009-04-06 - Gloria CORTI
+ - Increase major version of DecFiles to be used as previous one is 
+   incompatible with EvtGen new version.
+
+! 2009-04-02 - Silvia MIGLIORANZI
+ - QMTest reference files updated and gauss-2008.qmt modified adding new lines 
+   to be skipped in the comparison of the stdoutput.
+
+! 2009-03-31 - Silvia MIGLIORANZI
+ - QMTest modified to have the DecFiles built in the nightlies (forcing the 
+   ToolSvc.EvtGenDecay.DecayFile=
+   "$LHCBDEV/GAUSS/Gen/DecFiles/v17r0/dkfiles/DECAY.DEC").
+
+! 2009-03-30 - Silvia MIGLIORANZI
+ - QMTest modified to have the DecFiles built in the nightlies.
+
+! 2009-03-25 - Silvia MIGLIORANZI
+ - QMTest added in test directory. Standard output and error reference for 
+   5 MinBias events created.
+ - QMtests activated in requirements file.
+  
+! 2009-03-06 - Gloria CORTI
+ - Adapt options for debugging G4Tracking to changes in CommandTrackAction
+   class (GaussTools v15r2)
+   . DebugG4Track.opts
+ - Reset particle width to prevent crashes in EvtGen due to changes in
+   ParticleProperty table (DDDD tag head-20090213).
+   TEMPORARY until put in DDDB.
+
 !======================== Gauss v36r2 2009-02-10 =============================
 ! 2009-02-10 - Gloria CORTI
  - Modify transverse beam size settings for 450 GeV and 5 TeV based on 

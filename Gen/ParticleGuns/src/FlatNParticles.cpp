@@ -1,12 +1,15 @@
-// $Id: FlatNParticles.cpp,v 1.1 2008-05-19 10:11:24 robbep Exp $
+// $Id: FlatNParticles.cpp,v 1.2 2009-04-07 16:26:10 gcorti Exp $
 // Include files 
-
-// local
-#include "FlatNParticles.h"
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
+
+// from Event 
+#include "Event/GenHeader.h"
+
+// local
+#include "FlatNParticles.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatNParticles
@@ -63,8 +66,12 @@ StatusCode FlatNParticles::initialize( ) {
 //=============================================================================
 // Compute the number of particles
 //=============================================================================
-unsigned int FlatNParticles::numberOfPileUp( double & currentLuminosity ) {
-  currentLuminosity = 0. ;
+unsigned int FlatNParticles::numberOfPileUp( LHCb::GenHeader* theGenHeader ) {
+
+  theGenHeader->setLuminosity( 0.0 );
+  theGenHeader->setCrossingFreq( 1.0 );
+  theGenHeader->setTotCrossSection( 0.0 );
+
   return ( m_minNumberOfParticles + 
     (unsigned int) ( m_flatGenerator() * ( 1 + m_maxNumberOfParticles - m_minNumberOfParticles ) ) ) ;
 }

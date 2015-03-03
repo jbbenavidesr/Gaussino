@@ -4,6 +4,23 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================== EvtGen v11r0 2009-04-08 ==========================
+! 2009-04-08 - Patrick Robbe
+ - Pythia.F: fix decay routine (wrong index when calling PYSHOW routine)
+
+! 2009-04-02 - Patrick Robbe
+ - Fix compilation warnings for slc4 at various places.
+
+! 2009-03-28 - Patrick Robbe
+ - EvtPythia.cpp: reintroduce LHCb Pythia model
+
+! 2009-03-16 - Patrick Robbe
+ - Move to new EvtGen version from Anders Ryd after merging BaBar
+   and LHCb changes. 
+
+! 2009-02-26 - Patrick Robbe
+ - EvtParticleDecayList.cpp: fix case when decay mode is forced
+
 !========================== EvtGen v10r2 2009-02-09 ==========================
 ! 2009-01-20 - Will REECE
  - EvtGen, EvtModelReg. Adds a hook so new decay models can be passed in from

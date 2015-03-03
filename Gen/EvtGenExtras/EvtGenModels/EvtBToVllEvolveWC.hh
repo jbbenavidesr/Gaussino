@@ -6,6 +6,7 @@
 #include "CLHEP/Matrix/Matrix.h"
 
 #include <memory>
+#include <utility>
 #include "EvtGenBase/EvtComplex.hh"
 #include "EvtGenModels/EvtBToVllWC.hh"
 
@@ -16,22 +17,25 @@ typedef CLHEP::HepGenMatrix MatrixBaseClass;
 typedef CLHEP::HepMatrix StdMatrix;
 typedef std::auto_ptr<DiagMatrix> DiagMatrixPtr;
 typedef std::auto_ptr<StdMatrix> StdMatrixPtr;
+typedef std::pair<const WilsonCoefficients<WilsonType>*,const WilsonCoefficients<WilsonType>*> WilsonPair;
 
 /**
  * Class to evolve the WC using the full 10x10 anomalous
  * dimension matrix.
  */
-class EvtBToVllEvolveWC10D : public std::unary_function<double,std::auto_ptr<WilsonCoefficients<WilsonType> > >{
+
+class EvtBToVllEvolveWC10D : public std::unary_function<double,WilsonPair*>{
 	
 public:
 	
-	EvtBToVllEvolveWC10D(const WilsonCoefficients<WilsonType>&);
+	EvtBToVllEvolveWC10D(const WilsonCoefficients<WilsonType>&, const WilsonCoefficients<WilsonType>&);
 	result_type operator()(const argument_type& scale); 
 	
 	const static unsigned int dimension = 10;
 
 private:
-	const WilsonCoefficients<WilsonType>& C;
+	const WilsonCoefficients<WilsonType>& C;//left-handed coefficients
+	const WilsonCoefficients<WilsonType>& CR;//right-handed coefficients
 };
 
 template<int m, int n>
