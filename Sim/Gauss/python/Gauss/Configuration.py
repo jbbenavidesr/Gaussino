@@ -1,7 +1,7 @@
 """
 High level configuration tools for Gauss
 """
-__version__ = "$Id: Configuration.py,v 1.23 2009-12-03 16:42:56 cocov Exp $"
+__version__ = "$Id: Configuration.py,v 1.25 2009-12-17 13:12:56 silviam Exp $"
 __author__  = "Gloria Corti <Gloria.Corti@cern.ch>"
 
 from Gaudi.Configuration import *
@@ -344,7 +344,7 @@ class Gauss(LHCbConfigurableUser):
         # Monitors for the generator:
         for slot in SpillOverSlots:
 
-            genSequence = GaudiSequencer("GeneratorSlot" + slot )
+            genSequence = GaudiSequencer("GeneratorSlot" + self.slotName(slot) + "Seq" )
             genMoniSeq = GaudiSequencer("GenMonitor" + slot )
             genSequence.Members += [ genMoniSeq ]  
 
@@ -1156,6 +1156,8 @@ class Gauss(LHCbConfigurableUser):
         # new description postMC09 of Velo:  
         if VeloPostMC09:
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
+            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
+            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
         else:
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamVacTank")
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamVacTank")
