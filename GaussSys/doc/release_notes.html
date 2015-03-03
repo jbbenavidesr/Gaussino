@@ -4,6 +4,81 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v45r6">2013-12-02 - GaussSys v45r6</A></H1><PRE>
+<H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v35r4 (and Gaudi v23r6)
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5, 
+   photos++ 2.6.1a and tauola++ 1.0.7,
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.05 (via LCG_Interfaces),
+   Geant4 v95r2p5 (based on geant4.9.5.p02) and Geant4Files v95r0, 
+   XmlVis v1r15,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.3 (via LCG_GeneratorsInterfaces),
+   powheg-box r2092 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v13r10, EvtGenExtras v3r10</b> and Mint v2r1 
+   (private LHCb versions),
+   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and 
+   HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+! 2013-12-02 - Gloria Corti
+ - On v45b branch
+
+!========================= Gauss v45r6 2013-12-02 ============================
+ - on v45b branch
+ - No changes vs v45r5
+
+!========================== GenCuts v3r8 2013-12-02 ========================== 
+! 2013-11-25 - Jack Wimberley
+ - JpsiLeptonInAcceptance.cpp: Add tool to search for J/psi (or psi(2S)), 
+   lepton in event with configurable cuts on P, PT, DOCA, etc. 
+   (based on DiLeptonInAcceptance.cpp)
+
+!========================== GenCuts v3r7 2013-10-23 ========================== 
+! 2013-10-16 - Marc Olivier Bettler
+ - Lowered the verbosity of BcDaughtersInLHCbAndMassCut.cpp to debug
+ - Corrected treatment of cases with more than one Bc in the event.
+
+!========================== EvtGen v13r10 2013-11-21 ==========================
+! 2013-11-21 - John Back
+ - Modified EvtDalitzTable used by the EvtGenericDalitz model to warn 
+   if an unknown shape is used (and reverts to use a non-relativistic BW).
+
+!========================== EvtGen v13r9 2013-11-11 ==========================
+! 2013-11-11 - John Back
+ - Added Gounaris-Sakurai and Gaussian shapes to EvtGenericDalitz 
+   and set sensible defaults for LASS parameters (from Daniel Craik).
+
+!======================= EvtGenExtras v3r10 2013-12-02 =======================
+! 2013-11-27 - William Sutcliffe
+ - Fix in EvtLb2BaryonlnuFF for warning message.
+
+! 2013-11-26 - William Sutcliffe
+ - Added new model EvtLb2Baryonlnu and corresponding form factor class 
+   EvtLb2BaryonlnuFF. Registered this new model.
+ - Updated EvtSLBaryonAmp with a fix for discrepencies between baryon and 
+   anti-baryon decays.
+
+!========================= LbPythia8 v7r6 2013-10-23 =========================
+! 2013-10-23 - Chitsanu Khurewathanakul
+ - Added the missing files for Pythia8Gun. SVN-newbie.
+
+!========================= LbPGuns v4r1p1 2013-12-02 =========================
+! 2013-11-15 - Michel De Cian
+ - Added MomentumSpectrum.py and BSpectrum.root as example files for the class 
+   MomentumSpectrum to options.
+
+!=============================================================================
 </PRE><H1><A NAME="v45r5">2013-10-20 - GaussSys v45r5</A></H1><PRE>
 <H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
     </A></H2>
@@ -25,7 +100,7 @@ Purpose: LHCb Simulation program
    herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
    rivet 1.8.3 (via LCG_GeneratorsInterfaces),
    powheg-box r2092 (via LCG_GeneratorsInterfaces),
-   EvtGen v13r6 (private LHCb version),
+   <b>EvtGen v13r8</b>(private LHCb version),
    BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and 
    HidValley v3r2 (private LHCb versions)
 </A></H3>
