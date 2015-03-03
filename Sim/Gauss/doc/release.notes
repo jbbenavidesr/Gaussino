@@ -4,6 +4,12 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v45r9p1 2015-02-23 ===========================
+ - on v45b branch
+
+! 2015-02-23 - Gloria Corti
+ - Remove tests for new event types since they are in DecFilesTests
+
 !========================= Gauss v45r9 2014-12-18 ============================
  - on v45b branch
 

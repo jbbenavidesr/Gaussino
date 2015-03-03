@@ -4,6 +4,40 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v45r9p1">2015-02-23 - GaussSys v45r9p1</A></H1><PRE>
+<H2><A NAME="Note"For Sim08 production for Run I (2010-2013) data. Bug fix for
+   signal particle gun.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v35r4 (and Gaudi v23r6)
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5, 
+   photos++ 3.52 and tauola++ 1.1.1a,
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.05 (via LCG_Interfaces),
+   Geant4 v95r2p7 (based on geant4.9.5.p02) and Geant4Files v95r0, 
+   XmlVis v1r15,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1a and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.3 (via LCG_GeneratorsInterfaces),
+   powheg-box r2092 (via LCG_GeneratorsInterfaces),
+   EvtGen v13r14, EvtGenExtras v3r11 and Mint v3r2
+   (private LHCb versions),
+   BcVegPy v3r3 + BcVegPyData v2r*, GenXicc v2r1p1 + GenXiccData v3r* and 
+   HidValley v3r2p1 (private LHCb versions)
+   PGunsData v1r*
+</A></H3>
+
+! 2015-02-23 - Gloria Corti
+ - On v45b branch
+
+
+!=============================================================================
 </PRE><H1><A NAME="v45r9">2014-12-18 - GaussSys v45r9</A></H1><PRE>
 <H2><A NAME="Note"For Sim08 production for Run I (2010-2013) data.
     </A></H2>
@@ -34,6 +68,30 @@ Purpose: LHCb Simulation program
 
 ! 2014-12-18 - Gloria Corti
  - On v45b branch
+
+!======================== Gauss v45r9p1 2015-02-23 ===========================
+ - on v45b branch
+
+! 2015-02-23 - Gloria Corti
+ - Remove tests for new event types since they are in DecFilesTests
+
+!========================= LbPGuns v6r0p1 2015-01-26 =========================
+! 2015-01-26 - Gloria Corti
+ - Fix bug in particle guns that does not reject events that do not satisfy the
+   decay cuts but just clean the decay product. 
+   See https://its.cern.ch/jira/browse/LHCBGAUSS-349
+
+!========================== LbAlpGen v3r2 2015-02-23 ==========================
+ - on v3b branch
+
+! 2015-01-28 - Marco Clemencic (r183300 in trunk)
+ - Hacked CMT configuration to avoid the failures due to parallel builds.
+
+! 2014-12-02 - Gloria Corti (r181002 in trunk)
+ - Try to fix compilation warnings with --pedantic
+
+! 2014-11-19 - Marco Clemencic (r180460 in trunk)
+ - Updated CMake configuration
 
 !========================= Gauss v45r9 2014-12-18 ============================
  - on v45b branch

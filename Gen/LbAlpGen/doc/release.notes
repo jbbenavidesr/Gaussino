@@ -1,9 +1,21 @@
-! $Id: release.notes,v 1.3 2007-08-10 08:38:17 gcorti Exp $ 
+! $Id: release.notes,v 1.3 2007-08-10 08:38:17 gcorti Exp $
 ! -----------------------------------------------------------------------------
 ! Package     : Gen/LbAlpGen
 ! Responsible : Stephane Tourneur, Patrick Robbe
-! Purpose     : read ALPGEN-generated partonic level events 
+! Purpose     : read ALPGEN-generated partonic level events
 ! -----------------------------------------------------------------------------
+
+!========================== LbAlpGen v3r2 2015-02-23 ==========================
+ - on v3b branch
+
+! 2015-01-28 - Marco Clemencic (r183300 in trunk)
+ - Hacked CMT configuration to avoid the failures due to parallel builds.
+
+! 2014-12-02 - Gloria Corti (r181002 in trunk)
+ - Try to fix compilation warnings with --pedantic
+
+! 2014-11-19 - Marco Clemencic (r180460 in trunk)
+ - Updated CMake configuration
 
 !========================= LbAlpGen v3r1p1 2014-01-23 =========================
 ! 2014-01-13 - Stephane Tourneur
@@ -23,16 +35,16 @@
 !========================== LbAlpGen v3r0 2012-10-19 ==========================
 
 ! 2012-10-12 - Stephane Tourneur
- - Main change: We have now four new Production tools available that enable to select the alpgen hard process in the job option file 
+ - Main change: We have now four new Production tools available that enable to select the alpgen hard process in the job option file
     -> AlpGenProduction4q,  AlpGenProductionzbb, AlpGenProductionwqq, AlpGenProductiontop
     -> AlpGenProduction is deprecated
  - requirements adapted by Patrick to compile all pythia processes together
  - WQQ and Top processes added
- - New user cuts on eta and pt defined in alpgen's user code  
+ - New user cuts on eta and pt defined in alpgen's user code
 
 ! 2012-10-09 - Stephane Tourneur
- - Added (dummy interface) classes AlpGenProdutionzqq and AlpGenProdution4q inherited from AlpGenProduction to provide the user one tool per 
-alpgen 
+ - Added (dummy interface) classes AlpGenProdutionzqq and AlpGenProdution4q inherited from AlpGenProduction to provide the user one tool per
+alpgen
 process (these are useless now because LbAlpGen still works with only one process at a time)
  - Changed the way AlpgenProduction handles the MC seeds to adapt to the alpgen random generation
 
@@ -47,11 +59,11 @@ process (these are useless now because LbAlpGen still works with only one proces
 !========================== LbAlpGen v2r0 2012-07-23 ==========================
 ! 2012-07-23 - Patrick Robbe
  - Add AlpGenProduction Tool to perform in Gauss the generation of
-   fully hadronized events in one go. 
+   fully hadronized events in one go.
 
 ! 2012-07-10 - Stephane Tourneur
- - Add the condition njets>1 to execute the aleana function in zqqusr.F 
-   (This fixes the bug of AlpGen crashing for Z+QQ + 0 or 1 jet) 
+ - Add the condition njets>1 to execute the aleana function in zqqusr.F
+   (This fixes the bug of AlpGen crashing for Z+QQ + 0 or 1 jet)
 
 ! 2011-10-14 - Gloria Corti
  - Use alpgen from LCG_GeneratorsInterfaces
@@ -59,18 +71,18 @@ process (these are useless now because LbAlpGen still works with only one proces
 !========================== LbAlpGen v1r0 2007-08-10 ==========================
 ! 2007-07-31 - Vanya BELYAEV
  - Couple of minor fixes for ALPGEN generator
- - add the configuration file to read ALPGEN events 
+ - add the configuration file to read ALPGEN events
 
 
-! 2007-07-02 - Vanya BELYAEV 
+! 2007-07-02 - Vanya BELYAEV
  - New package
-   essentially the executable is just a restructurized "pyuser" example 
+   essentially the executable is just a restructurized "pyuser" example
    form ALPGEN distribution
-   Library contains the code for ocnvertion of ALPGEN structures into 
+   Library contains the code for ocnvertion of ALPGEN structures into
    pythia partonic events to perform PYTHIA fragmentation
    The concrete production tool is in Gen/LbPythia
- 
+
 
 ! -----------------------------------------------------------------------------
-! The END 
+! The END
 ! -----------------------------------------------------------------------------
