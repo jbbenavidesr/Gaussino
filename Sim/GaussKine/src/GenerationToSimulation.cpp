@@ -18,6 +18,7 @@
 #include "Event/MCHeader.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
+#include "GenEvent/HepMCUtils.h"
 
 // From Geant4
 #include "G4PrimaryVertex.hh"
@@ -76,12 +77,15 @@ StatusCode GenerationToSimulation::initialize() {
   
     // If requested by option, update Geant4 particle properties
     // from Gaudi/LHCb ParticlePropertySvc
-    if ( m_updateG4ParticleProperties ) {
+    if ( m_updateG4ParticleProperties ) { 
       LHCb::IParticlePropertySvc * ppSvc = 
         svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc", true );
 	
       G4ParticlePropertyTable* PPT = G4ParticlePropertyTable::GetParticlePropertyTable();
       G4ParticleTable * particleTable = G4ParticleTable::GetParticleTable() ;
+      // switch off output so that not to print unknown pdg from Gauss
+      if ( ! msgLevel( MSG::DEBUG ) ) 
+        particleTable -> SetVerboseLevel( 0 ) ;
       for ( int i = 0 ; i < particleTable -> size() ; ++i ) {
         G4ParticleDefinition * PDef = particleTable -> GetParticle( i ) ;
         const LHCb::ParticleProperty * pp = ppSvc->find( LHCb::ParticleID( PDef->GetPDGEncoding() ) ) ;
@@ -173,8 +177,11 @@ StatusCode GenerationToSimulation::execute() {
       }
     }
     
-    // Send to conversion the good particles 
-    std::vector< HepMC::GenParticle * >::iterator it ;
+    // Send to conversion the good particles
+    // sort them according to barcode first
+    std::sort( mctruthList.begin() , mctruthList.end() , 
+               HepMCUtils::compareHepMCParticles ) ;
+    std::vector< HepMC::GenParticle *>::iterator it ;
     for ( it = mctruthList.begin() ; mctruthList.end() != it ; ++it ) {
       HepMC::GenVertex * prodVertex = (*it) -> production_vertex() ;
       if ( 0 == prodVertex ) 
@@ -220,7 +227,7 @@ bool GenerationToSimulation::keep( const HepMC::GenParticle * particle ) const {
       else if ( 25 == pid.abspid() ) return true ;
     } else if ( 102 == particle -> parent_event() -> signal_process_id() ) {
       if ( 25 == pid.abspid() ) return true ;
-    }
+    } else if ( 6 == pid.abspid() ) return true ;
     return false ;
   case LHCb::HepMCEvent::Unknown: return false ;
   case LHCb::HepMCEvent::DecayedByProdGen: 
@@ -234,8 +241,8 @@ bool GenerationToSimulation::keep( const HepMC::GenParticle * particle ) const {
     case LHCb::ParticleID::down    : return false ;
     case LHCb::ParticleID::up      : return false ;
     case LHCb::ParticleID::strange : return false ;
-    case LHCb::ParticleID::charm   : return false ;
-    case LHCb::ParticleID::bottom  : return false ;
+    case LHCb::ParticleID::charm   : return true  ;
+    case LHCb::ParticleID::bottom  : return true  ;
     case LHCb::ParticleID::top     : return false ;
       //
     case                   21      : return false ;  // gluon
@@ -358,10 +365,20 @@ void GenerationToSimulation::convert( HepMC::GenParticle *& particle ,
   // now convert all daughters of the HepMC particle, if any
   HepMC::GenVertex * ev = particle -> end_vertex() ;
   if ( 0 != ev ) {
+    std::vector< HepMC::GenParticle *> dList ;
     HepMC::GenVertex::particle_iterator itD ;
     for ( itD = ev -> particles_begin( HepMC::children ) ; 
           itD != ev -> particles_end( HepMC::children ) ; ++itD ) {
       HepMC::GenParticle * P = (*itD) ;
+      dList.push_back( P ) ;
+    }
+    
+    // sort by barcode
+    std::sort( dList.begin() , dList.end() , 
+               HepMCUtils::compareHepMCParticles ) ;
+    std::vector< HepMC::GenParticle *>::iterator itDD ;
+    for ( itDD = dList.begin() ; dList.end() != itDD ; ++itDD ) {
+      HepMC::GenParticle * P = (*itDD) ;
       convert( P , pvertexg4 , originVertex , motherg4 , mothermcp ) ;
     }
   }
@@ -464,7 +481,13 @@ LHCb::MCParticle * GenerationToSimulation::makeMCParticle( HepMC::GenParticle *&
       // then skip the daughter particle
       particle = const_cast< HepMC::GenParticle * >( B ) ;
     }      
-    else endVertex -> setType( LHCb::MCVertex::DecayVertex ) ;
+    else {
+      // if this is a b or c quark set special vertex type
+      if ( ( 4 ==  pid.abspid() ) || ( 5 == pid.abspid() ) )
+        endVertex -> setType( LHCb::MCVertex::StringFragmentation ) ;
+      else
+        endVertex -> setType( LHCb::MCVertex::DecayVertex ) ;
+    }
     mcp -> addToEndVertices( endVertex ) ;
   }
   

@@ -4,6 +4,50 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v12r7 2013-08-29 ==========================
+! 2013-08-29 - Gloria Corti
+ - Need to revert to herwig++ 2.6.1a for Gauss v45 since 2.6.1b does not exists
+   in MCGenerators_lcgcmt64c
+
+! 2013-08-07 - Gloria Corti
+ - Adapt to change in interface package name for powhegbox instead of 
+   powheg-box that causes problems on bash
+
+! 2013-08-06 - Gloria Corti
+ - Introduce use of new LHAPDFSets data package where the PDF used by LHCb now
+   reside
+
+!========================= GENSER v12r6g1 2013-07-24 =========================
+! 2013-07-24 - Gloria Corti
+ - Identical to v12r4 but with 'g1' tag to allow to pick up the generators
+   distributions from the MCGenerators_lcgcmt65a area as needed by LHCB v36r1
+   and Gaudi v23r9
+
+!========================== GENSER v12r6 2013-07-24 ==========================
+! 2013-07-24 - Gloria Corti
+ - Introduce new macro for powheg-box native version and set it to r2092
+
+!========================== GENSER v12r5 2013-06-27 ==========================
+! 2013-06-27 - Gloria Corti
+ - Newer version of rivet (from 1.8.2 to 1.8.3) as not used in production
+
+! 2013-06-24 - Patrick Robbe
+ - requirements: remove definition of LHAPATH
+
+! 2013-06-13 - Gloria Corti
+ - Change version of herwigpp from 2.6.1a to 2.6.1b as not yet used in 
+   production
+
+! 2013-06-02 - Patrick Robbe
+ - Use LHAPDF version 5.8.9 instead of 5.8.8
+ - change back on June 5
+
+!========================= GENSER v12r4p1 2013-04-04 =========================
+! 2013-04-04 - Gloria Corti
+ - Make a patch release with no difference with respect to v12r4 to allow 
+   picking up the generators distributions from the MCGenerators_lcgcmt64d
+   area as needed by LHCB v35r5 and Gaudi v23r7
+
 !========================== GENSER v12r4 2013-03-15 ==========================
 ! 2013-03-15 - Gloria Corti
  - Use latest version of tauolapp 1.1.1a, ok by John Back, to allow to use

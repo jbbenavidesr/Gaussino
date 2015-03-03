@@ -85,10 +85,6 @@ StatusCode GiGaPhysListModular::initialize()
       tool<IGiGaPhysicsConstructor>( *constructor , this ) ;
     if( 0 == theconstr ) { return StatusCode::FAILURE ; }
     
-    // NB!!! prevent the deletion of contructors by Gaudi
-    //for( int i = 1 ; i < 1000 ; ++i ) 
-    //{ theconstr->addRef() ; }
-    
     if( 0 == theconstr -> physicsConstructor() ) 
     { return Error ( "G4PhysicsConstructor* points to NULL!" ) ; }
     
@@ -108,7 +104,10 @@ StatusCode GiGaPhysListModular::initialize()
 // ============================================================================
 StatusCode GiGaPhysListModular::finalize () 
 {
-  // release all constructors 
+  // reset G4 vector of physics lists (they have been destoyed by the Gaudi
+  // tool release methods 
+  physicsVector -> clear() ;
+
   return GiGaPhysListBase::finalize  ();
 };
 

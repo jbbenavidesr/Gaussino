@@ -4,6 +4,276 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v45r4">2013-07-24 - GaussSys v45r4</A></H1><PRE>
+<H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
+    </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v35r4 (and Gaudi v23r6)
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5, 
+   photos++ 2.6.1a and tauola++ 1.0.7,
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.05 (via LCG_Interfaces),
+   Geant4 v95r2p5 (based on geant4.9.5.p02) and Geant4Files v95r0, 
+   XmlVis v1r15,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 (via LCG_GeneratorsInterfaces),
+   <b>herwig++ 2.6.1b</b> and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   <b>rivet 1.8.3</b> (via LCG_GeneratorsInterfaces),
+   <b>powheg-box r2092 - NEW </b> (via LCG_GeneratorsInterfaces),
+   EvtGen v13r6 (private LHCb version),
+   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r0 + GenXiccData v2r0 and 
+   HidValley v3r2 (private LHCb versions)
+</A></H3>
+
+! 2013-07-31 - Gloria Corti
+ - Use patch version of LCG_GeneratorsInterfaces/powheg-box changing macros 
+   defined there to remove the '-' (from powheg-box to powhegbox) to fix issue
+   with environment variable resolution on tcsh
+
+! 2013-07-24 - Gloria Corti
+ - On v45b branch
+ - Introduce use of GaudiUtils v4r5 (from Gaudi v23r9) to be able to core 
+   dump jobs stuck.
+ - Introduce use of Event/GenEvent v6r8 (from LHCb v36r1) to pick up location
+   for HepMCEvents for B tagging studies
+ - Introduce use of Event/MCEvent v2r27 (from LHCb v36r1) to pick up new vertex
+   type (StringFragmentation)
+ - Introduce new interface package for generators until available in LCGCMT,
+   LCG_GeneratorsInterfaces/powheg-box
+
+!========================= Gauss v45r4 2013-07-24 ============================
+ - on v45b branch
+
+! 2013-07-18 - Patrick Robbe
+ - QMTests: do not order ChronoStat service output for reproducibility
+
+! 2013-07-16 - Patrick Robbe
+ - CaloOnly.py: add option to switch off RichCuts
+
+! 2013-07-15 - Patrick Robbe
+ - change reference for the "config" QMTests
+
+! 2013-07-08 - Patrick Robbe
+ - clean gauss-config-2011 QMTest and rename it as gauss-config-2011-pythia6
+
+! 2013-07-08 - Paul Szczypka
+ - Update qmtests to pick up correct geometry
+   . gauss-upgrade-vp-ut-ft
+   . gauss-upgrade-vl-ut-ft
+
+! 2013-07-04 - Patrick Robbe
+ - Set as unsupported the Pythia8 QMTests for 43900004, 42511100, 
+   42112002, 42112000, 40911011, 18412431, 28102062
+
+! 2013-07-03 - Patrick Robbe
+ - QMTests: reduce the number of events to 10 for Pythia8 tests, and 
+   divide the time limit by 5
+
+! 2013-07-02 - Paul Szczypka
+ - QMTests: clear upgrade test expected stderr file. (empty file now)
+
+! 2013-06-28 - Patrick Robbe
+ - QMTests: increase time limit for Lambda_b Pythia8 test (15874100)
+
+! 2013-06-26 - Patrick Robbe
+ - MonitorInDetail.opts: remove GeneratorFullMonitor which is not
+   supported anymore.
+ - qmtests: increase the time limit for pythia8 tests to 3600s
+
+! 2013-06-06 - Patrick Robbe
+ - QMTests: add pythia8 QMTests and clean obsolete reference files
+
+! 2013-06-02 - Patrick Robbe
+ - python/Gauss/Configuration.py: clean configuration for .xgen file 
+   generation
+ - QMTests: new sets of tests replacing the generator tests. Only the
+   output status is checked, not the standard out
+
+!========================== GenCuts v3r5 2013-06-27 ========================== 
+! 2013-05-15 - Jibo He
+ - Added BcNoCut, to generate Bc in full phase space
+
+!========================== GENSER v12r6 2013-07-24 ==========================
+! 2013-07-24 - Gloria Corti
+ - Introduce new macro for powheg_box native version and set it to r2092
+
+!========================== GENSER v12r5 2013-06-27 ==========================
+! 2013-06-27 - Gloria Corti
+ - Newer version of rivet (from 1.8.2 to 1.8.3) as not used in production
+
+! 2013-06-24 - Patrick Robbe
+ - requirements: remove definition of LHAPATH
+
+! 2013-06-13 - Gloria Corti
+ - Change version of herwigpp from 2.6.1a to 2.6.1b as not yet used in 
+   production
+
+! 2013-06-02 - Patrick Robbe
+ - Use LHAPDF version 5.8.9 instead of 5.8.8
+ - change back on June 5
+
+!========================== EvtGen v13r7 2013-07-16 ==========================
+! 2013-07-16 - John Back
+ - Code changes from Daniel Craik:
+   EvtParserXml now accepts file names containing environment variables;
+   exponential non-resonant shape in EvtDalitzReso now defined as 
+   exp(-alpha*m^2); LASS shape in EvtDalitzReso now takes a cutoff parameter. 
+   Added flag to turn on scaling of LASS amplitude by M/q in EvtDalitzReso.
+
+! 2013-06-28 - Patrick Robbe
+ - Fix gcc47 compilation problems
+
+!=========================== Mint v2r1 2013-07-24 ============================
+! 2013-06-28 - Patrick Robbe 
+ - Fix coverity warnings
+
+! 2013-02-20 - Matthew Coombes
+ - Added CLEO-c model for D->KK?? decays.
+ - Added alternative models from arXiv:1201.5716
+ - See Models/ModelNotes.txt
+
+! 2013-06-26 - Patrick Robbe
+ - Fix gcc47 compilation problems
+
+! 2013-05-08 - Jack Benton
+ - Added direct D0->4pi decay to NamedDecayTreeList.cpp
+
+!======================= EvtGenExtras v3r7 2013-07-24 ========================
+! 2013-07-10 - Patrick Robbe
+ - Add new EvtGen model to generate decays with PHSP and a flat 
+   lifetime distribution: EvtPhspFlatLifetime
+
+! 2013-07-03 - Patrick Robbe
+ - Fix gcc47 warnings
+
+! 2013-06-28 - Patrick Robbe
+ - Fix coverity warnings
+
+!======================= Generators v14r5 2013-07-23 =========================
+! 2013-07-15 - Patrick Robbe
+ - src/components/XmlCounterLogFile.cpp: fix cross-section format
+
+! 2013-07-07 - Patrick Robbe
+ - src/components/SaveSignalBInformation.h/.cpp : algorithm to save
+ in locate "Gen/BInfo" the string from which the B signal comes from
+
+!========================= LbPythia v14r1 2013-07-24 =========================
+! 2013-07-16 - Patrick Robbe
+ - Move ReadLHE to src/Lib and the header file to LbPythia
+
+!========================= LbPowheg v1r0p1 2013-07-31 ========================
+! 2013-07-31 - Gloria Corti
+ - Fix setting of POWHEGEXE to match change in interface that did not resolve 
+   correctly in tcsh
+
+!========================== LbPowheg v1r0 2013-07-24 =========================
+! 2013-07-16 - Patrick Robbe
+ - Remove code which is already in Gen/LbPythia
+ - Use strings instead of chars to avoid compilation warnings
+
+! 2013-07-15 - Gloria Corti
+ - Fix CTEQPDF environment variable to remove explicit version number of lhapdf
+ - Use powheg=box interface package as it has been committed and adapt 
+   POWHEGEXE environment variable accordingly
+ - Remove directive for windows as no longer supported
+
+! 2013-07-09 - Marcin Kucharczyk
+ - Remove cteq6m from Lib and get it from LCG lhapdf
+
+! 2013-07-08 - Marcin Kucharczyk
+ - Add processes for heavy quarks (bb, tt)
+ - Add separate options to run each process
+
+! 2013-05-24 - Marcin Kucharczyk
+ - First import of the package
+
+!========================= LbPythia8 v7r4 2013-07-24 =========================
+! 2013-07-15 - Patrick Robbe 
+ - Set b and c quarks with status 2 so that they are saved in 
+   MCParticle format
+
+!========================= LbPythia8 v7r3 2013-06-28 =========================
+! 2013-06-28 - Aurelien Martens
+ - add Charmonium and Bottomonium in std. minbias generation 
+ (does not seem to break anything at xgen level)
+
+! 2013-06-28 - Aurelien Martens
+ - cleanup debug commands
+
+! 2013-06-26 - Aurelien Martens
+ - update handling of HepMC status codes conversion to LHCb::Statuses 
+   (move many DecayedByProdGen in DocParticle) fixing an issue for Jpsi 
+   prompt production
+
+!========================= GenTune v2r0p1 2013-07-17 =======================
+! 2013-07-17 - Alex Grecu
+ - added scripts/listAnalysisInfo.py to list Rivet plugin info files given 
+   partial analysis names; also very nice example of using the Rivet/Python
+   interface
+ - corrected qmtests and optimized number of generated events for speed
+ - negative invariant mass particles are detected and reported only at DEBUG 
+   level
+ - cross-section values provided by user in option files need units and are 
+   automatically converted to picobarns (default unit in HepMC)
+ - RivetAnalysisHandler promptly detects and reports number of collision in 
+   event if 'fix1' beam options not used. Only first collision will be sent 
+   to analysis plugins.
+ - various other mods improvide code aesthetic.
+
+!========================= GiGa v20r2p1 2013-07-24 ===========================
+! 2013-06-28 - Patrick Robbe
+ - Fix coverity warnings
+
+!========================== GiGa v20r2 2013-06-27 ============================
+! 2012-05-31 - Patrick Robbe
+ - GiGa, GiGaRunManager, GiGaPhysConstructorBase, GiGaPhysListBase, 
+   GiGaSensDetBase: fix unreleased tool issue
+ - Set G4 particle table verbose level to 0 to avoid G4 warnings about
+   unknown PDG Ids
+
+!========================== GiGa v20r1 2013-02-14 ============================
+! 2012-02-07 - Patrick Robbe
+ - GiGaRunManager.h: Fix release method to avoid compilation warnings
+
+! 2012-02-05 - Patrick Robbe
+ - Fix release method to avoid compilation warnings when create configurables
+   in GiGaPhysConstructorBase.cpp, GiGaPhysListBase.cpp and GiGaSensDetBase.cpp 
+
+!========================= GaussKine v6r3 2013-07-24 =========================
+! 2013-07-15 - Patrick Robbe
+ - Reorder according to barcodes the HepMC particles before sending
+   them to G4, this should help reproducing the events
+ - Transfer to Geant4 top quarks
+ - Give vertex code "StringFragmentation" to daughters of b and c quarks
+
+! 2013-07-10 - Patrick Robbe
+ - GenerationToSimulation.cpp: save b and c quarks in MCParticles
+
+! 2013-07-03 - Patrick Robbe
+ - GenerationToSimulation.cpp: select switch off of G4 printout for 
+   unknown PDG Ids from the algorithm message service output level
+
+!========================= GaussKine v6r2 2013-06-27 =========================
+! 2013-05-31 - Patrick Robbe
+ - GenerationToSimulation.cpp: switch off G4 printout of unknown PDG ID
+
+!======================== GaussTools v18r2 2013-06-27 ========================
+! 2013-05-31 - Patrick Robbe
+ - GiGaPhysListBase: fix unreleased tool issues
+
+! 2013-05-29 - Patrick Robbe
+ - GiGaPhysListModular.cpp: unregister properly physics lists
+
+!======================= GaussMonitor v7r0 2013-06-27 ========================
+! 2013-06-26 - Patrick Robbe
+ - Remove obsolete GeneratorFullMonitor algorithm from Gauss
+
+!=============================================================================
 </PRE><H1><A NAME="v45r3">2013-05-20 - GaussSys v45r3</A></H1><PRE>
 <H2><A NAME="Note"For Sim08 production for 2012 and 2011 data.
     </A></H2>

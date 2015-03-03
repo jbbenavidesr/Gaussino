@@ -4,6 +4,33 @@
 ! Purpose     : Repository of EvtGen models with external linkages
 !-----------------------------------------------------------------------------
 
+!======================= EvtGenExtras v3r8 2013-08-07 ========================
+! 2013-07-31 - William sutcliffe
+ - Added models Lb2plnuLCSR and Lb2plnuLQCD together with corresponding form 
+   factor classes Lb2plnuLCSRFF and Lb2plnuLQCDFF.  These models calculate the
+   amplitude of Lb->plnu making use of Lb->p form factor predictions from 
+   Light Cone Sum Rules and Lattice QCD.
+ - Added the class EvtSLBaryonAmp.  This is a modified version of the class 
+   EvtSemiLeptonicBaryonAmp in the standard EvtGen distribution.  
+   This modification allows for the case of a Lb->p transtion. 
+   This class is then used in the models to calculate the full amplitude.
+ - Modified EvtModelRegExtras.cpp to include the new models.  
+
+!======================= EvtGenExtras v3r7 2013-07-24 ========================
+! 2013-07-10 - Patrick Robbe
+ - Add new EvtGen model to generate decays with PHSP and a flat 
+   lifetime distribution: EvtPhspFlatLifetime
+
+! 2013-07-03 - Patrick Robbe
+ - Fix gcc47 warnings
+
+! 2013-06-28 - Patrick Robbe
+ - Fix coverity warnings
+
+!====================== EvtGenExtras v3r6p1 2013-06-27 =======================
+! 2013-06-26 - Patrick Robbe
+ - Fix coverity warnings
+
 !======================= EvtGenExtras v3r6 2013-03-07 ========================
 ! 2013-02-13 - Patrick Robbe
  - Fix gcc46 compilation warnings

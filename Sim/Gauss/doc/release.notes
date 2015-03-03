@@ -4,6 +4,53 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v45r4 2013-07-24 ============================
+ - on v45b branch
+
+! 2013-07-18 - Patrick Robbe
+ - QMTests: do not order ChronoStat service output for reproducibility
+
+! 2013-07-16 - Patrick Robbe
+ - CaloOnly.py: add option to switch off RichCuts
+
+! 2013-07-15 - Patrick Robbe
+ - change reference for the "config" QMTests
+
+! 2013-07-08 - Patrick Robbe
+ - clean gauss-config-2011 QMTest and rename it as gauss-config-2011-pythia6
+
+! 2013-07-08 - Paul Szczypka
+ - Update qmtests to pick up correct geometry
+   . gauss-upgrade-vp-ut-ft
+   . gauss-upgrade-vl-ut-ft
+
+! 2013-07-04 - Patrick Robbe
+ - Set as unsupported the Pythia8 QMTests for 43900004, 42511100, 
+   42112002, 42112000, 40911011, 18412431, 28102062
+
+! 2013-07-03 - Patrick Robbe
+ - QMTests: reduce the number of events to 10 for Pythia8 tests, and 
+   divide the time limit by 5
+
+! 2013-07-02 - Paul Szczypka
+ - QMTests: clear upgrade test expected stderr file. (empty file now)
+
+! 2013-06-28 - Patrick Robbe
+ - QMTests: increase time limit for Lambda_b Pythia8 test (15874100)
+
+! 2013-06-26 - Patrick Robbe
+ - MonitorInDetail.opts: remove GeneratorFullMonitor which is not
+   supported anymore.
+ - qmtests: increase the time limit for pythia8 tests to 3600s
+
+! 2013-06-06 - Patrick Robbe
+ - QMTests: add pythia8 QMTests and clean obsolete reference files
+
+! 2013-06-02 - Patrick Robbe
+ - python/Gauss/Configuration.py: clean configuration for .xgen file 
+   generation
+ - QMTests: new sets of tests replacing the generator tests. Only the
+   output status is checked, not the standard out
 
 !========================= Gauss v45r3 2013-05-20 ============================
  - on v45b branch

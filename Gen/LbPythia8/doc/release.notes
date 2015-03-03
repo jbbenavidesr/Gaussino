@@ -4,10 +4,28 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia8 v7r4 2013-07-24 =========================
+! 2013-07-15 - Patrick Robbe 
+ - Set b and c quarks with status 2 so that they are saved in 
+   MCParticle format
+
+!========================= LbPythia8 v7r3 2013-06-28 =========================
+! 2013-06-28 - Aurelien Martens
+ - add Charmonium and Bottomonium in std. minbias generation 
+ (does not seem to break anything at xgen level)
+
+! 2013-06-28 - Aurelien Martens
+ - cleanup debug commands
+
+! 2013-06-26 - Aurelien Martens
+ - update handling of HepMC status codes conversion to LHCb::Statuses 
+   (move many DecayedByProdGen in DocParticle) fixing an issue for Jpsi 
+   prompt production
+
 !========================= LbPythia8 v7r2 2013-05-16 =========================
 ! 2013-05-14 - Aurelien Martens
  - do not store HepMC at the generateEvent call for pile-up events in case of 
-repeated hadronisation since already done at hadronisation level.
+   repeated hadronisation since already done at hadronisation level.
 
 !========================= LbPythia8 v7r1 2013-04-10 =========================
 ! 2013-04-02 - Aurelien Martens
