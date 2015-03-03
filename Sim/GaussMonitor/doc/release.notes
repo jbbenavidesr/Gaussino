@@ -4,6 +4,11 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!====================== GaussMonitor v6r6 2010-03-22 =========================
+! 2010-02-24 - Patrick Robbe
+ - src/GenMonitorAlg.cpp, src/GeneratorAnalysis.cpp: protect against particle
+   without production vertex (Pythia8).
+
 !====================== GaussMonitor v6r5 2009-12-17 =========================
 ! 2009-12-17 - Gloria CORTI
  - Introduce 2d histograms of x/y vs z primary vertex

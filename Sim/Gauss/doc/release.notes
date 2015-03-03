@@ -4,6 +4,41 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v38r4 2010-03-25 ============================
+! 2010-03-25 - Gloria CORTI
+ - Set beam parameters of EvtGenDecay for Pythia as set in Configurable. 
+   This is not strictly necessary as it is only used when Pythia is not chosen 
+   as production engine but it avoids confusion because the values are now 
+   always printed in the log file.
+   . Configurable.py
+ - Put latest tags for simulation for 2009 data and for development (i.e. for
+   2010 data)
+   . Gauss-MC-2009.py
+   . Gauss-DEV.py
+
+! 2010-03-22 - Silvia Miglioranzi
+ - Added options to steer different settings for the Physics Lists:
+   - G4PL_LHEP_EmStd.py
+   - G4PL_LHEP_EmOpt3.py
+   - G4PL_QGSP.py
+   - G4PL_QGSP_BERT.py
+   - G4PL_FTFP_BERT.py
+
+! 2010-03-08 - Silvia Miglioranzi
+ - Modified the Configurable "PhysicsList". Previously only 'LHEP' 
+   and 'QGSP' options were used to steer the entire PhysicsList. 
+   Now more options are available to construct the physics to be simulated:
+   'Em'         :['Std','Opt1,'Opt2','Opt3']
+   'GeneralPhys':[True,False]
+   'Hadron'     :['LHEP','QGSP','QGSP_BERT','QGSP_BERT_HP','FTFP_BERT']
+   'LHCbPhys'   :[True,False]
+
+   The PhysList-*.opts have now been replaced by a method inside Configuration.py.
+
+! 2010-03-01 - Patrick Robbe
+ - Configurable.py: transmit beam settings to Pythia8 when used as a 
+   production tool.
+
 !========================= Gauss v38r3 2010-02-05 ============================
 ! 2010-02-05 - Gloria CORTI
  - Update with the latest database tags options/Gauss-DEV.py

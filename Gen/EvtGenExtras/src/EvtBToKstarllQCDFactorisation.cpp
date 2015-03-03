@@ -137,6 +137,8 @@ void QCDFactorisation::init(){
 		std::cout << "Rate averaged AFB_[1,6] is: " << intAFB_1_6 << std::endl;
 		const double intFL_1_6 = constrain.getFLIntegral();
 		std::cout << "Rate averaged FL_[1,6] is: " << intFL_1_6 << std::endl;
+		const double intS5_1_6 = constrain.getS5Integral();
+		std::cout << "Rate averaged S5_[1,6] is: " << intS5_1_6 << std::endl;
 	}
 	
 #if 0
@@ -186,11 +188,13 @@ void QCDFactorisation::trasformAntiB(EvtParticle* parent, std::vector<EvtComplex
 	}
 }
 
-void QCDFactorisation::getFormFactors(const double q2,
+void QCDFactorisation::getFormFactors(const double q2,const double mB, const double mKstar,
 			double* const A0, double* const A1, double* const A2, double* const V,
 			double* const T1, double* const T2, double* const T3,
 			double* const xi1, double* const xi2) const{
 	
+	ffModel->setMasses(mB,mKstar);
+
 	//calculate the form factors
 	*V  = ffModel->getV(q2);
 	*A0 = ffModel->getA0(q2);
@@ -209,8 +213,8 @@ void QCDFactorisation::getAmp(EvtParticle* parent, EvtAmp& amp) const{
 	
 	EvtVector4R q = parent->getDaug(1)->getP4() + parent->getDaug(2)->getP4();
 	const double q2 = (q.mass2());
-	const double MB = constants::mB;
-	const double mK = constants::mKstar;
+	const double MB = parent->getP4().mass();
+	const double mK = parent->getDaug(0)->getP4().mass();
 	//const double q2 = 1.0;
 	const double mKhat = mK/MB;
 
@@ -357,6 +361,24 @@ void QCDFactorisation::getTnAmplitudes(const double q2, const double MB, const d
 	 * These tensors will be used in the eqns 2.2, 4.4 and 4.5 of Ali et al.
 	 * 
 	 */
+	const double turnOver = 18.25;//the point in q2 to cut off at
+	/*
+	 * The probability distribution really blows up
+	 * at high q2, due to the rapid increase of the
+	 * tensors A and E (mostly A). We are far outside
+	 * of the physical region, and so this pole may
+	 * well not be physically meaningful. To spare
+	 * some CPU cycles this pole is cut off at a
+	 * level similar to the photon pole probability
+	 * value of 3000. Beyond the q2 value set above,
+	 * the probability remains flat.
+	 */
+	if(q2 > (turnOver+1e-6)){
+		getTnAmplitudes(turnOver,MB,mK,tensors);
+		return;
+	}
+
+
 
 	//energy of final state meson
 	const double e = ((MB*MB) - q2)/(2*MB);
@@ -367,7 +389,7 @@ void QCDFactorisation::getTnAmplitudes(const double q2, const double MB, const d
 	double ffT1, ffT2, ffT3;
 	double xi1, xi2;
 	
-	getFormFactors(q2,
+	getFormFactors(q2,MB,mK,
 			&ffA0,&ffA1,&ffA2,&ffV,
 			&ffT1,&ffT2,&ffT3,
 			&xi1,&xi2);

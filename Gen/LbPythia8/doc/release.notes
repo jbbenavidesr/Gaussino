@@ -4,6 +4,18 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia8 v2r1 2010-03-22 =========================
+! 2010-03-21 - Patrick Robbe
+ - options/Pythia8.py: "default" Pythia8 options
+
+! 2010-03-01 - Patrick Robbe
+ - Pythia8Production.cpp: set generated_mass in HepMC event record with 
+   MeV units.
+
+! 2010-02-25 - Patrick Robbe
+ - Pythia8Production.cpp: translates correct status code into LHCb
+   status codes
+
 !========================= LbPythia8 v2r0 2008-08-25 =========================
 ! 2008-07-25 - Patrick Robbe
  - move to HEPMc 2
