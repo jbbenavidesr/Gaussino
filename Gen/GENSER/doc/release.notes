@@ -4,6 +4,15 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v4r3 2008-10-10 ===========================
+! 2008-09-23 - Patrick Robbe
+ - pyevwt.F: reweight events only if quarkonium
+ - pyrand.F: call pyevwt even if minimum bias processes activated
+
+! 2008-09-20 - Patrick Robbe
+ - Add temporary fixes in pyevnw.F and pyptfs.F which will be 
+   incorporated in pythia 6.4.19
+
 !========================== GENSER v4r2 2008-09-01 ===========================
 ! 2008-08-31 - Gloria CORTI
  - Use latest available version of Pythia 6 (418.2) from LCG MCGenerators

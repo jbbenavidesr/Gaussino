@@ -4,6 +4,12 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v6r1 2008-10-10 =======================
+! 2008-10-09 - Gloria CORTI for Silvia BORGHI
+ - Fix bug #42653. Variable assoicated to yVertexMin and zVertexMin was
+   xmin instead of ymin and zmin.
+   . FlatSmearVertex.cpp
+
 !======================= ParticleGuns v6r0 2008-08-25 =======================
 ! 2008-07-25 - Patrick Robbe
  - Move to HEPMc2

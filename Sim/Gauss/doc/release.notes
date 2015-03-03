@@ -4,6 +4,62 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!======================== Gauss v35r1 2008-10-10 =============================
+! 2008-10-10 - Gloria CORTI
+ - Adapt visualization options to run not as steering but as modifier in 
+   gaudirun.py. Also make comments clearer for switching between G4 UI control
+   and pure visualization with pre-defined viewer (in options dawn)
+   . GaussVis.opts
+ - Remove release_notes.html that where how release notes were done up to
+   Gauss v19r0
+
+! 2008-10-08 - Gloria CORTI
+ - Remove include of Pythia64.opts options no longer necessary since the
+   default in PythiaProduction
+   . Generator.opts
+ - Remove options no longer working: will need to be replaced with other
+   doing the same things
+   . lhcb-2008-GenPhase.opts
+   . lhcb-2008-SimPhase.opts
+ - Add options for beam energy with other Production tools
+   . BeamCond-5TeV.opts
+   . PilotRun.opts
+ - Do not add algorithms to generator sequence (setting properties by keeping
+   the name for the algorithm works). This reactivate the monitoring histogram
+   for the generator
+   . Gauss-Job.opts
+ - Do not print vertex multiplicity in monitoring by default to reduce 
+   printout in production
+   . Monitor.opts
+ - New python options for stearing a default Gauss job with 2008 geometry 
+   setup, for 450GeV
+   . Beam450GeV-VeloOpen-BfieldNeg.py
+ - Read particle table from DDDB rather than from text file
+   . Gauss-2008.py
+   . python/Gauss/Configuration.py
+ - Put initial value in list with "=" rather than "+=" as to be able to just
+   pass the options as argument and override the default one.
+   One can now do:
+    > gaudirun.py $GAUSSOPTS/Gauss-2008.py $GAUSSOPTS/PhysList-QGSP.opts ...
+   to switch to QGSP hadronic phyics
+   . PhysList-{LHEP,QGSP}.opts
+ - New options for turning delta rays on (lower production cuts) and for
+   delta rays on and low kinetic energy cuts (lower tracking cuts)
+   . DRaysOn-{LT,HT}.opts 
+
+! 2008-10-08 - Gloria CORTI for Marco PAPPAGALLO
+ - Add Visualization service to activate colors in Gauss G4-internal
+   visualization
+   . GaussVis.opts
+
+! 2008-09-16 - Gloria CORTI
+ - Remove lhcb-2008*.{py,opts} that are obsolete and no longer working.
+   Use Gauss-2008.py instead.
+   . REMOVED: lhcb-2008.opts      lhcb-2008.py      lhcb-2008-BOff.opts 
+              lhcb-2008-5TeV.opts lhcb-2008-5TeV.py lhcb-2008-5TeV-BOff.py 
+              lhcb-2008-5TeV-BOff.opts lhcb-2008-450GeV-OpenVelo-BOff.opts 
+              lhcb-2008-450GeV-BOff.py lhcb-2008-450GeV-BOff.opts
+
 !======================== Gauss v35r0 2008-09-11 =============================
 ! 2008-09-11 - Gloria CORTI
  - Fix bug (mistying) for Beam energy at 5 TeV, where for collision it was

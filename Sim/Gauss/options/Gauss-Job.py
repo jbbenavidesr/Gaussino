@@ -10,11 +10,6 @@ GaussGen = GenInit("GaussGen")
 GaussGen.FirstEventNumber = 1
 GaussGen.RunNumber        = 1082
 
-Generator = GaudiSequencer("Generator")
-Generator.Members  = [GaussGen]
-
-Generator.Members += ["Generation"]
-
 #--Number of events
 nEvts = 5
 ApplicationMgr( EvtMax     = nEvts )

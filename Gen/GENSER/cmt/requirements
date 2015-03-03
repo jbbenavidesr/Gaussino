@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v4r2
+version v4r3
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -62,7 +62,7 @@ macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6
 #============================================================================
-library      pythia6forgauss   pythia6/*.F "-x=pyevwt.F"
+library      pythia6forgauss   pythia6/*.F
 
 apply_pattern linker_library library=pythia6forgauss
 macro_append pythia6forgauss_shlibflags "$(pythia6_home)/lib/pydata.o -lnsl -lcrypt -ldl -lg2c"

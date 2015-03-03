@@ -1,4 +1,4 @@
-// $Id: FlatSmearVertex.cpp,v 1.3 2008-07-25 12:36:17 robbep Exp $
+// $Id: FlatSmearVertex.cpp,v 1.4 2008-10-09 11:45:33 gcorti Exp $
 // Include files 
 
 // local
@@ -33,9 +33,9 @@ FlatSmearVertex::FlatSmearVertex( const std::string& type,
     declareInterface< IVertexSmearingTool >( this ) ;
     declareProperty( "xVertexMin" , m_xmin = 0.0 * Gaudi::Units::mm ) ;
     declareProperty( "xVertexMax" , m_xmax = 0.0 * Gaudi::Units::mm ) ;
-    declareProperty( "yVertexMin" , m_xmin = 0.0 * Gaudi::Units::mm ) ;
+    declareProperty( "yVertexMin" , m_ymin = 0.0 * Gaudi::Units::mm ) ;
     declareProperty( "yVertexMax" , m_ymax = 0.0 * Gaudi::Units::mm ) ;
-    declareProperty( "zVertexMin" , m_xmin = 0.0 * Gaudi::Units::mm ) ;
+    declareProperty( "zVertexMin" , m_zmin = 0.0 * Gaudi::Units::mm ) ;
     declareProperty( "zVertexMax" , m_zmax = 0.0 * Gaudi::Units::mm ) ;
 }
 
