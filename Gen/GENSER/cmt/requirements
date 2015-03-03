@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v10r1
+version v10r2
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -47,7 +47,7 @@ macro alpgen_native_version "2.1.4"
 
 #-- Pythia 8
 #============================================================================
-macro pythia8_native_version "165"
+macro pythia8_native_version "170"
 macro_append pythia8_linkopts " -lhepmcinterface "
 
 
@@ -57,6 +57,10 @@ macro pythia6_native_version "425.2"
 use pythia6  v* LCG_GeneratorsInterfaces -no_auto_imports
 macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
                         WIN32 " pythia6_pdfdummy.lib "
+#-- Rivet for reference analysis with comparison with published data and
+#-- Professor for tuning
+#============================================================================
+macro rivet_native_version "1.8.0.b"
 
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6

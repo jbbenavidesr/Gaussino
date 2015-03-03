@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------------
+! Package     : Gen/GenTune
+! Responsible : Alex Grecu
+! Purpose     : Optimize various MC generators and obtain/test LHCb tunes 
+!               using Professor/Rivet system. 
+!-----------------------------------------------------------------------------
+
+!========================== GenTune v1r0 2012-10-19 ==========================
+! 2012-09-26 - Alex Grecu
+ - included QMTests with references for i686- and x86-64- slc5-gcc43 platforms
+
+! 2012-09-25 - Alex Grecu
+ - few minor patches to eliminate compilation warnings
+ - a fully working plugin example in options/
+
+! 2012-09-24 - Gloria Corti
+ - introduce use of Gen/Generators to ensure header of interfaces from this
+   package are made available before the build of GenTune
+
+! 2012-08-17 - Alex Grecu
+ - beta release under temporary name Gen/GenAnalysis
+
+! 2012-06-20 - Gloria Corti
+ - cmt configuration cleaned; package renamed
+
+! 2012-07-12 - Alex Grecu
+ - alpha release; only official Rivet plugins work; user plugins may crash!
+!============================================================================

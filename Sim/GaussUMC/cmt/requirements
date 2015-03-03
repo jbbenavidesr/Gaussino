@@ -1,10 +1,10 @@
 package GaussUMC
-version v1r1
+version v2r0
 
 branches cmt src doc options python
 
 use  MCEvent        v*       Event
-use  VeloPixDet     v*       Det
+use  VPDet          v*       Det
 use  GaudiAlg       v*
 
 #============================================================================

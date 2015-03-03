@@ -9,6 +9,7 @@
   <!ENTITY PipeVisAtts SYSTEM "PipeVisAtts.xml">
   <!ENTITY Rich1VisAtts SYSTEM "Rich1VisAtts.xml">
   <!ENTITY Rich2VisAtts SYSTEM "Rich2VisAtts.xml">
+  <!ENTITY TorchTBVisAtts SYSTEM "TorchTBVisAtts.xml">
   <!ENTITY VeloVisAtts SYSTEM "VeloVisAtts.xml">
   <!ENTITY TTVisAtts SYSTEM "TTVisAtts.xml">
   <!ENTITY ITVisAtts SYSTEM "ITVisAtts.xml">
@@ -36,6 +37,7 @@
   <!ENTITY PipeLogVols SYSTEM "PipeLogVols.xml">
   <!ENTITY Rich1LogVols SYSTEM "Rich1LogVols.xml">
   <!ENTITY Rich2LogVols SYSTEM "Rich2LogVols.xml">
+  <!ENTITY TorchTBLogVols SYSTEM "TorchTBLogVols.xml">
   <!ENTITY VeloLogVols SYSTEM "VeloLogVols.xml">
   <!ENTITY TTLogVols SYSTEM "TTLogVols.xml">
   <!ENTITY ITLogVols SYSTEM "ITLogVols.xml">
@@ -53,6 +55,7 @@
     &PipeVisAtts;
     &Rich1VisAtts;
     &Rich2VisAtts;
+    &TorchTBVisAtts;
     &VeloVisAtts;
     &TTVisAtts;
     &ITVisAtts;
@@ -81,6 +84,7 @@
     &PipeLogVols;
     &Rich1LogVols;
     &Rich2LogVols;
+    &TorchTBLogVols;
     &VeloLogVols;
     &TTLogVols;
     &ITLogVols;

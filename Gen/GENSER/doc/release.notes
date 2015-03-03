@@ -4,6 +4,15 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v10r2 2012-10-19 ==========================
+ - on v9r3b branch
+
+! 2012-09-27 - Gloria Corti
+ - Change version of pythia8 to latest release 170
+
+! 2012-09-18 - Gloria Corti
+ - Add macro to pick up rivet for the first time, with native version 1.8.0.b
+
 !========================== GENSER v10r1 2012-05-14 ==========================
  - on v9r3b branch
 
