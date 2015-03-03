@@ -4,6 +4,22 @@
 ! Purpose     : cut tools for Gauss
 !-----------------------------------------------------------------------------
 
+!========================== GenCuts v3r3 2013-03-21 ========================== 
+! 2013-03-21 - Gloria Corti
+ - Remove include of Generators/ExternalGenerator.h from 
+   BcDaughtersInLHCb and BcDaughtersInLHCbAndMassCut not necessary and that
+   would need use of Generator package
+
+! 2013-03-21 - Patrick Robbe
+ - Move the Bc generator level cuts from Gen/LbBcVegPy to Gen/GenCuts
+  (BcDaughtersInLHCb and BcDaughtersInLHCbAndMassCut)
+
+!========================== GenCuts v3r2 2013-03-15 ========================== 
+! 2012-09-27 - Aurelien Martens
+ - Added a bug fix (gammas from pi0's or eta's were considered as tracks for 
+   the momentum cuts...)
+   for DaughtersInLHCbAndWithDaughAndBCuts and DaughtersInLHCbAndWithMinP
+
 !========================== GenCuts v3r1 2012-10-19 ========================== 
 ! 2012-09-27 - Aurelien Martens
  - Added a bug fix for DaughtersInLHCbAndWithDaughAndBCuts

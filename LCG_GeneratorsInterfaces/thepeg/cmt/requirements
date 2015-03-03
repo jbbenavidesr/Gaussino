@@ -3,7 +3,7 @@ package thepeg
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro thepeg_home $(LCG_external)/MCGenerators_hepmc$(HepMC_config_version)/thepeg/$(thepeg_native_version)/$(LCG_system)
+macro thepeg_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/thepeg/$(thepeg_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(thepeg_home)/include

@@ -3,7 +3,7 @@ package rivet
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro rivet_home $(LCG_external)/MCGenerators_hepmc$(HepMC_config_version)/rivet/$(rivet_native_version)/$(LCG_system)
+macro rivet_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/rivet/$(rivet_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(rivet_home)/include
