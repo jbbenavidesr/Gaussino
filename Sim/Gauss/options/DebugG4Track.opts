@@ -1,0 +1,26 @@
+// $Id: DebugG4Track.opts,v 1.2 2005-04-12 17:58:30 gcorti Exp $ 
+#pragma print off
+
+/** @file 
+ * 
+ *  File with options to set up specific command actions for a
+ *  single track, allowing it to be debugged in detail for example.
+ *
+ *  @author G.Corti
+ *  @date 2005-02-22
+ */
+
+#pragma print on
+
+GiGa.TrackSeq.Members      += { "CommandTrackAction" };
+GiGa.TrackSeq.CommandTrackAction.TrackID     = 9961;
+// GiGa.TrackSeq.CommandTrackAction.PreCommand  = "/tracking/verbose 9";
+// GiGa.TrackSeq.CommandTrackAction.PostCommand = "/tracking/verbose 0";
+GiGa.TrackSeq.CommandTrackAction.PreCommand  = {
+  "/tracking/verbose 1",
+  "/geometry/navigator/verbose 4"
+};
+GiGa.TrackSeq.CommandTrackAction.PostCommand = {
+  "/tracking/verbose 0",
+  "/geometry/navigator/verbose 0"
+};

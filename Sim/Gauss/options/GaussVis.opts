@@ -1,0 +1,58 @@
+// $Id: GaussVis.opts,v 1.7 2006-05-29 08:50:37 gcorti Exp $ 
+
+/** @file 
+ *  The base configuration file to run Gauss exceutable with 
+ *  visualiation stuff
+ *
+ *  @author Vanya BELYAEV Ivan.Belyaev@itep.ru
+ *  @author G.Corti
+ *  @date 2005-02-21
+ */
+
+#include "$GAUSSOPTS/Gauss.opts"
+
+ApplicationMgr.DLLs += { "GiGaVisUI" } ;
+
+GiGa.VisManager = "GiGaVisManager/GiGaVis" ;
+GiGa.UIsession  = "GiGaUIsession/GiGaUI"   ;
+
+//GiGa.StepSeq.Members  += { "GiGaStepActionDraw/DrawStep"} ;
+
+GiGa.EventSeq.Members += { "GiGaEventActionDraw/DrawEvent"} ;
+GiGa.EventSeq.Members += { "GiGaEventActionCommand/VisEvtCmd"} ;
+GiGa.EventSeq.OutputLevel = 1 ;
+ApplicationMgr.EvtMax = 1;
+
+GiGa.EventSeq.VisEvtCmd.EndOfEventCommands = 
+  { "/vis/scene/add/volume"               , 
+    "/vis/scene/add/trajectories"         ,
+    "/vis/viewer/update"                  };
+#ifdef WIN32
+GiGa.EventSeq.VisEvtCmd.BeginOfEventCommands = 
+  { "/vis/scene/create"                   , 
+    "/vis/sceneHandler/create OIWIN32"    ,
+    "/vis/viewer/create"                  ,
+    "/vis/scene/add/volume"               , 
+    "/vis/scene/add/trajectories"         ,
+    "/vis/scene/notifyHandlers   "        } ;
+#else 
+GiGa.EventSeq.VisEvtCmd.BeginOfEventCommands = 
+  { "/vis/scene/create"                   , 
+    "/vis/sceneHandler/create DAWNFILE"   ,
+    "/vis/viewer/create"                  ,
+    "/vis/viewer/set/viewpointThetaPhi -90 -90",
+    "/vis/scene/add/volume"               , 
+    "/vis/scene/add/trajectories"         ,
+    "/vis/scene/notifyHandlers   "        } ;
+#endif 
+// To dump the geometry tree on an ASCII file, comments lines above for 
+// BeginOFEventCommands and uncomment those below
+// GiGa.EventSeq.VisEvtCmd.BeginOfEventCommands =
+//   { "/vis/ASCIITree/verbose 10"           ,
+//     "/vis/drawTree"                       } ;
+
+
+// ============================================================================
+// The END 
+// ============================================================================
+

@@ -1,0 +1,50 @@
+!-----------------------------------------------------------------------------
+! Package     : Velo/VeloGauss
+! Responsible : Tomasz Szumlak
+! Purpose     : VeloGauss monitoring
+!-----------------------------------------------------------------------------
+
+!========================== VeloGauss v2r0 2006-07-04 ========================
+! 2006-07-04 - Gloria CORTI
+ - Introduce use of Gaudi::Units namespace for LHCb v21r1 (Gaudi v18r5)
+   compatibility
+   . VeloGaussMoni.cpp
+
+!========================== VeloGauss v1r3 2006-03-27 ========================
+! 2006-03-27 - Mark Tobin
+ - Modified to work with new VeloDet interface
+
+!========================== VeloGauss v1r2 2006-03-15 ========================
+! 2006-03-10 - Tomasz Szumlak
+ - using DeVeloLocation namespace
+
+! 2006-02-02 - Tomasz Szumlak
+ - Use a midPoint() method to determine sensor number instead of exit()
+   or entry() methods (problems with misaligned Velo sensors)
+
+!========================== VeloGauss v1r2 2006-02-14 ========================
+! 2006-02-14 - Gloria CORTI
+ - Introduce necessary use of GaudiAlg, no longer gotten via LHCbKernel
+   . requirements
+
+! 2006-02-08 - Tomasz Szumlak
+ - new detector geometry XmlDDDB v30r0, new detector path
+
+!========================== VeloGauss v1r1 2006-02-07 ========================
+! 2006-02-07 - Tomasz Szumlak
+ - clean-up of the summary table
+
+! 2006-02-01 - Tomasz Szumlak
+ - faulty error message removed
+
+! 2006-01-31 - Tomasz Szumlak
+ - wrong filename in VeloGauss_load.cpp removed
+ - new option file added
+
+! 2006-01-19 - Tomasz Szumlak
+ - some clean up in the source code (move the data retrieving routine)
+
+! 2006-01-11 - Tomasz Szumlak
+ - a new version of the Velo monitoring package for Gauss stage
+ - adapt to the LHCb v20r0
+!=============================================================================

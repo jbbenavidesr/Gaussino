@@ -1,0 +1,144 @@
+!-----------------------------------------------------------------------------
+! Package     : Sim/GaussMonitor
+! Responsible : Gloria CORTI
+! Purpose     : Hold monitoring algorithms for Gauss
+!-----------------------------------------------------------------------------
+
+!=================== GaussMonitor v4r1 2006-09-19 ============================
+! 2006-09-05 - Gloria CORTI
+ - Fill histograms with units, since there was mismatch (in container MeV,
+   in label of histogram GeV)
+   . GenMonitorAlg.cpp
+
+!=================== GaussMonitor v4r0 2006-06-15 ============================
+! 2006-06-15 - Gloria Corti
+ - Port to Gaudi v18r5: introduce Gaudi::Units
+   . MCTruthMonitor.cpp 
+
+!=================== GaussMonitor v3r2 2006-04-12 ============================
+! 2006-04-12 - Gloria CORTI
+ - To fit in hsiograms boundaries, scale down MCVertexType >= 100
+   . MCTruthMonitor.cpp
+
+!=================== GaussMonitor v3r1 2006-03-27 ============================
+! 2006-03-23 - Juan PALACIOS
+ - Change use of std::vector<LHCb::MCParticle*> to 
+   LHCb::MCParticle::ConstVector in MCDecayCounter to match 
+   new IMCDecayFinder interface.
+
+!=================== GaussMonitor v3r0 2006-01-27 ============================
+! 2006-01-27 - Gloria CORTI
+ - Fix bug resulting in not filling stable Pt histogram
+
+! 2005-12-16 - Gloria CORTI
+ - Adapt to new event model change of method names, LHCb namespace, replacing
+   HardInfo with GenCollision
+   . src/GeneratorFullMonitor.cpp
+   . src/GenMonitorAlg.cpp
+   . src/MCDecayCounter.cpp
+   . src/MCTruthFullMonitor.cpp
+   . src/MCTruthMonitor.cpp
+ - Make algorithm inherit from GaudiAlgorithm and adapt to it
+   . src/GeneratorFullMonitor.{h,cpp}
+   . src/MCTruthFullMonitor.{h,cpp}
+ - Remove use of obsolete GenMCLink class
+   . src/MCTruthMonitor.cpp
+ - Pick IMCDecayFinder from Kernel 
+   . src/MCTruthMonitor.h   
+ - Use new macro for algorithm factories
+   . src/GeneratorFullMonitor.cpp
+   . src/GenMonitorAlg.cpp
+   . src/MCTruthFullMonitor.cpp
+   . src/MCTruthMonitor.h   
+ - Rename input property Input->HepMCEvents for HepMCEvents TES location
+   and Collisions for GenCollisions replaces HardInfo no longer valid
+   . src/GeneratorFullMonitor.{h,cpp}  
+ - use AIDA with -import
+   . cmt/requirements
+
+!===================== GaussMonitor v2r3 ===================================
+! 2005-10-30 - Gloria Corti
+ - cmt/requirements
+   . add necessary use of AIDA 
+
+! 2005-10-02 - Gloria CORTI
+ - src/MCTruthMonitor.{h,cpp}
+   . new algorithm to fill a few reference histograms for MC Truth
+     (MCParticles and MCVertices)
+
+!===================== GaussMonitor v2r2 ===================================
+! 2005-08-17 - Gloria CORTI
+ - src/GenMonitorAlg.{h,cpp}
+	 . use book and fill for histograms, instead of plot
+ - src/MCDecayCounter.{h,cpp}
+   . adapt to GaudiAlgorithm and clean up
+
+! 2005-07-01 - Gloria CORTI
+ - src/GenMonitorAlg.cpp
+   . Add new histogram on event process type
+
+!======================= GaussMonitor v2r1 ===================================
+! 2005-06-24 - Gloria CORTI
+ - src/GeneratorFullMonitor.{h,cpp}
+   . Add possibility to look for HardInfo in a different path in TES.
+     Controlled by setting property "HardInfo", by default set to
+     HardInfoLocation::Default.
+
+! 2005-06-23 - Gloria CORTI
+ - src/GenMonitorAlg.{h,cpp}
+   . Add possibility to monitor only particles in events produced
+     with a certain generator (identified by name in
+     HepMCEvent container). Controlled by setting name of generator in
+     property "ApplyTo". The default is set to an empty string, in which
+     case the smearing is applied to all events in container
+ 
+! 2005-06-21 - Gloria CORTI
+ - src/GenMonitorAlg.cpp
+   . force ID of histograms
+
+! 2005-06-17 - Gloria CORTI
+ - src/GenMonitorAlg.{h,cpp}
+   . adapt to GaudiHistoAlg and add some histograms for Primary vertices 
+     and pileup counters. This implies that property "FillHistos" is replaced
+     by "HistoProduce" (from GaudiHistoAlg), set to false in this algorithm. 
+
+!======================= GaussMonitor v2r0 ===================================
+! 2005-04-10 - Gloria Corti
+ - src/GenMonitorAlg.{h,cpp}
+   . move it from Gen/GeneratorModules, adapt to GaudiAlgorithm, add few
+     more histograms and counters for charged stable particles
+
+!======================= GaussMonitor v1r2 2004-08-02 ========================
+! 2004-08-02 - Gloria CORTI
+ - requirements, adapt to LCG interfaces
+
+! 2004-05-14 - Patrick Robbe
+ - src/GeneratorFullMonitor.cpp
+   . store in ntuple all particles which are converted from HepMC to
+     G4PrimaryParticle in GiGaHepMCCnv (Use the same logic and the same
+     tests on the type and status of particle to store).
+
+!======================= GaussMonitor v1r1 2004-04-29 ========================
+! 2004-04-29 - Gloria CORTI
+ - src/GeneratorFullMonitor.{h,cpp}
+   . introduce location where to read data from as option (Input). Default
+     set to HepMCEventLocation::Default
+ - src/MCTruthFullMonitor.cpp
+   . some clean up
+ - src/src/MCDecayCounter.{h,cpp}
+   . new algorithm that provided an asci decay descriptor (via option
+     ) will count the number of decays of this type. If printout level
+     in DEBUG it also print the signal info as found in "/Event/MC/Signal"
+     for HepMC and the pointer to MCParticle and what found by the 
+     MCDecayFinder in the whole "/Event/MC/Particles".
+ - cmt/requirements
+   . use MCTools
+
+!========================= GaussMonitor v1r0 2004-04-07 =======================
+! 2004-04-07 - Gloria CORTI
+ - New package to hold generic monitors for Gauss. This first import
+   contains one algorihtm that fill ntuple with basic quantities for
+   MCParticles (MCTruthFullMonitor) and for HepMC (GeneratorFullMonitor by
+   Patrick ROBBE)
+!==============================================================================
+

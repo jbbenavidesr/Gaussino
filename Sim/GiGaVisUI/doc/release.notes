@@ -1,0 +1,57 @@
+!-----------------------------------------------------------------------------
+! Package          : Sim/GiGaVisUI
+! Responsible	   : Vanya Belyaev, Witold Pokorski
+! Purpose          : GiGa visualisation and UI 
+!-----------------------------------------------------------------------------
+
+!========================= GiGaVisUI v3r1 2005-10-07 ======================
+! 2005-10-07 - Florence Ranjard
+ - requirements - move setting of DAWN related environment variables 
+                  from Gauss to GiGaVisUI
+
+!========================= GiGaVisUI v3r0 2003-12-10 =====================
+! 2003-12-10 - Florence RANJARD
+ - requirements - remove explicit version numbers
+
+!========================= GiGaVisUI v2r2 2003-09-25 ======================
+! 2003-09-25 - Florence RANJARD
+ - requirements - use G4useVisUI instead of G4VisUI
+ - GiGaVisManager.cpp - remove HepRep
+
+!========================== GiGaVisUI v2r1 2003-07-10 ======================
+! 2003-07-10 - Florence Ranjard
+ - fix for gcc32 (S.Ponce)
+
+!========================= GiGaVisUI v2r0 2003-05-01 ========================
+! 2003-05-01 - Witek Pokorski
+ - requirements - move to GiGa v14r0
+
+!========================= GiGaVisUI v1r3 2003-03-14 ========================
+! 2003-03-10 - Vanya Belyaev
+  - src/GiGaUISession.cpp    fix a bug for Win32 platform 
+
+!========================== GiGaVisUI v1r2 2003-02-17 =======================
+
+! 2003-02-17 - Florence Ranjard
+ - GIGaUIsession.cpp - remove G4UI_NONE, G4UI_TERMINAL, G4UI_GAG
+                       in case of tcsh session create G4UItcsh
+ - GiGaVisManager.cpp - remove G4VIS_NONE
+ 
+! 2003-02-17 - Witek Pokorski
+ - changed version numer for the next Gauss release	
+
+! 2003-02-11 - Ivan BELYAEV
+ - src/GiGaVisManager.cpp  initialize the static accessor to G4VVisManager 
+                           interface
+ 
+ - cmt/requirements        increase the version 
+
+!========================== GiGaVisUI v1r1 2003-02-07 ========================
+! 2003-02-07 - Florence RANJARD
+ - requirements - use GiGa v13r* anf G4VisUI v*
+
+!=========================== GiGaVisUI v1r0 2002-12-11 ========================
+! 2002-12-11 - Witek Pokorski
+  - New package: contains all GiGa visualisation and UI 
+
+!==============================================================================

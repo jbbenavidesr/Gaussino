@@ -1,0 +1,80 @@
+// $Id: Common.opts,v 1.21 2006-02-16 16:04:22 gcorti Exp $ 
+#pragma print off
+
+/** @file 
+ * 
+ *  File containing options to all Gauss jobs (setting of DLLs and options
+ *  for persistency.
+ *  It must be included in Gauss.opts
+ *
+ *  @author F.Ranjard
+ *  @author G.Corti
+ *  @date: modified 21 Feb 2001
+ */
+
+#units "$STDOPTS/units.opts"
+
+//AuditorSvc.Auditors = { "ChronoAuditor" };
+
+// External services that will be always used
+ApplicationMgr.ExtSvc = { "ToolSvc" ,
+                          "ParticlePropertySvc" ,
+                          "EventSelector",
+                          "EventClockSvc" };
+
+// Configuration of various services that are used: 
+RndmGenSvc.Engine.SetSingleton   = true;
+ParticlePropertySvc.ParticlePropertiesFile = "$PARAMFILESROOT/data/ParticleTable.txt" ;
+
+// Load necessary DLLs
+ApplicationMgr.DLLs  = { "GaudiAud"};
+ApplicationMgr.DLLs += { "GaudiAlg" } ;
+ApplicationMgr.DLLs += { "LHCbAlgs" } ;
+ApplicationMgr.DLLs += { "GaussTools"} ;
+ApplicationMgr.DLLs += { "GaussAlgs"  } ;
+ApplicationMgr.DLLs += { "ParticleGuns" };
+ApplicationMgr.DLLs += { "LbPythia", "Generators" } ;
+ApplicationMgr.DLLs += { "SimComponents", "GaussMonitor" };
+
+ApplicationMgr.DLLs += { "RootHistCnv" };
+RootHistSvc.ForceAlphaIds = true;        // Prepend histograms with "h" 
+
+// No events are read as input
+ApplicationMgr.EvtSel  = "NONE" ;
+
+// To prevent writing too much in production
+MessageSvc.OutputLevel         = 3;
+ToolSvc.EvtGenTool.OutputLevel = 4;
+SetDecayAlg.OutputLevel        = 4;
+MessageSvc.setWarning += { "XmlGenericCnv" };
+MessageSvc.Format = "% F%24W%S%7W%R%T %0W%M";  // Longer "algorithm" identifier in printout
+
+// Geometry setup always necessary
+#include "$STDOPTS/DetDesc.opts"
+ApplicationMgr.DLLs += { "VeloDet" };
+ApplicationMgr.DLLs += { "STDet" };
+ApplicationMgr.DLLs += { "OTDet" };
+// ApplicationMgr.DLLs += { "RichDet", "RichCondition" }; // RichConditions in 
+// Rich.opts
+ApplicationMgr.DLLs += { "RichDet" };
+ApplicationMgr.DLLs += { "MuonDet" };
+ApplicationMgr.DLLs += { "CaloDetXmlCnv" };
+ApplicationMgr.Dlls += { "CaloDet" };
+
+// "Default" geometry version: the latest
+DetectorDataSvc.DetDbLocation = "$XMLDDDBROOT/DDDB/lhcb-200601.xml";
+
+// Transient store setup
+EventDataSvc.ForceLeaves         = true ;
+
+// POOL persistency 
+EventPersistencySvc.CnvServices  = {};  
+#include "$STDOPTS/SimDicts.opts"
+
+// Objects to be written to output file
+#include "$GAUSSOPTS/GaussTape.opts"        
+
+// Other outputs
+ApplicationMgr.HistogramPersistency = "NONE";
+
+#pragma print on

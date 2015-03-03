@@ -1,0 +1,26 @@
+# $Id: requirements,v 1.5 2006-06-23 15:27:35 gcorti Exp $ 
+# Created    : 2004-10-25
+# Maintainer : Olivier Deschamps
+# ============================================================================
+package           CaloMoniSim
+version           v3r0
+
+# =============== structure ==================================================
+branches          cmt doc src options 
+
+# =============== environment ================================================
+set               CALOMONISIMOPTS  $(CALOMONISIMROOT)/options 
+
+# =============== dependencies ===============================================
+use CaloDet        v*      Det 
+use MCEvent        v*      Event
+
+# =============== constituents ===============================================
+library           CaloMoniSim    -import=AIDA *.cpp
+
+# =============== patterns ===================================================
+apply_pattern     component_library library=CaloMoniSim
+
+# ============================================================================
+# The END 
+# ============================================================================

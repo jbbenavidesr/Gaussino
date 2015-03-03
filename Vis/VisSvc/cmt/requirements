@@ -1,0 +1,16 @@
+package VisSvc
+version v3r3
+
+branches VisSvc doc cmt src
+
+include_dirs $(VISSVCROOT)
+
+use XmlTools v* Tools
+
+use DetDesc v* Det
+
+# build a component library
+library VisSvc     *.cpp
+
+apply_pattern component_library library="VisSvc"
+

@@ -1,0 +1,45 @@
+#============================================================================
+# Created    : 2002-12-12
+# Maintainer : Sajan Easo
+#============================================================================
+# $Id: requirements,v 1.43 2006-09-19 22:22:18 gcorti Exp $
+#============================================================================
+
+# =============================================================================
+package GaussRICH
+version v6r5
+
+# =============== package structure ===========================================
+branches          cmt src doc
+
+# =============== explicit dependencies =======================================
+use GaussTools    v*     Sim
+use AIDA          v*     LCG_Interfaces
+
+# =============== Event =======================================================
+use MCEvent       v*   Event
+use RichKernel    v*   Rich
+use RichDet       v*   Det
+
+# ============== component library ============================================
+library          GaussRICH    *.cpp             \
+                              SensDet/*.cpp     \ 
+                              PhysProcess/*.cpp \
+                              srcG4/*.cc       \
+                              RichAction/*.cpp \
+                              RichAnalysis/*.cpp \
+                              Misc/*.cpp   
+
+# ============== standard includes ============================================
+include_dirs     $(GAUSSRICHROOT) \
+                 $(GAUSSRICHROOT)/src/SensDet \
+                 $(GAUSSRICHROOT)/src/PhysProcess \
+                 $(GAUSSRICHROOT)/src/RichAction \
+                 $(GAUSSRICHROOT)/src/Misc \
+                 $(GAUSSRICHROOT)/src/RichAnalysis \
+                 $(GAUSSRICHROOT)/src/srcG4
+
+        
+# ============== standard patterns ===========================================
+apply_pattern    component_library library=GaussRICH
+

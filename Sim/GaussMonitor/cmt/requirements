@@ -1,0 +1,27 @@
+#============================================================================
+# Created    : 2004-01-27
+# Maintainer : Gloria CORTI
+#
+# Documentation on the requirement file can be found at
+# http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
+#============================================================================
+package           GaussMonitor
+version           v4r1
+
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc src options
+
+# Used packages.
+#============================================================================
+use   EvtGen          v*      Gen
+use   GenEvent        v*      Event
+use   SimComponents   v*      Sim
+
+# Component library building rule
+#============================================================================
+library          GaussMonitor    ../src/*.cpp  -import=AIDA
+
+# define component library link options
+#============================================================================
+apply_pattern    component_library library=GaussMonitor

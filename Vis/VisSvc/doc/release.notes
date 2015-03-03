@@ -1,0 +1,52 @@
+! =============================================================================
+! CVS tag $Name: not supported by cvs2svn $ 
+! =============================================================================
+! $Id: release.notes,v 1.9 2004-08-02 13:23:32 gcorti Exp $ 
+! =============================================================================
+package VisSvc
+package manager : Sebastien Ponce
+
+!====================== VisSvc v3r3 2004-08-02 =============================
+! 2004-08-02 - Gloria CORTI
+ - SimulationSvc.{h,cpp}
+   . use InterfaceID instead of IID to adapt to Gaudi v16
+
+!====================== VisSvc v3r2 2004-05-04 =============================
+! 2004-05-04 - Florence RANJARD
+ - replace all apply_pattern with apply_pattern component_library
+
+!====================== VisSvc v3r1 2003-06-27 ==============================
+! 2003-06-26 - Guy Barrand
+ - Update to compile with xerces-2.2.
+
+! 2003-04-16 - Sebastien Ponce
+ - added == operators on Color and VisAttribute
+
+!===================== VisSvc v2r1 2002-11-15 ===============================
+! 2002-11-15 - Florence Ranjard
+ - requirements - use new versions in the project environment
+
+! 2002-06-27 - Sebastien Ponce
+ - brand new version of this service, fully incompatible with the old one.
+   The main change is that the service provides VisAttributes instead of
+   colors now. These attributes contain the color but also the visibility,
+   the open status and the display mode of an object. The color was also
+   extended to include a alpha channel (transparency support).
+
+!====================== VisSvc v1r1 2001-02-04 ================================
+
+! 2001-02-04 - Sebastien Ponce
+  Exception catching in the logvolColor method in case getting the material
+  of the volume raises an exception.
+
+! 2001-01-23 - Sebastien Ponce
+  Bug fix concerning the new job option ColorDbLocation that was not taken
+  correctly into account. Also removed the use of $DDDB and $CDB
+
+!====================== VisSvc v1r0 2001-01-18 ================================
+
+! 2001-01-18 - Sebastien Ponce
+  NEW package for the visualization configuration and parametrization
+  This creates a VisualizationSvc that is able to give the color of a logical
+  volume or of a material by reading XML files in the database.
+

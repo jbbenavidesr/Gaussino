@@ -1,0 +1,19 @@
+package GaussPhysics
+version v4r0
+
+# =============== package structure ===========================================
+branches          cmt src doc
+
+# =============== explicit dependencies =======================================
+use GaussTools    v*	Sim
+use G4hadlists    v*	Geant4  
+
+# ============== component library ============================================
+library          GaussPhysics      *.cpp  
+
+# ============== standard patterns ===========================================
+apply_pattern    component_library library=GaussPhysics
+
+# ============================================================================
+# The END 
+# ============================================================================

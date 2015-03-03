@@ -1,0 +1,45 @@
+# $Id: requirements,v 1.26 2006-09-19 21:41:43 gcorti Exp $ 
+#============================================================================
+# Created    : 2005-06-20
+# Maintainer : Patrick ROBBE
+#============================================================================
+package       Generators
+version       v6r3
+
+#============================================================================
+# Structure, i.e. directories to process. 
+#============================================================================
+branches      Generators doc cmt src
+
+#============================================================================
+# Include directories
+#============================================================================
+include_dirs  $(GENERATORSROOT)
+
+#============================================================================
+# Used packages. Specify the version, * at the end specifies 'any revision'
+#    Put as many lines as needed, with all packages, without the '#'
+#============================================================================
+use           SEAL              v*                LCG_Interfaces
+use           GaudiAlg          v*
+use           GenEvent          v*                Event
+use           EvtGen            v*                Gen
+use           LoKiGen           v*                Phys 
+
+#============================================================================
+# Component and linker libraries building rule
+#============================================================================
+library       GeneratorsLib  Lib/*.cpp Lib/*.F
+library       Generators     component/*.cpp
+
+#============================================================================
+# define component and linker libraries link options (order is essential)
+#============================================================================
+apply_pattern component_library library=Generators 
+apply_pattern linker_library    library=GeneratorsLib 
+apply_pattern library_stamps    library=GeneratorsLib 
+
+#============================================================================
+# Link with HepMCfio from HepMC
+#============================================================================
+macro_prepend HepMC_linkopts "-L$(HepMC_home)/lib -lHepMCfio "

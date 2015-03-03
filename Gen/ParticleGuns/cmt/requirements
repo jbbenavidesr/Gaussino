@@ -1,0 +1,28 @@
+#============================================================================
+# Created    : 2004-07-21
+# Maintainer : Gloria CORTI, Patrick ROBBE
+#
+# Documentation on the requirement file can be found at
+# http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
+#============================================================================
+
+package          ParticleGuns
+version          v3r1
+
+
+# Structure
+#============================================================================
+branches         cmt doc src
+
+# Used packages. 
+#============================================================================
+use GaudiAlg       v*
+use GenEvent       v*      Event
+
+# Component library building rule
+#============================================================================
+library          ParticleGuns    *.cpp
+
+# define component library link options
+#============================================================================
+apply_pattern    component_library library=ParticleGuns

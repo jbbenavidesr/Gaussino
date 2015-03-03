@@ -1,0 +1,226 @@
+// $Id: RichG4CkvRecon.h,v 1.5 2006-02-21 17:05:27 seaso Exp $
+#ifndef RICHANALYSIS_RICHG4CKVRECON_H
+#define RICHANALYSIS_RICHG4CKVRECON_H 1
+
+// Include files
+
+/** @class RichG4CkvRecon RichG4CkvRecon.h RichAnalysis/RichG4CkvRecon.h
+ *
+ *
+ *
+ *  @author Sajan Easo
+ *  @date   2003-09-08
+ */
+
+#include <vector>
+#include <complex>
+
+#include "GaudiKernel/Kernel.h"
+#include "GaudiKernel/ISvcLocator.h"
+#include "GaudiKernel/IDataProviderSvc.h"
+#include "GaudiKernel/IMessageSvc.h"
+
+#include "GaudiKernel/MsgStream.h"
+#include "GaudiKernel/SmartDataPtr.h"
+
+#include "RichG4SvcLocator.h"
+
+//#include <CLHEP/Geometry/Point3D.h>
+//#include <CLHEP/Geometry/Plane3D.h>
+//#include <CLHEP/Geometry/Vector3D.h>
+//#include <CLHEP/Geometry/Transform3D.h>
+
+
+
+#include <CLHEP/Vector/ThreeVector.h>
+
+#include "RichG4ReconTransformHpd.h"
+#include "RichG4TransformPhDet.h"
+#include "RichG4ReconHpd.h"
+#include "RichG4ReconFlatMirr.h"
+#include "RichG4Hit.h"
+#include <complex>
+#include "RichSolveQuarticEqn.h"
+#include "Kernel/Point3DTypes.h"
+#include "Kernel/Plane3DTypes.h"
+#include "Kernel/Vector3DTypes.h"
+#include "Kernel/Transform3DTypes.h"
+
+class RichG4CkvRecon {
+public:
+
+  /// Standard constructor
+  RichG4CkvRecon( );
+
+  virtual ~RichG4CkvRecon( ); ///< Destructor
+
+
+  void SetCurrentLocalHitCoord( const double xhit,
+                                const double yhit, const double zhit)
+  {
+    m_curLocalHitCoord =  Gaudi::XYZPoint(xhit,yhit,zhit);
+  }
+
+  void SetCurrentEmissPt( const double xEmiss, const double yEmiss,
+                          const double zEmiss)
+  {
+    m_curEmisPt= Gaudi::XYZPoint(xEmiss,yEmiss, zEmiss);
+  }
+
+  void SetCurrentTkMom( const double xMom, const double yMom,
+                        const double zMom)
+  {
+    m_curTkMom=  Gaudi::XYZVector( xMom, yMom,zMom);
+  }
+
+  void SetCurrentRichDetNum(const int aRichDetNum)
+  {
+    m_CurrentRichDetNum=aRichDetNum;
+  }
+
+  void SetCurrentHpdNum( const int aHpdNum)
+  {
+    m_CurrentHpdNum= aHpdNum;
+  }
+
+  void SetCurrentFlatMirrorType(const int aType)
+  {
+    m_CurrentFlatMirrorType = aType;
+  }
+
+  void SetCurrentRichSector(const int aSectorNum)
+  {
+    m_CurrentRichSector=  aSectorNum;
+  }
+
+  void SetcurDetPoint (const Gaudi::XYZPoint & aDetPoint )
+  {
+    m_curDetPoint = aDetPoint;
+  }
+
+  void SetcurReflPt ( const Gaudi::XYZPoint & aReflPt )
+  {
+    m_curReflPt = aReflPt;
+  }
+
+  Gaudi::XYZPoint ReconPhCoordFromLocalCoord( const Gaudi::XYZPoint & aLocalHitCoord);
+  Gaudi::XYZPoint ReconReflectionPointOnSPhMirror(const Gaudi::XYZPoint & aDetectionPoint,
+                                             const Gaudi::XYZPoint & aEmissionPoint , const Gaudi::XYZPoint & aQwPoint,
+                                             int aRichDetNum, int aFlatMirrNum  );
+
+  Gaudi::XYZPoint ReconReflectionPointOnSPhMirrorStdInput();
+  //  void SolveQuartic ( std::vector<std::complex<double> > & z,
+  //                    double denom,
+  //                    double a[4] );
+
+  void SolveQuartic ( gsl_complex  z[4],
+                      double denom,
+                      double a[4] );
+
+  Gaudi::XYZPoint GetSiHitCoordFromPixelNum(int aPx, int aPy);
+  Gaudi::XYZPoint getPhotAgelExitZ( double ex, double ey, double ez,
+                               RichG4Hit* bHit);
+
+
+  int  CurrentFlatMirrorType() const
+  {
+    return m_CurrentFlatMirrorType ;
+  }
+
+  int  NumRichDet() const
+  { return m_NumRichDet;
+
+  }
+  int CurrentRichSector() const
+  {
+    return m_CurrentRichSector;
+  }
+
+  const std::vector<int> & NumHpdRich() const
+  {
+    return  m_NumHpdRich;
+  }
+
+  double CherenkovThetaFromReflPt(const Gaudi::XYZPoint & aReflPoint,
+                                  const Gaudi::XYZPoint & aEmisPt );
+
+  RichG4ReconHpd* getRichG4ReconHpd()
+  {
+    return m_RichG4ReconHpd;
+  }
+
+  void SetChTrackPreStepPosition( double xprepos,
+                                  double yprepos,
+                                  double zprepos);
+
+  const Gaudi::XYZPoint & ChTrackPreStepPosition() const
+  {
+    return m_ChTrackPreStepPosition;
+  }
+
+  void SetChTrackPostStepPosition( double xpostpos,
+                                   double ypostpos,
+                                   double zpostpos);
+
+  const Gaudi::XYZPoint  & ChTrackPostStepPosition() const
+  {
+    return m_ChTrackPostStepPosition;
+  }
+
+  double CherenkovThetaInAerogel(const Gaudi::XYZPoint & aReflPoint,
+                                 const Gaudi::XYZPoint & aEmisPt );
+
+  RichG4ReconFlatMirr* getCurReconFlatMirr() {
+    return m_CurReconFlatMirr;}
+  void setCurReconFlatMirr( RichG4ReconFlatMirr* aCurReconFlatMirr) {
+    m_CurReconFlatMirr = aCurReconFlatMirr;}
+  RichG4TransformPhDet* getCurPhDetTrans(int aSect) 
+  {
+    return m_PhDetTransforms[aSect];
+  }
+  
+protected:
+
+private:
+
+
+  int m_NumRichDet;
+  std::vector<int> m_NumHpdRich;
+
+  std::vector<std::vector<RichG4ReconTransformHpd*> > m_HpdTransforms;
+
+  std::vector<RichG4TransformPhDet*>  m_PhDetTransforms;
+  
+  std::vector<std::vector<double> > m_SphMirrCC;
+  std::vector<double> m_SphMirrRad;
+  RichG4ReconHpd* m_RichG4ReconHpd;
+
+
+  Gaudi::XYZPoint m_curLocalHitCoord;
+  Gaudi::XYZPoint m_curEmisPt;
+  Gaudi::XYZVector m_curTkMom;
+  Gaudi::XYZVector m_curGlobalHitPhCath;
+
+  Gaudi::XYZPoint m_curDetPoint;
+  Gaudi::XYZPoint m_curReflPt;
+
+
+  int m_CurrentRichDetNum;
+  int m_CurrentHpdNum;
+  int m_CurrentFlatMirrorType;
+  int m_CurrentRichSector;
+
+  double m_HpdSiDetThickness;
+  double  m_HpdSiPixelXSize;
+  double  m_HpdSiPixelYSize;
+  int  m_HpdSiNumPixelX;
+  int m_HpdSiNumPixelY;
+  Gaudi::XYZPoint m_ChTrackPreStepPosition;
+  Gaudi::XYZPoint  m_ChTrackPostStepPosition;
+
+  double m_c4f10nominalrefrativeindex;
+  double m_agelnominalrefractiveindex;
+  RichG4ReconFlatMirr* m_CurReconFlatMirr;
+};
+
+#endif // RICHANALYSIS_RICHG4CKVRECON_H

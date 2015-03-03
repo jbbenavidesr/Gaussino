@@ -1,0 +1,15 @@
+package SimSvc
+version v4r2
+
+branches SimSvc doc cmt src
+
+include_dirs $(SIMSVCROOT)
+
+use DetDescCnv     v* Det
+
+# build a component library
+library SimSvc     *.cpp
+
+apply_pattern component_library library=SimSvc
+
+

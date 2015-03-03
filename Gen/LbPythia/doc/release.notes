@@ -1,0 +1,98 @@
+! $Id: release.notes,v 1.34 2006-07-04 11:32:55 gcorti Exp $
+! Package     : Gen/LbPythia
+! Responsible : 
+
+! ==================== LbPythia v4r6 2006-07-04 ======================
+! 2006-07-04 - Gloria CORTI
+ - Follow general LHCb convention for name of componenet libraries
+   loading and declaration file.
+   . factories declared in LbPythia_load.cpp (modified)
+   . remove LbPythia_entries.cpp and add LbPythia_dll.cpp
+
+! ==================== LbPythia v4r5 2006-06-22 ======================
+! 2006-06-22 - Gloria CORTI
+ - Print message of production engine used at initialization.
+   . PythiaProduction.cpp 
+
+! ==================== LbPythia v4r4 2006-06-07 ======================
+! 2006-06-07 - Patrick Robbe
+ - PythiaProduction: put time in ns
+
+! ==================== LbPythia v4r3 2006-05-19 ======================
+! 2006-05-02 - Patrick Robbe
+ - PythiaProduction.h: move to include directory
+ - requirements: remove -fno-second-underscore fortran compilation flag
+   and add the second underscore where necessary
+ - upevnt and upinit: add functions for BcVegPy generator.
+
+! ==================== LbPythia v4r2 2006-04-07 ======================
+! 2006-04-06 - Patrick Robbe
+ - PythiaProduction: fix forced fragmentation setup.
+
+! 2006-04-04 - Patrick Robbe
+ - pykfdi.F: remove IMPLICITE declarations
+ - upevnt.F: add block data to define default value of gauss user process
+
+! ==================== LbPythia v4r1 2006-03-27 ======================
+! 2006-03-22 - Patrick Robbe
+ - PythiaProduction: use MeV instead of GeV
+
+! ==================== LbPythia v4r0 2006-01-19 ======================
+! 2005-31-12 - Patrick Robbe
+ - Adapt to new event model.
+
+! ========================= LbPythia v3r0 ============================
+! 2005-12-08 - Patrick Robbe
+ - Pythia.{h,cpp}: remove PDFLIB
+ - Remove old structure
+
+! 2005-11-29 - Patrick Robbe
+ - PythiaHiggs: add specific tool to cut at generator level on Higgs 
+   events (two b quarks in 400 mrad).
+ - PythiaProduction: do not change Higgs, top, W, Z widths in Pythia
+   which are computed at init, and add default Pythia settings in software
+
+! 2005-11-17 - Patrick Robbe
+ - PythiaProduction: add force fragmentation interface
+
+! ========================= LbPythia v2r1 ============================
+! 2005-11-07 - Patrick Robbe
+ - PythiaProduction: set particle properties of Pythia from 
+   ParticlePropertySvc.
+
+! 2005-11-04 - Patrick Robbe
+ - Pythia: add calls to PYEDIT and PYEXEC
+ - pyinit.F, pykfdi.F, pyrand.F, upenvt.F, upinit.F: move to Pythia 6.3
+ - PythiaProduction: changes to be able to generate signal events with
+   repeated hadronization.
+
+! ========================= LbPythia v2r0 ============================
+! 2005-10-13 - Patrick Robbe
+ - PythiaAlg: set printPythiaParameters in protected section
+
+! 2005-10-03 - Patrick Robbe
+ - Pythia.h : new utility class to interface Pythia FORTRAN functions.
+ - PythiaProduction: Production tool interfacing Pythia.
+ - PythiaAlgorithm : use new HepMC sort function.
+ - WZPythiaAlg : add algorithms to generate W and Z events.
+
+! ========================= LbPythia v1r2 ============================
+! 2005-08-22 - Florence RANJARD
+ - src/Lib/lunep.F - do not include nmxhep.inc but copy the content.
+
+! ========================== LbPythia v1r1 ============================
+! 2005-07-11 - Gloria CORTI
+ - requirements: introduce macro for fortran flags (no second underscore)
+
+! 2005-06-27 - Patrick Robbe
+ - Lib/pyinit.F: apply upinit only when there is a user process, for safety.
+
+! ========================== LbPythia v1r0 ============================
+! 2005-06-21 - Patrick Robbe
+ - New package: this package contains all functions related to the 
+   use of Pythia in LHCb (PythiaAlg, HiggsPythiaAlg, TTbarPythiaAlg), 
+   functions to access Pythia Fortran common block and reimplementation
+   of some Pythia functions for specific action in LHCb (forced fragmentation
+   mechanism).
+
+! ====================================================================

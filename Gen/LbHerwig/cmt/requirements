@@ -1,0 +1,35 @@
+# $Id: requirements,v 1.16 2006-09-20 11:41:43 ranjard Exp $ 
+# =============================================================================
+package       LbHerwig
+version       v3r0p1
+
+# =========== structure =======================================================
+branches      LbHerwig doc cmt src
+
+# =========== own includes ====================================================
+include_dirs  $(LBHERWIGROOT)
+
+# =========== dependencies ====================================================
+use           Generators        v*          Gen
+use           MCatNLOData       v1r*        
+
+# =========== constituents ====================================================
+library       LbHerwigLib       Lib/utility/*.cpp Lib/herwig/*.F Lib/jimmy/*.F Lib/mcatnlo/*.F Lib/mcatnlo/*.f Lib/mcatnlo/*.c
+library       LbHerwig          component/*.cpp
+
+# =========== standard patterns (the order is essential!) =====================
+apply_pattern component_library library=LbHerwig 
+apply_pattern linker_library    library=LbHerwigLib 
+apply_pattern library_stamps    library=LbHerwigLib 
+
+macro LbHerwig_fflags "-Wall -fno-second-underscore -fno-automatic" \
+      WIN32 ""
+
+macro herwig_native_version "6_510.2"
+macro jimmy_native_version "4_2.2"
+include_dirs $(GENSER_path)/include/herwig/$(herwig_native_version)/include $(GENSER_path)/include/jimmy/$(jimmy_native_version)/include
+
+macro herwig_linkopts "-L $(GENSER_home) -lherwig$(herwig_native_version) -ldummy_herwig$(herwig_native_version) -ljimmy$(jimmy_native_version)"\
+        WIN32         "/libpath:$(GENSER_home) herwig$(herwig_native_version) dummy_herwig$(herwig_native_version) jimmy$(jimmy_native_version)"
+
+macro_append GENSER_linkopts " $(herwig_linkopts) "

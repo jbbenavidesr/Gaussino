@@ -1,0 +1,577 @@
+!-----------------------------------------------------------------------------
+! Package       : Sim/GaussTools
+! Responsible	  : Witold Pokorski
+! Purpose       : G4 actions and some miscellaneous algs for Gauss
+!-----------------------------------------------------------------------------
+
+!======================== GaussTools v12r4 2006-07-27 =======================
+! 2006-07-27 - Gloria CORTI
+ - Introduce generic sensitive detector that initialize and sequence a 
+   list of sensitive detectors, allowing more than one per logical volume.
+   . src/Components/GiGaSensDetSequence.{h,cpp} - NEW
+
+!======================== GaussTools v12r3 2006-06-15 =======================
+! 2006-06-15 - Gloria CORTI
+ - Remove includsion of CLHEP_Units_defs.h not necessary and removed in
+   LHCb v21r0
+   . GiGaMagFieldGlobal.cpp
+
+!======================== GaussTools v12r2 2006-05-03 =======================
+! 2006-05-03 - Gloria CORTI
+ - Reset mass of wide resonances of generator to fix problem of mass taken
+   from central value
+   . src/Components/GaussTrackActionHepMC.cpp
+ - Set maximum z to which to store particle from 11290 mm to 12280 mm to
+   store particles produced in M1.
+   . src/Components/GaussPostTrackAction.cpp 
+
+! 2006-05-02 - Gloria CORTI
+ - Fix bug showing up in an MCHit pointing to an intermediate particle, due
+   to offset too small: increase offset for intermediated dummy particle
+   from 500000 to 20000000. 
+   Also increase offset for split particle from to 100000000.
+   Set the offset values as enum in MCTruthManager header file.
+   Set the PDG value of dummy particle as enum as well.
+   . GaussTools/MCTruthManager.h
+   . src/Lib/MCTruthManager.cpp
+
+!======================== GaussTools v12r1 2006-04-13 =======================
+! 2006-04-13 - Gloria CORTI
+ - Clean up messages
+   . src/Components/GaussTrackActionHepMC.cpp
+ - Remove changes for more tan one split since logic does not work in all
+   case and crash occurs. 
+   . src/Lib/MCTruthManager.cpp
+
+! 2006-04-12 - Gloria CORTI
+ - Import changes by Witek POKORSKI for more than one split in mother
+   particles for along the step processes (i.e. two Brems in a step)
+ - Move code to fill a new particle and associated vertices in HepMC structure
+   from GaussTrackActionHepMC to MCTruthManager.
+   All information is retrieved from G4 or LHCb utilities in GaussTrackAction
+   for a given particle and passed to the AddParticle method of the
+   MCTruthManager that handles the creation of dummy intermediate particles
+   if necessary and split of a mother when a process occurs along the step.
+ - Introduce map (and accessor method) of creator process for vertex 
+   codebars to be able to identify the vertex type. Use same numbering 
+   as LHCb MCVertexType enum
+ - Introduce map (and accessor method) of oscillated particles associated
+   to particles barcode to be able to identify them later on. 
+ - When pdg id is not provided by G4 use name and ParticlePropertySvc to 
+   get the LHCb extension.
+ - Change flag from noDirectParent to directParent
+ - Code modified: 
+   . GaussTools/MCTruthManager.h
+   . GaussTools/GaussTrackInformation.h
+   . src/Lib/MCTruthManager.cpp
+   . src/Lib/GaussTrackInformation.cpp
+   . src/Components/GaussTrackActionHepMC.{h,cpp} 
+ - Introduce option to not store optical photons neither in Trajectories
+   nor in HepMC structure. By default they are not stored now since not
+   necessary normally as MCParticles. A few of them were stored and are
+   causing problems when splitting the mother since they are produced along
+   the step.
+   . src/Components/GaussPostTrackAction.{h,cpp}
+ - Move retrieval of ParticlePropertySvc into initialize method from the
+   printing of the HepMC event, otherwise the code complains that the service
+   was already requested at each event. Modify the information printed.
+   . src/Components/GaussEventActionHepMC.{h,cpp}
+ - Change level of some messages to debug since not necessary in production
+   . src/Components/GiGaRegionsTool.cpp
+
+! 2006-04-08 - Vanya BELYAEV
+ - src/Components/TrCutsRunAction.cpp
+   add a check for non-null pointer to G4ParticleTable 
+   (prevents occasional segmentatiou fault at the finalisation of 
+   "pure generator" jobs)
+
+!======================== GaussTools v12r0 2006-01-31 =======================
+! 2006-01-31 - Gloria CORTI
+ - Adapt to change in interface of IMagneticFieldSvc now returning MathCore
+   quantities while Geant4 expect CLHEP
+   . src/Components/GiGaMagFieldGlobal.cpp
+
+!=========================== GaussTools v11r0 ===============================
+! 2005-11-10 - Gloria CORTI
+ - src/Components/GiGaRegionsTool.cpp from Sajan EASO
+   . Avoid print of Warning when a new region is formed that "overwrite"
+     the "World Region", print as info and issue Warning only for other
+     regions
+
+! 2005-10-31 - Gloria CORTI
+ - New classes originally from Witek Pokorski to store history of Geant4
+   tracking (processes and particles produced) in HepMC tree structure
+ - GaussTools/MCTruthManager.h
+   src/Lib/MCTruthManager.cpp
+   . new class (singleton) to manage HepMC event used in Geant4 tracking
+ - GaussTools/GaussTrackInformation.h
+   src/Lib/GaussTrackInformation.cpp
+   . introduce flag to store a G4Track in HepMC and flag indicating if direct
+     mother has been stored, if not use a special "dummy" link
+ - src/Components/GaussPostTrackAction.cpp
+   . set flag to store a G4Track in HepMC depending on conditions chosen
+ - src/Components/GaussTrackActionHepMC.{h,cpp}
+   . new specialization of G4UserTrackingAction to store in HepMC structure
+     new particles when flag has been set, also handle cases when direct
+     mother has not been stored
+ - src/Components/GaussEventActionHepMC.{h,cpp}
+   . new specialization of G4UserEventAction to execute some commands for
+     managment and debugging of HepMC as used in G4 tracking
+ - src/Components/GaussTools_load.cpp
+   . add declaration of GaussTrackActionHepMC and GaussEventActionHepMC
+
+! 2005-06-24 - Gloria CORTI
+ - src/Components/SpecialCuts.cpp
+   . put back compatibility to geant4.7.0   
+
+!=========================== GaussTools v10r10p1 ===========================
+! 2005-06-15 - Gloria CORTI
+ - src/Components/SpecialCuts.cpp
+   . adapt to use with geant4.6.1 by using obsolete methods names
+
+!=========================== GaussTools v10r10 =============================
+! 2005-04-11 - Gloria Corti
+ - src/Components/CommandTrackAction.cpp
+   . printout track number
+
+! 2005-04-08 - Gloria Corti
+ - src/Components/CommandTrackAction.cpp
+   . change to be able to set list of commands in option instead of a single
+     one (PreCommand and PostCommand are vectors now)
+
+!=========================== GaussTools v10r9 =============================
+! 2005-03-01 - Gloria Corti
+ - remove GDMLRunAction.{h,cpp} waiting for official release of GDML
+
+!=========================== GaussTools v10r8 =============================
+! 2005-02-28 - Gloria Corti
+ - src/Lib/GDMLRunAction.{h,cpp}
+   . introduce name of file where to write GDML geometry and schema to
+     use as properties ( names are "Output" and "Schema" )
+
+! 2005-01-19 - Patrick Robbe
+ - src/Components/TrCutsRunAction.h/cpp
+   . do not apply MinEkine cuts to short lived particles
+
+! 2005-01-17 - Patrick Robbe
+ - src/Components/GaussPostTrackAction.cpp
+   . transmit the pointer to the HepMC event and the barcode of
+     the associated HepMC Particle for all trajectory and not only
+     the signal particle.
+
+! 2004-12-16 - Gloria CORTI
+ - src/Lib/GDMLRunAction.{h,cpp}
+   . introduce new run action provided by Witek Pokorski to dump geometry
+     in GDML file
+ - requirements 
+   . add use of GDMLWriter
+
+!======================== GaussTools v10r7 ================================
+! 2004-12-14 - Gloria CORTI
+ - src/Components/SpecialCuts.cpp
+   . adapt to use with geant4.7.0 by replacing obsolete methods names with
+     new one (G4VParticleChange) :
+     SetEnergyChange       -> ProposeEnergy
+     SetLocalEnergyDeposit -> ProposeLocalEnergyDeposit
+     SetStatusChange       -> ProposeTrackStatus
+
+!===================== GaussTools v10r6 2004-06-15 ========================
+! 2004-06-15 - Gloria CORTI
+ - src/Components/TrCutsRunAction.cpp
+   . as suggested by Witek apply killing of looping particles to gamma as
+     well as electrons to avoid ping-pong effect in volumes observed in
+     production jobs
+
+!==================== GaussTools v10r5 2004-04-29 ============================
+! 2004-04-29 - Gloria CORTI
+ - src/Components/TrCutsRunAction.{h,cpp}
+   . introduce option to control cut on energy of neutrino for tracking
+     (NeutrinoTrCut). Default now set to zero to prevent neutrino to
+     deposit their energy where produced.
+ - src/Components/GaussPostTrackAction.cpp
+   . remove error counting when G4VProcess points to null that is legitimate
+     in a step
+   . set number of lines to print to zero in log file for warning about
+     particle produced by RichHpdPhotoelectricProcess not beeing kept, in
+     order to only have summary at the end of the job
+
+!========================= GaussTools v10r4 ==================================
+! 2004-04-22 - Gloria CORTI
+ - src/Components/GaussPostTrackAction.{h,cpp}
+   . introduce new features to specify a cut in z for processes beside
+     Primary, Marked and Forced Decay. This is controlled by job options
+     StoreUpToZ (def=true) and ZmaxForStoring (def=11290 * mm)
+   . introduce possibility to exclude photoelectron (important when choice
+     in energy or particle type is set). This is controlled by job options
+     RejectRICHPhotoelectrons (def=true)
+
+!========================= GaussTools v10r3 ==================================
+! 2004-04-20 - Vanya BELYAEV 
+
+- src/Components/GaussTrackActionByEnergy.cpp
+- src/Components/GaussTrackActionByEnergyType.cpp
+- src/Components/GaussTrackActionByProcess.cpp
+- src/Components/GaussTrackActionByProcess.h
+- src/Components/GaussTrackActionByType.cpp
+- src/Components/GaussTrackActionFinal.cpp
+- src/Components/GaussTrackActionGeneral.cpp
+- src/Components/GaussTrackActionStart.cpp
+
+     avoid the interference between different actions
+     through Geant4:StoreTrajectory flag 
+
+- src/Components/GiGaPhysListModular.cpp
+     make a fix for consructors 
+
+- src/Components/GaussTrackActionByEnergyProcess.cpp
+- src/Components/GaussTrackActionByEnergyProcess.h
+     new action which applies "ByAction" for tracks over some energy 
+     threshold 
+- src/Components/GaussTools_load.cpp
+     add new action 
+
+- GaussTools/GaussTrackActionBase.h
+- src/Lib/GaussTrackActionBase.cpp
+    add counter of how often the tracking action "marks" the track/rajectory 
+
+- cmt/requirement 
+    increment version to v10r3
+
+!===================== GaussTools v10r2 ==================================
+! 2004-04-07 - Gloria CORTI
+ - src/Lib/OscillationFlag.cpp
+   src/Components/GaussPostTrackAction.cpp
+   . Changes by Patrick ROBBE to pass signal information from G4 to Event model
+
+! 2004-04-05 - Gloria CORTI
+ - src/Components/GaussTrackActionByEnergy.{h,cpp}
+   src/Components/GaussTrackActionByEnergyType.{h,cpp}
+   src/Components/GaussTrackActionByType.{h,cpp}
+   . introduce new options to not consider photoelectrons when storing
+     particles by energy, type or their combination
+ - src/Components/GaussTrackActionFinal.cpp
+   . change default to store Marked tracks instead of with hits
+
+!===================== GaussTools v10r1 ==================================
+! 2004-03-22 - Vanya BELYAEV
+ - src/Components/GaussTrackActionGeneral.cpp
+      fix a stuid bug with  saving of primary particles 
+ - cmt/requirements  increase the version to v10r1 
+
+!===================== GaussTools v10r0 ====================================
+! 2004-02-19 - Vanya BELYAEV
+
+ - src/Component/GetGiGaHitsAlg.h,.cpp 
+        move into Sim/GaussAlgs package 
+ - src/Component/PrintEventAlg.h,.cpp 
+        move into Sim/GaussAlgs package 
+ - src/Component/GiGaFlushAlgorithm.h,.cpp 
+        move into Sim/GaussAlgs package 
+ - src/Component/GaussInitialisation.h,.cpp 
+        move into Sim/GaussAlgs package 
+ - src/Component/GaussTools_load.cpp 
+        remove GetGiGaHistAlg 
+        remove PrintEventAlg  
+        remome GiGaFlushAlgorithm 
+        remove GaussInitialisation 
+ - src/Component/GiGaSensDetBudget.cpp  
+        fix compilation warning 
+ - src/Component/SpecialCuts.cpp 
+        fix compilation warning 
+ - src/Component/GiGaPhysListModular.cpp
+        fix compilation warning 
+ - src/Component/GaussPostTrackAction.cpp 
+        fix compilation warning
+ - src/Components/GaussTrackActionStart.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionByEnergy.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionByEnergyType.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionByProcess.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionByType.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionFinal.h,.cpp
+        new tracking action 
+ - src/Components/GaussTrackActionGeneral.h,.cpp
+        new tracking action 
+ - cmt/requirement 
+        eliminate the dependencies on Event/VeloEvent
+                                      Event/MuonEvent
+                                      Event/RichEvent 
+                                      Event/CaloEvent
+        increase the *MAJOR* version -> v10r0 
+
+
+!======================= GaussTools v9r1 ================================
+! 2004-02-14 - Patrick Robbe
+ - GaussPostTrackAction.cpp : propagate mixing information from G4Tracks
+   to GiGaTrajectories for each track which is a B0 or a B0s which has
+   oscillated.
+
+! 2004-01-29 - Chris Jones
+ - Minor additions to GetGiGaHitsAlg for RICH debug objects
+
+!======================= GaussTools v9r0 =================================
+! 2003-12-10 - Florence RANJARD
+ - requirements - remove explicit version number to use GiGaCnv v14r0 
+                  compatible with Gaudi v13r0
+
+!======================== GaussTools v8r8 =================================
+- GiGaPhysListModular - removed obsolete production cuts, added flag for
+                        printing cuts table 
+- GaussInitialization - added printing of version number and exectution time
+- TraCutsRunAction - added cut for neutrinos (not to track them)
+- GaussPostStepAction - added possibility of storing trajectories
+                        according to their creator process
+- GiGaSensDetPrint - removed obsolete files
+
+!======================== GaussTools v8r7 =================================
+! 2003-10-30 - Witek Pokorski
+ - G4cout replaced by std::cout in a few files
+
+! 2003-10-13 - Witek Pokorski
+ - CommandTrackAction - tracking action added to facilitate debugging 
+ - GaussInitialization - switched to generation of random seed using hashing 
+	                 algorithm as in Boole
+
+!======================== GaussTools v8r6 =================================
+! 2003-10-09 - Witek Pokorski
+ - GaussTrackAction - added possibility of storing trajectories according
+                      to the creator process of its daughter
+ - PrintEventAlg - added printing of vertex type
+
+!======================== GaussTools v8r5 2003-09-25 ======================
+! 2003-09-22 - Vanya BELYAEV
+ - cmt/requirements     - increase the version to v8r5 
+ - few fixes for unfinalized or undeleted tools.
+   polishing of reference counting techniques.
+   Now ALL tools have proper reference counters 
+   and finalized properly
+
+!======================== GaussTools v8r4 2003-08-15 =======================
+! 2003-08-15 - Witek Pokorski
+ - GaussStepAction - added killing of optical photons making too many steps
+ 
+!======================== GaussTools v8r3 2003-07-28 =======================
+! 2003-07-28 - Witek Pokorski
+ - WorldCuts - added new process killing particles going out of "LHCb world"
+ - TrCutsRunAction - added instanciation of WorldCuts
+ - DetTrackInfo - added new base class for detector-specific trajectory
+                  information
+
+!======================== GaussTools v8r2 2003-07-15 =======================
+! 2003-07-15 - Witek Pokorski
+ - GetHitsAlg - changed back to MCRichHits
+ - PrintEventAlg - added printing of GenHeader and Collisions
+
+!======================== GaussTools v8r1 2003-07-07 =======================
+! 2003-07-07 - Florence RANJARD
+ - fix for gcc32 (S.Ponce)
+
+!======================== GaussTools v8r0 2003-06-18 =========================
+
+! 2003-06-17 - Witek Pokorski
+ - TrCutsRunAction - added LoopCuts process for electrons to prevent 
+	             photoelectrons getting stuck in HPDs 
+ - GaussTrackAction - split into two parts to be put before and after
+                      subdetector specific actions
+
+! 2003-06-16 - Witek Pokorski
+ - GaussTrackAction - added new mechanism for storing particles being 
+                      products of the decays generated by EvtGen
+
+! 2003-06-05 - Witek Pokorski
+ - ZeroFieldMgr - added new field manager which has explicitely a null pointer
+                  to G4MagneticField (to avoid propagation in field)
+
+! 2003-06-04 - Ivan BELYAEV
+ - src/GiGaRegionsTool.h,.cpp   - new tool to create ALL cuts per regions.
+ - src/GaussTools_load.cpp      - add declaration of new tool  
+ - cmt/requirements             - increase the version 
+
+! 2003-06-03 - Vanya BELYAEV
+ - src/Components/GaussG4UserLimits.cpp    Add comparison operator 
+ - src/Components/GaussG4UserLimits.h      Add comparison operator 
+ - src/Components/GiGaRegionTool.cpp       Improve the printout 
+ - src/Components/GiGaSetSimAttributes.cpp Fix the problem reported by Patrick Robbe 
+ - cmt/requirements                        Increase the version 
+
+! 2003-05-30 - Vanya BELYAEV
+ - src/Components/GiGaRegionTool.h 
+   src/Components/GiGaRegionTool.cpp  new tool to create the "region"
+ - src/Components/GaussTools_load.cpp declare new tool
+
+
+! 2003-05-30 - Vanya BELYAEV
+ - GiGaSetSimAttributes. add the recursive propagation of simulation attributes 
+                         from mother to daughter volumes. 
+ - cmt/requirements      increase the version 
+
+!======================= GaussTools v7r1 2003-05-05 ========================
+
+! 2003-05-05 - Witek Pokorski
+ - change to MinEkineCuts required by G4.5.1
+ - GiGaSetSimAttributes - update for the new SimSvc to handle cuts per particle
+
+!======================== GaussTools v7r0 2003-04-28 =======================
+! 2003-04-11 - Witek Pokorski
+ - TrCutsRunAction - implemented new run action which handles the creation
+   of a special process for UserLimits
+ - added SpecialCuts base class and one implementation MinEkineCuts
+ - added GaussG4UserLimits to handle UserLimits per particle type
+ - fixed small bug in GiGaEraseFieldMgr
+
+! 2003-04-06 - Ivan BELYAEV
+ - add 3 new constrete tools 
+   GiGaFieldMgr         - field manager fore GiGa 
+   GiGaEraseFieldMgr    - "erase" teh field from defined regions 
+   GiGaSetSimAttributes - set simulation attributes  for volumes 
+   GiGaPhysListModular.cpp - update for newer interafce 
+
+!========================= GaussTools v6r2 2003-03-11 =======================
+! 2003-03-10 Vanya Belyaev 
+  fix a problems with building a shared library at Win2K 
+  src/Lib/GaussTrajectoryAllocator.cpp  - remove file 
+  src/Lib/GaussTrajectory.cpp           - move "inline" method from *.icpp 
+                                          file. Add the instance counter.
+  GaussTools/GaussTrajectory.h          - remove allocator from the header 
+                                          file. Move the implementation
+                                          of "new" and "delete" to *.cpp
+                                          file. Remove extra "inline" 
+                                          directives.
+  GaussTools/GaussTrajectory.icpp       - remove obsolete file 
+
+!=========================== GaussTools v6r1 2002-02-14 =====================
+
+! 2003-02-14 - Witek Pokorski
+  added CutsStepAction with tracking cuts
+  dynamic_cast replaced by static_cast in a few places for optimisation
+  GiGaPhysListModular - added production cuts for electrons (to supress
+                        delta rays) 
+
+! 2003-01-23 - Vanya Belyaev 
+   few fixes for Win2K platform 
+
+! 2003-01008 - Witek Pokorski
+ - GaussInitialisation - added new jobOption to specify the number of the 
+                         first event to be processed
+                         changed the default behavior to the initialization
+                         of the random number engine before each event
+
+!============================ GaussTools v6r0 2002-12-17 =====================
+	
+! 2002-12-17 - Witek Pokorski
+ - use new GiGa, GiGaCnv (for new G4), increased version number
+ - src/Components/GaussInitialization - added new algorithm for initializing
+                                        RndnSvc. 
+! 2002-12-13 - Ivan Belyaev
+ - src/Components/GiGaFlushAlgorithm.cpp   remove extra call of "addRef"
+ src/Components/GiGaPhysListModular.cpp    return StatusCode::FAILURE for
+                                           notexistent Physics Constructors
+ src/Components/GiGaStream.cpp             clear the list of preloaded objects
+
+!============================ GaussTools v5r0 2002-12-11 =====================
+	
+! 2002-12-11 - Witek Pokorski
+
+ Major reorganization of the package. All subdetector specific stuff moved
+ to GaussTracker, GaussRICH and GaussCalo. Physics constructors moved to
+ GaussPhysics. Visualisation driver and UI moved to GiGaVisUI. 
+
+ Added PrintEventAlg, to print the decay tree of MCParticles
+!============================ GaussTools v4r0 2002-12-07 =====================
+
+! 2002-12-07 - Ivan Belyaev
+ - GaussTools/GaussHitBase.h               Instrument the classes with fast and  
+   GaussTools/GaussTrackInformation.h      efficient up-casting from their base 
+   GaussTools/GaussTrajectory.h            classes. Fro non-debug mode there  
+   GaussTools/GaussTrackInformation.icpp   should be significant CPU performance
+   src/Calo/CaloHit.h                      improvement
+   src/Calo/CaloSensDet.cpp
+   src/Calo/CaloSubHit.h
+
+ - src/Actions/GiGaTrackActionSimple.cpp 
+ - src/Calo/GiGaCaloHitCnv.cpp                update for usage of improved casts 
+ - src/Lib/GaussTrackInformationAllocator.cpp remove file 
+ - src/Lib/GaussTrackInformationAllocator.cpp new file 
+
+! 2002-12-07 - Ivan Belyaev
+ - src/Calo                    new directory with calorimeter stuff 
+   src/Calo/CaloHit.cpp
+   src/Calo/CaloHit.h
+   src/Calo/CaloSensDet.cpp
+   src/Calo/CaloSensDet.h
+   src/Calo/CaloSim.h
+   src/Calo/CaloSimHash.h
+   src/Calo/CaloSubHit.cpp
+   src/Calo/CaloSubHit.h
+   src/Calo/GiGaCaloHitCnv.cpp
+   src/Calo/GiGaCaloHitCnv.h
+ - cmt/requirements             version update for newer GiGa  
+
+! 2002-12-04 - Ivan Belyaev
+ - src/UIVis/GiGaUIsession.h,.cpp       UI sessions 	
+ - src/UIVis/GiGaVisManager.h,.cpp      Visualization Manager  
+ - src/GaussTools_load.cpp              update 	
+ - cmt/requrement                       version update 
+  Probably it is just a temporary location of these files
+  Need to think a little bit more before making the final decision 
+
+! 2002-12-04 - Ivan Belyaev   
+ - GaussTools/GaussHitBase.h             add 2 accessors in "Gaudi-Style"
+    
+! 2002-12-03 - Ivan Belyaev
+ - src/Components/GiGaStream.h
+ - src/Components/GiGaStream.cpp
+ - src/Components/GiGaInputStream.cpp    fix the bug with the conversion of 
+                                         hierarchy of the objects 
+
+!============================ GaussTools v3r3 2002-11-27 ======================
+! 2002-11-27 - Witek Pokorski
+ - added new physics lists: LHEP (taken from H-P. Wellisch page)
+
+!============================ GaussTools v3r2 2002-11-20 =====================
+! 2002-11-20 - Florence Ranjard
+ - requirements - use new RichEvent version v4r0
+
+!============================ GaussTools v3r1 2002-11-18 ======================
+! 2002-11-18 - Witek Pokorski
+ - added new physics lists: QGSP (taken from H-P. Wellisch page)
+
+!============================ GaussTools v3r0 2002-11-08 =====================
+! 2002-11-07 - Witek Pokorski
+ - GaussTrajectory - new class with AppendStep method reimplemented in order
+                     to work with the new GaussStepAction
+
+ - GaussStepAction - new class introduced to deal with decisions whether
+                     to store a trajectory point or not 
+ - sensitive detectors - trajectory is marked to be stored when it created
+                         a hit
+ - physics lists - LHEP_GN physics list imported 
+
+! 2002-10-30 - Witek Pokorski
+ - GiGaTrackInformation class moved from GiGa to GaussTools
+   added a vector of pointers to hits created by a track 
+ - sensitive detectors - modified in order to save pointers to hits in 
+   GiGaTrackInformation
+ - GiGaTrackActionSimple - added automatic updating of pointers from hits
+   to tracks, in order a given track is not saved as trajectory
+
+!============================ GaussTools v2r0 2002-10-15 =====================
+! 2002-10-15 - Florence Ranjard
+ - doc/release.notes - reformat the release notes
+
+! 2002-10-14 - Witold Pokorski
+  - src/PhysConstructors - bug fix
+
+! 2002-10-11 - Florence Ranjard
+ - requirements - use LHCB_v11r0
+
+!=========================== GaussTools v1r0 2002-08-26 ========================
+! 2002-08026 - Witek Pokorski
+  - New package: contains all the detector specific implementations of sensitive
+                  detectors and converters
+
+!==============================================================================

@@ -1,0 +1,82 @@
+!-----------------------------------------------------------------------------
+! Package          : Sim/GaussPhysics
+! Responsible	   : Witold Pokorski
+! Purpose          : collection of physics constructors for Gauss
+!-----------------------------------------------------------------------------
+
+!===================== GaussPhysics v4r0 ================================
+! 2006-01-09 - Patrick Robbe
+ - Adapt particle definitions to Geant4.8
+ - Use new physics lists in G4hadlists of Geant4.8 (has to be checked !)
+
+!===================== GaussPhysics v3r3 =================================
+! 2006-01-05 - Florence Ranjard
+ - requirements - do not use G4LHCblists which is included in G4hadlists
+
+!====================== GaussPhysics v3r2 ===============================
+! 2005-11-09 - Gloria CORTI
+ - Introduce factories for additional Physics lists private to LHCb
+   (HadronPhysicsQGSP_BERT_HP)
+   . GaussPhysics_load.cpp
+   . requirements - use of package G4LHCblists (requires Geant4 v71r0p11)
+
+! 2005-10-02 - Gloria CORTI
+ - Introduce factories for additional Physics lists for low energy studies:
+   HadronPhysicsLHEP_HP, HadronPhysicsLHEP_BERT_HP, HadronPhysicsQGSP_HP
+   . GaussPhysics_load.cpp
+
+!====================== GaussPhysics v3r1 ===============================
+! 2004-04-29 - Patrick ROBBE
+ - introduce new particles definitions for particles involved in B decays 
+   and normally unknown to Geant4, so that they are propagated to MCParticle
+   and the decays tree are complete.
+
+!====================== GaussPhysics v3r0 ===============================
+! 2004-02-18 - Vanya BELYAEV
+ - remove old stuff
+ - make use of new package G4hadlists 
+ - make use of GiGaExtPhysics 
+    (former GiGaExternalPhyicsConstructor) utility
+ - cmt/requirements : increase the version to v3r0 
+
+!===================== GaussPhysics v2r6 ===================================
+! 2003-12-15 - Witek Pokorski
+ - updated for G4.6.0
+
+!===================== GaussPhysics v2r5 ===================================
+! 2003-10-23 - Witek Pokorski
+ - small reorganization, created a directory Packaging where all the common
+   files are located
+ - updated with the latest version of physics list released by H-P. Wellish
+
+!===================== GaussPhysics v2r4 2003-10-17 ========================
+! 2003-10-17 - Florence RANJARD
+ - G4HadronQEDBuilder.cc - include G4Proton.hh and G4AntiProton.hh to please
+   geant4.5.2.ref04
+
+!======================= GaussPhysics v2r3 2003-08-07 ======================= 
+! 2003-08-07 - Witek Pokorski
+ - removed g4std
+ - removed multiple scattering for ions (cause non-reproducibility of events)
+
+! 2003-06-23 - Witek Pokorski 
+ - EMPhysics - added OpticalPhoton to the list of constructed particles
+
+!======================= GaussPhysics v2r2 2002-04-29 =======================
+! 2003-04-29 - Witek Pokorski
+ - requirements - user GaussTools v*
+ - some fixes from H-P.Welisch
+
+!======================= GaussPhysics v2r1 2003-03-07 =======================
+! 2003-03-07 - Florence RANJARD
+ - GaussPhysics_load.cpp - DECLARE GeneralPhysics
+	
+!======================= GaussPhysics v2r0 2002-12-17 ========================
+! 2002-12-17 - Witek Pokorski
+ - use new GaussTools (new G4) 
+
+!======================= GaussPhysics v1r0 2002-12-11 ========================
+! 2002-12-11 - Witek Pokorski
+  - New package: contains physics constructors for Gauss 
+
+!==============================================================================

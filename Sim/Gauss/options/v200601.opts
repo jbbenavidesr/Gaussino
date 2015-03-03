@@ -1,0 +1,24 @@
+/** @file 
+ * 
+ *  Job options for Gauss to produce events with geometry version
+ *  lhcb-200601.opts (DC06)
+ *
+ */
+
+//--------------------------------------------------------------------------
+// Execute a standard production Gauss job
+//--------------------------------------------------------------------------
+#include "$GAUSSOPTS/Gauss.opts"
+
+//--------------------------------------------------------------------------
+// Geometry database dependent options
+//--------------------------------------------------------------------------
+DetectorDataSvc.DetDbLocation = "$XMLDDDBROOT/DDDB/lhcb-200601.xml";
+MagneticFieldSvc.FieldMapFile = "$FIELDMAPROOT/cdf/field047.cdf";
+
+//--------------------------------------------------------------------------
+// Switch off monitors of detectors in production
+//--------------------------------------------------------------------------
+// SimMonitor.Members  -= { "GaudiSequencer/DetectorsMonitor" };
+// GiGa.EventSeq.RichG4Event.RichEventActionHistoFillSet2 = false;
+// GiGa.RunSeq.RichG4Run.DefineRichG4HistoSet2 = false;

@@ -1,0 +1,105 @@
+! $Id: release.notes,v 1.19 2006-09-20 11:41:43 ranjard Exp $
+!----------------------------------------------------------------------------
+! Package     : Gen/LbHerwig
+! Responsible : Karl Harrison <harrison@hep.phy.cam.ac.uk>
+! Purpose     : Handles use of Herwig as production engine
+!----------------------------------------------------------------------------
+
+!======================== LbHerwig v3r0p1 2006-09-20 ========================
+! 2006-09-20 - Florence RANJARD
+ - requirements: take the include files from $(GENSER_path)/include
+
+! 2006-09-06 - Gloria Corti
+ - requirements: use MCAtNLO data without package hat
+
+!======================== LbHerwig v3r0 2006-09-05 ==========================
+! 2006-09-05 - Karl Harrison
+ - Changes and additions to allow use of Herwig with Jimmy and/or MC@NLO
+
+!======================== LbHerwig v2r4 2006-07-27 ==========================
+! 2006-07-13 - Karl Harrison
+ - src/component/HerwigProduction.cpp modified
+  => Changed to follow LHCb convention, so that cT associated with
+     vertex is saved in ns rather than mm
+  => Default behaviour changed to have less printout:
+     * welcome message minimised
+     * particle table not printed
+     * no warnings for non-standard particles not know by Herwig
+     More verbose printout can be obtained by setting OutputLevel to
+     DEBUG, or by setting Herwig parameter iprint via Commands option
+  => Default behaviour changed so as to not write:
+     * Sudakov form factors
+     * three/four body decay tables
+     Writing of these files can be requested by setting Herwig parameters
+     lwsud and lwdec via Commands option
+
+!======================== LbHerwig v2r3 2006-07-04 ==========================
+! 2006-07-04 - Gloria CORTI
+ - Follow general LHCb convention for name of componenet libraries
+   loading and declaration file.
+   . factories declared in LbHerwig_load.cpp (modified)
+   . remove LbHerwig_entries.cpp and add LbHerwig_dll.cpp
+
+!======================== LbHerwig v2r2 2006-06-22 ==========================
+! 2006-06-22 - Gloria CORTI
+ - Print message of production engine used at initialization.
+   . HerwigProduction.cpp
+
+!======================== LbHerwig v2r1 2006-05-29 ==========================
+! 2006-05-29 - Gloria CORTI
+ - Change link options to append, otherwise Gauss does not run due to 
+   photos symbols "called but not linked"
+   . cmt/requirements
+
+!======================== LbHerwig v2r0 2006-05-19 ==========================
+! 2006-04-21 - Karl Harrison
+ - src/component/HerwigProduction.cpp modified
+    => Generation repeated in HerwigProduction::generateEvent
+       until Herwig error code is 0
+
+! 2006-04-06 - Karl Harrison
+ - src/component/HerwigProduction.h modified
+   so that particle momenta stored in HepMC are in MeV
+
+! 2006-03-24 - Karl Harrison
+ - Updated to Gauss v24r1 (new event model) 
+ - src/component/HerwigProduction.h reorganised to be more
+   similar to PythiaProduction.h
+ - Modified initialisation procedure
+   => Default Herwig parameters set in src/component/HerwigProduction.cpp
+   => Allow modifications at level of job options via Commands property
+ - Implemented HerwigProduction methods setStable and printRunningConditions
+   methods (previously dummy)
+   => Modifications to:
+      src/component/HerwigProdution.cpp
+      src/Lib/Herwig.cpp
+      LbHerwig/Herwig.h
+   => Addition of src/Lib/hwusta.F with messages suppressed
+ - Mapping from Herwig common blocks to C++ structures rechecked, updated
+   and partly rewritten
+   => LbHerwig/herwig6510.h substituted for LbHerwig/herwig6505.h
+ - References to Jimmy removed
+   => Removed LbHerwig/jimmy.inc
+   => Modifications to:
+      src/Lib/Herwig.cpp
+      src/Lib/herwig_common_block_address_65.F
+
+!======================== LbHerwig v1r1 ===========================
+! 2005-12-12 - Florence RANJARD
+ - requirements - uses GENSER_path to retrieve include files
+
+!======================== LbHerwig v1r0 ===========================
+! 2005-12-12 - Karl Harrison
+ - Updated to Gauss v22r0 and Herwig 6_510.2
+ - Added Herwig interface to Gauss random-number service
+
+! 2005-12-09 - Karl Harrison
+ - First implementation, allowing generation of minimum-bias events
+
+! 2005-10-06 - Gloria CORTI
+ - Add macros to set use of Herwig linking from GENSER
+
+! 2005-10-02 - Patrick Robbe
+ - New empty package for Herwig interface to Gauss
+
+! ====================================================================

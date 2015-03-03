@@ -1,0 +1,46 @@
+! $Id: release.notes,v 1.9 2006-07-04 12:15:51 gcorti Exp $
+! Package     : Gen/ParticleGuns
+! Responsible : Gloria CORTI, Patrick ROBBE
+
+! ==================== ParticleGuns v3r1 2006-07-04 =======================
+! 2006-07-04 - Gloria CORTI
+ - Follow general LHCb convention for name of componenet libraries
+   loading and declaration file.
+   . factories declared in ParticleGuns_load.cpp (modified)
+   . remove ParticleGuns_entries.cpp and add ParticleGuns_dll.cpp
+ 
+! ==================== ParticleGuns v3r0 2006-04-04 =======================
+! 2006-04-04 - Gloria CORTI
+ - Adapt to change in base class for put method that no longer returns 
+   StatusCode
+   . src/ParticleGunBaseAlg.cpp 
+
+! 2006-03-29 - Florence RANJARD
+ - remove use of HepEvt and CLHEP. GenEvent uses HepMC from lcg/external
+
+! ===================== ParticleGuns v2r1 2006-03-27 =======================
+! 2006-03-23 - Patrick Robbe
+ - ParticleGunBaseAlg: remove all what is not necessary.
+ - ParticleGun, SingleParticleGun, MaterialEvalGun: follow base class
+   changes, use Gaudi random number generator, use mm and MeV units
+
+! ===================== ParticleGuns v2r0 2006-01-19 =======================
+! 2006-01-19 - Gloria CORTI
+ - Modify ParticleGunBaseAlg to remove all unnecessary part regarding
+   physics event generation. 
+   Do not create a GenHeader but update the one already in TES.
+
+! 2005-12-15 - Gloria CORTI
+ - Modify necessary files to adapt to new event model and LHCb namespace
+   In particular to collapse of HardInfo in GenCollisions.
+   . src/MaterialEvalGun.cpp
+   . src/ParticleGunBaseAlg.{h,cpp} 
+ - Remove unnecessary include of PhysicalConstants.h
+   . src/ParticleGun.cpp
+
+! ======================= ParticleGuns v1r0 ================================
+! 2005-07-21 - Patrick Robbe
+ - New package to contain Particle Guns
+
+! ==========================================================================
+ 

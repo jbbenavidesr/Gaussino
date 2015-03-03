@@ -1,0 +1,18 @@
+package           GaussAlgs
+version           v2r3
+
+# =============== structure ==================================================
+branches          cmt doc src
+                
+# =============== dependencies ===============================================
+use               Boost       v* LCG_Interfaces
+use               LHCbKernel  v* Kernel
+use               GaussTools  v* Sim
+
+# =============== constituents ===============================================
+library           GaussAlgs    *.cpp
+
+# =============== patterns ===================================================
+apply_pattern     component_library library=GaussAlgs
+
+# ============================================================================

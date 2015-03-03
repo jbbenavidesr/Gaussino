@@ -1,0 +1,25 @@
+// $Id: RichExtendedInfo.opts,v 1.4 2006-03-15 15:07:16 jonrob Exp $
+  
+/** @file
+ *
+ *  File containing options for printing info and writing on file
+ *  extended RichInfo.
+ *
+ *  @author G.Corti
+ *  @date 2005-12-16
+ */
+
+GiGa.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag=true;
+GiGa.StepSeq.Members  += { "RichG4StepAnalysis4/RichStepAgelExit" } ;
+GiGa.StepSeq.Members  += { "RichG4StepAnalysis5/RichStepMirrorRefl" } ;
+
+GiGaGetHitsAlg.RichOpticalPhotons = "/Event/MC/Rich/OpticalPhotons";
+GiGaGetHitsAlg.RichSegments       = "/Event/MC/Rich/Segments";
+GiGaGetHitsAlg.RichTracks         = "/Event/MC/Rich/Tracks";
+
+GaussTape.OptItemList += {
+  "/Event/MC/Rich/OpticalPhotons#1"
+  ,"/Event/MC/Rich/Tracks#1"
+  ,"/Event/MC/Rich/Segments#1"
+};
+
