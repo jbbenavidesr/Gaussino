@@ -35,7 +35,9 @@
 <VisAtt name="VisEcalPlug">
   <Color R="0.48" G="0.54" B="0.54"/>
 </VisAtt>
-
+<VisAtt name="EcalDrilledAluminium">
+<Color R="0.8196" G="0.8196" B="0.8196"/>
+</VisAtt>
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes

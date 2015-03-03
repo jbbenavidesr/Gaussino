@@ -29,6 +29,8 @@
       attr="VisConcrete"/>
 <Item name="/dd/Materials/Iron"
       attr="VisIron"/>
+<Item name="/dd/Materials/Steel"
+      attr="Steel"/>
 <Item name="/dd/Materials/MBXW/YokeIron"
       attr="VisYokeIron"/>
 <Item name="/dd/Materials/MBXW/G10"

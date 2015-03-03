@@ -178,10 +178,10 @@
 <!--<VisAtt name="RichMirrorQuartz">
   <Color R="0" G="0" B="0"/>
 </VisAtt>-->
-<!--
 <VisAtt name="Rich1Nitrogen">
   <Color B="0.451" G="0.7765" R="0.8039"/>
 </VisAtt>
+<!--
 <VisAtt name="Rich2Nitrogen">
   <Color B="0.5608" G="0.9647" R="1"/>
 </VisAtt>

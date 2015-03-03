@@ -3090,7 +3090,7 @@
       attr="VisRichHPDSMaster"/>
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRichHPDSiDet"
       attr="VisRichHPDSiDet"/>
-
+  
 <!-- TR still needed ?
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror2MasterTop"
       attr="VisRich1Mirror2"/>

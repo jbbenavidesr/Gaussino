@@ -14,4 +14,11 @@
       attr="VisGantry"/>
 <Item name="/dd/Geometry/Infrastructure/Bunker"
       attr="VisBunker"/>
-
+<Item name="/dd/Geometry/Infrastructure/ExtensionBunker"
+      attr="VisExtensionBunker"/>
+<Item name="/dd/Geometry/Infrastructure/SteelStructure"
+      attr="VisSteelStructure"/>
+<Item name="/dd/Geometry/Infrastructure/UX85"
+      attr="VisUX85"/>
+<Item name="/dd/Geometry/Infrastructure/VertexPlateform"
+      attr="VisVertexPlateform"/>

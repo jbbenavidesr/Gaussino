@@ -3,6 +3,10 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r8 =====================================
+! 2008-10-14 - Thomas Ruf
+ - new infrastructure made by Emilie Maurice, summerstudent 2008
+
 !=========================== XmlVis v1r7 =====================================
 
 ! 2008-08-08 - Thomas Ruf
