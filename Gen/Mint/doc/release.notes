@@ -6,8 +6,14 @@
 !               Matt Coombes has task of implementing MINT into LHCb framework.
 !-----------------------------------------------------------------------------
 
+!=========================== Mint v1r1 2011-10-17 ============================
+
 !=========================== Mint v1r0 2011-09-10 ============================
 
+! 25-08-2011 - Matt Coombes
+ - Changed D_hhhh.cpp to generate cc of Decay using same amplitude model as decay.
+ - Also updated input to be reference to speed things up.
+   
 ! 25-08-2011 - Matt Coombes
  - General debugging after running in nightly builds
  - Fixed requirements to produce libraries correctly

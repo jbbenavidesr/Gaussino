@@ -3,6 +3,10 @@
 ! Responsible : Patrick ROBBE
 !=============================================================================
 
+!========================= LbBcVegPy v4r1 2011-10-17 =========================
+! 2011-09-28 - Patrick Robbe
+ - BcDaughtersInLHCb: move to MCInterfaces package
+
 !========================= LbBcVegPy v4r0 2011-07-15 =========================
 ! 2011-07-15 - Gloria Corti
  - Apply pattern not to build on windows, so that conditional use can be

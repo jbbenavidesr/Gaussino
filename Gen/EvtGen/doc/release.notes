@@ -4,6 +4,25 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================= EvtGen v12r7 2011-10-04 ==========================
+! 2011-10-04 - John Back
+ - Use the previous version of EvtMultiChannelParser class, but with the 
+   corrections to the array increment indices in assert calls. For some 
+   unknown reason, conjugate mixing amplitude terms were not getting 
+   propagated correctly if used in the decay file. These were not tested 
+   before (this option is not used in any current decay files in DecFiles).
+
+!========================= EvtGen v12r6 2011-10-04 ===========================
+! 2011-10-04 - John Back
+ - Rewrote EvtMultiChannelParser class to use more std::strings, use atof for
+   string to double conversions, and removed various static functions. 
+   Removed the array increment index calls during assert (initialisation) checks 
+   in both EvtMultiChannelParser and EvtPto3PAmpFactory, which were not working 
+   properly for optimised builds; the array index was never incremented, meaning 
+   that the parsing of the Dalitz plot decay file input gets out-of-synch with 
+   what is expected, i.e. values that should be numbers are initialised to
+   strings, etc..
+
 !========================= EvtGen v12r5 2011-09-24 ===========================
 ! 2011-09-24 - John Back
  - Return a boolean flag for EvtParticle::generateMassTree() that is set to

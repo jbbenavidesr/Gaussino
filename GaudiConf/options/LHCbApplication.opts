@@ -1,0 +1,16 @@
+// Job options to be included by a standard LHCb application 
+
+// Allow units to be used in jobOptions
+#units "$STDOPTS/units.opts"
+
+// Set up the transient data store
+EventDataSvc.ForceLeaves = true;
+EventDataSvc.RootCLID    =    1;
+
+// Geometry
+#include "$DDDBROOT/options/DDDB.opts"
+
+// Configure the DataOnDemand Service
+EventDataSvc.EnableFaultHandler = true ;
+
+
