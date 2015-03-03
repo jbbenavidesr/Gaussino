@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                              // author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
+// author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
 // status:  Mon 9 Feb 2009 19:18:00 GMT
 
 #include <cmath>
@@ -8,9 +8,6 @@
 #include "Mint/Utils.h"
 #include "Mint/CLHEPSystemOfUnits.h"
 #include "Mint/CLHEPPhysicalConstants.h"
-#include "Mint/AllPossibleSij.h"
-#include "Mint/counted_ptr.h"
-
 
 #include "TRandom.h"
 #include "TGenPhaseSpace.h"
@@ -23,15 +20,10 @@
 using namespace std;
 using namespace MINT; // for Utils.h
 
-const char DalitzEvent::prtNameChars[] = { '+', '-','(', ')', '\0' };
-const char DalitzEvent::ntpNameChars[] = { '#', '~', '{', '}', '\0' };
+const char DalitzEvent::prtNameChars[] = { '+', '-', '\0' };
+const char DalitzEvent::ntpNameChars[] = { '#', '~', '\0' };
 
 long int DalitzEvent::_eventCounter=0;
-long int DalitzEvent::_rememberVectorCounter=0;
-
-long int  DalitzEvent::assignUniqueRememberNumber(){
-  return _rememberVectorCounter++;
-}
 
 DalitzEvent::DalitzEvent()
   : _rememberPhaseSpace(-9999.)
@@ -181,7 +173,6 @@ DalitzEvent::DalitzEvent(const IDalitzEvent* other)
     //  , _p(other.)
   , _rememberPhaseSpace(other->phaseSpace())
   , _rememberAmps()
-  , _rememberAmpsFast()
   , _aValue(other->getAValue())
   , _weight(other->getWeight())
   , _generatorPdfRelativeToPhaseSpace(other->getGeneratorPdfRelativeToPhaseSpace())
@@ -203,7 +194,6 @@ DalitzEvent::DalitzEvent(const DalitzEvent* other)
   , _p(other->_p)
   , _rememberPhaseSpace(other->_rememberPhaseSpace)
   , _rememberAmps(other->_rememberAmps)
-  , _rememberAmpsFast(other->_rememberAmpsFast)
   , _aValue(other->_aValue)
   , _weight(other->_weight)
   , _generatorPdfRelativeToPhaseSpace(other->_generatorPdfRelativeToPhaseSpace)
@@ -226,7 +216,6 @@ DalitzEvent::DalitzEvent(const DalitzEvent& other)
   , _p(other._p)
   , _rememberPhaseSpace(other._rememberPhaseSpace)
   , _rememberAmps(other._rememberAmps)
-  , _rememberAmpsFast(other._rememberAmpsFast)
   , _aValue(other._aValue)
   , _weight(other._weight)
   , _generatorPdfRelativeToPhaseSpace(other._generatorPdfRelativeToPhaseSpace)
@@ -625,7 +614,6 @@ void DalitzEvent::print(std::ostream& os) const{
        << ", " << s(3,4) << ", " << t(4, 0);
   }
   os << "\n\t ps = " << this->phaseSpace();
-  os << "\t weight = " << this->getWeight();
   os << endl;
 }
 
@@ -638,27 +626,6 @@ bool DalitzEvent::shoutAndKill(){
        << "\n  > 4-vector list size: " << _p.size()
        << endl;
   throw "probably insonsistent pattern in DalitzEvent";
-}
-
-void DalitzEvent::P_conjugateYourself(){
-  // p-conjugates in mums restframe, but keeps old D momentum.
-
-  resetST(); // shouldn't be necessary, but to be save.
-  if(_p.empty()) return;
-  TVector3 mums3Momentum(_p[0].X(), _p[0].Y(), _p[0].Z());
-  for(unsigned int i=0; i < _p.size(); i++){
-    _p[i].SetX( - _p[i].X() );
-    _p[i].SetY( - _p[i].Y() );
-    _p[i].SetZ( - _p[i].Z() );
-  }
-  setMothers3Momentum(mums3Momentum);
-}
-void DalitzEvent::C_conjugateYourself(){
-  _pat = _pat.makeCPConjugate();
-}
-void DalitzEvent::CP_conjugateYourself(){
-  P_conjugateYourself();
-  C_conjugateYourself();
 }
 
 bool DalitzEvent::resetST(){ 
@@ -832,7 +799,7 @@ std::string DalitzEvent::ntpToPrtName(const std::string& s_in){
   return s;
 }
 
-std::string DalitzEvent::makeNtupleVarnames(const bool addSij)const{
+std::string DalitzEvent::makeNtupleVarnames()const{
   std::string s="";
   if(eventPattern().empty()){
     return s;
@@ -851,14 +818,6 @@ std::string DalitzEvent::makeNtupleVarnames(const bool addSij)const{
     //    if(i != _pat.size() -1) s+= ":";
     s+= ":";
   }
-  if(addSij){
-    int nd = _pat.size() - 1;
-    AllPossibleSij sijList(nd);
-    for(namedVMap::const_iterator it = sijList.begin(); it!= sijList.end(); it++){
-      s+="s" + it->first +":";
-    }
-  }
-  
   s += "weight:";
   s += "genPdf";
   return s;
@@ -868,8 +827,7 @@ int DalitzEvent::singleParticleNtpArraySize(){
   return 5;
 }
 bool DalitzEvent::fillNtupleVarArray(Double_t* array
-				     , unsigned int arraySize
-				     , const bool addSij)const{
+				     , unsigned int arraySize)const{
 
   if(eventPattern().empty()){
     return false;
@@ -883,27 +841,12 @@ bool DalitzEvent::fillNtupleVarArray(Double_t* array
     array[counter++] = _p[i].Y();
     array[counter++] = _p[i].Z();
   }
-
-  if(addSij){
-    AllPossibleSij sijList(_pat.size()-1);
-    for(namedVMap::const_iterator it = sijList.begin(); it!= sijList.end(); it++){
-      array[counter++] = sij(it->second);
-    }
-  }
-
   array[counter++] = getWeight();
   array[counter++] = getGeneratorPdfRelativeToPhaseSpace();
   return true;
 }
-
-
-unsigned int DalitzEvent::ntupleVarArraySize(const bool addSij) const{
-  int num_sij = 0;
-  if(addSij){
-    AllPossibleSij sijList(_pat.size()-1);
-    num_sij = sijList.size();
-  }
-  return _p.size() * singleParticleNtpArraySize() + 2 + num_sij;
+unsigned int DalitzEvent::ntupleVarArraySize() const{
+  return _p.size() * singleParticleNtpArraySize() + 2;
 }
 
 /*

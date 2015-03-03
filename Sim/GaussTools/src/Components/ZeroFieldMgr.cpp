@@ -5,6 +5,7 @@
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // include 
+//#include "GiGa/GiGaMACROs.h"
 // GEANT4 
 #include "G4ChordFinder.hh"
 #include "G4FieldManager.hh"
@@ -24,7 +25,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( ZeroFieldMgr )
+DECLARE_TOOL_FACTORY( ZeroFieldMgr );
 
 // ============================================================================
 /** standard constructor
@@ -43,14 +44,14 @@ ZeroFieldMgr::ZeroFieldMgr
   : GiGaFieldMgrBase ( type , name , parent ) 
   , m_field          ( 0     ) 
 {
-}
-
+} ;
+// ============================================================================
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-ZeroFieldMgr::~ZeroFieldMgr (){}
-
+ZeroFieldMgr::~ZeroFieldMgr (){} ;
+// ============================================================================
 
 // ============================================================================
 /** initialize the object 
@@ -69,8 +70,8 @@ StatusCode   ZeroFieldMgr::initialize     ()
     { return Error ( "Base class is not initialized properly!" , sc ) ; }
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** retrieve the magnetic field 
@@ -83,8 +84,8 @@ StatusCode   ZeroFieldMgr::initialize     ()
 G4MagneticField* ZeroFieldMgr::field    () const 
 {
   return 0;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The END 

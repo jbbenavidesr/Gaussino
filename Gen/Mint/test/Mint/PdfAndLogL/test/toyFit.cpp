@@ -16,9 +16,9 @@ using namespace std;
 using namespace MINT;
 
 class TimePdf : public PdfBase<double>{
-  FitParameter& _tau;
+  FitParameter tau;
 public:
-  TimePdf(FitParameter& tau) : _tau(tau){}
+  TimePdf() : tau("tau"){}
   double getVal(){
     double* evtPtr = getEvent();
     if(! evtPtr){
@@ -27,7 +27,7 @@ public:
       return -9999;
     }
     double t = *(evtPtr);
-    return exp(-t/_tau)/_tau;
+    return exp(-t/tau)/tau;
   }
 };
 
@@ -37,14 +37,12 @@ int toyFit(){
   NamedParameter<int> N("N");
   EventList<double> times;
   NamedParameter<double> generatedTime("generatedTime");
-  
-  FitParameter tau("tau");
 
   for(int i = 0; i < N; i++){
     times.Add(gRandom->Exp(generatedTime));
   }
 
-  TimePdf myTimePdf(tau);
+  TimePdf myTimePdf;
 
   Neg2LL<double> fcn(&myTimePdf, &times);
 
@@ -58,7 +56,6 @@ int toyFit(){
        << ". Result above."
        << endl;
 
-  cout << tau.mean() << ", " << tau.blindedMean() << endl;
   return 0;
 }
 

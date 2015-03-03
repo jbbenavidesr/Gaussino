@@ -9,7 +9,8 @@
 #include "G4TrackingManager.hh"
 #include "G4VProcess.hh"
 #include "G4ProcessType.hh"
-
+// GiGa
+//#include "GiGa/GiGaMACROs.h"
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
@@ -27,8 +28,8 @@
  */
 
 // ============================================================================
-DECLARE_TOOL_FACTORY( GaussTrackActionByEnergyProcess )
-
+DECLARE_TOOL_FACTORY( GaussTrackActionByEnergyProcess );
+// ============================================================================
 
 // ============================================================================
 /** standard constructor 
@@ -57,14 +58,14 @@ GaussTrackActionByEnergyProcess::GaussTrackActionByEnergyProcess
   declareProperty ( "OwnProcessTypes"   , m_ownPTypes   ) ;
   declareProperty ( "ChildProcessTypes" , m_childPTypes ) ;
   declareProperty ( "Threshold"         , m_threshold   ) ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
 // ============================================================================
 GaussTrackActionByEnergyProcess::~GaussTrackActionByEnergyProcess() {}
-
+// ============================================================================
 
 // ============================================================================
 /// perform initialization
@@ -80,8 +81,9 @@ StatusCode GaussTrackActionByEnergyProcess::initialize ()
   std::sort ( m_childPTypes  .begin () , m_childPTypes .end () ) ;
   
   return StatusCode::SUCCESS ;
-}
+};
 
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -122,8 +124,8 @@ void GaussTrackActionByEnergyProcess::PreUserTrackingAction
    
   if ( storeByOwnProcess() ) { mark( info ) ; }
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -169,9 +171,11 @@ void GaussTrackActionByEnergyProcess::PostUserTrackingAction
  
   if ( storeByChildProcess() ) { mark( info ) ; }
   
-}
+};
+// ============================================================================
 
 
+// ============================================================================
 
 // ============================================================================
 // The END 

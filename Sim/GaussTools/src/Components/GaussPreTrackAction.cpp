@@ -13,6 +13,8 @@
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/PropertyMgr.h"
+/// GiGa 
+//#include "GiGa/GiGaMACROs.h"
 // GaussTools
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
@@ -31,8 +33,8 @@
 // ============================================================================
 /// factory business 
 // ============================================================================
-DECLARE_TOOL_FACTORY( GaussPreTrackAction )
-
+DECLARE_TOOL_FACTORY( GaussPreTrackAction );
+// ============================================================================
 
 // ============================================================================
 /** standard constructor 
@@ -48,14 +50,18 @@ GaussPreTrackAction::GaussPreTrackAction
 ( const std::string& type   ,
   const std::string& name   ,
   const IInterface*  parent ) 
-  : GiGaTrackActionBase( type , name , parent ) {}
-
+  : GiGaTrackActionBase( type , name , parent ) 
+{
+};
+// ============================================================================
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-GaussPreTrackAction::~GaussPreTrackAction() {}
-
+GaussPreTrackAction::~GaussPreTrackAction()
+{
+};
+// ============================================================================
 
 // ============================================================================
 /** initialize the track action  
@@ -76,8 +82,8 @@ StatusCode GaussPreTrackAction::initialize ()
   
   return Print("Initialized successfully" , 
                StatusCode::SUCCESS        , MSG::VERBOSE);
-}
-
+} ;
+// ============================================================================
 
 // ============================================================================
 /** finalize the action object 
@@ -92,8 +98,8 @@ StatusCode GaussPreTrackAction::finalize   ()
 { 
   // finalize the base 
   return GiGaTrackActionBase::finalize() ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /**  perform action 
@@ -115,7 +121,7 @@ void GaussPreTrackAction::PreUserTrackingAction  (const G4Track* track )
   GaussTrajectory* traj = new GaussTrajectory( track ) ; 
   trackMgr()->SetTrajectory( traj ) ;  
   //
-}
+};
 
 
 

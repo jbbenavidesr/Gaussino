@@ -1,29 +1,30 @@
 #ifndef SYMM_LORENTZ_MATRIX_HH
 #define SYMM_LORENTZ_MATRIX_HH
 
-#include "LorentzMatrix.h"
+
 #include "TLorentzVector.h"
 
-class SymmLorentzMatrix : public LorentzMatrix{
+class SymmLorentzMatrix{
  protected:
   static SymmLorentzMatrix* __gmunu;
   static void makeGmunu();
-  
+
+  TLorentzVector _v[4];
   // we'll follow the x, y, z, E convention, i.e. E is 4
   bool symmetrize(){
     // clumsy but save
     X().SetY(Y().X());
     X().SetZ(Z().X());
     X().SetT(T().X());
-    
+
     Y().SetX(X().Y());
     Y().SetZ(Z().Y());
     Y().SetT(T().Y());
-    
+
     Z().SetX(X().Z());
     Z().SetY(Y().Z());
     Z().SetT(T().Z());
-    
+
     T().SetX(X().T());
     T().SetY(Y().T());
     T().SetZ(Z().T());
@@ -36,12 +37,14 @@ class SymmLorentzMatrix : public LorentzMatrix{
     T().SetXYZT(0,0,0,0);
     return true;
   }
- public:  
+ public:
   static const SymmLorentzMatrix& gmunu();
-  SymmLorentzMatrix(): LorentzMatrix(){}
-  SymmLorentzMatrix(const TLorentzVector p[4])
-    :  LorentzMatrix(p) {};
+  const TLorentzVector& v(int i) const{return _v[i];}
 
+  SymmLorentzMatrix(){};
+  SymmLorentzMatrix(const TLorentzVector p[4]){
+    for(int i=0; i<4; i++) _v[i] = p[i];
+  }
   SymmLorentzMatrix(const TLorentzVector p){
     X().SetX(p.X() * p.X());
     X().SetY(p.X() * p.Y());
@@ -63,9 +66,19 @@ class SymmLorentzMatrix : public LorentzMatrix{
     T().SetZ(p.T() * p.T());
     T().SetT(p.T() * p.T());
   }
-  SymmLorentzMatrix(const SymmLorentzMatrix& other)
-    : LorentzMatrix(other){}
+  SymmLorentzMatrix(const SymmLorentzMatrix& other){
+    for(int i=0; i<4; i++) _v[i] = other._v[i];
+  }
+  const TLorentzVector& X() const{return _v[0];}
+  const TLorentzVector& Y() const{return _v[1];}
+  const TLorentzVector& Z() const{return _v[2];}
+  const TLorentzVector& T() const{return _v[3];}
 
+  TLorentzVector& X() {return _v[0];}
+  TLorentzVector& Y() {return _v[1];}
+  TLorentzVector& Z() {return _v[2];}
+  TLorentzVector& T() {return _v[3];}
+  
   SymmLorentzMatrix& add(const SymmLorentzMatrix& other){
     for(int i=0; i < 4; i++) _v[i] += other._v[i];
     return *this;
@@ -82,18 +95,19 @@ class SymmLorentzMatrix : public LorentzMatrix{
     for(int i=0; i < 4; i++) _v[i] *= (1./s);
     return *this;
   }
+
   TLorentzVector Contract(const TLorentzVector& vec){
     // M^{mu nu} g_{nu alpha} v^{alpha}
     // M^{mu nu} v_{alpha}
     return vec.T()*T() - vec.X()*X() - vec.Y()*Y() -vec.Z()*Z();
   }
-  LorentzMatrix Contract_1(const SymmLorentzMatrix& M){
+  SymmLorentzMatrix Contract_1(const SymmLorentzMatrix& M){
     // One pair of indices gets contracted. Since
     // both matrices are symmetric, it doesnt matter which.
     //
     // O^{mu alpha} g_{alpha beta} M^{beta nu} = R^{mu nu}
     // O^{mu alpha} M_{beta}^{nu}
-    LorentzMatrix R;
+    SymmLorentzMatrix R;
     R.X() =  this->Contract(M.X());
     R.Y() =  this->Contract(M.Y());
     R.Z() =  this->Contract(M.Z());
@@ -107,7 +121,7 @@ class SymmLorentzMatrix : public LorentzMatrix{
     // not matter which index from this with which form M.
     //
     // O^{mu alpha} g_{alpha beta} M^{beta nu} g_{mu nu}
-    LorentzMatrix R(Contract_1(M));
+    SymmLorentzMatrix R(Contract_1(M));
     // R^{mu nu} R_{mu nu}
     double xx =  R.X().Dot(R.X());
     double yy =  R.Y().Dot(R.Y());

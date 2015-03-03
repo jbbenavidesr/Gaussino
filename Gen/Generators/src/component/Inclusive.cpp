@@ -25,7 +25,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( Inclusive )
+DECLARE_TOOL_FACTORY( Inclusive );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -97,7 +97,8 @@ StatusCode Inclusive::initialize( ) {
   else if ( charm ) m_lightestQuark = LHCb::ParticleID::charm ;
   else if (m_pids.size() > 2) return Error( "This case is not yet implemented" ) ;
 
-  info() << endmsg ;
+  info() << endmsg ;  
+  release( ppSvc ) ;
 
   // XML Log file
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;

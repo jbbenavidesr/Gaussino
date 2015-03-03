@@ -35,6 +35,7 @@ class     IGiGaGeoSrc                    ;
 class     G4UIsession                    ;
 class     G4UImanager                    ; 
 
+
 /** @class GiGaRunManager GiGaRunManager.h src/component/GiGaRunManager.h
  *
  *  Customized version of Geant4 Run Manager 
@@ -182,11 +183,11 @@ public:
   virtual unsigned long release()
   {
     unsigned long count = addRef() ;
-    if ( count > 2 ) {
+    if ( count > 2 )
+    {
       AlgTool::release() ;
       return AlgTool::release() ;
     }
-    this -> GaudiTool::~GaudiTool() ;
     return 0 ;
   };
   

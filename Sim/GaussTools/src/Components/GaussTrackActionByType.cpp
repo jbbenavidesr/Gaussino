@@ -14,6 +14,9 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
 
+// GiGa
+//#include "GiGa/GiGaMACROs.h"
+
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
@@ -30,7 +33,7 @@
  */
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GaussTrackActionByType )
+DECLARE_TOOL_FACTORY( GaussTrackActionByType );
 
 // ============================================================================
 /** standard constructor 
@@ -68,14 +71,14 @@ GaussTrackActionByType::GaussTrackActionByType
 
   declareProperty ( "RejectRICHPhotoelectrons", m_rejectRICHphe );
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
 // ============================================================================
 GaussTrackActionByType::~GaussTrackActionByType() {}
-
+// ============================================================================
 
 // ============================================================================
 /** initialize the track action  
@@ -145,8 +148,8 @@ StatusCode GaussTrackActionByType::initialize ()
   
 
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -196,8 +199,8 @@ void GaussTrackActionByType::PreUserTrackingAction  ( const G4Track* track )
   
   if ( storeOwn( track ) ) { mark( info ) ; }
   
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -245,8 +248,8 @@ void GaussTrackActionByType::PostUserTrackingAction
   // update track info 
   if ( store ) { mark( info ) ; }
   
-}
-
+};
+// ============================================================================
 
 
 // ============================================================================

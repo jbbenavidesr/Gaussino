@@ -23,9 +23,6 @@
 #ifdef HEPMC_HAS_UNITS
 #include <HepMC/Units.h>
 #endif
-#ifdef HEPMC_HAS_CROSS_SECTION
-#include <HepMC/GenCrossSection.h>
-#endif
 
 // disable unused parameter warning (appears in libRivet)
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -53,9 +50,9 @@ DECLARE_ALGORITHM_FACTORY( RivetAnalysisHandler );
 
 // Initializing static members
 const char* const RivetAnalysisHandler::_statDescriptors[] = {
-	"Particles with negative rest mass (in DEBUG mode only)", 
-	"Boost angle corrections", 
-	"Unit conversions", 
+	"Particles with negative rest mass", 
+	"Boost angle(s) corrections", 
+	"Unit conversions performed", 
 	"ParticleID adjustments"};
 
 //=============================================================================
@@ -65,8 +62,6 @@ RivetAnalysisHandler::RivetAnalysisHandler( const std::string& name,
                                             ISvcLocator* pSvcLocator)
   : GaudiAlgorithm ( name, pSvcLocator ),
     _analysisManager(0),
-    _reqCrossSection(false),
-    _xsectionSource(0),
     _mHxAngle(0.0),
     _mVxAngle(0.0),
     _scaleFactorEnergy(1.0),
@@ -82,8 +77,8 @@ RivetAnalysisHandler::RivetAnalysisHandler( const std::string& name,
   declareProperty("AnalysisPath", m_analysisPaths, "List of additional file paths where analysis plugins should be looked for, e.g. add os.path.abspath('.') when analysis lib(*.so) is in the option file directory ([])");
   declareProperty("CorrectStatusID", m_modStatusID=false, "Switch that controls the transformation of status ID of particles (given by EvtGen) back to Pythia defaults (False)");
   declareProperty("CorrectCrossingAngles", m_xAngleDetect=true, "Instructs the algorithm to automatically detect and correct for beam crossing angles (True)");
+  declareProperty("xSectionNeeded", m_reqCrossSection=false, "Indicates whether the cross-section is to be read from data (True)");
   declareProperty("xSectionValue", m_crossSection=-1., "The externally provided cross-section for the present run (mb or mub!?); ignored when read from data (-1.)");
-  declareProperty("forceXSection", m_forceCrossSection=false, "Forces GenTune to set the provided cross-section value for each event (False)");
   declareProperty("LogSuppressionSoftLimit", m_logSoftLimit=30, "Internal statistical messages print-out suppression soft limit (30)");
   declareProperty("LogSuppressionHardLimit", m_logHardLimit=200, "Internal statistical message print-out suppression hard limit (200)");
   declareProperty("LogSuppressedOutputFrequency", m_logSuppressFreq=10, "Internal statistical message print-out suppression frequency (10)");
@@ -98,16 +93,17 @@ RivetAnalysisHandler::~RivetAnalysisHandler() {}
 //=============================================================================
 StatusCode RivetAnalysisHandler::initialize()
 {
-  unsigned int nAna = 0;
   StatusCode sc = GaudiAlgorithm::initialize(); // must be executed first
   if ( sc.isFailure() ) return sc;  // error printed already by GaudiAlgorithm
   debug() << "==> Initialize: using Rivet v. " << Rivet::version() << endmsg;
 #ifdef HEPMC_HAS_UNITS
-  info() << "Units will be determined automatically from HepMC by RIVET! " \
-         << "Algorithm option 'AdjustUnits' will be ignored..." << endmsg;
-  _needsUnitConv = false;
-#else
+  always() << "Units will be determined automatically from HepMC by RIVET !" << std::endl;
+  always() << "Algorithm option 'AdjustUnits' will be ignored..." << endmsg;
+#endif
+#ifndef HEPMC_HAS_UNITS
   _needsUnitConv = true;
+#else 
+  _needsUnitConv = false;
 #endif
   //Check and select histogram service
   //Check histogram service is available - not implemented further yet!
@@ -166,51 +162,45 @@ StatusCode RivetAnalysisHandler::initialize()
       debug() << "RIVET_ANALYSIS_PATH missing or empty!" << endmsg;
     };
   };
-  // Setting log level for Rivet & analyses according to Gauss (LHCbApp) log level
+  // Setting log level for analyses according to Gauss (LHCbApp) log level
   MSG::Level jobMsgLvl = (MSG::Level)(*msgSvc()).outputLevel();
   always() << "Gauss log level: " << (int)jobMsgLvl << endmsg;
   Rivet::Log::setLevel("Rivet.Projection.PVertex", rivetLevel(jobMsgLvl));
   always() << "Rivet.Projection.PVertex log level: " << Rivet::Log::getLog("Rivet.Projection.PVertex").getLevel() << endmsg;
+  // Set Rivet native log level to match LHCbApp (Gauss)
   Rivet::Log::setLevel("Rivet", rivetLevel(jobMsgLvl));
-  if (msgLevel(MSG::VERBOSE)) { //list all available analysis names
+  // List all available analysis names - verbose mode only!
+  if (msgLevel(MSG::VERBOSE)) {
     vector<string> analysisNames = Rivet::AnalysisLoader::analysisNames();
     verbose() << "Listing available Rivet analyses:" << std::endl;
     foreach (const string& a, analysisNames) verbose() << " " << a << std::endl;
     verbose() << endmsg;
   };
-  // Determine if cross-section is needed
-  _reqCrossSection = false;
+  // Set cross-section if needed
+  m_reqCrossSection = false;
   foreach (const string& a, m_analysisNames) {
     info() << "Loading Rivet analysis " << a << " ... [ ";
     Rivet::Analysis* analysis = Rivet::AnalysisLoader::getAnalysis(a);
-    if ( 0 == analysis ) {
-      info() << "FAILED; Skipping... ]" << endmsg;
+    if (!(analysis))
+    {
+      info() << "FAILED; Skipping";
       continue;
     } else {
-      info() << "OK ]" << endmsg;
-      nAna ++;
+      info() << "OK";
     };
-    if ( analysis->needsCrossSection() ) {
-      _reqCrossSection = true;
-      info() << "Analysis " << a << " requires valid production cross section value." << endmsg;
-    };
+    info() << " ]" << endmsg;
     _analysisManager->addAnalysis(a);
     string logName = "Rivet.Analysis." + a;
     Rivet::Log::setLevel(logName, rivetLevel(jobMsgLvl));
-    delete analysis;
-  }; // end analysis foreach loop
-  if (nAna == 0) { // verify non-zero analysis plugins loaded
-    fatal() << "No analysis plugin left to run in current Rivet job. Exiting..." << endmsg;
-    return StatusCode::FAILURE;
-  };
-	if ( m_forceCrossSection && (m_crossSection < 0.0) ) { // fail if user tries to force invalid cross-section value
-    if (_reqCrossSection) {
-      fatal() << "Invalid external cross-section value was forced." << endmsg;
-      return StatusCode::FAILURE;
-    } else {
-      warning() << "Forced cross-section value is invalid, but not needed." << endmsg;
+    if (analysis->needsCrossSection()) {
+      m_reqCrossSection = true;
+      if (m_crossSection < 0.0) {
+        fatal() << "Analysis " << a << " requires the cross section to be set in the job options file." << endmsg;
+        return StatusCode::FAILURE;
+      };
     };
-  };
+    delete analysis;
+  }; // end foreach
   // Initialize Rivet
   _analysisManager->init();
   debug() << "<== Initialize done." << endmsg;
@@ -224,41 +214,34 @@ StatusCode RivetAnalysisHandler::execute()
 {
   bool negmm = false;
   stringstream dess;
-  debug() << "==> Execute";
-  if (_isFirstEvent) debug() << " first event";
-  debug() << endmsg;
+  debug() << "==> Execute" << endmsg;
   /// get HepMC event from TES 
   LHCb::HepMCEvent::Container* mcEvents 
     = get<LHCb::HepMCEvent::Container>( m_mcEvtLocation );
-  if ( NULL == mcEvents ) {
-    fatal() << "Cannot retrieve HepMC events from '" << m_mcEvtLocation << "' on TES." << endmsg;
+  if (NULL == mcEvents) {
+    error() << "No HepMC events on TES at " << m_mcEvtLocation << endmsg;
     return StatusCode::FAILURE;
   };
-  if ( mcEvents->size() == 0 ) {
-    warning() << "No HepMC events in TES container. Skipping execute sequence..." << endmsg;
-    return StatusCode::SUCCESS;
-  };
-  /// take only the first event and thus ignore pile-up ?!
-  if ( mcEvents->size() > 1 ) warning() << "Multiple {" << mcEvents->size() << "} HepMC events in container. Pile-up should be avoided. Taking first HepMC event only..." << endmsg;
+  /// take only the first event and thus ignore pile-up
   LHCb::HepMCEvent::Container::iterator ievent = mcEvents->begin();
   LHCb::HepMCEvent* lhcbEvent = (*ievent);
-  if ( NULL == lhcbEvent )
+  if (lhcbEvent == NULL)
   {
-    warning() << "Skipping NULL primary HepMC event and execute sequence..." << endmsg;
+    warning() << "Skipping NULL primary HepMC event..." << endmsg;
     return StatusCode::SUCCESS;
   };
-  // using GenEvent's deep copy constructor
+  // deep copy constructor!
   HepMC::GenEvent* gevEvent = new HepMC::GenEvent(*lhcbEvent->pGenEvt());
   // determine needed scaling factors and xangles from first event
   if (_isFirstEvent)
   {
   #ifdef HEPMC_HAS_UNITS
     // proper unit conversion is done in Rivet::Event by rebuilding GenEvent (deep copy)
-    info() << "HepMC event units are  [" << HepMC::Units::name(gevEvent->momentum_unit()) \
+    always() << "HepMC event units are  [" << HepMC::Units::name(gevEvent->momentum_unit()) \
            << ", " << HepMC::Units::name(gevEvent->length_unit()) << "]." << endmsg;
     if ((HepMC::Units::conversion_factor(gevEvent->momentum_unit(),HepMC::Units::GEV) != 1.0) || \
         (HepMC::Units::conversion_factor(gevEvent->length_unit(),HepMC::Units::MM) != 1.0)) \
-      info() << "Conversion to [GEV, MM] will be done automatically in RIVET." << endmsg;
+      warning() << "Conversion to [GEV, MM] will be done automatically in RIVET." << endmsg;
   #else
     warning() << "Old HepMC library detected! Assuming LHCb units [MeV, mm, ns] for conversion to RIVET units [GeV, mm, ns]." << endmsg;
     _scaleFactorEnergy = Gaudi::Units::MeV/Gaudi::Units::GeV;
@@ -266,38 +249,7 @@ StatusCode RivetAnalysisHandler::execute()
     _needsUnitConv = true;
   #endif
     info() << "Internal conversion of units... [" << (_needsUnitConv ? "enabled" : "disabled") << "]." << endmsg; 
-    // Cross-section info follows:
-  #ifdef HEPMC_HAS_CROSS_SECTION
-    if ( 0 == gevEvent->cross_section()) { // useful info for MC generators!
-      warning() << "MC generator provides NULL cross-section in HepMC." << endmsg;
-    } else {
-      info() << "HepMC cross-section: " << gevEvent->cross_section()->cross_section() << " +/- " << gevEvent->cross_section()->cross_section_error() << " picobarn(s)." << endmsg;
-      _xsectionSource = 1;
-    };
-  #else
-    warning() << "HepMC does not support cross-section entries." << endmsg;
-  #endif
-    if ( _reqCrossSection ) {
-      if ( m_forceCrossSection ) {
-        _xsectionSource = 2;
-        info() << "Forced cross-section: " << m_crossSection << " pb." << endmsg;
-      } else {
-        if ( (_xsectionSource == 0) && (m_crossSection < 0.0) ) {
-          warning() << "Invalid external cross-section value [pb]...Trying to use total cross section value." << endmsg;
-          m_crossSection = getTotalXSection();
-          if ( m_crossSection < 0.0 ) {
-            fatal() << "Invalid total cross-section value read from BeamParameters. No valid cross-section value available." << endmsg;
-            return StatusCode::FAILURE;
-          } else {
-            warning() << "Using total cross-section value from BeamParameters: " << m_crossSection << " pb." << endmsg;
-            _xsectionSource = 3;
-          };
-        };
-      };
-    } else {
-      info() << "Cross-section value not needed by any of the currently selected plug-ins." << endmsg;
-    }; // end cross-section source selection
-    /// set beam particles if not present in Event (e.g. when reading from external sources)
+    /// set beam particles if not present in event (when reading from external sources)
     pair<HepMC::GenParticle*, HepMC::GenParticle*> beamParticles = findBeamParticles(gevEvent);
     if ((0 != beamParticles.first) && (0 != beamParticles.second)) {
       Gaudi::XYZVector b1, b2;
@@ -310,16 +262,15 @@ StatusCode RivetAnalysisHandler::execute()
       b1 += b2;
       double hangle = b1.x()/b2.z()/Rivet::sign(b2.z())/2.0/Gaudi::Units::mrad;
       double vangle = b1.y()/b2.z()/Rivet::sign(b2.Z())/2.0/Gaudi::Units::mrad;
-      info() << "Smeared horizontal crossing angle: " << hangle << " mrad." << endmsg;
-      info() << "Smeared vertical crossing angle: " << vangle << " mrad." << endmsg;
+      info() << "Smeared horizontal x-angle: " << hangle << " mrad." << endmsg;
+      info() << "Smeared vertical x-angle: " << vangle << " mrad." << endmsg;
     };
-    /// if detection is requested and it fails then algorithm fails!
+    /// if detection is requested and it fails then algorithm fails as well!
     if ( (m_xAngleDetect) && (detectBeamCrossingAngles(gevEvent)) ) return StatusCode::FAILURE;
     _isFirstEvent = false;
   }; // end preprocessing first event
   if (_needsUnitConv || _xHAngleCorrection || _xVAngleCorrection || m_modStatusID) {
-    double px, py, pz, e;
-    double mm = 0.0;
+    double px, py, pz, e, mm;
     HepMC::FourVector* tmom;
     if (msgLevel(MSG::DEBUG)) { 
       debug() << "HepMC event before internal modifications:" << std::endl;
@@ -332,18 +283,16 @@ StatusCode RivetAnalysisHandler::execute()
       py = (*p)->momentum().py();
       pz = (*p)->momentum().pz();
       e  = (*p)->momentum().e();
-      if (msgLevel(MSG::DEBUG)) {
-        dess.str(std::string());
-        // from Rivet::FourMomentum::mass(); HepMC::FourVector::m() not optimised for Oz beam line
-        mm = invariantMass((*p)->momentum());
-        negmm = (mm < 0.0);
-      };
+      dess.str(std::string());
+      // from Rivet::FourMomentum::mass(); HepMC::FourVector::m() not optimised for Oz beam line
+      mm = invariantMass((*p)->momentum());
+      negmm = false;
       tmom = new HepMC::FourVector(px, py, pz, e);
       if (m_modStatusID) { //erases trace-back to particles decayed by EvtGen
         int psid = (*p)->status();
         if (psid > LHCb::HepMCEvent::DocumentationParticle) { //following HepMC 2.05 particle status code recommendation
-          if ((*p)->is_beam()) {
-            ; // beam particle (status code == 4)
+          if (psid == 4) {
+            ; // beam particle
           } else if (psid == LHCb::HepMCEvent::StableInDecayGen) {
             (*p)->set_status(1);
           } else if ((psid>10) && (psid < 201)) {
@@ -355,7 +304,8 @@ StatusCode RivetAnalysisHandler::execute()
         };
       };
       // detect if particle rest mass is negative (ignore documentation particles)
-      if ( msgLevel(MSG::DEBUG) && ( (*p)->status() != 3 ) && negmm ) {
+      if ( ( mm < 0. ) && ( (*p)->status() != 3 ) ) {
+        negmm = true;
         dess << "Negative rest mass particle: " << std::endl << "id=" << (*p)->pdg_id() << "; status=" << (*p)->status() << ";" << std::endl;
         dess << "Before boost: " << std::endl << "P = (" << px << ", " << py << ", " << pz << ", " << e << ") --> m0 = " 
              << mm << " [MeV]." <<  std::endl;
@@ -393,7 +343,7 @@ StatusCode RivetAnalysisHandler::execute()
         };
       };
       if (_needsUnitConv || _xHAngleCorrection || _xVAngleCorrection) (*p)->set_momentum((const HepMC::FourVector&)(*tmom));
-      if (msgLevel(MSG::DEBUG) && negmm) { // re-test for negative rest mass
+      if (negmm) { // re-test for negative rest mass
         if (_xHAngleCorrection || _xVAngleCorrection) {
           mm = invariantMass((*p)->momentum());
           if (mm < 0.) {
@@ -410,7 +360,9 @@ StatusCode RivetAnalysisHandler::execute()
       delete tmom;
     }; // end particle iteration
   }; //end big if (corrections/transforms needed)
-  compatSetCrossSection(gevEvent);
+#ifndef HEPMC_HAS_CROSS_SECTION
+  compatSetCrossSection();
+#endif  
   // Analyze HepMC GenEvent in debugging mode
   if (msgLevel(MSG::DEBUG) && (_needsUnitConv || _xHAngleCorrection || _xVAngleCorrection || m_modStatusID)) { 
     debug() << "HepMC event after internal modifications:" << std::endl;
@@ -429,10 +381,12 @@ StatusCode RivetAnalysisHandler::execute()
 StatusCode RivetAnalysisHandler::finalize()
 {
   debug() << "==> Finalize" << endmsg;
-  compatSetCrossSection(NULL);
+  #ifndef HEPMC_HAS_CROSS_SECTION
+  compatSetCrossSection();
+  #endif
   //print debugging counters
   info() << "Internal counter values:" << std::endl;
-  for (uint i = 0; i < this->_myStats.size(); i++ ) info() << "Counter[" << i << "] <<\"" << RivetAnalysisHandler::_statDescriptors[i] << "\">> = " << this->_myStats[i] << std::endl;
+  for (uint i = 0; i < this->_myStats.size(); i++ ) info() << "Counter[" << i << "] (\"" << RivetAnalysisHandler::_statDescriptors[i] << "\") = " << this->_myStats[i] << std::endl;
   info() << endmsg;
   string aidaFileName = (m_filename + ".aida");
   _analysisManager->finalize();
@@ -467,29 +421,9 @@ double invariantMass(const HepMC::FourVector& mom) {
   return mass;
 }
 
-/// sets manager cross section value when it cannot be read from data automatically or a specific value is forced
-void RivetAnalysisHandler::compatSetCrossSection(HepMC::GenEvent* pEvent) {
-  if (!(_reqCrossSection || m_forceCrossSection)) return;
-  if (m_crossSection < 0.0) { 
-    error() << "Not setting required negative cross-section value. Set a valid value and/or enforce it in options." << endmsg;
-    return;
-  };
-  if (NULL == pEvent) {
-    _analysisManager->setCrossSection(m_crossSection);
-    return;
-  };
-#ifdef HEPMC_HAS_CROSS_SECTION
-  HepMC::GenCrossSection *pxs = pEvent->cross_section();
-  if ( (0 == pxs) || m_forceCrossSection ) { // try setting the cross-section to "externally" provided value
-    pxs = new HepMC::GenCrossSection();
-    pxs->set_cross_section(m_crossSection);
-    pEvent->set_cross_section(*pxs);
-  } else {
-    m_crossSection = pxs->cross_section(); // (re)set xsection to value given by generator (backup value!)
-  };
-#else
-  _analysisManager->setCrossSection(m_crossSection);
-#endif
+/// sets manager cross section value when it cannot be read from data automatically
+void RivetAnalysisHandler::compatSetCrossSection() {
+  if (m_reqCrossSection) _analysisManager->setCrossSection(m_crossSection);
 }
 
 /// verifies if the log messages for a specific internal statistics flag is suppressed
@@ -547,13 +481,6 @@ std::pair<HepMC::GenParticle*,HepMC::GenParticle*> RivetAnalysisHandler::findBea
   return std::make_pair(pBeam1, pBeam2);
 }
 
-/// Read total cross-section from beam parameters. PYTHIA & LHCb use mb while HepMC uses pb!
-double RivetAnalysisHandler::getTotalXSection() {
-  LHCb::BeamParameters * beamParams = get<LHCb::BeamParameters>(LHCb::BeamParametersLocation::Default);
-  if ( 0 == beamParams ) return -1.0;
-  return (beamParams->totalXSec()/Gaudi::Units::picobarn);
-}
-
 /// Detect beam crossing angles if they exist
 bool RivetAnalysisHandler::detectBeamCrossingAngles(HepMC::GenEvent* hEvent) {
   if ( 0 == hEvent ) {
@@ -566,7 +493,7 @@ bool RivetAnalysisHandler::detectBeamCrossingAngles(HepMC::GenEvent* hEvent) {
     error() << "No beam parameters found in TES." << endmsg;
     return true;
   } else {
-    info() << "Maximal angle smearing: " << (beamParams->angleSmear()/Gaudi::Units::mrad) << " mrad." << endmsg;
+    info() << "Maximal smearing angle: " << (beamParams->angleSmear()/Gaudi::Units::mrad) << " mrad." << endmsg;
     if ( 0.0 != beamParams->angleSmear() )  debug()  \
               << "Please, use Gauss().BeamBetaStar = 0.0 to eliminate smearing when nedeed." \
               << endmsg;

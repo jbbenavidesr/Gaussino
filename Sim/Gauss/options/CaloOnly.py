@@ -14,9 +14,4 @@ Gauss().DetectorSim  = { "Detectors": ['Spd', 'Prs', 'Ecal', 'Hcal', 'Magnet' ] 
 Gauss().DetectorMoni = { "Detectors": ['Spd', 'Prs', 'Ecal', 'Hcal', 'Magnet' ] }
 Gauss().BeamPipe     = "BeamPipeInDet"
 
-# Remove RICH cuts
-def switchOffRICHCuts():
-    from Configurables import SimulationSvc
-    SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
 
-appendPostConfigAction( switchOffRICHCuts )

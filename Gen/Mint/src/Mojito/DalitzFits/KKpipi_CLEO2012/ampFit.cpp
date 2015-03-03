@@ -131,9 +131,6 @@ int ampFit(){
   NamedParameter<string> InputFileName("InputFileName", (std::string) "");
   bool generateNew = (std::string) InputFileName == "";
 
-  NamedParameter<string> OutputEventFileName("OutputEventFileName"
-                                             , (std::string) ""
-                                             , (char*) 0);
   NamedParameter<string> IntegratorEventFile("IntegratorEventFile"
                                              , (std::string) "SignalIntegrationEvents.root"
                                              , (char*) 0);
@@ -171,25 +168,14 @@ int ampFit(){
 
   if(generateNew){
     SignalGenerator sg(pdg);
-    cout << "generating new events" << endl;
     sg.FillEventList(eventList, Nevents);
-    cout << "generated events; now I've got " 
-	 << eventList.size() << " events." << endl;
-    if("" != (std::string) OutputEventFileName){
-      eventList.save(OutputEventFileName);
-      cout << "saving event list to " 
-	   << (std::string) OutputEventFileName << endl;
-    }else{
-      cout << "generated events, but not saving them"
-	   << " (set the parameter \"OutputEventFileName\" to save events in the future)" << endl;
-    }
   }
+
+
   
   DalitzHistoSet datH = eventList.histoSet();
   datH.save("plotsFromEventList.root");
   datH.draw("dataPlots_");
-
-  if(! doFit) return 0;
 
   MinuitParameterSet fitMPS;
   DalitzPdfSaveInteg amps(&eventList, integPrecision
@@ -208,6 +194,7 @@ int ampFit(){
   nc.checkNorm();
   */
 
+  if(! doFit) return 0;
 
   Minimiser mini(&fcn);
   mini.doFit();

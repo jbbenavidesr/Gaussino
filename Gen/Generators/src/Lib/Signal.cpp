@@ -12,6 +12,7 @@
 // from Generators
 #include "MCInterfaces/IDecayTool.h"
 #include "Generators/GenCounters.h"
+#include "Generators/ICounterLogFile.h"
 #include "GenEvent/HepMCUtils.h"
 
 // Function to test if a HepMC::GenParticle is Particle (or antiParticle) 
@@ -62,7 +63,8 @@ Signal::Signal( const std::string& type,
     m_sigName        ( "" ) ,
     m_sigBarName     ( "" ) ,
     m_cpMixture       ( true ) , 
-    m_signalBr ( 0.0 ) { 
+    m_signalBr ( 0.0 ) ,
+    m_xmlLogTool( 0 ) { 
     declareProperty( "SignalPIDList" , m_pidVector ) ;
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
     
@@ -101,6 +103,9 @@ StatusCode Signal::initialize( ) {
     return Error( "Could not initialize flat random number generator" ) ;
   
   release( randSvc ) ;
+
+  // XML Log file
+  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
 
   // Transform vector into set
   for ( std::vector<int>::iterator it = m_pidVector.begin() ; 

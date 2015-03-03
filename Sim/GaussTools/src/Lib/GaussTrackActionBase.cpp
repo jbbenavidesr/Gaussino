@@ -11,20 +11,26 @@
 // 
 // ============================================================================
 // Include files 
+// ============================================================================
 // CLHEP
+// ============================================================================
 #include "CLHEP/Units/SystemOfUnits.h"
-
+// ============================================================================
 // GiGa
+// ============================================================================
 #include "GiGa/GiGaUtil.h"
-
+// ============================================================================
 // Geant4
+// ============================================================================
 #include "G4TrackingManager.hh"
-
+// ============================================================================
 // GaussTools 
+// ============================================================================
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
-
+// ============================================================================
 // local
+// ============================================================================
 #include "GaussTools/GaussTrackActionBase.h"
 #include "GaussTools/createGaussTrajectory.h"
 // ============================================================================
@@ -55,8 +61,8 @@ GaussTrackActionBase::GaussTrackActionBase
   , m_nTrajectories  ( 0 )
   , m_nTrackInfos    ( 0 )
   , m_marked         ( 0 ) 
-{}
-
+{};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
@@ -150,8 +156,8 @@ GaussTrajectory* GaussTrackActionBase::trajectory () const
   { Error ( "trajectory(): invalid cast to GaussTrajectory") ; }
 
   return gau ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // get the valid Gauss track information 
@@ -164,8 +170,8 @@ GaussTrackInformation* GaussTrackActionBase::trackInfo     () const
     return 0 ;
   };
   return trackInfo( trackMgr() -> GetTrack() ) ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // get the valid Gauss tarck information 
@@ -196,8 +202,8 @@ GaussTrackInformation* GaussTrackActionBase::trackInfo
   { Error ( "trackInfo(): invalid cast to GaussTrajckInformation") ; }
 
   return gau ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // store children tracks S
@@ -219,8 +225,8 @@ StatusCode GaussTrackActionBase::storeChildren () const
   }
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 StatusCode GaussTrackActionBase::mark
 ( GaussTrackInformation* info ) const
@@ -231,7 +237,7 @@ StatusCode GaussTrackActionBase::mark
   else    { info -> setToBeStored( true ) ; ++m_marked ; }
   
   return StatusCode::SUCCESS ;
-}
+};
 
 // ============================================================================
 // The END 

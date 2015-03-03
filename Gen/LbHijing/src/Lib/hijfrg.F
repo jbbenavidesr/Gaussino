@@ -4,7 +4,6 @@ C
 C
 C
 	SUBROUTINE HIJFRG(JTP,NTP,IERROR)
-	IMPLICIT REAL*8(A-H,O-Z)
 C	NTP=1, fragment proj string, NTP=2, targ string, 
 C       NTP=3, independent 
 C	strings from jets.  JTP is the line number of the string
@@ -23,17 +22,17 @@ C******************************************************************
      &                PJTX(300,500),PJTY(300,500),PJTZ(300,500),
      &                PJTE(300,500),PJTM(300,500)
 	SAVE  /HIJJET1/
-	COMMON/HIJJET2/NSG,NSGPD,NJSG(900),IASG(900,3),K1SG(900,100),
+	COMMON/HIJJET2/NSG,NJSG(900),IASG(900,3),K1SG(900,100),
      &		K2SG(900,100),PXSG(900,100),PYSG(900,100),
      &		PZSG(900,100),PESG(900,100),PMSG(900,100)
 	SAVE  /HIJJET2/
 C
-        COMMON/HILUJETS/N,NPAD,K(9000,5),P(9000,5),V(9000,5)
-	SAVE  /HILUJETS/
-	COMMON/HILUDAT1/MSTU(200),PARU(200),MSTJ(200),PARJ(200)
-	SAVE  /HILUDAT1/
-	COMMON/HIRANSEED/NSEED,NSEEDPD
-	SAVE  /HIRANSEED/
+        COMMON/LUJETS/N,K(9000,5),P(9000,5),V(9000,5)
+	SAVE  /LUJETS/
+	COMMON/LUDAT1/MSTU(200),PARU(200),MSTJ(200),PARJ(200)
+	SAVE  /LUDAT1/
+	COMMON/RANSEED/NSEED
+	SAVE  /RANSEED/
 	
 	IERROR=0
 	CALL LUEDIT(0)
@@ -154,7 +153,7 @@ C		*******PZ of end-partons in c.m. frame of the string
 	P(2,5)=AM2
 	N=2
 C*****
-	CALL HIROBO(0.0d0,0.0d0,0.0d0,0.0d0,BTZ)
+	CALL HIROBO(0.0,0.0,0.0,0.0,BTZ)
 	JETOT=0
 	IF((PQ21**2+PQ22**2).GT.(PQ11**2+PQ12**2)) THEN
 		PMAX1=P(2,1)

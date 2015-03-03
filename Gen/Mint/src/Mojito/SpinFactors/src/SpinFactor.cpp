@@ -68,17 +68,7 @@ TLorentzVector SpinFactor::p(int i){
 	      << fsPS[i]->getVal().asi(0)
 	      << ")" << std::endl;
     */
-    TLorentzVector p4 = getEvent()->p(fsPS[i]->getVal().asi(0));
-    if (theDecay().getVal().parityFactor() < 0){
-      // if the mother is an anti-particle, we multiply all
-      // 3 momenta with -1. This makes an "anti" tree a CP
-      // conjugate tree, not just C conjuate.
-      // See also the comment in DecayTreeItem.h.
-      p4.SetX( -p4.X());
-      p4.SetY( -p4.Y());
-      p4.SetZ( -p4.Z());
-    }
-    return p4;
+    return getEvent()->p(fsPS[i]->getVal().asi(0));
   }
 }
 

@@ -69,16 +69,15 @@ class ParticleProperties{
 
   double radius() const;
 
-  std::string ScalarVectorPseudoAxialVectorTensor() const;
-  std::string SVPAT() const{
+  char ScalarVectorPseudoAxialVectorTensor() const;
+  char SVPAT() const{
     return ScalarVectorPseudoAxialVectorTensor();
   }
-  bool isVector() const{return ScalarVectorPseudoAxialVectorTensor() == "V";}
-  bool isScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "S";}
-  bool isPseudoScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "P";}
-  bool isAxialVector() const{return ScalarVectorPseudoAxialVectorTensor() == "A";}
-  bool isTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "T";}
-  bool isPseudoTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "PT";}
+  bool isVector() const{return ScalarVectorPseudoAxialVectorTensor() == 'V';}
+  bool isScalar() const{return ScalarVectorPseudoAxialVectorTensor() == 'S';}
+  bool isPseudoScalar() const{return ScalarVectorPseudoAxialVectorTensor() == 'P';}
+  bool isAxialVector() const{return ScalarVectorPseudoAxialVectorTensor() == 'A';}
+  bool isTensor() const{return ScalarVectorPseudoAxialVectorTensor() == 'T';}
 
   //  double mass_in_GeV() const{return mass()/1000.0;}
 

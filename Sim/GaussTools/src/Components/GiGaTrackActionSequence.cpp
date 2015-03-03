@@ -12,6 +12,7 @@
 // GiGa 
 #include "GiGa/IGiGaSvc.h"
 #include "GiGa/GiGaUtil.h"
+//#include "GiGa/GiGaMACROs.h"
 
 // local 
 #include "GiGaTrackActionSequence.h"
@@ -26,7 +27,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaTrackActionSequence )
+DECLARE_TOOL_FACTORY( GiGaTrackActionSequence );
 
 // ============================================================================
 /** standard constructor 
@@ -46,16 +47,14 @@ GiGaTrackActionSequence::GiGaTrackActionSequence
   , m_members ()  ///< default empty vertor!
   , m_actions ()
   , m_setMgr  ( false ) 
-{ 
-  declareProperty( "Members" , m_members ); 
-}
-
+{ declareProperty( "Members" , m_members ); };
+// ============================================================================
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-GiGaTrackActionSequence::~GiGaTrackActionSequence() {}
-
+GiGaTrackActionSequence::~GiGaTrackActionSequence() {};
+// ============================================================================
 
 // ============================================================================
 /** initialise the action object 
@@ -82,8 +81,8 @@ StatusCode GiGaTrackActionSequence::initialize ()
   //
   return Print("Iinitialized successfully" , 
                StatusCode::SUCCESS         , MSG::VERBOSE );
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform the pre-action
@@ -111,8 +110,8 @@ void GiGaTrackActionSequence::PreUserTrackingAction  ( const G4Track* track )
       IGiGaTrackAction*   action = *iaction ;
       if( 0 != action ) { action->PreUserTrackingAction( track ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform the post-action
@@ -140,8 +139,8 @@ void GiGaTrackActionSequence::PostUserTrackingAction  ( const G4Track* track )
       IGiGaTrackAction*   action = *iaction ;
       if( 0 != action ) { action->PostUserTrackingAction( track ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The END 

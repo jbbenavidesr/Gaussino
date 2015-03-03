@@ -550,8 +550,8 @@ class Gauss(LHCbConfigurableUser):
         self.removeBeamPipeElements( "velo" )
 
         # Temp fix for non-schema VL path in DDDB
-        #detPieces['BeforeMagnetRegion'] += ['VL']
-        detPieces['BeforeMagnetRegion'] += ['VeloLite']
+        detPieces['BeforeMagnetRegion'] += ['VL']
+        #detPieces['BeforeMagnetRegion'] += ['VeloLite']
 
         # Also sort out mis-alignment
         if self.getProp("DataType") != "Upgrade" :
@@ -572,8 +572,8 @@ class Gauss(LHCbConfigurableUser):
             MCHitsLocation = 'MC/' + det  + '/Hits',
             CollectionName = det + 'SDet/Hits',
             # Temp fix for non-schema VL path in DDDB
-            #Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
-            Detectors = [ '/dd/Structure/LHCb/' + region + '/VeloLite' ]
+            Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
+            #Detectors = [ '/dd/Structure/LHCb/' + region + '/VeloLite' ]
             )
         detHits.Members += [ moni ]
         pass
@@ -1695,10 +1695,6 @@ class Gauss(LHCbConfigurableUser):
         if 'UT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['UT']
         if 'FT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['FT']
 
-        # if Skip4 then dont propagate the detector list
-        if "GenToMCTree" in self.getProp("Phases"):
-            detlist = []
-
         SimConf().setProp("Detectors",detlist)
 
 
@@ -1795,54 +1791,12 @@ class Gauss(LHCbConfigurableUser):
         gen_t0.Special.Pythia8Production.LbLHAup.addTool( BcVegPyProduction , "BcVegPyProduction" ) 
         gen_t0.Special.Pythia8Production.LbLHAup.BcVegPyProduction.BcVegPyCommands += [ txtECM ]
 
-        # or with LbPowheg
-        from Configurables import PowhegProductionbb, PowhegProductiontt, PowhegProductionWbb
-        from Configurables import PowhegProductionWZ, PowhegProductionZZ
-        gen_t0.Special.addTool( PowhegProductionbb , name = "PowhegProductionbb" )
-        gen_t0.Special.addTool( PowhegProductiontt , name = "PowhegProductiontt" )
-        gen_t0.Special.addTool( PowhegProductionWbb , name = "PowhegProductionWbb" )
-        gen_t0.Special.addTool( PowhegProductionWZ , name = "PowhegProductionWZ" )
-        gen_t0.Special.addTool( PowhegProductionZZ , name = "PowhegProductionZZ" )
-        gen_t0.Special.PowhegProductionbb.ebeam1 = pInGeV
-        gen_t0.Special.PowhegProductionbb.ebeam2 = pInGeV
-        gen_t0.Special.PowhegProductiontt.ebeam1 = pInGeV
-        gen_t0.Special.PowhegProductiontt.ebeam2 = pInGeV
-        gen_t0.Special.PowhegProductionWbb.ebeam1 = pInGeV
-        gen_t0.Special.PowhegProductionWbb.ebeam2 = pInGeV
-        gen_t0.Special.PowhegProductionWZ.ebeam1 = pInGeV
-        gen_t0.Special.PowhegProductionWZ.ebeam2 = pInGeV
-        gen_t0.Special.PowhegProductionZZ.ebeam1 = pInGeV
-        gen_t0.Special.PowhegProductionZZ.ebeam2 = pInGeV
-        #
-        gen_t0.Special.PowhegProductionbb.numevts = LHCbApp().EvtMax
-        gen_t0.Special.PowhegProductiontt.numevts = LHCbApp().EvtMax
-        gen_t0.Special.PowhegProductionWbb.numevts = LHCbApp().EvtMax
-        gen_t0.Special.PowhegProductionWZ.numevts = LHCbApp().EvtMax
-        gen_t0.Special.PowhegProductionZZ.numevts = LHCbApp().EvtMax
-        #
-        gen_t0.Special.PowhegProductionbb.iseed = GenInit("GaussGen").RunNumber + GenInit("GaussGen").FirstEventNumber
-        gen_t0.Special.PowhegProductiontt.iseed = GenInit("GaussGen").RunNumber + GenInit("GaussGen").FirstEventNumber
-        gen_t0.Special.PowhegProductionWbb.iseed = GenInit("GaussGen").RunNumber + GenInit("GaussGen").FirstEventNumber
-        gen_t0.Special.PowhegProductionWZ.iseed = GenInit("GaussGen").RunNumber + GenInit("GaussGen").FirstEventNumber
-        gen_t0.Special.PowhegProductionZZ.iseed = GenInit("GaussGen").RunNumber + GenInit("GaussGen").FirstEventNumber
-
         # or with Hijing
         txtP = "hijinginit efrm "+str(pInGeV)
         gen_t0.addTool(MinimumBias,name="MinimumBias")
         gen_t0.MinimumBias.addTool(HijingProduction,name="HijingProduction")
         gen_t0.MinimumBias.HijingProduction.Commands += [ txtP ]
     #--For beam gas events (with hijing) only the energy of the beams is set
-
-    #--Set location for histogram particle guns based on beam energy
-        from Configurables import ParticleGun, MomentumSpectrum
-        pgun = ParticleGun("ParticleGun")
-        pgun.addTool( MomentumSpectrum , name = "MomentumSpectrum" )
-        txtPInGeV = str(pInGeV).split(".")[0]
-        hFileName = pgun.MomentumSpectrum.getProp("InputFile")
-        hFileName = hFileName.replace("Ebeam4000GeV","Ebeam"+txtPInGeV+"GeV")
-        pgun.MomentumSpectrum.InputFile = hFileName
-        print hFileName
-
     ## end of functions to set beam paramters and propagate them
     ##########################################################################
 
@@ -2759,33 +2713,29 @@ class Gauss(LHCbConfigurableUser):
 #"""
     ##
     ##
-    def configureGiGa(self , skipG4 = False ):
+    def configureGiGa(self):
          """
          Set up the configuration for the G4 settings: physics list, cuts and actions
          """
          richPmt = False
-         giga = GiGa()
-
          # PSZ - Use self.getProp('DataType') in future
          if [det for det in ['Rich1Pmt', 'Rich2Pmt'] if det in self.getProp('DetectorSim')['Detectors']]:
              richPmt = True
          ## setup the Physics list and the productions cuts
-         if skipG4:
-             richPmt = False
          self.setPhysList(richPmt)
          
          ## Mandatory G4 Run action
+         giga = GiGa()
          giga.addTool( GiGaRunActionSequence("RunSeq") , name="RunSeq" )
          giga.RunAction = "GiGaRunActionSequence/RunSeq"
-         if not skipG4:
-             giga.RunSeq.addTool( TrCutsRunAction("TrCuts") , name = "TrCuts" )
-             giga.RunSeq.Members += [ "TrCutsRunAction/TrCuts" ] 
-             giga.RunSeq.addTool( GiGaRunActionCommand("RunCommand") , name = "RunCommand" ) 
-             giga.RunSeq.Members += [ "GiGaRunActionCommand/RunCommand" ]
-             giga.RunSeq.RunCommand.BeginOfRunCommands = [
-                 "/tracking/verbose 0",
-                 "/tracking/storeTrajectory  1",
-                 "/process/eLoss/verbose -1" ]
+         giga.RunSeq.addTool( TrCutsRunAction("TrCuts") , name = "TrCuts" )
+         giga.RunSeq.addTool( GiGaRunActionCommand("RunCommand") , name = "RunCommand" ) 
+         giga.RunSeq.Members += [ "TrCutsRunAction/TrCuts" ] 
+         giga.RunSeq.Members += [ "GiGaRunActionCommand/RunCommand" ]
+         giga.RunSeq.RunCommand.BeginOfRunCommands = [
+             "/tracking/verbose 0",
+             "/tracking/storeTrajectory  1",
+             "/process/eLoss/verbose -1" ]
 
          giga.EventAction = "GiGaEventActionSequence/EventSeq"
          giga.addTool( GiGaEventActionSequence("EventSeq") , name="EventSeq" ) 
@@ -2819,13 +2769,12 @@ class Gauss(LHCbConfigurableUser):
              if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
                  importOptions("$GAUSSRICHROOT/options/Rich.opts")
              else:
-                 if not skipG4:
-                     giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                             name = "GiGaPhysConstructorOp" )
-                     giga.ModularPL.addTool( GiGaPhysConstructorHpd,
-                                             name = "GiGaPhysConstructorHpd" )
-                     giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
-                     giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+                 giga.ModularPL.addTool( GiGaPhysConstructorOp,
+                                         name = "GiGaPhysConstructorOp" )
+                 giga.ModularPL.addTool( GiGaPhysConstructorHpd,
+                                         name = "GiGaPhysConstructorHpd" )
+                 giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+                 giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
 
              if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
                  giga.ModularPL.addTool( GiGaPhysConstructorOp,
@@ -2889,11 +2838,6 @@ class Gauss(LHCbConfigurableUser):
         if "GenToMCTree" not in self.getProp("Phases"):
             log.warning("No GenToMCTree phase.")
             return
-
-        # Do not do detector simulation in this case
-        self.getProp('DetectorSim')['Detectors'] = []
-        self.getProp('DetectorGeo')['Detectors'] = []
-        self.getProp('DetectorMoni')['Detectors'] = []
         
         ApplicationMgr().ExtSvc += [ "GiGa" ]
 
@@ -2901,7 +2845,7 @@ class Gauss(LHCbConfigurableUser):
         gaussSeq = GaudiSequencer("GaussSequencer")
         gaussSeq.Members += [ gaussSkipGeant4Seq ]
 
-        self.configureGiGa( True )
+        self.configureGiGa()
 
         for slot in SpillOverSlots:
 
@@ -2936,6 +2880,11 @@ class Gauss(LHCbConfigurableUser):
                 packing = GaudiSequencer(self.slotName(slot)+"EventDataPacking")
                 skipGeant4SlotSeq.Members += [ packing ]
                 SimConf().PackingSequencers[slot] = packing
+
+
+
+
+
 
 
 #"""

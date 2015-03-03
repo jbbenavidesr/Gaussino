@@ -30,8 +30,7 @@ class EvtbTosllWilsCoeffNLO;
 class EvtbTosllAmpNewExt{
 
  public:
-  virtual ~EvtbTosllAmpNewExt( ) { } ;
- 
+
   virtual void CalcAmp( EvtParticle *parent, EvtAmp& amp,
 	 	        EvtbTosllFFNew *formFactors, 
                         EvtbTosllWilsCoeffNLO *WilsCoeff,

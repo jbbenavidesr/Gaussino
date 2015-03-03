@@ -24,7 +24,6 @@ bool compareToOldRooFit = DoAsLaurenDid;
 BW_BW::BW_BW( const AssociatedDecayTree& decay
 	      , IDalitzEventAccess* events)
   : DalitzEventAccess(events)
-  , _normBF("NormBF", 0)
   , _prSq(-9999.0)
   , _prSqForGofM(-9999.0)
   , _pABSq(-9999.0)
@@ -71,7 +70,6 @@ BW_BW::BW_BW(const BW_BW& other)
   , IDalitzEventAccess()
   , ILineshape()
   , DalitzEventAccess(other)
-  , _normBF(other._normBF)
   , _prSq(other._prSq)
   , _prSqForGofM(other._prSqForGofM)
   , _pABSq(other._pABSq)
@@ -439,14 +437,14 @@ TLorentzVector BW_BW::daughterP4(int i) const{
 	 << " You requested the 4-momentum of dgtr number " << i
 	 << ". There are " << _theDecay.nDgtr() 
 	 << " daughters." << endl;
-    return TLorentzVector(0.0, 0.0, 0.0, -9999.0);
+    return -9999;
   }
   const_counted_ptr<AssociatedDecayTree> dgtr = _theDecay.getDgtrTreePtr(i);
   std::vector<int> asi = dgtr->getVal().asi();
   if(asi.size() < 2){
     return getEvent()->p(asi[0]);
   }else{
-    return TLorentzVector();
+    return TLorentzVector(0.0);
   }
 }
 double BW_BW::daughterRecoMass2(int i) const{
@@ -514,23 +512,17 @@ double BW_BW::mumsRecoMass() const{
   return _mumsRecoMass;
 }
 
-double BW_BW::daughterPDGMass( const int& i ) const{
-  if( i >= _theDecay.nDgtr() || i < 0 ){
+double BW_BW::daughterPDGMass(int i) const{
+  if( i >= _theDecay.nDgtr() || i < 0){
     cout << " ERROR in BW_BW::daughterPDGMass:"
 	 << " You requested the mass of dgtr number " << i
-	 << ". There are " << _theDecay.nDgtr()
+	 << ". There are " << _theDecay.nDgtr() 
 	 << " daughters." << endl;
     return -9999;
   }
-
-  if( _daughterPDGMass[i] < 0 ){
-    _daughterPDGMass[i] = _theDecay.getDgtrVal(i).mass();
+  if(_daughterPDGMass[i] < 0){
+    _daughterPDGMass[i] =  _theDecay.getDgtrVal(i).mass();
   }
-
-  if( _theDecay.getDgtrVal(i).isNonResonant() ){
-    _daughterPDGMass[i] = daughterRecoMass(i);
-  }
-
   return _daughterPDGMass[i];
 }
 
@@ -1017,19 +1009,12 @@ const GaussFct& BW_BW::gaussianApprox(){
 }
 */
 
+
 std::complex<double> BW_BW::getVal(){
-  const bool dbThis = false;
+  bool dbThis=false;
+  if(nonResonant()) return 1;
 
   resetInternals();
-
-  if( nonResonant() ){
-    if( _normBF != 0 )
-      //Normalised barrier factors do not conserve total angular mopmentum x-(
-      return Fr();
-    else
-      return Fr_PDG_BL();
-  }
-
   if(startOfDecayChain()){
     // in principle there is no need to distinguish the start
     // of the decay chain from the rest - it could just get
@@ -1048,13 +1033,7 @@ std::complex<double> BW_BW::getVal(){
       }
       return 1;
     }
-    double returnVal;
-    if( _normBF != 0 )
-      //Normalised barrier factors do not conserve total angular mopmentum x-(
-      returnVal = Fr();
-    else
-      returnVal = Fr_PDG_BL();
-
+    double returnVal = Fr(); // this is where Lauren's is different, I think.
     if(dbThis && (returnVal > 2 || returnVal < 0.5)){
       cout << " BW_BW for " 
 	   << _theDecay.oneLiner() << endl; // dbg
@@ -1080,8 +1059,7 @@ std::complex<double> BW_BW::getVal(){
 	 << "\n    > EvtGenValue " << EvtGenValue()
 	 << endl;
   }
-  //std::complex<double> returnVal = Fr()*BreitWigner(); //Unnormalised BFs
-  const std::complex<double> returnVal = Fr_PDG_BL()*BreitWigner();
+  std::complex<double> returnVal = Fr()*BreitWigner();
   if(dbThis) cout << " value = " << returnVal 
        << "|A|^2 | " << returnVal.real()*returnVal.real() 
 	       + returnVal.imag()*returnVal.imag()

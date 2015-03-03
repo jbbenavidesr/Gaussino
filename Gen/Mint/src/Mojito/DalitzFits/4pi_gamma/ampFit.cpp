@@ -225,7 +225,7 @@ int ampFit(){
     cout << "ex " << j_ex << ") " << " got event pattern: " << pat << endl;
     DalitzEventList BpEventList, BmEventList;
 
-    bool doWeightTest= false && (0 == j_ex);
+    bool doWeightTest= true && (0 == j_ex);
     if(doWeightTest){
       SignalGenerator sgP_generateWeighted(BpAmps.get());
       sgP_generateWeighted.setWeighted();
@@ -293,10 +293,6 @@ int ampFit(){
     mini.doFit();
     mini.printResultVsInput();
     BpPdf.doFinalStats();
-    BpPdf.saveEachAmpsHistograms("Bp");
-    BmPdf.doFinalStats();
-    BmPdf.saveEachAmpsHistograms("Bm");
-
     cout << "ex " << j_ex << ") " << "done fit" << endl;
 
     MinuitParameterSet::getDefaultSet()->fillNtp(paraFile, ntp);    

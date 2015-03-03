@@ -8,7 +8,8 @@
 // Geant4
 #include "G4TrackingManager.hh"
 #include "G4VProcess.hh"
-
+// GiGa
+//#include "GiGa/GiGaMACROs.h"
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
 #include "GaussTools/GaussTrackInformation.h"
@@ -24,8 +25,8 @@
  */
 
 // ============================================================================
-DECLARE_TOOL_FACTORY( GaussTrackActionByEnergy )
-
+DECLARE_TOOL_FACTORY( GaussTrackActionByEnergy );
+// ============================================================================
 
 // ============================================================================
 /** standard constructor 
@@ -50,14 +51,14 @@ GaussTrackActionByEnergy::GaussTrackActionByEnergy
   declareProperty ( "StoreEnergy" , m_storeByEnergy ) ;
   declareProperty ( "Threshold"   , m_threshold     ) ;
   declareProperty ( "RejectRICHPhotoelectrons", m_rejectRICHphe );
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// Destructor
 // ============================================================================
 GaussTrackActionByEnergy::~GaussTrackActionByEnergy() {}
-
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -108,8 +109,8 @@ void GaussTrackActionByEnergy::PreUserTrackingAction  ( const G4Track* track )
   
   mark( info ) ; 
   
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform action 
@@ -118,8 +119,8 @@ void GaussTrackActionByEnergy::PreUserTrackingAction  ( const G4Track* track )
  */
 // ============================================================================
 void GaussTrackActionByEnergy::PostUserTrackingAction  
-( const G4Track* /* track */ ) {} 
-
+( const G4Track* /* track */ ) {} ;
+// ============================================================================
 
 // ============================================================================
 // The END 

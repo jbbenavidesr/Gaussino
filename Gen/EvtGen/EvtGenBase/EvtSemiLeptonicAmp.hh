@@ -29,8 +29,7 @@ class EvtId;
 class EvtSemiLeptonicAmp{
 
  public:
-  virtual ~EvtSemiLeptonicAmp( ) { } ;
-   
+
   //Daughters are initialized and have been added to the parent.
   //No need to carry around the daughters seperately!
 

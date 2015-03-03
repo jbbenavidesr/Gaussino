@@ -28,14 +28,12 @@ class Flatte : public BW_BW, virtual public ILineshape{
   double gK() const;
 
   virtual double GofM(); // <--the trick is all here
-  std::complex<double> complexGofM();
-  virtual std::complex<double> BreitWigner();
 
   double mPi0();
   double mPiPlus();
   double mK0();
   double mKPlus();
-  static std::complex<double> aSqrtTerm( const double& a, const double& b);
+  static double aSqrtTerm(double a, double b);
   static double pdgMass(int PDG_ID);
  public:
   
@@ -57,7 +55,7 @@ class Flatte : public BW_BW, virtual public ILineshape{
   // (magic of 'virtual' functions)
 
   virtual std::string name() const{
-    return "Flatte_("+_theDecay.oneLiner() +")";
+    return "FLATTE_alaBaBar_pipi("+_theDecay.oneLiner() +")";
   }
 
   virtual ~Flatte(){}

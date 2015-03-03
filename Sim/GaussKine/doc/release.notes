@@ -4,43 +4,6 @@
 ! Purpose     : Code to exchange kinematic information with Geant4
 !-----------------------------------------------------------------------------
 
-!======================== GaussKine v6r4p1 2014-12-18 ========================
-! 2014-11-26 - Gloria Corti
- - Fix warning when compiling with --pedantic
-
-! 2014-11-19 - Marco Clemencic
- - Fixed CMake configuration.
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
-!========================= GaussKine v6r4 2014-10-07 =========================
-! 2014-08-25 - Philip Ilten
- - GenerationToSimulation.{h,cpp}: cleaned code and added functionality to
-   specify additional particle types to keep
-
-!======================== GaussKine v6r3p1 2013-10-10 ========================
-! 2013-09-23 - Marco Clemencic
- - Added CMake configuration file.
-
-!========================= GaussKine v6r3 2013-07-24 =========================
-! 2013-07-15 - Patrick Robbe
- - Reorder according to barcodes the HepMC particles before sending
-   them to G4, this should help reproducing the events
- - Transfer to Geant4 top quarks
- - Give vertex code "StringFragmentation" to daughters of b and c quarks
-
-! 2013-07-10 - Patrick Robbe
- - GenerationToSimulation.cpp: save b and c quarks in MCParticles
-
-! 2013-07-03 - Patrick Robbe
- - GenerationToSimulation.cpp: select switch off of G4 printout for 
-   unknown PDG Ids from the algorithm message service output level
-
-!========================= GaussKine v6r2 2013-06-27 =========================
-! 2013-05-31 - Patrick Robbe
- - GenerationToSimulation.cpp: switch off G4 printout of unknown PDG ID
-
 !========================= GaussKine v6r1 2012-10-19 =========================
 ! 2012-09-08 - Patrick Robbe
  - GenerationToSimulation.cpp: transfer correctly particles for Higgs events

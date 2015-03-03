@@ -110,8 +110,6 @@ class FitAmpList
   virtual unsigned int size() const;
   virtual FitAmplitude* getAmpPtr(int i);
   const FitAmplitude* getAmpPtr(int i) const;
-
-  virtual MINT::MinuitParameterSet* getMinuitParameterSet(){return _minuitParaSet;};
  
   virtual bool CPConjugateSameFitParameters();
   virtual MINT::counted_ptr<FitAmpList> GetCPConjugateSameFitParameters() const;

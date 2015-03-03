@@ -10,6 +10,7 @@
 /// GiGa
 #include "GiGa/GiGaUtil.h"
 #include "GiGa/IGiGaSvc.h"
+//#include "GiGa/GiGaMACROs.h"
 /// local 
 #include "GiGaEventActionSequence.h"
 
@@ -24,7 +25,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaEventActionSequence )
+DECLARE_TOOL_FACTORY( GiGaEventActionSequence );
 
 // ============================================================================
 /** standard constructor 
@@ -43,16 +44,14 @@ GiGaEventActionSequence::GiGaEventActionSequence
   : GiGaEventActionBase ( type , name  , parent ) 
   , m_members      ()  ///< default empty list
   , m_actions      ()
-{ 
-  declareProperty( "Members" , m_members ); 
-}
-
+{ declareProperty( "Members" , m_members ); };
+// ============================================================================
 
 // ============================================================================
 /// destructor 
 // ============================================================================
-GiGaEventActionSequence::~GiGaEventActionSequence(){}
-
+GiGaEventActionSequence::~GiGaEventActionSequence(){};
+// ============================================================================
 
 // ============================================================================
 /** initialize the event action object
@@ -84,8 +83,8 @@ StatusCode GiGaEventActionSequence::initialize()
   }       
   //
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform begin-of-event action
@@ -101,8 +100,8 @@ void GiGaEventActionSequence::BeginOfEventAction ( const G4Event* event )
       IGiGaEventAction* action = *iaction ;
       if( 0 != action ) { action->BeginOfEventAction( event ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** perform end-of-event action
@@ -118,8 +117,8 @@ void GiGaEventActionSequence::EndOfEventAction ( const G4Event* event )
       IGiGaEventAction* action = *iaction ;
       if( 0 != action ) { action->EndOfEventAction( event ) ; }
     }
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The END 

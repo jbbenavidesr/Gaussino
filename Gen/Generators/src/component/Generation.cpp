@@ -37,7 +37,7 @@
 
 // Declaration of the Algorithm Factory
 
-DECLARE_ALGORITHM_FACTORY( Generation )
+DECLARE_ALGORITHM_FACTORY( Generation );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -106,7 +106,7 @@ Generation::Generation( const std::string& name,
 //=============================================================================
 // Destructor
 //=============================================================================
-Generation::~Generation() {}
+Generation::~Generation() {}; 
 
 //=============================================================================
 // Initialisation. Check parameters
@@ -324,9 +324,6 @@ StatusCode Generation::execute() {
 StatusCode Generation::finalize() {
   using namespace GenCounters ;
   debug( ) << "==> Finalize" << endmsg ;
-  // Add the event type number to the log file
-  m_xmlLogTool -> addEventType( m_eventType ) ;
-  
   // Print the various counters
   if ( 0 != m_pileUpTool ) { m_pileUpTool -> printPileUpCounters( ) ; }
 

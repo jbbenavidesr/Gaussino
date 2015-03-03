@@ -16,7 +16,6 @@
 class IProductionTool ;
 class IDecayTool ;
 class IGenCutTool ;
-class ICounterLogFile ;
 namespace LHCb { class IParticlePropertySvc ; }
 
 namespace HepMC { 
@@ -143,9 +142,6 @@ class ExternalGenerator : public GaudiTool ,
 
   /// Generator level cut tool to apply to generated interactions
   IGenCutTool     * m_cutTool        ;
-
-  /// Log file tool
-  ICounterLogFile * m_xmlLogTool ;
   
   /// Name assigned to the HepMC event and stored with it
   std::string m_hepMCName ;

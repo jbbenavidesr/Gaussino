@@ -4,14 +4,6 @@
 ! Responsible : G.Corti
 ! -----------------------------------------------------------------------------
 
-!======================== GaussAlgs v6r2 2013-07-17 ===========================
-! 2013-05-17 - Gloria Corti
- - Back-ported in branch v6b the modification below by Patrick. Cannot pick the
-   others since the code requires a change in the Event/MCEvent for SL hits
-
-! 2013-05-01 - Patrick Robbe
- - GenInit.cpp: set to 0 the event type of the GenHeader when creating it.
-   It will be filled to the correct value then in Generators/Generation.
 
 !======================== GaussAlgs v6r1 2012-10-19 ===========================
 ! 2012-09-27 - Sajan Easo

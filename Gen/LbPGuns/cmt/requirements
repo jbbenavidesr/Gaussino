@@ -7,7 +7,7 @@
 #============================================================================
 
 package          LbPGuns
-version          v6r0p1
+version          v4r0
 
 # Structure
 #============================================================================
@@ -20,8 +20,6 @@ use GaudiAlg       v*
 use GenEvent       v*      Event
 use DetDesc        v*      Det
 use Generators     v*      Gen
-
-use PGunsData      v*      Gen
 
 # Export include files
 #============================================================================

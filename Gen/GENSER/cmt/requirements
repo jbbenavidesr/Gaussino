@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v12r7p1
+version v12r4
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -17,8 +17,9 @@ use GaudiPolicy  v*
 #-- LHAPDF
 #============================================================================
 macro lhapdf_native_version "5.8.8"
-use lhapdf     v* LCG_GeneratorsInterfaces
-use LHAPDFSets v1r*
+use lhapdf v* LCG_GeneratorsInterfaces
+set LHAPATH $(lhapdf_path)/share/lhapdf/PDFsets
+
 
 #-- Herwig++ and ThePeg
 # Set native versions of required software.
@@ -27,14 +28,10 @@ macro herwigpp_native_version "2.6.1a"
 macro thepeg_native_version   "1.8.1"
 
 
-#-- AlpGen
+#-- AlpGen (until interface package exist in LCG)
 #============================================================================
 macro alpgen_native_version "2.1.4"
 
-
-#-- Powheg-box
-#============================================================================
-macro powhegbox_native_version "r2092"
 
 #-- Photos++ and Taula++ 
 #============================================================================
@@ -60,7 +57,7 @@ macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
 #-- Rivet for reference analysis with comparison with published data and
 #-- Professor for tuning
 #============================================================================
-macro rivet_native_version "1.8.3"
+macro rivet_native_version "1.8.2"
 
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6

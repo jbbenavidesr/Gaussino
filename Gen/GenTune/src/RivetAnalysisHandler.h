@@ -26,8 +26,6 @@ private:
 
   std::pair<HepMC::GenParticle*,HepMC::GenParticle*> findBeamParticles(HepMC::GenEvent* hEvent);
 
-  double getTotalXSection();
-
   bool detectBeamCrossingAngles(HepMC::GenEvent* hEvent);
 
   /// Property: The base file name (prefix of filenames) to write results to ("MyRivet").
@@ -54,19 +52,13 @@ private:
   /// Property: List of additional file paths where analyses should be looked for, e.g. add os.path.abspath('.') when analysis lib is in option file directory ([]).
   vector<string> m_analysisPaths;
 
-  /// Indicates whether the cross-section is needed by any of the analyses run in job (false).
-  bool _reqCrossSection;
+  /// Property: Indicates whether the cross-section is to be read from data (True).
+  bool m_reqCrossSection;
 
-  /// Indicates which source should be queried for cross-section value when needed (0 - invalid). Sources are: 1 - HepMC event; 2 - External cross-section value; 3 - BeamParameters total cross-section value
-  int _xsectionSource;
-
-  /// Property: Forces GenTune to set the cross-section to the value provided externally in each event (False).
-  bool m_forceCrossSection;
-
-  /// Property: The externally provided cross-section for the present run [picobarn]; ignored when read from data (-1.).
+  /// Property: The externally provided cross-section for the present run (mb or mub!?); ignored when read from data (-1.).
   double m_crossSection;
 
-  /// Property: Switch that controls the transformation of status ID of particles (given by EvtGen) back to Pythia defaults (False).
+  /// Switch that controls the transformation of status ID of particles (given by EvtGen) back to Pythia defaults (False).
   bool m_modStatusID;
 
   /// When crossing angle presence is detected these flags are true.
@@ -112,8 +104,7 @@ private:
   /// Property: Internal statistical message print-out suppression hard limit (200).
   long unsigned int m_logHardLimit;
 
-  /// Internal function: Set cross-section for each event when cross-section value provided in options
-  void compatSetCrossSection(HepMC::GenEvent*);
+  void compatSetCrossSection();
 
   /// Checks whether messages specific to internal flag statId are suppressed or not.
   bool statLogEnabled(unsigned int statId);

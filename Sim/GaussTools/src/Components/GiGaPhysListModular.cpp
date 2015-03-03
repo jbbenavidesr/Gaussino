@@ -32,7 +32,7 @@
  */
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaPhysListModular )
+DECLARE_TOOL_FACTORY( GiGaPhysListModular );
 
 // ============================================================================
 /** standard constructor 
@@ -54,8 +54,8 @@ GiGaPhysListModular::GiGaPhysListModular
 {
   declareProperty( "PhysicsConstructors"  , m_physconstr);
   declareProperty( "DumpCutsTable", m_dumpCutsTable);
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// destructor 
@@ -63,8 +63,8 @@ GiGaPhysListModular::GiGaPhysListModular
 GiGaPhysListModular::~GiGaPhysListModular()
 {
   m_physconstr.clear();
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 StatusCode GiGaPhysListModular::initialize() 
@@ -85,6 +85,10 @@ StatusCode GiGaPhysListModular::initialize()
       tool<IGiGaPhysicsConstructor>( *constructor , this ) ;
     if( 0 == theconstr ) { return StatusCode::FAILURE ; }
     
+    // NB!!! prevent the deletion of contructors by Gaudi
+    //for( int i = 1 ; i < 1000 ; ++i ) 
+    //{ theconstr->addRef() ; }
+    
     if( 0 == theconstr -> physicsConstructor() ) 
     { return Error ( "G4PhysicsConstructor* points to NULL!" ) ; }
     
@@ -99,17 +103,14 @@ StatusCode GiGaPhysListModular::initialize()
   }
   
   return StatusCode::SUCCESS;
-}
+};
 
 // ============================================================================
 StatusCode GiGaPhysListModular::finalize () 
 {
-  // reset G4 vector of physics lists (they have been destoyed by the Gaudi
-  // tool release methods 
-  physicsVector -> clear() ;
-
+  // release all constructors 
   return GiGaPhysListBase::finalize  ();
-}
+};
 
 
 // ============================================================================
@@ -136,7 +137,7 @@ void GiGaPhysListModular::SetCuts()
       << cutForPositron    () / mm << " mm " << endreq ;
   
   if (m_dumpCutsTable) { DumpCutValuesTable(); }
-}
+};
   
 
 // ============================================================================

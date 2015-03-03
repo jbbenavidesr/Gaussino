@@ -26,7 +26,7 @@ DECLARE_TOOL_FACTORY( XmlCounterLogFile )
 XmlCounterLogFile::XmlCounterLogFile( const std::string& type,
                                       const std::string& name,
                                       const IInterface* parent )
-: GaudiTool ( type, name , parent ) , m_version( "1.1" ) 
+  : GaudiTool ( type, name , parent ) 
 {
   declareInterface<ICounterLogFile>(this);
   declareProperty( "FileName" , m_fileName = "GeneratorLog.xml" ) ;
@@ -83,43 +83,11 @@ void XmlCounterLogFile::addCrossSection( const std::string & name ,
                                          const unsigned int number , 
                                          const double value ) 
 {
-  m_file << "  <crosssection id = \"" << processId << "\">" << std::endl 
+  m_file << "  <crosssection id = " << processId << ">" << std::endl 
          << "    <description> \""<< name << "\" </description>" << std::endl
          << "    <generated> " << number << " </generated>" << std::endl 
          << "    <value> " << format( "%.5g" , value ) << " </value>" << std::endl 
          << "  </crosssection>" << std::endl ;
-}
-
-//=============================================================================
-// Add event type value
-//=============================================================================
-void XmlCounterLogFile::addEventType( const unsigned int evType )
-{
-  m_file << "  <eventType>" << evType << "</eventType>" << std::endl ;
-}
-
-//=============================================================================
-// Add version value
-//=============================================================================
-void XmlCounterLogFile::addGaussVersion( const std::string & version )
-{
-  m_file << "  <gaussVersion>" << version << "</gaussVersion>" << std::endl ;
-}
-
-//=============================================================================
-// Add version value
-//=============================================================================
-void XmlCounterLogFile::addMethod( const std::string & type )
-{
-  m_file << "  <method>" << type << "</method>" << std::endl ;
-}
-
-//=============================================================================
-// Add version value
-//=============================================================================
-void XmlCounterLogFile::addGenerator( const std::string & generator )
-{
-  m_file << "  <generator>" << generator << "</generator>" << std::endl ;
 }
 
 //=============================================================================
@@ -138,8 +106,7 @@ StatusCode XmlCounterLogFile::initialize( )
     return Error( "Cannot open xml log file" ) ;
   
   m_file << "<?xml version=\"1.0\"?>" << std::endl 
-         << "<generatorCounters>" << std::endl 
-         << "  <version>" << m_version << "</version>" << std::endl ;
+         << "<generatorCounters>" << std::endl ;
 
   return StatusCode::SUCCESS ;
 }

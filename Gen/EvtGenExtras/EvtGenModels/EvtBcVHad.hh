@@ -33,8 +33,7 @@ using std::string;
 
 class EvtBcVHad:public  EvtDecayAmp  {
 public:
-  EvtBcVHad() : nCall( 0 ) , whichfit( 0 ) , idVector( 0 ) , out_code( 0 ) , 
-                ffmodel( 0 ) , wcurr( 0 ) {  };
+    EvtBcVHad() {  };
     virtual ~EvtBcVHad();
     std::string getName();
     EvtDecayBase* clone();

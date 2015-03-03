@@ -209,7 +209,7 @@ void EvtBtoXsll::decay( EvtParticle *p ){
 
   double mB = p->mass();
   double ml = mass[1];
-  double pb(0.);
+  double pb;
 
   int im = 0;
   static int nmsg = 0;

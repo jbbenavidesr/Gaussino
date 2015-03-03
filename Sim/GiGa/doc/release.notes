@@ -6,33 +6,6 @@
 !               for G4 <-> Gaudi applications 
 !-----------------------------------------------------------------------------
 
-!========================= GiGa v20r2p2 2013-10-10 ===========================
-! 2013-09-24 - Marco Clemencic
- - Disable -pedantic in the CMake configuration because it casuses a build
-   error in GiGaTrajectory.cpp (redefinition of isnan and finite).
-
-! 2013-09-23 - Marco Clemencic
- - Added CMake configuration file.
-
-!========================= GiGa v20r2p1 2013-07-24 ===========================
-! 2013-06-28 - Patrick Robbe
- - Fix coverity warnings
-
-!========================== GiGa v20r2 2013-06-27 ============================
-! 2012-05-31 - Patrick Robbe
- - GiGa, GiGaRunManager, GiGaPhysConstructorBase, GiGaPhysListBase, 
-   GiGaSensDetBase: fix unreleased tool issue
- - Set G4 particle table verbose level to 0 to avoid G4 warnings about
-   unknown PDG Ids
-
-!========================== GiGa v20r1 2013-02-14 ============================
-! 2012-02-07 - Patrick Robbe
- - GiGaRunManager.h: Fix release method to avoid compilation warnings
-
-! 2012-02-05 - Patrick Robbe
- - Fix release method to avoid compilation warnings when create configurables
-   in GiGaPhysConstructorBase.cpp, GiGaPhysListBase.cpp and GiGaSensDetBase.cpp 
-
 !========================== GiGa v20r0 2012-07-23 ============================
 ! 2012-07-23 - Gloria Corti
  - Adapt to LHCb::ParticlePropertySvc

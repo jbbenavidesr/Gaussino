@@ -30,8 +30,6 @@ Print:quiet = on
 # process selection
 # -------------------------------
 SoftQCD:all = on
-Charmonium:all = on
-Bottomonium:all = on
 # -------------------------------
 # couplings and scales
 # -------------------------------

@@ -1,6 +1,7 @@
       integer function hilunhep(beam)
-      IMPLICIT REAL*8(A-H,O-Z)
+
       INTEGER BEAM
+      
 C...Purpose: to convert HIJING event record contents to
 C...the standard event record common block.
 C...returns number of b quarks in the event
@@ -14,7 +15,7 @@ C      DOUBLE PRECISION DUMMY
       
       CHARACTER*16 CHAU
       
-      COMMON/HIMAIN1/NATT,NATTPD,EATT,JATT,NT,NP,N0,N01,N10,N11 
+      COMMON/HIMAIN1/NATT,EATT,JATT,NT,NP,N0,N01,N10,N11 
       COMMON/HIMAIN2/KATT(130000,4),PATT(130000,4) 
       
 C...HEPEVT commonblock.

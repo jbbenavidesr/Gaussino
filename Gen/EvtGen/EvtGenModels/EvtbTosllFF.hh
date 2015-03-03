@@ -28,8 +28,6 @@ class EvtbTosllFF{
 
  public:
 
-  virtual ~EvtbTosllFF( ) { } ;
-
   virtual void getScalarFF(EvtId /*parent*/, EvtId /*daught*/,double /*t*/, 
                            double /*mass*/, double& /*fp*/,double& /*f0*/,
 			   double& /*ft*/) {return;}

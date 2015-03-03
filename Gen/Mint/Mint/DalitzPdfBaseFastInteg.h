@@ -73,10 +73,10 @@ class DalitzPdfBaseFastInteg
   MINT::IEventGenerator<IDalitzEvent>* makeDefaultGenerator();
 
  public:
-  DalitzPdfBaseFastInteg(IDalitzEventAccess* events
-			 , MINT::IEventGenerator<IDalitzEvent>* generator
-			 , IFastAmplitudeIntegrable* amps
-			 , double precision = 1.e-3
+  DalitzPdfBaseFastInteg( IDalitzEventAccess* events
+			  , MINT::IEventGenerator<IDalitzEvent>* generator
+			  , IFastAmplitudeIntegrable* amps
+			  , double precision = 1.e-3
 			 );
 
   DalitzPdfBaseFastInteg(IDalitzEventList* events
@@ -156,17 +156,7 @@ class DalitzPdfBaseFastInteg
 
   void setIntegratorFileName(const std::string& commaSeparatedList);
 
-  double getIntegralValue() const{
-    return _norm;
-  }
-  double getIntegralValue(){
-    if(_norm < 0) getNorm(); return _norm;
-  }
-  double redoIntegrator(){
-    _norm = -1;
-    getNorm();
-    return _norm;
-  }
+  double getIntegralValue() const{return _norm;}
 
   void doFinalStats(MINT::Minimiser* mini=0);
 };

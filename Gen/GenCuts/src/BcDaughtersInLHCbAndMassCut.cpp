@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( BcDaughtersInLHCbAndMassCut )
+DECLARE_TOOL_FACTORY( BcDaughtersInLHCbAndMassCut );
 
 
 //=============================================================================
@@ -141,7 +141,7 @@ bool BcDaughtersInLHCbAndMassCut::applyCut( ParticleVector & theParticleVector ,
       itp = theParticleVector.erase( itp ) ;
     } else ++itp ;
   }
-  debug() << "+++++++++ out with : " << ! theParticleVector.empty() << endmsg ;
+  msg() << "+++++++++ out with : " << ! theParticleVector.empty() << endmsg ;
   return ( ! theParticleVector.empty() ) ;
 }
 
@@ -152,14 +152,11 @@ bool BcDaughtersInLHCbAndMassCut::passCuts( const HepMC::GenParticle * theSignal
   const {
   HepMC::GenVertex * EV = theSignal -> end_vertex() ;
   if ( 0 == EV ) {
-    // this seems counter intuitive, but it is correct.
-    // In case there are more than one Bc in the event, only one has been decayed at the moment.
-    // The others will be decayed freely later: they dont have an endvertex (nor daughters).
-    return true ;
+    msg() << "What???" << endmsg ;
+    return false ;
+    //return true ;
   }
-
-  // check if pz of the Bc is positive
-  if ( theSignal -> momentum().pz() < 0. ) return false ;  
+  
   
   typedef std::vector< HepMC::GenParticle * > Particles ;
   Particles stables ;
@@ -235,8 +232,8 @@ bool BcDaughtersInLHCbAndMassCut::passCuts( const HepMC::GenParticle * theSignal
     debug() << "No lepton1, lepton2 found in this event" << endmsg ;
     return false;
   } else {
-    debug() << "lepton1: " << muPlusList.size() << endmsg;
-    debug() << "lepton2: " << muMinusList.size() << endmsg;
+    msg() << "lepton1: " << muPlusList.size() << endmsg;
+    msg() << "lepton2: " << muMinusList.size() << endmsg;
   }
   
   //====================================================================
@@ -250,7 +247,7 @@ bool BcDaughtersInLHCbAndMassCut::passCuts( const HepMC::GenParticle * theSignal
     // PT Cut 
     if(m_PreselDausPT) {
       if( (*itePlus)->momentum().perp() < m_DausPTMin ) {
-          debug() << "Event not pass minimal PT daughter cut "<< m_DausPTMin << ", with PT: "
+          msg() << "Event not pass minimal PT daughter cut "<< m_DausPTMin << ", with PT: "
                   << (*itePlus)->momentum().perp() << endmsg ;
           continue;
         }
@@ -262,7 +259,7 @@ bool BcDaughtersInLHCbAndMassCut::passCuts( const HepMC::GenParticle * theSignal
       // PT Cut 
       if(m_PreselDausPT) {
         if( (*iteMinus)->momentum().perp() < m_DausPTMin ) {
-          debug() << "Event not pass minimal PT daughter cut " << m_DausPTMin << ", with PT: "
+          msg() << "Event not pass minimal PT daughter cut " << m_DausPTMin << ", with PT: "
                   << (*iteMinus)->momentum().perp() << endmsg ;
           continue;
         }
@@ -277,22 +274,22 @@ bool BcDaughtersInLHCbAndMassCut::passCuts( const HepMC::GenParticle * theSignal
       
         // mmMass > mmMaxMass 
         if( m_PreselMaxMass && mmVect.m() > m_mmMaxMass ) {
-          debug() << "Event not pass max Mass cut " << m_mmMaxMass << ", with mass:" << mmVect.m() << endmsg ;
+          msg() << "Event not pass max Mass cut " << m_mmMaxMass << ", with mass:" << mmVect.m() << endmsg ;
           continue;
         }
 
         // mmMass < mmMinMass 
         if( m_PreselMinMass && mmVect.m() < m_mmMinMass ) {
-          debug() << "Event not pass min Mass cut " << m_mmMinMass << ", with mass:" << mmVect.m() << endmsg ;
+          msg() << "Event not pass min Mass cut " << m_mmMinMass << ", with mass:" << mmVect.m() << endmsg ;
           continue;
         }
-        debug() << "!!!!!!!!!!!!!!!!!!!!!!Event pass: mass:" << mmVect.m() << endmsg ;
+        msg() << "!!!!!!!!!!!!!!!!!!!!!!Event pass: mass:" << mmVect.m() << endmsg ;
         return true ;
       }
-      debug() << "=====================Event pass: mass:" << mmVect.m() << endmsg ;
+      msg() << "=====================Event pass: mass:" << mmVect.m() << endmsg ;
       return true ;
     }
   }
-  debug() << "Final false" << endmsg ;
+  msg() << "Final false" << endmsg ;
   return false ;
 }

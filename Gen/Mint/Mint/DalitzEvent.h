@@ -16,7 +16,6 @@
 #include "Mint/Calculate4BodyProps.h"
 
 #include "Mint/RememberAnything.h"
-#include "Mint/RememberAnythingFast.h"
 
 #include "Mint/Permutator.h"
 
@@ -36,8 +35,6 @@ class DalitzEvent : virtual public IDalitzEvent{
 
   static long int _eventCounter;
 
-  static long int _rememberVectorCounter;
-
   // begin all data members:
   DalitzEventPattern          _pat;
   std::vector<TLorentzVector> _p;
@@ -45,7 +42,6 @@ class DalitzEvent : virtual public IDalitzEvent{
   mutable double _rememberPhaseSpace;
 
   RememberAnything<std::complex<double> >  _rememberAmps;
-  RememberAnythingFast<std::complex<double> >  _rememberAmpsFast;
 
   double _aValue;
   double _weight;
@@ -111,8 +107,6 @@ public:
 
   virtual ~DalitzEvent();
 
-  static long int assignUniqueRememberNumber();
-
   IDalitzEvent* clone() const;
 
   static long int eventCounter(){ return _eventCounter;}
@@ -122,10 +116,6 @@ public:
 
   virtual void   setGeneratorPdfRelativeToPhaseSpace(double gpdf);
   virtual double getGeneratorPdfRelativeToPhaseSpace()const;
-
-  virtual void P_conjugateYourself();
-  virtual void C_conjugateYourself();
-  virtual void CP_conjugateYourself();
 
   bool resetST();
 
@@ -155,9 +145,6 @@ public:
   virtual double getAValue()const{return _aValue;}
 
   virtual const DalitzEventPattern& eventPattern() const{return _pat;}
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
-  virtual const std::vector<TLorentzVector>& getP() const{return _p;}
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
   virtual const TLorentzVector& p(unsigned int i) const; // 4-vectors
   virtual TLorentzVector& p(unsigned int i); // 4-vectors
   virtual double s(unsigned int i, unsigned int j) const;       // sij
@@ -172,15 +159,9 @@ public:
   virtual bool retrieveComplex(void* key, std::complex<double>& value){
     return _rememberAmps.find(key, value);
   }
-  virtual bool retrieveComplex(int i, std::complex<double>& value){
-    return _rememberAmpsFast.get(i, value);
-  }
 
   virtual void setComplex(void* key, const std::complex<double>& value){
     _rememberAmps.set(key, value);
-  }
-  virtual void setComplex(int i, const std::complex<double>& value){
-    _rememberAmpsFast.set(i,value);
   }
  
   // helpful
@@ -204,9 +185,9 @@ public:
 				, TRandom* rnd = 0);
 
 
-  std::string makeNtupleVarnames(const bool addSij)const;
-  bool fillNtupleVarArray(Double_t* array, unsigned int arraySize, const bool addSij) const;
-  unsigned int ntupleVarArraySize(const bool addSij) const;
+  std::string makeNtupleVarnames()const;
+  bool fillNtupleVarArray(Double_t* array, unsigned int arraySize) const;
+  unsigned int ntupleVarArraySize() const;
 
   // mainly for debugging and x-check with prev version
   Calculate4BodyProps makeCalculate4BodyProps() const;

@@ -60,16 +60,15 @@ public MINT::EventPtrList<IDalitzEvent, DalitzEvent>
   DalitzHistoSet reWeightedHistoSet(IGetDalitzEvent* w) const;
   DalitzHistoSet weighedReWeightedHistoSet(IGetDalitzEvent* w) const;
 
-  bool save(const std::string& fname = "DalitzEvents.root", const bool addSij = false) const;
+  bool save(const std::string& fname = "DalitzEvents.root") const;
   bool fromFile(const std::string& fname = "DalitzEvents.root");
 
-  TNtupleD* makeNtuple(const bool addSij = false) const;
-  TNtupleD* makeNtuple(const std::string& ntpName, const bool addSij = false) const;
+  TNtupleD* makeNtuple() const;
+  TNtupleD* makeNtuple(const std::string& ntpName) const;
 
-  bool saveAsNtuple(const std::string& fname="DalitzEvents.root", const bool addSij = false)const;
+  bool saveAsNtuple(const std::string& fname="DalitzEvents.root")const;
   bool saveAsNtuple(const std::string& fname
 		    , const std::string& ntpName
-		    , const bool addSij = false
 		    ) const;
   bool fromNtuple(TTree* ntp);
   bool fromNtupleFile(const std::string& fname="DalitzEvents.root");

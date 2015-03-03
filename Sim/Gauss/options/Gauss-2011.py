@@ -12,5 +12,5 @@ importOptions("$APPCONFIGOPTS/Gauss/Sim08-Beam3500GeV-md100-2011-nu2.py")
 
 #--Set database tags using those for Sim08
 from Configurables import LHCbApp
-LHCbApp().DDDBtag   = "Sim08-20130503"
-LHCbApp().CondDBtag = "Sim08-20130503-vc-md100"
+LHCbApp().DDDBtag   = "dddb-20130312"
+LHCbApp().CondDBtag = "sim-20130222-vc-md100"

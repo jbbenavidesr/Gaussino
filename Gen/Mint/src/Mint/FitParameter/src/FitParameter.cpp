@@ -2,7 +2,6 @@
 // status:  Mon 9 Feb 2009 19:17:55 GMT
 #include "Mint/FitParameter.h"
 #include "Mint/MinuitParameterSet.h"
-#include "TRandom3.h"
 
 #include <iostream>
 using namespace std;
@@ -21,7 +20,6 @@ FitParameter::FitParameter(const std::string& name
   , NamedParameterBase(name, fname, vb)
   , IMinuitParameter()
   //  , _minPtr(0)
-  , _blinding(0)
   , _pset(0)
   , _psetIndex(-9999)
   //  , _pN(-1)
@@ -31,14 +29,12 @@ FitParameter::FitParameter(const std::string& name
   , _minInit(0)
   , _maxInit(0)
   , _scanParameters(name + "_Scan", fname, NamedParameterBase::QUIET)
-  , _blindingParameters(name + "_Blind", fname, NamedParameterBase::QUIET)
 {
   setFromParsedFile();
   MinuitParameterSet* ps = setPtr;
   if(0 == ps) ps = MinuitParameterSet::getDefaultSet();
   addToParSet(ps);
   initToResult();
-  setupBlinding();
   //  cout << "FitParameter constructed " << this->name() << endl;
 }
 FitParameter::FitParameter(const std::string& name
@@ -54,7 +50,6 @@ FitParameter::FitParameter(const std::string& name
   , NamedParameterBase(name, 0, vb)
   , IMinuitParameter()
   //  , _minPtr(0)
-  , _blinding(0)
   , _pset(0)
   , _psetIndex(-9999)
   //  , _pN(-1)
@@ -64,7 +59,6 @@ FitParameter::FitParameter(const std::string& name
   , _minInit(mi)
   , _maxInit(ma)
   , _scanParameters(name + "_Scan", 0, NamedParameterBase::QUIET)
-  , _blindingParameters(name + "_Blind", 0, NamedParameterBase::QUIET)
 {
   _gotInitialised = true;
   MinuitParameterSet* ps = setPtr;
@@ -73,8 +67,6 @@ FitParameter::FitParameter(const std::string& name
   addToParSet(ps);
 
   initToResult();
-  setupBlinding();
-
   //cout << "FitParameter constructed a " << this->name() << endl;
 }
 
@@ -87,7 +79,6 @@ FitParameter::FitParameter(const std::string& name
   , NamedParameterBase(name, 0, vb)
   , IMinuitParameter()
   //  , _minPtr(0)
-  , _blinding(0)
   , _pset(0)
   , _psetIndex(-9999)
   //  , _pN(-1)
@@ -97,36 +88,13 @@ FitParameter::FitParameter(const std::string& name
   , _minInit(0)
   , _maxInit(0)
   , _scanParameters(name + "_Scan", 0, NamedParameterBase::QUIET)
-  , _blindingParameters(name + "_Blind", 0, NamedParameterBase::QUIET)
 {
   setFromParsedFile();
   MinuitParameterSet* ps = setPtr;
   if(0 == ps) ps = MinuitParameterSet::getDefaultSet();
   addToParSet(ps);
   initToResult();
-  setupBlinding();
   //cout << "FitParameter constructed b " << this->name() << endl;
-}
-
-
-bool FitParameter::setupBlinding(){
-  if(! _blindingParameters.gotInitialised()) return true;
-  int seed = (int) fabs(_blindingParameters.getVal(0));
-  double min=-1, max=1;
-
-  if(_blindingParameters.size() > 1){
-    min = _blindingParameters.getVal(1);
-  }
-  if(_blindingParameters.size() > 2){
-    max = _blindingParameters.getVal(2);
-  }else{
-    max = min + 1;
-  }
-  
-  TRandom3 rnd(seed + 99);
-  _blinding = rnd.Rndm()*(max - min) + min;
-  return true;
-
 }
 
 // not so clear if I should keep copy constructor...
@@ -135,7 +103,6 @@ FitParameter::FitParameter(const FitParameter& other)
   : INamedParameter()
   , NamedParameterBase(other)
   , IMinuitParameter()
-  , _blinding(other._blinding)
   //  , _minPtr(other._minPtr)
   , _pset(other._pset)
   , _psetIndex(other._psetIndex)
@@ -146,7 +113,6 @@ FitParameter::FitParameter(const FitParameter& other)
   , _minInit(other._minInit)
   , _maxInit(other._maxInit)
   , _scanParameters(other._scanParameters)
-  , _blindingParameters(other._blindingParameters)
   , _meanResult(other._meanResult)
   , _errResult(other._errResult)
   , _errPosResult(other._errPosResult)
@@ -200,10 +166,10 @@ int FitParameter::parSetIndex() const{
 
 bool FitParameter::setFromParsedLine(const ParsedParameterLine& line){
   const std::vector<std::string>& vsl = line.parsedStrings();
-  if(vsl.size() < 3){
+  if(vsl.size() < 4){
     if(! _quiet) cout << "ERROR in FitParameter::setFromParsedLine"
 		      << " need at least 3 parameters:\n"
-		      << " iFix, initial mean"
+		      << " iFix, initial mean, initial stepsize"
 		      << endl;
     return false;
   }
@@ -309,9 +275,6 @@ void FitParameter::setResult(double fitMean
 double FitParameter::mean() const{
   return _meanResult;
 }
-double FitParameter::blindedMean() const{
-  return mean() - blinding() ;
-}
 double FitParameter::min() const{
   return minInit();
 }
@@ -338,7 +301,7 @@ void FitParameter::print(std::ostream& os) const{
   // ... in a format that can be read back in
   os << "\"" <<  name() << "\""
      << "\t" << iFixInit()
-     << "\t" << blindedMean()
+     << "\t" << mean()
      << "\t" << err()
      << "\t" << min()
      << "\t" << max();
@@ -346,7 +309,7 @@ void FitParameter::print(std::ostream& os) const{
 void FitParameter::printVal(std::ostream& os) const{
   // ... in a format that can be read back in, w/o the name
   os << iFixInit()
-     << "\t" << blindedMean()
+     << "\t" << mean()
      << "\t" << err()
      << "\t" << min()
      << "\t" << max();
@@ -354,12 +317,12 @@ void FitParameter::printVal(std::ostream& os) const{
 void FitParameter::printResultVsInput(std::ostream& os) const{
 
   double pull = -9999;
-  if(err() != 0) pull = (blindedMean() - meanInit() )/err();
+  if(err() != 0) pull = (mean() - meanInit() )/err();
 
 
   os << "\"" <<  name() << "\""
      << "\t" << iFixInit()
-     << "\t" << blindedMean() << " - " << meanInit() << " / " << err()
+     << "\t" << mean() << " - " << meanInit() << " / " << err()
      << " = \t" << pull;
 }
 void FitParameter::printFormat(std::ostream& os, int namelength){ // static

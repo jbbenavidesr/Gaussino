@@ -266,15 +266,14 @@ double ParticleProperties::radius() const{
 
 }
 
-std::string ParticleProperties::ScalarVectorPseudoAxialVectorTensor() const{
+char ParticleProperties::ScalarVectorPseudoAxialVectorTensor() const{
 
-  if(J()=="0" && P() == -1) return "P";
-  else if(J()=="1" && P() == -1) return "V";
-  else if(J()=="0" && P() ==  1) return "S";
-  else if(J()=="1" && P() ==  1) return "A";
-  else if(J()=="2" && P() ==  1) return "T";
-  else if(J()=="2" && P() == -1) return "PT";
-  else return "?";
+  if(J()=="0" && P() == -1) return 'P';
+  else if(J()=="1" && P() == -1) return 'V';
+  else if(J()=="0" && P() ==  1) return 'S';
+  else if(J()=="1" && P() ==  1) return 'A';
+  else if(J()=="2" && P() ==  1) return 'T';
+  else return '?';
 }
 
 bool ParticleProperties::isNonResonant() const{

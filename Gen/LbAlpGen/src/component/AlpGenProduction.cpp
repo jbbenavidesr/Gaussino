@@ -3,7 +3,6 @@
 // local
 #include "AlpGenProduction.h"
 
-//DELETE ME
 // STL 
 #include <fstream>
 
@@ -53,6 +52,7 @@ extern "C" {
   } alpgenptcut_;    
 }
 
+
 //Don't declare it a tool. The derived classes should be used instead 
 //DECLARE_TOOL_FACTORY( AlpGenProduction )
 
@@ -74,15 +74,12 @@ AlpGenProduction::AlpGenProduction( const std::string& type,
   declareProperty( "FileLabel" , m_fileLabel = "Zbb" );
   declareProperty( "nevxiter", m_nevxiter = 100000, 
                    "number of events per iteration to generate alpgen's phase space grid in alpgen mode 1. Do tests!");
-  declareProperty( "niter", m_niter = 2, 
-                   "number of iterations to generate alpgen's phase space grid in alpgen mode 1.");
-  declareProperty( "nwgtev", m_nwgtev = 1000000, 
-                   "number of weighted events to generate by alpgen in mode 1.  Do tests!");
+  declareProperty( "niter", m_niter = 2, "number of iterations to generate alpgen's phase space grid in alpgen mode 1.");
+  declareProperty( "nwgtev", m_nwgtev = 1000000, "number of weighted events to generate by alpgen in mode 1.  Do tests!");
   declareProperty( "ndns" , m_ndns = 9 , "parton density set (cf alpgen for codes) 9: CTEQ6L1 5: CTEQ5L");
   declareProperty( "iqopt" , m_iqopt = 1 , "scale option (process dependent)");
   declareProperty( "qfac" , m_qfac =  1.00, " Q scale rescaling factor");
-  declareProperty( "ickkw" , m_ickkw = 0 , 
-                   "0 : no matching of Matrix Elements and Parton Shower - 1: matching (mlm scheme)");
+  declareProperty( "ickkw" , m_ickkw = 0 , "0 : no matching of Matrix Elements and Parton Shower - 1: matching (mlm scheme)");
   declareProperty( "ktfac" , m_ktfac = 1.00 , " scale factor for ckkw alphas scale");
   declareProperty( "njets" , m_njets = 0, "number of light jets");
   declareProperty( "ihvy" , m_ihvy = 5 , "heavy flavour type for procs like WQQ, ZQQ, 2Q, etc(4=c, 5=b, 6=t)");
@@ -171,23 +168,21 @@ StatusCode AlpGenProduction::initialize( ) {
   m_target = "p+" ;
 
   // SET Filename
-  //boost::filesystem::path alpfile( std::tmpnam( NULL ) ) ;
-  boost::filesystem::path alpfile( boost::filesystem::current_path().string() + "/alpgenlabelname");
+  boost::filesystem::path alpfile( std::tmpnam( NULL ) ) ;
   if ( boost::filesystem::exists( alpfile ) ) 
     boost::filesystem::remove( alpfile ) ;
   
   std::ofstream g( alpfile.string().c_str() ) ;
   g << m_fileLabel << std::endl ;    // label of the output files
   g.close() ;
-  
-  // moved to alpho.f :
-  //  F77Utils::open( 79 , alpfile.string() , false ) ;  
 
-  //Initialization of Pythia done here
+  F77Utils::open( 89 , alpfile.string() , false ) ;  
+
+  //Initialize of Pythia done here
   StatusCode sc = PythiaProduction::initialize( ) ;
 
-  //removed in 11/2013 because it causes a job crash with gauss v45rx:
-  // boost::filesystem::remove( alpfile ) ;
+  F77Utils::close( 89 ) ;
+  boost::filesystem::remove( alpfile ) ;
 
   if ( sc.isFailure() ) return sc ;
 
@@ -210,7 +205,7 @@ StatusCode AlpGenProduction::finalize( ) {
   F77Utils::close( aiounits.niounw() ) ;
   
   // Do some cleaning of files
-    boost::filesystem::remove( boost::filesystem::path( "cnfg.dat" ) ) ;
+  boost::filesystem::remove( boost::filesystem::path( "cnfg.dat" ) ) ;
   boost::filesystem::remove( boost::filesystem::path( "par.list" ) ) ;
   boost::filesystem::remove( boost::filesystem::path( m_fileLabel + ".grid1" ) ) ;
   boost::filesystem::remove( boost::filesystem::path( m_fileLabel + ".grid2" ) ) ;
@@ -223,7 +218,6 @@ StatusCode AlpGenProduction::finalize( ) {
   boost::filesystem::remove( boost::filesystem::path( m_fileLabel + "_unw.par" ) ) ;
   boost::filesystem::remove( boost::filesystem::path( m_fileLabel + "_unw.top" ) ) ;
   boost::filesystem::remove( boost::filesystem::path( m_fileLabel + ".wgt" ) ) ;
-  boost::filesystem::remove( boost::filesystem::path( "alpgenlabelname" ) ) ;
   
   return PythiaProduction::finalize() ;
 }
@@ -286,26 +280,19 @@ StatusCode AlpGenProduction::generateEvent( HepMC::GenEvent * theEvent ,
 //============================================================================
 StatusCode AlpGenProduction::generateWeightedEvents( ) {
 
-  // create temporary file containing parameters to input to ALPGEN
-  // boost::filesystem::path alpfile( std::tmpnam( NULL ) ) ;
-  boost::filesystem::path alpfile( boost::filesystem::current_path().string() + "/alpgeninput1file");
-  
-  if ( boost::filesystem::exists( alpfile ) )
+  // create temporary file to input to ALPGEN
+  boost::filesystem::path alpfile( std::tmpnam( NULL ) ) ;
+  if ( boost::filesystem::exists( alpfile ) ) 
     boost::filesystem::remove( alpfile ) ;
-  
+
   std::ofstream g( alpfile.string().c_str() ) ;
-  
-  g << 1 << std::endl // Generation mode : 1 = generate weighted events
+
+  g << 1 << std::endl // Generation mode
     << m_fileLabel << std::endl          // label of the output files
     << 0 << std::endl              // new grid
-    //    << (m_nevents!=0 ? m_nevxiter : 10000) << " " << m_niter << std::endl 
-// nevents per iteration and n iterations
-    //CHANGE BACK!
-    //<< (m_nevents!=0 ? m_nwgtev : 100000) << std::endl;            // nevents to generate
-    << (m_nevents!=0 ? m_nevxiter : 10000) << " " << m_niter << std::endl
- // nevents per iteration and n iterations                                                   
-    << (m_nevents!=0 ? m_nwgtev : 1000) << std::endl;            // nevents to generate
-
+    << (m_nevents!=0 ? m_nevxiter : 10000) << " " << m_niter << std::endl // nevents per iteration and n iterations
+    << (m_nevents!=0 ? m_nwgtev : 100000) << std::endl;            // nevents to generate
+  
   //set up the new job options for fortran (see file */*usr.F , '*'=process ) :
   alpgenetacut_.letamin = m_etalmin ;
   alpgenetacut_.betamin = m_etabmin ;
@@ -330,7 +317,6 @@ StatusCode AlpGenProduction::generateWeightedEvents( ) {
     << "qfac " << m_qfac << std::endl
     << "ickkw " << m_ickkw << std::endl
     << "ktfac " << m_ktfac << std::endl
-    << "ilep " << 0 << std::endl 
     << "njets " << m_njets << std::endl
     << "ihvy " << m_ihvy << std::endl
     << "ihvy2 " << m_ihvy2 << std::endl
@@ -345,7 +331,6 @@ StatusCode AlpGenProduction::generateWeightedEvents( ) {
     << "etabmax " << m_etabmax << std::endl
     << "etacmax " << m_etacmax << std::endl
     << "etalmax " << m_etalmax << std::endl
-    << "etalmin " << m_etalmin << std::endl
     << "drjmin " << m_drjmin << std::endl
     << "drbmin " << m_drbmin << std::endl
     << "drcmin " << m_drcmin << std::endl
@@ -358,7 +343,9 @@ StatusCode AlpGenProduction::generateWeightedEvents( ) {
     << "izdecmode " << m_izdecmode << std::endl
     << "xlclu " << m_xlclu << std::endl
     << "lpclu " << m_lpclu << std::endl
-    << "cluopt " << m_cluopt << std::endl ;
+    << "cluopt " << m_cluopt << std::endl
+    << "etalmin " << 1.4 << std::endl
+    << "ilep " << 0 << std::endl ;
   
   if ( 0 == m_nevents ) {
     // use default seeds
@@ -412,8 +399,6 @@ StatusCode AlpGenProduction::generateWeightedEvents( ) {
   AlpGenFunctions::AlFhis() ;
   AlpGenFunctions::AlFbkk() ;
   
-  //added: 18 nov 2013:
-  F77Utils::close( 11) ;
   F77Utils::close( 10 ) ;
   F77Utils::close( 12 ) ;
 
@@ -424,15 +409,13 @@ StatusCode AlpGenProduction::generateWeightedEvents( ) {
 // Generate unweighted events with ALPGEN
 //============================================================================
 void AlpGenProduction::generateUnweightedEvents( ) {
-
-  // create temporary file containing parameters to input to ALPGEN                                                                               
-  boost::filesystem::path alpfile( boost::filesystem::current_path().string() + "/alpgin2file");
-  
-  if ( boost::filesystem::exists( alpfile ) )
+  // create temporary file to input to ALPGEN
+  boost::filesystem::path alpfile( std::tmpnam( NULL ) ) ;
+  if ( boost::filesystem::exists( alpfile ) ) 
     boost::filesystem::remove( alpfile ) ;
   
   std::ofstream g( alpfile.string().c_str() ) ;
-  g << 2 << std::endl // Generation mode : 2 = generate unweighted events
+  g << 2 << std::endl // Generation mode
     << m_fileLabel << std::endl  ;        // label of the output files
   g.close() ;
 

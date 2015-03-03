@@ -90,7 +90,7 @@ class DalitzBWBox{
 
 };
 
-std::ostream& operator<<(std::ostream& os, const DalitzBWBox& box);
+ostream& operator<<(ostream& os, const DalitzBWBox& box);
 
 
 #endif

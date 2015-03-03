@@ -9,7 +9,8 @@
 ///
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/DeclareFactoryEntries.h" 
-
+/// GiGa 
+//#include "GiGa/GiGaMACROs.h"
 //GaussTools
 #include "GaussTools/GaussTrackInformation.h"
 /// local
@@ -25,8 +26,8 @@
 // ============================================================================
 /// Factory
 // ============================================================================
-DECLARE_TOOL_FACTORY( CutsStepAction )
-
+DECLARE_TOOL_FACTORY( CutsStepAction );
+// ============================================================================
 
 // ============================================================================
 /** standard constructor 
@@ -48,14 +49,14 @@ CutsStepAction::CutsStepAction
 {
   declareProperty ("TrCutElGamma", m_trcuteg);
   declareProperty ("TrCutHadr", m_trcuthadr);
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /// destructor
 // ============================================================================
-CutsStepAction::~CutsStepAction(){}
-
+CutsStepAction::~CutsStepAction(){};
+// ============================================================================
 
 // ============================================================================
 /** stepping action
@@ -79,8 +80,8 @@ void CutsStepAction::UserSteppingAction ( const G4Step* step )
     track->SetTrackStatus(fStopAndKill);
 
 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 // The END 

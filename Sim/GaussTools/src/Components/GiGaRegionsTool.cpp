@@ -4,6 +4,9 @@
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/MsgStream.h"
 
+// GiGa 
+//#include "GiGa/GiGaMACROs.h"
+
 // GiGaCnv
 #include "GiGaCnv/GiGaVolumeUtils.h"
 
@@ -30,7 +33,7 @@
 // ============================================================================
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( GiGaRegionsTool )
+DECLARE_TOOL_FACTORY( GiGaRegionsTool );
 
 // ============================================================================
 /** standard constructor
@@ -53,8 +56,8 @@ GiGaRegionsTool::GiGaRegionsTool
 {
   declareProperty( "SimulationService" , m_simSvcName ) ; 
   declareProperty( "Overwrite"         , m_overwrite  ) ; 
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** standard initialization of the tool 
@@ -77,8 +80,8 @@ StatusCode GiGaRegionsTool::initialize ()
     { return Error ( "Service '"+m_simSvcName+"' is not located" , sc ) ; }
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 // ============================================================================
 /** standard finalization of the tool 
@@ -93,8 +96,8 @@ StatusCode GiGaRegionsTool::finalize   ()
 {
   if( 0 != m_simSvc ) { m_simSvc->release() ; m_simSvc = 0 ; }
   return GiGaToolBase::finalize() ;
-}
-
+} ;
+// ============================================================================
 
 // ============================================================================
 /** the only one method
@@ -185,8 +188,8 @@ StatusCode GiGaRegionsTool::process ( const std::string& region ) const
     }
   
   return StatusCode::SUCCESS ;
-}
-
+};
+// ============================================================================
 
 
 // ============================================================================

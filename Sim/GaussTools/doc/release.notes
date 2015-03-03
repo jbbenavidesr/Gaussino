@@ -4,54 +4,6 @@
 ! Purpose       : G4 actions and some miscellaneous algs for Gauss
 !-----------------------------------------------------------------------------
 
-!======================= GaussTools v19r2p2 2014-11-18 =======================
-! 2014-11-19 - Marco Clemencic
- - Fixed a (new?) problem with GaussToolsGenConfHelperLib.
-
-! 2014-11-19 - Marco Clemencic
- - Updated CMake configuration
-
-! 2014-11-18 - Gloria Corti
- - Removed many ";" causing warnings. Almost all files had them.
-
-!======================= GaussTools v19r2p1 2014-10-27 =======================
-! 2014-10-24 - Gloria Corti
- - Set macro for loading genConf library from Install area so that it can be
-   used with new RPM installation by packages needing the genConf library
-
-!======================== GaussTools v19r2 2014-10-08 ========================
-! 2014-10-07 - Luca Pescatore
- - GaussTargetMultiplicity.cpp modified adding new properties to store 
-   projectile and target features in the produced tree
-
-! 2014-09-06 - Luca Pescatore
- - Modified RadLengthColl.cpp to reflect the new naming of the planes
-   in the xml files which are now officially released.
-
-!======================== GaussTools v19r1 2014-07-03 ========================
-! 2014-05-09 - Heinrich Schindler
- - Add GiGaMagFieldSpecial class by Marius Bjornstad.
-
-!======================== GaussTools v19r0 2014-02-02 ========================
-! 2014-01-20 - Sajan Easo
- - Added the files GaussTargetMultiplicity.cpp, GaussTargetMultiplicity.h from 
-   Luca Pescatore for cross-section, radiation length studies.
- - To compile these modified the requirements file to add  -import=AIDA 
-
-! 2013-12-20 - Marco Clemencic
- - Removed obsolete file (not working with Gaudi >= v25).
-
-!======================= GaussTools v18r2p1 2013-10-10 =======================
-! 2013-09-23 - Marco Clemencic
- - Added CMake configuration file.
-
-!======================== GaussTools v18r2 2013-06-27 ========================
-! 2013-05-31 - Patrick Robbe
- - GiGaPhysListBase: fix unreleased tool issues
-
-! 2013-05-29 - Patrick Robbe
- - GiGaPhysListModular.cpp: unregister properly physics lists
-
 !======================= GaussTools v18r1p1 2013-02-04 =======================
 ! 2013-01-15 - Patrick Robbe
  - Fix compilation warnings

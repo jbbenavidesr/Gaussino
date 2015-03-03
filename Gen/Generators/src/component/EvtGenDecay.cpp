@@ -44,9 +44,6 @@
 
 #include "Generators/StreamForGenerator.h"
 #include "Generators/IProductionTool.h"
-#include "Generators/F77Utils.h" 
-#include "Generators/LbTaula.h"
-#include "Generators/LbPhotos.h"
 
 //EvtGen holding tool
 #include "IEvtGenTool.h"
@@ -58,7 +55,7 @@
 //-----------------------------------------------------------------------------
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( EvtGenDecay )
+DECLARE_TOOL_FACTORY( EvtGenDecay );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -77,11 +74,7 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     m_maxctau( 1.e+16 * Gaudi::Units::mm ) ,
     // Minimum value for Gamma in particle property data.
     // Below, it is set to 0
-    m_minwidth( 1.5e-6 * Gaudi::Units::GeV ) ,
-    // Unit for Taula output
-    m_taulaUnit( 6 ) ,
-    // Unit for PHOTOS output
-    m_photosUnit( 6 ) {
+    m_minwidth( 1.5e-6 * Gaudi::Units::GeV ) {
     // Declare IEvtGenDecay interface
     declareInterface<IDecayTool>( this ) ;
     // Declare properties for EvtGen
@@ -157,30 +150,6 @@ StatusCode EvtGenDecay::initialize( ) {
   const std::auto_ptr<const EvtModelList> models = EvtModelRegExtras::getModels();
   EvtAbsRadCorr* isrEngine = 0;//dummy needed for compile
 
-  // redirect taola output to temporary file
-  if ( ! ( msgLevel( MSG::DEBUG ) ) ) {
-    boost::filesystem::path taulaTempFileName( std::tmpnam(NULL) ) ;
-    if ( boost::filesystem::exists( taulaTempFileName ) ) 
-      boost::filesystem::remove( taulaTempFileName ) ;
-    m_taulaUnit = F77Utils::getUnit() ;
-    sc = F77Utils::openNew( m_taulaUnit , taulaTempFileName.string() ) ;
-    if ( ! sc.isSuccess() ) 
-      return Error( "Cannot create output file for TAULA" ) ;
-    LbTaula::setOutputUnit( m_taulaUnit ) ;
-  }
-
-  // change PHOTOS output unit
-  if ( ! ( msgLevel( MSG::DEBUG ) ) ) {
-    boost::filesystem::path photosTempFileName( std::tmpnam(NULL) ) ;
-    if ( boost::filesystem::exists( photosTempFileName ) ) 
-      boost::filesystem::remove( photosTempFileName ) ;
-    m_photosUnit = F77Utils::getUnit() ;
-    sc = F77Utils::openNew( m_photosUnit , photosTempFileName.string() ) ;
-    if ( ! sc.isSuccess() ) 
-      return Error( "Cannot create output file for PHOTOS" ) ;
-    LbPhotos::setOutputUnit( m_photosUnit ) ;
-  }
-  
   // create EvtGen engine from decay file, evt.pdl file and random engine
   if ( m_evtgentool -> isInit() )  m_gen = m_evtgentool->getEvtGen() ;
   else { 
@@ -200,7 +169,7 @@ StatusCode EvtGenDecay::initialize( ) {
   }
 
   debug() << "EvtGenDecay initialized" << endmsg ;
- 
+  
   return StatusCode::SUCCESS ;
 }
 
@@ -214,11 +183,6 @@ StatusCode EvtGenDecay::finalize() {
  
   release( m_evtgentool ) ;
 	
-  if ( ! ( msgLevel( MSG::DEBUG ) ) ) { 
-    F77Utils::close( m_taulaUnit ) ;
-    F77Utils::close( m_photosUnit ) ;
-  }
-  
   delete StreamForGenerator::getStream() ;
   StreamForGenerator::getStream() = 0 ;
 

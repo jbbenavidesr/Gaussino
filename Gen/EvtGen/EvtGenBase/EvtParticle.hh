@@ -244,12 +244,6 @@ public:
   */
   EvtId getId() const;
 
-  /**
-  * Returns the PDG id of the particle
-  */
-  
-  int getPDGId() const;
-
   /** 
   * Returns particle type.
   */

@@ -10,6 +10,7 @@
 
 #include "Mint/Utils.h"
 
+//#include <io.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -496,8 +497,7 @@ bool FitAmpPairList::retrieve(const std::string& asSubdirOf){
 	 << asSubdirOf << endl; 
   }
 
-  struct stat buf;
-  if(stat(asSubdirOf.c_str(), &buf) != 0){
+  if(access(asSubdirOf.c_str(), 0) != 0){
     if(verbose) cout << "FitAmpPairList::retrieve: " << asSubdirOf
 		     << " does not exist" << endl;
     return false;

@@ -18,3 +18,4 @@ apply_pattern set_lib_path
 
 macro lhapdf_export_paths "$(lhapdf_home)/include $(lhapdf_home)/lib"
 
+set LHAPATH $(lhapdf_path)/share/PDFsets

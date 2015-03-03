@@ -303,11 +303,7 @@ DalitzBWBoxSet Amplitude::MakeBWBoxes(const DalitzEventPattern& pat
   for(unsigned int i=0; i < perms.size(); i++){
     DalitzBWBox box(MakeBWBox(pat, perms[i], rnd));
     box.height() = boxFactor()/perms.size();
-    if(dbThis){ 
-      cout << "setting boxHeight to " << box.height()
-	   << " = " << boxFactor() << " / " << perms.size()
-	   << endl;
-    }
+    if(dbThis) cout << "setting boxHeight to " << box.height() << endl;
     v.add(box);
   }
 

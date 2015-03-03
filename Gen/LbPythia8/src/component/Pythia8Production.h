@@ -11,9 +11,6 @@
 // from Pythia8
 #include "Pythia.h"
 
-// LbPythia8.
-#include "LbPythia8/LhcbHooks.h"
-
 // Forward declaration
 class IBeamTool ;
 class GaudiRandomForPythia8 ;
@@ -27,12 +24,6 @@ class ILHAupFortranTool ;
  *  @date   2007-06-28
  */
 class Pythia8Production : public GaudiTool, virtual public IProductionTool {
-private:
-  // XML Log file to store cross-sections 
-  ICounterLogFile * m_xmlLogTool ; 
-
-  IBeamTool * m_beamTool ;
-
 public:
   typedef std::vector<std::string> CommandVector ;
   
@@ -85,17 +76,6 @@ public:
   virtual StatusCode setupForcedFragmentation( const int thePdgId ) ;
   
 protected:
-
-  // Central engine
-  Pythia8::Pythia * m_pythia;   // Pythia8 engine
-  Pythia8::LhcbHooks *m_hooks;  // LHCb user hooks
-  Pythia8::Event m_event;       // generated event
-
-  // Various input channels
-  std::string m_tuningFile;       // from $LBPYTHIA8ROOT
-  std::string m_tuningUserFile;   // Options file supplied by user
-  CommandVector m_commandVector;  // Options lines from Gauss job  
-
   
   /// Print Pythia8 parameters
   void printPythiaParameter( ) ;
@@ -109,8 +89,9 @@ protected:
 
   void checkPassedParticleProperties( );
 
-
 private:
+
+  ICounterLogFile * m_xmlLogTool ; ///< XML Log file to store cross-sections 
 
   /// get pythai8Id from the PP
   int getPythia8ID( const LHCb::ParticleProperty * thePP ) ;
@@ -121,9 +102,12 @@ private:
   /// retrieve the process Name
   string processName( int i );
     
-  // Beam tool 
   std::string m_beamToolName ;
-  BeamToolForPythia8 * m_pythiaBeamTool; ///< beam tool for Pythia8
+  
+  IBeamTool * m_beamTool ; ///< Beam tool to use
+  
+  Pythia8::Pythia * m_pythia; ///< Pythia8 engine
+  Pythia8::Event m_event; ///<  generated event
   
   std::vector<int> m_pdtlist ;
   int m_nEvents ;
@@ -131,7 +115,7 @@ private:
   GaudiRandomForPythia8 * m_randomEngine ; ///< Random Generator for Pythia8
   ILHAupFortranTool *     m_fortranUPTool ; ///< Tool to access Fortran User Processes
   std::string             m_fortranUPToolName ;
-
+  BeamToolForPythia8 * m_pythiaBeamTool; ///< beam tool for Pythia8
 
   // ==========================================================================
   bool m_validate_HEPEVT ; // force the valiadation of IO_HEPEVT 
@@ -146,9 +130,10 @@ private:
 
   bool m_showBanner ; //flag to show banner or not
 
-  
+  std::string m_tuningFile;
+  std::string m_tuningUserFile;
   std::string m_LHAupOptionFile;
   //kept for backward compatibilit for the time being
-  
+  CommandVector m_commandVector;
 } ;
 #endif // LBPYTHIA8_PYTHIA8PRODUCTION_H

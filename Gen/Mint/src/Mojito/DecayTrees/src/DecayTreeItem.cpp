@@ -3,7 +3,7 @@
 
 #include "Mint/DecayTreeItem.h"
 #include "Mint/ParticlePropertiesList.h"
-#include <cmath>
+
 
 DecayTreeItem::DecayTreeItem(int i)
   : _pdg_id(i)
@@ -37,10 +37,10 @@ std::string DecayTreeItem::name() const{
   }
   return pp->name();
 }
-std::string DecayTreeItem::SVPAT() const{
+char DecayTreeItem::SVPAT() const{
   const ParticleProperties* pp = props();
   if(0 == pp){
-    return "?";
+    return '?';
   }
   return pp->SVPAT();
 }
@@ -92,9 +92,11 @@ std::string DecayTreeItem::J() const{
 }
 
 
-bool DecayTreeItem::ChargeConThis(){
+bool DecayTreeItem::antiThis(){
   if(! hasDistinctAnti()) return false;
+
   _pdg_id *= -1;
+
   return true;
 }
 

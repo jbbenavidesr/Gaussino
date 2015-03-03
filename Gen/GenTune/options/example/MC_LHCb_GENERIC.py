@@ -1,5 +1,4 @@
 #Configuration file for MC generic RIVET analyses run on LHCb MB events
-from GaudiKernel import SystemOfUnits as units
 from Gaudi.Configuration import *
 from LHCbKernel.Configuration import *
 from Gauss.Configuration import *
@@ -28,7 +27,7 @@ importOptions("$GAUSSOPTS/Gauss-Job.py")
 LHCbApp().EvtMax = 1000
 LHCbApp().OutputLevel = INFO
 Gauss().Histograms = "NONE"
-Gauss().OutputType = "NONE"
+Gauss().Output = "NONE"
 Gauss().DatasetName = "myRivetGauss"
 # force head on collisions:
 #Gauss().BeamCrossingAngle = 0.0
@@ -49,9 +48,8 @@ rivet.AnalysisPath += [os.path.abspath('.'),]
 # the following options allow setting externally 
 # a cross-section value when it cannot be read from HepMC
 # (mostly necessary if/when using HepMC 2.04)
-rivet.forceXSection = False
-#rivet.forceXSection = True
-rivet.xSectionValue = 32.123 units.millibarn
+rivet.xSectionNeeded = False
+rivet.xSectionValue = 32.123
 # instruct the algorithm to correct the particle status IDs and 
 # apply the crossing angle correction when necessary
 rivet.CorrectStatusID = True

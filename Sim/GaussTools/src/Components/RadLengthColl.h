@@ -40,7 +40,7 @@ public:
   virtual StatusCode initialize();    ///< Algorithm initialization
   virtual StatusCode finalize  ();    ///< Algorithm finalization
   virtual void UserSteppingAction ( const G4Step* );
-  
+
 private:
 
   G4Track* track;
@@ -50,22 +50,16 @@ private:
   const G4VPhysicalVolume* Vol;
   const G4LogicalVolume* VOL;
   
-  std::string VolName, VolumeName, ParticleName, IDPlane;
+  std::string VolName,VolumeName,ParticleName, IDPlane;
   std::string ntname;
 
-  // Radiation Length
-  G4double MaterialRadiationLength;
+  G4double MaterialRadiationLength,StepLength;
   G4double theRadLength, thePlane2PlaneRadLength, theCumulatedRadLength;
-  // Interation Length
-  G4double MaterialInterLength;
-  G4double theInterLength, thePlane2PlaneInterLength, theCumulatedInterLength;
-  
-  G4double StepLength;
   G4ThreeVector initial_position;
-  int  index, IDP;
+  
+  int  index,IDP;
   NTuple::Item < long >   m_ntrk ;
-  NTuple::Array< float >  m_Xpos, m_Ypos, m_Zpos;
-  NTuple::Array< float >  m_cumradlgh, m_p2pradlgh, m_cuminterlgh, m_p2pinterlgh;
+  NTuple::Array< float >  m_Xpos, m_Ypos, m_Zpos, m_cumradlgh, m_p2pradlgh;
   NTuple::Array< float >  m_eta, m_phi;
   NTuple::Array< long >   m_planeID;
 
