@@ -4,6 +4,18 @@
 ! Purpose     : Hold monitoring algorithms for Gauss
 !-----------------------------------------------------------------------------
 
+!======================= GaussMonitor v8r1 2014-07-03 ========================
+! 2014-06-11 - James Mccarthy
+ - Added options file to run timing monitor code in options/MonitorTiming.py
+
+! 2014-04-01 - James Mccarthy
+ - Added scripts for monitoring timing in subdetectors and processes in Gauss 
+   (MonitorTiming.cpp MonitorTiming.h)
+
+!======================= GaussMonitor v8r0 2014-02-02 ========================
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
 !====================== GaussMonitor v7r0p1 2013-10-10 =======================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

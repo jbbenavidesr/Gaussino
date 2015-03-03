@@ -1,11 +1,15 @@
 #ifndef GENERATORS_XICCDAUGHTERSINLHCB_H 
 #define GENERATORS_XICCDAUGHTERSINLHCB_H 1
 
+// Include files
+
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/Transform4DTypes.h"
 
 #include "MCInterfaces/IGenCutTool.h"
+#include "MCInterfaces/QQqBaryons.h"
+
 
 // Forward declaration
 class IDecayTool ;
@@ -20,7 +24,7 @@ class IDecayTool ;
  *  @date   2011-04-22
  */
 
-class XiccDaughtersInLHCb : public GaudiTool, virtual public IGenCutTool {
+class XiccDaughtersInLHCb : public GaudiTool, public QQqBaryons, virtual public IGenCutTool {
  public:
   /// Standard constructor
   XiccDaughtersInLHCb( const std::string& type, 

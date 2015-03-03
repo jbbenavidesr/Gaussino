@@ -2,6 +2,21 @@
 ! Responsible : F. Zhang
 !=============================================================================
 
+!========================= LbGenXicc v4r0 2014-06-20 =========================
+! 2014-06-18 - Gloria Corti
+ - Moved QQqBaryons header to Kernel/MCInterfaces package since needed by 
+   a class in GenCuts. Adapted classes that used it to pick it up from there.
+
+! 2014-02-11 - Liang Zhong
+ - Add the interface to set the mass of Xicc baryon in GenXiccProduction.cpp
+   A new variable, ichange, is added. If ichange is set to 0, then the default
+   value of the generator will be used. If ichange is set to 1, then the mass
+   of Xicc baryon can be set. 
+
+! 2014-02-10 - Liang Zhong
+ - Simplify the option file GenXicc.py to control the production of Xi_cc+
+   and Xi_cc++ in a coherent way.
+
 !========================= LbGenXicc v3r0 2013-10-10 =========================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

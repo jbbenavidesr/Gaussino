@@ -44,7 +44,6 @@ XiccDaughtersInLHCb::XiccDaughtersInLHCb( const std::string& type,
   declareProperty( "NeutralThetaMax" , m_neutralThetaMax = 400 * Gaudi::Units::mrad ) ;
   declareProperty( "DecayTool" ,       m_decayToolName = "EvtGenDecay") ;
   declareProperty( "BaryonState"    , m_BaryonState="Xi_cc+"); // double heavy baryon to be looked for
-  m_sigXiccPID = 4412;
 
 }
 
@@ -68,6 +67,7 @@ StatusCode XiccDaughtersInLHCb::initialize( ) {
   if ( "" != m_decayToolName )
     m_decayTool = tool< IDecayTool >( m_decayToolName ) ;
 
+  m_sigXiccPID = m_mapBaryonPID[m_BaryonState];
   m_decayTool -> setSignal( m_sigXiccPID  ) ;
 
   return StatusCode::SUCCESS;

@@ -512,17 +512,23 @@ double BW_BW::mumsRecoMass() const{
   return _mumsRecoMass;
 }
 
-double BW_BW::daughterPDGMass(int i) const{
-  if( i >= _theDecay.nDgtr() || i < 0){
+double BW_BW::daughterPDGMass( const int& i ) const{
+  if( i >= _theDecay.nDgtr() || i < 0 ){
     cout << " ERROR in BW_BW::daughterPDGMass:"
 	 << " You requested the mass of dgtr number " << i
-	 << ". There are " << _theDecay.nDgtr() 
+	 << ". There are " << _theDecay.nDgtr()
 	 << " daughters." << endl;
     return -9999;
   }
-  if(_daughterPDGMass[i] < 0){
-    _daughterPDGMass[i] =  _theDecay.getDgtrVal(i).mass();
+
+  if( _daughterPDGMass[i] < 0 ){
+    _daughterPDGMass[i] = _theDecay.getDgtrVal(i).mass();
   }
+
+  if( _theDecay.getDgtrVal(i).isNonResonant() ){
+    _daughterPDGMass[i] = daughterRecoMass(i);
+  }
+
   return _daughterPDGMass[i];
 }
 
@@ -1009,12 +1015,14 @@ const GaussFct& BW_BW::gaussianApprox(){
 }
 */
 
-
 std::complex<double> BW_BW::getVal(){
-  bool dbThis=false;
-  if(nonResonant()) return 1;
+  const bool dbThis = false;
 
   resetInternals();
+
+  if( nonResonant() )
+    return Fr_PDG_BL();
+
   if(startOfDecayChain()){
     // in principle there is no need to distinguish the start
     // of the decay chain from the rest - it could just get
@@ -1033,7 +1041,8 @@ std::complex<double> BW_BW::getVal(){
       }
       return 1;
     }
-    double returnVal = Fr(); // this is where Lauren's is different, I think.
+    //double returnVal = Fr(); //Old version uses unnormalised Barrier Factors
+    const double returnVal = Fr_PDG_BL();
     if(dbThis && (returnVal > 2 || returnVal < 0.5)){
       cout << " BW_BW for " 
 	   << _theDecay.oneLiner() << endl; // dbg
@@ -1059,7 +1068,8 @@ std::complex<double> BW_BW::getVal(){
 	 << "\n    > EvtGenValue " << EvtGenValue()
 	 << endl;
   }
-  std::complex<double> returnVal = Fr()*BreitWigner();
+  //std::complex<double> returnVal = Fr()*BreitWigner(); //Unnormalised BFs
+  const std::complex<double> returnVal = Fr_PDG_BL()*BreitWigner();
   if(dbThis) cout << " value = " << returnVal 
        << "|A|^2 | " << returnVal.real()*returnVal.real() 
 	       + returnVal.imag()*returnVal.imag()

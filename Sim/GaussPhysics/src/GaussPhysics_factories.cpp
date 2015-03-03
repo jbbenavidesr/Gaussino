@@ -1,4 +1,3 @@
-// $Id: GaussPhysics_load.cpp,v 1.18 2010-03-08 17:50:56 silviam Exp $
 // Include files 
 
 #include "GaudiKernel/DeclareFactoryEntries.h" 
@@ -47,66 +46,59 @@
 // FTFP hadrons
 #include "HadronPhysicsFTFP_BERT.hh"
 
-// The DECLARE_NAMED_TOOL_FACTORY macro should be added to Gaudi
-#ifndef DECLARE_NAMED_TOOL_FACTORY
-#define DECLARE_NAMED_TOOL_FACTORY(x,n) PLUGINSVC_FACTORY_WITH_ID(x, std::string(#n), IAlgTool*(std::string, std::string, const IInterface*))
-#endif
-// Maybe this one should be added to Gaudi too
-#define DECLARE_TYPEDEF_TOOL_FACTORY(x) DECLARE_NAMED_TOOL_FACTORY(x,x)
-
 // Declaration of the External Physics list Factories
 typedef GiGaExtPhysics< G4DecayPhysics > DecayFactory;
-DECLARE_TOOL_FACTORY( DecayFactory );
+DECLARE_TOOL_FACTORY( DecayFactory )
 
 typedef GiGaExtPhysics< G4EmStandardPhysics_option1 > EmStdOpt1PhysFactory;
-DECLARE_TOOL_FACTORY( EmStdOpt1PhysFactory );
+DECLARE_TOOL_FACTORY( EmStdOpt1PhysFactory )
 typedef GiGaExtPhysics< G4EmStandardPhysics_option2 > EmStdOpt2PhysFactory;
-DECLARE_TOOL_FACTORY( EmStdOpt2PhysFactory );
+DECLARE_TOOL_FACTORY( EmStdOpt2PhysFactory )
 typedef GiGaExtPhysics< G4EmStandardPhysics_option3 > EmStdOpt3PhysFactory;
-DECLARE_TOOL_FACTORY( EmStdOpt3PhysFactory );
+DECLARE_TOOL_FACTORY( EmStdOpt3PhysFactory )
 typedef GiGaExtPhysics< G4EmStandardPhysics > EmStdPhysFactory;
-DECLARE_TOOL_FACTORY( EmStdPhysFactory );
+DECLARE_TOOL_FACTORY( EmStdPhysFactory )
 
 typedef GiGaExtPhysics< G4EmStandardPhysics_option1LHCb > EmStdLHCbPhysFactory;
-DECLARE_TOOL_FACTORY( EmStdLHCbPhysFactory );
+DECLARE_TOOL_FACTORY( EmStdLHCbPhysFactory )
 typedef GiGaExtPhysics< G4EmStandardPhysics_option1NoApplyCuts > EmStdOpt1NoCutsPhysFactory;
-DECLARE_TOOL_FACTORY( EmStdOpt1NoCutsPhysFactory );
+DECLARE_TOOL_FACTORY( EmStdOpt1NoCutsPhysFactory )
 typedef GiGaExtPhysics< G4EmStandardPhysics_LHCbTest > EmStdLHCbTestPhysFactory;
-DECLARE_TOOL_FACTORY( EmStdLHCbTestPhysFactory );
+DECLARE_TOOL_FACTORY( EmStdLHCbTestPhysFactory )
 
 typedef GiGaExtPhysics< G4EmExtraPhysics > EmExtraPhysFactory;
-DECLARE_TOOL_FACTORY( EmExtraPhysFactory );
+DECLARE_TOOL_FACTORY( EmExtraPhysFactory )
 
 typedef GiGaExtPhysics< G4IonPhysics > IonPhysFactory;
-DECLARE_TOOL_FACTORY( IonPhysFactory );
+DECLARE_TOOL_FACTORY( IonPhysFactory )
 typedef GiGaExtPhysics< G4QStoppingPhysics > QStopPhysFactory;
-DECLARE_TOOL_FACTORY( QStopPhysFactory );
+DECLARE_TOOL_FACTORY( QStopPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysics > HadElPhysFactory;
-DECLARE_TOOL_FACTORY( HadElPhysFactory );
+DECLARE_TOOL_FACTORY( HadElPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysicsLHEP > HadElLHEPPhysFactory;
-DECLARE_TOOL_FACTORY( HadElLHEPPhysFactory );
+DECLARE_TOOL_FACTORY( HadElLHEPPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysicsHP > HadElHPPhysFactory;
-DECLARE_TOOL_FACTORY( HadElHPPhysFactory );
+DECLARE_TOOL_FACTORY( HadElHPPhysFactory )
 
 typedef GiGaExtPhysics< G4NeutronTrackingCut > NeuTrkCutFactory;
-DECLARE_TOOL_FACTORY( NeuTrkCutFactory );
+DECLARE_TOOL_FACTORY( NeuTrkCutFactory )
 
 typedef GiGaExtPhysics< HadronPhysicsLHEP > HadPhysLHEPFactory;
-DECLARE_TOOL_FACTORY( HadPhysLHEPFactory );
+DECLARE_TOOL_FACTORY( HadPhysLHEPFactory )
 
 typedef GiGaExtPhysics< HadronPhysicsQGSP > HadPhysQGSPFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSPFactory );
+DECLARE_TOOL_FACTORY( HadPhysQGSPFactory )
 typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT > HadPhysQGSP_BERTFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSP_BERTFactory );
+DECLARE_TOOL_FACTORY( HadPhysQGSP_BERTFactory )
 typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_HP > HadPhysQGSP_BERT_HPFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_HPFactory );
+DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_HPFactory )
 typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_CHIPS > HadPhysQGSP_BERT_CHIPSFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_CHIPSFactory );
+DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_CHIPSFactory )
 typedef GiGaExtPhysics< HadronPhysicsQGSP_FTFP_BERT > HadPhysQGSP_FTFP_BERTFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSP_FTFP_BERTFactory );
+DECLARE_TOOL_FACTORY( HadPhysQGSP_FTFP_BERTFactory )
 
 typedef GiGaExtPhysics< HadronPhysicsFTFP_BERT > HadPhysFTFP_BERTFactory;
-DECLARE_TOOL_FACTORY( HadPhysFTFP_BERTFactory );
+DECLARE_TOOL_FACTORY( HadPhysFTFP_BERTFactory )
 
 
 // =========== Specialized extensions to GiGaExtPhysics ===========
@@ -362,10 +354,5 @@ public:
   inline G4NeutronTrackingCut *newInstance(const std::string &name, int verbosity) const {
     return new G4NeutronTrackingCut(name, verbosity);
   }
-};
-
-
-
-DECLARE_FACTORY_ENTRIES(GaussPhysics) { 
 };
 

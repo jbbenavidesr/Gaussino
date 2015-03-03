@@ -4,6 +4,13 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v45r8 2014-07-28 ============================
+ - on v45b branch
+
+! 2014-07-28 - Gloria Corti
+ - Change major version of GenXiccData to be used (to v3r*)
+ - Add use of PGunsData package fixing major version (v1r*)
+
 !========================= Gauss v45r7 2014-01-23 ============================
  - on v45b branch
 
