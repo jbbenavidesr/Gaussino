@@ -47,6 +47,25 @@ public:
 			   double *f2a) = 0 ;
 
 
+  virtual void getdiracff( EvtId /*parent*/, EvtId /*daught*/,
+                           double /*q2*/, double /*mass*/, 
+                           double * /*f1*/, double * /*f2*/, double * /*f3*/,
+                           double * /*g1*/, double * /*g2*/, double * /*g3*/ ) 
+  {
+    return;
+  }
+  
+ 
+  virtual void getraritaff( EvtId /*parent*/, EvtId /*daught*/,
+                            double /*q2*/, double /*mass*/, 
+                            double * /*f1*/, double * /*f2*/, 
+                            double * /*f3*/, double * /*f4*/,
+                            double * /*g1*/, double * /*g2*/, 
+                            double * /*g3*/, double * /*g4*/ ) 
+  {
+    return;
+  }
+
 };
 
 #endif

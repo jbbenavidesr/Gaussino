@@ -150,6 +150,8 @@
 #include "EvtGenModels/EvtD0mixDalitz.hh"
 
 #include "EvtGenModels/EvtModelReg.hh"
+#include "EvtGenModels/EvtBaryonPCR.hh"
+
 using std::fstream;
 using std::cout;
 using std::endl;
@@ -269,6 +271,7 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
 //    modelist.registerModel(new EvtJscontCDF);
 
     modelist.registerModel(new EvtbTosllAli);
+    modelist.registerModel(new EvtBaryonPCR);
     modelist.registerModel(new EvtBToDDalitzCPK);
     modelist.registerModel(new EvtLambdaB2LambdaV);
     modelist.registerModel(new EvtLambda2PPiForLambdaB2LambdaV);
