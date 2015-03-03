@@ -4,6 +4,23 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!======================== LbPythia8 v8r0 2014-07-24 ========================
+! 2014-07-14 - Gloria Corti
+ - Fix to be able to store all non-gluon gauge boson mediators (e.g. Z, W, ...)
+   in MCParticles. See details in https://its.cern.ch/jira/browse/LHCBGAUSS-105
+   . src/Pythia8Production.cpp
+
+! 2014-05-07 - Philip Ilten
+ - Added pT damping for all hard QCD and Onia production. This damping is
+   the same that is applied for all MPI. Additional future cross-section
+   weighting can now be added through the LhcbHooks class.
+
+! 2014-04-28 - Marco Clemencic
+ - Fixes to compile against Pythia8 183 (with CMake).
+
+! 2014-04-25 - Marco Clemencic
+ - Minor improvement to CMake configuration.
+
 !======================== LbPythia8 v7r7p2 2014-03-31 ========================
 ! 2014-03-31 - Gloria Corti
  - Fix options to set pt0 to 2.6 for all production mechanisms

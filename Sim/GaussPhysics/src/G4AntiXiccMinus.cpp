@@ -28,12 +28,12 @@ G4AntiXiccMinus * G4AntiXiccMinus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 3.59798*GeV , 5.e-10*MeV ,  -1.*eplus ,
+      new G4ParticleDefinition( name ,          3.59798*GeV ,   5.e-10*MeV ,    -1.*eplus ,
+                                1,              -1,             0,
                                 1,              +1,             0,
-                                0,              0,             0,
-                                "baryon", 0,  1, -4412,
-                                false,     0.334e-3*ns,          NULL,
-                                false, "xi_cc" );
+                                "baryon",       0,              -1,             -4412,
+                                false,          0.334e-3*ns,    NULL,
+                                false,          "xi_cc" );
   }
   theInstance = reinterpret_cast<G4AntiXiccMinus*>(anInstance);
   return theInstance;

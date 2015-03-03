@@ -105,6 +105,10 @@ StatusCode Pythia8Production::initialize( ) {
   //Initializing the pythia object
   m_pythia = new Pythia8::Pythia( xmlpath, m_showBanner );
   
+  // Set custom LHCb event weighting.
+  m_hooks = new Pythia8::LhcbHooks();
+  m_pythia->setUserHooksPtr(m_hooks);
+
   //Setting the random generator
   IRndmGenSvc* randSvc( 0 );
   try { randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ; }
@@ -373,6 +377,7 @@ StatusCode Pythia8Production::finalize( ) {
   }
 
   delete m_randomEngine;
+  delete m_hooks;
   delete m_pythia ;
   if ( 0 != m_fortranUPTool ) release( m_fortranUPTool ) ;
   return GaudiTool::finalize( ) ;
@@ -616,9 +621,11 @@ StatusCode Pythia8Production::toHepMC ( HepMC::GenEvent*     theEvent    ,
     int status = (*p) -> status() ;
 
     if ( status > 3 ) {
-      if ( ( 71 == status ) || ( 72 == status ) ) 
-        (*p) -> set_status( LHCb::HepMCEvent::DecayedByProdGen ) ;
-      else
+      if ( ( 71 == status ) || ( 72 == status ) ||
+           ( ( 62 == status ) && ( abs((*p)->pdg_id()) >= 22 ) &&
+             ( abs((*p)->pdg_id()) <= 37 ) ) ) {  
+        (*p) -> set_status( LHCb::HepMCEvent::DecayedByProdGen ) ; 
+      } else
         (*p) -> set_status( LHCb::HepMCEvent::DocumentationParticle ) ;
     } else if (status!=LHCb::HepMCEvent::DecayedByProdGen
                && status!=LHCb::HepMCEvent::StableInProdGen
