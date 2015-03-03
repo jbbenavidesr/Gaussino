@@ -22,7 +22,7 @@ if [ "x${intelplat}" != "x" -a "x${intel_home}" != "x" -a "x${icc_c_home}" != "x
   if [ x`echo $PATH | grep ${icc_f_home}` = "x" ] ; then
     if [ -e ${icc_f_home}/bin/ifortvars.sh ] ; then
       echo "${argv0}: Sourcing scripts for Intel Fortran compiler environment" 
-      . ${icc_f_home}/bin/ifortvars.sh 
+      . ${icc_f_home}/bin/ifortvars.sh intel64
     else 
       echo "${argv0}: No script for ifort variables found" 
     fi
@@ -33,7 +33,7 @@ if [ "x${intelplat}" != "x" -a "x${intel_home}" != "x" -a "x${icc_c_home}" != "x
   if [ x`echo $PATH | grep ${icc_c_home}` = "x" ] ; then
     if [ -e ${icc_c_home}/bin/iccvars.sh ] ; then
       echo "${argv0}: Sourcing scripts for Intel C compiler environment" 
-      . ${icc_c_home}/bin/iccvars.sh 
+      . ${icc_c_home}/bin/iccvars.sh intel64
     else 
       echo "${argv0}: No script for icc variables found" 
     fi

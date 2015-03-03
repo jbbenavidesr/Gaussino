@@ -209,14 +209,14 @@ StatusCode Pythia8Production::generateEvent( HepMC::GenEvent * theEvent ,
   // Generate Event
   m_pythia->next();
 
-  // not needed in all cases
+  for (int i =0;i<100000;i++) {};
+  
+  //not needed in all cases
   if (!m_pythia->flag("HadronLevel:all")) m_event = m_pythia->event;  
 
   // Update event counter
   ++m_nEvents ;
   
-  debug() << m_pythia->flag("HadronLevel:all") << " " << theCollision->isSignal() << endmsg;
-
   if (theCollision->isSignal() || m_pythia->flag("HadronLevel:all")) return toHepMC( theEvent, theCollision ) ;
   else return StatusCode::SUCCESS;
 }
@@ -553,11 +553,11 @@ StatusCode Pythia8Production::setupForcedFragmentation( const int
 StatusCode Pythia8Production::toHepMC ( HepMC::GenEvent*     theEvent    , 
                                         LHCb::GenCollision * theCollision ){
   StatusCode sc = StatusCode::SUCCESS ;
+
   
   //Convert from Pythia8 format to HepMC format
   HepMC::I_Pythia8 conversion ;
-  debug() << "momentum unit is " << theEvent->momentum_unit() << endmsg;
-  
+
   // Force the verification of the HEPEVT  record 
   if ( m_validate_HEPEVT ) 
   { 
@@ -598,7 +598,7 @@ StatusCode Pythia8Production::toHepMC ( HepMC::GenEvent*     theEvent    ,
   
     int status = (*p) -> status() ;
 
-    if (status>3 && status<20)
+    /*if (status>3 && status<20)
       (*p) -> set_status( LHCb::HepMCEvent::DocumentationParticle );
     else if (status>19 && status<80)
       (*p) -> set_status( LHCb::HepMCEvent::DecayedByProdGen );
@@ -606,11 +606,14 @@ StatusCode Pythia8Production::toHepMC ( HepMC::GenEvent*     theEvent    ,
       if ((*p) -> end_vertex()!=0)
         (*p) -> set_status( LHCb::HepMCEvent::DecayedByProdGen );
       else
-	(*p) -> set_status( LHCb::HepMCEvent::StableInProdGen );
+        (*p) -> set_status( LHCb::HepMCEvent::StableInProdGen );
     }
     else if (status==93 || status==94)
       (*p) -> set_status( LHCb::HepMCEvent::DecayedByProdGen );
     else if (status==99)
+      (*p) -> set_status( LHCb::HepMCEvent::DocumentationParticle );
+    */
+    if (status>3) 
       (*p) -> set_status( LHCb::HepMCEvent::DocumentationParticle );
     else if (status!=LHCb::HepMCEvent::DecayedByProdGen
              && status!=LHCb::HepMCEvent::StableInProdGen

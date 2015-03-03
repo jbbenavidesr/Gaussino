@@ -4,10 +4,12 @@
 ! Responsible : G.Corti
 ! -----------------------------------------------------------------------------
 
-!======================== GaussAlgs v6r2 2013-07-17 ===========================
-! 2013-05-17 - Gloria Corti
- - Back-ported in branch v6b the modification below by Patrick. Cannot pick the
-   others since the code requires a change in the Event/MCEvent for SL hits
+!======================== GaussAlgs v7r0 2013-06-27 ===========================
+! 2013-05-08 - Paul Szczypka
+ - commented out SL hitsTracker line such that it isn't run by default.
+
+! 2013-05-02 - Paul Szczypka
+ - Added SL hit information.
 
 ! 2013-05-01 - Patrick Robbe
  - GenInit.cpp: set to 0 the event type of the GenHeader when creating it.

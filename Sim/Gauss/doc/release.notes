@@ -4,12 +4,20 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================= Gauss v46r2p1 2013-05-30 ==========================
- - on v46r2b branch
+!========================== Gauss v46r3 2013-06-27 ===========================
+! 2013-06-26 - Patrick Robbe
+ - MonitorInDetail.opts: remove GeneratorFullMonitor which is not
+   supported anymore.
+ - qmtests: increase the time limit for pythia8 tests to 3600s
 
-! 2013-06-06 - Gloria Corti
- - Identical to v46r2, only depending from LHCb v35r6 as needed for upgrade 
-   DBASE
+! 2013-06-06 - Patrick Robbe
+ - QMTests: add pythia8 QMTests and clean obsolete reference files
+
+! 2013-06-02 - Patrick Robbe
+ - python/Gauss/Configuration.py: clean configuration for .xgen file
+   generation
+ - QMTests: new sets of tests replacing the generator tests. Only the
+   output status is checked, not the standard out
 
 !========================== Gauss v46r2 2013-05-30 ===========================
 ! 2013-05-08 - Paul Szczypka

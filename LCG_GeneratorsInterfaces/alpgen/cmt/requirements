@@ -8,7 +8,7 @@ macro alpgen_home  $(alpgen_path)/$(LCG_system)
 
 include_path none
 
-macro alpgen_linkopts "-L$(alpgen_home)/lib/archive \
+macro alpgen_linkopts "-L$(alpgen_home)/lib \
                         -lalpgen "
 macro alpsho_linkopts "-L$(alpgen_home)/lib \
                         -lalpsho " 

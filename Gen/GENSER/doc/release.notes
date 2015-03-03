@@ -4,6 +4,21 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v12r5 2013-06-27 ==========================
+! 2013-06-27 - Gloria Corti
+ - Newer version of rivet (from 1.8.2 to 1.8.3) as not used in production
+
+! 2013-06-24 - Patrick Robbe
+ - requirements: remove definition of LHAPATH
+
+! 2013-06-13 - Gloria Corti
+ - Change version of herwigpp from 2.6.1a to 2.6.1b as not yet used in 
+   production
+
+! 2013-06-02 - Patrick Robbe
+ - Use LHAPDF version 5.8.9 instead of 5.8.8
+ - change back on June 5
+
 !========================= GENSER v12r4p1 2013-04-04 =========================
 ! 2013-04-04 - Gloria Corti
  - Make a patch release with no difference with respect to v12r4 to allow 

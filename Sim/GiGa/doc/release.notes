@@ -6,6 +6,21 @@
 !               for G4 <-> Gaudi applications 
 !-----------------------------------------------------------------------------
 
+!========================== GiGa v20r2 2013-06-27 ============================
+! 2012-05-31 - Patrick Robbe
+ - GiGa, GiGaRunManager, GiGaPhysConstructorBase, GiGaPhysListBase, 
+   GiGaSensDetBase: fix unreleased tool issue
+ - Set G4 particle table verbose level to 0 to avoid G4 warnings about
+   unknown PDG Ids
+
+!========================== GiGa v20r1 2013-02-14 ============================
+! 2012-02-07 - Patrick Robbe
+ - GiGaRunManager.h: Fix release method to avoid compilation warnings
+
+! 2012-02-05 - Patrick Robbe
+ - Fix release method to avoid compilation warnings when create configurables
+   in GiGaPhysConstructorBase.cpp, GiGaPhysListBase.cpp and GiGaSensDetBase.cpp 
+
 !========================== GiGa v20r0 2012-07-23 ============================
 ! 2012-07-23 - Gloria Corti
  - Adapt to LHCb::ParticlePropertySvc

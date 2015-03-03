@@ -3,7 +3,7 @@ package tauolapp
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro tauolapp_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/tauolapp/$(tauolapp_native_version)/$(LCG_system)
+macro tauolapp_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/tauola++/$(tauolapp_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(tauolapp_home)/include

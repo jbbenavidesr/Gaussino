@@ -3,7 +3,7 @@ package photospp
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro photospp_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/photospp/$(photospp_native_version)/$(LCG_system)
+macro photospp_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/photos++/$(photospp_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(photospp_home)/include
