@@ -1,4 +1,5 @@
 // Rich specific Analysis job options
+#include "$GAUSSRICHROOT/options/RichExtendedInfo.opts"
 
 GiGa.StepSeq.Members             += { "RichG4StepAnalysis3/RichStep" } ;
 //GiGa.TrackSeq.Members      += { "RichG4TrackAction/RichTrack" } ;
@@ -15,11 +16,12 @@ GiGa.EventSeq.RichG4Event.RichEventActionHistoFillSet4=false;
 //GiGa.EventSeq.RichG4Event.RichEventActionHistoFillSet1=true;
 //GiGa.EventSeq.RichG4Event.RichEventActionHistoFillSet3=false;
 GiGa.EventSeq.RichG4Event.RichG4EventActivateCounting=true;
+GiGa.EventSeq.RichG4Event.RichG4EventActivateCountingFullAcc=true;
 //GiGa.EventSeq.RichG4Event.RichEventActionHistoFillTimer=true;
 GiGa.EventSeq.RichG4Event.RichG4EventActivateCkvReconstruction=false;
-GiGa.EventSeq.RichG4Event.RichG4EventHitReconUseSaturatedHit=false;
+GiGa.EventSeq.RichG4Event.RichG4EventHitReconUseSaturatedHit=true;
 GiGa.EventSeq.RichG4Event.RichG4EventHitReconUseMidRadiator=false;
-GiGa.EventSeq.RichG4Event.RichG4InputMonitorActivate=false;
+GiGa.EventSeq.RichG4Event.RichG4InputMonitorActivate=true;
 
  GiGa.RunSeq.Members           += { "RichG4RunAction/RichG4Run" } ;
  GiGa.RunSeq.RichG4Run.DefineRichG4HistoSet1=false;

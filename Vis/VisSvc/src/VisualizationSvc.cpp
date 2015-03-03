@@ -27,12 +27,12 @@ using namespace xercesc;
 // instances of this service
 // -----------------------------------------------------------------------
 
-DECLARE_SERVICE_FACTORY(VisualizationSvc);
+DECLARE_SERVICE_FACTORY(VisualizationSvc)
 
 // -----------------------------------------------------------------------
 // build a standard string from a DOMString
 // -----------------------------------------------------------------------
-const std::string dom2Std (const XMLCh* aString) {
+  const std::string dom2Std (const XMLCh* aString) {
   char *cString = xercesc::XMLString::transcode(aString);
   std::string stdString;
   if (cString) {
@@ -57,9 +57,9 @@ StatusCode VisualizationSvc::initialize() {
   // Before anything we have to initialize grand mother
   StatusCode status = Service::initialize();
   if (!status.isSuccess()) {
-    return status;  
+    return status;
   }
-  if( m_colorDbLocation.empty() || "empty" == m_colorDbLocation ) { 
+  if( m_colorDbLocation.empty() || "empty" == m_colorDbLocation ) {
     if ( 0 != getenv("XMLVISROOT") ) {
       m_colorDbLocation  = getenv("XMLVISROOT");
       m_colorDbLocation += "/xml/colors.xml";
@@ -100,7 +100,7 @@ void VisualizationSvc::reload () {
         << "attributes will not be loaded." << endmsg;
     return;
   }
-  log << MSG::INFO << "Loading visualization attributes file \"" 
+  log << MSG::INFO << "Loading visualization attributes file \""
       << m_colorDbLocation << "\" ..." << endmsg;
 
   // parses the file containing the color definitions
@@ -125,7 +125,7 @@ void VisualizationSvc::reload () {
     xmlSvc->releaseDoc(iovDoc);
     return;
   }
-  
+
   xercesc::XMLString::release(&xs);
   unsigned int i;
   for (i = 0; i < domAttrList->getLength(); i++) {
@@ -147,7 +147,7 @@ void VisualizationSvc::reload () {
     xs = xercesc::XMLString::transcode("mode");
     std::string modeAttribute = dom2Std (attr->getAttribute (xs));
     xercesc::XMLString::release(&xs);
-    
+
     // computes the values
     VisAttribute::Visibility visible = VisAttribute::NO_VISIBILITY;
     if ("Yes" == visibleAttribute) {
@@ -167,7 +167,7 @@ void VisualizationSvc::reload () {
     } else if ("WireFrame" == modeAttribute) {
       mode = VisAttribute::WIRE_FRAME;
     }
-    
+
     // Looks whether a color node exists
     Color color;
     xs = xercesc::XMLString::transcode("Color");
@@ -215,11 +215,11 @@ void VisualizationSvc::reload () {
       // creates the color
       color = Color (red, green, blue, alpha);
     }
-    
+
     // creates the attribute and register it
     m_attributeSet[name] = VisAttribute(visible, opened, mode, color);
   }
-  
+
   // go through the tree of elements and fill in the material2Vis map
   xs = xercesc::XMLString::transcode("Materials");
   DOMNodeList* domMaterialsList = document->getElementsByTagName(xs);
@@ -234,21 +234,20 @@ void VisualizationSvc::reload () {
     xercesc::XMLString::release(&xs);
 
     if(domMaterialList) {
-      unsigned int i;
-      for (i = 0; i < domMaterialList->getLength(); i++) {
-	DOMNode* materialNode = domMaterialList->item(i);
-	DOMElement* material = (DOMElement*) materialNode;
-	
-	xs = xercesc::XMLString::transcode("name");
-	std::string name = dom2Std (material->getAttribute (xs));
-	xercesc::XMLString::release(&xs);
-	
-	xs = xercesc::XMLString::transcode("attr");
-	std::string attr = dom2Std (material->getAttribute (xs));
-	xercesc::XMLString::release(&xs);
-	
-	// register the association
-	m_material2Vis[name] = attr;
+      for (unsigned int ii = 0; ii < domMaterialList->getLength(); ii++) {
+        DOMNode* materialNode = domMaterialList->item(ii);
+        DOMElement* material = (DOMElement*) materialNode;
+
+        xs = xercesc::XMLString::transcode("name");
+        std::string name = dom2Std (material->getAttribute (xs));
+        xercesc::XMLString::release(&xs);
+
+        xs = xercesc::XMLString::transcode("attr");
+        std::string attr = dom2Std (material->getAttribute (xs));
+        xercesc::XMLString::release(&xs);
+
+        // register the association
+        m_material2Vis[name] = attr;
       }
     }
   }
@@ -266,9 +265,8 @@ void VisualizationSvc::reload () {
     DOMNodeList* domLogvolList = logvolsElement->getElementsByTagName(xs);
     xercesc::XMLString::release(&xs);
 
-    unsigned int i;
-    for (i = 0; i < domLogvolList->getLength(); i++) {
-      DOMNode* logvolNode = domLogvolList->item(i);
+    for (unsigned int ii = 0; ii < domLogvolList->getLength(); ++ii) {
+      DOMNode* logvolNode = domLogvolList->item(ii);
       DOMElement* logvol = (DOMElement*) logvolNode;
 
       xs = xercesc::XMLString::transcode("name");
@@ -282,15 +280,15 @@ void VisualizationSvc::reload () {
       xs = xercesc::XMLString::transcode("attr");
       std::string attr = dom2Std (logvol->getAttribute (xs));
       xercesc::XMLString::release(&xs);
-    
+
       // register the association
       if(sname.size()) {
         m_logvol2Vis[sname] = attr;
       } else if(sregex.size()) {
         m_logvol_regex_2Vis[sregex] = attr;
-      } else { 
+      } else {
         MsgStream log(msgSvc(), name());
-        log << MSG::WARNING << "LogVol with empty name or regex attribute." 
+        log << MSG::WARNING << "LogVol with empty name or regex attribute."
             << endmsg;
       }
     }
@@ -308,7 +306,7 @@ VisualizationSvc::visAttribute (const Material* mat) const {
   VisAttribute attr;
 
   if (0 != mat) {
-    Dictionnary::const_iterator it = 
+    Dictionnary::const_iterator it =
       m_material2Vis.find (mat->registry()->identifier());
     if (it != m_material2Vis.end()) {
       AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
@@ -333,38 +331,12 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
   VisAttribute attr;
 
   if (0 != vol) {
+
     // try first to find an attribute associated directly to the logical volume
-    std::string bnn = vol->name();
-
-    Dictionnary::const_iterator it = m_logvol2Vis.find (bnn);
-    if (it != m_logvol2Vis.end()) {
-      AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
-      if (it2 != m_attributeSet.end()) {
-        attr = it2->second;
-        // If the attribute is complete, just return
-        if (attr.color().isValid() &&
-            VisAttribute::NO_VISIBILITY != attr.visible() &&
-            VisAttribute::NO_STATUS != attr.openStatus() &&
-            VisAttribute::NO_MODE != attr.displayMode()) {
-          return attr;
-        }
-      } else {
-        MsgStream log(msgSvc(), name());
-        log << MSG::WARNING << "VisAttribute " << it->second 
-            << " unknown but"
-            << " used for logical volume " << vol->name() << "." << endmsg;
-        return attr;
-      }
-    }
-
-    // look in LogVol Vis XMLs with regular expression :
-   {Dictionnary::const_iterator it;
-    for(it=m_logvol_regex_2Vis.begin();it!=m_logvol_regex_2Vis.end();it++) {
-      boost::regex re(it->first);
-      if(boost::regex_search(bnn,re)) {
-        //printf("debug : for \"%s\", found \"%s\" with value \"%s\"\n",
-	//       bnn.c_str(),it->first.c_str(),it->second.c_str());
-
+    const std::string bnn = vol->name();
+    {
+      Dictionnary::const_iterator it = m_logvol2Vis.find (bnn);
+      if (it != m_logvol2Vis.end()) {
         AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
         if (it2 != m_attributeSet.end()) {
           attr = it2->second;
@@ -377,16 +349,46 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
           }
         } else {
           MsgStream log(msgSvc(), name());
-          log << MSG::WARNING << "VisAttribute " << it->second 
+          log << MSG::WARNING << "VisAttribute " << it->second
               << " unknown but"
               << " used for logical volume " << vol->name() << "." << endmsg;
           return attr;
         }
-
-        break;
       }
-    }}
-    
+    }
+
+    // look in LogVol Vis XMLs with regular expression :
+    {
+      Dictionnary::const_iterator it;
+      for(it=m_logvol_regex_2Vis.begin();it!=m_logvol_regex_2Vis.end(); ++it) {
+        boost::regex re(it->first);
+        if(boost::regex_search(bnn,re)) {
+          //printf("debug : for \"%s\", found \"%s\" with value \"%s\"\n",
+          //       bnn.c_str(),it->first.c_str(),it->second.c_str());
+
+          AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
+          if (it2 != m_attributeSet.end()) {
+            attr = it2->second;
+            // If the attribute is complete, just return
+            if (attr.color().isValid() &&
+                VisAttribute::NO_VISIBILITY != attr.visible() &&
+                VisAttribute::NO_STATUS != attr.openStatus() &&
+                VisAttribute::NO_MODE != attr.displayMode()) {
+              return attr;
+            }
+          } else {
+            MsgStream log(msgSvc(), name());
+            log << MSG::WARNING << "VisAttribute " << it->second
+                << " unknown but"
+                << " used for logical volume " << vol->name() << "." << endmsg;
+            return attr;
+          }
+
+          break;
+        }
+      }
+    }
+
     // either we don't have an attribute or it may be interesting to
     // complete it using the material
     try {
@@ -404,7 +406,7 @@ VisualizationSvc::visAttribute (const ILVolume* vol) const {
           << endmsg;
     }
   }
-  
+
   return attr;
 
 }

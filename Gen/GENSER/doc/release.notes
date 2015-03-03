@@ -1,8 +1,27 @@
-!-----------------------------------------------------------------------------
+xs!-----------------------------------------------------------------------------
 ! Package     : Gen/GENSER
 ! Responsible : Gloria CORTI, Patrick ROBBE
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
+
+!========================== GENSER v9r2 2011-09-20 ===========================
+! 2011-09-16 - Gloria Corti
+ - Latest version of LHAPDF does not have soft link for lower cases library.
+   For now use 5.8.5
+
+! 2011-09-15 - Gloria Corti
+ - Move to latest versions of 
+   Pythia6 6.424.2 -> 6.425.2
+   LHAPDF  5.7.1   -> 5.8.6
+   Pythia8 150     -> 153
+
+! 2011-09-05 - Hubert Degaudenzi
+ - added workaround for tauola++ and photos++ libraries which have missing links
+   on their respective fortran libraries.
+
+! 2011-08-14 - Gloria Corti
+ - Move to version 150 of pythia8 as the only one available for hepmc 2.06.05
+   (also available for 2.03)
 
 !========================== GENSER v9r1 2011-07-15 ===========================
 ! 2011-07-15 - Gloria Corti

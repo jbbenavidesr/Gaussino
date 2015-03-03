@@ -1,0 +1,27 @@
+!-----------------------------------------------------------------------------
+! Package     : Sim/GaussCherenkov
+! Responsible	: Sajan Easo 
+! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH Upgrade
+!----------------------------------------------------------------------------- 
+
+!========================= GaussCherenkov v1r1 2011-09-20 ====================
+!2011-08-22 - Sajan Easo
+ - Comment out the obsolete G4MultipleScattering.hh which caused compilation issues
+!========================= GaussCherenkov v1r0 2011-07-24 ====================
+!2011-06-15 -Sajan Easo
+ - Made the adaptations needed for the new Radiator number scheme setup in 
+   GaussRICH 
+
+!2011-05-10 - Sajan Easo
+ - Adapted GetMCCkvInfoBase.cpp and .h to use the new base class configuration.
+!2011-05-10 - Sajan Easo
+ - Added more histograms for monitoring
+!2011-04-18 - Sajan Easo
+ - Added a few histograms on occupancy for monitoring.
+! 2011-03-03 - Sajan EASO
+ - First version 
+ - Uses MAPMT as the photodetector
+======================== GaussCherenkov v1r0 =================================
+
+
+!==============================================================================

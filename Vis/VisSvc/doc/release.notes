@@ -3,6 +3,10 @@
 ! Responsible : Gloria CORTI (originally Sebastien Ponce)
 ! Purpose     : 
 !-----------------------------------------------------------------------------
+!========================= VisSvc v5r5 2011-09-20 ============================
+! 2009-02-14 - Chris Jones
+ - supress various icc warnings
+
 !======================== VisSvc v5r5 ===========================
 ! 2009-08-25 - Thomas Ruf
  - requirements, match to new CMT version

@@ -4,6 +4,22 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================= EvtGen v12r4 2011-09-19 ==========================
+! 2011-09-17 - John Back
+ - EvtGenKine.cpp: Protect against negative square roots in the calculation
+   of the z momentum component for 2-body phase space kinematics. 
+   This was generating NaN values, affecting boosts/spin density matrices.
+
+!========================== EvtGen v12r3 2011-09-15 ==========================
+! 2011-09-15 - John Back
+ - EvtDDalitz.cpp: Added missing modes D,Ds->3pi; D,Ds->Kpipi WS and updated 
+   D+->Kpipi and D+->KKpi (from C. Gobel and H. Gordon).
+
+!========================== EvtGen v12r2 2011-08-18 ==========================
+! 2011-08-11 - John Back
+ - Added Bc -> V + npi and Bc -> P + npi decay models 
+  (from Alexey Luchinsky et al.)
+
 !========================== EvtGen v12r1 2011-07-15 ==========================
 ! 2011-07-15 - Gloria Corti
  - Apply pattern not to build on windows, so that conditional use can be

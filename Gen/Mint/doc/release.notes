@@ -1,0 +1,80 @@
+!-----------------------------------------------------------------------------
+! Package     : Gen/Mint
+! Responsible : Matt Coombes
+! Author      : Jonas Rademacker
+! Purpose     : Original author of MINT Dr. Jonas Rademacker.
+!               Matt Coombes has task of implementing MINT into LHCb framework.
+!-----------------------------------------------------------------------------
+
+!=========================== Mint v1r0 2011-09-10 ============================
+
+! 25-08-2011 - Matt Coombes
+ - General debugging after running in nightly builds
+ - Fixed requirements to produce libraries correctly
+ - Fixed ../src/Mint/Pareto/src/GeneralisedPareto.cpp(119): warning #68: 
+   integer conversion resulted in a change of sign unsigned int n=-9999;
+ - Fixed FitFraction.h(28): warning #858: type qualifier on return type is meaningless
+   const double sigmaInteg() const{return _sigmaInteg;}.
+ 
+ 
+! 19-08-2011 - Jonas Rademacker
+ - Modified SpinFactors4 so the spin factors actually print themselves 
+   correctly upon construction 
+ - there were problems with inherited spin factors previously, 
+   who thought they were their own parents. 
+ - I also added KKpipiAmpFit/ampFit.cpp again
+
+! 19-08-2011 - Matt Coombes
+ - Moved header files back into exported directory Mint/
+   with flat directory structure so that include statements are simple
+ - Corrected all include statements accordingly
+ - Added missing AmpFit.cpp to Users area
+ - Removed directory structure under Mint/
+ 
+ 
+! 18-08-2011 - Matt Coombes
+ - Moved header files back into exported directory Mint/
+   this now has directory structure which has changed imports a bit
+ - Renamed some files incorrectly named Namecpp - added dot back
+ - Updated Makefiles to take into account the changes.
+ 
+! 17-08-2011 - Jonas Rademacker
+ - Added DalitzFits/4pi_gamma 
+   as method for fitting for gamma using 4pi model
+
+! 17-08-2011 - Matt Coombes
+ - Created Interface IMintGen.h
+ - Moved header files to private
+ - Export only IMintGen.h
+ - Corrected Include statements to return to 'old' structure
+ 
+! 16-08-2011 - Matt Coombes
+ - Major changes to structure in order to release into Gauss
+ - Introduced test/ folder for test jobs.
+ - Test .C files renamed as .cpp
+ - Test files now call header files from Mint/
+ 
+! 15-08-2011 - Matt Coombes
+ - Major changes to structure in order to release into Gauss
+ - Introduced Mint/ folder with exported header files
+ - All Mint header files must now be imported with #import "Mint/header.h"
+ - Renamed all source .C files with .cpp. Needed in order to release
+ 
+! 10-08-2011 - Matt Coombes
+ - Edited ParticlePropertiesList.C to find .cvs files using $MINTROOT
+ - Added MoelNotes.txt to describe the models included within MINT
+ - Included models folder containing 3 current models to be used in production
+ - Implemented model naming format clearly visible and consistent with EvtModel
+
+  
+! 18-07-2011 - Matt Coombes
+ - Cleaned up Dalitz Event removed DecayD.C and .h
+  Instead use exterior interface to interact directly with Gauss
+
+! 06-07-2011 - Matt Coombes
+ - Replaced Mojito Makefile with a new Makefile from Jonas
+ - Updated MINT version to most recent local improvements by Jonas.
+
+! 03-04-2011 - Matt Coombes
+ - First Added MINT to LHCb framework
+!=============================================================================
