@@ -67,8 +67,6 @@ CkvSensDet::CkvSensDet( const std::string& type   ,
 // Destructor
 //=============================================================================
 CkvSensDet::~CkvSensDet(){  
-  std::cout<<" Now in CkvSensdet end "<<std::endl;
-  
   
 
 }
@@ -313,8 +311,11 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
   G4int CurrentPixelYNum= -1;
   G4bool PXG = false;
   G4bool PYG =false;
+
+  CkvGeometrySetupUtil * aCkvGeometrySetup= CkvGeometrySetupUtil::getCkvGeometrySetupUtilInstance();
   
-  if(CurrentRichDetNumber == 1 && m_Rich2UseGrandPmt ) {
+  if( (CurrentRichDetNumber == 1) && m_Rich2UseGrandPmt && ( aCkvGeometrySetup-> ModuleWithGrandPMT(CurrentPmtModuleNumber) )) {
+  
     CurrentPixelXNum =  GrandPixelXNum( CurLocalPos.x());
     CurrentPixelYNum  = GrandPixelYNum( CurLocalPos.y());
     PXG = m_RichGeomProperty->GrandPixelGapFinderX (CurLocalPos.x());
@@ -652,11 +653,11 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
 
 
     newHit -> setCurrentHitAsDuplicate( FlagThisHitAsDuplicate);
-    int NumHitsInCurHC =0;
+    //int NumHitsInCurHC =0; // Unused variable
     
     if(EnableThisHitStore) {
       
-     NumHitsInCurHC =m_RichHC[CurrentRichCollectionSet] ->insert( newHit );
+      //NumHitsInCurHC =m_RichHC[CurrentRichCollectionSet] ->insert( newHit ); // Unused variable
 
       if(m_RichPmtAviodDuplicateHitsActivate || m_RichPmtFlagDuplicateHitsActivate ) { 
          m_RichPmtAlreadyHit[CurrentPmtNumber]=true;
@@ -666,7 +667,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
       
     }
     
-    
+     
     // log << MSG::VERBOSE
     //   << "CkvSensdet: Current collection set AuxSet and Hit number stored = "
     //   << CurrentRichCollectionSet << "  " 

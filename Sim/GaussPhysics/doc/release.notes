@@ -4,6 +4,14 @@
 ! Purpose          : collection of physics constructors for Gauss
 !-----------------------------------------------------------------------------
 
+!====================== GaussPhysics v11r0 2014-02-02 ========================
+! 2014-01-08 - Marco Clemencic
+ - Restored GaudiPhysics_load.cpp as GaudiPhysics_factories.cpp
+   (removed by mistake).
+
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
 !===================== GaussPhysics v10r0p1 2013-10-10 ========================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

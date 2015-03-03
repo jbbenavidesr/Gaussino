@@ -4,6 +4,10 @@
 ! Purpose     : VeloGauss monitoring
 !-----------------------------------------------------------------------------
 
+!========================== VeloGauss v3r0 2014-01-30 ========================
+! 2013-12-31 - Marco Clemencic
+ - Removed obsolete files.
+
 !========================= VeloGauss v2r4p1 2013-10-10 =======================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

@@ -4,6 +4,13 @@
 ! Purpose     : Hold converters between LHCb and Geant4
 !-----------------------------------------------------------------------------
 
+!========================= GiGaCnv v21r0 2014-02-02 ==========================
+! 2014-01-19 - Marco Clemencic
+ - Fixed compilation problem after the change in IDataSelector (in Gaudi).
+
+! 2013-12-20 - Marco Clemencic
+ - Removed obsolete file (not working with Gaudi >= v25).
+
 !======================== GiGaCnv v20r2p1 2013-10-10 =========================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

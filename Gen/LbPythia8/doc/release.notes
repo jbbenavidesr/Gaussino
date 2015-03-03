@@ -4,6 +4,17 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!========================= LbPythia8 v7r7 2014-01-23 =========================
+! 2014-01-22 - Paul Szczypka
+ - Minor change to Pythia8Gun.cpp (using size_t as loop var now)
+
+! 2014-01-21 - Paul Szczypka
+ - Changes to remove warnings:
+   . Pythia8Gun.cpp: (un)signed comparison, loop var type change
+   . Pythia8Production.h: reordering of declarations in class definition
+
+! 2014-01-08 - Paul Szczypka
+ - Removed loop from Pythia8Production.cpp which did nothing.
 
 !========================= LbPythia8 v7r6 2013-10-23 =========================
 ! 2013-10-23 - Chitsanu Khurewathanakul

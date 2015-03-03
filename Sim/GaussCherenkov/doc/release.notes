@@ -5,6 +5,16 @@
 !               etc for RICH Upgrade
 !----------------------------------------------------------------------------- 
 
+!===================== GaussCherenkov v4r2 2014-02-02 ========================
+! 2014-01-21 - Paul Szczypka
+ - Commented out creation of unused variables.
+
+!2013-12-18 - Sajan Easo
+ - Modifications to use mixed set of PMTS (large +standard pixel size) in RICH2
+   in   RichPmtProperties,CkvGeometrySetupUtil,CkvSensDet,CherenkovG4CkvRecon,RichG4ReconTransformPmt,
+   CherenkovG4HitRecon and CherenkovG4HistoFillSet4
+ - Added some prints in RichPmtProperties for reduced set of pmts 
+
 !===================== GaussCherenkov v4r1 2013-10-23 ========================
 ! 2013-10-18 - Jibo He
  - GiGaPhysConstructorOpCkv -> RichPmtPhotoElectricEffect -> RichPmtProperties
