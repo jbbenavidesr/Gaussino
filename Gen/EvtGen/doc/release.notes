@@ -4,6 +4,41 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================== EvtGen v13r4 2013-02-01 ==========================
+! 2013-02-01 - John Back
+  - Modified the default settings for the Photos++ engine to be the same as 
+    the original settings used in the old fortran version. New tag.
+
+! 2013-01-31 - John Back
+  - Added the ability to read in Pythia 8 commands in ascii decay files
+    in EvtDecayTable::readDecayFile. They can be set using the syntax:
+    "PythiaTypeParam module:variable=value", where Type = Generic, Alias or
+    Both for specifying whether the parameter is for the generic or alias
+    Pythia decay engines (or both). The 2nd argument must not contain any
+    spaces. Fixed the list of commands strings being used in the
+    EvtPythiaEngine class (i.e. Pythia parameters that can be set via decay
+    files).
+
+!========================== EvtGen v13r3 2013-01-28 ==========================
+! 2013-01-28 - John Back
+ - Commented out printing of the updated decay tables used for Pythia
+   (EvtPythiaEngine::updateParticleLists, called within initialise).
+
+! 2013-01-24 - John Back
+ - Updated the Tauola++ and Photos++ engines to use the EvtGen random number
+   engine.
+
+! 2013-01-23 - John Back
+ - Added EvtGenModels/EvtPythiaRandom to allow the EvtGen random number 
+   engine to also be used as the random engine for Pythia 8.
+
+!========================== EvtGen v13r2 2013-01-16 ==========================
+! 2013-01-16 - John Back
+ - Removed Pythia 6 decay classes. New tag.
+
+! 2013-01-15 - Patrick Robbe
+ - EvtDecayBase.cpp : fix compilation warning
+
 !========================== EvtGen v13r1 2012-12-20 ==========================
 ! 2012-12-20 - John Back
  - Created new tag containing the recent changes to the Dalitz decay models.

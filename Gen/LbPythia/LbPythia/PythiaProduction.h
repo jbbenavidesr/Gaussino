@@ -4,13 +4,20 @@
 // ============================================================================
 // Include files
 // ============================================================================
+// From STL
+#include <fstream>
+//
 // from Gaudi
 // ============================================================================
 #include "GaudiAlg/GaudiTool.h"
 #include "Generators/IProductionTool.h"
+#include "Generators/ICounterLogFile.h"
 // ============================================================================
 // Forward declaration
 class IBeamTool ;
+namespace LHCb {
+  class ParticleProperty ;
+} ;
 
 /** @class PythiaProduction PythiaProduction.h 
  *  
@@ -59,7 +66,10 @@ public:
 
   virtual StatusCode setupForcedFragmentation( const int thePdgId ) ;
 
- protected:
+private:
+  ICounterLogFile * m_xmlLogTool ; ///< XML Log file to store cross-sections
+
+protected:
   /// Parse Pythia commands from a string vector
   StatusCode parsePythiaCommands( const CommandVector & theVector ) ;
   
@@ -117,6 +127,9 @@ protected:
   IBeamTool * m_beamTool ;
   
 private:
+
+  void writePythiaEntryHeader(std::ofstream &outdec, 
+                              const LHCb::ParticleProperty * thePP ) ;
   
   // MSTU(1)/MSTU(2) for initialization PYLIST
   int m_ini_mstu_1 ;
@@ -150,5 +163,7 @@ private:
   // ==========================================================================
 
   std::vector<int> m_updatedParticles;
+
+  std::vector< int > m_particlesToAdd ;
 };
 #endif // LBPYTHIA_PYTHIAPRODUCTION_H

@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti (Patrick Robbe, Paul Szczypka) 
 #============================================================================
 package Gauss
-version v44r3p1
+version v44r4
 
 #============================================================================
 #-- Structure
@@ -24,6 +24,7 @@ use MCatNLOData        v1r*                  -no_auto_imports
 use BcVegPyData        v2r*                  -no_auto_imports
 use GenXiccData        v2r*                  -no_auto_imports
 use XmlVis             v*     Vis            -no_auto_imports
+use GDMLData           v1r*   Det            -no_auto_imports
 
 #-- Package to run the application with different configurations
 use AppConfig          v3r*                  -no_auto_imports

@@ -36,6 +36,8 @@ private:
   std::string _fname;
   std::string _ntpName;
   long int _maxEvents;
+ 
+
 
   TRandom Rand;
   TTree* friendTree;
@@ -55,6 +57,9 @@ private:
 
   int m_particle;
   const char* _cuts;
+  
+  Long64_t _entries;
+  Long64_t _firstentry;
 
   TLorentzVector _pMother;
 
@@ -80,6 +85,8 @@ public:
   , _maxEvents(maxEvents)
   , m_useWeights(false)
   , m_particle(0)
+  , _firstentry(0)
+  , _entries(1000000000)
   {
     m_weightName = "";
 
@@ -155,6 +162,10 @@ public:
   {
     return Rand.Rndm();
   }
+  
+  void SetEntries(int entries){ _entries = entries;}
+  void SetFirstEntry(int firstEntry){ _firstentry = firstEntry;}
+
 };
 
 
@@ -233,16 +244,11 @@ bool ReadNTuple<T,N>::getUpdatedTree()
   cout << "cd'ed to new file " << endl;
   //  _tree = _oldTree->CloneTree(1000);
   std::cout << "Cuts: " << _cuts << std::endl;
-  //  _tree = _oldTree->CopyTree("", "", 10000);
-  //  _tree = _oldTree->CopyTree("", "");
-  _tree = _oldTree->CopyTree(_cuts, "");
+
+  _tree = _oldTree->CopyTree(_cuts, "",_entries,_firstentry);
 
   _tree->Write();
-  //  _tree = _oldTree->CopyTree();
 
-  //  _tree->SetDirectory(_file0);
-  //  //_tree->CopyEntries(ot, _maxEvents);
-  //  cout << "cloned tree from old file" << endl;
 
   return (0 != _tree);
 }
@@ -408,6 +414,7 @@ MINT::counted_ptr<DalitzEvent> ReadNTuple<T,N>::readEntry(unsigned int entry){
 
   int pdgArray[5];
   pdgArray[0] = (int)m_mother_pdg;
+//  std::cout << m_mother_pdg <<
 
   if (dbThis)
     {
@@ -530,7 +537,7 @@ bool ReadNTuple<T,N>::readit(DiskResidentEventList* listPtr, int maxEvents, doub
 
   if (!testEventPattern()) return false;
 
-  float weight(0);
+  double weight(0);
   if (m_useWeights)
     {
       _tree->SetBranchAddress(m_weightName.c_str(),&weight);
@@ -551,6 +558,7 @@ bool ReadNTuple<T,N>::readit(DiskResidentEventList* listPtr, int maxEvents, doub
                         {
                           evtPtr->setWeight(weight);
                         }
+
                       numEvents++;
                       listPtr->Add(*(evtPtr.get()));
                     }
@@ -576,7 +584,7 @@ template <typename T, typename N>
 bool ReadNTuple<T,N>::testEventPattern()
 {
   _tree->GetEntry(0);
-  if (set_pat[0] != m_mother_pdg)
+  if ((int)set_pat[0] != (int)m_mother_pdg)
     {
       cout << "Mother Pattern not the same try CC" << endl;
       cout << " set_pat " << set_pat[0] << " " << set_pat[1];
@@ -588,7 +596,7 @@ bool ReadNTuple<T,N>::testEventPattern()
       m_pat = new DalitzEventPattern(pat);
       set_pat = m_pat->getVectorOfInts();
     }
-  if (set_pat[0] != m_mother_pdg)
+  if ((int)set_pat[0] != (int)m_mother_pdg)
     {
       cerr << " set_pat " << set_pat[0] << std::endl;
       cerr << "Mother Pattern STILL not the same" << endl;

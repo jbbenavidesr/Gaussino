@@ -5,6 +5,33 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
+!======================= Generators v14r0 2013-02-04 =========================
+! 2013-02-01 - Aurelien Martens
+ - ExternalGenerator.cpp: add call to initializeGenerator, so that
+particle properties are set before initialization of the pythia instance
+
+
+! 2013-01-31 - Patrick Robbe
+ - Use Gaudi random number in ApplyPhotos
+
+! 2013-01-27 - Patrick Robbe
+ - ApplyPhotos.cpp: adapt to new photos++ interface
+
+! 2013-01-21 - Patrick Robbe
+ - EvtGenInPhSpDecay.cpp: remove Photos functions
+ - ICounterLogFile, XmlCounterLogFile: add counters for cross-section
+
+! 2013-01-20 - Patrick Robbe
+ - Remove Pythia6 from EvtGenDecay tool
+
+! 2013-01-16 - Patrick Robbe
+ - Add ICounterLogFile and XmlCounterLogFile classes to store in XML 
+   files the counters that allow to compute the generator level cut 
+   efficiencies.
+
+! 2012-12-19 - Aurelien Martens
+ - Fix SignalRH for pythia8 so that it also hadronize pile-up events.
+
 !======================= Generators v13r0 2012-11-29 =========================
 ! 2012-09-27 - Patrick Robbe
  - Added an option to switch off the reinitialization of the pile-up
