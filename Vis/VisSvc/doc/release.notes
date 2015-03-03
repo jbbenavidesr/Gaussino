@@ -4,6 +4,12 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!======================== VisSvc v5r2 2008-02-08 =============================
+! 2007-01-18 - Jeroen van Tilburg
+ - Get the name of the material from registry()->identifier(). Since this
+   returns the full path. The method name() only returns the last part of 
+   the path.
+
 !======================== VisSvc v5r1 2007-12-07 =============================
 ! 2007-12-04 - Gloria CORTI
  - Adapt default name of xml file to new package Vis/XmlVis that need to

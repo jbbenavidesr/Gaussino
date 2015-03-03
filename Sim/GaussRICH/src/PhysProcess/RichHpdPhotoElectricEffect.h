@@ -89,6 +89,11 @@ public:
 
   void setPostPhotoElectricLogVolName( const G4String PostPhotoElecLogVolName);
 
+  void setPrePhotoElectricMatNameSec( const G4String aPrePhotoElectricMatNameSec ) 
+  {    m_PrePhotoElectricMatNameSec=aPrePhotoElectricMatNameSec;}
+  G4String PrePhotoElectricMatNameSec()  {  return  m_PrePhotoElectricMatNameSec;}
+  
+
   //  RichHpdProperties* HpdProperty() {return  m_HpdProperty; }
 
   RichHpdProperties* HpdProperty() {return  RichHpdProperties::getRichHpdPropertiesInstance(); }
@@ -120,8 +125,11 @@ public:
   void setUseHpdMagDistortions(G4bool aflg ) { m_UseHpdMagDistortions= aflg;}
   void setHpdPhElecParam();
   void setPSFPreDc06Flag(G4bool aFlagPsf ) { m_PSFPreDc06Flag = aFlagPsf; }
+  void setHpdQEUsingNominalTable(G4bool ahpdqetableoption) 
+  {m_HpdQEUsingNominalTable=ahpdqetableoption;}  
   G4bool PSFPreDc06Flag() {return m_PSFPreDc06Flag;}
-
+  G4bool HpdQEUsingNominalTable()  {  return m_HpdQEUsingNominalTable;}
+  
 private:
 
   G4ThreeVector getCathodeToAnodeDirection(int ihpdnum , int richdetnum , 
@@ -130,6 +138,8 @@ private:
 
   G4String m_PrePhotoElectricLogVolName;
   G4String m_PostPhotoElectricLogVolName;
+  G4String m_PrePhotoElectricMatNameSec;
+  
   double m_HpdPhElectronKE;
   double m_PhCathodeToSilDetMaxDist;
   //   RichHpdProperties* m_HpdProperty;
@@ -148,6 +158,8 @@ private:
   G4bool m_PSFPreDc06Flag;  // if true the old psf implementation
                             // if false the new psf implementation which
                             // has a worse sigma than the old version.
+  G4bool m_HpdQEUsingNominalTable; // if true using old Nominal QE Table for all hpds from sqldddb
+                                   // if false using the new measured QE tables for the Hpds. 
 
 };
 

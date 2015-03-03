@@ -17,6 +17,25 @@
   <!--Color B="0.6" G="0.5333" R="0.4667"/-->
   <Color B="1" G="0" R="0" />				
 </VisAtt>
+<VisAtt name="VisEcalOutBlock">
+  <Color R="0.9" G="0.7" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisEcalMidBlock">
+  <Color R="0.9" G="0.5" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisEcalInnBlock1">
+  <Color R="0.9" G="0.3" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisEcalInnBlock2">
+  <Color R="0.9" G="0.3" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisEcalShield">
+  <Color R="0.8" G="0.3" B="0.0"/>
+</VisAtt>
+<VisAtt name="VisEcalPlug">
+  <Color R="0.48" G="0.54" B="0.54"/>
+</VisAtt>
+
 
 <!-- This part contains definitions of visualization attributes for
      logical volumes. These take precedence on the material attributes

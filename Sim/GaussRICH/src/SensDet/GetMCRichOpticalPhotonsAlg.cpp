@@ -1,4 +1,4 @@
-// $Id: GetMCRichOpticalPhotonsAlg.cpp,v 1.11 2007-03-18 19:54:57 gcorti Exp $
+// $Id: GetMCRichOpticalPhotonsAlg.cpp,v 1.14 2008-01-28 17:10:29 jonrob Exp $
 // Include files 
 
 // from Gaudi
@@ -151,6 +151,9 @@ StatusCode GetMCRichOpticalPhotonsAlg::execute()
 
           // exit point from aerogel (only meaningful for aerogel photons)
           mcPhoton->setAerogelExitPoint( Gaudi::XYZPoint(g4hit->OptPhotAgelExitPos()) );
+
+          // Hpd Quartz Window External Surface Incidence Point of the photon
+	        mcPhoton->setHpdQWIncidencePoint(Gaudi::XYZPoint(g4hit->HpdQuartzWindowExtSurfPhotIncidentPosition()));
 
           // Count photons
           ++m_hitTally[mchit->radiator()];

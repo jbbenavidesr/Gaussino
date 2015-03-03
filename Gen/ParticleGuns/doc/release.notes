@@ -4,6 +4,17 @@
 ! Purpose     : Holds code for generaion of particle guns
 !----------------------------------------------------------------------------
 
+!======================= ParticleGuns v4r0 2008-02-12 =======================
+! 2008-02-12 - Gloria CORTI
+ - Remove obsolete ParticleGun_load.cpp (imcompatible with Gaudi < 19)
+
+! 2008-02-12 - Wouter Hulsbergen
+ - Adapted OTCosmicGenerator to change in ROOT::Math::Transform3D
+
+! 2008-01-24 - Giulia Manca
+ - Added CosmicsGun, to generate cosmic rays in the all detector,
+  accorded to the model described in hep-ph 0604145.
+
 !======================= ParticleGuns v3r4 2007-12-07 =======================
 ! 2007-11-21 - Gloria Corti
  - Add use of DetDesc to compile new OTCosmicGenerator

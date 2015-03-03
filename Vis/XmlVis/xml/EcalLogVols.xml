@@ -46,3 +46,17 @@
 	attr="EcalOuterCellPlastic"/>
 	<Item name="/dd/Geometry/DownstreamRegion/Ecal/Modules/OutCellPb"
 	attr="EcalOuterCellPb"/>
+
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/OutBlock"
+      attr="VisEcalOutBlock"/>
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/MidBlock"
+      attr="VisEcalMidBlock"/>
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/InnBlock1"
+      attr="VisEcalInnBlock1"/>
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/InnBlock2"
+      attr="VisEcalInnBlock2"/>
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/Shield"
+      attr="VisEcalShield"/>
+<Item name="/dd/Geometry/DownstreamRegion/Ecal/Installation/PlugSupport"
+      attr="VisEcalPlug"/>
+

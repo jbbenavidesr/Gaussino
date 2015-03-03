@@ -1,0 +1,77 @@
+// $Id: CosmicsGun.opts,v 1.1 2008-01-24 20:49:23 manca Exp $
+ 
+/** @file
+ *
+ *  Example options to generate cosmic rays with their distribution in
+ *  momentum, theta and phi; the xyz vertex options define the region
+ *  of the detector which one wants to be populated; the 
+ *  vertex is extrapolated from there to a plane above the 
+ *  detector.
+*
+ *  This example will generate one mu+ or mu- per event originating at
+ *  (x,y,z) as explained before, with 1 GeV < abs(P) < 100 GeV,
+ *  0 degrees < theta < 85 degrees and 0 < phi < 2pi
+ *    
+ *  Include this file instead of the EVENTTYPE.opts after all you other 
+ *  options.
+ *
+ *  @author : G.Manca
+ *  @date   : last modified on 2008-01-24
+ *
+ */
+
+
+//- Steering of algorithms to execute, remove physics generation and resequence
+//- Monitor
+Generator.Members -= { "Generation", "GaudiSequencer/GenMonitor" };
+Generator.Members += { "CosmicsGun", "GaudiSequencer/GenMonitor" };
+
+//- Control of the CosmicsGun
+//CosmicsGun.OutputLevel         = 5
+//
+//- Event type is set as described in LHCb-2005-034 : G=5! (Def = 0)
+// gsdctnxu:
+//  g=type of process (5=particle gun)
+//  s=which particles are present and pass 400mrad w.r.t.beam cut; 2=mu
+//  d=decay; particle or antipart; 2=several particles (??)
+//  c=eta and p distribution : 2 (0=fix p, 1=flat eta, 2=flat xy, 3=mom range)
+//  tnxu = track parameters; if c=2 or 3, tn=00; 
+CosmicsGun.EventType = 52220000;
+
+//- Set min and max number of particles to produce in an event
+//- defaults are = 1, i.e. always one particle
+
+//GM: This should not be changed
+// CosmicsGun.MinNumParticles = 1
+// CosmicsGun.MaxNumParticles = 1
+
+//- PDG code of a list of possible particles to be generated, default = {13,-13)
+//GM: This should not be changed
+CosmicsGun.PdgCodes    = {-13, 13};
+
+//GM: The region of the detector you want populated. The 
+//real vertex will be extrapolated from this point at the point
+//y=+6m
+//This is an option as someone might want to generate only in 
+//one particular region of the detector.
+//default is the all detector.
+CosmicsGun.xVertexMin = -5000.0*mm;  
+CosmicsGun.xVertexMax =  5000.0*mm;
+CosmicsGun.yVertexMin =  -5000.0*mm;
+CosmicsGun.yVertexMax =   5000.0*mm;
+CosmicsGun.zVertexMin = 0*mm;
+CosmicsGun.zVertexMax = 19000*mm;
+
+//- The momentum of the particle is derived from randomly generated value
+//- of abs(P) (default min = 1 and max = 100 GeV), theta (default 
+//- min = 0.1*rad and max = pi/2) 
+//- and phi (default min = 0, max = twopi*rad)
+CosmicsGun.MomentumMin =     1000.0*MeV;
+CosmicsGun.MomentumMax =   100000.0*MeV;
+CosmicsGun.ThetaMin     =       0*rad;//0 degrees
+CosmicsGun.ThetaMax     =   1.483*rad;//85 degrees
+CosmicsGun.PhiMin      =     0.0*rad;
+CosmicsGun.PhiMax      =    6.28*rad;
+CosmicsGun.TimeOfInteraction  = 100.0*ns; 
+
+

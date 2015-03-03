@@ -3,10 +3,19 @@
 #include "G4ParticleDefinition.hh"
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
+#include "G4Electron.hh"
+#include "RichPhotoElectron.h"
+#include "RichPEInfoAttach.h"
+#include "RichG4AnalysisPhotElec.h"
+#include "RichG4AnalysisConstGauss.h"
+#include "RichG4GaussPathNames.h"
 #include "Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
+#include "G4ProcessVector.hh"
+#include "G4ProcessManager.hh"
+#include "RichHpdProperties.h"
 
 RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
                                         G4ProcessType   aType )
@@ -15,16 +24,22 @@ RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
     MinKineticEnergy(1.*keV),
     MipEnergyHpdSiEloss(1.0*GeV),
     finalRangeforSiDetStep(0.15*mm),
-    PhElectronMaxEnergy(25.0*keV),
-    SiHitDetGlobalEff(0.85),
-    PeBackScaProb(0.18)  {
+    PhElectronMaxEnergy(25.0*keV) 
+{
+  
+  // The following three initializations moved to GiGaPhysConstructorHpd and InitializeHpdProcParam so that they can be
+  // set through the options files. The defaults are as indicated below. SE 5-10-2007
+  // the pixelchipefficiency is set to 1 for now. the  SiHitDetGlobalEff is the product of the other two efficiencies.
+  //    SiHitDetGlobalEff(0.85), 
+  //     m_HpdSiDetEff(0.85)
+  //     _SiPixelChipEff(1.0)
+  //  PeBackScaProb(0.005823) /*RWL change 8th Nov 06*/ {
 
 
   const G4String materialName="/dd/Materials/RichMaterials/RichHpdSilicon";
   const G4String EnvelopeMaterialName="/dd/Materials/RichMaterials/Kovar";
 
-  //  SiHitDetGlobalEff=0.9;
-      SiHitDetGlobalEff=0.85;
+
 
   static const G4MaterialTable* theMaterialTable =
     G4Material::GetMaterialTable();
@@ -61,10 +76,36 @@ RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
   if(iMatk >= numberOfMat ) {
     G4Exception("Invalid material Name in RichHpdSiEnergyLoss constructor" );
   }
+   
   //     G4cout<<GetProcessName() <<" is created "<<G4endl;
 
 }
 RichHpdSiEnergyLoss::~RichHpdSiEnergyLoss() {; }
+
+void RichHpdSiEnergyLoss::InitializeHpdProcParam(){
+
+    RichHpdProperties*  m_HpdProperty = RichHpdProperties::getRichHpdPropertiesInstance();
+    m_HpdProperty->InitializeSiDetParam();
+    m_siliconDetXSize = (G4double) (m_HpdProperty->siDetXSize());
+    m_siliconDetYSize = (G4double) (m_HpdProperty->siDetYSize());
+    m_siliconDetZSize = (G4double) (m_HpdProperty->siDetZSize());  
+
+    SiHitDetGlobalEff= m_HpdSiDetEff*m_SiPixelChipEff;
+
+
+      //input value is measured back-hit fraction
+      //convert to BScatter probability using efficiency,
+      //also can do using sum of GS in inverse
+ 
+    G4double HPDBSTotalProbSum = PeBackScaProb*SiHitDetGlobalEff;
+    G4double HPDBSProbSum = HPDBSTotalProbSum/(1-SiHitDetGlobalEff);
+    PeBackScaProbCorrected = HPDBSProbSum/
+                            (SiHitDetGlobalEff+
+                             HPDBSProbSum*(1-SiHitDetGlobalEff));
+
+    G4cout<<"Rich Hpd SiHitEfficiency  BackScatterCorrectedProb "<< SiHitDetGlobalEff <<"   "<<PeBackScaProbCorrected<<G4endl;
+
+}
 
 
 G4bool RichHpdSiEnergyLoss::IsApplicable(const G4ParticleDefinition&
@@ -116,6 +157,8 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
 
   aParticleChange.Initialize(aTrack);
 
+
+
   G4int aMaterialIndex = aTrack.GetMaterial()->GetIndex();
   if(fMatIndexHpdSiEloss !=  aMaterialIndex  &&
      fMatIndexHpdEnvelopeKovar != aMaterialIndex  ) {
@@ -135,7 +178,7 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
 
 
 
-  //    G4cout<<"Now particle  "<<aParticle->GetDefinition()->GetParticleName()
+  //  G4cout<<"Now particle  "<<aParticle->GetDefinition()->GetParticleName()
   //       << "in HpdEnergyloss KE= "<<aKinEnergyInit <<G4endl;
   // if the Photoelectron hits the kovar of the Hpd envelope
   // endcap or barrel,  then the kill the photoelectron.
@@ -229,13 +272,17 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
   // energy. Hence the energy deposited on the hit is 20 keV.
   G4double EnegydepositMultFactor=1.0;
 
-  if(aCreatorProcessName == "RichHpdPhotoelectricProcess" ) {
+  if( (aCreatorProcessName == "RichHpdPhotoelectricProcess") ||  (aCreatorProcessName == "RichHpdSiEnergyLossProcess") ) {
     if(aKinEnergyInit > 1500 ) {
       aKinEnergyInit= aKinEnergyInit/100000;
+
+      // if( aCreatorProcessName == "RichHpdSiEnergyLossProcess" ) {
+      //	G4cout<<" a backscatered eln back in RichHpdenergyLossProcess "<<G4endl;
+      // }
       // EnegydepositMultFactor=10.0;
     }    
   } else {
-    //    G4cout<<" Now a non pe particle in Hpd Si Det" <<G4endl;
+    // G4cout<<" Now a non pe particle in RicHpdEnergyLoss  " <<G4endl;
   }
     
   //end of temporary fix.
@@ -247,7 +294,7 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
 
   aKinEnergyFinal=aKinEnergyInit-Eloss;
 
-  // Now for the hit detection effecidency and backscattering etc.
+  // Now for the hit detection effeciency and backscattering etc.
 
   //    aParticleChange.SetLocalEnergyDeposit(Eloss);
 
@@ -264,22 +311,128 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
   if(   EnergyTransfer > 0.0 ) {
 
     aParticleChange.ProposeLocalEnergyDeposit(EnergyTransfer);
-  }
-
-  //  if(  aCreatorProcessName != "RichHpdPhotoelectricProcess") {
-      
-     //  G4cout<<"EnergyTransfer in sidetEloss for charged particle " << EnergyTransfer<<G4endl;
-
-  // }
-  if ( (aKinEnergyFinal <= MinKineticEnergy) || 
-      (aCreatorProcessName == "RichHpdPhotoelectricProcess") ) {
-    aParticleChange.ProposeTrackStatus(fStopAndKill);
-    aParticleChange.ProposeEnergy(0.0);
-
+  }else if (aKinEnergyInit >= MipEnergyHpdSiEloss  ) {
+    
+    aParticleChange.ProposeLocalEnergyDeposit(Eloss);
   }else {
-    aParticleChange.ProposeEnergy(aKinEnergyFinal);
+      //RWL change 8th Nov 2006, add backscatter basic model    
+      //backscatter calculation
+      G4double Randreflect =  G4UniformRand();
+      //new rand # to ensure incoherant effects
+      
+      //input value is measured back-hit fraction
+      //convert to BScatter probability using efficiency,
+      //also can do using sum of GS in inverse
+      // for now allow only one backscatered electron per charged particle.
 
+
+      if( (Randreflect <= PeBackScaProbCorrected) &&  (aCreatorProcessName != "RichHpdSiEnergyLossProcess" ) )
+        {
+
+	  //create new photoelectron, kill old photoelectron
+
+          //work out new direction for pe, straight down
+
+          G4double RandXposition =  G4UniformRand() -0.5;
+          G4double RandYposition =  G4UniformRand() -0.5;
+          //new rand # to ensure incoherant effects
+
+          G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
+          G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
+ 
+
+          G4ThreeVector LocalElectronDirection( 0,0 ,-1 );
+          //1mm above Si detector, heading straight down
+
+          G4ThreeVector LocalElectronOrigin( RandXposition*m_siliconDetXSize ,
+                                             RandYposition*m_siliconDetYSize , 0.5*m_siliconDetZSize+1.0);
+
+          
+      	  
+         //transform to global co-ordinates
+         G4Navigator* theNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+         G4ThreeVector GlobalElectronOrigin = theNavigator->GetLocalToGlobalTransform().TransformPoint(LocalElectronOrigin);
+
+         const G4ThreeVector GlobalElectronDirection = theNavigator->
+                                GetLocalToGlobalTransform().TransformAxis(LocalElectronDirection);
+  
+          //create new pe with same energy
+
+          G4double aPElectronTime= aTrack.GetGlobalTime();
+
+ 
+          // G4cout<<" Creating a backscattered electron with energy "<<aKinEnergyInit<< G4endl;
+
+	   G4double aElecKineEnergyForTracking= aKinEnergyInit*100000;
+
+      G4DynamicParticle* aElectron= 
+	     new G4DynamicParticle (RichPhotoElectron::PhotoElectron(),
+                                GlobalElectronDirection, aElecKineEnergyForTracking) ;
+
+	    // the 100000 above is to get the photoelectron tracked without getting killed
+            // before tracking. The energy is scaled down by 100000 before the energydeposit is made to create hits.
+
+
+          // for now use the g4electron with the current G4.. SE Oct4-2007
+          // changed SE Jan24-2008
+          //G4DynamicParticle* aElectron= 
+          //   new G4DynamicParticle (G4Electron::Electron(),
+          //                      GlobalElectronDirection, aKinEnergyInit) ;
+
+        // G4DynamicParticle* aElectron= 
+        //      new G4DynamicParticle (G4Electron::Electron(),
+        //                         GlobalElectronDirection,aElecKineEnergyForTracking ) ;
+
+          aParticleChange.SetNumberOfSecondaries(1) ;
+	  
+           G4Track * aSecPETrack =
+	             new G4Track(aElectron,aPElectronTime,GlobalElectronOrigin);
+	    
+          aSecPETrack->SetTouchableHandle((G4VTouchable*)0);
+          aSecPETrack->SetParentID(aTrack.GetTrackID());
+          aSecPETrack->SetGoodForTrackingFlag(true);
+          //check this info attach
+          //G4Track* aTaggedSecPETrack = RichPEInfoAttach(aTrack,aSecPETrack);
+
+           G4Track* aTaggedSecPETrack =  RichPEBackScatAttach(aTrack,aSecPETrack);             
+           aParticleChange.AddSecondary(aTaggedSecPETrack);
+
+
+          //kill old pe
+          aParticleChange.ProposeTrackStatus(fStopAndKill);
+          aParticleChange.ProposeEnergy(0.0);
+
+          aKinEnergyFinal=0.0;
+
+          
+        }
+      
+      
+      
+      
   }
+  
+  
+  
+  
+  //end of change by RWL 8th Nov 2006
+
+
+
+
+   if ( (aKinEnergyFinal <= MinKineticEnergy) || 
+      (aCreatorProcessName == "RichHpdPhotoelectricProcess") ||  (aCreatorProcessName =="RichHpdSiEnergyLossProcess")) {
+       aParticleChange.ProposeTrackStatus(fStopAndKill);
+       aParticleChange.ProposeEnergy(0.0);
+
+   }else {
+       aParticleChange.ProposeEnergy(aKinEnergyFinal);
+ 
+   }
+
+
+
   
   return &aParticleChange;
 

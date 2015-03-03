@@ -17,6 +17,10 @@
 #include "RichG4GaussPathNames.h"
 #include "GaudiKernel/SmartDataPtr.h"
 #include "DetDesc/DetectorElement.h"
+#include "GaussTools/GaussTrackInformation.h"
+#include "RichInfo.h"
+#include "RichPhotInfo.h"
+#include "RichPhotInfoAttach.h"
 
 RichHpdPhotoElectricEffect::RichHpdPhotoElectricEffect(const GiGaBase* gigabase,
                                                        const G4String& processName,
@@ -24,49 +28,31 @@ RichHpdPhotoElectricEffect::RichHpdPhotoElectricEffect(const GiGaBase* gigabase,
   : G4VDiscreteProcess(processName, aType ),
     m_numTotHpd(std::vector<int>(2))
 {
-
-
     //  G4cout << GetProcessName() << " is created " << G4endl;
-    // set the default for mag distortions to be false. This is set 
-    // as a parameter which can be changed from the options file.
-   //  m_UseHpdMagDistortions = false;
-   //   IDataProviderSvc* detSvc;
-   //   if ( gigabase->svcLoc()->service( "DetectorDataSvc", detSvc, true) ) {
-
-   //  m_HpdProperty = new RichHpdProperties(detSvc, gigabase->msgSvc()) ;
-
-    // the following commented out and read from the options file
-    // SE 26-10-2006
-    //    SmartDataPtr<DetectorElement> Rich1DE(detSvc,Rich1DeStructurePathName );
-    // if( Rich1DE ){
-    //  m_UseHpdMagDistortions = Rich1DE->param<int>("UseHpdMagDistortions");
-    // } 
-    // std::cout<< "RichHpdPhotoElectricEffect UseHpdMagDistortions=   "<<
-    //  m_UseHpdMagDistortions<<std::endl;
-
-  // }
-
 }
 
 RichHpdPhotoElectricEffect::~RichHpdPhotoElectricEffect() {; }
 
 
-void RichHpdPhotoElectricEffect::setHpdPhElecParam() {
+void RichHpdPhotoElectricEffect::setHpdPhElecParam() 
+{
 
-
-    std::cout<< "RichHpdPhotoElectricEffect UseHpdMagDistortions=    "
+    std::cout<< "RichHpdPhotoElectricEffect UseHpdMagDistortions = "
 	     <<m_UseHpdMagDistortions<<std::endl;
-    std::cout<< "RichHpdPhotoElectricEffect PsfPreDc06Flag =    "
+    std::cout<< "RichHpdPhotoElectricEffect PsfPreDc06Flag       = "
 	     << m_PSFPreDc06Flag <<std::endl;
+     std::cout<< "RichHpdPhotoElectricEffect UseNominalHpdQE =   "<<m_HpdQEUsingNominalTable<<std::endl;
 
     RichHpdProperties*  m_HpdProperty = HpdProperty();
     m_HpdProperty -> setUsingHpdMagneticFieldDistortion((bool) m_UseHpdMagDistortions );
+    m_HpdProperty -> setUseNominalHpdQE( (bool) m_HpdQEUsingNominalTable );
     m_HpdProperty -> InitializeHpdProperties( );
 
     m_HpdPhElectronKE=m_HpdProperty->RichHpdHighVoltage();
     m_PhCathodeToSilDetMaxDist=m_HpdProperty->RichHpdQWToSiDist();
     m_PrePhotoElectricLogVolName=m_HpdProperty->HpdQWLogVolName();
     m_PostPhotoElectricLogVolName=m_HpdProperty->HpdPhCathodeLogVolName();
+    m_PrePhotoElectricMatNameSec= RichHpdVacName;
     m_NumRichDet=m_HpdProperty->numberOfRichDetectors();
     if((int) m_numTotHpd.size() != m_NumRichDet )
       m_numTotHpd.resize(m_NumRichDet);
@@ -101,21 +87,36 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
   G4String PostPhName= pPostStepPoint -> GetPhysicalVolume() ->
     GetLogicalVolume() -> GetName();
 
-  if(( PrePhName == m_PrePhotoElectricLogVolName &&
-       PostPhName == m_PostPhotoElectricLogVolName ) ||
-     ( PostPhName == m_PrePhotoElectricLogVolName  &&
-       PrePhName == m_PostPhotoElectricLogVolName )) {
-    //   G4cout<<"RichHpdPhElec effect PreVol Post Vol "<<PrePhName
-    //     <<"   "<<PostPhName<<G4endl;
+
+  //   if(( (PrePhName == m_PrePhotoElectricLogVolName) &&
+  //      (PostPhName == m_PostPhotoElectricLogVolName) ) ||
+  //    ( (PostPhName == m_PrePhotoElectricLogVolName)  &&
+  //     (PrePhName == m_PostPhotoElectricLogVolName) )) {
+
+     if(( (PrePhName == m_PrePhotoElectricLogVolName) &&
+        (PostPhName == m_PostPhotoElectricLogVolName) ) ||
+        ( (PrePhName == m_PrePhotoElectricMatNameSec )  &&
+          (PostPhName == m_PostPhotoElectricLogVolName) )) {
+
+
+
+  // temporary test with only qw-pc photons allowed to convert
+  //if  if(( PostPhName == m_PostPhotoElectricLogVolName ) ) {
+    // end of temporary test
+
+    //  G4cout<<"RichHpdPhElec effect PreVol Post Vol "<<PrePhName
+    //    <<"   "<<PostPhName<<G4endl;
   }else {
+
 
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
 
   }
 
   if (aTrack.GetStepLength()<=kCarTolerance/2) {
-    G4cout<<"Too small step length at hpd  ph cathode boundary "
-          <<aTrack.GetStepLength()<<G4endl;
+    //  G4cout<<"Too small step length at hpd  ph cathode boundary "
+    //     <<aTrack.GetStepLength()<<G4endl;
+
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
@@ -125,6 +126,8 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
   if(PhotonEnergy <= 0.0 ) {
     G4cout<<" zero or negative photon energy at Hpd phcathode "
           <<PhotonEnergy<<G4endl;
+
+
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
   //Now use the QE for the current HPD to determine if a
@@ -187,7 +190,11 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
     //  CurTT -> MoveUpHistory(2);
     //  currentRichDetPhysName = CurTT -> GetVolume() -> GetName();
 
-    currentRichDetPhysName = CurTT -> GetVolume(4)->GetName();
+    //    currentRichDetPhysName = CurTT -> GetVolume(4)->GetName();
+    // the following change made in accordance with the change in the 
+    // rich2 geometry in January 2008, where an extra layer
+    // is added as a container of the array of hpds.
+    currentRichDetPhysName = CurTT -> GetVolume(5)->GetName();
 
     if(currentRichDetPhysName !=  m_Rich2PhysVolNameA &&
        currentRichDetPhysName != m_Rich2PhysVolNameB ){
@@ -223,8 +230,16 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
   double CurPhCathodeQE = getCurrentHpdQE(currentHpdNumber, currentRichDetNumber,
                                           PhotonEnergy);
   G4double randomnum = G4UniformRand();
+  //RWL Modif 09.11.06 and SE 26-10-2007
+  //Get User information about photon
 
-  if( randomnum* m_MaxAnyHpdQEff <  CurPhCathodeQE )
+  G4int aQW2PCreflFlag=getRichHpdQwPcReflInfo(aTrack);        
+      //RWL: Don't do QE if photon has been reflected!!  
+
+      //       G4cout<<" reflection flag and randonnum and QE for photon  "<< aQW2PCreflFlag <<"  "
+      //        <<randomnum<<"  "<<CurPhCathodeQE<< G4endl;
+        
+  if( aQW2PCreflFlag == 0 && randomnum* m_MaxAnyHpdQEff <  CurPhCathodeQE )
   {
 
     //Now for histogram Analysis stuff.
@@ -315,9 +330,9 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
     //create the photoelectron
     G4double ElecKineEnergy= 100000*m_HpdPhElectronKE;
 
-     G4DynamicParticle* aElectron=
-     new G4DynamicParticle (G4Electron::Electron(),
-                           GlobalElectronDirection, ElecKineEnergy) ;
+    //  G4DynamicParticle* aElectron=
+    //  new G4DynamicParticle (G4Electron::Electron(),
+    //                       GlobalElectronDirection, ElecKineEnergy) ;
     //
     // end of temporary fix.
     //   test of number of proc for the photoelectron particle
@@ -350,9 +365,9 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
     //
     //    G4double ElecKineEnergy= m_HpdPhElectronKE;
 
-    // G4DynamicParticle* aElectron=
-    //  new G4DynamicParticle (RichPhotoElectron::PhotoElectron(),
-    //                         GlobalElectronDirection, ElecKineEnergy) ;
+      G4DynamicParticle* aElectron=
+        new G4DynamicParticle (RichPhotoElectron::PhotoElectron(),
+                             GlobalElectronDirection, ElecKineEnergy) ;
 
     aParticleChange.SetNumberOfSecondaries(1) ;
     //  aParticleChange.AddSecondary( aElectron ) ;
@@ -369,7 +384,7 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
     G4Track* aTaggedSecPETrack = RichPEInfoAttach(aTrack,aSecPETrack);
     aParticleChange.AddSecondary(aTaggedSecPETrack);
 
-    //   G4cout<<" RichHpdPhotoelectric effect : Now created a photoelectron with energy =  "
+    //  G4cout<<" RichHpdPhotoelectric effect : Now created a photoelectron with energy =  "
     //      << ElecKineEnergy<<G4endl;
 
 
@@ -377,6 +392,7 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
     // G4cout<<"Now killing photon which is converted"<<G4endl;
     aParticleChange.ProposeLocalEnergyDeposit(PhotonEnergy);
     //   aParticleChange.SetEnergyChange(0.);
+    //      aParticleChange.ProposeEnergy(0.0);
     aParticleChange.ProposeTrackStatus(fStopAndKill);
 
   } else {
@@ -385,6 +401,12 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
 
 
   }
+
+  //RWL modif 09.11.06
+  //Always set reflection flag back to 0 at end of QE process
+   setRichHpdQwPcReflInfo(aTrack,0);
+
+
   return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
 
 }

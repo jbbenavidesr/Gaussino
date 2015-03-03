@@ -24,6 +24,11 @@ public:
   int numHpdTotRich1() const {return  m_numHpdTotRich[0]; }
   int numHpdTotRich2() const {return  m_numHpdTotRich[1]; }
 
+  //  int hpdNumBegInHitCollection(int aCollBeg) 
+  // {return m_hpdNumBegInHitCollection[aCollBeg];}
+  // int hpdNumEndInHitCollection(int aCollEnd) 
+  // {return m_hpdNumEndInHitCollection[aCollEnd];}
+
   const std::vector<int> & numHpdTotRich() const {return m_numHpdTotRich; }
   const std::vector<RichHpdQE*> & RichHpdQEList(int richdetnum) const
   {return m_RichHpdQEList[richdetnum]; }
@@ -80,6 +85,9 @@ public:
     m_numberOfRichDetectors=numberOfRichdet;
   }
 
+  int numberOfRichHitCollections() const 
+  {    return m_numberOfRichHitCollections;}
+  
   double HpdPhCathodeInnerRadius() const {return  m_HpdPhCathodeInnerRadius; }
 
   void setHpdPhCathodeInnerRadius(const double phCaInnRad )
@@ -87,7 +95,12 @@ public:
     m_HpdPhCathodeInnerRadius = phCaInnRad;
   }
 
-  void setHpdMaxQuantumEff(const double aMaxQE)
+  double HpdMaxQuantumEffFromDB() const
+  {
+    return  m_HpdMaxQuantumEffFromDB;
+  }
+
+ void setHpdMaxQuantumEff(const double aMaxQE)
   {
     m_HpdMaxQuantumEff= aMaxQE;
   }
@@ -97,10 +110,57 @@ public:
     return  m_HpdMaxQuantumEff;
   }
 
+ 
+  void setHpdActivateOverRideMaxQEFromDB(bool abval)
+  { m_HpdActivateOverRideMaxQEFromDB=abval;}
+  
+  bool HpdActivateOverMaxQEFromDB()
+  {    return m_HpdActivateOverRideMaxQEFromDB;}
+
+  void setHpdDBOverRideMaxQEValue(double aqe) 
+  {m_HpdDBOverRideMaxQEValue=aqe;}
+  
+  double HpdDBOverRideMaxQEValue()
+  {  return m_HpdDBOverRideMaxQEValue;}
+  
+  void setHpdMaximumQuantumEfficiency();
+  
+
+
+  G4double  MinPhotonEnergyInRICH() 
+  {
+    return m_MinPhotonEnergyInRICH;
+  }
+  G4double  MaxPhotonEnergyInRICH()
+  {
+    return m_MaxPhotonEnergyInRICH;
+  }
+
   bool UsingHpdMagneticFieldDistortion() { return m_UsingHpdMagneticFieldDistortion; }
   void setUsingHpdMagneticFieldDistortion(bool aflag) {m_UsingHpdMagneticFieldDistortion=aflag;}
 
+  bool UseNominalHpdQE()  {return m_UseNominalHpdQE;}
+  void setUseNominalHpdQE(bool aQEUseTableOption){ m_UseNominalHpdQE=aQEUseTableOption;}
+  
+    
+    
+
+
   void setHpdPropertiesVerboseLevel(int aLevel );
+
+  void InitializeSiDetParam();
+  
+  double siDetXSize() 
+  {  return m_siDetXSize;}
+  double siDetYSize() 
+  {  return m_siDetYSize;}
+  double siDetZSize() 
+  {  return m_siDetZSize;}
+
+  double getHpdCorrectedQEFromPhotonEnergy(double photonenergy, double originalQE );
+
+  
+
 private:
 
   // standard constructor kept private.
@@ -110,6 +170,10 @@ private:
   //here the first vector has a dimension of 2
   // which is the number of rich detectors in lhcb.
   std::vector<int>m_numHpdTotRich;
+
+  //  std::vector<int>m_hpdNumBegInHitCollection;
+  // std::vector<int>m_hpdNumEndInHitCollection; 
+ 
   std::vector<std::vector<RichHpdQE*> >m_RichHpdQEList;
   std::vector<std::vector<RichHpdPSF*> >m_RichHpdPSFList;
   std::vector<std::vector<RichHpdDeMag*> >m_RichHpdDeMagList;
@@ -119,12 +183,29 @@ private:
   std::string m_HpdQWLogVolName;
   std::string m_HpdPhCathodeLogVolName;
   int m_numberOfRichDetectors;
+  int m_numberOfRichHitCollections;
   double m_HpdPhCathodeInnerRadius;
   int m_HpdVerboseLevel;
+  double m_HpdMaxQuantumEffFromDB;
   double m_HpdMaxQuantumEff;
 
-  bool m_UsingHpdMagneticFieldDistortion;
+  bool m_HpdActivateOverRideMaxQEFromDB;
+  double m_HpdDBOverRideMaxQEValue;
 
+
+  G4double  m_MinPhotonEnergyInRICH;
+  G4double  m_MaxPhotonEnergyInRICH;
+  
+  bool m_UsingHpdMagneticFieldDistortion;
+  bool m_UseNominalHpdQE;
+  
+
+  double m_siDetXSize;
+  double m_siDetYSize;
+  double m_siDetZSize;
+  
+
+  
 
   //  bool m_UseHpdMagDistortions;
 

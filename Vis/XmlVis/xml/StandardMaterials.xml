@@ -21,3 +21,5 @@
       attr="Vacuum"/>
 <Item name="/dd/Materials/Water"
       attr="Water"/>
+<Item name="/dd/Materials/Copper"
+      attr="Copper"/>

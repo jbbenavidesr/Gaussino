@@ -1,4 +1,4 @@
-// $Id: Gauss.opts,v 1.102 2007-10-01 13:45:30 gcorti Exp $ 
+// $Id: Gauss.opts,v 1.104 2008-05-08 20:21:52 gcorti Exp $ 
 
 /** @file 
  * 
@@ -16,8 +16,9 @@
 //                        and switch on Generator-StandAlone for writing to
 //                        tape
 //---------------------------------------------------------------------------
-ApplicationMgr.TopAlg += { "GaudiSequencer/Generator"  };
-ApplicationMgr.TopAlg += { "GaudiSequencer/Simulation" }; 
+ApplicationMgr.TopAlg += { "GaudiSequencer/Gauss" };
+Gauss.Members         += { "GaudiSequencer/Generator"  };
+Gauss.Members         += { "GaudiSequencer/Simulation" }; 
 
 //---------------------------------------------------------------------------
 // Initialize the Phases: set run and first event number,
@@ -27,8 +28,8 @@ Generator.Members         = { "GenInit/GaussGen" };
 Simulation.Members        = { "SimInit/GaussSim" };
 GaussGen.FirstEventNumber = 1;
 GaussGen.RunNumber        = 1;
-EventClockSvc.FakeEventTime.StartTime   = 0;
-EventClockSvc.FakeEventTime.TimeStep    = 25*ns;
+EventClockSvc.FakeEventTime.StartTime = 0;
+EventClockSvc.FakeEventTime.TimeStep  = 25*ns;
 
 //---------------------------------------------------------------------------
 // Generator phase: see there how to modify to run generator 
@@ -76,7 +77,7 @@ ApplicationMgr.EvtMax     = 2;
 // Output files. 
 //---------------------------------------------------------------------------
 GaussTape.Output = "DATAFILE='PFN:Gauss.sim' TYP='POOL_ROOTTREE' OPT='RECREATE'";
-PoolDbCacheSvc.Catalog = { "xmlcatalog_file:NewCatalog.xml" };
+FileCatalog.Catalogs = { "xmlcatalog_file:NewCatalog.xml" };
 
 HistogramPersistencySvc.OutputFile = "GaussHistos.root";  // Monitoring histos
 //NTupleSvc.Output={"FILE1 DATAFILE='GaussMonitor.root' TYP='ROOT' OPT='NEW'"};

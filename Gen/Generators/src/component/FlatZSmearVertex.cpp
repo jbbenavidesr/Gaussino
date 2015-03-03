@@ -1,4 +1,4 @@
-// $Id: FlatZSmearVertex.cpp,v 1.9 2007-10-02 15:56:42 gcorti Exp $
+// $Id: FlatZSmearVertex.cpp,v 1.11 2008-05-06 08:20:55 gcorti Exp $
 // Include files 
 
 // local
@@ -7,7 +7,7 @@
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h" 
-#include "GaudiKernel/SystemOfUnits.h"
+#include "GaudiKernel/PhysicalConstants.h"
 
 // from LHCb
 #include "Kernel/Vector4DTypes.h"
@@ -40,6 +40,9 @@ FlatZSmearVertex::FlatZSmearVertex( const std::string& type,
     
     declareProperty( "Xcut" , m_xcut = 4. ) ; // times SigmaX 
     declareProperty( "Ycut" , m_ycut = 4. ) ; // times SigmaY
+
+    declareProperty( "BeamDirection", m_zDir = 1 );
+
 }
 
 //=============================================================================
@@ -63,8 +66,20 @@ StatusCode FlatZSmearVertex::initialize( ) {
   if ( ! sc.isSuccess() ) 
     return Error( "Could not initialize flat random number generator" ) ;
 
+  std::string infoMsg = " applying TOF of interaction with ";
+  if ( m_zDir == -1 ) {
+    infoMsg = infoMsg + "negative beam direction";
+  } else if ( m_zDir == 1 ) {
+    infoMsg = infoMsg + "positive beam direction";
+  } else if ( m_zDir == 0 ) {
+    infoMsg = " with TOF of interaction equal to zero ";
+  } else {
+    return Error("BeamDirection can only be set to -1 or 1, or 0 to switch off TOF");
+  }
+
   info() << "Smearing of interaction point with transverse Gaussian "
          << " distribution " << endmsg;
+  info() << infoMsg << endmsg;
   info() << "and flat longitudinal z distribution" << endmsg;
   if( msgLevel(MSG::DEBUG) ) {
  
@@ -85,20 +100,21 @@ StatusCode FlatZSmearVertex::initialize( ) {
  
   return sc ;
 }
-
+ 
 //=============================================================================
 // Smearing function
 //=============================================================================
 StatusCode FlatZSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
-  double dx , dy , dz ;
+  double dx , dy , dz , dt;
   
   do { dx = m_gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * m_sigmaX ;
   do { dy = m_gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
   dy = dy * m_sigmaY ;
   dz = m_flatDist( ) ;
+  dt = m_zDir * dz/Gaudi::Units::c_light;
 
-  Gaudi::LorentzVector dpos( dx , dy , dz , 0. ) ;
+  Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
   
   HepMC::GenEvent::vertex_iterator vit ;
   HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;

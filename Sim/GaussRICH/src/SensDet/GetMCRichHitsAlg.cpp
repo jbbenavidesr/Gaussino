@@ -1,8 +1,8 @@
-// $Id: GetMCRichHitsAlg.cpp,v 1.26 2007-09-04 16:29:57 seaso Exp $
-// Include files 
+// $Id: GetMCRichHitsAlg.cpp,v 1.31 2008-01-29 13:43:22 jonrob Exp $
+// Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // local
 #include "GetMCRichHitsAlg.h"
@@ -26,10 +26,10 @@ DECLARE_ALGORITHM_FACTORY( GetMCRichHitsAlg );
 //=============================================================================
 GetMCRichHitsAlg::GetMCRichHitsAlg( const std::string& name,
                                     ISvcLocator* pSvcLocator)
-  : GetMCRichInfoBase     ( name , pSvcLocator      )
-  , m_nEvts               ( 0                       )
-  , m_invalidRichHits     ( 0                       )
-  , m_richDets            ( Rich::NRiches           )
+  : GetMCRichInfoBase     ( name , pSvcLocator )
+  , m_nEvts               ( 0                  )
+  , m_invalidRichHits     ( 0                  )
+  , m_richDets            ( Rich::NRiches      )
 {
   declareProperty( "MCRichHitsLocation",
                    m_dataToFill = MCRichHitLocation::Default );
@@ -81,7 +81,7 @@ StatusCode GetMCRichHitsAlg::execute()
     // now check the existence of MC particles and get their table.
     if( !( exist<MCParticles>( MCParticleLocation::Default ) ) )
     {
-      return Error( " GetMCRichHitsAlg :  MCParticles do not exist at'"
+      return Error( "GetMCRichHitsAlg : MCParticles do not exist at '"
                     + MCParticleLocation::Default +"'" );
     }
     // Get the Geant4->MCParticle table
@@ -111,15 +111,15 @@ StatusCode GetMCRichHitsAlg::execute()
       // reserve space
       totalSize += numberofhits;  // count the total num of hits in all collections.
 
-      // CRJ : Disclaimer. Be careful when editting the following as there is
+      // CRJ : Disclaimer ! Be careful when editting the following as there is
       // a hidden dependency on the position of the MCRichHit in the container and
-      // the associated g4hit. There must be one MCRichHit added in sequence for
+      // the associated g4hit. There MUST be one MCRichHit added in sequence for
       // each non-NULL g4hit
 
       // now loop through the hits in the current collection.
       for ( int ihit = 0; ihit < numberofhits; ++ihit )
       {
-        // Pointer to G4 hit
+        // Pointer to G4 hit modif rwl 22.01.08
         const RichG4Hit * g4hit = (*myCollection)[ihit];
         if ( !g4hit ) { Error( "Null RichG4Hit pointer" ); continue; }
 
@@ -129,8 +129,7 @@ StatusCode GetMCRichHitsAlg::execute()
         hits->push_back( mchit );
 
         // hit position
-        const Gaudi::XYZPoint entry = Gaudi::XYZPoint(g4hit->GetGlobalPos());
-        mchit->setEntry( entry );
+        mchit->setEntry( Gaudi::XYZPoint(g4hit->GetGlobalPos()) );
 
         // energy deposited
         mchit->setEnergy( g4hit->GetEdep() );
@@ -140,11 +139,11 @@ StatusCode GetMCRichHitsAlg::execute()
 
         // Rich detector information
         const Rich::DetectorType rich = g4hit->detectorType();
-        if ( mchit->richInfoValid() )
+        mchit->setRich( rich );
+        if ( !mchit->richInfoValid() )
         {
           Warning( "Invalid RICH detector from G4Hit" );
         }
-        mchit->setRich( rich );
 
         // radiator information
         const Rich::RadiatorType rad = g4hit->radiatorType();
@@ -152,7 +151,7 @@ StatusCode GetMCRichHitsAlg::execute()
         if ( g4hit->GetChTrackID() > 0 && rad == Rich::InvalidRadiator )
         {
           std::ostringstream mess;
-          mess << "track ID > 0 and Unknown radiator ID " << radID
+          mess << "track ID > 0 and unknown radiator ID " << radID
                << " -> MCRichHit history incomplete";
           Warning ( mess.str(), StatusCode::SUCCESS );
         }
@@ -164,7 +163,7 @@ StatusCode GetMCRichHitsAlg::execute()
         if ( Rich::Aerogel == rad )
         {
           const int aeroID = radID - Rich1AgelTile0CkvRadiatorNum;
-          if ( aeroID < 2*2*2*2*2 )
+          if ( aeroID < 2*2*2*2*2 ) // Aerogel tile ID field has 5 bits allocated
           {
             mchit->setAerogelTileID( aeroID );
           }
@@ -177,34 +176,31 @@ StatusCode GetMCRichHitsAlg::execute()
           }
         }
 
-        // the following case is when a non-pe charged track passes through
-        // a Silicon detector and creates a MIP signal  like in  a tracking det.
-        // In this case there is no radiator history, since there was
-        // no cherenkov radiation at all. hence the 'warning' flag is commeted out.
-        // SE 20-2-06.
-        // else
-        // {
-        //   Warning( "Radiator ID < 0 and track ID < 0 -> Radiator history unknown",
-        //         StatusCode::SUCCESS );
-        // }
-
         // charged track hitting HPD flag
-        if ( g4hit->GetChTrackID() < 0 )
-        {
-          mchit->setChargedTrack( true );
-        }
+        mchit->setChargedTrack( g4hit->GetChTrackID() < 0 );
+        
         // Rayleigh scattered flag
-        if ( g4hit->OptPhotRayleighFlag() > 0 )
-        {
-          mchit->setScatteredPhoton( true );
-        }
+        mchit->setScatteredPhoton( g4hit->OptPhotRayleighFlag() > 0 );
+        
+        // Back scattered electrons
+        mchit->setHpdSiBackscatter( g4hit->ElectronBackScatterFlag() );
+
+        // HPD reflections
+        mchit->setHpdReflQWPC   ( g4hit->isHpdQwPCRefl()     );
+        mchit->setHpdReflChr    ( g4hit->isHpdChromiumRefl() );
+        mchit->setHpdReflAirQW  ( g4hit->isHpdAirQwRefl()    );
+        mchit->setHpdReflAirPC  ( g4hit->isHpdAirPCRefl()    );
+        mchit->setHpdReflSi     ( g4hit->isHpdSiliconRefl()  );
+        mchit->setHpdReflKovar  ( g4hit->isHpdKovarRefl()    );
+        mchit->setHpdReflKapton ( g4hit->isHpdKaptonRefl()   );
+        mchit->setHpdReflPCQW   ( g4hit->isHpdPCQwRefl()     );
 
         // get sensitive detector identifier from det elem
-        const RichSmartID detID( m_richDets[rich]->sensitiveVolumeID(entry) );
+        const RichSmartID detID( m_richDets[rich]->sensitiveVolumeID(mchit->entry()) );
         if ( !detID.isValid() )
         {
           std::ostringstream mess;
-          mess << "Invalid RichSmartID returned for silicon point " << entry;
+          mess << "Invalid RichSmartID returned for silicon point " << mchit->entry();
           Warning( mess.str() );
         }
         else
@@ -214,11 +210,8 @@ StatusCode GetMCRichHitsAlg::execute()
         }
 
         // fill reference to MCParticle (need to const cast as method is not const !!)
-        // const int trackID = (const_cast<RichG4Hit*>(g4hit))->GetTrackID(); //replaced for Windows 4-9-2007
-          RichG4Hit* nonconstg4hit = const_cast<RichG4Hit*>(g4hit);    //      with this and the next line
-          const int trackID = nonconstg4hit->GetTrackID();             //      as suggested by GC.
-
-
+        RichG4Hit* nonconstg4hit = const_cast<RichG4Hit*>(g4hit);  
+        const int trackID = nonconstg4hit->GetTrackID();
 
         const MCParticle * mcPart = table[trackID].particle();
         if ( mcPart )
@@ -229,7 +222,7 @@ StatusCode GetMCRichHitsAlg::execute()
         {
           warning() << "No MCParticle for MCRichHit associated to G4 Track ID = "
                     << trackID << " Track Momentum = " << g4hit->ChTrackTotMom()
-                    << " Hit Energy = " << g4hit->GetEdep()  <<endmsg;
+                    << " Hit Energy = " << g4hit->GetEdep() << endmsg;
         }
 
         // now increment the various hit counters
@@ -242,10 +235,24 @@ StatusCode GetMCRichHitsAlg::execute()
         else
         {
           ++m_hitTally[rich];
-          if ( mchit->gasQuartzCK()  ) ++m_gasQzHits[rich];
-          if ( mchit->hpdQuartzCK()  ) ++m_hpdQzHits[rich];
-          if ( mchit->nitrogenCK()   ) ++m_nitroHits[rich];
-          if ( mchit->aeroFilterCK() ) ++m_aeroFilterHits[rich];
+          if ( mchit->gasQuartzCK()      ) ++m_gasQzHits[rich];
+          if ( mchit->hpdQuartzCK()      ) ++m_hpdQzHits[rich];
+          if ( mchit->nitrogenCK()       ) ++m_nitroHits[rich];
+          if ( mchit->aeroFilterCK()     ) ++m_aeroFilterHits[rich];
+          if ( mchit->hpdSiBackscatter() ) ++m_siBackScatt[rich];
+          if ( mchit->chargedTrack()     ) ++m_ctkHits[rich];
+          if ( mchit->hpdReflection()    )  
+          {
+            ++m_hpdReflHits[rich];
+            if ( mchit->hpdReflQWPC()   ) ++m_hpdReflHitslQWPC[rich];
+            if ( mchit->hpdReflChr()    ) ++m_hpdReflHitslChr[rich];
+            if ( mchit->hpdReflAirQW()  ) ++m_hpdReflHitsAirQW[rich];
+            if ( mchit->hpdReflAirPC()  ) ++m_hpdReflHitsAirPC[rich];
+            if ( mchit->hpdReflSi()     ) ++m_hpdReflHitsSi[rich];
+            if ( mchit->hpdReflKovar()  ) ++m_hpdReflHitsKovar[rich];
+            if ( mchit->hpdReflKapton() ) ++m_hpdReflHitsKapton[rich];
+            if ( mchit->hpdReflPCQW()   ) ++m_hpdReflHitsPCQW[rich];
+          }
         }
 
         // radiator counters
@@ -260,17 +267,25 @@ StatusCode GetMCRichHitsAlg::execute()
           {
             ++m_aeroTileHits[mchit->aerogelTileID()];
           }
-          if ( mchit->chargedTrack()    ) ++m_ctkHits[rad];
           if ( mchit->scatteredPhoton() ) ++m_scatHits[rad];
           if ( !mcPart                  ) ++m_nomcpHits[rad];
         }
 
         if ( msgLevel(MSG::VERBOSE) )
         {
-          verbose() << "Created MCRichHit " << entry << " energy " << g4hit->GetEdep()
-                    << " " << rich << " " << rad << " radID = " << radID
-                    << " sensDetID " << detID
-                    << " MCParticle " << mcPart << endreq;
+          verbose() << "Created MCRichHit " << *mchit << endreq;
+        }
+
+        // (temp) Debug reflection hits
+        if ( msgLevel(MSG::DEBUG) && mchit->hpdReflection() ) 
+        {
+          debug() << "HPD internal Reflection Hit : " << *mchit << endreq;
+        }
+
+        // (temp) si back-scatter hits
+        if ( msgLevel(MSG::DEBUG) && mchit->hpdSiBackscatter() ) 
+        {
+          debug() << "Si back-scatter hit : " << *mchit << endreq;
         }
 
       } // end loop on hits in the collection
@@ -280,13 +295,13 @@ StatusCode GetMCRichHitsAlg::execute()
     // Verify that all hits are stored for output.
     if ( hits->size() != totalSize )
     {
-      return Error("MCRichHits and RichG4HitCollection have different sizes!");
+      return Error("MCRichHits and RichG4HitCollection have different sizes !");
     }
 
   }
   else
   {
-    info() << "No RichG4Hits to be converted since no Collections available"
+    info() << "No RichG4Hits to be converted since no collections available"
            << endmsg;
   }
 
@@ -300,62 +315,104 @@ StatusCode GetMCRichHitsAlg::finalize()
 {
   const Rich::StatDivFunctor occ;
 
-  info() << "Av. # Invalid RICH flags            = " 
+  info() << "Av. # Invalid RICH flags              = "
          << occ(m_invalidRichHits,m_nEvts)
          << endmsg;
 
-  info() << "Av. # MCRichHits            : Rich1 = "
+  info() << "Av. # MCRichHits              : Rich1 = "
          << occ(m_hitTally[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_hitTally[Rich::Rich2],m_nEvts)
          << endmsg;
 
-  info() << "Av. # Invalid radiator hits : Rich1 = "
+  info() << "Av. # Invalid radiator hits   : Rich1 = "
          << occ(m_invalidRadHits[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_invalidRadHits[Rich::Rich2],m_nEvts)
          << endmsg;
 
-  info() << "Av. # Gas Quartz CK hits    : Rich1 = "
+  info() << "Av. # Gas Quartz CK hits      : Rich1 = "
          << occ(m_gasQzHits[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_gasQzHits[Rich::Rich2],m_nEvts)
          << endmsg;
-  info() << "Av. # HPD Quartz CK hits    : Rich1 = "
+  info() << "Av. # HPD Quartz CK hits      : Rich1 = "
          << occ(m_hpdQzHits[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_hpdQzHits[Rich::Rich2],m_nEvts)
          << endmsg;
-  info() << "Av. # Nitrogen CK hits      : Rich1 = "
+  info() << "Av. # Nitrogen CK hits        : Rich1 = "
          << occ(m_nitroHits[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_nitroHits[Rich::Rich2],m_nEvts)
          << endmsg;
-  info() << "Av. # Aero Filter CK hits   : Rich1 = "
+  info() << "Av. # Aero Filter CK hits     : Rich1 = "
          << occ(m_aeroFilterHits[Rich::Rich1],m_nEvts)
          << " Rich2 = " << occ(m_aeroFilterHits[Rich::Rich2],m_nEvts)
          << endmsg;
-  
-  info() << "Av. # Signal CK MCRichHits  : Aero  = "
-         << occ(m_radHits[Rich::Aerogel],m_nEvts)
-         << " C4F10 = " <<  occ(m_radHits[Rich::C4F10],m_nEvts)
-         <<   " CF4 = "   <<  occ(m_radHits[Rich::CF4],m_nEvts)
+
+  info() << "Av. # Si back-scattering      : Rich1 = "
+         << occ(m_siBackScatt[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_siBackScatt[Rich::Rich2],m_nEvts)
          << endmsg;
 
-  info() << "Av. # Charged Track hits    : Aero  = "
-         << occ(m_ctkHits[Rich::Aerogel],m_nEvts)
-         << " C4F10 = " << occ(m_ctkHits[Rich::C4F10],m_nEvts)
-         << " CF4 = "   << occ(m_ctkHits[Rich::CF4],m_nEvts)
+  info() << "Av. # Charged Track hits      : Rich1 = "
+         << occ(m_ctkHits[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_ctkHits[Rich::Rich2],m_nEvts)
          << endmsg;
-  info() << "Av. # Scattered hits        : Aero  = "
+
+  info() << "Av. # All HPD reflection hits : Rich1 = "
+         << occ(m_hpdReflHits[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHits[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # QW/PC refl. hits      : Rich1 = "
+         << occ(m_hpdReflHitslQWPC[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitslQWPC[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Chromium refl. hits   : Rich1 = "
+         << occ(m_hpdReflHitslChr[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitslChr[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Air/QW refl. hits     : Rich1 = "
+         << occ(m_hpdReflHitsAirQW[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsAirQW[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Air/PC refl. hits     : Rich1 = "
+         << occ(m_hpdReflHitsAirPC[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsAirPC[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # PC/QW refl. hits      : Rich1 = "
+         << occ(m_hpdReflHitsPCQW[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsPCQW[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Silicon refl. hits    : Rich1 = "
+         << occ(m_hpdReflHitsSi[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsSi[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Kovar refl. hits      : Rich1 = "
+         << occ(m_hpdReflHitsKovar[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsKovar[Rich::Rich2],m_nEvts)
+         << endmsg;
+  info() << "  Av. # Kapton refl. hits     : Rich1 = "
+         << occ(m_hpdReflHitsKapton[Rich::Rich1],m_nEvts)
+         << " Rich2 = " << occ(m_hpdReflHitsKapton[Rich::Rich2],m_nEvts)
+         << endmsg;
+
+  info() << "Av. # Signal CK MCRichHits    : Aero  = "
+         << occ(m_radHits[Rich::Aerogel],m_nEvts)
+         << " C4F10 = " <<  occ(m_radHits[Rich::C4F10],m_nEvts)
+         << " CF4 = "   <<  occ(m_radHits[Rich::CF4],m_nEvts)
+         << endmsg;
+
+  info() << "Av. # Rayleigh scattered hits : Aero  = "
          << occ(m_scatHits[Rich::Aerogel],m_nEvts)
          << " C4F10 = " << occ(m_scatHits[Rich::C4F10],m_nEvts)
          << " CF4 = "   << occ(m_scatHits[Rich::CF4],m_nEvts)
          << endmsg;
-  info() << "Av. # MCParticle-less hits  : Aero  = "
+  info() << "Av. # MCParticle-less hits    : Aero  = "
          << occ(m_nomcpHits[Rich::Aerogel],m_nEvts)
          << " C4F10 = " << occ(m_nomcpHits[Rich::C4F10],m_nEvts)
          << " CF4 = "   << occ(m_nomcpHits[Rich::CF4],m_nEvts)
          << endmsg;
 
   // number of hits in each aerogel tile
-  info() << "Av. # Aero hits per tile   :" << endreq;
-  const int maxTileID = 
+  info() << "Av. # Aero hits per tile     :" << endreq;
+  const int maxTileID =
     Rich1AgelTile15CkvRadiatorNum-Rich1AgelTile0CkvRadiatorNum;
   for ( int iTile = 0; iTile <= maxTileID; ++iTile )
   {

@@ -78,6 +78,7 @@
       attr="VisRich1MgShield"/>
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1MgsTeeth"
       attr="VisRich1MgShield"/>
+
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1Q0"
       attr="VisRich1Mirror1"/>
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1Q1"
@@ -114,12 +115,44 @@
       attr="VisRich1Mirror1HolderSeg" />
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1HolderQ3"
       attr="VisRich1Mirror1HolderSeg" />
+
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1Master"
+      attr="VisRich1Mirror1Master"/>
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1QuadrantModuleQ0"
+      attr="VisRich1Mirror1Quadrant" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1QuadrantModuleQ1"
+      attr="VisRich1Mirror1Quadrant" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1QuadrantModuleQ2"
+      attr="VisRich1Mirror1Quadrant" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1QuadrantModuleQ3"
+      attr="VisRich1Mirror1Quadrant" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreInnerLayerQ0"
+      attr="VisRich1Mirror1CaFiInnerSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreInnerLayerQ1"
+      attr="VisRich1Mirror1CaFiInnerSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreInnerLayerQ2"
+      attr="VisRich1Mirror1CaFiInnerSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreInnerLayerQ3"
+      attr="VisRich1Mirror1CaFiInnerSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreOuterLayerQ0"
+      attr="VisRich1Mirror1CaFiOuterSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreOuterLayerQ1"
+      attr="VisRich1Mirror1CaFiOuterSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreOuterLayerQ2"
+      attr="VisRich1Mirror1CaFiOuterSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreOuterLayerQ3"
+      attr="VisRich1Mirror1CaFiOuterSeg" />
+<Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror1CarbonFibreCylinder"
+      attr="VisRich1Mirror1CaFiCylinderSeg" />
+
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror2Support"
       attr="VisRich1Mirror2Support" />
+
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1MirrVertRimSeg"
       attr="VisRich1MirrorRimSeg" />
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1MirrHorizRimSeg"
       attr="VisRich1MirrorRimSeg" />
+
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1Mirror2"
       attr="VisRich1Mirror2"/>
 <Item name="/dd/Geometry/BeforeMagnetRegion/Rich1/lvRich1GQuartzW"

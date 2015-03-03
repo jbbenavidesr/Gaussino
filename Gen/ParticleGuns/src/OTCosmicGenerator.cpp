@@ -110,9 +110,9 @@ StatusCode OTCosmicGenerator::initialize()
   // position the two sintillators
   m_scintsolid = 
     std::auto_ptr<SolidBox>(new SolidBox( "OTScintSolid",60*Gaudi::Units::cm,0.5*135*Gaudi::Units::cm,5*Gaudi::Units::mm)) ;
-  m_toptransform = Gaudi::Transform3D(Gaudi::XYZVector(100*Gaudi::Units::cm,200*Gaudi::Units::cm,1000*Gaudi::Units::cm)) ;
-  m_bottransform = Gaudi::Transform3D(Gaudi::XYZVector(100*Gaudi::Units::cm,-300*Gaudi::Units::cm,600*Gaudi::Units::cm),
-				      ROOT::Math::RotationX(M_PI/2)) ;
+  m_toptransform = Gaudi::Transform3D(Gaudi::Transform3D::Vector(100*Gaudi::Units::cm,200*Gaudi::Units::cm,1000*Gaudi::Units::cm)) ;
+  m_bottransform = Gaudi::Transform3D(Gaudi::RotationX(M_PI/2),
+				      Gaudi::Transform3D::Vector(100*Gaudi::Units::cm,-300*Gaudi::Units::cm,600*Gaudi::Units::cm)) ;
 
   IParticlePropertySvc* ppSvc = svc< IParticlePropertySvc >( "ParticlePropertySvc" , true ) ;
   m_muplus  = ppSvc->findByStdHepID(  13 );

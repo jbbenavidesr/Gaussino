@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti, Thomas Ruf
 #============================================================================
 package           XmlVis
-version           v1r0
+version           v1r5
 
 #============================================================================
 # Structure, i.e. directories to process. 

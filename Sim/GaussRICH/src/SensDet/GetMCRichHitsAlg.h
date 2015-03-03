@@ -1,4 +1,4 @@
-// $Id: GetMCRichHitsAlg.h,v 1.5 2006-03-01 09:31:26 jonrob Exp $
+// $Id: GetMCRichHitsAlg.h,v 1.8 2008-01-29 13:43:22 jonrob Exp $
 #ifndef SENSDET_GetMCRichHitsAlg_H
 #define SENSDET_GetMCRichHitsAlg_H 1
 
@@ -13,6 +13,7 @@
 
 // RichKernel
 #include "RichKernel/RichMap.h"
+#include "RichG4HpdReflectionFlag.h"
 
 /** @class GetMCRichHitsAlg GetMCRichHitsAlg.h
  *
@@ -55,8 +56,8 @@ private:
   DMap m_invalidRadHits;
   /// number of hits with invalid RICH flag
   unsigned long int m_invalidRichHits;
-  /// overall charged track hit count in each radiator
-  RMap m_ctkHits;
+  /// overall charged track hit count in each detector
+  DMap m_ctkHits;
   /// overall scattered hit count in each radiator
   RMap m_scatHits;
 
@@ -68,6 +69,28 @@ private:
   DMap m_nitroHits;
   /// overall aerogel filter CK hit count in each radiator
   DMap m_aeroFilterHits;
+
+  /// Back-scattering from Si hits
+  DMap m_siBackScatt;
+
+  /// overall hits from all types of HPD reflections
+  DMap m_hpdReflHits;
+  /// overall hits from photons reflected by the QW/PC interface in the HPD
+  DMap m_hpdReflHitslQWPC;
+  /// overall hits from photons reflected by the Chromium in the HPD
+  DMap m_hpdReflHitslChr;
+  /// overall hits from photons reflected by the Air/QW interface in the HPD
+  DMap m_hpdReflHitsAirQW;
+  /// overall hits from photons reflected by the Air/PC interface in the HPD
+  DMap m_hpdReflHitsAirPC;
+  /// overall hits from photons reflected by the silicon in the HP
+  DMap m_hpdReflHitsSi;
+  /// overall hits from photons reflected by the kovar in the HP
+  DMap m_hpdReflHitsKovar;
+  /// overall hits from photons reflected by the kapton in the HP
+  DMap m_hpdReflHitsKapton;
+  /// overall hits from photons reflected by the PC/QW interface in the HPD
+  DMap m_hpdReflHitsPCQW;
 
   /// overall MCParticle-less hit count in each radiator
   RMap m_nomcpHits;

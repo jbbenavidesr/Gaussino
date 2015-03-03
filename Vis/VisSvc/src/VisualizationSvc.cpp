@@ -293,7 +293,8 @@ VisualizationSvc::visAttribute (const Material* mat) const {
   VisAttribute attr;
 
   if (0 != mat) {
-    Dictionnary::const_iterator it = m_material2Vis.find (mat->name());
+    Dictionnary::const_iterator it = 
+      m_material2Vis.find (mat->registry()->identifier());
     if (it != m_material2Vis.end()) {
       AttributeSet::const_iterator it2 = m_attributeSet.find (it->second);
       if (it2 != m_attributeSet.end()) {

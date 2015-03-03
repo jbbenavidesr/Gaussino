@@ -41,11 +41,19 @@
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2SecMSupport"
       attr="VisRich2MirrorSupports"/>
 
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2SphMirrorCont0"
+      attr="VisRich2MirrorContainer"/>
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2SphMirrorCont1"
+      attr="VisRich2MirrorContainer"/>
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2SecMirrorCont0"
-      attr="VisRich2SecMirrorContainer"/>
+      attr="VisRich2MirrorContainer"/>
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2SecMirrorCont1"
-      attr="VisRich2SecMirrorContainer"/>
+      attr="VisRich2MirrorContainer"/>
 
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2HPDN2Encl0"
+      attr="VisRich2HPDPanel"/>
+<Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2HPDN2Encl1"
+      attr="VisRich2HPDPanel"/>
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2HPDPanel0"
       attr="VisRich2HPDPanel"/>
 <Item name="/dd/Geometry/AfterMagnetRegion/Rich2/lvRich2HPDPanel1"

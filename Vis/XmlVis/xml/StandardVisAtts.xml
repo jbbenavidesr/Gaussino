@@ -29,11 +29,14 @@
   <Color R="0" G="0" B="0"/>
 </VisAtt>-->
 <VisAtt name="Vacuum">
-  <!--Color B="0.2902" G="0.2902" R="0.2902"/-->
-  <Color B="0" G="1" R="0"/>
+  <Color B="0.2902" G="0.2902" R="0.2902"/>
+  <!--Color B="0" G="1" R="0" A="1.0"/-->
 </VisAtt>
 <VisAtt name="Water">
   <Color B="0.9333" G="0.6980" R="0"/>
+</VisAtt>
+<VisAtt name="Copper">
+  <Color R="0.8" G="0.68" B="0.0"/>
 </VisAtt>
 
 <!-- This part contains definitions of visualization attributes for

@@ -1,4 +1,4 @@
-// $Id: GetTrackerHitsAlg.cpp,v 1.13 2007-10-02 16:22:00 gcorti Exp $
+// $Id: GetTrackerHitsAlg.cpp,v 1.15 2008-05-06 16:25:42 gcorti Exp $
 // Include files 
 
 // from Gaudi
@@ -43,13 +43,18 @@ GetTrackerHitsAlg::GetTrackerHitsAlg( const std::string& name,
   , m_gigaSvc      ( 0 )
   , m_gigaKineCnvSvc ( 0 )
 {
-  declareProperty( "GiGaService",    m_gigaSvcName  = "GiGa" );
-  declareProperty( "KineCnvService", m_kineSvcName  = IGiGaCnvSvcLocation::Kine );
-  declareProperty( "ExtendedInfo",   m_extendedInfo = false );
-  declareProperty( "MCHitsLocation", m_hitsLocation = "" );
-  declareProperty( "CollectionName", m_colName = "" );
-  declareProperty( "Detector",       m_detName = "" );
-
+  declareProperty( "GiGaService",    m_gigaSvcName  = "GiGa",
+                   "The service handling the intreface to Geant4" );
+  declareProperty( "KineCnvService", m_kineSvcName  = IGiGaCnvSvcLocation::Kine,
+                   "The service keeping the relation between Geant4 kinematic and MCTruth" );
+  declareProperty( "ExtendedInfo",   m_extendedInfo = false, 
+                   "Flag to control filling of MCExtendedHits instead of MCHits (def = false)" );
+  declareProperty( "MCHitsLocation", m_hitsLocation = "",
+                   "Location in TES where to put resulting MCHits" );
+  declareProperty( "CollectionName", m_colName = "",
+                   "Name of Geant4 collection where to retrieve hits" );
+  declareProperty( "Detectors",      m_detName,
+                   "List of detector paths in TDS for which to retrieve the hits (most of the time one" );
 }
 
 //=============================================================================
@@ -75,22 +80,29 @@ StatusCode GetTrackerHitsAlg::initialize() {
     fatal() << "Property CollectionName need to be set! " << endmsg;
     return StatusCode::FAILURE;
   }
-  if( "" == m_detName ) {
+  if( !m_detName.size() ) {
     fatal() << "Property Detector need to be set! " << endmsg;
     return StatusCode::FAILURE;
   }
 
+  std::vector<std::string>::iterator itDet;
   debug() << " The hits " << m_hitsLocation  << endmsg;
   debug() << " will be taken from G4 collection " << m_colName  << endmsg;
-  debug() << " for detector " << m_detName << endmsg;
-
+  debug() << " for detector(s) ";
+  for( itDet=m_detName.begin(); itDet!=m_detName.end(); itDet++ ){
+    debug() << *itDet << " ";
+  }
+  debug() << endmsg;
+  
   m_gigaSvc = svc<IGiGaSvc>( m_gigaSvcName ); // GiGa has to already exist!
 
   // get kineCnv service that hold the MCParticle/Geant4 table list
   m_gigaKineCnvSvc = svc<IGiGaKineCnvSvc>( m_kineSvcName );
 
   // get the detector element
-  m_detector = getDet<DetectorElement>(m_detName);
+  for( itDet=m_detName.begin(); itDet!=m_detName.end(); itDet++ ){
+    m_detector.push_back( getDet<DetectorElement>(*itDet) );
+  }
   
   return StatusCode::SUCCESS;
 };
@@ -193,7 +205,14 @@ void GetTrackerHitsAlg::fillHit( TrackerHit* g4Hit, LHCb::MCHit* mcHit ) {
   mcHit->setP( g4Hit->GetMomentum().mag() );
  
   // get sensitive detector identifier using mid point
-  int detID = m_detector->sensitiveVolumeID( mcHit->midPoint() );
+  int detID = -1;
+  std::vector<const DetectorElement*>::iterator itDet;
+  for( itDet=m_detector.begin(); itDet!=m_detector.end(); itDet++){
+    if( (*itDet)->isInside(mcHit->midPoint()) ){
+      detID = (*itDet)->sensitiveVolumeID( mcHit->midPoint() );
+      break;
+    }
+  }
   mcHit->setSensDetID(detID);
 
   // fill reference to MCParticle using the Geant4->MCParticle table

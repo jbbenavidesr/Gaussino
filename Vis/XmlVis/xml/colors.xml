@@ -10,6 +10,11 @@
   <!ENTITY Rich1VisAtts SYSTEM "Rich1VisAtts.xml">
   <!ENTITY Rich2VisAtts SYSTEM "Rich2VisAtts.xml">
   <!ENTITY VeloVisAtts SYSTEM "VeloVisAtts.xml">
+  <!ENTITY TTVisAtts SYSTEM "TTVisAtts.xml">
+  <!ENTITY ITVisAtts SYSTEM "ITVisAtts.xml">
+  <!ENTITY OTVisAtts SYSTEM "OTVisAtts.xml">
+  <!ENTITY InfraStructureVisAtts SYSTEM "InfraStructureVisAtts.xml">
+
 
   <!ENTITY StandardMaterials SYSTEM "StandardMaterials.xml">
   <!ENTITY EcalMaterials SYSTEM "EcalMaterials.xml">
@@ -19,6 +24,9 @@
   <!ENTITY PipeMaterials SYSTEM "PipeMaterials.xml">
   <!ENTITY RichMaterials SYSTEM "RichMaterials.xml">
   <!ENTITY VeloMaterials SYSTEM "VeloMaterials.xml">
+  <!ENTITY TTMaterials SYSTEM "TTMaterials.xml">
+  <!ENTITY ITMaterials SYSTEM "ITMaterials.xml">
+  <!ENTITY OTMaterials SYSTEM "OTMaterials.xml">
 
   <!ENTITY EcalLogVols SYSTEM "EcalLogVols.xml">
   <!ENTITY MagnetLogVols SYSTEM "MagnetLogVols.xml">
@@ -26,6 +34,10 @@
   <!ENTITY Rich1LogVols SYSTEM "Rich1LogVols.xml">
   <!ENTITY Rich2LogVols SYSTEM "Rich2LogVols.xml">
   <!ENTITY VeloLogVols SYSTEM "VeloLogVols.xml">
+  <!ENTITY TTLogVols SYSTEM "TTLogVols.xml">
+  <!ENTITY ITLogVols SYSTEM "ITLogVols.xml">
+  <!ENTITY OTLogVols SYSTEM "OTLogVols.xml">
+  <!ENTITY InfraStructureLogVols SYSTEM "InfraStructureLogVols.xml">
 ]>
 <Visualization>
   <VisAtts>
@@ -38,6 +50,10 @@
     &Rich1VisAtts;
     &Rich2VisAtts;
     &VeloVisAtts;
+    &TTVisAtts;
+    &ITVisAtts;
+    &OTVisAtts;
+    &InfraStructureVisAtts;
   </VisAtts>
   <Materials>
     &StandardMaterials;
@@ -48,6 +64,9 @@
     &PipeMaterials;
     &RichMaterials;
     &VeloMaterials;
+    &TTMaterials;
+    &ITMaterials;
+    &OTMaterials;
   </Materials>
   <LogVols>
     &EcalLogVols;
@@ -56,5 +75,9 @@
     &Rich1LogVols;
     &Rich2LogVols;
     &VeloLogVols;
+    &TTLogVols;
+    &ITLogVols;
+    &OTLogVols;
+    &InfraStructureLogVols;  
   </LogVols>
 </Visualization>

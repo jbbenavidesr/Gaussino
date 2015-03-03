@@ -39,15 +39,15 @@
 </VisAtt>
 
 <VisAtt name="VisRich2Gas" mode="WireFrame" opened="Yes" visible="No" >
-  <Color R="0.1" G="0.1" B="0.1"/>
+  <Color R="0.99" G="0.98" B="0.1"/>
 </VisAtt>
 
 <VisAtt name="VisRich2MirrorSupports" mode="WireFrame" opened="Yes"  >
   <Color R="0.3" G="0.7" B="0.9"/>
 </VisAtt>
 
-<VisAtt name="VisRich2SecMirrorContainer" mode="WireFrame" opened="Yes"  >
-  <Color R="0.1" G="0.1" B="0.1"/>
+<VisAtt name="VisRich2MirrorContainer" mode="WireFrame" opened="Yes"  >
+  <Color R="0.5" G="0.5" B="0.5"/>
 </VisAtt>
 
 <VisAtt name="VisRich2HPDPanel" mode="WireFrame" opened="Yes"  >

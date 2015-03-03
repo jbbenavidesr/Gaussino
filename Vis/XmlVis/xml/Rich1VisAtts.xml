@@ -76,6 +76,7 @@
 <VisAtt name="VisRich1MgShield" mode="WireFrame" opened="Yes" >
   <Color R="0.1" G="0.1" B="0.9"/>
 </VisAtt>
+
 <VisAtt name="VisRich1Mirror1Be">
   <Color R="0" G="0.5" B="0.5"/> 
 </VisAtt>
@@ -88,6 +89,23 @@
 <VisAtt name="VisRich1Mirror1HolderSeg">
   <Color R="0.6" G="0.8" B="0.4"/>
 </VisAtt>
+
+<VisAtt name="VisRich1Mirror1CaFiInnerSeg">
+  <Color R="0" G="0.5" B="0.5"/> 
+</VisAtt>
+<VisAtt name="VisRich1Mirror1CaFiOuterSeg">
+  <Color R="0.2" G="0.3" B="0.5"/> 
+</VisAtt>
+<VisAtt name="VisRich1Mirror1CaFiCylinderSeg">
+  <Color R="0.1" G="0.5" B="0.8"/> 
+</VisAtt>
+<VisAtt name="VisRich1Mirror1Quadrant" mode = "WireFrame" opened="Yes" >
+  <Color R="0.6" G="0.3" B="0.3"/> 
+</VisAtt>
+<VisAtt name="VisRich1Mirror1Master" mode = "WireFrame" opened="Yes" >
+  <Color R="0.4" G="0.7" B="0.7"/>
+</VisAtt>
+
 <VisAtt name="VisRich1Mirror2Support" mode="WireFrame" >
   <Color R="0.3" G="0.7" B="0.9"/>
 </VisAtt>

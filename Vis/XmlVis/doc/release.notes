@@ -3,6 +3,33 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r5 =====================================
+
+!=========================== XmlVis v1r4 =====================================
+! 2008-02-21 - Thomas Ruf
+ - added nice colors for Ecal
+ - added colours for Infrastructure
+
+!=========================== XmlVis v1r3 2008-02-04 ==========================
+
+! 2008-01-31 - "Antonis Papanestis"
+ - New RICH attributes for the composite RICH1 spherical mirrors and the
+   extra volumes around the RICH2 spherical mirrors and HPDs.
+
+!=========================== XmlVis v1r2 2008-01-28 ==========================
+
+! 2008-01-18 - Jeroen van Tilburg
+ - Changed a few things in TT attributes.
+ - Added Copper to StandardMaterials.
+ - Made Vacuum transparent.
+
+!=========================== XmlVis v1r1 2007-12-19 ==========================
+
+! 2007-12-12 - Thomas Ruf
+ - Imported IT and TT attributes from Jeroen Tilburg and
+   added a few more things. Tried to optimize for an event display
+ - Made a first implementation for OT attributes 
+
 
 !=========================== XmlVis v1r0 2007-12-03 ==========================
 

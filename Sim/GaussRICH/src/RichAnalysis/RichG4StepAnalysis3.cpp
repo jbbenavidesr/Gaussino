@@ -1,4 +1,4 @@
-// $Id: RichG4StepAnalysis3.cpp,v 1.9 2007-01-17 17:49:14 ranjard Exp $
+// $Id: RichG4StepAnalysis3.cpp,v 1.13 2008-04-20 16:15:13 seaso Exp $
 // Include files
 
 #include "G4Track.hh"
@@ -234,9 +234,15 @@ void RichG4StepAnalysis3::UserSteppingAction( const G4Step* aStep )
             }
 
             // Now for photons hitting mirror2
-
-            if(aPreVolName == LogVolC4F10NameAnalysis &&
-               aPostVolName == LogVolRich1Mirror2NameAnalysis ){
+            // The following 'if' has to parts to keep backward compatibility
+            std::string::size_type iR1M2StrPrePos=
+                      aPreVolName.find(LogVolRich1Mirror2MasterNameAnalysis);
+            std::string::size_type iR1M2SegStrPostPos=
+                      aPostVolName.find(LogVolRich1Mirror2SegNameAnalysis);
+            
+            if( ( (aPreVolName == LogVolC4F10NameAnalysis) &&
+               (aPostVolName == LogVolRich1Mirror2NameAnalysis)) || 
+               ( ( iR1M2StrPrePos != std::string::npos)  && (iR1M2SegStrPostPos !=  std::string::npos )   ) ){
               // the reflection already happened at this point.
 
               //                   if(PhotCurDir.z() < 0.0 ) {
@@ -266,10 +272,17 @@ void RichG4StepAnalysis3::UserSteppingAction( const G4Step* aStep )
                 }
               }
             }
+
             // now for photon hitting the HpdQW
+            
+             std::string::size_type iHpdSMStrPos0=
+                      aPreVolName.find(LogVolHpdSMasterNameAnalysisListStrPrefix[0]);
+             std::string::size_type iHpdSMStrPos1=
+                      aPreVolName.find(LogVolHpdSMasterNameAnalysisListStrPrefix[1]);
+            
 
-
-            if(aPreVolName == LogVolHpdSMasterNameAnalysis &&
+            if( ((aPreVolName == LogVolHpdSMasterNameAnalysis) || 
+                 (iHpdSMStrPos0 !=  std::string::npos  ) || iHpdSMStrPos1 !=  std::string::npos    ) &&
                aPostVolName ==  LogVolHpdQWindowNameAnalysis ){
 
               if(PhotCurDir.z() > 0.0 ) {
@@ -302,7 +315,13 @@ void RichG4StepAnalysis3::UserSteppingAction( const G4Step* aStep )
 
         const G4String & aelnPreVolName=
           aPreStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
-        if( aelnPreVolName == LogVolHpdSMasterNameAnalysis) {
+         std::string::size_type jHpdSMStrPos0=
+                      aelnPreVolName.find(LogVolHpdSMasterNameAnalysisListStrPrefix[0]);
+         std::string::size_type jHpdSMStrPos1=
+                      aelnPreVolName.find(LogVolHpdSMasterNameAnalysisListStrPrefix[1]);
+
+        if( (aelnPreVolName == LogVolHpdSMasterNameAnalysis) ||
+            (jHpdSMStrPos0 !=  std::string::npos)  ||  (jHpdSMStrPos1 !=  std::string::npos) ) {
 
           const G4String & aelnPostVolName=
             aPostStepPoint->GetPhysicalVolume()
@@ -315,8 +334,11 @@ void RichG4StepAnalysis3::UserSteppingAction( const G4Step* aStep )
 
 
             if(aParticleKE > 0.0 ) {
-              if(  aelnPreVolName == LogVolHpdSMasterNameAnalysis &&
-                   aelnPostVolName == LogVolSiDetNameAnalysis ){
+              if(  ( (aelnPreVolName == LogVolHpdSMasterNameAnalysis) ||
+                     (jHpdSMStrPos0 !=  std::string::npos) || (jHpdSMStrPos1 !=  std::string::npos)    ) &&
+                   ( (aelnPostVolName == LogVolSiDetNameAnalysis) ||
+                     (aelnPostVolName.find(LogVolSiDetNameAnalysisStrPrefix) 
+                      != std::string::npos ))){
 
 
                 G4int   aPeRadiatorNumber =  -1;

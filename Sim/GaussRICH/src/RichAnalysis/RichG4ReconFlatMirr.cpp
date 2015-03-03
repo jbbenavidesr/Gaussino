@@ -1,4 +1,4 @@
-// $Id: RichG4ReconFlatMirr.cpp,v 1.9 2007-01-12 15:32:11 ranjard Exp $
+// $Id: RichG4ReconFlatMirr.cpp,v 1.11 2008-04-11 13:40:23 seaso Exp $
 // Include files
 
 
@@ -52,8 +52,8 @@ RichG4ReconFlatMirr::RichG4ReconFlatMirr(  )
        m_Rich2NumSecMirror(40),
        m_RichSecMirrCoCRad( m_Rich1NumSecMirror+m_Rich2NumSecMirror,
                              std::vector<double> (m_RichNumSecMirrorCoCParam)),
-       m_Rich1Mirror2CommonPath(Rich1DeStructurePathName+  "/Rich1Mirror2Q"),
-       m_Rich2Mirror2CommonPath(Rich2DeStructurePathName + "/Rich2SecMirror:"),
+       m_Rich1Mirror2CommonPath(Rich1DeStructurePathName),
+       m_Rich2Mirror2CommonPath(Rich2DeStructurePathName),
        m_Rich1Mirror2IndPathString(std::vector<std::string> (m_Rich1NumSecMirror)),
        m_Rich2Mirror2IndPathString(std::vector<std::string> (m_Rich2NumSecMirror))
 {
@@ -79,11 +79,16 @@ RichG4ReconFlatMirr::RichG4ReconFlatMirr(  )
 
   SmartDataPtr<DetectorElement> Rich1DE(detSvc, Rich1DeStructurePathName);
   SmartDataPtr<DetectorElement> Rich2DE(detSvc, Rich2DeStructurePathName);
-  std::string r2mNum [] ={"00:0","01:1","02:2","03:3","34:4","35:5",
-                          "36:6","37:7","18:8","19:9","110:10","111:11",
-                          "212:12","213:13","214:14","215:15"};
+  std::string r1m2MPath []={"/Rich1Mirror2MasterTop/Rich1Mirror2Seg","/Rich1Mirror2MasterBot/Rich1Mirror2Seg" };
+  std::string r2mNum [] ={"00:0","01:1","02:2","03:3","04:4","05:5",
+                          "06:6","07:7","08:8","09:9","10:10","11:11",
+                          "12:12","13:13","14:14","15:15"};
   for(int ii=0; ii<m_Rich1NumSecMirror; ++ii) {
-    m_Rich1Mirror2IndPathString[ii]= m_Rich1Mirror2CommonPath+ r2mNum[ii];
+    if(ii < 8 ) {
+     m_Rich1Mirror2IndPathString[ii]= m_Rich1Mirror2CommonPath+  r1m2MPath [0]+ r2mNum[ii];
+    }else {
+     m_Rich1Mirror2IndPathString[ii]= m_Rich1Mirror2CommonPath+  r1m2MPath [1]+ r2mNum[ii];     
+    }
     
   }
 
@@ -91,10 +96,23 @@ RichG4ReconFlatMirr::RichG4ReconFlatMirr(  )
     std::string mnum []= {"0","1","2","3","4","5","6","7","8","9","10",
                          "11","12","13","14","15","16","17","18","19","20",
                           "21","22","23","24","25","26","27","28","29","30",
-                          "31","32","33","34","35","36","37","38","39","40"};
+                          "31","32","33","34","35","36","37","38","39"};
+
+    std::string Rich2Mirror2DetElemCont0= "/Rich2Gas/Rich2SecMirrorContainer_0";
+    std::string Rich2Mirror2DetElemCont1= "/Rich2Gas/Rich2SecMirrorContainer_1";
+    std::string Rich2Mirror2String= "/Rich2SecMirror:" ;
     
+        
     for(int ij=0; ij<m_Rich2NumSecMirror;++ij) {
-      m_Rich2Mirror2IndPathString[ij]= m_Rich2Mirror2CommonPath+mnum[ij];
+      if(ij< 20 ) {
+        
+        m_Rich2Mirror2IndPathString[ij]= m_Rich2Mirror2CommonPath+Rich2Mirror2DetElemCont0+Rich2Mirror2String+mnum[ij];
+      
+      }else {
+        
+        m_Rich2Mirror2IndPathString[ij]= m_Rich2Mirror2CommonPath+Rich2Mirror2DetElemCont1+Rich2Mirror2String+mnum[ij];
+        
+      }
       
     }
     
@@ -255,7 +273,7 @@ void RichG4ReconFlatMirr::setRich2FlatMirrorParam( )
       // SmartDataPtr<DetectorElement> Rich2M2(detSvc, apath);
     if(!Rich2M2) {
        RichG4ReconFlatMirrlog << MSG::ERROR<<       
-      "Rich1 mirror2 detelem does not exist . Mirror num "<<im<< endreq;
+      "Rich2 mirror2 detelem does not exist . Mirror num "<<im<< endreq;
        
     }else {
       
@@ -412,6 +430,8 @@ DetectorElement* RichG4ReconFlatMirr::getMirrorDetElem (int aRichDetNum, int aMi
 
       apath =  m_Rich2Mirror2IndPathString[aMirrorNum];
 
+      // G4cout<<" Current rich2 flat mirror Path detelem "<< apath<<G4endl;
+      
     }else {
      
       RichG4ReconFlatMirrlog << MSG::ERROR<<" Unknown sec mirror num in Rich2  "
