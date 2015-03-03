@@ -4,6 +4,42 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v37r8">2010-01-26 - GaussSys v37r8</A></H1><PRE>
+<H2><A NAME="Note">MC09 version: to enable direct CP violation and fix
+problem for B->3pi.
+   </A></H2>
+<H3><A NAME="Use">This version uses:
+   LHCb v26r3 (and Gaudi v20r4)
+   <b>AppConfig v3r* </b>,
+   DecFiles v20r* (<b>latest v20r1</b>), 
+   ParamFiles v8r0, 
+   SQLDDDB v5r*, FieldMap v5r*,
+   pythia6 418.2, photos 215.2, lhapdf 5.3.1 
+   (via LCG_GeneratorsInterfaces)
+   HepMC 2.03.09 (via LCG_Interfaces)
+   Geant4 v91r3 (based on geant4.9.1.p03) and Geant4Files v91r0
+   XmlVis v1r11,
+   herwig 6.510.2, jimmy 4.31.2 (via LCG_GeneratorsInterfaces),
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   pythia8 107,
+   bcvegpy (LHCb build)
+
+!========================= Gauss v37r8 2010-01-26 ============================
+! 2010-01-26 - Gloria CORTI
+ - Make new version to activate direct CPV and fix bug for CPV in B->3pi
+
+!========================== EvtGen v11r8 2010-01-26 ==========================
+! 2010-01-26 - Patrick Robbe
+ - EvtModelReg.cpp: reactivates Direct CPV
+
+! 2010-01-22 - Patrick Robbe
+ - EvtBTo3piCP.cpp: use OtherB function with 4 arguments to have this
+   model working correctly in LHCb.
+ - EvtCPUtil.cpp: abort when using EvtCPUtil::OtherB with 3 arguments as
+   this does not work for hadronic environment
+ - EvtBTo3pi.F: reintroduce changes made long time ago for 64 bits
+
+!=============================================================================
 </PRE><H1><A NAME="v37r7">2009-12-18 - GaussSys v37r7</A></H1><PRE>
 <H2><A NAME="Note">MC09 version: to deploy CP violation for all decays and
 fix finalization problem in production.

@@ -4,6 +4,10 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================= Gauss v37r8 2010-01-26 ============================
+! 2010-01-26 - Gloria CORTI
+ - Make new version to activate direct CPV and fix bug for CPV in B->3pi
+
 !========================= Gauss v37r7 2009-12-18 ============================
 ! 2009-12-18 - Gloria CORTI
  - Make new version to deploy changes to activate CP violation
