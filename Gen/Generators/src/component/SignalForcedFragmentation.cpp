@@ -54,7 +54,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
   if ( sc.isFailure() ) return sc ;
 
   IParticlePropertySvc * ppSvc = 
-    svc< IParticlePropertySvc >( "ParticlePropertySvc" ) ;
+    svc< IParticlePropertySvc >( "Gaudi::ParticlePropertySvc" ) ;
   ParticleProperty * prop = ppSvc -> findByStdHepID( *m_pids.begin() ) ;
   m_signalMass = prop -> mass() ;
 

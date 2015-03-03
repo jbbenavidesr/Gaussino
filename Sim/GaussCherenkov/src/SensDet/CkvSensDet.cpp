@@ -35,11 +35,6 @@
 #include "CkvG4Hit.h"
 
 
-//-----------------------------------------------------------------------------
-// Implementation file for class : CkvSensDet
-//
-// 2007-01-11 : Gloria Corti, adapt to Gaudi v19 (compatible also with v18)
-//-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
 DECLARE_TOOL_FACTORY( CkvSensDet );
@@ -54,6 +49,21 @@ CkvSensDet::CkvSensDet( const std::string& type   ,
   : G4VSensitiveDetector ( name  ),  
     GiGaSensDetBase      ( type , name , parent )
 {
+
+
+}
+
+//=============================================================================
+// Destructor
+//=============================================================================
+CkvSensDet::~CkvSensDet(){}
+//=============================================================================
+// initialize
+//=============================================================================
+StatusCode CkvSensDet::initialize() 
+{
+  StatusCode sc = GiGaSensDetBase::initialize();
+  if (sc.isFailure()) return sc;
 
   IDataProviderSvc* detSvc;
   if ( svcLoc()->service( "DetectorDataSvc" , detSvc , true ) ) {
@@ -78,12 +88,18 @@ CkvSensDet::CkvSensDet( const std::string& type   ,
 
   }
 
+  
+  return sc;
+}
+//=============================================================================
+// finalize
+//=============================================================================
+StatusCode CkvSensDet::finalize() 
+{
+  return GiGaSensDetBase::finalize();  
+  
 }
 
-//=============================================================================
-// Destructor
-//=============================================================================
-CkvSensDet::~CkvSensDet(){}
 
 //=============================================================================
 // process the hit (G4VSensitiveDetector method

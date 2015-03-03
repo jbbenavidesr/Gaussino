@@ -44,7 +44,7 @@ StatusCode StandAloneDecayTool::initialize() {
   debug() << "==> Initialize" << endmsg;
 
   IParticlePropertySvc * ppSvc = 
-    svc< IParticlePropertySvc >( "ParticlePropertySvc" ) ;
+    svc< IParticlePropertySvc >( "Gaudi::ParticlePropertySvc" ) ;
   ParticleProperty * prop = ppSvc -> findByStdHepID( *m_pids.begin() ) ;
   m_signalMass = prop -> mass() ;
 

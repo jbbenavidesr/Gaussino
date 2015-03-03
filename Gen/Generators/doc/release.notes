@@ -5,16 +5,15 @@ $! $Id: release.notes,v 1.167 2010-09-19 09:03:47 robbep Exp $
 ! Purpose     : Common algorithms and tools for all production engines
 !-----------------------------------------------------------------------------
 
-!======================= Generators v11r5 2012-07-13 =========================
- - build on v11b branch built starting from v11r4
-   and with the following changes ported from the trunk
- 
-! 2012-07-22 - Gloria Corti
- - Fix bug in FlatZSmearVertex where the location where to take the beam
-   parameters was empty. 
+!======================= Generators v12r0 2012-05-14 =========================
+ - on v11r4b branch
 
-! 2012-06-11 - Alex Shires
- - update EvtGenInPhSpDecay to allow a configurable input file name
+! 2012-05-09 - Gloria Corti
+ - Fix run time problem with finding of ParticlePropertySvc that in Gaudi
+   v23 is in the Gaudi:: namespace. 
+
+! 2012-05-08 - Gloria Corti
+ - Fix linking problems with boost newer version from building with Gaudi v23r2
 
 !======================= Generators v11r4 2012-02-12 =========================
 ! 2012-02-12 - Gloria Corti

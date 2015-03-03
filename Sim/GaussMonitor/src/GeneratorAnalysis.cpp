@@ -44,12 +44,12 @@ GeneratorAnalysis::GeneratorAnalysis( const std::string& name,
   , m_nChargedStable   ( 0 )
   , m_nAllParticles    ( 0 )
   , m_nBHistos         ( 0 )
-  , m_nS0L0J1          ( 0 )
+  , m_nS0L0J0          ( 0 )
+  , m_nS1L1J0          ( 0 )
+  , m_nS1L0J1          ( 0 )
+  , m_nS0L1J1          ( 0 )
   , m_nS1L1J1          ( 0 )
-  , m_nS1L0J3          ( 0 )
-  , m_nS0L1J3          ( 0 )
-  , m_nS1L1J3          ( 0 )
-  , m_nS1L1J5          ( 0 )
+  , m_nS1L1J2          ( 0 )
   , m_stateB           ( 0 )
   , m_stateBStar       ( 0 )
   , m_stateBStarStar   ( 0 )
@@ -398,17 +398,17 @@ StatusCode GeneratorAnalysis::finalize() {
          
          << "* B Meson production state:                                    *" 
          << std::endl
-         << "* Number of B   : " << m_stateB
+         << "* Number of B   (L=0, J=0)     : " << m_stateB
          << " [fraction : " << fraction( m_stateB , totalBMesonStates )
          << " +/- " << err_fraction( m_stateB , totalBMesonStates ) <<" ]" 
          << std::endl
     
-         << "* Number of B*  : " << m_stateBStar 
+         << "* Number of B*  (L=0, J=1)     : " << m_stateBStar 
          << " [fraction : "  << fraction( m_stateBStar , totalBMesonStates)
          << " +/- " << err_fraction( m_stateBStar , totalBMesonStates ) <<" ]" 
          << std::endl
     
-         << "* Number of B** : " << m_stateBStarStar
+         << "* Number of B** (L=1, J=0,1,2) : " << m_stateBStarStar
          << " [fraction : " << fraction ( m_stateBStarStar , totalBMesonStates )
          << " +/- " << err_fraction( m_stateBStarStar , totalBMesonStates ) 
          <<" ]" << std::endl
@@ -425,9 +425,24 @@ StatusCode GeneratorAnalysis::finalize() {
          << std::endl
          << "* S L J" << std::endl
 
-         << "* 0 0 1 : " << m_nS0L0J1
-         << " [fraction : " << fraction( m_nS0L0J1 , totalBMesonStates )
-         << " +/- " << err_fraction( m_nS0L0J1 , totalBMesonStates ) <<" ]" 
+         << "* 0 0 0 : " << m_nS0L0J0
+         << " [fraction : " << fraction( m_nS0L0J0 , totalBMesonStates )
+         << " +/- " << err_fraction( m_nS0L0J0 , totalBMesonStates ) <<" ]" 
+         << std::endl
+
+         << "* 1 1 0 : " << m_nS1L1J0
+         << " [fraction : " << fraction( m_nS1L1J0 , totalBMesonStates )
+         << " +/- " << err_fraction( m_nS1L1J0 , totalBMesonStates ) <<" ]" 
+         << std::endl
+
+         << "* 1 0 1 : " << m_nS1L0J1
+         << " [fraction : " << fraction( m_nS1L0J1 , totalBMesonStates )
+         << " +/- " << err_fraction( m_nS1L0J1 , totalBMesonStates ) <<" ]" 
+         << std::endl
+
+         << "* 0 1 1 : " << m_nS0L1J1
+         << " [fraction : " << fraction( m_nS0L1J1 , totalBMesonStates )
+         << " +/- " << err_fraction( m_nS0L1J1 , totalBMesonStates ) <<" ]" 
          << std::endl
 
          << "* 1 1 1 : " << m_nS1L1J1
@@ -435,24 +450,9 @@ StatusCode GeneratorAnalysis::finalize() {
          << " +/- " << err_fraction( m_nS1L1J1 , totalBMesonStates ) <<" ]" 
          << std::endl
 
-         << "* 1 0 3 : " << m_nS1L0J3
-         << " [fraction : " << fraction( m_nS1L0J3 , totalBMesonStates )
-         << " +/- " << err_fraction( m_nS1L0J3 , totalBMesonStates ) <<" ]" 
-         << std::endl
-
-         << "* 0 1 3 : " << m_nS0L1J3
-         << " [fraction : " << fraction( m_nS0L1J3 , totalBMesonStates )
-         << " +/- " << err_fraction( m_nS0L1J3 , totalBMesonStates ) <<" ]" 
-         << std::endl
-
-         << "* 1 1 3 : " << m_nS1L1J3
-         << " [fraction : " << fraction( m_nS1L1J3 , totalBMesonStates )
-         << " +/- " << err_fraction( m_nS1L1J3 , totalBMesonStates ) <<" ]" 
-         << std::endl
-
-         << "* 1 1 5 : " << m_nS1L1J5
-         << " [fraction : " << fraction( m_nS1L1J5 , totalBMesonStates )
-         << " +/- " << err_fraction( m_nS1L1J5 , totalBMesonStates ) <<" ]" 
+         << "* 1 1 2 : " << m_nS1L1J2
+         << " [fraction : " << fraction( m_nS1L1J2 , totalBMesonStates )
+         << " +/- " << err_fraction( m_nS1L1J2 , totalBMesonStates ) <<" ]" 
          << std::endl
 
          << "* Total : " << totalBMesonStates
@@ -842,7 +842,7 @@ void GeneratorAnalysis::bHadronInfo( LHCb::ParticleID m_mPID,
                                  LHCb::ParticleID m_dPID )
 {
     if ( m_dPID.abspid() == 5 ) return ;
-    if ( ! m_mPID.hasBottom() ) {
+    if ( ! ( m_mPID.hasBottom() && m_mPID.abspid()!=5) ) {
     if(m_dPID.hasBottom()){
       m_nBParticles++;
       //Set default B Hadron Type
@@ -891,45 +891,49 @@ void GeneratorAnalysis::bHadronInfo( LHCb::ParticleID m_mPID,
     }
     
     //Set default meson spin state
-    spinState spin = S0L0J1;
+    spinState spin = S0L0J0;
     if(m_dPID.isMeson() && m_dPID.hasBottom()){
       m_nMesonType++;
       if(5 == m_dPID.jSpin()){
-        spin = S1L1J5;
-        m_nS1L1J5++;
+        spin = S1L1J2;
+        m_nS1L1J2++;
       }else if(3 == m_dPID.jSpin()){
         if(1 == m_dPID.lSpin()){
           if(1 == m_dPID.sSpin()){
-            spin = S1L1J3;
-            m_nS1L1J3++;
+            spin = S1L1J1;
+            m_nS1L1J1++;
           }else if(0 == m_dPID.sSpin()){
-            spin = S0L1J3;
-            m_nS0L1J3++;
+            spin = S0L1J1;
+            m_nS0L1J1++;
           }
         }else if(0 == m_dPID.lSpin()){
-          spin = S1L0J3;    
-          m_nS1L0J3++;
+          spin = S1L0J1;    
+          m_nS1L0J1++;
         }
       }else if(1 == m_dPID.jSpin()){
         if(1 == m_dPID.lSpin()){
-          spin = S1L1J1;        
-          m_nS1L1J1++;
+          spin = S1L1J0;        
+          m_nS1L1J0++;
         }else if(0 == m_dPID.lSpin()){
-          spin = S0L0J1;        
-          m_nS0L0J1++;
+          spin = S0L0J0;        
+          m_nS0L0J0++;
         }
       }
 
-      if(0 == spin){
+      //mind that B** is L=1 state, B* is L=0 and J=1, and B is L=0, J=0
+      if(S0L0J0==spin){
         m_stateB++;
-      }else if(1 == spin){
-        m_stateBStar++;
+      }else if(S1L0J1==spin) {
+        m_stateBStar++;   
       }else{
         m_stateBStarStar++;
       }
-      //      if( produceHistos() && ( 0 <= spin <= 3 ) ) {
-      if( produceHistos() && ( 0 <= spin && spin <= 3 ) ) {
-        m_bMesonStates->fill((double)spin);
+
+      if( produceHistos() ) {
+        int state = 2; //L=1 state
+        if (S0L0J0==spin) state = 0;
+        else if (S1L0J1==spin) state = 1;
+        m_bMesonStates->fill((double)state);
       }
       if( produceHistos() ) m_bMesonStatesCode->fill((double)spin);
     }

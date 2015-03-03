@@ -147,8 +147,8 @@ StatusCode GetMCRichHitsAlg::execute()
         }
 
         // Check HPD is active. If not, skip making any MCRichHits for it.
-        const RichSmartID hpdID = detID.hpdID();
-        if ( !deRichSystem()->hpdIsActive(hpdID) )
+        const RichSmartID hpdID = detID.pdID();
+        if ( !deRichSystem()->pdIsActive(hpdID) )
         {
           std::ostringstream mess;
           mess << "Inactive HPD skipped " << hpdID;

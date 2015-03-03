@@ -5,6 +5,14 @@
 ! Purpose     : Handles use of Herwig as production engine
 !----------------------------------------------------------------------------
 
+!======================== LbHerwig v7r0 2012-05-14 ==========================
+! 2012-05-10 - Gloria Corti
+ - Fix run time problem with finding of ParticlePropertySvc that in Gaudi
+   v23 is in the Gaudi:: namespace.
+
+! 2011-10-20 - Patrick Robbe
+ - HerwigProduction: fix coverity warning
+
 !======================== LbHerwig v6r1 2011-07-24 ==========================
 ! 2011-07-24 - Gloria Corti
  - Apply pattern not to build on windows, so that conditional use can be

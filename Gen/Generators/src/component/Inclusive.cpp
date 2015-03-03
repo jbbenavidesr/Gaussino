@@ -74,7 +74,7 @@ StatusCode Inclusive::initialize( ) {
         it != m_pidVector.end() ; ++it ) m_pids.insert( *it ) ;
   
   IParticlePropertySvc * ppSvc =
-    svc< IParticlePropertySvc >( "ParticlePropertySvc" ) ;
+    svc< IParticlePropertySvc >( "Gaudi::ParticlePropertySvc" ) ;
   
   info() << "Generating Inclusive events of " ;
   PIDs::const_iterator it ;

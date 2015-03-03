@@ -1,4 +1,0 @@
-// Job options to set up DataOnDemandSvc for unpacking Digi objects
-DataOnDemandSvc.AlgMap += { "MC/Particles" : "UnpackMCParticle"
-                          , "MC/Vertices"  : "UnpackMCVertex"
-                          };

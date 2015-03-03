@@ -708,6 +708,17 @@ int NamedDecayTreeList::makeKKpipiList(){
   delete dk;
   
 
+  // D0->f(0)(980) NonResVbar0(pi-,pi+)
+  dk = new DecayTree(421);
+  dk->addDgtr(-9993)->addDgtr( -211, 211);
+  dk->addDgtr( 9010221)->addDgtr( -211,  +211);
+  add(AmpInitialiser(*dk, "FocusFlatte"));
+  add(AmpInitialiser(*dk, "Flatte"));
+  add(*dk);
+  if(dbThis) cout << "11th decay: " << *dk << endl;
+  delete dk;
+
+
   // f(0)(980) KK
   dk = new DecayTree(421);
   dk->addDgtr( 9010221)->addDgtr( -211,  +211);
@@ -1040,7 +1051,7 @@ int NamedDecayTreeList::makeK3piList(){
  bool dbThis=false;
 
  DecayTree* dk=0;
-
+ DecayTree* R1=0;
  // non-resonant K-pipipi
  dk = new DecayTree(421);
  dk->addDgtr(-321, 211, 211, -211);
@@ -1050,11 +1061,21 @@ int NamedDecayTreeList::makeK3piList(){
  // K- a1(1260)
  dk = new DecayTree(421);
  dk->addDgtr( -321);
- dk->addDgtr(20213)->addDgtr(211,  113)->addDgtr( 211,-211);
+ R1 = new DecayTree(20213); // the a1
+ R1->addDgtr(211,  113)->addDgtr( 211,-211);
+ dk->addDgtr(R1);
  add(AmpInitialiser(*dk, "RHO_OMEGA"));
+ add(*dk);
+ delete dk;
+ // now the one where the a1->rho pi is D-wave:
+ dk = new DecayTree(421);
+ dk->addDgtr( -321);
+ R1->getVal().setL(2);
+ dk->addDgtr(R1);
  add(*dk);
  if(dbThis) cout << "12th decay: " << *dk << endl;
  delete dk;
+ delete R1; // (dk stored a copy)
  
  // K-resonances -------------
  // ^^^^^^^^^^^^
@@ -1062,11 +1083,24 @@ int NamedDecayTreeList::makeK3piList(){
  // K1 1270 channels:
  // pi K1(1270)->K rho
  dk = new DecayTree(421);
- dk->addDgtr(211 , -10323)->addDgtr( -321,113  )->addDgtr( 211,-211);
+ R1 = new DecayTree(-10323);
+ // dk->addDgtr(211 , -10323)->addDgtr( -321,113  )->addDgtr( 211,-211);
+ dk->addDgtr(211);
+ R1->addDgtr( -321,113  )->addDgtr( 211,-211);
+ dk->addDgtr(R1);
  add(AmpInitialiser(*dk, "RHO_OMEGA"));
+ add(*dk);
+ delete dk;
+ // now K1->rho as D wave
+ dk = new DecayTree(421);
+ dk->addDgtr(211);
+ R1->getVal().setL(2);
+ dk->addDgtr(R1);
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
  delete dk;
+ delete R1;
+
  // the following, with the +10323 instead of -10323, is actually a typo, 
  // but kept for backward compatibility:
  // pi K1(1270)
@@ -1086,11 +1120,21 @@ int NamedDecayTreeList::makeK3piList(){
  // Added by Molina on Friday 29th January 2010
  // K(1)(1270)(->rho(->pi+,pi-),K-) pi+
  dk = new DecayTree(421);
- dk->addDgtr(10313)->addDgtr(-321,113)->addDgtr(211,-211);
+ R1 = new DecayTree(10313);
+ R1->addDgtr(-321,113)->addDgtr(211,-211);
  dk->addDgtr(211);
+ dk->addDgtr(R1);
+ add(*dk);
+ delete dk;
+ // now the same with K1->D wave
+ dk = new DecayTree(421);
+ R1->getVal().setL(2);
+ dk->addDgtr(211);
+ dk->addDgtr(R1);
  add(*dk);
  if(dbThis) cout << "61st decay: " << *dk << endl;
  delete dk;
+ delete R1;
 
  // pi K1(1270)->f0(1370) K
  dk = new DecayTree(421);
@@ -1098,7 +1142,8 @@ int NamedDecayTreeList::makeK3piList(){
  add(AmpInitialiser(*dk, "RHO_OMEGA"));
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
- 
+ delete dk;
+
  // pi K1(1270)->"non-res 3-body"
  // could be anything. I model it as...
  // K1 -> K Scalar, Scalar->pipi...
@@ -1106,35 +1151,78 @@ int NamedDecayTreeList::makeK3piList(){
  dk->addDgtr(211 , -10323)->addDgtr( -321, 9981)->addDgtr( 211,-211);
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
+ delete dk;
+
  // ... and K1 -> pi- Scalar, Scalar->K- pi+
  dk = new DecayTree(421);
  dk->addDgtr(211 , -10323)->addDgtr( -211, 9981)->addDgtr( 211,-321);
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
+ delete dk;
+
  // same with nonResV
  dk = new DecayTree(421);
- dk->addDgtr(211 , -10323)->addDgtr( -321, 9993)->addDgtr( 211,-211);
+ R1 = new DecayTree(-10323);
+ dk->addDgtr(211);
+ R1->addDgtr( -321, 9993)->addDgtr( 211,-211);
+ dk->addDgtr(R1);
  add(*dk);
- if(dbThis) cout << "13th decay: " << *dk << endl;
-
+ delete dk;
+ // now the same with K1->D wave
  dk = new DecayTree(421);
- dk->addDgtr(211 , -10323)->addDgtr( -211, 9993)->addDgtr( 211,-321);
+ R1->getVal().setL(2);
+ dk->addDgtr(211);
+ dk->addDgtr(R1);
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
- 
- // pi K1(1270)->K(1430)->Kpi
+ delete dk;
+ delete R1;
+
+ // same with nonResV
+ dk = new DecayTree(421);
+ R1 = new DecayTree(-10323);
+ dk->addDgtr(211);
+ R1->addDgtr( -211, 9993)->addDgtr( 211,-321);;
+ dk->addDgtr(R1);
+ add(*dk);
+ delete dk;
+ // now the same with K1->D wave
+ dk = new DecayTree(421);
+ R1->getVal().setL(2);
+ dk->addDgtr(211);
+ dk->addDgtr(R1);
+ add(*dk);
+ if(dbThis) cout << "13th decay: " << *dk << endl;
+ delete dk;
+ delete R1;
+
+
+ // pi K1(1270)->K(1430)->Kpi // K1->K(1430)pi can only be spin 1 (or 3, 5...)
  dk = new DecayTree(421);
  dk->addDgtr(211 , -10323)->addDgtr( -211, -10311)->addDgtr( 211, -321);
  add(AmpInitialiser(*dk, "RHO_OMEGA"));
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
+ delete dk;
 
  // pi K1(1400)->K*(892)pi
  dk = new DecayTree(421);
- dk->addDgtr(211 , -20323)->addDgtr( -211, -313)->addDgtr( 211, -321);
+ R1 = new DecayTree(-20323);
+ dk->addDgtr(211);
+ R1->addDgtr( -211, -313)->addDgtr( 211, -321);
+ dk->addDgtr(R1);
+ add(*dk);
+ delete dk;
+ // now the same with K1->D wave
+ R1->getVal().setL(2);
+ dk = new DecayTree(421);
+ dk->addDgtr(211);
+ dk->addDgtr(R1);
  add(*dk);
  if(dbThis) cout << "13th decay: " << *dk << endl;
- 
+ delete dk;
+ delete R1;
+
  // K*bar(892) rho S, P, D-wave
  dk = new DecayTree(421);
  dk->addDgtr( -313)->addDgtr( -321,  +211);
@@ -1231,6 +1319,19 @@ int NamedDecayTreeList::makeK3piList(){
   dk->addDgtr(    225)->addDgtr( -211,  +211);
   add(*dk);
   if(dbThis) cout << "18th decay: " << *dk << endl;
+
+  // D0->f(2)(1270)0(->pi+,pi-),NonResV0(->pi-,pi+)
+  dk = new DecayTree(421);
+  dk->addDgtr(225)->addDgtr( -211,  +211);
+  dk->addDgtr(9993)->addDgtr(-211,  +211);
+  add(*dk);
+
+  // D0->f(2)(1270)0(->pi+,pi-),NonResT0(->pi-,pi+)
+//  dk = new DecayTree(421);
+//  dk->addDgtr(225)->addDgtr( -211,  +211);
+//  dk->addDgtr(9985)->addDgtr(-211,  +211);
+//  add(*dk);
+
 
   // D0->f(2)(1430)0(->pi+,pi-),K*(892)bar0(->K-,pi+) P, D
   dk = new DecayTree(421);
@@ -1716,6 +1817,16 @@ DecayTree* dk=0;
   add(*dk);
   if(dbThis) cout << "third decay: " << *dk << endl;
   delete dk;
+
+//  //Dbar0 -> rho(770)rho(770), rho(770)->pi+pi-  [S-WAVE]
+//
+//  dk = new DecayTree(-421);
+//  dk->addDgtr(113)->addDgtr(211, -211);
+//  dk->addDgtr(113)->addDgtr(211, -211);
+//  add(*dk);
+//  if(dbThis) cout << "third decay: " << *dk << endl;
+//  delete dk;
+
 
 //D0 -> rho(770)rho(770), rho(770)->pi+pi-  [P-WAVE]
   dk = new DecayTree(421);

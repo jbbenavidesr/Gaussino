@@ -4,6 +4,20 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v10r0 2012-05-14 ==========================
+ - on v9r3b branch
+
+! 2012-05-10 - Gloria Corti
+ - Increase version of pythia8 as 165 has been made available on LCG today.
+   From pythia8 release note: "Big fix, that 'ParticleDecays:mixB = off' did
+   not switch off B0-B0bar and Bs0-Bs0bar mixing". 
+
+! 2012-05-07 - Gloria Corti
+ - Branch based on v9r3 for first 2012 MC.
+ - Change version of pythia8 to latest available 163
+ - Introduce macro to set version of Herwig++ 2.5.1 and ThePeg 1.7.1
+   so that they can be distributed on the grid
+
 !========================== GENSER v9r3 2012-04-02 ===========================
 ! 2012-03-28 - Gloria Corti
  - Backport changes from Zenwhei Yang:

@@ -13,13 +13,34 @@
 <VisAtt name="VisRich1AerogelContainers" mode = "WireFrame" opened="Yes" >
   <Color R="0.1" G="0.1" B="0.1"/>
 </VisAtt>
+<VisAtt name="VisRich1AerogelFilterFrame" mode = "WireFrame" opened="Yes" >
+  <Color R="0.3" G="0.4" B="0.1"/>
+</VisAtt>
+
 <VisAtt name="VisAerogelBoxRight"  >
   <Color R="0.3" G="0.6" B="0.3"/>
 </VisAtt>
 <VisAtt name="VisAerogelBoxLeft"  >
   <Color R="0.4" G="0.6" B="0.3"/>
 </VisAtt>
-<VisAtt name="VisRich1Filter" mode = "WireFrame" >
+<VisAtt name="VisAerogelWrapBox"  >
+  <Color R="0.3" G="0.6" B="0.3"/>
+</VisAtt>
+<VisAtt name="VisAerogelWrapBoxThreeL"  >
+  <Color R="0.4" G="0.4" B="0.3"/>
+</VisAtt>
+<VisAtt name="VisAerogelGasket"  >
+  <Color R="0.9" G="0.2" B="0.4"/>
+</VisAtt>
+
+<VisAtt name="VisAerogelGasketAttach"  >
+  <Color R="0.7" G="0.4" B="0.4"/>
+</VisAtt>
+
+<VisAtt name="VisAerogelEnclosureRoof"  >
+  <Color R="0.7" G="0.3" B="0.8"/>
+</VisAtt>
+<VisAtt name="VisRich1Filter" >
   <Color R="1.0" G="1.0" B="0.0"/>
 </VisAtt>
 <VisAtt name="VisRich1AerogelT0">

@@ -45,7 +45,8 @@ DECLARE_TOOL_FACTORY( HerwigProduction );
 HerwigProduction::HerwigProduction( const std::string& type,
                                     const std::string& name,
                                     const IInterface* parent )
-  : GaudiTool ( type, name , parent )
+  : GaudiTool ( type, name , parent ) ,
+    m_eventType( 0 ) , m_beamTool( 0 ) , m_ppSvc( 0 )
   {
     declareInterface< IProductionTool >( this ) ;
     declareProperty( "Commands" , m_commandVector ) ;
@@ -159,7 +160,7 @@ StatusCode HerwigProduction::initialize( )
   m_beamTool = tool< IBeamTool >( m_beamToolName , this );
 
   // Retrieve the particle-property service
-  m_ppSvc = svc< IParticlePropertySvc >( "ParticlePropertySvc" );
+  m_ppSvc = svc< IParticlePropertySvc >( "Gaudi::ParticlePropertySvc" );
 
   // Define event type
   setGenerationEventType();

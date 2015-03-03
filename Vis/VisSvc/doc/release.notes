@@ -3,7 +3,14 @@
 ! Responsible : Gloria CORTI (originally Sebastien Ponce)
 ! Purpose     : 
 !-----------------------------------------------------------------------------
-!========================= VisSvc v5r5 2011-09-20 ============================
+!========================= VisSvc v5r7 2012-01-26 ============================
+
+! 2012-01-26 - Marco Cattaneo
+ - Fix missing Boost linkopts for Gaudi v23
+ - Remove obsolete VisSvc_dll.cpp
+ - Replace obsolete DeclareFactoryEntries.h include
+
+!========================= VisSvc v5r6 2011-09-20 ============================
 ! 2009-02-14 - Chris Jones
  - supress various icc warnings
 

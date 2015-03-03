@@ -85,7 +85,6 @@ EvtGenInPhSpDecay::EvtGenInPhSpDecay( const std::string& type,
     declareProperty("NumQ2Bins" , m_q2nbins = 100 ) ;
     declareProperty("MaxQ2Bins" , m_q2nmax  = 19 ) ;
     declareProperty("MaxEvtGenCalls" , m_limit  = 1000 ) ;
-    declareProperty("ParamFile", m_prefix = "Q2Param" ) ;
 }
 //=============================================================================
 // Destructor
@@ -99,7 +98,7 @@ StatusCode EvtGenInPhSpDecay::initialize( ) {
   if ( sc.isFailure() ) return sc ;
 
   std::stringstream ssfilename ;
-  ssfilename << m_prefix << "_" << m_q2nbins << "_" << m_q2nmax << ".txt" ;
+  ssfilename << "Q2Param_" << m_q2nbins << "_" << m_q2nmax << ".txt" ;
   m_q2mapfilename = ssfilename.str() ;
   //do the same for the Q2 binning file
   if ( "UNKNOWN" != System::getEnv("DECFILESROOT") ) 

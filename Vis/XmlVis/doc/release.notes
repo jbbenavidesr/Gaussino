@@ -3,6 +3,11 @@
 ! Responsible : Gloria CORTI, Thomas RUF
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
+!=========================== XmlVis v1r14 ====================================
+!2012-02-20 - Sajan Easo
+ - Visualization for Gauss Tutorial
+!2012-02-07 - Sajan Easo
+  - Visualization attributes for the new Aerogel support box
 !=========================== XmlVis v1r13 ====================================
 ! 2010-06-23 - Sajan Easo
 - Visualization attributes for Aerogel subtiles

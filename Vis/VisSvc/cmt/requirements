@@ -3,7 +3,7 @@
 # Maintainer : Gloria CORTI
 #============================================================================
 package           VisSvc
-version           v5r6
+version           v5r7
 
 # Structure, i.e. directories to process.
 #============================================================================
@@ -13,6 +13,9 @@ branches          cmt doc src VisSvc
 #============================================================================
 use   XmlTools     v*      Tools
 use   DetDesc      v*      Det
+use   Boost        v*      LCG_Interfaces
+
+macro_append Boost_linkopts " $(Boost_linkopts_regex) "
 
 # Export include files
 #============================================================================

@@ -226,9 +226,9 @@ StatusCode EvtGenDecay::initialize( ) {
   // update the particle properties of Pythia
   IParticlePropertySvc * ppSvc( 0 ) ;
   try { ppSvc = 
-      svc< IParticlePropertySvc > ( "ParticlePropertySvc" , true ) ; }
+      svc< IParticlePropertySvc > ( "Gaudi::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
-    Exception( "Cannot open ParticlePropertySvc" , exc ) ;
+    Exception( "Cannot open Gaudi::ParticlePropertySvc" , exc ) ;
   }
   IParticlePropertySvc::const_iterator iter ;
   for ( iter = ppSvc -> begin() ; iter != ppSvc -> end() ; ++iter )
@@ -504,9 +504,9 @@ StatusCode EvtGenDecay::createTemporaryEvtFile( const boost::filesystem::path &
   // retrieve Gaudi particle property service  
   IParticlePropertySvc * ppSvc( 0 ) ;
   try { ppSvc = 
-          svc< IParticlePropertySvc > ( "ParticlePropertySvc" , true ) ; }
+          svc< IParticlePropertySvc > ( "Gaudi::ParticlePropertySvc" , true ) ; }
   catch ( const GaudiException & exc ) {
-    Exception( "Cannot open ParticlePropertySvc to fill EvtGen" , exc ) ;
+    Exception( "Cannot open Gaudi::ParticlePropertySvc to fill EvtGen" , exc ) ;
   }
 
   // Loop over particle properties

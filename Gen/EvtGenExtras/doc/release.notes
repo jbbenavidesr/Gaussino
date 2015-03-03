@@ -4,26 +4,6 @@
 ! Purpose     : Repository of EvtGen models with external linkages
 !-----------------------------------------------------------------------------
 
-!======================= EvtGenExtras v3r3 2012-07-13 ========================
-! 2012-07-11 - Aurelien Martens
- - remove spin checking for EvtFlatSqDalitz
-
-! 2012-07-10 - Aurelien Martens
- - Added new model for 3body decays to be generated flat on the so-called
-   square Dalitz plot (see PRD72 052002 (2005))
-
-! 2012-07-09 - Nikolai Nikitin
- - Added new model for Bq -> 4 leptons decay (BQTOLLLLHYPERCP) with light sgoldstino
-
-! 2012-06-20 - Nikolai Nikitin
- - cout deleting
-
-! 2012-06-20 - Nikolai Nikitin
- - Optimization of memory allocation in the matrix element calculation.
-
-! 2012-05-22 - Nikolai Nikitin
- - Added a new decay Bs -> f0(980) Mu Mu in the BTOSLLMS and BTOSLLMSEXT models.
-
 !======================= EvtGenExtras v3r2 2012-02-12 ========================
 ! 2012-01-31 - Nikolai Nikitin
  - Added new models for B -> K_1(1270) Mu Mu and B -> K_1 (1400) Mu Mu decays

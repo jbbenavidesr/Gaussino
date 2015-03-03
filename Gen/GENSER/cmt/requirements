@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v9r3
+version v10r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -33,6 +33,13 @@ macro herwig_native_version "6.510.3"
 macro jimmy_native_version "4.31.3"
 
 
+#-- Herwig++ and ThePeg
+# Set native versions of required software.
+#============================================================================
+macro herwig++_native_version "2.5.1"
+macro thepeg_native_version   "1.7.1"
+
+
 #-- AlpGen (until interface package exist in LCG)
 #============================================================================
 macro alpgen_native_version "2.1.3d"
@@ -40,7 +47,7 @@ macro alpgen_native_version "2.1.3d"
 
 #-- Pythia 8
 #============================================================================
-macro pythia8_native_version "153"
+macro pythia8_native_version "165"
 macro_append pythia8_linkopts " -lhepmcinterface "
 
 

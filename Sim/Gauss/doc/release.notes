@@ -4,21 +4,20 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================= Gauss v41r4 2012-07-13 ============================
+!========================= Gauss v42r0 2012-05-15 ============================
+! 2012-05-12 - Gloria Corti
+ - Modify reference files for qmtests after running them with v41r3.
 
- - on branch v41r3b
+! 2012-05-09 - Gloria Corti
+ - Put use of GaudiPartProp to keep using TEMPORARILY the old 
+   ParticleProperySvc and configure it in Gauss() to read file from DDDB.
+   It should be removed for the next release!
+ - Update Gauss-DEV.py to use latest 2012 tags
 
-! 2012-07-11 - Gloria Corti
- - Remove spill-over from Gauss-MC11a.py
- - Add the Gauss() configurable to Gauss-DEV.py to be able to run it by itself,
-   otherwise it is a generic gaudi application. It fixes the running of the 
-   development qmtest.
-
-! 2012-06-06 - Gloria Corti
- - Introduce new script by Emmanouil Kiagias to make qmtest files from a 
-   template. The script is added as a make action so that they will be made
-   in the nighlty and used to check newly committed event types in DecFiles
-   . cmt/makeQMTests.py
+! 2012-05-04 - Gloria Corti
+ - Remove use of GaudiPoolDb as no longer in Gaudi and not needed.
+ - First version post-MC11, only compile it against latest stack but do not
+   change external libraries as Pythia6 or Geant4
 
 !========================= Gauss v41r3 2012-04-03 ============================
 ! 2012-04-02 - Gloria Corti

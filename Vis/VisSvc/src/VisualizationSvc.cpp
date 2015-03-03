@@ -1,7 +1,5 @@
-// $ID: $
-
 // Include Files
-#include "GaudiKernel/DeclareFactoryEntries.h"
+#include "GaudiKernel/SvcFactory.h"
 #include "GaudiKernel/MsgStream.h"
 
 #include <xercesc/dom/DOMElement.hpp>

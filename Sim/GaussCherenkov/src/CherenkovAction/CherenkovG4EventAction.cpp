@@ -123,6 +123,28 @@ CherenkovG4EventAction::CherenkovG4EventAction( const std::string& type   ,
   for (int ic=0; ic<m_NumRichColl; ++ic) {
     m_RichG4CollectionID.push_back(-1);
   }
+
+}
+
+//=============================================================================
+// Destructor
+//=============================================================================
+CherenkovG4EventAction::~CherenkovG4EventAction( ){
+
+  delPointer( m_RichG4HistoFillSet1 );
+  delPointer( m_RichG4HistoFillSet2 );
+  delPointer( m_RichG4HistoFillSet3 );
+  delPointer( m_RichG4HistoFillSet4 );
+  delPointer( m_CherenkovG4HistoFillSet5 );
+  delPointer( m_RichG4HistoFillTimer );
+  delPointer( m_RichG4EventHitCounter );
+  delPointer( m_RichG4InputMon);
+}
+StatusCode CherenkovG4EventAction::initialize() 
+{
+ StatusCode sc = GiGaEventActionBase::initialize();
+  if (sc.isFailure()) return sc;
+
   //  if(m_RichEventActionHistoFillActivateSet1) {
 
   m_RichG4HistoFillSet1 = new CkvG4HistoFillSet1();
@@ -153,22 +175,22 @@ CherenkovG4EventAction::CherenkovG4EventAction( const std::string& type   ,
   
   m_RichG4InputMon = new RichG4InputMon();
 
+
+
+  return sc;  
+  
+}
+StatusCode CherenkovG4EventAction::finalize() 
+{
+ 
+  return GiGaEventActionBase::finalize();
+
+ 
+  
 }
 
-//=============================================================================
-// Destructor
-//=============================================================================
-CherenkovG4EventAction::~CherenkovG4EventAction( ){
 
-  delPointer( m_RichG4HistoFillSet1 );
-  delPointer( m_RichG4HistoFillSet2 );
-  delPointer( m_RichG4HistoFillSet3 );
-  delPointer( m_RichG4HistoFillSet4 );
-  delPointer( m_CherenkovG4HistoFillSet5 );
-  delPointer( m_RichG4HistoFillTimer );
-  delPointer( m_RichG4EventHitCounter );
-  delPointer( m_RichG4InputMon);
-}
+
 
 //=============================================================================
 // BeginOfEventAction (G4)
@@ -213,14 +235,16 @@ void CherenkovG4EventAction::BeginOfEventAction ( const G4Event* /* aEvt */ )
       m_CherenkovG4HistoFillSet5= new CherenkovG4HistoFillSet5();
       m_CherenkovG4HistoFillSet5->InitCherenkovG4HistoFillSet5();
       m_RichG4HitRecon -> setCherenkovG4HistoFillSet5Occp(  m_CherenkovG4HistoFillSet5);
-      m_RichG4HitRecon -> setuseOnlySignalHitsInRecon(m_CkvG4HitReconUseOnlySignalHit);
-      m_RichG4HitRecon -> setactivateMinMomForTrackRecon(m_CkvG4HitReconUseOnlyHighMom);
+      //     m_RichG4HitRecon -> setuseOnlySignalHitsInRecon(m_CkvG4HitReconUseOnlySignalHit);
+      // m_RichG4HitRecon -> setactivateMinMomForTrackRecon(m_CkvG4HitReconUseOnlyHighMom);
     }
     
 
   // now for the reconstruction for test.
 
   if(m_RichG4EventActivateCkvRecon) {
+      m_RichG4HitRecon -> setuseOnlySignalHitsInRecon(m_CkvG4HitReconUseOnlySignalHit);
+      m_RichG4HitRecon -> setactivateMinMomForTrackRecon(m_CkvG4HitReconUseOnlyHighMom);
 
     m_RichG4HitRecon ->setSatHitUse( m_RichG4HitReconUseSatHit);
     m_RichG4HitRecon ->setMidRadiatorUse(m_RichG4HitReconUseMidRadiator);

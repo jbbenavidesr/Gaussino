@@ -113,7 +113,6 @@ void EvtbTosllScalarAmpNew::CalcAmp( EvtParticle *parent,
   EvtId idparent = parent->getId();              // B-meson Id
   EvtId iddaught = parent->getDaug(iP)->getId(); // The pseudoscalar meson Id
 
-
 // set of the light quark mass value
   if((idparent == EvtPDL::getId(std::string("B+"))&&
       iddaught == EvtPDL::getId(std::string("K+")))||
@@ -130,25 +129,14 @@ void EvtbTosllScalarAmpNew::CalcAmp( EvtParticle *parent,
      (idparent == EvtPDL::getId(std::string("B_s0"))&&
       iddaught == EvtPDL::getId(std::string("eta'")))||
      (idparent == EvtPDL::getId(std::string("anti-B_s0"))&&
-      iddaught == EvtPDL::getId(std::string("eta'")))||
-     (idparent == EvtPDL::getId(std::string("B_s0"))&&
-      iddaught == EvtPDL::getId(std::string("f_0")))||
-     (idparent == EvtPDL::getId(std::string("anti-B_s0"))&&
-      iddaught == EvtPDL::getId(std::string("f_0")))){
+      iddaught == EvtPDL::getId(std::string("eta'")))){
      ms = formFactors->getQuarkMass(3); // m_s mass from the dispersion QM 
      // V_{ts}
      Vtq = unit1*(1.0-0.5*pow(CKM_lambda,2.0)) + 
       pow(CKM_lambda,2.0)*(CKM_barrho*unit1 + CKM_bareta*uniti)/sqrt(1.0-pow(CKM_lambda,2.0));
      Vtq = -CKM_A*pow(CKM_lambda,2.0)*Vtq;
      // V_{us}
-     Vuq = CKM_lambda*unit1;
-
-//     report(ERROR,"EvtGen") 
-//       << "\n\n In the function EvtbTosllScalarAmpNew::CalcScalarMaxProb(...)"
-//       << "\n       ms = " << ms
-//       << "\n idparent = " << idparent << ",    " << EvtPDL::getId(std::string("B_s0"))
-//       << "\n iddaught = " << iddaught << ",    " << EvtPDL::getId(std::string("f_0"))
-//       << std::endl;
+     Vuq = CKM_lambda*unit1;      
   }
 
   if((idparent == EvtPDL::getId(std::string("B+"))&&
@@ -451,7 +439,7 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
 
      // The maximum probability calculation
      // from s_min to s_max
-     for(j=max_j/2; j<max_j; j++){ 
+     for(j=0; j<=max_j; j++){ 
 
         s = s_min +ds*((double)j);
 
@@ -486,7 +474,7 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
         }
 
         // from t_minus to t_plus
-        for(k=0; k<max_k; k++){ 
+        for(k=0; k<=max_k; k++){ 
 
           t_for_s = t_minus + dt*((double) k);
 
@@ -511,20 +499,11 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
                // B-meson rest frame particles and they kinematics inicialization
           double EV, El1, El2;
           EV  = (pow(M1,2.0)+pow(M2,2.0)-s)/(2.0*M1);         // P-meson energy
-          if(EV < M2){
-             EV = 1.0000001*M2;
-          }
           El1 = (pow(M1,2.0)+pow(ml,2.0)-t_for_s)/(2.0*M1);   // ell^+ energy
-          if(El1 < ml){
-             El1 = 1.0000001*ml;
-          }
-          El2 = (s+t_for_s-pow(M2,2.0)-pow(ml,2.0))/(2.0*M1); // ell^- energy
-          if(El2 < ml){
-             El2 = 1.0000001*ml;
-          }
+          El2 = (s+t_for_s-pow(M2,2.0)-pow(ml,2.0))/(2.0*M1); // ell^- energy 
 
           double modV, modl1, modl2;
-          modV  = sqrt(pow(EV,2.0) -pow(M2,2.0));
+          modV  = sqrt(pow(EV,2.0) -pow(M2,2.0)); 
           modl1 = sqrt(pow(El1,2.0)-pow(ml,2.0)); 
           modl2 = sqrt(pow(El2,2.0)-pow(ml,2.0)); 
 
@@ -578,37 +557,11 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
              ::abort();
           }
 
-          double sin2Vellminus = 1.0-pow(cosVellminus,2.0);
-          if((sin2Vellminus < 0.0)&&(sin2Vellminus >= -0.0001)){
-             sin2Vellminus = 0.0;
-          }
-          if(sin2Vellminus <= -0.0001){
-             report(ERROR,"EvtGen") 
-               << "\n\n In the function EvtbTosllScalarAmpNew::CalcMaxProb(...)"
-               << "\n cos^2(theta) = " << sin2Vellminus << " < -0.001"
-               << "\n s       = " << s
-               << "\n t_for_s = " << t_for_s
-               << "\n s_min = " << s_min
-               << "\n s_max = " << s_max
-               << "\n t_plus  = " << t_plus 
-               << "\n t_minus = " << t_minus
-               << "\n dt      = " << dt
-               << "\n EV      = " << EV
-               << "\n El2     = " << El2
-               << "\n modV    = " << modV
-               << "\n modl2   = " << modl2
-               << "\n M2      = " << M2
-               << "\n ml      = " << ml
-               << std::endl;
-             ::abort();
-          }
-
           EvtVector4R p1, p2, k1, k2;
           p1.set(M1,  0.0,  0.0, 0.0);
           p2.set(EV,  modV, 0.0, 0.0);
-          k2.set(El2, modl2*cosVellminus, -modl2*sqrt(sin2Vellminus), 0.0);
+          k2.set(El2, modl2*cosVellminus, -modl2*sqrt(1.0-pow(cosVellminus,2.0)), 0.0);
           k1=p1-p2-k2;
-
 
 //          report(NOTICE,"EvtGen") 
 //              << "\n Debug in the function EvtbTosllScalarAmpNew::CalcMaxProb(...):"
@@ -667,31 +620,9 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
           lep1->noLifeTime();
           lep2->noLifeTime();
 
-//          report(ERROR,"EvtGen") 
-//             << "\n\n In the function EvtbTosllScalarAmpNew::CalcScalarMaxProb(...)"
-//             << "\n M1      = " << M1
-//             << "\n M2      = " << M2
-//             << "\n s       = " << s
-//             << "\n t_for_s = " << t_for_s
-//             << "\n p1      = " << p1
-//             << "\n p2      = " << p2
-//             << "\n k1      = " << k1 
-//             << "\n k2      = " << k2
-//             << "\n mesnum  = " << mesnum
-//             << "\n l1num   = " << l1num
-//             << "\n l2num   = " << l2num
-//             << std::endl;
-
           vect->init(mesnum,p2);
           lep1->init(l1num,k1);
           lep2->init(l2num,k2);
-
-//          report(ERROR,"EvtGen") 
-//             << "\n vect    = " << vect
-//             << "\n lep1    = " << lep1
-//             << "\n lep2    = " << lep2
-//             << std::endl;
-
 
           EvtSpinDensity rho;
           rho.setDiag(root_part->getSpinStates());
@@ -716,10 +647,8 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
 //                    << std::endl;
           }
 
-          delete scalar_part;
-
         } // for(k=0; k<=max_k; k++)
-     } // for(j=0; j<max_j; j++)
+     } // for(j=0; j<=max_j; j++)
     
   } // if(res_swch==0)
 
@@ -746,7 +675,7 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
      dt = (t_plus-t_minus)/1000.0;
 
      // The maximum probability calculation
-     for(k=0; k<1000; k++){ 
+     for(k=0; k<=1000; k++){ 
 
        t_for_s = t_minus + dt*((double) k);
 
@@ -825,33 +754,10 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
           ::abort();
        }
 
-       double sin2Vellminus = 1.0-pow(cosVellminus,2.0);
-       if((sin2Vellminus < 0.0)&&(sin2Vellminus >= -0.0001)){
-          sin2Vellminus = 0.0;
-       }
-       if(sin2Vellminus <= -0.0001){
-          report(ERROR,"EvtGen") 
-            << "\n\n In the function EvtbTosllScalarAmpNew::CalcMaxProb(...)"
-            << "\n cos^2(theta) = " << sin2Vellminus << " < -0.001"
-            << "\n s       = " << s
-            << "\n t_for_s = " << t_for_s
-            << "\n t_plus  = " << t_plus 
-            << "\n t_minus = " << t_minus
-            << "\n dt      = " << dt
-            << "\n EV      = " << EV
-            << "\n El2     = " << El2
-            << "\n modV    = " << modV
-            << "\n modl2   = " << modl2
-            << "\n M2      = " << M2
-            << "\n ml      = " << ml
-            << std::endl;
-          ::abort();
-       }
-
        EvtVector4R p1, p2, k1, k2;
        p1.set(M1,  0.0,  0.0, 0.0);
        p2.set(EV,  modV, 0.0, 0.0);
-       k2.set(El2, modl2*cosVellminus, -modl2*sqrt(sin2Vellminus), 0.0);
+       k2.set(El2, modl2*cosVellminus, -modl2*sqrt(1.0-pow(cosVellminus,2.0)), 0.0);
        k1=p1-p2-k2;
 
 //       report(NOTICE,"EvtGen") 
@@ -936,8 +842,6 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
 //                 << std::endl;
        }
 
-       delete scalar_part;
-
     } // for(k=0; k<=1000; k++)
 
     
@@ -957,7 +861,7 @@ double EvtbTosllScalarAmpNew::CalcMaxProb(EvtId parnum, EvtId mesnum,
     << maxfoundprob
     << std::endl;
 
-  maxfoundprob *=1.01;  
+  maxfoundprob *=1.01;
 
 //  report(NOTICE,"EvtGen") 
 //         << "\n ***************************************************************************"

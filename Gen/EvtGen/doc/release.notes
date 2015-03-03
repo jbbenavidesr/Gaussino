@@ -4,18 +4,6 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
-!======================= EvtGen v12r11 2012-07-11 =========================
-! 2012-07-11 - John Back
- - Additional corrections to D0->pi+pi-pi0 decay model in EvtDDalitz from
-   Marco Gersabeck and Frederic Dreyer.
-
-! 2012-07-09 - John Back
- - Added new decay models/classes from Alexey Luchinsky:
-   EvtBcVMuNu, EvtTVP, EvtWnPi, EvtSVP, EvtXPsiGamma, EvtBcVNpi
-
-! 2012-06-29 - John Back
- - Added D0->pi+pi-pi0 decay model to EvtDDalitz, from Frederic Dreyer.
-
 !======================== EvtGen v12r10 2012-05-14 =========================
 ! 2012-04-24 - Jordi Garra Tico
  - Solved two bugs in the EvtD0gammaDalitz model:
