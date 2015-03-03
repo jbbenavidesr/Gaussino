@@ -5,7 +5,7 @@
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // local
-#include "GetMCCkvOpticalPhotonsAlg.h"
+#include "GaussCherenkov/GetMCCkvOpticalPhotonsAlg.h"
 
 // namespaces
 using namespace LHCb;
@@ -18,7 +18,8 @@ using namespace LHCb;
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( GetMCCkvOpticalPhotonsAlg );
+// moved to Factories.cpp
+// DECLARE_ALGORITHM_FACTORY( GetMCCkvOpticalPhotonsAlg );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -64,10 +65,12 @@ StatusCode GetMCCkvOpticalPhotonsAlg::execute()
 
     // note this key is need for consistency with MCRichHit converter
     ++m_nEvts; // Count events
+
     for ( int iii=0; iii < RichG4HitCollectionName()->RichHCSize(); ++iii )
     {
       const std::string & colName = RichG4HitCollectionName()->RichHCName(iii);
 
+      
       G4SDManager * fSDM = G4SDManager::GetSDMpointer();
       if ( !fSDM ) return Error( "NULL G4SDManager pointer !!" );
       const int collectionID = fSDM->GetCollectionID(colName);

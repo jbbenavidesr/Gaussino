@@ -338,6 +338,7 @@ int NamedDecayTreeList::makeKsPiPiList(){
   dk->addDgtr(310, 113)->addDgtr(211, -211);
   this->add(AmpInitialiser(*dk, "GS"));
   this->add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  this->add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   this->add(*dk);
   delete dk;
 
@@ -624,6 +625,7 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk = new DecayTree(421);
   dk->addDgtr(-321, 10323)->addDgtr(+321, 113)->addDgtr(211, -211);
   this->add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  this->add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   this->add(*dk);
   if(dbThis) cout << "first decay: " << *dk << endl;
   delete dk;
@@ -671,6 +673,7 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr( 333)->addDgtr( 321, -321);
   dk->addDgtr(-113)->addDgtr(-211,  211);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "6th decay: " << *dk << endl;
   delete dk;
@@ -680,6 +683,7 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr(-113)->addDgtr(-211,  211);
   dk->getVal().setL(1);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "6th decay: " << *dk << endl;
   delete dk;
@@ -689,6 +693,7 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr(-113)->addDgtr(-211,  211);
   dk->getVal().setL(2);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "6th decay: " << *dk << endl;
   delete dk;
@@ -730,6 +735,7 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr( 321, -321);
   dk->addDgtr(-113)->addDgtr(-211,  211);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "7th decay: " << *dk << endl;
   delete dk;
@@ -872,6 +878,8 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr(9981)->addDgtr( 211, -211);
   dk->addDgtr(9993)->addDgtr(321,  -321);
   add(*dk);
+  add(AmpInitialiser(*dk, "ExpNonRes"));
+  add(AmpInitialiser(*dk, "PowNonRes"));
   if(dbThis) cout << "somethingth decay: " << *dk << endl;
   delete dk;
 
@@ -906,6 +914,10 @@ int NamedDecayTreeList::makeKKpipiList(){
   dk->addDgtr(9981)->addDgtr( 321, -211);
   dk->addDgtr(9993)->addDgtr(211,  -321);
   add(*dk);
+  add(AmpInitialiser(*dk, "ExpNonRes"));
+  add(AmpInitialiser(*dk, "PowNonRes"));
+  if(dbThis) cout << "somethingth decay: " << *dk << endl;
+  delete dk;
 
   // non-Res VV in S wave
   dk = new DecayTree(421);
@@ -1163,6 +1175,7 @@ int NamedDecayTreeList::makeK3piList(){
   R1->addDgtr(211,  113)->addDgtr( 211,-211);
   dk->addDgtr(R1);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   delete dk;
   // now the one where the a1->rho pi is D-wave:
@@ -1187,6 +1200,7 @@ int NamedDecayTreeList::makeK3piList(){
   R1->addDgtr( -321,113  )->addDgtr( 211,-211);
   dk->addDgtr(R1);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   delete dk;
   // now K1->rho as D wave
@@ -1205,6 +1219,7 @@ int NamedDecayTreeList::makeK3piList(){
   dk = new DecayTree(421);
   dk->addDgtr(211 , 10323)->addDgtr( -321,113  )->addDgtr( 211,-211);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "13th decay: " << *dk << endl;
   delete dk;
@@ -1238,6 +1253,7 @@ int NamedDecayTreeList::makeK3piList(){
   dk = new DecayTree(421);
   dk->addDgtr(211 , -10323)->addDgtr( -321, 30221)->addDgtr( 211,-211);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "13th decay: " << *dk << endl;
   delete dk;
@@ -1299,6 +1315,7 @@ int NamedDecayTreeList::makeK3piList(){
   dk = new DecayTree(421);
   dk->addDgtr(211 , -10323)->addDgtr( -211, -10311)->addDgtr( 211, -321);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(*dk);
   if(dbThis) cout << "13th decay: " << *dk << endl;
   delete dk;
@@ -1326,12 +1343,15 @@ int NamedDecayTreeList::makeK3piList(){
   dk->addDgtr( -313)->addDgtr( -321,  +211);
   dk->addDgtr(113)->addDgtr(-211,  211);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(AmpInitialiser(*dk, ""));
   dk->getVal().setL(1);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(AmpInitialiser(*dk, ""));
   dk->getVal().setL(2);
   add(AmpInitialiser(*dk, "RHO_OMEGA"));
+  add(AmpInitialiser(*dk, "WRONG_RHOOMEGA"));
   add(AmpInitialiser(*dk, ""));
   if(dbThis) cout << "16th decay: " << *dk << endl;
   delete dk;

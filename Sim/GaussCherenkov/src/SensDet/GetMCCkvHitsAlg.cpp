@@ -5,7 +5,7 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
 // local
-#include "GetMCCkvHitsAlg.h"
+#include "GaussCherenkov/GetMCCkvHitsAlg.h"
 #include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
 
 #include "RichDet/DeRichPMT.h"
@@ -28,7 +28,8 @@ using namespace LHCb;
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( GetMCCkvHitsAlg );
+// Moved to Factories.cpp
+//DECLARE_ALGORITHM_FACTORY( GetMCCkvHitsAlg );
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -108,11 +109,12 @@ StatusCode GetMCCkvHitsAlg::execute()
             RichG4RadiatorMaterialIdValues::RichG4RadiatorMaterialIdValuesInstance();
 
     // now loop through the collections.
+    
     for ( int iii= colRange()[0]; iii < colRange()[1]+1 ; ++iii )
     {
       // collection name
       const std::string & colName = RichG4HitCollectionName()->RichHCName(iii);
-
+      
       G4SDManager * fSDM = G4SDManager::GetSDMpointer();
       if ( !fSDM ) return Error( "NULL G4SDManager pointer !!" );
       const int collectionID = fSDM->GetCollectionID(colName);
@@ -582,7 +584,7 @@ void GetMCCkvHitsAlg::printStat( std::string name, DMap & a )
   //  info() << "Now in printStat Dmap  "<<SuperRichFlag()<<"  "<<  name <<"   "<<m_nEvts<<endreq;
   
   name.resize(30,' ');
-  if(!SuperRichFlag() ) {
+  // if(!SuperRichFlag() ) {
     
   info() << name 
          << ": Rich1 = " << occ(a[Rich::Rich1],m_nEvts)
@@ -590,15 +592,16 @@ void GetMCCkvHitsAlg::printStat( std::string name, DMap & a )
          << " Rich2 = "  << occ(a[Rich::Rich2],m_nEvts)
          << " (" << eff(a[Rich::Rich2],m_hitTally[Rich::Rich2]) << "%)"
          << endmsg;
-  }else {
+  // }else {
     
-  info() << name 
-         << ": SuperRich = " 
-           << occ(a[Rich::Rich2],m_nEvts)
-         << " (" << eff(a[Rich::Rich2],m_hitTally[Rich::Rich2]) << "%)"
-         << endmsg;
+    // info() << name 
+    //      << ": SuperRich = " 
+    //       << occ(a[Rich::Rich2],m_nEvts)
+    //     << " (" << eff(a[Rich::Rich2],m_hitTally[Rich::Rich2]) << "%)"
+    //     << endmsg;
     
-  }
+    // }
+  
   
   
 }
@@ -614,7 +617,7 @@ void GetMCCkvHitsAlg::printStat( std::string name, RMap & a )
   //  info() << name
   //       << ": Aero  = " << occ(a[Rich::Aerogel],m_nEvts)
   //        << " (" << eff(a[Rich::Aerogel],m_hitTally[Rich::Rich1]) << "%)"
-  if(!SuperRichFlag() ) {
+  // if(!SuperRichFlag() ) {
 
   info() << name
          << " C4F10 = "  << occ(a[Rich::C4F10],m_nEvts)
@@ -622,16 +625,16 @@ void GetMCCkvHitsAlg::printStat( std::string name, RMap & a )
          << " CF4 = "    << occ(a[Rich::CF4],m_nEvts)
          << " (" << eff(a[Rich::CF4],m_hitTally[Rich::Rich2]) << "%)"
          << endmsg;
-  }else {
+  //  }else {
     
-  info() << name
-         << " C4F10 = "  << occ(a[Rich::C4F10],m_nEvts)
-         << " (" << eff(a[Rich::C4F10],m_hitTally[Rich::Rich2]) << "%)"
-         << " CF4 = "    << occ(a[Rich::CF4],m_nEvts)
-         << " (" << eff(a[Rich::CF4],m_hitTally[Rich::Rich2]) << "%)"
-         << endmsg;
-    
-  }
+  //  info() << name
+  //       << " C4F10 = "  << occ(a[Rich::C4F10],m_nEvts)
+  //       << " (" << eff(a[Rich::C4F10],m_hitTally[Rich::Rich2]) << "%)"
+  //       << " CF4 = "    << occ(a[Rich::CF4],m_nEvts)
+  //       << " (" << eff(a[Rich::CF4],m_hitTally[Rich::Rich2]) << "%)"
+  //       << endmsg;
+  //  
+  // }
   
   
 }

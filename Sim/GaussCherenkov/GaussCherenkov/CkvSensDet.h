@@ -53,14 +53,16 @@ public:
    *  @param history  pointert to touchable history
    */
   virtual void Initialize(G4HCofThisEvent* HCE);
-  // virtual void EndOfEvent(G4HCofThisEvent* HCE);
-  virtual bool ProcessHits
-  ( G4Step* step                ,
-    G4TouchableHistory* history ) ;
+  //  virtual void EndOfEvent(G4HCofThisEvent* HCE);
+  virtual bool ProcessHits( G4Step* step,    G4TouchableHistory* history ) ;
   virtual void clear();
   virtual void DrawAll();
   virtual void PrintAll();
+  
+  void InitPmtHC();
 
+
+   
   CkvG4GeomProp*  RichGeomProperty() {return  m_RichGeomProperty; }
   RichG4HitCollName* RichG4HCName() {return m_RichG4HCName; }
   G4int NumberofRichDet() {return  m_RichGeomProperty->NumberOfRichDet(); }
@@ -95,22 +97,22 @@ public:
   G4int PixelYNum( const G4double localYCoord ) const
   {return m_RichGeomProperty->PixelYNumFromCoord(localYCoord) ;}
 
- G4int GrandPixelXNum(const G4double localXCoord ) const
+  G4int GrandPixelXNum(const G4double localXCoord ) const
   {return m_RichGeomProperty->GrandPixelXNumFromCoord(localXCoord) ;}
 
   G4int GrandPixelYNum ( const G4double localYCoord ) const
   {return m_RichGeomProperty->GrandPixelYNumFromCoord(localYCoord) ;}
 
-
-
-
   void ResetPmtMapInCurrentEvent();
- 
+
 private:
   ///
+ 
   CkvSensDet(); ///< no default constructor
   CkvSensDet( const CkvSensDet& ); ///< no copy constructor
   CkvSensDet& operator=( const CkvSensDet& ) ; ///< no =
+
+  
   ///
 private:
   ///
@@ -131,7 +133,9 @@ private:
   G4int m_TotNumPmtsInRich;
   std::vector<bool> m_RichPmtAlreadyHit; // flag for pmt to have hits in current event
   std::multimap<G4int,G4int> m_RichPmtToPixelNumMap; // map between pmt and Pixelnum for each hit in current event
-    
+  //  bool m_CkvSensInitFlag;
+  // bool m_CkvSensInitEventFlag;
+  
 
 };
 

@@ -3,7 +3,7 @@ package pythia6
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro pythia6_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/pythia6/$(pythia6_native_version)/$(LCG_system)
+macro pythia6_home $(LCG_external)/MCGenerators/pythia6/$(pythia6_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(pythia6_home)/include

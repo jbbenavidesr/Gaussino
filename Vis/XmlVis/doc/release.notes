@@ -4,6 +4,10 @@
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
 
+!========================== XmlVis v1r19 2014-08-21 ==========================
+! 2014-05-09 - Heinrich Schindler
+ - Update VP visualisation attributes.
+
 !=========================== XmlVis v1r18 ====================================
 ! 2013-09-23 - Marco Clemencic
  - Added CMake configuration file.

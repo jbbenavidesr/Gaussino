@@ -3,7 +3,7 @@ package pythia8
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro pythia8_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/pythia8/$(pythia8_native_version)/$(LCG_system) 
+macro pythia8_home $(LCG_external)/MCGenerators/pythia8/$(pythia8_native_version)/$(LCG_system) 
 
 include_path none
 include_dirs $(pythia8_home)/include

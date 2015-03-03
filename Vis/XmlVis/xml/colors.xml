@@ -29,6 +29,7 @@
   <!ENTITY PipeMaterials SYSTEM "PipeMaterials.xml">
   <!ENTITY RichMaterials SYSTEM "RichMaterials.xml">
   <!ENTITY VeloMaterials SYSTEM "VeloMaterials.xml">
+  <!ENTITY VPMaterials SYSTEM "VPMaterials.xml">
   <!ENTITY TTMaterials SYSTEM "TTMaterials.xml">
   <!ENTITY UTMaterials SYSTEM "UTMaterials.xml">
   <!ENTITY ITMaterials SYSTEM "ITMaterials.xml">
@@ -82,6 +83,7 @@
     &PipeMaterials;
     &RichMaterials;
     &VeloMaterials;
+    &VPMaterials;
     &TTMaterials;
     &UTMaterials;
     &ITMaterials;

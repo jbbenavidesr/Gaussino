@@ -4,6 +4,171 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 !=============================================================================
+</PRE><H1><A NAME="v47r0">2014-10-08 - GaussSys v47r0</A></H1><PRE>
+<H2><A NAME="Note"For development and Upgrade studies. Based on LCG_68.
+</A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v37r3 (and Gaudi v25r2)</b>
+   AppConfig v3r*,
+   <b>DecFiles v27r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   pythia 6.427.2, lhapdf 5.8.5 
+   photos++ 3.56 and tauola++ 1.1.1a 
+   pythia8 175 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.08 (via LCG_Interfaces),
+   LHAPDFSets v1r* (private LHCb version)
+   <b>Geant4 v95r2p7g2</b> (based on geant4.9.5.p02 + patches for LHCb) and 
+   Geant4Files v95r0, 
+   <b>XmlVis v1r19</b>,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 and powhegbox r2092 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.6.1b and thepeg 1.8.1 (via LCG_GeneratorsInterfaces),
+   rivet 1.8.3 (via LCG_GeneratorsInterfaces),
+   EvtGen v13r12, EvtGenExtras v3r10 and <b>Mint v3r1</b> 
+   (private LHCb version),
+   BcVegPy v3r1 + BcVegPyData v2r*, GenXicc v2r1 + GenXiccData v3r0 and 
+   HidValley v4r0 (private LHCb versions)
+   PGunsData v1r0
+</A></H3>
+
+! 2014-08-22 - Gloria Corti
+ - Use new version of LCG_Settings and all LCG_GeneratorsIinterfaces to adapt
+   to differences and change of paths in LCG 68
+
+!========================== Gauss v47r0 2014-10-07 ===========================
+! 2014-10-07 - Gloria Corti
+ - Revert back to LHAPDFSet v1r*
+ - Put back configuration of BcVegPy that had been temporarily switched off
+ - Introuduce DataType = 2015
+ - New property RICHRandomHits to have backgorund hits in RICH2
+
+! 2014-09-30 - Gloria Corti
+ - Change version of LHAPDFSet to v2r* for tests, will only be for v47r1
+
+! 2014-08-22 - Gloria Corti
+ - Increase major version for dependency to LCG68
+
+!========================= GENSER v14r0p1 2014-08-21 =========================
+! 2013-08-21 - Gloria Corti
+ - Require dummy release for building distribution with LCG 68
+
+!========================== LbAlpGen v4r0 2014-08-21 ==========================
+! 2014-01-13 - Gloria Corti
+ - Redefine macro alpgen_author_dir to be compatible with new structure of 
+   alpgen library and sources in LCGCMT68
+
+!=========================== Mint v3r1 2014-09-02 ============================
+! 2014-07-24 - Jeremy
+ - Minor bug fixes
+
+! 2014-07-22 - Jeremy
+ - Added two new lineshapes for the non-resonant component
+  . Exponential and power law
+  . At present, their shape parameters cannot be floated
+ - In steering file, indicate with ExpNonResD0 or PowNonResD0 keyword
+ - Lineshapes need to be manually added NamedDecayTreeList.cpp to each isobar
+  . add(AmpInitialiser(*dk, "ExpNonRes"));
+  . add(AmpInitialiser(*dk, "PowNonRes"));
+
+! 2014-05-16 - Jeremy
+ - Restore ability to use normalised barrier factors in amplitudes
+  . Control in steering file by setting "NormBF" to 1
+  . Default behaviour is to use unnormalised barrier factors
+  . Note that normalised barrier factors violate conservation of total angular momentum x-(
+
+! 2014-05-16 - Jeremy
+ - root 5.34.18 compatibility updates
+
+! 2014-03-04 - Claire
+ - added method getP() to DalitzEvent which gives back the vector of the four-momenta of all particles in the eve
+nt
+ - build an automatic rejection factor into DalitzMCMC generation
+ - added different constructors to DalitzMCMC
+ - new class DalitzMCMC_corrPairs that generates correlated events
+ - new class DalitzEventPairList that stores std::pair of events
+
+! 2014-02-07 - Jeremy
+ - Bug fix in Gounaris-Sakurai function
+ - Treat GS in the same way as other lineshapes
+  . Deprecate GSSpinFactor
+
+! 2014-02-05 - Jeremy
+ - Deprecate CrystalBallRhoOmega
+ - Create new Rho0Omega lineshape to describe rho-omega mixing
+  . Now the default rho-omega lineshape used by calling RHO_OMEGA in the steering file
+ - Warning added to CrystalBarrelFOCUS
+  . Contains many issues and bugs, only kept for backwards compatibility
+  . Keyword for usage changed to WRONG_RHOOMEGA in the steering file
+  . Hope to deprecate one day
+
+!======================== GiGaVisUI v6r0p1 2014-08-21 ========================
+! 2014-07-14 - Gloria Corti
+ - Put dependency from G4UIbasic since it was removed from G4UIGAG that was
+   picked up via GiGaVisUI
+
+!========================= GaussKine v6r4 2014-10-07 =========================
+! 2014-08-25 - Philip Ilten
+ - GenerationToSimulation.{h,cpp}: cleaned code and added functionality to
+   specify additional particle types to keep
+
+!======================== GaussTools v19r2 2014-10-08 ========================
+! 2014-10-07 - Luca Pescatore
+ - GaussTargetMultiplicity.cpp modified adding new properties to store 
+   projectile and target features in the produced tree
+
+! 2014-09-06 - Luca Pescatore
+ - Modified RadLengthColl.cpp to reflect the new naming of the planes
+   in the xml files which are now officially released.
+
+!===================== GaussCherenkov v4r4 2014-10-08 ========================
+! 2014-10-07 - Sajan Easo
+ - Minor modifications to the Cherenkov analysis in booking and filling 
+   histograms with new collection set.
+
+! 2014-08-24  - Sajan Easo 
+ - Added the file GetMCCkvTracksAlg  to avoid problems with collection 
+   name in that file.
+ - Kept some of the factories in Factories.cpp
+
+! 2014-08-24  - Sajan Easo
+ - For using the mixed set of PMTS, the sensitive detector and collection name
+  configurations are modified. The hits from large PMTS are in a separate 
+  sensitive detector and are stored in two
+  extra collection sets. All this is made transparent to the rest of the 
+  program.
+  Modified several files in the SensDet subdirectory and corresponding .h files.
+
+!========================== SimChecks v1r3 2014-10-08 ========================
+! 2014-10-07 - Luca Pescatore
+ - Scripts for post-job analysis for the RadLength and Target tools have been
+   converted from c++ to python. All scripts are updated to reflect the new 
+   structure. RadLengthAna.py scripts updated to use the last tag of the 
+   geometry 
+
+! 2014-09-29 - Luca Pescatore
+ - Updated RadLength scripts to get the database from the offical
+   location, since it is not released. Also added eta-phi plots as final output.
+
+! 2014-09-06 - Luca Pescatore
+ - Added cpp file to extract radiation length profile plots from the output 
+   files of the gauss jobs.
+
+! 2014-09-04 - Luca Pescatore
+ - Changed default number of events
+
+!=========================== GenTune v2r2 2014-08-21 =========================
+! 2014-07-28 - Alex Grecu
+ - modified qmtest to ignore -Wunused-local-typedefs warnings for BOOST 1.53 
+   when compiling with gcc48. Separate qmtests are needed for gcc46 and gcc48 
+   so one of the tests will remain in UNTESTED state.
+
+!========================== XmlVis v1r19 2014-08-21 ==========================
+! 2014-05-09 - Heinrich Schindler
+ - Update VP visualisation attributes.
+
+!=============================================================================
 </PRE><H1><A NAME="v46r8">2014-07-28 - GaussSys v46r8</A></H1><PRE>
 <H2><A NAME="Note"For development and Upgrade studies. Fix for missing hits in 
    RICH upgrade, and for photos++ bug on gcc48.

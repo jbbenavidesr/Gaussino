@@ -3,7 +3,7 @@ package lhapdf
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro lhapdf_path $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/lhapdf/$(lhapdf_native_version)
+macro lhapdf_path $(LCG_external)/MCGenerators/lhapdf/$(lhapdf_native_version)
 macro lhapdf_home $(lhapdf_path)/$(LCG_system) 
 
 include_path none

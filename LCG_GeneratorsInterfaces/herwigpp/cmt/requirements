@@ -3,7 +3,7 @@ package herwigpp
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro herwigpp_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/herwig++/$(herwigpp_native_version)/$(LCG_system)
+macro herwigpp_home $(LCG_external)/MCGenerators/herwig++/$(herwigpp_native_version)/$(LCG_system)
 set HERWIGPPHOME "$(herwigpp_home)"
 
 include_path none

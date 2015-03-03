@@ -5,13 +5,15 @@ include_path none
 
 use LCG_Platforms v*
 
-macro LCG_releases    "$(LCG_Platforms_root)/../../.." \
+macro_remove LCG_Platforms_project_release "CMT"
+
+macro LCG_releases    "$(LCG_Platforms_root)/../../../$(LCG_Platforms_project_release)" \
       ATLAS&NIGHTLIES "/afs/cern.ch/sw/lcg/app/nightlies/$(LCG_NGT_SLT_NAME)/$(LCG_NGT_DAY_NAME)" \
       ATLAS           "${SITEROOT}/sw/lcg/app/releases"
 
-macro LCG_external  "$(LCG_Platforms_root)/../../../../../external" \
-      ATLAS         "${SITEROOT}/sw/lcg/external"
-
+macro LCG_external       "$(LCG_releases)" \
+      ATLAS&experimental "${SITEROOT}/sw/lcg/experimental" \
+      ATLAS              "${SITEROOT}/sw/lcg/external"
 
 # ==== pattern to express optional dependencies =====
 pattern use_optional \
@@ -20,6 +22,11 @@ pattern use_optional \
          USE_ALL_OPT_PKGS    "<pkg> v* LCG_Interfaces -no_auto_imports" ;\
    use $(use_pkg)
 
+
+# ==== pattern to announce include dir to ROOT =====
+pattern set_root_include_path \
+  path_prepend ROOT_INCLUDE_PATH $(<package>_include) ; \
+  include_dirs $(<package>_include) 
 
 # ==== pattern for declaring container packages ====
 pattern composite_package \
@@ -140,7 +147,7 @@ macro gcc_config_version       "" \
       target-gccmax            "max" \
       target-g11max            "g11" \
       target-icc11             "4.3.6" \
-      target-icc13             "4.6.3" \
+      target-icc13             "4.7.2" \
       target-clang33           "4.8.1" \
       target-clang             "4.6.3" 
 macro gcc_native_version       "$(gcc_config_version)"

@@ -88,6 +88,7 @@ class Gauss(LHCbConfigurableUser):
         ,"SpilloverPaths"    : []
         ,"PhysicsList"       : {"Em":'NoCuts', "Hadron":'FTFP_BERT', "GeneralPhys":True, "LHCbPhys":True, "Other": '' }
         ,"DeltaRays"         : True
+        ,"RICHRandomHits"    : False
         ,"Phases"            : ["Generator","Simulation"] # The Gauss phases to include in the SIM file
         ,"BeamMomentum"      : 3.5*SystemOfUnits.TeV
         ,"BeamHCrossingAngle" : -0.520*SystemOfUnits.mrad
@@ -626,9 +627,9 @@ class Gauss(LHCbConfigurableUser):
     ##
     def configureRichSim (self, slot, detHits ):
         from Configurables import (
-            GetMCCkvHitsAlg,
-            GetMCCkvOpticalPhotonsAlg,
-            GetMCCkvSegmentsAlg,
+            GetMCRichHitsAlg,
+            GetMCRichOpticalPhotonsAlg,
+            GetMCRichSegmentsAlg,
             GetMCRichTracksAlg
             )
 
@@ -723,14 +724,14 @@ class Gauss(LHCbConfigurableUser):
             GetMCCkvHitsAlg,
             GetMCCkvOpticalPhotonsAlg,
             GetMCCkvSegmentsAlg,
-            GetMCRichTracksAlg
+            GetMCCkvTracksAlg
             )
         richHitsSeq = GaudiSequencer( "RichHits" + slot )
         detHits.Members += [ richHitsSeq ]
         richHitsSeq.Members = [ GetMCCkvHitsAlg( "GetRichHits"+slot),
                                 GetMCCkvOpticalPhotonsAlg("GetRichPhotons"+slot),
                                 GetMCCkvSegmentsAlg("GetRichSegments"+slot), 
-                                GetMCRichTracksAlg("GetRichTracks"+slot), 
+                                GetMCCkvTracksAlg("GetRichTracks"+slot), 
                                 Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot), 
                                 Rich__MC__MCRichHitToMCRichOpPhotAlg("MCRichHitToMCRichOpPhot"+slot) ]
 
@@ -2797,9 +2798,18 @@ class Gauss(LHCbConfigurableUser):
                  GiGaPhysConstructorOp,
                  GiGaPhysConstructorHpd
                  )
-             SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+
+             if self.getProp("DataType") == "2015" :
+                 # Line to remove AEROGEL warnings
+                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
+             else:
+                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+
              if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
                  importOptions("$GAUSSRICHROOT/options/Rich.opts")
+                 if self.getProp("DataType") == "2015" :
+                     importOptions("$GAUSSRICHROOT/options/RichRemoveAerogel.opts")
+                 
              else:
                  if not skipG4:
                      giga.ModularPL.addTool( GiGaPhysConstructorOp,
@@ -2815,6 +2825,11 @@ class Gauss(LHCbConfigurableUser):
                  giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
                  giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
                  giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
+                 if self.getProp("RICHRandomHits") == True :
+                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsActivate = True
+                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsProbabilityFactor = 0.5
+                 
+
 
          # END OF richPmt IF STATEMENT
 

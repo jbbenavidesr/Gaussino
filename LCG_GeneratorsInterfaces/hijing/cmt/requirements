@@ -3,7 +3,7 @@ package hijing
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro hijing_home $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/hijing/$(hijing_native_version)/$(LCG_system)
+macro hijing_home $(LCG_external)/MCGenerators/hijing/$(hijing_native_version)/$(LCG_system)
 
 include_path none
 include_dirs $(hijing_home)/include

@@ -3,7 +3,7 @@ package alpgen
 use LCG_Configuration v*
 use LCG_Settings v*
 
-macro alpgen_path  $(LCG_external)/MCGenerators_lcgcmt$(LCG_config_version)/alpgen/$(alpgen_native_version)
+macro alpgen_path  $(LCG_external)/MCGenerators/alpgen/$(alpgen_native_version)
 macro alpgen_home  $(alpgen_path)/$(LCG_system)
 
 include_path none
