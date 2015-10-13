@@ -4,6 +4,18 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+!========================== GENSER v16r0 2015-03-13 ==========================
+! 2014-11-20 - Gloria Corti
+ - Use of lhapdf 6 is now as a version of lhapdf and not a separate package
+ - Use newer versions of herig++ and thepeg as they are the only one in 
+   LCG_70
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-09-30 - Gloria Corti
+ - Replace use of lhapdf with phapdf6
+
 !========================== GENSER v15r0 2014-09-29 ==========================
 ! 2014-09-01 - John Back
  - Changed -lhepmcinterface to -lpythia8tohepmc for LbPythia8 for pythia8.18x.

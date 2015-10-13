@@ -2,7 +2,29 @@
 ! Package     : Gen/BcVegPy
 ! Responsible : 
 
-!========================= BcVegPy v3r2 2012-10-10 ===========================
+!========================= BcVegPy v4r0 2015-03-13 ===========================
+! 2015-03-13 - Gloria Corti
+ - Remove dependency from GenXicc in cmake configuration, since it should now
+   work with Jibo fixes
+
+! 2015-03-05 - Jibo He 
+ - To switch to LHAPDF6, removed MRST PDF related things from 
+  . src/genevnt_mod.F
+  . src/outerpdf.F
+
+!========================= BcVegPy v3r3 2014-12-16 ===========================
+! 2014-11-19 - Marco Clemencic
+ - Fixed CMake configuration.
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-10-13 - Jibo He
+ - Added 13 TeV as it is supported now
+   . src/bcvegpy_upinit.f
+   . src/bcvegpy_upevnt.f
+
+!========================= BcVegPy v3r2 2013-10-10 ===========================
  2013-10-08 - Patrick Robbe
  - Change status for the FORTRAN OPEN statements from UNKNOWN to OLD
    to solve problems seen on the grid at some of the sites

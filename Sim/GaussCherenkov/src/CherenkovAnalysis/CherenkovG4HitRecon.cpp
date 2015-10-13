@@ -151,17 +151,17 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
  
          // G4int aPmtNum =    aHit-> GetCurHpdNum();
           G4int aPmtNum =    aHit-> CurPmtNum();
-          //  G4int aPmtModuleNum =  aHit-> CurModuleNum();
+          // G4int aPmtModuleNum =  aHit-> CurModuleNum();  //unused param
 
           G4int aRichDetNum = aHit->  GetCurRichDetNum();
-          G4int aHitInPixelGap = aHit->CurHitInPixelGap() ;
+          // G4int aHitInPixelGap = aHit->CurHitInPixelGap() ;
 
           G4int aPmtLensFlag= aHit->pdWithLens() ;
           
 
           // test print
           //const G4ThreeVector & LocalHitCoord = aHit->GetLocalPos();
-          // const G4ThreeVector & aGlobalHitCoordTest = aHit->GetGlobalPos();
+          //  const G4ThreeVector & aGlobalHitCoordTest = aHit->GetGlobalPos();
            // if( aRichDetNum  == 0 ) {
 
            //            CherenkovG4HitReconlog<<MSG::DEBUG<<" Now Plot XY of  aGlobalHitCoordTest " << aGlobalHitCoordTest 
@@ -172,10 +172,10 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
           
           // end test print
 
-          if(aHitInPixelGap == 1   ) {
+          //  if(aHitInPixelGap == 1   ) {
             
-            OccpSelectThisHit=false;
-          }
+          //  OccpSelectThisHit=false;
+          //  }
 
            CherenkovG4Counters* aCherenkovG4Counters = CherenkovG4Counters::getInstance();
            aCherenkovG4Counters-> bumpRichPmtOccp(aPmtNum);
@@ -184,8 +184,10 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
 	         if(  aRichDetNum == 1 ) { aPmtNum -= aNumPmtInRich[0] ;  }
            //       G4int aRadiatornum= aHit->GetRadiatorNumber();
           
-           int irichsector =ihcol;
-           if(ihcol > 3 ) irichsector = ihcol -2;
+            int irichsector =ihcol;
+            if(ihcol > 3 ) irichsector = ihcol -2;
+
+
            
            //  const G4ThreeVector & LocalPhcathCoord = aHit -> GetLocalPEOriginPos();
          if( OccpSelectThisHit) {
@@ -205,6 +207,26 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
 
             Gaudi::XYZPoint aLocalCoordonLensInPhDetPanelPlane = m_RichG4CkvRec->
               GetCoordInPhDetPanelPlane(aLocalHitFromPixelNum,aPmtLensFlag);
+
+
+            //test print
+            // if( aRichDetNum == 0 ) {
+              
+            //   G4double aXcoord = aLocalCoordInPhDetPanelPlane.x();
+            //  if( (aXcoord < -700) || (aXcoord > 700 )) 
+            //  {
+            //    
+            //   CherenkovG4HitReconlog<<MSG::INFO<<" X coord in rich1 recon xcoord rawxcoord module pmt  "<< aXcoord 
+            //                          <<"  "<<aGlobalHitCoordTest.x()<< "   "<< aPmtNum  <<"  "<< aPmtModuleNum <<endreq;
+            //  }
+            //  
+            //  
+            // }
+            
+            
+            
+            
+            //end test print
             
             m_CherenkovG4HistoFillSet5Occp-> FillRichG4HistoSet5Coord( aHit, 
                   aLocalCoordInPhDetPanelPlane, aLocalCoordonLensInPhDetPanelPlane);

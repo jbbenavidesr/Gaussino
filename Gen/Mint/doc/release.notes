@@ -6,6 +6,24 @@
 !               Matt Coombes has task of implementing MINT into LHCb framework.
 !-----------------------------------------------------------------------------
 
+!=========================== Mint v3r3 2015-03-18 ============================
+! 2015-03-13 - Jonas Rademacker
+ - Some methods in MINT use std::polar, assuming that the 'magnitude' in polar
+   cooardinates can also be negative ( a*exp[i*phi] = -a*exp[i*(phi + pi)] ). 
+   But std::polar now returns nans if you give it negative magnitude (a), 
+   which leads to errors, at least on my local machine. This is now fixed.
+
+!========================== Mint v3r2p1 2014-12-19 ===========================
+! 2014-12-17 - Jeremy
+ - Fixed warnings produced by lcg-g++-4.8.1 -Wpedantic flag
+
+!=========================== Mint v3r2 2014-12-17 ============================
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-10-15 - Jeremy
+ - Added spin factor for wKs
+
 !=========================== Mint v3r1 2014-09-02 ============================
 ! 2014-07-24 - Jeremy
  - Minor bug fixes

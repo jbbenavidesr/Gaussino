@@ -1,8 +1,55 @@
 !-----------------------------------------------------------------------------
 ! Package     : EvtGen
-! Responsible : Patrick Robbe, Mark Whitehead, John Back
+! Responsible : Michal Kreps, Tom Latham, John Back
 ! Purpose     : 
 !-----------------------------------------------------------------------------
+
+!========================== EvtGen v14r1 2014-12-16 ==========================
+
+! 2014-11-20 - Michal Kreps
+  - Final fix to FF model for Lb --> L transition from Gutsche et al.
+    (1301.3737).
+
+! 2014-11-19 - Marco Clemencic
+ - Updated CMake configuration
+
+! 2014-11-18 - Michal Kreps
+  - Removing semicolons from wrong places to clear warnings when compiled
+    with -pedantic option.
+
+! 2014-10-31 - Michal Kreps
+  - Fix calculation of q2 in FF models for Lb --> L transition.
+  - Fix some typos in calculations of FF from Gutsche et al. (1301.3737).
+
+! 2014-10-24 - Michal Kreps
+  - Implement calculation of maximum probability to EvtRareLbToLll model
+  - Fix calculation of maximum probability in EvtLb2Lll model
+
+! 2014-10-23 - Andrew Crocombe
+  - Implement Bs --> K* form factors from Ball-Zwicky
+  - z-parametrization for form factors from 1006.4945.
+
+! 2014-10-23 - Michal Kreps
+  - Implement form factors from LQCD (1212.4827) for Lb --> L transitions.
+
+! 2014-10-21 - Michal Kreps
+  - Restructure EvtRareLbToLllFF to allow form factors from different
+    predictions to be implemented.
+  - Implement form factors from Gutsche et al. (1301.3737) for Lb --> L
+    transitions.
+
+! 2014-10-20 - C Langenbruch
+ - Fix for the form factors of the Bs->phill modes in EvtbTosllBallFF.cc.  
+   T3 showed a non-physical pole at very low q2 which significantly affected the electron mode.
+
+! 2014-10-17 - T Blake
+ - Added new EvtRareLbToLll model based on arXiv:1108.6129
+ - Added EvtRareLbToLllWC.{cpp,hh} for Wilson coefficient calculation
+ - Added EvtRareLbToLllFF.{cpp,hh} for FF parameterisation
+
+! 2014-10-14 - Michal Kreps
+ - Update Lb2Lll decay model to correctly compare IDs of particles to allow
+   use of aliases. 
 
 !========================== EvtGen v14r0 2014-10-08 ==========================
 ! 2014-09-01 - John Back
