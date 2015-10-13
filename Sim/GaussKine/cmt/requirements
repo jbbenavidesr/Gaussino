@@ -6,7 +6,7 @@
 # http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
 #============================================================================
 package           GaussKine
-version           v6r5
+version           v7r0
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -22,6 +22,7 @@ use   GenEvent      v*  Event
 use   MCEvent       v*  Event
 use   GaussTools    v*  Sim
 use   LoKiGen       v*  Phys
+use   SimComponents v*  Sim
 
 #============================================================================
 # Component library building rule

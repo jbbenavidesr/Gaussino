@@ -1,0 +1,342 @@
+!-----------------------------------------------------------------------------
+! Package     : Sim/SimComponents
+! Responsible : Gloria CORTI
+! Purpose     : Holds general purpose components that can be run at any
+!               processing stage accessing the MC event classes
+!-----------------------------------------------------------------------------
+
+
+!========================= SimComponents v3r0 2015-08-05 =========================
+! 2015-08-03 - Gerhard Raven
+ - remove #include of obsolete Gaudi headers
+
+! 2015-07-24 - Gloria Corti
+ - New tool to flag children from a signal particle propagating the relevant
+   flag
+ 
+!========================= SimComponents v2r25 2015-07-20 =========================
+! 2015-07-17 - Gloria Corti
+ - Add printing of signal flag value in PrintMCDecayTreeTool when specified in
+   options
+
+!========================= SimComponents v2r24p1 2013-07-17 ======================
+! 2013-06-17 - Marco Cattaneo
+ - Fix clang32 warning
+
+!========================= SimComponents v2r24 2013-01-20 ========================
+
+! 2012-12-10 - Marco Clemencic
+ - Modified the CMake configuration for the use of Gen/DecFiles (it must be 
+   declared in the project CMakeLists.txt).
+
+! 2012-12-10 - Chris Jones
+ - Add dependency on Gen/DecFiles, needed by EvtTypeSvc
+
+!========================= SimComponents v2r23 2012-11-26 ========================
+! 2012-11-15 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2012-10-12 - Marco Clemencic
+ - Fixed warning: extra ';' [-pedantic].
+
+!========================= SimComponents v2r22 2012-09-28 ========================
+! 2012-09-21 - Marco Clemencic
+ - Fixed compilation with -std=c++11 (-std=c++0x).
+
+! 2012-09-11 - Patrick Koppenburg
+ -PrintMCDecayTreeTool : Fix coverity warning http://lhcb-coverity.cern.ch:8080/sourcebrowser.htm?projectId=10002#mergedDefectId=39894&streamDefectId=47596&defectInstanceId=154950103&fileInstanceId=109386325
+
+! 2012-08-15 - Patrick Koppenburg
+ - PrintMCDecayTreeTool: Add PID field (optional)
+ - MCDecayFinder : Ignore particles not in ParticleTable.
+   https://savannah.cern.ch/bugs/?96768
+
+!========================= SimComponents v2r21 2011-09-06 =========================
+! 2011-09-05 - Patrick Spradlin
+ - MCDecayFinder:  Demoted some unnecessary warning messages to debug messages.
+   see bug #86351 (https://savannah.cern.ch/bugs/?86351).
+
+! 2011-08-02 - Marco Cattaneo
+ - Fix UNINIT_CTOR warning from Coverity
+ - Protect unprotected MSG::DEBUG and MSG::VERBOSE
+ - Fix some trivial icc remarks (extra ";" ignored)
+
+!====================== SimComponents v2r20p1 2010-05-21 =====================
+! 2010-05-18 - Marco Cattaneo
+ - Fix Windows warnings
+
+!====================== SimComponents v2r20 2009-11-13 =======================
+! 2009-10-21 - Patrick Koppenburg
+ - MCDecayFinder : Fix compilation warnings
+
+! 2009-10-19 - Patrick Koppenburg
+ - MCDecayFinder : Issue a warning (10 times) when decay is not found.
+ - Proper indent
+ - v2r20
+
+!====================== SimComponents v2r19 2009-07-13 =======================
+! 2009-07-13 - Marco Cattaneo
+ - Remove obsolete file SimComponents_dll.cpp
+
+! 2009-07-09 - Olivier Deschamps
+ - MCReconstructible : return false for pz < 0 in neutral_accept !
+                       Ecal geometrical parameters from CaloDet
+
+!====================== SimComponents v2r18 2009-06-16 =======================
+! 2009-06-11 - Rob Lambert
+ - MCEventTypeFinder. Added rare Tau decays, as in LHCbNote 2009-001
+
+!====================== SimComponents v2r17 2009-03-10 =======================
+! 2009-03-10 - Rob Lambert
+ - MCEventTypeFinder, changed default acceptance, closer to true
+   definition. Added checks for msgLevel to improve speed.
+
+! 2009-03-10 - Rob Lambert
+ - Bugfix, MCEventTypeFinder. It seems the const_reverse_iterator is
+   not implimented or has no != operator under windows for the std::set.
+
+! 2009-03-09 - Rob Lambert
+ - Bugfix, added in extra headers to EvtTypeSvc.
+   Could have produced differences with different compilers.
+
+! 2009-03-08 - Rob Lambert
+ - Bugfix, small problem with MCEventTypeFinder. noticed by Marco,
+   produced errors with gcc 4. Now fixed.
+
+! 2009-03-06 - Rob Lambert
+ - Added implimentation of EventTypeFinder tool.
+   This is a new tool, based on the IEventTypeFinder interface,
+   which is in Kernel/MCInterfaces.
+	 This allows you to search the MCTruth of an event for any event type.
+   Or to construct the event type based on lhcb-note 2005-034
+
+! 2009-03-05 - Rob Lambert
+ - Added sanity checking of the decay string, and use of the ppSvc to get
+   charge conjugated associates. Fixed some odd dereferencing segfaults.
+   MCDecayFinder now works much better.
+	 Added method to EvtTypeSvc to get all known types
+
+!====================== SimComponents v2r16 2009-02-18 =======================
+! 2009-02-17 M Needham
+  - Add printout of half sample width
+
+! 2009-01-16 - Chris Jones
+ - Fix memory leak in MCReconstructible
+
+!====================== SimComponents v2r15 2009-01-08 =======================
+! 2009-01-08 - Marco Cattaneo
+ - Adapt DumpHepMCDecay, DumpHepMCTree, MCDecayFinder, PrintMCDecayTreeTool,
+   PrintMCTree  to use new LHCb::IParticlePropertySvc implementation of particle
+   properties
+ - Remove unnecessary releaseTool from PrintMCTree::finalize()
+ - Various cosmetic cleanups of above files
+
+! 2008-12-16 - Marco Cattaneo
+ - Fix gcc 4.3 warning
+
+! 2008-12-15 - Marco Cattaneo
+ - In ForcedBDecayTool, protect hepmcp->print() with msgLevel(MSG::DEBUG) test
+
+! 2008-12-12 - Marco Cattaneo
+ - In MCParticleSelector.cpp, do not check betaGamma for particles with zero
+   mass, to avoid FPE
+
+! 2008-12-04 M Needham
+ - Update MCHitMonitor: make all histogram ranges sensible
+                        remove unneeded histos
+                        add summary printout in finalize
+ - Make default in MCParticleSelector really do nothing [was not quite case before]
+
+!====================== SimComponents v2r14 2008-11-17 =======================
+! 2008-11-17 - Olivier Callot
+ - Remove the Pack, Unpack and Compare for MC particles and vertices
+   and movethem to a new package Event/EventPacker with reconstruction packers
+
+! 2008-11-14 - Marco Cattaneo
+ - Add sanity check in MCParticleSelector.cpp, to avoid FPE on ia32
+
+! 2008-11-13 - Marco Cattaneo
+ - Improve underflow protection for MCVertex times, to work also on ia32
+
+! 2008-10-28 - Marco Cattaneo
+ - Fixes for gcc 4.3 compilation
+
+!====================== SimComponents v2r13 2008-09-30 =======================
+! 2008-09-08 - Marco Cattaneo
+ - Improve FPE protection of CompareMCVertex (was failing on ia32)
+
+!====================== SimComponents v2r12 2008-09-04 =======================
+! 2008-09-03 - Marco Musy
+ - fix of warning message
+
+! 2008-08-19 - Marco Musy
+ - Fix ForcedBDecayTool.cpp to work with CheatedSelection
+
+!====================== SimComponents v2r11 2008-07-27 =======================
+! 2008-07-24 - Marco Cattaneo
+ - Improve protection against crazy vertex times in PackMCVertex
+
+! 2008-07-23 - Marco Cattaneo
+ - Add DumpHepMCDecay, DumpHepMC, DumpHepMCTree algorithms, previously in
+   Gen/Generators as DumpMCDecay, DumpMC, DumpHepMCTree
+
+! 2008-07-22 - Marco Cattaneo
+ - Fix ForcedBDecayTool.cpp for HepMC 2 (Gaudi v20r2)
+ - Fix a doxygen warning
+
+!====================== SimComponents v2r10p2 2008-07-17 =====================
+! 2008-07-17 - Marco Cattaneo
+ - Fix compiler warning in mclexer.icpp
+
+!====================== SimComponents v2r10p1 2008-06-30 =====================
+! 2008-06-18 - Patrick Koppenburg
+ - Fixed doxygen for MCDecayFinder
+
+!====================== SimComponents v2r10 2008-06-05 =======================
+! 2008-06-05 - Marco Cattaneo
+ - Protect underflow in PackMCVertex and CompareMCVertex, due to crazy
+   vertex times in DC06 simulation
+
+! 2006-06-04 M Needham
+ - Protect division by zero in MCReconstructible
+
+!====================== SimComponents v2r9 2008-04-10 ========================
+! 2008-04-10 - Juan PALACIOS
+ - src/PrintMCDecayTreeAlg{.cpp, .h}
+  . Add property "MCParticleLocation" to allow to provide alternative input
+    MCParticle containers.
+  . Add some doxygen documentation.
+
+!====================== SimComponents v2r8p1 2008-02-08 ======================
+! 2008-02-08 - Marco Cattaneo
+ - Fix an untested StatusCode
+
+!====================== SimComponents v2r8 2007-11-26 ========================
+! 2007-11-26 - Marco Cattaneo
+ - Add PrintMCDecayTreeAlg to replace DumpEvent algorithm in DaVinciMCTools
+
+!====================== SimComponents v2r7 2007-11-02 ========================
+! 2007-11-02 - Marco Cattaneo
+ - Fix units in printout of MCParticleSelector cuts
+
+! 2007-10-29 M. Needham
+ - Modifications to MCReconstructible to protect against unknown category
+ - Change MCParticleSelector defaults to do no selection
+
+! 2007-10-23 - Chris Jones
+ - Add option to MCParticleSelector to select only B decay products
+
+!====================== SimComponents v2r6 2007-10-10 ========================
+! 2007-10-10 - Juan PALACIOS
+ - Import src/PrintMCTree{.cpp, .h} from Phys/DaVinciMCTools.
+
+! 2007-10-09 - Juan PALACIOS
+ - Add src/PrintMCDecayTreeTool{.cpp, .h}
+  . Implementation of MCInterfaces/IPrintMCDecayTreeTool.h
+
+! 2007-10-03 - Marco Cattaneo
+ - MCDecayFinder: get the ParticlePropertySvc in initialize, not the constructor
+
+!====================== SimComponents v2r5 2007-09-04 ========================
+! 2007-08-20 - Patrick Koppenburg
+ - MCDecayFinder: replace all LHCb::MCParticle::Vector by ConstVector
+	 to follow changes in interface. This could cause user code not to
+   compile anymore.
+ - Increment to v2r5
+
+!====================== SimComponents v2r4 2007-07-02 ========================
+! 2007-07-02 M. Needham
+ - Bug fix in MCParticleSelector defaults
+
+! 2007-06-27 M Needham
+ - Changes defaults in MCParticleSelector so they make no cuts
+
+!====================== SimComponents v2r3 2007-05-29 ========================
+! 2007-05-29 - Marco Cattaneo
+ - Adapt to new locations of MCInterfaces
+
+! 2007-05-25 M. Needham
+ - Follow extension in IMCReconstructible interface
+
+!====================== SimComponents v2r2 2007-05-16 ========================
+! 2007-05-15 M Needham
+ - Add possibility to remove hadronic interactions to MCParticleSelector
+ - Use MCTrackGeomCriteria in MCReconstructible
+
+!====================== SimComponents v2r1 2007-03-05 ========================
+! 2007-03-05 - Chris Jones
+ - Add new 'Outside Acceptance' category to MC reconstructibility
+
+! 2007-03-01 - Chris Jones
+ - Update MCParticleSelector to
+  + Not reject electrons by default (needed by default Particle monitors)
+  + Not implicitly reject neutrals. New options to reject either neutrals
+    or charged particles
+  + Add Max P cut (default is no cut, 999999 GeV)
+ - New version of MCReconstructible
+  + For charged Particles, defers reconstructibility decision to MCTrackInfo
+    data object
+  + For neutrals, uses private hard-coded definitions. To be updated to use
+    CALO tool when available.
+
+! 2007-02-26 - Marco Cattaneo
+ - Add ForcedBDecayTool from Marco Musy
+ - Remove obsolete SimComponents_load.cpp file
+
+!====================== SimComponents v2r0 2007-01-12 ========================
+! 2007-01-12 - Marco Cattaneo
+ - Use xxx_FACTORY macros
+ - Add VisPrimVertTool and MCReconstructible (previously in DaVinciMCTools).
+   Needs MCEvent v2r*
+
+!====================== SimComponents v1r2p1 2006-05-29 ======================
+! 2006-05-29 - Marco Cattaneo
+ - Change message levels of CompareMCVertex and CompareMCParticle, for use in
+   production inside Boole
+
+!====================== SimComponents v1r2 2006-05-10 ========================
+! 2006-05-10 - Marco Cattaneo
+ - Use explicitly Gaudi::Units namespace in MCParticleSelector.cpp
+ - Replace include of CLHEP units with GaudiKernel
+
+!====================== SimComponents v1r1p1 2006-03-31 ======================
+! 2006-03-31 - Marco Cattaneo
+ - Add explicit dependency on Boost, needed with Gaudi v18r3
+ - Add missing factory declaration for CheckMCEventTool
+
+!====================== SimComponents v1r1 2006-03-16 ========================
+! 2006-03-16 - P. Koppenburg
+ - Adapt MCDecayFinder to new interface
+
+!====================== SimComponents v1r0 2006-02-17 ========================
+! 2006-02-17 - Marco Cattaneo
+ - Add algorithms to pack, unpack and compare MCParticles and MCVertices
+
+! 2005-12-16 - Gloria CORTI
+ - Uncomment lines left inadvertently commented in EvtTypeChecker.cpp
+
+! 2005-12-13 - Gloria CORTI
+ - First version of the package importing code from Phys/MCTool:
+   . CheckMCEventTool.{h,cpp}   - tool to check integrity of an MCEvent
+   . DumpMCEventAlg.{h,cpp}     - algorithm to dump contents of an MCEvent
+   . EvtTypeChecker.{h,cpp}     - algorithm that checks if the events contains
+                                  a given "decay" and counts how many
+   . EvtTypeInfo.h              - auxiliary class containing infor for event
+                                  type as provided in Bookkeeping: type,
+                                  descriptor and nickname
+   . EvtTypeSvc.{h,cpp}         - service providing given a eventtype code
+                                  the decay descriptor and nickname
+   . MCDecayFinder.{h,cpp}      - tool to find a given "decay" provided a
+                                  string descriptor
+   . MCHitMonitor.{h,cpp}       - algorithm providing a generic monitor of
+                                  MCHits used for monitoring of IT, ST and OT
+   . MCParticleSelector.{h,cpp} - tool for selection of MC particles given a
+                                  criteria
+   . mclexer.{lpp,icpp},
+     mcparser.{h,icpp,ypp}      - auxiliary code for MCDecayFinder
+   The interfaces IEvtTypeSvc and IMCParticleSelector are in the Kernel
+   directory of LHCbKernel v6r0
+   The interface of IMCDecayFinder is in the Kernel directory of MCEvent v1r0.
+   All files adapted to new event model and LHCb namespace
+
+!=============================================================================

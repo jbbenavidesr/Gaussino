@@ -12,5 +12,10 @@ importOptions("$APPCONFIGOPTS/Gauss/Sim08-Beam3500GeV-md100-2011-nu2.py")
 
 #--Set database tags using those for Sim08
 from Configurables import LHCbApp
-LHCbApp().DDDBtag   = "dddb-20130929"
-LHCbApp().CondDBtag = "sim-20130522-vc-md100"
+LHCbApp().DDDBtag   = "dddb-20150522-1"
+LHCbApp().CondDBtag = "sim-20150522-1-vc-md100"
+
+#--Pick up new particle table until it is in a global tag
+from Configurables import CondDB
+CondDB().LocalTags = { "DDDB":["particles-20150720"] }
+

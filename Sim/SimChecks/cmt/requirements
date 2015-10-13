@@ -3,7 +3,7 @@
 # Maintainer : Luca Pescatore
 #============================================================================
 package           SimChecks
-version           v1r5
+version           v1r6
 
 #macro_append ROOT_linkopts " -lMLP -lTMVA -lGraf -lHist -lMatrix -lTreePlayer -lGpad -lGraf3d -lPhysics"
 
@@ -11,7 +11,7 @@ version           v1r5
 #============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          cmt doc scripts
+branches          cmt doc scripts options python
 
 use GaudiAlg v*
 #use   ROOT                v*    LCG_Interfaces -no_auto_imports
@@ -24,7 +24,19 @@ use GaudiAlg v*
 macro ROOT_includedirs "-I$(ROOTSYS)/include"
 macro ROOT_linkopts "-L$(ROOTSYS)/lib $(shell root-config --glibs)"
 
-#application RadLengthPlots ../scripts/RadLength/*.cpp
+#==========================================================================
+# Install scripts and python modules
+#===========================================================================
 
-#application TargetPlots ../scripts/Target/MultiTarget/TargetAnalysis/Multi.cpp
+apply_pattern install_scripts
+apply_pattern install_python_modules
+
+#==========================================================================
+# New variables and aliases
+#===========================================================================
+
+set	TARGETOPTS $(SIMCHECKSROOT)/options/Target
+
+alias 'rad_length_scan' 'rad_length_scan.py'
+alias 'rad_length_scan_velo_z' 'rad_length_scan_velo_z.py'
 

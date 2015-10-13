@@ -4,6 +4,15 @@
 ! Purpose     : cut tools for Gauss
 !-----------------------------------------------------------------------------
 
+!========================== GenCuts v3r12 2015-08-05 =========================
+! 2015-08-02 - Philip Ilten
+ - Updated BcDaughtersInLHCb to handle excited states with configurable 
+   meson ID
+
+! 2015-08-01 - Patrick Robbe
+ - Add new tool: DaughtersInLHCbKeepOnlySignal to implement event embedding:
+   The tool keeps only the signal particle and removes the rest of the event
+
 !========================= GenCuts v3r11p1 2015-05-27 ========================
 ! 2015-05-22 - Xabier Cid Vidal
  - Fixed tiny bug in InvariantMassQQMCJets.cpp that was causing core dump

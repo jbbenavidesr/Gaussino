@@ -4,6 +4,39 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+!========================== Gauss v48r3 2015-08-05 ===========================
+! 2015-08-05 - Gloria Corti
+ - New tests to check fromSignal flag is set in full simulation and when
+   fillinf MCPArticles from generator.
+ - New test to check 2015 configuration
+
+! 2015-08-04 - Gloria Corti
+ - Update options for supported data types (2011, 2012, 2015) with latest dbase
+   tags. Introduce reference options for 2010.
+ - Use DecFiles v28r* to use latest decay files and chnaged in options 
+   for BcVegPy, J/Psi etc.
+
+! 2015-08-03 - Gloria Corti
+ - Fix mistyping in Kine-LT.py options for values (had extra ;)
+ - New options as an example to lower Production cuts, ProductionCuts-Low.py
+
+! 2015-07-24 - Gloria Corti
+ - Updated Gauss reference tests for current detector followign change in
+   default random numbers generator
+
+! 2015-07-23 - Gloria Corti
+ - Provide options to Gauss() to choose between Ranlux and MTwist as random
+   number engine. Set the default to Ranlux since MTwist does not re-initialize
+   correctly for each event: while changing the seed at the start generates
+   different samples and keeping the same causes the same set to be made, 
+   successive events requires the previous one to be made to be reproduced.
+
+! 2015-07-20 - Gloria Corti
+ - Updated Gauss reference tests for current detector
+
+! 2015-MM-DD - Phil Ilten
+ - Removed configuration of powheg no longer necessary
+
 !========================== Gauss v48r2 2015-06-08 ===========================
 ! 2015-06-08 - Gloria Corti
  - Updated some qmtest reference files
