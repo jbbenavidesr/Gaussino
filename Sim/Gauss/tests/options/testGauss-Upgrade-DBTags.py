@@ -1,12 +1,8 @@
-from Gauss.Configuration import *
-from Configurables import Gauss
+from Configurables import CondDB, Gauss
+CondDB().Upgrade = True
+Gauss().DataType = "Upgrade"
 
-#--Number of events
-nEvts = 1
-LHCbApp().EvtMax = nEvts
-
-from Configurables import LHCbApp, CondDB
-LHCbApp().DDDBtag    = "dddb-20131108"
-LHCbApp().CondDBtag  = "sim-20131108-vc-md100"
-
-
+from Configurables import LHCbApp
+LHCbApp().EvtMax    = 1
+LHCbApp().DDDBtag   = "dddb-20150729"
+LHCbApp().CondDBtag = "sim-20150716-vc-md100"

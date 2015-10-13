@@ -4,6 +4,36 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+! 2015-10-07 - John Back
+  - Updated EvtPhotosEngine to check that additional particles from the 
+    outgoing vertex are indeed (FSR) photons, since later versions of Photos++
+    introduce pair emission, where particles may not always be photons.
+
+  - Added the ability to store named attributes for EvtParticles in the
+    form of a map<string, int>. The setAttribute(name, value) stores the
+    required value, while getAttribute(name) retrieves the integer value.
+    This is used in EvtPhotosEngine to specify the final-state radiation
+    "FSR" attribute to 1 for any additional photons (EvtPhotonParticles)
+    created by Photos++. It also stores the "ISR" attribute, but this
+    is always set to zero, since only FSR photons are created.
+    If the named attribute doesn't exist, then getAttribute() returns zero.
+
+! 2015-10-05 - John Back
+  - Fixed accessed uninitialised memory in EvtPDL.cpp:213.
+
+! 2015-10-01 - John Back
+  - Updated EvtSVPHelAmp and added new EvtSVPHelCPMix model from Clara Remon,
+    implementing the complete mixing phenomenology of Bs to vector gamma decays.
+  - Resolved some compiler warnings, and removed obsolete Windows #pragma usage.
+
+! 2015-09-23 - Michal Kreps
+  - Reimplement real Spence function in C++ and remove EvtLi2Spence.F.
+
+! 2015-09-10 - Christoph Langenbruch 
+  - Fixed form-factor calculations for the BTOSLLBALL model 6 used to generate 
+    b->sll decays. Affects B->K*ll, B->rholl and B->omegall, particularly the 
+    electron modes
+
 !========================== EvtGen v14r2 2015-08-05 ==========================
 
 ! 2015-06-29 - Jordi Tico 
