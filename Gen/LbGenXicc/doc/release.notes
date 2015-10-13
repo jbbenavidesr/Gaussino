@@ -2,6 +2,16 @@
 ! Responsible : F. Zhang
 !=============================================================================
 
+!========================= LbGenXicc v5r0 2015-06-02 =========================
+! 2015-05-12 - Philip Ilten
+ - Removed deprecated configurable options
+
+! 2015-05-07 - Gloria Corti
+ - Added linking to LbHardLib for cmake
+
+! 2015-05-01 - Philip Ilten
+ - Migrated to HardProduction tool
+
 !======================== LbGenXicc v4r0p1 2014-12-16 ========================
 ! 2014-11-28 - Gloria Corti
  - Try to fix warnings when compiling with --pedantic

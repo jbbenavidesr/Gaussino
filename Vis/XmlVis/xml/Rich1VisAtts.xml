@@ -1,10 +1,10 @@
 <!-- This part of the file contains definitions of visualization attributes for
      the materials used in the Rich1 description.
      The only attribute defined here is the color of the material -->
-<VisAtt name="VisRich1Master" mode="WireFrame" opened="Yes">
+<VisAtt name="VisRich1Master" mode="WireFrame" opened="Yes" >
   <Color R="0.0" G="1.0" B="1.0"/>
 </VisAtt>
-<VisAtt name="VisRich1SubMaster" mode="WireFrame" opened="Yes">
+<VisAtt name="VisRich1SubMaster" mode="WireFrame"  opened="Yes" >
   <Color R="0.3" G="0.2" B="0.7"/>
 </VisAtt>
 <VisAtt name="VisRich1AerogelMaster" mode = "WireFrame" opened="Yes" >
@@ -139,12 +139,23 @@
 <VisAtt name="VisRich1AerogelT15S">
   <Color R="0.9" G="0.85" B="0.0"/>
 </VisAtt>
-<VisAtt name="VisRich1MagSh" mode="WireFrame" opened="Yes" >
+<!--
+<VisAtt name="VisRich1MagSh " mode="WireFrame" opened="Yes" >
   <Color R="0.1" G="0.1" B="0.9"/>
 </VisAtt>
 <VisAtt name="VisRich1MgShield" mode="WireFrame" opened="Yes" >
   <Color R="0.1" G="0.1" B="0.9"/>
 </VisAtt>
+-->
+
+<VisAtt name="VisRich1MagSh" mode="WireFrame" opened="Yes" >
+  <Color R="0.9" G="0.1" B="0.2"/>
+</VisAtt>
+
+<VisAtt name="VisRich1MgShield" mode="WireFrame" opened="Yes" >
+  <Color R="0.1" G="0.1" B="0.9"/>
+</VisAtt>
+
 <VisAtt name="VisRich1Mirror1CaFiInnerSeg">
   <Color R="0" G="0.5" B="0.5"/> 
 </VisAtt>
@@ -172,9 +183,12 @@
 <VisAtt name="VisRich1GQuartzW" mode="WireFrame" >
   <Color R="0.9" G="0.4" B="0.5"/>
 </VisAtt>
-<VisAtt name="VisRich1PhDetSupFrame" mode="WireFrame" opened="Yes">
-  <Color R="0.9" G="0.8" B="0.6"/>
+
+<VisAtt name="VisRich1PhDetSupFrame"  mode = "WireFrame"  opened="Yes">
+  <Color R="0.7" G="0.9" B="0.6"/>
 </VisAtt>
+
+
 <VisAtt name="VisRichHPDMaster" >
   <Color R="0.8" G="0.7" B="0.7"/>
 </VisAtt>
@@ -193,6 +207,7 @@
 <VisAtt name="VisRichHPDQuartzWindow" opened="Yes" visible="No">
   <Color R="0.4" G="0.8" B="0.9"/>
 </VisAtt>
+
 <VisAtt name="VisRichHPDPhCathode" opened="Yes" visible="No">
   <Color R="0.2" G="0.3" B="0.3"/>
 </VisAtt>
@@ -214,6 +229,7 @@
   <Color R="0.6" G="0.3" B="0.7"/>
 </VisAtt>
 
+
 <VisAtt name="VisRichPMTAnode" >
   <Color R="0.0" G="0.4" B="0.8"/>
 </VisAtt>
@@ -221,6 +237,7 @@
 <VisAtt name="VisRichPMTQuartz" >
   <Color R="0.4" G="0.8" B="0.9"/>
 </VisAtt>
+
 <VisAtt name="VisRichPMTPhCathode" >
   <Color R="0.2" G="0.3" B="0.3"/>
 </VisAtt>
@@ -230,12 +247,17 @@
 <VisAtt name="VisRichPMTFrontRing" >
 <Color R="0.1" G="0.7" B="0.4" />
 </VisAtt>
+
+
 <VisAtt name="VisRichPMTModuleShielding" >
 <Color R="0.5" G="0.3" B="0.7" />
 </VisAtt>
-<VisAtt name="VisRichPMTModuleMaster" mode = "WireFrame" opened="Yes" >
-<Color R="0.1" G="0.4" B="0.2" />
+
+<VisAtt name="VisRichPMTModuleMaster" >
+<Color R="0.7" G="0.4" B="0.2" />
 </VisAtt>
+
+
 
 
 

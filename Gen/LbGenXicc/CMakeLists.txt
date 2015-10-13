@@ -1,10 +1,10 @@
 ################################################################################
 # Package: LbGenXicc
 ################################################################################
-gaudi_subdir(LbGenXicc v4r0p1)
+gaudi_subdir(LbGenXicc v5r0)
 
 gaudi_depends_on_subdirs(Gen/GenXicc
-                         Gen/LbPythia)
+                         Gen/LbHard)
 
 gaudi_add_library(LbGenXiccLib
                   src/Lib/*.cpp
@@ -14,5 +14,5 @@ gaudi_add_library(LbGenXiccLib
 
 gaudi_add_module(LbGenXicc
                  src/component/*.cpp
-                 LINK_LIBRARIES GenXicc LbPythiaLib LbGenXiccLib)
+                 LINK_LIBRARIES GenXicc LbHardLib LbPythiaLib LbGenXiccLib)
 

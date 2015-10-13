@@ -4,6 +4,11 @@
 ! Purpose     : Holds visualization attributes for a geometry
 !-----------------------------------------------------------------------------
 
+
+!========================== XmlVis v1r20 2015-05-07 ==========================
+! 2014-10-14 - Sajan Easo
+ - Updated RICH upgrade visibility options
+
 !========================== XmlVis v1r19 2014-08-21 ==========================
 ! 2014-05-09 - Heinrich Schindler
  - Update VP visualisation attributes.

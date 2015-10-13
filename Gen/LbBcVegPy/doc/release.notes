@@ -1,7 +1,23 @@
-! $Id: release.notes,v 1.16 2009-10-02 13:08:08 jhe Exp $
 ! Package     : Gen/LbBcVegPy
 ! Responsible : Patrick ROBBE
 !=============================================================================
+
+!========================= LbBcVegPy v6r0 2015-06-02 =========================
+! 2015-06-02 - Gloria Corti
+ - Fixed mistyping in BcVegPyPythia{,8}.py
+
+! 2015-05-13 - Philip Ilten
+ - Added the MesonState and ViolateGaugeInvariance configruables
+
+! 2015-05-12 - Philip Ilten
+ - Changed masses to be configured via the ParticlePropertySvc
+ - Moved beam energy configuration from Gauss/Configuration.py to tool
+
+! 2015-05-07 - Gloria Corti
+ - Added linking to LbHardLib in cmake
+
+! 2015-05-01 - Philip Ilten
+ - Migrated to HardProduction tool
 
 !======================== LbBcVegPy v5r1p1 2014-12-16 ========================
 ! 2014-12-01 - Gloria Corti

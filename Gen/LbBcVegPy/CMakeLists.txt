@@ -1,10 +1,10 @@
 ################################################################################
 # Package: LbBcVegPy
 ################################################################################
-gaudi_subdir(LbBcVegPy v5r1p1)
+gaudi_subdir(LbBcVegPy v6r0)
 
 gaudi_depends_on_subdirs(Gen/BcVegPy
-                         Gen/LbPythia)
+                         Gen/LbHard)
 
 gaudi_add_library(LbBcVegPyLib
                   src/Lib/*.cpp
@@ -14,5 +14,5 @@ gaudi_add_library(LbBcVegPyLib
 
 gaudi_add_module(LbBcVegPy
                  src/component/*.cpp
-                 LINK_LIBRARIES BcVegPy LbPythiaLib LbBcVegPyLib)
+                 LINK_LIBRARIES BcVegPy LbHardLib LbPythiaLib LbBcVegPyLib)
 

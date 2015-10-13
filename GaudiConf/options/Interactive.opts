@@ -1,0 +1,12 @@
+//--------------------------------------------------------------
+// Interactive Gaudi setup
+//--------------------------------------------------------------
+ApplicationMgr.Runable  = "PythonScriptingSvc";
+ApplicationMgr.ExtSvc  += {"IntrospectionSvc"};
+IntrospectionSvc.Dictionaries += {"LHCbKernelDict",
+                                  "EventDict",
+																  "EventKernelDict",
+																	"PhysEventDict" };
+//IntrospectionSvc.OutputLevel = 1;
+PythonScriptingSvc.StartupScript = "../options/startup.py";
+

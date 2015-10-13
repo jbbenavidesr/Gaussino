@@ -5,6 +5,31 @@
 !               using Professor/Rivet system. 
 !-----------------------------------------------------------------------------
 
+!=========================== GenTune v2r3 2015-05-07 =========================
+! 2015-04-30 - Alex Grecu
+ - Improve component logging and put generator cross-section change messages
+   under the supression system as value continues to vary slightly around 
+   asymptotic value.
+ - Minor patch to correct behaviour in automatically selecting interaction 
+   cross-section from various sources (MC generator, BeamParameters or 
+   externally force value). Previously ERROR was triggered when using 
+   generator provided cross-section in analysis module explicitly requiring
+   cross-section, even if cross-section value was correctly read from HepMC
+   stream.
+
+! 2015-04-07 - Alex Grecu
+ - Include lbInjectMathJax to inject MathJax enabling JS code in HTML pages.
+   This tool may become obsolete when rivet-mkhtml will support this feature. 
+ - Changed use line for fastjet in requirements to let package properly set 
+   up its corresponding link/build flags.
+
+! 2015-04-01 - Alex Grecu
+ - Adapted rivet-buildplugin from original RIVET distribution to work with 
+   LHCb specific configuration retrieved via CMT. Added bin directory containing
+   the build script named lbrivet-buildAM. Adjusted requirements to apply 
+   set_bin_path pattern for the package.
+ - Remove exec_prefix env variable definition in requirements
+
 !========================== GenTune v2r2p1 2014-12-19 ========================
 ! 2014-12-01 - Gloria Corti
  - Fixes for compilation warnings with --pedantic

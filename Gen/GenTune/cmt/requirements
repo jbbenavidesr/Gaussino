@@ -3,7 +3,7 @@
 # Maintainer : Alex Grecu <alexandru.grecu@nipne.ro>
 #============================================================================
 package           GenTune
-version           v2r2p1
+version           v2r3
 
 #============================================================================
 # Structure, i.e. directories to process. 
@@ -22,19 +22,21 @@ use GenEvent          v*     Event
 use Generators        v*     Gen  
 
 # Packages needed to resolve external dependencies at run time
-use fastjet           v*     LCG_Interfaces -no_auto_imports  #this should be transferred in the GENSER/rivet CMT interface
 use Python            v*     LCG_Interfaces -no_auto_imports
 use HepMC             v*     LCG_Interfaces -no_auto_imports
 use Boost             v*     LCG_Interfaces -no_auto_imports
-use ROOT              v*     LCG_Interfaces -no_auto_imports
+##use ROOT              v*     LCG_Interfaces -no_auto_imports
+use fastjet           v*     LCG_Interfaces #-no_auto_imports  #this should be transferred in the GENSER/rivet CMT interface
 
 #apply_tag ignore_installarea
 use rivet             v*     LCG_GeneratorsInterfaces -auto_imports
 
-#Patch to address bug in Rivet 1.9.0 - to be tested and removed in further versions
-set exec_prefix  "$(rivet_home)"
+#Hack to add LHCb specific fork of rivet-buildplugin - to be removed if LCG releases are corrected
+macro GenTune_home $(GenTune_root)
+#path_remove PATH $(rivet_home)/bin ##this would completely remove access to RIVET native scripts
+apply_pattern set_bin_path
 
-#============================================================================
+
 # Component library building rule
 #============================================================================
 library          GenTune     ../src/*.cpp -import=AIDA
