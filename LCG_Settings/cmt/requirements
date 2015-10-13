@@ -21,6 +21,12 @@ pattern use_optional \
          USE_ALL_OPT_PKGS    "<pkg> v* LCG_Interfaces -no_auto_imports" ;\
    use $(use_pkg)
 
+
+# ==== pattern to announce include dir to ROOT =====
+pattern set_root_include_path \
+  path_prepend ROOT_INCLUDE_PATH $(<package>_include) ; \
+  include_dirs $(<package>_include) 
+
 # ==== pattern for declaring container packages ====
 pattern composite_package \
   private ; \
@@ -141,7 +147,7 @@ macro gcc_config_version       "" \
       target-gccmax            "max" \
       target-g11max            "g11" \
       target-icc11             "4.3.6" \
-      target-icc13             "4.6.3" \
+      target-icc13             "4.7.2" \
       target-clang33           "4.8.1" \
       target-clang34           "4.8.1" \
       target-clang             "4.6.3" 
@@ -154,7 +160,7 @@ macro clang_config_version      "" \
       target-clang31            "3.1" \
       target-clang32            "3.2" \
       target-clang33            "3.3" \
-      target-clang34            "3.4" 
+      target-clang34            "3.4"
 macro clang_native_version      "$(clang_config_version)"
 macro clang_home                "$(LCG_external)/llvm/$(clang_native_version)/$(LCG_hostos)"
 
