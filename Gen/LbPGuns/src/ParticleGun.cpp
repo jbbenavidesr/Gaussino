@@ -234,15 +234,15 @@ StatusCode ParticleGun::execute() {
       // Prepare event container
       prepareInteraction( theEvents , theCollisions , theGenEvent , theGenCollision ) ;
 
-      // generate one particle
-      m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId );
-
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
         double massToGenerate = m_MassRange_min + RandomForGenerator::flat() * (m_MassRange_max-m_MassRange_min) ;
         double energy = sqrt( massToGenerate * massToGenerate + theFourMomentum.P() * theFourMomentum.P() ) ;
         theFourMomentum.SetE( energy ) ;
       }
+
+      // generate one particle
+      m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId );
 
       // create HepMC Vertex
       HepMC::GenVertex * v =

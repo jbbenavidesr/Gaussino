@@ -1,6 +1,6 @@
 // $Id: FlatPtRapidity.h,v 1.1.1.1 2009-09-18 16:18:24 gcorti Exp $
-#ifndef PARTICLEGUNS_FLATPTRAPIDITY_H
-#define PARTICLEGUNS_FLATPTRAPIDITY_H 1
+#ifndef PARTICLEGUNS_MOMENTUMRANGE_H
+#define PARTICLEGUNS_MOMENTUMRANGE_H 1
 
 // Include files
 // from Gaudi
@@ -12,7 +12,7 @@
 
 /** @class FlatPtRapidity FlatPtRapidity.h "FlatPtRapidity.h"
  *
- *  Particle gun generated flat in pt and rapidity
+ *  Particle gun with given momentum range
  *  
  *  @author Dan Johnson
  *  @date   2016-02-19
@@ -47,9 +47,6 @@ class FlatPtRapidity : public GaudiTool , virtual public IParticleGunTool {
 
   /// Pdg Codes of particles to generate (Set by options)
   std::vector<int>         m_pdgCodes;
-
-  /// Masses of particles to generate
-  std::vector<double>      m_masses;
 
   /// Names of particles to generate
   std::vector<std::string> m_names;
