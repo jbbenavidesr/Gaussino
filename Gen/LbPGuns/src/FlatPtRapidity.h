@@ -1,6 +1,6 @@
 // $Id: FlatPtRapidity.h,v 1.1.1.1 2009-09-18 16:18:24 gcorti Exp $
-#ifndef PARTICLEGUNS_MOMENTUMRANGE_H
-#define PARTICLEGUNS_MOMENTUMRANGE_H 1
+#ifndef PARTICLEGUNS_FLATPTRAPIDITY_H
+#define PARTICLEGUNS_FLATPTRAPIDITY_H 1
 
 // Include files
 // from Gaudi
@@ -12,7 +12,7 @@
 
 /** @class FlatPtRapidity FlatPtRapidity.h "FlatPtRapidity.h"
  *
- *  Particle gun with given momentum range
+ *  Particle gun generated flat in pt and rapidity
  *  
  *  @author Dan Johnson
  *  @date   2016-02-19
