@@ -83,8 +83,13 @@ StatusCode GetCaloHitsAlg::execute() {
   debug() << "==> Execute" << endmsg ;
 
   // Register output container to contain MCCaloHits
-  LHCb::MCCaloHits * hits = new LHCb::MCCaloHits( ) ;
-  put( hits , m_hitsLocation ) ;
+  LHCb::MCCaloHits * hits;
+  if ( exist<LHCb::MCCaloHits>(m_hitsLocation) ) {
+      hits = get<LHCb::MCCaloHits>(m_hitsLocation);
+  } else {
+    hits = new LHCb::MCCaloHits( ) ;
+    put( hits , m_hitsLocation ) ;
+  }
   
   // Get the G4 hit collections corresponding to Calo
   GiGaHitsByName col( m_colName ) ;

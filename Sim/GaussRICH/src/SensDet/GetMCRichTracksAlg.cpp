@@ -62,9 +62,14 @@ StatusCode GetMCRichTracksAlg::execute()
   debug() << "Execute" << endmsg;
 
   // Create the MCRichTracks and put them in the TES
-  MCRichTracks * richTracks = new MCRichTracks();
-  put( richTracks, dataLocationInTES() );
-  richTracks->reserve( 100 );
+  MCRichTracks * richTracks;
+  if ( exist<MCRichTracks>(dataLocationInTES()) ) {
+    richTracks = get<MCRichTracks>(dataLocationInTES());
+  } else {
+    richTracks = new MCRichTracks();
+    put( richTracks, dataLocationInTES() );
+    richTracks->reserve( 100 );
+  }
 
   // Get the G4 necessary hit collections from GiGa
   G4HCofThisEvent* hitscollections = 0;

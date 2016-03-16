@@ -124,8 +124,16 @@ StatusCode GetTrackerHitsAlg::execute() {
   // Cannot use 
   // MCHits* hits = getOrCreate<MCHits,MCHits>( m_hitsLocation );
   // because triggers convertion
-  LHCb::MCHits* hits = new LHCb::MCHits();
-  put( hits, m_hitsLocation );
+  LHCb::MCHits* hits;
+  if ( exist<LHCb::MCHits>(m_hitsLocation) ) {
+    hits = get<LHCb::MCHits>(m_hitsLocation);
+  } else {
+    hits = new LHCb::MCHits();
+    put( hits, m_hitsLocation );
+  }
+  //Get number of already properly processed tracks to make sure everything was
+  //converted.
+  size_t numOfHitsBefore = hits->size();
   
   // Get the G4 necessary hit collection from GiGa
   GiGaHitsByName col( m_colName );
@@ -151,7 +159,7 @@ StatusCode GetTrackerHitsAlg::execute() {
   // reserve elements on output container
   int numOfHits = hitCollection->entries();
   if( numOfHits > 0 ) {
-    hits->reserve( numOfHits );
+    hits->reserve(numOfHitsBefore + numOfHits );
   }
 
   // tranform G4Hit into MCHit and insert it in container
@@ -173,7 +181,7 @@ StatusCode GetTrackerHitsAlg::execute() {
   }
   
   // Check that all hits have been transformed
-  if( (size_t) hits->size() != (size_t) hitCollection->entries() ) {
+  if( (size_t) (hits->size() - numOfHitsBefore) != (size_t) hitCollection->entries() ) {
     return Error("MCHits and G4TrackerHitsCollection have different sizes!");
   }  
 
