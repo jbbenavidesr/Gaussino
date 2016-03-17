@@ -1,34 +1,28 @@
 #============================================================================
-# Created    : 2005-12-16
-# Maintainer : Gloria CORTI
-#
-# Documentation on the requirement file can be found at
-# http://cern.ch/lhcb-comp/Support/html/new_structure.pdf
+# Created    : 2003-01-24
+# Maintainer : Gloria Corti
 #============================================================================
-package           GaussRD
-version           v1r0
+package GaussRD
+version v6r0p1
 
-#============================================================================
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          cmt doc src
-include_path      none
+branches GaussRD doc cmt src
 
+# Used packages
 #============================================================================
-# Used packages. Specify the version, * at the end specifies 'any revision'
-#    Put as many lines as needed, with all packages, without the '#'
-#============================================================================
-use   GenEvent      v*  Event
-use   MCEvent       v*  Event
-use   GaussTools    v*  Sim
-use   LoKiGen       v*  Phys
-use   SimComponents v*  Sim
+use GaudiPolicy    v* 
+use DetDescCnv     v* Det
 
-#============================================================================
+apply_pattern install_more_includes more=GaussRD
+
+
 # Component library building rule
 #============================================================================
-library          GaussRD    ../src/*.cpp 
-#============================================================================
+library GaussRD     *.cpp
+
 # define component library link options
 #============================================================================
-apply_pattern    component_library library=GaussRD
+apply_pattern component_library library=GaussRD
+
+

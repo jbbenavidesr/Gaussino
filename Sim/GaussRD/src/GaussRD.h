@@ -62,7 +62,7 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *
    *  @return bool
    */
-  bool registerNewEvent() override;
+  virtual bool registerNewEvent() override;
 
   //Implementation of the storage interface IGaussRDStr
 
@@ -71,28 +71,28 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *  @param G4Event* event
    *  @return status code  
    */
-  virtual StatusCode  saveJunkG4Event( G4Event* event ) override;
+  //virtual StatusCode  saveJunkG4Event( G4Event* event ) override;
 
   /** Load the stored G4 event for the underlying event
    *
    *  @param G4Event*& event
    *  @return status code  
    */
-  virtual StatusCode  loadJunkG4Event( G4Event* & event ) const override;
+  //virtual StatusCode  loadJunkG4Event( G4Event* & event ) const override;
 
   /** Save the signal particle and its origin vertex for redecay
    *
    *  @param G4Event*& event
    *  @return status code  
    */
-  virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle* part, HepMC::GenVertex * vertex) override;
+  //virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle* part, HepMC::GenVertex * vertex) override;
 
   /** Load the signal particle and its origin vertex for redecay
    *
    *  @param G4Event*& event
    *  @return status code  
    */
-  virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle*& part, HepMC::GenVertex *& vertex) const override;
+  //virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle*& part, HepMC::GenVertex *& vertex) const override;
   
 
   protected:

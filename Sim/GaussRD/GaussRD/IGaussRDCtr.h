@@ -3,8 +3,8 @@
 // ============================================================================
 //
 // ============================================================================
-#ifndef GIGA_IGIGASVC_H
-#define GIGA_IGIGASVC_H 1 
+#ifndef GAUSS_IGAUSSRDStr_H
+#define GAUSS_IGAUSSRDStr_H 1 
 /// STD and STL 
 //#include   <utility>
 /// Include files from the Framework
@@ -18,12 +18,14 @@
  *  @author Dominik Muller dominik.muller@cern.ch
  */
 
+static const InterfaceID IID_IGaussRDCtr(123, 1 , 0);
+
 class IGaussRDCtr : virtual public IService
 {
 public:
   
   /// Retrieve interface ID
-  static const InterfaceID& interfaceID() ;
+  static const InterfaceID& interfaceID(){return IID_IGaussRDCtr;};
   
   /**  initialize 
    *   @return status code 
@@ -42,12 +44,12 @@ public:
    *
    *  @return bool
    */
-  bool registerNewEvent() = 0 ;
+  virtual bool registerNewEvent() = 0 ;
 
 protected:
   
   /// virtual destructor
-  virtual ~IGaussRDCtr();
+  virtual ~IGaussRDCtr(){};
 
 };
 
