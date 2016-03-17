@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti
 #============================================================================
 package GaussRD
-version v6r0p1
+version v1r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -11,8 +11,16 @@ branches GaussRD doc cmt src
 
 # Used packages
 #============================================================================
-use GaudiPolicy    v* 
-use DetDescCnv     v* Det
+use GaudiPolicy   v* 
+use MCEvent       v* Event
+use GaussTools    v* Sim
+use GenEvent      v*  Event
+use GaussTools    v*  Sim
+use LoKiGen       v*  Phys
+use SimComponents v*  Sim
+use GaudiKernel *
+use GaudiUtils  *
+use GaudiAlg  *
 
 apply_pattern install_more_includes more=GaussRD
 

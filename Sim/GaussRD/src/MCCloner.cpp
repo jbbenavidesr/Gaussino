@@ -19,23 +19,24 @@ void MCCloner::cloneDecayProducts(const SmartRefVector<LHCb::MCParticle>& produc
   }
 }
 
-MCCloner::MCCloner() : m_mcps(), m_mcvs(), m_mchit() {}
+//MCCloner::MCCloner() : m_mcps(), m_mcvs(), m_mchit() {}
+MCCloner::MCCloner() : m_mcps(), m_mcvs() {}
 
 void MCCloner::clear() {
   // Remove all objects created by the cloner.
   // Deletion of the object being cloned should be done
   // independently.
-  for (auto& m : m_mcps) {
-    delete m.second;
-  }
-  for (auto& m : m_mcvs) {
-    delete m.second;
-  }
-  for (auto& m : m_mchit) {
-    delete m.second;
-  }
-  m_mcps.clear();
-  m_mcvs.clear();
-  m_mchit.clear();
+  //for (auto& m : m_mcps) {
+    //delete m.second;
+  //}
+  //for (auto& m : m_mcvs) {
+    //delete m.second;
+  //}
+  //for (auto& m : m_mchit) {
+    //delete m.second;
+  //}
+  //m_mcps.clear();
+  //m_mcvs.clear();
+  //m_mchit.clear();
 }
 MCCloner::~MCCloner() { clear(); }

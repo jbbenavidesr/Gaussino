@@ -1,5 +1,14 @@
 #include "MCCloner.h"
 
+LHCb::MCHit* MCCloner::getStoredMCHit(const LHCb::MCHit* mchit) {
+  auto result = m_mchit.find(mchit);
+  if (result == m_mchit.end()) {
+    return nullptr;
+  } else {
+    return result->second;
+  }
+}
+
 LHCb::MCHit* MCCloner::cloneKeyedMCHit(const LHCb::MCHit* mchit) {
   auto clone = getStoredMCHit(mchit);
   if (!clone) {
