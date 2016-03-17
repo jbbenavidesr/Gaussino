@@ -23,6 +23,7 @@
 
 // local
 #include "GaussRD.h"
+#include "MCCloner.h"
 
 //-----------------------------------------------------------------------------
 // Implementation of general non-inline methods from class GiGaSvc
@@ -39,7 +40,7 @@ DECLARE_SERVICE_FACTORY(GaussRD)
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc) : Service(name, svcloc), m_rd_counter(0) {
+GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc) : Service(name, svcloc), m_mc_cloner(nullptr), m_rd_counter(0) {
   /// name of runmanager
   declareProperty("nRedecay", m_max_rd_counter = 100);
 }
@@ -47,7 +48,11 @@ GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc) : Service(name, s
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRD::~GaussRD() {}
+GaussRD::~GaussRD() {
+  if (m_mc_cloner) {
+    delete m_mc_cloner;
+  }
+}
 
 //=============================================================================
 // service initialization
@@ -55,6 +60,7 @@ GaussRD::~GaussRD() {}
 StatusCode GaussRD::initialize() {
   // initialize the base class
   StatusCode sc = Service::initialize();
+  m_mc_cloner = new MCCloner();
   if (sc.isFailure()) {
     return sc;
   }
@@ -66,6 +72,7 @@ StatusCode GaussRD::initialize() {
 // service finalization
 //=============================================================================
 StatusCode GaussRD::finalize() {
+  m_mc_cloner->clear();
   ///  finalize the base class
   return Service::finalize();
 }
@@ -86,6 +93,9 @@ bool GaussRD::registerNewEvent() {
       debug() << " Redecay counter " << m_rd_counter << " equal to " << m_max_rd_counter << ". Returning true." << endmsg;
     }
     m_rd_counter = 0;
+    //Won't need any of the copied objects anymore.
+    //Need empty cloner for the next incoming event.
+    m_mc_cloner->clear();
     return true;
   }
 }

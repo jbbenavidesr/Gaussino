@@ -16,6 +16,8 @@
 #include "G4Event.hh"
 #include "G4PrimaryVertex.hh"
 
+class MCCloner;
+
 static const InterfaceID IID_IGaussRDStr(123, 1 , 0);
 
 /** @class IGaussRDStr IGaussRDStr.h GiGa/IGaussRDStr.h
@@ -68,7 +70,7 @@ class IGaussRDStr : virtual public IService {
    *  @param G4Event*& event
    *  @return status code
    */
-  // virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle*& part, HepMC::GenVertex *& vertex) const = 0 ;
+  virtual MCCloner* mcCloner() = 0 ;
 
   protected:
   /// virtual destructor

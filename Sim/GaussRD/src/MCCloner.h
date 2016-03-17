@@ -10,18 +10,22 @@
 class MCCloner {
   public:
   MCCloner();
-  virtual ~MCCloner();  // Deletes every clone created
+  virtual ~MCCloner();
 
   LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp);
   LHCb::MCParticle* getStoredMCP(const LHCb::MCParticle* mcp);
+  LHCb::MCParticles* getClonedMCPs();
 
   LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex);
   LHCb::MCVertex* getStoredMCV(const LHCb::MCVertex* mcv);
+  LHCb::MCVertices* getClonedMCVs();
 
   LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit);
   LHCb::MCHit* getStoredMCHit(const LHCb::MCHit* mchit);
+  LHCb::MCHits* getClonedMCHits();
 
   void clear();
+  MCCloner* DeepClone();
 
   private:
   LHCb::MCParticle* cloneKeyedMCP(const LHCb::MCParticle* mcp);
@@ -42,6 +46,7 @@ class MCCloner {
   std::map<const LHCb::MCParticle*, LHCb::MCParticle*> m_mcps;
   std::map<const LHCb::MCVertex*, LHCb::MCVertex*> m_mcvs;
   std::map<const LHCb::MCHit*, LHCb::MCHit*> m_mchit;
+
 };
 
 #endif

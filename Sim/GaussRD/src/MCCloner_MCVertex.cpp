@@ -39,3 +39,11 @@ LHCb::MCVertex* MCCloner::doCloneMCV(const LHCb::MCVertex* vertex) {
 
   return clone;
 }
+
+LHCb::MCVertices* MCCloner::getClonedMCVs() {
+  auto temp = new LHCb::MCVertices();
+  for (auto& v : m_mcvs) {
+    temp->insert(v.second);
+  }
+  return temp;
+}

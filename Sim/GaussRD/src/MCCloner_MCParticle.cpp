@@ -73,3 +73,11 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
 
   return clone;
 }
+
+LHCb::MCParticles* MCCloner::getClonedMCPs() {
+  auto temp = new LHCb::MCParticles();
+  for (auto& p : m_mcps) {
+    temp->insert(p.second);
+  }
+  return temp;
+}

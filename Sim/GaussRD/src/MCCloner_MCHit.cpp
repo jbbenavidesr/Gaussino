@@ -53,3 +53,11 @@ LHCb::MCHit* MCCloner::doCloneMCHit(const LHCb::MCHit* mchit) {
 
   return clone;
 }
+
+LHCb::MCHits* MCCloner::getClonedMCHits() {
+  auto temp = new LHCb::MCHits();
+  for (auto& h : m_mchit) {
+    temp->add(h.second);
+  }
+  return temp;
+}

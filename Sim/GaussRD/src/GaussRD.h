@@ -26,6 +26,7 @@
 class ISvcLocator;
 template <class TYPE>
 class SvcFactory;
+class MCCloner;
 
 /**  @class GaussRD GaussRD.h
  *
@@ -63,6 +64,13 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *  @return bool
    */
   virtual bool registerNewEvent() override;
+
+  //Implementation of the storage interface IGaussRDStr
+  
+  /** Returns a pointer to the internal MCCloner instance,
+   *  @return MCCloner*
+   */
+  virtual MCCloner* mcCloner() override {return m_mc_cloner;};
 
   //Implementation of the storage interface IGaussRDStr
 
@@ -107,10 +115,12 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual ~GaussRD();
 
   private:
+  MCCloner* m_mc_cloner;
 
   //Counter and max event number
   size_t m_rd_counter;
   size_t m_max_rd_counter;
+
   
 };
 
