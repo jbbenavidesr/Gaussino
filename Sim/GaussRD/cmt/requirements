@@ -13,6 +13,7 @@ branches GaussRD doc cmt src
 #============================================================================
 use GaudiPolicy   v* 
 use MCEvent       v* Event
+use PhysEvent     * Event
 use GaussTools    v* Sim
 use GenEvent      v*  Event
 use GaussTools    v*  Sim
