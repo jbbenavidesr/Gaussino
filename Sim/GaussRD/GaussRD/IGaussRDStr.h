@@ -17,8 +17,12 @@
 #include "G4PrimaryVertex.hh"
 
 class MCCloner;
+#include "Event/Particle.h"
+#include "Event/MCParticle.h"
+#include "Event/MCHit.h"
+#include "Event/MCCaloHit.h"
 
-static const InterfaceID IID_IGaussRDStr(123, 1 , 0);
+static const InterfaceID IID_IGaussRDStr(123, 1, 0);
 
 /** @class IGaussRDStr IGaussRDStr.h GiGa/IGaussRDStr.h
  *
@@ -31,7 +35,7 @@ static const InterfaceID IID_IGaussRDStr(123, 1 , 0);
 class IGaussRDStr : virtual public IService {
   public:
   /// Retrieve interface ID
-  static const InterfaceID& interfaceID(){return IID_IGaussRDStr;};
+  static const InterfaceID& interfaceID() { return IID_IGaussRDStr; };
 
   /**  initialize
    *   @return status code
@@ -44,33 +48,25 @@ class IGaussRDStr : virtual public IService {
   virtual StatusCode finalize() = 0;
 
   public:
-  /** Store simualted G4 underlying event for the underlying event
+  /** Functions to save the different MC objects.
+   *  string argument allows storage split by the string.
+   *  Necessary as e.g. MCHits are stored seperately for
+   *  each subdetector in the GetTrackerHitsAlg
    *
-   *  @param G4Event* event
-   *  @return status code
+   *  @param Pointer to the object to clone.
+   *  @param Optional string. e.g. TES location
    */
-  // virtual StatusCode  saveJunkG4Event( G4Event* event ) = 0 ;
+  virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) = 0;
+  virtual LHCb::MCParticles* getClonedMCPs() = 0;
 
-  /** Load the stored G4 event for the underlying event
-   *
-   *  @param G4Event*& event
-   *  @return status code
-   */
-  // virtual StatusCode  loadJunkG4Event( G4Event* & event ) const = 0 ;
+  virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) = 0;
+  virtual LHCb::MCVertices* getClonedMCVs() = 0;
 
-  /** Save the signal particle and its origin vertex for redecay
-   *
-   *  @param G4Event*& event
-   *  @return status code
-   */
-  // virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle* part, HepMC::GenVertex * vertex) = 0 ;
+  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) = 0;
+  virtual LHCb::MCHits* getClonedMCHits(const std::string& vol) = 0;
 
-  /** Load the signal particle and its origin vertex for redecay
-   *
-   *  @param G4Event*& event
-   *  @return status code
-   */
-  virtual MCCloner* mcCloner() = 0 ;
+  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) = 0;
+  virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) = 0;
 
   protected:
   /// virtual destructor

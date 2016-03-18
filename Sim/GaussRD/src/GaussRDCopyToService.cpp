@@ -30,7 +30,7 @@ GaussRDCopyToService::GaussRDCopyToService( const std::string& Name   ,
   , m_gaussRDSvcName ( "GaussRD" ) 
   , m_gaussRDSvc     ( 0         )
 { 
-  declareProperty( "GaussRD" , m_gaussRDSvcName ) ; 
+  declareProperty( "GaussRD" , m_gaussRDSvcName="GaussRD" ) ; 
   declareProperty("Particles",
 		  m_particlesLocation = LHCb::MCParticleLocation::Default,
 		  "Location to place the MCParticles.");

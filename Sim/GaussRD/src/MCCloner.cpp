@@ -27,14 +27,28 @@ MCCloner* MCCloner::DeepClone(){
   for (auto& m : m_mcvs) {
     new_cloner->cloneMCV(m.second);
   }
-  for (auto& m : m_mchit) {
-    new_cloner->cloneMCHit(m.second);
+  for (auto& s : m_mchit) {
+    for (auto& m : s.second) {
+      delete m.second;
+    }
+  }
+  for (auto& s : m_mccalohit) {
+    for (auto& m : s.second) {
+      delete m.second;
+    }
   }
 
   return new_cloner;
 }
 
 MCCloner::MCCloner() : m_mcps(), m_mcvs(), m_mchit() {}
+
+void MCCloner::clear_no_deletion() {
+  m_mcps.clear();
+  m_mcvs.clear();
+  m_mchit.clear();
+  m_mccalohit.clear();
+}
 
 void MCCloner::clear() {
   // Remove all objects created by the cloner.
@@ -46,11 +60,17 @@ void MCCloner::clear() {
   for (auto& m : m_mcvs) {
     delete m.second;
   }
-  for (auto& m : m_mchit) {
-    delete m.second;
+  for (auto& s : m_mchit) {
+    for (auto& m : s.second) {
+      delete m.second;
+    }
   }
-  m_mcps.clear();
-  m_mcvs.clear();
-  m_mchit.clear();
+  for (auto& s : m_mccalohit) {
+    for (auto& m : s.second) {
+      delete m.second;
+    }
+  }
+  clear_no_deletion();
 }
+
 MCCloner::~MCCloner() {}

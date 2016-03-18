@@ -22,6 +22,7 @@ static const InterfaceID IID_IGaussRDCtr(123, 1 , 0);
 
 class IGaussRDCtr : virtual public IService
 {
+  friend class GaussRDCtrFilter;
 public:
   
   /// Retrieve interface ID
@@ -39,17 +40,22 @@ public:
 
 public:
   
+
+  virtual int whatShouldIDo() const = 0;
+  virtual void setPhase(int p) const = 0;
+
+protected:
+  
+  /// virtual destructor
+  virtual ~IGaussRDCtr(){};
+
+private:
   /** Registers a new event, returns false if the UD is already simulated and should be reused.
    *  Returns true if everything needs to be redone and deletes the internal storage objects.
    *
    *  @return bool
    */
   virtual bool registerNewEvent() = 0 ;
-
-protected:
-  
-  /// virtual destructor
-  virtual ~IGaussRDCtr(){};
 
 };
 

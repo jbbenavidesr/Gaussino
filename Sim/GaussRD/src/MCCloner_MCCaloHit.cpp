@@ -1,16 +1,23 @@
 #include "MCCloner.h"
 
-LHCb::MCCaloHit* MCCloner::getStoredMCCaloHit(const LHCb::MCCaloHit* mccalohit) {
-  auto result = m_mccalohit.find(mccalohit);
-  if (result == m_mccalohit.end()) {
+LHCb::MCCaloHit* MCCloner::getStoredMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol) {
+  auto volmap = m_mccalohit.find(vol);
+  if (volmap == m_mccalohit.end()) {
+    auto temp = std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>();
+    m_mccalohit.insert(std::pair<std::string, std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>>(vol, temp));
     return nullptr;
   } else {
-    return result->second;
+    auto result = (*volmap).second.find(mccalohit);
+    if (result == (*volmap).second.end()) {
+      return nullptr;
+    } else {
+      return result->second;
+    }
   }
 }
 
-LHCb::MCCaloHit* MCCloner::cloneKeyedMCCaloHit(const LHCb::MCCaloHit* mccalohit) {
-  auto clone = getStoredMCCaloHit(mccalohit);
+LHCb::MCCaloHit* MCCloner::cloneKeyedMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol) {
+  auto clone = getStoredMCCaloHit(mccalohit, vol);
   if (!clone) {
     // Copy all the properties. Matching mc particle will be selected
     // later.
@@ -19,23 +26,23 @@ LHCb::MCCaloHit* MCCloner::cloneKeyedMCCaloHit(const LHCb::MCCaloHit* mccalohit)
     clone->setCellID(mccalohit->cellID());
     clone->setActiveE(mccalohit->activeE());
     clone->setSensDetID(mccalohit->sensDetID());
-    m_mccalohit.insert(std::pair<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>(mccalohit, clone));
+    m_mccalohit[vol].insert(std::pair<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>(mccalohit, clone));
   }
 
   return clone;
 }
 
-LHCb::MCCaloHit* MCCloner::cloneMCCaloHit(const LHCb::MCCaloHit* mccalohit) {
+LHCb::MCCaloHit* MCCloner::cloneMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol) {
   if (!mccalohit) return NULL;
-  LHCb::MCCaloHit* clone = getStoredMCCaloHit(mccalohit);
-  return (clone ? clone : this->doCloneMCCaloHit(mccalohit));
+  LHCb::MCCaloHit* clone = getStoredMCCaloHit(mccalohit, vol);
+  return (clone ? clone : this->doCloneMCCaloHit(mccalohit, vol));
 }
 
-LHCb::MCCaloHit* MCCloner::doCloneMCCaloHit(const LHCb::MCCaloHit* mccalohit) {
+LHCb::MCCaloHit* MCCloner::doCloneMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol) {
   if (!mccalohit) return NULL;
 
   // Clone the MCCaloHits
-  LHCb::MCCaloHit* clone = cloneKeyedMCCaloHit(mccalohit);
+  LHCb::MCCaloHit* clone = cloneKeyedMCCaloHit(mccalohit, vol);
   // Fix the MCParticle relation of the clone
   auto org_part = mccalohit->particle();
 
@@ -52,10 +59,16 @@ LHCb::MCCaloHit* MCCloner::doCloneMCCaloHit(const LHCb::MCCaloHit* mccalohit) {
   return clone;
 }
 
-LHCb::MCCaloHits* MCCloner::getClonedMCCaloHits() {
+LHCb::MCCaloHits* MCCloner::getClonedMCCaloHits(const std::string& vol) {
   auto temp = new LHCb::MCCaloHits();
-  for (auto& h : m_mccalohit) {
-    temp->add(h.second);
+  auto volmap = m_mccalohit.find(vol);
+
+  if (volmap == m_mccalohit.end()) {
+    return nullptr;
+  } else {
+    for (auto& h : (*volmap).second) {
+      temp->add(h.second);
+    }
+    return temp;
   }
-  return temp;
 }

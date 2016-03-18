@@ -40,68 +40,56 @@ class MCCloner;
 class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaussRDCtr {
   /// friend factory
   friend class SvcFactory<GaussRD>;
+  // Declare the filter to activate the generation phase as friend so noone else
+  // gets to access the registerNewEvent function.
+  friend class GaussRDCtrFilter;
 
   public:
   /// useful typedef
   typedef std::vector<std::string> Strings;
 
-  
-  /**  initialize 
-   *   @return status code 
+  /**  initialize
+   *   @return status code
    */
-  virtual StatusCode   initialize() override;
-  
-  /**  initialize 
-   *   @return status code 
-   */
-  virtual StatusCode   finalize  () override;
+  virtual StatusCode initialize() override;
 
-  //Implementation of the control interface IGaussRDCtr
-  
-  /** Registers a new event, returns false if the UD is already simulated and should be reused.
-   *  Returns true if everything needs to be redone and deletes the internal storage objects.
+  /**  initialize
+   *   @return status code
+   */
+  virtual StatusCode finalize() override;
+
+  // Implementation of the control interface IGaussRDCtr
+
+  /** Allows any algorithm to query the service and ask what we currently up to.
+   * 0 - default running, no redecay etc.
+   * 1 - UE simulation phase
+   * 2 - Signal simulation phase
+   *  @return int
+   */
+  virtual int whatShouldIDo() const override;
+  virtual void setPhase(int p) override { m_phase = p; }
+
+  // Implementation of the storage interface IGaussRDStr
+  //
+  /** Functions to save the different MC objects.
+   *  string argument allows storage split by the string.
+   *  Necessary as e.g. MCHits are stored seperately for
+   *  each subdetector in the GetTrackerHitsAlg
    *
-   *  @return bool
+   *  @param Pointer to the object to clone.
+   *  @param Optional string. e.g. TES location
    */
-  virtual bool registerNewEvent() override;
+  virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
+  virtual LHCb::MCParticles* getClonedMCPs() override;
 
-  //Implementation of the storage interface IGaussRDStr
-  
-  /** Returns a pointer to the internal MCCloner instance,
-   *  @return MCCloner*
-   */
-  virtual MCCloner* mcCloner() override {return m_mc_cloner;};
+  virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) override;
+  virtual LHCb::MCVertices* getClonedMCVs() override;
 
-  //Implementation of the storage interface IGaussRDStr
+  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) override;
+  virtual LHCb::MCHits* getClonedMCHits(const std::string& vol) override;
 
-  /** Store simualted G4 underlying event for the underlying event
-   *
-   *  @param G4Event* event
-   *  @return status code  
-   */
-  //virtual StatusCode  saveJunkG4Event( G4Event* event ) override;
-
-  /** Load the stored G4 event for the underlying event
-   *
-   *  @param G4Event*& event
-   *  @return status code  
-   */
-  //virtual StatusCode  loadJunkG4Event( G4Event* & event ) const override;
-
-  /** Save the signal particle and its origin vertex for redecay
-   *
-   *  @param G4Event*& event
-   *  @return status code  
-   */
-  //virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle* part, HepMC::GenVertex * vertex) override;
-
-  /** Load the signal particle and its origin vertex for redecay
-   *
-   *  @param G4Event*& event
-   *  @return status code  
-   */
-  //virtual StatusCode  saveSignalGenInfo( HepMC::GenParticle*& part, HepMC::GenVertex *& vertex) const override;
-  
+  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) override;
+  virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) override;
 
   protected:
   /** standard constructor
@@ -115,13 +103,19 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual ~GaussRD();
 
   private:
+  /** Registers a new event, returns false if the UD is already simulated and should be reused.
+   *  Returns true if everything needs to be redone and deletes the internal storage objects.
+   *
+   *  @return bool
+   */
+  virtual bool registerNewEvent() override;
   MCCloner* m_mc_cloner;
+  MCCloner* m_mc_cloner_copy;
 
-  //Counter and max event number
+  // Counter and max event number
   size_t m_rd_counter;
   size_t m_max_rd_counter;
-
-  
+  int m_phase;
 };
 
 #endif  ///<  REDECAY_SERVICE_H
