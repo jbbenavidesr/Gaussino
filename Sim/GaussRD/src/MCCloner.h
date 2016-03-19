@@ -26,13 +26,13 @@ class MCCloner {
   LHCb::MCVertex* getStoredMCV(const LHCb::MCVertex* mcv);
   LHCb::MCVertices* getClonedMCVs();
 
-  LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string & vol);
-  LHCb::MCHit* getStoredMCHit(const LHCb::MCHit* mchit, const std::string & vol);
-  LHCb::MCHits* getClonedMCHits(const std::string & vol);
+  LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol);
+  LHCb::MCHit* getStoredMCHit(const LHCb::MCHit* mchit, const std::string& vol);
+  LHCb::MCHits* getClonedMCHits(const std::string& vol);
 
-  LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string & vol);
-  LHCb::MCCaloHit* getStoredMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string & vol);
-  LHCb::MCCaloHits* getClonedMCCaloHits(const std::string & vol);
+  LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol);
+  LHCb::MCCaloHit* getStoredMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol);
+  LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol);
 
   LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit);
   LHCb::MCRichHit* getStoredMCRichHit(const LHCb::MCRichHit* mchit);
@@ -61,11 +61,11 @@ class MCCloner {
   LHCb::MCVertex* cloneKeyedMCV(const LHCb::MCVertex* mcv);
   LHCb::MCVertex* doCloneMCV(const LHCb::MCVertex* mcVertex);
 
-  LHCb::MCHit* cloneKeyedMCHit(const LHCb::MCHit* mchit, const std::string & vol);
-  LHCb::MCHit* doCloneMCHit(const LHCb::MCHit* mchit, const std::string & vol);
+  LHCb::MCHit* cloneKeyedMCHit(const LHCb::MCHit* mchit, const std::string& vol);
+  LHCb::MCHit* doCloneMCHit(const LHCb::MCHit* mchit, const std::string& vol);
 
-  LHCb::MCCaloHit* cloneKeyedMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string & vol);
-  LHCb::MCCaloHit* doCloneMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string & vol);
+  LHCb::MCCaloHit* cloneKeyedMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol);
+  LHCb::MCCaloHit* doCloneMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol);
 
   LHCb::MCRichHit* cloneKeyedMCRichHit(const LHCb::MCRichHit* mchit);
   LHCb::MCRichHit* doCloneMCRichHit(const LHCb::MCRichHit* mchit);
