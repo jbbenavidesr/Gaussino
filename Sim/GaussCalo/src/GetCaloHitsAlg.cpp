@@ -89,11 +89,11 @@ StatusCode GetCaloHitsAlg::execute() {
 
   // Register output container to contain MCCaloHits
   LHCb::MCCaloHits * hits;
-  if(m_gaussRDCtrSvc->whatShouldIDo()==1){
-    hits = m_gaussRDStrSvc->getClonedMCCaloHits(m_hitsLocation);
-  } else {
+  //if(m_gaussRDCtrSvc->whatShouldIDo()==2){
+    //hits = m_gaussRDStrSvc->getClonedMCCaloHits(m_hitsLocation);
+  //} else {
     hits = new LHCb::MCCaloHits();
-  }
+  //}
   put( hits , m_hitsLocation ) ;
   
   // Get the G4 hit collections corresponding to Calo

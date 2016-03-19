@@ -133,11 +133,11 @@ StatusCode GetTrackerHitsAlg::execute() {
   // because triggers convertion
   LHCb::MCHits* hits;
   //If we simulate the signal candidate, load UE hits
-  if(m_gaussRDCtrSvc->whatShouldIDo()==1){
-    hits = m_gaussRDStrSvc->getClonedMCHits(m_hitsLocation);
-  } else {
-    hits = new LHCb::MCHits();
-  }
+  //if(m_gaussRDCtrSvc->whatShouldIDo()==2){
+    //hits = m_gaussRDStrSvc->getClonedMCHits(m_hitsLocation);
+  //} else {
+  hits = new LHCb::MCHits();
+  //}
   put( hits, m_hitsLocation );
   //Get number of already properly processed tracks to make sure everything was
   //converted.

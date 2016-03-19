@@ -27,14 +27,26 @@ MCCloner* MCCloner::DeepClone(){
   for (auto& m : m_mcvs) {
     new_cloner->cloneMCV(m.second);
   }
+  for (auto& m : m_mcrichhit) {
+    new_cloner->cloneMCRichHit(m.second);
+  }
+  for (auto& m : m_mcrichops) {
+    new_cloner->cloneMCRichOpticalPhoton(m.second);
+  }
+  for (auto& m : m_mcrichsegs) {
+    new_cloner->cloneMCRichSegment(m.second);
+  }
+  for (auto& m : m_mcrichtracks) {
+    new_cloner->cloneMCRichTrack(m.second);
+  }
   for (auto& s : m_mchit) {
     for (auto& m : s.second) {
-      delete m.second;
+        new_cloner->cloneMCHit(m.second, s.first);
     }
   }
   for (auto& s : m_mccalohit) {
     for (auto& m : s.second) {
-      delete m.second;
+        new_cloner->cloneMCCaloHit(m.second, s.first);
     }
   }
 
@@ -48,6 +60,10 @@ void MCCloner::clear_no_deletion() {
   m_mcvs.clear();
   m_mchit.clear();
   m_mccalohit.clear();
+  m_mcrichhit.clear();
+  m_mcrichops.clear();
+  m_mcrichsegs.clear();
+  m_mcrichtracks.clear();
 }
 
 void MCCloner::clear() {
@@ -58,6 +74,18 @@ void MCCloner::clear() {
     delete m.second;
   }
   for (auto& m : m_mcvs) {
+    delete m.second;
+  }
+  for (auto& m : m_mcrichhit) {
+    delete m.second;
+  }
+  for (auto& m : m_mcrichops) {
+    delete m.second;
+  }
+  for (auto& m : m_mcrichsegs) {
+    delete m.second;
+  }
+  for (auto& m : m_mcrichtracks) {
     delete m.second;
   }
   for (auto& s : m_mchit) {
