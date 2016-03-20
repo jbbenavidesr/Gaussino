@@ -36,6 +36,7 @@ LHCb::MCRichHit* MCCloner::cloneKeyedMCRichHit(const LHCb::MCRichHit* mchit) {
         clone->setHpdReflKapton(mchit->hpdReflKapton());
         clone->setHpdReflPCQW(mchit->hpdReflPCQW());
         m_mcrichhit.insert(std::pair<const LHCb::MCRichHit*, LHCb::MCRichHit*>(mchit, clone));
+        m_list_mcrichhits->push_back(clone);
     }
 
     return clone;
@@ -69,16 +70,9 @@ LHCb::MCRichHit* MCCloner::doCloneMCRichHit(const LHCb::MCRichHit* mchit) {
     return clone;
 }
 
-LHCb::MCHits* MCCloner::getClonedMCHits(const std::string& vol) {
-    auto temp = new LHCb::MCHits();
-    auto volmap = m_mchit.find(vol);
-
-    if (volmap == m_mchit.end()) {
-        return nullptr;
-    } else {
-        for (auto& h : (*volmap).second) {
-            temp->add(h.second);
-        }
-        return temp;
+LHCb::MCRichHits* MCCloner::getClonedMCRichHits() {
+    if(!m_list_mcrichhits){
+        m_list_mcrichhits = new LHCb::MCRichHits();
     }
+    return m_list_mcrichhits;
 }

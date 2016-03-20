@@ -97,6 +97,16 @@ class MCCloner {
 
   std::map<std::string, std::map<const LHCb::MCHit*, LHCb::MCHit*>> m_mchit;
   std::map<std::string, std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>> m_mccalohit;
+
+  //Storage for the containers
+  LHCb::MCParticles* m_list_mcps = nullptr;
+  LHCb::MCVertices* m_list_mcvs = nullptr;
+  std::map<std::string, LHCb::MCHits*> m_list_mchits;
+  std::map<std::string, LHCb::MCCaloHits*> m_list_mccalohit;
+  LHCb::MCRichHits* m_list_mcrichhits = nullptr;
+  LHCb::MCRichOpticalPhotons* m_list_mcrichops = nullptr;
+  LHCb::MCRichSegments* m_list_mcrichsegs = nullptr;
+  LHCb::MCRichTracks* m_list_mcrichtracks = nullptr;
 };
 
 #endif

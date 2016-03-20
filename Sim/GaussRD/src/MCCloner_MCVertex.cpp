@@ -14,6 +14,7 @@ LHCb::MCVertex* MCCloner::cloneKeyedMCV(const LHCb::MCVertex* mcv) {
   if (!clone) {
     clone = mcv->clone();
     m_mcvs.insert(std::pair<const LHCb::MCVertex*, LHCb::MCVertex*>(mcv, clone));
+    getClonedMCVs()->insert(clone);
   }
   return clone;
 }
@@ -41,9 +42,8 @@ LHCb::MCVertex* MCCloner::doCloneMCV(const LHCb::MCVertex* vertex) {
 }
 
 LHCb::MCVertices* MCCloner::getClonedMCVs() {
-  auto temp = new LHCb::MCVertices();
-  for (auto& v : m_mcvs) {
-    temp->insert(v.second);
+  if (!m_list_mcvs) {
+    m_list_mcvs = new LHCb::MCVertices();
   }
-  return temp;
+  return m_list_mcvs;
 }

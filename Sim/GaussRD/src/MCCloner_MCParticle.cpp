@@ -14,6 +14,7 @@ LHCb::MCParticle* MCCloner::cloneKeyedMCP(const LHCb::MCParticle* mcp) {
   if (!clone) {
     clone = mcp->clone();
     m_mcps.insert(std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
+    getClonedMCPs()->insert(clone);
   }
   return clone;
 }
@@ -75,9 +76,8 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
 }
 
 LHCb::MCParticles* MCCloner::getClonedMCPs() {
-  auto temp = new LHCb::MCParticles();
-  for (auto& p : m_mcps) {
-    temp->insert(p.second);
+  if(!m_list_mcps){
+      m_list_mcps = new LHCb::MCParticles();
   }
-  return temp;
+  return m_list_mcps;
 }
