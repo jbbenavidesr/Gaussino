@@ -47,13 +47,8 @@ StatusCode GetMCRichOpticalPhotonsAlg::execute()
   debug() << "Execute" << endmsg;
 
   // Create the photons and put them in the TES
-  MCRichOpticalPhotons * photons; 
-  if ( exist<MCRichOpticalPhotons>(dataLocationInTES()) ) { 
-    photons = get<MCRichOpticalPhotons>(dataLocationInTES()); 
-  } else { 
-    photons = new MCRichOpticalPhotons(); 
-    put( photons, dataLocationInTES() ); 
-  } 
+  MCRichOpticalPhotons * photons = new MCRichOpticalPhotons();
+  put( photons, dataLocationInTES() );
 
   // Get the G4 necessary hit collections from GiGa
   G4HCofThisEvent* hitscollections = 0;

@@ -50,14 +50,9 @@ StatusCode GetMCRichSegmentsAlg::execute()
   debug() << "Execute" << endmsg;
 
   // new container for segments
-  MCRichSegments * segments; 
-  if ( exist<MCRichSegments>(dataLocationInTES()) ) { 
-    segments = get<MCRichSegments>(dataLocationInTES()); 
-  } else { 
-    segments = new  MCRichSegments (); 
-    put( segments, dataLocationInTES() ); 
-    segments->reserve( 100 ); 
-  } 
+  MCRichSegments * segments = new  MCRichSegments ();
+  put( segments, dataLocationInTES() );
+  segments->reserve( 100 );
 
   // Get the G4 necessary hit collections from GiGa
   G4HCofThisEvent* hitscollections = 0;
