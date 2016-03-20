@@ -8,10 +8,6 @@
 #include "GiGa/IGiGaSvc.h"
 #include "GiGa/GiGaHitsByName.h"
 
-// from GaussRD
-#include "GaussRD/IGaussRDCtr.h"
-#include "GaussRD/IGaussRDStr.h"
-
 // from GiGaCnv
 #include "GiGaCnv/IGiGaKineCnvSvc.h" 
 #include "GiGaCnv/IGiGaCnvSvcLocation.h"
@@ -46,7 +42,6 @@ GetCaloHitsAlg::GetCaloHitsAlg( const std::string& name,
     declareProperty( "GiGaService" , m_gigaSvcName = "GiGa" ) ;
     declareProperty( "KineCnvService" , 
                      m_kineSvcName = IGiGaCnvSvcLocation::Kine ) ;
-    declareProperty( "GaussRD" , m_gaussRDSvcName="GaussRD" ) ; 
     declareProperty( "MCHitsLocation" , m_hitsLocation = "" ) ;
     declareProperty( "CollectionName" , m_colName = "" ) ;
     declareProperty( "MCParticles"    , 
@@ -88,12 +83,7 @@ StatusCode GetCaloHitsAlg::execute() {
   debug() << "==> Execute" << endmsg ;
 
   // Register output container to contain MCCaloHits
-  LHCb::MCCaloHits * hits;
-  //if(m_gaussRDCtrSvc->whatShouldIDo()==2){
-    //hits = m_gaussRDStrSvc->getClonedMCCaloHits(m_hitsLocation);
-  //} else {
-    hits = new LHCb::MCCaloHits();
-  //}
+  LHCb::MCCaloHits * hits = new LHCb::MCCaloHits( ) ;
   put( hits , m_hitsLocation ) ;
   
   // Get the G4 hit collections corresponding to Calo
@@ -155,9 +145,6 @@ StatusCode GetCaloHitsAlg::execute() {
 
         // Now insert in output container
         hits -> add( mchit ) ;
-        if(m_gaussRDCtrSvc->whatShouldIDo()==1){
-          m_gaussRDStrSvc->cloneMCCaloHit(mchit, m_hitsLocation);
-        }
       }
     } 
   }

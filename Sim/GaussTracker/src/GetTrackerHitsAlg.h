@@ -9,8 +9,6 @@
 // Forward declarations
 class IGiGaSvc;
 class IGiGaKineCnvSvc;
-class IGaussRDCtr;
-class IGaussRDStr;
 class DetectorElement;
 class TrackerHit;
 namespace LHCb {
@@ -58,9 +56,6 @@ private:
 
   std::string        m_gigaSvcName;      ///< Name of GiGa Service
   std::string        m_kineSvcName;      ///< Name of GiGaCnv Service
-  std::string        m_gaussRDSvcName;
-  IGaussRDStr*       m_gaussRDStrSvc;
-  IGaussRDCtr*       m_gaussRDCtrSvc;
   IGiGaSvc*          m_gigaSvc;          ///< Pointer to GiGa Service
   IGiGaKineCnvSvc*   m_gigaKineCnvSvc;   ///< Pointer to GiGaKine Service
 

@@ -9,8 +9,6 @@
 // forward declarations
 class IGiGaSvc ;
 class IGiGaKineCnvSvc ;
-class IGaussRDCtr;
-class IGaussRDStr;
 
 /** @class GetCaloHitsAlg GetCaloHitsAlg.h
  *  Conversion from G4 hits to MC CaloHits
@@ -42,9 +40,6 @@ private:
   std::string m_colName ;
   /// Name of the MCParticles location
   std::string m_mcParticles ;
-  std::string        m_gaussRDSvcName;
-  IGaussRDStr*       m_gaussRDStrSvc;
-  IGaussRDCtr*       m_gaussRDCtrSvc;
 
   /// Pointer to the GiGa service
   IGiGaSvc * m_gigaSvc ;

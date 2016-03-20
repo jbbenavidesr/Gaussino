@@ -8,10 +8,6 @@
 #include "GiGa/IGiGaSvc.h"
 #include "GiGa/GiGaHitsByName.h"
 
-// from GaussRD
-#include "GaussRD/IGaussRDCtr.h"
-#include "GaussRD/IGaussRDStr.h"
-
 // from GiGaCnv
 #include "GiGaCnv/IGiGaKineCnvSvc.h" 
 #include "GiGaCnv/IGiGaCnvSvcLocation.h"
@@ -49,7 +45,6 @@ GetTrackerHitsAlg::GetTrackerHitsAlg( const std::string& name,
 {
   declareProperty( "GiGaService",    m_gigaSvcName  = "GiGa",
                    "The service handling the intreface to Geant4" );
-  declareProperty( "GaussRD" , m_gaussRDSvcName="GaussRD" ) ; 
   declareProperty( "KineCnvService", m_kineSvcName  = IGiGaCnvSvcLocation::Kine,
                    "The service keeping the relation between Geant4 kinematic and MCTruth" );
   declareProperty( "ExtendedInfo",   m_extendedInfo = false, 
@@ -102,8 +97,6 @@ StatusCode GetTrackerHitsAlg::initialize() {
   debug() << endmsg;
   
   m_gigaSvc = svc<IGiGaSvc>( m_gigaSvcName ); // GiGa has to already exist!
-  m_gaussRDCtrSvc= svc<IGaussRDCtr>( m_gaussRDSvcName);
-  m_gaussRDStrSvc= svc<IGaussRDStr>( m_gaussRDSvcName);
 
   // get kineCnv service that hold the MCParticle/Geant4 table list
   m_gigaKineCnvSvc = svc<IGiGaKineCnvSvc>( m_kineSvcName );
@@ -131,17 +124,8 @@ StatusCode GetTrackerHitsAlg::execute() {
   // Cannot use 
   // MCHits* hits = getOrCreate<MCHits,MCHits>( m_hitsLocation );
   // because triggers convertion
-  LHCb::MCHits* hits;
-  //If we simulate the signal candidate, load UE hits
-  //if(m_gaussRDCtrSvc->whatShouldIDo()==2){
-    //hits = m_gaussRDStrSvc->getClonedMCHits(m_hitsLocation);
-  //} else {
-  hits = new LHCb::MCHits();
-  //}
+  LHCb::MCHits* hits = new LHCb::MCHits();
   put( hits, m_hitsLocation );
-  //Get number of already properly processed tracks to make sure everything was
-  //converted.
-  size_t numOfHitsBefore = hits->size();
   
   // Get the G4 necessary hit collection from GiGa
   GiGaHitsByName col( m_colName );
@@ -167,7 +151,7 @@ StatusCode GetTrackerHitsAlg::execute() {
   // reserve elements on output container
   int numOfHits = hitCollection->entries();
   if( numOfHits > 0 ) {
-    hits->reserve(numOfHitsBefore + numOfHits );
+    hits->reserve( numOfHits );
   }
 
   // tranform G4Hit into MCHit and insert it in container
@@ -189,7 +173,7 @@ StatusCode GetTrackerHitsAlg::execute() {
   }
   
   // Check that all hits have been transformed
-  if( (size_t) (hits->size() - numOfHitsBefore) != (size_t) hitCollection->entries() ) {
+  if( (size_t) hits->size() != (size_t) hitCollection->entries() ) {
     return Error("MCHits and G4TrackerHitsCollection have different sizes!");
   }  
 
@@ -241,11 +225,6 @@ void GetTrackerHitsAlg::fillHit( TrackerHit* g4Hit, LHCb::MCHit* mcHit ) {
   } else {
     warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: "
               << trackID << endmsg;
-  }
-
-  //If we are processing the UE, clone the hits into the storage
-  if(m_gaussRDCtrSvc->whatShouldIDo()==1){
-    m_gaussRDStrSvc->cloneMCHit(mcHit, m_hitsLocation);
   }
   
 }
