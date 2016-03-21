@@ -42,7 +42,7 @@ public:
   
 
   virtual int whatShouldIDo() const = 0;
-  virtual void setPhase(int p) const = 0;
+  virtual void setPhase(int p) = 0;
 
 protected:
   

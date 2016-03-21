@@ -50,7 +50,12 @@ class MCCloner {
   LHCb::MCRichTrack* getStoredMCRichTrack(const LHCb::MCRichTrack* mchit);
   LHCb::MCRichTracks* getClonedMCRichTracks();
 
+  //This deletes the internal ObjectVector<> responsible for storing the hits. This will
+  //delete the stored objects as well so only use it when necessary.
   void clear();
+  //This clears the internal maps (does not delete the objects) and sets the pointers
+  //of the ObjectVectors to zero. Be sure to have them somehwere (e.g. in the TES)
+  //before proceding.
   void clear_no_deletion();
   MCCloner* DeepClone();
 

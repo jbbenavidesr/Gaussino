@@ -1,7 +1,7 @@
 // Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
 // from GaussRD
@@ -9,95 +9,144 @@
 
 // local
 #include "GaussRDCopyToService.h"
-#include "MCCloner.h"
+#include "Event/Particle.h"
+#include "Event/MCParticle.h"
+#include "Event/MCHit.h"
+#include "Event/MCCaloHit.h"
+#include "Event/MCRichHit.h"
+#include "Event/MCRichOpticalPhoton.h"
+#include "Event/MCRichSegment.h"
+#include "Event/MCRichTrack.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GaussRDCopyToService
 //
-// 
+//
 // 2016-03-15 : Gloria Corti
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( GaussRDCopyToService )
+DECLARE_ALGORITHM_FACTORY(GaussRDCopyToService)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDCopyToService::GaussRDCopyToService( const std::string& Name   ,
-                                    ISvcLocator*       SvcLoc )
-  : GaudiAlgorithm ( Name , SvcLoc ) 
-  , m_gaussRDSvcName ( "GaussRD" ) 
-  , m_gaussRDSvc     ( 0         )
-{ 
-  declareProperty( "GaussRD" , m_gaussRDSvcName="GaussRD" ) ; 
-  declareProperty("Particles",
-		  m_particlesLocation = LHCb::MCParticleLocation::Default,
-		  "Location to place the MCParticles.");
-  declareProperty("Vertices",
-		  m_verticesLocation = LHCb::MCVertexLocation::Default,
-		  "Location to place the MCVertices.");  
-  declareProperty( "MCHitsLocation", m_hitsLocation = "",
-                   "Location in TES where to put resulting MCHits" );
+GaussRDCopyToService::GaussRDCopyToService(const std::string& Name, ISvcLocator* SvcLoc)
+    : GaudiAlgorithm(Name, SvcLoc), m_gaussRDSvcName("GaussRD"), m_gaussRDSvc(0) {
+    declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
+    declareProperty("Particles", m_particlesLocation = LHCb::MCParticleLocation::Default, "Location to place the MCParticles.");
+    declareProperty("Vertices", m_verticesLocation = LHCb::MCVertexLocation::Default, "Location to place the MCVertices.");
+    declareProperty("MCHitsLocation", m_hitsLocations, "Location in TES where to put resulting MCHits");
+    declareProperty("MCCaloHitsLocation", m_calohitsLocations, "Location in TES where to put resulting MCCaloHits");
+    declareProperty("MCRichHitsLocation", m_richHitsLocation = LHCb::MCRichHitLocation::Default, "Location in TES where to put resulting MCRichHits");
+    declareProperty("MCRichOpticalPhotonsLocation", m_richOpticalPhotonsLocation = LHCb::MCRichOpticalPhotonLocation::Default,
+                    "Location in TES where to put resulting MCRichOpticalPhotons");
+    declareProperty("MCRichSegmentsLocation", m_richSegmentsLocation = LHCb::MCRichSegmentLocation::Default,
+                    "Location in TES where to put resulting MCRichSegments");
+    declareProperty("MCRichTracksLocation", m_richTracksLocation = LHCb::MCRichTrackLocation::Default,
+                    "Location in TES where to put resulting MCRichTracks");
 }
 
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDCopyToService::~GaussRDCopyToService() {} 
+GaussRDCopyToService::~GaussRDCopyToService() {}
 
 //=============================================================================
 // Initialization
 //=============================================================================
-StatusCode GaussRDCopyToService::initialize() 
-{
-  StatusCode sc = GaudiAlgorithm::initialize() ;
-  if( sc.isFailure() ) { return sc ; }
+StatusCode GaussRDCopyToService::initialize() {
+    StatusCode sc = GaudiAlgorithm::initialize();
+    if (sc.isFailure()) {
+        return sc;
+    }
 
-  if( "" == m_hitsLocation ) {
-    fatal() << "Property MCHitsLocation need to be set! " << endmsg;
-    return StatusCode::FAILURE;
-  }
-  
-  m_gaussRDSvc = svc<IGaussRDStr>( m_gaussRDSvcName , true ) ;
-  
-  return StatusCode::SUCCESS ;
+    m_gaussRDSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+
+    return StatusCode::SUCCESS;
 }
 
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDCopyToService::execute() 
-{  
-  if ( nullptr == gaussRDSvc() ) 
-  { m_gaussRDSvc = svc<IGaussRDStr>( m_gaussRDSvcName , true ) ; }
-  
-  if ( nullptr == gaussRDSvc() ) 
-  { return Error ( " execute(): IGaussRDCtr* points to NULL" ) ;}
+StatusCode GaussRDCopyToService::execute() {
+    if (nullptr == gaussRDSvc()) {
+        m_gaussRDSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    }
 
-  auto cloner = m_gaussRDSvc->mcCloner();
+    if (nullptr == gaussRDSvc()) {
+        return Error(" execute(): IGaussRDCtr* points to NULL");
+    }
 
-  //Stuff all the MCParticles in there
-  auto m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
-  for(auto & part: *m_particleContainer){
-    cloner->cloneMCP(part);
-  }
+    auto m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_particleContainer->size() << " MCParticles from " << m_particlesLocation << endmsg;
+    }
+    for (auto& part : *m_particleContainer) {
+        m_gaussRDSvc->cloneMCP(part);
+    }
 
-  //Stuff all the MCVertices in there
-  auto m_vertexContainer= get<LHCb::MCVertices>(m_verticesLocation);
-  for(auto & vtx: *m_vertexContainer){
-    cloner->cloneMCV(vtx);
-  }
+    auto m_vertexContainer = get<LHCb::MCVertices>(m_verticesLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_vertexContainer->size() << " MCVertices from " << m_verticesLocation << endmsg;
+    }
+    for (auto& vrt : *m_vertexContainer) {
+        m_gaussRDSvc->cloneMCV(vrt);
+    }
 
-  //Stuff all the MCHits in there
-  auto m_hitsContainer= get<LHCb::MCHits>(m_hitsLocation);
-  for(auto & hit: *m_hitsContainer){
-    cloner->cloneMCHit(hit);
-  }
+    for (auto& s : m_hitsLocations) {
+        auto m_hitsContainer = get<LHCb::MCHits>(s);
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "Copying " << m_hitsContainer->size() << " MCHits from " << s << endmsg;
+        }
+        for (auto& hit : *m_hitsContainer) {
+            m_gaussRDSvc->cloneMCHit(hit, s);
+        }
+    }
 
+    for (auto& s : m_calohitsLocations) {
+        auto m_calohitsContainer = get<LHCb::MCCaloHits>(s);
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "Copying " << m_calohitsContainer->size() << " MCCaloHits from " << s << endmsg;
+        }
+        for (auto& hit : *m_calohitsContainer) {
+            m_gaussRDSvc->cloneMCCaloHit(hit, s);
+        }
+    }
 
-  return StatusCode::SUCCESS;
+    auto m_richHitsContainer = get<LHCb::MCRichHits>(m_richHitsLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_richHitsContainer->size() << " MCRichHits from " << m_richHitsLocation<< endmsg;
+    }
+    for (auto& a : *m_richHitsContainer) {
+        m_gaussRDSvc->cloneMCRichHit(a);
+    }
+
+    auto m_richOpticalPhotonsContainer = get<LHCb::MCRichOpticalPhotons>(m_richOpticalPhotonsLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_richOpticalPhotonsContainer->size() << " MCRichOpticalPhotons from " << m_richOpticalPhotonsLocation<< endmsg;
+    }
+    for (auto& a : *m_richOpticalPhotonsContainer) {
+        m_gaussRDSvc->cloneMCRichOpticalPhoton(a);
+    }
+
+    auto m_richSegmentsContainer = get<LHCb::MCRichSegments>(m_richSegmentsLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_richSegmentsContainer->size() << " MCRichSegments from " << m_richSegmentsLocation<< endmsg;
+    }
+    for (auto& a : *m_richSegmentsContainer) {
+        m_gaussRDSvc->cloneMCRichSegment(a);
+    }
+
+    auto m_richTracksContainer = get<LHCb::MCRichTracks>(m_richTracksLocation);
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_richTracksContainer->size() << " MCRichTracks from " << m_richTracksLocation<< endmsg;
+    }
+    for (auto& a : *m_richTracksContainer) {
+        m_gaussRDSvc->cloneMCRichTrack(a);
+    }
+
+    return StatusCode::SUCCESS;
 }
-
 
 //=============================================================================

@@ -21,6 +21,10 @@ class MCCloner;
 #include "Event/MCParticle.h"
 #include "Event/MCHit.h"
 #include "Event/MCCaloHit.h"
+#include "Event/MCRichHit.h"
+#include "Event/MCRichOpticalPhoton.h"
+#include "Event/MCRichSegment.h"
+#include "Event/MCRichTrack.h"
 
 static const InterfaceID IID_IGaussRDStr(123, 1, 0);
 
@@ -67,6 +71,18 @@ class IGaussRDStr : virtual public IService {
 
   virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) = 0;
   virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) = 0;
+
+  virtual LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit) = 0;
+  virtual LHCb::MCRichHits* getClonedMCRichHits() = 0;
+
+  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) = 0;
+  virtual LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() = 0;
+
+  virtual LHCb::MCRichSegment* cloneMCRichSegment(const LHCb::MCRichSegment* mchit) = 0;
+  virtual LHCb::MCRichSegments* getClonedMCRichSegments() = 0;
+
+  virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) = 0;
+  virtual LHCb::MCRichTracks* getClonedMCRichTracks() = 0;
 
   protected:
   /// virtual destructor

@@ -91,6 +91,18 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) override;
   virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) override;
 
+  virtual LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit) override;
+  virtual LHCb::MCRichHits* getClonedMCRichHits() override;
+
+  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) override;
+  virtual LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() override;
+
+  virtual LHCb::MCRichSegment* cloneMCRichSegment(const LHCb::MCRichSegment* mchit) override;
+  virtual LHCb::MCRichSegments* getClonedMCRichSegments() override;
+
+  virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) override;
+  virtual LHCb::MCRichTracks* getClonedMCRichTracks() override;
+
   protected:
   /** standard constructor
    *  @see Service

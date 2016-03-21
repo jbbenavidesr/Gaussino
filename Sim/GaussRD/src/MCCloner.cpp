@@ -75,7 +75,7 @@ MCCloner* MCCloner::DeepClone() {
     return new_cloner;
 }
 
-MCCloner::MCCloner() : m_mcps(), m_mcvs(), m_mchit() {}
+MCCloner::MCCloner(){}
 
 void MCCloner::clear_no_deletion() {
     m_mcps.clear();
@@ -86,44 +86,27 @@ void MCCloner::clear_no_deletion() {
     m_mcrichops.clear();
     m_mcrichsegs.clear();
     m_mcrichtracks.clear();
+
+    m_list_mcps = nullptr;
+    m_list_mcvs = nullptr;
+    m_list_mcrichhits = nullptr;
+    m_list_mcrichops = nullptr;
+    m_list_mcrichsegs = nullptr;
+    m_list_mcrichtracks = nullptr;
+    m_list_mchits.clear();
+    m_list_mccalohit.clear();
 }
 
 void MCCloner::clear() {
     // Remove all objects created by the cloner.
     // Deletion of the object being cloned should be done
     // independently.
-    for (auto& m : m_mcps) {
-        delete m.second;
-    }
-    for (auto& m : m_mcvs) {
-        delete m.second;
-    }
-    for (auto& m : m_mcrichhit) {
-        delete m.second;
-    }
-    for (auto& m : m_mcrichops) {
-        delete m.second;
-    }
-    for (auto& m : m_mcrichsegs) {
-        delete m.second;
-    }
-    for (auto& m : m_mcrichtracks) {
-        delete m.second;
-    }
-    for (auto& s : m_mchit) {
-        for (auto& m : s.second) {
-            delete m.second;
-        }
-    }
-    for (auto& s : m_mccalohit) {
-        for (auto& m : s.second) {
-            delete m.second;
-        }
-    }
     delete m_list_mcps;
     delete m_list_mcvs;
     delete m_list_mcrichhits;
     delete m_list_mcrichops;
+    delete m_list_mcrichsegs;
+    delete m_list_mcrichtracks;
     for (auto& a : m_list_mchits) {
         delete a.second;
     }
