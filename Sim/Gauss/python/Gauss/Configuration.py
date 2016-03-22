@@ -2120,6 +2120,8 @@ class Gauss(LHCbConfigurableUser):
 ##             log.warning("No generator phase. Need input file")
 ##             return
 
+        ApplicationMgr().ExtSvc += [ "GaussRD" ]
+        GaussRD()
         if self.evtMax() <= 0:
             raise RuntimeError( "Generating events but selected '%s' events. Use LHCbApp().EvtMax " %self.evtMax() )
 
@@ -2742,8 +2744,8 @@ class Gauss(LHCbConfigurableUser):
                 GaussRDRetrieveFromService()]
             simSeq.Members += [loadSlotSeq]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
-            richpaddingSlotSeq.Members = GaussSequencer('RichHits').Members[4:]
-            GaussSequencer('RichHits').Members = GaussSequencer('RichHits').Members[:4]
+            richpaddingSlotSeq.Members = GaudiSequencer('RichHits').Members[4:]
+            GaudiSequencer('RichHits').Members = GaudiSequencer('RichHits').Members[:4]
             simSeq.Members += [richpaddingSlotSeq]
 
 
