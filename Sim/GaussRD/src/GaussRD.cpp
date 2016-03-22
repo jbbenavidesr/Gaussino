@@ -138,27 +138,27 @@ bool GaussRD::registerNewEvent() {
 int GaussRD::whatShouldIDo() const { return m_phase; }
 
 LHCb::MCParticle* GaussRD::cloneMCP(const LHCb::MCParticle* mcp) { return m_mc_cloner->cloneMCP(mcp); }
-LHCb::MCParticles* GaussRD::getClonedMCPs() { return m_mc_cloner_copy->getClonedMCPs(); };
+LHCb::MCParticles* GaussRD::getClonedMCPs() { return m_mc_cloner_copy->getClonedMCPs(); }
 
-LHCb::MCVertex* GaussRD::cloneMCV(const LHCb::MCVertex* mcVertex) { return m_mc_cloner->cloneMCV(mcVertex); };
-LHCb::MCVertices* GaussRD::getClonedMCVs() { return m_mc_cloner_copy->getClonedMCVs(); };
+LHCb::MCVertex* GaussRD::cloneMCV(const LHCb::MCVertex* mcVertex) { return m_mc_cloner->cloneMCV(mcVertex); }
+LHCb::MCVertices* GaussRD::getClonedMCVs() { return m_mc_cloner_copy->getClonedMCVs(); }
 
-LHCb::MCHit* GaussRD::cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) { return m_mc_cloner->cloneMCHit(mchit, vol); };
-LHCb::MCHits* GaussRD::getClonedMCHits(const std::string& vol) { return m_mc_cloner_copy->getClonedMCHits(vol); };
+LHCb::MCHit* GaussRD::cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) { return m_mc_cloner->cloneMCHit(mchit, vol); }
+LHCb::MCHits* GaussRD::getClonedMCHits(const std::string& vol) { return m_mc_cloner_copy->getClonedMCHits(vol); }
 
-LHCb::MCCaloHit* GaussRD::cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) { return m_mc_cloner->cloneMCCaloHit(mchit, vol); };
+LHCb::MCCaloHit* GaussRD::cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) { return m_mc_cloner->cloneMCCaloHit(mchit, vol); }
 LHCb::MCCaloHits* GaussRD::getClonedMCCaloHits(const std::string& vol) { return m_mc_cloner_copy->getClonedMCCaloHits(vol); }
 
-LHCb::MCRichHit* GaussRD::cloneMCRichHit(const LHCb::MCRichHit* mchit) { return m_mc_cloner->cloneMCRichHit(mchit); };
-LHCb::MCRichHits* GaussRD::getClonedMCRichHits() { return m_mc_cloner_copy->getClonedMCRichHits(); };
+LHCb::MCRichHit* GaussRD::cloneMCRichHit(const LHCb::MCRichHit* mchit) { return m_mc_cloner->cloneMCRichHit(mchit); }
+LHCb::MCRichHits* GaussRD::getClonedMCRichHits() { return m_mc_cloner_copy->getClonedMCRichHits(); }
 
 LHCb::MCRichOpticalPhoton* GaussRD::cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) {
   return m_mc_cloner->cloneMCRichOpticalPhoton(mchit);
 };
-LHCb::MCRichOpticalPhotons* GaussRD::getClonedMCRichOpticalPhotons() { return m_mc_cloner_copy->getClonedMCRichOpticalPhotons(); };
+LHCb::MCRichOpticalPhotons* GaussRD::getClonedMCRichOpticalPhotons() { return m_mc_cloner_copy->getClonedMCRichOpticalPhotons(); }
 
-LHCb::MCRichSegment* GaussRD::cloneMCRichSegment(const LHCb::MCRichSegment* mchit) { return m_mc_cloner->cloneMCRichSegment(mchit); };
-LHCb::MCRichSegments* GaussRD::getClonedMCRichSegments() { return m_mc_cloner_copy->getClonedMCRichSegments(); };
+LHCb::MCRichSegment* GaussRD::cloneMCRichSegment(const LHCb::MCRichSegment* mchit) { return m_mc_cloner->cloneMCRichSegment(mchit); }
+LHCb::MCRichSegments* GaussRD::getClonedMCRichSegments() { return m_mc_cloner_copy->getClonedMCRichSegments(); }
 
 LHCb::MCRichTrack* GaussRD::cloneMCRichTrack(const LHCb::MCRichTrack* mchit) { return m_mc_cloner->cloneMCRichTrack(mchit); }
-LHCb::MCRichTracks* GaussRD::getClonedMCRichTracks() { return m_mc_cloner_copy->getClonedMCRichTracks(); };
+LHCb::MCRichTracks* GaussRD::getClonedMCRichTracks() { return m_mc_cloner_copy->getClonedMCRichTracks(); }
