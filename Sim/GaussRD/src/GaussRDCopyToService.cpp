@@ -102,6 +102,10 @@ StatusCode GaussRDCopyToService::execute() {
     if (msgLevel(MSG::DEBUG)) {
         debug() << "Copying " << m_genCollisionsContainer->size() << " GenCollisions from " << m_GenCollisionsLocation << endmsg;
     }
+    for (auto& gc : *m_genCollisionsContainer) {
+        m_gaussRDStrSvc->cloneGenCollision(gc);
+    }
+
     auto m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
     if (msgLevel(MSG::DEBUG)) {
         debug() << "Copying " << m_particleContainer->size() << " MCParticles from " << m_particlesLocation << endmsg;

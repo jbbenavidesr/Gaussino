@@ -45,7 +45,7 @@ LHCb::GenCollision* MCCloner::doCloneGenCollision(const LHCb::GenCollision* gc) 
 }
 
 LHCb::GenCollisions* MCCloner::getClonedGenCollisions() {
-    if (!m_list_mcps) {
+    if (!m_list_gencollisions) {
         m_list_gencollisions = new LHCb::GenCollisions();
     }
     return m_list_gencollisions;
