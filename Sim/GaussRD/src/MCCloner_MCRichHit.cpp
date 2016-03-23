@@ -36,7 +36,7 @@ LHCb::MCRichHit* MCCloner::cloneKeyedMCRichHit(const LHCb::MCRichHit* mchit) {
         clone->setHpdReflKapton(mchit->hpdReflKapton());
         clone->setHpdReflPCQW(mchit->hpdReflPCQW());
         m_mcrichhit.insert(std::pair<const LHCb::MCRichHit*, LHCb::MCRichHit*>(mchit, clone));
-        m_list_mcrichhits->push_back(clone);
+        getClonedMCRichHits()->push_back(clone);
     }
 
     return clone;

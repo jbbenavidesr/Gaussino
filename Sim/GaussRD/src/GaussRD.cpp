@@ -44,6 +44,7 @@ GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
     : Service(name, svcloc), m_mc_cloner(nullptr), m_mc_cloner_copy(nullptr), m_rd_counter(0) {
   /// name of runmanager
   declareProperty("nRedecay", m_max_rd_counter = 100);
+  declareProperty("Phase", m_phase= 0);
 }
 
 //=============================================================================
@@ -80,6 +81,28 @@ StatusCode GaussRD::finalize() {
   ///  finalize the base class
   return Service::finalize();
 }
+
+//=============================================================================
+// query interface 
+//=============================================================================
+StatusCode GaussRD::queryInterface( const InterfaceID& id , void** ppI ) 
+{
+  if ( 0 == ppI  ) { 
+    return StatusCode::FAILURE;                   //  RETURN !!!
+  } else if ( IGaussRDCtr::interfaceID() == id ) {
+    *ppI = static_cast<IGaussRDCtr*>( this ); 
+  } else if ( IGaussRDStr::interfaceID() == id ) {
+    *ppI = static_cast<IGaussRDStr*>( this );
+  } 
+  else { 
+    return Service::queryInterface( id , ppI );   //  RETURN !!!
+  } 
+
+  addRef(); 
+
+  return StatusCode::SUCCESS;
+}
+
 
 //=============================================================================
 // Check if the counter is at the max value and return true if a new event

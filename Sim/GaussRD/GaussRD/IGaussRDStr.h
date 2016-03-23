@@ -26,7 +26,7 @@ class MCCloner;
 #include "Event/MCRichSegment.h"
 #include "Event/MCRichTrack.h"
 
-static const InterfaceID IID_IGaussRDStr(123, 1, 0);
+static const InterfaceID IID_IGaussRDStr(517635934, 1, 0);
 
 /** @class IGaussRDStr IGaussRDStr.h GiGa/IGaussRDStr.h
  *

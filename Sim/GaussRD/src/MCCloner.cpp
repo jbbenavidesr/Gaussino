@@ -75,7 +75,17 @@ MCCloner* MCCloner::DeepClone() {
     return new_cloner;
 }
 
-MCCloner::MCCloner(){}
+MCCloner::MCCloner()
+    : m_mcps(),
+      m_mcvs(),
+      m_mcrichhit(),
+      m_mcrichops(),
+      m_mcrichsegs(),
+      m_mcrichtracks(),
+      m_mchit(),
+      m_mccalohit(),
+      m_list_mchits(),
+      m_list_mccalohit() {}
 
 void MCCloner::clear_no_deletion() {
     m_mcps.clear();

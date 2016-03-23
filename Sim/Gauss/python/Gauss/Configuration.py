@@ -60,6 +60,18 @@ from Configurables import ( GaussRD, GaussRDCopyToService,
                             GaussRDDoFullFilter,
                             GaussRDNotDoFullFilter)
 
+# Set the debug levels for all the new things
+GaussRD().OutputLevel = 0
+GaussRDCtrFilter().OutputLevel = 0
+GaussRDDoFullFilter().OutputLevel = 0
+GaussRDNotDoFullFilter().OutputLevel = 0
+GaussRD().Phase = 1
+GaussRDCopyToService().OutputLevel = 0
+GaussRDRetrieveFromService().OutputLevel = 0
+
+for abcd in ['Simulation', 'Generator', 'GeneratorSlotMainSeq', 'MainEventSeq', 'MainSimulation', 'MakeMainSim', 'DetectorsHits', 'LoadMainSim', 'RichPaddingMain', 'MainEventDataPacking']:
+    GaudiSequencer(abcd).OutputLevel = 0
+
 from DetCond.Configuration import CondDB
 
 ## @class Gauss
@@ -537,6 +549,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
 
@@ -852,6 +865,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureTTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -981,6 +995,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureITMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1183,6 +1198,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureOTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
@@ -1250,6 +1266,7 @@ class Gauss(LHCbConfigurableUser):
                                   Detectors = ['/dd/Structure/LHCb/DownstreamRegion/'+det] )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureMuonMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1317,6 +1334,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configurePrsSim ( self, slot, detHits ):
         det = "Prs"
@@ -1327,6 +1345,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureEcalSim ( self, slot, detHits ):
         det = "Ecal"
@@ -1337,6 +1356,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureHcalSim ( self, slot, detHits ):
         det = "Hcal"
@@ -1347,6 +1367,7 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         GaussRDCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+        GaussRDRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
 
 
@@ -1748,6 +1769,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             detHits.Members += [ moni ]
             GaussRDCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRDRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
 
     def configurePuVetoMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
 
@@ -2120,8 +2142,7 @@ class Gauss(LHCbConfigurableUser):
 ##             log.warning("No generator phase. Need input file")
 ##             return
 
-        ApplicationMgr().ExtSvc += [ "GaussRD" ]
-        GaussRD()
+        ApplicationMgr().ExtSvc += ['GaussRD']
         if self.evtMax() <= 0:
             raise RuntimeError( "Generating events but selected '%s' events. Use LHCbApp().EvtMax " %self.evtMax() )
 
@@ -2169,7 +2190,7 @@ class Gauss(LHCbConfigurableUser):
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
-
+            GaussRDCtrFilter().GaussRD='GaussRD'
             genSequence.Members += [ genInit, GaussRDCtrFilter(), genProc ]
             # When HC simulation is switched on the very forward protons must be
             # removed from the HepMC record since they cause showers in it
@@ -2702,11 +2723,13 @@ class Gauss(LHCbConfigurableUser):
                                                    GenHeader = TESNode + "Gen/Header" ,
                                                    MCHeader = TESNode + "MC/Header" ) ]
 
-            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
-                                     RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
+            #simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
+                                     #RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
+            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation", ShortCircuit=False )
             mainSimSequence.Members += [ simSeq ]
 
-            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim" )
+            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",
+                                         RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
             simSeq.Members += [simSlotSeq]
 
             # CRJ : Set RootInTES - Everything down stream will then use the correct location
@@ -2717,7 +2740,7 @@ class Gauss(LHCbConfigurableUser):
             # Following is the main sim of the event, either normal event or
             # the underlying event component for redecay, filter out if this
             # event does not need this information.
-            simSlotSeq.Members += [ GaussRDDoFullFilter('CheckIfReDoMainPart')]
+            simSlotSeq.Members += [ GaussRDDoFullFilter()]
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                LookForUnknownParticles = True )
             simSlotSeq.Members += [ genToSim ]
@@ -2740,7 +2763,7 @@ class Gauss(LHCbConfigurableUser):
 
             loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim" )
             loadSlotSeq.Members += [
-                GaussRDNotDoFullFilter('CheckIfSignalOnly'),
+                GaussRDNotDoFullFilter(),
                 GaussRDRetrieveFromService()]
             simSeq.Members += [loadSlotSeq]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )

@@ -90,7 +90,7 @@ StatusCode GaussRDRetrieveFromService::execute() {
 
     if(gaussRDCtrSvc()->whatShouldIDo()!=2){
         if (msgLevel(MSG::DEBUG)) {
-            debug() << "GaussRD phase not 2, skipping retrieval." << endmsg;
+            debug() << "GaussRD phase=" << gaussRDCtrSvc()->whatShouldIDo() << " not 2, skipping retrieval." << endmsg;
         }
         return StatusCode::SUCCESS;
     }

@@ -23,8 +23,9 @@ LHCb::MCRichTrack* MCCloner::cloneKeyedMCRichTrack(const LHCb::MCRichTrack* mchi
             auto cp_part = getStoredMCP(org_part);
             if (cp_part) {
                 clone->setMcParticle(cp_part);
-                m_list_mcrichtracks->insert(clone, cp_part->key());
+                getClonedMCRichTracks()->insert(clone, cp_part->key());
             } else {
+                getClonedMCRichTracks()->insert(clone);
                 // TODO: Produce an error as this should not happen if orignial
                 // had a MCParticle assigned (should have been cloned before)
             }

@@ -58,6 +58,9 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    */
   virtual StatusCode finalize() override;
 
+  virtual StatusCode queryInterface ( const InterfaceID& iid , 
+                                      void**             pI  ) override;
+
   // Implementation of the control interface IGaussRDCtr
 
   /** Allows any algorithm to query the service and ask what we currently up to.
@@ -79,6 +82,14 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *  @param Pointer to the object to clone.
    *  @param Optional string. e.g. TES location
    */
+
+  /** Registers a new event, returns false if the UD is already simulated and should be reused.
+   *  Returns true if everything needs to be redone and deletes the internal storage objects.
+   *
+   *  @return bool
+   */
+  virtual bool registerNewEvent() override;
+
   virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
   virtual LHCb::MCParticles* getClonedMCPs() override;
 
@@ -115,12 +126,6 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual ~GaussRD();
 
   private:
-  /** Registers a new event, returns false if the UD is already simulated and should be reused.
-   *  Returns true if everything needs to be redone and deletes the internal storage objects.
-   *
-   *  @return bool
-   */
-  virtual bool registerNewEvent() override;
   MCCloner* m_mc_cloner;
   MCCloner* m_mc_cloner_copy;
 

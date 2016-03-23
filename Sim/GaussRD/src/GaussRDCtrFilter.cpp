@@ -62,8 +62,16 @@ StatusCode GaussRDCtrFilter::execute()
   { return Error ( " execute(): IGaussRDCtr* points to NULL" ) ;}
 
   if (gaussRDSvc()->registerNewEvent()){
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "Setting setFilterPassed(true)" << endmsg;
+    }
     setFilterPassed(true);
   } else {
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "Setting setFilterPassed(false)" << endmsg;
+    }
     setFilterPassed(false);
   }
 

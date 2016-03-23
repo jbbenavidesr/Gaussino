@@ -6,6 +6,7 @@
 
 // from GaussRD
 #include "GaussRD/IGaussRDStr.h"
+#include "GaussRD/IGaussRDCtr.h"
 
 // local
 #include "GaussRDCopyToService.h"
@@ -32,7 +33,7 @@ DECLARE_ALGORITHM_FACTORY(GaussRDCopyToService)
 // Standard constructor, initializes variables
 //=============================================================================
 GaussRDCopyToService::GaussRDCopyToService(const std::string& Name, ISvcLocator* SvcLoc)
-    : GaudiAlgorithm(Name, SvcLoc), m_gaussRDSvcName("GaussRD"), m_gaussRDSvc(0) {
+    : GaudiAlgorithm(Name, SvcLoc), m_gaussRDSvcName("GaussRD"), m_gaussRDCtrSvc(0), m_gaussRDStrSvc(0) {
     declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
     declareProperty("Particles", m_particlesLocation = LHCb::MCParticleLocation::Default, "Location to place the MCParticles.");
     declareProperty("Vertices", m_verticesLocation = LHCb::MCVertexLocation::Default, "Location to place the MCVertices.");
@@ -61,7 +62,8 @@ StatusCode GaussRDCopyToService::initialize() {
         return sc;
     }
 
-    m_gaussRDSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    m_gaussRDCtrSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
+    m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
 
     return StatusCode::SUCCESS;
 }
@@ -70,12 +72,28 @@ StatusCode GaussRDCopyToService::initialize() {
 // Main execution
 //=============================================================================
 StatusCode GaussRDCopyToService::execute() {
-    if (nullptr == gaussRDSvc()) {
-        m_gaussRDSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    if (nullptr == m_gaussRDCtrSvc) {
+        m_gaussRDCtrSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
     }
 
-    if (nullptr == gaussRDSvc()) {
+    if (nullptr == m_gaussRDCtrSvc ) {
         return Error(" execute(): IGaussRDCtr* points to NULL");
+    }
+    if (nullptr == m_gaussRDStrSvc) {
+        m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    }
+
+    if (nullptr == m_gaussRDStrSvc ) {
+        return Error(" execute(): IGaussRDStr* points to NULL");
+    }
+    if(m_gaussRDCtrSvc->whatShouldIDo() != 1){
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "GaussRD phase: " << m_gaussRDCtrSvc->whatShouldIDo() << ". Skipping..." << endmsg;
+        }
+    } else {
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "Requested copy of MC locations to service." << endmsg;
+        }
     }
 
     auto m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
@@ -83,7 +101,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_particleContainer->size() << " MCParticles from " << m_particlesLocation << endmsg;
     }
     for (auto& part : *m_particleContainer) {
-        m_gaussRDSvc->cloneMCP(part);
+        m_gaussRDStrSvc->cloneMCP(part);
     }
 
     auto m_vertexContainer = get<LHCb::MCVertices>(m_verticesLocation);
@@ -91,7 +109,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_vertexContainer->size() << " MCVertices from " << m_verticesLocation << endmsg;
     }
     for (auto& vrt : *m_vertexContainer) {
-        m_gaussRDSvc->cloneMCV(vrt);
+        m_gaussRDStrSvc->cloneMCV(vrt);
     }
 
     for (auto& s : m_hitsLocations) {
@@ -100,7 +118,7 @@ StatusCode GaussRDCopyToService::execute() {
             debug() << "Copying " << m_hitsContainer->size() << " MCHits from " << s << endmsg;
         }
         for (auto& hit : *m_hitsContainer) {
-            m_gaussRDSvc->cloneMCHit(hit, s);
+            m_gaussRDStrSvc->cloneMCHit(hit, s);
         }
     }
 
@@ -110,7 +128,7 @@ StatusCode GaussRDCopyToService::execute() {
             debug() << "Copying " << m_calohitsContainer->size() << " MCCaloHits from " << s << endmsg;
         }
         for (auto& hit : *m_calohitsContainer) {
-            m_gaussRDSvc->cloneMCCaloHit(hit, s);
+            m_gaussRDStrSvc->cloneMCCaloHit(hit, s);
         }
     }
 
@@ -119,7 +137,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_richHitsContainer->size() << " MCRichHits from " << m_richHitsLocation<< endmsg;
     }
     for (auto& a : *m_richHitsContainer) {
-        m_gaussRDSvc->cloneMCRichHit(a);
+        m_gaussRDStrSvc->cloneMCRichHit(a);
     }
 
     auto m_richOpticalPhotonsContainer = get<LHCb::MCRichOpticalPhotons>(m_richOpticalPhotonsLocation);
@@ -127,7 +145,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_richOpticalPhotonsContainer->size() << " MCRichOpticalPhotons from " << m_richOpticalPhotonsLocation<< endmsg;
     }
     for (auto& a : *m_richOpticalPhotonsContainer) {
-        m_gaussRDSvc->cloneMCRichOpticalPhoton(a);
+        m_gaussRDStrSvc->cloneMCRichOpticalPhoton(a);
     }
 
     auto m_richSegmentsContainer = get<LHCb::MCRichSegments>(m_richSegmentsLocation);
@@ -135,7 +153,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_richSegmentsContainer->size() << " MCRichSegments from " << m_richSegmentsLocation<< endmsg;
     }
     for (auto& a : *m_richSegmentsContainer) {
-        m_gaussRDSvc->cloneMCRichSegment(a);
+        m_gaussRDStrSvc->cloneMCRichSegment(a);
     }
 
     auto m_richTracksContainer = get<LHCb::MCRichTracks>(m_richTracksLocation);
@@ -143,7 +161,7 @@ StatusCode GaussRDCopyToService::execute() {
         debug() << "Copying " << m_richTracksContainer->size() << " MCRichTracks from " << m_richTracksLocation<< endmsg;
     }
     for (auto& a : *m_richTracksContainer) {
-        m_gaussRDSvc->cloneMCRichTrack(a);
+        m_gaussRDStrSvc->cloneMCRichTrack(a);
     }
 
     return StatusCode::SUCCESS;

@@ -8,6 +8,7 @@
 
 // forward declarations
 class IGaussRDStr;  ///< GaussRD counter service
+class IGaussRDCtr;  ///< GaussRD counter service
 
 /** @class GaussRDCopyToService GaussRDCopyToService.h
  *
@@ -32,11 +33,11 @@ class GaussRDCopyToService : public GaudiAlgorithm {
   /** accessor to GaussRD Service
    *  @return pointer to GaussRD Service
    */
-  inline IGaussRDStr* gaussRDSvc() const { return m_gaussRDSvc; }
 
   private:
   std::string m_gaussRDSvcName;
-  IGaussRDStr* m_gaussRDSvc;
+  IGaussRDCtr* m_gaussRDCtrSvc;
+  IGaussRDStr* m_gaussRDStrSvc;
 
   std::string m_particlesLocation;  ///< Location in TES of output MCParticles.
   std::string m_verticesLocation;   ///< Location in TES of output MCVertices.

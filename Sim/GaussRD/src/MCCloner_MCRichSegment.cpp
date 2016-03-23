@@ -15,7 +15,7 @@ LHCb::MCRichSegment* MCCloner::cloneKeyedMCRichSegment(const LHCb::MCRichSegment
         // Copy all the properties.
         clone = new LHCb::MCRichSegment();
         m_mcrichsegs.insert(std::pair<const LHCb::MCRichSegment*, LHCb::MCRichSegment*>(mchit, clone));
-        m_list_mcrichsegs->insert(clone);
+        getClonedMCRichSegments()->insert(clone);
 
         clone->setRadiator(mchit->radiator());
         clone->setRich(mchit->rich());
