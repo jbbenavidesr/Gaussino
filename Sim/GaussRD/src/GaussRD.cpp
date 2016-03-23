@@ -185,3 +185,6 @@ LHCb::MCRichSegments* GaussRD::getClonedMCRichSegments() { return m_mc_cloner_co
 
 LHCb::MCRichTrack* GaussRD::cloneMCRichTrack(const LHCb::MCRichTrack* mchit) { return m_mc_cloner->cloneMCRichTrack(mchit); }
 LHCb::MCRichTracks* GaussRD::getClonedMCRichTracks() { return m_mc_cloner_copy->getClonedMCRichTracks(); }
+
+LHCb::GenCollision* GaussRD::cloneGenCollision(const LHCb::GenCollision* mchit) { return m_mc_cloner->cloneGenCollision(mchit); }
+LHCb::GenCollisions* GaussRD::getClonedGenCollisions() { return m_mc_cloner_copy->getClonedGenCollisions(); }

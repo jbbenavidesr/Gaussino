@@ -47,6 +47,7 @@ class GaussRDCopyToService : public GaudiAlgorithm {
   std::string m_richOpticalPhotonsLocation;
   std::string m_richSegmentsLocation;
   std::string m_richTracksLocation;
+  std::string m_GenCollisionsLocation;
 
 };
 

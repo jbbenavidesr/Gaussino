@@ -114,6 +114,9 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) override;
   virtual LHCb::MCRichTracks* getClonedMCRichTracks() override;
 
+  virtual LHCb::GenCollision* cloneGenCollision(const LHCb::GenCollision* mchit) override;
+  virtual LHCb::GenCollisions* getClonedGenCollisions() override;
+
   protected:
   /** standard constructor
    *  @see Service

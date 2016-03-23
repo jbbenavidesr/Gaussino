@@ -25,6 +25,7 @@ class MCCloner;
 #include "Event/MCRichOpticalPhoton.h"
 #include "Event/MCRichSegment.h"
 #include "Event/MCRichTrack.h"
+#include "Event/GenCollision.h"
 
 static const InterfaceID IID_IGaussRDStr(517635934, 1, 0);
 
@@ -83,6 +84,9 @@ class IGaussRDStr : virtual public IService {
 
   virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) = 0;
   virtual LHCb::MCRichTracks* getClonedMCRichTracks() = 0;
+
+  virtual LHCb::GenCollision* cloneGenCollision(const LHCb::GenCollision* mchit) = 0;
+  virtual LHCb::GenCollisions* getClonedGenCollisions() = 0;
 
   protected:
   /// virtual destructor

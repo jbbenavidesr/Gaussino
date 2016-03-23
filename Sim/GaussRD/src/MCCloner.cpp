@@ -66,6 +66,9 @@ MCCloner* MCCloner::DeepClone() {
     for (auto& m : *getClonedMCRichTracks()) {
         new_cloner->cloneMCRichTrack(m);
     }
+    for (auto& m : *getClonedGenCollisions()) {
+        new_cloner->cloneGenCollision(m);
+    }
     for (auto& s : m_list_mccalohit) {
         for (auto& m : *getClonedMCCaloHits(s.first)) {
             new_cloner->cloneMCCaloHit(m, s.first);
@@ -85,7 +88,8 @@ MCCloner::MCCloner()
       m_mchit(),
       m_mccalohit(),
       m_list_mchits(),
-      m_list_mccalohit() {}
+      m_list_mccalohit(),
+      m_gencollisions(){}
 
 void MCCloner::clear_no_deletion() {
     m_mcps.clear();
@@ -96,6 +100,7 @@ void MCCloner::clear_no_deletion() {
     m_mcrichops.clear();
     m_mcrichsegs.clear();
     m_mcrichtracks.clear();
+    m_gencollisions.clear();
 
     m_list_mcps = nullptr;
     m_list_mcvs = nullptr;
@@ -103,6 +108,7 @@ void MCCloner::clear_no_deletion() {
     m_list_mcrichops = nullptr;
     m_list_mcrichsegs = nullptr;
     m_list_mcrichtracks = nullptr;
+    m_list_gencollisions = nullptr;
     m_list_mchits.clear();
     m_list_mccalohit.clear();
 }
@@ -117,6 +123,7 @@ void MCCloner::clear() {
     delete m_list_mcrichops;
     delete m_list_mcrichsegs;
     delete m_list_mcrichtracks;
+    delete m_list_gencollisions;
     for (auto& a : m_list_mchits) {
         delete a.second;
     }

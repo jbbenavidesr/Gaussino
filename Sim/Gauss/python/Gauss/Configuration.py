@@ -2187,6 +2187,8 @@ class Gauss(LHCbConfigurableUser):
             genProc.GenHeaderLocation = TESNode+"Gen/Header"
             genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents"
             genProc.GenCollisionLocation = TESNode+"Gen/Collisions"
+            GaussRDCopyToService().GenCollisionLocation = TESNode+"Gen/Collisions"
+            GaussRDRetrieveFromService().GenCollisionLocation = TESNode+"Gen/Collisions"
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'

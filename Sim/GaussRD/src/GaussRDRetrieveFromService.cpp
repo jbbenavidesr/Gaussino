@@ -46,6 +46,7 @@ GaussRDRetrieveFromService::GaussRDRetrieveFromService(const std::string& Name, 
                     "Location in TES where to put resulting MCRichSegments");
     declareProperty("MCRichTracksLocation", m_richTracksLocation = LHCb::MCRichTrackLocation::Default,
                     "Location in TES where to put resulting MCRichTracks");
+    declareProperty("GenCollisionLocation", m_GenCollisionsLocation = LHCb::GenCollisionLocation::Default);
 }
 
 //=============================================================================
@@ -88,18 +89,24 @@ StatusCode GaussRDRetrieveFromService::execute() {
         return Error(" execute(): IGaussRDCtr* points to NULL");
     }
 
-    if(gaussRDCtrSvc()->whatShouldIDo()!=2){
+    if (gaussRDCtrSvc()->whatShouldIDo() != 2) {
         if (msgLevel(MSG::DEBUG)) {
             debug() << "GaussRD phase=" << gaussRDCtrSvc()->whatShouldIDo() << " not 2, skipping retrieval." << endmsg;
         }
         return StatusCode::SUCCESS;
     }
 
+    auto m_genCollisionsContainer = gaussRDStrSvc()->getClonedGenCollisions();
+    if (msgLevel(MSG::DEBUG)) {
+        debug() << "Copying " << m_genCollisionsContainer->size() << " GenCollisions to " << m_GenCollisionsLocation << endmsg;
+    }
+    put(m_genCollisionsContainer, m_GenCollisionsLocation);
+
     auto m_particleContainer = gaussRDStrSvc()->getClonedMCPs();
     if (msgLevel(MSG::DEBUG)) {
         debug() << "Copying " << m_particleContainer->size() << " MCParticles to " << m_particlesLocation << endmsg;
     }
-      put(m_particleContainer, m_particlesLocation);
+    put(m_particleContainer, m_particlesLocation);
 
     auto m_vertexContainer = gaussRDStrSvc()->getClonedMCVs();
     if (msgLevel(MSG::DEBUG)) {
@@ -120,30 +127,30 @@ StatusCode GaussRDRetrieveFromService::execute() {
         if (msgLevel(MSG::DEBUG)) {
             debug() << "Copying " << m_calohitsContainer->size() << " MCCaloHits to " << s << endmsg;
         }
-          put(m_calohitsContainer, s);
+        put(m_calohitsContainer, s);
     }
 
     auto m_richHitsContainer = gaussRDStrSvc()->getClonedMCRichHits();
     if (msgLevel(MSG::DEBUG)) {
-        debug() << "Copying " << m_richHitsContainer->size() << " MCRichHits to " << m_richHitsLocation<< endmsg;
+        debug() << "Copying " << m_richHitsContainer->size() << " MCRichHits to " << m_richHitsLocation << endmsg;
     }
     put(m_richHitsContainer, m_richHitsLocation);
 
     auto m_richOpticalPhotonsContainer = gaussRDStrSvc()->getClonedMCRichOpticalPhotons();
     if (msgLevel(MSG::DEBUG)) {
-        debug() << "Copying " << m_richOpticalPhotonsContainer->size() << " MCRichOpticalPhotons to " << m_richOpticalPhotonsLocation<< endmsg;
+        debug() << "Copying " << m_richOpticalPhotonsContainer->size() << " MCRichOpticalPhotons to " << m_richOpticalPhotonsLocation << endmsg;
     }
     put(m_richOpticalPhotonsContainer, m_richOpticalPhotonsLocation);
 
     auto m_richSegmentsContainer = gaussRDStrSvc()->getClonedMCRichSegments();
     if (msgLevel(MSG::DEBUG)) {
-        debug() << "Copying " << m_richSegmentsContainer->size() << " MCRichSegments to " << m_richSegmentsLocation<< endmsg;
+        debug() << "Copying " << m_richSegmentsContainer->size() << " MCRichSegments to " << m_richSegmentsLocation << endmsg;
     }
     put(m_richSegmentsContainer, m_richSegmentsLocation);
 
     auto m_richTracksContainer = gaussRDStrSvc()->getClonedMCRichTracks();
     if (msgLevel(MSG::DEBUG)) {
-        debug() << "Copying " << m_richTracksContainer->size() << " MCRichTracks to " << m_richTracksLocation<< endmsg;
+        debug() << "Copying " << m_richTracksContainer->size() << " MCRichTracks to " << m_richTracksLocation << endmsg;
     }
     put(m_richTracksContainer, m_richTracksLocation);
 
