@@ -2727,7 +2727,8 @@ class Gauss(LHCbConfigurableUser):
 
             #simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
                                      #RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
-            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation", ShortCircuit=False )
+            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
+                                     IgnoreFilterPassed = True)
             mainSimSequence.Members += [ simSeq ]
 
             simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",

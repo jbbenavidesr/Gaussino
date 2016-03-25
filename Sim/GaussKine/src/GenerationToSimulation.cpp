@@ -29,6 +29,8 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticlePropertyTable.hh"
 
+#include "LoKi/PrintHepMCDecay.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenerationToSimulation
 //
@@ -44,8 +46,10 @@ DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 GenerationToSimulation::GenerationToSimulation(const std::string& name,
 					       ISvcLocator* pSvcLocator) : 
   GaudiAlgorithm(name, pSvcLocator), m_gigaSvc(0), m_particleContainer(0), 
-  m_vertexContainer(0), m_keepCuts(LoKi::Constant<const HepMC::GenParticle*, 
-				   bool>(true)) {
+  m_vertexContainer(0),
+  m_keepCuts(LoKi::Constant<const HepMC::GenParticle*,bool>(true)),
+  m_selectiveSimSignal(LoKi::Constant<const HepMC::GenParticle*,bool>(false))
+{
   declareProperty("GiGaService", m_gigaSvcName = "GiGa",
 		  "Name of the GiGa service.");
   declareProperty("HepMCEventLocation",
@@ -71,6 +75,10 @@ GenerationToSimulation::GenerationToSimulation(const std::string& name,
 		  "Location to retrieve the MCHeader.");
   declareProperty("KeepCode", m_keepCode = "", 
 		  "The code to flag additional particles for storage.");
+  declareProperty("SelectiveSimulationStep", m_selectiveSimulation = NoSelectiveSimulation,
+                  "0 (no selective simulation), 1 (rest of the event) or 2 (signal)");
+  declareProperty("SelectiveSimulationSignal", m_selectiveSimSignalCode = "GNONE",
+                  "LoKi::Hybrid cut selecting signal HepMC particles (and their decay products)");
 }
 
 //=============================================================================
@@ -119,15 +127,18 @@ StatusCode GenerationToSimulation::initialize() {
     }
   }
   
+  svc<IService>("LoKiSvc");
+  LoKi::IGenHybridFactory* factory = tool<LoKi::IGenHybridFactory>
+    ("LoKi::Hybrid::GenTool/GenFactory:PUBLIC", this);
   // Cuts to keep additional particles.
   if (m_keepCode != "") {
-    svc<IService>("LoKiSvc");
-    LoKi::IGenHybridFactory* factory = tool<LoKi::IGenHybridFactory>
-      ("LoKi::Hybrid::GenTool/GenFactory:PUBLIC", this);
     sc = factory->get(m_keepCode, m_keepCuts);
     if (sc.isFailure()) 
       always() << "Error from KeepCode = '" + m_keepCode + "'" << endmsg;
   }
+  sc = factory->get(m_selectiveSimSignalCode, m_selectiveSimSignal);
+  if (sc.isFailure())
+    always() << "Error from ExcludeFromSimulationCode = '" + m_keepCode + "'" << endmsg;
 
   // get tool to set signal flag
   m_setSignalFlagTool = tool< IFlagSignalChain >( "FlagSignalChain" );
@@ -145,11 +156,20 @@ StatusCode GenerationToSimulation::execute() {
   LHCb::HepMCEvents* generationEvents = 
     get<LHCb::HepMCEvents>(m_generationLocation);
 
-  // Create containers in TES for MCParticles and MCVertices.
-  m_particleContainer = new LHCb::MCParticles();
-  put(m_particleContainer, m_particlesLocation);
-  m_vertexContainer = new LHCb::MCVertices();
-  put(m_vertexContainer, m_verticesLocation);
+  // Get or create containers in TES for MCParticles and MCVertices.
+  if ( exist<LHCb::MCParticles>(m_particlesLocation) ) {
+    m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
+  } else {
+    m_particleContainer = new LHCb::MCParticles();
+    put(m_particleContainer, m_particlesLocation);
+  }
+  if ( exist<LHCb::MCVertices>(m_verticesLocation) ) {
+    m_vertexContainer = get<LHCb::MCVertices>(m_verticesLocation);
+  } else {
+    m_vertexContainer = new LHCb::MCVertices();
+    put(m_vertexContainer, m_verticesLocation);
+  }
+
   if (!generationEvents || generationEvents->size() == 0)
     {*gigaSvc() << NULL; return StatusCode::SUCCESS;}
 
@@ -322,6 +342,25 @@ bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const{
   return false;
 }
 
+namespace {
+  // remove the placeholder MCParticle, return true on success
+  bool removeFromMCTree( LHCb::MCParticle* mcp )
+  {
+    LHCb::MCVertex* orig = const_cast<LHCb::MCVertex*>(mcp->originVertex());
+    if ( orig ) {
+      auto isref = std::find_if(std::begin(orig->products()), std::end(orig->products()),
+              [=] ( const SmartRef<LHCb::MCParticle>& prod ) -> bool { return mcp == prod.target(); }
+              ); // need find_if to ask for the same pointed-to object
+      if ( std::end(orig->products()) != isref ) {
+        orig->removeFromProducts(*isref);
+        return true;
+      }
+      return false;
+    } // otherwise nothing to be done
+    return true;
+  }
+}
+
 //=============================================================================
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
@@ -349,6 +388,21 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
       else {
 	m_g4ParticleMap.erase(pBarcode);
 	m_particlesToDelete.push_back(result->second.second);
+      }
+    }
+    if ( m_selectiveSimulation == SignalSimulationStep ) {
+      if (msgLevel(MSG::DEBUG)) { debug() << "Simulation step SIGNAL, asked to process " << *particle << " with G4 primary at " << pvertexg4 << ", MC origin vertex at " << originVertex << ", G4 mother at " << motherg4 << " and MC mother at " << mothermcp << endmsg; }
+      if ( ( ! mothermcp ) && ( ! motherg4 ) ) {
+        // find placeholder if doing two-step simulation
+        LHCb::MCParticle* prev = searchPreviousStableMCParticle(particle);
+        if ( prev && prev->originVertex() ) {
+          mothermcp = const_cast<LHCb::MCParticle*>(prev->mother());
+          removeFromMCTree(prev); // remove reference to placeholder
+          m_particleContainer->erase(prev); // TODO should we check return code, take ownership and destroy?
+        } else {
+          warning() << "Could not find an undecayed placeholder LHCb::MCParticle (or its origin vertex) for " << *particle << " -> skipping" << endmsg;
+          return; // do not pass it to Geant4 in that case (and do not recurse to daughters)
+        }
       }
     }
     G4PrimaryParticle* g4P = makeG4Particle(particle, mothermcp);
@@ -435,6 +489,29 @@ unsigned char GenerationToSimulation::transferToGeant4
 (const HepMC::GenParticle* p) const {
   if (!(keep(p) || (m_keepCode != "" && m_keepCuts(p)))) return 3;
   if (m_skipGeant4) return 2;
+
+  switch (m_selectiveSimulation) {
+    case UESimulationStep:
+      if (  m_selectiveSimSignal(p) ) { // keep as MC particle placeholder
+        if (msgLevel(MSG::DEBUG)) { 
+          debug() << "Inclusive simulation identified particle as signal: ";
+          debug() << "Barcode:\t " << p->barcode() << endmsg;
+          debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
+          debug() << "UNDECAYED:\t " << p->is_undecayed() << endmsg;
+          debug() << "Decay Tree:";
+          LoKi::PrintHepMC::printDecay(p, debug());
+          debug() << endmsg; }
+        return 2;
+      }
+      break;
+    case SignalSimulationStep:
+      if ( !m_selectiveSimSignal(p) ) { // has been simulated before (if needed)
+          return 3;
+      } else {
+        if (msgLevel(MSG::DEBUG)) { debug() << "Signal-only simulation, not skipping "; LoKi::PrintHepMC::printDecay(p, debug()); debug() << endmsg; }
+      }
+      break;
+  }
 
   // Return for Geant4 tracking if stable.
   HepMC::GenVertex* ev = p->end_vertex();
@@ -642,4 +719,19 @@ void GenerationToSimulation::removeFromPrimaryVertex
   }
   delete pvertexg4;
   pvertexg4 = newVertex;
+}
+
+//=============================================================================
+// Helper method: find previously made LHCb::MCParticle
+//=============================================================================
+LHCb::MCParticle* GenerationToSimulation::searchPreviousStableMCParticle( const HepMC::GenParticle* particle )
+{
+  if (msgLevel(MSG::DEBUG)) { debug() << "Trying to find MCParticle placeholder for " << *particle << " in " << m_particleContainer->size() << endmsg; }
+  LHCb::MCParticle::Vector matches{};
+  std::copy_if(m_particleContainer->begin(), m_particleContainer->end(), std::back_inserter(matches),
+          [=] ( const LHCb::MCParticle* mcp ) -> bool { return mcp->endVertices().empty() && ( std::abs(particle->pdg_id()) == std::abs(mcp->particleID().pid()) ); } );
+  if (msgLevel(MSG::DEBUG)) { debug() << "With same ID and no endvertices: " << matches.size() << " remaining" << endmsg; }
+  if ( matches.empty() ) { return nullptr; }
+  if ( matches.size() > 1 ) { warning() << "Found more than one previously made LHCb::MCParticle" << endmsg; }
+  return matches.front();
 }

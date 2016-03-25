@@ -110,6 +110,16 @@ private:
   std::string          m_keepCode; ///< Code to keep additional particles.
   LoKi::GenTypes::GCut m_keepCuts; ///< Cuts to keep additional particles.
 
+  enum SelectiveSimulationStep {
+    NoSelectiveSimulation = 0,
+    UESimulationStep = 1,
+    SignalSimulationStep = 2
+  };
+  int m_selectiveSimulation;
+  std::string m_selectiveSimSignalCode;
+  LoKi::GenTypes::GCut m_selectiveSimSignal;
+  LHCb::MCParticle* searchPreviousStableMCParticle( const HepMC::GenParticle* particle );
+
   /// Reference to tool to propagate fromSignal flag
   IFlagSignalChain* m_setSignalFlagTool;
 
