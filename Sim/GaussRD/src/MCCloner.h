@@ -2,6 +2,7 @@
 #define MCCLONER_H 1
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include "Event/Particle.h"
@@ -101,16 +102,16 @@ private:
     void cloneDecayVertices(const SmartRefVector<LHCb::MCVertex>& endVertices, LHCb::MCParticle* clonedParticle);
     void cloneDecayProducts(const SmartRefVector<LHCb::MCParticle>& products, LHCb::MCVertex* clonedVertex);
 
-    std::map<const LHCb::MCParticle*, LHCb::MCParticle*> m_mcps;
-    std::map<const LHCb::MCVertex*, LHCb::MCVertex*> m_mcvs;
-    std::map<const LHCb::MCRichHit*, LHCb::MCRichHit*> m_mcrichhit;
-    std::map<const LHCb::MCRichOpticalPhoton*, LHCb::MCRichOpticalPhoton*> m_mcrichops;
-    std::map<const LHCb::MCRichSegment*, LHCb::MCRichSegment*> m_mcrichsegs;
-    std::map<const LHCb::MCRichTrack*, LHCb::MCRichTrack*> m_mcrichtracks;
+    std::unordered_map<const LHCb::MCParticle*, LHCb::MCParticle*> m_mcps;
+    std::unordered_map<const LHCb::MCVertex*, LHCb::MCVertex*> m_mcvs;
+    std::unordered_map<const LHCb::MCRichHit*, LHCb::MCRichHit*> m_mcrichhit;
+    std::unordered_map<const LHCb::MCRichOpticalPhoton*, LHCb::MCRichOpticalPhoton*> m_mcrichops;
+    std::unordered_map<const LHCb::MCRichSegment*, LHCb::MCRichSegment*> m_mcrichsegs;
+    std::unordered_map<const LHCb::MCRichTrack*, LHCb::MCRichTrack*> m_mcrichtracks;
     // Turns out we have to save the MCHits split into different locations, hence, more maps ...
 
-    std::map<std::string, std::map<const LHCb::MCHit*, LHCb::MCHit*>> m_mchit;
-    std::map<std::string, std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>> m_mccalohit;
+    std::map<std::string, std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>> m_mchit;
+    std::map<std::string, std::unordered_map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>> m_mccalohit;
 
     // Storage for the containers
     LHCb::MCParticles* m_list_mcps = nullptr;

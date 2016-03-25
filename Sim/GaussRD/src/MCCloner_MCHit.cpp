@@ -3,8 +3,8 @@
 LHCb::MCHit* MCCloner::getStoredMCHit(const LHCb::MCHit* mchit, const std::string& vol) {
     auto volmap = m_mchit.find(vol);
     if (volmap == m_mchit.end()) {
-        auto temp = std::map<const LHCb::MCHit*, LHCb::MCHit*>();
-        m_mchit.insert(std::pair<std::string, std::map<const LHCb::MCHit*, LHCb::MCHit*>>(vol, temp));
+        auto temp = std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>();
+        m_mchit.insert(std::pair<std::string, std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>>(vol, temp));
         return nullptr;
     } else {
         auto result = (*volmap).second.find(mchit);

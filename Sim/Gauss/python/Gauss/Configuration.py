@@ -61,16 +61,16 @@ from Configurables import ( GaussRD, GaussRDCopyToService,
                             GaussRDNotDoFullFilter)
 
 # Set the debug levels for all the new things
-GaussRD().OutputLevel = 0
-GaussRDCtrFilter().OutputLevel = 0
-GaussRDDoFullFilter().OutputLevel = 0
-GaussRDNotDoFullFilter().OutputLevel = 0
-GaussRD().Phase = 1
-GaussRDCopyToService().OutputLevel = 0
-GaussRDRetrieveFromService().OutputLevel = 0
+#GaussRD().OutputLevel = 0
+#GaussRDCtrFilter().OutputLevel = 0
+#GaussRDDoFullFilter().OutputLevel = 0
+#GaussRDNotDoFullFilter().OutputLevel = 0
+#GaussRD().Phase = 1
+#GaussRDCopyToService().OutputLevel = 0
+#GaussRDRetrieveFromService().OutputLevel = 0
 
-for abcd in ['Simulation', 'Generator', 'GeneratorSlotMainSeq', 'MainEventSeq', 'MainSimulation', 'MakeMainSim', 'DetectorsHits', 'LoadMainSim', 'RichPaddingMain', 'MainEventDataPacking']:
-    GaudiSequencer(abcd).OutputLevel = 0
+#for abcd in ['Simulation', 'Generator', 'GeneratorSlotMainSeq', 'MainEventSeq', 'MainSimulation', 'MakeMainSim', 'DetectorsHits', 'LoadMainSim', 'RichPaddingMain', 'MainEventDataPacking']:
+    #GaudiSequencer(abcd).OutputLevel = 0
 
 from DetCond.Configuration import CondDB
 

@@ -43,33 +43,52 @@ MCCloner* MCCloner::DeepClone() {
     // GetCaloHitsAlg/GetHcalHits
     // GetTrackerHitsAlg/GetMuonHits
     //
+    new_cloner->m_mcps.reserve(m_mcps.size());
+    new_cloner->getClonedMCPs()->reserve(m_mcps.size()+100);
     for (auto& m : *getClonedMCPs()) {
         new_cloner->cloneMCP(m);
     }
+    new_cloner->m_mcvs.reserve(m_mcvs.size());
+    new_cloner->getClonedMCVs()->reserve(m_mcvs.size());
     for (auto& m : *getClonedMCVs()) {
         new_cloner->cloneMCV(m);
     }
     for (auto& s : m_list_mchits) {
+        auto temp = std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>();
+        new_cloner->m_mchit.insert(std::pair<std::string, std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>>(s.first, temp));
+        new_cloner->m_mchit[s.first].reserve(m_mchit[s.first].size()+100);
         for (auto& m : *getClonedMCHits(s.first)) {
             new_cloner->cloneMCHit(m, s.first);
         }
     }
+    new_cloner->m_mcrichhit.reserve(m_mcrichhit.size());
+    new_cloner->getClonedMCRichHits()->reserve(m_mcrichhit.size()+100);
     for (auto& m : *getClonedMCRichHits()) {
         new_cloner->cloneMCRichHit(m);
     }
+    new_cloner->m_mcrichops.reserve(m_mcrichops.size());
+    new_cloner->getClonedMCRichOpticalPhotons()->reserve(m_mcrichops.size()+100);
     for (auto& m : *getClonedMCRichOpticalPhotons()) {
         new_cloner->cloneMCRichOpticalPhoton(m);
     }
+    new_cloner->m_mcrichsegs.reserve(m_mcrichsegs.size());
+    new_cloner->getClonedMCRichSegments()->reserve(m_mcrichsegs.size()+100);
     for (auto& m : *getClonedMCRichSegments()) {
         new_cloner->cloneMCRichSegment(m);
     }
+    new_cloner->m_mcrichtracks.reserve(m_mcrichtracks.size());
+    new_cloner->getClonedMCRichTracks()->reserve(m_mcrichtracks.size()+100);
     for (auto& m : *getClonedMCRichTracks()) {
         new_cloner->cloneMCRichTrack(m);
     }
     for (auto& m : *getClonedGenCollisions()) {
         new_cloner->cloneGenCollision(m);
     }
+    new_cloner->m_mcvs.reserve(m_mcvs.size());
     for (auto& s : m_list_mccalohit) {
+        auto temp = std::unordered_map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>();
+        new_cloner->m_mccalohit.insert(std::pair<std::string, std::unordered_map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>>(s.first, temp));
+        new_cloner->m_mccalohit[s.first].reserve(m_mccalohit[s.first].size()+100);
         for (auto& m : *getClonedMCCaloHits(s.first)) {
             new_cloner->cloneMCCaloHit(m, s.first);
         }

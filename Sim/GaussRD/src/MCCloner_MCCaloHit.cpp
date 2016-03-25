@@ -3,8 +3,8 @@
 LHCb::MCCaloHit* MCCloner::getStoredMCCaloHit(const LHCb::MCCaloHit* mccalohit, const std::string& vol) {
     auto volmap = m_mccalohit.find(vol);
     if (volmap == m_mccalohit.end()) {
-        auto temp = std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>();
-        m_mccalohit.insert(std::pair<std::string, std::map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>>(vol, temp));
+        auto temp = std::unordered_map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>();
+        m_mccalohit.insert(std::pair<std::string, std::unordered_map<const LHCb::MCCaloHit*, LHCb::MCCaloHit*>>(vol, temp));
         return nullptr;
     } else {
         auto result = (*volmap).second.find(mccalohit);
