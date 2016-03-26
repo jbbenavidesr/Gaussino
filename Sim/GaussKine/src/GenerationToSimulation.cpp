@@ -9,7 +9,7 @@
 #include "GaudiKernel/PhysicalConstants.h"
 
 // GiGa.
-#include "GiGa/IGiGaSvc.h" 
+#include "GiGa/IGiGaSvc.h"
 #include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 
 // Event.
@@ -30,6 +30,8 @@
 #include "G4ParticlePropertyTable.hh"
 
 #include "LoKi/PrintHepMCDecay.h"
+#include "GaussRD/IGaussRDCtr.h"
+#include "GaussRD/IGaussRDStr.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenerationToSimulation
@@ -43,42 +45,25 @@ DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 //=============================================================================
 // Standard constructor, declares properties.
 //=============================================================================
-GenerationToSimulation::GenerationToSimulation(const std::string& name,
-					       ISvcLocator* pSvcLocator) : 
-  GaudiAlgorithm(name, pSvcLocator), m_gigaSvc(0), m_particleContainer(0), 
-  m_vertexContainer(0),
-  m_keepCuts(LoKi::Constant<const HepMC::GenParticle*,bool>(true)),
-  m_selectiveSimSignal(LoKi::Constant<const HepMC::GenParticle*,bool>(false))
-{
-  declareProperty("GiGaService", m_gigaSvcName = "GiGa",
-		  "Name of the GiGa service.");
-  declareProperty("HepMCEventLocation",
-		  m_generationLocation = LHCb::HepMCEventLocation::Default,
-		  "Location to read the HepMC event.");
-  declareProperty("Particles",
-		  m_particlesLocation = LHCb::MCParticleLocation::Default,
-		  "Location to place the MCParticles.");
-  declareProperty("Vertices",
-		  m_verticesLocation = LHCb::MCVertexLocation::Default,
-		  "Location to place the MCVertices.");  
-  declareProperty("TravelLimit", m_travelLimit = 1e-10*m,
-		  "Pass particles to Geant4 with travel length above this.");
-  declareProperty("LookForUnknownParticles", 
-		  m_lookForUnknownParticles = false,
-		  "Check if Geant4 knows the particle type.");
-  declareProperty("SkipGeant", m_skipGeant4 = false,
-		  "Skip passing everything to Geant4.");
-  declareProperty("UpdateG4ParticleProperties", 
-		  m_updateG4ParticleProperties = true,
-		  "Update the Geant4 particle properties.");
-  declareProperty("MCHeader", m_mcHeader = LHCb::MCHeaderLocation::Default,
-		  "Location to retrieve the MCHeader.");
-  declareProperty("KeepCode", m_keepCode = "", 
-		  "The code to flag additional particles for storage.");
+GenerationToSimulation::GenerationToSimulation(const std::string& name, ISvcLocator* pSvcLocator)
+    : GaudiAlgorithm(name, pSvcLocator),
+      m_gigaSvc(0),
+      m_particleContainer(0),
+      m_vertexContainer(0),
+      m_keepCuts(LoKi::Constant<const HepMC::GenParticle*, bool>(true)) {
+  declareProperty("GiGaService", m_gigaSvcName = "GiGa", "Name of the GiGa service.");
+  declareProperty("HepMCEventLocation", m_generationLocation = LHCb::HepMCEventLocation::Default, "Location to read the HepMC event.");
+  declareProperty("Particles", m_particlesLocation = LHCb::MCParticleLocation::Default, "Location to place the MCParticles.");
+  declareProperty("Vertices", m_verticesLocation = LHCb::MCVertexLocation::Default, "Location to place the MCVertices.");
+  declareProperty("TravelLimit", m_travelLimit = 1e-10 * m, "Pass particles to Geant4 with travel length above this.");
+  declareProperty("LookForUnknownParticles", m_lookForUnknownParticles = false, "Check if Geant4 knows the particle type.");
+  declareProperty("SkipGeant", m_skipGeant4 = false, "Skip passing everything to Geant4.");
+  declareProperty("UpdateG4ParticleProperties", m_updateG4ParticleProperties = true, "Update the Geant4 particle properties.");
+  declareProperty("MCHeader", m_mcHeader = LHCb::MCHeaderLocation::Default, "Location to retrieve the MCHeader.");
+  declareProperty("KeepCode", m_keepCode = "", "The code to flag additional particles for storage.");
   declareProperty("SelectiveSimulationStep", m_selectiveSimulation = NoSelectiveSimulation,
                   "0 (no selective simulation), 1 (rest of the event) or 2 (signal)");
-  declareProperty("SelectiveSimulationSignal", m_selectiveSimSignalCode = "GNONE",
-                  "LoKi::Hybrid cut selecting signal HepMC particles (and their decay products)");
+  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
 }
 
 //=============================================================================
@@ -90,32 +75,27 @@ GenerationToSimulation::~GenerationToSimulation() {}
 // Initialization.
 //=============================================================================
 StatusCode GenerationToSimulation::initialize() {
-
   // Initialize the GaudiAlgorithm, return if failure.
-  StatusCode sc = GaudiAlgorithm::initialize(); 
+  StatusCode sc = GaudiAlgorithm::initialize();
   if (sc.isFailure()) return sc;
 
   // Intialize the tool.
   debug() << "==> Initialize" << endmsg;
   if (!m_skipGeant4) {
-    
     // Create the GiGa service.
     m_gigaSvc = svc<IGiGaSvc>(m_gigaSvcName, true);
-  
+
     // Update Geant4 particle properties from ParticlePropertySvc.
-    if (m_updateG4ParticleProperties) { 
-      LHCb::IParticlePropertySvc* ppSvc = 
-        svc<LHCb::IParticlePropertySvc>("LHCb::ParticlePropertySvc", true);
-      G4ParticlePropertyTable* PPT = G4ParticlePropertyTable::
-	GetParticlePropertyTable();
+    if (m_updateG4ParticleProperties) {
+      LHCb::IParticlePropertySvc* ppSvc = svc<LHCb::IParticlePropertySvc>("LHCb::ParticlePropertySvc", true);
+      G4ParticlePropertyTable* PPT = G4ParticlePropertyTable::GetParticlePropertyTable();
       G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
       // Suppress printing unknown PDGs from Gauss.
       if (!msgLevel(MSG::DEBUG)) particleTable->SetVerboseLevel(0);
       for (int i = 0; i < particleTable->size(); ++i) {
         G4ParticleDefinition* PDef = particleTable->GetParticle(i);
-        const LHCb::ParticleProperty* pp = ppSvc->
-	  find(LHCb::ParticleID(PDef->GetPDGEncoding()));
+        const LHCb::ParticleProperty* pp = ppSvc->find(LHCb::ParticleID(PDef->GetPDGEncoding()));
         if (pp) {
           G4ParticlePropertyData* PPData = PPT->GetParticleProperty(PDef);
           PPData->SetPDGMass(pp->mass());
@@ -126,22 +106,17 @@ StatusCode GenerationToSimulation::initialize() {
       release(ppSvc);
     }
   }
-  
-  svc<IService>("LoKiSvc");
-  LoKi::IGenHybridFactory* factory = tool<LoKi::IGenHybridFactory>
-    ("LoKi::Hybrid::GenTool/GenFactory:PUBLIC", this);
+
   // Cuts to keep additional particles.
   if (m_keepCode != "") {
+    svc<IService>("LoKiSvc");
+    LoKi::IGenHybridFactory* factory = tool<LoKi::IGenHybridFactory>("LoKi::Hybrid::GenTool/GenFactory:PUBLIC", this);
     sc = factory->get(m_keepCode, m_keepCuts);
-    if (sc.isFailure()) 
-      always() << "Error from KeepCode = '" + m_keepCode + "'" << endmsg;
+    if (sc.isFailure()) always() << "Error from KeepCode = '" + m_keepCode + "'" << endmsg;
   }
-  sc = factory->get(m_selectiveSimSignalCode, m_selectiveSimSignal);
-  if (sc.isFailure())
-    always() << "Error from ExcludeFromSimulationCode = '" + m_keepCode + "'" << endmsg;
 
   // get tool to set signal flag
-  m_setSignalFlagTool = tool< IFlagSignalChain >( "FlagSignalChain" );
+  m_setSignalFlagTool = tool<IFlagSignalChain>("FlagSignalChain");
 
   return StatusCode::SUCCESS;
 }
@@ -150,36 +125,26 @@ StatusCode GenerationToSimulation::initialize() {
 // Main execution.
 //=============================================================================
 StatusCode GenerationToSimulation::execute() {
-  
   // Retrieve the HepMCEvents.
   debug() << "==> Execute" << endmsg;
-  LHCb::HepMCEvents* generationEvents = 
-    get<LHCb::HepMCEvents>(m_generationLocation);
+  LHCb::HepMCEvents* generationEvents = get<LHCb::HepMCEvents>(m_generationLocation);
 
-  // Get or create containers in TES for MCParticles and MCVertices.
-  if ( exist<LHCb::MCParticles>(m_particlesLocation) ) {
-    m_particleContainer = get<LHCb::MCParticles>(m_particlesLocation);
-  } else {
-    m_particleContainer = new LHCb::MCParticles();
-    put(m_particleContainer, m_particlesLocation);
-  }
-  if ( exist<LHCb::MCVertices>(m_verticesLocation) ) {
-    m_vertexContainer = get<LHCb::MCVertices>(m_verticesLocation);
-  } else {
-    m_vertexContainer = new LHCb::MCVertices();
-    put(m_vertexContainer, m_verticesLocation);
-  }
+  // Create containers in TES for MCParticles and MCVertices.
+  m_particleContainer = new LHCb::MCParticles();
+  put(m_particleContainer, m_particlesLocation);
+  m_vertexContainer = new LHCb::MCVertices();
+  put(m_vertexContainer, m_verticesLocation);
 
-  if (!generationEvents || generationEvents->size() == 0)
-    {*gigaSvc() << NULL; return StatusCode::SUCCESS;}
+  if (!generationEvents || generationEvents->size() == 0) {
+    *gigaSvc() << NULL;
+    return StatusCode::SUCCESS;
+  }
 
   // Retrieve the MCHeader.
   LHCb::MCHeader* mcHeader = get<LHCb::MCHeader>(m_mcHeader);
 
   // Loop over the events (one for each pile-up interaction).
-  for(LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin(); 
-       generationEvents->end() != genEvent; ++genEvent) {
-
+  for (LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin(); generationEvents->end() != genEvent; ++genEvent) {
     // Retrieve the event.
     HepMC::GenEvent* ev = (*genEvent)->pGenEvt();
 
@@ -187,10 +152,10 @@ StatusCode GenerationToSimulation::execute() {
     m_g4ParticleMap.clear();
     m_mcParticleMap.clear();
     m_particlesToDelete.clear();
-    
+
     // Determine the position of the primary vertex.
     Gaudi::LorentzVector thePV = primaryVertex(ev);
-    
+
     /*
       Set G4PrimaryVertex to this position. The assumption is that all
       particles transferred to Geant4 for this pile up interaction
@@ -198,56 +163,50 @@ StatusCode GenerationToSimulation::execute() {
       with non zero lifetimes must be passed to Geant4 and then must
       be declared to Geant4 so that they can be transported correctly.
     */
-    G4PrimaryVertex* origVertex = 
-      new G4PrimaryVertex(thePV.X(), thePV.Y(), thePV.Z(), thePV.T());
+    G4PrimaryVertex* origVertex = new G4PrimaryVertex(thePV.X(), thePV.Y(), thePV.Z(), thePV.T());
 
     // Create and add the primary MCVertex.
     LHCb::MCVertex* primaryVertex = new LHCb::MCVertex();
     m_vertexContainer->insert(primaryVertex);
-    primaryVertex->setPosition(Gaudi::XYZPoint( thePV.Vect()));
+    primaryVertex->setPosition(Gaudi::XYZPoint(thePV.Vect()));
     primaryVertex->setTime(thePV.T());
     primaryVertex->setType(LHCb::MCVertex::ppCollision);
     mcHeader->addToPrimaryVertices(primaryVertex);
-  
+
     // Set ID of all vertices to 0.
-    for (HepMC::GenEvent::vertex_iterator itV = ev->vertices_begin();
-	 itV != ev->vertices_end(); ++itV) (*itV)->set_id(0);
+    for (HepMC::GenEvent::vertex_iterator itV = ev->vertices_begin(); itV != ev->vertices_end(); ++itV) (*itV)->set_id(0);
 
     // Extract the particles to store in MCParticles.
     std::vector<HepMC::GenParticle*> mctruthList;
-    for (HepMC::GenEvent::particle_const_iterator itP = ev->particles_begin();
-	 itP != ev->particles_end(); ++itP) {
-      if (keep(*itP) || (m_keepCode != "" && m_keepCuts(*itP))) { 
+    for (HepMC::GenEvent::particle_const_iterator itP = ev->particles_begin(); itP != ev->particles_end(); ++itP) {
+      if (keep(*itP) || (m_keepCode != "" && m_keepCuts(*itP))) {
         mctruthList.push_back(*itP);
-	
-	/*
+
+        /*
          Set the ID of of the end vertex to one, then the particle
          with production vertex of ID 0 and end vertex of ID 1 (or
          without end vertex) will be the start point of a decay tree
          to convert to MCTruth.
-	*/
+        */
         HepMC::GenVertex* endVertex = (*itP)->end_vertex();
         if (endVertex) endVertex->set_id(1);
       }
     }
-    
+
     // Sort the particles to be stored by barcode and then convert them.
-    std::sort(mctruthList.begin(), mctruthList.end(), 
-	      HepMCUtils::compareHepMCParticles);
-    for (std::vector<HepMC::GenParticle*>::iterator it = mctruthList.begin();
-	 mctruthList.end() != it; ++it) {
+    std::sort(mctruthList.begin(), mctruthList.end(), HepMCUtils::compareHepMCParticles);
+    for (std::vector<HepMC::GenParticle*>::iterator it = mctruthList.begin(); mctruthList.end() != it; ++it) {
       HepMC::GenVertex* prodVertex = (*it)->production_vertex();
-      if (!prodVertex) 
-        warning() << "The particle has no production vertex !!" << endreq;
+      if (!prodVertex)
+        warning() << "The particle has no production vertex !!" << endmsg;
       else if (0 == prodVertex->id())
         convert(*it, origVertex, primaryVertex, 0, 0);
     }
-    
+
     // Remove from the primary vertex and delete the unneeded particles.
     if (!m_particlesToDelete.empty()) {
-      std::vector< G4PrimaryParticle*>::const_iterator itDel;
-      for (itDel = m_particlesToDelete.begin(); 
-	   itDel != m_particlesToDelete.end(); ++itDel) { 
+      std::vector<G4PrimaryParticle*>::const_iterator itDel;
+      for (itDel = m_particlesToDelete.begin(); itDel != m_particlesToDelete.end(); ++itDel) {
         removeFromPrimaryVertex(origVertex, *itDel);
         delete *itDel;
       }
@@ -256,13 +215,13 @@ StatusCode GenerationToSimulation::execute() {
   }
 
   // This needs to be done only if Geant4 is not called since in that case
-  // the setting of the flags for the daughters is taken care of by 
+  // the setting of the flags for the daughters is taken care of by
   // SimulationToMCTruth
-  if ( m_skipGeant4 ) {
+  if (m_skipGeant4) {
     LHCb::MCParticles::const_iterator ip;
-    for ( ip = m_particleContainer->begin(); ip != m_particleContainer->end(); ip++ ) {
-      if ( (*ip)->fromSignal() ) {
-        m_setSignalFlagTool->setFromSignalFlag( *ip );
+    for (ip = m_particleContainer->begin(); ip != m_particleContainer->end(); ip++) {
+      if ((*ip)->fromSignal()) {
+        m_setSignalFlagTool->setFromSignalFlag(*ip);
       }
     }
   }
@@ -273,206 +232,217 @@ StatusCode GenerationToSimulation::execute() {
 //=============================================================================
 // Decides if a particle should be kept in MCParticles.
 //=============================================================================
-bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const{
+bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const {
   LHCb::ParticleID pid(particle->pdg_id());
-  switch (particle -> status()) {
-  case LHCb::HepMCEvent::StableInProdGen: return true;
-  case LHCb::HepMCEvent::DecayedByDecayGen: return true;
-  case LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen: return true;
-  case LHCb::HepMCEvent::SignalInLabFrame: return true;
-  case LHCb::HepMCEvent::StableInDecayGen: return true;
+  switch (particle->status()) {
+    case LHCb::HepMCEvent::StableInProdGen:
+      return true;
+    case LHCb::HepMCEvent::DecayedByDecayGen:
+      return true;
+    case LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen:
+      return true;
+    case LHCb::HepMCEvent::SignalInLabFrame:
+      return true;
+    case LHCb::HepMCEvent::StableInDecayGen:
+      return true;
 
-  // For some processes the resonance has status 3.
-  case LHCb::HepMCEvent::DocumentationParticle:
-    if (24 == particle->parent_event()->signal_process_id()) {
-      if (23 == pid.abspid()) return true;
-      else if (25 == pid.abspid()) return true;
-    } else if (26 == particle->parent_event()-> signal_process_id()) {
-      if (24 == pid.abspid()) return true;
-      else if (25 == pid.abspid()) return true;
-    } else if (102 == particle->parent_event()->signal_process_id()) {
-      if (25 == pid.abspid()) return true;
-    } else if (6 == pid.abspid()) return true;
-    return false;
-  case LHCb::HepMCEvent::Unknown: return false;
-  case LHCb::HepMCEvent::DecayedByProdGen: 
-    if ( pid.isHadron() ) return true;
-    if ( pid.isLepton() ) return true;
-    if ( pid.isNucleus() ) return true;
-    if ( pid.isDiQuark() ) return false;
+    // For some processes the resonance has status 3.
+    case LHCb::HepMCEvent::DocumentationParticle:
+      if (24 == particle->parent_event()->signal_process_id()) {
+        if (23 == pid.abspid())
+          return true;
+        else if (25 == pid.abspid())
+          return true;
+      } else if (26 == particle->parent_event()->signal_process_id()) {
+        if (24 == pid.abspid())
+          return true;
+        else if (25 == pid.abspid())
+          return true;
+      } else if (102 == particle->parent_event()->signal_process_id()) {
+        if (25 == pid.abspid()) return true;
+      } else if (6 == pid.abspid())
+        return true;
+      return false;
+    case LHCb::HepMCEvent::Unknown:
+      return false;
+    case LHCb::HepMCEvent::DecayedByProdGen:
+      if (pid.isHadron()) return true;
+      if (pid.isLepton()) return true;
+      if (pid.isNucleus()) return true;
+      if (pid.isDiQuark()) return false;
 
-    // Store particles of interest.
-    switch (pid.abspid()) {
-    case LHCb::ParticleID::down   : return false;
-    case LHCb::ParticleID::up     : return false;
-    case LHCb::ParticleID::strange: return false;
-    case LHCb::ParticleID::charm  : return true;
-    case LHCb::ParticleID::bottom : return true;
-    case LHCb::ParticleID::top    : return false;
-    case 21: return false;  // Gluon.
-    case 22: return true;   // Photon.
-    case 23: // Z0.
-      if (24 == particle->parent_event()->signal_process_id()) return false;
-      else return true;
-    case 24: // W. 
-      if (26 == particle->parent_event()->signal_process_id()) return false;
-      else return true;
-    case 25: // SM Higgs.
-      if (24 == particle-> parent_event()-> signal_process_id() || 
-	  26 == particle-> parent_event()-> signal_process_id() || 
-	  102 == particle-> parent_event()-> signal_process_id()) return false;
-      else return true;
-    case 32: return true;  // Z'.
-    case 33: return true;  // Z''.
-    case 34: return true;  // W'.
-    case 35: return true;  // CP-even heavy Higgs (H0/H2).
-    case 36: return true;  // CP-odd Higgs (A0/H3).
-    case 37: return true;  // Charged Higgs (H+).
-    // See Table 6 of the Pythia 6 manual (arxiv.org/abs/hep-ph/0603175).
-    case 90: return false; // System particle.
-    case 91: return false; // Parton system from cluster fragmentation.
-    case 92: return false; // Parton system from string fragmentation.
-    case 93: return false; // Parton system from independent fragmentation.
-    case 94: return false; // Time-like showering system.
-    default: return true;
-    }
-    return true;
-  default: return false;
+      // Store particles of interest.
+      switch (pid.abspid()) {
+        case LHCb::ParticleID::down:
+          return false;
+        case LHCb::ParticleID::up:
+          return false;
+        case LHCb::ParticleID::strange:
+          return false;
+        case LHCb::ParticleID::charm:
+          return true;
+        case LHCb::ParticleID::bottom:
+          return true;
+        case LHCb::ParticleID::top:
+          return false;
+        case 21:
+          return false;  // Gluon.
+        case 22:
+          return true;  // Photon.
+        case 23:        // Z0.
+          if (24 == particle->parent_event()->signal_process_id())
+            return false;
+          else
+            return true;
+        case 24:  // W.
+          if (26 == particle->parent_event()->signal_process_id())
+            return false;
+          else
+            return true;
+        case 25:  // SM Higgs.
+          if (24 == particle->parent_event()->signal_process_id() || 26 == particle->parent_event()->signal_process_id() ||
+              102 == particle->parent_event()->signal_process_id())
+            return false;
+          else
+            return true;
+        case 32:
+          return true;  // Z'.
+        case 33:
+          return true;  // Z''.
+        case 34:
+          return true;  // W'.
+        case 35:
+          return true;  // CP-even heavy Higgs (H0/H2).
+        case 36:
+          return true;  // CP-odd Higgs (A0/H3).
+        case 37:
+          return true;  // Charged Higgs (H+).
+        // See Table 6 of the Pythia 6 manual (arxiv.org/abs/hep-ph/0603175).
+        case 90:
+          return false;  // System particle.
+        case 91:
+          return false;  // Parton system from cluster fragmentation.
+        case 92:
+          return false;  // Parton system from string fragmentation.
+        case 93:
+          return false;  // Parton system from independent fragmentation.
+        case 94:
+          return false;  // Time-like showering system.
+        default:
+          return true;
+      }
+      return true;
+    default:
+      return false;
   }
   return false;
 }
 
 namespace {
-  // remove the placeholder MCParticle, return true on success
-  bool removeFromMCTree( LHCb::MCParticle* mcp )
-  {
-    LHCb::MCVertex* orig = const_cast<LHCb::MCVertex*>(mcp->originVertex());
-    if ( orig ) {
-      auto isref = std::find_if(std::begin(orig->products()), std::end(orig->products()),
-              [=] ( const SmartRef<LHCb::MCParticle>& prod ) -> bool { return mcp == prod.target(); }
-              ); // need find_if to ask for the same pointed-to object
-      if ( std::end(orig->products()) != isref ) {
-        orig->removeFromProducts(*isref);
-        return true;
-      }
-      return false;
-    } // otherwise nothing to be done
-    return true;
-  }
+// remove the placeholder MCParticle, return true on success
+bool removeFromMCTree(LHCb::MCParticle* mcp) {
+  LHCb::MCVertex* orig = const_cast<LHCb::MCVertex*>(mcp->originVertex());
+  if (orig) {
+    auto isref = std::find_if(std::begin(orig->products()), std::end(orig->products()), [=](const SmartRef<LHCb::MCParticle>& prod) -> bool {
+      return mcp == prod.target();
+    });  // need find_if to ask for the same pointed-to object
+    if (std::end(orig->products()) != isref) {
+      orig->removeFromProducts(*isref);
+      return true;
+    }
+    return false;
+  }  // otherwise nothing to be done
+  return true;
+}
 }
 
 //=============================================================================
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
-void GenerationToSimulation::convert(HepMC::GenParticle*& particle, 
-				     G4PrimaryVertex* pvertexg4,
-				     LHCb::MCVertex* originVertex,
-				     G4PrimaryParticle* motherg4,
-				     LHCb::MCParticle* mothermcp) {
-
+void GenerationToSimulation::convert(HepMC::GenParticle*& particle, G4PrimaryVertex* pvertexg4, LHCb::MCVertex* originVertex,
+                                     G4PrimaryParticle* motherg4, LHCb::MCParticle* mothermcp) {
   // Decision to convert the particle.
   unsigned char conversionCode = transferToGeant4(particle);
   switch (conversionCode) {
-  case 1: { // Convert particle to G4.
+    case 1: {  // Convert particle to G4.
 
-    // Check if particle has been converted.
-    const int pBarcode = particle->barcode();
-    std::map<int, std::pair<bool, G4PrimaryParticle*> >::const_iterator 
-      result = m_g4ParticleMap.find(pBarcode);
-    if (result != m_g4ParticleMap.end()) {
+      // Check if particle has been converted.
+      const int pBarcode = particle->barcode();
+      std::map<int, std::pair<bool, G4PrimaryParticle*>>::const_iterator result = m_g4ParticleMap.find(pBarcode);
+      if (result != m_g4ParticleMap.end()) {
+        // Return if converted.
+        if (result->second.first) return;
 
-      // Return if converted.
-      if (result->second.first) return;
-
-      // Flag for deletion.
-      else {
-	m_g4ParticleMap.erase(pBarcode);
-	m_particlesToDelete.push_back(result->second.second);
-      }
-    }
-    if ( m_selectiveSimulation == SignalSimulationStep ) {
-      if (msgLevel(MSG::DEBUG)) { debug() << "Simulation step SIGNAL, asked to process " << *particle << " with G4 primary at " << pvertexg4 << ", MC origin vertex at " << originVertex << ", G4 mother at " << motherg4 << " and MC mother at " << mothermcp << endmsg; }
-      if ( ( ! mothermcp ) && ( ! motherg4 ) ) {
-        // find placeholder if doing two-step simulation
-        LHCb::MCParticle* prev = searchPreviousStableMCParticle(particle);
-        if ( prev && prev->originVertex() ) {
-          mothermcp = const_cast<LHCb::MCParticle*>(prev->mother());
-          removeFromMCTree(prev); // remove reference to placeholder
-          m_particleContainer->erase(prev); // TODO should we check return code, take ownership and destroy?
-        } else {
-          warning() << "Could not find an undecayed placeholder LHCb::MCParticle (or its origin vertex) for " << *particle << " -> skipping" << endmsg;
-          return; // do not pass it to Geant4 in that case (and do not recurse to daughters)
+        // Flag for deletion.
+        else {
+          m_g4ParticleMap.erase(pBarcode);
+          m_particlesToDelete.push_back(result->second.second);
         }
       }
+      G4PrimaryParticle* g4P = makeG4Particle(particle, mothermcp);
+
+      // Check mother.
+      if (!motherg4) {
+        // Flag for recreation with correct mother link.
+        if (!mothermcp)
+          m_g4ParticleMap.insert(std::make_pair(pBarcode, std::make_pair(false, g4P)));
+        else
+          m_g4ParticleMap.insert(std::make_pair(pBarcode, std::make_pair(true, g4P)));
+
+        // Attach root particle to G4 primary vertex.
+        if (pvertexg4)
+          pvertexg4->SetPrimary(g4P);
+        else
+          error() << "Primary vertex points to NULL !" << endmsg;
+
+        // Set mother link.
+      } else {
+        m_g4ParticleMap.insert(std::make_pair(pBarcode, std::make_pair(true, g4P)));
+        motherg4->SetDaughter(g4P);
+      }
+      pvertexg4 = 0;
+      originVertex = 0;
+      motherg4 = g4P;
+      mothermcp = 0;
+      break;
     }
-    G4PrimaryParticle* g4P = makeG4Particle(particle, mothermcp);
+    case 2: {  // Convert to MCParticle.
 
-    // Check mother.
-    if (!motherg4) {
+      // Check if already converted.
+      const int pBarcode = particle->barcode();
+      std::map<int, bool>::const_iterator result = m_mcParticleMap.find(pBarcode);
+      if (result != m_mcParticleMap.end()) return;
 
-      // Flag for recreation with correct mother link.
-      if (!mothermcp) m_g4ParticleMap.insert
-			(std::make_pair(pBarcode, std::make_pair(false, g4P)));
-      else m_g4ParticleMap.insert
-	     (std::make_pair(pBarcode, std::make_pair(true, g4P)));
-
-      // Attach root particle to G4 primary vertex.
-      if (pvertexg4) pvertexg4->SetPrimary(g4P);
-      else error() << "Primary vertex points to NULL !" << endreq ;
-
-    // Set mother link.
-    } else {
-      m_g4ParticleMap.insert
-	(std::make_pair(pBarcode, std::make_pair(true, g4P)));
-      motherg4->SetDaughter(g4P);
+      // Convert the particle.
+      LHCb::MCVertex* endVertex = 0;
+      LHCb::MCParticle* mcP = makeMCParticle(particle, endVertex);
+      if (originVertex) {
+        mcP->setOriginVertex(originVertex);
+        originVertex->addToProducts(mcP);
+      }
+      m_mcParticleMap.insert(std::make_pair(pBarcode, true));
+      mothermcp = mcP;
+      originVertex = endVertex;
+      break;
     }
-    pvertexg4 = 0;
-    originVertex = 0;
-    motherg4 = g4P;
-    mothermcp = 0; 
-    break;
-  }
-  case 2: { // Convert to MCParticle.
-
-    // Check if already converted.
-    const int pBarcode = particle->barcode() ;
-    std::map<int, bool>::const_iterator result = m_mcParticleMap.find(pBarcode);
-    if (result != m_mcParticleMap.end()) return;
-    
-    // Convert the particle.
-    LHCb::MCVertex* endVertex = 0 ;
-    LHCb::MCParticle* mcP = makeMCParticle(particle, endVertex);
-    if (originVertex) {
-      mcP->setOriginVertex(originVertex);
-      originVertex->addToProducts(mcP);
-    }
-    m_mcParticleMap.insert(std::make_pair(pBarcode, true));
-    mothermcp = mcP;
-    originVertex = endVertex; 
-    break;
-  }
-  case 3: // Skip the particle.
-  default:
-    break;
+    case 3:  // Skip the particle.
+    default:
+      break;
   }
 
   // Convert all daughters of the HepMC particle (recurse).
   HepMC::GenVertex* ev = particle->end_vertex();
   if (ev) {
-
     // Create the list.
     std::vector<HepMC::GenParticle*> dList;
-    for (HepMC::GenVertex::particle_iterator itD = ev->particles_begin
-	   (HepMC::children); itD != ev->particles_end(HepMC::children); 
-	 ++itD) {
+    for (HepMC::GenVertex::particle_iterator itD = ev->particles_begin(HepMC::children); itD != ev->particles_end(HepMC::children); ++itD) {
       HepMC::GenParticle* P = (*itD);
       dList.push_back(P);
     }
-    
+
     // Sort by barcode and convert.
     std::sort(dList.begin(), dList.end(), HepMCUtils::compareHepMCParticles);
-    for (std::vector<HepMC::GenParticle*>::iterator itDD = dList.begin(); 
-	 dList.end() != itDD; ++itDD) {
+    for (std::vector<HepMC::GenParticle*>::iterator itDD = dList.begin(); dList.end() != itDD; ++itDD) {
       HepMC::GenParticle* P = (*itDD);
       convert(P, pvertexg4, originVertex, motherg4, mothermcp);
     }
@@ -485,42 +455,35 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
 // 2: convert to MCParticle directly, the particle is not sent to Geant4.
 // 3: skip the particle completely.
 //=============================================================================
-unsigned char GenerationToSimulation::transferToGeant4
-(const HepMC::GenParticle* p) const {
+unsigned char GenerationToSimulation::transferToGeant4(const HepMC::GenParticle* p) const {
   if (!(keep(p) || (m_keepCode != "" && m_keepCuts(p)))) return 3;
   if (m_skipGeant4) return 2;
 
   switch (m_selectiveSimulation) {
     case UESimulationStep:
-      if (  m_selectiveSimSignal(p) ) { // keep as MC particle placeholder
-        if (msgLevel(MSG::DEBUG)) { 
+
+      if (p->status() == LHCb::HepMCEvent::SignalInLabFrame) {  // keep as MC particle placeholder
+        if (msgLevel(MSG::DEBUG)) {
           debug() << "Inclusive simulation identified particle as signal: ";
           debug() << "Barcode:\t " << p->barcode() << endmsg;
           debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
-          debug() << "UNDECAYED:\t " << p->is_undecayed() << endmsg;
+          debug() << "END VERTEX:\t " << (p->end_vertex() != nullptr) << endmsg;
           debug() << "Decay Tree:";
           LoKi::PrintHepMC::printDecay(p, debug());
-          debug() << endmsg; }
+          debug() << endmsg;
+        }
         return 2;
       }
-      break;
-    case SignalSimulationStep:
-      if ( !m_selectiveSimSignal(p) ) { // has been simulated before (if needed)
-          return 3;
-      } else {
-        if (msgLevel(MSG::DEBUG)) { debug() << "Signal-only simulation, not skipping "; LoKi::PrintHepMC::printDecay(p, debug()); debug() << endmsg; }
-      }
+    default:
       break;
   }
 
   // Return for Geant4 tracking if stable.
   HepMC::GenVertex* ev = p->end_vertex();
-  if (!ev) { 
-    if (m_lookForUnknownParticles) 
-      if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id())) 
-        warning() << "The particle " << p -> pdg_id() 
-		  << " is not known to Geant4 but travels a finite distance" 
-		  << endreq;
+  if (!ev) {
+    if (m_lookForUnknownParticles)
+      if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id()))
+        warning() << "The particle " << p->pdg_id() << " is not known to Geant4 but travels a finite distance" << endmsg;
     return 1;
   }
 
@@ -534,69 +497,60 @@ unsigned char GenerationToSimulation::transferToGeant4
   if (dist < m_travelLimit) return 2;
 
   // Return for Geant4 tracking if stable.
-  if (m_lookForUnknownParticles) 
-    if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id())) 
-      warning() << "The particle " << p -> pdg_id() 
-		<< " is not known to Geant4 but travels a finite distance" 
-		<< endreq;
+  if (m_lookForUnknownParticles)
+    if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id()))
+      warning() << "The particle " << p->pdg_id() << " is not known to Geant4 but travels a finite distance" << endmsg;
   return 1;
 }
 
 //=============================================================================
 // Create a G4PrimaryParticle from a HepMC Particle.
 //=============================================================================
-G4PrimaryParticle* GenerationToSimulation::makeG4Particle
-(HepMC::GenParticle*& particle, LHCb::MCParticle* mcp) const {
-  HepMC::FourVector mom = particle -> momentum();
-  G4PrimaryParticle * g4P = new G4PrimaryParticle(particle->pdg_id(), mom.x(), 
-						  mom.y(), mom.z());
+G4PrimaryParticle* GenerationToSimulation::makeG4Particle(HepMC::GenParticle*& particle, LHCb::MCParticle* mcp) const {
+  HepMC::FourVector mom = particle->momentum();
+  G4PrimaryParticle* g4P = new G4PrimaryParticle(particle->pdg_id(), mom.x(), mom.y(), mom.z());
   g4P->SetMass(particle->generated_mass());
-  
+
   // Create information containing the HepMC link and signal information.
-  bool isSignalParticle(LHCb::HepMCEvent::SignalInLabFrame == 
-			(particle->status()));
-  GiGaPrimaryParticleInformation* gInfo = new GiGaPrimaryParticleInformation
-    (isSignalParticle, particle->barcode(), 0);
+  bool isSignalParticle(LHCb::HepMCEvent::SignalInLabFrame == (particle->status()));
+  GiGaPrimaryParticleInformation* gInfo = new GiGaPrimaryParticleInformation(isSignalParticle, particle->barcode(), 0);
 
   HepMC::GenVertex* ev = particle->end_vertex();
   if (ev) {
-    
     // Set propertime of the particle.
     double life = lifetime(mom, particle->production_vertex(), ev);
     g4P->SetProperTime(life);
-    
+
     // Store if particle has oscillated.
     const HepMC::GenParticle* B = hasOscillated(particle);
-    if (B) { 
+    if (B) {
       gInfo->setHasOscillated(true);
       particle = const_cast<HepMC::GenParticle*>(B);
     }
   }
-  
+
   // Link to MCParticle to be able to rebuild history later.
   if (mcp) gInfo->setMotherMCParticle(mcp);
   g4P->SetUserInformation(gInfo);
-  return g4P ;
+  return g4P;
 }
 
 //=============================================================================
 // Create an MCParticle from a HepMC GenParticle.
 //=============================================================================
-LHCb::MCParticle* GenerationToSimulation::makeMCParticle
-(HepMC::GenParticle*& particle, LHCb::MCVertex*& endVertex) const {
-
+LHCb::MCParticle* GenerationToSimulation::makeMCParticle(HepMC::GenParticle*& particle, LHCb::MCVertex*& endVertex) const {
   // Create and insert into TES.
-  LHCb::MCParticle * mcp = new LHCb::MCParticle();
+  LHCb::MCParticle* mcp = new LHCb::MCParticle();
   m_particleContainer->insert(mcp);
 
   // Set properties.
   Gaudi::LorentzVector mom(particle->momentum());
   LHCb::ParticleID pid(particle->pdg_id());
-  mcp -> setMomentum(mom);
-  mcp -> setParticleID(pid);
-  
+  mcp->setMomentum(mom);
+  mcp->setParticleID(pid);
+
   // Set the vertex.
-  HepMC::GenVertex* V = particle->end_vertex() ;
+  HepMC::GenVertex* V = particle->end_vertex();
   if (V) {
     endVertex = new LHCb::MCVertex();
     m_vertexContainer->insert(endVertex);
@@ -607,18 +561,18 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle
     // Check if the particle has oscillated.
     const HepMC::GenParticle* B = hasOscillated(particle);
     if (B) {
-      endVertex->setType( LHCb::MCVertex::OscillatedAndDecay);
+      endVertex->setType(LHCb::MCVertex::OscillatedAndDecay);
       particle = const_cast<HepMC::GenParticle*>(B);
-    } else if (( 4 == pid.abspid()) || (5 == pid.abspid()))
-      endVertex->setType( LHCb::MCVertex::StringFragmentation);
+    } else if ((4 == pid.abspid()) || (5 == pid.abspid()))
+      endVertex->setType(LHCb::MCVertex::StringFragmentation);
     else
-      endVertex -> setType( LHCb::MCVertex::DecayVertex);
-    mcp -> addToEndVertices(endVertex);
+      endVertex->setType(LHCb::MCVertex::DecayVertex);
+    mcp->addToEndVertices(endVertex);
   }
 
   //  Set the fromSignal flag
-  if ( LHCb::HepMCEvent::SignalInLabFrame == (particle->status()) ) {
-    mcp -> setFromSignal(true);
+  if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
+    mcp->setFromSignal(true);
   }
 
   return mcp;
@@ -627,34 +581,39 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle
 //=============================================================================
 // Determine the primary vertex for the event.
 //=============================================================================
-Gaudi::LorentzVector GenerationToSimulation::primaryVertex
-(const HepMC::GenEvent* genEvent) const {
+Gaudi::LorentzVector GenerationToSimulation::primaryVertex(const HepMC::GenEvent* genEvent) const {
   Gaudi::LorentzVector result(0, 0, 0, 0);
 
   // First method, get the beam particle and use the decay vertex if it exists.
   if (genEvent->valid_beam_particles()) {
     HepMC::GenParticle* P = genEvent->beam_particles().first;
-    HepMC::GenVertex*   V = P->end_vertex();
-    if (V) result = V->position(); 
-    else error() << "The beam particles have no end vertex!" << endreq;
-  // Second method, use the singal vertex stored in HepMC.
-  } else if ( 0 != genEvent -> signal_process_vertex() ) {
+    HepMC::GenVertex* V = P->end_vertex();
+    if (V)
+      result = V->position();
+    else
+      error() << "The beam particles have no end vertex!" << endmsg;
+    // Second method, use the singal vertex stored in HepMC.
+  } else if (0 != genEvent->signal_process_vertex()) {
     HepMC::GenVertex* V = genEvent->signal_process_vertex();
     result = V->position();
-  // Third method, take production/end vertex of the particle with barcode 1.
+    // Third method, take production/end vertex of the particle with barcode 1.
   } else {
     HepMC::GenParticle* P = genEvent->barcode_to_particle(1);
-    HepMC::GenVertex*   V = 0;
+    HepMC::GenVertex* V = 0;
     if (P) {
       V = P->production_vertex();
-      if (V) result = V->position();
+      if (V)
+        result = V->position();
       else {
         V = P->end_vertex();
-        if (V) result = V->position();
-        else error() << "The first particle has no production vertex and "
-		     << "no end vertex !" << endreq ;
+        if (V)
+          result = V->position();
+        else
+          error() << "The first particle has no production vertex and "
+                  << "no end vertex !" << endmsg;
       }
-    } else error() << "No particle with barcode equal to 1!" << endreq;
+    } else
+      error() << "No particle with barcode equal to 1!" << endmsg;
   }
   return result;
 }
@@ -662,9 +621,7 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex
 //=============================================================================
 // Compute the lifetime of a particle.
 //=============================================================================
-double GenerationToSimulation::lifetime(const HepMC::FourVector mom, 
-					const HepMC::GenVertex* P,
-					const HepMC::GenVertex* E ) const {
+double GenerationToSimulation::lifetime(const HepMC::FourVector mom, const HepMC::GenVertex* P, const HepMC::GenVertex* E) const {
   if (!E) return 0;
   Gaudi::LorentzVector A(P->position()), B(E->position());
   Gaudi::LorentzVector AB = B - A;
@@ -676,7 +633,7 @@ double GenerationToSimulation::lifetime(const HepMC::FourVector mom,
   Gaudi::LorentzVector M(mom);
   ROOT::Math::Boost theBoost(M.BoostToCM());
   Gaudi::LorentzVector ABStar = theBoost(AB);
-  
+
   // Switch back to time.
   return ABStar.T() / Gaudi::Units::c_light;
 }
@@ -684,13 +641,12 @@ double GenerationToSimulation::lifetime(const HepMC::FourVector mom,
 //=============================================================================
 // Check if a particle has oscillated.
 //=============================================================================
-const HepMC::GenParticle* GenerationToSimulation::hasOscillated
-(const HepMC::GenParticle* P) const {
+const HepMC::GenParticle* GenerationToSimulation::hasOscillated(const HepMC::GenParticle* P) const {
   const HepMC::GenVertex* ev = P->end_vertex();
-  if (!ev) return 0 ; 
+  if (!ev) return 0;
   if (1 != ev->particles_out_size()) return 0;
   const HepMC::GenParticle* D = *(ev->particles_out_const_begin());
-  if (!D) return 0 ;
+  if (!D) return 0;
   if (-P->pdg_id() != D->pdg_id()) return 0;
   return D;
 }
@@ -698,18 +654,13 @@ const HepMC::GenParticle* GenerationToSimulation::hasOscillated
 //=============================================================================
 // Remove a particle from a primary vertex.
 //=============================================================================
-void GenerationToSimulation::removeFromPrimaryVertex
-(G4PrimaryVertex*& pvertexg4, const G4PrimaryParticle* particleToDelete) const {
-
+void GenerationToSimulation::removeFromPrimaryVertex(G4PrimaryVertex*& pvertexg4, const G4PrimaryParticle* particleToDelete) const {
   // This should be rare, so warn.
-  warning() << "A G4PrimaryParticle will be removed from the G4PrimaryVertex" 
-	    << endmsg ;
+  warning() << "A G4PrimaryParticle will be removed from the G4PrimaryVertex" << endmsg;
   particleToDelete->Print();
 
   // Make a new vertex.
-  G4PrimaryVertex* newVertex = new G4PrimaryVertex
-    (pvertexg4->GetX0(), pvertexg4->GetY0(),
-     pvertexg4->GetZ0(), pvertexg4->GetT0());
+  G4PrimaryVertex* newVertex = new G4PrimaryVertex(pvertexg4->GetX0(), pvertexg4->GetY0(), pvertexg4->GetZ0(), pvertexg4->GetT0());
 
   // Copy particles to new vertex, except the one to remove.
   G4PrimaryParticle* particle = pvertexg4->GetPrimary();
@@ -724,14 +675,22 @@ void GenerationToSimulation::removeFromPrimaryVertex
 //=============================================================================
 // Helper method: find previously made LHCb::MCParticle
 //=============================================================================
-LHCb::MCParticle* GenerationToSimulation::searchPreviousStableMCParticle( const HepMC::GenParticle* particle )
-{
-  if (msgLevel(MSG::DEBUG)) { debug() << "Trying to find MCParticle placeholder for " << *particle << " in " << m_particleContainer->size() << endmsg; }
+LHCb::MCParticle* GenerationToSimulation::searchPreviousStableMCParticle(const HepMC::GenParticle* particle) {
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "Trying to find MCParticle placeholder for " << *particle << " in " << m_particleContainer->size() << endmsg;
+  }
   LHCb::MCParticle::Vector matches{};
-  std::copy_if(m_particleContainer->begin(), m_particleContainer->end(), std::back_inserter(matches),
-          [=] ( const LHCb::MCParticle* mcp ) -> bool { return mcp->endVertices().empty() && ( std::abs(particle->pdg_id()) == std::abs(mcp->particleID().pid()) ); } );
-  if (msgLevel(MSG::DEBUG)) { debug() << "With same ID and no endvertices: " << matches.size() << " remaining" << endmsg; }
-  if ( matches.empty() ) { return nullptr; }
-  if ( matches.size() > 1 ) { warning() << "Found more than one previously made LHCb::MCParticle" << endmsg; }
+  std::copy_if(m_particleContainer->begin(), m_particleContainer->end(), std::back_inserter(matches), [=](const LHCb::MCParticle* mcp) -> bool {
+    return mcp->endVertices().empty() && (std::abs(particle->pdg_id()) == std::abs(mcp->particleID().pid()));
+  });
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "With same ID and no endvertices: " << matches.size() << " remaining" << endmsg;
+  }
+  if (matches.empty()) {
+    return nullptr;
+  }
+  if (matches.size() > 1) {
+    warning() << "Found more than one previously made LHCb::MCParticle" << endmsg;
+  }
   return matches.front();
 }

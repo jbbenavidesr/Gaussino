@@ -89,6 +89,7 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     declareProperty("DecayFile" , m_decayFile = "empty" ) ;
     // The signal decay file
     declareProperty("UserDecayFile" , m_userDecay = "empty" ) ;
+    declareProperty("DecaySignal", m_decaySignal = true ) ;
     // Keep temporary evt.pdl file
     declareProperty("KeepTempEvtFile" , m_keepTempEvtFile = false ) ;
     // Generate Polarized Lambda_b decays
@@ -99,7 +100,7 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     declareProperty("RealHelOne"  , m_realHelOne  = 1. ) ;
     declareProperty("ImHelOne"    , m_imHelOne    = 0. ) ;
     declareProperty("RealHelZero" , m_realHelZero = 1. ) ;
-    declareProperty("ImHelZero"   , m_imHelZero   = 0. ) ;   
+    declareProperty("ImHelOne"    , m_imHelZero   = 0. ) ;   
     // Initialize signalId
     m_signalId = EvtId( -1, -1 ) ;
 }
@@ -275,37 +276,39 @@ StatusCode EvtGenDecay::generateSignalDecay( HepMC::GenParticle * theMother ,
     return StatusCode::SUCCESS ;
   }
   
-  // Call EvtGen for the particle to generate
   checkParticle( theMother ) ;
 
-  // get signal alias
-  EvtId decayId = getSignalAlias( theMother -> pdg_id() ) ;
+  // Call EvtGen for the particle to generate
+  if ( m_decaySignal ) {
+    // get signal alias
+    EvtId decayId = getSignalAlias( theMother -> pdg_id() ) ;
 
-  EvtParticle * part( 0 ) ;
-  StatusCode sc = callEvtGen( part , theMother , decayId ) ;
-  if ( ! sc.isSuccess( ) ) return sc ;
+    EvtParticle * part( 0 ) ;
+    StatusCode sc = callEvtGen( part , theMother , decayId ) ;
+    if ( ! sc.isSuccess( ) ) return sc ;
 
-  // Update HepMCEvent theEvent and HepMCParticle theMother
+    // Update HepMCEvent theEvent and HepMCParticle theMother
 
-  // sets PDG Id of theMother
-  // because EvtGen might have asked to change the original one
-  // for CP modes (if flip is enabled)
-  theMother -> set_pdg_id( EvtPDL::getStdHep( part->getId() ) ) ;
-  flip = ( decayId != part -> getId() ) ;
+    // sets PDG Id of theMother
+    // because EvtGen might have asked to change the original one
+    // for CP modes (if flip is enabled)
+    theMother -> set_pdg_id( EvtPDL::getStdHep( part->getId() ) ) ;
+    flip = ( decayId != part -> getId() ) ;
 
-  // Get reference position in space and time to be able to assign
-  // correct vertex for daughter particles of theMother
-  // because EvtGen gives position with respect to the "root" particle
-  // This reference position is production vertex of theMother
-  HepMC::GenVertex * PV = theMother -> production_vertex() ;
-  Gaudi::LorentzVector theOriginPosition( PV -> position() ) ;
-  
-  // Fill HepMC event theEvent with EvtGen decay tree part
-  // starting from theMother
-  makeHepMC( part , theMother , theOriginPosition , -999 ) ;
+    // Get reference position in space and time to be able to assign
+    // correct vertex for daughter particles of theMother
+    // because EvtGen gives position with respect to the "root" particle
+    // This reference position is production vertex of theMother
+    HepMC::GenVertex * PV = theMother -> production_vertex() ;
+    Gaudi::LorentzVector theOriginPosition( PV -> position() ) ;
 
-  // delete EvtGen particle and all its daughters
-  part -> deleteTree ( ) ;
+    // Fill HepMC event theEvent with EvtGen decay tree part
+    // starting from theMother
+    makeHepMC( part , theMother , theOriginPosition , -999 ) ;
+
+    // delete EvtGen particle and all its daughters
+    part -> deleteTree ( ) ;
+  }
 
   // Set status to "signal in lab frame"
   theMother -> set_status( LHCb::HepMCEvent::SignalInLabFrame ) ;
