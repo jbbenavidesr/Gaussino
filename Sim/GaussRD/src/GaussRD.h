@@ -62,6 +62,7 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
                                       void**             pI  ) override;
 
   // Implementation of the control interface IGaussRDCtr
+  virtual size_t numberOfRedecays() const override {return m_max_rd_counter;};
 
   /** Allows any algorithm to query the service and ask what we currently up to.
    * 0 - default running, no redecay etc.

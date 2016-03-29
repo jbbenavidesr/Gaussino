@@ -14,6 +14,7 @@ branches          cmt doc src
 use               Boost       v* LCG_Interfaces
 use               LHCbKernel  v* Kernel
 use               GaussTools  v* Sim
+use   GaussRD       v*  Sim
 
 # Component library building rule
 #============================================================================

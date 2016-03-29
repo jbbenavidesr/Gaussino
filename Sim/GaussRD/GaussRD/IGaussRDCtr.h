@@ -46,6 +46,7 @@ public:
    *  @return bool
    */
   virtual bool registerNewEvent() = 0 ;
+  virtual size_t numberOfRedecays() const = 0 ;
 
   virtual int whatShouldIDo() const = 0;
   virtual void setPhase(int p) = 0;

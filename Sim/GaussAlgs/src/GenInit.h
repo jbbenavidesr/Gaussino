@@ -10,6 +10,7 @@
 #include "Event/BeamParameters.h"
 
 class IGenericTool;
+class IGaussRDCtr;
 
 /** @class GenInit GenInit.h
  *  
@@ -59,6 +60,9 @@ private:
   double        m_luminosity ;
 
   bool          m_createBeam;
+
+  IGaussRDCtr* m_gaussRDSvc;
+  std::string m_gaussRDSvcName;
 
   LHCb::BeamParameters m_beam ; ///< Local beam parameter object
 };

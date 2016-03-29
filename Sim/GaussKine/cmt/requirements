@@ -20,7 +20,9 @@ include_path      none
 #============================================================================
 use   GenEvent      v*  Event
 use   MCEvent       v*  Event
+use   PhysEvent     * Event
 use   GaussTools    v*  Sim
+use   GaussRD       v*  Sim
 use   LoKiGen       v*  Phys
 use   SimComponents v*  Sim
 
