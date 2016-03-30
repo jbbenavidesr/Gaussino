@@ -2,12 +2,12 @@
 # Created    : 2003-01-24
 # Maintainer : Gloria Corti
 #============================================================================
-package GaussRD
+package GaussRDAlgs
 version v1r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
-branches GaussRD doc cmt src
+branches doc cmt src
 
 # Used packages
 #============================================================================
@@ -17,21 +17,23 @@ use PhysEvent     * Event
 use GaussTools    v* Sim
 use GenEvent      v*  Event
 use GaussTools    v*  Sim
+use GaussRD    v*  Sim
+use Generators     v*      Gen
 use LoKiGen       v*  Phys
 use SimComponents v*  Sim
 use GaudiKernel *
 use GaudiUtils  *
 use GaudiAlg  *
 
-apply_pattern install_more_includes more=GaussRD
+apply_pattern install_more_includes more=GaussRDAlgs
 
 
 # Component library building rule
 #============================================================================
-library GaussRD     *.cpp
+library GaussRDAlgs     *.cpp
 
 # define component library link options
 #============================================================================
-apply_pattern component_library library=GaussRD
+apply_pattern component_library library=GaussRDAlgs
 
 
