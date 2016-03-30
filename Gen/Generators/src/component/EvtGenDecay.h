@@ -51,6 +51,7 @@ namespace LHCb {
 class EvtGen ;
 class EvtParticle ;
 class EvtRandomEngine ;
+class IGaussRDCtr;
 
 /** @class EvtGenDecay EvtGenDecay.h "EvtGenDecay.h"
  *  
@@ -182,7 +183,11 @@ private:
   std::string m_decayFile ; ///< Generic decay file name (set by options)
 
   std::string m_userDecay ; ///< User decay file name (set by options)
-  bool m_decaySignal ; ///< Flag to decay signal particles or leave them stable
+
+  std::string m_gaussRDSvcName;
+  IGaussRDCtr* m_gaussRDSvc;                   ///< GaussRD storage service
+
+
 
   EvtId m_signalId ; /// EvtGen Id of signal ID
 

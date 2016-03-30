@@ -30,6 +30,9 @@
 #include "HepMC/GenVertex.h"
 #include "HepMC/GenEvent.h"
  
+// from GaussRD
+#include "GaussRD/IGaussRDCtr.h"
+
 // from EvtGen
 #include "EvtGen/EvtGen.hh"
 #include "EvtGenBase/EvtParticleFactory.hh"
@@ -89,7 +92,6 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     declareProperty("DecayFile" , m_decayFile = "empty" ) ;
     // The signal decay file
     declareProperty("UserDecayFile" , m_userDecay = "empty" ) ;
-    declareProperty("DecaySignal", m_decaySignal = true ) ;
     // Keep temporary evt.pdl file
     declareProperty("KeepTempEvtFile" , m_keepTempEvtFile = false ) ;
     // Generate Polarized Lambda_b decays
@@ -101,6 +103,7 @@ EvtGenDecay::EvtGenDecay( const std::string& type,
     declareProperty("ImHelOne"    , m_imHelOne    = 0. ) ;
     declareProperty("RealHelZero" , m_realHelZero = 1. ) ;
     declareProperty("ImHelOne"    , m_imHelZero   = 0. ) ;   
+  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
     // Initialize signalId
     m_signalId = EvtId( -1, -1 ) ;
 }
@@ -200,6 +203,15 @@ StatusCode EvtGenDecay::initialize( ) {
     m_gen -> readUDecay( m_userDecay.c_str() ) ; 
   }
 
+  if (nullptr == m_gaussRDSvc) {
+      m_gaussRDSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
+  }
+
+  if (nullptr == m_gaussRDSvc) {
+      return Error(" initialize(): IGaussRDStr* points to NULL");
+  }
+
+
   debug() << "EvtGenDecay initialized" << endmsg ;
  
   return StatusCode::SUCCESS ;
@@ -270,6 +282,10 @@ StatusCode EvtGenDecay::generateDecay( HepMC::GenParticle * theMother ) const {
 //=============================================================================
 StatusCode EvtGenDecay::generateSignalDecay( HepMC::GenParticle * theMother ,
                                              bool & flip) const {
+  bool decaySignal = true;
+  if(m_gaussRDSvc->whatShouldIDo()==1){
+      decaySignal=false;
+  }
   // If particle already has daughters, return now
   if ( 0 != theMother -> end_vertex() ) {
     flip = false ;
@@ -279,7 +295,7 @@ StatusCode EvtGenDecay::generateSignalDecay( HepMC::GenParticle * theMother ,
   checkParticle( theMother ) ;
 
   // Call EvtGen for the particle to generate
-  if ( m_decaySignal ) {
+  if ( decaySignal ) {
     // get signal alias
     EvtId decayId = getSignalAlias( theMother -> pdg_id() ) ;
 

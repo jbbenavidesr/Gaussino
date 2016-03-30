@@ -70,6 +70,7 @@ GaussRDSignalDecay::GaussRDSignalDecay(const std::string& name, ISvcLocator* pSv
     declareProperty("GenCutTool", m_genCutToolName = "");
     // Flag to generate signal
     //declareProperty("SignalPdgCode", m_sigPdgCode = 0);
+  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
 }
 
 //=============================================================================
