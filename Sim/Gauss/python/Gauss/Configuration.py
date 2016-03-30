@@ -2786,6 +2786,9 @@ class Gauss(LHCbConfigurableUser):
             simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
             simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim",
                                                 RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
+            grdfilter = GaussRDCtrFilter('CheckIfSignalSim')
+            grdfilter.IsPhaseEqual = 2
+            simSlotSignal.Members += [ grdfilter]
             simSlotSignal.Members += [GaussRDSignalDecay()]
             GaussRDSignalDecay().HepMCEventLocation = 'Signal/Gen/HepMCEvents'
             simSlotSignal.Members += [StoreExplorerAlg('BLA')]
@@ -2793,9 +2796,6 @@ class Gauss(LHCbConfigurableUser):
             simSeq.Members += [simSlotSignal]
 
             simSlotSignalSeq.RootInTES = '{}Signal'.format(slot)
-            grdfilter = GaussRDCtrFilter('CheckIfSignalSim')
-            grdfilter.IsPhaseEqual = 2
-            simSlotSignalSeq.Members += [ grdfilter]
 
             genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
                                                LookForUnknownParticles = True )
