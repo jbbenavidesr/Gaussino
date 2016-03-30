@@ -42,17 +42,20 @@ MCCloner* MCCloner::DeepClone() {
     // GetCaloHitsAlg/GetEcalHits
     // GetCaloHitsAlg/GetHcalHits
     // GetTrackerHitsAlg/GetMuonHits
-    //
+    
     new_cloner->m_mcps.reserve(m_mcps.size());
     new_cloner->getClonedMCPs()->reserve(m_mcps.size()+100);
+    new_cloner->m_mcvs.reserve(m_mcvs.size());
+    new_cloner->getClonedMCVs()->reserve(m_mcvs.size()+100);
+
     for (auto& m : *getClonedMCPs()) {
         new_cloner->cloneMCP(m);
     }
-    new_cloner->m_mcvs.reserve(m_mcvs.size());
-    new_cloner->getClonedMCVs()->reserve(m_mcvs.size());
     for (auto& m : *getClonedMCVs()) {
         new_cloner->cloneMCV(m);
     }
+  
+    new_cloner->m_sig_part = new_cloner->cloneMCP(m_sig_part);
     for (auto& s : m_list_mchits) {
         auto temp = std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>();
         new_cloner->m_mchit.insert(std::pair<std::string, std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>>(s.first, temp));

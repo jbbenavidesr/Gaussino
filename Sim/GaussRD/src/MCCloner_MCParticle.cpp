@@ -14,7 +14,7 @@ LHCb::MCParticle* MCCloner::cloneKeyedMCP(const LHCb::MCParticle* mcp) {
   if (!clone) {
     clone = mcp->clone();
     m_mcps.insert(std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
-    getClonedMCPs()->insert(clone);
+    getClonedMCPs()->insert(clone, mcp->key());
   }
   return clone;
 }
@@ -43,7 +43,7 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
       originVertexClone->clearProducts();
 
       // Clone the origin vertex mother
-      const LHCb::MCParticle* mother = mcp->mother();
+      const LHCb::MCParticle* mother = originVertex->mother();
       LHCb::MCParticle* motherClone = (mother ? cloneMCP(mother) : NULL);
       originVertexClone->setMother(motherClone);
     }

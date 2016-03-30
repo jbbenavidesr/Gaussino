@@ -20,7 +20,6 @@ class IGiGaSvc;
 class G4PrimaryVertex;
 class G4PrimaryParticle;
 class IFlagSignalChain;
-class IGaussRDCtr;
 class IGaussRDStr;
 namespace HepMC {
 class GenEvent;
@@ -109,12 +108,11 @@ class GenerationToSimulation : public GaudiAlgorithm {
   enum SelectiveSimulationStep {
     NoSelectiveSimulation = 0,
     UESimulationStep = 1,
+    SignalSimulationStep = 2,
   };
   int m_selectiveSimulation;
   std::string m_gaussRDSvcName;
-  IGaussRDCtr* m_gaussRDCtrSvc;
   IGaussRDStr* m_gaussRDStrSvc;
-  LHCb::MCParticle* searchPreviousStableMCParticle(const HepMC::GenParticle* particle);
 
   /// Reference to tool to propagate fromSignal flag
   IFlagSignalChain* m_setSignalFlagTool;

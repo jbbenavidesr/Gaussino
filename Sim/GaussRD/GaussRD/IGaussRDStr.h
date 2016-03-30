@@ -64,6 +64,9 @@ class IGaussRDStr : virtual public IService {
   virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) = 0;
   virtual LHCb::MCParticles* getClonedMCPs() = 0;
 
+  virtual void setSignal(LHCb::MCParticle* mcp) = 0;
+  virtual LHCb::MCParticle* getSignal() = 0;
+
   virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) = 0;
   virtual LHCb::MCVertices* getClonedMCVs() = 0;
 

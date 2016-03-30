@@ -125,6 +125,8 @@ private:
 
     LHCb::GenCollisions* m_list_gencollisions = nullptr;
     std::map<const LHCb::GenCollision*, LHCb::GenCollision*> m_gencollisions;
+    
+    LHCb::MCParticle *m_sig_part = nullptr;
 };
 
 #endif

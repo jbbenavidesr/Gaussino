@@ -40,9 +40,6 @@ class MCCloner;
 class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaussRDCtr {
   /// friend factory
   friend class SvcFactory<GaussRD>;
-  // Declare the filter to activate the generation phase as friend so noone else
-  // gets to access the registerNewEvent function.
-  friend class GaussRDCtrFilter;
 
   public:
   /// useful typedef
@@ -58,11 +55,10 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    */
   virtual StatusCode finalize() override;
 
-  virtual StatusCode queryInterface ( const InterfaceID& iid , 
-                                      void**             pI  ) override;
+  virtual StatusCode queryInterface(const InterfaceID& iid, void** pI) override;
 
   // Implementation of the control interface IGaussRDCtr
-  virtual size_t numberOfRedecays() const override {return m_max_rd_counter;};
+  virtual size_t numberOfRedecays() const override { return m_max_rd_counter; };
 
   /** Allows any algorithm to query the service and ask what we currently up to.
    * 0 - default running, no redecay etc.
@@ -89,10 +85,14 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *
    *  @return bool
    */
+
   virtual bool registerNewEvent() override;
 
   virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
   virtual LHCb::MCParticles* getClonedMCPs() override;
+
+  virtual void setSignal(LHCb::MCParticle* mcp) override { m_signal_particle = m_org_signal_particle = mcp; };
+  virtual LHCb::MCParticle* getSignal() override { return m_signal_particle; };
 
   virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) override;
   virtual LHCb::MCVertices* getClonedMCVs() override;
@@ -132,6 +132,13 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   private:
   MCCloner* m_mc_cloner;
   MCCloner* m_mc_cloner_copy;
+
+  // Pointer to the signal MC particle in the current scope, will be changed and adjusted by
+  // registerNewEvent()
+  LHCb::MCParticle* m_signal_particle;
+  // Pointer to the signal particle in the original version of everything, needed to obtain newest clone in each event.
+  // registerNewEvent()
+  LHCb::MCParticle* m_org_signal_particle;
 
   // Counter and max event number
   size_t m_rd_counter;

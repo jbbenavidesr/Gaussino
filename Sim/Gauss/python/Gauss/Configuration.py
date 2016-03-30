@@ -57,8 +57,9 @@ from Configurables import ( PackMCParticle, PackMCVertex,
 from Configurables import ( GaussRD, GaussRDCopyToService,
                             GaussRDRetrieveFromService,
                             GaussRDCtrFilter,
-                            GaussRDDoFullFilter,
-                            GaussRDNotDoFullFilter)
+                            GaussRDSignalDecay)
+
+from Configurables import StoreExplorerAlg
 
 # Set the debug levels for all the new things
 #GaussRD().OutputLevel = 0
@@ -2192,7 +2193,10 @@ class Gauss(LHCbConfigurableUser):
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
-            GaussRDCtrFilter().GaussRD='GaussRD'
+
+            gaussrdfilter = GaussRDCtrFilter('RegisterNewEvent')
+            gaussrdfilter.RegisterNewEvent = True
+            genSequence.Members += [ genInit, gaussrdfilter, genProc ]
             genSequence.Members += [ genInit, GaussRDCtrFilter(), genProc ]
             # When HC simulation is switched on the very forward protons must be
             # removed from the HepMC record since they cause showers in it
@@ -2731,43 +2735,97 @@ class Gauss(LHCbConfigurableUser):
                                      IgnoreFilterPassed = True)
             mainSimSequence.Members += [ simSeq ]
 
-            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",
+
+            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim")
+            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim",
                                          RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
+            simSlotSeq.Members += [simSlotFullSeq]
             simSeq.Members += [simSlotSeq]
 
             # CRJ : Set RootInTES - Everything down stream will then use the correct location
             #       (assuming they use GaudiAlg get and put) so no need to set data locations
             #       by hand any more ...
-            if slot != '' : simSlotSeq.RootInTES = slot
+            if slot != '' : simSlotFullSeq.RootInTES = slot
 
             # Following is the main sim of the event, either normal event or
             # the underlying event component for redecay, filter out if this
             # event does not need this information.
-            simSlotSeq.Members += [ GaussRDDoFullFilter()]
+            #
+            # Make a filter to turn this part off for the signal redecay part.
+            # Ask whether phase is 1 and set it to 2 later on. Only applies for
+            # redecay, setting to 2 ignored otherwise!
+            grdfilter = GaussRDCtrFilter('CheckIfFullOrUESim')
+            grdfilter.IsPhaseNotEqual = 2
+            grdfilter.SetPhase = 2
+            simSlotFullSeq.Members += [ grdfilter]
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                LookForUnknownParticles = True )
-            simSlotSeq.Members += [ genToSim ]
+            simSlotFullSeq.Members += [ genToSim ]
 
-            simSlotSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
-            simSlotSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
+            simSlotFullSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
+            simSlotFullSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
             simToMC = SimulationToMCTruth( "SimToMCTruth"+slot )
-            simSlotSeq.Members += [ simToMC ]
+            simSlotFullSeq.Members += [ simToMC ]
 
             ## Detectors hits
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot )
-            simSlotSeq.Members += [ detHits ]
-            simSlotSeq.Members += [ GaussRDCopyToService() ]
+            simSlotFullSeq.Members += [ detHits ]
+            simSlotFullSeq.Members += [ StoreExplorerAlg()]
+            simSlotFullSeq.Members += [ GaussRDCopyToService() ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
             configuredRichSim = [ False ]
             for det in self.getProp('DetectorSim')['Detectors']:
                 self.configureDetectorSim( slot, detHits, det, configuredRichSim )
 
+            # ################################################
+            # Signal part here
+            # ################################################
+            TESNode = "/Event/"+self.slot_(slot)+"Signal"
+            simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
+            simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim",
+                                                RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
+            simSlotSignal.Members += [GaussRDSignalDecay()]
+            GaussRDSignalDecay().HepMCEventLocation = 'Signal/Gen/HepMCEvents'
+            simSlotSignal.Members += [StoreExplorerAlg('BLA')]
+            simSlotSignal.Members += [simSlotSignalSeq]
+            simSeq.Members += [simSlotSignal]
+
+            simSlotSignalSeq.RootInTES = '{}Signal'.format(slot)
+            grdfilter = GaussRDCtrFilter('CheckIfSignalSim')
+            grdfilter.IsPhaseEqual = 2
+            simSlotSignalSeq.Members += [ grdfilter]
+
+            genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
+                                               LookForUnknownParticles = True )
+            genToSim.SelectiveSimulationStep = 2
+            simSlotSignalSeq.Members += [ genToSim ]
+
+            simSlotSignalSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
+            simSlotSignalSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
+            simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
+            simSlotSignalSeq.Members += [ simToMC ]
+
+            TESNode = TESNode + "MC/"
+            detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
+            simSlotSignalSeq.Members += [ detHits ]
+
+            configuredRichSim = [ False ]
+            for det in self.getProp('DetectorSim')['Detectors']:
+                self.configureDetectorSim( slot+'Signal', detHits, det, configuredRichSim )
+
+            # ##############################################
+            # End signal part
+            # ##############################################
             loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim" )
+            grdfilter = GaussRDCtrFilter('CheckIfSignalSim2')
+            grdfilter.IsPhaseEqual = 2
+            simSlotSignalSeq.Members += [ grdfilter]
             loadSlotSeq.Members += [
-                GaussRDNotDoFullFilter(),
-                GaussRDRetrieveFromService()]
+                grdfilter,
+                GaussRDRetrieveFromService(),
+                StoreExplorerAlg()]
             simSeq.Members += [loadSlotSeq]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
             richpaddingSlotSeq.Members = GaudiSequencer('RichHits').Members[4:]
@@ -3496,6 +3554,6 @@ class Gauss(LHCbConfigurableUser):
         GaudiKernel.ProcessJobOptions.PrintOff()
 
         # Print out TES contents at the end of each event
-        #from Configurables import StoreExplorerAlg
-        #GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
+        # from Configurables import StoreExplorerAlg
+        # GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
 

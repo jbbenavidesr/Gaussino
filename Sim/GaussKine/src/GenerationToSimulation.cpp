@@ -117,6 +117,14 @@ StatusCode GenerationToSimulation::initialize() {
 
   // get tool to set signal flag
   m_setSignalFlagTool = tool<IFlagSignalChain>("FlagSignalChain");
+  m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+  if (nullptr == m_gaussRDStrSvc) {
+    m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+  }
+
+  if (nullptr == m_gaussRDStrSvc) {
+    return Error(" initialize(): IGaussRDStr* points to NULL");
+  }
 
   return StatusCode::SUCCESS;
 }
@@ -141,7 +149,10 @@ StatusCode GenerationToSimulation::execute() {
   }
 
   // Retrieve the MCHeader.
-  LHCb::MCHeader* mcHeader = get<LHCb::MCHeader>(m_mcHeader);
+  LHCb::MCHeader* mcHeader = nullptr;
+  if (m_selectiveSimulation == SignalSimulationStep) {
+    mcHeader = get<LHCb::MCHeader>(m_mcHeader);
+  }
 
   // Loop over the events (one for each pile-up interaction).
   for (LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin(); generationEvents->end() != genEvent; ++genEvent) {
@@ -171,7 +182,9 @@ StatusCode GenerationToSimulation::execute() {
     primaryVertex->setPosition(Gaudi::XYZPoint(thePV.Vect()));
     primaryVertex->setTime(thePV.T());
     primaryVertex->setType(LHCb::MCVertex::ppCollision);
-    mcHeader->addToPrimaryVertices(primaryVertex);
+    if (mcHeader) {
+      mcHeader->addToPrimaryVertices(primaryVertex);
+    }
 
     // Set ID of all vertices to 0.
     for (HepMC::GenEvent::vertex_iterator itV = ev->vertices_begin(); itV != ev->vertices_end(); ++itV) (*itV)->set_id(0);
@@ -573,6 +586,14 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle(HepMC::GenParticle*& pa
   //  Set the fromSignal flag
   if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
     mcp->setFromSignal(true);
+    if (m_selectiveSimulation == UESimulationStep) {
+      // Set this particle as the signal in the service to track it through the attack of the clones.
+      m_gaussRDStrSvc->setSignal(mcp);
+      if (msgLevel(MSG::DEBUG)) {
+        debug() << "MCParticle at " << mcp << " is being flagged as signal, let's make sure it gets cloned." << endmsg;
+        debug() << "PDG-ID:\t " << mcp->particleID() << endmsg;
+      }
+    }
   }
 
   return mcp;
@@ -670,27 +691,4 @@ void GenerationToSimulation::removeFromPrimaryVertex(G4PrimaryVertex*& pvertexg4
   }
   delete pvertexg4;
   pvertexg4 = newVertex;
-}
-
-//=============================================================================
-// Helper method: find previously made LHCb::MCParticle
-//=============================================================================
-LHCb::MCParticle* GenerationToSimulation::searchPreviousStableMCParticle(const HepMC::GenParticle* particle) {
-  if (msgLevel(MSG::DEBUG)) {
-    debug() << "Trying to find MCParticle placeholder for " << *particle << " in " << m_particleContainer->size() << endmsg;
-  }
-  LHCb::MCParticle::Vector matches{};
-  std::copy_if(m_particleContainer->begin(), m_particleContainer->end(), std::back_inserter(matches), [=](const LHCb::MCParticle* mcp) -> bool {
-    return mcp->endVertices().empty() && (std::abs(particle->pdg_id()) == std::abs(mcp->particleID().pid()));
-  });
-  if (msgLevel(MSG::DEBUG)) {
-    debug() << "With same ID and no endvertices: " << matches.size() << " remaining" << endmsg;
-  }
-  if (matches.empty()) {
-    return nullptr;
-  }
-  if (matches.size() > 1) {
-    warning() << "Found more than one previously made LHCb::MCParticle" << endmsg;
-  }
-  return matches.front();
 }

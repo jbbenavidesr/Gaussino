@@ -41,10 +41,15 @@ DECLARE_SERVICE_FACTORY(GaussRD)
 // Standard constructor, initializes variables
 //=============================================================================
 GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
-    : Service(name, svcloc), m_mc_cloner(nullptr), m_mc_cloner_copy(nullptr), m_rd_counter(0) {
+    : Service(name, svcloc),
+      m_mc_cloner(nullptr),
+      m_mc_cloner_copy(nullptr),
+      m_signal_particle(nullptr),
+      m_org_signal_particle(nullptr),
+      m_rd_counter(0) {
   /// name of runmanager
   declareProperty("nRedecay", m_max_rd_counter = 100);
-  declareProperty("Phase", m_phase= 0);
+  declareProperty("Phase", m_phase = 0);
 }
 
 //=============================================================================
@@ -83,26 +88,23 @@ StatusCode GaussRD::finalize() {
 }
 
 //=============================================================================
-// query interface 
+// query interface
 //=============================================================================
-StatusCode GaussRD::queryInterface( const InterfaceID& id , void** ppI ) 
-{
-  if ( 0 == ppI  ) { 
-    return StatusCode::FAILURE;                   //  RETURN !!!
-  } else if ( IGaussRDCtr::interfaceID() == id ) {
-    *ppI = static_cast<IGaussRDCtr*>( this ); 
-  } else if ( IGaussRDStr::interfaceID() == id ) {
-    *ppI = static_cast<IGaussRDStr*>( this );
-  } 
-  else { 
-    return Service::queryInterface( id , ppI );   //  RETURN !!!
-  } 
+StatusCode GaussRD::queryInterface(const InterfaceID& id, void** ppI) {
+  if (0 == ppI) {
+    return StatusCode::FAILURE;  //  RETURN !!!
+  } else if (IGaussRDCtr::interfaceID() == id) {
+    *ppI = static_cast<IGaussRDCtr*>(this);
+  } else if (IGaussRDStr::interfaceID() == id) {
+    *ppI = static_cast<IGaussRDStr*>(this);
+  } else {
+    return Service::queryInterface(id, ppI);  //  RETURN !!!
+  }
 
-  addRef(); 
+  addRef();
 
   return StatusCode::SUCCESS;
 }
-
 
 //=============================================================================
 // Check if the counter is at the max value and return true if a new event
@@ -122,6 +124,8 @@ bool GaussRD::registerNewEvent() {
     // close the loop and increment already for the next event.
     m_rd_counter = 1;
     m_phase = 1;
+    // New event so there is no signal particle around.
+    m_signal_particle = m_org_signal_particle = nullptr;
     // trigger new event generation and clean up
     // Check if the MC cloner already exists (should be the case except for the
     // very first event)
@@ -150,6 +154,8 @@ bool GaussRD::registerNewEvent() {
     // If the counter is >0, previous event properly filled m_mc_cloner, so make a deep copy
     // of all the content to be moved to the TES.
     m_mc_cloner_copy = m_mc_cloner->DeepClone();
+    m_signal_particle = m_mc_cloner_copy->cloneMCP(m_mc_cloner->cloneMCP(m_org_signal_particle));
+    // Now everything should have been cloned, get the clone of the signal particle from the original event.
     return false;
   } else {
     // This should NEVER happen, but just in case ...
@@ -177,7 +183,7 @@ LHCb::MCRichHits* GaussRD::getClonedMCRichHits() { return m_mc_cloner_copy->getC
 
 LHCb::MCRichOpticalPhoton* GaussRD::cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) {
   return m_mc_cloner->cloneMCRichOpticalPhoton(mchit);
-};
+}
 LHCb::MCRichOpticalPhotons* GaussRD::getClonedMCRichOpticalPhotons() { return m_mc_cloner_copy->getClonedMCRichOpticalPhotons(); }
 
 LHCb::MCRichSegment* GaussRD::cloneMCRichSegment(const LHCb::MCRichSegment* mchit) { return m_mc_cloner->cloneMCRichSegment(mchit); }

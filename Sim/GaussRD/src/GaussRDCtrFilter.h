@@ -11,9 +11,7 @@ class IGaussRDCtr;  ///< GaussRD counter service
 
 /** @class GaussRDCtrFilter GaussRDCtrFilter.h
  *
- *  An algorithm to control processing in a GaudiSequencer.
- *  Following members of the sequence are only processed
- *  if a new event needs to be generated
+ *  An algorithm to control processing in a GaudiSequencer for GaussRD.
  *
  *  @author Dominik Muller
  *  @date   2016-3-15
@@ -37,6 +35,11 @@ class GaussRDCtrFilter : public GaudiAlgorithm {
   private:
   std::string m_gaussRDSvcName;
   IGaussRDCtr* m_gaussRDSvc;
+
+  bool m_registerNewEvent;
+  int m_isPhase;
+  int m_isPhaseNot;
+  int m_setPhase;
 };
 
 #endif  // GaussRDCtrFilter_H

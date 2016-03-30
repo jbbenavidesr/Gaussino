@@ -17,6 +17,7 @@ use PhysEvent     * Event
 use GaussTools    v* Sim
 use GenEvent      v*  Event
 use GaussTools    v*  Sim
+use Generators     v*      Gen
 use LoKiGen       v*  Phys
 use SimComponents v*  Sim
 use GaudiKernel *
