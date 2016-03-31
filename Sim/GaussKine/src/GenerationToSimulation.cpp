@@ -39,6 +39,33 @@
 // 2008-09-24 : Gloria CORTI, Patrick ROBBE
 //-----------------------------------------------------------------------------
 
+void RemoveDaughters( HepMC::GenParticle * theParticle ) {
+  if ( 0 == theParticle ) return ;
+
+  HepMC::GenVertex * EV = theParticle -> end_vertex() ;
+
+  if ( 0 == EV ) return ;
+
+  theParticle -> set_status( LHCb::HepMCEvent::StableInProdGen ) ;
+  HepMC::GenEvent * theEvent = theParticle -> parent_event() ;
+
+  std::vector< HepMC::GenVertex * > tempList ;
+  HepMC::GenVertex::particle_iterator iterDes ;
+
+  tempList.push_back( EV ) ;
+
+  for ( iterDes = EV -> particles_begin( HepMC::descendants ) ;
+        iterDes != EV -> particles_end( HepMC::descendants ) ; ++iterDes ) {
+    if ( 0 != (*iterDes) -> end_vertex() )
+      tempList.push_back( (*iterDes) -> end_vertex() ) ;
+  }
+
+  std::vector< HepMC::GenVertex * >::iterator iter ;
+  for ( iter = tempList.begin() ; iter != tempList.end() ; ++iter ) {
+    theEvent -> remove_vertex( *iter ) ;
+    delete (*iter) ;
+  }
+}
 // Declaration of the Algorithm Factory.
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 
@@ -158,6 +185,29 @@ StatusCode GenerationToSimulation::execute() {
   for (LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin(); generationEvents->end() != genEvent; ++genEvent) {
     // Retrieve the event.
     HepMC::GenEvent* ev = (*genEvent)->pGenEvt();
+    if (m_selectiveSimulation == UESimulationStep) {
+      auto sv = ev->signal_process_vertex();
+      if (sv) {
+        if (msgLevel(MSG::DEBUG)) {
+          debug() << "HepMC signal vertex outgoing particles: " << endmsg;
+        }
+        auto it = sv->particles_in_const_begin();
+        auto itend = sv->particles_in_const_end();
+        for (; it != itend; ++it) {
+          if (msgLevel(MSG::DEBUG)) {
+            LoKi::PrintHepMC::printDecay(*it, debug());
+            debug() << endmsg;
+          }
+          if ((*it)->status() == LHCb::HepMCEvent::SignalInLabFrame) {
+            if (msgLevel(MSG::DEBUG)) {
+              debug() << "That's signal. Deleting children." << endmsg;
+            }
+            //HepMCUtils::RemoveDaughters(*it);
+            (*it)->set_status(LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen);
+          }
+        }
+      }
+    }
 
     // Empty the maps of converted particles.
     m_g4ParticleMap.clear();
@@ -257,6 +307,8 @@ bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const {
     case LHCb::HepMCEvent::SignalInLabFrame:
       return true;
     case LHCb::HepMCEvent::StableInDecayGen:
+      return true;
+    case (LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen):
       return true;
 
     // For some processes the resonance has status 3.
@@ -475,13 +527,13 @@ unsigned char GenerationToSimulation::transferToGeant4(const HepMC::GenParticle*
   switch (m_selectiveSimulation) {
     case UESimulationStep:
 
-      if (p->status() == LHCb::HepMCEvent::SignalInLabFrame) {  // keep as MC particle placeholder
+      if (p->status() == LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen) {  // keep as MC particle placeholder
         if (msgLevel(MSG::DEBUG)) {
           debug() << "Inclusive simulation identified particle as signal: ";
           debug() << "Barcode:\t " << p->barcode() << endmsg;
           debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
           debug() << "END VERTEX:\t " << (p->end_vertex() != nullptr) << endmsg;
-          debug() << "Decay Tree:";
+          debug() << "Decay Tree: ";
           LoKi::PrintHepMC::printDecay(p, debug());
           debug() << endmsg;
         }
@@ -584,7 +636,7 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle(HepMC::GenParticle*& pa
   }
 
   //  Set the fromSignal flag
-  if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
+  if ((LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen) == (particle->status())) {
     mcp->setFromSignal(true);
     if (m_selectiveSimulation == UESimulationStep) {
       // Set this particle as the signal in the service to track it through the attack of the clones.

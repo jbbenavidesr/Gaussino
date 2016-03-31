@@ -2756,7 +2756,7 @@ class Gauss(LHCbConfigurableUser):
             # redecay, setting to 2 ignored otherwise!
             grdfilter = GaussRDCtrFilter('CheckIfFullOrUESim')
             grdfilter.IsPhaseNotEqual = 2
-            grdfilter.SetPhase = 2
+            # grdfilter.SetPhase = 2
             simSlotFullSeq.Members += [ grdfilter]
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                LookForUnknownParticles = True )
@@ -2787,7 +2787,7 @@ class Gauss(LHCbConfigurableUser):
             simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim",
                                                 RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
             grdfilter = GaussRDCtrFilter('CheckIfSignalSim')
-            grdfilter.IsPhaseEqual = 2
+            grdfilter.IsPhaseNotEqual = 0
             simSlotSignal.Members += [ grdfilter]
             simSlotSignal.Members += [GaussRDSignalDecay()]
             GaussRDSignalDecay().HepMCEventLocation = 'Signal/Gen/HepMCEvents'
