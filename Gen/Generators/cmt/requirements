@@ -20,7 +20,6 @@ use           GenEvent          v*                Event
 use           MCInterfaces      v*                Kernel
 use           EvtGen            v*                Gen
 use           EvtGenExtras      v*                Gen
-use           GaussRD           v*                Sim
 use           Boost             v*                LCG_Interfaces -no_auto_imports
 
 #============================================================================

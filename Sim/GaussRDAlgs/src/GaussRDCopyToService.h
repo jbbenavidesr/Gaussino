@@ -12,9 +12,7 @@ class IGaussRDCtr;  ///< GaussRD counter service
 
 /** @class GaussRDCopyToService GaussRDCopyToService.h
  *
- *  An algorithm to control processing in a GaudiSequencer.
- *  Following members of the sequence are only processed
- *  if a new event needs to be generated
+ * Algorithm to copy all the MC objects into the service for later reuse.
  *
  *  @author Dominik Muller
  *  @date   2016-3-15
