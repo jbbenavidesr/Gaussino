@@ -16,8 +16,11 @@
 
 #include "Event/GenCollision.h"
 
+class GaussRDMergeAndClean;
+
 class MCCloner {
   public:
+  friend class GaussRDMergeAndClean;
   MCCloner();
   virtual ~MCCloner();
 
@@ -74,6 +77,10 @@ class MCCloner {
   MCCloner* DeepClone();
 
   private:
+  // When merge-cloning later, we must be able to turn off carry-over of the
+  // key.
+  // Make function private to restrict access to the merge algorithm.
+  void setCloneKey(bool c) { m_clone_key = c; };
   LHCb::MCParticle* cloneKeyedMCP(const LHCb::MCParticle* mcp);
   LHCb::MCParticle* doCloneMCP(const LHCb::MCParticle* mcp);
 
@@ -148,6 +155,7 @@ class MCCloner {
   std::map<const LHCb::GenCollision*, LHCb::GenCollision*> m_gencollisions;
 
   LHCb::MCParticle* m_sig_part = nullptr;
+  bool m_clone_key = true;
 };
 
 #endif

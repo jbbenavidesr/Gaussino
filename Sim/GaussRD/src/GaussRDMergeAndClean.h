@@ -44,6 +44,8 @@ class GaussRDMergeAndClean : public GaudiAlgorithm {
   std::string m_richTracksLocation;
   std::string m_mcHeaderLocation;
   std::string m_signal_tes_prefix;
+  std::string m_hepMCEventLocation;
+  std::string m_genCollisionLocation;
   template <typename T>
   std::pair<T*, T*> get_and_print(const std::string&);
 };
@@ -54,6 +56,7 @@ std::pair<T*, T*> GaussRDMergeAndClean::get_and_print(const std::string& loc) {
   auto loc_s = m_signal_tes_prefix+loc;
   auto con_s = get<T>(loc_s);
   if (msgLevel(MSG::DEBUG)) {
+    debug() << "Got " << con->size() << " from " << loc << endmsg;
     debug() << "Got " << con_s->size() << " from " << loc_s << endmsg;
   }
   return std::pair<T*,T*>(con, con_s);

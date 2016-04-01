@@ -393,24 +393,6 @@ bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const {
   return false;
 }
 
-namespace {
-// remove the placeholder MCParticle, return true on success
-bool removeFromMCTree(LHCb::MCParticle* mcp) {
-  LHCb::MCVertex* orig = const_cast<LHCb::MCVertex*>(mcp->originVertex());
-  if (orig) {
-    auto isref = std::find_if(std::begin(orig->products()), std::end(orig->products()), [=](const SmartRef<LHCb::MCParticle>& prod) -> bool {
-      return mcp == prod.target();
-    });  // need find_if to ask for the same pointed-to object
-    if (std::end(orig->products()) != isref) {
-      orig->removeFromProducts(*isref);
-      return true;
-    }
-    return false;
-  }  // otherwise nothing to be done
-  return true;
-}
-}
-
 //=============================================================================
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================

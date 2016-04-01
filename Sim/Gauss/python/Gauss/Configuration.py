@@ -58,7 +58,8 @@ from Configurables import ( GaussRD, GaussRDCopyToService,
                             GaussRDRetrieveFromService,
                             GaussRDCtrFilter,
                             GaussRDSignalDecay,
-                           GaussRDPrintMCParticles)
+                           GaussRDPrintMCParticles,
+                           GaussRDMergeAndClean)
 
 from Configurables import StoreExplorerAlg
 
@@ -2782,7 +2783,6 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotFullSeq.Members += [ detHits ]
-            simSlotFullSeq.Members += [ StoreExplorerAlg()]
             simSlotFullSeq.Members += [ GaussRDCopyToService() ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
@@ -2824,7 +2824,6 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
             simSlotSignalSeq.Members += [ detHits ]
-            simSlotSignalSeq.Members += [StoreExplorerAlg('BLA')]
 
             configuredRichSim = [ False ]
             for det in self.getProp('DetectorSim')['Detectors']:
@@ -2839,8 +2838,18 @@ class Gauss(LHCbConfigurableUser):
             loadSlotSeq.Members += [
                 grdfilter,
                 GaussRDRetrieveFromService(),
-                StoreExplorerAlg()]
+                StoreExplorerAlg('BeforeMerge')]
             simSeq.Members += [loadSlotSeq]
+            grdfilter = GaussRDCtrFilter('CheckIfMerge')
+            grdfilter.IsPhaseNotEqual = 0
+            mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim" )
+            GaussRDMergeAndClean().MCHitsLocation = GaussRDCopyToService().MCHitsLocation
+            GaussRDMergeAndClean().MCCaloHitsLocation = GaussRDCopyToService().MCCaloHitsLocation
+            mergeSlotSeq.Members += [
+                grdfilter,
+                GaussRDMergeAndClean(),
+                StoreExplorerAlg('AfterMerge')]
+            simSeq.Members += [mergeSlotSeq]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
             richpaddingSlotSeq.Members = GaudiSequencer('RichHits').Members[4:]
             GaudiSequencer('RichHits').Members = GaudiSequencer('RichHits').Members[:4]
