@@ -51,7 +51,7 @@ void GaussRDSignalDecay::printHepMCTree(HepMC::GenParticle* p, int level) {
     auto it = ev->particles_out_const_begin();
     auto itend = ev->particles_out_const_end();
     for (; it != itend; ++it) {
-      printHepMCTree(p, level + 1);
+      printHepMCTree(*it, level + 1);
     }
   }
 }
@@ -147,7 +147,7 @@ StatusCode GaussRDSignalDecay::execute() {
   if (m_decayTool && m_sigPdgCode != 0) m_decayTool->setSignal(m_sigPdgCode);
   if (msgLevel(MSG::DEBUG)) {
     debug() << "Got particle (PT,eta) = (" << theFourMomentum.pt() << ", "
-            << theFourMomentum.eta() << endmsg;
+            << theFourMomentum.eta()<< ")" << endmsg;
     debug() << "Got origin vertex (X,Y,Z,T) = (" << origin.X() << ", "
             << origin.Y() << ", " << origin.Z() << ", " << origin.T() << ")"
             << endmsg;
