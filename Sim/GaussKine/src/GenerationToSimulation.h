@@ -47,6 +47,7 @@ class GenerationToSimulation : public GaudiAlgorithm {
    *  @return pointer to GiGa Service.
    */
   IGiGaSvc* gigaSvc() const { return m_gigaSvc; }
+  void PurgeVertex(HepMC::GenVertex *);
 
   /// Determine the primary vertex of the interaction.
   Gaudi::LorentzVector primaryVertex(const HepMC::GenEvent* genEvent) const;

@@ -13,7 +13,8 @@ LHCb::MCParticle* MCCloner::cloneKeyedMCP(const LHCb::MCParticle* mcp) {
   auto clone = getStoredMCP(mcp);
   if (!clone) {
     clone = mcp->clone();
-    m_mcps.insert(std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
+    m_mcps.insert(
+        std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
     getClonedMCPs()->insert(clone, mcp->key());
   }
   return clone;
@@ -53,7 +54,9 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
 
     // Add the cloned MCP to the cloned origin vertex, if not already there
     bool found = false;
-    for (SmartRefVector<LHCb::MCParticle>::const_iterator i = originVertexClone->products().begin(); i != originVertexClone->products().end(); ++i) {
+    for (SmartRefVector<LHCb::MCParticle>::const_iterator i =
+             originVertexClone->products().begin();
+         i != originVertexClone->products().end(); ++i) {
       const LHCb::MCParticle* c = *i;
       if (c == clone) {
         found = true;
@@ -76,8 +79,8 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
 }
 
 LHCb::MCParticles* MCCloner::getClonedMCPs() {
-  if(!m_list_mcps){
-      m_list_mcps = new LHCb::MCParticles();
+  if (!m_list_mcps) {
+    m_list_mcps = new LHCb::MCParticles();
   }
   return m_list_mcps;
 }

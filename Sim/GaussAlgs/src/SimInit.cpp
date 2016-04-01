@@ -85,7 +85,7 @@ StatusCode SimInit::execute() {
     get<LHCb::GenHeader>( m_genHeader );
 
   // Initialize the random number
-  std::vector<long int> seeds = getSeeds( evt->runNumber(), evt->evtNumber() );
+  std::vector<long int> seeds = getSeeds( evt->runNumber(), this->eventCounter());
   sc = this->initRndm( seeds );
   if ( sc.isFailure() ) return sc;  // error printed already by initRndm  
   this->printEventRun( evt->evtNumber(), evt->runNumber(), &seeds );

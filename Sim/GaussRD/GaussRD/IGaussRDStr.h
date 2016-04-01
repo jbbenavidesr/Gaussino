@@ -70,25 +70,31 @@ class IGaussRDStr : virtual public IService {
   virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) = 0;
   virtual LHCb::MCVertices* getClonedMCVs() = 0;
 
-  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) = 0;
+  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit,
+                                  const std::string& vol) = 0;
   virtual LHCb::MCHits* getClonedMCHits(const std::string& vol) = 0;
 
-  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) = 0;
+  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
+                                          const std::string& vol) = 0;
   virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) = 0;
 
   virtual LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit) = 0;
   virtual LHCb::MCRichHits* getClonedMCRichHits() = 0;
 
-  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) = 0;
+  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(
+      const LHCb::MCRichOpticalPhoton* mchit) = 0;
   virtual LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() = 0;
 
-  virtual LHCb::MCRichSegment* cloneMCRichSegment(const LHCb::MCRichSegment* mchit) = 0;
+  virtual LHCb::MCRichSegment* cloneMCRichSegment(
+      const LHCb::MCRichSegment* mchit) = 0;
   virtual LHCb::MCRichSegments* getClonedMCRichSegments() = 0;
 
-  virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) = 0;
+  virtual LHCb::MCRichTrack* cloneMCRichTrack(
+      const LHCb::MCRichTrack* mchit) = 0;
   virtual LHCb::MCRichTracks* getClonedMCRichTracks() = 0;
 
-  virtual LHCb::GenCollision* cloneGenCollision(const LHCb::GenCollision* mchit) = 0;
+  virtual LHCb::GenCollision* cloneGenCollision(
+      const LHCb::GenCollision* mchit) = 0;
   virtual LHCb::GenCollisions* getClonedGenCollisions() = 0;
 
   protected:

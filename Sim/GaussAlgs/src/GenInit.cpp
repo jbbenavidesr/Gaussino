@@ -138,7 +138,7 @@ StatusCode GenInit::execute() {
 
   // Initialize the random number
   longlong eventNumber = m_firstEvent - 1 + int(float(this->eventCounter()-1)/m_gaussRDSvc->numberOfRedecays())+1;
-  std::vector<long int> seeds = getSeeds( m_runNumber, eventNumber );
+  std::vector<long int> seeds = getSeeds( m_runNumber, this->eventCounter());
   sc = this->initRndm( seeds );
   if ( sc.isFailure() ) return sc;  // error printed already by initRndm
   this->printEventRun( eventNumber, m_runNumber, &seeds);

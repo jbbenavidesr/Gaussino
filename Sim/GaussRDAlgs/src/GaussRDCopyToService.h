@@ -39,14 +39,15 @@ class GaussRDCopyToService : public GaudiAlgorithm {
 
   std::string m_particlesLocation;  ///< Location in TES of output MCParticles.
   std::string m_verticesLocation;   ///< Location in TES of output MCVertices.
-  std::vector<std::string> m_hitsLocations;   ///< Location in TES of output MCHits.
-  std::vector<std::string> m_calohitsLocations;   ///< Location in TES of output MCCaloHits.
+  std::vector<std::string>
+      m_hitsLocations;  ///< Location in TES of output MCHits.
+  std::vector<std::string>
+      m_calohitsLocations;  ///< Location in TES of output MCCaloHits.
   std::string m_richHitsLocation;
   std::string m_richOpticalPhotonsLocation;
   std::string m_richSegmentsLocation;
   std::string m_richTracksLocation;
   std::string m_GenCollisionsLocation;
-
 };
 
 #endif  // GaussRDCopyToService_H

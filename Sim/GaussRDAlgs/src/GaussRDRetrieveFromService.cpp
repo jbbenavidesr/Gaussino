@@ -32,21 +32,39 @@ DECLARE_ALGORITHM_FACTORY(GaussRDRetrieveFromService)
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDRetrieveFromService::GaussRDRetrieveFromService(const std::string& Name, ISvcLocator* SvcLoc)
-    : GaudiAlgorithm(Name, SvcLoc), m_gaussRDSvcName("GaussRD"), m_gaussRDStrSvc(0), m_gaussRDCtrSvc(0) {
+GaussRDRetrieveFromService::GaussRDRetrieveFromService(const std::string& Name,
+                                                       ISvcLocator* SvcLoc)
+    : GaudiAlgorithm(Name, SvcLoc),
+      m_gaussRDSvcName("GaussRD"),
+      m_gaussRDStrSvc(0),
+      m_gaussRDCtrSvc(0) {
   declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
-  declareProperty("Particles", m_particlesLocation = LHCb::MCParticleLocation::Default, "Location to place the MCParticles.");
-  declareProperty("Vertices", m_verticesLocation = LHCb::MCVertexLocation::Default, "Location to place the MCVertices.");
-  declareProperty("MCHitsLocation", m_hitsLocations, "Location in TES where to put resulting MCHits");
-  declareProperty("MCCaloHitsLocation", m_calohitsLocations, "Location in TES where to put resulting MCCaloHits");
-  declareProperty("MCRichHitsLocation", m_richHitsLocation = LHCb::MCRichHitLocation::Default, "Location in TES where to put resulting MCRichHits");
-  declareProperty("MCRichOpticalPhotonsLocation", m_richOpticalPhotonsLocation = LHCb::MCRichOpticalPhotonLocation::Default,
-                  "Location in TES where to put resulting MCRichOpticalPhotons");
-  declareProperty("MCRichSegmentsLocation", m_richSegmentsLocation = LHCb::MCRichSegmentLocation::Default,
+  declareProperty("Particles",
+                  m_particlesLocation = LHCb::MCParticleLocation::Default,
+                  "Location to place the MCParticles.");
+  declareProperty("Vertices",
+                  m_verticesLocation = LHCb::MCVertexLocation::Default,
+                  "Location to place the MCVertices.");
+  declareProperty("MCHitsLocation", m_hitsLocations,
+                  "Location in TES where to put resulting MCHits");
+  declareProperty("MCCaloHitsLocation", m_calohitsLocations,
+                  "Location in TES where to put resulting MCCaloHits");
+  declareProperty("MCRichHitsLocation",
+                  m_richHitsLocation = LHCb::MCRichHitLocation::Default,
+                  "Location in TES where to put resulting MCRichHits");
+  declareProperty(
+      "MCRichOpticalPhotonsLocation",
+      m_richOpticalPhotonsLocation = LHCb::MCRichOpticalPhotonLocation::Default,
+      "Location in TES where to put resulting MCRichOpticalPhotons");
+  declareProperty("MCRichSegmentsLocation",
+                  m_richSegmentsLocation = LHCb::MCRichSegmentLocation::Default,
                   "Location in TES where to put resulting MCRichSegments");
-  declareProperty("MCRichTracksLocation", m_richTracksLocation = LHCb::MCRichTrackLocation::Default,
+  declareProperty("MCRichTracksLocation",
+                  m_richTracksLocation = LHCb::MCRichTrackLocation::Default,
                   "Location in TES where to put resulting MCRichTracks");
-  declareProperty("GenCollisionLocation", m_GenCollisionsLocation = LHCb::GenCollisionLocation::Default);
+  declareProperty(
+      "GenCollisionLocation",
+      m_GenCollisionsLocation = LHCb::GenCollisionLocation::Default);
 }
 
 //=============================================================================
@@ -91,13 +109,15 @@ StatusCode GaussRDRetrieveFromService::execute() {
 
   if (gaussRDCtrSvc()->whatShouldIDo() != 2) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "GaussRD phase=" << gaussRDCtrSvc()->whatShouldIDo() << " not 2, skipping retrieval." << endmsg;
+      debug() << "GaussRD phase=" << gaussRDCtrSvc()->whatShouldIDo()
+              << " not 2, skipping retrieval." << endmsg;
     }
     return StatusCode::SUCCESS;
   }
 
   auto m_genCollisionsContainer = gaussRDStrSvc()->getClonedGenCollisions();
-  if (test_print_put(m_genCollisionsContainer, m_GenCollisionsLocation).isFailure()) {
+  if (test_print_put(m_genCollisionsContainer, m_GenCollisionsLocation)
+          .isFailure()) {
     return StatusCode::FAILURE;
   };
 
@@ -130,13 +150,17 @@ StatusCode GaussRDRetrieveFromService::execute() {
     return StatusCode::FAILURE;
   };
 
-  auto m_richOpticalPhotonsContainer = gaussRDStrSvc()->getClonedMCRichOpticalPhotons();
-  if (test_print_put(m_richOpticalPhotonsContainer, m_richOpticalPhotonsLocation).isFailure()) {
+  auto m_richOpticalPhotonsContainer =
+      gaussRDStrSvc()->getClonedMCRichOpticalPhotons();
+  if (test_print_put(m_richOpticalPhotonsContainer,
+                     m_richOpticalPhotonsLocation)
+          .isFailure()) {
     return StatusCode::FAILURE;
   };
 
   auto m_richSegmentsContainer = gaussRDStrSvc()->getClonedMCRichSegments();
-  if (test_print_put(m_richSegmentsContainer, m_richSegmentsLocation).isFailure()) {
+  if (test_print_put(m_richSegmentsContainer, m_richSegmentsLocation)
+          .isFailure()) {
     return StatusCode::FAILURE;
   };
 

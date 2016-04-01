@@ -27,7 +27,6 @@
 
 // Gaudi Common Flat Random Number generator
 #include "Generators/RandomForGenerator.h"
-#include "LoKi/PrintHepMCDecay.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GaussRDSignalDecay
@@ -38,16 +37,39 @@
 // Declaration of the Algorithm Factory
 
 DECLARE_ALGORITHM_FACTORY(GaussRDSignalDecay)
+void GaussRDSignalDecay::printHepMCTree(HepMC::GenParticle* p, int level) {
+  std::string spacer = "|---";
+  std::string space = "";
+  for (int i = 0; i < level; i++) {
+    space += spacer;
+  }
+  debug() << space << " " << p->pdg_id() << " (PT, Eta) = ("
+          << p->momentum().perp() << ", " << p->momentum().eta() << ")"
+          << endmsg;
+  auto ev = p->end_vertex();
+  if (ev) {
+    auto it = ev->particles_out_const_begin();
+    auto itend = ev->particles_out_const_end();
+    for (; it != itend; ++it) {
+      printHepMCTree(p, level + 1);
+    }
+  }
+}
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDSignalDecay::GaussRDSignalDecay(const std::string& name, ISvcLocator* pSvcLocator) : GaudiAlgorithm(name, pSvcLocator) {
+GaussRDSignalDecay::GaussRDSignalDecay(const std::string& name,
+                                       ISvcLocator* pSvcLocator)
+    : GaudiAlgorithm(name, pSvcLocator) {
   // Generation Method
   declareProperty("EventType", m_eventType = 50000000);
-  declareProperty("HepMCEventLocation", m_hepMCEventLocation = LHCb::HepMCEventLocation::Default);
-  declareProperty("GenHeaderLocation", m_genHeaderLocation = LHCb::GenHeaderLocation::Default);
-  declareProperty("GenCollisionLocation", m_genCollisionLocation = LHCb::GenCollisionLocation::Default);
+  declareProperty("HepMCEventLocation",
+                  m_hepMCEventLocation = LHCb::HepMCEventLocation::Default);
+  declareProperty("GenHeaderLocation",
+                  m_genHeaderLocation = LHCb::GenHeaderLocation::Default);
+  declareProperty("GenCollisionLocation",
+                  m_genCollisionLocation = LHCb::GenCollisionLocation::Default);
   declareProperty("DecayTool", m_decayToolName = "EvtGenDecay");
   declareProperty("FullGenEventCutTool", m_fullGenEventCutToolName = "");
   declareProperty("GenCutTool", m_genCutToolName = "");
@@ -68,23 +90,19 @@ StatusCode GaussRDSignalDecay::initialize() {
 
   debug() << "==> Initialise" << endmsg;
 
-  // Initialization of the Common Flat Random generator if not already done
-  // This generator must be used by all external MC Generator
-  if (!(RandomForGenerator::getNumbers())) {
-    sc = RandomForGenerator::getNumbers().initialize(randSvc(), Rndm::Flat(0, 1));
-    if (!sc.isSuccess()) return Error("Could not initialize Rndm::Flat", sc);
-  }
-
   // Retrieve decay tool
   if ("" != m_decayToolName) {
     m_decayTool = tool<IDecayTool>(m_decayToolName);
   }
 
   // Retrieve full gen event cut tool
-  if ("" != m_fullGenEventCutToolName) m_fullGenEventCutTool = tool<IFullGenEventCutTool>(m_fullGenEventCutToolName, this);
+  if ("" != m_fullGenEventCutToolName)
+    m_fullGenEventCutTool =
+        tool<IFullGenEventCutTool>(m_fullGenEventCutToolName, this);
 
   // Retrieve gen cut tool
-  if ("" != m_genCutToolName) m_genCutTool = tool<IGenCutTool>(m_genCutToolName, this);
+  if ("" != m_genCutToolName)
+    m_genCutTool = tool<IGenCutTool>(m_genCutToolName, this);
 
   if (nullptr == m_gaussRDStrSvc) {
     m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
@@ -93,11 +111,6 @@ StatusCode GaussRDSignalDecay::initialize() {
   if (nullptr == m_gaussRDStrSvc) {
     return Error(" initialize(): IGaussRDStr* points to NULL");
   }
-
-  // Message relative to event type
-  always() << "==================================================================" << endmsg;
-  always() << "Requested to redecay EventType " << m_eventType << endmsg;
-  always() << "==================================================================" << endmsg;
 
   return StatusCode::SUCCESS;
 }
@@ -127,14 +140,17 @@ StatusCode GaussRDSignalDecay::execute() {
 
   auto sig_mc_part = m_gaussRDStrSvc->getSignal();
   Gaudi::LorentzVector theFourMomentum = sig_mc_part->momentum();
-  Gaudi::XYZTPoint origin = sig_mc_part->originVertex()->position4vector();
+  auto sig_mc_vertex = sig_mc_part->originVertex();
+  Gaudi::XYZTPoint origin = sig_mc_vertex->position4vector();
   int thePdgId = sig_mc_part->particleID().pid();
   m_sigPdgCode = thePdgId;
   if (m_decayTool && m_sigPdgCode != 0) m_decayTool->setSignal(m_sigPdgCode);
   if (msgLevel(MSG::DEBUG)) {
-    debug() << "Got particle (PX,PY,PZ,e) = (" << theFourMomentum.Px() << ", " << theFourMomentum.Py() << ", " << theFourMomentum.Pz() << ", "
-            << theFourMomentum.E() << ")" << endmsg;
-    debug() << "Got origin vertex (X,Y,Z,T) = (" << origin.X() << ", " << origin.Y() << ", " << origin.Z() << ", " << origin.T() << ")" << endmsg;
+    debug() << "Got particle (PT,eta) = (" << theFourMomentum.pt() << ", "
+            << theFourMomentum.eta() << endmsg;
+    debug() << "Got origin vertex (X,Y,Z,T) = (" << origin.X() << ", "
+            << origin.Y() << ", " << origin.Z() << ", " << origin.T() << ")"
+            << endmsg;
   }
 
   // Generate sets of particles until a good one is found
@@ -148,11 +164,13 @@ StatusCode GaussRDSignalDecay::execute() {
     prepareInteraction(theEvents, theCollisions, theGenEvent, theGenCollision);
 
     // create HepMC Vertex
-    HepMC::GenVertex* v = new HepMC::GenVertex(HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
+    HepMC::GenVertex* v = new HepMC::GenVertex(
+        HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
     // create HepMC particle
-    HepMC::GenParticle* p =
-        new HepMC::GenParticle(HepMC::FourVector(theFourMomentum.Px(), theFourMomentum.Py(), theFourMomentum.Pz(), theFourMomentum.E()), thePdgId,
-                               LHCb::HepMCEvent::StableInProdGen);
+    HepMC::GenParticle* p = new HepMC::GenParticle(
+        HepMC::FourVector(theFourMomentum.Px(), theFourMomentum.Py(),
+                          theFourMomentum.Pz(), theFourMomentum.E()),
+        thePdgId, LHCb::HepMCEvent::StableInProdGen);
 
     v->add_particle_out(p);
     theGenEvent->add_vertex(v);
@@ -166,15 +184,17 @@ StatusCode GaussRDSignalDecay::execute() {
     // Decay the event if it is a good event
     if (0 != m_decayTool) {
       unsigned short iPart(0);
-      for (itEvents = theEvents->begin(); itEvents != theEvents->end(); ++itEvents) {
+      for (itEvents = theEvents->begin(); itEvents != theEvents->end();
+           ++itEvents) {
         ParticleVector theParticleList;
         theParticleList.clear();
 
-        HepMC::GenParticle* theSignal = decayEvent(*itEvents, theParticleList, sc);
+        HepMC::GenParticle* theSignal =
+            decayEvent(*itEvents, theParticleList, sc);
         if (!sc.isSuccess()) return sc;
         if (msgLevel(MSG::DEBUG)) {
-          debug() << "Made a nice new and shiny signal decay:" << endmsg;
-          LoKi::PrintHepMC::printDecay(theSignal, debug());
+          debug() << "Made a nice, new and shiny signal decay:" << endmsg;
+          printHepMCTree(theSignal);
         }
 
         (*itEvents)->pGenEvt()->set_event_number(++iPart);
@@ -183,7 +203,8 @@ StatusCode GaussRDSignalDecay::execute() {
         bool passCut(true);
         if (m_genCutTool && theSignal) {
           ++m_nBeforeCut;
-          passCut = m_genCutTool->applyCut(theParticleList, theGenEvent, theGenCollision);
+          passCut = m_genCutTool->applyCut(theParticleList, theGenEvent,
+                                           theGenCollision);
           // event does not pass cuts
           if (!passCut || theParticleList.empty()) {
             if (msgLevel(MSG::DEBUG)) {
@@ -201,7 +222,8 @@ StatusCode GaussRDSignalDecay::execute() {
     if (m_fullGenEventCutTool) {
       if (goodEvent) {
         ++m_nBeforeFullEvent;
-        goodEvent = m_fullGenEventCutTool->studyFullEvent(theEvents, theCollisions);
+        goodEvent =
+            m_fullGenEventCutTool->studyFullEvent(theEvents, theCollisions);
         if (goodEvent) ++m_nAfterFullEvent;
       }
     }
@@ -211,9 +233,12 @@ StatusCode GaussRDSignalDecay::execute() {
   m_nAcceptedParticles += 1;
 
   // Now either create the info in the TES or add it to the existing one
-  LHCb::HepMCEvents* eventsInTES = getOrCreate<LHCb::HepMCEvents, LHCb::HepMCEvents>(m_hepMCEventLocation);
+  LHCb::HepMCEvents* eventsInTES =
+      getOrCreate<LHCb::HepMCEvents, LHCb::HepMCEvents>(m_hepMCEventLocation);
 
-  LHCb::GenCollisions* collisionsInTES = getOrCreate<LHCb::GenCollisions, LHCb::GenCollisions>(m_genCollisionLocation);
+  LHCb::GenCollisions* collisionsInTES =
+      getOrCreate<LHCb::GenCollisions, LHCb::GenCollisions>(
+          m_genCollisionLocation);
 
   // Check that number of temporary HepMCEvents is the same as GenCollisions
   if (theEvents->size() != theCollisions->size()) {
@@ -221,7 +246,8 @@ StatusCode GaussRDSignalDecay::execute() {
   }
 
   itEvents = theEvents->begin();
-  for (LHCb::GenCollisions::const_iterator it = theCollisions->begin(); theCollisions->end() != it; ++it) {
+  for (LHCb::GenCollisions::const_iterator it = theCollisions->begin();
+       theCollisions->end() != it; ++it) {
     // HepMCEvent
     LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
     theHepMCEvent->setGeneratorName((*itEvents)->generatorName());
@@ -268,7 +294,8 @@ StatusCode GaussRDSignalDecay::finalize() {
   printCounter(info(), "accepted events", m_nAcceptedEvents);
   printCounter(info(), "particles in accepted events", m_nAcceptedParticles);
 
-  printEfficiency(info(), "full event cut", m_nAfterFullEvent, m_nBeforeFullEvent);
+  printEfficiency(info(), "full event cut", m_nAfterFullEvent,
+                  m_nBeforeFullEvent);
   printEfficiency(info(), "signal cut", m_nAfterCut, m_nBeforeCut);
   info() << endmsg;
 
@@ -283,11 +310,13 @@ StatusCode GaussRDSignalDecay::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC::GenParticle* GaussRDSignalDecay::decayEvent(LHCb::HepMCEvent* theEvent, ParticleVector& theParticleList, StatusCode& sc) {
+HepMC::GenParticle* GaussRDSignalDecay::decayEvent(
+    LHCb::HepMCEvent* theEvent, ParticleVector& theParticleList,
+    StatusCode& sc) {
   using namespace LHCb;
   m_decayTool->disableFlip();
   sc = StatusCode::SUCCESS;
-  HepMC::GenParticle* theSignal(0);
+  HepMC::GenParticle* theSignal(nullptr);
 
   HepMC::GenEvent* pEvt = theEvent->pGenEvt();
 
@@ -301,10 +330,13 @@ HepMC::GenParticle* GaussRDSignalDecay::decayEvent(LHCb::HepMCEvent* theEvent, P
     HepMC::GenParticle* thePart = (*itp);
     unsigned int status = thePart->status();
 
-    if ((HepMCEvent::StableInProdGen == status) || ((HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status) && (0 == thePart->end_vertex()))) {
+    if ((HepMCEvent::StableInProdGen == status) ||
+        ((HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status) &&
+         (0 == thePart->end_vertex()))) {
       if (m_decayTool->isKnownToDecayTool(thePart->pdg_id())) {
         if (HepMCEvent::StableInProdGen == status)
-          thePart->set_status(HepMCEvent::DecayedByDecayGenAndProducedByProdGen);
+          thePart->set_status(
+              HepMCEvent::DecayedByDecayGenAndProducedByProdGen);
         else
           thePart->set_status(HepMCEvent::DecayedByDecayGen);
 
@@ -327,8 +359,9 @@ HepMC::GenParticle* GaussRDSignalDecay::decayEvent(LHCb::HepMCEvent* theEvent, P
 //=============================================================================
 // Set up event
 //=============================================================================
-void GaussRDSignalDecay::prepareInteraction(LHCb::HepMCEvents* theEvents, LHCb::GenCollisions* theCollisions, HepMC::GenEvent*& theGenEvent,
-                                            LHCb::GenCollision*& theGenCollision) const {
+void GaussRDSignalDecay::prepareInteraction(
+    LHCb::HepMCEvents* theEvents, LHCb::GenCollisions* theCollisions,
+    HepMC::GenEvent*& theGenEvent, LHCb::GenCollision*& theGenCollision) const {
   LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
   theHepMCEvent->setGeneratorName("SignalDecay");
   theGenEvent = theHepMCEvent->pGenEvt();

@@ -55,10 +55,13 @@ class GaussRDSignalDecay : public GaudiAlgorithm {
 
   protected:
   /// Decay the event with the IDecayTool.
-  HepMC::GenParticle* decayEvent(LHCb::HepMCEvent* theEvent, ParticleVector& particleList, StatusCode& sc);
+  HepMC::GenParticle* decayEvent(LHCb::HepMCEvent* theEvent,
+                                 ParticleVector& particleList, StatusCode& sc);
 
   /// Perpare the particle containers
-  void prepareInteraction(LHCb::HepMCEvents* theEvents, LHCb::GenCollisions* theCollisions, HepMC::GenEvent*& theGenEvent,
+  void prepareInteraction(LHCb::HepMCEvents* theEvents,
+                          LHCb::GenCollisions* theCollisions,
+                          HepMC::GenEvent*& theGenEvent,
                           LHCb::GenCollision*& theGenCollision) const;
 
   private:
@@ -72,11 +75,12 @@ class GaussRDSignalDecay : public GaudiAlgorithm {
 
   /// Location where to store HardInfo (set by options)
   std::string m_genCollisionLocation;
+  void printHepMCTree(HepMC::GenParticle* p, int level = 0);
 
   IDecayTool* m_decayTool = nullptr;                      ///< Decay tool
   IFullGenEventCutTool* m_fullGenEventCutTool = nullptr;  ///< Cut tool
   IGenCutTool* m_genCutTool = nullptr;                    ///< Cut tool
-  IGaussRDStr* m_gaussRDStrSvc = nullptr;                 ///< GaussRD storage service
+  IGaussRDStr* m_gaussRDStrSvc = nullptr;  ///< GaussRD storage service
 
   /// Name of the IDecayTool (set by options)
   std::string m_decayToolName;

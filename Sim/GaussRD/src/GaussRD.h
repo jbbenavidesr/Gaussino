@@ -37,7 +37,9 @@ class MCCloner;
  *    @author: Vanya Belyaev Ivan.Belyaev@itep.ru
  */
 
-class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaussRDCtr {
+class GaussRD : public Service,
+                virtual public IGaussRDStr,
+                virtual public IGaussRDCtr {
   /// friend factory
   friend class SvcFactory<GaussRD>;
 
@@ -80,8 +82,10 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
    *  @param Optional string. e.g. TES location
    */
 
-  /** Registers a new event, returns false if the UD is already simulated and should be reused.
-   *  Returns true if everything needs to be redone and deletes the internal storage objects.
+  /** Registers a new event, returns false if the UD is already simulated and
+   * should be reused.
+   *  Returns true if everything needs to be redone and deletes the internal
+   * storage objects.
    *
    *  @return bool
    */
@@ -91,31 +95,41 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
   virtual LHCb::MCParticles* getClonedMCPs() override;
 
-  virtual void setSignal(LHCb::MCParticle* mcp) override { m_signal_particle = m_org_signal_particle = mcp; };
+  virtual void setSignal(LHCb::MCParticle* mcp) override {
+    m_signal_particle = m_org_signal_particle = mcp;
+  };
   virtual LHCb::MCParticle* getSignal() override { return m_signal_particle; };
 
   virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) override;
   virtual LHCb::MCVertices* getClonedMCVs() override;
 
-  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit, const std::string& vol) override;
+  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit,
+                                  const std::string& vol) override;
   virtual LHCb::MCHits* getClonedMCHits(const std::string& vol) override;
 
-  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit, const std::string& vol) override;
-  virtual LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) override;
+  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
+                                          const std::string& vol) override;
+  virtual LHCb::MCCaloHits* getClonedMCCaloHits(
+      const std::string& vol) override;
 
-  virtual LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit) override;
+  virtual LHCb::MCRichHit* cloneMCRichHit(
+      const LHCb::MCRichHit* mchit) override;
   virtual LHCb::MCRichHits* getClonedMCRichHits() override;
 
-  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(const LHCb::MCRichOpticalPhoton* mchit) override;
+  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(
+      const LHCb::MCRichOpticalPhoton* mchit) override;
   virtual LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() override;
 
-  virtual LHCb::MCRichSegment* cloneMCRichSegment(const LHCb::MCRichSegment* mchit) override;
+  virtual LHCb::MCRichSegment* cloneMCRichSegment(
+      const LHCb::MCRichSegment* mchit) override;
   virtual LHCb::MCRichSegments* getClonedMCRichSegments() override;
 
-  virtual LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) override;
+  virtual LHCb::MCRichTrack* cloneMCRichTrack(
+      const LHCb::MCRichTrack* mchit) override;
   virtual LHCb::MCRichTracks* getClonedMCRichTracks() override;
 
-  virtual LHCb::GenCollision* cloneGenCollision(const LHCb::GenCollision* mchit) override;
+  virtual LHCb::GenCollision* cloneGenCollision(
+      const LHCb::GenCollision* mchit) override;
   virtual LHCb::GenCollisions* getClonedGenCollisions() override;
 
   protected:
@@ -133,10 +147,12 @@ class GaussRD : public Service, virtual public IGaussRDStr, virtual public IGaus
   MCCloner* m_mc_cloner;
   MCCloner* m_mc_cloner_copy;
 
-  // Pointer to the signal MC particle in the current scope, will be changed and adjusted by
+  // Pointer to the signal MC particle in the current scope, will be changed and
+  // adjusted by
   // registerNewEvent()
   LHCb::MCParticle* m_signal_particle;
-  // Pointer to the signal particle in the original version of everything, needed to obtain newest clone in each event.
+  // Pointer to the signal particle in the original version of everything,
+  // needed to obtain newest clone in each event.
   // registerNewEvent()
   LHCb::MCParticle* m_org_signal_particle;
 

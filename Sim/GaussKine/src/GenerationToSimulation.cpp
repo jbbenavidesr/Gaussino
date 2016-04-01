@@ -29,7 +29,6 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticlePropertyTable.hh"
 
-#include "LoKi/PrintHepMCDecay.h"
 #include "GaussRD/IGaussRDCtr.h"
 #include "GaussRD/IGaussRDStr.h"
 
@@ -39,35 +38,27 @@
 // 2008-09-24 : Gloria CORTI, Patrick ROBBE
 //-----------------------------------------------------------------------------
 
-void RemoveDaughters( HepMC::GenParticle * theParticle ) {
-  if ( 0 == theParticle ) return ;
-
-  HepMC::GenVertex * EV = theParticle -> end_vertex() ;
-
-  if ( 0 == EV ) return ;
-
-  theParticle -> set_status( LHCb::HepMCEvent::StableInProdGen ) ;
-  HepMC::GenEvent * theEvent = theParticle -> parent_event() ;
-
-  std::vector< HepMC::GenVertex * > tempList ;
-  HepMC::GenVertex::particle_iterator iterDes ;
-
-  tempList.push_back( EV ) ;
-
-  for ( iterDes = EV -> particles_begin( HepMC::descendants ) ;
-        iterDes != EV -> particles_end( HepMC::descendants ) ; ++iterDes ) {
-    if ( 0 != (*iterDes) -> end_vertex() )
-      tempList.push_back( (*iterDes) -> end_vertex() ) ;
-  }
-
-  std::vector< HepMC::GenVertex * >::iterator iter ;
-  for ( iter = tempList.begin() ; iter != tempList.end() ; ++iter ) {
-    theEvent -> remove_vertex( *iter ) ;
-    delete (*iter) ;
-  }
-}
 // Declaration of the Algorithm Factory.
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
+
+void GenerationToSimulation::PurgeVertex(HepMC::GenVertex* vertex) {
+  if (vertex == nullptr) return;
+
+  auto it = vertex->particles_out_const_begin();
+  auto itend = vertex->particles_out_const_end();
+
+  for (; it != itend; ++it) {
+    auto part = *it;
+    auto dvtx = part->end_vertex();
+    if (dvtx) {
+      PurgeVertex(dvtx);
+    }
+    part->set_status(98765);
+    if (MSG::DEBUG) {
+      debug() << "Flagged particle " << part->pdg_id() << endmsg;
+    }
+  }
+}
 
 //=============================================================================
 // Standard constructor, declares properties.
@@ -177,9 +168,7 @@ StatusCode GenerationToSimulation::execute() {
 
   // Retrieve the MCHeader.
   LHCb::MCHeader* mcHeader = nullptr;
-  if (m_selectiveSimulation == SignalSimulationStep) {
-    mcHeader = get<LHCb::MCHeader>(m_mcHeader);
-  }
+  mcHeader = get<LHCb::MCHeader>(m_mcHeader);
 
   // Loop over the events (one for each pile-up interaction).
   for (LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin(); generationEvents->end() != genEvent; ++genEvent) {
@@ -189,21 +178,22 @@ StatusCode GenerationToSimulation::execute() {
       auto sv = ev->signal_process_vertex();
       if (sv) {
         if (msgLevel(MSG::DEBUG)) {
-          debug() << "HepMC signal vertex outgoing particles: " << endmsg;
+          debug() << "HepMC signal vertex ingoing particles: " << endmsg;
         }
         auto it = sv->particles_in_const_begin();
         auto itend = sv->particles_in_const_end();
         for (; it != itend; ++it) {
           if (msgLevel(MSG::DEBUG)) {
-            LoKi::PrintHepMC::printDecay(*it, debug());
-            debug() << endmsg;
+            debug() << (*it)->pdg_id();
+            if ((*it)->status() == LHCb::HepMCEvent::SignalInLabFrame) {
+              debug() << " <--- That's signal." << endmsg;
+            } else {
+              debug() << endmsg;
+            }
           }
           if ((*it)->status() == LHCb::HepMCEvent::SignalInLabFrame) {
-            if (msgLevel(MSG::DEBUG)) {
-              debug() << "That's signal. Deleting children." << endmsg;
-            }
-            //HepMCUtils::RemoveDaughters(*it);
-            (*it)->set_status(LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen);
+            PurgeVertex((*it)->end_vertex());
+            (*it)->set_status(LHCb::HepMCEvent::SignalInLabFrame + 10000 * LHCb::HepMCEvent::StableInProdGen);
           }
         }
       }
@@ -232,9 +222,7 @@ StatusCode GenerationToSimulation::execute() {
     primaryVertex->setPosition(Gaudi::XYZPoint(thePV.Vect()));
     primaryVertex->setTime(thePV.T());
     primaryVertex->setType(LHCb::MCVertex::ppCollision);
-    if (mcHeader) {
-      mcHeader->addToPrimaryVertices(primaryVertex);
-    }
+    mcHeader->addToPrimaryVertices(primaryVertex);
 
     // Set ID of all vertices to 0.
     for (HepMC::GenEvent::vertex_iterator itV = ev->vertices_begin(); itV != ev->vertices_end(); ++itV) (*itV)->set_id(0);
@@ -298,6 +286,8 @@ StatusCode GenerationToSimulation::execute() {
 bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const {
   LHCb::ParticleID pid(particle->pdg_id());
   switch (particle->status()) {
+    case 98765:
+      return true;
     case LHCb::HepMCEvent::StableInProdGen:
       return true;
     case LHCb::HepMCEvent::DecayedByDecayGen:
@@ -308,7 +298,7 @@ bool GenerationToSimulation::keep(const HepMC::GenParticle* particle) const {
       return true;
     case LHCb::HepMCEvent::StableInDecayGen:
       return true;
-    case (LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen):
+    case (LHCb::HepMCEvent::SignalInLabFrame + 10000 * LHCb::HepMCEvent::StableInProdGen):
       return true;
 
     // For some processes the resonance has status 3.
@@ -524,23 +514,28 @@ unsigned char GenerationToSimulation::transferToGeant4(const HepMC::GenParticle*
   if (!(keep(p) || (m_keepCode != "" && m_keepCuts(p)))) return 3;
   if (m_skipGeant4) return 2;
 
-  switch (m_selectiveSimulation) {
-    case UESimulationStep:
-
-      if (p->status() == LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen) {  // keep as MC particle placeholder
-        if (msgLevel(MSG::DEBUG)) {
-          debug() << "Inclusive simulation identified particle as signal: ";
-          debug() << "Barcode:\t " << p->barcode() << endmsg;
-          debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
-          debug() << "END VERTEX:\t " << (p->end_vertex() != nullptr) << endmsg;
-          debug() << "Decay Tree: ";
-          LoKi::PrintHepMC::printDecay(p, debug());
-          debug() << endmsg;
-        }
-        return 2;
+  if (m_selectiveSimulation == UESimulationStep) {
+    if (p->status() == 98765) {
+      if (msgLevel(MSG::DEBUG)) {
+        debug() << "transferToGeant4() identified particle as from signal: ";
+        debug() << "Barcode:\t " << p->barcode() << endmsg;
+        debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
+        debug() << "Not converting to anything!" << endmsg;
+        debug() << endmsg;
       }
-    default:
-      break;
+      return 3;
+    }
+
+    if (p->status() == LHCb::HepMCEvent::SignalInLabFrame + 10000 * LHCb::HepMCEvent::StableInProdGen) {  // keep as MC particle placeholder
+      if (msgLevel(MSG::DEBUG)) {
+        debug() << "transferToGeant4() identified particle as signal: ";
+        debug() << "Barcode:\t " << p->barcode() << endmsg;
+        debug() << "PDG ID:\t " << p->pdg_id() << endmsg;
+        debug() << "END VERTEX:\t " << (p->end_vertex() != nullptr) << endmsg;
+        debug() << endmsg;
+      }
+      return 2;
+    }
   }
 
   // Return for Geant4 tracking if stable.
@@ -614,8 +609,26 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle(HepMC::GenParticle*& pa
   mcp->setMomentum(mom);
   mcp->setParticleID(pid);
 
-  // Set the vertex.
   HepMC::GenVertex* V = particle->end_vertex();
+  if (m_selectiveSimulation == UESimulationStep) {
+    if ((LHCb::HepMCEvent::SignalInLabFrame + 10000 * LHCb::HepMCEvent::StableInProdGen) == (particle->status())) {
+      mcp->setFromSignal(true);
+      // Set this particle as the signal in the service to track it through the attack of the clones.
+      m_gaussRDStrSvc->setSignal(mcp);
+      V=nullptr;
+      if (msgLevel(MSG::DEBUG)) {
+        debug() << "MCParticle at " << mcp << " is being flagged as signal, let's make sure it gets cloned." << endmsg;
+        debug() << "Momentum:\t " << mcp->momentum().px() << ", " << mcp->momentum().py() << ", " << mcp->momentum().pz() << endmsg;
+        debug() << "PDG-ID:\t " << mcp->particleID() << endmsg;
+        debug() << "END VERTEX:\t " << mcp->originVertex() << endmsg;
+      }
+    }
+  } else {
+    if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
+      mcp->setFromSignal(true);
+    }
+  
+  }
   if (V) {
     endVertex = new LHCb::MCVertex();
     m_vertexContainer->insert(endVertex);
@@ -633,19 +646,6 @@ LHCb::MCParticle* GenerationToSimulation::makeMCParticle(HepMC::GenParticle*& pa
     else
       endVertex->setType(LHCb::MCVertex::DecayVertex);
     mcp->addToEndVertices(endVertex);
-  }
-
-  //  Set the fromSignal flag
-  if ((LHCb::HepMCEvent::SignalInLabFrame + 10000*LHCb::HepMCEvent::StableInProdGen) == (particle->status())) {
-    mcp->setFromSignal(true);
-    if (m_selectiveSimulation == UESimulationStep) {
-      // Set this particle as the signal in the service to track it through the attack of the clones.
-      m_gaussRDStrSvc->setSignal(mcp);
-      if (msgLevel(MSG::DEBUG)) {
-        debug() << "MCParticle at " << mcp << " is being flagged as signal, let's make sure it gets cloned." << endmsg;
-        debug() << "PDG-ID:\t " << mcp->particleID() << endmsg;
-      }
-    }
   }
 
   return mcp;
