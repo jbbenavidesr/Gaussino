@@ -138,19 +138,21 @@ StatusCode GaussRDSignalDecay::execute() {
   LHCb::GenCollision* theGenCollision(0);
   HepMC::GenEvent* theGenEvent(0);
 
-  auto sig_mc_part = m_gaussRDStrSvc->getSignal();
-  Gaudi::LorentzVector theFourMomentum = sig_mc_part->momentum();
-  auto sig_mc_vertex = sig_mc_part->originVertex();
-  Gaudi::XYZTPoint origin = sig_mc_vertex->position4vector();
-  int thePdgId = sig_mc_part->particleID().pid();
+  Gaudi::LorentzVector theFourMomentum = m_gaussRDStrSvc->getSignalMomentum();
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "With (PX, PY, PZ, E) = (" << theFourMomentum.px() << ", "
+            << theFourMomentum.py() << ", " << theFourMomentum.pz() << ", "
+            << theFourMomentum.e() << ")" << endmsg;
+    debug() << "and (PT, eta) = (" << theFourMomentum.pt() << ", "
+            << theFourMomentum.eta() << ")" << endmsg;
+  }
+  auto origin = m_gaussRDStrSvc->getSignalOrigin();
+  int thePdgId = m_gaussRDStrSvc->getSignalID();
   m_sigPdgCode = thePdgId;
   if (m_decayTool && m_sigPdgCode != 0) m_decayTool->setSignal(m_sigPdgCode);
   if (msgLevel(MSG::DEBUG)) {
-    debug() << "Got particle (PT,eta) = (" << theFourMomentum.pt() << ", "
-            << theFourMomentum.eta()<< ")" << endmsg;
-    debug() << "Got origin vertex (X,Y,Z,T) = (" << origin.X() << ", "
-            << origin.Y() << ", " << origin.Z() << ", " << origin.T() << ")"
-            << endmsg;
+    debug() << "With (X,Y,Z,T) = (" << origin.X() << ", " << origin.Y() << ", "
+            << origin.Z() << ", " << origin.T() << ")" << endmsg;
   }
 
   // Generate sets of particles until a good one is found

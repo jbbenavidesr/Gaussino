@@ -8,6 +8,7 @@
 #include "GaussRDMergeAndClean.h"
 #include "Event/Particle.h"
 #include "Event/MCParticle.h"
+#include "Event/MCVertex.h"
 #include "Event/MCHit.h"
 #include "Event/MCCaloHit.h"
 #include "Event/MCRichHit.h"
@@ -19,6 +20,7 @@
 
 #include "MCCloner.h"
 #include "GaussRD/IGaussRDStr.h"
+#include "LHCbMath/LHCbMath.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GaussRDMergeAndClean
@@ -97,15 +99,13 @@ StatusCode GaussRDMergeAndClean::execute() {
   // Get all the MCParticles and MCVertices first and merge them in the main
   // container.
   // All hits are only associated to those and can be combined directly.
-  auto org_signal = m_gaussRDStrSvc->getSignal();
+  // auto org_signal = m_gaussRDStrSvc->getSignal();
   auto m_mcHeader =
       get<LHCb::MCHeader>(m_signal_tes_prefix + m_mcHeaderLocation);
 
-  // Later check if we did it correctly
-  auto org_pv = org_signal->primaryVertex();
-
   auto temp_cloner = new MCCloner();
-  // As the default keys have been used when the signal containers were filled,
+  // As the default keys have been used when the signal containers were
+  // filled,
   // there are key conflicts if the cloned signal objects use the same key so
   // turn
   // off the cloning of the keys.
@@ -117,36 +117,36 @@ StatusCode GaussRDMergeAndClean::execute() {
 
   // Get the vertex and remove the const to change the decay products.
   // Then delete the original particle from the record.
-  auto org_signal_vtx = const_cast<LHCb::MCVertex*>(org_signal->originVertex());
-  org_signal_vtx->removeFromProducts(org_signal);
-  mcparticles.first->erase(org_signal);
-
-  // This temp cloner does not know about all the other particles from the main
-  // simulation so for
-  // the cloning procedure we need to remove the origin vertex of the new
-  // signal to not add an additional vertex to the event which is unconnected.
   auto tmp_pv = m_mcHeader->primaryVertices();
   // Perform some sanity checks
   if (tmp_pv.size() != 1) {
     return Error("Signal does not have exactly one PV.");
   }
-  auto sig_pv = *begin(tmp_pv);
-  if (sig_pv->products().size() != 1) {
+  auto signal_vertex = *begin(tmp_pv);
+  if (signal_vertex->products().size() != 1) {
     return Error("Signal PV does not have exactly one child.");
   }
-  auto sig_signal = *begin(sig_pv->products());
-  sig_pv->removeFromProducts(sig_signal);
-  sig_signal->setOriginVertex(nullptr);
-  mcvertices.second->erase(sig_pv);
+  // Get all the main vertices that have the same position as the
+  // signal sim PV
 
-  // Let's create the clone and attach it to the original signal vertex. Cloning
+  auto org_signal_vtx = findVertex(mcvertices.first, mcparticles.first);
+
+  // This temp cloner does not know about all the other particles from the
+  // main
+  // simulation so for
+  // the cloning procedure we need to remove the origin vertex of the new
+  // signal to not add an additional vertex to the event which is unconnected.
+  auto sig_signal = *begin(signal_vertex->products());
+  signal_vertex->removeFromProducts(sig_signal);
+  sig_signal->setOriginVertex(nullptr);
+  mcvertices.second->erase(signal_vertex);
+
+  // Let's create the clone and attach it to the original signal vertex.
+  // Cloning
   // is also adding the objects to the containers in the TES.
   sig_signal = temp_cloner->cloneMCP(sig_signal);
   org_signal_vtx->addToProducts(sig_signal);
   sig_signal->setOriginVertex(org_signal_vtx);
-  if (org_pv != sig_signal->primaryVertex()) {
-    return Error("PVs of original and replaced signal do not match!");
-  }
 
   // Now clone all the other particles and vertices.
   for (auto& part : *mcparticles.second) {
@@ -156,19 +156,6 @@ StatusCode GaussRDMergeAndClean::execute() {
     temp_cloner->cloneMCV(vtx);
   }
 
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_mcHeaderLocation, true));
-  //delete m_mcHeader;
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_particlesLocation, true));
-  //delete mcparticles.second;
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_verticesLocation, true));
-  //delete mcvertices.second;
-
-  // The rest is straight forward as the cloner will assign the correct clones
-  // for the particles which caused the hits.
-
   // MCHits
   for (auto& s : m_hitsLocations) {
     auto mchits = get_and_print<LHCb::MCHits>(s);
@@ -176,8 +163,6 @@ StatusCode GaussRDMergeAndClean::execute() {
     for (auto& hit : *mchits.second) {
       temp_cloner->cloneMCHit(hit, s);
     }
-    //evtSvc()->unregisterObject(fullTESLocation(m_signal_tes_prefix + s, true));
-    //delete mchits.second;
   }
 
   // MCCaloHits
@@ -187,8 +172,6 @@ StatusCode GaussRDMergeAndClean::execute() {
     for (auto& hit : *mchits.second) {
       temp_cloner->cloneMCCaloHit(hit, s);
     }
-    //evtSvc()->unregisterObject(fullTESLocation(m_signal_tes_prefix + s, true));
-    //delete mchits.second;
   }
 
   // MCRichHits
@@ -197,9 +180,6 @@ StatusCode GaussRDMergeAndClean::execute() {
   for (auto& a : *mcrichhits.second) {
     temp_cloner->cloneMCRichHit(a);
   }
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_richHitsLocation, true));
-  //delete mcrichhits.second;
 
   // MCRichOpticalPhotons
   auto mcrichops =
@@ -208,9 +188,6 @@ StatusCode GaussRDMergeAndClean::execute() {
   for (auto& a : *mcrichops.second) {
     temp_cloner->cloneMCRichOpticalPhoton(a);
   }
-  //evtSvc()->unregisterObject(fullTESLocation(
-      //m_signal_tes_prefix + m_richOpticalPhotonsLocation, true));
-  //delete mcrichops.second;
 
   // MCRichSegments
   auto mcrichsegs = get_and_print<LHCb::MCRichSegments>(m_richSegmentsLocation);
@@ -218,9 +195,6 @@ StatusCode GaussRDMergeAndClean::execute() {
   for (auto& a : *mcrichsegs.second) {
     temp_cloner->cloneMCRichSegment(a);
   }
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_richSegmentsLocation, true));
-  //delete mcrichsegs.second;
 
   // MCRichTracks
   auto mcrichtracks = get_and_print<LHCb::MCRichTracks>(m_richTracksLocation);
@@ -228,31 +202,124 @@ StatusCode GaussRDMergeAndClean::execute() {
   for (auto& a : *mcrichtracks.second) {
     temp_cloner->cloneMCRichTrack(a);
   }
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_richTracksLocation, true));
-  //delete mcrichtracks.second;
-
-  // Now, cleanup the dummy files created: GenCollisions and the HepMCEvent
-  auto colls =
-      get<LHCb::GenCollisions>(m_signal_tes_prefix + m_genCollisionLocation);
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_genCollisionLocation, true));
-  //delete colls;
-  auto hepmc =
-      get<LHCb::HepMCEvents>(m_signal_tes_prefix + m_hepMCEventLocation);
-  //evtSvc()->unregisterObject(
-      //fullTESLocation(m_signal_tes_prefix + m_hepMCEventLocation, true));
-  //delete hepmc;
-
-  // And finally get rid of the main signal branch in the TES.
-  // Should now be empty anyway.
-  
-  //evtSvc()->unregisterObject(fullTESLocation(m_signal_tes_prefix, true));
 
   temp_cloner->clear_no_deletion();
   delete temp_cloner;
 
   return StatusCode::SUCCESS;
+}
+
+LHCb::MCVertex* GaussRDMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
+                                                 LHCb::MCParticles* parts) {
+  std::vector<LHCb::MCVertex*> matched_vertices;
+  auto signal_vertex_position = m_gaussRDStrSvc->getSignalOrigin();
+  /*
+   * Option 1: Find the placeholder.
+   */
+  auto ph = findPlaceholder(parts);
+  if (ph) {
+    auto vertex = const_cast<LHCb::MCVertex*>(ph->originVertex());
+    vertex->removeFromProducts(ph);
+    deleteParticle(ph, vtxs, parts);
+    if (msgLevel(MSG::DEBUG)) {
+      debug() << "Returning matched via placeholder." << endmsg;
+    }
+    return vertex;
+  }
+  /*
+   * Option 1-3: Position matched vertices
+   */
+  for (auto& vtx : *vtxs) {
+    auto vtx_position = vtx->position();
+    bool equ_d = true;
+    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
+                         signal_vertex_position.X(), vtx_position.X());
+    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
+                         signal_vertex_position.Y(), vtx_position.Y());
+    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
+                         signal_vertex_position.Z(), vtx_position.Z());
+    if (!equ_d) {
+      continue;
+    }
+    // Only consider real vertices, not Geant4 interaction stuff
+    if (vtx->type() == 0 || vtx->type() >= 100) {
+      continue;
+    }
+
+    matched_vertices.push_back(vtx);
+  }
+
+  /*
+   * Option 2: Position matched vertex
+   */
+  if (matched_vertices.size() == 1) {
+    warning() << "Returning position matched vertex." << endmsg;
+    return *begin(matched_vertices);
+  }
+
+  /*
+   * Option 3: First position matched vertex
+   */
+  if (matched_vertices.size() > 1) {
+    if (msgLevel(MSG::DEBUG)) {
+      warning() << "Multiple position matched vertices, returning first vertex."
+                << endmsg;
+    }
+    return *begin(matched_vertices);
+  }
+
+  /*
+   * Option 4: Creating a new vertex
+   */
+  if (matched_vertices.size() == 0) {
+    if (msgLevel(MSG::DEBUG)) {
+      warning() << "Could not find vertex. That is not normal." << endmsg;
+      warning() << "Creating a new one." << endmsg;
+    }
+    auto vertex = new LHCb::MCVertex();
+    vertex->setTime(signal_vertex_position.T());
+    vertex->setPosition(Gaudi::XYZPoint(signal_vertex_position.x(),
+                                        signal_vertex_position.y(),
+                                        signal_vertex_position.z()));
+    vtxs->insert(vertex);
+    return vertex;
+  }
+  return nullptr;  // should not get here but it insists on a warning otherwise ..
+}
+
+LHCb::MCParticle* GaussRDMergeAndClean::findPlaceholder(
+    const LHCb::MCParticles* parts) {
+  LHCb::MCParticle* matched = nullptr;
+  for (auto& o : *parts) {
+    if (o->particleID().pid() != 424242) {
+      continue;
+    }
+    matched = o;
+  }
+  return matched;
+}
+
+//=============================================================================
+// Delete a particle and all decay tree
+//=============================================================================
+void GaussRDMergeAndClean::deleteParticle(
+    LHCb::MCParticle* P, LHCb::MCVertices* m_vertexContainer,
+    LHCb::MCParticles* m_particleContainer) {
+  for (SmartRefVector<LHCb::MCVertex>::const_iterator endV =
+           P->endVertices().begin();
+       P->endVertices().end() != endV; ++endV) {
+    for (SmartRefVector<LHCb::MCParticle>::const_iterator prod =
+             (*endV)->products().begin();
+         prod != (*endV)->products().end(); ++prod) {
+      const LHCb::MCParticle* constParticle = *prod;
+      LHCb::MCParticle* Particle = const_cast<LHCb::MCParticle*>(constParticle);
+      deleteParticle(Particle, m_vertexContainer, m_particleContainer);
+    }
+    const LHCb::MCVertex* constV = *endV;
+    LHCb::MCVertex* V = const_cast<LHCb::MCVertex*>(constV);
+    m_vertexContainer->erase(V);
+  }
+  m_particleContainer->erase(P);
 }
 
 //=============================================================================

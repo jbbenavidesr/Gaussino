@@ -5,6 +5,7 @@
 // from Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include <utility>
+#include "Event/MCVertex.h"
 
 class IGaussRDStr;
 
@@ -31,6 +32,17 @@ class GaussRDMergeAndClean : public GaudiAlgorithm {
    *  @return pointer to GaussRD Service
    */
   private:
+  /*
+   *Function to find the correct signal vertex in the list of mc vertices.
+   *Multiple options are tried, returning if they are successful in the
+   *following order:
+   * 1. Find the placeholder 424242 particle
+   * 2. Find the only matching vertex based on position
+   * 3. Return the first matching vertex based on position
+   * 4. Recreate a new vertex with the correct position
+   */
+  LHCb::MCVertex* findVertex(LHCb::MCVertices*, LHCb::MCParticles*);
+  LHCb::MCParticle* findPlaceholder(const LHCb::MCParticles* parts);
   std::string m_gaussRDSvcName;
   IGaussRDStr* m_gaussRDStrSvc;
 
@@ -48,17 +60,20 @@ class GaussRDMergeAndClean : public GaudiAlgorithm {
   std::string m_genCollisionLocation;
   template <typename T>
   std::pair<T*, T*> get_and_print(const std::string&);
+  /// Delete a complete tree from event record
+  void deleteParticle(LHCb::MCParticle* P, LHCb::MCVertices* m_vertexContainer,
+                      LHCb::MCParticles* m_particleContainer);
 };
 
 template <typename T>
 std::pair<T*, T*> GaussRDMergeAndClean::get_and_print(const std::string& loc) {
   auto con = get<T>(loc);
-  auto loc_s = m_signal_tes_prefix+loc;
+  auto loc_s = m_signal_tes_prefix + loc;
   auto con_s = get<T>(loc_s);
   if (msgLevel(MSG::DEBUG)) {
     debug() << "Got " << con->size() << " from " << loc << endmsg;
     debug() << "Got " << con_s->size() << " from " << loc_s << endmsg;
   }
-  return std::pair<T*,T*>(con, con_s);
+  return std::pair<T*, T*>(con, con_s);
 }
 #endif  // GaussRDMergeAndClean_H

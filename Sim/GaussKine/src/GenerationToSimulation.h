@@ -109,7 +109,6 @@ class GenerationToSimulation : public GaudiAlgorithm {
   enum SelectiveSimulationStep {
     NoSelectiveSimulation = 0,
     UESimulationStep = 1,
-    SignalSimulationStep = 2,
   };
   int m_selectiveSimulation;
   std::string m_gaussRDSvcName;

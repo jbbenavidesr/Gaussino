@@ -4,33 +4,17 @@
 // Include files
 // from STD & STL
 #include <string>
-//#include <list>
-//#include <vector>
-//#include <algorithm>
 
 // from Gaudi
 #include "GaudiKernel/ISvcLocator.h"
 #include "GaudiKernel/IMessageSvc.h"
-//#include    "GaudiKernel/IChronoStatSvc.h"
-//#include    "GaudiKernel/IToolSvc.h"
-//#include    "GaudiKernel/SvcFactory.h"
-//#include    "GaudiKernel/MsgStream.h"
-//#include    "GaudiKernel/Bootstrap.h"
-//#include    "GaudiKernel/MsgStream.h"
-//#include    "GaudiKernel/Stat.h"
-//#include    "GaudiKernel/PropertyMgr.h"
-//#include    "GaudiKernel/IRndmGenSvc.h"
 
 // local
 #include "GaussRD.h"
 #include "MCCloner.h"
 
 //-----------------------------------------------------------------------------
-// Implementation of general non-inline methods from class GiGaSvc
-//
-// YYYY-MM-DD : I.Belyaev
-//
-// Last modified 2006-07-21 : G.Corti
+// Implementation of GaussRD
 //-----------------------------------------------------------------------------
 
 // Instantiation of a static factory class used by clients to create
@@ -44,10 +28,10 @@ GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
     : Service(name, svcloc),
       m_mc_cloner(nullptr),
       m_mc_cloner_copy(nullptr),
-      m_signal_particle(nullptr),
-      m_org_signal_particle(nullptr),
-      m_rd_counter(0) {
-  /// name of runmanager
+      m_rd_counter(0),
+      m_sig_mom(),
+      m_sig_point(),
+      m_sig_id(0) {
   declareProperty("nRedecay", m_max_rd_counter = 100);
   declareProperty("Phase", m_phase = 0);
 }
@@ -57,8 +41,10 @@ GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
 //=============================================================================
 GaussRD::~GaussRD() {
   if (m_mc_cloner) {
-    m_mc_cloner->clear();
     delete m_mc_cloner;
+  }
+  if (m_mc_cloner_copy) {
+    delete m_mc_cloner_copy;
   }
 }
 
@@ -125,10 +111,9 @@ bool GaussRD::registerNewEvent() {
     // close the loop and increment already for the next event.
     m_rd_counter = 1;
     m_phase = 1;
-    // New event so there is no signal particle around.
-    m_signal_particle = m_org_signal_particle = nullptr;
     // trigger new event generation and clean up
-    // Check if the MC cloner already exists (should be the case except for the
+    // Check if the MC cloner already exists (should be the case except for
+    // the
     // very first event)
     if (m_mc_cloner) {
       // Won't need any of the copied objects anymore.
@@ -149,7 +134,8 @@ bool GaussRD::registerNewEvent() {
     m_phase = 2;
     m_rd_counter++;
     if (m_mc_cloner_copy) {
-      // The content (ObjectVectors and all the Objects) have been handed over
+      // The content (ObjectVectors and all the Objects) have been handed
+      // over
       // to the TES.
       // DO NOT attempt to delete all of them again!
       m_mc_cloner_copy->clear_no_deletion();
@@ -159,10 +145,6 @@ bool GaussRD::registerNewEvent() {
     // a deep copy
     // of all the content to be moved to the TES.
     m_mc_cloner_copy = m_mc_cloner->DeepClone();
-    m_signal_particle = m_mc_cloner_copy->cloneMCP(
-        m_mc_cloner->cloneMCP(m_org_signal_particle));
-    // Now everything should have been cloned, get the clone of the signal
-    // particle from the original event.
     return false;
   } else {
     // This should NEVER happen, but just in case ...

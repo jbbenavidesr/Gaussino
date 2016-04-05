@@ -37,7 +37,7 @@ from Configurables import ( SimInit, GiGaGeo, GiGaInputStream, GiGa,
                             GiGaFieldMgr, GiGaRunManager, GiGaSetSimAttributes,
                             GiGaPhysConstructorOp, GiGaPhysConstructorHpd,
                             SpdPrsSensDet, EcalSensDet, HcalSensDet,
-                            GaussSensPlaneDet )
+                            GaussSensPlaneDet, GiGaPhysListGeantino )
 from Configurables import ( GenerationToSimulation, GiGaFlushAlgorithm,
                             GiGaCheckEventStatus, SimulationToMCTruth,
                             GiGaGetEventAlg, GiGaGetHitsAlg,
@@ -2819,7 +2819,6 @@ class Gauss(LHCbConfigurableUser):
             simSlotSignalSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
             simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
             simSlotSignalSeq.Members += [ simToMC ]
-            simSlotSignalSeq.Members += [ GaussRDPrintMCParticles()]
 
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
@@ -3497,6 +3496,7 @@ class Gauss(LHCbConfigurableUser):
         else:
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
 
+        gmpl.PhysicsConstructors.append("GiGaRDTagParticle")
 
         ## --- LHCb specific physics:
         if  (lhcbPhys == True):
@@ -3507,6 +3507,7 @@ class Gauss(LHCbConfigurableUser):
 
         ## LHCb particles unknown to default Geant4
             gmpl.PhysicsConstructors.append("GiGaPhysUnknownParticles")
+
         elif (lhcbPhys == False):
             log.warning("The lhcb-related physics (RICH processed, UnknownParticles) is disabled")
         else:
