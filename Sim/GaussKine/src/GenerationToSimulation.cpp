@@ -192,13 +192,14 @@ StatusCode GenerationToSimulation::execute() {
   LHCb::MCHeader* mcHeader = nullptr;
   mcHeader = get<LHCb::MCHeader>(m_mcHeader);
 
+  int n_signal = 0;
+
   // Loop over the events (one for each pile-up interaction).
   for (LHCb::HepMCEvents::const_iterator genEvent = generationEvents->begin();
        generationEvents->end() != genEvent; ++genEvent) {
     // Retrieve the event.
     HepMC::GenEvent* ev = (*genEvent)->pGenEvt();
     if (m_selectiveSimulation == UESimulationStep) {
-      bool no_signal = true;
       auto sv = ev->signal_process_vertex();
       if (sv) {
         auto it = sv->particles_in_const_begin();
@@ -213,14 +214,11 @@ StatusCode GenerationToSimulation::execute() {
             m_gaussRDStrSvc->setSignalID((*it)->pdg_id());
             PurgeVertex((*it)->end_vertex());
             (*it)->set_status(LHCb::HepMCEvent::SignalInLabFrame);
-            (*it)->set_pdg_id(
-                424242);  // Try turning our particle into a Geantino
-            no_signal = false;
+            // Turn the signal into the tag particle
+            (*it)->set_pdg_id(424242);
+            n_signal++;
           }
         }
-      }
-      if (no_signal) {
-        return Error("Could not find signal particle to redecay.");
       }
     }
 
@@ -295,6 +293,11 @@ StatusCode GenerationToSimulation::execute() {
       }
     }
     if (!m_skipGeant4) *gigaSvc() << origVertex;
+  }
+  if (m_selectiveSimulation == UESimulationStep) {
+    if (n_signal != 1) {
+      error() << "Not exactly 1 signal particle. Found " << n_signal << endmsg;
+    }
   }
 
   // This needs to be done only if Geant4 is not called since in that case

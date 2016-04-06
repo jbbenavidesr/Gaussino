@@ -63,7 +63,6 @@ MCCloner* MCCloner::DeepClone() {
     new_cloner->cloneMCV(m);
   }
 
-  new_cloner->m_sig_part = new_cloner->cloneMCP(m_sig_part);
   for (auto& s : m_list_mchits) {
     auto temp = std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>();
     new_cloner->m_mchit.insert(
