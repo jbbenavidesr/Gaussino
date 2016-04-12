@@ -12,7 +12,9 @@ LHCb::MCParticle* MCCloner::getStoredMCP(const LHCb::MCParticle* mcp) {
 LHCb::MCParticle* MCCloner::cloneKeyedMCP(const LHCb::MCParticle* mcp) {
   auto clone = getStoredMCP(mcp);
   if (!clone) {
-    clone = mcp->clone();
+    clone = new LHCb::MCParticle();
+    clone->setMomentum(mcp->momentum());
+    clone->setParticleID(mcp->particleID());
     m_mcps.insert(
         std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
     if (m_clone_key) {
