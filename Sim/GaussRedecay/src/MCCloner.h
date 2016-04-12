@@ -16,11 +16,11 @@
 
 #include "Event/GenCollision.h"
 
-class GaussRDMergeAndClean;
+class GaussRedecayMergeAndClean;
 
 class MCCloner {
   public:
-  friend class GaussRDMergeAndClean;
+  friend class GaussRedecayMergeAndClean;
   MCCloner();
   virtual ~MCCloner();
 

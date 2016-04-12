@@ -1,5 +1,5 @@
-#ifndef GaussRDMergeAndClean_H
-#define GaussRDMergeAndClean_H 1
+#ifndef GaussRedecayMergeAndClean_H
+#define GaussRedecayMergeAndClean_H 1
 
 // Include files
 // from Gaudi
@@ -7,9 +7,9 @@
 #include <utility>
 #include "Event/MCVertex.h"
 
-class IGaussRDStr;
+class IGaussRedecayStr;
 
-/** @class GaussRDMergeAndClean GaussRDMergeAndClean.h
+/** @class GaussRedecayMergeAndClean GaussRedecayMergeAndClean.h
  *
  * Algorithm to merge all the signal stuff back into the main containers
  * and clean the signal tree in the TES.
@@ -17,19 +17,19 @@ class IGaussRDStr;
  *  @author Dominik Muller
  *  @date   2016-4-1
  */
-class GaussRDMergeAndClean : public GaudiAlgorithm {
+class GaussRedecayMergeAndClean : public GaudiAlgorithm {
   public:
   /// Standard constructor
-  GaussRDMergeAndClean(const std::string& Name, ISvcLocator* SvcLoc);
+  GaussRedecayMergeAndClean(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRDMergeAndClean();  ///< Destructor
+  virtual ~GaussRedecayMergeAndClean();  ///< Destructor
 
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 
   protected:
-  /** accessor to GaussRD Service
-   *  @return pointer to GaussRD Service
+  /** accessor to GaussRedecay Service
+   *  @return pointer to GaussRedecay Service
    */
   private:
   /*
@@ -44,7 +44,7 @@ class GaussRDMergeAndClean : public GaudiAlgorithm {
   LHCb::MCVertex* findVertex(LHCb::MCVertices*, LHCb::MCParticles*);
   LHCb::MCParticle* findPlaceholder(const LHCb::MCParticles* parts);
   std::string m_gaussRDSvcName;
-  IGaussRDStr* m_gaussRDStrSvc;
+  IGaussRedecayStr* m_gaussRDStrSvc;
 
   std::string m_particlesLocation;
   std::string m_verticesLocation;
@@ -66,7 +66,7 @@ class GaussRDMergeAndClean : public GaudiAlgorithm {
 };
 
 template <typename T>
-std::pair<T*, T*> GaussRDMergeAndClean::get_and_print(const std::string& loc) {
+std::pair<T*, T*> GaussRedecayMergeAndClean::get_and_print(const std::string& loc) {
   auto con = get<T>(loc);
   auto loc_s = m_signal_tes_prefix + loc;
   auto con_s = get<T>(loc_s);
@@ -76,4 +76,4 @@ std::pair<T*, T*> GaussRDMergeAndClean::get_and_print(const std::string& loc) {
   }
   return std::pair<T*, T*>(con, con_s);
 }
-#endif  // GaussRDMergeAndClean_H
+#endif  // GaussRedecayMergeAndClean_H

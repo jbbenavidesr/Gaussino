@@ -1,12 +1,12 @@
-// $Id: GaussRDCtrFilter.h,v 1.4 2007-01-12 15:23:41 ranjard Exp $
-#ifndef GaussRDPrintMCParticles_H
-#define GaussRDPrintMCParticles_H 1
+// $Id: GaussRedecayCtrFilter.h,v 1.4 2007-01-12 15:23:41 ranjard Exp $
+#ifndef GaussRedecayPrintMCParticles_H
+#define GaussRedecayPrintMCParticles_H 1
 
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
 
-/** @class GaussRDPrintMCParticles GaussRDPrintMCParticles.h
+/** @class GaussRedecayPrintMCParticles GaussRedecayPrintMCParticles.h
  *
  * Simple algorithm to debug redecayed MCParticle output
  *
@@ -17,19 +17,19 @@
 namespace LHCb {
 class MCVertex;
 }
-class GaussRDPrintMCParticles : public GaudiAlgorithm {
+class GaussRedecayPrintMCParticles : public GaudiAlgorithm {
   public:
   /// Standard constructor
-  GaussRDPrintMCParticles(const std::string& Name, ISvcLocator* SvcLoc);
+  GaussRedecayPrintMCParticles(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRDPrintMCParticles();  ///< Destructor
+  virtual ~GaussRedecayPrintMCParticles();  ///< Destructor
 
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 
   protected:
-  /** accessor to GaussRD Service
-   *  @return pointer to GaussRD Service
+  /** accessor to GaussRedecay Service
+   *  @return pointer to GaussRedecay Service
    */
 
   private:
@@ -39,4 +39,4 @@ class GaussRDPrintMCParticles : public GaudiAlgorithm {
   int printMCParticlesTree(LHCb::MCVertex* vtx, int level = 0, int counter = 0);
 };
 
-#endif  // GaussRDPrintMCParticles_H
+#endif  // GaussRedecayPrintMCParticles_H

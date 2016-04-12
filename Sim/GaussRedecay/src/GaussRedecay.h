@@ -17,9 +17,9 @@
 #include "GaudiKernel/Stat.h"
 #include "GaudiKernel/IToolSvc.h"
 
-// from GaussRD
-#include "GaussRD/IGaussRDStr.h"  //Abstract storage interface
-#include "GaussRD/IGaussRDCtr.h"  //Abstract control interface
+// from GaussRedecay
+#include "GaussRedecay/IGaussRedecayStr.h"  //Abstract storage interface
+#include "GaussRedecay/IGaussRedecayCtr.h"  //Abstract control interface
 
 // Forwad declarations
 // from Gaudi
@@ -28,20 +28,20 @@ template <class TYPE>
 class SvcFactory;
 class MCCloner;
 
-/**  @class GaussRD GaussRD.h
+/**  @class GaussRedecay GaussRedecay.h
  *
- *   Implementation of abstract Interfaces IGaussRDStr
+ *   Implementation of abstract Interfaces IGaussRedecayStr
  *   (for storing redecay information)
- *    and IGaussRDCtr (for controlling redecay flow)
+ *    and IGaussRedecayCtr (for controlling redecay flow)
  *
  *    @author: Dominik Muller dominik.muller@cern.ch
  */
 
-class GaussRD : public Service,
-                virtual public IGaussRDStr,
-                virtual public IGaussRDCtr {
+class GaussRedecay : public Service,
+                virtual public IGaussRedecayStr,
+                virtual public IGaussRedecayCtr {
     /// friend factory
-    friend class SvcFactory<GaussRD>;
+    friend class SvcFactory<GaussRedecay>;
 
 public:
     /// useful typedef
@@ -60,7 +60,7 @@ public:
     virtual StatusCode queryInterface(const InterfaceID& iid,
                                       void** pI) override;
 
-    // Implementation of the control interface IGaussRDCtr
+    // Implementation of the control interface IGaussRedecayCtr
     virtual size_t numberOfRedecays() const override {
         return m_max_rd_counter;
     };
@@ -75,7 +75,7 @@ public:
     virtual int whatShouldIDo() const override;
     virtual void setPhase(int p) override { m_phase = p; }
 
-    // Implementation of the storage interface IGaussRDStr
+    // Implementation of the storage interface IGaussRedecayStr
     //
     /** Functions to save the different MC objects.
      *  string argument allows storage split by the string.
@@ -151,10 +151,10 @@ protected:
      *  @param name instrance name
      *  @param svc  pointer to service locator
      */
-    GaussRD(const std::string& name, ISvcLocator* svc);
+    GaussRedecay(const std::string& name, ISvcLocator* svc);
 
     /// (virtual destructor)
-    virtual ~GaussRD();
+    virtual ~GaussRedecay();
 
 private:
     MCCloner* m_mc_cloner;

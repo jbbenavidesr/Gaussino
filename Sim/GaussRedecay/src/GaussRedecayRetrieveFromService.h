@@ -1,15 +1,15 @@
-#ifndef GaussRDRetrieveFromService_H
-#define GaussRDRetrieveFromService_H 1
+#ifndef GaussRedecayRetrieveFromService_H
+#define GaussRedecayRetrieveFromService_H 1
 
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
 
 // forward declarations
-class IGaussRDStr;  ///< GaussRD counter service
-class IGaussRDCtr;  ///< GaussRD counter service
+class IGaussRedecayStr;  ///< GaussRedecay counter service
+class IGaussRedecayCtr;  ///< GaussRedecay counter service
 
-/** @class GaussRDRetrieveFromService GaussRDRetrieveFromService.h
+/** @class GaussRedecayRetrieveFromService GaussRedecayRetrieveFromService.h
  *
  *  An algorithm to control processing in a GaudiSequencer.
  *  Following members of the sequence are only processed
@@ -18,27 +18,27 @@ class IGaussRDCtr;  ///< GaussRD counter service
  *  @author Dominik Muller
  *  @date   2016-3-21
  */
-class GaussRDRetrieveFromService : public GaudiAlgorithm {
+class GaussRedecayRetrieveFromService : public GaudiAlgorithm {
   public:
   /// Standard constructor
-  GaussRDRetrieveFromService(const std::string& Name, ISvcLocator* SvcLoc);
+  GaussRedecayRetrieveFromService(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRDRetrieveFromService();  ///< Destructor
+  virtual ~GaussRedecayRetrieveFromService();  ///< Destructor
 
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 
   protected:
-  /** accessor to GaussRD Service
-   *  @return pointer to GaussRD Service
+  /** accessor to GaussRedecay Service
+   *  @return pointer to GaussRedecay Service
    */
-  inline IGaussRDStr* gaussRDStrSvc() const { return m_gaussRDStrSvc; }
-  inline IGaussRDCtr* gaussRDCtrSvc() const { return m_gaussRDCtrSvc; }
+  inline IGaussRedecayStr* gaussRDStrSvc() const { return m_gaussRDStrSvc; }
+  inline IGaussRedecayCtr* gaussRDCtrSvc() const { return m_gaussRDCtrSvc; }
 
   private:
   std::string m_gaussRDSvcName;
-  IGaussRDStr* m_gaussRDStrSvc;
-  IGaussRDCtr* m_gaussRDCtrSvc;
+  IGaussRedecayStr* m_gaussRDStrSvc;
+  IGaussRedecayCtr* m_gaussRDCtrSvc;
 
   std::string m_particlesLocation;  ///< Location in TES of output MCParticles.
   std::string m_verticesLocation;   ///< Location in TES of output MCVertices.
@@ -61,7 +61,7 @@ class GaussRDRetrieveFromService : public GaudiAlgorithm {
 };
 
 template <typename T>
-StatusCode GaussRDRetrieveFromService::test_print_put(T* container,
+StatusCode GaussRedecayRetrieveFromService::test_print_put(T* container,
                                                       std::string loc) {
   if (msgLevel(MSG::DEBUG)) {
     debug() << "Copying " << container->size() << " GenCollisions to " << loc
@@ -77,4 +77,4 @@ StatusCode GaussRDRetrieveFromService::test_print_put(T* container,
   return StatusCode::SUCCESS;
 }
 
-#endif  // GaussRDRetrieveFromService_H
+#endif  // GaussRedecayRetrieveFromService_H

@@ -4,34 +4,34 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
-// from GaussRD
-#include "GaussRD/IGaussRDCtr.h"
+// from GaussRedecay
+#include "GaussRedecay/IGaussRedecayCtr.h"
 
 // local
-#include "GaussRDCtrFilter.h"
+#include "GaussRedecayCtrFilter.h"
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : GaussRDCtrFilter
+// Implementation file for class : GaussRedecayCtrFilter
 //
 //
 // 2016-03-15 : Gloria Corti
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(GaussRDCtrFilter)
+DECLARE_ALGORITHM_FACTORY(GaussRedecayCtrFilter)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDCtrFilter::GaussRDCtrFilter(const std::string& Name, ISvcLocator* SvcLoc)
+GaussRedecayCtrFilter::GaussRedecayCtrFilter(const std::string& Name, ISvcLocator* SvcLoc)
     : GaudiAlgorithm(Name, SvcLoc),
-      m_gaussRDSvcName("GaussRD"),
+      m_gaussRDSvcName("GaussRedecay"),
       m_gaussRDSvc(0),
       m_registerNewEvent(false),
       m_isPhase(-1),
       m_isPhaseNot(-1),
       m_setPhase(-1) {
-  declareProperty("GaussRD", m_gaussRDSvcName);
+  declareProperty("GaussRedecay", m_gaussRDSvcName);
   declareProperty("RegisterNewEvent", m_registerNewEvent = false);
   declareProperty("IsPhaseEqual", m_isPhase = -1);
   declareProperty("IsPhaseNotEqual", m_isPhaseNot = -1);
@@ -41,18 +41,18 @@ GaussRDCtrFilter::GaussRDCtrFilter(const std::string& Name, ISvcLocator* SvcLoc)
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDCtrFilter::~GaussRDCtrFilter() {}
+GaussRedecayCtrFilter::~GaussRedecayCtrFilter() {}
 
 //=============================================================================
 // Initialization
 //=============================================================================
-StatusCode GaussRDCtrFilter::initialize() {
+StatusCode GaussRedecayCtrFilter::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();
   if (sc.isFailure()) {
     return sc;
   }
 
-  m_gaussRDSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
+  m_gaussRDSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
 
   return StatusCode::SUCCESS;
 }
@@ -60,13 +60,13 @@ StatusCode GaussRDCtrFilter::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDCtrFilter::execute() {
+StatusCode GaussRedecayCtrFilter::execute() {
   if (nullptr == gaussRDSvc()) {
-    m_gaussRDSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
+    m_gaussRDSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
   }
 
   if (nullptr == gaussRDSvc()) {
-    return Error(" execute(): IGaussRDCtr* points to NULL");
+    return Error(" execute(): IGaussRedecayCtr* points to NULL");
   }
 
   // If this algorithm requests a new event, we call that function and ignore
@@ -74,13 +74,13 @@ StatusCode GaussRDCtrFilter::execute() {
   if (m_registerNewEvent) {
     if (gaussRDSvc()->registerNewEvent()) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -91,17 +91,17 @@ StatusCode GaussRDCtrFilter::execute() {
   // Next check that the flag is equal to the requested value:
   if (m_isPhase > -1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "Checking if GaussRD phase is " << m_isPhase << endmsg;
+      debug() << "Checking if GaussRedecay phase is " << m_isPhase << endmsg;
     }
     if (gaussRDSvc()->whatShouldIDo() == m_isPhase) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -111,17 +111,17 @@ StatusCode GaussRDCtrFilter::execute() {
   // Next check that the flag is not equal to the requested value:
   if (m_isPhaseNot > -1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "Checking if GaussRD phase is not " << m_isPhaseNot << endmsg;
+      debug() << "Checking if GaussRedecay phase is not " << m_isPhaseNot << endmsg;
     }
     if (gaussRDSvc()->whatShouldIDo() != m_isPhaseNot) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRD phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -132,7 +132,7 @@ StatusCode GaussRDCtrFilter::execute() {
 
   if (m_setPhase > -1 && gaussRDSvc()->whatShouldIDo() != 0) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "Setting GaussRD phase to " << m_setPhase << endmsg;
+      debug() << "Setting GaussRedecay phase to " << m_setPhase << endmsg;
     }
     gaussRDSvc()->setPhase(m_setPhase);
   }

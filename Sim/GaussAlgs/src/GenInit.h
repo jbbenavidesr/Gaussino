@@ -10,7 +10,7 @@
 #include "Event/BeamParameters.h"
 
 class IGenericTool;
-class IGaussRDCtr;
+class IGaussRedecayCtr;
 
 /** @class GenInit GenInit.h
  *  
@@ -61,7 +61,7 @@ private:
 
   bool          m_createBeam;
 
-  IGaussRDCtr* m_gaussRDSvc;
+  IGaussRedecayCtr* m_gaussRDSvc;
   std::string m_gaussRDSvcName;
 
   LHCb::BeamParameters m_beam ; ///< Local beam parameter object

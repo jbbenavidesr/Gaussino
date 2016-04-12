@@ -29,8 +29,8 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticlePropertyTable.hh"
 
-#include "GaussRD/IGaussRDCtr.h"
-#include "GaussRD/IGaussRDStr.h"
+#include "GaussRedecay/IGaussRedecayCtr.h"
+#include "GaussRedecay/IGaussRedecayStr.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenerationToSimulation
@@ -97,7 +97,7 @@ GenerationToSimulation::GenerationToSimulation(const std::string& name,
   declareProperty(
       "SelectiveSimulationStep", m_selectiveSimulation = NoSelectiveSimulation,
       "0 (no selective simulation), 1 (rest of the event) or 2 (signal)");
-  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
+  declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
 }
 
 //=============================================================================
@@ -156,13 +156,13 @@ StatusCode GenerationToSimulation::initialize() {
 
   // get tool to set signal flag
   m_setSignalFlagTool = tool<IFlagSignalChain>("FlagSignalChain");
-  m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+  m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
   if (nullptr == m_gaussRDStrSvc) {
-    m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
   }
 
   if (nullptr == m_gaussRDStrSvc) {
-    return Error(" initialize(): IGaussRDStr* points to NULL");
+    return Error(" initialize(): IGaussRedecayStr* points to NULL");
   }
 
   return StatusCode::SUCCESS;

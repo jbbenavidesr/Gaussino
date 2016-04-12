@@ -10,21 +10,21 @@
 #include "GaudiKernel/IMessageSvc.h"
 
 // local
-#include "GaussRD.h"
+#include "GaussRedecay.h"
 #include "MCCloner.h"
 
 //-----------------------------------------------------------------------------
-// Implementation of GaussRD
+// Implementation of GaussRedecay
 //-----------------------------------------------------------------------------
 
 // Instantiation of a static factory class used by clients to create
 // instances of this service
-DECLARE_SERVICE_FACTORY(GaussRD)
+DECLARE_SERVICE_FACTORY(GaussRedecay)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
+GaussRedecay::GaussRedecay(const std::string& name, ISvcLocator* svcloc)
     : Service(name, svcloc),
       m_mc_cloner(nullptr),
       m_mc_cloner_copy(nullptr),
@@ -39,7 +39,7 @@ GaussRD::GaussRD(const std::string& name, ISvcLocator* svcloc)
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRD::~GaussRD() {
+GaussRedecay::~GaussRedecay() {
   if (m_mc_cloner) {
     delete m_mc_cloner;
   }
@@ -51,7 +51,7 @@ GaussRD::~GaussRD() {
 //=============================================================================
 // service initialization
 //=============================================================================
-StatusCode GaussRD::initialize() {
+StatusCode GaussRedecay::initialize() {
   // initialize the base class
   StatusCode sc = Service::initialize();
   m_mc_cloner = nullptr;
@@ -66,7 +66,7 @@ StatusCode GaussRD::initialize() {
 //=============================================================================
 // service finalization
 //=============================================================================
-StatusCode GaussRD::finalize() {
+StatusCode GaussRedecay::finalize() {
   m_mc_cloner->clear();
   m_mc_cloner_copy->clear_no_deletion();
   ///  finalize the base class
@@ -76,13 +76,13 @@ StatusCode GaussRD::finalize() {
 //=============================================================================
 // query interface
 //=============================================================================
-StatusCode GaussRD::queryInterface(const InterfaceID& id, void** ppI) {
+StatusCode GaussRedecay::queryInterface(const InterfaceID& id, void** ppI) {
   if (0 == ppI) {
     return StatusCode::FAILURE;  //  RETURN !!!
-  } else if (IGaussRDCtr::interfaceID() == id) {
-    *ppI = static_cast<IGaussRDCtr*>(this);
-  } else if (IGaussRDStr::interfaceID() == id) {
-    *ppI = static_cast<IGaussRDStr*>(this);
+  } else if (IGaussRedecayCtr::interfaceID() == id) {
+    *ppI = static_cast<IGaussRedecayCtr*>(this);
+  } else if (IGaussRedecayStr::interfaceID() == id) {
+    *ppI = static_cast<IGaussRedecayStr*>(this);
   } else {
     return Service::queryInterface(id, ppI);  //  RETURN !!!
   }
@@ -96,7 +96,7 @@ StatusCode GaussRD::queryInterface(const InterfaceID& id, void** ppI) {
 // Check if the counter is at the max value and return true if a new event
 // should be generated
 //=============================================================================
-bool GaussRD::registerNewEvent() {
+bool GaussRedecay::registerNewEvent() {
   // In case phase is 0, the entire redecay part should be ignored.
   if (m_phase == 0) {
     return true;
@@ -154,72 +154,72 @@ bool GaussRD::registerNewEvent() {
   }
 }
 
-int GaussRD::whatShouldIDo() const { return m_phase; }
+int GaussRedecay::whatShouldIDo() const { return m_phase; }
 
-LHCb::MCParticle* GaussRD::cloneMCP(const LHCb::MCParticle* mcp) {
+LHCb::MCParticle* GaussRedecay::cloneMCP(const LHCb::MCParticle* mcp) {
   return m_mc_cloner->cloneMCP(mcp);
 }
-LHCb::MCParticles* GaussRD::getClonedMCPs() {
+LHCb::MCParticles* GaussRedecay::getClonedMCPs() {
   return m_mc_cloner_copy->getClonedMCPs();
 }
 
-LHCb::MCVertex* GaussRD::cloneMCV(const LHCb::MCVertex* mcVertex) {
+LHCb::MCVertex* GaussRedecay::cloneMCV(const LHCb::MCVertex* mcVertex) {
   return m_mc_cloner->cloneMCV(mcVertex);
 }
-LHCb::MCVertices* GaussRD::getClonedMCVs() {
+LHCb::MCVertices* GaussRedecay::getClonedMCVs() {
   return m_mc_cloner_copy->getClonedMCVs();
 }
 
-LHCb::MCHit* GaussRD::cloneMCHit(const LHCb::MCHit* mchit,
+LHCb::MCHit* GaussRedecay::cloneMCHit(const LHCb::MCHit* mchit,
                                  const std::string& vol) {
   return m_mc_cloner->cloneMCHit(mchit, vol);
 }
-LHCb::MCHits* GaussRD::getClonedMCHits(const std::string& vol) {
+LHCb::MCHits* GaussRedecay::getClonedMCHits(const std::string& vol) {
   return m_mc_cloner_copy->getClonedMCHits(vol);
 }
 
-LHCb::MCCaloHit* GaussRD::cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
+LHCb::MCCaloHit* GaussRedecay::cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
                                          const std::string& vol) {
   return m_mc_cloner->cloneMCCaloHit(mchit, vol);
 }
-LHCb::MCCaloHits* GaussRD::getClonedMCCaloHits(const std::string& vol) {
+LHCb::MCCaloHits* GaussRedecay::getClonedMCCaloHits(const std::string& vol) {
   return m_mc_cloner_copy->getClonedMCCaloHits(vol);
 }
 
-LHCb::MCRichHit* GaussRD::cloneMCRichHit(const LHCb::MCRichHit* mchit) {
+LHCb::MCRichHit* GaussRedecay::cloneMCRichHit(const LHCb::MCRichHit* mchit) {
   return m_mc_cloner->cloneMCRichHit(mchit);
 }
-LHCb::MCRichHits* GaussRD::getClonedMCRichHits() {
+LHCb::MCRichHits* GaussRedecay::getClonedMCRichHits() {
   return m_mc_cloner_copy->getClonedMCRichHits();
 }
 
-LHCb::MCRichOpticalPhoton* GaussRD::cloneMCRichOpticalPhoton(
+LHCb::MCRichOpticalPhoton* GaussRedecay::cloneMCRichOpticalPhoton(
     const LHCb::MCRichOpticalPhoton* mchit) {
   return m_mc_cloner->cloneMCRichOpticalPhoton(mchit);
 }
-LHCb::MCRichOpticalPhotons* GaussRD::getClonedMCRichOpticalPhotons() {
+LHCb::MCRichOpticalPhotons* GaussRedecay::getClonedMCRichOpticalPhotons() {
   return m_mc_cloner_copy->getClonedMCRichOpticalPhotons();
 }
 
-LHCb::MCRichSegment* GaussRD::cloneMCRichSegment(
+LHCb::MCRichSegment* GaussRedecay::cloneMCRichSegment(
     const LHCb::MCRichSegment* mchit) {
   return m_mc_cloner->cloneMCRichSegment(mchit);
 }
-LHCb::MCRichSegments* GaussRD::getClonedMCRichSegments() {
+LHCb::MCRichSegments* GaussRedecay::getClonedMCRichSegments() {
   return m_mc_cloner_copy->getClonedMCRichSegments();
 }
 
-LHCb::MCRichTrack* GaussRD::cloneMCRichTrack(const LHCb::MCRichTrack* mchit) {
+LHCb::MCRichTrack* GaussRedecay::cloneMCRichTrack(const LHCb::MCRichTrack* mchit) {
   return m_mc_cloner->cloneMCRichTrack(mchit);
 }
-LHCb::MCRichTracks* GaussRD::getClonedMCRichTracks() {
+LHCb::MCRichTracks* GaussRedecay::getClonedMCRichTracks() {
   return m_mc_cloner_copy->getClonedMCRichTracks();
 }
 
-LHCb::GenCollision* GaussRD::cloneGenCollision(
+LHCb::GenCollision* GaussRedecay::cloneGenCollision(
     const LHCb::GenCollision* mchit) {
   return m_mc_cloner->cloneGenCollision(mchit);
 }
-LHCb::GenCollisions* GaussRD::getClonedGenCollisions() {
+LHCb::GenCollisions* GaussRedecay::getClonedGenCollisions() {
   return m_mc_cloner_copy->getClonedGenCollisions();
 }

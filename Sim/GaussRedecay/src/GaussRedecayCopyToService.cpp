@@ -4,12 +4,12 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
-// from GaussRD
-#include "GaussRD/IGaussRDStr.h"
-#include "GaussRD/IGaussRDCtr.h"
+// from GaussRedecay
+#include "GaussRedecay/IGaussRedecayStr.h"
+#include "GaussRedecay/IGaussRedecayCtr.h"
 
 // local
-#include "GaussRDCopyToService.h"
+#include "GaussRedecayCopyToService.h"
 #include "Event/Particle.h"
 #include "Event/MCParticle.h"
 #include "Event/MCHit.h"
@@ -21,25 +21,25 @@
 #include "Event/GenCollision.h"
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : GaussRDCopyToService
+// Implementation file for class : GaussRedecayCopyToService
 //
 //
 // 2016-03-15 : Dominik Muller
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(GaussRDCopyToService)
+DECLARE_ALGORITHM_FACTORY(GaussRedecayCopyToService)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDCopyToService::GaussRDCopyToService(const std::string& Name,
+GaussRedecayCopyToService::GaussRedecayCopyToService(const std::string& Name,
                                            ISvcLocator* SvcLoc)
     : GaudiAlgorithm(Name, SvcLoc),
-      m_gaussRDSvcName("GaussRD"),
+      m_gaussRDSvcName("GaussRedecay"),
       m_gaussRDCtrSvc(0),
       m_gaussRDStrSvc(0) {
-  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
+  declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
   declareProperty("Particles",
                   m_particlesLocation = LHCb::MCParticleLocation::Default,
                   "Location to place the MCParticles.");
@@ -71,19 +71,19 @@ GaussRDCopyToService::GaussRDCopyToService(const std::string& Name,
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDCopyToService::~GaussRDCopyToService() {}
+GaussRedecayCopyToService::~GaussRedecayCopyToService() {}
 
 //=============================================================================
 // Initialization
 //=============================================================================
-StatusCode GaussRDCopyToService::initialize() {
+StatusCode GaussRedecayCopyToService::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();
   if (sc.isFailure()) {
     return sc;
   }
 
-  m_gaussRDCtrSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
-  m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+  m_gaussRDCtrSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
+  m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
 
   return StatusCode::SUCCESS;
 }
@@ -91,24 +91,24 @@ StatusCode GaussRDCopyToService::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDCopyToService::execute() {
+StatusCode GaussRedecayCopyToService::execute() {
   if (nullptr == m_gaussRDCtrSvc) {
-    m_gaussRDCtrSvc = svc<IGaussRDCtr>(m_gaussRDSvcName, true);
+    m_gaussRDCtrSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
   }
 
   if (nullptr == m_gaussRDCtrSvc) {
-    return Error(" execute(): IGaussRDCtr* points to NULL");
+    return Error(" execute(): IGaussRedecayCtr* points to NULL");
   }
   if (nullptr == m_gaussRDStrSvc) {
-    m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
   }
 
   if (nullptr == m_gaussRDStrSvc) {
-    return Error(" execute(): IGaussRDStr* points to NULL");
+    return Error(" execute(): IGaussRedecayStr* points to NULL");
   }
   if (m_gaussRDCtrSvc->whatShouldIDo() != 1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "GaussRD phase: " << m_gaussRDCtrSvc->whatShouldIDo()
+      debug() << "GaussRedecay phase: " << m_gaussRDCtrSvc->whatShouldIDo()
               << ". Skipping..." << endmsg;
     }
   } else {

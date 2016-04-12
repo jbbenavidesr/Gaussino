@@ -1,4 +1,4 @@
-// $Id: IGaussRDStr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
+// $Id: IGaussRedecayStr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
 // ============================================================================
 // ============================================================================
 //
@@ -27,9 +27,9 @@ class MCCloner;
 #include "Event/MCRichTrack.h"
 #include "Event/GenCollision.h"
 
-static const InterfaceID IID_IGaussRDStr(517635934, 1, 0);
+static const InterfaceID IID_IGaussRedecayStr(517635934, 1, 0);
 
-/** @class IGaussRDStr IGaussRDStr.h GiGa/IGaussRDStr.h
+/** @class IGaussRedecayStr IGaussRedecayStr.h GiGa/IGaussRedecayStr.h
  *
  *  definition of the abstract interface to Geant4 Service
  *   for event-by-event communications with Geant4
@@ -37,10 +37,10 @@ static const InterfaceID IID_IGaussRDStr(517635934, 1, 0);
  *  @author Vanya Belyaev
  */
 
-class IGaussRDStr : virtual public IService {
+class IGaussRedecayStr : virtual public IService {
   public:
   /// Retrieve interface ID
-  static const InterfaceID& interfaceID() { return IID_IGaussRDStr; };
+  static const InterfaceID& interfaceID() { return IID_IGaussRedecayStr; };
 
   /**  initialize
    *   @return status code
@@ -103,7 +103,7 @@ class IGaussRDStr : virtual public IService {
 
   protected:
   /// virtual destructor
-  virtual ~IGaussRDStr(){};
+  virtual ~IGaussRedecayStr(){};
 };
 
 // ============================================================================

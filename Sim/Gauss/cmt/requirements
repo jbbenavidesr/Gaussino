@@ -70,7 +70,7 @@ use LbCRMC             v*     Gen            -no_auto_imports
 #-- Simulation
 use GiGaCnv              v*    Sim   -no_auto_imports
 use GaussTools           v*    Sim   -no_auto_imports
-use GaussRD              v*    Sim   -no_auto_imports
+use GaussRedecay              v*    Sim   -no_auto_imports
 use GaussAlgs		     v*    Sim   -no_auto_imports
 use GaussKine            v*    Sim   -no_auto_imports
 use GaussPhysics         v*    Sim   -no_auto_imports

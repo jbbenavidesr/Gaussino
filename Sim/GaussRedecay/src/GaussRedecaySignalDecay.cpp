@@ -1,9 +1,9 @@
-// $Id: GaussRDSignalDecay.cpp,v 1.1.1.1 2009-09-18 16:18:24 gcorti Exp $
+// $Id: GaussRedecaySignalDecay.cpp,v 1.1.1.1 2009-09-18 16:18:24 gcorti Exp $
 // Include files
 
 // local
-#include "GaussRDSignalDecay.h"
-#include "GaussRD/IGaussRDStr.h"
+#include "GaussRedecaySignalDecay.h"
+#include "GaussRedecay/IGaussRedecayStr.h"
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
@@ -29,15 +29,15 @@
 #include "Generators/RandomForGenerator.h"
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : GaussRDSignalDecay
+// Implementation file for class : GaussRedecaySignalDecay
 //
 // 2016-03-29 : Dominik Muller
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
 
-DECLARE_ALGORITHM_FACTORY(GaussRDSignalDecay)
-void GaussRDSignalDecay::printHepMCTree(HepMC::GenParticle* p, int level) {
+DECLARE_ALGORITHM_FACTORY(GaussRedecaySignalDecay)
+void GaussRedecaySignalDecay::printHepMCTree(HepMC::GenParticle* p, int level) {
   std::string spacer = "|---";
   std::string space = "";
   for (int i = 0; i < level; i++) {
@@ -59,7 +59,7 @@ void GaussRDSignalDecay::printHepMCTree(HepMC::GenParticle* p, int level) {
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDSignalDecay::GaussRDSignalDecay(const std::string& name,
+GaussRedecaySignalDecay::GaussRedecaySignalDecay(const std::string& name,
                                        ISvcLocator* pSvcLocator)
     : GaudiAlgorithm(name, pSvcLocator) {
   // Generation Method
@@ -73,18 +73,18 @@ GaussRDSignalDecay::GaussRDSignalDecay(const std::string& name,
   declareProperty("DecayTool", m_decayToolName = "EvtGenDecay");
   declareProperty("FullGenEventCutTool", m_fullGenEventCutToolName = "");
   declareProperty("GenCutTool", m_genCutToolName = "");
-  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
+  declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
 }
 
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDSignalDecay::~GaussRDSignalDecay() {}
+GaussRedecaySignalDecay::~GaussRedecaySignalDecay() {}
 
 //=============================================================================
 // Initialisation. Check parameters
 //=============================================================================
-StatusCode GaussRDSignalDecay::initialize() {
+StatusCode GaussRedecaySignalDecay::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();  // Initialize base class
   if (sc.isFailure()) return sc;
 
@@ -105,11 +105,11 @@ StatusCode GaussRDSignalDecay::initialize() {
     m_genCutTool = tool<IGenCutTool>(m_genCutToolName, this);
 
   if (nullptr == m_gaussRDStrSvc) {
-    m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+    m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
   }
 
   if (nullptr == m_gaussRDStrSvc) {
-    return Error(" initialize(): IGaussRDStr* points to NULL");
+    return Error(" initialize(): IGaussRedecayStr* points to NULL");
   }
 
   return StatusCode::SUCCESS;
@@ -118,7 +118,7 @@ StatusCode GaussRDSignalDecay::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDSignalDecay::execute() {
+StatusCode GaussRedecaySignalDecay::execute() {
   debug() << "Processing event type " << m_eventType << endmsg;
   StatusCode sc = StatusCode::SUCCESS;
 
@@ -286,7 +286,7 @@ StatusCode GaussRDSignalDecay::execute() {
 //=============================================================================
 //  Finalize
 //=============================================================================
-StatusCode GaussRDSignalDecay::finalize() {
+StatusCode GaussRedecaySignalDecay::finalize() {
   using namespace GenCounters;
   debug() << "==> Finalize" << endmsg;
   // Print the various counters
@@ -312,7 +312,7 @@ StatusCode GaussRDSignalDecay::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC::GenParticle* GaussRDSignalDecay::decayEvent(
+HepMC::GenParticle* GaussRedecaySignalDecay::decayEvent(
     LHCb::HepMCEvent* theEvent, ParticleVector& theParticleList,
     StatusCode& sc) {
   using namespace LHCb;
@@ -361,7 +361,7 @@ HepMC::GenParticle* GaussRDSignalDecay::decayEvent(
 //=============================================================================
 // Set up event
 //=============================================================================
-void GaussRDSignalDecay::prepareInteraction(
+void GaussRedecaySignalDecay::prepareInteraction(
     LHCb::HepMCEvents* theEvents, LHCb::GenCollisions* theCollisions,
     HepMC::GenEvent*& theGenEvent, LHCb::GenCollision*& theGenCollision) const {
   LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();

@@ -13,13 +13,13 @@ class ISampleGenerationTool;
 class IFullGenEventCutTool;
 class IGenCutTool;
 
-class IGaussRDStr;
+class IGaussRedecayStr;
 
 namespace HepMC {
 class GenEvent;
 }
 
-/** @class GaussRDSignalDecay GaussRDSignalDecay.h "GaussRDSignalDecay.h"
+/** @class GaussRedecaySignalDecay GaussRedecaySignalDecay.h "GaussRedecaySignalDecay.h"
  *
  *  Algorithm to take vertex and particle, build a new HepMC event and decay it.
  *  Many things taken from ParticleGun class by Patrick Robbe
@@ -27,13 +27,13 @@ class GenEvent;
  *  @author Dominik Muller
  *  @date   2016-03-29
  */
-class GaussRDSignalDecay : public GaudiAlgorithm {
+class GaussRedecaySignalDecay : public GaudiAlgorithm {
   public:
   typedef std::vector<HepMC::GenParticle*> ParticleVector;
   /// Standard constructor
-  GaussRDSignalDecay(const std::string& name, ISvcLocator* pSvcLocator);
+  GaussRedecaySignalDecay(const std::string& name, ISvcLocator* pSvcLocator);
 
-  virtual ~GaussRDSignalDecay();
+  virtual ~GaussRedecaySignalDecay();
 
   /** Algorithm initialization.
    *  -# Initializes the common Gaudi random number generator used in all
@@ -80,7 +80,7 @@ class GaussRDSignalDecay : public GaudiAlgorithm {
   IDecayTool* m_decayTool = nullptr;                      ///< Decay tool
   IFullGenEventCutTool* m_fullGenEventCutTool = nullptr;  ///< Cut tool
   IGenCutTool* m_genCutTool = nullptr;                    ///< Cut tool
-  IGaussRDStr* m_gaussRDStrSvc = nullptr;  ///< GaussRD storage service
+  IGaussRedecayStr* m_gaussRDStrSvc = nullptr;  ///< GaussRedecay storage service
 
   /// Name of the IDecayTool (set by options)
   std::string m_decayToolName;

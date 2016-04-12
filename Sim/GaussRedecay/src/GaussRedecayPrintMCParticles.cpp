@@ -5,18 +5,18 @@
 #include "GaudiKernel/MsgStream.h"
 
 // local
-#include "GaussRDPrintMCParticles.h"
+#include "GaussRedecayPrintMCParticles.h"
 #include "Event/MCParticle.h"
 #include "Event/MCHeader.h"
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : GaussRDPrintMCParticles
+// Implementation file for class : GaussRedecayPrintMCParticles
 //
 //
 // 2016-03-30 : Dominik Muller
 //-----------------------------------------------------------------------------
 
-int GaussRDPrintMCParticles::printMCParticlesTree(LHCb::MCVertex* vtx,
+int GaussRedecayPrintMCParticles::printMCParticlesTree(LHCb::MCVertex* vtx,
                                                   int level, int counter) {
   std::string spacer = "|---";
   std::string space = "";
@@ -38,12 +38,12 @@ int GaussRDPrintMCParticles::printMCParticlesTree(LHCb::MCVertex* vtx,
 }
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(GaussRDPrintMCParticles)
+DECLARE_ALGORITHM_FACTORY(GaussRedecayPrintMCParticles)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDPrintMCParticles::GaussRDPrintMCParticles(const std::string& Name,
+GaussRedecayPrintMCParticles::GaussRedecayPrintMCParticles(const std::string& Name,
                                                  ISvcLocator* SvcLoc)
     : GaudiAlgorithm(Name, SvcLoc) {
   declareProperty("Particles",
@@ -56,12 +56,12 @@ GaussRDPrintMCParticles::GaussRDPrintMCParticles(const std::string& Name,
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDPrintMCParticles::~GaussRDPrintMCParticles() {}
+GaussRedecayPrintMCParticles::~GaussRedecayPrintMCParticles() {}
 
 //=============================================================================
 // Initialization
 //=============================================================================
-StatusCode GaussRDPrintMCParticles::initialize() {
+StatusCode GaussRedecayPrintMCParticles::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();
   if (sc.isFailure()) {
     return sc;
@@ -73,7 +73,7 @@ StatusCode GaussRDPrintMCParticles::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDPrintMCParticles::execute() {
+StatusCode GaussRedecayPrintMCParticles::execute() {
   if (!msgLevel(MSG::DEBUG)) {
     return StatusCode::SUCCESS;
   }

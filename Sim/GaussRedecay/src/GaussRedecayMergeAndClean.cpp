@@ -5,7 +5,7 @@
 #include "GaudiKernel/MsgStream.h"
 
 // local
-#include "GaussRDMergeAndClean.h"
+#include "GaussRedecayMergeAndClean.h"
 #include "Event/Particle.h"
 #include "Event/MCParticle.h"
 #include "Event/MCVertex.h"
@@ -19,29 +19,29 @@
 #include "Event/GenCollision.h"
 
 #include "MCCloner.h"
-#include "GaussRD/IGaussRDStr.h"
+#include "GaussRedecay/IGaussRedecayStr.h"
 #include "LHCbMath/LHCbMath.h"
 
 //-----------------------------------------------------------------------------
-// Implementation file for class : GaussRDMergeAndClean
+// Implementation file for class : GaussRedecayMergeAndClean
 //
 //
 // 2016-03-15 : Gloria Corti
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(GaussRDMergeAndClean)
+DECLARE_ALGORITHM_FACTORY(GaussRedecayMergeAndClean)
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GaussRDMergeAndClean::GaussRDMergeAndClean(const std::string& Name,
+GaussRedecayMergeAndClean::GaussRedecayMergeAndClean(const std::string& Name,
                                            ISvcLocator* SvcLoc)
     : GaudiAlgorithm(Name, SvcLoc), m_gaussRDStrSvc(nullptr) {
   declareProperty("Particles",
                   m_particlesLocation = LHCb::MCParticleLocation::Default,
                   "Location to place the MCParticles.");
-  declareProperty("GaussRD", m_gaussRDSvcName = "GaussRD");
+  declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
   declareProperty("Vertices",
                   m_verticesLocation = LHCb::MCVertexLocation::Default,
                   "Location to place the MCVertices.");
@@ -76,18 +76,18 @@ GaussRDMergeAndClean::GaussRDMergeAndClean(const std::string& Name,
 //=============================================================================
 // Destructor
 //=============================================================================
-GaussRDMergeAndClean::~GaussRDMergeAndClean() {}
+GaussRedecayMergeAndClean::~GaussRedecayMergeAndClean() {}
 
 //=============================================================================
 // Initialization
 //=============================================================================
-StatusCode GaussRDMergeAndClean::initialize() {
+StatusCode GaussRedecayMergeAndClean::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();
   if (sc.isFailure()) {
     return sc;
   }
 
-  m_gaussRDStrSvc = svc<IGaussRDStr>(m_gaussRDSvcName, true);
+  m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
 
   return StatusCode::SUCCESS;
 }
@@ -95,7 +95,7 @@ StatusCode GaussRDMergeAndClean::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode GaussRDMergeAndClean::execute() {
+StatusCode GaussRedecayMergeAndClean::execute() {
   // Get all the MCParticles and MCVertices first and merge them in the main
   // container.
   // All hits are only associated to those and can be combined directly.
@@ -209,7 +209,7 @@ StatusCode GaussRDMergeAndClean::execute() {
   return StatusCode::SUCCESS;
 }
 
-LHCb::MCVertex* GaussRDMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
+LHCb::MCVertex* GaussRedecayMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
                                                  LHCb::MCParticles* parts) {
   std::vector<LHCb::MCVertex*> matched_vertices;
   auto signal_vertex_position = m_gaussRDStrSvc->getSignalOrigin();
@@ -287,7 +287,7 @@ LHCb::MCVertex* GaussRDMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
   return nullptr;  // should not get here but it insists on a warning otherwise ..
 }
 
-LHCb::MCParticle* GaussRDMergeAndClean::findPlaceholder(
+LHCb::MCParticle* GaussRedecayMergeAndClean::findPlaceholder(
     const LHCb::MCParticles* parts) {
   LHCb::MCParticle* matched = nullptr;
   for (auto& o : *parts) {
@@ -302,7 +302,7 @@ LHCb::MCParticle* GaussRDMergeAndClean::findPlaceholder(
 //=============================================================================
 // Delete a particle and all decay tree
 //=============================================================================
-void GaussRDMergeAndClean::deleteParticle(
+void GaussRedecayMergeAndClean::deleteParticle(
     LHCb::MCParticle* P, LHCb::MCVertices* m_vertexContainer,
     LHCb::MCParticles* m_particleContainer) {
   for (SmartRefVector<LHCb::MCVertex>::const_iterator endV =

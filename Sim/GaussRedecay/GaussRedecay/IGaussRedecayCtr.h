@@ -1,4 +1,4 @@
-// $Id: IGaussRDCtr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
+// $Id: IGaussRedecayCtr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
 // ============================================================================
 // ============================================================================
 //
@@ -10,7 +10,7 @@
 /// Include files from the Framework
 #include "GaudiKernel/IService.h"
 
-/** @class IGaussRDCtr IGaussRDCtr.h GiGa/IGaussRDCtr.h
+/** @class IGaussRedecayCtr IGaussRedecayCtr.h GiGa/IGaussRedecayCtr.h
  *
  *
  *
@@ -18,14 +18,14 @@
  *  @author Dominik Muller dominik.muller@cern.ch
  */
 
-static const InterfaceID IID_IGaussRDCtr(5623694057, 1, 0);
+static const InterfaceID IID_IGaussRedecayCtr(5623694057, 1, 0);
 
-class IGaussRDCtr : virtual public IService {
-  friend class GaussRDCtrFilter;
+class IGaussRedecayCtr : virtual public IService {
+  friend class GaussRedecayCtrFilter;
 
   public:
   /// Retrieve interface ID
-  static const InterfaceID& interfaceID() { return IID_IGaussRDCtr; };
+  static const InterfaceID& interfaceID() { return IID_IGaussRedecayCtr; };
 
   /**  initialize
    *   @return status code
@@ -53,7 +53,7 @@ class IGaussRDCtr : virtual public IService {
 
   protected:
   /// virtual destructor
-  virtual ~IGaussRDCtr(){};
+  virtual ~IGaussRedecayCtr(){};
 
   private:
 };

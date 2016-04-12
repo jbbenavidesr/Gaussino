@@ -20,7 +20,7 @@ class IGiGaSvc;
 class G4PrimaryVertex;
 class G4PrimaryParticle;
 class IFlagSignalChain;
-class IGaussRDStr;
+class IGaussRedecayStr;
 namespace HepMC {
 class GenEvent;
 class GenParticle;
@@ -112,7 +112,7 @@ class GenerationToSimulation : public GaudiAlgorithm {
   };
   int m_selectiveSimulation;
   std::string m_gaussRDSvcName;
-  IGaussRDStr* m_gaussRDStrSvc;
+  IGaussRedecayStr* m_gaussRDStrSvc;
 
   /// Reference to tool to propagate fromSignal flag
   IFlagSignalChain* m_setSignalFlagTool;

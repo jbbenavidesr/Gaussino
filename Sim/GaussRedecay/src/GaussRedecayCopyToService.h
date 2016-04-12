@@ -1,41 +1,41 @@
-// $Id: GaussRDCtrFilter.h,v 1.4 2007-01-12 15:23:41 ranjard Exp $
-#ifndef GaussRDCopyToService_H
-#define GaussRDCopyToService_H 1
+// $Id: GaussRedecayCtrFilter.h,v 1.4 2007-01-12 15:23:41 ranjard Exp $
+#ifndef GaussRedecayCopyToService_H
+#define GaussRedecayCopyToService_H 1
 
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
 
 // forward declarations
-class IGaussRDStr;  ///< GaussRD counter service
-class IGaussRDCtr;  ///< GaussRD counter service
+class IGaussRedecayStr;  ///< GaussRedecay counter service
+class IGaussRedecayCtr;  ///< GaussRedecay counter service
 
-/** @class GaussRDCopyToService GaussRDCopyToService.h
+/** @class GaussRedecayCopyToService GaussRedecayCopyToService.h
  *
  * Algorithm to copy all the MC objects into the service for later reuse.
  *
  *  @author Dominik Muller
  *  @date   2016-3-15
  */
-class GaussRDCopyToService : public GaudiAlgorithm {
+class GaussRedecayCopyToService : public GaudiAlgorithm {
   public:
   /// Standard constructor
-  GaussRDCopyToService(const std::string& Name, ISvcLocator* SvcLoc);
+  GaussRedecayCopyToService(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRDCopyToService();  ///< Destructor
+  virtual ~GaussRedecayCopyToService();  ///< Destructor
 
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 
   protected:
-  /** accessor to GaussRD Service
-   *  @return pointer to GaussRD Service
+  /** accessor to GaussRedecay Service
+   *  @return pointer to GaussRedecay Service
    */
 
   private:
   std::string m_gaussRDSvcName;
-  IGaussRDCtr* m_gaussRDCtrSvc;
-  IGaussRDStr* m_gaussRDStrSvc;
+  IGaussRedecayCtr* m_gaussRDCtrSvc;
+  IGaussRedecayStr* m_gaussRDStrSvc;
 
   std::string m_particlesLocation;  ///< Location in TES of output MCParticles.
   std::string m_verticesLocation;   ///< Location in TES of output MCVertices.
@@ -50,4 +50,4 @@ class GaussRDCopyToService : public GaudiAlgorithm {
   std::string m_GenCollisionsLocation;
 };
 
-#endif  // GaussRDCopyToService_H
+#endif  // GaussRedecayCopyToService_H
