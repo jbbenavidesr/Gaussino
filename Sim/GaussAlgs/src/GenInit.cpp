@@ -13,7 +13,6 @@
 
 // local
 #include "GenInit.h"
-#include "GaussRedecay/IGaussRedecayCtr.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenInit
@@ -55,7 +54,6 @@ GenInit::GenInit( const std::string& name,
   declareProperty( "Luminosity" , m_luminosity = 1.e32 /( Gaudi::Units::cm2 * Gaudi::Units::s ) ) ;
 
   declareProperty( "CreateBeam", m_createBeam = false );
-  declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
 
 }
 
@@ -77,7 +75,6 @@ StatusCode GenInit::initialize() {
   std::string toolName = name()+"Memory";
   m_memoryTool = tool<IGenericTool>( "MemoryTool", toolName, this, true );
 
-  m_gaussRDSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
   // create beam parameter object
   m_beam.setEnergy( m_beamEnergy ) ;
   m_beam.setSigmaS( m_bunchLengthRMS ) ;
@@ -137,8 +134,8 @@ StatusCode GenInit::execute() {
   m_memoryTool->execute();
 
   // Initialize the random number
-  longlong eventNumber = m_firstEvent - 1 + int(float(this->eventCounter()-1)/m_gaussRDSvc->numberOfRedecays())+1;
-  std::vector<long int> seeds = getSeeds( m_runNumber, this->eventCounter());
+  longlong eventNumber = m_firstEvent - 1 + this->eventCounter();
+  std::vector<long int> seeds = getSeeds( m_runNumber, eventNumber );
   sc = this->initRndm( seeds );
   if ( sc.isFailure() ) return sc;  // error printed already by initRndm
   this->printEventRun( eventNumber, m_runNumber, &seeds);
