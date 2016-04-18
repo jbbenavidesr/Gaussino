@@ -1,0 +1,25 @@
+#============================================================================
+# Created    : 2015-12-22
+# Maintainer : Alex Grecu <alexandru.grecu@nipne.ro> - to be changed!
+#============================================================================
+package           yoda
+version           v1r0 
+
+use LCG_Configuration v*
+use LCG_Settings v*
+
+.ßmacro yoda_home $(LCG_external)/MCGenerators/yoda/$(yoda_native_version)/$(LCG_system)
+ 
+include_path none
+include_dirs $(yoda_home)/include
+
+macro yoda_linkopts "-L$(yoda_home)/lib -lYODA"
+ 
+# make Python interface accessible
+path_remove  PYTHONPATH  "/yoda/"
+path_prepend PYTHONPATH  "$(yoda_home)/lib/python$(Python_version)/site-packages"
+ 
+
+macro yoda_name "yoda"
+apply_pattern set_bin_and_lib_path
+
