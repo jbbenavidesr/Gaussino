@@ -1,0 +1,21 @@
+!-----------------------------------------------------------------------------
+! Package     : Gen/LbCRMC
+! Responsible : Laure Massacrier, Dmitry Popov
+! Purpose     : LHCb SW interface to CRMC/EPOS
+!-----------------------------------------------------------------------------
+
+! 2016-04-18 - Gloria Corti
+ - Change version of crmc from 1.4 to 1.5.6
+
+! 2015-03-18 - Dmitry Popov
+ - Replaced the std::runtime_error exceptions with StatusCode returns/checks
+   to comply with Gaudi guidelines.
+
+! 2015-11-06 - Dmitry Popov
+ - Fixed the momenta setup of the colliding particles for the case when user
+   overrides value for only one particle.
+
+! Initial commit - Laure Massacrier
+  Package to interface epos with CRMC
+  Original code developed by Dimitry Popov.
+  Modifications by Laure Massacrier

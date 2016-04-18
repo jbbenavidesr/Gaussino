@@ -1,0 +1,54 @@
+#============================================================================
+# Created    : 2014-02-03
+# Maintainer : Dmitry.Popov@cern.ch
+#============================================================================
+package  LbCRMC
+version  v1r0
+
+
+# Structure, i.e. directories to process.
+#============================================================================
+#branches                      cmt doc src LbCRMC python
+branches                       LbCRMC python cmt doc src
+
+
+# Local include directory (not exported to project).
+#============================================================================
+include_dirs    $(LBCRMCROOT)
+
+
+# Used packages.
+#============================================================================
+use      crmc    v*    LCG_GeneratorsInterfaces
+use      Generators    v*     Gen
+
+
+# Component and linker library building rule
+#============================================================================
+library       LbCRMCLib    Lib/*.cpp Lib/*.F
+library       LbCRMC        component/*.cpp
+
+
+# Define component and linker library link options
+#============================================================================
+
+apply_pattern    component_library   library=LbCRMC
+apply_pattern    linker_library      library=LbCRMCLib
+apply_pattern    library_stamps      library=LbCRMCLib
+
+
+# Do not build on windows
+#============================================================================
+apply_pattern disable_package_on platform=target-winxp
+
+
+# ========================= Install configurable ============================
+#apply_pattern install_python_modules
+
+#-- CRMC/EPOS
+#============================================================================
+macro crmc_native_version "1.5.6"
+
+private
+macro_append ROOT_linkopts " -lMatrix"
+end_private
