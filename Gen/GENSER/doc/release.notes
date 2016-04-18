@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-04-18 - Gloria Corti
+ - Change the version of Rivet to 2.4.0 and introduce yoda with version 1.5.5
+   as needed by rivet.
+
 !========================== GENSER v16r1 2016-03-02 ==========================
 ! 2015-11-18 - Marco Clemencic
  - Disabled warnings for FORTRAN code.
