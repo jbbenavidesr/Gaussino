@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-04-19 - Gloria Corti
+ - Introduce macro to select version of crmc/epos, initially set to 1.5.6
+   (merged from v16b branch r205015)
+
 ! 2016-04-18 - Gloria Corti
  - Change the version of Rivet to 2.4.0 and introduce yoda with version 1.5.5
    as needed by rivet.
