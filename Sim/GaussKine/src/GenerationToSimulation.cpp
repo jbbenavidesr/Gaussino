@@ -40,6 +40,39 @@
 
 // Declaration of the Algorithm Factory.
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
+int GenerationToSimulation::printAncestors(HepMC::GenVertex* vertex,
+                                           int level) {
+  std::map<int, std::string> id_to_name;
+  id_to_name[0] = "Unknown";
+  id_to_name[1] = "StableInProdGen";
+  id_to_name[2] = "DecayedByProdGen";
+  id_to_name[3] = "DocumentationParticle";
+  id_to_name[777] = "DecayedByDecayGen";
+  id_to_name[888] = "DecayedByDecayGenAndProducedByProdGen";
+  id_to_name[889] = "SignalInLabFrame";
+  id_to_name[998] = "SignalAtRest";
+  id_to_name[999] = "StableInDecayGen";
+  std::string space = "";
+  for (int i = 0; i < level; i++) {
+    space += "|---> ";
+  }
+  level++;
+  auto out_begin = vertex->particles_out_const_begin();
+  auto out_end = vertex->particles_out_const_end();
+  for (; out_begin != out_end; out_begin++) {
+    auto p = *out_begin;
+    std::string idname = "";
+    if (id_to_name.find(p->status()) != id_to_name.end()) {
+      idname = id_to_name[p->status()];
+    }
+    debug() << space << p->pdg_id() << " -> " << p->status() << ": " << idname
+            << endmsg;
+    if (p->end_vertex()) {
+      printAncestors(p->end_vertex(), level);
+    }
+  }
+  return level;
+}
 
 void GenerationToSimulation::PurgeVertex(HepMC::GenVertex* vertex) {
   if (vertex == nullptr) return;
@@ -202,6 +235,7 @@ StatusCode GenerationToSimulation::execute() {
     if (m_selectiveSimulation == UESimulationStep) {
       auto sv = ev->signal_process_vertex();
       if (sv) {
+        printAncestors(ev->beam_particles().first->end_vertex());
         auto it = sv->particles_in_const_begin();
         auto itend = sv->particles_in_const_end();
         for (; it != itend; ++it) {

@@ -104,6 +104,7 @@ class GenerationToSimulation : public GaudiAlgorithm {
   std::vector<G4PrimaryParticle*> m_particlesToDelete;
 
   std::string m_keepCode;           ///< Code to keep additional particles.
+  int printAncestors(HepMC::GenVertex* vertex, int level=0);
   LoKi::GenTypes::GCut m_keepCuts;  ///< Cuts to keep additional particles.
 
   enum SelectiveSimulationStep {
