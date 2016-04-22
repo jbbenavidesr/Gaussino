@@ -4,6 +4,10 @@
 ! Purpose     :
 !-----------------------------------------------------------------------------
 
+! 2016-04-22 - Michal Kreps
+  - Implement new LQCD form factors for Lb --> L mu mu from paper
+    1602.01399. Old LQCD form factors are removed.
+
 !========================== EvtGen v14r6 2016-03-18 ==========================
 ! 2016-03-17 - John Back
   - Fixed incorrect spinor algebra used in S1 -> 1/2 S2, 1/2 -> S3 S4 decays
