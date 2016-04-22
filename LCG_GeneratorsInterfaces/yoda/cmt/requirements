@@ -8,7 +8,7 @@ version           v1r0
 use LCG_Configuration v*
 use LCG_Settings v*
 
-.ßmacro yoda_home $(LCG_external)/MCGenerators/yoda/$(yoda_native_version)/$(LCG_system)
+macro yoda_home $(LCG_external)/MCGenerators/yoda/$(yoda_native_version)/$(LCG_system)
  
 include_path none
 include_dirs $(yoda_home)/include
