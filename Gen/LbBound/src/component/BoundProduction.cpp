@@ -163,6 +163,7 @@ StatusCode BoundProduction::bindStates(HepMC::GenEvent *theEvent) {
   // TO-DO: implement the coalescence model or whatever physics
   // model(s) is chosen! The HepMC Doxygen is here:
   // http://lcgapp.cern.ch/project/simu/HepMC/206/html/
+  TLorentzVector test;
   return StatusCode::FAILURE;
 }
 

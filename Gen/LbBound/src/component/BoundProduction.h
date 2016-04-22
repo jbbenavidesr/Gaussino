@@ -5,6 +5,9 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "Generators/IProductionTool.h"
 
+// ROOT.
+#include "TLorentzVector.h"
+
 /** 
  * Production tool to generate bound states.
  *  

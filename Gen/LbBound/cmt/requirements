@@ -12,6 +12,7 @@ branches      doc cmt src
 # Used packages.
 #============================================================================
 use           Generators       v*    Gen
+use           ROOT             v*    LCG_Interfaces
 
 # Component library building rule.
 #============================================================================
@@ -20,3 +21,4 @@ library       LbBound          component/*.cpp
 # Define component and linker library link options.
 #============================================================================
 apply_pattern component_library library=LbBound
+apply_pattern library_Llinkopts library=Physics

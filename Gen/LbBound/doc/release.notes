@@ -4,6 +4,9 @@
 ! Purpose     : Production tool for deuterons
 !-----------------------------------------------------------------------------
 
+! 2016-04-22 - Philip Ilten
+ - Added in dependence on ROOT Physics library (for TLorentzVector).
+
 ! 2016-03-18 - Philip Ilten
  - Initial version, without any physics in yet
 !=============================================================================
