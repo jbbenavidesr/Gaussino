@@ -45,6 +45,6 @@ apply_pattern disable_package_on platform=target-winxp
 # ========================= Install configurable ============================
 #apply_pattern install_python_modules
 
-crmcprivate
+private
 macro_append ROOT_linkopts " -lMatrix"
 end_private
