@@ -2040,15 +2040,15 @@ class Gauss(LHCbConfigurableUser):
             raise RuntimeError( "Unknown particle type: %s"  % B1Particle ) 
         if ( B2Particle not in self.__ion_pdg_id__.keys() ):
             raise RuntimeError( "Unknown particle type: %s"  % B2Particle ) 
-        get_t0.MinimumBias.CRMCProduction.ProjectileID = self.__ion_pdg_id__[ B1Particle ] 
-        get_t0.MinimumBias.CRMCProduction.TargetID = self.__ion_pdg_id__[ B2Particle ] 
-        get_t0.MinimumBias.CRMCProduction.ProjectileMomentum = beamMom / SystemOfUnits.GeV
-        get_t0.MinimumBias.CRMCProduction.TargetMomentum = b2Mom / SystemOfUnits.GeV
+        gen_t0.MinimumBias.CRMCProduction.ProjectileID = self.__ion_pdg_id__[ B1Particle ] 
+        gen_t0.MinimumBias.CRMCProduction.TargetID = self.__ion_pdg_id__[ B2Particle ] 
+        gen_t0.MinimumBias.CRMCProduction.ProjectileMomentum = beamMom / SystemOfUnits.GeV
+        gen_t0.MinimumBias.CRMCProduction.TargetMomentum = b2Mom / SystemOfUnits.GeV
 
         ## Setup HIJING particle type
         if ( B1Particle != 'p' ):
             Zproj = str( self.__ion_pdg_id__[ B1Particle ] )[ 3:5 ]
-            Aproj = int( self.__ion_pdg_id__[ B1Particle ] )[ 6:8 ]
+            Aproj = str( self.__ion_pdg_id__[ B1Particle ] )[ 6:8 ]
             textOptionHijing = "hijinginit izp %s," % Zproj
             textOptionHijing+= "hijinginit iap %s," % Aproj
             textOptionHijing+= "hijinginit proj A,"
@@ -2058,7 +2058,7 @@ class Gauss(LHCbConfigurableUser):
             textOptionHijing+= "hijinginit proj P,"
         if ( B2Particle != 'p' ):
             Ztarg = str( self.__ion_pdg_id__[ B2Particle ] )[ 3:5 ]
-            Atarg = int( self.__ion_pdg_id__[ B2Particle ] )[ 6:8 ]
+            Atarg = str( self.__ion_pdg_id__[ B2Particle ] )[ 6:8 ]
             textOptionHijing+= "hijinginit izt %s," % Zproj
             textOptionHijing+= "hijinginit iat %s," % Aproj
             textOptionHijing+= "hijinginit targ A"
