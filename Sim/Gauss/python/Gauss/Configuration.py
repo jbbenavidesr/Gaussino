@@ -80,7 +80,8 @@ class Gauss(LHCbConfigurableUser):
     __used_configurables__ = [ LHCbApp, SimConf ]
 
     ## Map to contain PDG ids for beam particles
-    __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 } 
+    __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 , 'Kr': 1000360840 ,
+                       'Xe': 1000541320 } 
 
     ## Steering options
     __slots__ = {
