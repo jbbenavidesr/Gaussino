@@ -78,6 +78,9 @@ class Gauss(LHCbConfigurableUser):
     ## Possible used Configurables
     __used_configurables__ = [ LHCbApp, SimConf ]
 
+    ## Map to contain PDG ids for beam particles
+    __ion_pdg_id__ = { 'Pb': 100082080 , 'Ar': 1000180400 , 'p': 2212 } 
+
     ## Steering options
     __slots__ = {
         "Histograms"        : "DEFAULT"
@@ -116,6 +119,13 @@ class Gauss(LHCbConfigurableUser):
         #,"BeamPipe" : "BeamPipeOff"  # _beamPipeSwitch = 0
         #,"BeamPipe" : "BeamPipeInDet"  # _beamPipeSwitch = -1
         ,"RandomGenerator"   : 'Ranlux'
+        ## Add properties for fixed target and heavy ion simulation
+        ## energy of the beam 2 (beam 1 is taken from the BeamMomentum property
+        ## if this energy is 0, or if BeamMomentum is 0, it is fixed target simulation
+        , "B2Momentum" : 3.5*SystemOfUnits.TeV
+        ## type of particle in the beam or in the fixed target
+        , "B1Particle" : 'p'
+        , "B2Particle" : 'p'
       }
     
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
@@ -1983,7 +1993,9 @@ class Gauss(LHCbConfigurableUser):
         totCrossSection                = self.getProp("TotalCrossSection")
         meanX, meanY, meanZ            = self.getProp("InteractionPosition")
         sigmaS                         = self.getProp("BunchRMS")
-
+        b2Mom                          = self.getProp("B2Momentum")
+        B1Particle                     = self.getProp("B1Particle")
+        B2Particle                     = self.getProp("B2Particle")
 
         # Give beam parameters to GenInit algorithm
         genInit.CreateBeam              = True
@@ -2015,6 +2027,29 @@ class Gauss(LHCbConfigurableUser):
         gen_t0.addTool(MinimumBias,name="MinimumBias")
         gen_t0.MinimumBias.addTool(HijingProduction,name="HijingProduction")
         gen_t0.MinimumBias.HijingProduction.Commands += [ txtP ]
+
+
+        ## handle the information for HI generation (EPOS or HIJING)
+        ## Is it a fixed target generation ?
+        isFixedTarget = ( ( beamMom == 0. ) or (b2Mom == 0. ) )
+
+        ## Setup EPOS particle type
+        gen_t0.MinimumBias.addTool(CRMCProduction,name="CRMCProduction")
+        if ( B1Particle ) not in __ion_pdg__.keys():
+            raise RuntimeError( "Unknown particle type: %s"  % B1Particle ) 
+        if ( B2Particle ) not in __ion_pdg__.keys():
+            raise RuntimeError( "Unknown particle type: %s"  % B2Particle ) 
+        get_t0.MinimumBias.CRMCProduction.ProjectileID = __ion_pdg__[ B1Particle ] 
+        get_t0.MinimumBias.CRMCProduction.TargetID = __ion_pdg__[ B2Particle ] 
+        get_t0.MinimumBias.CRMCProduction.ProjectileMomentum = beamMom / SystemOfUnits.GeV
+        get_t0.MinimumBias.CRMCProduction.TargetMomentum = b2Mom / SystemOfUnits.GeV
+
+        ## Setup HIJING particle type
+        Zproj = str( __ion_pdg__[ B1Particle ] )[ 3:5 ]
+        Aproj = int( __ion_pdg__[ B1Particle ] )[ 6:8 ]
+        textOptionHijing = "hijinginit izp %s," % Zproj
+        textOptionHijing+= "hijinginit iap %s," % Aproj
+        
     #--For beam gas events (with hijing) only the energy of the beams is set
     ## end of functions to set beam paramters and propagate them
     ##########################################################################
