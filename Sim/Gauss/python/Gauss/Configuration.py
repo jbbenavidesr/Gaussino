@@ -22,6 +22,7 @@ from Configurables import ( GenInit, Generation, MinimumBias, Inclusive,
                             SignalForcedFragmentation, StandAloneDecayTool,
                             Special,
                             PythiaProduction, HijingProduction,
+                            CRMCProduction,
 # Not used
                             CollidingBeams, FixedTarget,
                             BeamSpotSmearVertex, FlatZSmearVertex,
