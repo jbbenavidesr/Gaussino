@@ -4,6 +4,10 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+! 2016-04-26 - Patrick Robbe
+ - Add options to Gauss configurable for the simulation of heavy-ion and
+   beam gas events. 
+
 !========================== Gauss v49r0 2016-03-29 ===========================
 ! 2016-03-29 - Gloria Corti
  - Update references for tests
