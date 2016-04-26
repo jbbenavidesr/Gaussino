@@ -2045,10 +2045,26 @@ class Gauss(LHCbConfigurableUser):
         get_t0.MinimumBias.CRMCProduction.TargetMomentum = b2Mom / SystemOfUnits.GeV
 
         ## Setup HIJING particle type
-        Zproj = str( __ion_pdg__[ B1Particle ] )[ 3:5 ]
-        Aproj = int( __ion_pdg__[ B1Particle ] )[ 6:8 ]
-        textOptionHijing = "hijinginit izp %s," % Zproj
-        textOptionHijing+= "hijinginit iap %s," % Aproj
+        if ( B1Particle != 'p' ):
+            Zproj = str( __ion_pdg__[ B1Particle ] )[ 3:5 ]
+            Aproj = int( __ion_pdg__[ B1Particle ] )[ 6:8 ]
+            textOptionHijing = "hijinginit izp %s," % Zproj
+            textOptionHijing+= "hijinginit iap %s," % Aproj
+            textOptionHijing+= "hijinginit proj A,"
+        else:
+            textOptionHijing = "hijinginit izp 1,"
+            textOptionHijing+= "hijinginit iap 1,"
+            textOptionHijing+= "hijinginit proj P,"
+        if ( B2Particle != 'p' ):
+            Ztarg = str( __ion_pdg__[ B2Particle ] )[ 3:5 ]
+            Atarg = int( __ion_pdg__[ B2Particle ] )[ 6:8 ]
+            textOptionHijing+= "hijinginit izt %s," % Zproj
+            textOptionHijing+= "hijinginit iat %s," % Aproj
+            textOptionHijing+= "hijinginit targ A"
+        else:
+            textOptionHijing+= "hijinginit izt 1,"
+            textOptionHijing+= "hijinginit iat 1,"
+            textOptionHijing+= "hijinginit targ P"
         
     #--For beam gas events (with hijing) only the energy of the beams is set
     ## end of functions to set beam paramters and propagate them
