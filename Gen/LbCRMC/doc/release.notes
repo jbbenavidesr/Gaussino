@@ -4,6 +4,9 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-04-26 - Patrick Robbe
+ - Add default option (EPOY.py) and CRMC option file
+
 ! 2016-04-19 - Gloria Corti
  - Remove macro crmc_native_version that has been moved to Gen/GENSER
 
