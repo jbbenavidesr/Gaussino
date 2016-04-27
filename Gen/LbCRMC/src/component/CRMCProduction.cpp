@@ -475,6 +475,13 @@ void CRMCProduction::printOutGeneratorConfiguration() {
   std::cout << " Projectile id and momentum: " << m_projectileID << " (id), " << m_projectileMomentum << " (GeV)" << std::endl;
   std::cout << " Target id and momentum: " << m_targetID << " (id), " << m_targetMomentum << " (GeV)" << std::endl;
 
+  double m_proton = 0.938272046;
+  double eTarget = TMath::Sqrt(m_targetMomentum*m_targetMomentum + TMath::Power(m_proton,2));
+  double eProjectile = TMath::Sqrt(m_projectileMomentum*m_projectileMomentum + TMath::Power(m_proton,2));
+  double fSqrts = TMath::Sqrt(TMath::Power(eTarget+eProjectile,2)-TMath::Power(m_targetMomentum+m_projectileMomentum,2));
+
+  std::cout << " Nucleon-Nucleon center-of-mass energy: " << fSqrts << " (GeV)" << std::endl;
+
   // Boost and rotation
   std::cout << " Apply boost and rotation: ";
   if (m_boostAndRotate)
@@ -489,7 +496,7 @@ void CRMCProduction::printOutGeneratorConfiguration() {
   else
   std::cout << "YES" << std::endl;*/
 
-  std::cout << " Minimum decay length (ignore if using a custom config file): " << m_minDecayLength << std::endl;
+  // std::cout << " Minimum decay length (ignore if using a custom config file): " << m_minDecayLength << std::endl;
   std::cout << " Configuration file: " << m_paramFileName << std::endl;
   std::cout << "_____________________________________________________________________________" << std::endl << std::endl;
 }

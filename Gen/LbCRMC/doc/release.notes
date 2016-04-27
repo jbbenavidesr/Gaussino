@@ -4,8 +4,11 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-04-27 - Laure Massacrier
+ - Add calculation and printing of the center of mass energy to check the configuration infos in CRMCProduction.cpp
+
 ! 2016-04-26 - Patrick Robbe
- - Add default option (EPOY.py) and CRMC option file
+ - Add default option (EPOS.py) and CRMC option file
 
 ! 2016-04-19 - Gloria Corti
  - Remove macro crmc_native_version that has been moved to Gen/GENSER
@@ -13,13 +16,41 @@
 ! 2016-04-18 - Gloria Corti
  - Change version of crmc from 1.4 to 1.5.6
 
-! 2015-03-18 - Dmitry Popov
+! 2016-03-18 - Laure Massacrier
+ - Fix division by A in BoostAndRotate function + possibility to produce tables in Epos
+
+! 2016-03-18 - Dmitry Popov
  - Replaced the std::runtime_error exceptions with StatusCode returns/checks
    to comply with Gaudi guidelines.
+
+! 2016-02-10 - Laure Massacrier
+  - First version of the filling of HepMC files for EPOS
+
+! 2016-01-28 - Laure Massacrier
+  - Add Class to read Hadr25 epos common Block
+
+! 2016-01-27 - Laure Massacrier
+  - Add Class to read common block Appli, Drop7 and Othe1
+
+! 2016-01-23 - Laure Massacrier
+  - Fix in the variable type from Fortran to C++
+  - Add classes to read the Accum and Nucl1 epos common blocks
+
+! 2015-11-28 - Laure Massacrier
+ - Add some changes to CRMCProduction.cpp to remove truncation of events
 
 ! 2015-11-06 - Dmitry Popov
  - Fixed the momenta setup of the colliding particles for the case when user
    overrides value for only one particle.
+
+! 2015-10-31 - Laure Massacrier
+ - New class Hadr5.cpp/.F to access Hadr5 epos common block
+
+! 2015-10-30 - Laure Massacrier
+ - New class added in LbCRMC and cleaning of old classes
+
+! 2015-10-22 - Laure Massacrier
+ - Adding some comments in CRMCProduction.cpp
 
 ! Initial commit - Laure Massacrier
   Package to interface epos with CRMC
