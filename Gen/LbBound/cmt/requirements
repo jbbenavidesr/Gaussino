@@ -12,7 +12,7 @@ branches      doc cmt src
 # Used packages.
 #============================================================================
 use           Generators       v*    Gen
-use           ROOT             v*    LCG_Interfaces
+use           ROOT             v*    LCG_Interfaces  -no_auto_imports
 
 # Component library building rule.
 #============================================================================
