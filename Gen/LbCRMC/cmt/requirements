@@ -45,9 +45,6 @@ apply_pattern disable_package_on platform=target-winxp
 # ========================= Install configurable ============================
 #apply_pattern install_python_modules
 
-#-- CRMC/EPOS
-#============================================================================
-macro crmc_native_version "1.5.6"
 
 private
 macro_append ROOT_linkopts " -lMatrix"
