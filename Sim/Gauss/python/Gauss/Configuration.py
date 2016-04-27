@@ -2062,11 +2062,21 @@ class Gauss(LHCbConfigurableUser):
             Atarg = str( self.__ion_pdg_id__[ B2Particle ] )[ 6:8 ]
             textOptionHijing+= "hijinginit izt %s," % Zproj
             textOptionHijing+= "hijinginit iat %s," % Aproj
-            textOptionHijing+= "hijinginit targ A"
+            textOptionHijing+= "hijinginit targ A,"
         else:
             textOptionHijing+= "hijinginit izt 1,"
             textOptionHijing+= "hijinginit iat 1,"
-            textOptionHijing+= "hijinginit targ P"
+            textOptionHijing+= "hijinginit targ P,"
+
+        if isFixedTarget:
+            textOptionHijing+= "hijinginit frame LAB,"
+            if ( beamMom == 0 ):
+                textOptionHijing+= "hijinginit beam2"
+            else:
+                textOptionHijing+= "hijinginit beam1"
+        else:
+            textOptionHijing+= "hijinginit frame CMS"
+        gen_t0.MinimumBias.HijingProduction.Commands += [ textOptionHijing ]
         
     #--For beam gas events (with hijing) only the energy of the beams is set
     ## end of functions to set beam paramters and propagate them
