@@ -29,6 +29,7 @@ use rivet               v79r0p1 LCG_GeneratorsInterfaces
 use alpgen              v79r0p1 LCG_GeneratorsInterfaces
 use hijing              v79r0p1 LCG_GeneratorsInterfaces
 use powhegbox           v79r0p1 LCG_GeneratorsInterfaces
+use crmc                v79r0p1 LCG_GeneratorsInterfaces
 
 # Generator packages: Basic configuration
 use GenCuts             v3r13   Gen
@@ -54,8 +55,9 @@ use LbHidValley         v4r1    Gen
 use LbOniaPairs         v2r1p2  Gen
 use LbPowheg            v4r0    Gen
 
-# Generators packages: alternative for p-A collisions
+# Generators packages: alternative for p-A & A-A collisions
 use LbHijing            v10r0p2 Gen
+use LbCRMC              v1r0    Gen
 
 # Generators packages: LHCb sampling results for Machine Induced Background
 use LbMIB               v7r0p2  Gen
