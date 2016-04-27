@@ -2060,8 +2060,8 @@ class Gauss(LHCbConfigurableUser):
         if ( B2Particle != 'p' ):
             Ztarg = str( self.__ion_pdg_id__[ B2Particle ] )[ 3:5 ]
             Atarg = str( self.__ion_pdg_id__[ B2Particle ] )[ 6:8 ]
-            textOptionHijing+= "hijinginit izt %s," % Zproj
-            textOptionHijing+= "hijinginit iat %s," % Aproj
+            textOptionHijing+= "hijinginit izt %s," % Ztarg
+            textOptionHijing+= "hijinginit iat %s," % Atarg
             textOptionHijing+= "hijinginit targ A,"
         else:
             textOptionHijing+= "hijinginit izt 1,"
