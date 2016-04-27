@@ -92,7 +92,7 @@ ifastjet="${fastjetHome}/include"
 test -n "$ifastjet" && mycppflags="$mycppflags -I${ifastjet}"
 igsl="${gslHome}/include"
 test -n "$igsl" && mycppflags="$mycppflags -I${igsl}"
-iboost="$(readlink -f $(cmt show macro_value Boost_home))/include/boost-1_55"
+iboost="$(readlink -f $(cmt show macro_value Boost_home))/include/boost-$(cmt show macro_value Boost_file_version)"
 ifastjet="$(readlink -f $(cmt show macro_value fastjet_home))/include"
 test -n "$iboost" && mycppflags="$mycppflags -I${iboost}"
 
