@@ -1004,7 +1004,7 @@ HepMC::GenEvent* CRMCProduction::FillHepMC(HepMC::GenEvent *theEvent) {
      bpart[0]->set_pdg_id(id);
      bpart[0]->set_momentum(HepMC::FourVector(0.0, 0.0, pprojin,TMath::Sqrt((TMath::Power(pprojin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
      bpart[0]->set_generated_mass((double)(amass)); 
-     bpart[0]->set_status(4); //in HepMC, beam particle status = 4
+     bpart[0]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
      bpart[0]->suggest_barcode(1);
      //main vertex is at (0,0,0)
      vertex->add_particle_in(bpart[0]);
@@ -1023,7 +1023,7 @@ HepMC::GenEvent* CRMCProduction::FillHepMC(HepMC::GenEvent *theEvent) {
      bpart[1]->set_pdg_id(id);
      bpart[1]->set_momentum(HepMC::FourVector(0.0, 0.0, ptargin,TMath::Sqrt((TMath::Power(ptargin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
      bpart[1]->set_generated_mass((double)(amass)); 
-     bpart[1]->set_status(4); //in HepMC, beam particle status = 4
+     bpart[1]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
      bpart[1]->suggest_barcode(2);
      //main vertex is at (0,0,0)
      vertex->add_particle_in(bpart[1]);

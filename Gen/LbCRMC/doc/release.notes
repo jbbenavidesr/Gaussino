@@ -6,6 +6,7 @@
 
 ! 2016-04-27 - Laure Massacrier
  - Add calculation and printing of the center of mass energy to check the configuration infos in CRMCProduction.cpp
+ - Fix status of beam particles to 3 while filling HepMC event so that beam particles are ignored by EvtGen
 
 ! 2016-04-26 - Patrick Robbe
  - Add default option (EPOS.py) and CRMC option file
