@@ -1,6 +1,6 @@
 #============================================================================
-# Created    : 2003-01-24
-# Maintainer : Gloria Corti
+# Created    : 2016-03-24
+# Maintainer : Dominik Muller
 #============================================================================
 package GaussRedecay
 version v1r0
@@ -17,6 +17,8 @@ use PhysEvent     * Event
 use GaussTools    v* Sim
 use GenEvent      v*  Event
 use GaussTools    v*  Sim
+use G4physics_lists    v*       Geant4
+use G4LHCblists        v*       Geant4
 use Generators     v*      Gen
 use LoKiGen       v*  Phys
 use SimComponents v*  Sim

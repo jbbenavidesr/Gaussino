@@ -57,6 +57,7 @@ from Configurables import ( PackMCParticle, PackMCVertex,
 from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
                             GaussRedecayCtrFilter,
+                           GaussRedecaySorter,
                             GaussRedecaySignalDecay,
                            GaussRedecayPrintMCParticles,
                            GaussRedecayMergeAndClean)
@@ -2196,14 +2197,16 @@ class Gauss(LHCbConfigurableUser):
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
             gaussrdfilter = GaussRedecayCtrFilter('RegisterNewEvent')
             gaussrdfilter.RegisterNewEvent = True
-            genSequence.Members += [ genInit, gaussrdfilter, genProc ]
-            genSequence.Members += [ genInit, GaussRDCtrFilter(), genProc ]
+            genSequence.Members += [ genInit ]
             # When HC simulation is switched on the very forward protons must be
             # removed from the HepMC record since they cause showers in it
             if 'HC' in self.getProp('DetectorSim')['Detectors']:
                 genMask = MaskParticles("MaskDiffractiveProton"+slot,
                                         HepMCEventLocation = TESNode+"Gen/HepMCEvents")
                 genSequence.Members += [genMask]
+
+            genSequence.Members += [ gaussrdfilter, genProc,
+                                    GaussRedecaySorter() ]
 
     ## end of Gen configuration
     ##########################################################################
@@ -3484,7 +3487,7 @@ class Gauss(LHCbConfigurableUser):
         else:
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
 
-        gmpl.PhysicsConstructors.append("GiGaRDTagParticle")
+        # gmpl.PhysicsConstructors.append("GiGaRDTagParticle")
 
         ## --- LHCb specific physics:
         if  (lhcbPhys == True):

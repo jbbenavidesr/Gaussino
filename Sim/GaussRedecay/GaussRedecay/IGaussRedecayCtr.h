@@ -48,8 +48,24 @@ class IGaussRedecayCtr : virtual public IService {
   virtual bool registerNewEvent() = 0;
   virtual size_t numberOfRedecays() const = 0;
 
-  virtual int whatShouldIDo() const = 0;
+  /** Returns the phase of the redecay flow.
+   * 0: Nominal simulation
+   * 1: Generating a full new event
+   * 2: Doing the signal (re)decay right now
+   *
+   *  @return int
+   */
+  virtual int getPhase() const = 0;
   virtual void setPhase(int p) = 0;
+
+  /** Returns the redecay mode, used by the sorter
+   * to decide what should be redecayed.
+   * 0: Redecay signal only.
+   * 1: Redecay everything of at least the signal mass.
+   *
+   *  @return int
+   */
+  virtual int getRedecayMode() const = 0;
 
   protected:
   /// virtual destructor
@@ -58,6 +74,4 @@ class IGaussRedecayCtr : virtual public IService {
   private:
 };
 
-// ============================================================================
-#endif  ///< GIGA_GIGASVC_H
-// ============================================================================
+#endif

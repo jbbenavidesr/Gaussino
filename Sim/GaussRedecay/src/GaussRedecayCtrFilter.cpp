@@ -74,13 +74,13 @@ StatusCode GaussRedecayCtrFilter::execute() {
   if (m_registerNewEvent) {
     if (gaussRDSvc()->registerNewEvent()) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -93,15 +93,15 @@ StatusCode GaussRedecayCtrFilter::execute() {
     if (msgLevel(MSG::DEBUG)) {
       debug() << "Checking if GaussRedecay phase is " << m_isPhase << endmsg;
     }
-    if (gaussRDSvc()->whatShouldIDo() == m_isPhase) {
+    if (gaussRDSvc()->getPhase() == m_isPhase) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -113,15 +113,15 @@ StatusCode GaussRedecayCtrFilter::execute() {
     if (msgLevel(MSG::DEBUG)) {
       debug() << "Checking if GaussRedecay phase is not " << m_isPhaseNot << endmsg;
     }
-    if (gaussRDSvc()->whatShouldIDo() != m_isPhaseNot) {
+    if (gaussRDSvc()->getPhase() != m_isPhaseNot) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->whatShouldIDo() << endmsg;
+        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -130,7 +130,7 @@ StatusCode GaussRedecayCtrFilter::execute() {
 
   // Lastly, set the phase to a new value if required!
 
-  if (m_setPhase > -1 && gaussRDSvc()->whatShouldIDo() != 0) {
+  if (m_setPhase > -1 && gaussRDSvc()->getPhase() != 0) {
     if (msgLevel(MSG::DEBUG)) {
       debug() << "Setting GaussRedecay phase to " << m_setPhase << endmsg;
     }

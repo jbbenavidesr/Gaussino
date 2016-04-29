@@ -107,9 +107,9 @@ StatusCode GaussRedecayRetrieveFromService::execute() {
     return Error(" execute(): IGaussRedecayCtr* points to NULL");
   }
 
-  if (gaussRDCtrSvc()->whatShouldIDo() != 2) {
+  if (gaussRDCtrSvc()->getPhase() != 2) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "GaussRedecay phase=" << gaussRDCtrSvc()->whatShouldIDo()
+      debug() << "GaussRedecay phase=" << gaussRDCtrSvc()->getPhase()
               << " not 2, skipping retrieval." << endmsg;
     }
     return StatusCode::SUCCESS;

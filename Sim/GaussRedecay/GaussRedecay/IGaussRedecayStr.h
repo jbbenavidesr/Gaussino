@@ -53,6 +53,21 @@ class IGaussRedecayStr : virtual public IService {
   virtual StatusCode finalize() = 0;
 
   public:
+  struct Particle{
+    int pdg_id = 0;
+    Gaudi::LorentzVector momentum;
+    Gaudi::XYZTPoint point;
+  };
+  static const int PlaceholderPDGID = 424242;
+
+  /** Function to register a particle for the redecay, returns
+   * a temp particle ID which can be used to tag the particle.
+   *
+   *  @param Particle struct holding the necessary information
+   *  @return int temp particle id unique for this Particle
+   */
+  virtual int registerForRedecay(Particle part) = 0;
+
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.
    *  Necessary as e.g. MCHits are stored seperately for

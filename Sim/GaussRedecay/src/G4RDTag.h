@@ -8,6 +8,7 @@
 // GEANT4
 // ============================================================================
 #include "G4ParticleDefinition.hh"
+#include <map>
 // ============================================================================
 /** @class G4RDTAG
  *  Particle able to be tracked by Geant4 but does absolutely nothing, inspired
@@ -19,13 +20,13 @@
 class G4RDTag : public G4ParticleDefinition {
   public:
   virtual ~G4RDTag();  // virtual desctructor
-  static G4RDTag* Definition();
-  static G4RDTag* RDTagDefinition();
-  static G4RDTag* RDTag();
+  static G4RDTag* Definition(int pdg_id=default_pdg_id);
+  static G4ParticleDefinition* make_definition(int pdg_id=default_pdg_id);
 
   private:
   G4RDTag() {}
-  static G4RDTag* theInstance;
+  static std::map<int,G4RDTag*> m_pdg_to_object;
+  static const int default_pdg_id = 424242;
 };
 
 #endif

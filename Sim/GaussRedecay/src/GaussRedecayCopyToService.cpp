@@ -106,9 +106,9 @@ StatusCode GaussRedecayCopyToService::execute() {
   if (nullptr == m_gaussRDStrSvc) {
     return Error(" execute(): IGaussRedecayStr* points to NULL");
   }
-  if (m_gaussRDCtrSvc->whatShouldIDo() != 1) {
+  if (m_gaussRDCtrSvc->getPhase() != 1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "GaussRedecay phase: " << m_gaussRDCtrSvc->whatShouldIDo()
+      debug() << "GaussRedecay phase: " << m_gaussRDCtrSvc->getPhase()
               << ". Skipping..." << endmsg;
     }
   } else {

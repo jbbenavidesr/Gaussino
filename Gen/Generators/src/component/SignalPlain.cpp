@@ -14,6 +14,7 @@
 // Kernel
 #include "MCInterfaces/IGenCutTool.h"
 #include "MCInterfaces/IDecayTool.h"
+#include "LoKi/PrintHepMCDecay.h"
 
 // from Generators
 #include "Generators/IProductionTool.h"
@@ -71,9 +72,19 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;
       if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
+        debug() << "Signals found: " << endmsg;
+        for(auto & p:theParticleList){
+          debug() << p->pdg_id() << " with ";
+          auto ev = p->end_vertex();
+          if(ev){
+            debug() << ev->particles_out_size() << " children.";
+          }
+          debug() << endmsg;
+        }
 
         // establish correct multiplicity of signal
         if ( ensureMultiplicity( theParticleList.size() ) ) {
+          debug() << "Passed multiplicity check." << endmsg;
 
           // choose randomly one particle and force the decay
           hasFlipped = false ;
@@ -86,6 +97,16 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
             Error( "Skip event" ) ;
             return false ;
           }
+          debug() << "Begin after chooseAndRevert." << endmsg;
+          for(auto & p:theParticleList){
+            debug() << p->pdg_id() << " with ";
+            auto ev = p->end_vertex();
+            if(ev){
+              debug() << ev->particles_out_size() << " children.";
+            }
+            debug() << endmsg;
+          }
+          debug() << "End after chooseAndRevert." << endmsg;
 
           theParticleList.clear() ;
           theParticleList.push_back( theSignal ) ;
