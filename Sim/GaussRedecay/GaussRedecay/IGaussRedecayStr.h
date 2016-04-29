@@ -67,6 +67,7 @@ class IGaussRedecayStr : virtual public IService {
    *  @return int temp particle id unique for this Particle
    */
   virtual int registerForRedecay(Particle part) = 0;
+  virtual std::map<int, Particle>* getRegisteredForRedecay() = 0;
 
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.
@@ -78,13 +79,6 @@ class IGaussRedecayStr : virtual public IService {
    */
   virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) = 0;
   virtual LHCb::MCParticles* getClonedMCPs() = 0;
-
-  virtual void setSignalMomentum(const Gaudi::LorentzVector& mom) = 0;
-  virtual void setSignalOrigin(const Gaudi::XYZTPoint& point) = 0;
-  virtual void setSignalID(int id) = 0;
-  virtual Gaudi::LorentzVector getSignalMomentum() = 0;
-  virtual Gaudi::XYZTPoint getSignalOrigin() = 0;
-  virtual int getSignalID() = 0;
 
   virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) = 0;
   virtual LHCb::MCVertices* getClonedMCVs() = 0;

@@ -58,7 +58,6 @@ from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
                             GaussRedecayCtrFilter,
                            GaussRedecaySorter,
-                            GaussRedecaySignalDecay,
                            GaussRedecayPrintMCParticles,
                            GaussRedecayMergeAndClean)
 
@@ -2787,19 +2786,18 @@ class Gauss(LHCbConfigurableUser):
             TESNode = "/Event/"+self.slot_(slot)+"Signal/"
             simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
             simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
-            sdh = SimInit('SignalDummyHeader')
-            sdh.MCHeader = 'Signal/MC/Header'
+            gdh = GenInit('SignalDummyGenHeader')
+            sdh = SimInit('SignalDummyMCHeader')
             grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
             grdfilter.IsPhaseNotEqual = 0
             simSlotSignal.Members += [ grdfilter]
+            simSlotSignal.Members += [ gdh]
             simSlotSignal.Members += [ sdh]
-            simSlotSignal.Members += [GaussRedecaySignalDecay()]
-            GaussRedecaySignalDecay().HepMCEventLocation = 'Signal/Gen/HepMCEvents'
-            GaussRedecaySignalDecay().GenCollisionLocation= 'Signal/Gen/Collisions'
+            simSlotSignal.Members += [Generation("GenerationSignal")]
             simSlotSignal.Members += [simSlotSignalSeq]
             simSeq.Members += [simSlotSignal]
 
-            simSlotSignalSeq.RootInTES = '{}Signal'.format(slot)
+            simSlotSignal.RootInTES = '{}Signal'.format(slot)
 
             genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
                                                LookForUnknownParticles = True )

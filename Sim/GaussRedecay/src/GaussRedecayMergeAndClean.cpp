@@ -212,7 +212,7 @@ StatusCode GaussRedecayMergeAndClean::execute() {
 LHCb::MCVertex* GaussRedecayMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
                                                  LHCb::MCParticles* parts) {
   std::vector<LHCb::MCVertex*> matched_vertices;
-  auto signal_vertex_position = m_gaussRDStrSvc->getSignalOrigin();
+  /*auto signal_vertex_position = m_gaussRDStrSvc->getSignalOrigin();*/
   /*
    * Option 1: Find the placeholder.
    */
@@ -229,61 +229,61 @@ LHCb::MCVertex* GaussRedecayMergeAndClean::findVertex(LHCb::MCVertices* vtxs,
   /*
    * Option 1-3: Position matched vertices
    */
-  for (auto& vtx : *vtxs) {
-    auto vtx_position = vtx->position();
-    bool equ_d = true;
-    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
-                         signal_vertex_position.X(), vtx_position.X());
-    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
-                         signal_vertex_position.Y(), vtx_position.Y());
-    equ_d = equ_d && LHCb::Math::knuth_equal_to_double(
-                         signal_vertex_position.Z(), vtx_position.Z());
-    if (!equ_d) {
-      continue;
-    }
-    // Only consider real vertices, not Geant4 interaction stuff
-    if (vtx->type() == 0 || vtx->type() >= 100) {
-      continue;
-    }
+  /*for (auto& vtx : *vtxs) {*/
+    /*auto vtx_position = vtx->position();*/
+    /*bool equ_d = true;*/
+    /*equ_d = equ_d && LHCb::Math::knuth_equal_to_double(*/
+                         /*signal_vertex_position.X(), vtx_position.X());*/
+    /*equ_d = equ_d && LHCb::Math::knuth_equal_to_double(*/
+                         /*signal_vertex_position.Y(), vtx_position.Y());*/
+    /*equ_d = equ_d && LHCb::Math::knuth_equal_to_double(*/
+                         /*signal_vertex_position.Z(), vtx_position.Z());*/
+    /*if (!equ_d) {*/
+      /*continue;*/
+    /*}*/
+    /*// Only consider real vertices, not Geant4 interaction stuff*/
+    /*if (vtx->type() == 0 || vtx->type() >= 100) {*/
+      /*continue;*/
+    /*}*/
 
-    matched_vertices.push_back(vtx);
-  }
+    /*matched_vertices.push_back(vtx);*/
+  /*}*/
 
   /*
    * Option 2: Position matched vertex
    */
-  if (matched_vertices.size() == 1) {
-    warning() << "Returning position matched vertex." << endmsg;
-    return *begin(matched_vertices);
-  }
+  /*if (matched_vertices.size() == 1) {*/
+    /*warning() << "Returning position matched vertex." << endmsg;*/
+    /*return *begin(matched_vertices);*/
+  /*}*/
 
   /*
    * Option 3: First position matched vertex
    */
-  if (matched_vertices.size() > 1) {
-    if (msgLevel(MSG::DEBUG)) {
-      warning() << "Multiple position matched vertices, returning first vertex."
-                << endmsg;
-    }
-    return *begin(matched_vertices);
-  }
+  /*if (matched_vertices.size() > 1) {*/
+    /*if (msgLevel(MSG::DEBUG)) {*/
+      /*warning() << "Multiple position matched vertices, returning first vertex."*/
+                /*<< endmsg;*/
+    /*}*/
+    /*return *begin(matched_vertices);*/
+  /*}*/
 
   /*
    * Option 4: Creating a new vertex
    */
-  if (matched_vertices.size() == 0) {
-    if (msgLevel(MSG::DEBUG)) {
-      warning() << "Could not find vertex. That is not normal." << endmsg;
-      warning() << "Creating a new one." << endmsg;
-    }
-    auto vertex = new LHCb::MCVertex();
-    vertex->setTime(signal_vertex_position.T());
-    vertex->setPosition(Gaudi::XYZPoint(signal_vertex_position.x(),
-                                        signal_vertex_position.y(),
-                                        signal_vertex_position.z()));
-    vtxs->insert(vertex);
-    return vertex;
-  }
+  /*if (matched_vertices.size() == 0) {*/
+    /*if (msgLevel(MSG::DEBUG)) {*/
+      /*warning() << "Could not find vertex. That is not normal." << endmsg;*/
+      /*warning() << "Creating a new one." << endmsg;*/
+    /*}*/
+    /*auto vertex = new LHCb::MCVertex();*/
+    /*vertex->setTime(signal_vertex_position.T());*/
+    /*vertex->setPosition(Gaudi::XYZPoint(signal_vertex_position.x(),*/
+                                        /*signal_vertex_position.y(),*/
+                                        /*signal_vertex_position.z()));*/
+    /*vtxs->insert(vertex);*/
+    /*return vertex;*/
+  /*}*/
   return nullptr;  // should not get here but it insists on a warning otherwise ..
 }
 

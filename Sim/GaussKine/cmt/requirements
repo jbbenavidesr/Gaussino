@@ -20,13 +20,9 @@ include_path      none
 #============================================================================
 use   GenEvent      v*  Event
 use   MCEvent       v*  Event
-use   PhysEvent     * Event
 use   GaussTools    v*  Sim
-use   GaussRedecay       v*  Sim
 use   LoKiGen       v*  Phys
 use   SimComponents v*  Sim
-use G4physics_lists    v*	Geant4  
-use G4LHCblists        v*	Geant4  
 
 #============================================================================
 # Component library building rule

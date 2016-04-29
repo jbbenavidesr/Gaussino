@@ -77,6 +77,7 @@ class GaussRedecay : public Service,
   // Implementation of the storage interface IGaussRedecayStr
 
   virtual int registerForRedecay(Particle part) override;
+  virtual std::map<int, Particle> *getRegisteredForRedecay() override {return &m_sig_map;};
   /** Registers a new event, returns false if the UD is already simulated and
    * should be reused.
    *  Returns true if everything needs to be redone and deletes the internal
@@ -86,19 +87,6 @@ class GaussRedecay : public Service,
    */
 
   virtual bool registerNewEvent() override;
-
-  virtual void setSignalMomentum(const Gaudi::LorentzVector& mom) override {
-    m_sig_mom = mom;
-  }
-  virtual void setSignalOrigin(const Gaudi::XYZTPoint& point) override {
-    m_sig_point = point;
-  }
-  virtual void setSignalID(int id) override { m_sig_id = id; }
-  virtual Gaudi::LorentzVector getSignalMomentum() override {
-    return m_sig_mom;
-  }
-  virtual Gaudi::XYZTPoint getSignalOrigin() override { return m_sig_point; }
-  virtual int getSignalID() override { return m_sig_id; }
 
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.
