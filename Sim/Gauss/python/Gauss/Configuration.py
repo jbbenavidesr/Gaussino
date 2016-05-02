@@ -57,9 +57,9 @@ from Configurables import ( PackMCParticle, PackMCVertex,
 from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
                             GaussRedecayCtrFilter,
-                           GaussRedecaySorter,
-                           GaussRedecayPrintMCParticles,
-                           GaussRedecayMergeAndClean)
+                            GaussRedecaySorter,
+                            GaussRedecayPrintMCParticles,
+                            GaussRedecayMergeAndClean)
 
 from Configurables import StoreExplorerAlg
 
@@ -2774,6 +2774,7 @@ class Gauss(LHCbConfigurableUser):
             detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotFullSeq.Members += [ detHits ]
             simSlotFullSeq.Members += [ GaussRedecayCopyToService() ]
+            simSlotFullSeq.Members += [ GaussRedecayPrintMCParticles('AfterMain') ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
             configuredRichSim = [ False ]
@@ -2787,6 +2788,7 @@ class Gauss(LHCbConfigurableUser):
             simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
             simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
             gdh = GenInit('SignalDummyGenHeader')
+            self.setBeamParameters(self.defineCrossingList(), gdh)
             sdh = SimInit('SignalDummyMCHeader')
             grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
             grdfilter.IsPhaseNotEqual = 0
@@ -2812,6 +2814,7 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
             simSlotSignalSeq.Members += [ detHits ]
+            simSlotSignalSeq.Members += [ GaussRedecayPrintMCParticles('AfterSignal') ]
 
             configuredRichSim = [ False ]
             for det in self.getProp('DetectorSim')['Detectors']:
@@ -2825,8 +2828,7 @@ class Gauss(LHCbConfigurableUser):
             grdfilter.IsPhaseEqual = 2
             loadSlotSeq.Members += [
                 grdfilter,
-                GaussRedecayRetrieveFromService(),
-                StoreExplorerAlg('BeforeMerge')]
+                GaussRedecayRetrieveFromService()]
             simSeq.Members += [loadSlotSeq]
             grdfilter = GaussRedecayCtrFilter('CheckIfMerge')
             grdfilter.IsPhaseNotEqual = 0
@@ -2834,6 +2836,7 @@ class Gauss(LHCbConfigurableUser):
             GaussRedecayMergeAndClean().MCHitsLocation = GaussRedecayCopyToService().MCHitsLocation
             GaussRedecayMergeAndClean().MCCaloHitsLocation = GaussRedecayCopyToService().MCCaloHitsLocation
             mergeSlotSeq.Members += [
+                StoreExplorerAlg('BeforeMerge'),
                 grdfilter,
                 GaussRedecayMergeAndClean(),
                 StoreExplorerAlg('AfterMerge')]

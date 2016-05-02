@@ -74,8 +74,8 @@ bool SignalPlain::generate(const unsigned int nPileUp,
               printChildren(p);
             }
           }
-        }
         debug() << "-----------------------------------------" << endmsg;
+        }
       }
       debug() << "=========================================" << endmsg;
     }

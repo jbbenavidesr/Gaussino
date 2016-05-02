@@ -145,6 +145,14 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
   /*Now store it, delete the daugthers and replace the pdg id with the
    * placeholder.*/
   auto new_id = m_gaussRDStrSvc->registerForRedecay(temp_str_part);
+  if (msgLevel(MSG::DEBUG)) {
+    auto mom = Gaudi::LorentzVector(part->momentum());
+    debug() << "Stored particle for PDG ID " << part->pdg_id()
+            << " with placeholder ID" << new_id << endmsg;
+    debug() << "#### Momentum (PT, Eta, Phi, E) = (" << mom.pt() << ", "
+            << mom.eta() << ", " << mom.phi() << ", " << mom.E() << ")"
+            << endmsg;
+  }
   HepMCUtils::RemoveDaughters(part);
   part->set_pdg_id(new_id);
 }
@@ -199,7 +207,7 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
   }
   std::set<HepMC::GenParticle*> selected_heavy_stuff;
   for (auto& part : heavy_stuff) {
-    if(part->status() == 1042){
+    if (part->status() == 1042) {
       selected_heavy_stuff.insert(part);
     }
   }

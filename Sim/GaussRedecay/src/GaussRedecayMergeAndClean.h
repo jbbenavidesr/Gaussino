@@ -7,7 +7,13 @@
 #include <utility>
 #include "Event/MCVertex.h"
 
+class MCCloner;
 class IGaussRedecayStr;
+namespace LHCb {
+class MCVertex;
+class MCParticle;
+}
+
 
 /** @class GaussRedecayMergeAndClean GaussRedecayMergeAndClean.h
  *
@@ -32,19 +38,18 @@ class GaussRedecayMergeAndClean : public GaudiAlgorithm {
    *  @return pointer to GaussRedecay Service
    */
   private:
-  /*
-   *Function to find the correct signal vertex in the list of mc vertices.
-   *Multiple options are tried, returning if they are successful in the
-   *following order:
-   * 1. Find the placeholder 424242 particle
-   * 2. Find the only matching vertex based on position
-   * 3. Return the first matching vertex based on position
-   * 4. Recreate a new vertex with the correct position
+  /* Finds the vertex in the signal origin vertex in the full event
+   * using the placeholder id. Also removes the placeholder from
+   * the vertex and the list of particles.
    */
-  LHCb::MCVertex* findVertex(LHCb::MCVertices*, LHCb::MCParticles*);
-  LHCb::MCParticle* findPlaceholder(const LHCb::MCParticles* parts);
+  LHCb::MCVertex* findVertex(int placeholder);
+  /* Finds the MCParticle of the given placeholder in the provided
+   * list of particles.
+   */
+  LHCb::MCParticle* findPlaceholder(const LHCb::MCParticles* parts, int placeholder);
   std::string m_gaussRDSvcName;
   IGaussRedecayStr* m_gaussRDStrSvc;
+  MCCloner* m_temp_cloner = nullptr;
 
   std::string m_particlesLocation;
   std::string m_verticesLocation;
@@ -54,15 +59,18 @@ class GaussRedecayMergeAndClean : public GaudiAlgorithm {
   std::string m_richOpticalPhotonsLocation;
   std::string m_richSegmentsLocation;
   std::string m_richTracksLocation;
-  std::string m_mcHeaderLocation;
   std::string m_signal_tes_prefix;
   std::string m_hepMCEventLocation;
   std::string m_genCollisionLocation;
+
+  std::pair<LHCb::MCParticles*, LHCb::MCParticles*> m_mcparticles;
+  std::pair<LHCb::MCVertices*, LHCb::MCVertices*> m_mcvertices;
   template <typename T>
   std::pair<T*, T*> get_and_print(const std::string&);
   /// Delete a complete tree from event record
   void deleteParticle(LHCb::MCParticle* P, LHCb::MCVertices* m_vertexContainer,
                       LHCb::MCParticles* m_particleContainer);
+  void fix_connections(int placeholder, int original_id);
 };
 
 template <typename T>

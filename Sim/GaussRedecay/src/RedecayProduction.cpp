@@ -15,7 +15,7 @@
 //
 // 2016-04-28: Dominik Muller
 //-----------------------------------------------------------------------------
-DECLARE_TOOL_FACTORY( RedecayProduction )
+DECLARE_TOOL_FACTORY(RedecayProduction)
 
 //=============================================================================
 // Default constructor.
@@ -56,17 +56,30 @@ StatusCode RedecayProduction::finalize() {
     return GaudiTool::finalize();
 }
 
-StatusCode RedecayProduction::generateEvent(HepMC::GenEvent* theEvent,
-                                            LHCb::GenCollision* /*theCollision*/) {
+StatusCode RedecayProduction::generateEvent(
+    HepMC::GenEvent* theEvent, LHCb::GenCollision* /*theCollision*/) {
     // Let's construct a fake event
     auto sig_info = m_gaussRDStrSvc->getRegisteredForRedecay();
+    HepMC::GenVertex* dummy_vertex = nullptr;
     for (auto& part : *sig_info) {
         auto mom = part.second.momentum;
         auto origin = part.second.point;
         auto thePdgId = part.second.pdg_id;
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "Making a particle for PDG ID " << thePdgId
+                    << " with placeholder ID" << part.first << endmsg;
+            debug() << "#### Momentum (PT, Eta, Phi, E) = (" << mom.pt() << ", "
+                    << mom.eta() << ", " << mom.phi() << ", " << mom.E() << ")"
+                    << endmsg;
+        }
         // create HepMC Vertex
         auto v = new HepMC::GenVertex(
             HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
+        if(!dummy_vertex){
+            dummy_vertex = new HepMC::GenVertex(
+                HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
+            theEvent->add_vertex(dummy_vertex);
+        }
         // create HepMC particle
         auto p = new HepMC::GenParticle(
             HepMC::FourVector(mom.Px(), mom.Py(), mom.Pz(), mom.E()), thePdgId,
@@ -75,9 +88,10 @@ StatusCode RedecayProduction::generateEvent(HepMC::GenEvent* theEvent,
         auto tag = new HepMC::GenParticle(
             HepMC::FourVector(mom.Px(), mom.Py(), mom.Pz(), mom.P()),
             part.first, LHCb::HepMCEvent::StableInDecayGen);
+        v->add_particle_in(tag);
+        dummy_vertex->add_particle_out(tag);
 
         v->add_particle_out(p);
-        v->add_particle_out(tag);
         theEvent->add_vertex(v);
     }
 
