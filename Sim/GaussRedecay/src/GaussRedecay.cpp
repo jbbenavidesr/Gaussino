@@ -38,6 +38,8 @@ GaussRedecay::GaussRedecay(const std::string& name, ISvcLocator* svcloc)
   declareProperty("Phase", m_phase = 0);
   declareProperty("RedecayMode", m_rd_mode = 0,
                   "0: Signal, 1: Everything heavier.");
+  declareProperty("G4Reserve", m_g4_reserve= 100,
+                  "Number of tag particles registerred to Geant4.");
 }
 
 //=============================================================================
@@ -159,9 +161,21 @@ bool GaussRedecay::registerNewEvent() {
 int GaussRedecay::getPhase() const { return m_phase; }
 
 int GaussRedecay::registerForRedecay(Particle part) {
+  if(!m_g4_initialized){
+    for(int i=0;i<m_g4_reserve;i++){
+      int id = PlaceholderPDGID + i;
+      auto ret = G4RDTag::Definition(id);
+      if(!ret){
+        error() << "Could not register tag particle in Geant4 with ID: " << id << endmsg;
+        return -1;
+      }
+    }
+    m_g4_initialized=true;
+  }
   int unique_id = m_sig_map.size() + 1 + PlaceholderPDGID;
-  G4RDTag::Definition(PlaceholderPDGID);
-  G4RDTag::Definition(unique_id);
+  if(unique_id >= PlaceholderPDGID + m_g4_reserve){
+        return -1;
+  }
   m_sig_map[unique_id] = part;
   return unique_id;
 }

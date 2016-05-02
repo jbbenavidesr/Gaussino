@@ -114,6 +114,9 @@ StatusCode GaussRedecaySorter::execute() {
        * a pretty error*/
       break;
   }
+  if(m_store_fail){
+    return Error("Could not store all particles. Increase number of reserved tag particles.");
+  }
 
   return StatusCode::SUCCESS;
 }
@@ -145,6 +148,9 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
   /*Now store it, delete the daugthers and replace the pdg id with the
    * placeholder.*/
   auto new_id = m_gaussRDStrSvc->registerForRedecay(temp_str_part);
+  if(new_id==-1){
+    m_store_fail = true;
+  }
   if (msgLevel(MSG::DEBUG)) {
     auto mom = Gaudi::LorentzVector(part->momentum());
     debug() << "Stored particle for PDG ID " << part->pdg_id()

@@ -19,7 +19,6 @@ use           GaudiAlg          v*
 use           GenEvent          v*                Event
 use           MCInterfaces      v*                Kernel
 use           EvtGen            v*                Gen
-use           LoKiGen           v*                Phys
 use           EvtGenExtras      v*                Gen
 use           Boost             v*                LCG_Interfaces -no_auto_imports
 

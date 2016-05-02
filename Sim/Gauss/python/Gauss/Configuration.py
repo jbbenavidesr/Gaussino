@@ -58,7 +58,6 @@ from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
                             GaussRedecayCtrFilter,
                             GaussRedecaySorter,
-                            GaussRedecayPrintMCParticles,
                             GaussRedecayMergeAndClean)
 
 from Configurables import StoreExplorerAlg
@@ -2774,7 +2773,6 @@ class Gauss(LHCbConfigurableUser):
             detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotFullSeq.Members += [ detHits ]
             simSlotFullSeq.Members += [ GaussRedecayCopyToService() ]
-            simSlotFullSeq.Members += [ GaussRedecayPrintMCParticles('AfterMain') ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
             configuredRichSim = [ False ]
@@ -2814,7 +2812,6 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
             simSlotSignalSeq.Members += [ detHits ]
-            simSlotSignalSeq.Members += [ GaussRedecayPrintMCParticles('AfterSignal') ]
 
             configuredRichSim = [ False ]
             for det in self.getProp('DetectorSim')['Detectors']:

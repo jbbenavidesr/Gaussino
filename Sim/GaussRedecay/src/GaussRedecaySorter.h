@@ -43,6 +43,8 @@ class GaussRedecaySorter : public GaudiAlgorithm {
   LHCb::IParticlePropertySvc* m_ppSvc = nullptr;
   HepMC::GenParticle* m_theSignal = nullptr;
 
+  bool m_store_fail = false;
+
   std::string m_generationLocation;
 
   HepMC::GenParticle* find_signal(LHCb::HepMCEvents* evts);

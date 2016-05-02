@@ -50,6 +50,9 @@
         // create particle
         anInstance = make_definition(pdg_id);
         pTable->Insert(anInstance);
+    } else {
+      std::cout << "G4RDTag: ID " << pdg_id << "already in table!" << std::endl;
+      return nullptr;
     }
     m_pdg_to_object[pdg_id] =
         reinterpret_cast<G4RDTag*>(anInstance);

@@ -152,6 +152,8 @@ class GaussRedecay : public Service,
   size_t m_max_rd_counter;
   int m_phase;
   int m_rd_mode;
+  int m_g4_reserve;
+  bool m_g4_initialized=false;
 
   // Signal information storage
   std::map<int, Particle> m_sig_map;
