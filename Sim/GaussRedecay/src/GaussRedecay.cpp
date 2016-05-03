@@ -12,7 +12,6 @@
 // local
 #include "GaussRedecay.h"
 #include "MCCloner.h"
-#include "G4RDTag.h"
 
 //-----------------------------------------------------------------------------
 // Implementation of GaussRedecay
@@ -34,68 +33,68 @@ GaussRedecay::GaussRedecay(const std::string& name, ISvcLocator* svcloc)
       m_sig_mom(),
       m_sig_point(),
       m_sig_id(0) {
-  declareProperty("nRedecay", m_max_rd_counter = 100);
-  declareProperty("Phase", m_phase = 0);
-  declareProperty("RedecayMode", m_rd_mode = 0,
-                  "0: Signal, 1: Everything heavier.");
-  declareProperty("G4Reserve", m_g4_reserve= 100,
-                  "Number of tag particles registerred to Geant4.");
+    declareProperty("nRedecay", m_max_rd_counter = 100);
+    declareProperty("Phase", m_phase = 0);
+    declareProperty("RedecayMode", m_rd_mode = 0,
+                    "0: Signal, 1: Everything heavier.");
+    declareProperty("G4Reserve", m_g4_reserve = 100,
+                    "Number of tag particles registerred to Geant4.");
 }
 
 //=============================================================================
 // Destructor
 //=============================================================================
 GaussRedecay::~GaussRedecay() {
-  if (m_mc_cloner) {
-    delete m_mc_cloner;
-  }
-  if (m_mc_cloner_copy) {
-    delete m_mc_cloner_copy;
-  }
+    if (m_mc_cloner) {
+        delete m_mc_cloner;
+    }
+    if (m_mc_cloner_copy) {
+        delete m_mc_cloner_copy;
+    }
 }
 
 //=============================================================================
 // service initialization
 //=============================================================================
 StatusCode GaussRedecay::initialize() {
-  // initialize the base class
-  StatusCode sc = Service::initialize();
-  m_mc_cloner = nullptr;
-  m_mc_cloner_copy = nullptr;
-  if (sc.isFailure()) {
-    return sc;
-  }
+    // initialize the base class
+    StatusCode sc = Service::initialize();
+    m_mc_cloner = nullptr;
+    m_mc_cloner_copy = nullptr;
+    if (sc.isFailure()) {
+        return sc;
+    }
 
-  return StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 //=============================================================================
 // service finalization
 //=============================================================================
 StatusCode GaussRedecay::finalize() {
-  if (m_mc_cloner) m_mc_cloner->clear();
-  if (m_mc_cloner_copy) m_mc_cloner_copy->clear_no_deletion();
-  ///  finalize the base class
-  return Service::finalize();
+    if (m_mc_cloner) m_mc_cloner->clear();
+    if (m_mc_cloner_copy) m_mc_cloner_copy->clear_no_deletion();
+    ///  finalize the base class
+    return Service::finalize();
 }
 
 //=============================================================================
 // query interface
 //=============================================================================
 StatusCode GaussRedecay::queryInterface(const InterfaceID& id, void** ppI) {
-  if (0 == ppI) {
-    return StatusCode::FAILURE;  //  RETURN !!!
-  } else if (IGaussRedecayCtr::interfaceID() == id) {
-    *ppI = static_cast<IGaussRedecayCtr*>(this);
-  } else if (IGaussRedecayStr::interfaceID() == id) {
-    *ppI = static_cast<IGaussRedecayStr*>(this);
-  } else {
-    return Service::queryInterface(id, ppI);  //  RETURN !!!
-  }
+    if (0 == ppI) {
+        return StatusCode::FAILURE;  //  RETURN !!!
+    } else if (IGaussRedecayCtr::interfaceID() == id) {
+        *ppI = static_cast<IGaussRedecayCtr*>(this);
+    } else if (IGaussRedecayStr::interfaceID() == id) {
+        *ppI = static_cast<IGaussRedecayStr*>(this);
+    } else {
+        return Service::queryInterface(id, ppI);  //  RETURN !!!
+    }
 
-  addRef();
+    addRef();
 
-  return StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 //=============================================================================
@@ -103,150 +102,140 @@ StatusCode GaussRedecay::queryInterface(const InterfaceID& id, void** ppI) {
 // should be generated
 //=============================================================================
 bool GaussRedecay::registerNewEvent() {
-  // In case phase is 0, the entire redecay part should be ignored.
-  if (m_phase == 0) {
-    return true;
-  }
-  // Have to handle two different cases, need to rerun the generation in case
-  // of counter==0 or counter==max, otherwise just do some cleanup.
-  if (m_rd_counter == 0 || m_rd_counter == m_max_rd_counter) {
-    if (msgLevel(MSG::DEBUG)) {
-      debug() << " Redecay counter " << m_rd_counter
-              << ". Need to generate a new event." << endmsg;
+    // In case phase is 0, the entire redecay part should be ignored.
+    if (m_phase == 0) {
+        return true;
     }
-    // close the loop and increment already for the next event.
-    m_rd_counter = 1;
-    m_phase = 1;
-    /*trigger new event generation and clean up. Check if the MC cloner already
-     * exists (should be the case except for the very first event)*/
-    if (m_mc_cloner) {
-      // Won't need any of the copied objects anymore.
-      // Need empty cloner for the next incoming event.
-      // None of the objects in that MCCloner have ever been put into the
-      // TES so take care of deleting it ourselves.
-      m_mc_cloner->clear();
-      delete m_mc_cloner;
+    // Have to handle two different cases, need to rerun the generation in case
+    // of counter==0 or counter==max, otherwise just do some cleanup.
+    if (m_rd_counter == 0 || m_rd_counter == m_max_rd_counter) {
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << " Redecay counter " << m_rd_counter
+                    << ". Need to generate a new event." << endmsg;
+        }
+        // close the loop and increment already for the next event.
+        m_rd_counter = 1;
+        m_phase = 1;
+        /*trigger new event generation and clean up. Check if the MC cloner
+         * already
+         * exists (should be the case except for the very first event)*/
+        if (m_mc_cloner) {
+            // Won't need any of the copied objects anymore.
+            // Need empty cloner for the next incoming event.
+            // None of the objects in that MCCloner have ever been put into the
+            // TES so take care of deleting it ourselves.
+            m_mc_cloner->clear();
+            delete m_mc_cloner;
+        }
+        m_mc_cloner = new MCCloner();
+        // New event has new particles to redecay so empty the map storing them.
+        m_sig_map.clear();
+        return true;
+    } else if (m_rd_counter > 0 && m_rd_counter < m_max_rd_counter) {
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << " Redecay counter " << m_rd_counter << " smaller than "
+                    << m_max_rd_counter
+                    << ". Clean up the copy and return false." << endmsg;
+        }
+        m_phase = 2;
+        m_rd_counter++;
+        if (m_mc_cloner_copy) {
+            /*The content (ObjectVectors and all the Objects) have been handed*/
+            /*over to the TES DO NOT attempt to delete all of them again!*/
+            m_mc_cloner_copy->clear_no_deletion();
+            delete m_mc_cloner_copy;
+        }
+        /*If the counter is >0, previous event properly filled m_mc_cloner, so
+         * make*/
+        /*a deep copy of all the content to be moved to the TES.*/
+        m_mc_cloner_copy = m_mc_cloner->DeepClone();
+        return false;
+    } else {
+        // This should NEVER happen, but just in case ...
+        error() << "Invalid redecay counter " << m_rd_counter
+                << ". Something is REALLY wrong!" << endmsg;
+        return false;
     }
-    m_mc_cloner = new MCCloner();
-    // New event has new particles to redecay so empty the map storing them.
-    m_sig_map.clear();
-    return true;
-  } else if (m_rd_counter > 0 && m_rd_counter < m_max_rd_counter) {
-    if (msgLevel(MSG::DEBUG)) {
-      debug() << " Redecay counter " << m_rd_counter << " smaller than "
-              << m_max_rd_counter << ". Clean up the copy and return false."
-              << endmsg;
-    }
-    m_phase = 2;
-    m_rd_counter++;
-    if (m_mc_cloner_copy) {
-      /*The content (ObjectVectors and all the Objects) have been handed*/
-      /*over to the TES DO NOT attempt to delete all of them again!*/
-      m_mc_cloner_copy->clear_no_deletion();
-      delete m_mc_cloner_copy;
-    }
-    /*If the counter is >0, previous event properly filled m_mc_cloner, so
-     * make*/
-    /*a deep copy of all the content to be moved to the TES.*/
-    m_mc_cloner_copy = m_mc_cloner->DeepClone();
-    return false;
-  } else {
-    // This should NEVER happen, but just in case ...
-    error() << "Invalid redecay counter " << m_rd_counter
-            << ". Something is REALLY wrong!" << endmsg;
-    return false;
-  }
 }
 
 int GaussRedecay::getPhase() const { return m_phase; }
 
 int GaussRedecay::registerForRedecay(Particle part) {
-  if(!m_g4_initialized){
-    for(int i=0;i<m_g4_reserve;i++){
-      int id = PlaceholderPDGID + i;
-      auto ret = G4RDTag::Definition(id);
-      if(!ret){
-        error() << "Could not register tag particle in Geant4 with ID: " << id << endmsg;
+    int unique_id = m_sig_map.size() + 1 + PlaceholderPDGID;
+    if (unique_id >= PlaceholderPDGID + m_g4_reserve) {
         return -1;
-      }
     }
-    m_g4_initialized=true;
-  }
-  int unique_id = m_sig_map.size() + 1 + PlaceholderPDGID;
-  if(unique_id >= PlaceholderPDGID + m_g4_reserve){
-        return -1;
-  }
-  m_sig_map[unique_id] = part;
-  return unique_id;
+    m_sig_map[unique_id] = part;
+    return unique_id;
 }
 
 // Following are all the boring redirections for the MCCloner class.
 
 LHCb::MCParticle* GaussRedecay::cloneMCP(const LHCb::MCParticle* mcp) {
-  return m_mc_cloner->cloneMCP(mcp);
+    return m_mc_cloner->cloneMCP(mcp);
 }
 LHCb::MCParticles* GaussRedecay::getClonedMCPs() {
-  return m_mc_cloner_copy->getClonedMCPs();
+    return m_mc_cloner_copy->getClonedMCPs();
 }
 
 LHCb::MCVertex* GaussRedecay::cloneMCV(const LHCb::MCVertex* mcVertex) {
-  return m_mc_cloner->cloneMCV(mcVertex);
+    return m_mc_cloner->cloneMCV(mcVertex);
 }
 LHCb::MCVertices* GaussRedecay::getClonedMCVs() {
-  return m_mc_cloner_copy->getClonedMCVs();
+    return m_mc_cloner_copy->getClonedMCVs();
 }
 
 LHCb::MCHit* GaussRedecay::cloneMCHit(const LHCb::MCHit* mchit,
                                       const std::string& vol) {
-  return m_mc_cloner->cloneMCHit(mchit, vol);
+    return m_mc_cloner->cloneMCHit(mchit, vol);
 }
 LHCb::MCHits* GaussRedecay::getClonedMCHits(const std::string& vol) {
-  return m_mc_cloner_copy->getClonedMCHits(vol);
+    return m_mc_cloner_copy->getClonedMCHits(vol);
 }
 
 LHCb::MCCaloHit* GaussRedecay::cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
                                               const std::string& vol) {
-  return m_mc_cloner->cloneMCCaloHit(mchit, vol);
+    return m_mc_cloner->cloneMCCaloHit(mchit, vol);
 }
 LHCb::MCCaloHits* GaussRedecay::getClonedMCCaloHits(const std::string& vol) {
-  return m_mc_cloner_copy->getClonedMCCaloHits(vol);
+    return m_mc_cloner_copy->getClonedMCCaloHits(vol);
 }
 
 LHCb::MCRichHit* GaussRedecay::cloneMCRichHit(const LHCb::MCRichHit* mchit) {
-  return m_mc_cloner->cloneMCRichHit(mchit);
+    return m_mc_cloner->cloneMCRichHit(mchit);
 }
 LHCb::MCRichHits* GaussRedecay::getClonedMCRichHits() {
-  return m_mc_cloner_copy->getClonedMCRichHits();
+    return m_mc_cloner_copy->getClonedMCRichHits();
 }
 
 LHCb::MCRichOpticalPhoton* GaussRedecay::cloneMCRichOpticalPhoton(
     const LHCb::MCRichOpticalPhoton* mchit) {
-  return m_mc_cloner->cloneMCRichOpticalPhoton(mchit);
+    return m_mc_cloner->cloneMCRichOpticalPhoton(mchit);
 }
 LHCb::MCRichOpticalPhotons* GaussRedecay::getClonedMCRichOpticalPhotons() {
-  return m_mc_cloner_copy->getClonedMCRichOpticalPhotons();
+    return m_mc_cloner_copy->getClonedMCRichOpticalPhotons();
 }
 
 LHCb::MCRichSegment* GaussRedecay::cloneMCRichSegment(
     const LHCb::MCRichSegment* mchit) {
-  return m_mc_cloner->cloneMCRichSegment(mchit);
+    return m_mc_cloner->cloneMCRichSegment(mchit);
 }
 LHCb::MCRichSegments* GaussRedecay::getClonedMCRichSegments() {
-  return m_mc_cloner_copy->getClonedMCRichSegments();
+    return m_mc_cloner_copy->getClonedMCRichSegments();
 }
 
 LHCb::MCRichTrack* GaussRedecay::cloneMCRichTrack(
     const LHCb::MCRichTrack* mchit) {
-  return m_mc_cloner->cloneMCRichTrack(mchit);
+    return m_mc_cloner->cloneMCRichTrack(mchit);
 }
 LHCb::MCRichTracks* GaussRedecay::getClonedMCRichTracks() {
-  return m_mc_cloner_copy->getClonedMCRichTracks();
+    return m_mc_cloner_copy->getClonedMCRichTracks();
 }
 
 LHCb::GenCollision* GaussRedecay::cloneGenCollision(
     const LHCb::GenCollision* mchit) {
-  return m_mc_cloner->cloneGenCollision(mchit);
+    return m_mc_cloner->cloneGenCollision(mchit);
 }
 LHCb::GenCollisions* GaussRedecay::getClonedGenCollisions() {
-  return m_mc_cloner_copy->getClonedGenCollisions();
+    return m_mc_cloner_copy->getClonedGenCollisions();
 }

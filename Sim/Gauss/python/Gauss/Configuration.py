@@ -2787,11 +2787,14 @@ class Gauss(LHCbConfigurableUser):
             simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
             gdh = GenInit('SignalDummyGenHeader')
             self.setBeamParameters(self.defineCrossingList(), gdh)
+
+            gdh.MCHeader = TESNode+"Gen/Header"
+            gdh.CreateBeam = False
             sdh = SimInit('SignalDummyMCHeader')
             grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
             grdfilter.IsPhaseNotEqual = 0
             simSlotSignal.Members += [ grdfilter]
-            simSlotSignal.Members += [ gdh]
+            simSeq.Members += [ gdh]
             simSlotSignal.Members += [ sdh]
             simSlotSignal.Members += [Generation("GenerationSignal")]
             simSlotSignal.Members += [simSlotSignalSeq]
@@ -3485,7 +3488,10 @@ class Gauss(LHCbConfigurableUser):
         else:
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
 
-        # gmpl.PhysicsConstructors.append("GiGaRDTagParticle")
+        from Configurables import GiGaPhysG4RDTag
+        gmpl.addTool(GiGaPhysG4RDTag)
+        gmpl.GiGaPhysG4RDTag.OutputLevel=0
+        gmpl.PhysicsConstructors.append(gmpl.GiGaPhysG4RDTag)
 
         ## --- LHCb specific physics:
         if  (lhcbPhys == True):
