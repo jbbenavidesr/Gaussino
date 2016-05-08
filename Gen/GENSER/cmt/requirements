@@ -39,7 +39,7 @@ macro powhegbox_native_version "r2092"
 #-- Photos++ and Taula++ 
 #============================================================================
 macro photospp_native_version "3.56"
-macro tauolapp_native_version "1.1.4"
+macro tauolapp_native_version "1.1.6"
 
 
 #-- Pythia 8
@@ -59,7 +59,7 @@ macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
 #-- Rivet for reference analysis with comparison with published data and
 #-- Professor for tuning, also needs Yoda for Rivet 2.0
 #============================================================================
-macro rivet_native_version "2.4.1"
+macro rivet_native_version "2.4.2"
 macro yoda_native_version "1.5.9"
 
 
