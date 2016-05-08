@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-05-08 - Gloria Corti
+ - Change the version of Rivet to 2.4.2
+ - Change the version of taoula to 1.1.6
+
 ! 2016-04-27 - Gloria Corti
  - Change the version of Rivet to 2.4.1 and of yoda to 1.5.9
 
