@@ -5,6 +5,7 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/RndmGenerators.h"
 #include "GaudiKernel/SystemOfUnits.h"
+#include "HepMC/GenRanges.h"
 
 // from Event
 #include "Event/GenHeader.h"
@@ -247,7 +248,22 @@ StatusCode Generation::execute() {
                 sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
             if ( ! sc.isSuccess() ) return sc ;
           }
+        if (msgLevel(MSG::DEBUG)) {
+            debug() << "All vertices with no parents after decay" << endmsg;
+            debug() << "-----------------------------------------" << endmsg;
+            for (auto vtx : (*itEvents)->pGenEvt()->vertex_range()) {
+            if (vtx->particles_in_size() == 0) {
+                if (vtx->particles_out_size() > 0) {
+                for (auto p : vtx->particles(HepMC::children)) {
+                    printChildren(p);
+                }
+                }
+            debug() << "-----------------------------------------" << endmsg;
+            }
+            }
+            debug() << "=========================================" << endmsg;
         }
+      }
       }
 
       if ( ( m_commonVertex ) && ( 1 < nPileUp ) ) {
@@ -538,3 +554,32 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
     ++theCounter[ PromptC ];
 }
 
+void Generation::printChildren(HepMC::GenParticle* part, int level) {
+  std::map<int, std::string> id_to_name;
+  id_to_name[0] = "Unknown";
+  id_to_name[1] = "StableInProdGen";
+  id_to_name[2] = "DecayedByProdGen";
+  id_to_name[3] = "DocumentationParticle";
+  id_to_name[777] = "DecayedByDecayGen";
+  id_to_name[888] = "DecayedByDecayGenAndProducedByProdGen";
+  id_to_name[889] = "SignalInLabFrame";
+  id_to_name[998] = "SignalAtRest";
+  id_to_name[999] = "StableInDecayGen";
+  id_to_name[1042] = "Redecay";
+  id_to_name[1043] = "ChildOfRedecay";
+  std::string space = "";
+  for (int i = 0; i < level; i++) {
+    space += "|---> ";
+  }
+  std::string idname = "";
+  if (id_to_name.find(part->status()) != id_to_name.end()) {
+    idname = id_to_name[part->status()];
+  }
+  debug() << space << part->pdg_id() << " -> " << part->status() << ": "
+          << idname << ", # " <<part->barcode() << endmsg;
+  if (part->end_vertex()) {
+    for (auto p : part->particles_out(HepMC::children)) {
+      printChildren(p, level + 1);
+    }
+  }
+}

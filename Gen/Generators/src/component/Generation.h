@@ -71,6 +71,7 @@ protected:
   StatusCode decayEvent( LHCb::HepMCEvent * theEvent ) ;
 
 private:
+  void printChildren(HepMC::GenParticle* part, int level=0);
   int          m_eventType ; ///< Event type (set by options)
 
   /// Location where to store generator events (set by options)

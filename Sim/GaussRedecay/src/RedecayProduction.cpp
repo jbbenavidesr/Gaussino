@@ -60,7 +60,6 @@ StatusCode RedecayProduction::generateEvent(
     HepMC::GenEvent* theEvent, LHCb::GenCollision* /*theCollision*/) {
     // Let's construct a fake event
     auto sig_info = m_gaussRDStrSvc->getRegisteredForRedecay();
-    HepMC::GenVertex* dummy_vertex = nullptr;
     for (auto& part : *sig_info) {
         auto mom = part.second.momentum;
         auto origin = part.second.point;
@@ -75,11 +74,9 @@ StatusCode RedecayProduction::generateEvent(
         // create HepMC Vertex
         auto v = new HepMC::GenVertex(
             HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
-        if(!dummy_vertex){
-            dummy_vertex = new HepMC::GenVertex(
+            auto dummy_vertex = new HepMC::GenVertex(
                 HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
             theEvent->add_vertex(dummy_vertex);
-        }
         // create HepMC particle
         auto p = new HepMC::GenParticle(
             HepMC::FourVector(mom.Px(), mom.Py(), mom.Pz(), mom.E()), thePdgId,

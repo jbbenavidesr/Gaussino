@@ -5,10 +5,9 @@ LHCb::MCHit* MCCloner::getStoredMCHit(const LHCb::MCHit* mchit,
   auto volmap = m_mchit.find(vol);
   if (volmap == m_mchit.end()) {
     auto temp = std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>();
-    m_mchit.insert(
-        std::pair<std::string,
-                  std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>>(vol,
-                                                                        temp));
+    m_mchit.insert(std::pair<
+        std::string, std::unordered_map<const LHCb::MCHit*, LHCb::MCHit*>>(
+        vol, temp));
     return nullptr;
   } else {
     auto result = (*volmap).second.find(mchit);
@@ -63,7 +62,9 @@ LHCb::MCHit* MCCloner::doCloneMCHit(const LHCb::MCHit* mchit,
     if (cp_part) {
       clone->setMCParticle(cp_part);
     } else {
-      // TODO: Produce an error
+      std::cout
+          << "MCCloner::doCloneMCHit(): No matching MCParticle clone found!"
+          << std::endl;
     }
   }
 
@@ -75,8 +76,7 @@ LHCb::MCHits* MCCloner::getClonedMCHits(const std::string& vol) {
 
   if (volmap == m_list_mchits.end()) {
     volmap = m_list_mchits.insert(std::pair<std::string, LHCb::MCHits*>(
-                                      vol, new LHCb::MCHits()))
-                 .first;
+                                      vol, new LHCb::MCHits())).first;
   }
   return volmap->second;
 }

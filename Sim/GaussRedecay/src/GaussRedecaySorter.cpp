@@ -182,48 +182,54 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
     if (!m_theSignal) {
         m_theSignal = find_signal(evts);
     }
-    auto evt = m_theSignal->parent_event();
     auto sig_pdg_id = m_theSignal->pdg_id();
     auto PID = LHCb::ParticleID(sig_pdg_id);
     auto sig_info = m_ppSvc->find(PID);
-    /*Get the invariant mass of the particle to decay everything that is
-     * heavier.
-     * Multiplied by a factor just smaller than one to all prevent floating
-     * point
-     * precision problems when checking particles identical to the signal
-     * itself.*/
     double inv_mass = 0.9999 * sig_info->mass();
     std::set<HepMC::GenParticle*> heavy_stuff;
+    for (auto& e : *evts) {
+        auto evt = e->pGenEvt();
+        /*Get the invariant mass of the particle to decay everything that is
+         * heavier.
+         * Multiplied by a factor just smaller than one to all prevent floating
+         * point
+         * precision problems when checking particles identical to the signal
+         * itself.*/
 
-    /*Following code is taken from the decayHeavyParticles function in
-     * ExternalGenerator.cpp using the default case of the switch statement to
-     * decide what was further decayed to find the signal.*/
-    for (auto part : evt->particle_range()) {
-        auto status = part->status();
-        /*Only pick up particles that make sense to redecay. Not constraining
-         * this
-         * any further results in quarks in the list of particles to redecay
-         * depending on the value of part->generated_mass().*/
-        if (status != LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen &&
-            status != LHCb::HepMCEvent::DecayedByDecayGen &&
-            status != LHCb::HepMCEvent::SignalInLabFrame) {
-            continue;
-        }
-        if (15 == PID.abspid()) {  // tau ?
-            LHCb::ParticleID pid(part->pdg_id());
-            if ((pid.hasQuark(LHCb::ParticleID::charm)) ||
-                (pid.hasQuark(LHCb::ParticleID::bottom)))
-                heavy_stuff.insert(part);
-        } else {
-            LHCb::ParticleID pid(part->pdg_id());
-            if (part->generated_mass() > inv_mass) {
-                heavy_stuff.insert(part);
-                debug() << "This should be redecayed: " << endmsg;
-                printChildren(part);
+        /*Following code is taken from the decayHeavyParticles function in
+         * ExternalGenerator.cpp using the default case of the switch statement
+         * to
+         * decide what was further decayed to find the signal.*/
+        for (auto part : evt->particle_range()) {
+            auto status = part->status();
+            /*Only pick up particles that make sense to redecay. Not
+             * constraining
+             * this
+             * any further results in quarks in the list of particles to redecay
+             * depending on the value of part->generated_mass().*/
+            if (status !=
+                    LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen &&
+                status != LHCb::HepMCEvent::DecayedByDecayGen &&
+                status != LHCb::HepMCEvent::SignalInLabFrame) {
+                continue;
             }
-            // if signal is KS then decay also K0
-            else if ((m_theSignal->pdg_id() == 310) && (pid.abspid() == 311))
-                heavy_stuff.insert(part);
+            if (15 == PID.abspid()) {  // tau ?
+                LHCb::ParticleID pid(part->pdg_id());
+                if ((pid.hasQuark(LHCb::ParticleID::charm)) ||
+                    (pid.hasQuark(LHCb::ParticleID::bottom)))
+                    heavy_stuff.insert(part);
+            } else {
+                LHCb::ParticleID pid(part->pdg_id());
+                if (part->generated_mass() > inv_mass) {
+                    heavy_stuff.insert(part);
+                    debug() << "Event " << evt->event_number() << "This should be redecayed: " << endmsg;
+                    printChildren(part);
+                }
+                // if signal is KS then decay also K0
+                else if ((m_theSignal->pdg_id() == 310) &&
+                         (pid.abspid() == 311))
+                    heavy_stuff.insert(part);
+            }
         }
     }
     for (auto& part : heavy_stuff) {
