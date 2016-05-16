@@ -12,7 +12,7 @@
 
 /*static*/ G4ParticleDefinition* G4RDTag::make_definition(int pdg_id /*=424242*/) {
     std::string str_name = "rdtag";
-    str_name += pdg_id;
+    str_name += std::to_string(pdg_id);
     return new G4ParticleDefinition(str_name,   // the name
                                     0.0 * MeV,  // the mass
                                     0.0 * MeV,  // the width
@@ -31,7 +31,7 @@
                                     0.0,        // lifetime
                                     nullptr,    // decay table
                                     false,      // shortlived
-                                    "rdtag",    // subtype
+                                    str_name,    // subtype
                                     pdg_id      // antiparticle
                                     );
 }

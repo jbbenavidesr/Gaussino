@@ -6,8 +6,8 @@ void MCCloner::cloneDecayVertices(
   for (SmartRefVector<LHCb::MCVertex>::const_iterator iEndVtx =
            endVertices.begin();
        iEndVtx != endVertices.end(); ++iEndVtx) {
-    if ((*iEndVtx)->isDecay() && !((*iEndVtx)->products().empty())) {
-      LHCb::MCVertex* decayVertexClone = cloneMCV(*iEndVtx);
+    LHCb::MCVertex* decayVertexClone = cloneMCV(*iEndVtx);
+    if (decayVertexClone) {
       clonedParticle->addToEndVertices(decayVertexClone);
     }
   }

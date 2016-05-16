@@ -12,6 +12,7 @@
 #include "GaussRedecayRetrieveFromService.h"
 #include "Event/Particle.h"
 #include "Event/MCParticle.h"
+#include "Event/MCHeader.h"
 #include "Event/MCHit.h"
 #include "Event/MCCaloHit.h"
 #include "Event/MCRichHit.h"
@@ -65,6 +66,8 @@ GaussRedecayRetrieveFromService::GaussRedecayRetrieveFromService(const std::stri
   declareProperty(
       "GenCollisionLocation",
       m_GenCollisionsLocation = LHCb::GenCollisionLocation::Default);
+  declareProperty("MCHeader", m_mcHeader = LHCb::MCHeaderLocation::Default,
+		  "Location to retrieve the MCHeader.");
 }
 
 //=============================================================================
@@ -130,6 +133,14 @@ StatusCode GaussRedecayRetrieveFromService::execute() {
   if (test_print_put(m_vertexContainer, m_verticesLocation).isFailure()) {
     return StatusCode::FAILURE;
   };
+
+  // Add the primary vertex to the header file.
+  LHCb::MCHeader* mcHeader = get<LHCb::MCHeader>(m_mcHeader);
+  for(auto&vtx:*m_vertexContainer){
+      if(vtx->type() == LHCb::MCVertex::ppCollision){
+          mcHeader->addToPrimaryVertices(vtx);
+      }
+  }
 
   for (auto& s : m_hitsLocations) {
     auto m_hitsContainer = gaussRDStrSvc()->getClonedMCHits(s);

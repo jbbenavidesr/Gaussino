@@ -96,6 +96,17 @@ StatusCode GaussRedecaySorter::execute() {
             /*Redecay only the signal particle*/
             if (msgLevel(MSG::DEBUG)) {
                 debug() << "Registering only the signal for redecay." << endmsg;
+                auto tmp = m_theSignal->particles_in(HepMC::parents).begin();
+                if (tmp != m_theSignal->particles_in(HepMC::parents).end()) {
+                    auto tmp2 = (*tmp)->particles_in(HepMC::parents).begin();
+                    if (tmp2 != (*tmp)->particles_in(HepMC::parents).end()) {
+                        printChildren(*tmp2);
+                    } else {
+                        printChildren(*tmp);
+                    }
+                } else {
+                    printChildren(m_theSignal);
+                }
             }
             store_particle(m_theSignal);
             break;
@@ -105,7 +116,8 @@ StatusCode GaussRedecaySorter::execute() {
              * mess with ProdGen stuff though.*/
             if (msgLevel(MSG::DEBUG)) {
                 debug() << "Registering everything heavier than the signal for "
-                           "redecay" << endmsg;
+                           "redecay"
+                        << endmsg;
             }
             store_heavier_than_signal(generationEvents);
             break;
@@ -171,11 +183,11 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
     HepMCUtils::RemoveDaughters(part);
     part->set_pdg_id(new_id);
     part->set_status(LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen);
-    auto v = new HepMC::GenVertex(
-        HepMC::FourVector(temp_str_part.point.X(), temp_str_part.point.Y(),
-                          temp_str_part.point.Z(), temp_str_part.point.T()));
-    v->add_particle_in(part);
-    part->parent_event()->add_vertex(v);
+    //auto v = new HepMC::GenVertex(
+        //HepMC::FourVector(temp_str_part.point.X(), temp_str_part.point.Y(),
+                          //temp_str_part.point.Z(), temp_str_part.point.T()));
+    //v->add_particle_in(part);
+    //part->parent_event()->add_vertex(v);
 }
 
 void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
@@ -222,7 +234,8 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
                 LHCb::ParticleID pid(part->pdg_id());
                 if (part->generated_mass() > inv_mass) {
                     heavy_stuff.insert(part);
-                    debug() << "Event " << evt->event_number() << "This should be redecayed: " << endmsg;
+                    debug() << "Event " << evt->event_number()
+                            << "This should be redecayed: " << endmsg;
                     printChildren(part);
                 }
                 // if signal is KS then decay also K0
@@ -292,8 +305,8 @@ void GaussRedecaySorter::printChildren(HepMC::GenParticle* part, int level) {
     if (id_to_name.find(part->status()) != id_to_name.end()) {
         idname = id_to_name[part->status()];
     }
-    debug() << space << part->pdg_id() << " -> " << part->status() << ": "
-            << idname << endmsg;
+    debug() << space << part->pdg_id() << " -> #" << part->barcode() << ", "
+            << part->status() << ": " << idname << endmsg;
     if (part->end_vertex()) {
         for (auto p : part->particles_out(HepMC::children)) {
             printChildren(p, level + 1);

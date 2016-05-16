@@ -49,6 +49,7 @@ GiGaPhysG4RDTag::~GiGaPhysG4RDTag(){}
 //=============================================================================
 void GiGaPhysG4RDTag::ConstructParticle()
 {
+    G4ParticleTable::GetParticleTable()->SetVerboseLevel(1);
     for (int i = 0; i < m_g4_reserve; i++) {
         int id = m_initial_placeholder + i;
         auto ret = G4RDTag::Definition(id);
@@ -67,15 +68,20 @@ void GiGaPhysG4RDTag::ConstructParticle()
 //=============================================================================
 void GiGaPhysG4RDTag::ConstructProcess()
 {
+    G4ParticleTable::GetParticleTable()->SetVerboseLevel(1);
   theParticleIterator -> reset() ;
   while ( (*theParticleIterator)() ) {
     G4ParticleDefinition * particle = theParticleIterator -> value() ;
+    if ( msgLevel( MSG::DEBUG) ) {
+    debug() << "RDTagList ConstructProcess(): " << particle ->GetPDGEncoding() << ", " << particle->GetParticleName()  
+            << endmsg;
+    }
     G4ProcessManager     * pmanager = particle -> GetProcessManager() ;
     if ( particle -> GetParticleName() == "unknown" ) {
       pmanager -> AddProcess( &m_unknownDecay ) ;
       pmanager -> SetProcessOrdering( &m_unknownDecay , idxPostStep ) ;
       if ( msgLevel( MSG::DEBUG) ) {
-        debug() << "### Unknown Decays for " << particle -> GetParticleName() 
+        debug() << "RDTagList ConstructProcess(): Unknown Decays for " << particle -> GetParticleName() 
               << endmsg;
         pmanager -> DumpInfo() ;
       }

@@ -191,7 +191,6 @@ StatusCode GaussRedecayMergeAndClean::execute() {
 LHCb::MCVertex* GaussRedecayMergeAndClean::findVertex(int placeholder) {
     auto vtxs = m_mcvertices.first;
     auto parts = m_mcparticles.first;
-    std::vector<LHCb::MCVertex*> matched_vertices;
     auto ph = findPlaceholder(parts, placeholder);
     if (ph) {
         auto vertex = const_cast<LHCb::MCVertex*>(ph->originVertex());

@@ -219,8 +219,12 @@ StatusCode GenerationToSimulation::execute() {
       HepMC::GenVertex* prodVertex = (*it)->production_vertex();
       if (!prodVertex) 
         warning() << "The particle has no production vertex !!" << endreq;
-      else if (0 == prodVertex->id())
+      else if (0 == prodVertex->id()){
+        debug() << "Converting main " << (*it)->pdg_id() << endmsg;
+        debug() << "---> Should start: (" << prodVertex->position().x() << ", " << prodVertex->position().y() <<", " << prodVertex->position().z() << ")" << endmsg;
+        debug() << "---> Does start:   (" << origVertex->GetPosition().x() << ", " << origVertex->GetPosition().y() <<", " << origVertex->GetPosition().z() << ")" << endmsg;
         convert(*it, origVertex, primaryVertex, 0, 0);
+      }
     }
     
     // Remove from the primary vertex and delete the unneeded particles.
@@ -335,6 +339,7 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
   unsigned char conversionCode = transferToGeant4(particle);
   switch (conversionCode) {
   case 1: { // Convert particle to G4.
+      debug() << "Converting " << particle->pdg_id() << " to G4." << endmsg;
 
     // Check if particle has been converted.
     const int pBarcode = particle->barcode();
@@ -379,6 +384,7 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
     break;
   }
   case 2: { // Convert to MCParticle.
+      debug() << "Converting " << particle->pdg_id() << " to MC." << endmsg;
 
     // Check if already converted.
     const int pBarcode = particle->barcode() ;
@@ -398,6 +404,7 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
     break;
   }
   case 3: // Skip the particle.
+    debug() << "Not converting " << particle->pdg_id() << "." << endmsg;
   default:
     break;
   }
@@ -558,19 +565,23 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex
   if (genEvent->valid_beam_particles()) {
     HepMC::GenParticle* P = genEvent->beam_particles().first;
     HepMC::GenVertex*   V = P->end_vertex();
+    debug() << "PV from beam particle end vertex!" << endmsg;
     if (V) result = V->position(); 
     else error() << "The beam particles have no end vertex!" << endreq;
   // Second method, use the singal vertex stored in HepMC.
   } else if ( 0 != genEvent -> signal_process_vertex() ) {
     HepMC::GenVertex* V = genEvent->signal_process_vertex();
     result = V->position();
+    debug() << "PV from signal process vertex!" << endmsg;
   // Third method, take production/end vertex of the particle with barcode 1.
   } else {
     HepMC::GenParticle* P = genEvent->barcode_to_particle(1);
     HepMC::GenVertex*   V = 0;
     if (P) {
       V = P->production_vertex();
-      if (V) result = V->position();
+      if (V){ result = V->position();
+      debug() << "PV from barcode 1 particle!" << endmsg;
+      }
       else {
         V = P->end_vertex();
         if (V) result = V->position();

@@ -15,25 +15,25 @@ LHCb::MCParticle* MCCloner::cloneKeyedMCP(const LHCb::MCParticle* mcp) {
     clone = new LHCb::MCParticle();
     clone->setMomentum(mcp->momentum());
     clone->setParticleID(mcp->particleID());
-    m_mcps.insert(
-        std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
     if (m_clone_key) {
       getClonedMCPs()->insert(clone, mcp->key());
     } else {
       getClonedMCPs()->insert(clone);
     }
+    m_mcps.insert(
+        std::pair<const LHCb::MCParticle*, LHCb::MCParticle*>(mcp, clone));
   }
   return clone;
 }
 
 LHCb::MCParticle* MCCloner::cloneMCP(const LHCb::MCParticle* mcp) {
-  if (!mcp) return NULL;
+  if (!mcp) return nullptr;
   LHCb::MCParticle* clone = getStoredMCP(mcp);
   return (clone ? clone : this->doCloneMCP(mcp));
 }
 
 LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
-  if (!mcp) return NULL;
+  if (!mcp) return nullptr;
 
   // Clone the MCParticle
   LHCb::MCParticle* clone = cloneKeyedMCP(mcp);
@@ -51,7 +51,7 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
 
       // Clone the origin vertex mother
       const LHCb::MCParticle* mother = originVertex->mother();
-      LHCb::MCParticle* motherClone = (mother ? cloneMCP(mother) : NULL);
+      LHCb::MCParticle* motherClone = cloneMCP(mother);
       originVertexClone->setMother(motherClone);
     }
 
@@ -74,7 +74,7 @@ LHCb::MCParticle* MCCloner::doCloneMCP(const LHCb::MCParticle* mcp) {
     }
 
   } else {
-    clone->setOriginVertex(NULL);
+    clone->setOriginVertex(nullptr);
   }
 
   // Clone the end vertices

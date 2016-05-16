@@ -16,13 +16,13 @@ LHCb::MCVertex* MCCloner::cloneKeyedMCV(const LHCb::MCVertex* mcv) {
         clone->setPosition(mcv->position());
         clone->setTime(mcv->time());
         clone->setType(mcv->type());
-        m_mcvs.insert(
-            std::pair<const LHCb::MCVertex*, LHCb::MCVertex*>(mcv, clone));
         if (m_clone_key) {
             getClonedMCVs()->insert(clone, mcv->key());
         } else {
             getClonedMCVs()->insert(clone);
         }
+        m_mcvs.insert(
+            std::pair<const LHCb::MCVertex*, LHCb::MCVertex*>(mcv, clone));
     }
     return clone;
 }

@@ -2773,7 +2773,6 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotFullSeq.Members += [ detHits ]
-            simSlotFullSeq.Members += [ GaussRedecayPrintMCParticles('FillPrint') ]
             simSlotFullSeq.Members += [ GaussRedecayCopyToService() ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
@@ -2842,6 +2841,7 @@ class Gauss(LHCbConfigurableUser):
                 StoreExplorerAlg('BeforeMerge'),
                 grdfilter,
                 GaussRedecayMergeAndClean(),
+                GaussRedecayPrintMCParticles('FullPrint'),
                 StoreExplorerAlg('AfterMerge')]
             simSeq.Members += [mergeSlotSeq]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
@@ -3493,7 +3493,7 @@ class Gauss(LHCbConfigurableUser):
 
         from Configurables import GiGaPhysG4RDTag
         gmpl.addTool(GiGaPhysG4RDTag)
-        gmpl.GiGaPhysG4RDTag.OutputLevel=0
+        gmpl.GiGaPhysG4RDTag.G4Reserve=10
         gmpl.PhysicsConstructors.append(gmpl.GiGaPhysG4RDTag)
 
         ## --- LHCb specific physics:
