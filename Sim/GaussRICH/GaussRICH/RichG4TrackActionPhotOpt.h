@@ -63,10 +63,30 @@ private:
   G4double  m_MaxRich2Mirror1Reflect;
   G4double  m_MaxRich2Mirror2Reflect;
   G4double  m_ZDownstreamOfRich1;
-  G4double  m_Rich1TotPhotonSuppressFactor;
-  G4double  m_Rich2TotPhotonSuppressFactor;
+
+  G4double  m_Rich1NominalAerogelBeginZLocation;
+  G4double  m_Rich1NominalAerogelEndZLocation;
+  
+  G4double  m_Rich1AerogelTotPhotonSuppressFactor;
+  G4double  m_Rich1GasTotPhotonSuppressFactor;
+  G4double  m_Rich2GasTotPhotonSuppressFactor;
+
   G4bool    m_RichHpdMaxQEOverRideDB;
+  G4bool    m_RichMirrorReflMaxOverRideDB;
+  
   G4double  m_RichHpdMaxQEValueWhenOverRideDB;
+  
+  G4double  m_MaxRich1Mirror1ReflectWhenOverRideDB;
+  G4double  m_MaxRich1Mirror2ReflectWhenOverRideDB;
+  G4double  m_MaxRich2Mirror1ReflectWhenOverRideDB;
+  G4double  m_MaxRich2Mirror2ReflectWhenOverRideDB;
+  
+  G4double  m_RichHpdSiDetEfficiency;
+  G4double  m_RichHpdReadoutEffWithAerogel;
+  G4double  m_RichHpdReadoutEffWithRich1Gas;
+  G4double  m_RichHpdReadoutEffWithRich2Gas;
+  G4double  m_Rich1EffConvolutionSuppressFactor;
+  G4double  m_Rich2EffConvolutionSuppressFactor;
   
 };
 

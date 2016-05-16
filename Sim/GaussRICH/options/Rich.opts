@@ -51,10 +51,13 @@ GiGa.ModularPL.GiGaPhysConstructorOp.RichMaxNumPhotPerCherenkovStep=40;
 //GiGaGetHitsAlg.RichSegments       = "";
 //GiGaGetHitsAlg.RichTracks         = "";
 
+
 GiGa.StepSeq.Members  += { "RichG4StepAnalysis6/RichStepHpdRefl" } ;
 GiGa.TrackSeq.Members      += { "RichG4TrackActionPhotOpt/RichG4PhotOpt" } ;
 GiGa.TrackSeq.Members      += { "Rich1G4TrackActionUpstrPhoton/Rich1UpstrPhotonTrack" } ;
 GiGa.TrackSeq.Members      += { "RichG4TrackActionAerogelPhoton/RichG4AgelPhot" };
+//GiGa.TrackSeq.Members      += {"RichG4TrackActionRich2Photon/Rich2PhotonBackwardSup" };
+ 
 
 //GiGa.TrackSeq.RichG4PhotOpt.RichHpdMaxQEOverRideDB=true;
 //GiGa.TrackSeq.RichG4PhotOpt.RichHpdMaxQEValueWhenOverRideDB=1.0;

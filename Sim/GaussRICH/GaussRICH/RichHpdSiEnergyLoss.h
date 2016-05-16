@@ -75,6 +75,8 @@ private:
   G4double finalRangeforSiDetStep;
   G4double PhElectronMaxEnergy;
   G4double SiHitDetGlobalEff;
+  G4double SiHitDetGlobalEffForBackSca;
+  G4double m_HpdSiDetEffForBackSca;  
 
   G4double m_HpdSiDetEff;  
   G4double m_SiPixelChipEff;

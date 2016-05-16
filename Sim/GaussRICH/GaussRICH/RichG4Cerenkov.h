@@ -154,6 +154,10 @@ public: // With description
   void setRich2BackgrProb(G4double abackgrprob ) 
   { m_Rich2BackgrProb = abackgrprob; }
   void printBackgrRich2Param();
+
+  void setActivateRichG4CherenkovAnalysis(G4bool aFLA) {
+    m_ActivateRichG4CherenkovAnalysis = aFLA ;
+  }
   
 private:
 
@@ -188,7 +192,9 @@ private:
 
   G4bool m_AddBackGrRich2;
   G4double  m_Rich2BackgrProb;
+  G4bool  m_ActivateRichG4CherenkovAnalysis;
   
+
 };
 
 ////////////////////

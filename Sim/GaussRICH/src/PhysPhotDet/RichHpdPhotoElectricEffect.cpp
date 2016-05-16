@@ -69,6 +69,8 @@ void RichHpdPhotoElectricEffect::setHpdPhElecParam()
     m_hpdPhCathodeInnerRadius= m_HpdProperty->HpdPhCathodeInnerRadius();
     m_MaxZHitInRich1=  m_HpdProperty->Rich1MaxZHitZCoord();
     m_MaxAnyHpdQEff =   m_HpdProperty-> HpdMaxQuantumEff();
+
+
     
 
 
@@ -234,7 +236,7 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
 
   //  RichG4AnalysisPhotElecA (aStep, currentRichDetNumber,
   //                         currentHpdNumber, PhotonEnergy);
-  RichG4AnalysisPhotElecA (aStep, currentRichDetNumber);
+  if(m_activateRichPhotElecAnalysis)RichG4AnalysisPhotElecA (aStep, currentRichDetNumber);
  
   // End of histogram Analysis stuff
   double CurPhCathodeQE = getCurrentHpdQE(currentHpdNumber, currentRichDetNumber,
@@ -256,7 +258,7 @@ RichHpdPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
 
     //    RichG4AnalysisPhotElecB (aStep, currentRichDetNumber,
     //                         currentHpdNumber, PhotonEnergy);
-    RichG4AnalysisPhotElecB (aStep, currentRichDetNumber);
+    if(m_activateRichPhotElecAnalysis)RichG4AnalysisPhotElecB (aStep, currentRichDetNumber);
 
     // End of histogram Analysis stuff.
     //  G4double aPhotonTime= aParticleChange.GetProperTimeChange();

@@ -59,6 +59,7 @@ private:
   double m_RichHpdReadoutEffWithAerogel;   //to account for efficiency loss seen in real data
   double m_RichHpdReadoutEffWithRich1Gas; // to account for efficiency loss seen in real data
   double m_RichHpdReadoutEffWithRich2Gas; // to account for efficiency loss seen in real data
+
   
 };
 // ============================================================================

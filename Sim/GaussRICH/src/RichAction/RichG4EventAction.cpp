@@ -71,7 +71,8 @@ RichG4EventAction::RichG4EventAction( const std::string& type   ,
     m_RichG4InputMonActivate(false),
     m_IsRichG4FirstEvent(true),
     m_RichG4HitReconUseOnlySignalHit(false),
-    m_RichG4HitReconUseOnlyHighMom(false)
+    m_RichG4HitReconUseOnlyHighMom(false),
+    m_RichQwAnalysisNtupleName("RichG4AnalysisNtupleTestName")
 {
   declareProperty( "RichEventActionVerbose",
                    m_RichEventActionVerboseLevel );
@@ -120,6 +121,11 @@ RichG4EventAction::RichG4EventAction( const std::string& type   ,
   declareProperty("RichG4HitReconUseHighMomTk",
                   m_RichG4HitReconUseOnlyHighMom);
   
+
+  //declareProperty("RichQwAnalysisNtupleName", m_RichQwAnalysisNtupleName);
+  
+
+
   m_RichHitCName= new RichG4HitCollName();
   m_NumRichColl=m_RichHitCName->RichHCSize();
   m_RichG4CollectionID.reserve(m_NumRichColl);
@@ -280,21 +286,33 @@ void RichG4EventAction::BeginOfEventAction ( const G4Event* /* aEvt */ )
     if( m_RichG4HistoActivateQw ) {
 
       RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
-      aRichG4QwAnalysis->InitQwAnalysis();
+      //      aRichG4QwAnalysis->InitQwAnalysis();
+      aRichG4QwAnalysis-> setAnalysisNtupleFileName(m_RichQwAnalysisNtupleName);
+      
+      aRichG4QwAnalysis->InitQwAnalysisA();
     }
+    
 
-    m_IsRichG4FirstEvent = false;
-  } else {
-    if( m_RichG4HistoActivateQw ) {
-      RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
-      aRichG4QwAnalysis->reset_NumPartInQwHisto();
-
-    }
+      m_IsRichG4FirstEvent = false;
+  
   }
+  
+  
+  // else {
+  //  if( m_RichG4HistoActivateQw ) {
+  //    RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
+  //    aRichG4QwAnalysis->reset_NumPartInQwHisto();
+
+  // }
+  //}
+
+
 
 
   // Print("'BeginOfEventAction' method is invoked by RichG4EventAction");
 }
+
+
 
 //=============================================================================
 // G4
@@ -397,11 +415,11 @@ void RichG4EventAction::EndOfEventAction( const G4Event* anEvent  /* event */ )
   }
 
 
-    if( m_RichG4HistoActivateQw ) {
+  //    if( m_RichG4HistoActivateQw ) {
 
-      RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
-      aRichG4QwAnalysis->WriteOutQwNtuple();
-    }
+  //    RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
+  //    aRichG4QwAnalysis->WriteOutQwNtuple();
+  //  }
 
   //get the trajectories
   G4TrajectoryContainer* trajectoryContainer=anEvent->GetTrajectoryContainer();

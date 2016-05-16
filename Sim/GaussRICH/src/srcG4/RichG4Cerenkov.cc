@@ -98,7 +98,8 @@ using namespace std;
 RichG4Cerenkov::RichG4Cerenkov(const G4String& processName, G4ProcessType type)
   : G4VDiscreteProcess(processName, type),
     fRichVerboseInfoTag(false),
-    fMaxPhotonPerRadiatorFlag(false)
+    fMaxPhotonPerRadiatorFlag(false),
+    m_ActivateRichG4CherenkovAnalysis(false)
 {
 
   //        G4cout << "RichG4Cerenkov::RichG4Cerenkov constructor" << G4endl;
@@ -429,21 +430,66 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     G4Track* aTaggedSecondaryTrack
       = RichG4CherenkovPhotProdTag(aTrack,aSecondaryTrack,
                                    cosTheta,phi,sampledEnergy,fRichVerboseInfoTag,aCkvSourceInfo );
+
+
     aParticleChange.AddSecondary(aTaggedSecondaryTrack);
+
+   // test SE
+   //Kill the photon if the track is produced in the downstream region
+
+    // const G4ThreeVector& aChTrackProdPosAA = aTrack.GetVertexPosition();
+       // G4bool trackKill=false;
+       // if(aChTrackProdPosAA.z() > 6500.0 && aChTrackProdPosAA.z() < 12000.0) {
+         // G4cout<<"Track prod in dns region "<<G4endl;
+         
+         //  if( pPreVolName == LogVolCF4NameAnalysis){ 
+       //    aTaggedSecondaryTrack ->SetTrackStatus(fStopAndKill);
+       //    trackKill=true;
+           
+           // }
+         
+       //  }
+       
+  //end test SE
+ 
+       //  if( ! trackKill ){
+         
+       //   aParticleChange.AddSecondary(aTaggedSecondaryTrack);
+
+          //  }else {
+         // G4cout<<" Photon killed at production"<<G4endl;
+         
+          //  }
+       
+       
     // end of additions by SE to tag the info on photon production.
     // also the next line is commented out as as result.
     // aParticleChange.AddSecondary(aSecondaryTrack);
 		//aParticleChange.AddSecondary(aSecondaryTrack);
 
+
+
 	}
   
   
+  
    // test analysis by SE. Not needed for regular production running.
+   // Hence switched off by default.
   // RichG4CherenkovProdFeaturesHisto(aTrack);
-  // RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
-  // if( aRichG4QwAnalysis->qwAnalysisNtupleBooked() ) {
-  //  aRichG4QwAnalysis ->FillQwAnalysisHisto(aTrack);
-  // }
+
+  if( m_ActivateRichG4CherenkovAnalysis ) {
+    
+   RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
+   if( aRichG4QwAnalysis->qwAnalysisNtupleBooked() ) {
+     // aRichG4QwAnalysis ->FillQwAnalysisHisto(aTrack);
+    aRichG4QwAnalysis ->FillQwAnalysisHistoA(aTrack);
+   }
+      
+       
+  }
+  
+  
+
   // end of test analysis by SE
 
 	if (verboseLevel>0) {

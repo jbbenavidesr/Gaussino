@@ -7,12 +7,18 @@
 #include "GaudiKernel/NTuple.h"
 #include "G4Track.hh" 
 
+ class TFile;
+ class TTree;
+
+
 /** @class RichG4QwAnalysis RichG4QwAnalysis.h RichAnalysis/RichG4QwAnalysis.h
  *  
  *
  *  @author Sajan EASO
- *  @date   2006-02-21
+ *  @date   2006-02-21 
+ *  Modif  09-05-2016  SE
  */
+
 class RichG4QwAnalysis {
 public: 
 
@@ -27,6 +33,17 @@ public:
     m_qNtuple->write();
   }
   bool qwAnalysisNtupleBooked() {return m_qwAnalysisNtupleBooked;}
+
+  void setAnalysisNtupleFileName(G4String aString){
+    m_RichAnaNtupFileName = aString;
+    
+  }
+  
+
+  void InitQwAnalysisA();
+  void FillQwAnalysisHistoA(const G4Track& aChTrack);
+  void EndofRunQwAnalysis();
+  
 
 protected:
 
@@ -48,6 +65,28 @@ private:
   NTuple::Array <float> m_ChProcType;
   NTuple::Array <float> m_ChTotEner;
   NTuple::Array <float> m_RadNum; 
+  NTuple::Array <float> m_ChDirX;
+  NTuple::Array <float> m_ChDirY;
+  NTuple::Array <float> m_ChDirZ;
+  
   bool  m_qwAnalysisNtupleBooked; 
+  
+  G4String m_RichAnaNtupFileName;
+  TFile* m_RichAnaNtupFile;
+  TTree* m_RichAnaTree;
+
+  G4double m_aChProdX;
+  G4double m_aChProdY;
+  G4double m_aChProdZ;
+  G4double m_aRDetNum;
+  G4double m_aChPartType;
+  G4double m_aChProcType;
+  G4double m_aChTotEner;
+  G4double m_aRadNum;
+  G4double m_aChDirX;
+  G4double m_aChDirY;
+  G4double m_aChDirZ;
+  
+
 };
 #endif //GAUSSRICH_RICHG4QWANALYSIS_H

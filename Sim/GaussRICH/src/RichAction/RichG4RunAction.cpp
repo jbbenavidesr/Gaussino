@@ -20,6 +20,7 @@
 #include "GaussRICH/RichG4Counters.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
+#include "GaussRICH/RichG4QwAnalysis.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4RunAction
@@ -169,6 +170,10 @@ void RichG4RunAction::EndOfRunAction( const G4Run* run )
   //        ui->ApplyCommand( *iCmd );
   //      }
   //  }
+  
+  RichG4QwAnalysis* aRichG4QwAnalysis = RichG4QwAnalysis::getRichG4QwAnalysisInstance();
+  aRichG4QwAnalysis ->EndofRunQwAnalysis();
+  
 }
 
 
