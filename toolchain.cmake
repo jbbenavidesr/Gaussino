@@ -9,12 +9,13 @@ set(generators_versions
     hijing      1.383bs.2
     lhapdf      6.1.4
     photos++    3.56
-    powheg-box  r2092
+    powheg-box  r3043.lhcb
     pythia6     427.2
-    pythia8     186
-    rivet       1.9.0
-    tauola++    1.1.4
+    pythia8     219
+    rivet       2.4.2
+    tauola++    1.1.5
     thepeg      1.9.2p1
+    yoda        1.5.9
     )
 
 # Process the lines of LCG_generators_*.txt file to extract the
