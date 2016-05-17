@@ -6,6 +6,8 @@
 
 ! 2016-05-17 - Gloria Corti
  - Change the version of Pythia8 to 219
+ - Change the version of tauola to 1.1.5 temporarily until 1.1.6 is available
+   from LCG_79 and LCG_84
 
 ! 2016-05-08 - Gloria Corti
  - Change the version of Rivet to 2.4.2
