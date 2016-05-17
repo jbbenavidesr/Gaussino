@@ -4,6 +4,9 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-05-17 - Gloria Corti
+ - Change the version of Pythia8 to 219
+
 ! 2016-05-08 - Gloria Corti
  - Change the version of Rivet to 2.4.2
  - Change the version of taoula to 1.1.6
