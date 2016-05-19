@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-05-19 - Gloria Corti
+ - Remove the link to pythia8tohepmc that is no longer present and should no
+   longer be necessary with the build of Pythia8 219
+
 ! 2016-05-17 - Gloria Corti
  - Change the version of Pythia8 to 219
  - Change the version of tauola to 1.1.5 temporarily until 1.1.6 is available
