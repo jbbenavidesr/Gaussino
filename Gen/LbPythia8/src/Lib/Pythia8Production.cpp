@@ -27,8 +27,7 @@
 //=============================================================================
 // Default constructor.
 //=============================================================================
-Pythia8Production::Pythia8Production(const std::string& type,
-                                     const std::string& name,
+Pythia8Production::Pythia8Production(const string& type, const string& name,
                                      const IInterface* parent)
   : GaudiTool(type, name, parent), m_pythia(0), m_hooks(0), m_lhaup(0),
     m_beamTool(0), m_pythiaBeamTool(0), m_randomEngine(0), m_nEvents(0),
@@ -121,8 +120,8 @@ StatusCode Pythia8Production::initialize() {
   m_xmlLogTool = tool<ICounterLogFile >("XmlCounterLogFile");
 
   // Create the Pythia 8 generator.
-  std::string xmlpath("UNKNOWN" != System::getEnv("PYTHIA8XML") ?
-		      System::getEnv("PYTHIA8XML") : ""); 
+  string xmlpath("UNKNOWN" != System::getEnv("PYTHIA8XML") ?
+		 System::getEnv("PYTHIA8XML") : ""); 
   m_pythia = new Pythia8::Pythia(xmlpath, m_showBanner); 
   if (!m_pythia) return StatusCode::FAILURE;
 
@@ -220,11 +219,9 @@ StatusCode Pythia8Production::initializeGenerator() {
   }
   
   // Initialize.
-  if (m_lhaup) {
-    if (m_pythia->init(m_lhaup)) return StatusCode::SUCCESS;
-    else return Error("Failed to initialize Pythia 8 with LHAUP pointer.");
-  } else if (m_pythia->init()) {return StatusCode::SUCCESS;
-  } else return Error("Failed to initialize Pythia 8.");
+  if (m_lhaup) m_pythia->setLHAupPtr(m_lhaup);
+  if (m_pythia->init()) return StatusCode::SUCCESS;
+  else return Error("Failed to initialize Pythia 8.");
 }
 
 //=============================================================================
@@ -233,7 +230,7 @@ StatusCode Pythia8Production::initializeGenerator() {
 StatusCode Pythia8Production::finalize() {
 
   // Print the statistics.
-  m_pythia->statistics();
+  m_pythia->stat();
 
   // Write the cross-sections to the XML log.
   vector<int> codes = m_pythia->info.codesHard();
