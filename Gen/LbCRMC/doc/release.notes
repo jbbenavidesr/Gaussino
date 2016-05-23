@@ -4,6 +4,9 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-05-23 - Laure Massacrier
+Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
+
 ! 2016-04-27 - Laure Massacrier
  - Add calculation and printing of the center of mass energy to check the configuration infos in CRMCProduction.cpp
  - Fix status of beam particles to 3 while filling HepMC event so that beam particles are ignored by EvtGen

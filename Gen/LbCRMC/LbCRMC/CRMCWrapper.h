@@ -129,9 +129,13 @@ class CRMCWrapper {
     void (*crmc_generate)(const int&, const int&, int&, double&, int&, double&,
                           double&, double&,double&, double&, int&);
 
+    /*void (*crmc_set)(const int&, const int&, const double&, const double&,
+                     const int&, const int&, const int&, const int&, const int&,
+                     const char*, const char*);*/
     void (*crmc_set)(const int&, const int&, const double&, const double&,
                      const int&, const int&, const int&, const int&, const int&,
-                     const char*, const char*);
+                     const char*);
+
 
     void (*crmc_init)();
 

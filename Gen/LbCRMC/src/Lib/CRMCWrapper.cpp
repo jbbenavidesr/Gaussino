@@ -327,7 +327,7 @@ bool CRMCWrapper::initialize_generator() {
     return false;
 
   // Set parameters in CRMC
-  crmc_set(fNCollision,
+  /* crmc_set(fNCollision,
            fSeed,
            fProjectileMomentum,
            fTargetMomentum,
@@ -337,6 +337,16 @@ bool CRMCWrapper::initialize_generator() {
            fProduceTables,
            fTypout,
            fOutputFileName.c_str(),
+           fParamFileName.c_str());*/
+   crmc_set(fNCollision,
+           fSeed,
+           fProjectileMomentum,
+           fTargetMomentum,
+           fProjectileId,
+           fTargetId,
+           fHEModel,
+           fProduceTables,
+           fTypout,
            fParamFileName.c_str());
 
   // Kick CRMC initialisation
@@ -660,9 +670,14 @@ bool CRMCWrapper::load_generator_library(int HEmodel) {
   }
 
   // Configuration method
-  crmc_set = (void(*)(const int&, const int&, const double&, const double&,
+  /*  crmc_set = (void(*)(const int&, const int&, const double&, const double&,
                       const int&, const int&, const int&, const int&,
                       const int&, const char*, const char*))
+                      dlsym(fLibrary, "crmc_set_f_");*/
+
+  crmc_set = (void(*)(const int&, const int&, const double&, const double&,
+                      const int&, const int&, const int&, const int&,
+                      const int&, const char*))
                       dlsym(fLibrary, "crmc_set_f_");
 
   if(crmc_set == NULL) {
