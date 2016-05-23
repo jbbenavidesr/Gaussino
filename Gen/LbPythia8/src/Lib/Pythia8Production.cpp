@@ -155,8 +155,9 @@ StatusCode Pythia8Production::initializeGenerator() {
 
   // Initialize the external pointers.
   m_pythia->setRndmEnginePtr(m_randomEngine);
-  m_pythia->setUserHooksPtr(m_hooks);
   m_pythia->setBeamShapePtr(m_pythiaBeamTool);
+  if (m_hooks) m_pythia->setUserHooksPtr(m_hooks);
+  if (m_lhaup) m_pythia->setLHAupPtr(m_lhaup);
 
   // Set the beam configuration.
   Gaudi::XYZVector beamA, beamB;
@@ -219,7 +220,6 @@ StatusCode Pythia8Production::initializeGenerator() {
   }
   
   // Initialize.
-  if (m_lhaup) m_pythia->setLHAupPtr(m_lhaup);
   if (m_pythia->init()) return StatusCode::SUCCESS;
   else return Error("Failed to initialize Pythia 8.");
 }
