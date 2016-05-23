@@ -2,7 +2,7 @@
 #define LBBCVEGPY_LHAUPBCVEGPY_H 1
 
 // Parton shower packages.
-#include "LbPythia8/LHAFortran.h"
+#include "Pythia8Plugins/LHAFortran.h"
 #include "LbHard/HardProduction.h"
 
 /**
