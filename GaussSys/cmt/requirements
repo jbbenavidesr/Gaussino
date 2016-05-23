@@ -1,17 +1,11 @@
 package GaussSys
-version v49r0
+version v50r0
 
 branches cmt doc
 
 #==================================================================
 # Gauss packages
 #==================================================================
-
-# Temporarily to pick up locker mechanism for nighlty tests and builds
-use GaudiPolicy         v15r8
-
-# Temporarily to pick up fix in DDDB warning
-use DDDB                v1r84   Det 
 
 # Gauss application: the application is not built on Win32
 use Gauss               v49r0   Sim
