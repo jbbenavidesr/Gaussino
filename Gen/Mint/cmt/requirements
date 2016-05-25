@@ -3,7 +3,7 @@
 # Maintainer : Matt Coombes
 #============================================================================
 package           Mint
-version           v4r0
+version           v4r1
 
 #============================================================================
 # Structure, i.e. directories to process. 

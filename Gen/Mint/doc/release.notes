@@ -6,8 +6,18 @@
 !               Matt Coombes has task of implementing MINT into LHCb framework.
 !-----------------------------------------------------------------------------
 
-!=========================== Mint v4r0 2016-03-94 ============================
-! 2015-03-04 - Gloria Corti
+!=========================== Mint v4r1 2016-05-25 ============================
+! 2016-04-04 - Jonas Rademacker
+ - fix one more spin factor (that used to always give zero). Again, credit
+   goes to the brilliant Philippe d'Argent.
+ - fix an error in SymmLorentzMatrix::Contract_2 which will affect two spin-2 
+   spin factors: SF_DtoT1T2_T1toP0P1_T2toP2P3_S, 
+   SF_DtoPseudoTP0_PseudoTtoTP1_TtoP2P3 (and there's also a fix for a compile 
+   time error in NamedParameter? picked up by the latest clang which should 
+   have no further consequences)
+
+!=========================== Mint v4r0 2016-03-04 ============================
+! 2016-03-04 - Gloria Corti
  - Increase major version to highligth that behavioru may be different
    Add release notes for all commits.
 
