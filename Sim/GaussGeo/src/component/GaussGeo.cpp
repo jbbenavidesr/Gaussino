@@ -26,39 +26,39 @@
 #include "ClhepTools/MathCore2Clhep.h"
 
 // GEANT4
-#include "G4Element.hh"
-#include "G4Material.hh"
-#include "G4LogicalVolume.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PVPlacement.hh"
+#include "Geant4/G4Element.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4PVPlacement.hh"
 // For solids
-#include "G4Box.hh"
-#include "G4Cons.hh"
-#include "G4Sphere.hh"
-#include "G4Trd.hh"
-#include "G4Tubs.hh"
-#include "G4Trap.hh"
-#include "G4Polycone.hh"
+#include "Geant4/G4Box.hh"
+#include "Geant4/G4Cons.hh"
+#include "Geant4/G4Sphere.hh"
+#include "Geant4/G4Trd.hh"
+#include "Geant4/G4Tubs.hh"
+#include "Geant4/G4Trap.hh"
+#include "Geant4/G4Polycone.hh"
 // For SolidBoolean
-#include "G4SubtractionSolid.hh"
-#include "G4IntersectionSolid.hh"
-#include "G4UnionSolid.hh"
+#include "Geant4/G4SubtractionSolid.hh"
+#include "Geant4/G4IntersectionSolid.hh"
+#include "Geant4/G4UnionSolid.hh"
 // For surfaces
-#include  "G4OpticalSurface.hh"
-#include  "G4LogicalSurface.hh"
-#include  "G4LogicalSkinSurface.hh"
-#include  "G4LogicalBorderSurface.hh"
+#include "Geant4/G4OpticalSurface.hh"
+#include "Geant4/G4LogicalSurface.hh"
+#include "Geant4/G4LogicalSkinSurface.hh"
+#include "Geant4/G4LogicalBorderSurface.hh"
 // Other G4
-#include "G4VisAttributes.hh"
-#include "G4SDManager.hh"
-#include "G4FieldManager.hh"
-#include "G4TransportationManager.hh"
-#include "G4MagIntegratorStepper.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4FieldManager.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4MagIntegratorStepper.hh"
 // Used for cleanup in finilization
-#include "G4GeometryManager.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4SolidStore.hh"
+#include "Geant4/G4GeometryManager.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
+#include "Geant4/G4PhysicalVolumeStore.hh"
+#include "Geant4/G4SolidStore.hh"
 
 // GiGa
 #include "GiGa/IGiGaSensDet.h"
@@ -109,9 +109,9 @@ GaussGeo::GaussGeo(const std::string& service_name, ISvcLocator* service_locator
   declareProperty("WorldLogicalVolumeName", m_world_lv_name = "World");
   declareProperty("WorldMaterial", m_world_material = "/dd/Materials/Air");
 
-  declareProperty("XsizeOfWorldVolume", m_world_volume_size_x = 50. * m);
-  declareProperty("YsizeOfWorldVolume", m_world_volume_size_y = 50. * m);
-  declareProperty("ZsizeOfWorldVolume", m_world_volume_size_z = 50. * m);
+  declareProperty("XsizeOfWorldVolume", m_world_volume_size_x = 50. * Gaudi::Units::m);
+  declareProperty("YsizeOfWorldVolume", m_world_volume_size_y = 50. * Gaudi::Units::m);
+  declareProperty("ZsizeOfWorldVolume", m_world_volume_size_z = 50. * Gaudi::Units::m);
 
   declareProperty("GlobalSensitivity", m_budget = "");
 
@@ -1399,15 +1399,15 @@ G4VSolid* GaussGeo::solidBoolToG4Solid(const SolidBoolean* solid_bool) {
         }
       }
 
-      HepRep3x3 trep(matrix_elems[0][0], matrix_elems[0][1], matrix_elems[0][2],
-                     matrix_elems[1][0], matrix_elems[1][1], matrix_elems[1][2],
-                     matrix_elems[2][0], matrix_elems[2][1], matrix_elems[2][2]);
+      CLHEP::HepRep3x3 trep(matrix_elems[0][0], matrix_elems[0][1], matrix_elems[0][2],
+                            matrix_elems[1][0], matrix_elems[1][1], matrix_elems[1][2],
+                            matrix_elems[2][0], matrix_elems[2][1], matrix_elems[2][2]);
 
-      HepRotation new_rotation;
+      CLHEP::HepRotation new_rotation;
       new_rotation.set(trep);
-      HepTransform3D new_transform(new_rotation, Hep3Vector(matrix_elems[0][3],
-                                                            matrix_elems[1][3],
-                                                            matrix_elems[2][3]));
+      HepGeom::Transform3D new_transform(new_rotation, CLHEP::Hep3Vector(matrix_elems[0][3],
+                                                                         matrix_elems[1][3],
+                                                                         matrix_elems[2][3]));
 
       g4_resulting_solid = new G4SubtractionSolid(solid_bool->first()->name() + "-" + solid_child->name(),
                                                   g4_resulting_solid,
@@ -1464,7 +1464,7 @@ G4VPhysicalVolume* GaussGeo::world() {
   G4LogicalVolume* world_logical_volume = createG4LVolume(world_solid_box, world_material, m_world_lv_name);
   world_logical_volume->SetVisAttributes(G4VisAttributes::Invisible);
 
-  m_world_root = new G4PVPlacement(0, Hep3Vector(), m_world_pv_name, world_logical_volume, 0, false, 0);
+  m_world_root = new G4PVPlacement(0, CLHEP::Hep3Vector(), m_world_pv_name, world_logical_volume, 0, false, 0);
 
   // Import GDML geometry
   for (const auto& reader : m_gdml_readers) {
