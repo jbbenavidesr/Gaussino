@@ -4,6 +4,7 @@
 ! Purpose     : 
 !-----------------------------------------------------------------------------
 
+!========================== SimChecks v1r8 2016-05-25 ========================
 ! 2016-03-22 - Dmitry Popov
  - Removed the settings which do not change the Gauss' defaults, replaced
    the explicit tags with a $GAUSSROOT import.
