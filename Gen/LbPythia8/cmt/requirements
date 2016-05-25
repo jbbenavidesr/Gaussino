@@ -30,8 +30,9 @@ apply_pattern linker_library    library=LbPythia8Lib
 apply_pattern library_stamps    library=LbPythia8Lib
  
 # define environment variable to get xmldoc repository from GENSER distrib
+# location changed for 219
 #============================================================================
-set PYTHIA8XML $(pythia8_home)/xmldoc
+set PYTHIA8XML $$(pythia8_home)/share/Pythia8/xmldoc
 
 # do not build on windows
 #============================================================================

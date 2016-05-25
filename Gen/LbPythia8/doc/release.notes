@@ -4,6 +4,9 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+! 2016-05-25 - Gloria Corti
+ - Change path for PYTHIA8XML
+
 ! 2016-05-23 - Philip Ilten
  - Cleaned up extra files and updated for usage with Pythia 8.219
 
