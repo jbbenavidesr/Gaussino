@@ -133,6 +133,8 @@ private:
   RichG4HistoDefineSet5* m_aRichG4HistoSet5;
   RichG4HistoDefineTimer* m_aRichG4HistoTimer;
 
+  int  m_defineRichG4HistoSet1Type;
+  
   bool  m_FirstTimeOfBeginRichRun;
 
 };

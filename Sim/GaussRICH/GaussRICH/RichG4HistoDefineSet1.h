@@ -19,6 +19,8 @@ class RichG4HistoDefineSet1 {
 public:
   RichG4HistoDefineSet1();
   virtual ~RichG4HistoDefineSet1();
+  void setRichG4HistoSet1Type(int aType){m_RichG4HistoSet1Type = aType; }
+  void BookRichG4HistogramsSet1 ();
 
 private:
   // These data members are used in the execution of this algorithm
@@ -26,7 +28,12 @@ private:
   // for the RichG4RunAction.
   // bool        m_DefineRichG4HistogramSet1;  // flag for histo production
   /// Book histograms
-  void bookRichG4HistogramsSet1();
+  void bookRichG4HistogramsSet1Type1();
+  void bookRichG4HistogramsSet1Type2();
+  void bookRichG4HistogramsSet1Type3();
+  
+
+  
 
   // Histograms ( used if m_produceHistogramSet1 = 1 (true) )
   IHistogram1D*         m_hNumTotHitRich1;
@@ -67,6 +74,55 @@ private:
   //  IHistogram1D*  m_hEnergyLossInCF4;
   
   // IHistogram1D* m_hNumScintPhotProdInCF4;
+  
+
+   IHistogram1D*         m_hStepNumScintPhotRich2;
+   IHistogram1D*         m_hStepNumScintPhotLBARich2;
+   IHistogram1D*         m_hStepNumScintPhotSBARich2;
+   IHistogram1D*         m_hStepNumScintPhotSBA2Rich2;
+   IHistogram1D*         m_hStepNumCkvPhotRich2;
+   IHistogram1D*         m_hStepNumCkvPhotLBARich2;
+   IHistogram1D*         m_hStepNumCkvPhotSBA2Rich2;
+
+
+  IHistogram1D*         m_hPhtotScintVertAngleRich2;
+  IHistogram1D*         m_hPhtotScintForwardAngleRich2;
+  IHistogram1D*         m_hPhtotScintBackwardAngleRich2;
+  IHistogram1D*         m_hPhtotScintHorizAngleRich2;
+  IHistogram2D*         m_hPhtotScintForwardVsHorizAngleRich2;
+  IHistogram2D*          m_hPhtotScintNegZVsHorizAngleRich2;
+  
+
+  IHistogram1D*         m_hPhtotScintXRich2;
+  IHistogram1D*         m_hPhtotScintYRich2;
+  IHistogram1D*         m_hPhtotScintZRich2;
+  IHistogram2D*         m_hPhtotScintXvsZRich2;
+  
+
+ 
+  IHistogram1D*         m_hPhtotScintWavelengthRich2;
+  IHistogram1D*         m_hPhtotScintPartMomRich2;
+
+
+
+  IHistogram1D*         m_hPhDetPlaneScintVertAngleRich2;
+  IHistogram1D*         m_hPhDetPlaneScintForwardAngleRich2;
+  IHistogram1D*         m_hPhDetPlaneScintBackwardAngleRich2;
+  IHistogram1D*         m_hPhDetPlaneScintHorizAngleRich2;
+  IHistogram2D*         m_hPhDetPlaneScintForwardVsHorizAngleRich2;
+  IHistogram2D*          m_hPhDetPlaneScintNegZVsHorizAngleRich2;
+  
+
+  IHistogram1D*         m_hPhDetPlaneScintXRich2;
+  IHistogram1D*         m_hPhDetPlaneScintYRich2;
+  IHistogram1D*         m_hPhDetPlaneScintZRich2;
+  IHistogram2D*         m_hPhDetPlaneScintXvsZRich2;
+  
+
+  IHistogram1D*         m_hPhDetPlaneScintWavelengthRich2;
+  IHistogram1D*         m_hPhDetPlaneScintPartMomRich2;
+  
+  int                 m_RichG4HistoSet1Type;
   
 
   std::string m_RichG4HistoPathSet1; ///< Histo path

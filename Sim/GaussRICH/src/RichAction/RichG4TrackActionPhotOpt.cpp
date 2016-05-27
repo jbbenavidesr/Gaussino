@@ -39,6 +39,8 @@
 #include "GaussRICH/RichHpdProperties.h"
 #include "GaussRICH/RichPEInfoAttach.h"
 #include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
+#include "GaussRICH/RichScintilParamAdmin.h"
+
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4TrackActionPhotOpt
@@ -223,6 +225,12 @@ StatusCode RichG4TrackActionPhotOpt::initialize()
          aRichHpdProperties-> setHpdMaximumQuantumEfficiency();
        }
        
+         RichScintilParamAdmin* aRichScintilParamAdmin = 
+                RichScintilParamAdmin::getRichScintilParamAdminInstance();
+         aRichScintilParamAdmin->setRichScintilScaleFactor(m_Rich2GasTotPhotonSuppressFactor);
+         
+
+
        log << MSG::INFO <<" Rich HPD MaxQE SiDetEff  and  OverallEff  for  Aerogel Rich1Gas Rich2Gas  "
            << m_MaxHpdQuantumEffFromDB<<"    " <<  m_RichHpdSiDetEfficiency <<"   "<< m_RichHpdReadoutEffWithAerogel <<"    "
            << m_RichHpdReadoutEffWithRich1Gas  <<"   "<< m_RichHpdReadoutEffWithRich2Gas  <<endreq;       
@@ -260,8 +268,18 @@ void RichG4TrackActionPhotOpt::PreUserTrackingAction
     G4double PhotonSupFact=  m_Rich1GasTotPhotonSuppressFactor;
 
     if(ZPhotOrigin >  m_ZDownstreamOfRich1){
-      PhotonSupFact=  m_Rich2GasTotPhotonSuppressFactor;
 
+      const G4VProcess* aProcess = aTrack->GetCreatorProcess();
+      G4String  aCreatorProcessName=  
+                   (aProcess) ? (aProcess ->GetProcessName()) :  "NullProcess";
+      if(aCreatorProcessName != "RichG4Scintillation" ) {        
+          PhotonSupFact=  m_Rich2GasTotPhotonSuppressFactor;
+      }else {
+
+        PhotonSupFact= 1.0;
+      }
+      
+      
     }else  if ( ( ZPhotOrigin < m_Rich1NominalAerogelEndZLocation) && 
                 ( ZPhotOrigin > m_Rich1NominalAerogelBeginZLocation ) ) {
 

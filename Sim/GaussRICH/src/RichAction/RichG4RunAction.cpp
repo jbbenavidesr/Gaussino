@@ -53,9 +53,9 @@ RichG4RunAction::RichG4RunAction
   , m_aRichG4HistoSet2(0)
   , m_aRichG4HistoSet3(0)
   , m_aRichG4HistoSet4(0)
-  , m_aRichG4HistoTimer(0),
-    m_FirstTimeOfBeginRichRun(true)
-
+  , m_aRichG4HistoTimer(0)
+  , m_defineRichG4HistoSet1Type(1)
+  ,  m_FirstTimeOfBeginRichRun(true)
 {
   declareProperty("BeginOfRunCommands", m_beginCmds );
   declareProperty("EndOfRunCommands"  , m_endCmds   );
@@ -65,7 +65,8 @@ RichG4RunAction::RichG4RunAction
   declareProperty("DefineRichG4HistoSet4", m_defineRichG4HistoSet4);
   declareProperty("DefineRichG4HistoSet5", m_defineRichG4HistoSet5);
   declareProperty("DefineRichG4HistoTimer",  m_defineRichG4HistoTimer);
-
+  declareProperty("DefineRichG4HistoSet1Type",  m_defineRichG4HistoSet1Type);
+  
 
 }
 
@@ -112,7 +113,10 @@ void RichG4RunAction::BeginOfRunAction( const G4Run* run )
   if(m_defineRichG4HistoSet1) {
 
     m_aRichG4HistoSet1 = new RichG4HistoDefineSet1();
-  }
+    m_aRichG4HistoSet1 ->setRichG4HistoSet1Type(m_defineRichG4HistoSet1Type);
+    m_aRichG4HistoSet1 ->BookRichG4HistogramsSet1();
+    
+ }
   if(m_defineRichG4HistoSet2) {
 
     m_aRichG4HistoSet2 = new RichG4HistoDefineSet2();

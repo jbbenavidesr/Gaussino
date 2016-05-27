@@ -11,6 +11,7 @@
 #include "GaussRICH/RichG4EventAction.h"
 #include "GaussRICH/Rich1G4TrackActionUpstrPhoton.h"
 #include "GaussRICH/RichG4TrackActionRich2Photon.h"
+#include "GaussRICH/RichG4TrackActionRich2DbgPhotonTrack.h"
 #include "GaussRICH/GiGaPhysConstructorHpd.h"
 #include "GaussRICH/GiGaPhysConstructorOp.h"
 #include "GaussRICH/GetMCRichHitsAlg.h"
@@ -21,6 +22,7 @@
 #include "GaussRICH/RichG4StepAnalysis4.h"
 #include "GaussRICH/RichG4StepAnalysis5.h"
 #include "GaussRICH/RichG4StepAnalysis6.h"
+#include "GaussRICH/RichG4StepAnalysis15.h"
 
 
 
@@ -36,6 +38,7 @@ DECLARE_TOOL_FACTORY( RichG4RunAction )
 DECLARE_TOOL_FACTORY( RichG4EventAction )
 DECLARE_TOOL_FACTORY( Rich1G4TrackActionUpstrPhoton )
 DECLARE_TOOL_FACTORY( RichG4TrackActionRich2Photon  )
+DECLARE_TOOL_FACTORY( RichG4TrackActionRich2DbgPhotonTrack )
 DECLARE_TOOL_FACTORY( GiGaPhysConstructorHpd )
 DECLARE_TOOL_FACTORY( GiGaPhysConstructorOp )
 DECLARE_ALGORITHM_FACTORY( GetMCRichHitsAlg )
@@ -47,5 +50,6 @@ DECLARE_TOOL_FACTORY(RichG4StepAnalysis3)
 DECLARE_TOOL_FACTORY(RichG4StepAnalysis4)
 DECLARE_TOOL_FACTORY(RichG4StepAnalysis5)
 DECLARE_TOOL_FACTORY(RichG4StepAnalysis6)
+DECLARE_TOOL_FACTORY(RichG4StepAnalysis15)
 
 

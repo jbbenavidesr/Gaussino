@@ -3,7 +3,21 @@
 ! Responsible	: Sajan Easo
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
-! 2016-16-05 - Sajan Easo
+! 2016-05-27 - Sajan Easo
+
+ - Added new track action named RichG4TrackActionRich2Photon which suppresses some of the photons 
+   created by scintillation process in RICH2, which are not expected to reach the detector plane.
+   This was to reduce the CPU time used for RICH2 simulation.
+-  For the same purpose, modified RichG4TrackActionRich2Photon and  GiGaPhysConstructorOp so that the
+   suppression factor from efficiency lossses is transferred to the scintillation process, when creating that process. This is to
+   reduce the creation of extra photons, instead of suppressing them after they are created in their first step.
+   A good fraction of the scintillation photons which do not go to the detector plane die in their first step 
+   after reaching the vessel edge. So this modification speeds up killing them.
+-  Added a trackaction RichG4TrackActionRich2DbgPhotonTrack and a step action named RichG4StepAnalysis15. for debugging purpose. 
+   This is to study the effect of killing rich2 photons. This is not actived by default at all. This is for special studies only.
+  
+
+! 2016-05-16 - Sajan Easo
  - Added few modifications to speed up the program. This includes the pixel efficiency and the 
    readout efficiencies seen in data updated into  RichG4TrackActionPhotOpt at pre-user trackaction level. 
    The corresponding suppressions are avoided at the hit level in the RichHpdSiEnergyLoss so that there is no
@@ -32,7 +46,7 @@
 -  There is also the option to override the DB values for max efficiency for making tests for special studies. But this is not
    activated by default. The corresponding options are commented out in RichEfficiency.opts by default.
     
-! 2016-01-05 -Sajan Easo 
+! 2016-05-01 -Sajan Easo 
  -Recently a typedef is removed for Rich1DTabFunc in RichDet. 
   So modifications made to be compatible with this change.
 

@@ -32,6 +32,7 @@
 #include <vector>
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
+#include "GaussRICH/RichScintilParamAdmin.h"
 
 
 // #include "DetDesc/DetectorElement.h"
@@ -74,6 +75,9 @@ GiGaPhysConstructorOp::GiGaPhysConstructorOp
     m_ActivateRICHOpticalPhysProc(true),
     m_activateRICHCF4Scintillation(true),
     m_ActivateRICHHitSmearing(false),
+    m_RichApplyScintillationYieldScaleFactor(true),
+    m_RichScintillationYieldScaleFactor(0.6),
+    m_RichScintillationYieldAuxiliaryScaleFactor(1.0),
     m_RichAerogelHitSmearValue(0.0),
     m_Rich1GasHitSmearValue(0.0),
     m_Rich2GasHitSmearValue(0.0),
@@ -115,9 +119,13 @@ GiGaPhysConstructorOp::GiGaPhysConstructorOp
   declareProperty("RichOpticalPhysicsProcessActivate", m_ActivateRICHOpticalPhysProc);
 
   declareProperty("RichActivateCF4Scintillation",  m_activateRICHCF4Scintillation);
-  declareProperty("RichApplyScintillationYieldScaleFactor", 
-                                          m_RichApplyScintillationYieldScaleFactor);
-  declareProperty("RichScintillationYieldScaleFactor", m_RichScintillationYieldScaleFactor);
+  declareProperty("RichApplyScintillationYieldScaleFactor",
+                     m_RichApplyScintillationYieldScaleFactor);
+  declareProperty("RichScintillationYieldScaleFactor", 
+                     m_RichScintillationYieldScaleFactor);
+  
+  declareProperty("RichScintillationYieldAuxiliaryScaleFactor", 
+                     m_RichScintillationYieldAuxiliaryScaleFactor);
   
 
   //  declareProperty("RichActivateCF4ScintHisto" , m_activateRICHCF4ScintillationHisto);
@@ -288,14 +296,27 @@ void GiGaPhysConstructorOp::ConstructOp() {
   
   if( m_activateRICHCF4Scintillation ) {
       
+    RichScintilParamAdmin* aRichScintilParamAdmin = 
+                RichScintilParamAdmin::getRichScintilParamAdminInstance();
+    aRichScintilParamAdmin->setRichScintilRawFraction( m_RichScintillationYieldScaleFactor);
+    aRichScintilParamAdmin->setRichScintilAuxScaleFactor(m_RichScintillationYieldAuxiliaryScaleFactor);
+    
+    G4double aRichScintillationYieldEffectiveScaleFactor = 
+      (G4double)  (aRichScintilParamAdmin->RichScintilEffectiveFraction());
+    
     theRichScintillationProcess = new RichG4Scintillation("RichG4Scintillation",fOptical);
     theRichScintillationProcess->SetVerboseLevel(0);
     if(m_RichApplyScintillationYieldScaleFactor) {
-      G4cout<<" Rich2 scintillation yield scale factor "<<  
-              m_RichScintillationYieldScaleFactor <<G4endl;
+
+      G4cout<<" Rich2 scintillation yield raw ScaleFactor  effective ScaleFactor  ScaleComponents "<<  
+        m_RichScintillationYieldScaleFactor << "   "
+            << aRichScintillationYieldEffectiveScaleFactor<<"  "
+            <<aRichScintilParamAdmin->RichScintilScaleFactor() <<"   "
+            <<aRichScintilParamAdmin->RichScintilAuxScaleFactor()<<   G4endl;
       
       theRichScintillationProcess-> 
-        SetScintillationYieldFactor(m_RichScintillationYieldScaleFactor);
+        SetScintillationYieldFactor(aRichScintillationYieldEffectiveScaleFactor);
+
     }
     
   }

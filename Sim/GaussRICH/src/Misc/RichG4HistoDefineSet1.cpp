@@ -27,18 +27,46 @@
 //                           ISvcLocator* pSvcLocator) {}
 
 RichG4HistoDefineSet1::RichG4HistoDefineSet1() {
+
   // Declare job options
   m_RichG4HistoPathSet1="RICHG4HISTOSET1/";
   //  declareProperty( "RichG4HistoPath", m_RichG4HistoPath = "/RICHG4HISTOSET1/" );
 
-  // Book histograms
-  bookRichG4HistogramsSet1() ;
+}
+
+
+void RichG4HistoDefineSet1::BookRichG4HistogramsSet1() {
   
+
+  // Book Set 1 histograms
+
+  std::cout<<" Book set1 histograms with type "<< m_RichG4HistoSet1Type <<std::endl;
+  
+
+  
+  if(m_RichG4HistoSet1Type == 1 ) {
+    
+    bookRichG4HistogramsSet1Type1() ;
+
+  }else if (m_RichG4HistoSet1Type  == 2){
+
+    bookRichG4HistogramsSet1Type2() ;
+            
+  }else if ( m_RichG4HistoSet1Type == 3 ) {
+
+    bookRichG4HistogramsSet1Type3() ;
+
+  }
+   
+    
   
 }
+
+
+
 RichG4HistoDefineSet1::~RichG4HistoDefineSet1() {  }
 
-void RichG4HistoDefineSet1::bookRichG4HistogramsSet1() {
+void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
 
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
   RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1" << endreq;
@@ -327,8 +355,214 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1() {
 }
 
 
+void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
 
 
+
+  MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
+
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1A" << endreq;
+
+
+  IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
+
+
+  std::string title="Step Num for Photons in Rich2 produced from scintillation ";
+
+  m_hStepNumScintPhotRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1040",
+                       title,200,0.0,200.0);
+  if(!m_hStepNumScintPhotRich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from scintillation Large size";
+
+  m_hStepNumScintPhotLBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1041",
+                       title,200,0.0,500.0);
+  if(!m_hStepNumScintPhotLBARich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from scintillation Small size";
+
+  m_hStepNumScintPhotSBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1042",
+                       title,202,-1.0,100.0);
+  if(!m_hStepNumScintPhotSBARich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from scintillation Small size Above 5";
+
+  m_hStepNumScintPhotSBA2Rich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1043",
+                       title,202,-1.0,100.0);
+  if(!m_hStepNumScintPhotSBA2Rich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from Cherenkov";
+
+  m_hStepNumCkvPhotRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1044",
+                       title,202,-1.0,100.0);
+  if(!m_hStepNumCkvPhotRich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from Cherenkov large size";
+
+  m_hStepNumCkvPhotLBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1045",
+                       title,500,0.0,500.0);
+  if(!m_hStepNumCkvPhotLBARich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+  title="Step Num for Photons in Rich2 produced from Cherenkov small size above 5";
+
+  m_hStepNumCkvPhotSBA2Rich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1046",
+                       title,201,-1.0,200.0);
+  if(!m_hStepNumCkvPhotSBA2Rich2 ) {
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+
+  }
+
+}
+
+void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type3() {
+
+ MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
+
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1B" << endreq;
+
+
+  IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
+
+
+   std::string title="Angle wrt Y axis for Photons in Rich2 produced from scintillation ";
+
+   m_hPhtotScintVertAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2100",
+                                                   title,200, 0.0, 2.0);
+
+   
+   title="Angle wrt positive Z axis for Photons in Rich2 produced from scintillation ";
+   
+   m_hPhtotScintForwardAngleRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"2110",
+                                                   title,200, 0.0, 2.0); 
+
+
+   title="Angle wrt negative Z axis for Photons in Rich2 produced from scintillation ";
+  
+   m_hPhtotScintBackwardAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2120",
+                                                       title, 200, 0.0, 2.0);
+   
+   
+   title="Angle wrt X axis for Photons in Rich2 produced from scintillation ";
+   
+   m_hPhtotScintHorizAngleRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"2130",
+                                                   title,200, 0.0, 2.0); 
+
+   title = "Angle wrt ForwardZ  vs wrt X  for Photons in Rich2 from scintillation";
+   
+   m_hPhtotScintForwardVsHorizAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2135",
+                                                             title,200, 0.0, 2.0, 200, 0.0, 2.0 ); 
+ 
+  title = "Angle wrt Neg Z  vs wrt X  for Photons in Rich2 from scintillation";
+   
+   m_hPhtotScintNegZVsHorizAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2136",
+                                                             title,200, 0.0, 2.0, 200, 0.0, 2.0 ); 
+
+   title=" X coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhtotScintXRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2140",
+                                            title, 400, -3700.0, 3700.0);
+    
+
+   title=" Y coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhtotScintYRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2150",
+                                            title, 400, -3700.0, 3700.0);
+
+   title=" Z coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhtotScintZRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2160",
+                                            title, 400, 9400.0, 12400.0);
+
+
+   title=" X vs Z coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhtotScintXvsZRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2161",
+                                              title, 400, 9400.0, 12400.0,400, -3700.0, 3700.0);
+  
+   title ="Wavelength of photons  in Rich2 produced froms scintillation";
+    m_hPhtotScintWavelengthRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2170", 
+                                                     title, 400, 100, 900.0);
+    
+    title = "Momentum of particles which produce photons in Rich2 from scintillation";
+    m_hPhtotScintPartMomRich2 =  CurHistoSvc->book(m_RichG4HistoPathSet1+"2180",
+                                                   title, 200, 0.0, 100000.0);
+    
+   title="On Detector Plane: Angle wrt Y axis for Photons in Rich2 produced from scintillation ";
+
+   m_hPhDetPlaneScintVertAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2200",
+                                                   title,200, 0.0, 2.0);
+
+   
+   title="On Detector Plane: Angle wrt positive Z axis for Photons in Rich2 produced from scintillation ";
+   
+   m_hPhDetPlaneScintForwardAngleRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"2210",
+                                                   title,200, 0.0, 2.0); 
+
+
+   title="On Detector Plane:Angle wrt negative Z axis for Photons in Rich2 produced from scintillation ";
+  
+   m_hPhDetPlaneScintBackwardAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2220",
+                                                       title, 200, 0.0, 2.0);
+   
+   
+   title="On Detector Plane: Angle wrt X axis for Photons in Rich2 produced from scintillation ";
+   
+   m_hPhDetPlaneScintHorizAngleRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"2230",
+                                                   title,200, 0.0, 2.0); 
+
+
+  title = "On Detector Plane: Angle wrt ForwardZ vs wrt X  for Photons in Rich2 from scintillation";
+   
+   m_hPhDetPlaneScintForwardVsHorizAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2235",
+                                                             title,200, 0.0, 2.0, 200, 0.0, 2.0 ); 
+
+  title = "On Detector Plane: Angle wrt NegZ vs wrt X  for Photons in Rich2 from scintillation";
+   
+   m_hPhDetPlaneScintNegZVsHorizAngleRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2236",
+                                                             title,200, 0.0, 2.0, 200, 0.0, 2.0 ); 
+
+   title=" On Detector Plane: X coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhDetPlaneScintXRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2240",
+                                            title, 400, -3700.0, 3700.0);
+    
+
+   title="On Detector Plane:  Y coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhDetPlaneScintYRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2250",
+                                            title, 400, -3700.0, 3700.0);
+
+   title=" On Detector Plane: Z coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhDetPlaneScintZRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2260",
+                                            title, 400, 9400.0, 12400.0);
+
+   title=" On Detector Plane: X vs Z coordinate of origin of photons in Rich2 produced froms scintillation";
+   m_hPhDetPlaneScintXvsZRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2261",
+                                                   title, 400, 9400.0, 12400.0, 400, -3700.0, 3700.0);
+   
+   title =" On Detector Plane: Wavelength of photons  in Rich2 produced froms scintillation";
+
+    m_hPhDetPlaneScintWavelengthRich2 = CurHistoSvc->book(m_RichG4HistoPathSet1+"2270", 
+                                                     title, 400, 100, 900.0);
+    
+    title = "On Detector Plane: Momentum of particles which produce photons in Rich2 from scintillation";
+    m_hPhDetPlaneScintPartMomRich2 =  CurHistoSvc->book(m_RichG4HistoPathSet1+"2280",
+                                                   title, 200, 0.0, 100000.0);
+
+
+}
 
 
 

@@ -56,6 +56,8 @@ GiGa.StepSeq.Members  += { "RichG4StepAnalysis6/RichStepHpdRefl" } ;
 GiGa.TrackSeq.Members      += { "RichG4TrackActionPhotOpt/RichG4PhotOpt" } ;
 GiGa.TrackSeq.Members      += { "Rich1G4TrackActionUpstrPhoton/Rich1UpstrPhotonTrack" } ;
 GiGa.TrackSeq.Members      += { "RichG4TrackActionAerogelPhoton/RichG4AgelPhot" };
+GiGa.TrackSeq.Members      += { "RichG4TrackActionRich2Photon/Rich2ScintPhotonSup" };
+
 //GiGa.TrackSeq.Members      += {"RichG4TrackActionRich2Photon/Rich2PhotonBackwardSup" };
  
 
@@ -79,9 +81,15 @@ GiGa.ModularPL.GiGaPhysConstructorOp.RichApplyScintillationYieldScaleFactor=true
 //GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=2.0;
 // reduced scintillation for 2011 data. So the scale factor is set to small value 
 // corresponding to about 1/10 of the normal scintillation.
+// The following is for 2011
 //GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.1; 
+// The following is for 2012
 GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.6; 
 
+
+// test with effective scintillation factor. This is now automatically in c++. 
+//GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.6*0.285066; 
+// end test with effective scintillation factor.
 // To set the Readout efficiency which empirically seems to depend on Radiator Type, from real data.
 // The default in the C++ is 1.0 which sets 100% readout efficiency for each radiator. 
 // The default for chip efficiency is 0.85 in the code. The total efficiency is

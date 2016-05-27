@@ -148,6 +148,8 @@ private:
   bool m_ActivateRICHHitSmearing;
   bool m_RichApplyScintillationYieldScaleFactor;
   double m_RichScintillationYieldScaleFactor;
+  double m_RichScintillationYieldAuxiliaryScaleFactor;
+  
   double m_RichAerogelHitSmearValue;
   double m_Rich1GasHitSmearValue;
   double m_Rich2GasHitSmearValue;
