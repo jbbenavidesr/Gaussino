@@ -108,6 +108,7 @@ bool GaussRedecay::registerNewEvent() {
     }
     // Have to handle two different cases, need to rerun the generation in case
     // of counter==0 or counter==max, otherwise just do some cleanup.
+    m_first_access = true;
     if (m_rd_counter == 0 || m_rd_counter == m_max_rd_counter) {
         if (msgLevel(MSG::DEBUG)) {
             debug() << " Redecay counter " << m_rd_counter
@@ -130,6 +131,7 @@ bool GaussRedecay::registerNewEvent() {
         m_mc_cloner = new MCCloner();
         // New event has new particles to redecay so empty the map storing them.
         m_sig_map.clear();
+        m_n_particles = 0;
         return true;
     } else if (m_rd_counter > 0 && m_rd_counter < m_max_rd_counter) {
         if (msgLevel(MSG::DEBUG)) {
@@ -160,15 +162,32 @@ bool GaussRedecay::registerNewEvent() {
 
 int GaussRedecay::getPhase() const { return m_phase; }
 
-int GaussRedecay::registerForRedecay(Particle part) {
-    int unique_id = m_sig_map.size() + 1 + PlaceholderPDGID;
+int GaussRedecay::registerForRedecay(Particle part, int pileup_id) {
+    int unique_id = m_n_particles + 1 + PlaceholderPDGID;
     if (unique_id >= PlaceholderPDGID + m_g4_reserve) {
         return -1;
     }
-    m_sig_map[unique_id] = part;
+    if(m_sig_map.find(pileup_id) == end(m_sig_map)){
+      m_sig_map[pileup_id] = std::map<int, Particle>();
+    }
+    m_sig_map[pileup_id][unique_id] = part;
+    m_n_particles++;
     return unique_id;
 }
 
+std::map<int, GaussRedecay::Particle> *GaussRedecay::getRegisteredForRedecay(){
+  if(m_first_access){
+    m_first_access = false;
+    m_pileup_it = begin(m_sig_map);
+  } else {
+    m_pileup_it++;
+    if(m_pileup_it==end(m_sig_map)){
+      m_pileup_it = begin(m_sig_map);
+    }
+  }
+
+  return &(m_pileup_it->second);
+}
 // Following are all the boring redirections for the MCCloner class.
 
 LHCb::MCParticle* GaussRedecay::cloneMCP(const LHCb::MCParticle* mcp) {

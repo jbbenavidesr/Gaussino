@@ -42,6 +42,7 @@ class GaussRedecaySorter : public GaudiAlgorithm {
   IGaussRedecayCtr* m_gaussRDCtrSvc = nullptr;
   LHCb::IParticlePropertySvc* m_ppSvc = nullptr;
   HepMC::GenParticle* m_theSignal = nullptr;
+  int m_current_pileup = 0;
 
   bool m_store_fail = false;
 
@@ -58,7 +59,7 @@ class GaussRedecaySorter : public GaudiAlgorithm {
    * 1043 if it is the daugther of a particle to be redecayed.
    * 1042 will not override 1043.*/
   void recursive_tagger(HepMC::GenParticle*);
-  void printChildren(HepMC::GenParticle*, int level=0);
+  void printChildren(HepMC::GenParticle*, int level = 0);
 };
 
 #endif  // GaussRedecaySorter_H

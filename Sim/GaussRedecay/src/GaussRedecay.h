@@ -76,8 +76,9 @@ class GaussRedecay : public Service,
 
   // Implementation of the storage interface IGaussRedecayStr
 
-  virtual int registerForRedecay(Particle part) override;
-  virtual std::map<int, Particle> *getRegisteredForRedecay() override {return &m_sig_map;};
+  virtual int registerForRedecay(Particle part, int pileup_id) override;
+  virtual std::map<int, Particle> *getRegisteredForRedecay() override;
+  int getNPileUp() override {return m_sig_map.size();};
   /** Registers a new event, returns false if the UD is already simulated and
    * should be reused.
    *  Returns true if everything needs to be redone and deletes the internal
@@ -156,7 +157,11 @@ class GaussRedecay : public Service,
   bool m_g4_initialized=false;
 
   // Signal information storage
-  std::map<int, Particle> m_sig_map;
+  std::map<int, std::map<int, Particle>> m_sig_map;
+  std::map<int, std::map<int, Particle>>::iterator m_pileup_it;
+  int m_n_particles = 0;
+  bool m_first_access = true;
+
   Gaudi::LorentzVector m_sig_mom;
   Gaudi::XYZTPoint m_sig_point;
   int m_sig_id;
