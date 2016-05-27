@@ -4,12 +4,15 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+!========================== LbCRMC v1r0 2016-05-27 ===========================
 ! 2016-05-23 - Laure Massacrier
-Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
+ - Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
 
 ! 2016-04-27 - Laure Massacrier
- - Add calculation and printing of the center of mass energy to check the configuration infos in CRMCProduction.cpp
- - Fix status of beam particles to 3 while filling HepMC event so that beam particles are ignored by EvtGen
+ - Add calculation and printing of the center of mass energy to check the
+   configuration infos in CRMCProduction.cpp
+ - Fix status of beam particles to 3 while filling HepMC event so that beam 
+   particles are ignored by EvtGen
 
 ! 2016-04-26 - Patrick Robbe
  - Add default option (EPOS.py) and CRMC option file
@@ -21,7 +24,8 @@ Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
  - Change version of crmc from 1.4 to 1.5.6
 
 ! 2016-03-18 - Laure Massacrier
- - Fix division by A in BoostAndRotate function + possibility to produce tables in Epos
+ - Fix division by A in BoostAndRotate function + possibility to produce 
+   tables in Epos
 
 ! 2016-03-18 - Dmitry Popov
  - Replaced the std::runtime_error exceptions with StatusCode returns/checks
@@ -60,3 +64,5 @@ Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
   Package to interface epos with CRMC
   Original code developed by Dimitry Popov.
   Modifications by Laure Massacrier
+
+!==============================================================================
