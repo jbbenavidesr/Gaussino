@@ -4,6 +4,9 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-05-27 - Gloria Corti
+ - Chnage path for PYTHIA8DATA as location of xmldoc changed in relase of 219
+
 ! 2016-05-20 - Gloria Corti
  - Change the version of tauola to 1.1.6 now that is available in LCG_84 (& 79)
 
