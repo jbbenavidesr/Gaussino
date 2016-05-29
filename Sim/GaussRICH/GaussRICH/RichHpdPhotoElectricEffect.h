@@ -150,9 +150,6 @@ public:
   void setRich2GasHitSmearVal(double aR2gasSmVal)
   {m_Rich2GasHitSmearVal=aR2gasSmVal;  }
   
-  void setactivateRichPhotElecAnalysis(G4bool aAc) 
-  {m_activateRichPhotElecAnalysis = aAc;}
-  
 
   
 private:
@@ -190,7 +187,6 @@ private:
   double m_RichAerogelHitSmearVal;
   double m_Rich1GasHitSmearVal;
   double m_Rich2GasHitSmearVal;
-  G4bool m_activateRichPhotElecAnalysis;
   
 };
 

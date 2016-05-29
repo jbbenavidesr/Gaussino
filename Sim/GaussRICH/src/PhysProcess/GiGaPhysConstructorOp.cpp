@@ -78,9 +78,7 @@ GiGaPhysConstructorOp::GiGaPhysConstructorOp
     m_Rich1GasHitSmearValue(0.0),
     m_Rich2GasHitSmearValue(0.0),
     m_CherenkovAddBackgrRich2(false),
-    m_CherenkovRich2BackgrProbFactor(0.5),
-    m_ActivateRichPhotElecAnalysis(false),
-    m_RichActivateG4CherenkovAnalysis(0)
+    m_CherenkovRich2BackgrProbFactor(0.5)
 {
   // in the above 3 is for the three radiators.
   //   m_CherenkovAddBackgrRich2(true),
@@ -127,9 +125,7 @@ GiGaPhysConstructorOp::GiGaPhysConstructorOp
   declareProperty("Rich2GasHitSmearValue",m_Rich2GasHitSmearValue);
   declareProperty("Rich2BackgrHitsActivate", m_CherenkovAddBackgrRich2 );
   declareProperty("Rich2BackgrHitsProbabilityFactor", m_CherenkovRich2BackgrProbFactor);
-  declareProperty("ActivateRichPhotElecAnalysis", m_ActivateRichPhotElecAnalysis);  
-  declareProperty("RichActivateG4CherenkovAnalysis",m_RichActivateG4CherenkovAnalysis);
-
+  
 
 }
 
@@ -316,9 +312,7 @@ void GiGaPhysConstructorOp::ConstructOp() {
   theRichHpdPhotoElectricProcess->setRichAerogelHitSmearVal(m_RichAerogelHitSmearValue);
   theRichHpdPhotoElectricProcess->setRich1GasHitSmearVal(m_Rich1GasHitSmearValue);
   theRichHpdPhotoElectricProcess->setRich2GasHitSmearVal(m_Rich2GasHitSmearValue);
-  theRichHpdPhotoElectricProcess->setactivateRichPhotElecAnalysis(m_ActivateRichPhotElecAnalysis);
   theRichHpdPhotoElectricProcess->setHpdPhElecParam();  
-
   
 
   //  G4int MaxNumPhotons = 300;
@@ -358,11 +352,6 @@ void GiGaPhysConstructorOp::ConstructOp() {
     SetRichVerboseInfoTag( (G4bool) m_RichActivateVerboseProcessInfoTag);
   theCerenkovProcess->
     SetMaxPhotonPerRadiatorFlag((G4bool) m_ApplyMaxPhotCkvLimitPerRadiator);  
-
-  if(m_RichActivateG4CherenkovAnalysis >= 1 ) {
-    theCerenkovProcess-> setActivateRichG4CherenkovAnalysis(true);
-  }
-  
 
   theCerenkovProcess -> setAddBackGrRich2(m_CherenkovAddBackgrRich2);
   theCerenkovProcess -> setRich2BackgrProb(m_CherenkovRich2BackgrProbFactor);

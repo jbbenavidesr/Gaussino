@@ -71,7 +71,7 @@ StatusCode PowhegProduction::hardInitialize() {
   Pythia8::Pythia *pythia = m_pythia8->m_pythia;
   m_powheg = new Pythia8::PowhegProcs(pythia, "hvq");
   m_lhaup  = m_powheg->lhaup;
-  if (m_pythia8->m_hooks) {delete m_pythia8->m_hooks; m_pythia8->m_hooks = 0;}
+  m_hooks  = &m_powheg->hooks;
   
   // Configure Pythia 8.
   if (m_procs.find(m_proc) == m_procs.end())

@@ -1,0 +1,831 @@
+!-----------------------------------------------------------------------------
+! Package     : Det/DDDB
+! Responsible : Marco Cattaneo
+! Purpose     : Interface package to Geometry and Conditions DB
+!-----------------------------------------------------------------------------
+
+!========================= DDDB v1r84 2016-03-16 =========================
+! 2016-02-02 - Marco Cattaneo
+ - Do not set default tak for LHCBCOND, CALIBOFF and DQFLAGS partitions in
+   case of Simulation
+ - Remove MC09 default tags
+
+!========================= DDDB v1r83 2016-01-27 =========================
+! 2016-01-07 - Marco Cattaneo
+ - Add support for 2016 DataType
+ - Set InitialTime for 2015 at end of fill 4720 (last fill of the year)
+
+!========================= DDDB v1r82 2015-11-23 =========================
+! 2015-10-20 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20151016
+
+!========================= DDDB v1r81 2015-10-12 =========================
+! 2015-09-29 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB, 2012: cond-20150928
+
+! 2015-09-01 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150828
+
+!========================= DDDB v1r80 2015-08-06 =========================
+! 2015-08-06 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150805
+
+!========================= DDDB v1r79 2015-08-05 =========================
+! 2015-07-27 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015: dddb-20150724
+   . LHCBCOND, 2015: cond-20150724
+
+! 2015-07-23 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150722
+
+!========================= DDDB v1r78 2015-07-20 =========================
+! 2015-07-20 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150716
+   . DQFLAGS,  2015: dq-20150717
+
+! 2015-07-06 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015: dddb-20150703
+
+! 2015-07-01 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150625
+
+!========================= DDDB v1r77 2015-06-18 =========================
+! 2015-06-18 - Marco Cattaneo
+ - Set default initial time for 2013 to end of last physics fill (fill 3564)
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150617
+
+! 2015-06-04 - Liang Sun
+ - Default database tag for CALIBOFF should be head-2015604, fix the typo here
+
+! 2015-06-04 - Liang Sun
+ - Default database tag for CALIBOFF: head-20150604, empty content
+
+! 2015-06-03 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150602
+
+! 2015-06-02 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015: cond-20150601
+
+! 2015-05-29 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015: dddb-20150526
+   . LHCBCOND, 2015: cond-20150526
+
+!========================= DDDB v1r76 2015-05-26 =========================
+! 2015-05-26 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015                  : dddb-20150520
+   . DDDB,           2012            : dddb-20150522-2
+   . DDDB,                 2011      : dddb-20150522-1
+   . DDDB,                       2010: dddb-20150522
+   . LHCBCOND, 2015                  : cond-20150511
+   . LHCBCOND,                   2010: cond-20150527
+
+!========================= DDDB v1r75 2015-04-20 =========================
+! 2015-04-12 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015                  : cond-20150409-2
+   . LHCBCOND,       2013, 2012      : cond-20150409-1
+   . LHCBCOND,                   2011: cond-20150409
+
+!========================= DDDB v1r74 2015-02-23 =========================
+! 2015-02-18 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015                        : dddb-20150119-3
+   . DDDB,                 2012            : dddb-20150119-2
+   . DDDB,                       2011      : dddb-20150119-1
+   . DDDB,                             2010: dddb-20150119
+   . LHCBCOND, 2015                        : cond-20150119-1
+   . LHCBCOND,       2013, 2012, 2011, 2010: cond-20150119
+
+!========================= DDDB v1r73 2014-10-14 =========================
+! 2014-10-08 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2015, 2013, 2012, 2011, 2010 : cond-20141007
+
+!========================= DDDB v1r72 2014-09-08 =========================
+! 2014-09-01 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2015                  : dddb-20140729
+   . DDDB,           2013, 2012, 2011: dddb-20130929-1
+   . DQFLAGS,  2015, 2013, 2012, 2011: dq-20140822
+
+!========================= DDDB v1r71 2014-08-16 =========================
+! 2014-04-02 - Marco Cattaneo
+ - Add 2015 data type, for now same as 2013
+
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2011,2012,2013 : cond-20140604
+
+!========================= DDDB v1r70 2014-07-14 =========================
+! 2014-04-02 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . DDDB,     2010 : dddb-20140610
+   . LHCBCOND, 2010 : cond-20140604
+
+!========================= DDDB v1r69 2014-05-12 =========================
+! 2014-04-28 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2012, 2011 : cond-20140425
+   . DQFLAGS,        2011 : dq-20140428
+
+! 2014-04-02 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2010 : cond-20140328
+
+!========================= DDDB v1r68 2014-02-24 =========================
+! 2014-02-21 - Rob Lambert
+ - Cannot use None as a default type for things which are ever used in propagateProperty.
+
+! 2014-02-20 - Rob Lambert
+ - Add one property to DDDB which allows for the Moore use case, that the time must be "now".
+
+!========================= DDDB v1r67 2013-12-09 =========================
+! 2013-12-02 - Marco Cattaneo
+ - Make "cond-20131128" the default LHCBCOND tag for 2012 and 2013 data.
+
+!========================= DDDB v1r66 2013-10-29 =========================
+
+! 2013-10-29 - Chris Jones
+ - Make "cond-20131028" the default LHCBCOND tag for 2012 and 2013 data.
+
+!========================= DDDB v1r65 2013-10-23 =========================
+! 2013-10-11 - Chris Jones
+ - Fix typo in default DQFLAGS tag for 2011 data
+     "dq-2013086-1" -> "dq-20130806-1"
+
+!========================= DDDB v1r64 2013-09-30 =========================
+! 2013-09-26 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2013, 2012      : cond-20130710
+   . LHCBCOND,             2011: cond-20130522
+   . DDDB,     2013, 2012      : head-20130503-1
+   . DDDB,                 2011: head-20130503
+   . DQFLAGS   2013, 2012, 2011: dq-20130806-1
+
+!========================= DDDB v1r63 2013-07-17 =========================
+! 2013-06-28 - Illya Shapoval
+ - minor refactoring of 'autotags' feature to make it compliant with revised
+   Ariadne XMLRPC API. 
+
+!========================= DDDB v1r62 2013-04-29 =========================
+! 2013-04-27 - Marco Cattaneo
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2013, 2012, 2011: cond-20130404
+   . DDDB,     2013, 2012      : head-20130312-1
+   . DDDB,                 2011: head-20130312
+   . DQFLAGS   2013, 2012      : dq-20130418
+
+! 2013-04-24 - Illya Shapoval
+ - When forming an Ariadne query, a preference is given to DDDBConf().Simulation
+   instead of CondDB().Simulation property.
+
+! 2013-04-23 - Illya Shapoval
+ - 'AutoTags' property added. If set to True, an automatic Ariadne-driven
+   CondDB configuration is used according to the datatype set.
+
+!========================= DDDB v1r61 2013-03-20 =========================
+! 2013-03-18 - Illya Shapoval
+ - Update default database tags to the latest ones:
+   . LHCBCOND, 2013: cond-20130125
+   . LHCBCOND, 2012: cond-20130125
+   . DDDB,     2011: dddb-20130111
+   . LHCBCOND, 2011: cond-20130125
+
+!========================= DDDB v1r60 2013-02-04 =========================
+! 2013-01-10 - Marco Cattaneo
+ - Add 2013 DataType (pA run)
+
+!========================= DDDB v1r59 2012-11-26 =========================
+! 2012-11-16 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2012: cond-20121116
+
+! 2012-11-15 - Marco Clemencic
+ - Added CMake configuration file.
+
+! 2012-11-12 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2012: cond-20121108
+
+! 2012-10-26 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2012: cond-20121025
+   . LHCBCOND, 2011: cond-20120724 (was cond-20120829, which is only for 2012)
+   . DQFLAGS,  2012: dq-20121016
+
+! 2012-10-11 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2012: cond-20121008
+
+!========================= DDDB v1r58 2012-09-28 =========================
+! 2012-09-28 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2012: cond-20120917
+   . DQFLAGS, 2012,2011: dq-20120910
+
+! 2012-09-13 - Marco Clemencic
+ - Removed dependencies on CORAL LFCReplicaSvc (dropped in LCGCMT 64).
+
+! 2012-08-31 - Illya Shapoval
+ - Update database tags for latest global tags:
+   . DDDB, 2012: dddb-20120831
+   . LHCBCOND, 2012: cond-20120831
+   . DQFLAGS, 2012: dq-20120831
+
+! 2012-08-29 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: cond-20120829
+
+! 2012-08-08 - Marco Clemencic
+ - Added python/DDDB/__init__.py.
+
+!========================= DDDB v1r57 2012-07-30 =========================
+! 2012-07-30 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: cond-20120730
+
+! 2012-07-27 - Illya Shapoval
+ - Update database tags for latest global tags:
+   . DDDB, 2011: dddb-20120727
+   . DQFLAGS, 2011, 2012: dq-20120727
+
+!========================= DDDB v1r56 2012-07-24 =========================
+! 2012-07-24 - Illya Shapoval
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: cond-20120724
+
+! 2012-07-18 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: cond-20120710
+
+! 2012-06-28 - Illya Shapoval
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: cond-20120628
+
+!========================= DDDB v1r55 2012-06-25 =========================
+! 2012-06-13 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: head-20120607
+
+!========================= DDDB v1r54 2012-05-02 =========================
+! 2012-04-27 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . LHCBCOND, 2011, 2012: head-20120420
+
+!========================= DDDB v1r53 2012-04-13 =========================
+! 2012-04-13 - Marco Cattaneo
+ - Update database tags for latest global tags:
+   . DDDB,           2012: head-20120413
+   . LHCBCOND, 2011, 2012: head-20120413
+
+!========================= DDDB v1r52 2012-03-22 =========================
+! 2012-03-22 - Illya Shapoval
+ - Update default DQFLAGS database tags:
+   . DQFLAGS, 2011: dq-20120322 (new flags and fixes for the previous ones)
+   . DQFLAGS, 2012: dq-20120322 (no 2012 flags so far, just updating to the
+     latest 2011 one)
+
+! 2012-03-16 - Marco Cattaneo
+ - Update database tags for latest 2012 global tags:
+   . DDDB,     2012: head-20120316
+   . LHCBCOND, 2012: head-20120316
+
+!========================= DDDB v1r51 2012-02-28 =========================
+! 2012-02-28 - Marco Cattaneo
+ - Change SQLDDDB dependency to v7r*, to pick up by default the new
+   distribution mechanism
+
+!========================= DDDB v1r50 2012-01-31 =========================
+! 2012-01-10 - Marco Clemencic
+ - Fixed a bug in the initial event time used for 2012.
+ - Modified the code setting the initial time to preserve the value in the
+   low level property (if set).
+
+! 2012-01-09 - Marco Cattaneo
+ - Add support for 2012 DataType
+ - For each DataType, in case of real data, set initial time
+   (used for CondDB initialisation before first event)
+   to the last meaningful time of the corresponding year:
+   . End of year for 2008, 2009
+   . End of last fill for 2010, 2011
+   . Current time for 2012, if before end of 2012
+
+!========================= DDDB v1r49 2011-12-14 =========================
+! 2011-12-10 - Marco Cattaneo
+ - Removed use of Gaudi ParticlePropertySvc (obsolete) from DDDBConf.
+
+! 2011-11-15 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r20:
+   . LHCBCOND, 2011: head-20111111
+
+!========================= DDDB v1r48 2011-11-08 =========================
+! 2011-11-08 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r19:
+   . LHCBCOND, 2011: head-20111102
+   . DDDB,     2011: head-20111102
+
+!========================= DDDB v1r47 2011-09-15 =========================
+! 2011-09-14 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r17:
+   . LHCBCOND, 2011: head-20110914
+   . DDDB,     2011: head-20110914
+
+! 2011-09-02 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r16:
+   . LHCBCOND, 2011: head-20110901
+
+! 2011-08-30 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r15:
+   . LHCBCOND, 2011: head-20110823
+   . DDDB,     2011: head-20110823
+
+!========================= DDDB v1r46 2011-07-25 =========================
+! 2011-07-25 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r14:
+   . LHCBCOND, 2011: head-20110722
+   . DDDB,     2011: head-20110722
+   . DDDB,     2010: head-20110721
+
+! 2011-07-20 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r13:
+   . LHCBCOND, 2011: head-20110622
+   . LHCBCOND, 2010, 2009: head-20110614
+
+!========================= DDDB v1r45 2011-06-14 =========================
+! 2011-05-24 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r10:
+   . LHCBCOND, 2011, 2010, 2009: head-20110524
+
+! 2011-05-14 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r9:
+   . LHCBCOND, 2011, 2010, 2009: head-20110512
+
+!========================= DDDB v1r44 2011-04-26 =========================
+! 2011-04-15 - Marco Cattaneo
+ - Remove configuration for DC06, no longer supported
+
+! 2011-04-12 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r7:
+   . LHCBCOND, 2011, 2010: head-20110407
+
+!========================= DDDB v1r43 2011-04-04 =========================
+! 2011-04-01 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r6:
+   . LHCBCOND, 2011, 2010: head-20110331
+
+! 2011-03-29 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r5:
+   . LHCBCOND, 2011, 2010: head-20110328
+
+!========================= DDDB v1r42 2011-03-23 =========================
+! 2011-03-23 - Marco Cattaneo
+ - Update database tags for SQLDDDB v6r4:
+   . DDDB, 2011: head-20110302
+   . DDDB, 2010: head-20110303
+   . LHCBCOND, 2011, 2010: head-20110321
+   . LHCBCOND, 2009: head-20110131
+
+!========================= DDDB v1r41 2011-02-22 =========================
+! 2011-02-16 - Illya Shapoval
+ - Defaults for DQFLAGS db tag are added to DDDBConf configurable for 2011,
+   2010, 2009 and 2008 datatypes.
+
+!========================= DDDB v1r40 2011-01-31 =========================
+! 2011-01-31 - Illya Shapoval
+ - SQLDDDB dependecy is changed to pickup the one with major version
+   increased to v6.
+
+! 2010-12-20 - Marco Cattaneo
+ - Update database tags for SQLDDDB v5r44:
+   . DDDB, 2009, 2010: head-20101206
+ - Add 2011 data type and make it the new default, default tags currently the
+   same as for 2010
+
+!========================= DDDB v1r39 2010-11-27 =========================
+! 2010-11-15 - Marco Cattaneo
+ - Update database tags for SQLDDDB v5r43:
+   . LHCBCOND, 2010, 2009: head-20101112
+
+! 2010-11-10 - Marco Cattaneo
+ - Remove default tag for 2010 SIMCOND, added by mistake in last release
+ - Update database tags for SQLDDDB v5r42:
+   . LHCBCOND, 2010, 2009: head-20101106
+
+!========================= DDDB v1r38 2010-10-28 =========================
+! 2010-10-28 - Rob Lambert
+ - Update database tags:
+   . LHCBCOND, 2010, 2009: head-20101026
+   . DDDB, 2010, 2009: head-20101026
+   . SIMCOND, 2010: sim-20101026-vc-md100
+   . SIMCOND, 2009: MC-20101026-vc15mm-md100
+
+!========================= DDDB v1r37 2010-10-25 =========================
+
+! 2010-10-11 - Marco Cattaneo
+ - Changed default LHCBCOND tag for 2008, 2009, 2010 data:
+   . head-20101011 for LHCBCOND
+ - Reverted to previous default SIMCOND tag for MC09:
+   . MC09-20100921-vc-md100 for SIMCOND
+
+!========================== DDDB v1r36 2010-10-05 ============================
+! 2010-10-05 - Marco Cattaneo
+ - Changed default SIMCOND tag for MC09:
+   . MC09-20101004-vc-md100 for SIMCOND
+
+! 2010-10-04 - Marco Cattaneo
+ - Changed default DDDB and LHCBCOND tags for 2008, 2009, 2010 data:
+   . head-20101003 for LHCBCOND
+   . head-20101003 for DDDB
+
+ - Changed default SIMCOND tag for 2009:
+   . MC-20101004-vc15mm-md100 for 2009 SIMCOND
+
+!========================== DDDB v1r35 2010-09-27 ============================
+! 2010-09-21 - Marco Cattaneo
+ - Changed default SIMCOND tag for MC09:
+   . MC09-20100921-vc-md100 for SIMCOND
+
+!========================== DDDB v1r34 2010-08-31 ============================
+! 2010-09-01 - Rob Lambert
+ - Changed default tags for 2008, 2009 and 2010 data:
+  . head-20100831 for LHCBCOND
+
+! 2010-08-30 - Rob Lambert
+ - Changed default SIMCOND tags for MC09 and 2009:
+   . MC09-20100827-vc-md100 for MC09 SIMCOND
+   . MC-20100827-vc15mm-md100 for 2009 SIMCOND
+
+! 2010-08-27 - Rob Lambert
+ - Changed default tags for 2008, 2009 and 2010 data:
+   . head-20100826 for LHCBCOND
+   . head-20100826 for DDDB
+
+!========================== DDDB v1r33 2010-07-19 ============================
+! 2010-07-19 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100715         for LHCBCOND
+
+! 2010-06-25 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100624         for DDDB
+   . head-20100624         for LHCBCOND
+
+!========================== DDDB v1r32 2010-06-18 ============================
+! 2010-06-01 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100531         for LHCBCOND
+
+!========================== DDDB v1r31 2010-05-21 ============================
+! 2010-05-19 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100518         for DDDB
+   . head-20100518         for LHCBCOND
+
+! 2010-05-11 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100509         for LHCBCOND
+
+! 2010-05-07 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100504         for DDDB
+   . head-20100430         for LHCBCOND
+ - Changed default tag for 2009 MC:
+   . head-20100504         for DDDB
+ - Changed default tag for MC09:
+   . MC09-20100430-vc-md100 for SIMCOND
+ - Removed default tags for Upgrade, must be given explicitly
+
+!========================== DDDB v1r30 2010-04-26 ============================
+! 2010-04-23 - Marco Cattaneo
+ - Adapt to change of MagneticFieldSvc options
+
+! 2010-04-16 - Marco Cattaneo
+ - Changed default tags for 2009 and 2010 data:
+   . head-20100407         for DDDB
+   . head-20100414         for LHCBCOND
+ - Changed default tag for 2009 MC:
+   . MC-20100412-vc15mm-md100 for SIMCOND
+
+!========================== DDDB v1r29 2010-03-25 ============================
+! 2010-03-25 - Marco Cattaneo
+ - Changed default tag for 2009 and 2010 data:
+   . head-20100325         for LHCBCOND
+ - Changed default tag for 2009 MC:
+   . MC-20100321-vc15mm-md100 for SIMCOND
+
+! 2010-03-15 - Marco Cattaneo
+ - Changed default tag for 2009 and 2010 data:
+   . head-20100303         for LHCBCOND
+
+!========================== DDDB v1r28 2010-02-12 ============================
+! 2010-02-12 - Marco Cattaneo
+ - Changed default tag for 2009 data:
+   . head-20100202         for LHCBCOND
+ - Added default tag for 2010 data, currently same as 2009
+   N.B. As from 2010, no default tag is set for SIMCOND, must be set explicitly
+ - Set default DataType to 2010
+
+!========================== DDDB v1r27 2010-01-19 ============================
+! 2010-01-19 - Marco Cattaneo
+ - Changed default tag for 2009 data:
+   . head-20100119         for DDDB
+   . head-20100119         for LHCBCOND
+   . sim-20100119-vc-md100 for SIMCOND
+
+!========================== DDDB v1r26 2009-12-11 ============================
+! 2009-12-11 - Illya Shapoval
+ - Changed default tag for 2009 data:
+   . head-20091120         for DDDB (same as before)
+   . head-20091211         for LHCBCOND
+   . sim-20091112-vc-md100 for SIMCOND (same as before)
+
+!========================== DDDB v1r25 2009-11-27 ============================
+! 2009-11-27 - Illya Shapoval
+ - Changed default tag for 2009 data:
+   . head-20091120         for DDDB (same as before)
+   . head-20091127         for LHCBCOND
+   . sim-20091112-vc-md100 for SIMCOND (same as before)
+
+!========================== DDDB v1r24 2009-11-22 ============================
+! 2009-11-20 - Illya Shapoval
+ - Changed default tags for 2009 data:
+   . head-20091120         for DDDB
+   . head-20091120         for LHCBCOND
+   . sim-20091112-vc-md100 for SIMCOND (same as before)
+
+! 2009-11-13 - Marco Clemencic
+ - Changed default tags for 2009 data:
+   . head-20091112         for DDDB
+   . head-20091112         for LHCBCOND
+   . sim-20091112-vc-md100 for SIMCOND
+
+!========================== DDDB v1r23 2009-10-16 ============================
+! 2009-10-07 - Illya Shapoval
+ - Changed default tag for 2009 data:
+   . head-20091007         for DDDB
+
+!========================== DDDB v1r22 2009-09-22 ============================
+! 2009-09-16 - Tomasz Skwarnicki
+ - Introduce "Upgrade" DataType
+   . set DDDB tag for the first Minimal Upgrade Layout release (mul-20091917)
+
+!========================== DDDB v1r21 2009-09-04 ============================
+! 2009-09-03 - Marco Clemencic
+ - Changed default tags for 2009 data:
+   . head-20090902         for DDDB
+   . head-20090902         for LHCBCOND
+   . sim-20090902-vc-md100 for SIMCOND
+ - Changed default tags for DC06 data:
+   . DC06-20090902         for DDDB
+   . DC06-20081002         for LHCBCOND (same as before)
+
+!========================== DDDB v1r20 2009-07-13 ============================
+! 2009-07-13 - Marco Clemencic
+ - Changed default tags for 2009 data:
+   . head-20090713         for DDDB
+   . head-20090713         for LHCBCOND
+   . sim-20090713-vc-md100 for SIMCOND
+
+! 2009-07-09 - Marco Clemencic
+ - Changed default tags for 2009 data:
+   . MC09-20090402-vc-md100 for SIMCOND
+
+! 2009-07-08 - Marco Clemencic
+ - Changed default tags for 2009 data:
+   . head-20090708         for DDDB
+   . head-20090707         for LHCBCOND
+   . sim-20090707-vc-md100 for SIMCOND
+
+!========================== DDDB v1r19 2009-06-30 ============================
+! 2009-06-30 - Marco Clemencic
+ - Set initial event time for DC06 data (to avoid problems with ONLINE snapshots)
+
+!========================== DDDB v1r18 2009-06-18 ============================
+! 2009-06-18 - Marco Clemencic
+ - Update 2009 default tags to latest tags in SQLDDDB v5r8:
+   . head-20090617         for DDDB
+
+!========================== DDDB v1r17 2009-06-02 ============================
+! 2009-06-02 - Marco Clemencic
+ - Update 2009 default tags to latest tags in SQLDDDB v5r7:
+   . MC09-20090602         for DDDB
+
+! 2009-05-28 - Marco Cattaneo
+ - Update 2009 default tags to latest tags in SQLDDDB v5r6:
+   . MC09-20090526         for DDDB
+   . head-20090508         for LHCBCOND
+   . sim-20090508-vc-md100 for SIMCOND
+
+ - Add default tags for MC09:
+   . MC09-20090526         for DDDB
+   . sim-20090402-vc-md100 for SIMCOND
+
+!========================== DDDB v1r16 2009-04-03 ============================
+! 2009-04-03 - Marco Cattaneo
+ - Add 2009 data type and corresponding tags
+ - New default tags for 2008:
+   - head-20090330 for DDDB
+   - head-20090402 for LHCBCOND
+
+! 2009-03-09 - Marco Cattaneo
+ - Remove obsolete file options/DDDB.py
+ - Remove property DDDBConf().UseOracle, use CondDB().UseOracle instead
+
+!========================== DDDB v1r15 2009-02-18 ============================
+! 2000-02-13 - Marco Clemencic
+ - New default tag for 2008:
+   - head-20090213 for DDDB and LHCBCOND
+   - sim-20090212 for SIMCOND
+
+! 2009-02-13 - Marco Cattaneo
+ - New default tags for 2008:
+   - head-20090212 for DDDB and LHCBCOND
+   - sim-20090212 for SIMCOND
+
+!========================== DDDB v1r14 2009-01-12 ============================
+! 2009-01-12 - Marco Cattaneo
+ - New default tags for 2008:
+   - head-20090112 for DDDB and LHCBCOND
+   - sim-20090112 for SIMCOND
+
+! 2009-01-09 - Marco Cattaneo
+ - DDDBConf now issues a warning if default tags are being used. Previously
+   warning was issued when default tag was NOT used
+ - Default tag is used if DetCond().Tags has not been set for a given partition,
+   or if it has been set to the string "default" (case insensitive)
+
+! 2000-01-09 - Marco Clemencic
+ - New default tags for 2008:
+   - head-20090108 for DDDB and LHCBCOND
+   - sim-20090108 for SIMCOND
+
+! 2009-01-08 - Marco Cattaneo
+ - Add ParticlePropertiesFile location for new LHCb::ParticlePropertySvc
+
+!========================== DDDB v1r13 2008-11-17 ============================
+! 2008-11-14 - Marco Cattaneo
+ - Add loading of HepMCBack Dll for DC06 case
+ - Tell ParticlePropertySvc to get ParticleTable.txt from CondDB
+
+! 2008-11-11 - Marco Cattaneo
+ - Improve warning printout when not using default database tags
+
+! 2008-11-06 - Marco Clemencic
+ - Added the ConfigurableUser DDDBConf to replace all the option files for the
+   configuration of the detector description.
+   Re-implementeed the old option files in terms of the new ConfigurableUser.
+   Needs Det/DetCond > v12r3
+
+!========================== DDDB v1r12 2008-10-06 ============================
+! 2008-10-06 - Marco Cattaneo
+ - In DC06.{opts,.py} suppress warnings from MagneticFieldSvc to avoid warning
+   from manual setting of polarity
+
+! 2008-10-02 - Marco Cattaneo
+ - New default tag for 2008 (head-20081002).
+ - New default tag for DC06 (DC06-20081002).
+ - Force positive magnet polarity for DC06 (i.e. don't take default from ONLINE)
+
+! 2008-09-30 - Marco Cattaneo
+ - Change requirements to look for SQLDDDB v5r*, due to incompatibility between
+   new ONLINE implementation and previous software releases missing the bug fix
+   in DetCond v12r3
+ - New default tag for DC06 (DC06-20080930)
+
+! 2008-09-29 - Marco Cattaneo
+ - In DDDB.py, ensure that DetectorDataSvc is loaded as first ExtSvc
+
+! 2008-09-29 - Marco Clemencic
+ - New default tag for 2008 (head-20080929).
+
+! 2008-09-26 - Marco Clemencic
+ - New default tag for 2008 (head-20080926).
+
+!========================== DDDB v1r11 2008-09-08 ============================
+! 2008-09-08 - Marco Cattaneo
+ - New default tags for 2008 (head-20080908).
+
+! 2008-09-05 - Marco Clemencic
+ - New default tags for 2008 (head-20080905).
+
+! 2008-09-04 - Marco Clemencic
+ - New default tags for DC06 (DC06-20080904) and 2008 (head-20080904).
+
+! 2008-09-03 - Marco Clemencic
+ - Changed the default global tag for DC06 to DC06-20080903. (Fixed bug #40313)
+
+!========================== DDDB v1r10 2008-07-29 ============================
+! 2008-07-29 - Marco Cattaneo
+ - In LHCb-2008.py   change default 2008 tag to head-20080729
+ - Remove Magnetic field options also from DC06.opts
+
+! 2008-07-29 - Marco Clemencic
+ - DDDB.opts:
+   - Fixed a problem with the new type of CondDBDispatcherSvc.Alternatives.
+   - Enabled the ONLINE partition.
+ - DDDB.py:
+   - Use SQLDDDB-Oracle.py instead of SQLDDDB-Oracle.opts.
+
+! 2008-07-26 - Marco Cattaneo
+ - In DC06.py, .opts change default DC06 tag to DC06-20080725
+ - In LHCb-2008.py   change default 2008 tag to head-20080725
+ - Remove Magnetic field options from DC06.py, LHCb-2008.py, now taken
+   from ONLINE condDB partition
+ - Fix DDDB.py to make ONLINE a CondDBTimeSwitchSvc
+
+! 2008-07-23 - Marco Clemencic
+ - Modified DDDB.py to avoid conflicts with the next version of SQLDDDB, where
+   ONLINE may not be a CondDBAccessSvc.
+
+! 2008-07-22 - Marco Cattaneo
+ - In DDDB.py, use new "useOracleCondDB" property of LHCbApp configurable to
+   access Oracle CondDB instead of SQLDDDB. Default is SQLDDDB
+
+!========================== DDDB v1r9 2008-07-16 =============================
+! 2008-07-16 - Marco Cattaneo
+ - In DC06.py, .opts: Do not use conditions for DC06 magnetic field scaling
+                      Change default DC06 tag to DC06-20080716
+ - In LHCb-2008.py:   Change default 2008 tag to head-20080716
+
+!========================== DDDB v1r8 2008-07-03 =============================
+! 2008-07-03 - Marco Cattaneo
+ - In DDDB.py, LHCb-2008.py: add support for SIMCOND
+ - In LHCb-2008.py: get fieldMap options from UserRealMap.py
+                    (needs Det/Magnet v3r10)
+                    change default tag to head-20080702 (from SQLDDDB v4r5)
+
+! 2008-06-30 - Marco Cattaneo
+ - In DDDB.py, DDDB.opts: suppress pointless warning from COOL_2_5_0
+ - In DC06.py, LHCb-2008.py: Do not expand environment variable in options,
+                             breaks on grid. Needs Gaudi v20r1
+
+! 2008-06-12 - Marco Clemencic
+ - The name of the component to be passed to XmlParserSvc.EntityResolver has
+   changed from CondDBEntityResolverSvc to CondDBEntityResolver.
+   Needs Tools/CondDBEntityResolver v5r0 (Gaudi v20r0)
+
+!========================== DDDB v1r7 2008-06-03 =============================
+! 2008-06-03 - Marco Cattaneo
+ - In LHCb-2008.py to change default tags to head-20080603.
+   Requires SQLDDDB >= v4r4
+
+!========================== DDDB v1r6 2008-05-16 =============================
+! 2008-05-09 - Marco Cattaneo
+ - Add LHCb-2008.py to describe default tags for real 2008 detector. Current
+   default tag is head-20080516, requires SQLDDDB >= v4r3
+
+! 2008-04-23 - Marco Cattaneo
+ - Change default DC06 tag (in DC06.opts, DC06.py) to DC06-20080516, for use
+   with new ST detector elements in LHCb v23r6. Requires SQLDDDB >= v4r3
+
+!========================== DDDB v1r5 2008-04-11 =============================
+! 2008-04-11 - Marco Cattaneo
+ - Change default DC06 tag (in DC06.opts, DC06.py) to DC06-20080407, for use
+   with new Muon and Velo detector elements in LHCb v23r5.
+   Requires SQLDDDB >= v4r2
+
+!========================== DDDB v1r4 2008-03-03 =============================
+! 2008-02-29 - Marco Clemencic
+ - Added Python option files DDDB.py (requires SQLDDDB.py) and DC06.py.
+
+!========================== DDDB v1r3 2008-01-28 =============================
+! 2008-01-28 - Marco Cattaneo
+ - Add oracle dependency to allow access to Oracle DDDB
+ - Add lfc dependency to get credentials for Oracle DDDB access
+
+! 2008-01-25 - Marco Cattaneo
+ - Change requirements to pick up SQLDDDB v4r* for backwards incompatible Rich
+   changes in post DC06 tags
+
+!========================== DDDB v1r2 2007-11-01 =============================
+! 2007-11-01 - Marco Cattaneo
+ - Change requirements to pick up SQLDDDB v3r*, needed by MuonDet v7r0
+
+!========================== DDDB v1r1 2007-09-21 =============================
+! 2007-09-21 - Marco Cattaneo
+ - Change DC06.opts to pick up DC06-repro0710 tag, for DC06 reprocessing.
+   Needs SQLDDDB v2r3 or greater
+
+!========================== DDDB v1r0 2007-03-14 =============================
+! 2007-03-14 - Marco Cattaneo
+ - New package to interface to the Geometry and Conditions DB. Contains:
+   . cmt/requirements:  dependencies to SQLDDDB database and packages needed to
+                        read it.
+   . options/DDDB.opts: options for setting up CondDb access.
+                        Replaces $STDOPTS/DetDesc.opts
+   . options/DC06.opts: options to select DC06 tags
+                        Replaces $STDOPTS/DC06Conditions.opts
+!========================= DDDB v1r40 2010-11-27 =========================

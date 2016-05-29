@@ -4,18 +4,17 @@ find_file(inherit_heptools_module InheritHEPTools.cmake)
 
 # FIXME: generator versions must be moved to another file
 set(generators_versions
-    alpgen         2.1.4
-    herwig++       2.7.1
-    hijing         1.383bs.2
-    lhapdf         6.1.4
-    photos++       3.56
-    powheg-box-v2  r3043.lhcb
-    pythia6        427.2
-    pythia8        186
-    rivet          2.4.2
-    tauola++       1.1.5
-    thepeg         1.9.2p1
-    yoda           1.5.9
+    alpgen      2.1.4
+    herwig++    2.7.1
+    hijing      1.383bs.2
+    lhapdf      6.1.4
+    photos++    3.56
+    powheg-box  r2092
+    pythia6     427.2
+    pythia8     186
+    rivet       1.9.0
+    tauola++    1.1.4
+    thepeg      1.9.2p1
     )
 
 # Process the lines of LCG_generators_*.txt file to extract the
@@ -93,14 +92,4 @@ if(inherit_heptools_module)
       message(FATAL_ERROR "Only LCG >= 68 is supported")
     endif()
   endif()
-
-  # strip Geant4 from CMAKE_PREFIX_PATH
-  set(new_CPP)
-  foreach(p ${CMAKE_PREFIX_PATH})
-    if(NOT p MATCHES "/Geant4/")
-      list(APPEND new_CPP "${p}")
-    endif()
-  endforeach()
-  set(CMAKE_PREFIX_PATH ${new_CPP})
-  unset(new_CPP)
 endif()

@@ -1,5 +1,5 @@
 package GaussSys
-version v50r0
+version v49r1
 
 branches cmt doc
 
@@ -7,8 +7,14 @@ branches cmt doc
 # Gauss packages
 #==================================================================
 
+# Temporarily to pick up locker mechanism for nighlty tests and builds
+use GaudiPolicy         v15r8
+
+# Temporarily to pick up fix in DDDB warning
+use DDDB                v1r84   Det 
+
 # Gauss application: the application is not built on Win32
-use Gauss               v49r0   Sim
+use Gauss               v49r1   Sim
 
 # LCG interfaces to generators, until available in LCGCMT
 use LCG_Settings        v79r0p1 
@@ -24,16 +30,15 @@ use alpgen              v79r0p1 LCG_GeneratorsInterfaces
 use hijing              v79r0p1 LCG_GeneratorsInterfaces
 use powhegbox           v79r0p1 LCG_GeneratorsInterfaces
 use crmc                v79r0p1 LCG_GeneratorsInterfaces
-use yoda                v79r0p1 LCG_GeneratorsInterfaces
 
 # Generator packages: Basic configuration
 use GenCuts             v3r13   Gen
-use GENSER              v16r1   Gen
-use EvtGen              v14r6   Gen
-use Mint                v4r0    Gen
+use GENSER              v16r2   Gen
+use EvtGen              v14r7   Gen
+use Mint                v4r1    Gen
 use EvtGenExtras        v3r12p1 Gen
 use Generators          v16r0   Gen
-use LbPythia8           v12r0   Gen
+use LbPythia8           v12r1   Gen
 
 # Generators packages: alternative to Pythia8 for pp collisions
 use LbPythia            v15r1   Gen
@@ -105,7 +110,7 @@ use XmlVis              v1r23     Vis
 
 # Test packages for new releases or installations on new platforms
 use GenTests            v1r6p2    Gen
-use SimChecks           v1r7      Sim
+use SimChecks           v1r8      Sim
 
 # Allow to run the QMTests  
 apply_pattern QMTest

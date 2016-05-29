@@ -4,36 +4,9 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
-! 2016-05-27 - Gloria Corti
- - Chnage path for PYTHIA8DATA as location of xmldoc changed in relase of 219
-
-! 2016-05-20 - Gloria Corti
- - Change the version of tauola to 1.1.6 now that is available in LCG_84 (& 79)
-
-! 2016-05-19 - Gloria Corti
- - Remove the link to pythia8tohepmc that is no longer present and should no
-   longer be necessary with the build of Pythia8 219
-
-! 2016-05-17 - Gloria Corti
- - Change the version of Pythia8 to 219
- - Change the version of tauola to 1.1.5 temporarily until 1.1.6 is available
-   from LCG_79 and LCG_84
-
-! 2016-05-08 - Gloria Corti
- - Change the version of Rivet to 2.4.2
- - Change the version of taoula to 1.1.6
- - Change the version of powhegbox(v2) to r3043.lhcb
-
-! 2016-04-27 - Gloria Corti
- - Change the version of Rivet to 2.4.1 and of yoda to 1.5.9
-
+!========================== GENSER v16r2 2016-05-25 ==========================
 ! 2016-04-19 - Gloria Corti
  - Introduce macro to select version of crmc/epos, initially set to 1.5.6
-   (merged from v16b branch r205015)
-
-! 2016-04-18 - Gloria Corti
- - Change the version of Rivet to 2.4.0 and introduce yoda with version 1.5.5
-   as needed by rivet.
 
 !========================== GENSER v16r1 2016-03-02 ==========================
 ! 2015-11-18 - Marco Clemencic

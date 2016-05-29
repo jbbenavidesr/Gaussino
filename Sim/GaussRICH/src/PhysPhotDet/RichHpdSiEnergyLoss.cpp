@@ -29,7 +29,6 @@ RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
     MipEnergyHpdSiEloss(1.0*GeV),
     finalRangeforSiDetStep(0.15*mm),
     PhElectronMaxEnergy(25.0*keV) ,
-    m_HpdSiDetEffForBackSca(0.85),
     m_HpdReadOutEffAerogel(1.0),
     m_HpdReadOutEffRich1Gas(1.0),
     m_HpdReadOutEffRich2Gas(1.0),
@@ -103,21 +102,19 @@ void RichHpdSiEnergyLoss::InitializeHpdProcParam(){
     m_siliconDetZSize = (G4double) (m_HpdProperty->siDetZSize());  
 
     SiHitDetGlobalEff= m_HpdSiDetEff*m_SiPixelChipEff;
-    SiHitDetGlobalEffForBackSca= m_HpdSiDetEffForBackSca*m_SiPixelChipEff;
 
 
       //input value is measured back-hit fraction
       //convert to BScatter probability using efficiency,
       //also can do using sum of GS in inverse
  
-    G4double HPDBSTotalProbSum = PeBackScaProb*SiHitDetGlobalEffForBackSca;
-    G4double HPDBSProbSum = HPDBSTotalProbSum/(1-SiHitDetGlobalEffForBackSca);
+    G4double HPDBSTotalProbSum = PeBackScaProb*SiHitDetGlobalEff;
+    G4double HPDBSProbSum = HPDBSTotalProbSum/(1-SiHitDetGlobalEff);
     PeBackScaProbCorrected = HPDBSProbSum/
-                            (SiHitDetGlobalEffForBackSca+
-                             HPDBSProbSum*(1-SiHitDetGlobalEffForBackSca));
+                            (SiHitDetGlobalEff+
+                             HPDBSProbSum*(1-SiHitDetGlobalEff));
 
-    G4cout<<"Rich Hpd SiHitEfficiency Used for Backscatter  BackScatterCorrectedProb "<< SiHitDetGlobalEffForBackSca 
-          <<"   "<<PeBackScaProbCorrected<<G4endl;
+    G4cout<<"Rich Hpd SiHitEfficiency  BackScatterCorrectedProb "<< SiHitDetGlobalEff <<"   "<<PeBackScaProbCorrected<<G4endl;
 
 }
 
@@ -350,9 +347,7 @@ G4VParticleChange* RichHpdSiEnergyLoss::AlongStepDoIt(const G4Track& aTrack,
       //also can do using sum of GS in inverse
       // for now allow only one backscatered electron per charged particle.
 
-      double aFracEff=(SiHitDetGlobalEffForBackSca != 1.0) ? 
-                      (1.0-SiHitDetGlobalEffForBackSca)/
-                      (1.0-(SiHitDetGlobalEffForBackSca*m_HpdCurrentReadOutEff)): 1.0;
+      double aFracEff=(SiHitDetGlobalEff != 1.0) ? (1.0-SiHitDetGlobalEff)/(1.0-(SiHitDetGlobalEff*m_HpdCurrentReadOutEff)): 1.0;
       // G4cout<<" Hpd Energy losss SidetEff HpdReadOuteff FracEff "<<SiHitDetGlobalEff<<"  "<<m_HpdCurrentReadOutEff<<"  "
       //      <<aFracEff<<G4endl;
       

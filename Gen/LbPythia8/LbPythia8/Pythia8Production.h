@@ -4,6 +4,7 @@
 // LbPythia8.
 #include "LbPythia8/GaudiRandomForPythia8.h" 
 #include "LbPythia8/BeamToolForPythia8.h"
+#include "LbPythia8/ILHAupFortranTool.h"
 #include "LbPythia8/LhcbHooks.h"
 
 // Gaudi.
@@ -13,10 +14,8 @@
 
 // Pythia8.
 #include "Pythia8/Pythia.h"
-#include "Pythia8Plugins/LHAFortran.h"
-#include "Pythia8Plugins/HepMC2.h"
-
-using namespace std;
+#include "Pythia8/LHAFortran.h"
+#include "Pythia8/Pythia8ToHepMC.h"
 
 /** 
  * Production tool to generate events with Pythia 8.
@@ -37,10 +36,10 @@ using namespace std;
  */
 class Pythia8Production : public GaudiTool, virtual public IProductionTool {
 public:
-  typedef vector<string> CommandVector ;
+  typedef std::vector<std::string> CommandVector ;
   
   /// Default constructor.
-  Pythia8Production(const string& type, const string& name,
+  Pythia8Production(const std::string& type, const std::string& name,
 		    const IInterface* parent);
   
   /// Default destructor.
@@ -136,7 +135,7 @@ public:
   Pythia8::Event      m_event;  ///< The Pythia 8 event record.
 
   // Members needed externally.
-  string m_beamToolName;        ///< The name of the beam tool.
+  std::string m_beamToolName;   ///< The name of the beam tool.
   
 protected:
 
@@ -159,8 +158,8 @@ protected:
   GaudiRandomForPythia8* m_randomEngine; ///< Random number generator.
   int m_nEvents;                         ///< Number of generated events.
   CommandVector m_userSettings;          ///< The user settings vector.
-  string m_tuningFile;                   ///< The global tuning file.
-  string m_tuningUserFile;               ///< The user tuning file.
+  std::string m_tuningFile;              ///< The global tuning file.
+  std::string m_tuningUserFile;          ///< The user tuning file.
   bool m_validate_HEPEVT;                ///< Flag to validate the event.
   bool m_listAllParticles;               ///< Flag to list all the particles.
   bool m_checkParticleProperties ;       ///< Flag to check particle properties.

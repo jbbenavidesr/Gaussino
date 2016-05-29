@@ -3,7 +3,7 @@ package           powhegbox
 use LCG_Configuration v*
 use LCG_Settings      v*
 
-macro powhegbox_home $(LCG_external)/MCGenerators/powheg-box-v2/$(powhegbox_native_version)/$(LCG_system)
+macro powhegbox_home  $(LCG_external)/MCGenerators/powheg-box/$(powhegbox_native_version)/$(LCG_system)
 
 include_path none
 

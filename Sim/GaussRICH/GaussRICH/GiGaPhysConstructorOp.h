@@ -154,11 +154,8 @@ private:
   
   bool m_CherenkovAddBackgrRich2;
   double m_CherenkovRich2BackgrProbFactor;
-  bool m_ActivateRichPhotElecAnalysis;
-
-  int m_RichActivateG4CherenkovAnalysis;  // to activate the cherenkov analaysis. 0 means off
-                                          // and  1 means  to activate.
-
+  
+  
     
   
 };

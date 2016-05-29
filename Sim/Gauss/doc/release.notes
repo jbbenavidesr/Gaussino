@@ -4,8 +4,16 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-! 2016-04-26 - Patrick Robbe
- - Add options to Gauss configurable for the simulation of heavy-ion and
+!========================== Gauss v49r1 2016-05-26 ===========================
+- on v49b branch
+
+! 2016-05-26 - Gloria Corti
+ - Use version of DecFiles v29r* to indicate new decay.dec and different
+   results. This is the first Sim09 version.
+
+! 2016-05-25 - Gloria Corti 
+ - Merged from trunk changed made on 2016-04-26 by Patrick Robbe :
+   Add options to Gauss configurable for the simulation of heavy-ion and
    beam gas events. 
 
 !========================== Gauss v49r0 2016-03-29 ===========================

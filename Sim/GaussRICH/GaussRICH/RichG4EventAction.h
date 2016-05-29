@@ -192,8 +192,6 @@ private:
   bool m_RichG4HitReconUseOnlySignalHit;
   bool m_RichG4HitReconUseOnlyHighMom;
   
-  std::string m_RichQwAnalysisNtupleName;
-  
 };
 
 #endif  // end of RichG4EventAction_H

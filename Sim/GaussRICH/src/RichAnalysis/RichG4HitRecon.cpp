@@ -242,7 +242,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
           G4int aPrimaryMirrCopyInfo = aHit->Mirror1PhotonDetectorCopyNum();
           G4int aSecMirrCopyInfo = aHit->Mirror2PhotonDetectorCopyNum();
-          //    G4cout<<" RichHitrecon hit info: richdet PrimMirrCopyInfo  SecMirrorcopyinfo "<< aRichDetNum<<" "
+          //     G4cout<<" RichHitrecon hit info: richdet PrimMirrCopyInfo  SecMirrorcopyinfo "<< aRichDetNum<<" "
           // 	<<aPrimaryMirrCopyInfo<<"  " <<  aSecMirrCopyInfo<<G4endl;
 
           G4int adfact = 100;
@@ -251,7 +251,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
           // const G4ThreeVector trueLocalPeOrigin =  aHit->GetLocalPEOriginPos();
           
-          // const G4ThreeVector trueGlobalPeOrigin= aHit->GetGlobalPEOriginPos();
+          //const G4ThreeVector trueGlobalPeOrigin= aHit->GetGlobalPEOriginPos();
           
           //const G4ThreeVector trueReflPtOnMirror1=  aHit-> Mirror1PhotonReflPosition();
           
@@ -1042,8 +1042,8 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
                                                aRichDetNum, aSecMirrCopyNum  );
 
  
-            //  RichG4HitReconlog << MSG::INFO<<" Reflection pt D3E3, D4E3 D7E3  D4E1  "<< aReflPointD3E3 <<"     "
-            //                  <<aReflPointD4E3<< "   "<<aReflPointD7E3<< "  "<<aReflPointD4E1<<endreq;
+            // RichG4HitReconlog << MSG::INFO<<" Reflection pt D3E3, D4E3 D7E3  D4E1  "<< aReflPointD3E3 <<"     "
+            //      <<aReflPointD4E3<< "   "<<aReflPointD7E3<< "  "<<aReflPointD4E1<<endreq;
             
                    
 
@@ -1132,7 +1132,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             if(m_RichG4HistoFillSet4Ckv) {
               //              RichG4HitReconlog << MSG::INFO
               //  << " Now filling Ckv Angle histo "
-              //                << m_RichG4ReconResult-> ckvAngleD4E1() << endreq;
+              //                <<  aCkvAngle<< endreq;
 
               m_RichG4HistoFillSet4Ckv->
                 FillRichG4HistoSet4(aHit,m_RichG4ReconResult );

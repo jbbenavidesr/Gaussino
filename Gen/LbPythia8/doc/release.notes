@@ -4,11 +4,11 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+!======================== LbPythia8 v12r1 2016-05-23 =========================
 ! 2016-05-25 - Gloria Corti
- - Change path for PYTHIA8XML
-
-! 2016-05-23 - Philip Ilten
- - Cleaned up extra files and updated for usage with Pythia 8.219
+ - Merged r206272 from trunk by Phil Ilten 
+   . Removed the onia double counting from the default LHCb tune in 
+     LHCbDefault.cmd
 
 !======================== LbPythia8 v12r0 2016-03-28 =========================
 ! 2016-03-28 - Gloria Corti

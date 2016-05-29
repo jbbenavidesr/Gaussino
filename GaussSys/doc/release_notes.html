@@ -4,13 +4,143 @@ Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
 
-! 2016-05-23 - Gloria Corti
- - Remove use of GaudiPolicy and DDDB that are in LHCB v40r1 and Gaudi v27r1 
-   on which Gauss v50ro will be based on
+!=======================================================================================
+</PRE><H1><A NAME="v49r1">2016-05-27 - GaussSys v49r1</A></H1><PRE>
+<H2><A NAME="Note"First release for Sim09 productions. 
+   Based on LCG_79.
+   Default Tune1 for Pythia8.
+</A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v39r1 (and Gaudi v26r4)</b>
+   AppConfig v3r*,
+   <b>DecFiles v29r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   PGunsData v1r*
+   pythia8 186, lhapdf 6.1.4, 
+   photos++ 3.56 and tauola++ 1.1.4, 
+   pythia 6.427.2 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.09> (via LCG_Interfaces),
+   LHAPDFSets v2r* (private LHCb version)
+   Geant4 v96r4p3 (based on geant4.9.6.p04 + patches for LHCb) and 
+   Geant4Files v96r0, 
+   XmlVis v1r23,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 and powhegbox r2092 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.7.1 and thepeg 1.9.2p1 (via LCG_GeneratorsInterfaces),
+   rivet 1.9.0 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v14r7</b>, EvtGenExtras v3r12p1 and <b>Mint v4r0</b>
+   (private LHCb version),
+   BcVegPy v4r0p1 + BcVegPyData v2r*, GenXicc v2r2 + GenXiccData v3r* and 
+   HidValley v4r1 (private LHCb versions)
+</A></H3>
 
 ! 2016-04-27 - Gloria Corti
- - New LCG_GeneratorsInterfaces packages introduced for CRMC and YODA
- - New adaptor package for CRMC/EPOS
+ - New packages introduced for CRMC, including LCG_GeneratorsInterfaces/crmc
+
+!========================== Gauss v49r1 2016-05-26 ===========================
+- on v49b branch
+
+! 2016-05-26 - Gloria Corti
+ - Use version of DecFiles v29r* to indicate new decay.dec and different
+   results. This is the first Sim09 version.
+
+! 2016-05-25 - Gloria Corti 
+ - Merged from trunk changed made on 2016-04-26 by Patrick Robbe :
+   Add options to Gauss configurable for the simulation of heavy-ion and
+   beam gas events. 
+
+!========================== GENSER v16r2 2016-05-25 ==========================
+! 2016-04-19 - Gloria Corti
+ - Introduce macro to select version of crmc/epos, initially set to 1.5.6
+
+!========================== EvtGen v14r7 2016-04-26 ==========================
+! 2016-04-22 - Michal Kreps
+  - Implement new LQCD form factors for Lb --> L mu mu from paper
+    1602.01399. Old LQCD form factors are removed.
+
+!=========================== Mint v4r1 2016-05-25 ============================
+! 2016-04-04 - Jonas Rademacker
+ - fix one more spin factor (that used to always give zero). Again, credit
+   goes to the brilliant Philippe d'Argent.
+ - fix an error in SymmLorentzMatrix::Contract_2 which will affect two spin-2 
+   spin factors: SF_DtoT1T2_T1toP0P1_T2toP2P3_S, 
+   SF_DtoPseudoTP0_PseudoTtoTP1_TtoP2P3 (and there's also a fix for a compile 
+   time error in NamedParameter? picked up by the latest clang which should 
+   have no further consequences)
+
+!======================== LbPythia8 v12r1 2016-05-23 =========================
+! 2016-05-25 - Gloria Corti
+ - Merged r206272 from trunk by Phil Ilten 
+   . Removed the onia double counting from the default LHCb tune in 
+     LHCbDefault.cmd
+
+!========================== LbCRMC v1r0 2016-05-27 ===========================
+! 2016-05-23 - Laure Massacrier
+ - Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
+
+! 2016-04-27 - Laure Massacrier
+ - Add calculation and printing of the center of mass energy to check the
+   configuration infos in CRMCProduction.cpp
+ - Fix status of beam particles to 3 while filling HepMC event so that beam 
+   particles are ignored by EvtGen
+
+! 2016-04-26 - Patrick Robbe
+ - Add default option (EPOS.py) and CRMC option file
+
+! 2016-04-19 - Gloria Corti
+ - Remove macro crmc_native_version that has been moved to Gen/GENSER
+
+! 2016-04-18 - Gloria Corti
+ - Change version of crmc from 1.4 to 1.5.6
+
+! 2016-03-18 - Laure Massacrier
+ - Fix division by A in BoostAndRotate function + possibility to produce 
+   tables in Epos
+
+! 2016-03-18 - Dmitry Popov
+ - Replaced the std::runtime_error exceptions with StatusCode returns/checks
+   to comply with Gaudi guidelines.
+
+! 2016-02-10 - Laure Massacrier
+  - First version of the filling of HepMC files for EPOS
+
+! 2016-01-28 - Laure Massacrier
+  - Add Class to read Hadr25 epos common Block
+
+! 2016-01-27 - Laure Massacrier
+  - Add Class to read common block Appli, Drop7 and Othe1
+
+! 2016-01-23 - Laure Massacrier
+  - Fix in the variable type from Fortran to C++
+  - Add classes to read the Accum and Nucl1 epos common blocks
+
+! 2015-11-28 - Laure Massacrier
+ - Add some changes to CRMCProduction.cpp to remove truncation of events
+
+! 2015-11-06 - Dmitry Popov
+ - Fixed the momenta setup of the colliding particles for the case when user
+   overrides value for only one particle.
+
+! 2015-10-31 - Laure Massacrier
+ - New class Hadr5.cpp/.F to access Hadr5 epos common block
+
+! 2015-10-30 - Laure Massacrier
+ - New class added in LbCRMC and cleaning of old classes
+
+! 2015-10-22 - Laure Massacrier
+ - Adding some comments in CRMCProduction.cpp
+
+! Initial commit - Laure Massacrier
+  Package to interface epos with CRMC
+  Original code developed by Dimitry Popov.
+  Modifications by Laure Massacrier
+
+!========================== SimChecks v1r8 2016-05-25 ========================
+! 2016-03-22 - Dmitry Popov
+ - Removed the settings which do not change the Gauss' defaults, replaced
+   the explicit tags with a $GAUSSROOT import.
 
 !=======================================================================================
 </PRE><H1><A NAME="v49r0">2016-03-29 - GaussSys v49r0</A></H1><PRE>

@@ -134,11 +134,6 @@ StatusCode GetMCCkvHitsAlg::execute()
       // reserve space
       totalSize += numberofhits;  // count the total num of hits in all collections.
 
-      // GrandPmtFlag
-      bool isGrandPmtHitFlag = ( (iii >= RichG4HitCollectionName() ->InitCollectListNumForGrandPmtOutput()) && 
-                                (iii <=  RichG4HitCollectionName() -> FinalCollectListNumForGrandPmtOutput())) ? true : false;
-      
-
       // now loop through the hits in the current collection.
       for ( int ihit = 0; ihit < numberofhits; ++ihit )
       {
@@ -267,9 +262,7 @@ StatusCode GetMCCkvHitsAlg::execute()
         // fill reference to MCParticle (need to const cast as method is not const !!)
         CkvG4Hit* nonconstg4hit = const_cast<CkvG4Hit*>(g4hit);  
 
-
-        const LHCb::RichSmartID detID = assembleMCPmtRichSmartID(g4hit,isGrandPmtHitFlag); 
-        
+        const LHCb::RichSmartID detID = assembleMCPmtRichSmartID(g4hit);
         if ( !detID.isValid() )
          {     
            warning()<<" Invalid richsmartID for Pmt from GaussCherenkov "<<endmsg; 
@@ -371,7 +364,7 @@ StatusCode GetMCCkvHitsAlg::execute()
 
   return StatusCode::SUCCESS;
 }
-LHCb::RichSmartID GetMCCkvHitsAlg::assembleMCPmtRichSmartID(const CkvG4Hit * aHit , bool isAGrandPmtHitFlag) 
+LHCb::RichSmartID GetMCCkvHitsAlg::assembleMCPmtRichSmartID(const CkvG4Hit * aHit) 
 {
   const int CurRich= aHit ->GetCurRichDetNum();
   const int CurSide = aHit ->GetCurSectorNum();
@@ -426,27 +419,15 @@ LHCb::RichSmartID GetMCCkvHitsAlg::assembleMCPmtRichSmartID(const CkvG4Hit * aHi
   // info()<<"smartIdInput from Pmt  rich side M P PxX PxY lensflag "<<iRich<<"   "<<iSide<<"  "
   //       <<CurPInM<<"   "<<CurM<<"   "<<CurPiX<<"   "<<CurPiY<<" CurPdLensFlag  "<<CurPdLensFlag<<endmsg; 
 
-
-  //   info()<<"smartIdInput from Pmt  rich side M P PxX PxY lensflag "<<iRich<<"   "<<iSide<<"  "
-  //         <<CurPInM<<"   "<<CurM<<"   "<<CurPiX<<"   "<<CurPiY
-  //         <<"   GrandpmtFlag  "<< isAGrandPmtHitFlag   <<endmsg;
-  //
-       //<<" CurPdLensFlag  "<<CurPdLensFlag
-
-     // LHCb::RichSmartID asmartID_PM_test = LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,
-     //                                            LHCb::RichSmartID::MaPMTID );
-
-
-     //   LHCb::RichSmartID asmartID_withPixelNum_test = LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,CurPiX,CurPiY,
-     //                                             LHCb::RichSmartID::MaPMTID );
-     //  if(isAGrandPmtHitFlag) asmartID_withPixelNum_test.setLargePMT(true);
-     //
+   //    LHCb::RichSmartID asmartID_PM_test = LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,
+   //                                              LHCb::RichSmartID::MaPMTID );
+  //      LHCb::RichSmartID asmartID_withPixelNum_test = LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,CurPiX,CurPiY,
+  //                                                LHCb::RichSmartID::MaPMTID );
   //     asmartID_PM_test.setRichLensFlag(CurPdLensFlag );
   //     asmartID_withPixelNum_test.setRichLensFlag(CurPdLensFlag ); 
-     //    info()<<" RichSmarid Pixel "<<asmartID_withPixelNum_test.rich()  <<"  "<<asmartID_withPixelNum_test.panel()   <<"  "
-     //        << asmartID_withPixelNum_test.pdNumInCol()   <<"   "<<asmartID_withPixelNum_test.pdCol()  <<"   "
-     //      <<"  "<<asmartID_withPixelNum_test.key()
-     //      << "    GrandpmtfromID   "<<asmartID_withPixelNum_test.isLargePMT()    <<endmsg;
+  //    info()<<" RichSmarid Pixel "<<asmartID_withPixelNum_test.rich()  <<"  "<<asmartID_withPixelNum_test.panel()   <<"  "
+  //           << asmartID_withPixelNum_test.pdNumInCol()   <<"   "<<asmartID_withPixelNum_test.pdCol()  <<"   "<<CurPdLensFlag<<" "
+  //           <<"  "<<asmartID_withPixelNum_test.key()<< endmsg;
   //      
   //  info()<<" now det richdet info "<<endmsg;
     
@@ -535,12 +516,8 @@ LHCb::RichSmartID GetMCCkvHitsAlg::assembleMCPmtRichSmartID(const CkvG4Hit * aHi
    //                           CurPiY,CurPiX,CurPdLensFlag,LHCb::RichSmartID::MaPMTID ) );
   //  return ( asmartID_withPixelNum  );
 
-
-    LHCb::RichSmartID a_detID= LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,
-                                                  CurPiY,CurPiX,LHCb::RichSmartID::MaPMTID );
-    if(isAGrandPmtHitFlag) a_detID.setLargePMT(true);
-
-   return (a_detID );
+   return ( LHCb::RichSmartID (iRich,iSide, CurPInM, CurM,
+                             CurPiY,CurPiX,LHCb::RichSmartID::MaPMTID ) );
 }
 
 //=============================================================================

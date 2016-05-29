@@ -4,8 +4,8 @@
 // LbHard.
 #include "LbHard/HardProduction.h"
 
-// Pythia 8.
-#include "Pythia8Plugins/PowhegProcs.h"
+// Local.
+#include "PowhegProcs.h"
 
 /** 
  * Production tool to generate events with PowhegBox.

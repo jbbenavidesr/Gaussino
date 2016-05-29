@@ -46,25 +46,21 @@ GiGaPhysConstructorHpd::GiGaPhysConstructorHpd
   const std::string& name   ,
   const IInterface*  parent )
   : GiGaPhysConstructorBase( type , name , parent ),
-    m_RichHpdSiDetEfficiency(1.0),
+    m_RichHpdSiDetEfficiency(0.85),
     m_RichHpdPixelChipEfficiency(1.0),
     m_RichHpdPeBackScatterProb(0.005823), /*RWL change 8th Nov 06*/
     m_ActivateRICHHPDPhysProc(true),
     m_RichHpdReadoutEffWithAerogel(1.0),
     m_RichHpdReadoutEffWithRich1Gas(1.0),
-    m_RichHpdReadoutEffWithRich2Gas(1.0)
+    m_RichHpdReadoutEffWithRich2Gas(1.0)   
 { 
   declareProperty("RichHpdSiDetEfficiency", m_RichHpdSiDetEfficiency);
   declareProperty("RichHpdPixelChipEfficiency", m_RichHpdPixelChipEfficiency);
   declareProperty("RichHpdBackScatterProb" , m_RichHpdPeBackScatterProb);
-  declareProperty("RichHpdPhysicsProcessActivate",m_ActivateRICHHPDPhysProc);
-
-  // The following 5 lines moved to RichG4TrackActionPhotOpt.cpp . SE 05-05-2016
-  //   m_RichHpdSiDetEfficiency(0.85),
- // declareProperty("RichHpdSiDetEfficiency", m_RichHpdSiDetEfficiency);
-  //  declareProperty("RichHpdReadOutEffInAerogel",m_RichHpdReadoutEffWithAerogel);
-  // declareProperty("RichHpdReadOutEffInRich1Gas", m_RichHpdReadoutEffWithRich1Gas);
-  // declareProperty("RichHpdReadOutEffInRich2Gas", m_RichHpdReadoutEffWithRich2Gas);
+  declareProperty("RichHpdPhysicsProcessActivate",m_ActivateRICHHPDPhysProc); 
+  declareProperty("RichHpdReadOutEffInAerogel",m_RichHpdReadoutEffWithAerogel);
+  declareProperty("RichHpdReadOutEffInRich1Gas", m_RichHpdReadoutEffWithRich1Gas);
+  declareProperty("RichHpdReadOutEffInRich2Gas", m_RichHpdReadoutEffWithRich2Gas);
   
  }
 

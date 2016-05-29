@@ -1,9 +1,6 @@
 ! Package     : Gen/LbGenXicc
-! Responsible : Philip Ilten
+! Responsible : F. Zhang
 !=============================================================================
-
-! 2016-05-23 - Philip Ilten
- - Updated to use the LHAupFortran header from Pythia 8.219 directly
 
 !======================== LbGenXicc v5r1p1 2016-03-29 ========================
 ! 2016-03-29 - Gloria Corti

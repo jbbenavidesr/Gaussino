@@ -676,16 +676,16 @@ void  RichHpdProperties::FillHpdDemagTablesAtInit ( IDataProviderSvc* detSvc,
 
 	if(iDeHpd) {
 
-	  const Rich::TabulatedFunction1D* r_demag   = iDeHpd->demagnification_RtoR();
-	  const Rich::TabulatedFunction1D* phi_demag = iDeHpd->demagnification_RtoPhi();
+	  const Rich1DTabFunc* r_demag   = iDeHpd->demagnification_RtoR();
+	  const Rich1DTabFunc* phi_demag = iDeHpd->demagnification_RtoPhi();
 
 	  m_RichHpdDeMagList[irichdet][ih]->setCurrentDemagnification( r_demag, phi_demag  );
 
 	  //debug stuff:
 // 	  for( double r_cathode=0.0; r_cathode<36.0;  r_cathode+=5.0 ) {
 // 	    double r_anode = r_demag->value(r_cathode);
-// 	    const Rich::TabulatedFunction1D* r_mag     = iDeHpd->  magnification_RtoR();
-// 	    const Rich::TabulatedFunction1D* phi_mag   = iDeHpd->  magnification_RtoPhi();
+// 	    const Rich1DTabFunc* r_mag     = iDeHpd->  magnification_RtoR();
+// 	    const Rich1DTabFunc* phi_mag   = iDeHpd->  magnification_RtoPhi();
 // 	    double rback_cathode = r_mag->value(r_anode);
 // 	    double deltaphi_anode       = phi_demag->value(r_cathode);
 // 	    double deltaphi_back_cathode= phi_mag  ->value(r_anode);
