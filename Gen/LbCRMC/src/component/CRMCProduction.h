@@ -102,6 +102,9 @@ public:
     //  bool m_switchOffDecayInEPOS;      // Toggle decaying of particles in CRMC
     bool m_switchOffEventTruncation;  // Switch off event truncation
     bool m_produceTables; //Produce EPOS tables
+    bool m_impactParameter; //To define a user impact parameter range
+    double m_minImpactParameter; //min value of the impact parameter
+    double m_maxImpactParameter; //max value of the impact parameter
 
     // Boost and rotation variables
     TMatrixD *m_transformToCMSMatrix;      // Lorentz transformation matrix (K -> K')

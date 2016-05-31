@@ -10,7 +10,12 @@ from Configurables import CRMCProduction
 Generation().MinimumBias.addTool(CRMCProduction, name = "CRMCProduction")
 
 Generation().MinimumBias.CRMCProduction.SwitchOffEventTruncation = True # to use the code without limit at 10000 particles
-Generation().MinimumBias.CRMCProduction.EPOSParamFileName = '$LBCRMCROOT/options/crmc.param' # to use the external param file
+#Generation().MinimumBias.CRMCProduction.EPOSParamFileName = '$LBCRMCROOT/options/crmc.param' # to use the external param file (not needed)
 Generation().MinimumBias.CRMCProduction.ProduceTables = False
 Generation().MinimumBias.CRMCProduction.BoostAndRotate = False
+#To define a user impact parameter range
+#Generation().MinimumBias.CRMCProduction.ImpactParameter = True
+#Generation().MinimumBias.CRMCProduction.MinImpactParameter = 9.;
+#Generation().MinimumBias.CRMCProduction.MaxImpactParameter = 20.;
+
 

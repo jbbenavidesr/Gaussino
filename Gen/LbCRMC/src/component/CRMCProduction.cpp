@@ -71,7 +71,10 @@ CRMCProduction::CRMCProduction(const std::string &type, const std::string &name,
                                m_paramFileName(""),
                                m_boostAndRotate(true),
                                m_switchOffEventTruncation(true),
-                               m_produceTables(false)
+                               m_produceTables(false),
+                               m_impactParameter(false),
+                               m_minImpactParameter(0.),
+                               m_maxImpactParameter(20.)
 
 {
   // Properties
@@ -92,6 +95,9 @@ CRMCProduction::CRMCProduction(const std::string &type, const std::string &name,
   //  declareProperty("SwitchOffDecayInEPOS", m_switchOffDecayInEPOS = false);
   declareProperty("SwitchOffEventTruncation", m_switchOffEventTruncation = true);
   declareProperty("ProduceTables", m_produceTables = false);
+  declareProperty("ImpactParameter", m_impactParameter = false);
+  declareProperty("MinImpactParameter", m_minImpactParameter = 0.);
+  declareProperty("MaxImpactParameter", m_maxImpactParameter = 20.);
 
   // Matrices for boost and rotation calculation
   m_transformToCMSMatrix = new TMatrixD(4, 4);
@@ -737,7 +743,7 @@ StatusCode CRMCProduction::copyTVecDToHepMCVec(const TVectorD &tVec, HepMC::Four
 void CRMCProduction::createDefaultCRMCConfiguratio() {
   m_defaultSettings.push_back("switch fusion on\n");
   m_defaultSettings.push_back("application hadron\n");
-  m_defaultSettings.push_back("frame nucleon-nucleon\n");
+  // m_defaultSettings.push_back("frame nucleon-nucleon\n");
 
   // Should CRMC decay particles or not?
   // if (m_switchOffDecayInEPOS)
@@ -746,30 +752,38 @@ void CRMCProduction::createDefaultCRMCConfiguratio() {
 
 
   // List of particles not to decay by the generator
-  m_defaultSettings.push_back("nodecay  14\n");
-  m_defaultSettings.push_back("nodecay -14\n");
-  m_defaultSettings.push_back("nodecay  1120\n");
-  m_defaultSettings.push_back("nodecay -1120\n");
-  m_defaultSettings.push_back("nodecay  1220\n");
-  m_defaultSettings.push_back("nodecay -1220\n");
-  m_defaultSettings.push_back("nodecay  120\n");
-  m_defaultSettings.push_back("nodecay -120\n");
-  m_defaultSettings.push_back("nodecay  130\n");
-  m_defaultSettings.push_back("nodecay -130\n");
-  m_defaultSettings.push_back("nodecay -20\n");
-  m_defaultSettings.push_back("nodecay  17\n");
-  m_defaultSettings.push_back("nodecay -17\n");
-  m_defaultSettings.push_back("nodecay  18\n");
-  m_defaultSettings.push_back("nodecay -18\n");
-  m_defaultSettings.push_back("nodecay  19\n");
-  m_defaultSettings.push_back("nodecay -19\n");
+  //m_defaultSettings.push_back("nodecay  14\n");
+  // m_defaultSettings.push_back("nodecay -14\n");
+  //m_defaultSettings.push_back("nodecay  1120\n");
+  // m_defaultSettings.push_back("nodecay -1120\n");
+  // m_defaultSettings.push_back("nodecay  1220\n");
+  // m_defaultSettings.push_back("nodecay -1220\n");
+  // m_defaultSettings.push_back("nodecay  120\n");
+  // m_defaultSettings.push_back("nodecay -120\n");
+  // m_defaultSettings.push_back("nodecay  130\n");
+  // m_defaultSettings.push_back("nodecay -130\n");
+  // m_defaultSettings.push_back("nodecay -20\n");
+  // m_defaultSettings.push_back("nodecay  17\n");
+  // m_defaultSettings.push_back("nodecay -17\n");
+  // m_defaultSettings.push_back("nodecay  18\n");
+  // m_defaultSettings.push_back("nodecay -18\n");
+  // m_defaultSettings.push_back("nodecay  19\n");
+  // m_defaultSettings.push_back("nodecay -19\n");
 
-  // Which particles to consider stable - remove (or set to -1) to decay everything in CRMC
-  if (m_minDecayLength != 0) {
-    std::ostringstream tmp_minDecayLengthStr;
-    tmp_minDecayLengthStr << m_minDecayLength;
-    m_defaultSettings.push_back("MinDecayLength  " + tmp_minDecayLengthStr.str() + "\n");
+  if(m_impactParameter){
+      std::ostringstream tmp_minImpactParameter;
+      std::ostringstream tmp_maxImpactParameter;
+      tmp_minImpactParameter << m_minImpactParameter;
+      tmp_maxImpactParameter << m_maxImpactParameter;
+      m_defaultSettings.push_back("set bminim " + tmp_minImpactParameter.str() + "\n");
+      m_defaultSettings.push_back("set bmaxim " + tmp_maxImpactParameter.str() + "\n");
   }
+  // Which particles to consider stable - remove (or set to -1) to decay everything in CRMC
+  // if (m_minDecayLength != 0) {
+  //  std::ostringstream tmp_minDecayLengthStr;
+  //  tmp_minDecayLengthStr << m_minDecayLength;
+  //   m_defaultSettings.push_back("MinDecayLength  " + tmp_minDecayLengthStr.str() + "\n");
+  // }
 
   
 

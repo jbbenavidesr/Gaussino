@@ -33,26 +33,20 @@ switch decay off     !no decay at all
 !for other particles, please ask authors ... or use minimum ctau (cm) :
 !MinDecayLength  1.    !minimum c.Tau to define stable particles (cm)
 
+fdpmjetpho dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/phojet_fitpar.dat
+fdpmjet dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/dpmjet.dat
+fqgsjet dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsjet.dat
+fqgsjet ncs   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsjet.ncs
+fqgsjetII03 dat /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsdat-II-03.lzma
+fqgsjetII03 ncs /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/sectnu-II-03
+fqgsjetII dat /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsdat-II-04.lzma
+fqgsjetII ncs /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/sectnu-II-04
 fname check  none
-fname initl  $(CRMC_TABS)/epos.initl
-fname iniev  $(CRMC_TABS)/epos.iniev
-fname inirj  $(CRMC_TABS)/epos.inirj
-fname inics  $(CRMC_TABS)/epos.inics
-
-!fdpmjetpho dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/phojet_fitpar.dat
-!fdpmjet dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/dpmjet.dat
-!fqgsjet dat   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsjet.dat
-!fqgsjet ncs   /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsjet.ncs
-!fqgsjetII03 dat /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsdat-II-03.lzma
-!fqgsjetII03 ncs /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/sectnu-II-03
-!fqgsjetII dat /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/qgsdat-II-04.lzma
-!fqgsjetII ncs /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/sectnu-II-04
-!fname check  none
-!fname initl  /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.initl
-!fname iniev  /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.iniev
-!fname inirj  /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inirj
-!fname inics  /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inics
-!fname inihy  /afs/.cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inihy
+fname initl  /afs/cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.initl
+fname iniev  /afs/cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.iniev
+fname inirj  /afs/cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inirj
+fname inics  /afs/cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inics
+fname inihy  /afs/cern.ch/sw/lcg/releases/MCGenerators/crmc/1.5.6-35c26/x86_64-slc6-gcc49-opt/tabs/epos.inihy
 
 !set pytune 350   !possibility to change PYTHIA tune (for PYTHIA only !)
 
