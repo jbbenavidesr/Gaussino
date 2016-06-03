@@ -105,6 +105,8 @@ public:
     bool m_impactParameter; //To define a user impact parameter range
     double m_minImpactParameter; //min value of the impact parameter
     double m_maxImpactParameter; //max value of the impact parameter
+    bool m_addUserSettingsToDefault; //add user settings to default settings
+    std::string m_frame; //give the frame for the outputs
 
     // Boost and rotation variables
     TMatrixD *m_transformToCMSMatrix;      // Lorentz transformation matrix (K -> K')
