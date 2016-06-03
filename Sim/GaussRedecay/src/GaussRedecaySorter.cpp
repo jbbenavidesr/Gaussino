@@ -167,7 +167,7 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
   /*Now store it, delete the daugthers and replace the pdg id with the
    * placeholder.*/
   auto new_id =
-      m_gaussRDStrSvc->registerForRedecay(temp_str_part, m_current_pileup);
+      m_gaussRDStrSvc->registerForRedecay(temp_str_part, part->parent_event()->event_number()-1);
   if (new_id == -1) {
     m_store_fail = true;
   }
@@ -200,6 +200,9 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
   std::set<HepMC::GenParticle*> heavy_stuff;
   m_current_pileup = 0;
   for (auto& e : *evts) {
+    if (msgLevel(MSG::DEBUG)) {
+      debug() << "Working on pile-up event " << m_current_pileup << endmsg;
+    }
     auto evt = e->pGenEvt();
     /*Get the invariant mass of the particle to decay everything that is
      * heavier.
@@ -233,8 +236,8 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
         LHCb::ParticleID pid(part->pdg_id());
         if (part->generated_mass() > inv_mass) {
           heavy_stuff.insert(part);
-          debug() << "Event " << evt->event_number()
-                  << "This should be redecayed: " << endmsg;
+          debug() << "Event " << m_current_pileup
+                  << ": This should be redecayed: " << endmsg;
           printChildren(part);
         }
         // if signal is KS then decay also K0

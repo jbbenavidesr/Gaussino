@@ -89,6 +89,9 @@ StatusCode RedecayProduction::generateEvent(
         dummy_vertex->add_particle_out(tag);
 
         v->add_particle_out(p);
+        if(!theEvent->valid_beam_particles()){
+            theEvent->set_beam_particles(tag, tag);
+        }
         theEvent->add_vertex(v);
     }
 

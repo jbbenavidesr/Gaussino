@@ -113,10 +113,11 @@ StatusCode GaussRedecayMergeAndClean::execute() {
     m_temp_cloner->m_list_mcps = m_mcparticles.first;
     m_temp_cloner->m_list_mcvs = m_mcvertices.first;
 
-
-    auto sig_info = m_gaussRDStrSvc->getRegisteredForRedecay();
-    for (auto& info : *sig_info) {
-        fix_connections(info.first, info.second.pdg_id);
+    for (int i = 0; i < m_gaussRDStrSvc->getNPileUp(); i++) {
+        auto sig_info = m_gaussRDStrSvc->getRegisteredForRedecay();
+        for (auto& info : *sig_info) {
+            fix_connections(info.first, info.second.pdg_id);
+        }
     }
 
     // Now clone all the other particles and vertices.

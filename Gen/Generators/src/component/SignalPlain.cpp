@@ -61,6 +61,9 @@ bool SignalPlain::generate(const unsigned int nPileUp,
   HepMC::GenEvent* theGenEvent(0);
 
   for (unsigned int i = 0; i < nPileUp; ++i) {
+    debug() << "#########################################" << endmsg;
+    debug() << "Redecay Pileup: " << i << endmsg;
+    debug() << "#########################################" << endmsg;
     prepareInteraction(theEvents, theCollisions, theGenEvent, theGenCollision);
 
     sc = m_productionTool->generateEvent(theGenEvent, theGenCollision);
@@ -74,7 +77,6 @@ bool SignalPlain::generate(const unsigned int nPileUp,
               printChildren(p);
             }
           }
-        debug() << "-----------------------------------------" << endmsg;
         }
       }
       debug() << "=========================================" << endmsg;
@@ -95,7 +97,6 @@ bool SignalPlain::generate(const unsigned int nPileUp,
               }
             }
           }
-          debug() << "-----------------------------------------" << endmsg;
         }
         debug() << "=========================================" << endmsg;
       }
