@@ -4,6 +4,9 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-06-05 - Patrick Robbe
+ - Add random generator interface for EPOS: use the Gauss generator 
+
 ! 2016-05-27 - Gloria Corti
  - Chnage path for PYTHIA8DATA as location of xmldoc changed in relase of 219
 
