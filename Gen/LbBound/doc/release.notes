@@ -4,6 +4,7 @@
 ! Purpose     : Production tool for deuterons
 !-----------------------------------------------------------------------------
 
+!========================== LbBound v1r0 2016-06-07 ==========================
 ! 2016-04-27 - Gloria Corti
  - Added no-auto-import to use of ROOT to keep it private to the build of this
    package
