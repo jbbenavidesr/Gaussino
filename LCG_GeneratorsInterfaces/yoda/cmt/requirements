@@ -3,7 +3,6 @@
 # Maintainer : Alex Grecu <alexandru.grecu@nipne.ro> - to be changed!
 #============================================================================
 package           yoda
-version           v1r0 
 
 use LCG_Configuration v*
 use LCG_Settings v*
