@@ -1,7 +1,7 @@
 ################################################################################
 # Package: GaussCherenkov
 ################################################################################
-gaudi_subdir(GaussCherenkov v4r5)
+gaudi_subdir(GaussCherenkov v5r0)
 
 gaudi_depends_on_subdirs(Det/RichDet
                          Event/LinkerEvent
