@@ -3,52 +3,76 @@
 ! Responsible	: Sajan Easo
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
-! 2016-05-27 - Sajan Easo
 
- - Added new track action named RichG4TrackActionRich2Photon which suppresses some of the photons 
-   created by scintillation process in RICH2, which are not expected to reach the detector plane.
+!========================= GaussRICH v15r0 2016-03-23 ========================
+! 2016-05-27 - Sajan Easo
+ - Added new track action named RichG4TrackActionRich2Photon which suppresses
+   some of the photons created by scintillation process in RICH2, which are not
+   expected to reach the detector plane.
    This was to reduce the CPU time used for RICH2 simulation.
--  For the same purpose, modified RichG4TrackActionRich2Photon and  GiGaPhysConstructorOp so that the
-   suppression factor from efficiency lossses is transferred to the scintillation process, when creating that process. This is to
-   reduce the creation of extra photons, instead of suppressing them after they are created in their first step.
-   A good fraction of the scintillation photons which do not go to the detector plane die in their first step 
-   after reaching the vessel edge. So this modification speeds up killing them.
--  Added a trackaction RichG4TrackActionRich2DbgPhotonTrack and a step action named RichG4StepAnalysis15. for debugging purpose. 
-   This is to study the effect of killing rich2 photons. This is not actived by default at all. This is for special studies only.
-  
+ - For the same purpose, modified RichG4TrackActionRich2Photon and 
+   GiGaPhysConstructorOp so that the suppression factor from efficiency lossses
+   is transferred to the scintillation process, when creating that process. 
+   This is to reduce the creation of extra photons, instead of suppressing them
+   after they are created in their first step.
+   A good fraction of the scintillation photons which do not go to the detector
+   plane die in their first step after reaching the vessel edge. So this 
+   modification speeds up killing them.
+ - Added a trackaction RichG4TrackActionRich2DbgPhotonTrack and a step action 
+   named RichG4StepAnalysis15. for debugging purpose. 
+   This is to study the effect of killing rich2 photons. This is not actived by
+    default at all. This is for special studies only.
 
 ! 2016-05-16 - Sajan Easo
- - Added few modifications to speed up the program. This includes the pixel efficiency and the 
-   readout efficiencies seen in data updated into  RichG4TrackActionPhotOpt at pre-user trackaction level. 
-   The corresponding suppressions are avoided at the hit level in the RichHpdSiEnergyLoss so that there is no
+ - Added few modifications to speed up the program. This includes the pixel 
+   efficiency and the readout efficiencies seen in data updated into  
+   RichG4TrackActionPhotOpt at pre-user trackaction level. 
+   The corresponding suppressions are avoided at the hit level in the 
+   RichHpdSiEnergyLoss so that there is no
    double suppressions (double counting) for these efficiencies. 
-
--  The Max of the mirror reflectivites are also included in  RichG4TrackActionPhotOpt at pre-user trackaction level.
-   The default max efficiencies are set to 1.0 so that there is no suppression. But when the max efficienies 
-   as listed in the recent DB is read in, those values are used. In the same database update, new mirror reflectivity tables
-   are activated where the reflectivities are scaled up accordingly so that there is no double counting of the effect 
-   from the max reflectivities. As a result the program can be run with or without the new database update for RICH. 
-   When the new database update is used, the cpu time is improved by a small amount.
+ - The Max of the mirror reflectivites are also included in  
+   RichG4TrackActionPhotOpt at pre-user trackaction level.
+   The default max efficiencies are set to 1.0 so that there is no suppression.
+   But when the max efficienies as listed in the recent DB is read in, those
+   values are used. In the same database update, new mirror reflectivity tables
+   are activated where the reflectivities are scaled up accordingly so that 
+   there is no double counting of the effect 
+   from the max reflectivities. As a result the program can be run with or
+   without the new database update for RICH. 
+   When the new database update is used, the cpu time is improved by a small
+   amount.
    
--  The RichG4TrackActionPhotOpt is activated by default. This already had the photon suppression from Max HPD QE. With the
-   current updates, the max Mirror reflectivites, detection efficiency and pixel efficiency are included into this.
-   The detection efficiency is different for three radators and are read in from the RichEfficiency.opts. This options
-   file is modified so that the efficiency values are now used by RichG4TrackActionPhotOpt.  The values of these 
-   efficiencies in the options file may get modified in the future with the new data in different years.
+ - The RichG4TrackActionPhotOpt is activated by default. This already had the 
+   photon suppression from Max HPD QE. With the
+   current updates, the max Mirror reflectivites, detection efficiency and 
+   pixel efficiency are included into this.
+   The detection efficiency is different for three radators and are read in
+   from the RichEfficiency.opts. This options
+   file is modified so that the efficiency values are now used by 
+   RichG4TrackActionPhotOpt.  The values of these 
+   efficiencies in the options file may get modified in the future with the
+   new data in different years.
  
--  A new track action is installed and it is named RichG4TrackActionRich2Photon. When this activated, 
-   avoid photons created in the backward direction in RICH2 are killed at the pre-user tracking level. 
-   By default this is not activated. The option to activate this in Rich.opts but it is commented out by default. 
+ - A new track action is installed and it is named RichG4TrackActionRich2Photon.
+   When this activated, 
+   avoid photons created in the backward direction in RICH2 are killed at the
+   pre-user tracking level. 
+   By default this is not activated. The option to activate this in Rich.opts 
+   but it is commented out by default. 
  
--  The RichG4QwAnalysis is modified to create an ntuple for Cherenkov studies. This can be actiaved to be 
-    filled from RichG4Cerenkov and can be activated to be initalized from RchG4EventAction. 
-    This is only for special stufies hence is switched off by default. 
--  There is also the option to override the DB values for max efficiency for making tests for special studies. But this is not
-   activated by default. The corresponding options are commented out in RichEfficiency.opts by default.
+ - The RichG4QwAnalysis is modified to create an ntuple for Cherenkov studies. 
+   This can be actiaved to be 
+   filled from RichG4Cerenkov and can be activated to be initalized from 
+   RchG4EventAction. 
+   This is only for special stufies hence is switched off by default. 
+ - There is also the option to override the DB values for max efficiency for making
+   tests for special studies. But this is not
+   activated by default. The corresponding options are commented out in 
+   RichEfficiency.opts by default.
     
 ! 2016-05-01 -Sajan Easo 
- -Recently a typedef is removed for Rich1DTabFunc in RichDet. 
-  So modifications made to be compatible with this change.
+ - Recently a typedef is removed for Rich1DTabFunc in RichDet. 
+   So modifications made to be compatible with this change.
 
 !======================== GaussRICH v14r3p1 2016-03-23 =======================
 ! 2016-02-02 - Gloria Corti
