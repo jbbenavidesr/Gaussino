@@ -150,7 +150,11 @@ macro gcc_config_version       "" \
       target-icc13             "4.7.2" \
       target-clang33           "4.8.4" \
       target-clang34           "4.8.4" \
-      target-clang             "4.6.3" 
+      target-clang             "4.6.3" \
+      target-clang35           "4.8.4" \
+      target-clang36           "4.8.4" \
+      target-clang37           "4.9.3" \
+      target-clang38           "4.9.3" 
 macro gcc_native_version       "$(gcc_config_version)"
 macro gcc_home                 "$(LCG_external)/gcc/$(gcc_native_version)/$(LCG_hostos)"
 
@@ -160,9 +164,14 @@ macro clang_config_version      "" \
       target-clang31            "3.1" \
       target-clang32            "3.2" \
       target-clang33            "3.3" \
-      target-clang34            "3.4"
+      target-clang34            "3.4" \
+      target-clang35            "3.5" \
+      target-clang36            "3.6" \
+      target-clang37            "3.7" \
+      target-clang38            "3.8"
+
 macro clang_native_version      "$(clang_config_version)"
-macro clang_home                "$(LCG_external)/llvm/$(clang_native_version)/$(LCG_hostos)"
+macro clang_home                "$(LCG_base)/llvm/$(clang_native_version)/$(LCG_hostos)"
 
 # icc
 macro icc_config_version       "" \
@@ -198,7 +207,7 @@ macro cc_name                              "gcc" \
       host-slc5&target-gcc34               "gcc34" \
       target-darwin                        "cc" \
       target-win                           "cl" \
-      target-clang                         "clang" \
+      target-clang                         "clang --gcc-toolchain=$(gcc_home)" \
       target-icc                           "icc"
 
 macro cc                                   "$(cc_name)"
@@ -212,7 +221,7 @@ macro cpp_name                             "g++" \
       host-slc5&target-gcc34               "g++34" \
       target-darwin                        "c++" \
       target-win                           "cl" \
-      target-clang                         "clang++" \
+      target-clang                         "clang++ --gcc-toolchain=$(gcc_home)" \
       target-icc                           "icpc"
 
 macro cpp                                  "$(cpp_name)"
