@@ -14,11 +14,11 @@
 ! 2016-01-25 - Alex Grecu
  - Obtained same functionality for Rivet 2.x as previous version of package
    which is compatible with Rivet 1.9.0.
- - Improved documentation in option files from options directory
+ - Improved documentation in option files from options directory.
  - Removed options/beamOpts directory and its beam-options content. Users
    should follow guide lines in Python option files from options to select
    beam options from $APPCONFIGOPTS/Gauss which are apropriate for RIVET
-   runs. Details are also discussed on Twiki (https://twiki.cern.ch/twiki/bin/view/LHCb/GenTuneWithRivet).
+   runs. Details are also given on Twiki (https://twiki.cern.ch/twiki/bin/view/LHCb/GenTuneWithRivet).
 
 ! 2016-01-22 - Alex Grecu
  - Copy and patch locally rivet-mkhtml then rename as lbrivet-mkhtml. Bugs
