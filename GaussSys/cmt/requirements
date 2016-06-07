@@ -8,32 +8,32 @@ branches cmt doc
 #==================================================================
 
 # Gauss application: the application is not built on Win32
-use Gauss               v49r0   Sim
+use Gauss               v50r0   Sim
 
 # LCG interfaces to generators, until available in LCGCMT
-use LCG_Settings        v79r0p1 
-use lhapdf              v79r0p1 LCG_GeneratorsInterfaces
-use photospp            v79r0p1 LCG_GeneratorsInterfaces
-use tauolapp            v79r0p1 LCG_GeneratorsInterfaces
-use pythia6             v79r0p1 LCG_GeneratorsInterfaces
-use pythia8             v79r0p1 LCG_GeneratorsInterfaces
-use thepeg              v79r0p1 LCG_GeneratorsInterfaces
-use herwigpp            v79r0p1 LCG_GeneratorsInterfaces
-use rivet               v79r0p1 LCG_GeneratorsInterfaces
-use alpgen              v79r0p1 LCG_GeneratorsInterfaces
-use hijing              v79r0p1 LCG_GeneratorsInterfaces
-use powhegbox           v79r0p1 LCG_GeneratorsInterfaces
-use crmc                v79r0p1 LCG_GeneratorsInterfaces
-use yoda                v79r0p1 LCG_GeneratorsInterfaces
+use LCG_Settings        v84r0p1 
+use lhapdf              v84r0p1 LCG_GeneratorsInterfaces
+use photospp            v84r0p1 LCG_GeneratorsInterfaces
+use tauolapp            v84r0p1 LCG_GeneratorsInterfaces
+use pythia6             v84r0p1 LCG_GeneratorsInterfaces
+use pythia8             v84r0p1 LCG_GeneratorsInterfaces
+use thepeg              v84r0p1 LCG_GeneratorsInterfaces
+use herwigpp            v84r0p1 LCG_GeneratorsInterfaces
+use rivet               v84r0p1 LCG_GeneratorsInterfaces
+use alpgen              v84r0p1 LCG_GeneratorsInterfaces
+use hijing              v84r0p1 LCG_GeneratorsInterfaces
+use powhegbox           v84r0p1 LCG_GeneratorsInterfaces
+use crmc                v84r0p1 LCG_GeneratorsInterfaces
+#use yoda                v84r0p1 LCG_GeneratorsInterfaces
 
 # Generator packages: Basic configuration
 use GenCuts             v3r13   Gen
-use GENSER              v16r1   Gen
-use EvtGen              v14r6   Gen
-use Mint                v4r0    Gen
+use GENSER              v16r2   Gen
+use EvtGen              v14r7   Gen
+use Mint                v4r1    Gen
 use EvtGenExtras        v3r12p1 Gen
 use Generators          v16r0   Gen
-use LbPythia8           v12r0   Gen
+use LbPythia8           v12r1   Gen
 
 # Generators packages: alternative to Pythia8 for pp collisions
 use LbPythia            v15r1   Gen
@@ -52,7 +52,7 @@ use LbPowheg            v4r0    Gen
 
 # Generators packages: alternative for p-A & A-A collisions
 use LbHijing            v10r0p2 Gen
-use LbCRMC              v1r0    Gen
+use LbCRMC              v1r1    Gen
 
 # Generators packages: LHCb sampling results for Machine Induced Background
 use LbMIB               v7r0p2  Gen
@@ -66,6 +66,9 @@ use LbSuperChic         v1r0p1  Gen
 use LPair               v1r0    Gen
 use LbLPair             v1r0    Gen
 
+# Generators packages: for prompt nuclei production, e.g. Deuteron
+use LbBound             v1r0    Gen
+
 # Simulation basic packages
 use GiGa        	v21r1     Sim     
 use GiGaCnv     	v21r1     Sim
@@ -73,16 +76,17 @@ use SimSvc              v6r0p1    Sim
 use GiGaVisUI           v6r0p2    Sim
 use VisSvc              v5r8      Vis 
 use ClhepTools          v2r1p3    Tools
+use GaussGeo            v1r0      Sim
 
 # Simulation specialized packages
 use GaussKine           v7r0      Sim
 use GaussAlgs		v8r1      Sim
 use GaussTools          v20r1     Sim
-use GaussRICH		v14r3p1   Sim
+use GaussRICH		v15r0     Sim
 use GaussTracker	v7r0p1    Sim
 use GaussCalo		v10r1     Sim
 use GaussPhysics	v11r1p1   Sim
-use GaussCherenkov      v4r5      Sim
+use GaussCherenkov      v5r0      Sim
 
 # Monitoring packages
 use GaussMonitor	v8r2      Sim
@@ -105,7 +109,7 @@ use XmlVis              v1r23     Vis
 
 # Test packages for new releases or installations on new platforms
 use GenTests            v1r6p2    Gen
-use SimChecks           v1r7      Sim
+use SimChecks           v1r8      Sim
 
 # Allow to run the QMTests  
 apply_pattern QMTest
