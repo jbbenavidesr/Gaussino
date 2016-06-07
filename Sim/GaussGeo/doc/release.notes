@@ -8,3 +8,5 @@
 ! 2016-03-08 - Dmitry Popov
  - Initial release, providing the basic geometry conversion functionality,
    based on GiGaCnv conversion service.
+
+!=============================================================================
