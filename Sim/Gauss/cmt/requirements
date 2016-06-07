@@ -3,7 +3,7 @@
 # Maintainer : Gloria Corti (Patrick Robbe, Paul Szczypka) 
 #============================================================================
 package Gauss
-version v49r0
+version v50r0
 
 #============================================================================
 #-- Structure
@@ -17,7 +17,7 @@ branches src doc options cmt job python
 use DDDB               v*     Det            -no_auto_imports
 use ParamFiles         v8r*                  -no_auto_imports
 use FieldMap           v5r*                  -no_auto_imports
-use DecFiles           v28r*  Gen            -no_auto_imports
+use DecFiles           v29r*  Gen            -no_auto_imports
 use LHAPDFSets         v2r*                  -no_auto_imports
 use MIBData            v3r*                  -no_auto_imports
 use BcVegPyData        v2r*                  -no_auto_imports
@@ -65,6 +65,7 @@ use LbAlpGen           v*     Gen            -no_auto_imports
 use LbHijing           v*     Gen            -no_auto_imports
 use LbPythia8          v*     Gen            -no_auto_imports
 use LbPowheg           v*     Gen            -no_auto_imports
+use LbCRMC             v*     Gen            -no_auto_imports
 
 #-- Simulation
 use GiGaCnv              v*    Sim   -no_auto_imports

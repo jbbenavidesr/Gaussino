@@ -8,13 +8,13 @@
 
 #--Pick beam conditions as set in AppConfig
 from Gaudi.Configuration import *
-importOptions("$APPCONFIGOPTS/Gauss/Beam6500GeV-md100-nu1.6.py")
+importOptions("$APPCONFIGOPTS/Gauss/Beam6500GeV-md100-2015-nu1.6.py")
 importOptions("$APPCONFIGOPTS/Gauss/EnableSpillover-25ns.py")
 importOptions("$APPCONFIGOPTS/Gauss/DataType-2015.py")
 importOptions("$APPCONFIGOPTS/Gauss/RICHRandomHits.py")
 
 
-#--Set database tags using those for Sim08
+#--Set database tags
 from Configurables import LHCbApp
 LHCbApp().DDDBtag   = "dddb-20150724"
-LHCbApp().CondDBtag = "sim-20150703-vc-md100"
+LHCbApp().CondDBtag = "sim-20160606-vc-md100"

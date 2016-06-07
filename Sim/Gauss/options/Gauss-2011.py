@@ -9,17 +9,11 @@
 #--Pick beam conditions as set in AppConfig
 from Gaudi.Configuration import *
 importOptions("$APPCONFIGOPTS/Gauss/Sim08-Beam3500GeV-md100-2011-nu2.py")
+importOptions("$APPCONFIGOPTS/Gauss/DataType-2011.py")
+importOptions("$APPCONFIGOPTS/Gauss/RICHRandomHits.py")
+importOptions("$APPCONFIGOPTS/Gauss/NoPacking.py")
 
 #--Set database tags using those for Sim08
 from Configurables import LHCbApp
-LHCbApp().DDDBtag   = "dddb-20150522-1"
-LHCbApp().CondDBtag = "sim-20150522-1-vc-md100"
-
-#--Pick up new particle table until it is in a global tag
-from Configurables import CondDB
-CondDB().LocalTags = { "DDDB":["particles-20150720"] }
-
-#--Set datatype
-from Configurables import Gauss
-Gauss().DataType  = "2011"
-
+LHCbApp().DDDBtag   = "dddb-20160318-1"
+LHCbApp().CondDBtag = "sim-20160321-1-vc-md100"
