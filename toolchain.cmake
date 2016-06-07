@@ -15,7 +15,6 @@ set(generators_versions
     rivet          2.4.2
     tauola++       1.1.5
     thepeg         1.9.2p1
-    yoda           1.5.9
     )
 
 # Process the lines of LCG_generators_*.txt file to extract the
