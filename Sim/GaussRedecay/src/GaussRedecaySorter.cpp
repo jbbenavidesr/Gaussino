@@ -182,11 +182,6 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
   HepMCUtils::RemoveDaughters(part);
   part->set_pdg_id(new_id);
   part->set_status(LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen);
-  // auto v = new HepMC::GenVertex(
-  // HepMC::FourVector(temp_str_part.point.X(), temp_str_part.point.Y(),
-  // temp_str_part.point.Z(), temp_str_part.point.T()));
-  // v->add_particle_in(part);
-  // part->parent_event()->add_vertex(v);
 }
 
 void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
