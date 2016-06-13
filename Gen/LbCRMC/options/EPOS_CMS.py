@@ -12,12 +12,13 @@ Generation().MinimumBias.addTool(CRMCProduction, name = "CRMCProduction")
 Generation().MinimumBias.CRMCProduction.SwitchOffEventTruncation = True # to use the code without limit at 10000 particles
 Generation().MinimumBias.CRMCProduction.ProduceTables = False
 Generation().MinimumBias.CRMCProduction.BoostAndRotate = False
+Generation().MinimumBias.CRMCProduction.Frame = "nucleon-nucleon"
 #To define a user impact parameter range
 #Generation().MinimumBias.CRMCProduction.ImpactParameter = True
 #Generation().MinimumBias.CRMCProduction.MinImpactParameter = 9.;
 #Generation().MinimumBias.CRMCProduction.MaxImpactParameter = 20.;
 #To Add User Settings to the Default configuration of EPOS
-Generation().MinimumBias.CRMCProduction.AddUserSettingsToDefault = True
+#Generation().MinimumBias.CRMCProduction.AddUserSettingsToDefault = True
 #Generation().MinimumBias.CRMCProduction.Commands +=[
 #"set pytune 350",
 #"fdpmjetpho dat $CRMC_TABS/phojet_fitpar.dat",
