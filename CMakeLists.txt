@@ -23,7 +23,7 @@ endmacro()
 gaudi_project(Gauss v50r0
               FORTRAN
               USE LHCb v40r1
-                  Geant4 v96r4p3
+                  Geant4 v96r4p4
               DATA AppConfig VERSION v3r*
                    BcVegPyData VERSION v2r*
                    Det/GDMLData VERSION v1r*
