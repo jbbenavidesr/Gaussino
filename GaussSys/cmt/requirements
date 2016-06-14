@@ -24,11 +24,11 @@ use alpgen              v84r0p1 LCG_GeneratorsInterfaces
 use hijing              v84r0p1 LCG_GeneratorsInterfaces
 use powhegbox           v84r0p1 LCG_GeneratorsInterfaces
 use crmc                v84r0p1 LCG_GeneratorsInterfaces
-#use yoda                v84r0p1 LCG_GeneratorsInterfaces
+
 
 # Generator packages: Basic configuration
 use GenCuts             v3r13   Gen
-use GENSER              v16r2   Gen
+use GENSER              v16r2p1 Gen
 use EvtGen              v14r7   Gen
 use Mint                v4r1    Gen
 use EvtGenExtras        v3r12p1 Gen

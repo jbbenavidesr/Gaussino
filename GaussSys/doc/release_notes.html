@@ -3,14 +3,272 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
+!=======================================================================================
+</PRE><H1><A NAME="v50r0">2016-03-29 - GaussSys v50r0</A></H1><PRE>
+<H2><A NAME="Note"Release for Upgrade production. The generator part is identical to 
+   Gauss v49r1 but for new features in CRMC and a new generator that will be propagated
+   to v49r2.
+   The simulation part has improvement for the RICH (current and upgrade) otherwise
+   identical to v49r1. 
+   Based on LCG_84.
+   Default Tune1 for Pythia8 and J/Psi with data.
+</A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v40r1 (and Gaudi v27r1)</b>
+   AppConfig v3r*,
+   <b>DecFiles v29r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   PGunsData v1r*
+   pythia8 186, lhapdf 6.1.4, 
+   photos++ 3.56 and tauola++ 1.1.4, 
+   pythia 6.427.2 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.09 (via LCG_Interfaces),
+   LHAPDFSets v2r* (private LHCb version)
+   <p>Geant4 v96r4p4</b> (based on geant4.9.6.p04 + patches for LHCb) and 
+   Geant4Files v96r0,
+   XmlVis v1r23,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 and powhegbox r2092 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.7.1 and thepeg 1.9.2p1 (via LCG_GeneratorsInterfaces),
+   rivet 1.9.0 (via LCG_GeneratorsInterfaces),
+   <b>EvtGen v14r7</b>, EvtGenExtras v3r12p1 and Mint <b>v4r1</b>
+   (private LHCb version),
+   BcVegPy v4r0p1 + BcVegPyData v2r*, GenXicc v2r2 + GenXiccData v3r* and 
+   HidValley v4r1 (private LHCb versions)
+</A></H3>
+
+! 2016-06-07 - Gloria Corti
+ - Use new version of LCG_Settings to match LCG_84. New tags for all 
+   LCG_GeneratorsInterfaces to indicate they are for LCG_84 even when 
+   identical to previous versions
+ - New package for nuclei boudn states, e.g. Deuteron production, LbBound
+ - New package for new way to pass geometry to Geant4, GaussGeo. For the 
+   moment is in parallel to GiGa geometry converters. Intended to replace 
+   it after tests.
 
 ! 2016-05-23 - Gloria Corti
  - Remove use of GaudiPolicy and DDDB that are in LHCB v40r1 and Gaudi v27r1 
-   on which Gauss v50ro will be based on
+   on which Gauss v50r0 will be based on
 
 ! 2016-04-27 - Gloria Corti
- - New LCG_GeneratorsInterfaces packages introduced for CRMC and YODA
+ - New LCG_GeneratorsInterfaces packages introduced for CRMC 
  - New adaptor package for CRMC/EPOS
+
+!========================== Gauss v50r0 2016-06-14 ===========================
+! 2016-06-07 - Gloria Corti
+  - Use version of DecFiles v29r* to indicate new decay.dec and different
+    results. 
+  - Update reference options for the Run1 and 2015 data taking to use latests
+    tags and options as in Sim09a productions 
+
+! 2016-04-26 - Patrick Robbe
+ - Add options to Gauss configurable for the simulation of heavy-ion and
+   beam gas events. 
+
+!======================= Gen/GENSER v16r2p1 2016-06-14 =======================
+! 2016-06-14 - Gloria Corti
+ - Pure tag to indicate that a tar fiel for deployment of GENSER against LCG
+   84 need to be done
+
+!========================== EvtGen v14r7 2016-04-26 ==========================
+! 2016-04-22 - Michal Kreps
+  - Implement new LQCD form factors for Lb --> L mu mu from paper
+    1602.01399. Old LQCD form factors are removed.
+
+!=========================== Mint v4r1 2016-05-25 ============================
+! 2016-04-04 - Jonas Rademacker
+ - fix one more spin factor (that used to always give zero). Again, credit
+   goes to the brilliant Philippe d'Argent.
+ - fix an error in SymmLorentzMatrix::Contract_2 which will affect two spin-2 
+   spin factors: SF_DtoT1T2_T1toP0P1_T2toP2P3_S, 
+   SF_DtoPseudoTP0_PseudoTtoTP1_TtoP2P3 (and there's also a fix for a compile 
+   time error in NamedParameter? picked up by the latest clang which should 
+   have no further consequences)
+
+!======================== LbPythia8 v12r1 2016-05-23 =========================
+! 2016-05-25 - Gloria Corti
+ - Merged r206272 from trunk by Phil Ilten 
+   . Removed the onia double counting from the default LHCb tune in 
+     LHCbDefault.cmd
+
+!========================== LbCRMC v1r1 2016-06-07 ===========================
+! 2016-06-03 - Laure Massacrier
+  - Add a function to define the frame in which the outputs are given
+  - File EPOS.py replace by EPOS_CMS.py (frame nucleon-nucleon) and 
+    EPOS_TARGET.py (frame target)
+  - Add the possibility to give UserSettings to CRMCProduction tool
+
+! 2016-05-31 - Laure Massacrier
+ - Hardcode the path to EPOS tables in the example file crmc.param 
+   (for local usage only/ will not be use in production environment)
+ - Update in CRMCProduction.cpp of the Default Configuration function 
+   (use same configuration as the crmc.param file)
+ - Add the possibility to Set an impact parameter range in CRMCProduction tool
+ - Modify EPOS.py file in order not to call the crmc.param file
+
+!========================== LbCRMC v1r0 2016-05-27 ===========================
+! 2016-05-23 - Laure Massacrier
+ - Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6
+
+! 2016-04-27 - Laure Massacrier
+ - Add calculation and printing of the center of mass energy to check the
+   configuration infos in CRMCProduction.cpp
+ - Fix status of beam particles to 3 while filling HepMC event so that beam 
+   particles are ignored by EvtGen
+
+! 2016-04-26 - Patrick Robbe
+ - Add default option (EPOS.py) and CRMC option file
+
+! 2016-04-19 - Gloria Corti
+ - Remove macro crmc_native_version that has been moved to Gen/GENSER
+
+! 2016-04-18 - Gloria Corti
+ - Change version of crmc from 1.4 to 1.5.6
+
+! 2016-03-18 - Laure Massacrier
+ - Fix division by A in BoostAndRotate function + possibility to produce 
+   tables in Epos
+
+! 2016-03-18 - Dmitry Popov
+ - Replaced the std::runtime_error exceptions with StatusCode returns/checks
+   to comply with Gaudi guidelines.
+
+! 2016-02-10 - Laure Massacrier
+  - First version of the filling of HepMC files for EPOS
+
+! 2016-01-28 - Laure Massacrier
+  - Add Class to read Hadr25 epos common Block
+
+! 2016-01-27 - Laure Massacrier
+  - Add Class to read common block Appli, Drop7 and Othe1
+
+! 2016-01-23 - Laure Massacrier
+  - Fix in the variable type from Fortran to C++
+  - Add classes to read the Accum and Nucl1 epos common blocks
+
+! 2015-11-28 - Laure Massacrier
+ - Add some changes to CRMCProduction.cpp to remove truncation of events
+
+! 2015-11-06 - Dmitry Popov
+ - Fixed the momenta setup of the colliding particles for the case when user
+   overrides value for only one particle.
+
+! 2015-10-31 - Laure Massacrier
+ - New class Hadr5.cpp/.F to access Hadr5 epos common block
+
+! 2015-10-30 - Laure Massacrier
+ - New class added in LbCRMC and cleaning of old classes
+
+! 2015-10-22 - Laure Massacrier
+ - Adding some comments in CRMCProduction.cpp
+
+! Initial commit - Laure Massacrier
+  Package to interface epos with CRMC
+  Original code developed by Dimitry Popov.
+  Modifications by Laure Massacrier
+
+!========================== LbBound v1r0 2016-06-07 ==========================
+! 2016-04-27 - Gloria Corti
+ - Added no-auto-import to use of ROOT to keep it private to the build of this
+   package
+
+! 2016-04-22 - Philip Ilten
+ - Added in dependence on ROOT Physics library (for TLorentzVector).
+
+! 2016-03-18 - Philip Ilten
+ - Initial version, without any physics in yet
+
+!========================= GaussGeo v1r0 2016-03-08 ==========================
+! 2016-03-08 - Dmitry Popov
+ - Initial release, providing the basic geometry conversion functionality,
+   based on GiGaCnv conversion service.
+
+!========================= GaussRICH v15r0 2016-03-23 ========================
+! 2016-05-27 - Sajan Easo
+ - Added new track action named RichG4TrackActionRich2Photon which suppresses
+   some of the photons created by scintillation process in RICH2, which are not
+   expected to reach the detector plane.
+   This was to reduce the CPU time used for RICH2 simulation.
+ - For the same purpose, modified RichG4TrackActionRich2Photon and 
+   GiGaPhysConstructorOp so that the suppression factor from efficiency lossses
+   is transferred to the scintillation process, when creating that process. 
+   This is to reduce the creation of extra photons, instead of suppressing them
+   after they are created in their first step.
+   A good fraction of the scintillation photons which do not go to the detector
+   plane die in their first step after reaching the vessel edge. So this 
+   modification speeds up killing them.
+ - Added a trackaction RichG4TrackActionRich2DbgPhotonTrack and a step action 
+   named RichG4StepAnalysis15. for debugging purpose. 
+   This is to study the effect of killing rich2 photons. This is not actived by
+    default at all. This is for special studies only.
+
+! 2016-05-16 - Sajan Easo
+ - Added few modifications to speed up the program. This includes the pixel 
+   efficiency and the readout efficiencies seen in data updated into  
+   RichG4TrackActionPhotOpt at pre-user trackaction level. 
+   The corresponding suppressions are avoided at the hit level in the 
+   RichHpdSiEnergyLoss so that there is no
+   double suppressions (double counting) for these efficiencies. 
+ - The Max of the mirror reflectivites are also included in  
+   RichG4TrackActionPhotOpt at pre-user trackaction level.
+   The default max efficiencies are set to 1.0 so that there is no suppression.
+   But when the max efficienies as listed in the recent DB is read in, those
+   values are used. In the same database update, new mirror reflectivity tables
+   are activated where the reflectivities are scaled up accordingly so that 
+   there is no double counting of the effect 
+   from the max reflectivities. As a result the program can be run with or
+   without the new database update for RICH. 
+   When the new database update is used, the cpu time is improved by a small
+   amount.
+   
+ - The RichG4TrackActionPhotOpt is activated by default. This already had the 
+   photon suppression from Max HPD QE. With the
+   current updates, the max Mirror reflectivites, detection efficiency and 
+   pixel efficiency are included into this.
+   The detection efficiency is different for three radators and are read in
+   from the RichEfficiency.opts. This options
+   file is modified so that the efficiency values are now used by 
+   RichG4TrackActionPhotOpt.  The values of these 
+   efficiencies in the options file may get modified in the future with the
+   new data in different years.
+ 
+ - A new track action is installed and it is named RichG4TrackActionRich2Photon.
+   When this activated, 
+   avoid photons created in the backward direction in RICH2 are killed at the
+   pre-user tracking level. 
+   By default this is not activated. The option to activate this in Rich.opts 
+   but it is commented out by default. 
+ 
+ - The RichG4QwAnalysis is modified to create an ntuple for Cherenkov studies. 
+   This can be actiaved to be 
+   filled from RichG4Cerenkov and can be activated to be initalized from 
+   RchG4EventAction. 
+   This is only for special stufies hence is switched off by default. 
+ - There is also the option to override the DB values for max efficiency for making
+   tests for special studies. But this is not
+   activated by default. The corresponding options are commented out in 
+   RichEfficiency.opts by default.
+    
+! 2016-05-01 -Sajan Easo 
+ - Recently a typedef is removed for Rich1DTabFunc in RichDet. 
+   So modifications made to be compatible with this change.
+
+!===================== GaussCherenkov v5r0 2016-06-07 ========================
+! 2015-11-17 - Sajan Easo
+ - Introduced creation of the hit with new RichSmartID which has now a  flag
+   which indicates if the hit is from a largePMT
+   Using this RichSmartid needs the latest version of Kernel/LHCbKernel as of
+   this date.
+
+! 2015-11-15 - Marco Clemencic
+ - Fixed compilation with CLHEP 2.
+
+!========================== SimChecks v1r8 2016-05-25 ========================
+! 2016-03-22 - Dmitry Popov
+ - Removed the settings which do not change the Gauss' defaults, replaced
+   the explicit tags with a $GAUSSROOT import.
 
 !=======================================================================================
 </PRE><H1><A NAME="v49r0">2016-03-29 - GaussSys v49r0</A></H1><PRE>
