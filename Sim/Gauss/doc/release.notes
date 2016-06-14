@@ -4,7 +4,7 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
-!========================== Gauss v49r1 2016-06-07 ===========================
+!========================== Gauss v50r0 2016-06-14 ===========================
 ! 2016-06-07 - Gloria Corti
   - Use version of DecFiles v29r* to indicate new decay.dec and different
     results. 
