@@ -5,6 +5,53 @@
 !               etc for RICH Upgrade
 !-----------------------------------------------------------------------------
 
+!2016-06-15 -Sajan Easo
+ - Created a GaussCherenkov Configurable in  python/GaussCherenkov/Configuration.py 
+   This has various options in its 'slots'. 
+
+ - This allows the GaussCherenkov to run at 4 different speeeds which can be set from the Gauss Configurable.
+
+   The 'Formula1' option has creation of most of the parameters for RICH specific studies switched off, including
+   assigning the location of 'auxiliary classes' like  /Event/MC/Rich/OpticalPhotons at the output. 
+   It also has the histogram monitoring switched off. Using this option for standard production may need
+   some changes in the RICH reconstrution and overall Gauss Configuration to avoid potential crashes from non-existant classes.
+   This option is not used by default for now.
+
+   The 'GTB' option is similar to 'Formula1', but has the monitoring and auxiliary classes switched on. This is the current default option.
+   Some of the auxiliary information stored will not be the correct values, but just some defaults. But this is OK for large scale 
+   physics simulations where such information is not needed.
+
+   The 'SUV' option is similar to GTB, but has all the auxiliary information created and filled using some step actions. 
+   This may be used for RICH specific studies using RICH reconstruction. This is a bit slower than GTB and mostly corresponds to what 
+   was activated so far.
+
+   The 'HGV' option has most of the extra processing for RICH studies in simulation activated. There are also options available to 
+   activate even more step actions for special simulation studies. 
+
+   The 'clunker' option is available from the Gauss configurable for backward compatibility. This allows the options files used so far, to be activated.
+   Hence these  options files are kept in the 'options' area.
+
+   The 'FareFiasco' option allows to switch off the RICH specific processes, including creation of optical photons. This is essentially for the running of
+   GAUSS in LHCb upgrade,  without RICH simulation. 
+     
+  - The Gauss DataType is just 'Upgrade'. So the year of the data for GaussCherenkov configurable set as the year 2022. 
+   The aerogel is automatically switched off. The configurable also takes care of the Gauss Configurations 
+   where the RICH geometry is not present or the Geant4 is skipped.
+
+  - When the aerogel is switched off in upgrade, in order to avoid some useless print statements there is a file named
+   $GAUSSROOT/xml/SimulationRICHAerogelOff.xml which is automatically activated. The older name for this file was SimulationRICHesOff.xml in the same area, 
+   which is a confusing name since it does not switch off the RICH ; but this file still kept for backward compatibility.
+   
+
+  - The python scripts to activate  'GTB','SUV', 'clunker' and 'FareFiasco' options are expected to be updated in the $APPCONFIGOPTS/Gauss area along 
+   with this version. The other options can be activated in a similar way. The 'GTB' is the current default and hence does not require the corresponding
+   script in the $APPCONFIGOPTS/Gauss area.
+
+  - At the moment it is does not look to be easy to access the GiGaGeo in this configurable to set Binaryreadout options. But it is possible to access it using the 
+    options file. So an options file to set the various options are created in options/GaussCherenkovGiGaGeoOptions/GaussCherenkovBinaryReadout.opts. The default
+    setup does not require this options file.
+
+
 !===================== GaussCherenkov v5r0 2016-06-07 ========================
 ! 2015-11-17 - Sajan Easo
  - Introduced creation of the hit with new RichSmartID which has now a  flag

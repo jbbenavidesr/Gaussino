@@ -45,6 +45,12 @@ include_dirs     $(GAUSSCHERENKOVROOT)
 #============================================================================
 apply_pattern    component_library library=GaussCherenkov
 
+# Setup Python Configurables
+#============================================================================
+apply_pattern install_python_modules
+
+
+
 # define options directory
 #============================================================================
 #macro_append GaussCherenkov_linkopts "-lGaussRICH"

@@ -8,7 +8,7 @@
  *  @author G.Corti
  *  @date 2005-12-16
  */
-GiGa.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag=true;
+GiGa.ModularPL.GiGaPhysConstructorOpCkv.RichActivateRichPhysicsProcVerboseTag=true;
 //GiGa.StepSeq.Members  += { "RichG4StepAnalysis4/RichStepAgelExit" } ;
 GiGa.StepSeq.Members  += { "CkvG4StepAnalysis5/RichStepMirrorRefl" } ;
 // The following already in GaussCherenkov.opts

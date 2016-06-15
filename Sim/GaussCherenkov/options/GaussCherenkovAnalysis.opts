@@ -1,6 +1,6 @@
 // Rich specific Analysis job options
 
-GiGa.StepSeq.Members             += { "RichG4StepAnalysis3/CkvStep4" } ;
+GiGa.StepSeq.Members             += { "RichG4StepAnalysis3/CkvStep3" } ;
 GiGa.StepSeq.Members             += { "CherenkovStepAnalysis7/CkvStep7" } ;
 //GiGa.StepSeq.Members  += {"CkvG4StepAnalysis11/Rich1G4StepAna11" } ;
 
