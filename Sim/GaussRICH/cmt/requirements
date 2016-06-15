@@ -51,6 +51,13 @@ apply_pattern packageOpts
 
 # special linking for genConf (see GaudiTools)
 #============================================================================
+#============================================================================
+# Setup Python Configurables
+#============================================================================
+apply_pattern install_python_modules
+
+
+
 private
 apply_pattern use_genconf_helper_lib pkg=GaussTools
 

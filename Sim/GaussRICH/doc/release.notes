@@ -3,6 +3,49 @@
 ! Responsible	: Sajan Easo
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
+!2016-06-15 -Sajan Easo
+ - Created a GaussRICH Configurable in  python/GaussRICH/Configuration.py 
+   This has various options in its 'slots'. 
+
+ - This allows the GaussRICH to run at 4 different speeeds which can be set from the Gauss Configurable.
+
+   The 'Formula1' option has creation of most of the parameters for RICH specific studies switched off, including
+   assigning the location of 'auxiliary classes' like  /Event/MC/Rich/OpticalPhotons at the output. 
+   It also has the histogram monitoring switched off. Using this option for standard production may need
+   some changes in the RICH reconstrution and overall Gauss Configuration to avoid potential crashes from non-existant classes.
+   This option is not used by default for now.
+
+   The 'GTB' option is similar to 'Formula1', but has the monitoring and auxiliary classes switched on. This is the current default option.
+   Some of the auxiliary information stored will not be the correct values, but just some defaults. But this is OK for large scale 
+   physics simulations where such information is not needed.
+
+   The 'SUV' option is similar to GTB, but has all the auxiliary information created and filled using some step actions. 
+   This may be used for RICH specific studies using RICH reconstruction. This is a bit slower than GTB and mostly corresponds to what 
+   was activated so far.
+
+   The 'HGV' option has most of the extra processing for RICH studies in simulation activated. There are also options available to 
+   activate even more step actions for special simulation studies. 
+
+   The 'clunker' option is available from the Gauss configurable for backward compatibility. This allows the options files used so far, to be activated.
+   Hence these  options files are kept in the 'options' area.
+
+   The 'FareFiasco' option allows to switch off the RICH specific processes, including creation of optical photons. This is essentially for the running of
+   Gauss without RICH simulation. 
+     
+ -  The GaussRICH configurable gets the 'year' of the data to simulate from the Gauss DataType. This automatically sets things  like the
+   activation of aerogel, amount of scintillation yield fraction in RICH2 as appropriate. It is also possible override these settings 
+   for special runs, if needed.  The configurable also takes care of the Gauss Configurations 
+   where the RICH geometry is not present or the Geant4 is skipped.
+
+ -  When the aerogel is switched off, in order to avoid some useless print statements there is a file named
+   $GAUSSROOT/xml/SimulationRICHAerogelOff.xml which is automatically activated. The older name for this file was SimulationRICHesOff.xml in the same area, 
+   which is a confusing name since it does not switch off the RICH ; but this file still kept for backward compatibility.
+   
+
+ -  The python scripts to activate  'GTB','SUV', 'clunker' and 'FareFiasco' options are expected to be updated in the $APPCONFIGOPTS/Gauss area along 
+   with this version. The other options can be activated in a similar way. The 'GTB' is the current default and hence does not require the corresponding
+   script in the $APPCONFIGOPTS/Gauss area.
+
 
 !========================= GaussRICH v15r0 2016-03-23 ========================
 ! 2016-05-27 - Sajan Easo
