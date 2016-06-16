@@ -4,11 +4,14 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
-!========================== LbCRMC v1r1 2016-06-07 ===========================
+
+! 2016-06-16 - Gloria Corti
+  - Add CMakeList.txt file
 
 ! 2016-06-13 - Laure Massacrier
   - Fix the frame in EPOS_CMS.py file 
 
+!========================== LbCRMC v1r1 2016-06-07 ===========================
 ! 2016-06-03 - Laure Massacrier
   - Add a function to define the frame in which the outputs are given
   - File EPOS.py replace by EPOS_CMS.py (frame nucleon-nucleon) and 
