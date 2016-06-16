@@ -4,6 +4,19 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+! 2016-06-15 - Sajan Easo
+ - Modified the Gauss Configurable to activate the GaussRICH and GaussCherenkov
+   This allows to run RICH simulation with different configurations. The default
+   is set to be the 'GTB' option which takes less CPU time than the current version.
+
+ - The current way of using the RICH options files are kept for now, for backward compatibility.
+   It can be activated using the 'clunker' option.
+
+ - More information regarding the various options are in the release notes of GaussRICH and GaussCherenkov.
+
+ - A file named xml/SimulationRICHAerogelOff.xml  added to reduce confusion in the future. The old version 
+   named xml/SimulationRICHesOff.xml is kept for backward compatibility. The  Configurables in 
+   GaussRICH and GaussCherenkov uses the new file
 !========================== Gauss v50r0 2016-06-14 ===========================
 ! 2016-06-07 - Gloria Corti
   - Use version of DecFiles v29r* to indicate new decay.dec and different

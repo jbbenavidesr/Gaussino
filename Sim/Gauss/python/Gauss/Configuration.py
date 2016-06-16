@@ -53,6 +53,8 @@ from Configurables import ( PackMCParticle, PackMCVertex,
                             UnpackMCParticle, UnpackMCVertex,
                             CompareMCParticle, CompareMCVertex )
 
+from Configurables import (GaussRICHConf, GaussCherenkovConf)
+
 from DetCond.Configuration import CondDB
 
 ## @class Gauss
@@ -77,7 +79,10 @@ class Gauss(LHCbConfigurableUser):
         ]
 
     ## Possible used Configurables
-    __used_configurables__ = [ LHCbApp, SimConf ]
+    __used_configurables__ = [ LHCbApp, SimConf,
+                               (GaussRICHConf,None),
+                               (GaussCherenkovConf,None)
+                               ]
 
     ## Map to contain PDG ids for beam particles
     __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 , 'Kr': 1000360840 ,
@@ -128,6 +133,8 @@ class Gauss(LHCbConfigurableUser):
         ## type of particle in the beam or in the fixed target
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
+        , "CurrentRICHSimRunOption" : 'GTB'
+        , "UpgradeRICHSimRunOption"  : 'GTB'
       }
     
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
@@ -150,6 +157,8 @@ class Gauss(LHCbConfigurableUser):
        ,"BeamPipe"       : """Switch for beampipe definition; BeamPipeOn: On everywhere, BeamPipeOff: Off everywhere, BeamPipeInDet: Only in named detectors """
        ,"ReplaceWithGDML": """Replace a list of specified volumes with GDML description from file provided """
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
+       ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """  
+       ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """  
        }
     KnownHistOptions     = ['NONE','DEFAULT']
     TrackingSystem       = ['VELO','TT','IT','OT']
@@ -696,10 +705,14 @@ class Gauss(LHCbConfigurableUser):
             cRichTrk  = DataPacking__Check_LHCb__MCRichTrackPacker_("CheckRichTracks"+slot )
             packCheckSeq.Members += [cRichHit,cRichOpPh,cRichSeg,cRichTrk]
         # Out of loop
-        if not configuredRichMoni[1]:
-            importOptions("$GAUSSRICHROOT/options/RichAnalysis.opts")
-            configuredRichMoni[1] = True
-
+        if ( self.getProp("CurrentRICHSimRunOption") == "clunker" ):
+            if not configuredRichMoni[1]:
+                importOptions("$GAUSSRICHROOT/options/RichAnalysis.opts")
+                configuredRichMoni[1] = True
+        elif (GaussRICHConf().getProp("MakeRichG4MonitorHistoSet2") ):
+            if not configuredRichMoni[1]:
+                configuredRichMoni[1] = True
+            
 #"""
 #  ><<<<<<<     ><<     ><<    ><<     ><<    ><<<<<<<   ><<       ><< ><<< ><<<<<<
 #  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<    ><< >< ><<   ><<<      ><<    
@@ -786,9 +799,17 @@ class Gauss(LHCbConfigurableUser):
             cRichTrk  = DataPacking__Check_LHCb__MCRichTrackPacker_("CheckRichTracks"+slot )
             packCheckSeq.Members += [cRichHit,cRichOpPh,cRichSeg,cRichTrk]
         # Out of indent
-        if not configuredRichMoni[1]:
-            importOptions("$GAUSSCHERENKOVROOT/options/GaussCherenkovAnalysis.opts")
-            configuredRichMoni[1] = True
+
+
+        if ( self.getProp("UpgradeRICHSimRunOption") == "clunker" ):
+            if not configuredRichMoni[1]:
+                importOptions("$GAUSSCHERENKOVROOT/options/GaussCherenkovAnalysis.opts")
+                configuredRichMoni[1] = True
+        elif (GaussCherenkovConf().getProp("MakeCkvG4MonitorHistoSet2")):
+            if not configuredRichMoni[1]:
+                configuredRichMoni[1] = True
+
+
 
 #"""
 #><<< ><<<<<<     ><<<<      ><<<<<<<         ><<    ><<     ><<
@@ -2671,7 +2692,9 @@ class Gauss(LHCbConfigurableUser):
         self.defineGeo()
 
         self.configureGiGa()
+         
 
+        
         for slot in SpillOverSlots:
 
             TESNode = "/Event/"+self.slot_(slot)
@@ -3031,16 +3054,44 @@ class Gauss(LHCbConfigurableUser):
          """
          Set up the configuration for the G4 settings: physics list, cuts and actions
          """
-         richPmt = False
+         richUpgradeConfig = False
+         UpgradeRichPmtDetector=False
+         Run1Run2RichDetector=False
+         
          giga = GiGa()
 
+         
          # PSZ - Use self.getProp('DataType') in future
+         # This modification now being applied.  SE
+         if self.getProp("DataType") == "Upgrade" :
+             richUpgradeConfig=True
+
+         # Do some sanity checks for RICH       
          if [det for det in ['Rich1Pmt', 'Rich2Pmt'] if det in self.getProp('DetectorSim')['Detectors']]:
-             richPmt = True
+             UpgradeRichPmtDetector = True
+             if richUpgradeConfig == False :
+                 log.warning( "Incompatible Datatype and Detector configuration for RICH Upgrade. Please check your Configration" )
+             else:
+                 log.info( "Using RICH simulation  configuration for Upgrade Run ")
+         
+
+         if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
+             Run1Run2RichDetector = True
+             if richUpgradeConfig == True :
+                 log.warning( "Incompaticle Datatype and Detector configuration for RICH in RUN1 and RUN2. Please check your Configuration")
+             else:
+                 log.info( "Using RICH simulation configuration for RUN1 and RUN2 ")
+                 
+         #end of sanity checks for RICH       
+
+                 
+                  
          ## setup the Physics list and the productions cuts
-         if skipG4:
-             richPmt = False
-         self.setPhysList(richPmt)
+         ## the following 2 lines commented out.        
+         #if skipG4:
+         #    richPmt = False
+         
+         self.setPhysList(richUpgradeConfig)
          
          ## Mandatory G4 Run action
          giga.addTool( GiGaRunActionSequence("RunSeq") , name="RunSeq" )
@@ -3072,61 +3123,39 @@ class Gauss(LHCbConfigurableUser):
 
          giga.SteppingAction =   "GiGaStepActionSequence/StepSeq"
          giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
+         
+         #Now Configure the  RICH Simulation. The old setup using options is kept for backward
+         #compatibility and may be removed in the future. 
 
-         if richPmt:
-             from Configurables import (
-                 GiGaPhysConstructorOpCkv,
-                 GiGaPhysConstructorPhotoDetector
-                 )
-             # Line to remove AEROGEL warnings
-             SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
-             importOptions("$GAUSSCHERENKOVROOT/options/GaussCherenkov.opts")
-             # richPmt False unless there's > 1 upgrade Rich
-             giga.ModularPL.addTool( GiGaPhysConstructorOpCkv,
-                                     name="GiGaPhysConstructorOpCkv" )
-             giga.ModularPL.GiGaPhysConstructorOpCkv.RichActivateRichPhysicsProcVerboseTag = True
-             giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
-             giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
-
+         # RICH simulation configuration
+         if (richUpgradeConfig):
+             if (self.getProp("UpgradeRICHSimRunOption") != "clunker"):
+                mGaussCherenkovConf = GaussCherenkovConf()
+                mGaussCherenkovConf.InitializeGaussCherenkovConfiguration()
+                mGaussCherenkovConf.setUpgradeRichDetExistFlag(UpgradeRichPmtDetector)
+                mGaussCherenkovConf.setSkipUpgradeGeant4Flag(skipG4)
+                mGaussCherenkovConf.ApplyGaussCherenkovConfiguration(giga)
+                    
+             else:
+                 #keep the old options for backward compatibility for now. It may be removed in the future                 
+                 self.GaussCherenkovOldSetup(giga,UpgradeRichPmtDetector,skipG4 )
          else:
-             from Configurables import (
-                 GiGaPhysConstructorOp,
-                 GiGaPhysConstructorHpd
-                 )
-
-             if self.getProp("DataType") in self.Run2DataTypes :
-                 # Line to remove AEROGEL warnings
-                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
+            
+             if (self.getProp("CurrentRICHSimRunOption") != "clunker" ):
+                mGaussRICHConf= GaussRICHConf()
+                mGaussRICHConf.InitializeGaussRICHConfiguration()
+                mGaussRICHConf.setRichDetectorExistFlag(Run1Run2RichDetector)
+                mGaussRICHConf.setSkipGeant4RichFlag(skipG4 )
+                mGaussRICHConf.ApplyGaussRICHConfiguration(giga)
+                
              else:
-                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+                 #keep the old options for backward compatibility for now. It may be removed in the future.
+                 self.GaussRICHOldSetup(giga,Run1Run2RichDetector ,skipG4 )
+                  
 
-             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
-                 importOptions("$GAUSSRICHROOT/options/Rich.opts")
-                 if self.getProp("DataType") in self.Run2DataTypes :
-                     importOptions("$GAUSSRICHROOT/options/RichRemoveAerogel.opts")
-                 
-             else:
-                 if not skipG4:
-                     giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                             name = "GiGaPhysConstructorOp" )
-                     giga.ModularPL.addTool( GiGaPhysConstructorHpd,
-                                             name = "GiGaPhysConstructorHpd" )
-                     giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
-                     giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+          
 
-             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
-                 giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                         name="GiGaPhysConstructorOp" )
-                 giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
-                 giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
-                 giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
-                 if self.getProp("RICHRandomHits") == True :
-                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsActivate = True
-                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsProbabilityFactor = 0.5
-                 
-
-
-         # END OF richPmt IF STATEMENT
+         # End of RICH simulation configuration
 
          giga.TrackSeq.Members += [ "GaussPostTrackAction/PostTrack" ]
          giga.TrackSeq.Members += [ "GaussTrackActionHepMC/HepMCTrack" ]
@@ -3151,9 +3180,57 @@ class Gauss(LHCbConfigurableUser):
          giga.GiGaMgr.RunTools += [ "GiGaRegionsTool" ]
          giga.GiGaMgr.addTool( GiGaSetSimAttributes() , name = "GiGaSetSimAttributes" )
          giga.GiGaMgr.GiGaSetSimAttributes.OutputLevel = 4
+
          # Second part went here
 
          #return giga
+         
+    def GaussRICHOldSetup(self,giga,Run1Run2RichDetector=True, skipG4=False):
+        #Old setup for GaussRICH which can be removed in the future.
+        
+        from Configurables import ( GiGaPhysConstructorOp,GiGaPhysConstructorHpd )
+        if self.getProp("DataType") in self.Run2DataTypes :
+            # Line to remove AEROGEL warnings
+            SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
+        else:            
+            SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+
+        giga.ModularPL.addTool( GiGaPhysConstructorOp,name = "GiGaPhysConstructorOp" )
+        giga.ModularPL.addTool( GiGaPhysConstructorHpd,name = "GiGaPhysConstructorHpd" ) 
+        if Run1Run2RichDetector:
+            importOptions("$GAUSSRICHROOT/options/Rich.opts")
+            if self.getProp("DataType") in self.Run2DataTypes :
+                importOptions("$GAUSSRICHROOT/options/RichRemoveAerogel.opts")
+
+            giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
+            giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
+            giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
+            if self.getProp("RICHRandomHits") == True :
+                giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsActivate = True
+                giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsProbabilityFactor = 0.5
+        else:
+            if not skipG4:
+                giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+                giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+
+
+    def GaussCherenkovOldSetup(self, giga, UpgradeRichPmtDetector=True, skipG4=False):
+        #Old set up for GaussCherenkov which can removed in the future                 
+        from Configurables import ( GiGaPhysConstructorOpCkv, GiGaPhysConstructorPhotoDetector)
+        # Line to remove AEROGEL warnings
+        SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
+        if UpgradeRichPmtDetector :
+            importOptions("$GAUSSCHERENKOVROOT/options/GaussCherenkov.opts")
+            giga.ModularPL.addTool( GiGaPhysConstructorOpCkv, name="GiGaPhysConstructorOpCkv" )
+            giga.ModularPL.addTool(GiGaPhysConstructorPhotoDetector, name="GiGaPhysConstructorPhotoDetector")
+            giga.ModularPL.GiGaPhysConstructorOpCkv.RichActivateRichPhysicsProcVerboseTag = True
+            giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
+            giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
+            if skipG4:
+                giga.ModularPL.GiGaPhysConstructorOpCkv.RichOpticalPhysicsProcessActivate = False
+                giga.ModularPL.GiGaPhysConstructorPhotoDetector.RichPmtPhysicsProcessActivate = False
+         
+
 
 
 #"""
@@ -3241,7 +3318,7 @@ class Gauss(LHCbConfigurableUser):
 #                                                       ><<             
 #"""
 
-    def setPhysList( self, richPmt ):
+    def setPhysList( self, richUpgradeConfig ):
 
         giga = GiGa()
         giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" ) 
@@ -3359,7 +3436,7 @@ class Gauss(LHCbConfigurableUser):
         
         ## --- LHCb specific physics: 
         if  (lhcbPhys == True):
-            if (richPmt == True):
+            if (richUpgradeConfig == True):
                 self.defineRichMaPmtPhys(gmpl)
             else:
                 self.defineRichPhys(gmpl)
@@ -3424,6 +3501,7 @@ class Gauss(LHCbConfigurableUser):
         self.setBeamParameters( crossingList, genInitPrime )
         # PSZ - everything happens here
         self.configurePhases( crossingList  )  # in Boole, defineOptions() in Brunel
+
 
         #--Configuration of output files and 'default' outputs files that can/should
         #--be overwritten in Gauss-Job.py
