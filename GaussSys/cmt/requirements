@@ -120,6 +120,20 @@ apply_pattern container_package
 # Allow the generation of QMTest summary 
 apply_pattern QMTestSummarize
 
+####################################################################
+# Override the generation of the manifest.xml from gaudi to fix the LCG 84 tcmalloc renaming issue
+####################################################################
+pattern -global generate_manifest_file \
+    private ; \
+    macro generate_manifest_file_output "$(CMTINSTALLAREA)/$(tag)/manifest.xml" ; \
+        macro generate_manifest_file_deps "FORCE" ; \
+        macro generate_manifest_file_command "python $(GaussSys_root)/scripts/project_manifest.py -o $(generate_manifest_file_output) $(<package>_cmtpath)/CMakeLists.txt $(LCG_config_version) $(tag)" ; \
+        macro generate_manifest_file_applied "NullCommand" \
+                       container-package "CallCommand" ; \
+    apply_pattern $(generate_manifest_file_applied) target=generate_manifest_file ; \
+        end_private
+
+
 private
 action TestProject "cmt br - cmt TestPackage ; cmt qmtest_summarize"
 end_private
