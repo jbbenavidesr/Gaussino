@@ -24,7 +24,7 @@ use alpgen              v84r0p1 LCG_GeneratorsInterfaces
 use hijing              v84r0p1 LCG_GeneratorsInterfaces
 use powhegbox           v84r0p1 LCG_GeneratorsInterfaces
 use crmc                v84r0p1 LCG_GeneratorsInterfaces
-
+use yoda                v84r0p1 LCG_GeneratorsInterfaces
 
 # Generator packages: Basic configuration
 use GenCuts             v3r13   Gen
