@@ -358,7 +358,9 @@ std::vector<G4double> RichG4TrackActionRich2Photon::getPhotonScintProdAngles(G4d
        ( aPhotPyAbs != 0.0 ) ? atan2( sqrt( aPhotPx*aPhotPx  + aPhotPz* aPhotPz ), aPhotPyAbs ) : (G4double) (M_PI * 0.5);
 
    G4double  aPhotPolarAngleWrtZ = -1.0;
-   if(aPhotPz >=  0.0 )  aPhotPolarAngleWrtZ = atan2( sqrt( aPhotPx*aPhotPx  + aPhotPy* aPhotPy ), aPhotPz );
+   //if(aPhotPz >=  0.0 )  aPhotPolarAngleWrtZ = atan2( sqrt( aPhotPx*aPhotPx  + aPhotPy* aPhotPy ), aPhotPz );
+   if(aPhotPz >=  0.0 )  aPhotPolarAngleWrtZ =
+      (aPhotPz != 0.0) ? atan2( sqrt( aPhotPx*aPhotPx  + aPhotPy* aPhotPy ), aPhotPz ): (G4double) (M_PI * 0.5) ;
    
     G4double  aPhotPolarAngleWrtNegZ = -1.0;
    if(aPhotPz <  0.0 )  aPhotPolarAngleWrtNegZ = atan2( sqrt( aPhotPx*aPhotPx  + aPhotPy* aPhotPy ), -1.0*aPhotPz );

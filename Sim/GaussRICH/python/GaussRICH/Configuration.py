@@ -189,7 +189,8 @@ class GaussRICHConf (LHCbConfigurableUser):
             # In 2011 there was too much CO2 and 2012 the CO2 was reduced. Hence
             # the scintillation in 2011 was 0.1 of normal scintillation.
             # and the scintillation in 2012 was 0.6 of normal scinitillation
-            # In 2015 onwards the scinitillation is a bit reduced wrt to that in 2012.
+            # In 2015 onwards the scinitillation is expected to a bit reduced wrt to that in 2012.
+            # But the precise values are not known. So kept default as that in 2012 for now.
             if  self.getProp("RichDataYear") == "2011" :
                 GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.1
             elif self.getProp("RichDataYear") == "2012":
@@ -197,9 +198,9 @@ class GaussRICHConf (LHCbConfigurableUser):
             elif self.getProp("RichDataYear") == "2013":
                 GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.6
             elif  self.getProp("RichDataYear") == "2015":  
-                GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.5
+                GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.6
             elif  self.getProp("RichDataYear") == "2016":  
-                GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.5
+                GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.6
             elif  self.getProp("RichDataYear") == "2010":
                 GiGa.ModularPL.GiGaPhysConstructorOp.RichScintillationYieldScaleFactor=0.7
             elif  self.getProp("RichDataYear")  == "2009":

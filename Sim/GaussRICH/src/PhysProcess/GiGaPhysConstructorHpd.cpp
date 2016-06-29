@@ -60,12 +60,14 @@ GiGaPhysConstructorHpd::GiGaPhysConstructorHpd
   declareProperty("RichHpdPhysicsProcessActivate",m_ActivateRICHHPDPhysProc);
 
   // The following 5 lines moved to RichG4TrackActionPhotOpt.cpp . SE 05-05-2016
+  // Temporarily activated for backward compatibility to avoid crashes when using old options file. SE 23-6-2016
   //   m_RichHpdSiDetEfficiency(0.85),
- // declareProperty("RichHpdSiDetEfficiency", m_RichHpdSiDetEfficiency);
-  //  declareProperty("RichHpdReadOutEffInAerogel",m_RichHpdReadoutEffWithAerogel);
-  // declareProperty("RichHpdReadOutEffInRich1Gas", m_RichHpdReadoutEffWithRich1Gas);
-  // declareProperty("RichHpdReadOutEffInRich2Gas", m_RichHpdReadoutEffWithRich2Gas);
-  
+    declareProperty("RichHpdSiDetEfficiency", m_RichHpdSiDetEfficiency);
+    declareProperty("RichHpdReadOutEffInAerogel",m_RichHpdReadoutEffWithAerogel);
+    declareProperty("RichHpdReadOutEffInRich1Gas", m_RichHpdReadoutEffWithRich1Gas);
+    declareProperty("RichHpdReadOutEffInRich2Gas", m_RichHpdReadoutEffWithRich2Gas);
+    // end of temporary activation
+ 
  }
 
 

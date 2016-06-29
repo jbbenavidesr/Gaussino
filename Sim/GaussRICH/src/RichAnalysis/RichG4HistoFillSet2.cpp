@@ -562,7 +562,7 @@ void RichG4HistoFillSet2:: FillRichG4HistoSet2A()
       if(hNumTotHitC4F10Sat) hNumTotHitC4F10Sat->fill(nhita,1.0);
     }
     int nhita1 =  NumRich1GasSatHitNoRefl[ihtra];
-    if( nhita > 0) {
+    if( nhita1 > 0) {
       if(hNumTotHitC4F10SatNoRefl) hNumTotHitC4F10SatNoRefl->fill(nhita1,1.0);
     }
 
