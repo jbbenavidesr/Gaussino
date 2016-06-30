@@ -18,22 +18,21 @@ Generation().MinimumBias.CRMCProduction.Frame = "target"
 #Generation().MinimumBias.CRMCProduction.MinImpactParameter = 9.;
 #Generation().MinimumBias.CRMCProduction.MaxImpactParameter = 20.;
 #To Add User Settings to the Default configuration of EPOS
-#Generation().MinimumBias.CRMCProduction.AddUserSettingsToDefault = True
-#Generation().MinimumBias.CRMCProduction.Commands +=[
-#"set pytune 350",
-#"fdpmjetpho dat $CRMC_TABS/phojet_fitpar.dat",
-#"fdpmjet dat $CRMC_TABS/dpmjet.dat",
-#"fqgsjet dat $CRMC_TABS/qgsjet.dat",
-#"fqgsjet ncs $CRMC_TABS/qgsjet.ncs",
-#"fqgsjetII03 dat $CRMC_TABS/qgsdat-II-03.lzma",
-#"fqgsjetII03 ncs $CRMC_TABS/sectnu-II-03",
-#"fqgsjetII dat $CRMC_TABS/qgsdat-II-04.lzma",
-#"fqgsjetII ncs $CRMC_TABS/sectnu-II-04",
-#"fname check  none",
-#"fname initl  $CRMC_TABS/epos.initl",
-#"fname iniev  $CRMC_TABS/epos.iniev",
-#"fname inirj  $CRMC_TABS/epos.inirj",
-#"fname inics  $CRMC_TABS/epos.inics",
-#"fname inihy  $CRMC_TABS/epos.inihy"
-#]
+Generation().MinimumBias.CRMCProduction.AddUserSettingsToDefault = True
+Generation().MinimumBias.CRMCProduction.Commands +=[
+"fdpmjetpho dat $CRMC_TABS/phojet_fitpar.dat",
+"fdpmjet dat $CRMC_TABS/dpmjet.dat",
+"fqgsjet dat $CRMC_TABS/qgsjet.dat",
+"fqgsjet ncs $CRMC_TABS/qgsjet.ncs",
+"fqgsjetII03 dat $CRMC_TABS/qgsdat-II-03.lzma",
+"fqgsjetII03 ncs $CRMC_TABS/sectnu-II-03",
+"fqgsjetII dat $CRMC_TABS/qgsdat-II-04.lzma",
+"fqgsjetII ncs $CRMC_TABS/sectnu-II-04",
+"fname check  none",
+"fname initl  $CRMC_TABS/epos.initl",
+"fname iniev  $CRMC_TABS/epos.iniev",
+"fname inirj  $CRMC_TABS/epos.inirj",
+"fname inics  $CRMC_TABS/epos.inics",
+"fname inihy  $CRMC_TABS/epos.inihy"
+]
 

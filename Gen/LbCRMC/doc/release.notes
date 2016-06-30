@@ -4,6 +4,8 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-06-30 - Laure Massacrier
+  - Fix the table path in EPOS_CMS.py and EPOS_TARGET.py for production environment
 
 ! 2016-06-16 - Gloria Corti
   - Add CMakeList.txt file
