@@ -120,6 +120,7 @@ class Gauss(LHCbConfigurableUser):
         ,"EnablePack"        : True
         ,"DataPackingChecks" : True
         ,"WriteFSR"          : True
+        ,"MergeGenFSR"       : False
         ,"Debug"             : False
         ,"BeamPipe" : "BeamPipeOn" # _beamPipeSwitch = 1
         ,"ReplaceWithGDML"   : [ { "volsToReplace" : [], "gdmlFile" : "" } ]
@@ -154,6 +155,7 @@ class Gauss(LHCbConfigurableUser):
        ,'EnablePack'     : """ Flag to turn on or off the packing of the SIM data """
        ,'DataPackingChecks' : """ Flag to turn on or off the running of some test algorithms to check the quality of the data packing """
        ,"WriteFSR"       : """Add file summary record, default True"""
+       ,"MergeGenFSR"    : """Flags whether to merge the generator level FSRs"""
        ,"BeamPipe"       : """Switch for beampipe definition; BeamPipeOn: On everywhere, BeamPipeOff: Off everywhere, BeamPipeInDet: Only in named detectors """
        ,"ReplaceWithGDML": """Replace a list of specified volumes with GDML description from file provided """
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
@@ -2281,7 +2283,15 @@ class Gauss(LHCbConfigurableUser):
             outputFile=IOHelper().undressFile(simWriter.getProp("Output"))
         else:
             outputFile=self.outputName() + fileExtension
-        
+
+        # Merge genFSRs
+        if self.getProp("WriteFSR"):
+            seqGenFSR = GaudiSequencer("GenFSRSeq")
+            ApplicationMgr().TopAlg += [ seqGenFSR ]
+
+            if self.getProp("MergeGenFSR"):
+                seqGenFSR.Members += [ "GenFSRMerge" ]
+                                                  
         IOHelper().outStream( outputFile, simWriter, self.getProp("WriteFSR") )
         
         simWriter.RequireAlgs.append( 'GaussSequencer' )

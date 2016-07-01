@@ -4,6 +4,9 @@
 ! Purpose     : LHCb Simulation Application with Geant4
 !-----------------------------------------------------------------------------
 
+! 2016-07-01 - Davide Fazzini
+	- Update Configurable to write and merge genFSR
+
 ! 2016-06-15 - Sajan Easo
  - Modified the Gauss Configurable to activate the GaussRICH and GaussCherenkov
    This allows to run RICH simulation with different configurations. The default
