@@ -78,15 +78,6 @@ include_dirs $(GENSERROOT)/src/pythia6
 # force the order of link for pythia6
 macro_append GENSER_linkopts " $(pythia6_linkopts) "
 
-#-- and the same for EPOS
-#============================================================================
-library      eposforgauss   epos/*.F
-
-apply_pattern linker_library library=eposforgauss
-
-# force the order of link for epos
-macro_append GENSER_linkopts " $(epos_linkopts) "
-
 #-- Hijing
 #============================================================================
 macro hijing_native_version "1.383bs.2"
