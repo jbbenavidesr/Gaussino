@@ -4,6 +4,30 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-06-30 - Laure Massacrier
+  - Fix the table path in EPOS_CMS.py and EPOS_TARGET.py for production environment
+
+! 2016-06-16 - Gloria Corti
+  - Add CMakeList.txt file
+
+! 2016-06-13 - Laure Massacrier
+  - Fix the frame in EPOS_CMS.py file 
+
+!========================== LbCRMC v1r1 2016-06-07 ===========================
+! 2016-06-03 - Laure Massacrier
+  - Add a function to define the frame in which the outputs are given
+  - File EPOS.py replace by EPOS_CMS.py (frame nucleon-nucleon) and 
+    EPOS_TARGET.py (frame target)
+  - Add the possibility to give UserSettings to CRMCProduction tool
+
+! 2016-05-31 - Laure Massacrier
+ - Hardcode the path to EPOS tables in the example file crmc.param 
+   (for local usage only/ will not be use in production environment)
+ - Update in CRMCProduction.cpp of the Default Configuration function 
+   (use same configuration as the crmc.param file)
+ - Add the possibility to Set an impact parameter range in CRMCProduction tool
+ - Modify EPOS.py file in order not to call the crmc.param file
+
 !========================== LbCRMC v1r0 2016-05-27 ===========================
 ! 2016-05-23 - Laure Massacrier
  - Fix in function crmc_set in class CRMCWrapper.cpp to work with crmc v.1.5.6

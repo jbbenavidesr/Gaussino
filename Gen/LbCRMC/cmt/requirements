@@ -3,7 +3,7 @@
 # Maintainer : Laure Massacrier
 #============================================================================
 package  LbCRMC
-version  v1r0
+version  v1r2
 
 
 # Structure, i.e. directories to process.
