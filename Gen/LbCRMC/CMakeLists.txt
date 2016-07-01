@@ -11,6 +11,7 @@ find_package(HepMC COMPONENTS fio)
 
 gaudi_add_library(LbCRMCLib
                   src/Lib/*.cpp
+                  src/Lib/*.F
                   PUBLIC_HEADERS LbCRMC
                   INCLUDE_DIRS CRMC 
                   LINK_LIBRARIES GeneratorsLib CRMC HepMC)
