@@ -4,6 +4,10 @@
 ! Purpose     : interface package to GENSER
 !-----------------------------------------------------------------------------
 
+! 2016-06-07 - Gloria Corti 
+ - merge from trunk r206623 introduced on 2016-06-05 by Patrick Robbe
+   . Add random generator interface for EPOS: use the Gauss generator 
+
 !========================== GENSER v16r2 2016-05-25 ==========================
 ! 2016-04-19 - Gloria Corti
  - Introduce macro to select version of crmc/epos, initially set to 1.5.6
