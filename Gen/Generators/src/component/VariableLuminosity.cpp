@@ -13,6 +13,8 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
 
 // From Generators
 #include "Generators/GenCounters.h"
@@ -87,19 +89,30 @@ unsigned int VariableLuminosity::numberOfPileUp( ) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  int key = 0;
+
   unsigned int result = 0 ;
   double mean , currentLuminosity;
   while ( 0 == result ) {
     m_nEvents++ ;
+    key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
+    genFSR->incrementGenCounter(key,1);
     currentLuminosity = beam -> luminosity() * m_fillDuration / m_beamDecayTime /
       ( 1.0 - exp( -m_fillDuration / m_beamDecayTime ) ) ;
 
     mean = currentLuminosity * beam -> totalXSec() / beam -> revolutionFrequency() ;
     Rndm::Numbers poissonGenerator( m_randSvc , Rndm::Poisson( mean ) ) ;
     result = (unsigned int) poissonGenerator() ;
-    if ( 0 == result ) m_numberOfZeroInteraction++ ;
+    if ( 0 == result ) {
+      m_numberOfZeroInteraction++ ;
+      key =LHCb::GenCountersFSR::CounterKeyToType("ZeroInt");
+      genFSR->incrementGenCounter(key, 1);
+    }
   }
-
+  
   return result ;
 }
 

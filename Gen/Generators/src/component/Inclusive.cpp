@@ -17,6 +17,10 @@
 #include "Generators/GenCounters.h"
 #include "Generators/ICounterLogFile.h"
 
+// from Event                                                                                                                                                    
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : Inclusive
 //
@@ -122,6 +126,11 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
   unsigned int theccCounter , thebbCounter ;
   
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  int key = 0;
+  
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     prepareInteraction( theEvents , theCollisions , theGenEvent, 
                         theGenCollision ) ;
@@ -162,8 +171,12 @@ bool Inclusive::generate( const unsigned int nPileUp ,
 
         GenCounters::AddTo( m_bExcitedC , thebExcitedC ) ;
         GenCounters::AddTo( m_cExcitedC , thecExcitedC ) ;
-        
+
+        GenCounters::updateHadronFSR( theGenEvent, genFSR, "Gen");
+
         ++m_nEventsBeforeCut ;
+        key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
+        genFSR->incrementGenCounter(key, 1);
         bool passCut = true ;
         if ( 0 != m_cutTool ) 
           passCut = m_cutTool -> applyCut( theParticleList , theGenEvent , 
@@ -178,6 +191,13 @@ bool Inclusive::generate( const unsigned int nPileUp ,
           if ( 0 == nPositivePz( theParticleList ) ) {
             revertEvent( theGenEvent ) ;
             ++m_nInvertedEvents ;
+            key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
+            genFSR->incrementGenCounter(key, 1);
+          }
+          else
+          {
+            key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
+            genFSR->incrementGenCounter(key, 1); 
           }
 
           GenCounters::AddTo( m_bHadCAccepted , thebHadC ) ;
@@ -187,6 +207,8 @@ bool Inclusive::generate( const unsigned int nPileUp ,
 
           GenCounters::AddTo( m_bExcitedCAccepted , thebExcitedC ) ;
           GenCounters::AddTo( m_cExcitedCAccepted , thecExcitedC ) ;          
+
+          GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
         }
       }
     }

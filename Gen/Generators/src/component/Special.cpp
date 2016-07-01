@@ -17,6 +17,8 @@
 // Event 
 #include "Event/HepMCEvent.h"
 #include "Event/GenCollision.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : Special
@@ -109,7 +111,12 @@ bool Special::generate( const unsigned int nPileUp ,
   HepMC::GenEvent * theGenEvent( 0 ) ;
 
   bool result = false ;
-  
+
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  int key = 0;
+
   // For the moment no pile-up for this type of event
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     prepareInteraction( theEvents , theCollisions , theGenEvent, 
@@ -123,6 +130,9 @@ bool Special::generate( const unsigned int nPileUp ,
       
       ParticleVector theParticleList ;
       m_nEventsBeforeCut++ ;
+      key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
+      genFSR->incrementGenCounter(key, 1);
+
       bool passCut = true ;
       if ( 0 != m_cutTool ) 
         passCut = m_cutTool -> applyCut( theParticleList , theGenEvent , 
@@ -130,6 +140,8 @@ bool Special::generate( const unsigned int nPileUp ,
       
       if ( passCut ) {
         m_nEventsAfterCut++ ;
+        key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
+        genFSR->incrementGenCounter(key, 1);
         result = true ;
         theGenCollision -> setIsSignal( true ) ;
       } else return false ;

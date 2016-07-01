@@ -20,6 +20,10 @@
 #include "Generators/IProductionTool.h"
 #include "GenEvent/HepMCUtils.h"
 
+// from Event                                                                                                                                                    
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalRepeatedHadronization
 //
@@ -89,6 +93,11 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   HepMC::GenEvent * theGenEvent( 0 ) ;
   HepMC::GenParticle * theSignal ;
 
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  int key = 0;
+
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     bool partonEventWithSignalQuarks = false ;
     ParticleVector theQuarkList ;
@@ -155,6 +164,9 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
               // Count particles and anti-particles of Signal type before 
               // the cut in all directions
               m_nEventsBeforeCut++ ;
+              key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");              
+              genFSR->incrementGenCounter(key, 1);
+
               updateCounters( theParticleList , m_nParticlesBeforeCut , 
                               m_nAntiParticlesBeforeCut , false , false ) ;            
             
@@ -166,10 +178,18 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
               
               if ( passCut && ( ! theParticleList.empty() ) ) {
 
-                if ( ! isInverted ) m_nEventsAfterCut++ ;
-                
-                if ( isInverted ) ++m_nInvertedEvents ;
-                
+                if ( ! isInverted ) {
+                  m_nEventsAfterCut++ ;
+                  key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
+                  genFSR->incrementGenCounter(key, 1);                  
+                }
+
+                if ( isInverted ) {
+                  ++m_nInvertedEvents ;
+                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
+                  genFSR->incrementGenCounter(key, 1);                  
+                }
+
                 // Count particles and anti-particles of Signal type with
                 // pz>0, after generator level cut
                 updateCounters( theParticleList , m_nParticlesAfterCut , 
@@ -188,9 +208,17 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 
                 // theGenCollision -> setIsSignal( true ) ;
                 
-                if ( theSignal -> pdg_id() > 0 ) ++m_nSig ;
-                else ++m_nSigBar ;
-                
+                if ( theSignal -> pdg_id() > 0 ) {
+                  ++m_nSig ;
+                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
+                  genFSR->incrementGenCounter(key, 1);
+                }
+                else {
+                  ++m_nSigBar ;
+                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
+                  genFSR->incrementGenCounter(key, 1);                  
+                }
+
                 // Update counters
                 GenCounters::updateHadronCounters( theGenEvent , m_bHadC ,
                                                    m_antibHadC , m_cHadC , 
@@ -199,7 +227,9 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 GenCounters::updateExcitedStatesCounters( theGenEvent , 
                                                           m_bExcitedC , 
                                                           m_cExcitedC ) ;
-              } else {
+                GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+              } 
+              else {
                 // Signal does not pass cut: remove daughters
                 HepMCUtils::RemoveDaughters( theSignal ) ;
               }

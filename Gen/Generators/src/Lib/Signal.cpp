@@ -14,6 +14,10 @@
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 
+// from Event                                                                                                                                                    
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+
 // Function to test if a HepMC::GenParticle is Particle (or antiParticle) 
 struct isParticle : std::unary_function< const HepMC::GenParticle * , bool > {
   bool operator() ( const HepMC::GenParticle * part ) const {
@@ -348,19 +352,34 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   int nP( 0 ) , nAntiP( 0 ) ;
   ParticleVector::const_iterator from = particleList.begin() ;
   ParticleVector::const_iterator to = particleList.end() ;
-  
+
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  int keyP = 0, keyAP = 0;
+
   if ( onlyForwardParticles ) {
     // if the particle has been inverted z -> -z, do not count it
     if ( ! isInverted ) {
+      keyP = LHCb::GenCountersFSR::CounterKeyToType("AfterPCut");      
+      keyAP = LHCb::GenCountersFSR::CounterKeyToType("AfterantiPCut");
+
       nP = std::count_if( from , to , isForwardParticle() ) ;
       nAntiP = std::count_if( from , to , isForwardAntiParticle() ) ;
     }
   } else {
+    keyP = LHCb::GenCountersFSR::CounterKeyToType("BeforePCut");    
+    keyAP = LHCb::GenCountersFSR::CounterKeyToType("BeforeantiPCut");
+
     nP = std::count_if( from , to , isParticle() ) ;
     nAntiP = particleList.size() - nP ;
   }
 
   particleCounter += nP ;
   antiparticleCounter += nAntiP ;
+
+  genFSR->incrementGenCounter(keyP, nP);
+  genFSR->incrementGenCounter(keyAP, nAntiP);
+
 }
 

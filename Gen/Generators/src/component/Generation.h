@@ -6,6 +6,8 @@
 
 #include <boost/array.hpp>
 
+#include "Event/GenFSR.h"
+
 // Forward declarations
 class ISampleGenerationTool ;
 class IPileUpTool ;
@@ -82,6 +84,12 @@ private:
   /// Location where to store HardInfo (set by options)
   std::string  m_genCollisionLocation ;
 
+  /// Location where to store FSR counters (set by options)                                                                                                      
+  std::string  m_FSRName;
+
+  /// Reference to file records data service                                                                                                                     
+  IDataProviderSvc* m_fileRecordSvc;
+
   IPileUpTool              * m_pileUpTool             ; ///< Pile-up tool
 
   IDecayTool               * m_decayTool              ; ///< Decay tool
@@ -153,6 +161,11 @@ private:
   /// Counter of events after the full event generator level cut
   unsigned int m_nAfterFullEvent ;
 
+  /// TDS container                                                                                                                                              
+  /// LHCb::GenFSRs* m_genFSRs;                                                                                                                                  
+  /// FSR for current file                                                                                                                                       
+  LHCb::GenFSR* m_genFSR;
+
   /** Update the counters counting on interactions.
    *  @param[in,out] theCounter Counter of events
    *  @param[in]     theEvent  The interaction to study
@@ -161,5 +174,14 @@ private:
                                   const LHCb::HepMCEvent * theEvent ) ;
 
   
+  /** Update the counters counting on interactions.                                                                                                              
+   *  @param[in,out] m_genFSR     The counters in FSR                                                                                                            
+   *  @param[in]     theCounter   The interaction counters                                                                                                       
+   *  @param[in]     option       Separate generated and accepted counters                                                                                       
+   */
+  void updateFSRCounters( interactionCounter & theCounter ,
+                          LHCb::GenFSR * m_genFSR,
+                          const std::string option ) ;
+
 };
 #endif // GENERATORS_GENERATION_H

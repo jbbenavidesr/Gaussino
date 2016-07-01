@@ -9,6 +9,9 @@
 // from Event
 #include "Event/GenHeader.h"
 #include "Event/GenCollision.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+#include "Event/CrossSectionsFSR.h"
 
 // from LHCb
 #include "Kernel/ParticleID.h"
@@ -29,6 +32,11 @@
 // local
 #include "Generation.h"
 
+#include <iostream>
+#include <stdlib.h>     /* getenv */
+#include "TSystem.h"
+#include "TUnixSystem.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : Generation
 //
@@ -45,6 +53,7 @@ DECLARE_ALGORITHM_FACTORY( Generation )
 Generation::Generation( const std::string& name,
                         ISvcLocator* pSvcLocator)
   : GaudiAlgorithm ( name , pSvcLocator ) ,
+    m_fileRecordSvc        ( 0 ) ,
     m_pileUpTool           ( 0 ) ,
     m_decayTool            ( 0 ) ,
     m_xmlLogTool           ( 0 ) ,
@@ -56,7 +65,9 @@ Generation::Generation( const std::string& name,
     m_nInteractions        ( 0 ) , 
     m_nAcceptedInteractions( 0 ) ,
     m_nBeforeFullEvent     ( 0 ) ,
-    m_nAfterFullEvent      ( 0 ) {
+    m_nAfterFullEvent      ( 0 ) ,
+    m_genFSR               ( 0 ) {  
+
     // Generation Method
     declareProperty ( "SampleGenerationTool" , 
                       m_sampleGenerationToolName = "MinimumBias" ) ;
@@ -69,7 +80,9 @@ Generation::Generation( const std::string& name,
                       LHCb::GenHeaderLocation::Default ) ;
     declareProperty ( "GenCollisionLocation" , m_genCollisionLocation = 
                       LHCb::GenCollisionLocation::Default ) ;
-    
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
+
     // Tool name to generate the event
     declareProperty( "PileUpTool" , m_pileUpToolName = "FixedLuminosity" ) ;
     // Tool name to decay particles in the event
@@ -165,7 +178,18 @@ StatusCode Generation::initialize() {
   always()
     << "=================================================================="
     << endmsg;
-  
+
+  // get the File Records service                                                                                                                                
+  m_fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+
+  // create a new FSR and append to TDS                                                                                                                          
+  m_genFSR = new LHCb::GenFSR();
+
+  // Now either create the info in the TES or add it to the existing one                                                                                         
+  put(m_fileRecordSvc, m_genFSR, m_FSRName);
+
+  m_genFSR->initializeInfos();
+
   return StatusCode::SUCCESS;
 }
 
@@ -184,6 +208,38 @@ StatusCode Generation::execute() {
     theGenHeader -> setEvType( m_eventType );  
   }
 
+  if(m_genFSR->getSimulationInfo("evtType", 0) == 0)
+  {
+    std::string decFiles = "";
+    int evtType = 0;
+    std::string path = gSystem->Getenv("DECFILESROOT");
+    std::string decFiles_file = "";
+   
+    if(path!=NULL)
+    {
+      decFiles_file = path;
+    
+      for(int i=decFiles_file.length()-1; i>= 0; i--)
+      {
+        char stop_char = '/';
+        char ichar = decFiles_file[i];
+        if(ichar!=stop_char)
+          decFiles += ichar;
+        else
+          break; 
+      }
+
+      std::reverse(decFiles.begin(), decFiles.end());      
+    }
+
+    evtType = m_eventType;
+
+    m_genFSR->addSimulationInfo("evtType", evtType);
+    m_genFSR->addSimulationInfo("generationMethod",m_sampleGenerationTool->name());
+    m_genFSR->addSimulationInfo("decFiles", decFiles);
+    m_genFSR->incrementNJobs();
+  }
+
   unsigned int  nPileUp( 0 ) ;
   
   LHCb::HepMCEvents::iterator itEvents ;
@@ -193,6 +249,10 @@ StatusCode Generation::execute() {
   LHCb::GenCollisions* theCollisions = new LHCb::GenCollisions( );
 
   interactionCounter theIntCounter ;
+
+  // variables to store counters in FSR                                                              
+  int key = 0;  
+  std::string name = " ";
 
   // Generate a set of interaction until a good one is found
   bool goodEvent = false ;
@@ -220,12 +280,24 @@ StatusCode Generation::execute() {
     // increase event and interactions counters
     ++m_nEvents ;    m_nInteractions += nPileUp ;
 
+    // increase the generated events counter in the FSR                                                                                                          
+    name = "EvtGenerated";
+    key = LHCb::GenCountersFSR::CounterKeyToType(name);
+    m_genFSR->incrementGenCounter(key,1);
+    // increase the generated interactions counter in the FSR                                                                                                    
+    name = "IntGenerated";
+    key = LHCb::GenCountersFSR::CounterKeyToType(name);    
+    m_genFSR->incrementGenCounter(key,nPileUp);
+
     // Update interaction counters
     if ( 0 < nPileUp ) { 
       theIntCounter.assign( 0 ) ;
       for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ; 
             ++itEvents ) updateInteractionCounters( theIntCounter , *itEvents ) ;
     
+      // Increse the generated interactions counters in FSR                                                                                                      
+      updateFSRCounters(theIntCounter, m_genFSR, "Gen");
+
       GenCounters::AddTo( m_intC , theIntCounter ) ;
 
       // Decay the event if it is a good event
@@ -267,9 +339,20 @@ StatusCode Generation::execute() {
       if ( m_fullGenEventCutTool ) {
         if ( goodEvent ) {
           ++m_nBeforeFullEvent ;
+          // increase the counter of events before the full event generator level cut in the FSR                                                                 
+          name = "BeforeFullEvt";
+          key = LHCb::GenCountersFSR::CounterKeyToType(name);          
+          m_genFSR->incrementGenCounter(key,1);
+
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
-          if ( goodEvent ) ++m_nAfterFullEvent ;
+          if ( goodEvent ) {
+            ++m_nAfterFullEvent ;
+            // increase the counter of events after the full event generator level cut in the FSR                                                                
+            name = "AfterFullEvt";
+            key = LHCb::GenCountersFSR::CounterKeyToType(name);
+            m_genFSR->incrementGenCounter(key,1);            
+          }
         }
       }
     }
@@ -278,10 +361,23 @@ StatusCode Generation::execute() {
   ++m_nAcceptedEvents ;
   m_nAcceptedInteractions += nPileUp ;
   
+  // increase the generated events counter in the FSR                                                                                                            
+  name = "EvtAccepted";
+  key = LHCb::GenCountersFSR::CounterKeyToType(name);
+  m_genFSR->incrementGenCounter(key,1);
+
+  // increase the generated interactions counter in the FSR                                                                                                      
+  name = "IntAccepted";
+  key = LHCb::GenCountersFSR::CounterKeyToType(name);  
+  m_genFSR->incrementGenCounter(key,nPileUp);
+
   LHCb::HepMCEvents* eventsInTES( 0 )  ;
   LHCb::GenCollisions* collisionsInTES( 0 ) ;
   if ( 0 < nPileUp ) {
     GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
+
+    // Increse the accepted interactions counters in FSR                                                                                                         
+    updateFSRCounters(theIntCounter, m_genFSR, "Acc");
 
     // Now either create the info in the TES or add it to the existing one
     eventsInTES = 
@@ -303,7 +399,11 @@ StatusCode Generation::execute() {
   if ( 0 < nPileUp ) {
     for( LHCb::GenCollisions::const_iterator it = theCollisions->begin();
          theCollisions->end() != it; ++it ) {
-      
+
+      // GenFSR
+      if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
+        m_genFSR->addSimulationInfo("hardGenerator",(*itEvents)->generatorName());
+
       // HepMCEvent
       LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
       theHepMCEvent->setGeneratorName( (*itEvents)->generatorName() );
@@ -369,6 +469,11 @@ StatusCode Generation::finalize() {
                    m_nBeforeFullEvent ) ;
 
   m_sampleGenerationTool -> printCounters() ;
+
+  // check if the FSR can be retrieved from the TS                                                                                                               
+  LHCb::GenFSR* readFSR = getIfExists<LHCb::GenFSR>(m_fileRecordSvc, m_FSRName);
+  if(readFSR!=NULL)    // print the FSR just retrieved from TS                                                                                                   
+    always() << "READ FSR: " << *readFSR << endmsg;
 
   if ( 0 != m_pileUpTool ) release( m_pileUpTool ) ;
   if ( 0 != m_decayTool ) release( m_decayTool ) ;
@@ -532,3 +637,23 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
     ++theCounter[ PromptC ];
 }
 
+//=============================================================================                                                                                   
+// Interaction counters in FSR                                                                                                                                    
+//=============================================================================                                                                                   
+void Generation::updateFSRCounters( interactionCounter & theCounter,
+                                    LHCb::GenFSR* m_genFSR,
+                                    const std::string option)
+{
+  int key = 0; 
+  longlong count = 0;
+  std::string name[7]= {"Oneb","Threeb","PromptB","Onec","Threec","PromptC","bAndc"};  
+  std::string cname = "";
+
+  for(int i=0; i<7; i++)
+  {
+    cname = name[i]+option;
+    key = LHCb::GenCountersFSR::CounterKeyToType(cname);
+    count = theCounter[i];
+    m_genFSR->incrementGenCounter(key,count); 
+  } 
+}

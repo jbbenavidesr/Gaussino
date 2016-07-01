@@ -342,3 +342,264 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
   } 
 }
 
+
+//=============================================================================                    
+// Update the genFRS in selected events                                                            
+//=============================================================================                    
+void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
+                                   LHCb::GenFSR* genFSR,
+                                   const std::string option)
+{  
+  // Signal Vertex                                                                        
+  HepMC::GenVertex * signalV = theEvent -> signal_process_vertex() ;
+  int key = 0;
+  
+  // Count B :                                                                                    
+  std::vector< HepMC::GenParticle * > rootB ;
+  HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
+                  std::back_inserter( rootB ) , isRootB() ) ;
+
+  std::vector< HepMC::GenParticle * >::const_iterator iter ;
+
+  for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter )
+  {
+    if ( 0 != signalV )
+    {  
+      if ( ! HepMCUtils::commonTrees( signalV ,
+                                      (*iter) -> end_vertex() ) )
+        continue ; 
+    }    
+    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+
+    if (thePid.isMeson())
+    {
+      if (0 == thePid.lSpin())
+      {
+        if (1 == thePid.jSpin())
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("B"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bstar"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      }
+      else
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("B2star"+option);
+        genFSR->incrementGenCounter(key, 1);                                                                                        
+      } 
+    } 
+  }
+
+  // Count D :                                                                                     
+  std::vector< HepMC::GenParticle * > rootD ;  
+  HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
+                  std::back_inserter( rootD ) , isRootD() ) ;
+
+  for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter )
+  {
+    if ( 0 != signalV )
+    {
+      if ( ! HepMCUtils::commonTrees( signalV ,
+                                      (*iter) -> end_vertex() ) )
+        continue ; 
+    }
+
+    LHCb::ParticleID thePid( (*iter) -> pdg_id() );
+
+    if (thePid.isMeson())
+    {
+      if (0 == thePid.lSpin())
+      {
+        if (1 == thePid.jSpin())
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("D"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Dstar"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      }
+      else
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("D2star"+option);
+        genFSR->incrementGenCounter(key, 1); 
+      } 
+    } 
+  }
+
+  // Count B:                                                                                     
+  std::vector< HepMC::GenParticle * > endB ;
+  HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
+                  std::back_inserter( endB ) , isEndB() ) ;
+
+  for ( iter = endB.begin() ; iter != endB.end() ; ++iter )
+  {
+    if ( 0 != signalV )
+    {
+      if ( HepMCUtils::commonTrees( signalV ,
+                                    (*iter) -> end_vertex() ) )
+        continue ;      
+    }
+
+    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+
+    if ( thePid.isMeson() )                                                                                                               
+    {                                                                                                                                  
+      if ( thePid.pid() > 0 )
+      {                                                                                                                              
+        if ( thePid.hasUp() )                                                                                                         
+        {                                                              
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bplus"+option);
+          genFSR->incrementGenCounter(key, 1);                                                                                       
+        }                                                                                                                          
+        else if ( thePid.hasDown() )                                                                                                  
+        {                                                                 
+          key = LHCb::GenCountersFSR::CounterKeyToType("B0"+option);
+          genFSR->incrementGenCounter(key, 1);                                                                                       
+        }                                                                                                                          
+        else if ( thePid.hasStrange() )                                                                                               
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bs0"+option); 
+          genFSR->incrementGenCounter(key, 1);
+        }
+        else if ( thePid.hasCharm() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bcplus"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("bb"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      }
+      else
+      {
+        if ( thePid.hasUp() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bminus"+option);
+          genFSR->incrementGenCounter(key, 1);
+        }
+        else if ( thePid.hasDown() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("antiB0"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasStrange() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("antiBs0"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasCharm() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Bcminus"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("bb"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      } 
+    }
+    else if ( thePid.isBaryon() )
+    {
+      if ( thePid.pid() < 0 )
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("bBaryon"+option);
+        genFSR->incrementGenCounter(key, 1); 
+      }
+      else
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("antibBaryon"+option);
+        genFSR->incrementGenCounter(key, 1); 
+      } 
+    } 
+  }
+
+  // Count D:                                                                                   
+  std::vector< HepMC::GenParticle * > endD ;
+  HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
+                  std::back_inserter( endD ) , isEndD() ) ;
+
+  for ( iter = endD.begin() ; iter != endD.end() ; ++iter )
+  {
+    if ( 0 != signalV )
+    {
+      if ( HepMCUtils::commonTrees( signalV ,
+                                    (*iter) -> end_vertex() ) )
+        continue ;      
+    }
+
+    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+
+    if ( thePid.isMeson() )
+    {
+      if ( thePid.pid() > 0 )
+      {
+        if ( thePid.hasUp() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("D0"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasDown() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Dplus"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasStrange() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Dsplus"+option);
+          genFSR->incrementGenCounter(key, 1);
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("cc"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      }
+      else
+      {
+        if ( thePid.hasUp() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("antiD0"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasDown() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Dminus"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else if ( thePid.hasStrange() )
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("Dsminus"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        }
+        else
+        {
+          key = LHCb::GenCountersFSR::CounterKeyToType("cc"+option);
+          genFSR->incrementGenCounter(key, 1); 
+        } 
+      } 
+    }
+    else if ( thePid.isBaryon() )
+    {
+      if ( thePid.pid() > 0 )
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("cBaryon"+option);
+        genFSR->incrementGenCounter(key, 1); 
+      }
+      else
+      {
+        key = LHCb::GenCountersFSR::CounterKeyToType("anticBaryon"+option);
+        genFSR->incrementGenCounter(key, 1); 
+      } 
+    } 
+  } 
+}

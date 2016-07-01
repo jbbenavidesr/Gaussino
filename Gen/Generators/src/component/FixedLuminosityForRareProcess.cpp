@@ -11,6 +11,8 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
 
 // From Generators
 #include "Generators/GenCounters.h"
@@ -72,8 +74,16 @@ unsigned int FixedLuminosityForRareProcess::numberOfPileUp( ) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;  
 
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  int key = 0;
+
   unsigned int result = 0 ;
   m_nEvents++ ;
+  key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");  
+  genFSR->incrementGenCounter(key,1);
+
   Rndm::Numbers poissonGenerator( m_randSvc , Rndm::Poisson( beam -> nu() ) ) ;
   result = (unsigned int) ( poissonGenerator() + 1.0 ) ;
   return result ;
