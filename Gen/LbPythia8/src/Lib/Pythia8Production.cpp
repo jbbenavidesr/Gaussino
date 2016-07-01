@@ -7,6 +7,9 @@
  
 // Event.
 #include "Event/GenCollision.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+#include "Event/CrossSectionsFSR.h"
 
 // Generators.
 #include "Generators/IBeamTool.h"
@@ -261,6 +264,46 @@ StatusCode Pythia8Production::generateEvent(HepMC::GenEvent* theEvent,
   if (tries == 10) return Error("Pythia 8 event generation failed 10 times.");
   if (!m_pythia->flag("HadronLevel:all")) m_event = m_pythia->event;  
   ++m_nEvents;
+
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  int key = 0;
+
+  vector<int> codes = m_pythia->info.codesHard();
+
+  // Store the minimum bias cross-section in the GenFSR                                                                                                          
+  key = LHCb::CrossSectionsFSR::CrossSectionKeyToType("MBCrossSection");
+
+  if(genFSR->hasGenCounter(key+100))
+  {
+    longlong count = genFSR->getGenCounterInfo(100+key).second;
+    count = m_pythia->info.nAccepted(key) - count;
+    if(count > 0) genFSR->incrementGenCounter(key+100, count); 
+  }
+  else if (m_pythia->info.nAccepted(key) != 0)
+    genFSR->addGenCounter(100+key, m_pythia->info.nAccepted(key));
+
+  if(genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
+  genFSR->addCrossSection(key,LHCb::GenFSR::CrossValues("Total cross-section", m_pythia->info.sigmaGen(key)));
+
+  // Store the others cross-sections in the GenFSR                                                                                                               
+  for (unsigned int code = 0; code < codes.size(); ++code)
+  {
+    key = codes[code];
+
+    if(genFSR->hasGenCounter(key+100))
+    {
+      longlong count = genFSR->getGenCounterInfo(100+key).second;
+      count = m_pythia->info.nAccepted(key) - count;
+      if(count > 0) genFSR->incrementGenCounter(key+100, count);
+    }
+    else if (m_pythia->info.nAccepted(key) != 0)
+      genFSR->addGenCounter(100+key, m_pythia->info.nAccepted(key));
+
+    if(genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
+    genFSR->addCrossSection(key,LHCb::GenFSR::CrossValues(m_pythia->info.nameProc(key),m_pythia->info.sigmaGen(key)));    
+  }
 
   // Convert the event to HepMC and return.
   if (theCollision->isSignal() || m_pythia->flag("HadronLevel:all")) 
