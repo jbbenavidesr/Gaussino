@@ -1,3 +1,6 @@
 [lb-checkout "Gaudi.GaudiPolicy"]
 	base = 2f6eb48c7a79c4b76bc00114304283e6c44cba9b
 	imported = 17f2380691864f5978b422543e2475c566a64987
+[lb-checkout "LHCb.Det/DDDB"]
+	base = 032a84d1a68c2150cdd743e3594650b12c1d60da
+	imported = 7a9c86841269960d99081330be7f12ff383dd414
