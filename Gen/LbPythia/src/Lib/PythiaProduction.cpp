@@ -20,6 +20,9 @@
 
 // from Event
 #include "Event/GenCollision.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
+#include "Event/CrossSectionsFSR.h"
 
 // Generators 
 #include "Generators/StringParse.h"
@@ -533,6 +536,12 @@ StatusCode PythiaProduction::initializeGenerator( ) {
 StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent , 
                                             LHCb::GenCollision * theCollision )
 {
+  // Access to genFSR
+  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
+  std::string FSRName = LHCb::GenFSRLocation::Default;
+  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  int key = 0;  
+
   // Set beam parameters if variable energy
   if ( m_variableEnergy ) {
     Gaudi::XYZVector pBeam1 , pBeam2 ;
@@ -563,7 +572,39 @@ StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent ,
     Pythia::pydat1().mstu(1) = mstu_1 ;
     Pythia::pydat1().mstu(2) = mstu_2 ;
   }
+
+  // Fill genFSR
+  key = LHCb::CrossSectionsFSR::CrossSectionKeyToType("MBCrossSection");
+  if(genFSR->hasGenCounter(100+key))
+  {
+    longlong count = genFSR->getGenCounterInfo(100+key).second;
+    count = Pythia::pyint5().ngen(key,3) - count ;
+    if(count > 0)   genFSR->incrementGenCounter(100+key, count); 
+  }
+  else if(Pythia::pyint5().ngen(key,3) != 0)   genFSR->addGenCounter(100+key, Pythia::pyint5().ngen(key,3));
   
+  if(genFSR->hasCrossSection(key))   genFSR->eraseCrossSection(key);
+  genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues(Pythia::pyint6().proc(key),Pythia::pyint5().xsec(key,3)));
+
+  for (int i = 1 ; i <= 500 ; ++i )
+  {
+    if ( 1 == Pythia::pysubs().msub( i ) )
+    {
+      key = i;
+  
+      if(genFSR->hasGenCounter(key+100))
+      {
+        longlong count = genFSR->getGenCounterInfo(100+key).second;
+        count = Pythia::pyint5().ngen(key,3) - count;
+        if(count > 0)   genFSR->incrementGenCounter(key+100, count); 
+      }
+      else if (Pythia::pyint5().ngen(key,3) != 0)   genFSR->addGenCounter(100+key, Pythia::pyint5().ngen(key,3));
+      
+      if(genFSR->hasCrossSection(key))   genFSR->eraseCrossSection(key);
+      genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues((Pythia::pyint6().proc(key)).c_str(),Pythia::pyint5().xsec(key,3))); 
+    }    
+  }
+
   return toHepMC( theEvent , theCollision ) ;
 }
 

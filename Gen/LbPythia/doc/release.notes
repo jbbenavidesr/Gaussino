@@ -4,6 +4,9 @@
 ! Purpose     : Package for Pythia 6 in Gauss
 !-----------------------------------------------------------------------------
 
+! 2016-07-01 - Davide Fazzini
+	- Update PythiaProduction.cpp to store the Pythia counters in genFSR
+
 !========================= LbPythia v15r1 2016-03-28 =========================
 ! 2016-03-28 - Gloria Corti
  - Remove obsolete options files
