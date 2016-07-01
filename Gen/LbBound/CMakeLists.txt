@@ -1,6 +1,6 @@
 ################################################################################# Package: LbBound
 ################################################################################
-gaudi_subdir(LbBound v1r0)
+gaudi_subdir(LbBound v1r1)
 
 gaudi_depends_on_subdirs(Gen/Generators)
 
