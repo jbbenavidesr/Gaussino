@@ -3,6 +3,53 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
+!==============================================================================
+</PRE><H1><A NAME="v49r2">2016-07-04 - GaussSys v49r2</A></H1><PRE>
+<H2><A NAME="Note"Release for Sim09 productions. 
+   Based on LCG_79.
+   Default Tune1 for Pythia8.
+   Introduce fixes for ion-ion production with CRMC/EPOS.
+   New generator for Deuteron.
+   Use new GenTune with Rivet 2.
+</A></H2>
+<H3><A NAME="Use">This version uses:
+   <b>LHCb v39r1 (and Gaudi v26r4)</b>
+   AppConfig v3r*,
+   <b>DecFiles v29r*</b>, 
+   ParamFiles v8r*, 
+   SQLDDDB v7r*, FieldMap v5r*,
+   GDMLData v1r*,
+   PGunsData v1r*
+   pythia8 186, lhapdf 6.1.4, 
+   photos++ 3.56 and tauola++ 1.1.4, 
+   pythia 6.427.2 (via LCG_GeneratorsInterfaces),
+   HepMC 2.06.09 (via LCG_Interfaces),
+   LHAPDFSets v2r* (private LHCb version)
+   Geant4 v96r4p3 (based on geant4.9.6.p04 + patches for LHCb) and 
+   Geant4Files v96r0, 
+   XmlVis v1r23,
+   hijing 1.383bs.2 (via LCG_GeneratorsInterfaces),
+   alpgen 2.1.4 and powhegbox r2092 (via LCG_GeneratorsInterfaces),
+   herwig++ 2.7.1 and thepeg 1.9.2p1 (via LCG_GeneratorsInterfaces),
+   <b>rivet 2.4.2</b> and <b>yoda 1.9.0 (NEW)</b> (via LCG_GeneratorsInterfaces),
+   EvtGen v14r7, EvtGenExtras v3r12p1 and Mint v4r0
+   (private LHCb version),
+   BcVegPy v4r0p1 + BcVegPyData v2r*, GenXicc v2r2 + GenXiccData v3r* and 
+   HidValley v4r1 (private LHCb versions)
+</A></H3>
+
+<dl>
+<dt>[<a href="https://gitlab.cern.ch/lhcb-svnmirror/Gauss/merge_requests/10">MR 10</a>] 
+Use new vervion of GenTune requiring Rivet 2. and new dependency on yoda.
+<dd>
+See details also in <a href="https://its.cern.ch/jira/browse/LHCBGAUSS-598">LHCBGAUSS-598</a>
+<dt>[<a href="https://its.cern.ch/jira/browse/LHCBGAUSS-683">LHCBGAUSS-683</a>]
+Imported first version of new Gen/LbBound package for nuclei bound stated from master
+<dd>
+<dt>[<a href=""></a>]Fixes random number seed and options for Pb-Pb test productions with CRMC/EPOS
+<dd>
+</dl>
+
 
 !=======================================================================================
 </PRE><H1><A NAME="v49r1">2016-05-27 - GaussSys v49r1</A></H1><PRE>
