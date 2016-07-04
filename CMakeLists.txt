@@ -20,7 +20,7 @@ macro(FindG4libs)
 endmacro()
 
 # Declare project name and version
-gaudi_project(Gauss v49r0
+gaudi_project(Gauss v49r2
               FORTRAN
               USE LHCb v39r1
                   Geant4 v96r4p3
