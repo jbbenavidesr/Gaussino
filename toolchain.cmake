@@ -12,9 +12,11 @@ set(generators_versions
     powheg-box  r2092
     pythia6     427.2
     pythia8     186
-    rivet       1.9.0
+    rivet       2.4.2
     tauola++    1.1.4
     thepeg      1.9.2p1
+    crmc        1.5.6
+    yoda        1.5.9
     )
 
 # Process the lines of LCG_generators_*.txt file to extract the
