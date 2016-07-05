@@ -18,6 +18,13 @@ namespace HepMC {
   class GenEvent ;
 }
 
+namespace LHCb 
+{
+  class GenFSR ;
+  class GenCountersFSR ;  
+}
+
+
 /** @namespace GenCounters
  *  
  *  Utility functions to print counters and compute efficiencies

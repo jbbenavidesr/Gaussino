@@ -15,6 +15,8 @@
 
 // Event
 #include "Event/HepMCEvent.h"
+#include "Event/GenFSR.h"
+#include "Event/GenCountersFSR.h"
 
 // LHCb
 #include "Kernel/ParticleID.h"
