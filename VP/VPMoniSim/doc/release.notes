@@ -4,6 +4,10 @@
 ! Purpose     : Monitoring of VP hits in Gauss
 !-----------------------------------------------------------------------------
 
+! 2016-07-13 - Manuel Jahn (Summer Student) and Mark Williams
+ - Edit VPGaussMoni.cpp to fix MCVertexPosZX (was plotting ZY)
+ - Add new plot showing distance traversed in silicon (SiDist)
+
 !======================= VP/VPMoniSim v1r0 2014-07-28 ========================
 ! 2014-05-06 - Heinrich Schindler
  - Rename package from Sim/GaussUMC to VP/VPMoniSim

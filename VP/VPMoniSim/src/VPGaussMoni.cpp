@@ -160,12 +160,20 @@ void VPGaussMoni::monitor() {
     plot2D(x, y, "MCVertexPosXY",
            "Position of production MC Vertex of MCParticles giving hits - XY [cm]",
            -5., 5., -5., 5., 500, 500);      
-    plot2D(z, y, "MCVertexPosZX",
-           "Position of production MC Vertex of MCParticles giving hits - ZY [cm]",
+    plot2D(z, x, "MCVertexPosZX",
+           "Position of production MC Vertex of MCParticles giving hits - ZX [cm]",
            -30., 80., -5., 5., 500, 500); 
     plot2D(z, y, "MCVertexPosZY",
            "Position of production MC Vertex of MCParticles giving hits - ZY [cm]",
-           -30., 80., -5., 5., 500, 500); 
+           -30., 80., -5., 5., 500, 500);
+    
+    // Get the distance traversed through silicon for each particle
+    double xdist2 = pow((*it)->entry().x()-(*it)->exit().x(),2);
+    double ydist2 = pow((*it)->entry().y()-(*it)->exit().y(),2);
+    double zdist2 = pow((*it)->entry().z()-(*it)->exit().z(),2);
+    double dist = sqrt(xdist2+ydist2+zdist2) / Gaudi::Units::cm;
+    plot(dist, "SiDist", "Distance traversed through silicon by particle [cm]", 0., .05, 500.);
+
     if (m_printInfo) {
       info() << " ==> MCHit - MCParticle: "
              << "\np_x = " << fMom.px() / Gaudi::Units::GeV
