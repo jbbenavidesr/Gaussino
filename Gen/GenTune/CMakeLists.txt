@@ -17,8 +17,8 @@ find_package(YODA)
 
 gaudi_add_module(GenTune
                  src/*.cpp
-                 INCLUDE_DIRS AIDA YODA Rivet
-                 LINK_LIBRARIES YODA Rivet GenEvent GaudiAlgLib pythia6forgauss GeneratorsLib)
+                 INCLUDE_DIRS YODA Rivet FastJet
+                 LINK_LIBRARIES YODA Rivet FastJet GenEvent GaudiAlgLib pythia6forgauss GeneratorsLib)
 
 
 gaudi_add_test(QMTest QMTEST)
