@@ -333,12 +333,7 @@ StatusCode CRMCProduction::generateEvent(HepMC::GenEvent *theEvent, LHCb::GenCol
     while (!theEvent->is_valid()) {
   	// Generate the event
 	  m_CRMCEngine->generate_event(theEvent);
-	  theEvent->print();
-	  //loop over particles and print some infos to check
-	  /* for ( HepMC::GenEvent::particle_iterator itrPart = theEvent->particles_begin(); itrPart != theEvent->particles_end(); ++itrPart ) {
-	         HepMC::GenParticle* genPart1=*itrPart;
-		 genPart1->print();
-		 }*/
+	  // theEvent->print();
 
 	  if (!theEvent->is_valid()) {
 	  	warning() << "LbCRMC : CRMC returned a malformed HepMC event, will try to generate another one" << endmsg;
@@ -354,7 +349,7 @@ StatusCode CRMCProduction::generateEvent(HepMC::GenEvent *theEvent, LHCb::GenCol
           //Take the information from the fortran blocks and Fill the HepMC file
           theEvent = CRMCProduction::FillHepMC(theEvent);
           //check the format of the HepMC file
-	  theEvent->print();
+	  // theEvent->print();
 	    
   }  //end of else
     
@@ -1020,6 +1015,7 @@ HepMC::GenEvent* CRMCProduction::FillHepMC(HepMC::GenEvent *theEvent) {
 
      //other particles
      HepMC::GenParticle* gpart[200001]; //change not to have something hardcoded (should be nptl + the 2 beam particles)
+     Double_t Energy[200001];
      for(int a = 1; a < 200001; a++ ){
      gpart[a] = new HepMC::GenParticle();
      }
@@ -1090,13 +1086,16 @@ HepMC::GenEvent* CRMCProduction::FillHepMC(HepMC::GenEvent *theEvent) {
        //convert the id of epos to the pdg id
        idpdg = idtrafo_((char *)"nxs", (char *)"pdg", &Epos::cptl().idptl(i),3,3); //convert the id of the particle from epos id to pdg id 
        gpart[i]->set_pdg_id(idpdg);
-       gpart[i]->set_momentum(HepMC::FourVector((double)(Epos::cptl().pptl(1,i)), (double)(Epos::cptl().pptl(2,i)), (double)(Epos::cptl().pptl(3,i)), (double)(Epos::cptl().pptl(4,i))));  //here is GeV
+       //recalculate the energy to ensure energy conservation (important to use EvtGen)
+       Energy[i] = TMath::Sqrt( (double)(Epos::cptl().pptl(1,i))*(double)(Epos::cptl().pptl(1,i)) + (double)(Epos::cptl().pptl(2,i))*(double)(Epos::cptl().pptl(2,i)) + (double)(Epos::cptl().pptl(3,i))*(double)(Epos::cptl().pptl(3,i)) + (double)(Epos::cptl().pptl(5,i))*(double)(Epos::cptl().pptl(5,i)) );
+       gpart[i]->set_momentum(HepMC::FourVector((double)(Epos::cptl().pptl(1,i)), (double)(Epos::cptl().pptl(2,i)), (double)(Epos::cptl().pptl(3,i)), (double)(Energy[i])));  //here is GeV
        gpart[i]->set_generated_mass((double)(Epos::cptl().pptl(5,i))); //here is GeV
        gpart[i]->set_status(TMath::Min(2,Epos::cptl().istptl(i)+1)); //here is hepmc status
        //in the first loop we only set all particles with proper barecode
        gpart[i]->suggest_barcode(barecode);
        barecode++;
        vertex->add_particle_out(gpart[i]);
+
        } //end of if
      } //end of for
 

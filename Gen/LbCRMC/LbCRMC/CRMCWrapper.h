@@ -82,6 +82,9 @@ class CRMCWrapper {
     std::string parameters_file_name();
     void set_parameters_file_name(std::string new_file_name);
 
+    //Apply a trick to force energy conservation for all the particle
+    void correct_particle_energy(HepMC::GenEvent *theEvent);
+
     // Convert event particles values from GeV to MeV
     void convert_to_mev_and_mm(HepMC::GenEvent *theEvent);
 
