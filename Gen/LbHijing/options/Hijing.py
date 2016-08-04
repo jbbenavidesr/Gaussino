@@ -1,6 +1,14 @@
-from Configurables import Generation, MinimumBias
+from Configurables import Generation, Special, HijingProduction, MinimumBias, Inclusive, SignalPlain, SignalRepeatedHadronization
 
-Generation().SampleGenerationTool = "MinimumBias"
-Generation().addTool( MinimumBias ) 
-Generation().MinimumBias.ProductionTool = "HijingProduction"
+gen = Generation()
+gen.addTool( Special )
+gen.addTool( MinimumBias )
+gen.addTool( Inclusive )
+gen.addTool( SignalPlain )
+gen.addTool( SignalRepeatedHadronization )
 
+gen.Special.ProductionTool = "HijingProduction"
+gen.MinimumBias.ProductionTool = "HijingProduction"
+gen.Inclusive.ProductionTool = "HijingProduction"
+gen.SignalPlain.ProductionTool = "HijingProduction"
+gen.SignalRepeatedHadronization.ProductionTool = "HijingProduction"
