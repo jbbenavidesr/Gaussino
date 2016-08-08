@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <stdexcept>
+#include <TMath.h>
 
 //-----------------------------------------------------------------------------
 //  Implementation file for class: CRMCWrapper
@@ -545,10 +546,40 @@ void CRMCWrapper::fill_event(HepMC::GenEvent *event) {
   }
   event->set_signal_process_id(sig_id);
 
-  // Convert units
-  if (event->is_valid())
-	  convert_to_mev_and_mm(event);
+  // Correct particle energy and Convert units (be carefull order of the functions matter)
+  if (event->is_valid()){
+      correct_particle_energy(event);
+      convert_to_mev_and_mm(event);
+  }
 }
+
+//Apply a trick to force energy conservation for all the particle
+void CRMCWrapper::correct_particle_energy(HepMC::GenEvent *event){
+
+  if (!event)
+    throw std::runtime_error("LbCRMC : Null pointer for the event passed to correct_particle_energy!");
+
+  //Get the HepMC::GenParticle infos and reset the energy of all the particles
+  HepMC::FourVector fv;
+  double gen_mass;
+  double px;
+  double py;
+  double pz;
+  double energy;
+  
+  for (HepMC::GenEvent::particle_iterator particle = event->particles_begin(); particle != event->particles_end(); ++particle) {
+      fv = (*particle)->momentum();
+      px = fv.px();
+      py = fv.py();
+      pz = fv.pz();
+      gen_mass = (*particle)->generated_mass();
+      energy = TMath::Sqrt((px*px) + (py*py) + (pz*pz) + (gen_mass*gen_mass));
+      (*particle)->set_momentum(HepMC::FourVector(px, py, pz, energy));
+      (*particle)->set_generated_mass(gen_mass);
+  }
+   
+}
+
 
 // Convert event particles values from GeV to MeV
 void CRMCWrapper::convert_to_mev_and_mm(HepMC::GenEvent *event) {

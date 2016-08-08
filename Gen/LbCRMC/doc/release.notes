@@ -4,6 +4,10 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-07-21 - Laure Massacrier
+  - Apply a fix so that the mass of the particles calculated from the particle 4-vector (p,E) matches the particle generated mass
+  - Add a first version of the python script to make the embedding of the J/psi in the EPOS underlying event
+
 ! 2016-06-30 - Laure Massacrier
   - Fix the table path in EPOS_CMS.py and EPOS_TARGET.py for production environment
 
