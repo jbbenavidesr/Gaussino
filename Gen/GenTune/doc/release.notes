@@ -5,6 +5,9 @@
 !               using Professor/Rivet system.
 !-----------------------------------------------------------------------------
 
+! 2016-07-16 - Alex Grecu
+ - Add required FastJet dependency to cmake file. Remove no longer needed AIDA dependency.
+
 ! 2016-06-16 - Gloria Corti
  - Add yoda into cmake file
 
