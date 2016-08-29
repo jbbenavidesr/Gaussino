@@ -182,6 +182,16 @@ StatusCode GaussRedecayMergeAndClean::execute() {
   delete m_temp_cloner;
   m_temp_cloner = nullptr;
 
+  // Run a check that all used placeholder IDs have disappeared form the record.
+  auto all_placeholder_ids = m_gaussRDStrSvc->getUsedPlaceholderIDs();
+  for (auto& part : *m_mcparticles.first) {
+    if (all_placeholder_ids.count(part->particleID().pid()) != 0) {
+      error() << "Placeholder " << part->particleID().pid()
+              << " still in MCParticles." << endmsg;
+      return StatusCode::FAILURE;
+    }
+  }
+
   return StatusCode::SUCCESS;
 }
 
@@ -278,8 +288,8 @@ void GaussRedecayMergeAndClean::fix_connections(int placeholder,
   sig_signal = m_temp_cloner->cloneMCP(sig_signal);
   org_signal_vtx->addToProducts(sig_signal);
   if (msgLevel(MSG::DEBUG)) {
-    debug() << "---> Original vertex: (" << org_signal_vtx->position().x() << ", "
-            << org_signal_vtx->position().y() << ", "
+    debug() << "---> Original vertex: (" << org_signal_vtx->position().x()
+            << ", " << org_signal_vtx->position().y() << ", "
             << org_signal_vtx->position().z() << ")" << endmsg;
   }
   sig_signal->setOriginVertex(org_signal_vtx);

@@ -59,27 +59,24 @@ bool SignalPlain::generate(const unsigned int nPileUp,
   bool hasFailed = false;
   LHCb::GenCollision* theGenCollision(0);
   HepMC::GenEvent* theGenEvent(0);
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "#########################################" << endmsg;
+    debug() << "Generating a new event!" << endmsg;
+    debug() << "#########################################" << endmsg;
+  }
 
   for (unsigned int i = 0; i < nPileUp; ++i) {
-    debug() << "#########################################" << endmsg;
+    debug() << "=========================================" << endmsg;
     debug() << "Redecay Pileup: " << i << endmsg;
-    debug() << "#########################################" << endmsg;
+    debug() << "=========================================" << endmsg;
     prepareInteraction(theEvents, theCollisions, theGenEvent, theGenCollision);
 
     sc = m_productionTool->generateEvent(theGenEvent, theGenCollision);
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "All vertices with no parents before decay" << endmsg;
+      debug() << "Event from beam end_vertex before decay" << endmsg;
       debug() << "-----------------------------------------" << endmsg;
-      for (auto vtx : theGenEvent->vertex_range()) {
-        if (vtx->particles_in_size() == 0) {
-          if (vtx->particles_out_size() > 0) {
-            for (auto p : vtx->particles(HepMC::children)) {
-              printChildren(p);
-            }
-          }
-        }
-      }
-      debug() << "=========================================" << endmsg;
+      printChildren(theGenEvent->beam_particles().first);
+      debug() << "-----------------------------------------" << endmsg;
     }
     if (sc.isFailure()) Exception("Could not generate event");
 
@@ -88,17 +85,10 @@ bool SignalPlain::generate(const unsigned int nPileUp,
       decayHeavyParticles(theGenEvent, m_signalQuark, m_signalPID);
       if (msgLevel(MSG::DEBUG)) {
         debug() << "All vertices with no parents after decay" << endmsg;
+        debug() << "Event from beam end_vertex after decay" << endmsg;
         debug() << "-----------------------------------------" << endmsg;
-        for (auto vtx : theGenEvent->vertex_range()) {
-          if (vtx->particles_in_size() == 0) {
-            if (vtx->particles_out_size() > 0) {
-              for (auto p : vtx->particles(HepMC::children)) {
-                printChildren(p);
-              }
-            }
-          }
-        }
-        debug() << "=========================================" << endmsg;
+        printChildren(theGenEvent->beam_particles().first);
+        debug() << "-----------------------------------------" << endmsg;
       }
 
       // Check if one particle of the requested list is present in event

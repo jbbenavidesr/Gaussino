@@ -69,6 +69,7 @@ class IGaussRedecayStr : virtual public IService {
   virtual int registerForRedecay(Particle part, int pileup_id) = 0;
   virtual std::map<int, Particle>* getRegisteredForRedecay() = 0;
   virtual int getNPileUp() = 0;
+  virtual std::set<int> getUsedPlaceholderIDs() = 0;
 
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.

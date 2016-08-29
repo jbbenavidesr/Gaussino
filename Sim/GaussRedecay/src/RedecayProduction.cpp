@@ -59,11 +59,11 @@ StatusCode RedecayProduction::generateEvent(
     HepMC::GenEvent* theEvent, LHCb::GenCollision* /*theCollision*/) {
   // Let's construct a fake event
   auto sig_info = m_gaussRDStrSvc->getRegisteredForRedecay();
+  HepMC::GenVertex* dummy_vertex = nullptr;
   for (auto& part : *sig_info) {
     auto mom = part.second.momentum;
     auto origin = part.second.point;
     auto thePdgId = part.second.pdg_id;
-    HepMC::GenVertex* dummy_vertex = nullptr;
     if (msgLevel(MSG::DEBUG)) {
       debug() << "Making a particle for PDG ID " << thePdgId
               << " with placeholder ID" << part.first << endmsg;

@@ -132,6 +132,7 @@ class GaussRedecay : public Service,
   virtual LHCb::GenCollision* cloneGenCollision(
       const LHCb::GenCollision* mchit) override;
   virtual LHCb::GenCollisions* getClonedGenCollisions() override;
+  virtual std::set<int> getUsedPlaceholderIDs() override;
 
   protected:
   /** standard constructor

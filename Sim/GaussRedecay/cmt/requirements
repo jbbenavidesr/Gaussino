@@ -11,13 +11,13 @@ branches GaussRedecay doc cmt src
 
 # Used packages
 #============================================================================
+use Generators        v* Gen
 use MCEvent           v* Event
 use PhysEvent         v* Event
 use GenEvent          v* Event
 use GaussTools        v* Sim
 #use G4physics_lists   v* Geant4
 #use G4LHCblists       v* Geant4
-use Generators        v* Gen
 #use LoKiGen       v*  Phys
 #use SimComponents v*  Sim
 #use GaudiKernel *
@@ -29,6 +29,7 @@ apply_pattern install_more_includes more=GaussRedecay
 
 # Component library building rule
 #============================================================================
+macro GaussRedecay_linkopts " -Wl,--no-as-needed $(lhapdf_linkopts) -Wl,--as-needed "
 library     GaussRedecay     *.cpp
 
 # define component library link options
