@@ -36,7 +36,7 @@ extern "C" {
       num1[1], p1m[1], p1p[1], p2m[1], p2p[1], pboo[4], pcm[4], pcmod[1], 
       pepm[1], pepp[1], peppg[1], pgmod[1], pgtot[4], phi[1], phi1[1], phi2[1], 
       phi6[1], phi8[1], phig[1], pi[1], picostsq[1], pin[4], plb[4], pmod[1], 
-      pnorm[1], pout[4][100], ppi[1], pt1sq[1], pt1x[1], pt1y[1], pt2sq[1], 
+      pnorm[1], pout[100][4], ppi[1], pt1sq[1], pt1x[1], pt1y[1], pt2sq[1], 
       pt2x[1], pt2y[1], ptdif[2], ptmax[1], ptmin[1], ptw[1], ptxsq[1], 
       ptxx[1], q14[4], q14c[4], q14q15[1], q15[4], q15c[4], q5[4], q6[4], 
       q6c[4], q6q7[1], q7[4], q7c[4], q8[4], q8q9[1], q9[4], qf[1], qs[1], 
@@ -79,7 +79,7 @@ extern "C" {
   } it_;
 
   extern struct {
-    double grid[5][5][50][50][50][50];
+    double grid[50][50][50][50][5][5];
   } dat_;
 
   extern struct {
@@ -92,7 +92,7 @@ extern "C" {
   } flags_;
 
   extern struct {
-    double q[4][20];
+    double q[20][4];
   } mom_;
 
   extern struct {

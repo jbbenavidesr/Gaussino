@@ -183,11 +183,15 @@ class Symtree:
         if line.startswith('    type spec :'):
             line = line[17:-1].split()
             self.type = line[0]
-            if self.type == 'CHARACTER': self.dims = [int(line[1])]
+            if self.type == 'CHARACTER':
+                try: self.dims = [int(line[1])]
+                except: pass
             elif self.type != 'UNKNOWN': self.type += ' ' + line[1]
         elif line.startswith('    Array spec:'):
-            line = line[line.find('EXPLICIT') + 11:-2].split(' 1 ')
-            self.dims = [int(c) for c in line]
+            l = line[line.find('EXPLICIT') + 9:-2].split()
+            try: self.dims = [int(l[i+1]) - int(l[i]) + 1 for i in 
+                              range(len(l) - 2, -1, -2)]
+            except: pass
         elif line.startswith('    attributes:'):
             self.atts = line[17:-1].split()
         elif line.startswith('    Formal arglist:'):

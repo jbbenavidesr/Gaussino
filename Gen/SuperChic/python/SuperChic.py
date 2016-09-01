@@ -18,7 +18,7 @@ downloaded.
 
 import os, urllib2, Fortran
 ver = 'superchicv1.47.f'
-url = 'https://superchic.hepforge.org/'
+url = 'https://superchic.hepforge.org/superchicv1/'
 
 # Download the FORTRAN source if needed.
 if not os.path.isfile(ver):
