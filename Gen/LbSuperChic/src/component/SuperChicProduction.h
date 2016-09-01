@@ -25,56 +25,57 @@ class IBeamTool;
  * 3", "idh1 211", "idh2 -211"] would configure SuperChic for Upsilon
  * photoproduction where the Upsilon decays into a pion final state.
  *
- * xflag:   determines what X(5) is.
- *          	'chic':    chi_c
- *          	'chib':	   chi_b
- *          	'etac':	   eta_c
- *          	'etab':	   eta_b
- *          	'pi':      pi0 pi0
- *          	'pipm':    pi+ pi-
- *          	'rho':     rho0 rho0
- *          	'etap':    eta' eta'
- *          	'etaetap': eta eta'
- *          	'kpkm':    K+ K-
- *          	'ks':      K0 K0
- *          	'jpsi':	   J/psi
- *          	'ups':	   Upsilon(1S)
- *          	'psip':	   psi(2S)
- * chiflag:  sets what chi_x is: 0 (0++), 1 (1++), 2 (2++).
- * decay:    sets the decay channel for chi_x decays. For eta_x decays, the 
- * 	     decay mode is always 2. If not 1 the masses and PDG IDs of the
- * 	     decay products need to be set via idh[1234] and mh[12].
- * 	      	1: gamma psi/Upsilon[mu mu]
- * 		2: fermion fermion
- * 		3: scalar scalar
- * 		4: 4-body phase space (chi_c only)
- * idh[1-4]: PDG IDs of the decay products when using 'decay'.
- * mh[1-2]:  masses of decay products.
- * 	  	1: masses of decay products 1 and 2.
- * 		2: masses of decay products 3 and 4.
- * phdecay:  sets the decay channel for J/psi, Upsilon, and psi(2S) production.
- * 	        'mu':    mu mu
- * 		'psipi': J/psi[mu mu] pi+ pi- (psi(2S) only)
- * eflag:    center of mass energy.
- * 	  	300: 0.3 TeV (meson pair only)
- * 	  	500: 0.5 TeV (chi_c only)
- * 	  	900: 0.9 TeV (meson pair only)
- * 		2:   1.96 TeV
- * 		7:   7 TeV
- * 		8:   8 TeV
- * 		10:  10 TeV
- * 		14:  14 TeV
- *  gen:     type of kinematics to use.
- * 	      	'fit':   approximate kinematics but faster running.
- * 		'exact': exact kinematics.
- * photo:    for J/psi, Upsilon, and psi(2S) production inidicates method.
- * 	        'fit':    uses HERA data.
- * 		'theory': uses LO theory (PDF dependent).
- * chiv:     additional fit to g g -> chi_x2 vertex.
- * 	        1: gives best description of the proton pT.
- * 		2: gives best description of the chi_x pT.
- * surv:     survival factors flag, either 'on' or 'off'.
- * corr:     include spin correlations in decays, either 'on' or 'off'.
+ *\n xflag:   determines what X(5) is.
+ *\n          	'chic':    chi_c
+ *\n          	'chib':	   chi_b
+ *\n          	'etac':	   eta_c
+ *\n          	'etab':	   eta_b
+ *\n          	'pi':      pi0 pi0
+ *\n          	'pipm':    pi+ pi-
+ *\n          	'rho':     rho0 rho0
+ *\n          	'etap':    eta' eta'
+ *\n          	'etaetap': eta eta'
+ *\n          	'kpkm':    K+ K-
+ *\n          	'ks':      K0 K0
+ *\n          	'jpsi':	   J/psi
+ *\n          	'ups':	   Upsilon(1S)
+ *\n          	'psip':	   psi(2S)
+ *\n chiflag:  sets what chi_x is: 0 (0++), 1 (1++), 2 (2++).
+ *\n decay:    sets the decay channel for chi_x decays. For eta_x decays, the 
+ *  	       decay mode is always 2. If not 1 the masses and PDG IDs of the
+ *  	       decay products need to be set via idh[1234] and mh[12].
+ *\n 	      	1: gamma psi/Upsilon[mu mu]
+ *\n 		2: fermion fermion
+ *\n 		3: scalar scalar
+ *\n 		4: 4-body phase space (chi_c only)
+ *\n idh[1-4]: PDG IDs of the decay products when using 'decay'.
+ *\n mh[1-2]:  masses of decay products.
+ *\n 	  	1: masses of decay products 1 and 2.
+ *\n 		2: masses of decay products 3 and 4.
+ *\n phdecay:  sets the decay channel for J/psi, Upsilon, and psi(2S) 
+ *             production.
+ *\n 	        'mu':    mu mu
+ *\n 		'psipi': J/psi[mu mu] pi+ pi- (psi(2S) only)
+ *\n eflag:    center of mass energy.
+ *\n 	  	300: 0.3 TeV (meson pair only)
+ *\n 	  	500: 0.5 TeV (chi_c only)
+ *\n 	  	900: 0.9 TeV (meson pair only)
+ *\n 		2:   1.96 TeV
+ *\n 		7:   7 TeV
+ *\n 		8:   8 TeV
+ *\n 		10:  10 TeV
+ *\n 		14:  14 TeV
+ *\n  gen:     type of kinematics to use.
+ *\n 	      	'fit':   approximate kinematics but faster running.
+ *\n 		'exact': exact kinematics.
+ *\n photo:    for J/psi, Upsilon, and psi(2S) production inidicates method.
+ *\n 	        'fit':    uses HERA data.
+ *\n 		'theory': uses LO theory (PDF dependent).
+ *\n chiv:     additional fit to g g -> chi_x2 vertex.
+ *\n 	        1: gives best description of the proton pT.
+ *\n 		2: gives best description of the chi_x pT.
+ *\n surv:     survival factors flag, either 'on' or 'off'.
+ *\n corr:     include spin correlations in decays, either 'on' or 'off'.
  *
  * @class  SuperChicProduction
  * @file   SuperChicProduction.h 
