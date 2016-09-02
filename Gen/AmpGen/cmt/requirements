@@ -1,0 +1,38 @@
+#============================================================================
+# Created    : 2016-09-02
+# Maintainer : Tim Evans
+#============================================================================
+package           AmpGen
+version           v1r0
+
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc src
+
+# Used packages.
+#============================================================================
+use ROOT              v*     LCG_Interfaces -no_auto_imports
+
+
+include_path      none
+
+# Linker library building rule
+#============================================================================
+library          AmpGen    ../src/*.cpp 
+
+# Executables
+#============================================================================
+# application      NameOfExec  src_for_main_only
+
+# Patterns
+#============================================================================
+apply_pattern    component_library library=AmpGenLib
+# apply_pattern     application_path
+
+#private
+#special linkopts
+#end_private
+
+
+
+
