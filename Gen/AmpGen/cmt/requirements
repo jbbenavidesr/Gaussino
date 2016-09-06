@@ -7,31 +7,49 @@ version           v1r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          cmt doc src
+branches          AmpGen cmt doc src apps
 
 # Used packages.
 #============================================================================
-use ROOT              v*     LCG_Interfaces -no_auto_imports
+#use ROOT              v*     LCG_Interfaces # -no_auto_imports
+
+use ROOT        * LCG_Interfaces -no_auto_imports
 
 
-include_path      none
+include_dirs "../" 
+
+
+#include_path      none
+#include_dirs /afs/cern.ch/user/t/tevans/cmtuser/Gauss_HEAD/Gen/AmpGen/ 
+
+macro_append cppflags " -fPIC -g3 -Ofast -std=c++14 -fopenmp -Wno-unused-function -Wno-unused-parameter"
+macro_append ROOT_linkopts " -lHist -lMatrix -lGraf -lMinuit -lTree -lMathCore -lPhysics"
+
+#apply_pattern install_more_includes more=AmpGen
 
 # Linker library building rule
 #============================================================================
-library          AmpGen    ../src/*.cpp 
+library          AmpGen    -import=ROOT ../src/*.cpp 
 
 # Executables
 #============================================================================
-# application      NameOfExec  src_for_main_only
 
+application          Generator  -import=ROOT ../apps/Generator.cpp
+application             Fitter  -import=ROOT ../apps/Fitter.cpp
+application  SpinAmplitudeTest  -import=ROOT ../apps/SpinAmplitudeTest.cpp
 # Patterns
 #============================================================================
-apply_pattern    component_library library=AmpGenLib
 # apply_pattern     application_path
+apply_pattern    component_library library=AmpGenLib
 
-#private
+private
 #special linkopts
-#end_private
+  macro_append          Generatorlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append             Fitterlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append  SpinAmplitudeTestlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+end_private
+
+apply_pattern disable_package_on platform=target-winxp
 
 
 
