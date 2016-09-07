@@ -722,19 +722,19 @@ const {
     thePart -> setDiagonalSpinDensity( ) ;
   }
   
-  // Generates polarized charmonium if requested: 
-  // Only if vector particle, is meson, and contains two charm quarks
+  // Generates polarized charmonium, if requested, for vector mesons containing
+  // two charm quarks. The PDG code integer will always end in 443. Similarly, 
+  // tensor codes end in 445, although nothing extra is done at the moment
   if ( m_generatePolCharmonium ) {
-    if ( ( abs( theHepMCPart -> pdg_id() ) == 443 ) ||
-         ( abs( theHepMCPart -> pdg_id() ) == 20443 ) ) {
+    if ( abs(theHepMCPart -> pdg_id())%1000 == 443 ) {
       EvtSpinDensity rho ;
       rho.setDiag( thePart -> getSpinStates() ) ;
       rho.set( 0 , 0 , EvtComplex( m_realHelOne  , m_imHelOne  ) ) ;
       rho.set( 1 , 1 , EvtComplex( m_realHelZero , m_imHelZero ) ) ;
       rho.set( 2 , 2 , EvtComplex( m_realHelOne  , m_imHelOne  ) ) ;
-      thePart -> setSpinDensityForwardHelicityBasis( rho ) ;    
-    } else if ( 445 == abs( theHepMCPart -> pdg_id() ) ) {
-         // WHAT TO DO HERE FOR TENSOR PARTICLES ? 
+      thePart -> setSpinDensityForwardHelicityBasis( rho ) ;
+    } else if ( abs(theHepMCPart -> pdg_id())%1000 == 445 ) {
+      // WHAT TO DO HERE FOR TENSOR PARTICLES ?
     }
   }
 
