@@ -86,9 +86,11 @@ void EvtHQET2FF::getscalarff(EvtId parent,EvtId,
 
     //if in extended mode, use helicity-suppressed FF using the result from
     //Tanaka and Watanabe, Phys. Rev. D 82 034027 (2010)
-    
+
+    double r = mass/mb;
+    double r1 = r + 1.0;
     double s1 =v1*(1+delta*(-0.019+0.041*(w-1)-0.015*(w-1)*(w-1))); //as in ref
-    *f0m = s1*(w+1)/2.; //convert to convention used by EvtGen
+    *f0m = s1*(w+1.0)*2.0*r/(r1*r1); //convert to convention used by EvtGen with proper relative normalization
   }
 
 }
