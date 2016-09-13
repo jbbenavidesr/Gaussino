@@ -11,6 +11,7 @@
 
 #ifndef MSGSERVICE_H
 #define MSGSERVICE_H 1
+#include <iostream>
 
 #include <iomanip>
 

@@ -28,35 +28,13 @@
 #include "AmpGen/Plots.h"
 #include "AmpGen/MintUtilities.h"
 
-#include "rootLogin.h"
-
 typedef AmpGen::FCNLibrary<std::complex<double>> pdfLib;
-
-std::vector<double> vectorFromLorentz( TLorentzVector* v ){
-  return { 1000*v->X() , 1000*v->Y() , 1000*v->Z() , 1000*v->T() };
-}
-
-void drawInValidationStyle(const std::string& pName ){
-  TH1D* mint_plot = (TH1D*)gFile->Get( (pName +"_Mint3").c_str());
-  TH1D*  qft_plot = (TH1D*)gFile->Get( (pName +"_QFT").c_str());
-  mint_plot->SetLineColor(kRed);
-  mint_plot->SetFillColor(kRed);
-  mint_plot->SetFillStyle(3001);
-  mint_plot->GetYaxis()->SetTitle("Entries");
-  mint_plot->SetStats(0);
-  mint_plot->SetMinimum(0);
-  INFO("Drawing AmpGen plot");
-  mint_plot->Draw("C HIST");
-  INFO("Drawing QFT++ plot");
-  qft_plot->Draw("E same");
-}
 
 
 using namespace AmpGen;
 
 int main(int argc , char* argv[] ){
 
-  rootLogin(); 
   TFile* f = TFile::Open(   AmpGen::NamedParameter<std::string>("SgIntegratorFname").getVal().c_str() );
   TTree* tree = (TTree*)f->Get("DalitzEventList");
 

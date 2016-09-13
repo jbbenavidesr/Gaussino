@@ -34,20 +34,26 @@ library          AmpGen    -import=ROOT ../src/*.cpp
 # Executables
 #============================================================================
 
-application          Generator  -import=ROOT ../apps/Generator.cpp
-application             Fitter  -import=ROOT ../apps/Fitter.cpp
-application  SpinAmplitudeTest  -import=ROOT ../apps/SpinAmplitudeTest.cpp
+application   ConvertToSourceCode  -import=ROOT ../apps/ConvertToSourceCode.cpp
+
+
+private 
+  application             Generator  -import=ROOT ../apps/Generator.cpp
+  application                Fitter  -import=ROOT ../apps/Fitter.cpp
+  application     SpinAmplitudeTest  -import=ROOT ../apps/SpinAmplitudeTest.cpp
 # Patterns
 #============================================================================
 # apply_pattern     application_path
-apply_pattern    component_library library=AmpGenLib
 
-private
 #special linkopts
-  macro_append          Generatorlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
-  macro_append             Fitterlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
-  macro_append  SpinAmplitudeTestlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append            Generatorlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append               Fitterlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append    SpinAmplitudeTestlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append  ConvertToSourceCodelinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+
 end_private
+
+apply_pattern    component_library library=AmpGenLib
 
 apply_pattern disable_package_on platform=target-winxp
 

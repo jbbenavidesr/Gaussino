@@ -28,9 +28,12 @@ int main( int /*argc */, char** /*argv*/ ){
 
   AmpGen::MinuitParameterSet MPS = MPSFromStream();
 
+  omp_set_num_threads(NamedParameter<unsigned int>("nCores",16).getVal() );
+  omp_set_dynamic(0);
+
   EventType eventType( 
-    AmpGen::NamedParameter<std::string>("Mother") 
-  , AmpGen::NamedParameter<std::string>("EventType").getVector()  );
+    NamedParameter<std::string>("Mother") 
+  , NamedParameter<std::string>("EventType").getVector()  );
 
   EventList accepted( eventType );
 
@@ -49,13 +52,17 @@ int main( int /*argc */, char** /*argv*/ ){
   Generator GENERATOR( sig, eventType );
   TRandom3 rnd;
   GENERATOR.setRandom( &rnd );
-  GENERATOR.fillEventList( accepted, AmpGen::NamedParameter<double>("NEvents",10000).getVal() );
-  TTree* tree = accepted.tree("DalitzEventList");
- 
-  auto plots = accepted.makePlots();
+  GENERATOR.fillEventList( accepted, 
+      NamedParameter<double>("NEvents",10000).getVal() ,
+      NamedParameter<int>("useRoot",0).getVal() );
+  
+  INFO("Making output files");
   TFile* f = TFile::Open("output_plots.root","RECREATE");
   f->cd();
+  TTree* tree = accepted.tree("DalitzEventList");
   tree->Write();
-  
+  auto plots = accepted.makePlots();
+  for( auto& plot : plots ) plot->Write();
+  INFO("Writing output file ");  
   f->Close();
 }

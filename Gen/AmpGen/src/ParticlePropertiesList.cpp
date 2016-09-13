@@ -114,15 +114,8 @@ void ParticlePropertiesList::fillDirList(){
   
   _dirList.push_back("");
   _dirList.push_back("./");
-  _dirList.push_back("/home/evansti/cmtuser/Mint3/src/Users/Tim/Fitter/");
-  _dirList.push_back(DecFilesRoot+"/MintData/");
-  _dirList.push_back(MintRoot+"/src/Mojito/ParticleProperties/src/");
-  _dirList.push_back("../../../Mojito/ParticleProperties/src/");
-  _dirList.push_back("../../../../src/Mojito/ParticleProperties/src/");
-  _dirList.push_back("../../ParticleProperties/src/");
-  _dirList.push_back("../ParticleProperties/src/");
-  _dirList.push_back("./ParticleProperties/src/");
   _dirList.push_back("../");
+  _dirList.push_back("/afs/cern.ch/user/t/tevans/cmtuser/Gauss_v50r0/Gen/AmpGen/options/");
   _dirList.push_back("../../");
 }
 
@@ -161,12 +154,8 @@ FILE* ParticlePropertiesList::findThisFile(const std::string& fname){
     }
 
   }
-  cout << "ERROR in ParticlePropertiesList::findFile()"
-       << "\n  > having trouble finding file"
-       << "\n  > with name " << fname
-       << "\n  > in any directory I could guess."
-       << "\n  > This is hardcoded in ParticleProperties.C."
-       << endl;
+  ERROR( "Cannot find file " << fname << " in any directory" );
+  exit(1);
   return (FILE*) 0;
 }
 
