@@ -25,7 +25,9 @@
 #include "EvtGenBase/EvtDecayTable.hh"
 #include "EvtGenBase/EvtRandom.hh"
 #include "EvtGenBase/EvtReport.hh"
+#include "EvtGenBase/EvtSymTable.hh"
 
+#include "Tauola/Log.h"
 #include "Tauola/Tauola.h"
 #include "Tauola/TauolaHepMCEvent.h"
 #include "Tauola/TauolaHepMCParticle.h"
@@ -57,6 +59,9 @@ EvtTauolaEngine::EvtTauolaEngine(bool useEvtGenRandom) {
   Tauolapp::Tauola::setSameParticleDecayMode(Tauolapp::Tauola::All); // all modes allowed
   Tauolapp::Tauola::setOppositeParticleDecayMode(Tauolapp::Tauola::All); // all modes allowed
 
+  // Limit the number of warnings printed out. Can't choose zero here, unfortunately
+  Tauolapp::Log::SetWarningLimit(1);
+
   // Initial the Tauola external generator
   if (useEvtGenRandom == true) {
       
@@ -66,9 +71,18 @@ EvtTauolaEngine::EvtTauolaEngine(bool useEvtGenRandom) {
       
   }
 
-  Tauolapp::Tauola::initialize();
+  // Use the new chiral current calculations
+  Tauolapp::Tauola::setNewCurrents(1);
 
-  // Set-up possible decay modes when we have read the (user) decay file
+  Tauolapp::Tauola::initialize();
+  
+  // Initialise various default parameters
+  // Neutral and charged spin propagator choices
+  _neutPropType = Tauolapp::TauolaParticle::Z0; // PDG id = 23
+  _posPropType = Tauolapp::TauolaParticle::W_PLUS; // PDG id = 24
+  _negPropType = Tauolapp::TauolaParticle::W_MINUS; // PDG id = -24
+
+  // Set-up possible decay modes _after_ we have read the (user) decay file
   _initialised = false;
 
 }
@@ -88,6 +102,7 @@ void EvtTauolaEngine::initialise() {
   if (_initialised == false) {
 
     this->setUpPossibleTauModes();
+    this->setOtherParameters();
 
     _initialised = true;
 
@@ -221,6 +236,101 @@ int EvtTauolaEngine::getModeInt(EvtDecayBase* decayModel) {
 
 }
 
+void EvtTauolaEngine::setOtherParameters() {
+
+  // Set other Tauola parameters using the "Defined" keyword in the decay file. If any of
+  // these are not found in the decay file, then default values are assumed/kept
+
+  // 1) TauolaNeutralProp: Specify the neutral propagator type used for spin matrix calculations
+  // "Z" (default), "Gamma", "Higgs" (H0), "PseudoHiggs" (A0), "MixedHiggs" (A0/H0)
+  int iErr(0);
+  std::string neutPropName = EvtSymTable::get("TauolaNeutralProp", iErr);
+  if (neutPropName == "Gamma") {
+      _neutPropType = Tauolapp::TauolaParticle::GAMMA;
+  } else if (neutPropName == "Higgs") {
+      _neutPropType = Tauolapp::TauolaParticle::HIGGS;
+  } else if (neutPropName == "PseudoHiggs") {
+      _neutPropType = Tauolapp::TauolaParticle::HIGGS_A;
+  } else if (neutPropName == "MixedHiggs") {
+      _neutPropType = Tauolapp::Tauola::getHiggsScalarPseudoscalarPDG();
+  } else {
+      _neutPropType = Tauolapp::TauolaParticle::Z0;
+  }
+  
+  report(INFO,"EvtGen")<<"TAUOLA neutral spin propagator PDG id set to "<<_neutPropType<<endl;
+
+  // 2) TauolaChargedProp: Specify the charged propagator type used for spin matrix calculations
+  // "W" (default), "Higgs" (H+/H-)
+  std::string chargedPropName = EvtSymTable::get("TauolaChargedProp", iErr);
+  if (chargedPropName == "Higgs") {
+      _negPropType = Tauolapp::TauolaParticle::HIGGS_MINUS;
+      _posPropType = Tauolapp::TauolaParticle::HIGGS_PLUS;
+  } else {
+      _negPropType = Tauolapp::TauolaParticle::W_MINUS;
+      _posPropType = Tauolapp::TauolaParticle::W_PLUS;
+  }
+
+  report(INFO,"EvtGen")<<"TAUOLA negative charge spin propagator PDG id set to "<<_negPropType<<endl;
+  report(INFO,"EvtGen")<<"TAUOLA positive charge spin propagator PDG id set to "<<_posPropType<<endl;
+  
+    
+  // 3) TauolaHiggsMixingAngle: Specify the mixing angle between the neutral scalar & pseudoscalar Higgs
+  // A0/H0; the default mixing angle is pi/4 radians
+  std::string mixString = EvtSymTable::get("TauolaHiggsMixingAngle", iErr);
+  // If the definition name is not found, get() just returns the first argument string
+  if (mixString != "TauolaHiggsMixingAngle") {
+
+      double mixAngle = std::atof(mixString.c_str());
+      report(INFO,"EvtGen")<<"Setting TAUOLA Higgs mixing angle to "<<mixAngle<<" radians"<<endl;
+      Tauolapp::Tauola::setHiggsScalarPseudoscalarMixingAngle(mixAngle);
+
+  }
+
+
+  // 4) TauolaBRi, where i = 1,2,3,4: Redefine sub-channel branching fractions using the setTaukle
+  // function, after initialized() has been called. Default values = 0.5, 0.5, 0.5 and 0.6667
+  int j(1);
+  std::vector<double> BRVect;
+  BRVect.push_back(0.5);
+  BRVect.push_back(0.5);
+  BRVect.push_back(0.5);
+  BRVect.push_back(0.6667);
+
+  for (j = 1; j < 5;  j++) {
+
+      std::ostringstream o;
+      o << j;
+      std::string BRName = "TauolaBR" + o.str();
+      std::string stringBR = EvtSymTable::get(BRName, iErr);
+
+      // If the definition name is not found, get() just returns the first argument string
+      if (stringBR != BRName) {
+	  BRVect[j-1] = std::atof(stringBR.c_str());
+      }
+
+  }
+
+  report(INFO,"EvtGen")<<"TAUOLA::setTaukle values are "<<BRVect[0]
+		       <<", "<<BRVect[1]<<", "<<BRVect[2]<<", "<<BRVect[3]<<endl;
+
+  Tauolapp::Tauola::setTaukle(BRVect[0], BRVect[1], BRVect[2], BRVect[3]);
+
+  // 5) TauolaUseOldCurrents: Specify if we want to use the old CLEO hadronic currents (default is false).
+  // This can be (re)set after initialized() has been called.
+  std::string currentString = EvtSymTable::get("TauolaUseOldCurrents", iErr);
+
+  if (currentString != "TauolaUseOldCurrents") {
+
+      int useOldCurrents = std::atoi(currentString.c_str());
+      if (useOldCurrents == 1) {
+	  report(INFO,"EvtGen")<<"Warning: Using old CLEO hadronic currents for TAUOLA"<<endl;
+	  Tauolapp::Tauola::setNewCurrents(0);
+      }
+
+  }
+
+}
+
 bool EvtTauolaEngine::doDecay(EvtParticle* tauParticle) {
 
   if (_initialised == false) {this->initialise();}
@@ -263,10 +373,11 @@ void EvtTauolaEngine::decayTauEvent(EvtParticle* tauParticle) {
   
   // Get the parent of this tau particle
   EvtParticle* theParent = tauParticle->getParent();
+  HepMC::GenParticle* hepMCParent(0);
 
   // Assign the parent particle as the incoming particle to the vertex.
   if (theParent != 0) {
-    HepMC::GenParticle* hepMCParent = this->createGenParticle(theParent);
+    hepMCParent = this->createGenParticle(theParent);
     theVertex->add_particle_in(hepMCParent);
   } else {
     // The tau particle has no parent. Set "itself" as the incoming particle for the first vertex.
@@ -291,9 +402,18 @@ void EvtTauolaEngine::decayTauEvent(EvtParticle* tauParticle) {
   // candidate: we do not want to recreate existing EvtParticle pointers.
   std::map<HepMC::GenParticle*, EvtParticle*> tauMap;
 
+  // Keep track of the original EvtId of the parent particle, since we may need to set
+  // the equivalent HepMCParticle has a gauge boson to let Tauola calculate spin effects
+  EvtId origParentId(-1,-1);
+
   if (theParent != 0) {
   
-    // Find all tau particles in the decay tree and store them in the map
+    // Original parent id
+    origParentId = EvtPDL::getId(theParent->getName());
+	
+    // Find all tau particles in the decay tree and store them in the map.
+    // Keep track of how many tau daughters this parent particle has
+    int nTaus(0);
     int nDaug(theParent->getNDaug());
     int iDaug(0);
     
@@ -313,6 +433,7 @@ void EvtTauolaEngine::decayTauEvent(EvtParticle* tauParticle) {
 	  // Delete any siblings for the tau particle
 	  if (theDaughter->getNDaug() > 0) {theDaughter->deleteDaughters(false);}
 	  tauMap[hepMCDaughter] = theDaughter;
+	  nTaus++;
 	} else {
 	  // Treat all other particles as "stable"
 	  hepMCDaughter->set_status(Tauolapp::TauolaParticle::STABLE);
@@ -320,6 +441,23 @@ void EvtTauolaEngine::decayTauEvent(EvtParticle* tauParticle) {
 		
       } // theDaughter != 0
     } // Loop over daughters
+
+    // For the parent particle, artifically set the PDG to a boson with the same 4-momentum
+    // so that spin correlations are calculated inside Tauola. 
+    // This leaves the original parent _EvtParticle_ unchanged
+    if (nTaus > 0 && hepMCParent != 0) {
+
+	int parCharge = EvtPDL::chg3(origParentId)/3; // (3*particle charge)/3 = particle charge
+	if (parCharge == 0) {
+	    hepMCParent->set_pdg_id(_neutPropType);
+	} else if (parCharge == -1) {
+	    hepMCParent->set_pdg_id(_negPropType);
+	} else if (parCharge == 1) {
+	    hepMCParent->set_pdg_id(_posPropType);
+	}
+
+    }
+
 
   } else {
 
