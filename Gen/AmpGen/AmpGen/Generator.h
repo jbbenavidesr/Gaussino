@@ -48,7 +48,7 @@ namespace AmpGen {
             newEvent.setWeight(1,0);
             list.push_back( newEvent );
 
-          };
+          }
         }
         else { 
           while( list.size() < N ){
@@ -65,20 +65,20 @@ namespace AmpGen {
              
             list.push_back( newEvent );
           }
-        };
+        }
         auto t_end = std::chrono::high_resolution_clock::now();
         double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
 
         INFO( "Stage 1 efficiency = " 
             << 100.*list.size() / (list.size() + rejected ) 
             << "%, yield = " << list.size() << " time = " << time );
-      };
+      }
 
       void fillEventList( EventList& list, const unsigned int& N , bool useRoot = false ){
         if( m_rnd == nullptr ){
           ERROR("Random generator not set!") ;
           return;
-        };
+        }
         double normalisationConstant=0;
         unsigned int size0 = list.size();
         auto tStartTotal = std::chrono::high_resolution_clock::now() ;
@@ -104,7 +104,7 @@ namespace AmpGen {
             double value = std::norm( m_pdf.getVal( evt ) );
             if( value > normalisationConstant ){
               WARNING("PDF value exceeds norm value");
-            };
+            }
             if( value > normalisationConstant * m_rnd->Rndm() ){
               evt.setGenPdf( value );  
               list.push_back( evt );
@@ -118,9 +118,10 @@ namespace AmpGen {
               / (double)m_generatorBlock 
               << "% yield = " << list.size() << " , time = " << time << "ms" );
           INFO("Total time = " << timeTotal << " ms");
-        };
+        }
         double time = std::chrono::duration<double, std::milli>( 
             std::chrono::high_resolution_clock::now() -tStartTotal).count() ;
         INFO("Generated " << N << " events in " << time << " ms");
-      };
-  };}
+      }
+  };
+}

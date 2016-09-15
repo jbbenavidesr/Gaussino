@@ -8,6 +8,20 @@
 
 /// takes an event, plots 
 namespace AmpGen { 
+
+  template < class FUNCTION, class PDF, class CUT > 
+    void plot1D( const EventList&   data,
+                 const EventList&     mc,
+                 const FUNCTION&    func,
+                 const CUT&          cut,
+                 const PDF&          pdf,
+                 const plotAxis&    axis,
+                 const std::string& name ){
+       plot1D( data, func, cut, axis, "Data_"+name);
+       makePerAmplitudePlot( mc, pdf, func, cut, axis, name );
+    }
+
+
   template < class T1 , class T2 , class TC> 
     TH2D* plot2D( const EventList& evts, 
         const T1& f1, 
@@ -49,8 +63,9 @@ namespace AmpGen {
 
   template < class PDF, class FUNC, class CUT> 
 
-    void makePerAmplitudePlot( const EventList& evts, 
-        PDF& pdf, 
+    void makePerAmplitudePlot( 
+        const EventList& evts, 
+                 PDF pdf, 
         const FUNC& func, 
         const CUT& cut, 
         const plotAxis axis, 

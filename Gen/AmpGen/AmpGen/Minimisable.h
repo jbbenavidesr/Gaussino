@@ -3,11 +3,10 @@
 // author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
 // status:  Mon 9 Feb 2009 19:17:55 GMT
 
-#include "AmpGen/IMinimisable.h"
 #include "AmpGen/MinuitParameterSet.h"
 
 namespace AmpGen{
-class Minimisable : virtual public IMinimisable{
+class Minimisable {
   MinuitParameterSet* _pset;
  public:
   Minimisable(MinuitParameterSet* mps=0);
@@ -17,12 +16,12 @@ class Minimisable : virtual public IMinimisable{
 
 
   // you can choose to implement these:
-  virtual void beginFit(){}
-  virtual void parametersChanged(){}
-  virtual void endFit(){}
+  void beginFit(){}
+  void parametersChanged(){}
+  void endFit(){}
 
  // you'll have to implement this:
-  double getVal() =0;
+  virtual double getVal() =0;
 
   // useful:
   double getNewVal(){
