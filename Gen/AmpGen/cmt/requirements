@@ -7,7 +7,7 @@ version           v1r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
-branches          AmpGen cmt doc src apps
+branches          AmpGen cmt doc src apps models
 
 # Used packages.
 #============================================================================
