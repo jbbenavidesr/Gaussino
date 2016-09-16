@@ -23,7 +23,7 @@ Minimiser* Minimiser::getDefaultMinimiser(){
 }
 
 
-Minimiser::Minimiser(IMinimisable* fitFunction)
+Minimiser::Minimiser(Minimisable* fitFunction)
   : TMinuit(0)
   , ierflg(0)
   , _useAnalyticGradient(false)
@@ -62,12 +62,6 @@ Int_t Minimiser::Eval(Int_t  npar
   }
   this->updateFitParameters(par);
   fval = this->getFCNVal();
-  if (flag == 4) {
-        if(_useAnalyticGradient){
-            //calculate GRAD, the first derivatives of FVAL
-            this->FCNGradient(grad);
-        }
-  }
   return -1;
 }
 
@@ -117,13 +111,13 @@ bool Minimiser::init(){
   initialiseVariables();
   if(dbThis) cout << " initialised variables." << endl;
 
-  _useAnalyticGradient = theFunction()->useAnalyticGradient();  
+//  _useAnalyticGradient = theFunction()->useAnalyticGradient();  
     
   if(dbThis) cout << "Minimiser::init(): returning true" << endl;
   return true;
 }
 
-bool Minimiser::attachFunction(IMinimisable* fcn){
+bool Minimiser::attachFunction(Minimisable* fcn){
   if(0==fcn) return false;
   //  detachParameters();
   _theFunction = fcn;
@@ -262,14 +256,6 @@ double Minimiser::getFCNVal(){
   return theFunction()->getVal();
 }
 
-void Minimiser::FCNGradient(Double_t* grad){
-    if(! this->OK()){
-        cout << "ERROR IN Minimiser::FCNGradient()"
-        << " I'm not OK!!" << endl;
-    }
-    return theFunction()->Gradient(grad);
-}
-
 bool Minimiser::setPrintLevel(int level){
   if(level >=0 )_printLevel=level;
   arglist[0] = _printLevel;
@@ -293,8 +279,8 @@ bool Minimiser::SetSomeMinuitOptions(){
   arglist[0] = 1;
   TMinuit::mnexcm("SET STRATEGY", arglist , 1, ierflg);
   success &= (! ierflg);
-  if(_useAnalyticGradient)TMinuit::mnexcm("SET GRADIENT", arglist , 1, ierflg);
-  else TMinuit::mnexcm("SET NOGRADIENT", arglist , 1, ierflg);
+ // if(_useAnalyticGradient)TMinuit::mnexcm("SET GRADIENT", arglist , 1, ierflg);
+  TMinuit::mnexcm("SET NOGRADIENT", arglist , 1, ierflg);
   return success;
 }
 
@@ -323,14 +309,14 @@ bool Minimiser::CallMinos(){
 bool Minimiser::CallSimplex(int maxCalls, double tolerance ){
     bool dbThis=true;
     bool success=true;
-    bool useAnalyticGradient = _useAnalyticGradient;
+//    bool useAnalyticGradient = _useAnalyticGradient;
     _useAnalyticGradient = false;
     arglist[0] = maxCalls; arglist[1] = tolerance;
     if(dbThis) cout << "calling SIMPLEX" << endl;
     TMinuit::mnexcm("SIMPLEX", arglist ,2,ierflg);
     if(dbThis) cout << "did that. How did I do? ierflg=" << ierflg << endl;
     success &= (! ierflg);
-    _useAnalyticGradient = useAnalyticGradient;
+    //_useAnalyticGradient = useAnalyticGradient;
     return success;
 }
 

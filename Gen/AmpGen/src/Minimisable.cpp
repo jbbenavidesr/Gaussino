@@ -9,9 +9,8 @@ Minimisable::Minimisable(MinuitParameterSet* mps)
 
 }
 
-Minimisable::Minimisable(const Minimisable& other)
-    : IMinimisable() 
-    , _pset(other._pset)
+Minimisable::Minimisable(const Minimisable& other) 
+   : _pset(other._pset)
 {
 
 }
