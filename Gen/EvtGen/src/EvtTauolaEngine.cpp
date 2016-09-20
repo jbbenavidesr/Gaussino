@@ -78,12 +78,9 @@ EvtTauolaEngine::EvtTauolaEngine(bool useEvtGenRandom) {
   
   // Initialise various default parameters
   // Neutral and charged spin propagator choices
-  _neutPropType = Tauolapp::TauolaParticle::Z0; // PDG id = 23
-  _posPropType = Tauolapp::TauolaParticle::W_PLUS; // PDG id = 24
-  _negPropType = Tauolapp::TauolaParticle::W_MINUS; // PDG id = -24
-
-  // Boolean to specify if we want to use the spin matrices
-  _useSpin = true;
+  _neutPropType = 0;
+  _posPropType = 0;
+  _negPropType = 0;
 
   // Set-up possible decay modes _after_ we have read the (user) decay file
   _initialised = false;
@@ -248,7 +245,9 @@ void EvtTauolaEngine::setOtherParameters() {
   // "Z" (default), "Gamma", "Higgs" (H0), "PseudoHiggs" (A0), "MixedHiggs" (A0/H0)
   int iErr(0);
   std::string neutPropName = EvtSymTable::get("TauolaNeutralProp", iErr);
-  if (neutPropName == "Gamma") {
+  if (neutPropName == "Z0" || neutPropName == "Z") {
+      _neutPropType = Tauolapp::TauolaParticle::Z0;
+  } else if (neutPropName == "Gamma") {
       _neutPropType = Tauolapp::TauolaParticle::GAMMA;
   } else if (neutPropName == "Higgs") {
       _neutPropType = Tauolapp::TauolaParticle::HIGGS;
@@ -256,26 +255,31 @@ void EvtTauolaEngine::setOtherParameters() {
       _neutPropType = Tauolapp::TauolaParticle::HIGGS_A;
   } else if (neutPropName == "MixedHiggs") {
       _neutPropType = Tauolapp::Tauola::getHiggsScalarPseudoscalarPDG();
-  } else {
-      _neutPropType = Tauolapp::TauolaParticle::Z0;
   }
-  
-  report(INFO,"EvtGen")<<"TAUOLA neutral spin propagator PDG id set to "<<_neutPropType<<endl;
+
+  if (_neutPropType != 0) {
+      report(INFO,"EvtGen")<<"TAUOLA neutral spin propagator PDG id set to "<<_neutPropType<<endl;
+  }
 
   // 2) TauolaChargedProp: Specify the charged propagator type used for spin matrix calculations
   // "W" (default), "Higgs" (H+/H-)
   std::string chargedPropName = EvtSymTable::get("TauolaChargedProp", iErr);
-  if (chargedPropName == "Higgs") {
-      _negPropType = Tauolapp::TauolaParticle::HIGGS_MINUS;
-      _posPropType = Tauolapp::TauolaParticle::HIGGS_PLUS;
-  } else {
+  if (chargedPropName == "W") {
       _negPropType = Tauolapp::TauolaParticle::W_MINUS;
       _posPropType = Tauolapp::TauolaParticle::W_PLUS;
+  } else if (chargedPropName == "Higgs") {
+      _negPropType = Tauolapp::TauolaParticle::HIGGS_MINUS;
+      _posPropType = Tauolapp::TauolaParticle::HIGGS_PLUS;
   }
 
-  report(INFO,"EvtGen")<<"TAUOLA negative charge spin propagator PDG id set to "<<_negPropType<<endl;
-  report(INFO,"EvtGen")<<"TAUOLA positive charge spin propagator PDG id set to "<<_posPropType<<endl;
-  
+  if (_negPropType != 0) {
+      report(INFO,"EvtGen")<<"TAUOLA negative charge spin propagator PDG id set to "<<_negPropType<<endl;
+  }
+
+  if (_posPropType != 0) {
+      report(INFO,"EvtGen")<<"TAUOLA positive charge spin propagator PDG id set to "<<_posPropType<<endl;
+  }
+ 
     
   // 3) TauolaHiggsMixingAngle: Specify the mixing angle between the neutral scalar & pseudoscalar Higgs
   // A0/H0; the default mixing angle is pi/4 radians
@@ -328,19 +332,6 @@ void EvtTauolaEngine::setOtherParameters() {
       if (useOldCurrents == 1) {
 	  report(INFO,"EvtGen")<<"TAUOLA warning: Using old CLEO hadronic currents"<<endl;
 	  Tauolapp::Tauola::setNewCurrents(0);
-      }
-
-  }
-
-  // 6) TauolaNoSpin: Specify if we want to turn off spin effects, i.e. just generate kinematics
-  std::string spinString = EvtSymTable::get("TauolaNoSpin", iErr);
-
-  if (spinString != "TauolaNoSpin") {
-
-      int noSpinOption = std::atoi(spinString.c_str());
-      if (noSpinOption == 1) {
-	  report(INFO,"EvtGen")<<"TAUOLA warning: disabling spin effects"<<endl;
-	  _useSpin = false;
       }
 
   }
@@ -461,14 +452,14 @@ void EvtTauolaEngine::decayTauEvent(EvtParticle* tauParticle) {
     // For the parent particle, artifically set the PDG to a boson with the same 4-momentum
     // so that spin correlations are calculated inside Tauola. 
     // This leaves the original parent _EvtParticle_ unchanged
-    if (_useSpin == true && nTaus > 0 && hepMCParent != 0) {
+    if (nTaus > 0 && hepMCParent != 0) {
 
 	int parCharge = EvtPDL::chg3(origParentId)/3; // (3*particle charge)/3 = particle charge
-	if (parCharge == 0) {
+	if (parCharge == 0 && _neutPropType != 0) {
 	    hepMCParent->set_pdg_id(_neutPropType);
-	} else if (parCharge == -1) {
+	} else if (parCharge == -1 && _negPropType != 0) {
 	    hepMCParent->set_pdg_id(_negPropType);
-	} else if (parCharge == 1) {
+	} else if (parCharge == 1 && _posPropType != 0) {
 	    hepMCParent->set_pdg_id(_posPropType);
 	}
 
