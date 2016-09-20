@@ -16,7 +16,7 @@ branches          AmpGen cmt doc src apps models
 use ROOT        * LCG_Interfaces -no_auto_imports
 
 
-include_dirs "../" 
+include_dirs $(AMPGENROOT)
 
 
 #include_path      none
@@ -34,12 +34,10 @@ library          AmpGen    -import=ROOT ../src/*.cpp
 # Executables
 #============================================================================
 
-application   ConvertToSourceCode  -import=ROOT ../apps/ConvertToSourceCode.cpp
-
-
 private 
   application                  Generator  -import=ROOT ../apps/Generator.cpp
   application                     Fitter  -import=ROOT ../apps/Fitter.cpp
+  application        ConvertToSourceCode  -import=ROOT ../apps/ConvertToSourceCode.cpp
 # Patterns
 #============================================================================
 # apply_pattern     application_path
@@ -53,7 +51,4 @@ end_private
 apply_pattern    component_library library=AmpGenLib
 
 apply_pattern disable_package_on platform=target-winxp
-
-
-
 

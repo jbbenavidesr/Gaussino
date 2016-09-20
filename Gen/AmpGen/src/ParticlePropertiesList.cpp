@@ -99,24 +99,16 @@ void ParticlePropertiesList::fillDirList(){
 
 
   std::string MintRoot(".");
-  char * Mintevn(0);
-  Mintevn = getenv ("AmpGenROOT");
-  if (NULL != Mintevn){
-    MintRoot = Mintevn;
+  char * Mintenv(0);
+  Mintenv = getenv ("AMPGENROOT");
+  if (NULL != Mintenv){
+    MintRoot = Mintenv;
   }
 
-  std::string DecFilesRoot("UNKNOWN");
-  char * DecFiles;
-  DecFiles = getenv ("DECFILESROOT");
-  if (NULL != DecFiles){
-    DecFilesRoot = DecFiles;
-  }
   
   _dirList.push_back("");
-  _dirList.push_back("./");
+  _dirList.push_back( MintRoot + "/options/");
   _dirList.push_back("../");
-  _dirList.push_back("/afs/cern.ch/user/t/tevans/cmtuser/Gauss_v50r0/Gen/AmpGen/options/");
-  _dirList.push_back("../../");
 }
 
 
