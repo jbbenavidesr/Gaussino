@@ -1,5 +1,4 @@
 #include "AmpGen/Lineshapes.h"
-#include "AmpGen/Trigonometry.h"
 
 #define PHASE( x ) Complex( Cos(x), Sin(x) ) 
 

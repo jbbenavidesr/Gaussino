@@ -120,7 +120,10 @@ Expression AmpGen::dot( Tensor A, Tensor B ){
   }
   Expression result;
   for( unsigned int i = 0 ; i < A.nElements(); ++i ){
-    result = result + A.metricSgn(i)*A.get(i)*B.get(i);
+    int sgn=A.metricSgn(i);
+    if( sgn == 1 ) result = result + A.get(i)*B.get(i);
+    else if( sgn == -1 ) result = result - A.get(i) * B.get(i);
+    else result + sgn*A.get(i)*B.get(i);
   }
   return result;
 }

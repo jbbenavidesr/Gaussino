@@ -24,8 +24,7 @@ class ParticlePropertiesList{ // a singleton - ensures everyone
 
   static ParticlePropertiesList* ptr;
  
-
-  ParticlePropertiesList(std::string fname_in="mass_width.cvs");
+  ParticlePropertiesList(std::string fname_in="mass_width.csv");
   static std::string _MintDalitzSpecialParticles;
  protected:
   static std::vector<std::string> _dirList;

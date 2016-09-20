@@ -42,6 +42,28 @@
 #define EXPRESSION_H 1
 
 #define add_debug(X,Y) Y->push_back( DBSYMBOL( std::string(#X), X  ) ) 
+#define DEFINE_CAST(X) X::operator Expression (){ return Expression( std::make_shared<X>(*this) ) ; }
+
+#define DECLARE_UNARY_OPERATOR(X) struct X : public IUnaryExpression { \
+    X( const Expression& other ) ; \
+    virtual std::string to_string() const; \
+    virtual Expression d( const Parameter& div ) ;\
+    virtual std::complex<double> complexEval() const ;\
+    virtual double realEval() const ;\
+    operator Expression() ; \
+    virtual Expression conjugate() const ;\
+  };
+
+#define DECLARE_BINARY_OPERATOR(X) struct X : public IBinaryExpression { \
+    X( const Expression& l , const Expression& r ) ; \
+    virtual std::string to_string() const; \
+    virtual Expression d( const Parameter& div ) ;\
+    virtual std::complex<double> complexEval() const ;\
+    virtual double realEval() const ;\
+    operator Expression() ; \
+    virtual Expression conjugate() const ;\
+  };
+
 
 #include <iostream>
 #include <memory>
@@ -95,7 +117,7 @@ namespace AmpGen {
 
     std::string to_string() const { 
       if( m_expression == 0 || get() == 0 ){
-        ERROR("WHAT THE SHIT LANA?");
+        ERROR("No expression contained in this node!");
       };
       return m_expression->to_string() ; }
     IExpression* get() const { return m_expression.get() ; }
@@ -126,6 +148,30 @@ namespace AmpGen {
     Expression operator-() const ;   
   };
 
+  struct IUnaryExpression : public IExpression {
+    IUnaryExpression( const Expression& other ) : m_expression( other ) {};
+    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
+      m_expression.resolveDependencies( dependencies );
+    }
+    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
+      m_expression.resolveEventMapping( evtMapping );
+    }
+    Expression m_expression;
+  };
+
+  struct IBinaryExpression : public IExpression {
+    IBinaryExpression( const Expression& l, const Expression& r ) : lval( l ),rval(r) {};
+    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
+      lval.resolveDependencies( dependencies );
+      rval.resolveDependencies( dependencies );
+    }
+    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
+      lval.resolveEventMapping( evtMapping );
+      rval.resolveEventMapping( evtMapping );
+    }
+    Expression lval;
+    Expression rval;
+  };
 
 
   struct Complex : public IExpression { 
@@ -164,31 +210,6 @@ namespace AmpGen {
 
 
   } ; //// complex number definition////
-
-  Expression operator<(const Expression& A, const Expression& B);
-  Expression operator>(const Expression& A, const Expression& B);
-
-  Expression operator+( const Expression& A, const Expression& B);
-  Expression operator-( const Expression& A, const Expression& B);
-  Expression operator*( const Expression& A, const Expression& B);
-  Expression operator/( const Expression& A, const Expression& B);
-
-  Expression operator+( const Expression& A, const double& B);
-  Expression operator-( const Expression& A, const double& B);
-  Expression operator*( const Expression& A, const double& B);
-  Expression operator/( const Expression& A, const double& B);
-
-  Complex operator*( const Complex& A, const Complex& B);
-  Complex operator+( const Complex& A, const Complex& B);
-
-  Expression operator+( const double& A, const Expression& B);
-  Expression operator-( const double& A, const Expression& B);
-  Expression operator*( const double& A, const Expression& B);
-  Expression operator/( const double& A, const Expression& B);
-
-  Expression operator&&(const Expression& A, const Expression& B);
-
-
 
   struct Constant : public IExpression {
     Constant( const double& value ) : m_value(value) {}
@@ -259,236 +280,28 @@ namespace AmpGen {
     operator Expression(){ return Expression( std::make_shared<Parameter>(*this) ); }
   } ; 
 
-  struct Pow : public IExpression { 
-    Pow( const Expression& other, const Expression& co ) : 
-      m_expression(other), m_coefficient(co) {} ;
-    Pow( const Expression& other, const double& n) : 
-      m_expression( other ) , m_coefficient( Expression(Constant(n) ) ) {};
-    virtual std::string to_string() const { 
-      return "pow(" + m_expression.to_string() + ", " 
-        + m_coefficient.to_string() + ")"; }
-    virtual Expression d( const Parameter& div ) ;
-    virtual Expression conjugate() const { return Pow( m_expression.conjugate(), m_coefficient.conjugate() ) ; }
+  DECLARE_UNARY_OPERATOR(Log)
+  DECLARE_UNARY_OPERATOR(Exp)
+  DECLARE_UNARY_OPERATOR(Sqrt)
+  DECLARE_UNARY_OPERATOR(Abs)
 
-    virtual std::complex<double> complexEval() const { 
-      return pow( m_expression.complexEval() , m_coefficient.complexEval() ); }
-    virtual double realEval() const { 
-      return pow(m_expression.realEval() , m_coefficient.realEval() ); }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-      m_expression.resolveDependencies( dependencies );
-      m_coefficient.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      m_expression.resolveEventMapping( evtMapping );
-      m_coefficient.resolveEventMapping( evtMapping );
-    }
-    operator Expression(){ return Expression( std::make_shared<Pow>(*this) ); }
+  DECLARE_UNARY_OPERATOR(Sin)
+  DECLARE_UNARY_OPERATOR(Cos)
+  DECLARE_UNARY_OPERATOR(Tan)
 
-    Expression m_expression;
-    Expression m_coefficient;
-  };
-
-  struct IUnaryExpression : public IExpression {
-    IUnaryExpression( const Expression& other ) : m_expression( other ) {};
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-      m_expression.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      m_expression.resolveEventMapping( evtMapping );
-    }
-
-    Expression m_expression;
-  };
-
-  struct Sqrt : public IUnaryExpression { 
-    Sqrt( const Expression& other ) :  IUnaryExpression(other)  {} ;
-    virtual std::string to_string() const { 
-      return "sqrt(" + m_expression.to_string() +")";}
-    virtual Expression d ( const Parameter& div ) ;
-    virtual std::complex<double> complexEval() const { return sqrt( m_expression.complexEval() ); }
-    virtual double realEval() const { return sqrt(m_expression.realEval() ); }
-    operator Expression(){ return Expression( std::make_shared<Sqrt>(*this) ); }
-    virtual Expression conjugate() const { return Sqrt(m_expression.conjugate()) ; }
-
-  };
-
-
-  struct Exp : public IUnaryExpression {
-    Exp( const Expression& other ) : IUnaryExpression(other) {};
-    virtual std::string to_string() const {
-      return "exp(" + m_expression.to_string() +")";
-    }
-    virtual Expression d( const Parameter& div ) ;  
-    virtual std::complex<double> complexEval() const { return exp( m_expression.complexEval() ); }
-    virtual double realEval() const { return exp( m_expression.realEval() ); }
-    operator Expression(){ return Expression( std::make_shared<Exp>(*this) ); }
-    virtual Expression conjugate() const { return Exp(m_expression.conjugate()) ; }
-
-
-  };
-
-  struct Log : public IUnaryExpression {
-    Log( const Expression& other ) : IUnaryExpression( other ) { };
-    virtual std::string to_string() const {
-      return "log(" + m_expression.to_string() +")";
-    }
-    virtual Expression d( const Parameter& div ) ;
-    virtual std::complex<double> complexEval() const { 
-      return log( m_expression.complexEval() ); }
-    virtual double realEval() const { 
-      return log( m_expression.realEval() ); }
-    operator Expression(){ return Expression( std::make_shared<Log>(*this) ) ; } 
-    virtual Expression conjugate() const { return Log(m_expression.conjugate()) ; }
-
-  };
-
-  struct Abs : public IUnaryExpression {
-    Abs( const Expression& expression ) : IUnaryExpression(expression) {};
-    virtual std::string to_string() const {
-      return "fabs("+m_expression.to_string() +")";
-    }
-    virtual Expression d( const Parameter& div ) ;
-
-    double realEval() const {
-      return abs(m_expression.realEval()); }
-    virtual std::complex<double> complexEval() const {
-      return m_expression.complexEval(); }
-    operator Expression(){ return Expression( std::make_shared<Abs>(*this) ); }
-    virtual Expression conjugate() const { return Expression( std::make_shared<Abs>(*this) )  ; }
-
-  };
+  DECLARE_UNARY_OPERATOR(aSin)
+  DECLARE_UNARY_OPERATOR(aCos)
+  DECLARE_UNARY_OPERATOR(aTan)
 
   /// binary relations
-  struct Sum : public IExpression { 
-
-    Sum( const Expression& l, const Expression& r) : lval(l), rval(r) {}
-
-    virtual std::string to_string() const {
-      const std::string& lstring = lval.to_string();
-      const std::string& rstring = rval.to_string();
-      return "(" + lstring + " + " + rstring + ")"; 
-    } 
-    virtual Expression d(const Parameter& div );
-    virtual std::complex<double> complexEval() const {
-      return lval.complexEval() + rval.complexEval() ; }
-    virtual double realEval() const {
-      return lval.realEval() + rval.realEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int, double> >& dependencies ) {
-      lval.resolveDependencies( dependencies );
-      rval.resolveDependencies( dependencies );
-    }
-    operator Expression(){ return Expression( std::make_shared<Sum>(*this) ); }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      lval.resolveEventMapping( evtMapping );
-      rval.resolveEventMapping( evtMapping );
-    }
-    virtual Expression conjugate() const { return lval.conjugate() + rval.conjugate() ; }
-
-    Expression lval;
-    Expression rval;
-  };
-
-
-  struct Sub : public IExpression {
-
-    Sub( const Expression& l, const Expression& r) : lval(l), rval(r) {}
-    virtual std::string to_string() const {
-      const std::string& lstring = lval.to_string();
-      const std::string& rstring = rval.to_string();
-      if( lstring == std::to_string(0) ) return "-" + rstring;
-      else if( rstring == std::to_string(0) ) return lstring;
-      else return "(" + lstring + " - " + rstring +")";
-    }
-    virtual Expression d(const Parameter& div );
-    virtual std::complex<double> complexEval() const {
-      return lval.complexEval() - rval.complexEval() ; }
-    double realEval() const {
-      return lval.realEval() - rval.realEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-      lval.resolveDependencies( dependencies );
-      rval.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      lval.resolveEventMapping( evtMapping );
-      rval.resolveEventMapping( evtMapping );
-    }
-    virtual Expression conjugate() const { return lval.conjugate() - rval.conjugate() ; }
-
-    operator Expression(){ return Expression( std::make_shared<Sub>(*this) ); }
-
-    Expression lval;
-    Expression rval;
-
-  };
-
-
-  struct Product : public IExpression {
-
-    Product( const Expression& l, const Expression& r) : lval(l), rval(r) {} 
-
-    virtual std::string to_string() const {
-      const std::string& lstring = lval.to_string();
-      const std::string& rstring = rval.to_string();
-      if( lstring != std::to_string(0) && rstring != std::to_string(0) ){ 
-        if( lstring == std::to_string(1) ) return rstring; 
-        if( rstring == std::to_string(1) ) return lstring;
-        return lstring + "*" + rstring ; 
-      }
-      else return std::to_string(0);
-    }
-    virtual Expression d (const Parameter& div );
-    virtual std::complex<double> complexEval() const {
-      return lval.complexEval() * rval.complexEval() ; }
-    double realEval() const { return lval.realEval() * rval.realEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-
-      lval.resolveDependencies( dependencies );
-      rval.resolveDependencies( dependencies );
-    }
-    operator Expression(){ return Expression( std::make_shared<Product>(*this) ); }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      lval.resolveEventMapping( evtMapping );
-      rval.resolveEventMapping( evtMapping );
-    }
-    virtual Expression conjugate() const { return lval.conjugate() * rval.conjugate() ; }
-
-    Expression lval;
-    Expression rval; 
-  } ; 
-
-
-  struct Divide : public IExpression {
-    Divide( const Expression& a, const Expression& b ) : lval(a), rval(b) {}
-    virtual std::string to_string() const {
-      const std::string& lv = lval.to_string();
-      const std::string& rv = rval.to_string();
-
-      if( lv == std::to_string(0) ) return lv;
-      if( rv == std::to_string(0) ) return "NaN";
-      if( rv == std::to_string(1) ) return lv;
-      if( lv == rv ) return "1.";
-      return "((" + lv + ")/(" + rv + "))";
-    }
-    virtual Expression d( const Parameter& div );
-    double realEval() const { 
-      return lval.realEval() / rval.realEval() ; }
-    virtual std::complex<double> complexEval() const { 
-      return lval.complexEval() / rval.complexEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-      lval.resolveDependencies( dependencies );
-      rval.resolveDependencies( dependencies );
-    }         
-    operator Expression(){ return Expression( std::make_shared<Divide>(*this) ); }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      lval.resolveEventMapping( evtMapping );
-      rval.resolveEventMapping( evtMapping );
-    }
-    virtual Expression conjugate() const { return lval.conjugate() / rval.conjugate() ; }
-
-    Expression lval;
-    Expression rval;
-
-  };
+  DECLARE_BINARY_OPERATOR(Sum)
+  DECLARE_BINARY_OPERATOR(Sub)
+  DECLARE_BINARY_OPERATOR(Product)
+  DECLARE_BINARY_OPERATOR(Divide)
+  DECLARE_BINARY_OPERATOR(LessThan)
+  DECLARE_BINARY_OPERATOR(GreaterThan)
+  DECLARE_BINARY_OPERATOR(And)
+  DECLARE_BINARY_OPERATOR(Pow)
 
   struct Ternary : public IExpression {
     Ternary( const Expression& cond,
@@ -522,87 +335,29 @@ namespace AmpGen {
     virtual Expression conjugate() const { return Ternary( m_cond, m_v1.conjugate(), m_v2.conjugate() ) ; }
   };
 
-  struct LessThan : public IExpression {
-    LessThan( const Expression& lval, const Expression& rval ) : m_lval(lval), m_rval(rval) {}
+  Expression operator<(const Expression& A, const Expression& B);
+  Expression operator>(const Expression& A, const Expression& B);
 
-    virtual std::string to_string() const { 
-      return "("+m_lval.to_string()+"<"+m_rval.to_string()+")";
-    }
+  Expression operator+( const Expression& A, const Expression& B);
+  Expression operator-( const Expression& A, const Expression& B);
+  Expression operator*( const Expression& A, const Expression& B);
+  Expression operator/( const Expression& A, const Expression& B);
 
-    virtual Expression d( const Parameter& div){ return Expression( Constant(0) ); }
-    Expression m_lval;
-    Expression m_rval;
-    virtual std::complex<double> complexEval() const { return std::complex<double>() ; }
-    virtual double    realEval() const { return m_lval.realEval() < m_rval.realEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-      m_lval.resolveDependencies( dependencies );
-      m_rval.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      m_lval.resolveEventMapping( evtMapping );
-      m_rval.resolveEventMapping( evtMapping );
-    }
+  Expression operator+( const Expression& A, const double& B);
+  Expression operator-( const Expression& A, const double& B);
+  Expression operator*( const Expression& A, const double& B);
+  Expression operator/( const Expression& A, const double& B);
 
-    operator Expression(){ return Expression( std::make_shared<LessThan>(*this) ); }
-    virtual Expression conjugate() const { return Expression( std::make_shared<LessThan>(*this) ) ; } 
+  Complex operator*( const Complex& A, const Complex& B);
+  Complex operator+( const Complex& A, const Complex& B);
 
-  };
+  Expression operator+( const double& A, const Expression& B);
+  Expression operator-( const double& A, const Expression& B);
+  Expression operator*( const double& A, const Expression& B);
+  Expression operator/( const double& A, const Expression& B);
 
-  struct GreaterThan : public IExpression {
-    GreaterThan( const Expression& lval, const Expression& rval ) : m_lval(lval), m_rval(rval) {}
-    virtual std::string to_string() const {
-      return "("+m_lval.to_string()+">"+m_rval.to_string()+")";
-    }
-    virtual Expression d( const Parameter& div){
-      return Expression( Constant(0 ) );
-    }
-    Expression m_lval;
-    Expression m_rval;
-    virtual std::complex<double> complexEval() const { return std::complex<double>() ; }
-    virtual               double    realEval() const { return m_lval.realEval() > m_rval.realEval() ; }
+  Expression operator&&(const Expression& A, const Expression& B);
 
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-
-      m_lval.resolveDependencies( dependencies );
-      m_rval.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      m_lval.resolveEventMapping( evtMapping );
-      m_rval.resolveEventMapping( evtMapping );
-    }
-    operator Expression(){ return Expression( std::make_shared<GreaterThan>(*this )); }
-
-    virtual Expression conjugate() const { return Expression(std::make_shared<GreaterThan>(*this) ); }
-  };
-
-  struct And : public IExpression {
-    And( const Expression& lval, const Expression& rval) : m_lval(lval), m_rval(rval) {} ;
-
-    Expression m_lval;
-    Expression m_rval;
-    virtual std::string to_string() const { 
-      return "("+m_lval.to_string()+"&&"+m_rval.to_string()+")";
-    }
-    virtual Expression d( const Parameter& div){
-      return Expression( Constant(0 ) );
-    }
-    virtual std::complex<double> complexEval() const { return std::complex<double>() ; }
-    virtual               double    realEval() const { return m_lval.realEval() && m_rval.realEval() ; }
-    virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
-
-      m_lval.resolveDependencies( dependencies );
-      m_rval.resolveDependencies( dependencies );
-    }
-    virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){
-      m_lval.resolveEventMapping( evtMapping );
-      m_rval.resolveEventMapping( evtMapping );
-    }
-    virtual Expression conjugate() const { return Expression( std::make_shared<And>(*this) ) ; } 
-
-    operator Expression(){ return Expression( std::make_shared<And>(*this) ); }
-
-
-  };
 } 
 /// prefixed binary operators
 

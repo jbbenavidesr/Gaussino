@@ -14,7 +14,7 @@ using namespace std;
 using namespace AmpGen;
 
 ParticlePropertiesList* ParticlePropertiesList::ptr=0;
-std::string ParticlePropertiesList::_MintDalitzSpecialParticles="MintDalitzSpecialParticles.cvs";
+std::string ParticlePropertiesList::_MintDalitzSpecialParticles="MintDalitzSpecialParticles.csv";
 
 std::vector<std::string> ParticlePropertiesList::_dirList;
 

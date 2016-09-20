@@ -9,6 +9,8 @@ Expression AmpGen::operator+(const Expression& A, const Expression& B){
   const Constant* rawB = dynamic_cast< Constant* >( B.get() );
   if( rawA != 0 && rawA->m_value == 0. ) return B;
   else if ( rawB != 0 && rawB->m_value == 0. ) return A;
+  else if ( rawA != 0 && rawB != 0) 
+    return Constant( rawA->m_value + rawB->m_value );
   return Expression( Sum( A, B ) ); 
 }
 Expression AmpGen::operator-(const Expression& A, const Expression& B){ 
@@ -16,6 +18,8 @@ Expression AmpGen::operator-(const Expression& A, const Expression& B){
   const Constant* rawB = dynamic_cast< Constant* >( B.get() );
   if( rawA != 0 && rawA->m_value == 0. ) return -B;
   else if ( rawB != 0 && rawB->m_value == 0. ) return A;
+  else if ( rawA != 0 && rawB != 0)
+    return Constant( rawA->m_value - rawB->m_value );
   return Expression( Sub( A, B ) ); 
 }
 Expression AmpGen::operator*(const Expression& A, const Expression& B){ 
@@ -63,51 +67,6 @@ Expression AmpGen::operator>(const Expression& A, const Expression& B){ return E
 
 /// derivatives of the elementary functions 
 
-Expression Parameter::d(const Parameter& div) { 
-  return Expression( Constant ( div.m_name == m_name ? 1 : 0 ) ); 
-}
-
-Expression Constant::d( const Parameter& /*div*/ ) { 
-  return Expression( Constant(0) ); 
-}
-
-Expression Sum::d(const Parameter& div )  { 
-  return lval.d( div ) + rval.d( div ) ; 
-}
-
-Expression Sub::d(const Parameter& div )  { 
-  return lval.d( div ) - rval.d( div ) ; 
-}
-
-Expression Product::d( const Parameter& div ){ 
-  return lval.d(div)*rval + lval*rval.d(div) ; 
-}
-
-Expression Divide::d( const Parameter& div ){ 
-  return lval.d(div)/rval - lval*rval.d(div) / (rval *rval ); 
-}
-
-Expression Sqrt::d ( const Parameter& div ){
-  return m_expression.d(div)/(2*Sqrt(m_expression)); 
-}
-
-Expression Log::d( const Parameter& div ){ 
-  return 1./m_expression; 
-}
-
-Expression Exp::d( const Parameter& div ){
-  return Exp(m_expression)*m_expression.d(div); 
-}
-
-Expression Pow::d( const Parameter& div ){
-  return Log( m_expression ) * Pow( m_expression, m_coefficient ) * m_coefficient.d(div) +
-    Pow( m_expression, m_coefficient - 1)*m_coefficient*m_expression.d(div) ; 
-}
-
-Expression Abs::d( const Parameter& div){
-  return Ternary( m_expression > Constant(0) , m_expression.d(div), - m_expression.d(div) );  
-}
-
 
 Expression Ternary::d( const Parameter& div ){
   return Ternary( m_cond , m_v1.d(div), m_v2.d(div) );
@@ -125,6 +84,13 @@ Expression Expression::operator*=(const Expression& other) const {
   return Product(*this,other);
 }
 
+Expression Parameter::d(const Parameter& div) { 
+  return Expression( Constant ( div.m_name == m_name ? 1 : 0 ) ); 
+}
+
+Expression Constant::d( const Parameter& /*div*/ ) { 
+  return Expression( Constant(0) ); 
+}
 
 Expression::Expression( const double& value ) : m_expression(std::make_shared<Constant>(value)){}
 Expression::Expression() : m_expression( std::make_shared<Constant>(0.)) {}

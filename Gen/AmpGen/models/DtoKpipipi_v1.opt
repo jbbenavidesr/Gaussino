@@ -1,7 +1,7 @@
 Mother    D0
 EventType K- pi+ pi+ pi-
-NEvents 500000
-sourceFile            "../src/DtoKpipipi_v1.cpp"
+NEvents 100000
+# sourceFile            "../src/DtoKpipipi_v1.cpp"
 
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                            0 1 0.1
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                            0 0 0.1
@@ -45,8 +45,8 @@ D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Re                    0 0.
 D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Im                    0 0.136074  0.1
 
 
-K(1460)bar-_mass  2 1460 1 1000 2000
-K(1460)bar-_width 2  250 1 100  500
+K(1460)bar-_mass  0 1460 1 1000 2000
+K(1460)bar-_width 0  250 1 100  500
 
 a(1)(1260)+_mass   2   1237 1 1200 1800
 a(1)(1260)+_width  2    526 1  300  800

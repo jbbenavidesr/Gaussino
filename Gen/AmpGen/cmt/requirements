@@ -22,7 +22,7 @@ include_dirs "../"
 #include_path      none
 #include_dirs /afs/cern.ch/user/t/tevans/cmtuser/Gauss_HEAD/Gen/AmpGen/ 
 
-macro_append cppflags " -fPIC -g3 -Ofast -std=c++14 -fopenmp -Wno-unused-function -Wno-unused-parameter"
+macro_append cppflags " -g -fPIC -Ofast -std=c++14 -fopenmp -Wno-unused-function -Wno-unused-parameter"
 macro_append ROOT_linkopts " -lHist -lMatrix -lGraf -lMinuit -lTree -lMathCore -lPhysics"
 
 #apply_pattern install_more_includes more=AmpGen
@@ -38,9 +38,8 @@ application   ConvertToSourceCode  -import=ROOT ../apps/ConvertToSourceCode.cpp
 
 
 private 
-  application             Generator  -import=ROOT ../apps/Generator.cpp
-  application                Fitter  -import=ROOT ../apps/Fitter.cpp
-  application     SpinAmplitudeTest  -import=ROOT ../apps/SpinAmplitudeTest.cpp
+  application                  Generator  -import=ROOT ../apps/Generator.cpp
+  application                     Fitter  -import=ROOT ../apps/Fitter.cpp
 # Patterns
 #============================================================================
 # apply_pattern     application_path
@@ -48,9 +47,7 @@ private
 #special linkopts
   macro_append            Generatorlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
   macro_append               Fitterlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
-  macro_append    SpinAmplitudeTestlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
   macro_append  ConvertToSourceCodelinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
-
 end_private
 
 apply_pattern    component_library library=AmpGenLib

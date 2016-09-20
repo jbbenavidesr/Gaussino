@@ -49,8 +49,14 @@ int main( int /*argc */, char** /*argv*/ ){
     ERROR("Library linking / creation failed, exiting");
     return 0 ;
   }
+  INFO("PDF is linked and ready to go ? " );
+  ///for( auto& p : pdf ) INFO( p.second->isReady() ); 
+  for( unsigned int i = 0 ; i < sig.size(); ++i){
+    INFO( sig.pdf(i).isReady() );
+  };
   Generator GENERATOR( sig, eventType );
   TRandom3 rnd;
+  
   GENERATOR.setRandom( &rnd );
   GENERATOR.fillEventList( accepted, 
       NamedParameter<double>("NEvents",10000).getVal() ,

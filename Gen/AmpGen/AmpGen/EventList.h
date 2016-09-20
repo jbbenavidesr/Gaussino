@@ -200,7 +200,7 @@ namespace AmpGen {
           const std::vector<std::string>& branches, 
           const EventType& evtType, 
           const unsigned int& opt,  
-          const std::vector<unsigned int> eventList = std::vector<unsigned int>() ) ;
+          const std::vector<unsigned int>& eventList = std::vector<unsigned int>() ) ;
 
       EventList(TTree* tree, 
           const EventType& particles , 

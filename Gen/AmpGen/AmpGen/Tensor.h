@@ -352,35 +352,35 @@ namespace AmpGen {
     Tensor operator*( const Tensor& other ); 
   };  
 
-//// operators ////
-Tensor operator+( Tensor t1, Tensor t2 );
-Tensor operator-( Tensor t1, Tensor t2 );
+  //// operators ////
+  Tensor operator+( Tensor t1, Tensor t2 );
+  Tensor operator-( Tensor t1, Tensor t2 );
 
-Tensor operator/( Tensor t1, const Expression& t2);
-Tensor operator*( const Expression& t1, Tensor t2);
-Tensor operator*( Tensor t1, const Expression& t2);
+  Tensor operator/( Tensor t1, const Expression& t2);
+  Tensor operator*( const Expression& t1, Tensor t2);
+  Tensor operator*( Tensor t1, const Expression& t2);
 
-Tensor operator/( Tensor t1, const double& t2);
-Tensor operator*( const double& t1, Tensor t2);
-Tensor operator*( Tensor t1, const double& t2);
-
-
-static Tensor Metric4x4(
-    std::vector<double>({-1,0,0,0,
-      0,-1,0,0,
-      0,0,-1,0,
-      0,0,0,1}), std::vector<unsigned int>({4,4}) );
+  Tensor operator/( Tensor t1, const double& t2);
+  Tensor operator*( const double& t1, Tensor t2);
+  Tensor operator*( Tensor t1, const double& t2);
 
 
-Tensor LeviCivita(const unsigned int& rank=4 ); 
-Tensor outer_product( Tensor A, Tensor B, std::vector<unsigned int> orderingA={}, std::vector<unsigned int> orderingB={} ) ; 
+  static Tensor Metric4x4(
+      std::vector<double>({-1,0,0,0,
+        0,-1,0,0,
+        0,0,-1,0,
+        0,0,0,1}), std::vector<unsigned int>({4,4}) );
 
 
-Expression dot( Tensor A, Tensor B );
-Tensor Orbital_PWave( Tensor A, Tensor B);
-Tensor Orbital_DWave( Tensor A, Tensor B);
-Tensor Spin1ProjectionOperator( Tensor A );
-Tensor Spin2ProjectionOperator( Tensor A );
+  Tensor LeviCivita(const unsigned int& rank=4 ); 
+  Tensor outer_product( Tensor A, Tensor B, std::vector<unsigned int> orderingA={}, std::vector<unsigned int> orderingB={} ) ; 
+
+
+  Expression dot( Tensor A, Tensor B );
+  Tensor Orbital_PWave( Tensor A, Tensor B);
+  Tensor Orbital_DWave( Tensor A, Tensor B);
+  Tensor Spin1ProjectionOperator( Tensor A );
+  Tensor Spin2ProjectionOperator( Tensor A );
 }
 
 #endif

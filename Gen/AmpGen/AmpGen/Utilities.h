@@ -38,7 +38,7 @@ static std::vector<std::string> vectorFromFile( const std::string& filename,
 template <class T> static bool isIn( const std::vector<T>& container, const T& obj ){
   for( auto& it : container ) if ( obj == it ) return true;
   return false; 
-};
+}
 
 template <class T, class B, class F> static bool isIn( const std::vector<T>& container, const B& obj , F f ){
   for( auto& it : container ) if( f( it, obj ) ) return true;
@@ -119,11 +119,11 @@ static std::string replaceAll( const std::string& input,
     }
   } while( pos != std::string::npos );
   return output;
-};
+}
 
 static std::string RootTeX( const std::string& input ){
   return replaceAll( input, "\\", "#" );
-};
+}
 
 /// extracts tree structures of the form X{Y,Z,A} 
 // where Y and Z and A are also tree elements, by finding
@@ -240,7 +240,7 @@ static std::string round(const double& number, const unsigned int& nsf ){
   //return std::to_string( value / pow(10,nsf) ) ;
   std::string returnValue(buffer);
   return returnValue;
-};
+}
 
 static std::string numberWithError( const double& number, const double& error, const unsigned int& nDigits ){  
   return round( number, nDigits)  + "(" + round( error*pow(10,nDigits), 0 ) + ")";

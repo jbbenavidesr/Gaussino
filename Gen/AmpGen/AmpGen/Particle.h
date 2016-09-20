@@ -152,6 +152,11 @@ class Particle {
       m_parity_factor = p;
       for( auto& d : m_daughters ) d->setParityFactor(m_parity_factor);
     }
+    int finalStateParity(){
+      int lpart = ( m_orbital % 2 == 0 ? 1 : -1 );
+      for( auto& d : m_daughters) lpart *= d->parity();
+      return lpart;
+    };
     void CPConjugateThis();
     
     std::pair<unsigned int, unsigned int> lRange(bool converseParity=true ) const;
@@ -190,7 +195,7 @@ class Particle {
     Tensor SpinTensor(std::vector<DBSYMBOL>* db=0);
     Expression FormFactor(std::vector<DBSYMBOL>* db=0) const ;
     /// key functions 
-    Expression getExpression(std::vector<DBSYMBOL>* db=0 );
+    Expression getExpression(std::vector<DBSYMBOL>* db=0 , const unsigned int& i=0);
 }; } 
 
 #endif

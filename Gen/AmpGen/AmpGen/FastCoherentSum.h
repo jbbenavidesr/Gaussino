@@ -325,9 +325,12 @@ class FastCoherentSum {
     stream << std::setprecision(10) ; 
     for( auto& p : m_pdfs ) p.compileWithParameters( stream );
     
-    stream << "extern \"C\" double FCN( double* E ){" << std::endl;
+    stream << "extern \"C\" double FCN( double* E , const int& parity){" << std::endl;
     stream << " std::complex<double> amplitude = " << std::endl;
     for( unsigned int i = 0 ; i < m_pdfs.size() ; ++i ){
+      int parity = m_decayTrees[i]->finalStateParity();
+      //INFO( m_decayTrees[i]->uniqueString() << " parity = " << parity );
+      if( parity == -1 ) stream << " double(parity) * ";
       stream << "std::complex<double>(" << std::real(m_coefficients[i]) << " , " << std::imag( m_coefficients[i] ) << ") * ";
       stream << "r" << m_pdfs[i].hash() << "( E )";
       stream << ( i==m_pdfs.size()-1 ? ";" : "+" ) << std::endl;  

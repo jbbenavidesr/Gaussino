@@ -1,5 +1,4 @@
 #include "AmpGen/Lineshapes.h"
-#include "AmpGen/Trigonometry.h"
 
 using namespace AmpGen;
 

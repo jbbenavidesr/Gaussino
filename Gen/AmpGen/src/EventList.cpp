@@ -11,6 +11,7 @@ EventList::EventList(TTree* tree,
     const unsigned int& pdfsize, 
     const bool& flipState, 
     const double& scaleFactor ) : EventList( particles) {
+  auto t_start = std::chrono::high_resolution_clock::now();
 
   INFO("Building eventlist with " << tree->GetEntries() );
   Event temp(4*particles.size(), pdfsize);
@@ -39,14 +40,16 @@ EventList::EventList(TTree* tree,
     if( scaleFactor == 1 ) std::vector<Event>::push_back(temp);
     else if( scaleFactor > gRandom->Uniform(0,1) ) std::vector<Event>::push_back(temp);
   }
-  INFO("EventList.size() = " << std::vector<Event>::size() );
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double t_taken = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
+  INFO("EventList.size() = " << std::vector<Event>::size() << " time taken = " << t_taken << "ms");
 }
 
 EventList::EventList( TTree* tree, 
     const std::vector<std::string>& branches, 
     const EventType& evtType, 
     const unsigned int& opt,  
-    const std::vector<unsigned int> eventList ) : m_eventType(evtType){
+    const std::vector<unsigned int>& eventList ) : m_eventType(evtType){
   Event temp( branches.size(), 0 );
   temp.setWeight(1);
   temp.setGenPdf(1);

@@ -2,7 +2,6 @@
 #include "AmpGen/Array.h"
 #include "AmpGen/Unary.h"
 #include "AmpGen/NamedParameter.h"
-#include "AmpGen/Trigonometry.h"
 
 using namespace AmpGen;
 
