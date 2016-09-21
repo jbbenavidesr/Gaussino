@@ -222,7 +222,7 @@ namespace AmpGen {
     void print() const ;
 
     //// contraction operator of the form A_{abcd}*B_{defg} 
-    Tensor operator*( const Tensor& other ); 
+  //  Tensor operator*( const Tensor& other ); 
   };  
 
   //// operators ////

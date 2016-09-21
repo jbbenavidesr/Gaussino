@@ -82,6 +82,7 @@ Tensor AmpGen::operator*(const double& other , Tensor t1 ){ return Constant(othe
 Tensor AmpGen::operator*(Tensor t1, const double& other){ return t1*Constant(other) ; }
 
 
+
 Tensor AmpGen::outer_product( Tensor A, Tensor B, 
     std::vector<unsigned int> orderingA, 
     std::vector<unsigned int> orderingB){
@@ -111,6 +112,7 @@ Tensor AmpGen::outer_product( Tensor A, Tensor B,
   return ret; 
 }
 
+
 Expression AmpGen::dot( Tensor A, Tensor B ){
 
   if( A.rank() != B.rank() || A.nElements() != B.nElements() ){
@@ -131,6 +133,7 @@ Expression AmpGen::dot( Tensor A, Tensor B ){
 
 //// the contraction operator does X_a1,a2,a3 * X_a3,b2,b3 where summation over a3 is implied. Note that the metric is not included here. 
 
+/*
 Tensor Tensor::operator*( const Tensor& other ){
 
   /// special case of scalar product ///
@@ -176,6 +179,7 @@ Tensor Tensor::operator*( const Tensor& other ){
   }
   return output;
 }
+*/
 
 Tensor AmpGen::Orbital_PWave( Tensor P, Tensor Q){
   return Q - P * ( dot(P,Q) / dot(P,P) ) ;
@@ -184,8 +188,8 @@ Tensor AmpGen::Orbital_PWave( Tensor P, Tensor Q){
 Tensor AmpGen::Orbital_DWave( Tensor P, Tensor Q){
 
   Tensor V = Orbital_PWave(P,Q);
-  Tensor PP = outer_product(P,P) / dot(P,P); 
-  Tensor VV = outer_product(V,V);
+  Tensor PP = outer_product( P, P )   / dot(P,P); 
+  Tensor VV = outer_product( V, V );
   if( PP.rank() != VV.rank() )
     ERROR( "Tensor ranks do not match " );
   if( PP.rank() != Metric4x4.rank() )
@@ -195,7 +199,7 @@ Tensor AmpGen::Orbital_DWave( Tensor P, Tensor Q){
 }
 
 Tensor AmpGen::Spin1ProjectionOperator( Tensor P ){
-  return Metric4x4 - outer_product(P,P)/dot(P,P); //  - Metric4x4;
+  return Metric4x4 - outer_product( P, P ) /dot(P,P); //  - Metric4x4;
 }
 
 Tensor AmpGen::Spin2ProjectionOperator( Tensor P ){
@@ -247,7 +251,6 @@ Expression Tensor::Determinant() const {
     Tensor sub=elim.Eliminate(i,1);
     result = result + ((i%2 ? m_elements[index({0,i})] : -m_elements[index({0,i})]))*sub.Determinant();
   }
-
   return result;
 }
 
@@ -412,7 +415,7 @@ Tensor Tensor::Invert() const {
         value.m_elements[elem] = elementExpression; 
       }
       return value; 
-    };
+    }
 
     void Tensor::print() const {
       INFO( "Dimension of object = " << m_dim.size() << " : ");
