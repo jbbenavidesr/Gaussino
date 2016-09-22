@@ -3,6 +3,70 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
+<P>
+<b>BEWARE: 
+<ul>
+<li>As from version v49r2, the Sim09 branch of the project is maintained only in Git
+<li>The package release notes are no longer maintained, look at the Git Merge Request (MR) comments
+<li>The package versions are no longer maintained, use the Git commit IDs
+</ul>
+</b>
+
+
+<H1><A NAME="v49r3">2016-09-22 - Gauss v49r3</A></H1>
+<H2><A NAME="Note"Release for Sim09 productions</A></H2>
+This version uses projects:
+   LCG_79 (HepMC 2.06.09, ROOT 6.04.02), Gaudi v26r4, LHCb v39r1, 
+   Geant4 v96r4p3 (geant4.9.6.p04 + LHCb patches)
+   and SQLDDDB v7r*, ParamFiles v8r*, FieldMap v5r*, AppConfig v3r*, Geant4Files v96r*, GDMLData v1r*
+
+<p>
+This version uses (via LCG_79/MCGenerators):
+   pythia8 186 (with LHCb Tune1), lhapdf 6.1.4, photos++ 3.56, tauola++ 1.1.4, pythia 6.427.2,
+   hijing 1.383bs.2, crmc 1.5.6 (epos), alpgen 2.1.4, powhegbox r2092, herwig++ 2.7.1, thepeg 1.9.2p1
+   rivet 2.4.2, yoda 1.5.9
+
+<p>
+This version uses (private LHCb generators versions):
+   <b>EvtGen<b>, EvtGenExtras, Mint, BcVegPy, GenXicc, HidValley
+   and DecFiles v29r*, LHAPDFSets v2r*, BcVegPyData v2r*, GenXiccData v3r*, PGunsData v1r*
+
+<p>
+This version is released on Sim09 branch
+
+<h2>Updates to generators</h2>
+
+<dl>
+<dt>[MR !14] J/Psi with EPOS
+<dd>New options to produce J/Psi with Pythia8 and merge them in EPOS. Clean up of unused files.
+
+<dt>[MR !18] New cut for *3pi analysis 
+<dd>Code provided by Guy Wormser, see LHCBGAUSS-844
+
+<dt>[MR !16] Modified EvtHQET2FF in EvtGen
+<dd>see LHCBGAUSS-814
+
+<dt>[MR !15] Allow setting charmonia polarization
+<dd>Code changes to Gen/Generators/src/component/EvtGenDecay.cpp to allow polarization of any charmonium vector particles for Sim09. Details at LHCBGAUSS-831    
+
+<dt>[MR !13] Avoid crashes in EvtGen
+<dd>Fixing the energy of the particle to avoid crash in EvtGen, see LHCBGAUSS-772
+</dl>
+
+<h2>Tests</h2>
+
+<dl>
+<dt>[MR !12]Fix issues for GenTune for qmtest
+<dd>fix options and qmtest directories as in v3r0 on svn, see LHCBGAUSS-598
+</dl>
+
+<h2>Code modernization and maintenance<h2>
+
+<dl>
+<dt>[MR !11]Solving project dependency issues for cmake
+</dl>
+
+ 
 !==============================================================================
 </PRE><H1><A NAME="v49r2">2016-07-04 - GaussSys v49r2</A></H1><PRE>
 <H2><A NAME="Note"Release for Sim09 productions. 
@@ -40,7 +104,7 @@ Purpose: LHCb Simulation program
 
 <dl>
 <dt>[<a href="https://gitlab.cern.ch/lhcb-svnmirror/Gauss/merge_requests/10">MR 10</a>] 
-Use new vervion of GenTune requiring Rivet 2. and new dependency on yoda.
+Use new version of GenTune requiring Rivet 2. and new dependency on yoda.
 <dd>
 See details also in <a href="https://its.cern.ch/jira/browse/LHCBGAUSS-598">LHCBGAUSS-598</a>
 <dt>[<a href="https://its.cern.ch/jira/browse/LHCBGAUSS-683">LHCBGAUSS-683</a>]
