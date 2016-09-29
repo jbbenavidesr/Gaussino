@@ -25,6 +25,9 @@ if(PYTHIA8_XML AND NOT PYTHIA8_VERSION)
   mark_as_advanced(PYTHIA8_VERSION)
 endif()
 
+# Define the additional environment needed
+set(PYTHIA8DATA ${PYTHIA8_XML})
+
 # Enforce a minimal list if none is explicitly requested
 if(NOT Pythia8_FIND_COMPONENTS)
   set(Pythia8_FIND_COMPONENTS pythia8)
