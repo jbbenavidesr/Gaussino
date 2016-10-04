@@ -4,6 +4,9 @@
 ! Purpose     : Integration package for Pythia 8 
 !-----------------------------------------------------------------------------
 
+! 2016-10-04 - Philip Ilten
+ - Fixed bug in lifetime, minimum mass, and maximum mass updating
+
 !======================== LbPythia8 v12r1 2016-05-23 =========================
 ! 2016-05-25 - Gloria Corti
  - Merged r206272 from trunk by Phil Ilten 
