@@ -31,6 +31,8 @@ AmpGen::NamedParameter<std::string>::operator*=(const std::string& rhs){
   return *this;
 }
 
+
+
 template<>
 AmpGen::NamedParameter<std::string>& 
 AmpGen::NamedParameter<std::string>::operator/=(const std::string& rhs){

@@ -13,9 +13,7 @@ using namespace AmpGen;
 int main( int argc , char** argv ){
 
   
-  EventType eventType( 
-    AmpGen::NamedParameter<std::string>("Mother") 
-  , AmpGen::NamedParameter<std::string>("EventType").getVector()  );
+  EventType eventType( NamedParameter<std::string>("EventType").getVector()  );
   
 
   AmpGen::MinuitParameterSet MPS = MPSFromStream();
@@ -26,6 +24,6 @@ int main( int argc , char** argv ){
 
   pdf.setPset( &MPS );
   pdf.buildLibrary();
-  sig.makeBinary( AmpGen::NamedParameter<std::string>("sourceFile",std::string("test.cpp")) );
+  sig.makeBinary( NamedParameter<std::string>("sourceFile",std::string("test.cpp")) );
 
 }

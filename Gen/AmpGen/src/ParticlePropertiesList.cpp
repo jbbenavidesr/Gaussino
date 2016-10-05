@@ -1,12 +1,10 @@
 // author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
 // status:  Mon 9 Feb 2009 19:18:04 GMT
 #include "AmpGen/ParticlePropertiesList.h"
-#include "AmpGen/NamedParameter.h"
 #include "AmpGen/MsgService.h"
 
 #include <string>
 #include <fstream>
-//#include <sstream>
 #include <cstdio>
 #include <stdlib.h>
 
@@ -86,17 +84,8 @@ const std::vector<std::string>& ParticlePropertiesList::dirList(){
 
 void ParticlePropertiesList::fillDirList(){
   _dirList.clear();
-  NamedParameter<std::string> userDir("ParticlePropertiesList::ParticlePropertiesDir"
-					, (std::string) "");
-  for(int i=0; i < userDir.size(); i++){
-    if("" != userDir.getVal(i)){
-      _dirList.push_back(userDir.getVal(i) + "/");
-      //      cout << "just pushed back " << userDir.getVal() << endl;
-    }
-  }
 
 //   Get directory to AmpGenROOT
-
 
   std::string MintRoot(".");
   char * Mintenv(0);
@@ -104,7 +93,6 @@ void ParticlePropertiesList::fillDirList(){
   if (NULL != Mintenv){
     MintRoot = Mintenv;
   }
-
   
   _dirList.push_back("");
   _dirList.push_back( MintRoot + "/options/");

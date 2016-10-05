@@ -22,7 +22,10 @@
 #include <chrono>
 #include <ctime>
 
+#ifdef __USE_OPENMP__
 #include <omp.h>
+#endif
+
 #include <fstream>
 
 namespace AmpGen { 

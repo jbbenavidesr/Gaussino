@@ -7,11 +7,12 @@ std::vector<Binning> CoherenceFactor::makeCoherentBins( const unsigned int& nBin
   bool needToSplitMore = false;
   Bin bin0;
   std::vector<std::pair<double,double>> limits;
-  for( auto& indices : gChi2Indices ) limits.push_back( m_data.getEventType().minmax(indices ));
+  for( auto& indices : gChi2Indices ) 
+    limits.push_back( m_data->getEventType().minmax(indices ));
 
   for( unsigned int i=0;i < limits.size();++i )
     bin0.setBoundary(i , limits[i]);
-  bin0.addData( m_data.begin(), m_data.end(), true );
+  bin0.addData( m_data->begin(), m_data->end(), true );
   Binning dataBins;
   dataBins.push_back( bin0 );
 
@@ -39,8 +40,8 @@ std::vector<Binning> CoherenceFactor::makeCoherentBins( const unsigned int& nBin
   for( auto& bin : dataBins ) norm += bin.getNorm1();
   norm /= (double)nBins ; 
 
-//  auto begin = dataBins.begin();
-//  auto it = dataBins.begin();
+  //  auto begin = dataBins.begin();
+  //  auto it = dataBins.begin();
   std::vector<Binning> coherentBins;
   std::vector<std::pair<double,double>> binLimits; 
   std::ofstream binPersist; 
@@ -92,8 +93,8 @@ void CoherenceFactor::setVoxelCoherence( Bin& voxel ){
 
 void CoherenceFactor::getFitFractions( AmpGen::Minimiser& minuit ){
   for( auto& bin : m_bins ){
-    EventList events = bin.events( m_data.getEventType() );
-    
+    EventList events = bin.events( m_data->getEventType() );
+
     m_pdf1->setMC( events );
     m_pdf1->prepare();
     m_pdf1->fitFractions(minuit, std::cout);
@@ -114,7 +115,6 @@ void CoherenceFactor::getNumberOfEventsInEachBin(const EventList& events ){
 
 }
 
-
 std::vector<Binning> CoherenceFactor::getBinningFromFile( const std::string& filename ){ 
 
   std::vector<std::vector<std::string>> binsAsStrings;
@@ -128,4 +128,20 @@ std::vector<Binning> CoherenceFactor::getBinningFromFile( const std::string& fil
       bins.emplace_back( tmp );  
   }
   return bins; 
+}
+
+void CoherenceFactor::makeBins( const unsigned int& nBins ){
+  m_bins = makeCoherentBins(nBins);
+}
+
+void CoherenceFactor::readBinsFromFile( const std::string& binName ){
+  INFO("Loading bins from file :" << binName );
+  m_bins = getBinningFromFile( binName );
+  INFO("Got " << m_bins.size() << " bins");
+  /*
+  for( auto& bin : m_bins ){
+    bin.add( m_data );
+    for( auto& voxel : bin ) setVoxelCoherence( voxel );
+  }
+  */
 }

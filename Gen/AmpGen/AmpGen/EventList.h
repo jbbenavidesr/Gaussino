@@ -6,7 +6,6 @@
 #include "AmpGen/CompiledExpression.h"
 #include "AmpGen/EventType.h"
 
-#include "AmpGen/TeXFormat.h"
 #include "AmpGen/MsgService.h"
 #include <chrono>
 
@@ -19,8 +18,9 @@
 #include "TRandom.h"
 /// OPEN MP
 //
-
+#ifdef __USE_OPENMP__
 #include <omp.h>
+#endif
 
 namespace AmpGen { 
   static std::vector<std::vector<unsigned int>> gChi2Indices = { {1,2,3},{0,1},{0,2},{2,3},{0,1,2} };
@@ -196,10 +196,15 @@ namespace AmpGen {
         for( auto& evt : *this ){ integral += evt.weight(cat) ; } 
         return integral;  
       };
+      EventList( const std::string& fname, 
+                 const EventType& evtType,
+                 const unsigned int& pdfSize, 
+                 const bool& flipState=false,
+                 const double& scaleFactor=1 );
       EventList( TTree* tree, 
           const std::vector<std::string>& branches, 
           const EventType& evtType, 
-          const unsigned int& opt,  
+          const unsigned int& opt=0 , 
           const std::vector<unsigned int>& eventList = std::vector<unsigned int>() ) ;
 
       EventList(TTree* tree, 
@@ -309,7 +314,7 @@ namespace AmpGen {
       std::string particleNamesFromIndices( const std::vector<unsigned int>& indices ) const {
         std::string thing="";
         for( auto& x : indices ){
-          thing += getTexFromPDG( m_eventType[x], true );
+          thing += m_eventType.label(x, true ) ; 
         }
         return thing;
       }

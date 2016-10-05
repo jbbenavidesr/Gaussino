@@ -226,7 +226,6 @@ namespace AmpGen {
     virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping ){};
 
     operator Expression(){ return Expression( std::make_shared<Constant>(*this) ); }
-
   };
 
   struct Parameter : public IExpression {

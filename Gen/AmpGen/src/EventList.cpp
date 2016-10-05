@@ -1,6 +1,31 @@
 #include "AmpGen/EventList.h"
+#include "TTree.h"
+#include "TFile.h"
 
 using namespace AmpGen ;
+
+
+EventList::EventList( const std::string& fname,
+    const EventType& evtType,
+    const unsigned int& pdfSize,
+    const bool& flipState,
+    const double& scaleFactor ) :   
+      EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
+      evtType,
+      pdfSize,
+      flipState,
+      scaleFactor ) {};
+
+/*
+EventList::EventList( const std::string& fname,
+    const std::vector<std::string>& branches,
+    const EventType& evtType,
+    const unsigned int& opt ) : 
+  EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
+      branches,
+      evtType,
+      opt ) {};  
+*/
 
 EventList::EventList( const EventType& type ) : 
   m_eventType(type), 
@@ -19,7 +44,7 @@ EventList::EventList(TTree* tree,
   auto finalStatesMintStyle = particles.getPickledFinalStates(flipState);
   for( unsigned int ip=0;ip<particles.size();++ip ){
     std::string prefix="_"+std::to_string(ip+1)+"_"+finalStatesMintStyle[ip];
-    INFO("Adding branches for " << prefix );
+    DEBUG("Adding branches for " << prefix );
 
     tree->SetBranchAddress((prefix+"_Px").c_str() ,temp.address(4*ip+0) );
     tree->SetBranchAddress((prefix+"_Py").c_str() ,temp.address(4*ip+1) );
@@ -68,10 +93,11 @@ EventList::EventList( TTree* tree,
     tree->SetBranchStatus("genPdf",1);
     tree->SetBranchAddress( "genPdf",&genPdf );
   }
-  int motherID; 
-  tree->SetBranchStatus( (evtType.mother() + "_ID").c_str(), 1 );
-
-  tree->SetBranchAddress(  (evtType.mother() + "_ID").c_str() , &motherID );
+  int motherID=1; 
+  if( applyParity ){
+    tree->SetBranchStatus( (evtType.mother() + "_ID").c_str(), 1 );
+    tree->SetBranchAddress(  (evtType.mother() + "_ID").c_str() , &motherID );
+  }
   std::mt19937 rng(12);    // random-number engine used (Mersenne-Twister in this case)
 
   auto shuffles = evtType.getBosePairs();

@@ -4,7 +4,7 @@ EventType K- pi+ pi+ pi-
 #SgIntegratorFname     "/afs/cern.ch/work/t/tevans/public/RS_K3pi_IntegrationEvents.root" #integration MC events 
 #SigFileName           "/afs/cern.ch/work/t/tevans/public/RS_K3pi_DataEvents.root" #data events
 SgIntegratorFname "$DATADIR/imc.root"
-SigFileName       "ToyMC1.root"
+SigFileName       "$DATADIR/imc_AmpGen.root"
 
 debug 0 # include verbose debugging samples 
 #Prescale 0.5 #prescale integration MC for doing resampling error estimation 

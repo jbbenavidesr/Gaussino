@@ -48,14 +48,12 @@ void randomizeStartingPoint( MinuitParameterSet& MPS , TRandom3& rand, bool Spli
 }
 
 
-template<typename PDF >
-Minimiser* doFit( PDF& pdf , 
+template<typename PDF > Minimiser* doFit( PDF& pdf , 
     EventList& data, 
     EventList& mc, 
     std::ofstream& outlog, 
     MinuitParameterSet& MPS,
-    FitQuality& fq
- ){
+    FitQuality& fq ){
 
   const std::string fLib = NamedParameter<std::string>("Lib",(std::string)"functions").getVal();
 
@@ -126,17 +124,38 @@ Minimiser* doFit( PDF& pdf ,
 
 int main(int argc , char* argv[] ){
 
-  //rootLogin();
-  std::string fname = NamedParameter<std::string>("SigFileName").getVal();
-  NamedParameter<std::string> SgIntegratorFname("SgIntegratorFname");
-  std::string logFile  = NamedParameter<std::string>("LogFile",(std::string)"Fitter.log").getVal();
-  std::string plotFile = NamedParameter<std::string>("Plots",(std::string)"plots.root").getVal();
+  std::string dataFile = NamedParameter<std::string>("SigFileName") ; 
+  std::string mcFile   = NamedParameter<std::string>("SgIntegratorFname");
+  std::string flatMC   = NamedParameter<std::string>("MCCoherence","NONE");
 
-  omp_set_num_threads( NamedParameter<unsigned int>("nCores",1).getVal() );
+  std::string logFile  = NamedParameter<std::string>("LogFile",(std::string)"Fitter.log");   
+  std::string plotFile = NamedParameter<std::string>("Plots",(std::string)"plots.root");
+  std::string latexOut = NamedParameter<std::string>("Plots",(std::string)"fit.tex");
+  std::string epsFile  = NamedParameter<std::string>("EpsFile",(std::string)"default.eps");
+
+  unsigned int nThreads    = NamedParameter<unsigned int>("nCores",1);
+  unsigned int changeLabel = NamedParameter<unsigned int>("ChangeMCLabel",0);  
+  unsigned int nBins       = NamedParameter<unsigned int>("nBins",100);
+  unsigned int morePlots   = NamedParameter<unsigned int>("makeExtendedPlots",0);
+  
+  std::vector<std::string> evtType_particles = NamedParameter<std::string>("EventType").getVector();
+
+  double fPDF     = NamedParameter<double>("fPDF",1.0);
+  double fComb    = NamedParameter<double>("fComb",1.0);
+  double fMisID   = NamedParameter<double>("fMisID",0.0);
+  double prescale = NamedParameter<double>("Prescale",1.0).getVal();
+  
+  /// coherence factor ///
+  double globalPhase      = NamedParameter<double>     ("Coherence::GlobalPhase",2.967);
+  std::string binningName = NamedParameter<std::string>("Coherence::BinningName",std::string(""));
+  unsigned int co_nBins   = NamedParameter<unsigned int>("Coherence::nBins"      ,4);
+
+
+  omp_set_num_threads( nThreads );
   omp_set_dynamic(0);
 
   MinuitParameterSet MPS = MPSFromStream();
-  EventType evtType( "D0", NamedParameter<std::string>("EventType").getVector()  );
+  EventType evtType( evtType_particles );
 
   if( argc == 2 ){
     unsigned int n = atoi(argv[1]);
@@ -145,23 +164,13 @@ int main(int argc , char* argv[] ){
     
     rand->SetSeed( n );
     gRandom = rand; 
-   // randomizeStartingPoint( MPS, rand , 
-  //      NamedParameter<int>("RandomiseSpline",0).getVal() 
-  //   );
-    //auto logTokens = split( logFile, '.');
     logFile = logFile + "." + argv[1]; // logTokens[0]+argv[1]+"."+logTokens[1];
-    auto nameTokens = split( fname, '.');
-    fname = nameTokens[0] + argv[1] +".root";
+    auto nameTokens = split( dataFile, '.');
+    dataFile = nameTokens[0] + argv[1] +".root";
     INFO("Writing to log = " << logFile );
-    //auto plotTokens = split( plotFile, '.');
-    //plotFile = plotTokens[0]+argv[1]+"."+plotTokens[1];
     INFO("Writing plots = " << plotFile );
   }
-  INFO("Reading file " << fname );
-  TFile* f = TFile::Open( fname.c_str() );
-  if( f == 0 ) ERROR("Filename " << fname << " not found" );
-  TTree* tree = (TTree*)f->Get("DalitzEventList");
-  EventList events (tree, evtType , MPS.size() / 2 ) ;
+  EventList events ( dataFile , evtType , MPS.size() / 2 ) ;
 
   FastCoherentSum pdf( evtType 
       , MPS 
@@ -186,18 +195,11 @@ int main(int argc , char* argv[] ){
     return -1;
   };
 
-  double fPDF = NamedParameter<double>("fPDF",1.0);
-  double fComb = NamedParameter<double>("fComb",1.0);
-  double fMisID = NamedParameter<double>("fMisID",0.0);
   pdf.setWeight( fPDF );
   bkg.setWeight( fComb ); 
   misID.setWeight( fMisID );
-  TFile* mc = TFile::Open(SgIntegratorFname.getVal().c_str());
-  TTree* tmc = (TTree*)mc->Get("DalitzEventList"); 
   
-  double prescale = NamedParameter<double>("Prescale",1.0).getVal();
-  int changeLabel = NamedParameter<int>("ChangeMCLabel",(int)0).getVal();
-  EventList eventsMC(tmc, evtType , MPS.size() / 2  , changeLabel, prescale );
+  EventList eventsMC( mcFile , evtType , MPS.size() / 2  , changeLabel, prescale );
 
   SumPDF<std::complex<double>, FastCoherentSum&> signalPDF( pdf ); /// PURE signal pdf
 
@@ -240,17 +242,11 @@ int main(int argc , char* argv[] ){
   /// From here is just making plots and finalising the output //// 
   output->cd();
 
-  unsigned int nBins=NamedParameter<unsigned int>("nBins",100).getVal();
   std::vector<TH1D*> plots = events.makePlots("Data_", nBins );
   for( auto& plot : plots ) plot->Write();
- // std::vector<TH2D*> plots2D = events.makePlots2D("Data_");
- // for( auto& plot : plots2D ) plot->Write();
 
-  if( NamedParameter<int>("makeExtendedPlots",0).getVal() ){
+  if( morePlots ){
     unsigned int nBinsReduced = NamedParameter<unsigned int>("nBinsReduced",50).getVal();
-//  double norm = 0 ;
-//  for( auto& evt : eventsMC ) norm += evt.weight();
-//  norm /= eventsMC.size();  
     auto kpi_mid   = [](auto& evt){ return fabs( sqrt( evt.s({0,1}) ) - 897.6 ) < 75;  } ;
     auto pipi_mid     = [](auto& evt){ return fabs( sqrt( evt.s({2,3}) ) - 770. ) < 100; } ;
     auto kpi_high = [](auto& evt){ return evt.s({0,1}) > 1100*1100;  } ;
@@ -267,39 +263,18 @@ int main(int argc , char* argv[] ){
     auto triple_axis = plotAxis("#phi [rads]",-1.0,1.0,nBinsReduced);
     auto aco_axis   = plotAxis( "#chi [rads]",0,M_PI*2,nBinsReduced);
 
-    plot1D( events, kstar_hcos   , kpi_mid     , kpi_axis  , "Data_HelicityCosineKstar"  ) ;
-    plot1D( events, rho_hcos     , pipi_mid       , rho_axis  , "Data_HelicityCosineRho"  )  ;
-    plot1D( events, acoplanarity , kstarrho_window  , aco_axis  , "Data_Acoplanarity" ) ;
+    plot1D( events, eventsMC, kstar_hcos   , kpi_mid          , pdf , kpi_axis  , "hCos_kpi_mid"  ) ;
+    plot1D( events, eventsMC, rho_hcos     , pipi_mid         , pdf , rho_axis  , "hCos_pipi_mid"  )  ;
+    plot1D( events, eventsMC, acoplanarity , kstarrho_window  , pdf , aco_axis  , "aco_kstarrho" ) ;
     
-    plot1D( events, kstar_hcos   , kpi_high         ,  kpi_axis  , "Data_HelicityCosineKHighMass"  ) ;
-    plot1D( events, kstar_hcos   , no_cut           , kpi_axis  , "Data_HCosKPi_NoCut" ) ;
-    plot1D( events, rho_hcos     , no_cut           , rho_axis  , "Data_HCosPiPi_NoCut" ) ;
+    plot1D( events, eventsMC, kstar_hcos   , kpi_high         , pdf ,  kpi_axis  , "hCos_kpi_high"  ) ;
+    plot1D( events, eventsMC, kstar_hcos   , no_cut           , pdf , kpi_axis  , "hCos_kpi_all" ) ;
+    plot1D( events, eventsMC, rho_hcos     , no_cut           , pdf , rho_axis  , "hCos_pipi_all" ) ;
 
-    plot1D( events, TripleProduct , kpi_mid          , triple_axis  , "Data_tripleProductKpi"  ) ;
-    plot1D( events, TripleProduct , pipi_mid         , triple_axis  , "Data_tripleProductPiPi"  )  ;
-    plot1D( events, TripleProduct , kstarrho_window  , triple_axis  , "Data_tripleProductKstarRho" ) ;
-    plot1D( events, TripleProduct , kpi_high         , triple_axis  , "Data_tripleProductKpiMass"  ) ;
-
-
-    makePerAmplitudePlot( eventsMC, pdf, kstar_hcos , kpi_mid , kpi_axis, "HelicityCosineKstar"     ); 
-   
-    makePerAmplitudePlot( eventsMC, pdf, rho_hcos  , pipi_mid , rho_axis, "HelicityCosineRho"          );
-    makePerAmplitudePlot( eventsMC, pdf, kstar_hcos , kpi_high, kpi_axis, "HelicityCosineKHighMass");
-    makePerAmplitudePlot( eventsMC, pdf, acoplanarity , kstarrho_window, aco_axis, "Acoplanarity"        );
-    makePerAmplitudePlot( eventsMC, pdf, kstar_hcos     , no_cut , kpi_axis, "HCosKPi_NoCut"             );
-    makePerAmplitudePlot( eventsMC, pdf, rho_hcos     , no_cut , rho_axis, "HCosPiPi_NoCut"              );
-
-    makePerAmplitudePlot( eventsMC,pdf, TripleProduct , kpi_mid           , triple_axis, "tripleProductKpi"  ) ;
-    makePerAmplitudePlot( eventsMC,pdf, TripleProduct , pipi_mid          , triple_axis, "tripleProductPiPi"  )  ;
-    makePerAmplitudePlot( eventsMC,pdf, TripleProduct , kstarrho_window   , triple_axis, "tripleProductKstarRho" ) ;
-    makePerAmplitudePlot( eventsMC,pdf, TripleProduct , kpi_high          , triple_axis, "tripleProductKpiMass"  ) ;
-
-    makePerAmplitudePlot( eventsMC, bkg , kstar_hcos , kpi_mid , kpi_axis,     "Inco_HelicityCosineKstar"    ); 
-    makePerAmplitudePlot( eventsMC, bkg , rho_hcos  , pipi_mid , rho_axis,        "Inco_HelicityCosineRho"      );
-    makePerAmplitudePlot( eventsMC, bkg , kstar_hcos , kpi_high, kpi_axis,    "Inco_HelicityCosineKHighMass");
-    makePerAmplitudePlot( eventsMC, bkg , acoplanarity , kstarrho_window, aco_axis, "Inco_Acoplanarity"           );
-    makePerAmplitudePlot( eventsMC, bkg , kstar_hcos     , no_cut , kpi_axis,       "Inco_HCosKPi_NoCut"          );
-    makePerAmplitudePlot( eventsMC, bkg , rho_hcos     , no_cut , rho_axis,         "Inco_HCosPiPi_NoCut"         );
+    plot1D( events, eventsMC, TripleProduct , kpi_mid         , pdf , triple_axis  , "tp_kpi_mid"  ) ;
+    plot1D( events, eventsMC, TripleProduct , pipi_mid        , pdf , triple_axis  , "tp_pipi_mid"  ) ;
+    plot1D( events, eventsMC, TripleProduct , kstarrho_window , pdf , triple_axis  , "tp_kstarrho" ) ;
+    plot1D( events, eventsMC, TripleProduct , kpi_high        , pdf , triple_axis  , "tp_kpi_high"  ) ;
 
   auto defaultAxes = eventsMC.defaultProjections();
 
@@ -319,20 +294,12 @@ int main(int argc , char* argv[] ){
       makePerAmplitudePlot2D( eventsMC, bkg, sij, s2, no_cut, axis, yAxis, "MC_" + axis.name + "_"+yAxis.name +"_allAmps");
     };
 
-    makePerAmplitudePlot( eventsMC, pdf, sij, kpi_mid, axis, "MC_"+axis.name+"_kpi_mid");
-    plot1D( events,sij, kpi_mid, axis , "Data"+axis.name+"_kpi_mid" ) ;
-    makePerAmplitudePlot( eventsMC, pdf, sij, pipi_mid, axis, "MC_"+axis.name+"_pipi_mid");
-    plot1D( events,sij,  pipi_mid ,axis,  "Data"+axis.name+"_pipi_mid"  ) ;
-    makePerAmplitudePlot( eventsMC, pdf, sij, kpi_high, axis,  "MC_"+axis.name+"_kpi_high" );
-    plot1D( events,sij,  kpi_high ,axis,  "Data"+axis.name+"_kpi_high"  ) ;
-    makePerAmplitudePlot( eventsMC, pdf, sij, pipi_high, axis, "MC_"+axis.name+"_pipi_high" );
-    plot1D( events,sij,  pipi_high ,axis,  "Data"+axis.name+"_pipi_high"  ) ;
-    makePerAmplitudePlot( eventsMC, pdf, sij, pipi_low, axis, "MC_"+axis.name+"_pipi_low" );
-    plot1D( events,sij,  pipi_low ,axis,  "Data"+axis.name+"_pipi_low"  ) ;
-    makePerAmplitudePlot( eventsMC, pdf, sij, kpi_low, axis, "MC_"+axis.name+"_kpi_low" );
-    plot1D( events,sij,  kpi_low ,axis,  "Data"+axis.name+"_kpi_low"  ) ;
-
-
+    plot1D( events, eventsMC, sij,  kpi_mid  , pdf , axis , axis.name+"_kpi_mid" ) ;
+    plot1D( events, eventsMC, sij,  pipi_mid , pdf, axis , axis.name+"_pipi_mid"  ) ;
+    plot1D( events, eventsMC, sij,  kpi_high , pdf, axis , axis.name+"_kpi_high"  ) ;
+    plot1D( events, eventsMC, sij,  pipi_high, pdf, axis , axis.name+"_pipi_high"  ) ;
+    plot1D( events, eventsMC, sij,  pipi_low , pdf, axis , axis.name+"_pipi_low"  ) ;
+    plot1D( events, eventsMC, sij,  kpi_low  , pdf, axis , axis.name+"_kpi_low"  ) ;
   }
 
   }
@@ -344,25 +311,17 @@ int main(int argc , char* argv[] ){
   }
   if( fComb == 1 ){
     std::vector<std::string> fitfractions = bkg.fitFractions( *mini , logstream ) ;
-    std::string latexOutput = 
-      NamedParameter<std::string>("LatexFile",(std::string)"fits.tex").getVal();
-    LatexTable( latexOutput ).makeTable( bkg.decayTrees() , fitfractions, fq , true );
+    LatexTable( latexOut ).makeTable( bkg.decayTrees() , fitfractions, fq , true );
   }
   else  {
     std::vector<std::string> fitfractions = pdf.fitFractions( *mini , logstream );
-    std::string latexOutput = 
-      NamedParameter<std::string>("LatexFile",(std::string)"fits.tex").getVal();
-    LatexTable( latexOutput ).makeTable( pdf.decayTrees() , fitfractions, fq );
+    LatexTable( latexOut ).makeTable( pdf.decayTrees() , fitfractions, fq );
   }
-  std::string flatMC = 
-    NamedParameter<std::string>("MCCoherence", (std::string)"NONE" ).getVal();
-/*
-  if( flatMC != "NONE" ){
-  
-    TFile* mc = TFile::Open(flatMC.c_str());
-    TTree* tmc = (TTree*)mc->Get("DalitzEventList");
-    EventList flatMC(tmc, evtType , MPS.size() / 2  );
 
+  if( flatMC != "NONE" ){
+
+    EventList flatEvts( flatMC , evtType , MPS.size() / 2  );
+    /*
     TH2D* coherence = new TH2D("coherenceFactor","coherenceFactor",200,0,1,100,-M_PI,M_PI);
     auto covariance = mini->covMatrix(); 
     TDecompChol decomposed( covariance );
@@ -373,18 +332,21 @@ int main(int argc , char* argv[] ){
     for( unsigned int i = 0 ; i < MPS.size(); ++i){
       if( MPS.getParPtr(i)->iFixInit() == 0 ){
         floatingParams.push_back( MPS.getParPtr(i) );
-         initialValues.push_back( MPS.getParPtr(i)->mean() );
+        initialValues.push_back( MPS.getParPtr(i)->mean() );
       };
     }
-   
-    signalAndTwoBackground.setMC( flatMC );
+     */ 
+    signalAndTwoBackground.setMC( flatEvts );
     signalAndTwoBackground.getVal();
-    CoherenceFactor rk3pi( flatMC, &pdf, &misID );
+    CoherenceFactor rk3pi( &flatEvts, &pdf, &misID );
+    rk3pi.setGlobalPhase( globalPhase );
+    if( binningName == "" ) rk3pi.makeBins( co_nBins );
+    else rk3pi.readBinsFromFile( binningName  );
     rk3pi.printCoherence( logstream ) ;
+    
     //rk3pi.getFitFractions( *mini );
-    //rk3pi.getNumberOfEventsInEachBin( events );
-    
-    
+    //rk3pi.getNumberOfEventsInEachBin( events );    
+   /*
     TRandom3* randomMatrixErrorPropagator = new TRandom3();
     
     for( unsigned int i = 0 ; i < 10000 ; ++i ){
@@ -396,15 +358,13 @@ int main(int argc , char* argv[] ){
       for( unsigned int i = 0 ; i < floatingParams.size() ; ++i ) 
         floatingParams[i]->setCurrentFitVal( initialValues[i] );
     }
-    
+    */
     output->cd();
-    coherence->Write(); 
+  //  coherence->Write(); 
   };
-  */
+  
   logstream << "End Log" << std::endl; 
   
-  std::string epsFile = 
-    NamedParameter<std::string>("EpsFile",(std::string)"default.eps").getVal();
 //  TCanvas* c1 = MakePlots( output );
 //  c1->SaveAs( epsFile.c_str() );
   output->Write();

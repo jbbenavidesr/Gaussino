@@ -3,7 +3,6 @@
 #include "AmpGen/ParticleProperties.h"
 #include "AmpGen/CLHEPPhysicalConstants.h"
 #include "AmpGen/CLHEPSystemOfUnits.h"
-#include "AmpGen/NamedParameter.h"
 #include "AmpGen/Utils.h"
 
 
@@ -141,34 +140,10 @@ ParticleProperties::ParticleProperties(std::string pdg_string)
 
 void ParticleProperties::setRadius(){
   // set radius (not part of mass_width.csv):
-  if (abs(pdg_id()) == 421 
-      || abs(pdg_id()) == 411 
-      || abs(pdg_id()) == 431){
-    _Radius = _defaultCharmRadius;
-  }else{
-    _Radius = _defaultRadius;
-  }
-
-  string pdg_id_string = anythingToString(abs(pdg_id()));
-  string parName = pdg_id_string + "_Radius_invGeV";
-  NamedParameter<double> specificR( parName
-				   , (double) -9999.0
-				   , (const char*) 0
-				   , NamedParameterBase::QUIET
-				    );
-  if(specificR > -9998){
-    _Radius = specificR/GeV;
-  }else{
-    NamedParameter<double> genericR("Default_Radius_invGeV"
-				    , (double) -9999.0
-				    , (const char*) 0
-				    , NamedParameterBase::QUIET);
-   if(genericR > -9998){
-      _Radius = genericR/GeV;
-    }
-  }
-
-  return;
+ bool isCharm = (abs(pdg_id()) == 421
+      || abs(pdg_id()) == 411
+      || abs(pdg_id()) == 431) ;
+  _Radius = isCharm ? _defaultCharmRadius : _defaultRadius; 
 }
 
 void ParticleProperties::antiQuarks(){

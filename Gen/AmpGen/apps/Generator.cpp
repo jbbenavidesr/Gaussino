@@ -28,12 +28,16 @@ int main( int /*argc */, char** /*argv*/ ){
 
   AmpGen::MinuitParameterSet MPS = MPSFromStream();
 
-  omp_set_num_threads(NamedParameter<unsigned int>("nCores",16).getVal() );
+  std::vector<std::string>  eventTypeNames = NamedParameter<std::string>("EventType").getVector();
+  unsigned int nCores  = NamedParameter<unsigned int>("nCores",16); 
+  unsigned int nEvents = NamedParameter<double>("NEvents",10000);
+  unsigned int useRoot = NamedParameter<unsigned int>("useRoot",0);
+  std::string output   = NamedParameter<std::string>("OutputFile",std::string("output.root") );
+  
+  omp_set_num_threads(nCores );
   omp_set_dynamic(0);
 
-  EventType eventType( 
-    NamedParameter<std::string>("Mother") 
-  , NamedParameter<std::string>("EventType").getVector()  );
+  EventType eventType(  eventTypeNames  );
 
   EventList accepted( eventType );
 
@@ -49,26 +53,22 @@ int main( int /*argc */, char** /*argv*/ ){
     ERROR("Library linking / creation failed, exiting");
     return 0 ;
   }
-  INFO("PDF is linked and ready to go ? " );
-  ///for( auto& p : pdf ) INFO( p.second->isReady() ); 
-  for( unsigned int i = 0 ; i < sig.size(); ++i){
-    INFO( sig.pdf(i).isReady() );
-  };
-  Generator GENERATOR( sig, eventType );
+  Generator signalGenerator( sig, eventType );
   TRandom3 rnd;
   
-  GENERATOR.setRandom( &rnd );
-  GENERATOR.fillEventList( accepted, 
-      NamedParameter<double>("NEvents",10000).getVal() ,
-      NamedParameter<int>("useRoot",0).getVal() );
+  signalGenerator.setRandom( &rnd );
+  signalGenerator.fillEventList( accepted, nEvents, []( auto& evt ){ return evt.s(0,1) > 1000*1000 ; }  );
   
   INFO("Making output files");
-  TFile* f = TFile::Open("output_plots.root","RECREATE");
+  TFile* f = TFile::Open( output.c_str(),"RECREATE");
   f->cd();
-  TTree* tree = accepted.tree("DalitzEventList");
-  tree->Write();
+  accepted.tree("DalitzEventList")->Write();
+  
   auto plots = accepted.makePlots();
   for( auto& plot : plots ) plot->Write();
+  auto plots2d = accepted.makePlots2D("",0,50); 
+  for( auto& plot2d : plots2d ) plot2d->Write();
   INFO("Writing output file ");  
+
   f->Close();
 }

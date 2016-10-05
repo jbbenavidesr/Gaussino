@@ -11,63 +11,64 @@
 
 #include "AmpGen/ParticleProperties.h"
 
-class ParticlePropertiesList{ // a singleton - ensures everyone
-  // uses the same particle properties, which is initialised 
-  // only once.  Saves space and time
-  // and (maybe) increases consistency.
-  // To get access do:
-  // ParticlePropertiesList* PPL = ParticlePropertiesList::getMe();
-  // and then:
-  // ParticleProperties* pionProps = PPL->get("pion");
-  // ParticleProperties* pionProps = PPL->get(221);
-  // 
+namespace AmpGen {
+  class ParticlePropertiesList{ // a singleton - ensures everyone
+    // uses the same particle properties, which is initialised 
+    // only once.  Saves space and time
+    // and (maybe) increases consistency.
+    // To get access do:
+    // ParticlePropertiesList* PPL = ParticlePropertiesList::getMe();
+    // and then:
+    // ParticleProperties* pionProps = PPL->get("pion");
+    // ParticleProperties* pionProps = PPL->get(221);
+    // 
 
-  static ParticlePropertiesList* ptr;
- 
-  ParticlePropertiesList(std::string fname_in="mass_width.csv");
-  static std::string _MintDalitzSpecialParticles;
- protected:
-  static std::vector<std::string> _dirList;
-  static const std::vector<std::string>& dirList();
-  static void fillDirList();
+    static ParticlePropertiesList* ptr;
 
-  static void printCannotFindWarning(const std::string& where
-				     , const std::string& what);
-  static void printCannotFindWarning(const std::string& where
-				     , int what);
+    ParticlePropertiesList(std::string fname_in="mass_width.csv");
+    static std::string _MintDalitzSpecialParticles;
+    protected:
+    static std::vector<std::string> _dirList;
+    static const std::vector<std::string>& dirList();
+    static void fillDirList();
 
-  std::string _fname;
-  FILE* findFiles();
-  static FILE* findThisFile(const std::string& fname);
-  bool readFiles();
-  std::list<ParticleProperties> theList;
-  std::map<std::string, std::list<ParticleProperties>::iterator > byName;
-  std::map<int, std::list<ParticleProperties>::iterator > byID;
+    static void printCannotFindWarning(const std::string& where
+        , const std::string& what);
+    static void printCannotFindWarning(const std::string& where
+        , int what);
 
- public:
-  static const ParticlePropertiesList* getMe();
-  
-  const ParticleProperties* get(const std::string& name) const;
-  const ParticleProperties* get(int pdg_id) const;
+    std::string _fname;
+    FILE* findFiles();
+    static FILE* findThisFile(const std::string& fname);
+    bool readFiles();
+    std::list<ParticleProperties> theList;
+    std::map<std::string, std::list<ParticleProperties>::iterator > byName;
+    std::map<int, std::list<ParticleProperties>::iterator > byID;
 
-  std::vector<std::string> getParticleNames() const {
-    std::vector<std::string> particleNames;
-    for( auto& particle : byName ) particleNames.push_back( particle.first ); 
-    return particleNames; 
-  }  
-  void print(std::ostream& out=std::cout) const;
+    public:
+    static const ParticlePropertiesList* getMe();
 
+    const ParticleProperties* get(const std::string& name) const;
+    const ParticleProperties* get(int pdg_id) const;
 
-  // fast fuss-free access:
-  static double mass(const std::string& name);
-  static double mass(int PDG);
-  static double width(const std::string& name);
-  static double width(int PDG);
-  
-};
+    std::vector<std::string> getParticleNames() const {
+      std::vector<std::string> particleNames;
+      for( auto& particle : byName ) particleNames.push_back( particle.first ); 
+      return particleNames; 
+    }  
+    void print(std::ostream& out=std::cout) const;
 
 
-std::ostream& operator<<(std::ostream& out, const ParticlePropertiesList& ppl);
+    // fast fuss-free access:
+    static double mass(const std::string& name);
+    static double mass(int PDG);
+    static double width(const std::string& name);
+    static double width(int PDG);
 
+  };
+
+
+  std::ostream& operator<<(std::ostream& out, const ParticlePropertiesList& ppl);
+}
 #endif
 //

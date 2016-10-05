@@ -35,9 +35,13 @@ static std::string getTexFromPDG( const std::string& input , const bool& isRoot=
     theGreeks.emplace_back("Omega","\\Omega");
     theGreeks.emplace_back("Upsilon","\\Upsilon");
     theGreeks.emplace_back("eta","\\eta");
+    theGreeks.emplace_back("K0S0","\\mathrm{K}_{S}^{0}");
+    theGreeks.emplace_back("K0L0","\\mathrm{K}_{L}^{0}");
+
     theGreeks.emplace_back("K","\\mathrm{K}");
     theGreeks.emplace_back("a","\\mathrm{a}");
     theGreeks.emplace_back("f","\\mathrm{f}");
+    theGreeks.emplace_back("B","\\mathrm{B}");
   } else {
     theGreeks.emplace_back("rho","#rho");
     theGreeks.emplace_back("pi","#pi");
@@ -49,11 +53,14 @@ static std::string getTexFromPDG( const std::string& input , const bool& isRoot=
     theGreeks.emplace_back("Omega","#Omega");
     theGreeks.emplace_back("Upsilon","#Upsilon");
     theGreeks.emplace_back("eta","#eta");
+    theGreeks.emplace_back("K0S0","K_{S}^{0}");
+    theGreeks.emplace_back("K0L0","K_{L}^{0}");
+
     theGreeks.emplace_back("K","K");
     theGreeks.emplace_back("a","a");
     theGreeks.emplace_back("f","f");
+    theGreeks.emplace_back("B","B");
   }
-
 
   std::vector<std::pair<std::string,std::string>> signs;
   signs.emplace_back("*","^{*}");

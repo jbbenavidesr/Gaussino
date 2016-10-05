@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <algorithm>
+#include <sstream>
+#include "AmpGen/MsgService.h"
 
 /*
 

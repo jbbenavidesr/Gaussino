@@ -30,7 +30,12 @@ namespace AmpGen {
         m_rnd = rand ; 
         m_gps.setRandom( m_rnd );
       } 
-      void fillEventListPhaseSpace( EventList& list, const unsigned int& N, bool useRoot=false){
+      void fillEventListPhaseSpace( EventList& list, const unsigned int& N, bool useRoot=false ){
+        fillEventListPhaseSpace( list, N, []( const Event& evt ){ return 1; } , useRoot );
+      };      
+
+      template <class HARD_CUT > 
+      void fillEventListPhaseSpace( EventList& list, const unsigned int& N, HARD_CUT cut , bool useRoot=false){
 
         unsigned int rejected = 0 ;
         list.reserve(N);
@@ -46,8 +51,7 @@ namespace AmpGen {
                   m_gps.GetDecay(i)->Pz(),
                   m_gps.GetDecay(i)->E() } ) ;
             newEvent.setWeight(1,0);
-            list.push_back( newEvent );
-
+            if( cut(newEvent) ) list.push_back( newEvent );
           }
         }
         else { 
@@ -55,14 +59,12 @@ namespace AmpGen {
             if( m_gps_root.Generate() < m_rnd->Uniform() ){ rejected++; continue ; }
             Event newEvent( 4*m_eventType.size() , m_pdf.size() );
             for( unsigned int i = 0 ; i < m_eventType.size() ; ++i )
-
               newEvent.set( i, { 
                   m_gps_root.GetDecay(i)->Px(),
                   m_gps_root.GetDecay(i)->Py(),
                   m_gps_root.GetDecay(i)->Pz(),
                   m_gps_root.GetDecay(i)->E() } ) ;
-            newEvent.setWeight(1,0);
-             
+            newEvent.setWeight(1,0);    
             list.push_back( newEvent );
           }
         }
@@ -73,8 +75,18 @@ namespace AmpGen {
             << 100.*list.size() / (list.size() + rejected ) 
             << "%, yield = " << list.size() << " time = " << time );
       }
+      void fillEventList( EventList& list, 
+                          const unsigned int& N,
+                          bool useRoot=false ){
+        fillEventList( list, N ,  [](auto& evt ){ return 1; } , useRoot);
 
-      void fillEventList( EventList& list, const unsigned int& N , bool useRoot = false ){
+      }
+
+      template <class HARD_CUT>
+      void fillEventList( EventList& list, 
+                     const unsigned int& N,
+                     HARD_CUT cut,
+                     bool useRoot = false ){
         if( m_rnd == nullptr ){
           ERROR("Random generator not set!") ;
           return;
@@ -85,7 +97,7 @@ namespace AmpGen {
         while( list.size() - size0 < N ){
           auto t_start = std::chrono::high_resolution_clock::now();
           EventList mc( m_eventType );
-          fillEventListPhaseSpace( mc, m_generatorBlock, useRoot );
+          fillEventListPhaseSpace( mc, m_generatorBlock, cut, useRoot );
           auto t_stage2 = std::chrono::high_resolution_clock::now();
 
           m_pdf.setEvents( mc );

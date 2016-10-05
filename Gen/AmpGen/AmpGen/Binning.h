@@ -280,19 +280,15 @@ class Bin {
       other.push_back( bins.first );
       other.push_back( bins.second );
     }
-
-    //    bool operator<( const double& other ){ return other ; };
-    // bool operator>( const double& other ){ return min(0) > other ; };
-
 };
 
-bool operator<( const double& number, const Bin& bin ){ return number < bin.min(0) ; }
-bool operator>( const double& number, const Bin& bin ){ return bin.min(0) > number ; } 
-bool operator>( const Bin& bin , const double& number){ return bin.min(0) > number ; }
-bool operator<( const Bin& bin , const double& number){ return bin.min(0) < number ; }
+bool operator<( const double& number, const Bin& bin ) ;  // { return number < bin.min(0) ; }
+bool operator>( const double& number, const Bin& bin ) ;  // { return bin.min(0) > number ; } 
+bool operator>( const Bin& bin , const double& number) ;  // { return bin.min(0) > number ; }
+bool operator<( const Bin& bin , const double& number) ;  // { return bin.min(0) < number ; }
 
 
-double deltaN( const Bin& bin0, const Bin& bin1 ){ return abs( bin0.nEvents() - bin1.nEvents() ); }
+double deltaN( const Bin& bin0, const Bin& bin1 ) ; // { return abs( bin0.nEvents() - bin1.nEvents() ); }
 
 class Binning : public std::vector<Bin>{
   public:
@@ -334,7 +330,8 @@ class Binning : public std::vector<Bin>{
       return nEvt;
     }
     void lowerBoundSort(const unsigned int& index){
-      std::sort( std::vector<Bin>::begin(), std::vector<Bin>::end(), [index]( auto& b1, auto&b2 ){ return b1.min(index) < b2.min(index) ; } );
+      std::sort( std::vector<Bin>::begin(), std::vector<Bin>::end(), 
+        [index]( const Bin& b1, const Bin& b2 ){ return b1.min(index) < b2.min(index) ; } );
     }; /// sort bins by lower bound 
 
     Binning( Bin& bin, const unsigned int& index, const double& pos ) : std::vector<Bin>(2) {
