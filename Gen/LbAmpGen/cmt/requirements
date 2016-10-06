@@ -1,0 +1,34 @@
+#============================================================================
+# Created    : 2016-09-02
+# Maintainer : Tim Evans
+#============================================================================
+package           LbAmpGen
+version           v1r0
+
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          cmt doc src models
+
+# Used packages. 
+#============================================================================
+use   AmpGen  v*  Gen
+
+include_path      none
+
+# Component library building rule
+#============================================================================
+library          LbDtoKpipipi_v1    ../src/DtoKpipipi_v1.cpp 
+
+# define component library link options
+#============================================================================
+apply_pattern    component_library library=LbDtoKpipipi_v1
+
+# Make the C++ source code from the steering files
+#============================================================================
+#private
+#  action make_source_files "./makeModels.py"
+#  macro_append constituents " make_source_files"
+#  macro_remove cmt_actions_constituents "make_source_files"
+#
+#end_private
+

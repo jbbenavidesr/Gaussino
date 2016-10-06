@@ -1,0 +1,54 @@
+#============================================================================
+# Created    : 2016-09-02
+# Maintainer : Tim Evans
+#============================================================================
+package           AmpGen
+version           v1r0
+
+# Structure, i.e. directories to process. 
+#============================================================================
+branches          AmpGen cmt doc src apps models
+
+# Used packages.
+#============================================================================
+#use ROOT              v*     LCG_Interfaces # -no_auto_imports
+
+use ROOT        * LCG_Interfaces -no_auto_imports
+
+
+include_dirs $(AMPGENROOT)
+
+
+#include_path      none
+#include_dirs /afs/cern.ch/user/t/tevans/cmtuser/Gauss_HEAD/Gen/AmpGen/ 
+
+macro_append cppflags " -g -fPIC -Ofast -std=c++14 -fopenmp -Wno-unused-function -Wno-unused-parameter"
+macro_append ROOT_linkopts " -lHist -lMatrix -lGraf -lMinuit -lTree -lMathCore -lPhysics"
+
+#apply_pattern install_more_includes more=AmpGen
+
+# Linker library building rule
+#============================================================================
+library          AmpGen    -import=ROOT ../src/*.cpp 
+
+# Executables
+#============================================================================
+
+private 
+  application                  Generator  -import=ROOT ../apps/Generator.cpp
+  application                     Fitter  -import=ROOT ../apps/Fitter.cpp
+  application        ConvertToSourceCode  -import=ROOT ../apps/ConvertToSourceCode.cpp
+# Patterns
+#============================================================================
+# apply_pattern     application_path
+
+#special linkopts
+  macro_append            Generatorlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append               Fitterlinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+  macro_append  ConvertToSourceCodelinkopts    "$(use_linkopts) -lAmpGen -fopenmp"
+end_private
+
+apply_pattern    component_library library=AmpGenLib
+
+apply_pattern disable_package_on platform=target-winxp
+
