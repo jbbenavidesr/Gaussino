@@ -98,115 +98,37 @@ namespace AmpGen {
 
     Tensor operator | ( Tensor other ) ; 
 
-    Tensor ( std::vector<double> elements, 
-        std::vector<unsigned int> _dim) : 
-      m_dim(_dim),
-      m_indices(_dim.size() )
-    {
-      for( auto& x : elements ) append( x );
-    }
+    Tensor() ; 
+    Tensor( const std::vector<double>&      elements, const std::vector<unsigned int>& _dim)  ;
+    Tensor( const std::vector<std::string>& elements, const std::vector<unsigned int>& _dim, bool  resolved=false) ;
+    Tensor( const std::vector<Expression>&  elements, const std::vector<unsigned int>& _dim ) ;
+    Tensor( const std::vector<Expression>&  elements );
 
-    Tensor ( const std::vector<std::string>& elements, 
-        const std::vector<unsigned int>& _dim, 
-        bool  resolved=false) : m_dim(_dim),
-    m_indices(_dim.size() ) 
-    {
-      for( auto& x : elements ) append( x , resolved );
-    }
     Expression Determinant() const;
-    Tensor(){};
-    Tensor( std::vector<Expression> elements, 
-        const std::vector<unsigned int>& _m_dim ) : 
-      m_dim(_m_dim) ,  
-      m_elements(elements),
-      m_indices(_m_dim.size()) {
-        if( nElements() != m_elements.size() ){
-          ERROR("Dimensions do not match number of m_elements!");
-        }
-      };
-    Tensor( const std::vector<Expression>& elements ) : 
-      Tensor( elements, std::vector<unsigned int>({(unsigned int)elements.size()})) {} ; 
+    
 
-    void setName( const std::string& name ){ m_name = name ; }
-    std::string name() const { return m_name; }
     /// get an element of the tensor from the index 
-    Expression get( const unsigned int& co ) { 
-      if( co >= m_elements.size() )
-        ERROR( "Element (" + std::to_string(co) + " ) out of range (0" 
-            << ", " << m_elements.size() << ")" );
-      return (m_elements[co]); 
-    }
-    Expression get( const unsigned int& co ) const {
-      if( co >= m_elements.size() )
-        ERROR( "Element (" + std::to_string(co) + " ) out of range (0"
-            << ", " << m_elements.size() << ")" );
-      return (m_elements[co]);
-    }
-    std::string to_string() { 
-      std::string value = "{";
-      for( unsigned int i=0; i < m_dim[0] ; ++i ){
-        value += "{";
-        for( unsigned int j = 0 ; j < m_dim[1] ; ++j ){
-          value += (*this)[{i,j}].to_string() + ( i == m_dim[0] -1 && j == m_dim[1] -1 ? "" : ",") ;
-        }
-      };
-      return value + "}"; 
-    };
+    Expression get( const unsigned int& co ) ;
 
-    unsigned int rank() const { return m_dim.size() ; } 
-    int metricSgn(const std::vector<unsigned int>& coordinates ) const {
-      int sgn=1;
-      for( auto& coord : coordinates ) 
-        sgn *= ( coord == 3 ) ? 1 : -1; 
-      return sgn;
-    }
-    int metricSgn( const unsigned int& index ) const {
-      return metricSgn( coords(index) ); 
-    }
-    void append( const Expression& expression ) { m_elements.push_back( expression ); }
-    void append( const double& value) { m_elements.push_back( Expression( Constant( value ) )); }
-    void append( const std::string& name , bool resolved=true) { m_elements.push_back( Expression( Parameter(name , 0 , resolved ) ) ); }
-    Expression get( const std::vector<unsigned int>& _co ) const { return (m_elements[index( _co ) ]); }
-    unsigned int size() const { return m_elements.size(); } 
-    unsigned int index( const std::vector<unsigned int>& _co ) const {
-      unsigned int _index = 0 ;
-      unsigned int dproduct = 1;
-      for( unsigned int i = 0 ; i < _co.size() ; ++i ){
-        _index += _co[i] * dproduct;
-        dproduct *= m_dim[i];
-      }
-      if( _index > nElements() )
-        ERROR( "Element (" + std::to_string(_index) +") out of range" );
-      return _index; 
-    }
+    Expression get( const unsigned int& co ) const ;
 
+    std::string to_string() ;
+
+    unsigned int rank() const ; 
+    int metricSgn(const std::vector<unsigned int>& coordinates ) const ; 
+    int metricSgn( const unsigned int& index ) const ;
+    void append( const Expression& expression ) ;
+    void append( const double& value) ;
+    void append( const std::string& name , bool resolved=true) ;
+    Expression get( const std::vector<unsigned int>& _co ) const ;
+    unsigned int size() const ;  
+    unsigned int index( const std::vector<unsigned int>& _co ) const ;
     /// get the coordinates of a given index ////
-    std::vector<unsigned int> coords( const unsigned int& index ) const { 
-      std::vector<unsigned int> returnValue; 
-      unsigned int index_temp = index; 
-      for( unsigned int j=1; j < m_dim.size()+1; ++j ){
-        unsigned int dproduct=1;
-        for( unsigned int i = 0 ; i < m_dim.size() -j; ++i ){
-          dproduct*=m_dim[i];
-        }
-        unsigned int val = ( index_temp - ( index_temp % dproduct ) ) /dproduct ; 
-        index_temp -= dproduct*val;
-        returnValue.push_back(val);
-      }
-      std::reverse( returnValue.begin(), returnValue.end() );   
-      return returnValue;
-    } 
+    std::vector<unsigned int> coords( const unsigned int& index ) const ;
+
     /// get the number of d.o.f.s of a Tensor of given rank and dimension  
-    unsigned int nElements() const {
-      unsigned int dim=1;
-      //std::string dString;
-      for( auto& d : m_dim ){ 
-        dim *= ( d != 0 ) ? d : 1;
-        //  dString += "x" + std::to_string(d);
-      }
-      //INFO( dim << "    " << dString ) ;
-      return dim; 
-    }
+    unsigned int nElements() const ; 
+    
     bool isScalar() const {
       return size() == 1 && m_dim[0] == 1;
     };

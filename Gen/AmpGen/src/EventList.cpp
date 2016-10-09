@@ -14,7 +14,7 @@ EventList::EventList( const std::string& fname,
       evtType,
       pdfSize,
       flipState,
-      scaleFactor ) {};
+      scaleFactor ) {} 
 
 /*
 EventList::EventList( const std::string& fname,

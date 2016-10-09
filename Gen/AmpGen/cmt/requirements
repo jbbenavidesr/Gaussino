@@ -16,7 +16,7 @@ use ROOT        * LCG_Interfaces -no_auto_imports
 
 include_dirs $(AMPGENROOT)
 
-macro_append cppflags " -g -fPIC -Ofast -std=c++14 -fopenmp -Wno-unused-function -Wno-unused-parameter"
+macro_append cppflags " -g -fPIC -Ofast -fopenmp -Wno-unused-function -Wno-unused-parameter"
 macro_append ROOT_linkopts " -lHist -lMatrix -lGraf -lMinuit -lTree -lMathCore -lPhysics"
 
 # Linker library building rule

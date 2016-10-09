@@ -247,14 +247,14 @@ int main(int argc , char* argv[] ){
 
   if( morePlots ){
     unsigned int nBinsReduced = NamedParameter<unsigned int>("nBinsReduced",50).getVal();
-    auto kpi_mid   = [](auto& evt){ return fabs( sqrt( evt.s({0,1}) ) - 897.6 ) < 75;  } ;
-    auto pipi_mid     = [](auto& evt){ return fabs( sqrt( evt.s({2,3}) ) - 770. ) < 100; } ;
-    auto kpi_high = [](auto& evt){ return evt.s({0,1}) > 1100*1100;  } ;
-    auto pipi_high   = [](auto& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
-    auto kpi_low      = [](auto& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
-    auto pipi_low    = [](auto& evt){ return evt.s({2,3}) < 550*550; };
-    auto no_cut          = [](auto& evt){ return 1; };
-    auto kstarrho_window = [&kpi_mid,&pipi_mid](auto& evt){ return kpi_mid(evt) && pipi_mid(evt) ; };
+    auto kpi_mid   = [](const Event& evt){ return fabs( sqrt( evt.s({0,1}) ) - 897.6 ) < 75;  } ;
+    auto pipi_mid  = [](const Event& evt){ return fabs( sqrt( evt.s({2,3}) ) - 770. ) < 100; } ;
+    auto kpi_high  = [](const Event& evt){ return evt.s({0,1}) > 1100*1100;  } ;
+    auto pipi_high = [](const Event& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
+    auto kpi_low   = [](const Event& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
+    auto pipi_low  = [](const Event& evt){ return evt.s({2,3}) < 550*550; };
+    auto no_cut    = [](const Event& evt){ return 1; };
+    auto kstarrho_window = [&kpi_mid,&pipi_mid](const Event& evt){ return kpi_mid(evt) && pipi_mid(evt) ; };
 
     auto kstar_hcos = HelicityCosine(0,3,{1,0});
     auto rho_hcos   = HelicityCosine(1,2,{2,3}) ;
@@ -280,7 +280,7 @@ int main(int argc , char* argv[] ){
 
   for( unsigned int i = 0 ; i < defaultAxes.size(); ++i ){
     auto axis = defaultAxes[i];
-    auto sij = [&axis](auto& evt){ 
+    auto sij = [&axis]( const Event& evt){ 
       //INFO( "returning : " << evt.s( axis.indices ) / (1000.*1000.) );
       return evt.s( axis.indices) / (1000.*1000.) ; } ;
     gFile->cd();
@@ -288,7 +288,7 @@ int main(int argc , char* argv[] ){
  
    for( unsigned int j = i +1 ; j < defaultAxes.size(); ++j){
     auto& yAxis = defaultAxes[j];
-    auto s2 = [&yAxis](auto& evt){
+    auto s2 = [&yAxis]( const Event& evt){
               return evt.s( yAxis.indices) / (1000.*1000.) ; } ;
           
       makePerAmplitudePlot2D( eventsMC, bkg, sij, s2, no_cut, axis, yAxis, "MC_" + axis.name + "_"+yAxis.name +"_allAmps");

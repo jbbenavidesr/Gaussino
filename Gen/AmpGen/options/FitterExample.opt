@@ -1,10 +1,10 @@
-EventType K- pi+ pi+ pi- 
+EventType D0 K- pi+ pi+ pi- 
 ####################
 
 #SgIntegratorFname     "/afs/cern.ch/work/t/tevans/public/RS_K3pi_IntegrationEvents.root" #integration MC events 
 #SigFileName           "/afs/cern.ch/work/t/tevans/public/RS_K3pi_DataEvents.root" #data events
-SgIntegratorFname "$DATADIR/imc.root"
-SigFileName       "$DATADIR/imc_AmpGen.root"
+SgIntegratorFname "$DATADIR/RS_MC.root"
+SigFileName       "$DATADIR/RS_PARITY.root"
 
 debug 0 # include verbose debugging samples 
 #Prescale 0.5 #prescale integration MC for doing resampling error estimation 

@@ -17,6 +17,7 @@ namespace AmpGen {
       private:
         void* m_handle; 
         std::map<unsigned int, CompiledExpression<RETURN_TYPE>* > m_objects;
+        typedef typename std::map<unsigned int, CompiledExpression<RETURN_TYPE>* >::iterator it;
         std::vector<std::string> m_includes; 
       public: 
         enum OPTIONS {
@@ -25,8 +26,8 @@ namespace AmpGen {
         };
 
         FCNLibrary() : m_includes({"complex","iostream","math.h"}) {};
-        auto begin(){ return m_objects.begin(); }
-        auto end(){ return m_objects.end(); }
+        it begin(){ return m_objects.begin(); }
+        it end(){ return m_objects.end(); }
         /*
         template <class... Args > 
           auto emplace( Args&& ...args ){

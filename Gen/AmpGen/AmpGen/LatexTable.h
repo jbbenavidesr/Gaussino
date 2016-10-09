@@ -26,15 +26,16 @@ namespace AmpGen {
       std::ofstream model; model.open(fname);
 
       INFO("Making LaTeX table with " << particles.size() << " , " << ff.size() << " entries" );
-      std::map<std::string, std::vector<std::pair< std::shared_ptr<Particle>, unsigned int>>> topos; /// STL MADNESS
+      typedef std::pair< std::shared_ptr<Particle>, unsigned int> topoObject;
+
+      std::map<std::string, std::vector<topoObject>> topos; /// STL MADNESS
       for( unsigned int i = 0 ; i < particles.size(); ++i ){
         auto particle = particles[i];
         topos[ particle->topologicalString() ].push_back( std::make_pair(particle,i ) );
       };
-
       for( auto& topologies :topos ) {
         if( topologies.first == "VV" ){
-          std::sort( topologies.second.begin(), topologies.second.end() , [](auto& g1, auto& g2){
+          std::sort( topologies.second.begin(), topologies.second.end() , []( const topoObject& g1, const topoObject& g2){
               double m1 = g1.first->daughter(0)->mass() + g1.first->daughter(1)->mass();
               double m2 = g2.first->daughter(0)->mass() + g2.first->daughter(1)->mass();
               double l1 = g1.first->orbital();
@@ -43,7 +44,7 @@ namespace AmpGen {
         };
         std::string spinBit = topologies.first.substr( 0, 2 );
         if( spinBit == "AP" || spinBit == "TP" ){
-          std::sort( topologies.second.begin(), topologies.second.end() , [](auto& g1, auto& g2){
+          std::sort( topologies.second.begin(), topologies.second.end() , []( const topoObject& g1, const topoObject& g2){
               double m1 = g1.first->daughter(0)->mass();
               double m2 = g2.first->daughter(0)->mass();
               double l1 = g1.first->daughter(0)->orbital();

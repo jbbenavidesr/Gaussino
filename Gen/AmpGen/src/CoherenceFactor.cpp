@@ -34,7 +34,9 @@ std::vector<Binning> CoherenceFactor::makeCoherentBins( const unsigned int& nBin
   /// hyper-voxelate the data /// 
 
   for( auto& voxel : dataBins ) setVoxelCoherence( voxel );
-  std::sort( dataBins.begin(), dataBins.end(), []( auto& b1, auto& b2 ){ return std::arg( b1.getValue() ) < std::arg( b2.getValue() ) ; } );
+  std::sort( dataBins.begin(), dataBins.end(), 
+      []( const Bin& b1, const Bin& b2 )
+      { return std::arg( b1.getValue() ) < std::arg( b2.getValue() ) ; } );
 
   double norm=0 ;
   for( auto& bin : dataBins ) norm += bin.getNorm1();

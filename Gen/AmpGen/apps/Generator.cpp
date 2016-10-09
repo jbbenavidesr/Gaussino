@@ -31,7 +31,7 @@ int main( int /*argc */, char** /*argv*/ ){
   std::vector<std::string>  eventTypeNames = NamedParameter<std::string>("EventType").getVector();
   unsigned int nCores  = NamedParameter<unsigned int>("nCores",16); 
   unsigned int nEvents = NamedParameter<double>("NEvents",10000);
-  unsigned int useRoot = NamedParameter<unsigned int>("useRoot",0);
+  //unsigned int useRoot = NamedParameter<unsigned int>("useRoot",0);
   std::string output   = NamedParameter<std::string>("OutputFile",std::string("output.root") );
   
   omp_set_num_threads(nCores );
@@ -57,7 +57,9 @@ int main( int /*argc */, char** /*argv*/ ){
   TRandom3 rnd;
   
   signalGenerator.setRandom( &rnd );
-  signalGenerator.fillEventList( accepted, nEvents, []( auto& evt ){ return evt.s(0,1) > 1000*1000 ; }  );
+  signalGenerator.fillEventList( accepted, nEvents ) ; 
+  
+  //, []( const Event& evt ){ return evt.s(0,1) > 1000*1000 ; }  );
   
   INFO("Making output files");
   TFile* f = TFile::Open( output.c_str(),"RECREATE");

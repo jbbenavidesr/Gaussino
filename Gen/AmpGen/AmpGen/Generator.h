@@ -78,7 +78,7 @@ namespace AmpGen {
       void fillEventList( EventList& list, 
                           const unsigned int& N,
                           bool useRoot=false ){
-        fillEventList( list, N ,  [](auto& evt ){ return 1; } , useRoot);
+        fillEventList( list, N ,  []( const Event& evt ){ return 1; } , useRoot);
 
       }
 

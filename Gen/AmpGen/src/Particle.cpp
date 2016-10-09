@@ -192,12 +192,12 @@ Tensor Particle::P() const {
 
   if( isStable() ){
     if( m_index != 999 ){
-      momentum.setName( std::to_string(m_index) );
+      const std::string index=std::to_string(m_index);
       return Tensor( {
-          (m_parity_factor)*Parameter( std::to_string(m_index)+"_Px", 0, false,true ), 
-          (m_parity_factor)* Parameter( std::to_string(m_index)+"_Py",0, false,true),
-          (m_parity_factor)* Parameter( std::to_string(m_index)+"_Pz",0, false,true),
-          Parameter( std::to_string(m_index)+"_E",0 , false, true ) } , {4} ) ;
+          (m_parity_factor) * Parameter( index+"_Px",0, false,true), 
+          (m_parity_factor) * Parameter( index+"_Py",0, false,true),
+          (m_parity_factor) * Parameter( index+"_Pz",0, false,true),
+                              Parameter( index+"_E" ,0, false,true) } , {4} ) ;
     }
     else ERROR( "Stable particle " <<  m_index << "is unindexed!" );
   } 
@@ -315,7 +315,7 @@ Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned in
   Expression total(0);
   auto finalStateParticles = getFinalStateParticles();
   std::sort( finalStateParticles.begin(), finalStateParticles.end(), 
-      []( auto& p1, auto& p2){ return p1->index() < p2->index() ; } ); /// get the final state particles ordered by index /// 
+      []( const std::shared_ptr<Particle>& p1, const std::shared_ptr<Particle>& p2){ return p1->index() < p2->index() ; } ); /// get the final state particles ordered by index /// 
   std::vector<std::string> permutation0_names ; 
   std::vector<unsigned int> indices( finalStateParticles.size() ) ;
   std::iota( indices.begin() , indices.end() , 0 );
