@@ -32,19 +32,12 @@ namespace AmpGen {
   class FastCoherentSum {
     protected:
 
-      /* all of these things are the same size --- 
-         we should seee about doing this better, 
-         but it would probably screw up the cache alignment 
+      /* 
+         all of these things are the same size
+         we should see about doing this better,
+         but it would probably screw up the cache alignment
          should also maybe partition some of the behaviour
          for fast incoherent sums, more general stuff blah blah
-         */
-      /*
-         struct addressMapping {
-         AmpGen::MinuitParameter* source;
-         unsigned int pdf;
-         unsigned int param;
-         addressMapping( AmpGen::MinuitParameter* _source, unsigned int _pdf, unsigned int _param ) : source(_source), pdf(_pdf), param(_param) {};
-         }; 
          */
       std::vector<std::shared_ptr<Particle>> m_decayTrees; //// decay tree storage ///
       std::vector<CompiledExpression<std::complex<double>>> m_pdfs;    

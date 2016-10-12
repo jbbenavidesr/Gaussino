@@ -103,7 +103,7 @@ namespace AmpGen {
     virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) = 0 ;
     virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping )=0;
     virtual Expression conjugate() const = 0 ;
-    virtual ~IExpression() {}; 
+    virtual ~IExpression() {};
   };
 
   typedef std::pair < std::string, Expression > DBSYMBOL;
