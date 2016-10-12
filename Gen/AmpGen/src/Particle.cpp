@@ -204,7 +204,7 @@ Tensor Particle::P() const {
   else {
     for(auto& d : m_daughters) momentum = momentum + d->P();
   }
-  if( momentum.m_elements.size() != 4 ){
+  if( momentum.nElements() != 4 ){
     ERROR("Momentum is not a four vector");
   }
   return momentum; 
@@ -216,7 +216,7 @@ Tensor Particle::Q() const {
     return Tensor();
   }
   Tensor qV =  m_daughters[0]->P() - m_daughters[1]->P() ; 
-  if( qV.m_elements.size() != 4 )
+  if( qV.nElements() != 4 )
     ERROR("Momentum transfer ill formed, somehow ..");
   return qV;
 }

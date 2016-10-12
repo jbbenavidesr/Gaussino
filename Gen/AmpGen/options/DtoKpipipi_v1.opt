@@ -1,5 +1,4 @@
-Mother    D0
-EventType K- pi+ pi+ pi-
+EventType D0 K- pi+ pi+ pi-
 NEvents 100000
 # sourceFile            "../src/DtoKpipipi_v1.cpp"
 

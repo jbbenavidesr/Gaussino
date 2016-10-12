@@ -24,12 +24,18 @@ namespace AmpGen {
   }; }
 
 namespace AmpGen { 
-  struct Tensor {
+  class Tensor {
 
-    std::string m_name;
+    private :  
     std::vector<unsigned int> m_dim;
     std::vector<Expression> m_elements;
     std::vector<LorentzIndex> m_indices ;
+
+    public: 
+    const std::vector<unsigned int>& dims() const { return m_dim ; }
+    const std::vector<LorentzIndex>& indices() const { return m_indices ; } 
+    void setIndices( const std::vector<LorentzIndex>& in ) { m_indices = in ; }  
+    unsigned int nDim() const { return m_dim.size() ; } 
 
     Tensor ( const std::vector<unsigned int>& _dim) : 
       m_dim(_dim), 

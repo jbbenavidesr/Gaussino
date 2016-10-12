@@ -103,6 +103,7 @@ namespace AmpGen {
     virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) = 0 ;
     virtual void resolveEventMapping( const std::map < std::string, unsigned int>& evtMapping )=0;
     virtual Expression conjugate() const = 0 ;
+    virtual ~IExpression() {}; 
   };
 
   typedef std::pair < std::string, Expression > DBSYMBOL;
@@ -112,7 +113,7 @@ namespace AmpGen {
       std::ostream& stream ) ;
 
 
-  struct Expression { /// effective type erasure structre /// (ETES)
+  struct Expression { /// effective type erasure structre
     std::shared_ptr<IExpression> m_expression;
 
     std::string to_string() const { 

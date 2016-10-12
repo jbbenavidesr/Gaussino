@@ -1,8 +1,8 @@
 // author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
 // status:  Mon 9 Feb 2009 19:18:04 GMT
 #include "AmpGen/ParticleProperties.h"
-#include "AmpGen/CLHEPPhysicalConstants.h"
-#include "AmpGen/CLHEPSystemOfUnits.h"
+//#include "AmpGen/CLHEPPhysicalConstants.h"
+//#include "AmpGen/CLHEPSystemOfUnits.h"
 #include "AmpGen/Utils.h"
 
 
@@ -14,6 +14,8 @@ using namespace std;
 using namespace AmpGen;
 
 const char* ParticleProperties::pionString = "1.3957018E+02 ,3.5E-04,3.5E-04,2.5284E-14  ,5.0E-18,5.0E-18,1  ,-,0   ,-, ,B,    211,   +, ,R,pi               ,uD              ";
+
+static const double GeV = 1000; 
 
 double ParticleProperties::_defaultRadius = 1.5/GeV; //1.5/GeV;
 double ParticleProperties::_defaultCharmRadius = 5.0/GeV;
@@ -29,7 +31,7 @@ void ParticleProperties::print(ostream& out) const{
       << "\n quark content: " << quarks()
       << "\n net-quark-content " << netQuarkContent()
       << "\n is its own antiparticle? " << (isItsOwnAnti() ? "yes" : "no")
-      << "\n lifetime " << lifetime_in_ps() << " ps"
+//      << "\n lifetime " << lifetime_in_ps() << " ps"
       << "\n radius " << radius()*GeV << " /GeV"
      << endl;
 }
@@ -210,7 +212,7 @@ std::string ParticleProperties::name() const{
   fullName += _charge;
   return fullName;
 }
-
+/*
 double ParticleProperties::lifetime() const{
   if(width()<0) return -9999.0;
   if(width() == 0) return 9.9999e109;
@@ -228,7 +230,7 @@ double ParticleProperties::ctau() const{
 double ParticleProperties::ctau_in_microns() const{
   return ctau()/micrometer;
 }
-
+*/
 double ParticleProperties::radius() const{
   return _Radius;
   // not set in mass_width.csv, but in normal options file

@@ -159,41 +159,41 @@ unsigned int Tensor::nElements() const {
 
 
 Tensor AmpGen::operator+( Tensor t1, Tensor t2 ){
-  Tensor result(t1.m_dim);
+  Tensor result(t1.dims());
 
   if( t1.rank() != t2.rank() ){
     ERROR( "Addition between tensors of different rank makes no sense!" );
     t1.print();
     t2.print();
   }
-  if( t1.m_elements.size() != t2.m_elements.size() ){
+  if( t1.nElements() != t2.nElements() ){
     ERROR( "Addition between tensors with different number of elements "
-        << t1.m_elements.size() << " " << t2.m_elements.size() );
+        << t1.nElements() << " " << t2.nElements() );
   }
 
-  for( unsigned int i = 0 ; i < t1.m_elements.size(); ++i )
+  for( unsigned int i = 0 ; i < t1.nElements(); ++i )
     result[i] = t1[i] + t2[i]  ;
 
   return result;
 }
 
 Tensor AmpGen::operator-( Tensor t1, Tensor t2 ){
-  Tensor result(t1.m_dim);
+  Tensor result(t1.dims());
   if( t1.rank() != t2.rank() ){
     ERROR( "Subtraction between tensors of different rank makes no sense!" );
     t1.print();
     t2.print();
   }
-  if( t1.m_elements.size() != t2.m_elements.size() ){
+  if( t1.nElements() != t2.nElements() ){
     t1.print();
     t2.print();
     ERROR( "Subtraction between tensors with different number of elements " 
-        << t1.m_elements.size() << " " << t2.m_elements.size() );
+        << t1.nElements() << " " << t2.nElements() );
   }
-  for( unsigned int i = 0 ; i < t1.m_elements.size(); ++i )
+  for( unsigned int i = 0 ; i < t1.nElements() ; ++i )
     result[i] = t1[i] - t2[i];
-  if( result.m_elements.size() != t1.m_elements.size() ||
-      result.m_elements.size() != t2.m_elements.size()
+  if( result.nElements() != t1.nElements() ||
+      result.nElements() != t2.nElements()
     ){
     ERROR("What are you saying?");
   }
@@ -203,17 +203,17 @@ Tensor AmpGen::operator-( Tensor t1, Tensor t2 ){
 
 
 Tensor AmpGen::operator/(Tensor t1, const Expression& t2){
-  Tensor result(t1.m_dim);
-  result.m_indices = t1.m_indices ;
-  for( unsigned int i = 0 ; i < t1.m_elements.size(); ++i ) result[i] = t1[i]/t2 ;
+  Tensor result(t1.dims());
+  result.setIndices(  t1.indices() ) ;
+  for( unsigned int i = 0 ; i < t1.nElements(); ++i ) result[i] = t1[i]/t2 ;
 
   return result;
 }
 
 Tensor AmpGen::operator*(const Expression& other , Tensor t1 ){
-  Tensor result(t1.m_dim);
-  result.m_indices = t1.m_indices;
-  for( unsigned int i = 0 ; i < t1.m_elements.size(); ++i ) result[i] = t1[i]*other ;
+  Tensor result(t1.dims());
+  result.setIndices( t1.indices() );
+  for( unsigned int i = 0 ; i < t1.nElements(); ++i ) result[i] = t1[i]*other ;
   return result;
 }
 
@@ -239,8 +239,8 @@ Tensor AmpGen::outer_product( Tensor A, Tensor B,
     return Tensor( std::vector<double>({0.}), {1} );
   }
 
-  for( auto& r : A.m_dim ) rank.push_back( r );
-  for( auto& r : B.m_dim ) rank.push_back( r );
+  for( auto& r : A.dims() ) rank.push_back( r );
+  for( auto& r : B.dims() ) rank.push_back( r );
 
   Tensor ret( rank );
   for( unsigned int i=0; i < ret.nElements() ; ++i){
@@ -249,7 +249,7 @@ Tensor AmpGen::outer_product( Tensor A, Tensor B,
     std::vector<unsigned int> B_coords; // ( B.rank() , 0 );
     for( unsigned int i = 0 ; i != A.rank() ; ++i ) A_coords.push_back( coords[ orderingA[i] ] ); /// this is mighty confusing :S ////
     for( unsigned int i = 0 ; i != B.rank() ; ++i ) B_coords.push_back( coords[ orderingB[i] ] ); 
-    ret.m_elements[i] = A.get( A_coords )*B.get(B_coords ) ;
+    ret[i] = A.get( A_coords )*B.get(B_coords ) ;
   }
   return ret; 
 }
@@ -312,7 +312,7 @@ Tensor AmpGen::LeviCivita( const unsigned int & rank  ){
 
   do{
     unsigned int index = result.index( indices );
-    result.m_elements[index] = signed_product( indices ) / p0;
+    result[index] = signed_product( indices ) / p0;
   } while (std::next_permutation(indices.begin(), indices.end() ) );
   return result; 
 }
@@ -428,9 +428,9 @@ AmpGen::Tensor Tensor::operator | ( AmpGen::Tensor other ){
     }
     // else allIndices.push_back( std::make_pair( other.m_indices[i], other.m_dim[i] ) );
   }
-  int size = m_dim.size() + other.m_dim.size() - 2*contractions.size();
-  DEBUG(" multiplying " << m_dim.size() << " x "
-      << other.m_dim.size() << " with " 
+  int size =  nDim() + other.nDim() - 2*contractions.size();
+  DEBUG(" multiplying " << nDim() << " x "
+      << other.nDim() << " with " 
       << contractions.size() 
       << " contractions (dim = " << size << ")" );
   if(size<0) ERROR("Making an object of negative rank , doesn't make sense");
@@ -440,8 +440,8 @@ AmpGen::Tensor Tensor::operator | ( AmpGen::Tensor other ){
   DEBUG( "Size of object = " << value.nElements() );
   for( unsigned int elem = 0 ; elem < nElem ; ++elem ){
     auto coords = value.coords(elem); /// coordinates of this part of the expression /// 
-    std::vector<unsigned int> thisCoordinates( m_dim.size() , 0 ), 
-      otherCoordinates( other.m_dim.size() , 0);
+    std::vector<unsigned int> thisCoordinates( nDim() , 0 ), 
+      otherCoordinates( other.nDim() , 0);
     unsigned int i = 0 ; 
     unsigned int j = 0 ; 
     do {
@@ -460,10 +460,10 @@ AmpGen::Tensor Tensor::operator | ( AmpGen::Tensor other ){
         j++;
       }
       //j++;
-    } while( ++i < m_dim.size() ) ; 
+    } while( ++i < nDim() ) ; 
 
     i=0; 
-    j = m_dim.size() - contractions.size() ;
+    j = nDim() - contractions.size() ;
     do { 
       DEBUG("Checking : " << i );
       if( isIn( contractions, i, [](
@@ -478,7 +478,7 @@ AmpGen::Tensor Tensor::operator | ( AmpGen::Tensor other ){
         j++;
       }
 
-    } while( ++i < other.m_dim.size() );
+    } while( ++i < other.nDim() );
     unsigned int sumElements=1;
     for( unsigned int i=0;i<contractions.size(); ++i) sumElements*=m_dim[i];
     Expression elementExpression=0;

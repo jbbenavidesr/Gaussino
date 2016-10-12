@@ -62,13 +62,13 @@ class ParticleProperties{
   std::string name() const;
   std::string quarks() const{return _quarks;}
   const MultiQuarkContent& netQuarkContent() const{return _netQuarkContent;}
-
+/*
   double lifetime() const;
   double ctau() const;
   double ctau_in_microns() const;
   double lifetime_in_ns() const;
   double lifetime_in_ps() const;
-
+*/
   double radius() const;
 
   std::string ScalarVectorPseudoAxialVectorTensor() const;

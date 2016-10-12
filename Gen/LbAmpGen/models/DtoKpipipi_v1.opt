@@ -1,52 +1,51 @@
-Mother    D0
-EventType K- pi+ pi+ pi-
+EventType D0 K- pi+ pi+ pi-
 NEvents 500000
-sourceFile            "../src/DtoKpipipi_v1.cpp"
+sourceFile            "DtoKpipipi_v1.cpp"
 
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                            0 1 0.1
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                            0 0 0.1
-D0[P]{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                          0  0.0590662 0.1
-D0[P]{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                          0  -0.370379 0.1
-D0[P]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                            0 0.0322678 0.1
-D0[P]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                            0 -0.276235 0.1
-D0{K(1)(1270)bar-{K(0)*(1430)bar0[LASS]{K-,pi+},pi-},pi+}_Re                0 -0.0285448  0.1
-D0{K(1)(1270)bar-{K(0)*(1430)bar0[LASS]{K-,pi+},pi-},pi+}_Im                0 0.0275645 0.1
-D0{K(1)(1270)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                          0 0.0212064 0.1
-D0{K(1)(1270)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                          0 -0.0782938  0.1
-D0{K(1)(1270)bar-{rho(770)0{pi+,pi-},K-},pi+}_Re                            0 0.0790658 0.1
-D0{K(1)(1270)bar-{rho(770)0{pi+,pi-},K-},pi+}_Im                            0 0.195681  0.1
-D0{K(1)(1400)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                          0 -0.0823602  0.1
-D0{K(1)(1400)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                          0 0.0395957 0.1
-D0{K(1460)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0  -0.0585198  0.1
-D0{K(1460)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0  0.046941  0.1
-D0{K(1460)bar-{f(0)(600)0[Bugg]{pi+,pi-},K-},pi+}_Re                        0 -0.0122881  0.1
-D0{K(1460)bar-{f(0)(600)0[Bugg]{pi+,pi-},K-},pi+}_Im                        0 0.0287662 0.1
-D0{K(2)*(1430)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                        0  0.101976  0.1
-D0{K(2)*(1430)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                        0  -0.250514 0.1
-D0{K*(1410)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0 0.0445427 0.1
-D0{K*(1410)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0 0.0475971 0.1
-D0{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                              0 0.0955999 0.1
-D0{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                              0 -0.0492663  0.1
-D0{K*(892)bar0{K-,pi+},f(0)(600)0[Bugg]{pi+,pi-}}_Re                        0 -0.11116  0.1
-D0{K*(892)bar0{K-,pi+},f(0)(600)0[Bugg]{pi+,pi-}}_Im                        0 -0.0710287  0.1
-D0{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                              0  0.0756802 0.1
-D0{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                              0  -0.0525899  0.1
-D0{K-,pi+,pi+,pi-}_Re                                                      0  -0.0355394  0.1
-D0{K-,pi+,pi+,pi-}_Im                                                      0  0.0239042 0.1
-D0{NonResA0[D]{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0  -0.412513 0.1
-D0{NonResA0[D]{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0  0.100705  0.1
-D0{a(1)(1260)+[D;WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Re                0 0.155193  0.1
-D0{a(1)(1260)+[D;WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Im                0 1.16265 0.1
-D0{a(1)(1260)+[WidthSpline]{f(0)(600)0[Bugg]{pi+,pi-},pi+},K-}_Re          0  0.100522  0.1
-D0{a(1)(1260)+[WidthSpline]{f(0)(600)0[Bugg]{pi+,pi-},pi+},K-}_Im          0  0.770069  0.1
-D0{a(1)(1260)+[WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Re                  0 -0.457907 0.1
-D0{a(1)(1260)+[WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Im                  0 -0.403366 0.1
-D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Re                    0 0.0957689 0.1
-D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Im                    0 0.136074  0.1
+D0[P]{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                          0  0.050375  0.1
+D0[P]{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                          0  -0.36232  0.1
+D0[P]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                            0 0.0273556 0.1
+D0[P]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                            0 -0.278033 0.1
+D0{K(1)(1270)bar-{K(0)*(1430)bar0[LASS]{K-,pi+},pi-},pi+}_Re                0 -0.02237  0.1
+D0{K(1)(1270)bar-{K(0)*(1430)bar0[LASS]{K-,pi+},pi-},pi+}_Im                0 0.0125309 0.1
+D0{K(1)(1270)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                          0 0.0382486 0.1
+D0{K(1)(1270)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                          0 -0.0539731  0.1
+D0{K(1)(1270)bar-{rho(770)0{pi+,pi-},K-},pi+}_Re                            0 0.0833684 0.1
+D0{K(1)(1270)bar-{rho(770)0{pi+,pi-},K-},pi+}_Im                            0 0.23399 0.1
+D0{K(1)(1400)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                          0 -0.0542539  0.1
+D0{K(1)(1400)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                          0 0.0264675 0.1
+D0{K(1460)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0  -0.0150483  0.1
+D0{K(1460)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0  0.0669865 0.1
+D0{K(1460)bar-{f(0)(1370)0{pi+,pi-},K-},pi+}_Re                            0  -0.0123706  0.1
+D0{K(1460)bar-{f(0)(1370)0{pi+,pi-},K-},pi+}_Im                            0  0.110158  0.1
+D0{K(2)*(1430)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                        0  0.104903  0.1
+D0{K(2)*(1430)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                        0  -0.254699 0.1
+D0{K*(1410)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0 0.0472464 0.1
+D0{K*(1410)bar-{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0 0.0472561 0.1
+D0{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                              0 0.163596  0.1
+D0{K*(1410)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                              0 -0.0404119  0.1
+D0{K*(892)bar0{K-,pi+},f(0)(600)0[Bugg]{pi+,pi-}}_Re                        0 -0.171809 0.1
+D0{K*(892)bar0{K-,pi+},f(0)(600)0[Bugg]{pi+,pi-}}_Im                        0 -0.115967 0.1
+D0{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                              0  0.073456  0.1
+D0{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                              0  -0.0480112  0.1
+D0{K-,pi+,pi+,pi-}_Re                                                      0  -0.0219028  0.1
+D0{K-,pi+,pi+,pi-}_Im                                                      0  0.02264 0.1
+D0{NonResA0[D]{K*(892)bar0{K-,pi+},pi-},pi+}_Re                            0  -0.460714 0.1
+D0{NonResA0[D]{K*(892)bar0{K-,pi+},pi-},pi+}_Im                            0  0.141151  0.1
+D0{a(1)(1260)+[D;WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Re                0 0.27345 0.1
+D0{a(1)(1260)+[D;WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Im                0 1.09445 0.1
+D0{a(1)(1260)+[WidthSpline]{f(0)(600)0[Bugg]{pi+,pi-},pi+},K-}_Re          0  0.08429 0.1
+D0{a(1)(1260)+[WidthSpline]{f(0)(600)0[Bugg]{pi+,pi-},pi+},K-}_Im          0  0.762663  0.1
+D0{a(1)(1260)+[WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Re                  0 -0.448736 0.1
+D0{a(1)(1260)+[WidthSpline]{rho(770)0{pi+,pi-},pi+},K-}_Im                  0 -0.413141 0.1
+D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Re                    0 0.160851  0.1
+D0{rho(1450)0{pi+,pi-},K(0)*(1430)bar0[LASS]{K-,pi+}}_Im                    0 0.237969  0.1
 
 
-K(1460)bar-_mass  2 1460 1 1000 2000
-K(1460)bar-_width 2  250 1 100  500
+K(1460)bar-_mass  2 1358 1 1000 2000
+K(1460)bar-_width 2  281 1 100  500
 
 a(1)(1260)+_mass   2   1237 1 1200 1800
 a(1)(1260)+_width  2    526 1  300  800
