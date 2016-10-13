@@ -71,7 +71,8 @@ EvtTauolaEngine::EvtTauolaEngine(bool useEvtGenRandom) {
       
   }
 
-  // Use the new chiral current calculations
+  // Use the BaBar-tuned chiral current calculations by default. Can be changed using the
+  // TauolaCurrentOption keyword in decay files
   Tauolapp::Tauola::setNewCurrents(1);
 
   Tauolapp::Tauola::initialize();
@@ -288,7 +289,7 @@ void EvtTauolaEngine::setOtherParameters() {
   if (mixString != "TauolaHiggsMixingAngle") {
 
       double mixAngle = std::atof(mixString.c_str());
-      report(INFO,"EvtGen")<<"Setting TAUOLA Higgs mixing angle to "<<mixAngle<<" radians"<<endl;
+      report(INFO,"EvtGen")<<"TAUOLA Higgs mixing angle set to "<<mixAngle<<" radians"<<endl;
       Tauolapp::Tauola::setHiggsScalarPseudoscalarMixingAngle(mixAngle);
 
   }
@@ -322,17 +323,16 @@ void EvtTauolaEngine::setOtherParameters() {
 
   Tauolapp::Tauola::setTaukle(BRVect[0], BRVect[1], BRVect[2], BRVect[3]);
 
-  // 5) TauolaUseOldCurrents: Specify if we want to use the old CLEO hadronic currents (default is false).
-  // This can be (re)set after initialized() has been called.
-  std::string currentString = EvtSymTable::get("TauolaUseOldCurrents", iErr);
+  // 5) Specify the hadronic current option, e.g. orig CLEO = 0, BaBar-tuned = 1 (default), ...
+  // No check is made by EvtGen on valid integer options - its just passed to Tauola
+  std::string currentOption = EvtSymTable::get("TauolaCurrentOption", iErr);
+  // If the definition name is not found, get() just returns the first argument string
+  if (currentOption != "TauolaCurrentOption") {
 
-  if (currentString != "TauolaUseOldCurrents") {
+      int currentOpt = std::atoi(currentOption.c_str());
+      report(INFO,"EvtGen")<<"TAUOLA current option = "<<currentOpt<<endl;
 
-      int useOldCurrents = std::atoi(currentString.c_str());
-      if (useOldCurrents == 1) {
-	  report(INFO,"EvtGen")<<"TAUOLA warning: Using old CLEO hadronic currents"<<endl;
-	  Tauolapp::Tauola::setNewCurrents(0);
-      }
+      Tauolapp::Tauola::setNewCurrents(currentOpt);
 
   }
 
