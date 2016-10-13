@@ -25,8 +25,7 @@ Tensor::Tensor(){}
 Tensor::Tensor( const std::vector<Expression>& elements, 
     const std::vector<unsigned int>& _dim ) : 
   m_dim(_dim) ,  
-  m_elements(elements),
-  m_indices(_dim.size()) 
+  m_elements(elements)
 {
   if( nElements() != m_elements.size() )
     ERROR("Dimensions do not match number of m_elements!");
@@ -40,16 +39,14 @@ Tensor::Tensor( const std::vector<Expression>& elements ) :
 
 Tensor::Tensor ( const std::vector<double>& elements, 
     const std::vector<unsigned int>& _dim) : 
-    m_dim(_dim),
-    m_indices(_dim.size() )
+  m_dim(_dim)
 {
   for( auto& x : elements ) append( x );
 }
 
 Tensor::Tensor ( const std::vector<std::string>& elements, 
     const std::vector<unsigned int>& _dim, 
-    bool  resolved) : m_dim(_dim),
-  m_indices(_dim.size() ) 
+    bool  resolved) : m_dim(_dim)
 {
   for( auto& x : elements ) append( x , resolved );
 }
@@ -102,11 +99,11 @@ void Tensor::append( const Expression& expression )
 
 void Tensor::append( const double& value) 
 { 
-  m_elements.push_back( Expression( Constant( value ) )); 
+  append( Expression( Constant( value ) )); 
 }
 void Tensor::append( const std::string& name , bool resolved) 
 { 
-  m_elements.push_back( Expression( Parameter(name , 0 , resolved ) ) ); 
+  append( Expression( Parameter(name , 0 , resolved ) ) ); 
 }
 
 Expression Tensor::get( const std::vector<unsigned int>& _co ) const 
@@ -204,7 +201,6 @@ Tensor AmpGen::operator-( Tensor t1, Tensor t2 ){
 
 Tensor AmpGen::operator/(Tensor t1, const Expression& t2){
   Tensor result(t1.dims());
-  result.setIndices(  t1.indices() ) ;
   for( unsigned int i = 0 ; i < t1.nElements(); ++i ) result[i] = t1[i]/t2 ;
 
   return result;
@@ -212,7 +208,6 @@ Tensor AmpGen::operator/(Tensor t1, const Expression& t2){
 
 Tensor AmpGen::operator*(const Expression& other , Tensor t1 ){
   Tensor result(t1.dims());
-  result.setIndices( t1.indices() );
   for( unsigned int i = 0 ; i < t1.nElements(); ++i ) result[i] = t1[i]*other ;
   return result;
 }
@@ -223,8 +218,7 @@ Tensor AmpGen::operator/(Tensor t1, const double& t2){ return t1/Constant(t2); }
 Tensor AmpGen::operator*(const double& other , Tensor t1 ){ return Constant(other)*t1; }
 Tensor AmpGen::operator*(Tensor t1, const double& other){ return t1*Constant(other) ; }
 
-
-
+/*
 Tensor AmpGen::outer_product( Tensor A, Tensor B, 
     std::vector<unsigned int> orderingA, 
     std::vector<unsigned int> orderingB){
@@ -253,7 +247,7 @@ Tensor AmpGen::outer_product( Tensor A, Tensor B,
   }
   return ret; 
 }
-
+*/
 
 Expression AmpGen::dot( Tensor A, Tensor B ){
 
@@ -280,8 +274,11 @@ Tensor AmpGen::Orbital_PWave( Tensor P, Tensor Q){
 Tensor AmpGen::Orbital_DWave( Tensor P, Tensor Q){
 
   Tensor V = Orbital_PWave(P,Q);
-  Tensor PP = outer_product( P, P )   / dot(P,P); 
-  Tensor VV = outer_product( V, V );
+  LorentzIndex mu("mu");
+  LorentzIndex nu("nu");
+  Tensor PP = P(mu) * P(nu)  / dot(P,P); 
+  Tensor VV = V(mu) * V(nu) ; 
+
   if( PP.rank() != VV.rank() )
     ERROR( "Tensor ranks do not match " );
   if( PP.rank() != Metric4x4.rank() )
@@ -291,12 +288,18 @@ Tensor AmpGen::Orbital_DWave( Tensor P, Tensor Q){
 }
 
 Tensor AmpGen::Spin1ProjectionOperator( Tensor P ){
-  return Metric4x4 - outer_product( P, P ) /dot(P,P); //  - Metric4x4;
+  LorentzIndex mu("mu");
+  LorentzIndex nu("nu");
+  return Metric4x4(mu,nu) - P(mu) * P(nu) /dot(P,P); //  - Metric4x4;
 }
 
 Tensor AmpGen::Spin2ProjectionOperator( Tensor P ){
-  Tensor sp1 = Spin1ProjectionOperator(P);
-  return ( outer_product( sp1, sp1, {0,2},{1,3} ) + outer_product( sp1, sp1 , {0,3},{1,2}) )/2. - outer_product(sp1,sp1)/3.;
+  Tensor S = Spin1ProjectionOperator(P);
+  LorentzIndex mu("mu");
+  LorentzIndex nu("nu");
+  LorentzIndex alpha("alpha");
+  LorentzIndex beta("beta");
+  return -(1/3) * S(mu,nu)*S(alpha,beta) + S( mu,alpha) * S (nu,beta) + S( mu,beta) * S(nu,alpha) ;
 }
 
 Tensor AmpGen::LeviCivita( const unsigned int & rank  ){
@@ -404,110 +407,6 @@ Tensor Tensor::Invert() const {
   return data;
 }
 /// generic contraction operator /// 
-AmpGen::Tensor Tensor::operator | ( AmpGen::Tensor other ){
-  //    std::vector<std::pair<LorentzIndex, unsigned int> > allIndices; 
-  std::vector<std::pair<unsigned int, unsigned int>> contractions; 
-  //  for( unsigned int i = 0 ; i < m_indices.size(); ++i ) 
-  //      allIndices.push_back( std::make_pair(  m_indices[i]  , m_dim[i])  );
-  std::vector<LorentzIndex> unsummedIndices;
-  for( auto& index : m_indices ) 
-    if( std::find( other.m_indices.begin(), other.m_indices.end(), index ) == other.m_indices.end() ) 
-      unsummedIndices.push_back( index );
-  for( auto& index : other.m_indices )
-    if( std::find( m_indices.begin(), m_indices.end(), index ) == m_indices.end() ) 
-      unsummedIndices.push_back( index );
-
-  for( unsigned int i = 0 ; i < other.m_indices.size(); ++i ){
-    std::vector<LorentzIndex>::iterator it = 
-      std::find( m_indices.begin(), m_indices.end(), other.m_indices[i] );
-    if( it != m_indices.end() ){
-      if( other.m_indices[i].isUpper() != it->isUpper() ){
-        contractions.push_back( std::make_pair(std::distance(m_indices.begin(),it),i) );
-      }
-      else ERROR("Contraction makes no sense!");
-    }
-    // else allIndices.push_back( std::make_pair( other.m_indices[i], other.m_dim[i] ) );
-  }
-  int size =  nDim() + other.nDim() - 2*contractions.size();
-  DEBUG(" multiplying " << nDim() << " x "
-      << other.nDim() << " with " 
-      << contractions.size() 
-      << " contractions (dim = " << size << ")" );
-  if(size<0) ERROR("Making an object of negative rank , doesn't make sense");
-  Tensor value( std::vector<unsigned int>(size,4));
-  unsigned nElem = value.nElements();
-  value.m_indices = unsummedIndices; 
-  DEBUG( "Size of object = " << value.nElements() );
-  for( unsigned int elem = 0 ; elem < nElem ; ++elem ){
-    auto coords = value.coords(elem); /// coordinates of this part of the expression /// 
-    std::vector<unsigned int> thisCoordinates( nDim() , 0 ), 
-      otherCoordinates( other.nDim() , 0);
-    unsigned int i = 0 ; 
-    unsigned int j = 0 ; 
-    do {
-      DEBUG("Checking : " << i );
-      if( isIn( contractions, i  , [](
-              //INFO( "checking : " << i );
-              const std::pair<unsigned int, unsigned int>& a, 
-              const unsigned int & b ){ return a.first == b ; } ) ){
-        DEBUG("Skipping coordinate " << i << " as is being contracted " );
-        //  thisCoordinates[i] = 999; 
-        continue;
-      }
-      else {
-        DEBUG(" Setting coordinate " << i << " = " << j  );
-        thisCoordinates[i] = coords[j];
-        j++;
-      }
-      //j++;
-    } while( ++i < nDim() ) ; 
-
-    i=0; 
-    j = nDim() - contractions.size() ;
-    do { 
-      DEBUG("Checking : " << i );
-      if( isIn( contractions, i, [](
-              const std::pair<unsigned int, unsigned int>& a,
-              const unsigned int & b ){ return a.second == b ; } ) ){
-        DEBUG("Skipping coordinate " << i << " as is being contracted " );
-
-      }
-      else {
-        otherCoordinates[i]=coords[j];
-        DEBUG( "Setting i = " << i << ", (" << j << ")"<< coords[j] );
-        j++;
-      }
-
-    } while( ++i < other.nDim() );
-    unsigned int sumElements=1;
-    for( unsigned int i=0;i<contractions.size(); ++i) sumElements*=m_dim[i];
-    Expression elementExpression=0;
-    //std::cout << "Element ( " ;
-    //for( unsigned int i = 0 ; i < coords.size() ; ++i ) std::cout << coords[i] << ") = "; 
-    for( unsigned int i = 0 ; i < sumElements; ++i ){  
-      std::vector<unsigned int> contractedCoordinates(contractions.size());
-
-      unsigned int elemI = i;
-      for( unsigned int n = 0 ; n < contractions.size() ; ++n ){
-        unsigned int bi = elemI % 4 ;
-        elemI = (elemI - bi ) /4;
-        contractedCoordinates[n] = bi;
-      }
-      int sign=1;
-      for( unsigned int i = 0 ; i < contractions.size(); ++i ){
-        thisCoordinates[ contractions[i].first ] =   contractedCoordinates[i];
-        otherCoordinates[ contractions[i].second ] = contractedCoordinates[i];
-        sign *= ( contractedCoordinates[i] ) == 3 ? 1 : -1; 
-      }
-      if( sign == 1 ) 
-        elementExpression = elementExpression + get( thisCoordinates ) * other.get( otherCoordinates );  
-      else 
-        elementExpression = elementExpression - get( thisCoordinates ) * other.get( otherCoordinates ); 
-    }
-    value.m_elements[elem] = elementExpression; 
-  }
-  return value; 
-}
 
 void Tensor::print() const {
   INFO( "Dimension of object = " << m_dim.size() << " : ");
@@ -534,5 +433,29 @@ void Tensor::print() const {
     }   
 
   }
+}
+/*
+TensorHelper Tensor::operator()( ) const {
+    return TensorHelper(*this,{} );
+}
+*/
+TensorHelper Tensor::operator()( const std::vector<LorentzIndex>& indices ) const {
+  return TensorHelper(*this,indices );
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a) const { 
+  return TensorHelper(*this,{a}) ;  
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b ) const { 
+  return TensorHelper(*this,{a,b}) ; 
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
+    const LorentzIndex& c ) const {
+  return TensorHelper(*this,{a,b,c}) ;
+}
+
+
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
+    const LorentzIndex& c, const LorentzIndex& d ) const {
+  return TensorHelper(*this,{a,b,c,d}) ;
 }
 

@@ -78,7 +78,7 @@ EventType::EventType( const std::vector<std::string>& particleNames ) : m_mother
     }
     m_particleNamesPickled.push_back( replaceAll( replaceAll( particle , "+","~"), "-","#") );
   }
-  DEBUG( mother <<  " = " << m_motherMass << " -> " );
+  DEBUG( m_mother <<  " = " << m_motherMass << " -> " );
   for( unsigned int i = 0 ; i < m_particleNames.size() ;++i ){
     DEBUG( m_particleNames[i] << " = " << m_particleNamesPickled[i] << " = " << m_particleMasses[i] );
   }

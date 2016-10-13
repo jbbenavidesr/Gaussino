@@ -12,15 +12,15 @@ struct IVertex {
   static const LorentzIndex alpha;
   static const LorentzIndex beta;
   static const double GeV;
-  virtual Tensor get( Tensor P,  Tensor Q, Tensor V1, Tensor V2,std::vector<DBSYMBOL>* db = 0)=0; 
+  virtual Tensor get( const Tensor& P,  const Tensor& Q, const Tensor& V1, const Tensor& V2,std::vector<DBSYMBOL>* db = 0)=0; 
   virtual ~IVertex(){};
 };
 
 
 #define DECLARE_VERTEX(NAME ) struct NAME : public IVertex { \
-  virtual Tensor get( Tensor P, Tensor Q,  Tensor V1, Tensor V2, std::vector<DBSYMBOL>* db = 0); }
+  virtual Tensor get( const Tensor& P, const Tensor& Q,  const Tensor& V1, const Tensor& V2, std::vector<DBSYMBOL>* db = 0); }
 
-#define DEFINE_VERTEX(NAME) Tensor NAME::get( Tensor P, Tensor Q, Tensor V1, Tensor V2 , std::vector<DBSYMBOL>* db)
+#define DEFINE_VERTEX(NAME) Tensor NAME::get( const Tensor& P, const Tensor& Q, const Tensor& V1, const Tensor& V2 , std::vector<DBSYMBOL>* db)
 
 extern unsigned int pid( const double& motherSpin, 
     const double& daughter0, 
@@ -88,7 +88,7 @@ class VertexFactory {
       s_vertexInstance = new VertexFactory();
     return s_vertexInstance;
   };
-  static Tensor getSpinFactor( Tensor P, Tensor Q,  Tensor V1, Tensor V2, const unsigned int& hash, std::vector<DBSYMBOL>* db=0 ) ; //Particle& mother,std::vector<DBSYMBOL>* db = 0 ) ; 
+  static Tensor getSpinFactor( const Tensor& P, const Tensor& Q,  const Tensor& V1, const Tensor& V2, const unsigned int& hash, std::vector<DBSYMBOL>* db=0 ) ; //Particle& mother,std::vector<DBSYMBOL>* db = 0 ) ; 
   void addSpinfactor( const unsigned int& hash, IVertex* vertex){
     if( m_vertices.find(hash) != m_vertices.end() ){
       IVertex* oldVertex = m_vertices.find(hash)->second;

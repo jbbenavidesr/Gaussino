@@ -41,7 +41,7 @@ namespace AmpGen {
           auto it = m_objects.find(expression->hash() );
           if( it == m_objects.end() ) {
             m_objects[ expression->hash() ] = expression; 
-            DEBUG( "Added " << expression.name() << " to FCN library" );
+            DEBUG( "Added " << expression->name() << " to FCN library" );
           }
           else if( it->second->name() != expression->name() ){
             WARNING("Hash Collision between " << it->second->name() << " and " << expression->name() );
