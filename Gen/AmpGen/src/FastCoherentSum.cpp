@@ -1,0 +1,419 @@
+#include "AmpGen/FastCoherentSum.h"
+
+using namespace AmpGen; 
+
+FastCoherentSum::FastCoherentSum( const EventType& type , 
+    AmpGen::MinuitParameterSet& mps,
+    const std::map<std::string, unsigned int>& extendEventFormat, 
+    const std::string& prefix,
+    unsigned int options  ) : 
+
+  m_events(0),
+  m_sim(0), 
+  m_weight(1),
+  m_prepareCalls(0), 
+  m_lastPrint(0), 
+  m_prefix(prefix),
+  m_stateIsGood(true) {
+    bool dbThis = options & OPTIONS::DEBUG;
+    bool CPConjugate = options & OPTIONS::CPCONJUGATE;
+    bool FlavConjugate = options & OPTIONS::FLAVCONJUGATE;
+
+    std::map<std::string, std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*>> tmpParams;
+    std::map<std::string, AmpGen::MinuitParameter*> otherParameters; 
+
+    for( unsigned int i =0 ;i < mps.size(); ++i ){
+      AmpGen::MinuitParameter* parameter = mps.getParPtr(i);
+      const std::string paramName = parameter->name();
+      auto tokens = split( paramName, '_');
+      std::string thisDecayName;
+      std::string thisPrefix;
+      std::string thisSuffix;
+      if( tokens.size() == 3 ){ 
+        thisPrefix = tokens[0];
+        thisDecayName = tokens[1];    
+        thisSuffix = tokens[2];
+      }
+      else if( tokens.size() == 2 ){
+        thisDecayName = tokens[0];
+        thisSuffix = tokens[1];
+        thisPrefix = ""; /// assume no prefix ///
+      }
+      if( prefix == thisPrefix && ( thisSuffix == "Re" || thisSuffix == "Im" )){
+        std::map<std::string, 
+          std::pair<AmpGen::MinuitParameter*,
+          AmpGen::MinuitParameter*>>::iterator ip = tmpParams.find( thisDecayName );
+
+        if( ip == tmpParams.end() ){
+          tmpParams[ thisDecayName ] = 
+            std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*>( 0 , 0 );
+
+          DEBUG( "Adding: " << prefix << "   " << thisDecayName << "   " << thisSuffix );
+          ip = tmpParams.find( thisDecayName );
+        }
+        if( thisSuffix == "Re" ) ip->second.first = parameter;
+        else if( thisSuffix == "Im" ) ip->second.second = parameter; 
+      }
+      else {
+        DEBUG("Another parameter = " << paramName );
+        otherParameters[ paramName ] = parameter; 
+      }
+    }
+    m_pdfs.reserve( tmpParams.size());
+    m_decayTrees.reserve( tmpParams.size());
+    for( auto& p : tmpParams ){
+      std::vector<std::string> finalStates = type.finalStates();
+      std::shared_ptr<Particle> decayTree = 
+        std::make_shared<Particle>(p.first, finalStates );
+
+      if( ! decayTree->isStateGood() ){
+        ERROR("Decay tree not configured correctly");
+        m_stateIsGood = false;
+        return; 
+      }
+      if(CPConjugate){
+        decayTree->CPConjugateThis();
+        std::shared_ptr<Particle> decayTreeCP = 
+          std::make_shared<Particle>(decayTree->uniqueString(),finalStates );
+        m_decayTrees.push_back( decayTreeCP );
+        INFO("Adding tree = " << decayTreeCP->uniqueString() );
+      }
+      else {
+        m_decayTrees.push_back( decayTree );
+        INFO("Adding tree = " << p.first );
+      }
+
+      DEBUG("Configuring external parameters");
+
+      std::vector<DBSYMBOL> dbExpressions;
+      if( FlavConjugate ) (*m_decayTrees.rbegin())->setConj( true );
+      const std::string name = (*m_decayTrees.rbegin())->uniqueString();
+      const Expression expression = 
+        (*m_decayTrees.rbegin())->getExpression(dbThis?&dbExpressions:NULL);    
+      DEBUG("Got expression for this tree");
+      m_pdfs.emplace_back( expression , name , extendEventFormat, dbThis?&dbExpressions:NULL );
+      auto& pdf = *( m_pdfs.rbegin() );
+
+
+      /*
+       *   This code needs to be refactored in such a way that one can flexibly add transfer logic
+       *   and parameter resolution. Having an abstract "handler" that is mapped from the different 
+       *   types has some appeal... 
+       */
+
+      std::map<std::string, 
+        std::pair< unsigned int, double> > parameterNames = pdf.getAddressMapping();
+      std::map<std::string, 
+        std::pair< unsigned int, double> > splineParameters; 
+
+      for( auto& param : parameterNames ){ /// all parameters for this PDF, including fixed ones ///  
+        if( param.first.find("Spline") != std::string::npos ){
+          ///INFO("Identified Spline Parameter = " << param.first );
+          splineParameters[param.first] = param.second;
+          continue; 
+        };
+        DEBUG( "Mapping parameter " << param.first << "  " << param.second.first ); 
+        //       for( auto& param : otherParameters ) 
+        auto it = otherParameters.find(param.first ); 
+
+        if( it != otherParameters.end() ){
+          DEBUG("Setting value of " << param.first << " from options file = " << (*it).second->mean() );
+          m_addressMapping.push_back( 
+              std::make_shared<CacheTransfer>( 
+                (*it).second , /// MinuitParameter*
+                &m_pdfs[ m_pdfs.size() -1 ] , //// CompiledExpression*
+                param.second.first //// destination address 
+                ) ) ; 
+          (*m_addressMapping.rbegin())->transfer();
+          continue;
+        }
+        else {
+          DEBUG("Setting " << param.first << " to default value");
+        };
+        DEBUG("Parameter " << param.first << " not found in options file - checking for a default setting " );
+
+        auto tokens = split( param.first , '_' );
+        if( tokens.size() == 2 ){
+          const ParticleProperties* props = ParticlePropertiesList::getMe()->get(tokens[0]) ;
+          if( props != 0 ){
+            if( tokens[1] == "mass" ){ 
+              pdf.setExternal( props->mass(), param.second.first );
+              DEBUG("Setting mass of " << tokens[0] << " from pdg = " << props->mass() << " memory address =" << param.second.first );
+            }
+            else if( tokens[1] == "width" ){
+              pdf.setExternal( props->width(), param.second.first );
+              DEBUG("Setting width of " << tokens[0] << " from pdg = " << props->width() << " memory address = " << param.second.first );
+            }
+            else if( tokens[1] == "radius" ){
+              pdf.setExternal( props->radius(), param.second.first );                                                                                                                            //        "mass"
+              DEBUG("Setting radius for " << tokens[0] << " from pdg = " << props->radius() << " memory address = " << param.second.first );
+            }
+          }
+          else pdf.setExternal( param.second.second, param.second.first );
+        }
+        else {
+          pdf.setExternal( param.second.second, param.second.first );
+        }
+      }
+      if( splineParameters.size() != 0 ){
+        /// this is if we want to go mental and have 2D splines ////
+        std::map< std::string, std::shared_ptr<SplineTransfer> > paramMap;
+        for( auto param : splineParameters ){
+
+          auto tokens = split( param.first , ':' );
+          const std::string particleName = tokens[0];
+          const std::string splineName = tokens[0] + "::"+tokens[1]+"::"+tokens[2];
+          DEBUG("Spline parameter for " << param.first << " configuring");
+          auto 
+            thisSpline = paramMap.find(splineName);
+          if( thisSpline == paramMap.end() ){
+            double min = 
+              AmpGen::NamedParameter<double>(particleName+"::Spline::Min",0.).getVal();
+            double max = 
+              AmpGen::NamedParameter<double>(particleName+"::Spline::Max",1800*1800).getVal();
+            unsigned int nBins = 
+              AmpGen::NamedParameter<unsigned int>(particleName+"::Spline::N",10).getVal();
+            paramMap[splineName] = 
+              std::make_shared<SplineTransfer>( &m_pdfs[ m_pdfs.size() -1 ], nBins , min, max ) ;
+            thisSpline = paramMap.find( splineName );
+          }
+          auto it = otherParameters.find( param.first );
+          unsigned int index = stoi((*tokens.rbegin()));
+
+          if ( it != otherParameters.end() ){  
+            DEBUG(" -> to " << (*it).second <<"    " <<  param.first << "    " << (*it).second->mean() ); 
+            thisSpline->second->set( index , (*it).second );
+            if( index == 0 ) 
+              thisSpline->second->setAddress( param.second.first );
+          }
+
+          else if( *(tokens.rbegin()+1) == "C"  ){ 
+            if( index == 0 ) thisSpline->second->setCurveAddress( param.second.first );
+          }
+          else 
+            ERROR( param.first << " spline parameter not understood");
+
+        }
+        for( auto& spline : paramMap ){
+          if( spline.second->isConfigured() ){
+            m_addressMapping.push_back(spline.second);
+            (*m_addressMapping.rbegin())->transfer();
+          }
+          else {
+            ERROR("Spline not configured correctly!");
+            m_stateIsGood = false;
+            return; 
+          }
+        }
+      }
+      std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*> parameters = p.second;
+      if (parameters.first == 0 || parameters.second == 0 ){
+        ERROR("Amplitude " << name 
+            << " not properly configured : pointers = (" 
+            << parameters.first << " , " 
+            << parameters.second << ") , prefix = " << prefix );
+        m_stateIsGood = false;
+        return; 
+      }
+      m_coefficients.push_back( 
+          std::complex<double>( parameters.first->mean() , parameters.second->mean() ) );
+      m_minuitparameters.push_back( parameters );
+    }
+    DEBUG("Configured all parameters");
+    if( m_pdfs.size() == 0 ) 
+      WARNING("No expressions found for amplitude with prefix = " << m_prefix ); 
+    else 
+      INFO("PDF has " << m_pdfs.size() << " amplitudes" ) ; 
+
+    m_normalisations.resize( m_pdfs.size(), std::vector<std::complex<double>>( m_pdfs.size() ) );
+  }
+
+void FastCoherentSum::prepare(){
+  m_prepareCalls++;
+  transferParameters(); /// move everything to the "immediate" cache ///
+  for( auto& addr : m_addressMapping ) addr->transfer();
+  std::vector<unsigned int> changedPdfIndices;
+  auto t_total = std::chrono::high_resolution_clock::now();
+  for( unsigned int i = 0 ; i < m_pdfs.size(); ++i){
+    auto& pdf = m_pdfs[i];
+    if( pdf.hasExternalsChanged() || m_prepareCalls == 1 ){
+      DEBUG("Calling prepare for the first time");
+      auto t_start = std::chrono::high_resolution_clock::now();
+      if( m_prepareCalls == 1 ){
+        if( m_events != 0 ){
+          DEBUG("Caching PDF for data");
+          m_cacheAddresses.push_back( m_events->cacheIndex( pdf ) );
+        }
+        if( m_sim != 0 && m_events == 0 ){
+          DEBUG("Caching PDF for MC (no data)");
+          m_cacheAddresses.push_back( m_sim->cacheIndex( pdf ) );
+        }
+        if( m_sim != 0 && m_events != 0 ){
+          DEBUG("Caching PDF for MC");
+          m_sim->cacheIndex(pdf);
+        }
+      }
+      else {
+        m_events->updateCache( pdf, m_cacheAddresses[ i ] ); 
+        if( m_sim != 0 ) m_sim->updateCache( pdf, m_cacheAddresses[i] );   
+      }
+      auto t_end = std::chrono::high_resolution_clock::now();
+      double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
+      if( m_prepareCalls > m_lastPrint + 100 || m_prepareCalls == 1 ){
+        INFO(pdf.name() << " ( t = " << time << " ms, nCalls = " << m_prepareCalls << ")" );    
+        m_lastPrint = m_prepareCalls;
+      }
+      changedPdfIndices.push_back( i ); 
+      pdf.resetExternals();
+    }
+  }
+  if( m_sim == 0 ) return; 
+  auto t_start = std::chrono::high_resolution_clock::now();
+  double iTime=0;
+
+  unsigned int nIntegrals = 0 ;
+  std::vector<std::vector<bool>> integralHasChanged( m_pdfs.size(), std::vector<bool>(m_pdfs.size(), 0 ));
+  for( auto& i : changedPdfIndices ){
+    for( unsigned int j = 0 ; j < m_pdfs.size(); ++j){
+      if( j==i ){
+        if( !integralHasChanged[i][j] ) {
+          auto iStart = std::chrono::high_resolution_clock::now();
+          m_normalisations[i][j] = m_sim->integrate( m_pdfs[i], m_pdfs[j], false );
+          iTime += std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() -iStart).count() ; 
+          nIntegrals++;
+          integralHasChanged[i][j] = true;
+        }
+      }
+      else if( !integralHasChanged[i][j] ){
+        auto iStart = std::chrono::high_resolution_clock::now();
+        m_normalisations[i][j] = m_sim->integrate( m_pdfs[i], m_pdfs[j] , false ) ;
+        iTime += std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() -iStart).count() ; 
+        m_normalisations[j][i] = std::conj( m_normalisations[i][j] );
+        nIntegrals++;
+        integralHasChanged[i][j] = true;
+        integralHasChanged[j][i] = true;
+      }
+    }
+  }
+  if( changedPdfIndices.size() != 0 && m_prepareCalls == m_lastPrint ){
+    auto t_end = std::chrono::high_resolution_clock::now();
+    double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
+    double total = std::chrono::duration<double, std::milli>(t_end-t_total).count() ;
+    INFO( this << " prepare performance : nIntegrals = " << nIntegrals << ", time = " << time << " ms, total prepare time = " << total  << " integrals = " << iTime );
+  }
+  m_norm = norm(); /// update normalisation 
+}
+
+void FastCoherentSum::debug( const unsigned int& N, const std::string& nameMustContain){ 
+  for( auto& pdf : m_pdfs ) pdf.resetExternals();
+  if( nameMustContain == "" ) for( auto& pdf : m_pdfs ) pdf.debug( m_events->getEvent(N) );
+  else 
+    for( auto& pdf: m_pdfs ) if( pdf.name().find( nameMustContain ) != std::string::npos ) pdf.debug( m_events->getEvent(N) );
+  prepare();
+  INFO( "Pdf = " << prob( m_events->at(N) )); 
+}
+
+std::vector<std::string> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit , std::ostream& stream){
+  std::vector<Complex> co;
+  std::vector<std::string> formatted;
+  auto covMatrix = minuit.covMatrixFull();
+  DEBUG("Covariance matrix size = " << covMatrix.GetNcols() << " x " << covMatrix.GetNrows()  );
+
+  for( unsigned int i=0;i<m_minuitparameters.size();++i ) 
+    co.push_back( Complex( AmpGen::FitParameter( m_minuitparameters[i].first) , 
+          AmpGen::FitParameter( m_minuitparameters[i].second ) ) );
+
+  DEBUG("Collected 2x" << m_minuitparameters.size() << " parameters" );
+  std::vector<Parameter> params;
+  for( auto& param : m_minuitparameters ){
+    params.push_back( Parameter( param.first->name() ) );
+    params.push_back( Parameter( param.second->name() ) );
+  }
+  DEBUG("Collected " << params.size() << 
+      " named parameters ( normalisations = " << m_normalisations.size() );
+  Expression normalisation; 
+  Expression diagonalFitFraction; 
+  for( unsigned int i=0;i<m_minuitparameters.size();++i){
+    normalisation = normalisation + co[i].norm()*m_normalisations[i][i].real();
+    diagonalFitFraction = diagonalFitFraction + co[i].norm()*m_normalisations[i][i].real();
+    for( unsigned int j=i+1; j < m_minuitparameters.size(); ++j )
+      normalisation = normalisation + 2*( co[i]*co[j].conj()*m_normalisations[i][j] ).real() ; 
+  }
+  DEBUG("Calculated normalisations");
+  std::vector<Observable> fractions;
+  std::vector<Observable> interferenceTerms;
+  std::vector<std::string> latexTable;
+
+  for( unsigned int i=0;i<m_minuitparameters.size();++i){
+
+    Observable FF( co[i].norm()*m_normalisations[i][i].real() / normalisation ,
+        m_decayTrees[i]->uniqueString() );
+    FF.evaluate( covMatrix , params );
+    fractions.push_back(FF);
+    for( unsigned int j=i+1; j < m_minuitparameters.size(); ++j ){
+      Complex fij = co[i]*co[j].conj()*m_normalisations[i][j] ;
+      Observable IF( fij.real() / normalisation,
+          m_decayTrees[i]->uniqueString() + " x " + m_decayTrees[j]->uniqueString() );
+      IF.evaluate( covMatrix, params);
+      interferenceTerms.push_back( IF);
+    }   
+    stream << m_decayTrees[i]->uniqueString() << " : " 
+      << FF.getVal() << " " << FF.getError() << " " 
+      << m_minuitparameters[i].first->mean() << " " 
+      << m_minuitparameters[i].first->err() << " " 
+      << m_minuitparameters[i].second->mean() << " " 
+      << m_minuitparameters[i].second->err() << std::endl;
+    std::string latexString = numberWithError(FF.getVal(),FF.getError(),4) + " & " +
+      numberWithError(m_minuitparameters[i].first->mean() , m_minuitparameters[i].first->err(),3) + " & " +
+      numberWithError(m_minuitparameters[i].second->mean() , m_minuitparameters[i].second->err(),3) ;  
+    formatted.push_back( latexString );
+  }
+  Observable OFF( diagonalFitFraction / normalisation ,"SumOfFitFractions");
+  OFF.evaluate( covMatrix, params ); 
+  INFO( "Diagonal Fit Fraction = " << numberWithError( OFF.getVal() , OFF.getError(),4)  );
+  formatted.push_back( numberWithError( OFF.getVal(), OFF.getError(),4) );
+  DEBUG( fractions.size() << " fit fraction observables");
+  DEBUG( interferenceTerms.size() << " interference observables");
+
+  std::sort( fractions.begin(), fractions.end() );
+  std::sort( interferenceTerms.begin(), interferenceTerms.end() );
+
+  for( auto fraction = fractions.begin() ; fraction != fractions.end(); ++fraction )
+    std::cout << std::setw(55) << fraction->name() << "   " 
+      << std::setw(7)  << fraction->getVal() 
+      << std::setw(7)  << " +/- " << fraction->getError() << std::endl;
+
+  std::cout << "#################################################" << std::endl; 
+
+  std::cout << "Re(Interference) (+/-) stat." << std::endl;
+  for( auto& fraction : interferenceTerms )
+    std::cout << std::setw(55) << fraction.name() << "   " 
+      << std::setw(7)  << fraction.getVal() 
+      << std::setw(7)  << " +/- " << fraction.getError() << std::endl;
+  return formatted ; 
+}
+
+
+void FastCoherentSum::makeBinary( const std::string& fname ){
+  std::ofstream stream( fname );
+  stream << "#include <complex>" << std::endl;
+  stream << "#include <vector>" << std::endl; 
+  for( auto& p : m_pdfs ) p.compile( stream );
+  transferParameters();
+  stream << std::setprecision(10) ; 
+  for( auto& p : m_pdfs ) p.compileWithParameters( stream );
+
+  stream << "extern \"C\" double FCN( double* E , const int& parity){" << std::endl;
+  stream << " std::complex<double> amplitude = " << std::endl;
+  for( unsigned int i = 0 ; i < m_pdfs.size() ; ++i ){
+    int parity = m_decayTrees[i]->finalStateParity();
+    //INFO( m_decayTrees[i]->uniqueString() << " parity = " << parity );
+    if( parity == -1 ) stream << " double(parity) * ";
+    stream << "std::complex<double>(" << std::real(m_coefficients[i]) << " , " << std::imag( m_coefficients[i] ) << ") * ";
+    stream << "r" << m_pdfs[i].hash() << "( E )";
+    stream << ( i==m_pdfs.size()-1 ? ";" : "+" ) << std::endl;  
+  };
+  stream << " return std::norm(amplitude) ; }" << std::endl; 
+  stream.close();
+}
+
