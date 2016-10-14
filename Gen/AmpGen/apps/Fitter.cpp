@@ -11,7 +11,6 @@
 #include "AmpGen/Particle.h"
 #include "AmpGen/FastCoherentSum.h"
 #include "AmpGen/FastIncoherentSum.h"
-#include "AmpGen/Binning.h"
 #include "AmpGen/Chi2Estimator.h"
 #include "AmpGen/MsgService.h"
 #include "AmpGen/SumPDF.h"
@@ -87,7 +86,7 @@ template<typename PDF > Minimiser* doFit( PDF& pdf ,
     for( auto& plot : mc_plots ) plot->Write();
   }
 
-  Chi2Estimator chi2(data, mc , 10, 30);
+  Chi2Estimator chi2(data, mc , 15 );
 
   TMatrixTSym<double> cov = mini->covMatrixFull();
   outlog << "Covariance Matrix:" << std::endl;
@@ -338,12 +337,14 @@ int main(int argc , char* argv[] ){
      */ 
     signalAndTwoBackground.setMC( flatEvts );
     signalAndTwoBackground.getVal();
+   
     CoherenceFactor rk3pi( &flatEvts, &pdf, &misID );
     rk3pi.setGlobalPhase( globalPhase );
-    if( binningName == "" ) rk3pi.makeBins( co_nBins );
-    else rk3pi.readBinsFromFile( binningName  );
-    rk3pi.printCoherence( logstream ) ;
-    
+    rk3pi.makeCoherentMapping( co_nBins ) ;
+    rk3pi.writeToFile("test.dat");
+    rk3pi.getNumberOfEventsInEachBin( events );
+
+
     //rk3pi.getFitFractions( *mini );
     //rk3pi.getNumberOfEventsInEachBin( events );    
    /*

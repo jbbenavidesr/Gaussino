@@ -47,10 +47,6 @@ TensorHelper AmpGen::operator * ( const TensorHelper& t1, const TensorHelper& t2
       << contractions.size() 
       << " contractions (dim = " << size << ")" );
   if(size<0) ERROR("Making an object of negative rank , doesn't make sense");
-  #ifdef DEBUG
-    DEBUG("Contractions :" );
-    for(auto& contraction : contractions ) DEBUG( contraction.first << " " << contraction.second );
-  #endif
   Tensor value( std::vector<unsigned int>(size,4));
 
   unsigned nElem = value.nElements();

@@ -18,10 +18,12 @@ include_path      none
 # Component library building rule
 #============================================================================
 library          LbDtoKpipipi_v1    DtoKpipipi_v1.cpp 
+library          LbDtopiKpipi_v1    DtopiKpipi_v1.cpp
 
 # define component library link options
 #============================================================================
 apply_pattern    component_library library=LbDtoKpipipi_v1
+apply_pattern    component_library library=LbDtopiKpipi_v1
 
 # Make the C++ source code from the steering files
 #============================================================================
