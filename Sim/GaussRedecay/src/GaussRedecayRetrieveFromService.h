@@ -67,7 +67,7 @@ template <typename T>
 StatusCode GaussRedecayRetrieveFromService::test_print_put(T* container,
                                                            std::string loc) {
     if (msgLevel(MSG::DEBUG)) {
-        debug() << "Copying " << container->size() << " GenCollisions to "
+        debug() << "Copying " << container->size() << " to "
                 << loc << endmsg;
     }
     if (exist<T>(loc)) {

@@ -56,7 +56,7 @@ from Configurables import ( PackMCParticle, PackMCVertex,
 # All GaussRedecay includes
 from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
-                           GaussRedecayPrintMCParticles,
+                            GaussRedecayPrintMCParticles,
                             GaussRedecayCtrFilter,
                             GaussRedecaySorter,
                             GaussRedecayMergeAndClean)
@@ -139,6 +139,7 @@ class Gauss(LHCbConfigurableUser):
         ## type of particle in the beam or in the fixed target
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
+        , "Redecay" : {"N": 100, 'active': False}
       }
 
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
@@ -541,8 +542,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
 
@@ -858,8 +859,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureTTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -989,8 +990,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureITMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1193,8 +1194,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureOTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
@@ -1262,8 +1263,8 @@ class Gauss(LHCbConfigurableUser):
                                   Detectors = ['/dd/Structure/LHCb/DownstreamRegion/'+det] )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
 
     def configureMuonMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1331,8 +1332,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configurePrsSim ( self, slot, detHits ):
         det = "Prs"
@@ -1343,8 +1344,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureEcalSim ( self, slot, detHits ):
         det = "Ecal"
@@ -1355,8 +1356,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
     def configureHcalSim ( self, slot, detHits ):
         det = "Hcal"
@@ -1367,8 +1368,8 @@ class Gauss(LHCbConfigurableUser):
             )
         detHits.Members += [ moni ]
         if 'Signal' not in slot:
-            GaussRedecayCopyToService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
-            GaussRedecayRetrieveFromService().MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCCaloHitsLocation += ['MC/' + det  + '/Hits']
 
 
 
@@ -1770,8 +1771,8 @@ class Gauss(LHCbConfigurableUser):
                 )
             detHits.Members += [ moni ]
             if 'Signal' not in slot:
-                GaussRedecayCopyToService().MCHitsLocation += ['MC/' + det  + '/Hits']
-                GaussRedecayRetrieveFromService().MCHitsLocation += ['MC/' + det  + '/Hits']
+                GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
+                GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += ['MC/' + det  + '/Hits']
 
     def configurePuVetoMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
 
@@ -2143,8 +2144,6 @@ class Gauss(LHCbConfigurableUser):
 ##         if "Gen" not in self.getProp("MainSequence") :
 ##             log.warning("No generator phase. Need input file")
 ##             return
-
-        ApplicationMgr().ExtSvc += ['GaussRedecay']
         if self.evtMax() <= 0:
             raise RuntimeError( "Generating events but selected '%s' events. Use LHCbApp().EvtMax " %self.evtMax() )
 
@@ -2189,12 +2188,14 @@ class Gauss(LHCbConfigurableUser):
             genProc.GenHeaderLocation = TESNode+"Gen/Header"
             genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents"
             genProc.GenCollisionLocation = TESNode+"Gen/Collisions"
-            GaussRedecayCopyToService().GenCollisionLocation = TESNode+"Gen/Collisions"
-            GaussRedecayRetrieveFromService().GenCollisionLocation = TESNode+"Gen/Collisions"
+            #GaussRedecayCopyToService('GaussRedecayCopyToService{}'.format(
+                #slot)).GenCollisionLocation = TESNode+"Gen/Collisions"
+            #GaussRedecayRetrieveFromService(
+                #'GaussRedecayRetrieveFromService{}'.format(slot)).GenCollisionLocation = TESNode+"Gen/Collisions"
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
-            gaussrdfilter = GaussRedecayCtrFilter('RegisterNewEvent')
+            gaussrdfilter = GaussRedecayCtrFilter('RegisterNewEvent{}'.format(slot))
             gaussrdfilter.RegisterNewEvent = True
             genSequence.Members += [ genInit ]
             # When HC simulation is switched on the very forward protons must be
@@ -2204,8 +2205,10 @@ class Gauss(LHCbConfigurableUser):
                                         HepMCEventLocation = TESNode+"Gen/HepMCEvents")
                 genSequence.Members += [genMask]
 
-            genSequence.Members += [ gaussrdfilter, genProc,
-                                    GaussRedecaySorter() ]
+            if slot != '':
+                genSequence.Members += [ gaussrdfilter, genProc]
+            else:
+                genSequence.Members += [ gaussrdfilter, genProc, GaussRedecaySorter() ]
 
     ## end of Gen configuration
     ##########################################################################
@@ -2245,6 +2248,8 @@ class Gauss(LHCbConfigurableUser):
             self.configureSkipGeant4( SpillOverSlots )
         self.configureSim( SpillOverSlots )
         self.configureMoni( SpillOverSlots ) #(expert or default)
+        if self.Redecay['active']:
+            self.configureRedecay( SpillOverSlots )
     ## end of phase configuration
     ##########################################################################
 
@@ -2738,9 +2743,9 @@ class Gauss(LHCbConfigurableUser):
             mainSimSequence.Members += [ simSeq ]
 
 
-            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim")
-            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim",
+            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",
                                          RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
+            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim")
             simSlotSeq.Members += [simSlotFullSeq]
             simSeq.Members += [simSlotSeq]
 
@@ -2756,7 +2761,8 @@ class Gauss(LHCbConfigurableUser):
             # Make a filter to turn this part off for the signal redecay part.
             # Ask whether phase is 1 and set it to 2 later on. Only applies for
             # redecay, setting to 2 ignored otherwise!
-            grdfilter = GaussRedecayCtrFilter('CheckIfFullOrUESim')
+            grdfilter = GaussRedecayCtrFilter(
+                'CheckIfFullOrUESim{}'.format(slot))
             grdfilter.IsPhaseNotEqual = 2
             # grdfilter.SetPhase = 2
             simSlotFullSeq.Members += [ grdfilter]
@@ -2773,7 +2779,9 @@ class Gauss(LHCbConfigurableUser):
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotFullSeq.Members += [ detHits ]
-            simSlotFullSeq.Members += [ GaussRedecayCopyToService() ]
+            simSlotFullSeq.Members += [ GaussRedecayCopyToService(
+                'GaussRedecayCopyToService{}'.format(slot)
+            ) ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
             configuredRichSim = [ False ]
@@ -2783,71 +2791,75 @@ class Gauss(LHCbConfigurableUser):
             # ################################################
             # Signal part here
             # ################################################
-            TESNode = "/Event/"+self.slot_(slot)+"Signal/"
-            simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
-            simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
-            gdh = GenInit('SignalDummyGenHeader')
-            self.setBeamParameters(self.defineCrossingList(), gdh)
+            if slot == '':
+                TESNode = "/Event/"+self.slot_(slot)+"Signal/"
+                simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
+                simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
+                gdh = GenInit('SignalDummyGenHeader')
+                self.setBeamParameters(self.defineCrossingList(), gdh)
 
-            gdh.MCHeader = TESNode+"Gen/Header"
-            gdh.CreateBeam = False
-            sdh = SimInit('SignalDummyMCHeader')
-            grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
-            grdfilter.IsPhaseNotEqual = 0
-            simSlotSignal.Members += [ grdfilter]
-            simSeq.Members += [ gdh]
-            simSlotSignal.Members += [ sdh]
-            simSlotSignal.Members += [Generation("GenerationSignal")]
-            simSlotSignal.Members += [simSlotSignalSeq]
-            simSeq.Members += [simSlotSignal]
+                gdh.MCHeader = TESNode+"Gen/Header"
+                gdh.CreateBeam = False
+                sdh = SimInit('SignalDummyMCHeader')
+                grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
+                grdfilter.IsPhaseNotEqual = 0
+                simSlotSignal.Members += [ grdfilter]
+                simSeq.Members += [ gdh]
+                simSlotSignal.Members += [ sdh]
+                simSlotSignal.Members += [Generation("GenerationSignal")]
+                simSlotSignal.Members += [simSlotSignalSeq]
+                simSeq.Members += [simSlotSignal]
 
-            simSlotSignal.RootInTES = '{}Signal'.format(slot)
+                simSlotSignal.RootInTES = '{}Signal'.format(slot)
 
-            genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
-                                               LookForUnknownParticles = True )
-            # genToSim.SelectiveSimulationStep = 2
-            simSlotSignalSeq.Members += [ genToSim ]
+                genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
+                                                LookForUnknownParticles = True )
+                # genToSim.SelectiveSimulationStep = 2
+                simSlotSignalSeq.Members += [ genToSim ]
 
-            simSlotSignalSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
-            simSlotSignalSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
-            simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
-            simSlotSignalSeq.Members += [ simToMC ]
+                simSlotSignalSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
+                simSlotSignalSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
+                simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
+                simSlotSignalSeq.Members += [ simToMC ]
 
-            TESNode = TESNode + "MC/"
-            detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
-            simSlotSignalSeq.Members += [ detHits ]
-            simSlotSignalSeq.Members += [ GaussRedecayPrintMCParticles('SignalPrint') ]
+                TESNode = TESNode + "MC/"
+                detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
+                simSlotSignalSeq.Members += [ detHits ]
+                simSlotSignalSeq.Members += [ GaussRedecayPrintMCParticles('SignalPrint') ]
 
-            configuredRichSim = [ False ]
-            for det in self.getProp('DetectorSim')['Detectors']:
-                self.configureDetectorSim( slot+'Signal', detHits, det, configuredRichSim )
+                configuredRichSim = [ False ]
+                for det in self.getProp('DetectorSim')['Detectors']:
+                    self.configureDetectorSim( slot+'Signal', detHits, det, configuredRichSim )
 
             # ##############################################
             # End signal part
             # ##############################################
             loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim" )
-            grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim2')
+            grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim2{}'.format(slot))
             grdfilter.IsPhaseEqual = 2
+            loadSlotSeq.RootInTES = slot
             loadSlotSeq.Members += [
                 grdfilter,
-                GaussRedecayRetrieveFromService()]
+                GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService{}'.format(slot))]
             simSeq.Members += [loadSlotSeq]
-            grdfilter = GaussRedecayCtrFilter('CheckIfMerge')
-            grdfilter.IsPhaseNotEqual = 0
-            mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim" )
-            GaussRedecayMergeAndClean().MCHitsLocation = GaussRedecayCopyToService().MCHitsLocation
-            GaussRedecayMergeAndClean().MCCaloHitsLocation = GaussRedecayCopyToService().MCCaloHitsLocation
-            mergeSlotSeq.Members += [
-                StoreExplorerAlg('BeforeMerge'),
-                grdfilter,
-                GaussRedecayMergeAndClean(),
-                GaussRedecayPrintMCParticles('FullPrint'),
-                StoreExplorerAlg('AfterMerge')]
-            simSeq.Members += [mergeSlotSeq]
+            if slot == '':
+                grdfilter = GaussRedecayCtrFilter('CheckIfMerge')
+                grdfilter.IsPhaseNotEqual = 0
+                mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim" )
+                GaussRedecayMergeAndClean().MCHitsLocation = GaussRedecayCopyToService().MCHitsLocation
+                GaussRedecayMergeAndClean().MCCaloHitsLocation = GaussRedecayCopyToService().MCCaloHitsLocation
+                mergeSlotSeq.Members += [
+                    #StoreExplorerAlg('BeforeMerge'),
+                    grdfilter,
+                    GaussRedecayMergeAndClean()]
+                    #GaussRedecayPrintMCParticles('FullPrint'),
+                    #StoreExplorerAlg('AfterMerge')]
+                simSeq.Members += [mergeSlotSeq]
+                GaudiSequencer('RichHitsSignal').Members = GaudiSequencer('RichHitsSignal').Members[:4]
             richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
-            richpaddingSlotSeq.Members = GaudiSequencer('RichHits').Members[4:]
-            GaudiSequencer('RichHits').Members = GaudiSequencer('RichHits').Members[:4]
-            GaudiSequencer('RichHitsSignal').Members = GaudiSequencer('RichHitsSignal').Members[:4]
+            richpaddingSlotSeq.RootInTES = slot
+            richpaddingSlotSeq.Members = GaudiSequencer('RichHits' + slot).Members[4:]
+            GaudiSequencer('RichHits' + slot).Members = GaudiSequencer('RichHits' + slot).Members[:4]
             simSeq.Members += [richpaddingSlotSeq]
 
 
@@ -3007,7 +3019,8 @@ class Gauss(LHCbConfigurableUser):
             TESNode = "/Event/"+self.slot_(slot)
 
             simSequence = GaudiSequencer( self.slotName(slot)+"Simulation" )
-            simMoniSeq = GaudiSequencer( "SimMonitor" + slot )
+            simMoniSeq = GaudiSequencer( "SimMonitor" + slot,
+                                        RequireObjects = [ 'MC/Particles' ])
             simSequence.Members += [ simMoniSeq ]
 
             # CRJ : Set RootInTES - Everything down stream will then use the correct location
@@ -3580,3 +3593,38 @@ class Gauss(LHCbConfigurableUser):
         # from Configurables import StoreExplorerAlg
         # GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
 
+
+# _____          _
+#|  __ \        | |
+#| |__) |___  __| | ___  ___ __ _ _   _
+#|  _  // _ \/ _` |/ _ \/ __/ _` | | | |
+#| | \ \  __/ (_| |  __/ (_| (_| | |_| |
+#|_|  \_\___|\__,_|\___|\___\__,_|\__, |
+#                                  __/ |
+#                                 |___/
+
+    def configureRedecay(self, SpillOverSlots ):
+        """Apply final configuration to the redecay configurables, especially set
+        the correct GaussRedecay Service instances for the different spillover
+        slots"""
+        n_redecays = self.Redecay['N']
+
+        for slot in SpillOverSlots:
+            svcname = 'GaussRedecay' + slot
+            ApplicationMgr().ExtSvc += ['GaussRedecay/GaussRedecay' + slot]
+            GaussRedecay(svcname).Phase = 1
+            GaussRedecay(svcname).nRedecay = n_redecays
+            GaussRedecay(svcname).RedecayMode = 1
+
+            if slot == '':
+                continue
+            GaussRedecayCopyToService(
+                'GaussRedecayCopyToService' + slot).GaussRedecay = svcname
+            GaussRedecayRetrieveFromService(
+                'GaussRedecayRetrieveFromService' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'RegisterNewEvent' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'CheckIfFullOrUESim' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'CheckIfSignalSim2' + slot).GaussRedecay = svcname

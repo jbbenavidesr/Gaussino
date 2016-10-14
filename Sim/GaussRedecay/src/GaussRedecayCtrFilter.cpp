@@ -74,13 +74,13 @@ StatusCode GaussRedecayCtrFilter::execute() {
   if (m_registerNewEvent) {
     if (gaussRDSvc()->registerNewEvent()) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -91,17 +91,17 @@ StatusCode GaussRedecayCtrFilter::execute() {
   // Next check that the flag is equal to the requested value:
   if (m_isPhase > -1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "Checking if GaussRedecay phase is " << m_isPhase << endmsg;
+      debug() << "Checking if " << m_gaussRDSvcName << " phase is " << m_isPhase << endmsg;
     }
     if (gaussRDSvc()->getPhase() == m_isPhase) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
@@ -111,17 +111,17 @@ StatusCode GaussRedecayCtrFilter::execute() {
   // Next check that the flag is not equal to the requested value:
   if (m_isPhaseNot > -1) {
     if (msgLevel(MSG::DEBUG)) {
-      debug() << "Checking if GaussRedecay phase is not " << m_isPhaseNot << endmsg;
+      debug() << "Checking if " << m_gaussRDSvcName << " phase is not " << m_isPhaseNot << endmsg;
     }
     if (gaussRDSvc()->getPhase() != m_isPhaseNot) {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(true)" << endmsg;
       }
       setFilterPassed(true);
     } else {
       if (msgLevel(MSG::DEBUG)) {
-        debug() << "GaussRedecay phase=" << gaussRDSvc()->getPhase() << endmsg;
+        debug() << m_gaussRDSvcName << " phase = " << gaussRDSvc()->getPhase() << endmsg;
         debug() << "Setting setFilterPassed(false)" << endmsg;
       }
       setFilterPassed(false);
