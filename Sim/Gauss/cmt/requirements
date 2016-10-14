@@ -126,9 +126,5 @@ apply_pattern GaudiApp
 
 #== Run the tests
 private
-  action make_qmtest_files "./makeQMTests.py"
-  macro_append constituents " make_qmtest_files"
-  macro_remove cmt_actions_constituents "make_qmtest_files"
-
   apply_pattern QMTest
 end_private
