@@ -12,7 +12,55 @@ Purpose: LHCb Simulation program
 </ul>
 </b>
 
+<H1><A NAME="v49r4">2016-10-19 - Gauss v49r4</A></H1>
+<H2><A NAME="Note"Release for Sim09 productions</A></H2>
+This version uses projects:
+   LCG_79 (HepMC 2.06.09, ROOT 6.04.02), Gaudi v26r4, LHCb v39r1, 
+   Geant4 v96r4p3 (geant4.9.6.p04 + LHCb patches)
+   and SQLDDDB v7r*, ParamFiles v8r*, FieldMap v5r*, AppConfig v3r*, Geant4Files v96r*, GDMLData v1r*
 
+<p>
+This version uses (via LCG_79/MCGenerators):
+   pythia8 186 (with LHCb Tune1), lhapdf 6.1.4, photos++ 3.56, tauola++ 1.1.4, pythia 6.427.2,
+   hijing 1.383bs.2, crmc 1.5.6 (epos), alpgen 2.1.4, powhegbox r2092, herwig++ 2.7.1, thepeg 1.9.2p1
+   rivet 2.4.2, yoda 1.5.9
+
+<p>
+This version uses (private LHCb generators versions):
+   EvtGen, <b>EvtGenExtras</b>, Mint, <b>AmpGen - NEW </b>, BcVegPy, GenXicc, HidValley
+   and DecFiles v29r*, LHAPDFSets v2r*, BcVegPyData v2r*, GenXiccData v3r*, PGunsData v1r*
+
+<p>
+This version is released on Sim09 branch
+
+<h2>Updates to generators</h2>
+
+<dl>
+<dt>[MR !26]New Amplitude model for D -> pi pi pi
+<dd>New Amplitude model from Tim Evans.
+    Changes in requirements and cmake build added (made with Marco Clemencic).
+    Details at LHCBGAUSS-838
+
+</dl>
+
+
+<h2>Code modernization and maintenance</h2>
+
+<dl>
+<dt>[MR !27]Remove script and template for new event type tests from Gauss as well as its execution
+<dd>Remove script and template for new event type tests.
+    Remove executing the script from the cmt requirements.
+    This in not only no longer necessary since they are done in dedicated DecFilesTests 
+    project but it also creating problems in making the web page test reporting when building with cmake.
+    See LHCBGAUSS-838
+
+<dt>[Commit 43f1e77dc794ce2212c7eee1d7e2b0c26d253c73]Update Gauss-DEV.py to use latest 2016 tags
+
+<dt>[Commit fd3f764f9ba93170b9fbf85f11a95dbe3028f5a9]Update CMakeLists.txt to set the PYTHIA8DATA environment that is used by EvtGen
+
+</dl>
+
+!==============================================================================
 <H1><A NAME="v49r3">2016-09-22 - Gauss v49r3</A></H1>
 <H2><A NAME="Note"Release for Sim09 productions</A></H2>
 This version uses projects:

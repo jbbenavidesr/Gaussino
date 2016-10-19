@@ -1,5 +1,5 @@
 package GaussSys
-version v49r3
+version v49r4
 
 branches cmt doc
 
@@ -37,6 +37,8 @@ use GenCuts             v*   Gen
 use GENSER              v*   Gen
 use EvtGen              v*   Gen
 use Mint                v*   Gen
+use AmpGen              v*   Gen
+use LbAmpGen            v*   Gen
 use EvtGenExtras        v*   Gen
 use Generators          v*   Gen
 use LbPythia8           v*   Gen
