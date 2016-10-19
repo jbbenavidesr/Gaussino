@@ -17,8 +17,6 @@
 
 // Gaudi Histograms:
 #include "GaudiAlg/GaudiHistoAlg.h"
-// CaloKernel
-#include "CaloKernel/CaloException.h"
 
 // local
 #include "MCCaloMonitor.h"
