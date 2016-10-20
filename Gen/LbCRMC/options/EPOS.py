@@ -1,11 +1,17 @@
 from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production, Special, Inclusive, SignalPlain, FixedNInteractions, DaughtersInLHCbKeepOnlySignal, Gauss
+from GaudiKernel import SystemOfUnits
 
 import math
+
+__ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 , 'Kr': 1000360840 ,
+                       'Xe': 1000541320 }
 
 gen = Generation()
 
 def finalConfiguration():
     event_type = gen.getProp('EventType')
+    gauss = Gauss()
+
     if event_type != 30000000: ## embedding
         gen.CommonVertex = True
         gen.SampleGenerationTool = "Special"
@@ -28,10 +34,15 @@ def finalConfiguration():
         gen.Special.PileUpProductionTool = "CRMCProduction"
         gen.Special.ReinitializePileUpGenerator = False
 
-        Generation().Special.addTool( Pythia8Production , name = 'SignalPythia8' )
-        Generation().Special.SignalPythia8.Tuning = "LHCbDefault.cmd"
+        gen.Special.addTool( Pythia8Production , name = 'SignalPythia8' )
+        gen.Special.SignalPythia8.Tuning = "LHCbDefault.cmd"
+        #
+        gen.Special.CRMCProduction.ProjectileID = __ion_pdg_id__[  gauss.getProp('B1Particle') ]
+        gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
+        gen.Special.CRMCProduction.ProjectileMomentum = gauss.getProp('BeamMomentum') / SystemOfUnits.GeV
+        gen.Special.CRMCProduction.TargetMomentum =  gauss.getProp('B2Momentum') / SystemOfUnits.GeV
+        
     ## decide if fixed target or not
-    gauss = Gauss()
     if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
         gen.MinimumBias.CRMCProduction.Frame = "target"
         gen.Special.CRMCProduction.Frame = "target"
