@@ -36,6 +36,18 @@ def finalConfiguration():
 
         gen.Special.addTool( Pythia8Production , name = 'SignalPythia8' )
         gen.Special.SignalPythia8.Tuning = "LHCbDefault.cmd"
+        # give correct beam parameters to Pythia8
+        horizontalCrossingAngle = gauss.getProp('BeamHCrossingAngle')
+        horizontalBeamlineAngle = gauss.getProp('BeamLineAngles')[ 0 ]
+        verticalCrossingAngle = gauss.getProp('BeamVCrossingAngle')
+        verticalBeamlineAngle =  gauss.getProp('BeamLineAngles')[ 1 ]
+        pzB = -gauss.getProp('B2Momentum') / SystemOfUnits.GeV
+        pxB = -pzB * math.sin( horizontalCrossingAngle - horizontalBeamlineAngle )
+        pyB = -pzB * math.sin( verticalCrossingAngle - verticalBeamlineAngle )
+        gen.Special.SignalPythia8.Commands += [ 'Beams:pxB = %.2f' % pxB ,
+                                                'Beams:pyB = %.2f' % pyB ,
+                                                'Beams:pzB = %.2f' % pzB ,
+                                                'Init:showProcesses = on' ] 
         #
         gen.Special.CRMCProduction.ProjectileID = __ion_pdg_id__[  gauss.getProp('B1Particle') ]
         gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
