@@ -1,4 +1,4 @@
-from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production, Special, Inclusive, SignalPlain, FixedNInteractions, DaughtersInLHCbKeepOnlySignal, Gauss
+from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production, Special, Inclusive, SignalPlain, FixedNInteractions, DaughtersInLHCbKeepOnlySignal, Gauss, BoostForEpos, GaudiSequencer
 from GaudiKernel import SystemOfUnits
 
 import math
@@ -12,6 +12,27 @@ def finalConfiguration():
     event_type = gen.getProp('EventType')
     gauss = Gauss()
 
+    horizontalCrossingAngle = gauss.getProp('BeamHCrossingAngle')
+    horizontalBeamlineAngle = gauss.getProp('BeamLineAngles')[ 0 ]
+    verticalCrossingAngle = gauss.getProp('BeamVCrossingAngle')
+    verticalBeamlineAngle =  gauss.getProp('BeamLineAngles')[ 1 ]
+    pzB = -math.fabs(gauss.getProp('B2Momentum')) / SystemOfUnits.GeV
+    pxB = -pzB * math.sin( horizontalCrossingAngle - horizontalBeamlineAngle )
+    pyB = -pzB * math.sin( verticalCrossingAngle - verticalBeamlineAngle )
+    pzA = gauss.getProp('BeamMomentum') / SystemOfUnits.GeV
+    pxA = pzA * math.sin( horizontalCrossingAngle + horizontalBeamlineAngle )
+    pyA = pzA * math.sin( verticalCrossingAngle + verticalBeamlineAngle )
+
+    gen.MinimumBias.CRMCProduction.ProjectileMomentum = pzA
+    gen.MinimumBias.CRMCProduction.TargetMomentum = pzB
+    gen.Special.CRMCProduction.ProjectileMomentum = pzA
+    gen.Special.CRMCProduction.TargetMomentum = pzB
+    gen.Inclusive.CRMCProduction.ProjectileMomentum = pzA
+    gen.Inclusive.CRMCProduction.TargetMomentum = pzB
+    gen.SignalPlain.CRMCProduction.ProjectileMomentum = pzA
+    gen.SignalPlain.CRMCProduction.TargetMomentum = pzB
+
+
     if event_type != 30000000: ## embedding
         gen.CommonVertex = True
         gen.SampleGenerationTool = "Special"
@@ -23,12 +44,9 @@ def finalConfiguration():
         gen.Special.CutTool = "DaughtersInLHCbKeepOnlySignal"
         gen.Special.addTool( DaughtersInLHCbKeepOnlySignal )
 
-        signal_pid = []
-        if not gen.SignalPlain.getProp( 'SignalPIDList' ):
-            signal_pid = gen.SignalPlain.getProp( 'SignalPIDList' )
-        else: signal_pid = [ 443 ]
-        
-        gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = math.fabs( signal_pid[ 0 ] )
+        signal_pid = gen.SignalPlain.getProp( 'SignalPIDList' )
+        if len(signal_pid) > 0:
+            gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = math.fabs( signal_pid[ 0 ] )
         #
         gen.Special.ProductionTool = "Pythia8Production/SignalPythia8"
         gen.Special.PileUpProductionTool = "CRMCProduction"
@@ -37,13 +55,6 @@ def finalConfiguration():
         gen.Special.addTool( Pythia8Production , name = 'SignalPythia8' )
         gen.Special.SignalPythia8.Tuning = "LHCbDefault.cmd"
         # give correct beam parameters to Pythia8
-        horizontalCrossingAngle = gauss.getProp('BeamHCrossingAngle')
-        horizontalBeamlineAngle = gauss.getProp('BeamLineAngles')[ 0 ]
-        verticalCrossingAngle = gauss.getProp('BeamVCrossingAngle')
-        verticalBeamlineAngle =  gauss.getProp('BeamLineAngles')[ 1 ]
-        pzB = -gauss.getProp('B2Momentum') / SystemOfUnits.GeV
-        pxB = -pzB * math.sin( horizontalCrossingAngle - horizontalBeamlineAngle )
-        pyB = -pzB * math.sin( verticalCrossingAngle - verticalBeamlineAngle )
         gen.Special.SignalPythia8.Commands += [ 'Beams:pxB = %.2f' % pxB ,
                                                 'Beams:pyB = %.2f' % pyB ,
                                                 'Beams:pzB = %.2f' % pzB ,
@@ -51,8 +62,8 @@ def finalConfiguration():
         #
         gen.Special.CRMCProduction.ProjectileID = __ion_pdg_id__[  gauss.getProp('B1Particle') ]
         gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
-        gen.Special.CRMCProduction.ProjectileMomentum = gauss.getProp('BeamMomentum') / SystemOfUnits.GeV
-        gen.Special.CRMCProduction.TargetMomentum =  gauss.getProp('B2Momentum') / SystemOfUnits.GeV
+        gen.Special.CRMCProduction.ProjectileMomentum = pzA
+        gen.Special.CRMCProduction.TargetMomentum =  pzB
         
     ## decide if fixed target or not
     if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
@@ -65,10 +76,19 @@ def finalConfiguration():
         gen.Special.CRMCProduction.Frame = "nucleon-nucleon"
         gen.Inclusive.CRMCProduction.Frame = "nucleon-nucleon"
         gen.SignalPlain.CRMCProduction.Frame = "nucleon-nucleon"
+    ## then boost the EPOS interactions in the correct frame
+    genSequence = GaudiSequencer( "GeneratorSlotMainSeq" )
+    boost_px = (pxA + pxB) * SystemOfUnits.GeV
+    boost_py = (pyA + pyB) * SystemOfUnits.GeV
+    if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
+        boost_pz = 0.
+    else:
+        boost_pz = (pzA + pzB) * SystemOfUnits.GeV
+    boostAlg = BoostForEpos( p_x = boost_px , p_y= boost_py , p_z = boost_pz )
+    genSequence.Members += [ boostAlg ]
 
 from Gaudi.Configuration import appendPostConfigAction
 appendPostConfigAction( finalConfiguration )
-
 
 ## Configure the production tools
 gen.addTool( MinimumBias )
