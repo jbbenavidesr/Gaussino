@@ -89,22 +89,32 @@ StatusCode BoostForEpos::execute() {
   // loop over particles and apply boost
   for ( HepMC::GenEvent::particle_iterator itP = theEPOSevent -> particles_begin() ;
           itP != theEPOSevent -> particles_end() ; ++itP ) {
-    std::cout << "AVANT = " << (*itP) -> momentum().px() / Gaudi::Units::GeV 
-              << " " << (*itP) -> momentum().py()  / Gaudi::Units::GeV
-              << " " << (*itP) -> momentum().pz()  / Gaudi::Units::GeV
-              << " " << (*itP) -> momentum().e()  / Gaudi::Units::GeV<< std::endl ;
     Gaudi::LorentzVector momentum( (*itP) -> momentum() ) ;
     Gaudi::LorentzVector newMomentum = m_boost( momentum ) ;
     (*itP) -> set_momentum( HepMC::FourVector( newMomentum.px() , 
                                                newMomentum.py() , 
-                                               newMomentum.pz() , 
+                                               newMomentum.pz() ,                   
                                                newMomentum.e() ) ) ;
-    std::cout << "APRES = " << (*itP) -> momentum().px()  / Gaudi::Units::GeV 
-              << " " << (*itP) -> momentum().py()  / Gaudi::Units::GeV
-              << " " << (*itP) -> momentum().pz()  / Gaudi::Units::GeV
-              << " " << (*itP) -> momentum().e()  / Gaudi::Units::GeV << std::endl ;
   }
+
+  // Find PV position
+  HepMC::GenParticle * theBeam = theEPOSevent -> beam_particles().first ;
+  HepMC::FourVector thePV = theBeam -> end_vertex() -> position() ;
   
+  // loop over vertices and apply boost
+  for ( HepMC::GenEvent::vertex_iterator itV = theEPOSevent -> vertices_begin() ;
+          itV != theEPOSevent -> vertices_end() ; ++itV ) {
+    Gaudi::LorentzVector position( (*itV) -> position().x() - thePV.x() , 
+                                   (*itV) -> position().y() - thePV.y() ,
+                                   (*itV) -> position().z() - thePV.z() , 
+                                   (*itV) -> position().t() - thePV.t() ) ;
+    Gaudi::LorentzVector newPosition = m_boost( position ) + thePV ;
+    (*itV) -> set_position( HepMC::FourVector( newPosition.x() , 
+                                               newPosition.y() , 
+                                               newPosition.z() ,                   
+                                               newPosition.t() ) ) ;
+  }
+
   return StatusCode::SUCCESS;
 }
 
