@@ -1,16 +1,22 @@
-from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production, Special, Inclusive, SignalPlain, FixedNInteractions, DaughtersInLHCbKeepOnlySignal, Gauss, BoostForEpos, GaudiSequencer
+from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production
+from Configurables import Special, Inclusive, SignalPlain, FixedNInteractions
+from Configurables import DaughtersInLHCbKeepOnlySignal, Gauss, BoostForEpos, GaudiSequencer
 from GaudiKernel import SystemOfUnits
 
 import math
 
-__ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 , 'Kr': 1000360840 ,
-                       'Xe': 1000541320 }
+__ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 ,
+                   'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 ,
+                   'Kr': 1000360840 ,
+                   'Xe': 1000541320 }
 
 gen = Generation()
 
 def finalConfiguration():
     event_type = gen.getProp('EventType')
     gauss = Gauss()
+
+    gen.MinimumBias.ProductionTool = "CRMCProduction"
 
     horizontalCrossingAngle = gauss.getProp('BeamHCrossingAngle')
     horizontalBeamlineAngle = gauss.getProp('BeamLineAngles')[ 0 ]
@@ -80,11 +86,16 @@ def finalConfiguration():
     genSequence = GaudiSequencer( "GeneratorSlotMainSeq" )
     boost_px = (pxA + pxB) * SystemOfUnits.GeV
     boost_py = (pyA + pyB) * SystemOfUnits.GeV
+    m_p =  0.938272
     if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
         boost_pz = 0.
+        boost_e = math.sqrt( m_p * m_p + pxA * pxA + pyA * pyA ) * SystemOfUnits.GeV
     else:
         boost_pz = (pzA + pzB) * SystemOfUnits.GeV
-    boostAlg = BoostForEpos( p_x = boost_px , p_y= boost_py , p_z = boost_pz )
+        boost_e = ( math.sqrt( m_p * m_p + pxA*pxA + pyA*pyA + pzA*pzA ) +  math.sqrt( m_p * m_p + pxB*pxB + pyB*pyB + pzB*pzB ) ) * SystemOfUnits.GeV
+
+    boostAlg = BoostForEpos( p_x = boost_px , p_y= boost_py , p_z = boost_pz ,
+                             e = boost_e )
     genSequence.Members += [ boostAlg ]
 
 from Gaudi.Configuration import appendPostConfigAction

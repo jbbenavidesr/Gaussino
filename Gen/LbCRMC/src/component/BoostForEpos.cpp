@@ -1,5 +1,4 @@
 // Include file
-
 #include <cmath>
 
  // from Gaudi
@@ -21,7 +20,6 @@
 // Declaration of the Algorithm Factory
 DECLARE_ALGORITHM_FACTORY( BoostForEpos )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
@@ -34,7 +32,9 @@ BoostForEpos::BoostForEpos( const std::string& name,
   declareProperty( "p_x" , m_px = 0. ) ;  
   declareProperty( "p_y" , m_py = 0. ) ;  
   declareProperty( "p_z" , m_pz = 0. ) ;
+  declareProperty( "e", m_e = 0. ) ;
 }
+
 //=============================================================================
 // Destructor
 //=============================================================================
@@ -49,12 +49,7 @@ StatusCode BoostForEpos::initialize() {
 
   if ( msgLevel(MSG::DEBUG) ) debug() << "==> Initialize" << endmsg;
 
-  double proton_mass = 0.938272 * Gaudi::Units::GeV ;
-  Gaudi::LorentzVector vec( m_px , m_py, m_pz , std::sqrt( proton_mass * 
-                                                           proton_mass + 
-                                                           m_px * m_px + 
-                                                           m_py * m_py + 
-                                                           m_pz * m_pz ) ) ;
+  Gaudi::LorentzVector vec( m_px , m_py, m_pz , m_e ) ;
 
   m_boost = ROOT::Math::Boost( -vec.BoostToCM() ) ;
 

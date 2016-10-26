@@ -28,7 +28,7 @@ protected:
 
 private:
   std::string m_inputHepMCEvent  ;
-  double m_px, m_py, m_pz ;
+  double m_px, m_py, m_pz , m_e ;
   ROOT::Math::Boost m_boost ;
 };
 #endif // LBCRMC_BOOSTFOREPOS_H

@@ -837,283 +837,185 @@ void CRMCProduction::createDefaultCRMCConfiguratio() {
 
 }
 
+//======================================================================================
 // Fill HepMCEvent directly from epos epout
+//======================================================================================
 HepMC::GenEvent* CRMCProduction::FillHepMC(HepMC::GenEvent *theEvent) {
-
-    //prepare to store event information
-    //Define Units in the HepMC file (be extremely carefull with this)
-    theEvent->define_units(HepMC::Units::MEV, HepMC::Units::MM); //this is the unit we want at the end. But we Give GEV and MM
-    //we then use a conversion from GeV to theEvent->momentum_unit() unit. This means hepmc should have been compiled with MeV default unit!!!!!!!!
-    //by explicitely defining the unit to MEV here it should be always ok, whatever the default unit HepMC was compiled with. 
-
-    //Set cross section information for this event
-    HepMC::GenCrossSection cross_section;
-    cross_section.set_cross_section((double)(Epos::hadr5().sigineaa())*1e9); //required in pB
-    theEvent->set_cross_section(cross_section);
-    //fill event information
-    // Provide optional pdf set id numbers for CMSSW to work flavour of partons and stuff... hope it's optional
-    HepMC::PdfInfo pdf(0, 0, 0, 0, 0, 0, 0);
-    theEvent->set_pdf_info(pdf);
-
-    // Setting heavy ion information
-    // int   Ncoll_hard          // Number of hard scatterings
-    // int   Npart_proj          // Number of projectile participants
-    // int   Npart_targ          // Number of target participants
-    // int   Ncoll               // Number of NN (nucleon-nucleon) collisions
-    // int   spectator_neutrons           // Number of spectator neutrons
-    // int   spectator_protons            // Number of spectator protons
-    // int   N_Nwounded_collisions        // Number of N-Nwounded collisions (here Glauber number of participants with at least 1 interaction)
-    // int   Nwounded_N_collisions        // Number of Nwounded-N collisons (here Glauber number of participants with at least 2 interaction2)
-    // int   Nwounded_Nwounded_collisions // Number of Nwounded-Nwounded collisions (here GLauber number of collisions)
-    // float impact_parameter        // Impact Parameter(fm) of collision
-    // float event_plane_angle       // Azimuthal angle of event plane
-    // float eccentricity            // eccentricity of participating nucleons
-    //                                        in the transverse plane
-    //                                        (as in phobos nucl-ex/0510031)
-    // float sigma_inel_NN           // nucleon-nucleon inelastic
-    //                                        (including diffractive) cross-section
-	 
-
-    //print some infos to check that the common block is properly written
-    //print infos from common block Hadr4
-    /*  printf("sigtot=%f\n",Epos::hadr5().sigtot());
-    printf("sigcut=%f\n",Epos::hadr5().sigcut());
-    printf("sigela=%f\n",Epos::hadr5().sigela());
-    printf("sloela=%f\n",Epos::hadr5().sloela());
-    printf("sigsd=%f\n",Epos::hadr5().sigsd());
-    printf("sigine=%f\n",Epos::hadr5().sigine());
-    printf("sigdif=%f\n",Epos::hadr5().sigdif());
-    printf("sigineaa=%f\n",Epos::hadr5().sigineaa());
-    printf("sigtotaa=%f\n",Epos::hadr5().sigtotaa());
-    printf("sigelaaa=%f\n",Epos::hadr5().sigelaaa());
-    printf("sigcutaa=%f\n",Epos::hadr5().sigcutaa());
-    printf("sigdd=%f\n",Epos::hadr5().sigdd());
-    //print infos from common block Cevt	 
-    printf("phievt=%f\n",Epos::cevt().phievt());
-    printf("nevt=%i\n",Epos::cevt().nevt());
-    printf("bimevt=%f\n",Epos::cevt().bimevt());
-    printf("kolevt=%i\n",Epos::cevt().kolevt());
-    printf("koievt=%i\n",Epos::cevt().koievt());
-    printf("pmxevt=%f\n",Epos::cevt().pmxevt());
-    printf("egyevt=%f\n",Epos::cevt().egyevt());
-    printf("npjevt=%i\n",Epos::cevt().npjevt());
-    printf("ntgevt=%i\n",Epos::cevt().ntgevt());
-    printf("npnevt=%i\n",Epos::cevt().npnevt());
-    printf("nppevt=%i\n",Epos::cevt().nppevt());
-    printf("ntnevt=%i\n",Epos::cevt().ntnevt());
-    printf("ntpevt=%i\n",Epos::cevt().ntpevt());
-    printf("jpnevt=%i\n",Epos::cevt().jpnevt());
-    printf("jppevt=%i\n",Epos::cevt().jppevt());
-    printf("jtnevt=%i\n",Epos::cevt().jtnevt());
-    printf("jtpevt=%i\n",Epos::cevt().jtpevt());
-    printf("jpnevt=%i\n",Epos::cevt().jpnevt());
-    printf("xbjevt=%f\n",Epos::cevt().xbjevt());
-    printf("qsqevt=%f\n",Epos::cevt().qsqevt());
-    printf("nglevt=%i\n",Epos::cevt().nglevt());
-    printf("zppevt=%f\n",Epos::cevt().zppevt());
-    printf("zptevt=%f\n",Epos::cevt().zptevt());
-    printf("minfra=%i\n",Epos::cevt().minfra());
-    printf("maxfra=%i\n",Epos::cevt().maxfra());
-    printf("kohevt=%i\n",Epos::cevt().kohevt());
-    //print infos from common block C2evt
-    printf("ng1evt=%i\n",Epos::c2evt().ng1evt());
-    printf("ng2evt=%i\n",Epos::c2evt().ng2evt());
-    printf("rglevt=%f\n",Epos::c2evt().rglevt());
-    printf("sglevt=%f\n",Epos::c2evt().sglevt());
-    printf("eglevt=%f\n",Epos::c2evt().eglevt());
-    printf("fglevt=%f\n",Epos::c2evt().fglevt());
-    printf("ikoevt=%i\n",Epos::c2evt().ikoevt());
-    printf("typevt=%f\n",Epos::c2evt().typevt());
-    //print infos from common block Accum
-    printf("nrevt=%i\n",Epos::accum().nrevt());
-    //print infos from common block Nucl1
-    printf("maproj=%i\n",Epos::nucl1().maproj());
-    printf("matarg=%i\n",Epos::nucl1().matarg());
-    printf("laproj=%i\n",Epos::nucl1().laproj());
-    printf("latarg=%i\n",Epos::nucl1().latarg());
-    //print infos from common block Othe1
-    printf("istmax=%i\n",Epos::othe1().istmax());
-    //print infos from common block Appli
-    printf("model=%i\n",Epos::appli().model());
-    //print infos from common block Drop7
-    printf("ioclude=%i\n",Epos::drop7().ioclude());
-    //printf infos from common block Hadr25
-    printf("idprojin=%i\n",Epos::hadr25().idprojin());*/
+  //prepare to store event information
+  //Define Units in the HepMC file (be extremely carefull with this)
+  theEvent->define_units(HepMC::Units::MEV, HepMC::Units::MM); 
+  //this is the unit we want at the end. But we Give GEV and MM
+  //we then use a conversion from GeV to theEvent->momentum_unit() unit.
+  //  This means hepmc should have been compiled with MeV default unit!!!!!!!!
+  // by explicitely defining the unit to MEV here it should be always ok, whatever the 
+  // default unit HepMC was compiled with. 
   
-    // Fill the heavy ion informations of the event
-    HepMC::HeavyIon ion(Epos::cevt().kohevt(),      //check it is properly filled
-			Epos::cevt().npjevt(),
-			Epos::cevt().ntgevt(),
-			Epos::cevt().kolevt(),
-			Epos::cevt().npnevt() + Epos::cevt().ntnevt(),
-			Epos::cevt().nppevt() + Epos::cevt().ntpevt(),
-			Epos::c2evt().ng1evt(), 
-			Epos::c2evt().ng2evt(), 
-			Epos::cevt().nglevt(),
-			Epos::cevt().bimevt(),
-			Epos::cevt().phievt(),
-		        Epos::c2evt().fglevt(),  // defined only if phimin=phimax=0. // -1
-		        Epos::hadr5().sigine()*1e9); //required in pB
-    
-     theEvent->set_heavy_ion(ion);
-    
-     // Integer ID uniquely specifying the signal process (i.e. MSUB in Pythia)
-     int sig_id = -1;
-
-     // If negative typevt mini plasma was created by event (except -4)
-     switch ((int)Epos::c2evt().typevt()) {
+  //Set cross section information for this event
+  HepMC::GenCrossSection cross_section;
+  cross_section.set_cross_section((double)(Epos::hadr5().sigineaa())*1e9); //required in pB
+  theEvent->set_cross_section(cross_section);
+  //fill event information
+  // Provide optional pdf set id numbers for CMSSW to work flavour of partons and stuff
+  HepMC::PdfInfo pdf(0, 0, 0, 0, 0, 0, 0);
+  theEvent->set_pdf_info(pdf);
   
-	      case  0: break; //unknown for qgsjetII
-	      case  1: sig_id = 101;
-	      break;
-	      case -1: sig_id = 101;
-	      break;
-	      case  2: sig_id = 105;
-	      break;
-	      case -2: sig_id = 105;
-	      break;
-	      case  3: sig_id = 102;
-	      break;
-	      case -3: sig_id = 102;
-	      break;
-	      case  4: sig_id = 103;
-	      break;
-	      case -4: sig_id = 104;
-	      break;
-	      default: std::cerr << "LbCRMC : Signal ID not recognised" << std::endl;
+  // Fill the heavy ion informations of the event
+  HepMC::HeavyIon ion(Epos::cevt().kohevt(),      //check it is properly filled
+                      Epos::cevt().npjevt(),
+                      Epos::cevt().ntgevt(),
+                      Epos::cevt().kolevt(),
+                      Epos::cevt().npnevt() + Epos::cevt().ntnevt(),
+                      Epos::cevt().nppevt() + Epos::cevt().ntpevt(),
+                      Epos::c2evt().ng1evt(), 
+                      Epos::c2evt().ng2evt(), 
+                      Epos::cevt().nglevt(),
+                      Epos::cevt().bimevt(),
+                      Epos::cevt().phievt(),
+                      Epos::c2evt().fglevt(),  // defined only if phimin=phimax=0. // -1
+                      Epos::hadr5().sigine()*1e9); //required in pB
+  
+  theEvent->set_heavy_ion(ion);
+  
+  // Integer ID uniquely specifying the signal process (i.e. MSUB in Pythia)
+  int sig_id = -1;
+  
+  // If negative typevt mini plasma was created by event (except -4)
+  switch ((int)Epos::c2evt().typevt()) {
     
-     }
-   
-     theEvent->set_signal_process_id(sig_id);  
-     //set event number
-     theEvent->set_event_number(Epos::accum().nrevt()); 
-     //set default vertex
-     HepMC::GenVertex* vertex = new HepMC::GenVertex(HepMC::FourVector(0,0,0,0));
-     theEvent->add_vertex(vertex);
+  case  0: break; //unknown for qgsjetII
+  case  1: sig_id = 101;
+    break;
+  case -1: sig_id = 101;
+    break;
+  case  2: sig_id = 105;
+    break;
+  case -2: sig_id = 105;
+    break;
+  case  3: sig_id = 102;
+    break;
+  case -3: sig_id = 102;
+    break;
+  case  4: sig_id = 103;
+    break;
+  case -4: sig_id = 104;
+    break;
+  default: std::cerr << "LbCRMC : Signal ID not recognised" << std::endl;
+  }
+  
+  theEvent->set_signal_process_id(sig_id);  
+  //set event number
+  theEvent->set_event_number(Epos::accum().nrevt()); 
+  //set default vertex
+  HepMC::GenVertex* vertex = new HepMC::GenVertex(HepMC::FourVector(0,0,0,0));
+  theEvent->add_vertex(vertex);
+  
+  //adapt the hepmcstore epos subroutine in a less complex way     
+  double pprojin = 0.0;
+  double ptargin = 0.0;
+  int idpdg;
+  int idprin;
+  int idtgin;
+  float amass;
+  int id;
+  
+  //first loop over particles to prepare the beam particles
+  for(int i = 1; i <= Epos::cptl().nptl(); i++){
+    //prepare beam momenta
+    if(i<=Epos::nucl1().maproj()){pprojin=pprojin + (double)(Epos::cptl().pptl(3,i));}
+    else if(i<=(Epos::nucl1().maproj() + Epos::nucl1().matarg())){ptargin = ptargin + (double)(Epos::cptl().pptl(3,i));}
+  }
 
-     //adapt the hepmcstore epos subroutine in a less complex way     
-     double pprojin = 0.0;
-     double ptargin = 0.0;
-     int idpdg;
-     int idprin;
-     int idtgin;
-     float amass;
-     int id;
-
-     //first loop over particles to prepare the beam particles
-     for(int i = 1; i <= Epos::cptl().nptl(); i++){
-         //prepare beam momenta
-       if(i<=Epos::nucl1().maproj()){pprojin=pprojin + (double)(Epos::cptl().pptl(3,i));}
-       else if(i<=(Epos::nucl1().maproj() + Epos::nucl1().matarg())){ptargin = ptargin + (double)(Epos::cptl().pptl(3,i));}
-     }
-
-     //beam particles
-     HepMC::GenParticle* bpart[2]; 
-     for(int a = 0; a < 2; a++ ){
-     bpart[a] = new HepMC::GenParticle();
-     }
-
-     //other particles
-     HepMC::GenParticle* gpart[200001]; //change not to have something hardcoded (should be nptl + the 2 beam particles)
-     Double_t Energy[200001];
-     for(int a = 1; a < 200001; a++ ){
-     gpart[a] = new HepMC::GenParticle();
-     }
-
-     //store initial target
-     if(Epos::nucl1().maproj() > 1){
+  //beam particles
+  HepMC::GenParticle* bpart[2]; 
+  for(int a = 0; a < 2; a++ ){
+    bpart[a] = new HepMC::GenParticle();
+  }
+  
+  //other particles
+  HepMC::GenParticle* gpart[200001]; //change not to have something hardcoded (should be nptl + the 2 beam particles)
+  Double_t Energy[200001];
+  for(int a = 1; a < 200001; a++ ){
+    gpart[a] = new HepMC::GenParticle();
+  }
+  
+  //store initial target
+  if(Epos::nucl1().maproj() > 1){
 	  idprin = 1000000000 + (Epos::nucl1().maproj()*10) + (Epos::nucl1().laproj()*10000);
-     } //end of if maproj > 1
-     else{
+  } //end of if maproj > 1
+  else{
 	  idprin = Epos::hadr25().idprojin();
-     }  //end of else maproj > 1
+  }  //end of else maproj > 1
 	
-     id = idtrafo_((char *)"nxs", (char *)"pdg", &idprin,3,3); //needed ? should already be the pdg one?
-     idmass_(&idprin,&amass);
-
-     //store beam particle at the beggining of the HepMC file
-     bpart[0]->set_pdg_id(id);
-     bpart[0]->set_momentum(HepMC::FourVector(0.0, 0.0, pprojin,TMath::Sqrt((TMath::Power(pprojin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
-     bpart[0]->set_generated_mass((double)(amass)); 
-     bpart[0]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
-     bpart[0]->suggest_barcode(1);
-     //main vertex is at (0,0,0)
-     vertex->add_particle_in(bpart[0]);
-    
-     //target
-     if(Epos::nucl1().matarg() > 1){
-	  idtgin = 1000000000 + (Epos::nucl1().matarg()*10) + (Epos::nucl1().latarg()*10000);
-     } //end of if TMath::nucl1().matarg > 1
-     else{
-	  idtgin = Epos::hadr25().idtargin();
-     } //end of else TMath::nucl1().matarg() > 1
-	 
-     id =  idtrafo_((char *)"nxs", (char *)"pdg", &idtgin,3,3);
-     idmass_(&idtgin,&amass);
-
-     bpart[1]->set_pdg_id(id);
-     bpart[1]->set_momentum(HepMC::FourVector(0.0, 0.0, ptargin,TMath::Sqrt((TMath::Power(ptargin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
-     bpart[1]->set_generated_mass((double)(amass)); 
-     bpart[1]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
-     bpart[1]->suggest_barcode(2);
-     //main vertex is at (0,0,0)
-     vertex->add_particle_in(bpart[1]);
-
-     //before conversion of units
-     //   bpart[0]->print();
-     // bpart[1]->print();
-       
-     //set the beam particles inside the event (not sure it is needed since the particles were added to the default vertex)
-     theEvent->set_beam_particles(bpart[0],bpart[1]);
-
-     //give a new index to the particle in hepmc
-     int barecode=3;
-     // int countvertex = 1;
-     //     HepMC::GenVertex* secondary_vertex[200000];
-
-
-    
- 
+  id = idtrafo_((char *)"nxs", (char *)"pdg", &idprin,3,3); //needed ? should already be the pdg one?
+  idmass_(&idprin,&amass);
   
-     //loop over particles
+  //store beam particle at the beggining of the HepMC file
+  bpart[0]->set_pdg_id(id);
+  bpart[0]->set_momentum(HepMC::FourVector(0.0, 0.0, pprojin,
+                                           TMath::Sqrt((TMath::Power(pprojin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
+  bpart[0]->set_generated_mass((double)(amass)); 
+  bpart[0]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
+  bpart[0]->suggest_barcode(1);
+  //main vertex is at (0,0,0)
+  vertex->add_particle_in(bpart[0]);
+  
+  //target
+  if(Epos::nucl1().matarg() > 1){
+	  idtgin = 1000000000 + (Epos::nucl1().matarg()*10) + (Epos::nucl1().latarg()*10000);
+  } //end of if TMath::nucl1().matarg > 1
+  else{
+	  idtgin = Epos::hadr25().idtargin();
+  } //end of else TMath::nucl1().matarg() > 1
+	
+  id =  idtrafo_((char *)"nxs", (char *)"pdg", &idtgin,3,3);
+  idmass_(&idtgin,&amass);
+  
+  bpart[1]->set_pdg_id(id);
+  bpart[1]->set_momentum(HepMC::FourVector(0.0, 0.0, ptargin,TMath::Sqrt((TMath::Power(ptargin,2))+(TMath::Power((double)(amass),2)))));  //here is GeV
+  bpart[1]->set_generated_mass((double)(amass)); 
+  bpart[1]->set_status(3); //in HepMC, beam particle status = 4 (here we give 3 for EvtGen (= particle ignored by EvtGen))
+  bpart[1]->suggest_barcode(2);
+  //main vertex is at (0,0,0)
+  vertex->add_particle_in(bpart[1]);
+  
+  //set the beam particles inside the event (not sure it is needed since the particles were added to the default vertex)
+  theEvent->set_beam_particles(bpart[0],bpart[1]);
+  
+  //give a new index to the particle in hepmc
+  int barecode=3;
+  
+  //loop over particles
+  
+  for (int i = 1; i <= Epos::cptl().nptl(); i++) {
+    //skip non final particles
+    if ( Epos::cptl().istptl(i) == 0 ) { //last generation has status 0 in Epos and +1 in HepMC 
+      //convert the id of epos to the pdg id
+      idpdg = idtrafo_((char *)"nxs", (char *)"pdg", &Epos::cptl().idptl(i),3,3);
+      //convert the id of the particle from epos id to pdg id 
+      gpart[i]->set_pdg_id(idpdg);
+      //recalculate the energy to ensure energy conservation (important to use EvtGen)
+      Energy[i] = TMath::Sqrt( (double)(Epos::cptl().pptl(1,i))*(double)(Epos::cptl().pptl(1,i)) + 
+                               (double)(Epos::cptl().pptl(2,i))*(double)(Epos::cptl().pptl(2,i)) + 
+                               (double)(Epos::cptl().pptl(3,i))*(double)(Epos::cptl().pptl(3,i)) + 
+                               (double)(Epos::cptl().pptl(5,i))*(double)(Epos::cptl().pptl(5,i)) );
+      gpart[i]->set_momentum(HepMC::FourVector((double)(Epos::cptl().pptl(1,i)), 
+                                               (double)(Epos::cptl().pptl(2,i)), 
+                                               (double)(Epos::cptl().pptl(3,i)), 
+                                               (double)(Energy[i])));  //here is GeV
+      gpart[i]->set_generated_mass((double)(Epos::cptl().pptl(5,i))); //here is GeV
+      gpart[i]->set_status(TMath::Min(2,Epos::cptl().istptl(i)+1)); //here is hepmc status
+      //in the first loop we only set all particles with proper barecode
+      gpart[i]->suggest_barcode(barecode);
+      barecode++;
+      vertex->add_particle_out(gpart[i]);    
+    } //end of if
+  } //end of for
 
-     for(int i = 1; i <= Epos::cptl().nptl(); i++){    	 
-
-       //  printf("i=%i, fa=%i,mo=%i, dau1=%i, dau2=%i, stat=%i\n",i,Epos::cptl().iorptl(i),Epos::cptl().jorptl(i),Epos::cptl().ifrptl(1,i),Epos::cptl().ifrptl(2,i),Epos::cptl().istptl(i));
-
-       //skip non final particles
-       if((Epos::cptl().istptl(i) + 1) == 1){ //last generation has status 0 in Epos and +1 in HepMC 
-       //convert the id of epos to the pdg id
-       idpdg = idtrafo_((char *)"nxs", (char *)"pdg", &Epos::cptl().idptl(i),3,3); //convert the id of the particle from epos id to pdg id 
-       gpart[i]->set_pdg_id(idpdg);
-       //recalculate the energy to ensure energy conservation (important to use EvtGen)
-       Energy[i] = TMath::Sqrt( (double)(Epos::cptl().pptl(1,i))*(double)(Epos::cptl().pptl(1,i)) + (double)(Epos::cptl().pptl(2,i))*(double)(Epos::cptl().pptl(2,i)) + (double)(Epos::cptl().pptl(3,i))*(double)(Epos::cptl().pptl(3,i)) + (double)(Epos::cptl().pptl(5,i))*(double)(Epos::cptl().pptl(5,i)) );
-       gpart[i]->set_momentum(HepMC::FourVector((double)(Epos::cptl().pptl(1,i)), (double)(Epos::cptl().pptl(2,i)), (double)(Epos::cptl().pptl(3,i)), (double)(Energy[i])));  //here is GeV
-       gpart[i]->set_generated_mass((double)(Epos::cptl().pptl(5,i))); //here is GeV
-       gpart[i]->set_status(TMath::Min(2,Epos::cptl().istptl(i)+1)); //here is hepmc status
-       //in the first loop we only set all particles with proper barecode
-       gpart[i]->suggest_barcode(barecode);
-       barecode++;
-       vertex->add_particle_out(gpart[i]);
-
-       } //end of if
-     } //end of for
-
-     
   //don't forget to rescale the units to MeV (if units where GeV)
-
   CRMCWrapper *wrap = new CRMCWrapper();
   wrap->convert_to_mev_and_mm(theEvent);
 
-  //after conversion of units
-  /*  printf("after conversion of units");
-  bpart[0]->print();
-  bpart[1]->print();
-  gpart[1]->print();
-  gpart[2]->print();*/
-
   return theEvent;
-
 }
 
 // EOF
