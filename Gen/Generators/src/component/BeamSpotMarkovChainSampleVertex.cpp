@@ -67,8 +67,8 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
   const auto c = Gaudi::Units::c_light ;
   const auto Pi = Gaudi::Units::pi;
 
-  const auto sx = std::sqrt( emittance*betastar/Pi );
-  const auto sy = std::sqrt( emittance*betastar/Pi );
+  const auto sx = std::sqrt( emittance*betastar );
+  const auto sy = sx;
   const auto sz = beamp -> sigmaS();// RMS bunch length in mm
 
   const auto x = vec.x();
