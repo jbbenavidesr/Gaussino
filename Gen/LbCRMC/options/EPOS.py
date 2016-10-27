@@ -1,6 +1,7 @@
 from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production
 from Configurables import Special, Inclusive, SignalPlain, FixedNInteractions
 from Configurables import DaughtersInLHCbKeepOnlySignal, Gauss, BoostForEpos, GaudiSequencer
+from Configurables import AsymmetricCollidingBeams
 from GaudiKernel import SystemOfUnits
 
 import math
@@ -70,7 +71,13 @@ def finalConfiguration():
         gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
         gen.Special.CRMCProduction.ProjectileMomentum = pzA
         gen.Special.CRMCProduction.TargetMomentum =  pzB
-        
+        #
+        ## set the correct beam 2 momentum in case of asymmetric beam
+        if gauss.getProp('BeamMomentum') != gauss.getProp('B2Momentum'):
+            gen.Special.SignalPythia8.BeamToolName = "AsymmetricCollidingBeams"
+            gen.Special.SignalPythia8.addTool( AsymmetricCollidingBeams )
+            gen.Special.SignalPythia8.AsymmetricCollidingBeams.Beam2Momentum = math.fabs( pzB ) * SystemOfUnits.GeV
+
     ## decide if fixed target or not
     if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
         gen.MinimumBias.CRMCProduction.Frame = "target"
@@ -82,6 +89,7 @@ def finalConfiguration():
         gen.Special.CRMCProduction.Frame = "nucleon-nucleon"
         gen.Inclusive.CRMCProduction.Frame = "nucleon-nucleon"
         gen.SignalPlain.CRMCProduction.Frame = "nucleon-nucleon"
+
     ## then boost the EPOS interactions in the correct frame
     genSequence = GaudiSequencer( "GeneratorSlotMainSeq" )
     boost_px = (pxA + pxB) * SystemOfUnits.GeV
