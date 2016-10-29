@@ -11,7 +11,7 @@
 <argument name="args"><set>
 	<text>$GAUSSOPTS/Gauss-2015.py</text>
 	<text>$DECFILESROOT/options/24142001.py</text>
-	<text>$LBCMRCROOT/options/EPOS.py</text>
+	<text>$LBCRMCROOT/options/EPOS.py</text>
 	<text>$GAUSSOPTS/GenStandAlone.py</text>
 	<text>$GAUSSROOT/tests/options/testGauss-NoOutput.py</text>
   	<text>$GAUSSROOT/tests/options/testGauss-gen-10evts-defaults.py</text>
