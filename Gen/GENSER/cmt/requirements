@@ -39,7 +39,7 @@ macro powhegbox_native_version "r2092"
 #-- Photos++ and Taula++ 
 #============================================================================
 macro photospp_native_version "3.56"
-macro tauolapp_native_version "1.1.6b"
+macro tauolapp_native_version "1.1.6b.lhcb"
 
 
 #-- Pythia 8
