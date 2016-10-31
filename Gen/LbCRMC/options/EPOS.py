@@ -78,29 +78,18 @@ def finalConfiguration():
             gen.Special.SignalPythia8.addTool( AsymmetricCollidingBeams )
             gen.Special.SignalPythia8.AsymmetricCollidingBeams.Beam2Momentum = math.fabs( pzB ) * SystemOfUnits.GeV
 
-    ## decide if fixed target or not
-    if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
-        gen.MinimumBias.CRMCProduction.Frame = "target"
-        gen.Special.CRMCProduction.Frame = "target"
-        gen.Inclusive.CRMCProduction.Frame = "target"
-        gen.SignalPlain.CRMCProduction.Frame = "target"
-    else:
-        gen.MinimumBias.CRMCProduction.Frame = "nucleon-nucleon"
-        gen.Special.CRMCProduction.Frame = "nucleon-nucleon"
-        gen.Inclusive.CRMCProduction.Frame = "nucleon-nucleon"
-        gen.SignalPlain.CRMCProduction.Frame = "nucleon-nucleon"
+    gen.MinimumBias.CRMCProduction.Frame = "nucleon-nucleon"
+    gen.Special.CRMCProduction.Frame = "nucleon-nucleon"
+    gen.Inclusive.CRMCProduction.Frame = "nucleon-nucleon"
+    gen.SignalPlain.CRMCProduction.Frame = "nucleon-nucleon"
 
     ## then boost the EPOS interactions in the correct frame
     genSequence = GaudiSequencer( "GeneratorSlotMainSeq" )
     boost_px = (pxA + pxB) * SystemOfUnits.GeV
     boost_py = (pyA + pyB) * SystemOfUnits.GeV
     m_p =  0.938272
-    if gauss.getProp('BeamMomentum')==0. or gauss.getProp('B2Momentum')==0.:
-        boost_pz = 0.
-        boost_e = math.sqrt( m_p * m_p + pxA * pxA + pyA * pyA ) * SystemOfUnits.GeV
-    else:
-        boost_pz = (pzA + pzB) * SystemOfUnits.GeV
-        boost_e = ( math.sqrt( m_p * m_p + pxA*pxA + pyA*pyA + pzA*pzA ) +  math.sqrt( m_p * m_p + pxB*pxB + pyB*pyB + pzB*pzB ) ) * SystemOfUnits.GeV
+    boost_pz = (pzA + pzB) * SystemOfUnits.GeV
+    boost_e = ( math.sqrt( m_p * m_p + pxA*pxA + pyA*pyA + pzA*pzA ) +  math.sqrt( m_p * m_p + pxB*pxB + pyB*pyB + pzB*pzB ) ) * SystemOfUnits.GeV
 
     boostAlg = BoostForEpos( p_x = boost_px , p_y= boost_py , p_z = boost_pz ,
                              e = boost_e )
