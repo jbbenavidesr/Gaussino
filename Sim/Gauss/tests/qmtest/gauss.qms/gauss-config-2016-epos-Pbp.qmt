@@ -13,7 +13,7 @@
 	<integer>1800</integer>
 </argument>
 <argument name="reference">
-	<text>$GAUSSROOT/tests/refs/testGauss-config-2016-epos-pbp.ref</text>
+	<text>$GAUSSROOT/tests/refs/testGauss-config-2016-epos-Pbp.ref</text>
 </argument>
 <argument name="error_reference">
 	<text>$GAUSSROOT/tests/refs/testGauss-err.ref</text>
