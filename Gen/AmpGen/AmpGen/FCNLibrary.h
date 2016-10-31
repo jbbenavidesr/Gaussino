@@ -9,33 +9,34 @@
 #include <fstream>
 #include <dlfcn.h>
 
+#include <stdlib.h>
+
 /// at the moment, a FCN library can only return one type, this is a bit daft, will look to improve ///
 
 namespace AmpGen { 
   template <class RETURN_TYPE>
     class FCNLibrary  {
       private:
+        std::string m_filename; 
         void* m_handle; 
         std::map<unsigned int, CompiledExpression<RETURN_TYPE>* > m_objects;
         typedef typename std::map<unsigned int, CompiledExpression<RETURN_TYPE>* >::iterator it;
         std::vector<std::string> m_includes; 
+        std::string generateFilename(){
+          char buffer[] = "/tmp/libAmpGen-XXXXXX";
+          mkstemp( buffer );
+          return buffer; 
+        }
+       
       public: 
         enum OPTIONS {
           DEBUG = (1<<0),
           RECOMPILE = (1<<1)
         };
 
-        FCNLibrary() : m_includes({"complex","iostream","math.h"}) {};
+        FCNLibrary() : m_filename(), m_includes({"complex","iostream","math.h"}) {};
         it begin(){ return m_objects.begin(); }
         it end(){ return m_objects.end(); }
-        /*
-        template <class... Args > 
-          auto emplace( Args&& ...args ){
-            CompiledExpression<RETURN_TYPE> temp( std::forward<Args>(args)...) ; 
-            add( temp );
-            return m_objects[ temp.hash() ]; 
-          }
-          */
 
         void add( CompiledExpression<RETURN_TYPE>* expression ){
           auto it = m_objects.find(expression->hash() );
@@ -64,12 +65,13 @@ namespace AmpGen {
             expression.second->compile(output, debug );
           output.close();
         };
-        virtual bool compile(const std::string& name="/tmp/functions", bool debug=false){
-
-          generateSourceCode( name , debug ); 
-          INFO("Building shared library ... " << name );
+        virtual bool compile(const std::string& name="", bool debug=false){
+          if( m_filename == "" )
+            m_filename = name == "" ? generateFilename() : name ;
+          generateSourceCode( m_filename , debug ); 
+          INFO("Building shared library ... " << m_filename );
           const std::string buildCommand = 
-            "g++ -Ofast -shared -rdynamic -fPIC "+name+".cpp -o " + name + ".so";
+            "g++ -Ofast -shared -rdynamic -fPIC "+m_filename+".cpp -o " + m_filename + ".so";
           if( system(buildCommand.c_str()) != 0){
             ERROR("Compilation failed"); 
             return false;
@@ -78,17 +80,20 @@ namespace AmpGen {
         } 
 
         bool link( const unsigned int& options=FCNLibrary<RETURN_TYPE>::OPTIONS::RECOMPILE,
-            const std::string& name="/tmp/functions"){
-          INFO( "Linking shared library " << name );
-          m_handle = dlopen((name+".so").c_str(),RTLD_NOW);
+            const std::string& name=""){
+          if( m_filename == "" )
+            m_filename = name == "" ? generateFilename() : name;
+
+          INFO( "Linking shared library " << m_filename );
+          m_handle = dlopen((m_filename+".so").c_str(),RTLD_NOW);
           bool dbThis = options & FCNLibrary<RETURN_TYPE>::OPTIONS::DEBUG ; 
           bool autorebuild = options & FCNLibrary<RETURN_TYPE>::OPTIONS::RECOMPILE ; 
           unsigned int newOptions = dbThis ? FCNLibrary<RETURN_TYPE>::OPTIONS::DEBUG : 0;
           if( !m_handle ){
             WARNING( dlerror() );
             if( autorebuild ){
-              return FCNLibrary<RETURN_TYPE>::compile(name, dbThis ) &&  
-                link(newOptions,name);
+              return FCNLibrary<RETURN_TYPE>::compile(m_filename, dbThis ) &&  
+                link(newOptions,m_filename);
             }
             else return false;
           }
@@ -99,15 +104,15 @@ namespace AmpGen {
             success &= thisLinked;
             if( !thisLinked )
               ERROR("Symbol:" << expression.second->name() << " linking failed");
-
           }
           if( !success && autorebuild ){
-            INFO("Linking fails - recompiling the dynamic library");
+            WARNING("Linking fails - recompiling the dynamic library");
             dlclose(m_handle);
-            return FCNLibrary<RETURN_TYPE>::compile(name, dbThis ) && link(newOptions,name);
+            return FCNLibrary<RETURN_TYPE>::compile(m_filename, dbThis ) && link(newOptions,m_filename);
           }
           return success;
         }
-    };} 
+    };
+} 
 
 #endif

@@ -1,4 +1,5 @@
 #include "AmpGen/FastCoherentSum.h"
+#include "AmpGen/resolveParameters.h"
 
 using namespace AmpGen; 
 
@@ -82,7 +83,6 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
         m_decayTrees.push_back( decayTree );
         INFO("Adding tree = " << p.first );
       }
-
       DEBUG("Configuring external parameters");
 
       std::vector<DBSYMBOL> dbExpressions;
@@ -92,120 +92,11 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
         (*m_decayTrees.rbegin())->getExpression(dbThis?&dbExpressions:NULL);    
       DEBUG("Got expression for this tree");
       m_pdfs.emplace_back( expression , name , extendEventFormat, dbThis?&dbExpressions:NULL );
-      auto& pdf = *( m_pdfs.rbegin() );
-
-
-      /*
-       *   This code needs to be refactored in such a way that one can flexibly add transfer logic
-       *   and parameter resolution. Having an abstract "handler" that is mapped from the different 
-       *   types has some appeal... 
-       */
-
-      std::map<std::string, 
-        std::pair< unsigned int, double> > parameterNames = pdf.getAddressMapping();
-      std::map<std::string, 
-        std::pair< unsigned int, double> > splineParameters; 
-
-      for( auto& param : parameterNames ){ /// all parameters for this PDF, including fixed ones ///  
-        if( param.first.find("Spline") != std::string::npos ){
-          ///INFO("Identified Spline Parameter = " << param.first );
-          splineParameters[param.first] = param.second;
-          continue; 
-        };
-        DEBUG( "Mapping parameter " << param.first << "  " << param.second.first ); 
-        //       for( auto& param : otherParameters ) 
-        auto it = otherParameters.find(param.first ); 
-
-        if( it != otherParameters.end() ){
-          DEBUG("Setting value of " << param.first << " from options file = " << (*it).second->mean() );
-          m_addressMapping.push_back( 
-              std::make_shared<CacheTransfer>( 
-                (*it).second , /// MinuitParameter*
-                &m_pdfs[ m_pdfs.size() -1 ] , //// CompiledExpression*
-                param.second.first //// destination address 
-                ) ) ; 
-          (*m_addressMapping.rbegin())->transfer();
-          continue;
-        }
-        else {
-          DEBUG("Setting " << param.first << " to default value");
-        };
-        DEBUG("Parameter " << param.first << " not found in options file - checking for a default setting " );
-
-        auto tokens = split( param.first , '_' );
-        if( tokens.size() == 2 ){
-          const ParticleProperties* props = ParticlePropertiesList::getMe()->get(tokens[0]) ;
-          if( props != 0 ){
-            if( tokens[1] == "mass" ){ 
-              pdf.setExternal( props->mass(), param.second.first );
-              DEBUG("Setting mass of " << tokens[0] << " from pdg = " << props->mass() << " memory address =" << param.second.first );
-            }
-            else if( tokens[1] == "width" ){
-              pdf.setExternal( props->width(), param.second.first );
-              DEBUG("Setting width of " << tokens[0] << " from pdg = " << props->width() << " memory address = " << param.second.first );
-            }
-            else if( tokens[1] == "radius" ){
-              pdf.setExternal( props->radius(), param.second.first );                                                                                                                            //        "mass"
-              DEBUG("Setting radius for " << tokens[0] << " from pdg = " << props->radius() << " memory address = " << param.second.first );
-            }
-          }
-          else pdf.setExternal( param.second.second, param.second.first );
-        }
-        else {
-          pdf.setExternal( param.second.second, param.second.first );
-        }
-      }
-      if( splineParameters.size() != 0 ){
-        /// this is if we want to go mental and have 2D splines ////
-        std::map< std::string, std::shared_ptr<SplineTransfer> > paramMap;
-        for( auto param : splineParameters ){
-
-          auto tokens = split( param.first , ':' );
-          const std::string particleName = tokens[0];
-          const std::string splineName = tokens[0] + "::"+tokens[1]+"::"+tokens[2];
-          DEBUG("Spline parameter for " << param.first << " configuring");
-          auto 
-            thisSpline = paramMap.find(splineName);
-          if( thisSpline == paramMap.end() ){
-            double min = 
-              AmpGen::NamedParameter<double>(particleName+"::Spline::Min",0.).getVal();
-            double max = 
-              AmpGen::NamedParameter<double>(particleName+"::Spline::Max",1800*1800).getVal();
-            unsigned int nBins = 
-              AmpGen::NamedParameter<unsigned int>(particleName+"::Spline::N",10).getVal();
-            paramMap[splineName] = 
-              std::make_shared<SplineTransfer>( &m_pdfs[ m_pdfs.size() -1 ], nBins , min, max ) ;
-            thisSpline = paramMap.find( splineName );
-          }
-          auto it = otherParameters.find( param.first );
-          unsigned int index = stoi((*tokens.rbegin()));
-
-          if ( it != otherParameters.end() ){  
-            DEBUG(" -> to " << (*it).second <<"    " <<  param.first << "    " << (*it).second->mean() ); 
-            thisSpline->second->set( index , (*it).second );
-            if( index == 0 ) 
-              thisSpline->second->setAddress( param.second.first );
-          }
-
-          else if( *(tokens.rbegin()+1) == "C"  ){ 
-            if( index == 0 ) thisSpline->second->setCurveAddress( param.second.first );
-          }
-          else 
-            ERROR( param.first << " spline parameter not understood");
-
-        }
-        for( auto& spline : paramMap ){
-          if( spline.second->isConfigured() ){
-            m_addressMapping.push_back(spline.second);
-            (*m_addressMapping.rbegin())->transfer();
-          }
-          else {
-            ERROR("Spline not configured correctly!");
-            m_stateIsGood = false;
-            return; 
-          }
-        }
-      }
+     
+  //    m_addressMapping.clear(); 
+      auto newAddresses = resolveParameters( &(*m_pdfs.rbegin()) , otherParameters );
+      for( auto& addr : newAddresses ) m_addressMapping.push_back( addr );
+     
       std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*> parameters = p.second;
       if (parameters.first == 0 || parameters.second == 0 ){
         ERROR("Amplitude " << name 
@@ -393,8 +284,7 @@ std::vector<std::string> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit
   return formatted ; 
 }
 
-
-void FastCoherentSum::makeBinary( const std::string& fname ){
+void FastCoherentSum::makeBinary( const std::string& fname, const double& normalisation ){
   std::ofstream stream( fname );
   stream << "#include <complex>" << std::endl;
   stream << "#include <vector>" << std::endl; 
@@ -413,7 +303,7 @@ void FastCoherentSum::makeBinary( const std::string& fname ){
     stream << "r" << m_pdfs[i].hash() << "( E )";
     stream << ( i==m_pdfs.size()-1 ? ";" : "+" ) << std::endl;  
   };
-  stream << " return std::norm(amplitude) ; }" << std::endl; 
+  stream << " return std::norm(amplitude) / "<< normalisation << " ; }" << std::endl; 
   stream.close();
 }
 

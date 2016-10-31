@@ -1,4 +1,4 @@
-EventType D0 K- pi+ pi+ pi-
+EventType D0 K+ pi- pi- pi+
 sourceFile            "DtopiKpipi_v1.cpp"
 
 D0[D]{K*(892)0{K+,pi-},rho(770)0{pi-,pi+}}_Re                              0  7.22835 0.1

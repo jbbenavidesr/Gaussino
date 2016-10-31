@@ -145,7 +145,7 @@ TensorHelper AmpGen::operator/( const TensorHelper& t1, const double& t2){
 
 TensorHelper AmpGen::operator-( const TensorHelper& t1, const TensorHelper& t2 ){
   return t1 + ( -1 ) * t2; 
-};
+}
 
 TensorHelper AmpGen::operator+( const TensorHelper& t1, const TensorHelper& t2 ){
 
