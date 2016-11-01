@@ -13,7 +13,7 @@ set(generators_versions
     pythia6     427.2
     pythia8     186
     rivet       2.4.2
-    tauola++    1.1.4
+    tauola++    1.1.6b.lhcb
     thepeg      1.9.2p1
     crmc        1.5.6
     yoda        1.5.9
