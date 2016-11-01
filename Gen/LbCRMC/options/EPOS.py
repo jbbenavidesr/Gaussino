@@ -118,34 +118,30 @@ configuration_commands = [
   "fqgsjetII03 ncs $CRMC_TABS/sectnu-II-03",
   "fqgsjetII dat $CRMC_TABS/qgsdat-II-04.lzma",
   "fqgsjetII ncs $CRMC_TABS/sectnu-II-04",
-  "fname check  none",
-  "fname initl  $CRMC_TABS/epos.initl",
-  "fname iniev  $CRMC_TABS/epos.iniev",
-  "fname inirj  $CRMC_TABS/epos.inirj",
-  "fname inics  $CRMC_TABS/epos.inics",
-  "fname inihy  $CRMC_TABS/epos.inihy"
+  "fname check none",
+  "fname initl $CRMC_TABS/epos.initl",
+  "fname iniev $CRMC_TABS/epos.iniev",
+  "fname inirj $CRMC_TABS/epos.inirj",
+  "fname inics $CRMC_TABS/epos.inics",
+  "fname inihy $CRMC_TABS/epos.inihy"
 ]
 
 gen.MinimumBias.CRMCProduction.SwitchOffEventTruncation = True 
 gen.MinimumBias.CRMCProduction.ProduceTables = False
-gen.MinimumBias.CRMCProduction.BoostAndRotate = False
 gen.MinimumBias.CRMCProduction.AddUserSettingsToDefault = True
 gen.MinimumBias.CRMCProduction.Commands += configuration_commands
 
 gen.Special.CRMCProduction.SwitchOffEventTruncation = True 
 gen.Special.CRMCProduction.ProduceTables = False
-gen.Special.CRMCProduction.BoostAndRotate = False
 gen.Special.CRMCProduction.AddUserSettingsToDefault = True
 gen.Special.CRMCProduction.Commands += configuration_commands
 
 gen.Inclusive.CRMCProduction.SwitchOffEventTruncation = True 
 gen.Inclusive.CRMCProduction.ProduceTables = False
-gen.Inclusive.CRMCProduction.BoostAndRotate = False
 gen.Inclusive.CRMCProduction.AddUserSettingsToDefault = True
 gen.Inclusive.CRMCProduction.Commands += configuration_commands
 
 gen.SignalPlain.CRMCProduction.SwitchOffEventTruncation = True 
 gen.SignalPlain.CRMCProduction.ProduceTables = False
-gen.SignalPlain.CRMCProduction.BoostAndRotate = False
 gen.SignalPlain.CRMCProduction.AddUserSettingsToDefault = True
 gen.SignalPlain.CRMCProduction.Commands += configuration_commands
