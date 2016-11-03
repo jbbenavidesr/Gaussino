@@ -20,14 +20,6 @@ using namespace AmpGen;
 const char MinuitParameterSet::prtNameChars[] = { '+', '-', '*', '>', ',', '(', ')', '[', ']', '\0'};
 const char MinuitParameterSet::ntpNameChars[] = { '#', '~', 's', '_', '_', '_', '_', '_', '_', '\0'};
 
-MinuitParameterSet* MinuitParameterSet::_defaultMinuitParameterSet=0;
-MinuitParameterSet* MinuitParameterSet::getDefaultSet(){
-  if(0 == _defaultMinuitParameterSet){
-    _defaultMinuitParameterSet = new MinuitParameterSet();
-  }
-  return _defaultMinuitParameterSet;
-}
-
 MinuitParameterSet::MinuitParameterSet(){}
 MinuitParameterSet::MinuitParameterSet(const MinuitParameterSet& other)
   : _parPtrList(other._parPtrList)

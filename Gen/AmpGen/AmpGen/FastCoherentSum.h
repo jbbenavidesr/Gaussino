@@ -50,7 +50,7 @@ namespace AmpGen {
       EventList* m_sim; 
       double m_weight; /// global weight, i.e. the yield ///
       std::vector<unsigned int> m_cacheAddresses; /// the addresses in the event cache for each PDF /// 
-      std::vector<std::shared_ptr<CacheTransfer>> m_addressMapping; /// complicated transfer logic //// 
+      std::vector<std::shared_ptr<CacheTransfer<std::complex<double>>>> m_addressMapping; /// complicated transfer logic //// 
       int m_prepareCalls;
       int m_lastPrint;
       double m_weightIntegral;
@@ -153,7 +153,7 @@ namespace AmpGen {
 
       std::vector<std::string> fitFractions(AmpGen::Minimiser& minuit , std::ostream& stream); 
 
-      void makeBinary( const std::string& fname ) ; 
+      void makeBinary( const std::string& fname , const double& normalisation=1) ; 
   }; 
 } 
 
