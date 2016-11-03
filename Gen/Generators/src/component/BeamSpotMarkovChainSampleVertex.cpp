@@ -23,7 +23,7 @@ BeamSpotMarkovChainSampleVertex( const std::string& type,
   declareProperty( "Zcut" , m_zcut = 4. ) ; // times SigmaZ
   declareProperty( "BeamParameters" , 
                    m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
-  declareProperty( "NMarkovChainSmaples", m_nMCSamples = 1000 );
+  declareProperty( "NMarkovChainSamples", m_nMCSamples = 1000 );
 }
 
 //=============================================================================
