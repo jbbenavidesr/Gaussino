@@ -1,6 +1,6 @@
-// $Id: BeamSpotMarkovChainSampleVertex.h,v 1.7 2010-05-09 17:05:43 gcorti Exp $
-#ifndef GENERATORS_BEAMSPOTSMEARVERTEX_H 
-#define GENERATORS_BEAMSPOTSMEARVERTEX_H 1
+
+#ifndef GENERATORS_BeamSpotMarkovChainSampleVertex_H 
+#define GENERATORS_BeamSpotMarkovChainSampleVertex_H 1
 
 // Include files
 // from Gaudi
@@ -79,6 +79,16 @@ public:
 
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
+  /// Number of Markov Chain sampling iterations
+  unsigned int m_nMCSamples;
+
+  /// Number of sigma above which to cut for x-axis smearing (set by options)
+  double m_xcut;
+  /// Number of sigma above which to cut for y-axis smearing (set by options)
+  double m_ycut;
+  /// Number of sigma above which to cut for z-axis smearing (set by options)
+  double m_zcut;
+
   //  Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
   Rndm::Numbers m_gaussDistX ; ///< Gaussian random number generator for Markov chain pertubation in x
   Rndm::Numbers m_gaussDistY ; ///< Gaussian random number generator for Markov chain pertubation in y
@@ -87,4 +97,5 @@ public:
   Rndm::Numbers m_flatDist ; ///< Random number generator (between 0 and 1)
 
 };
-#endif // GENERATORS_BEAMSPOTSMEARVERTEX_H
+
+#endif // GENERATORS_BeamSpotMarkovChainSampleVertex_H

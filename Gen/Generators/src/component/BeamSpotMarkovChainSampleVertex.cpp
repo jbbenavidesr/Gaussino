@@ -1,5 +1,4 @@
-// $Id: BeamSpotMarkovChainSampleVertex.cpp,v 1.12 2010-05-09 17:05:42 gcorti Exp $
-// Include files 
+
 // local
 #include "BeamSpotMarkovChainSampleVertex.h"
 
@@ -16,11 +15,15 @@ BeamSpotMarkovChainSampleVertex::
 BeamSpotMarkovChainSampleVertex( const std::string& type,
                                  const std::string& name,
                                  const IInterface* parent )
-: GaudiTool ( type, name , parent )
+  : GaudiTool ( type, name , parent )
 {
   declareInterface< IVertexSmearingTool >( this ) ;
+  declareProperty( "Xcut" , m_xcut = 4. ) ; // times SigmaX 
+  declareProperty( "Ycut" , m_ycut = 4. ) ; // times SigmaY
+  declareProperty( "Zcut" , m_zcut = 4. ) ; // times SigmaZ
   declareProperty( "BeamParameters" , 
                    m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
+  declareProperty( "NMarkocChainSmaples", m_nMCSamples = 1000 );
 }
 
 //=============================================================================
@@ -46,7 +49,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::initialize( )
          && m_gaussDistT.initialize( randSvc , Rndm::Gauss( 0. , 1.     ) ) 
          && m_flatDist.initialize  ( randSvc , Rndm::Flat ( 0. , 1.     ) ) );
   if ( sc.isFailure() ) 
-    return Error( "Could not initialize random number generators" ) ;
+  { return Error( "Could not initialize random number generators" ); }
 
   release( randSvc ) ;
 
@@ -60,15 +63,15 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
                                                  const HepMC::FourVector & vec ) const
 {
   const auto emittance = beamp -> emittance();
-  const auto betastar = beamp -> betaStar();
-  const auto aX = (beamp -> horizontalCrossingAngle())/2.0;
-  const auto aY = (beamp -> verticalCrossingAngle())/2.0;
+  const auto betastar  = beamp -> betaStar();
+  const auto aX        = beamp -> horizontalCrossingAngle();
+  const auto aY        = beamp -> verticalCrossingAngle();
 
-  const auto c = Gaudi::Units::c_light ;
+  const auto c  = Gaudi::Units::c_light ;
   const auto Pi = Gaudi::Units::pi;
 
-  const auto sx = std::sqrt( emittance*betastar/Pi );
-  const auto sy = std::sqrt( emittance*betastar/Pi );
+  const auto sx = std::sqrt( emittance*betastar );
+  const auto sy = sx;
   const auto sz = beamp -> sigmaS();// RMS bunch length in mm
 
   const auto x = vec.x();
@@ -134,59 +137,82 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( LHCb::HepMCEvent * theE
   // The sampled point. Always start at origin for reproducibility.
   HepMC::FourVector x( 0 , 0 , 0 , 0 );
 
-  for( int repeat=0 ; repeat<1000 ; ++repeat ) 
+  // Repeat until we get a sampled point within the defined (x,,y,z) limits
+  unsigned int iLoop = 0; // sanity check to prevent infinite loops...
+  bool OK = false;
+  while ( iLoop++ < m_nMCSamples && !OK )
   {
-    // Copute the PDF value for this point
-    const auto f = gauss4D( beamp , x );
-    
-    // smear the point. random walk.
-    const HepMC::FourVector y( x.x() + m_gaussDistX(),
-                               x.y() + m_gaussDistY(),
-                               x.z() + m_gaussDistZ(),
-                               x.t() + m_gaussDistT() );    
+    for ( unsigned int repeat = 0; repeat < m_nMCSamples; ++repeat ) 
+    {
+      // Copute the PDF value for this point
+      const auto f = gauss4D( beamp , x );
+      
+      // smear the point. random walk.
+      const HepMC::FourVector y( x.x() + m_gaussDistX(),
+                                 x.y() + m_gaussDistY(),
+                                 x.z() + m_gaussDistZ(),
+                                 x.t() + m_gaussDistT() );    
+      
+      // compute the prob for the new point
+      const auto g = gauss4D( beamp , y );    
+      
+      if ( f < g ) 
+      {
+        // new point is better, so always keep
+        x = y;
+      }
+      else 
+      {
+        // randomly keep worse point a fraction depending on the prob values.
+        const auto ratio = ( fabs(f)>0 ? g/f : 0.0 );
+        const auto r = m_flatDist( );
+        if ( r < ratio ) { x = y; }	
+      }
+    }
 
-    // compute the prob for the new point
-    const auto g = gauss4D( beamp , y );    
-    
-    if ( f < g ) 
-    {
-      // new point is better, so always keep
-      x = y;
-    }
-    else 
-    {
-      // randomly keep worse point a fraction depending on the prob values.
-      const auto ratio = ( fabs(f)>0 ? g/f : 0.0 );
-      const auto r = m_flatDist( );
-      if ( r < ratio ) { x = y; }	
-    }
+    // Check final if the spatial part of x is within the defined limits.
+    OK = ( ( fabs(x.x()) < ( m_xcut * beamp->sigmaX() ) ) &&
+           ( fabs(x.y()) < ( m_ycut * beamp->sigmaY() ) ) &&
+           ( fabs(x.z()) < ( m_zcut * beamp->sigmaZ() ) ) );
+
+    // reset and repeat
+    if ( !OK ) { x = HepMC::FourVector(0,0,0,0); }
+
   }
-
-  // A shift to put the mean of the temporal distribution at t=0.// Factor 10 because the bunches 
-  // start 10*sigmaZ away from the interaction point.
-  const auto timeDelay = 10*(beamp -> sigmaS())/Gaudi::Units::c_light; 
-
-  // Shift the sampled point to average beam spot position and time offset
-  x.setT( x.t() - timeDelay ); 
-  x.setX( x.x() + beamp -> beamSpot().x() ); // Offset the centre of the beamspot
-  x.setY( x.y() + beamp -> beamSpot().y() );
-  x.setZ( x.z() + beamp -> beamSpot().z() );
-
-  // update the values for all vertices
-  auto * pEvt = theEvent -> pGenEvt() ;
-  if ( pEvt )
+  if ( UNLIKELY(!OK) )
   {
-    for ( auto vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; ++vit )
-    {
-      const auto pos = (*vit) -> position() ;
-      (*vit) -> set_position( HepMC::FourVector( pos.x() + x.x() , 
-						 pos.y() + x.y() , 
-						 pos.z() + x.z() , 
-						 pos.t() + x.t() ) ) ;
-    }
+    Warning( "Markov Chain sampling for PV (x,y,z,t) failed" ).ignore();
   }
+  else
+  {
 
-  return StatusCode::SUCCESS ;      
+    // A shift to put the mean of the temporal distribution at t=0.// Factor 10 because the bunches 
+    // start 10*sigmaZ away from the interaction point.
+    const auto timeDelay = 10*(beamp -> sigmaS())/Gaudi::Units::c_light; 
+    
+    // Shift the sampled point to average beam spot position and time offset
+    x.setT( x.t() - timeDelay ); 
+    x.setX( x.x() + beamp -> beamSpot().x() ); // Offset the centre of the beamspot
+    x.setY( x.y() + beamp -> beamSpot().y() );
+    x.setZ( x.z() + beamp -> beamSpot().z() );
+    
+    // update the values for all vertices
+    auto * pEvt = theEvent -> pGenEvt() ;
+    if ( pEvt )
+    {
+      for ( auto vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; ++vit )
+      {
+        const auto pos = (*vit) -> position() ;
+        (*vit) -> set_position( HepMC::FourVector( pos.x() + x.x() , 
+                                                   pos.y() + x.y() , 
+                                                   pos.z() + x.z() , 
+                                                   pos.t() + x.t() ) ) ;
+      }
+    }
+    
+  }
+  
+  return StatusCode::SUCCESS;      
 }
 
 // Declaration of the Tool Factory
