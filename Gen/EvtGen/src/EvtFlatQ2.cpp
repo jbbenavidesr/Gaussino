@@ -21,19 +21,11 @@
 #include "EvtGenBase/EvtPatches.hh"
 #include "EvtGenModels/EvtFlatQ2.hh"
 
-#include <stdlib.h>
 #include <fstream>
-#include <stdio.h>
 #include <string>
-#include "EvtGenBase/EvtGenKine.hh"
 #include "EvtGenBase/EvtParticle.hh"
 #include "EvtGenBase/EvtPDL.hh"
 #include "EvtGenBase/EvtReport.hh"
-#include "EvtGenBase/EvtDiracSpinor.hh"
-#include "EvtGenBase/EvtVector4C.hh"
-#include "EvtGenBase/EvtTensor4C.hh"
-using std::fstream;
-#include <iomanip>
 
 double lambda(double q, double m_mu)
 {
@@ -134,5 +126,3 @@ void EvtFlatQ2::decay( EvtParticle *p){
   return;
 
 }
-
-
