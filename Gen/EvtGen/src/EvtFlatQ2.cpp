@@ -33,6 +33,19 @@
 #include "EvtGenBase/EvtVector4C.hh"
 #include "EvtGenBase/EvtTensor4C.hh"
 using std::fstream;
+#include <iomanip>
+
+double lambda(double q, double m_mu)
+{
+
+  double L(1.0);
+  if (fabs(q) > 0.0) {
+      L -= 4.0*m_mu*m_mu/(q*q);
+  }
+
+  return L;
+
+}
 
 EvtFlatQ2::~EvtFlatQ2() {}
 
@@ -58,14 +71,36 @@ void EvtFlatQ2::initProbMax(){
 
 void EvtFlatQ2::init(){
 
-  // check that there are 0 arguments
-  checkNArg(0);
+  // check that there are 3 daughters
   checkNDaug(3);
 
-  //We expect B->X l nu events
+  // We expect B -> X lepton lepton events
   checkSpinParent(EvtSpinType::SCALAR);
-  checkSpinDaughter(1,EvtSpinType::DIRAC);
-  checkSpinDaughter(2,EvtSpinType::NEUTRINO);
+
+  EvtSpinType::spintype d1type = EvtPDL::getSpinType(getDaug(1));
+  EvtSpinType::spintype d2type = EvtPDL::getSpinType(getDaug(2));
+
+  if (!(d1type == EvtSpinType::DIRAC || d1type == EvtSpinType::NEUTRINO)) {
+      report(ERROR,"EvtGen") << "EvtFlatQ2 expects 2nd daughter to "
+			     << "be a lepton" <<std::endl;
+      report(ERROR,"EvtGen") << "Will terminate execution!"<<std::endl;
+      ::abort();
+  }
+
+  if (!(d2type == EvtSpinType::DIRAC || d2type == EvtSpinType::NEUTRINO)) {
+      report(ERROR,"EvtGen") << "EvtFlatQ2 expects 3rd daughter to "
+			     << "be a lepton" <<std::endl;
+      report(ERROR,"EvtGen") << "Will terminate execution!"<<std::endl;
+      ::abort();
+  }
+
+  // Specify if we want to use the phase space factor
+  _usePhsp = false;
+  if (getNArg() > 0) {
+      if (getArg(0) != 0) {_usePhsp = true;}
+  }
+
+  report(INFO,"EvtGen") <<"EvtFlatQ2 usePhsp = "<<int(_usePhsp)<<std::endl;
 
 }
 
@@ -75,15 +110,29 @@ void EvtFlatQ2::decay( EvtParticle *p){
   p->initializePhaseSpace(getNDaug(),getDaugs());
 
   EvtVector4R p4Xu = p->getDaug(0)->getP4();
-  double pXu_x2=p4Xu.get(1)*p4Xu.get(1);
-  double pXu_y2=p4Xu.get(2)*p4Xu.get(2);
-  double pXu_z2=p4Xu.get(3)*p4Xu.get(3);
+
+  EvtVector4R p4ell1 = p->getDaug(1)->getP4();
+  EvtVector4R p4ell2 = p->getDaug(2)->getP4();
+
+  double pXu_x2 = p4Xu.get(1)*p4Xu.get(1);
+  double pXu_y2 = p4Xu.get(2)*p4Xu.get(2);
+  double pXu_z2 = p4Xu.get(3)*p4Xu.get(3);
   double pXu = sqrt(pXu_x2+pXu_y2+pXu_z2);
-  double prob=1/pXu;
-  
-  if(pXu>0.01) setProb(prob);
+  double prob(0.0);
+  if (fabs(pXu) > 0.0) {prob = 1/pXu;}
+
+  // Include the phase space factor if requested
+  if (_usePhsp) {
+
+    double Lambda = lambda((p4ell1+p4ell2).mass(), p4ell1.mass());
+    if (Lambda > 0.0) {prob=prob/sqrt(Lambda);}
+	  
+  }
+
+  if (pXu > 0.01) {setProb(prob);}
 
   return;
+
 }
 
 
