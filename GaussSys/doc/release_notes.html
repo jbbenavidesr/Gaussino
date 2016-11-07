@@ -12,6 +12,92 @@ Purpose: LHCb Simulation program
 </ul>
 </b>
 
+<H1><A NAME="v49r5">2016-11-07 - Gauss v49r5</A></H1>
+<H2><A NAME="Note"Release for Sim09b productions</A></H2>
+This version give incompatible physics results in some cases with respect to <= v49r4, hence it is
+refered to as a <b>Sim09b</b> version.
+
+This version uses projects:
+   LCG_79 (HepMC 2.06.09, ROOT 6.04.02), Gaudi v26r4, LHCb v39r1, 
+   Geant4 v96r4p3 (geant4.9.6.p04 + LHCb patches)
+   and SQLDDDB v7r*, ParamFiles v8r*, FieldMap v5r*, AppConfig v3r*, Geant4Files v96r*, GDMLData v1r*
+
+<p>
+This version uses (via LCG_79/MCGenerators):
+   pythia8 186 (with LHCb Tune1), lhapdf 6.1.4, photos++ 3.56, <b>tauola++ 1.1.6b.lhcb</b>, pythia 6.427.2,
+   hijing 1.383bs.2, crmc 1.5.6 (epos), alpgen 2.1.4, powhegbox r2092, herwig++ 2.7.1, thepeg 1.9.2p1
+   rivet 2.4.2, yoda 1.5.9
+
+<p>
+This version uses (private LHCb generators versions):
+   <b>EvtGen</b>, EvtGenExtras, Mint, <b>AmpGen</b>, BcVegPy, GenXicc, HidValley
+   and DecFiles v29r*, LHAPDFSets v2r*, BcVegPyData v2r*, GenXiccData v3r*, PGunsData v1r*
+
+<p>
+This version is released on Sim09 branch
+
+<h2>Updates to generators</h2>
+
+<dl>
+<dt>[MR !28] Modifications to EvtTauolaEngine for the B to tau tau physics analysis
+<dd> Code changes to `EvtTauolaEngine` in EvtGen to allow the B to tau tau physics analysis to move forward:    
+<p> See LHCBGAUSS-841
+<p>    1) It uses the updated BaBar hadronic currents by default. An extra decay file keyword `TauolaCurrentOption` can be used to r
+eset the integer value via `Tauola::setNewCurrents()`. This means that if there is a build of Tauola with the intricate CLEO curr
+ents enabled, then the code will be able to use that by setting
+    `Define TauolaCurrentOption -1` in the decay file.
+    
+<p>    2) The code also allows the option to set the sub-branching fractions of certain modes via `Tauola::setTaukle`, which will im
+prove MC generation efficiency by ignoring unneeded modes, using the decay file keywords `TauolaBRx`, where x = 1,2,3 or 4.
+    
+<p>    3) It also contains some code to artificially set the PDG ids of the tau parents to vector bosons to use internal Tauola spin
+ matrix weights, but this is not enabled by default, since we believe it doesn't do the right spin physics for B decays (we need 
+further feedback from the Tauola developers).
+    
+<p>    4) There is also new code in `EvtParticle` to allow the future storage and retrieval of double quantities, such as amplitude 
+weights, via the `setAttributeDouble(name, value)` and `value = getAttributeDouble(name)` functions, although no decay model is u
+sing this at the moment and will therefore have zero effect on current MC production.
+
+<p>    5) Uses new tauola 1.1.6b.lhcb to allo access to the Cleo intricate model
+
+<dt>[MR !25] Fix for min/max particle masses 
+<dd> Bug fix that has as effect to truncate mass of Bs excited states
+<p> See LHCBGAUSS-857
+
+<dt>[MR !41] Fixes in AmpGen
+<dd> See LHCBGAUSS-905
+<p> - Fixes WS normalisation and automatic normalisation of PDFs.
+<p> - Move parameter resolution code into a separate function.
+<p> - Minor code cleanups.
+
+<dt>[MR !35] New EPOS option file and code for fixed target configuration
+<dd> See LHCBGAUSS-894
+<p> Add new EPOS.py generic option file in Gen/LbCRMC which creates automatically the correct configuration for EPOS based on:
+<p> - beam momentum to define the fixed target or collisionner mode
+<p> - event type to generated minimum bias events or to embed Pythia8 signal events with EPOS underlying event
+    
+<dt>[MR !42] Improve ImpactParam_PERIPH.py option file 
+<dd> related to LHCBGAUSS-657 and LHCBGAUSS-894
+<p> - To be propagated to master and Sim09 branches
+<p> - Improvements have been made in the ImpactParam_PERIPH.py option files which purpose is to define centrality cuts in EPOS fo
+r PbPb.
+<p> - Those changes have been made to account for all possible configurations of EPOS which have been deployed in the new EPOS.py
+ file
+
+</dl>
+
+
+!==============================================================================
+
+<P>
+<b>BEWARE: 
+<ul>
+<li>As from version v49r2, the Sim09 branch of the project is maintained only in Git
+<li>The package release notes are no longer maintained, look at the Git Merge Request (MR) comments
+<li>The package versions are no longer maintained, use the Git commit IDs
+</ul>
+</b>
+
 <H1><A NAME="v49r4">2016-10-19 - Gauss v49r4</A></H1>
 <H2><A NAME="Note"Release for Sim09 productions</A></H2>
 This version uses projects:
