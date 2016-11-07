@@ -27,16 +27,22 @@
 #include "EvtGenBase/EvtPDL.hh"
 #include "EvtGenBase/EvtReport.hh"
 
-double lambda(double q, double m_mu)
+double lambda(double q, double m1, double m2) 
 {
-
   double L(1.0);
-  if (fabs(q) > 0.0) {
-      L -= 4.0*m_mu*m_mu/(q*q);
+  double mSum = m1 + m2;
+  double mDiff = m1 - m2;
+  double qSq = q*q;
+
+  if (qSq > 0.0) {
+
+    double prodTerm = (qSq - mSum*mSum)*(qSq - mDiff*mDiff);
+
+    if (prodTerm > 0.0) {L = sqrt(prodTerm)/qSq;}
+
   }
 
   return L;
-
 }
 
 EvtFlatQ2::~EvtFlatQ2() {}
@@ -116,9 +122,15 @@ void EvtFlatQ2::decay( EvtParticle *p){
   // Include the phase space factor if requested
   if (_usePhsp) {
 
-    double Lambda = lambda((p4ell1+p4ell2).mass(), p4ell1.mass());
-    if (Lambda > 0.0) {prob=prob/sqrt(Lambda);}
-	  
+    // Invariant mass of lepton pair
+    double q = (p4ell1+p4ell2).mass();
+    // Rest masses of the leptons
+    double m1 = p4ell1.mass();
+    double m2 = p4ell2.mass();
+    // Phase space factor, which includes the various square roots
+    double Lambda = lambda(q, m1, m2);
+    if (Lambda > 0.0) {prob = prob/Lambda;}
+
   }
 
   if (pXu > 0.01) {setProb(prob);}
