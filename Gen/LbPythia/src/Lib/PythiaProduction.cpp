@@ -541,6 +541,7 @@ StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent ,
   std::string FSRName = LHCb::GenFSRLocation::Default;
   LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
   int key = 0;  
+  std::string name_cross = "";
 
   // Set beam parameters if variable energy
   if ( m_variableEnergy ) {
@@ -584,7 +585,11 @@ StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent ,
   else if(Pythia::pyint5().ngen(key,3) != 0)   genFSR->addGenCounter(100+key, Pythia::pyint5().ngen(key,3));
   
   if(genFSR->hasCrossSection(key))   genFSR->eraseCrossSection(key);
-  genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues(Pythia::pyint6().proc(key),Pythia::pyint5().xsec(key,3)));
+
+  name_cross = "";
+  name_cross += Pythia::pyint6().proc(key);
+
+  genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues(name_cross, Pythia::pyint5().xsec(key,3)));
 
   for (int i = 1 ; i <= 500 ; ++i )
   {
@@ -601,7 +606,11 @@ StatusCode PythiaProduction::generateEvent( HepMC::GenEvent * theEvent ,
       else if (Pythia::pyint5().ngen(key,3) != 0)   genFSR->addGenCounter(100+key, Pythia::pyint5().ngen(key,3));
       
       if(genFSR->hasCrossSection(key))   genFSR->eraseCrossSection(key);
-      genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues((Pythia::pyint6().proc(key)).c_str(),Pythia::pyint5().xsec(key,3))); 
+      
+      name_cross = "";
+      name_cross += Pythia::pyint6().proc(key);
+
+      genFSR->addCrossSection(key, LHCb::GenFSR::CrossValues(name_cross, Pythia::pyint5().xsec(key,3)));
     }    
   }
 

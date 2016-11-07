@@ -1,0 +1,543 @@
+<?xml version="1.0"?>
+<generatorCounters>
+  <version>1.1</version>
+  <eventType> 13114005 </eventType>
+  <counter name = "all events (including empty events)">
+    <value> 16512 </value>
+  </counter>
+  <counter name = "events with 0 interactions">
+    <value> 1326 </value>
+  </counter>
+  <counter name = "generated events">
+    <value> 15186 </value>
+  </counter>
+  <counter name = "generated interactions">
+    <value> 41428 </value>
+  </counter>
+  <counter name = "accepted events">
+    <value> 30 </value>
+  </counter>
+  <counter name = "interactions in accepted events">
+    <value> 94 </value>
+  </counter>
+  <counter name = "generated interactions with >= 1b">
+    <value> 239 </value>
+  </counter>
+  <counter name = "generated interactions with >= 3b">
+    <value> 1 </value>
+  </counter>
+  <counter name = "generated interactions with 1 prompt B">
+    <value> 3 </value>
+  </counter>
+  <counter name = "generated interactions with >= 1c">
+    <value> 2453 </value>
+  </counter>
+  <counter name = "generated interactions with >= 3c">
+    <value> 242 </value>
+  </counter>
+  <counter name = "generated interactions with 1 prompt C">
+    <value> 178 </value>
+  </counter>
+  <counter name = "generated interactions with b and c">
+    <value> 30 </value>
+  </counter>
+  <counter name = "accepted interactions with >= 1b">
+    <value> 31 </value>
+  </counter>
+  <counter name = "accepted interactions with >= 3b">
+    <value> 1 </value>
+  </counter>
+  <counter name = "accepted interactions with 1 prompt B">
+    <value> 0 </value>
+  </counter>
+  <counter name = "accepted  interactions with >= 1c">
+    <value> 8 </value>
+  </counter>
+  <counter name = "accepted interactions with >= 3c">
+    <value> 1 </value>
+  </counter>
+  <counter name = "accepted interactions with 1 prompt C">
+    <value> 0 </value>
+  </counter>
+  <counter name = "accepted interactions with b and c">
+    <value> 5 </value>
+  </counter>
+  <efficiency name = "generator level cut">
+    <after> 18 </after>
+    <before> 126 </before>
+    <value> 0.142857 </value>
+    <error> 0.031174 </error>
+  </efficiency>
+  <counter name = "z-inverted events">
+    <value> 12 </value>
+  </counter>
+  <efficiency name = "generator particle level cut">
+    <after> 7 </after>
+    <before> 57 </before>
+    <value> 0.122807 </value>
+    <error> 0.0434732 </error>
+  </efficiency>
+  <efficiency name = "generator anti-particle level cut">
+    <after> 11 </after>
+    <before> 69 </before>
+    <value> 0.15942 </value>
+    <error> 0.0440694 </error>
+  </efficiency>
+  <fraction name = "accepted B0">
+    <number> 8 </number>
+    <value> 0.5 </value>
+    <error> 0.125 </error>
+  </fraction>
+  <fraction name = "accepted B0bar">
+    <number> 6 </number>
+    <value> 0.375 </value>
+    <error> 0.121031 </error>
+  </fraction>
+  <fraction name = "accepted B+">
+    <number> 5 </number>
+    <value> 0.3125 </value>
+    <error> 0.115878 </error>
+  </fraction>
+  <fraction name = "accepted B-">
+    <number> 7 </number>
+    <value> 0.4375 </value>
+    <error> 0.12402 </error>
+  </fraction>
+  <fraction name = "accepted Bs0">
+    <number> 1 </number>
+    <value> 0.0625 </value>
+    <error> 0.0605154 </error>
+  </fraction>
+  <fraction name = "accepted anti-Bs0s">
+    <number> 2 </number>
+    <value> 0.125 </value>
+    <error> 0.0826797 </error>
+  </fraction>
+  <fraction name = "accepted b-Baryon">
+    <number> 2 </number>
+    <value> 0.125 </value>
+    <error> 0.0826797 </error>
+  </fraction>
+  <fraction name = "accepted anti-b-Baryon">
+    <number> 1 </number>
+    <value> 0.0625 </value>
+    <error> 0.0605154 </error>
+  </fraction>
+  <fraction name = "accepted D0">
+    <number> 13 </number>
+    <value> 0.590909 </value>
+    <error> 0.104824 </error>
+  </fraction>
+  <fraction name = "accepted D0bar">
+    <number> 12 </number>
+    <value> 0.521739 </value>
+    <error> 0.104159 </error>
+  </fraction>
+  <fraction name = "accepted D+">
+    <number> 7 </number>
+    <value> 0.318182 </value>
+    <error> 0.0993026 </error>
+  </fraction>
+  <fraction name = "acceptedD-">
+    <number> 6 </number>
+    <value> 0.26087 </value>
+    <error> 0.0915605 </error>
+  </fraction>
+  <fraction name = "accepted Ds+">
+    <number> 1 </number>
+    <value> 0.0454545 </value>
+    <error> 0.0444095 </error>
+  </fraction>
+  <fraction name = "">
+    <number> 4 </number>
+    <value> 0.173913 </value>
+    <error> 0.0790342 </error>
+  </fraction>
+  <fraction name = "accepted c-Baryon">
+    <number> 1 </number>
+    <value> 0.0454545 </value>
+    <error> 0.0444095 </error>
+  </fraction>
+  <fraction name = "accepted anti-c-Baryon">
+    <number> 1 </number>
+    <value> 0.0434783 </value>
+    <error> 0.0425226 </error>
+  </fraction>
+  <fraction name = "accepted B* (L=0, J=1)">
+    <number> 24 </number>
+    <value> 0.75 </value>
+    <error> 0.0765466 </error>
+  </fraction>
+  <fraction name = "generated signal events">
+    <number> 15 </number>
+    <value> 0.5 </value>
+    <error> 0.0912871 </error>
+  </fraction>
+  <fraction name = "generated anti-signal events">
+    <number> 15 </number>
+    <value> 0.5 </value>
+    <error> 0.0912871 </error>
+  </fraction>
+  <fraction name = "generator particle level cut">
+    <number> 7 </number>
+    <value> 0.122807 </value>
+    <error> 0.0434732 </error>
+  </fraction>
+  <fraction name = "generator anti-particle level cut">
+    <number> 11 </number>
+    <value> 0.15942 </value>
+    <error> 0.0440694 </error>
+  </fraction>
+  <crosssection name = "generated events">
+    <generated> 41428 </generated>
+    <value> 2.72804 </value>
+    <error> 0.0258788 </error>
+  </crosssection>
+  <crosssection name = "generated interactions">
+    <generated> 41428 </generated>
+    <value> 2.50896 </value>
+    <error> 0.0230907 </error>
+  </crosssection>
+  <crosssection name = "interactions in accepted events">
+    <generated> 94 </generated>
+    <value> 3.13333 </value>
+    <error> 0.657042 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with >= 1b">
+    <generated> 239 </generated>
+    <value> 0.537348 </value>
+    <error> 0.0346578 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with >= 3b">
+    <generated> 1 </generated>
+    <value> 0.00224832 </value>
+    <error> 0.00224829 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with 1 prompt B">
+    <generated> 3 </generated>
+    <value> 0.00674496 </value>
+    <error> 0.00389406 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with >= 1c">
+    <generated> 2453 </generated>
+    <value> 5.51513 </value>
+    <error> 0.108007 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with >= 3c">
+    <generated> 242 </generated>
+    <value> 0.544093 </value>
+    <error> 0.0348733 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with 1 prompt C">
+    <generated> 178 </generated>
+    <value> 0.400201 </value>
+    <error> 0.0299318 </error>
+  </crosssection>
+  <crosssection name = "generated interactions with b and c">
+    <generated> 30 </generated>
+    <value> 0.0674496 </value>
+    <error> 0.0123101 </error>
+  </crosssection>
+  <crosssection name = "accepted interactions with >= 1b">
+    <generated> 31 </generated>
+    <value> 30.7175 </value>
+    <error> 4.5166 </error>
+  </crosssection>
+  <crosssection name = "accepted interactions with >= 3b">
+    <generated> 1 </generated>
+    <value> 0.990887 </value>
+    <error> 0.985602 </error>
+  </crosssection>
+  <crosssection name = "accepted  interactions with >= 1c">
+    <generated> 8 </generated>
+    <value> 7.9271 </value>
+    <error> 2.68074 </error>
+  </crosssection>
+  <crosssection name = "accepted interactions with >= 3c">
+    <generated> 1 </generated>
+    <value> 0.990887 </value>
+    <error> 0.985602 </error>
+  </crosssection>
+  <crosssection name = "accepted interactions with b and c">
+    <generated> 5 </generated>
+    <value> 4.95443 </value>
+    <error> 2.15596 </error>
+  </crosssection>
+  <method> Generation.SignalRepeatedHadronization </method>
+  <generator> Pythia </generator>
+  <crosssection id = "0">
+    <description> "All included subprocesses   " </description>
+    <generated> 41428 </generated>
+    <value> 93.1434 </value>
+  </crosssection>
+  <crosssection id = "11">
+    <description> "f + f' -> f + f' (QCD)      8" </description>
+    <generated> 5366 </generated>
+    <value> 12.0453 </value>
+  </crosssection>
+  <crosssection id = "12">
+    <description> "f + fbar -> f' + fbar'      8" </description>
+    <generated> 5 </generated>
+    <value> 0.0133033 </value>
+  </crosssection>
+  <crosssection id = "13">
+    <description> "f + fbar -> g + g           8" </description>
+    <generated> 5 </generated>
+    <value> 0.0133033 </value>
+  </crosssection>
+  <crosssection id = "28">
+    <description> "f + g -> f + g              8" </description>
+    <generated> 4705 </generated>
+    <value> 10.556 </value>
+  </crosssection>
+  <crosssection id = "53">
+    <description> "g + g -> f + fbar           8" </description>
+    <generated> 288 </generated>
+    <value> 0.65574 </value>
+  </crosssection>
+  <crosssection id = "68">
+    <description> "g + g -> g + g              8" </description>
+    <generated> 11735 </generated>
+    <value> 26.3303 </value>
+  </crosssection>
+  <crosssection id = "91">
+    <description> "Elastic scattering          8" </description>
+    <generated> 8788 </generated>
+    <value> 19.8945 </value>
+  </crosssection>
+  <crosssection id = "92">
+    <description> "Single diffractive (XB)     8" </description>
+    <generated> 3110 </generated>
+    <value> 6.90282 </value>
+  </crosssection>
+  <crosssection id = "93">
+    <description> "Single diffractive (AX)     8" </description>
+    <generated> 3034 </generated>
+    <value> 6.90282 </value>
+  </crosssection>
+  <crosssection id = "94">
+    <description> "Double  diffractive         8" </description>
+    <generated> 4189 </generated>
+    <value> 9.39062 </value>
+  </crosssection>
+  <crosssection id = "95">
+    <description> "Low-pT scattering           8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "421">
+    <description> "g + g  -> cc~[3S1(1)] + g   8" </description>
+    <generated> 2 </generated>
+    <value> 0.00225717 </value>
+  </crosssection>
+  <crosssection id = "422">
+    <description> "g + g  -> cc~[3S1(8)] + g   8" </description>
+    <generated> 6 </generated>
+    <value> 0.009662 </value>
+  </crosssection>
+  <crosssection id = "423">
+    <description> "g + g  -> cc~[1S0(8)] + g   8" </description>
+    <generated> 4 </generated>
+    <value> 0.00929792 </value>
+  </crosssection>
+  <crosssection id = "424">
+    <description> "g + g  -> cc~[3PJ(8)] + g   8" </description>
+    <generated> 12 </generated>
+    <value> 0.0195472 </value>
+  </crosssection>
+  <crosssection id = "425">
+    <description> "g + q  -> q + cc~[3S1(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "426">
+    <description> "g + q  -> q + cc~[1S0(8)]   8" </description>
+    <generated> 1 </generated>
+    <value> 0.00133416 </value>
+  </crosssection>
+  <crosssection id = "427">
+    <description> "g + q  -> q + cc~[3PJ(8)]   8" </description>
+    <generated> 4 </generated>
+    <value> 0.00451094 </value>
+  </crosssection>
+  <crosssection id = "428">
+    <description> "q + q~ -> g + cc~[3S1(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "429">
+    <description> "q + q~ -> g + cc~[1S0(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "430">
+    <description> "q + q~ -> g + cc~[3PJ(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "431">
+    <description> "g + g  -> cc~[3P0(1)] + g   8" </description>
+    <generated> 51 </generated>
+    <value> 0.109322 </value>
+  </crosssection>
+  <crosssection id = "432">
+    <description> "g + g  -> cc~[3P1(1)] + g   8" </description>
+    <generated> 25 </generated>
+    <value> 0.0583005 </value>
+  </crosssection>
+  <crosssection id = "433">
+    <description> "g + g  -> cc~[3P2(1)] + g   8" </description>
+    <generated> 44 </generated>
+    <value> 0.12674 </value>
+  </crosssection>
+  <crosssection id = "434">
+    <description> "q + g  -> q + cc~[3P0(1)]   8" </description>
+    <generated> 4 </generated>
+    <value> 0.0170322 </value>
+  </crosssection>
+  <crosssection id = "435">
+    <description> "q + g  -> q + cc~[3P1(1)]   8" </description>
+    <generated> 4 </generated>
+    <value> 0.0113313 </value>
+  </crosssection>
+  <crosssection id = "436">
+    <description> "q + g  -> q + cc~[3P2(1)]   8" </description>
+    <generated> 13 </generated>
+    <value> 0.0228236 </value>
+  </crosssection>
+  <crosssection id = "437">
+    <description> "q + q~ -> g + cc~[3P0(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "438">
+    <description> "q + q~ -> g + cc~[3P1(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "439">
+    <description> "q + q~ -> g + cc~[3P2(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "461">
+    <description> "g + g  -> bb~[3S1(1)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "462">
+    <description> "g + g  -> bb~[3S1(8)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "463">
+    <description> "g + g  -> bb~[1S0(8)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "464">
+    <description> "g + g  -> bb~[3PJ(8)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "465">
+    <description> "g + q  -> q + bb~[3S1(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "466">
+    <description> "g + q  -> q + bb~[1S0(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "467">
+    <description> "g + q  -> q + bb~[3PJ(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "468">
+    <description> "q + q~ -> g + bb~[3S1(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "469">
+    <description> "q + q~ -> g + bb~[1S0(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "470">
+    <description> "q + q~ -> g + bb~[3PJ(8)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "471">
+    <description> "g + g  -> bb~[3P0(1)] + g   8" </description>
+    <generated> 2 </generated>
+    <value> 0.00285718 </value>
+  </crosssection>
+  <crosssection id = "472">
+    <description> "g + g  -> bb~[3P1(1)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "473">
+    <description> "g + g  -> bb~[3P2(1)] + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "474">
+    <description> "q + g  -> q + bb~[3P0(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "475">
+    <description> "q + g  -> q + bb~[3P1(1)]   8" </description>
+    <generated> 1 </generated>
+    <value> 0.000510403 </value>
+  </crosssection>
+  <crosssection id = "476">
+    <description> "q + g  -> q + bb~[3P2(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "477">
+    <description> "q + q~ -> g + bb~[3P0(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "478">
+    <description> "q + q~ -> g + bb~[3P1(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "479">
+    <description> "q + q~ -> g + bb~[3P2(1)]   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "480">
+    <description> "g + g  -> Psi(2S) + g       8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "481">
+    <description> "g + g  -> Upsilon(2S) + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "482">
+    <description> "g + g  -> Upsilon(3S) + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "483">
+    <description> "g + g  -> Upsilon(4S) + g   8" </description>
+    <generated> 0 </generated>
+    <value> 0 </value>
+  </crosssection>
+  <crosssection id = "485">
+    <description> "g + g  -> psi(3770) + g     8" </description>
+    <generated> 30 </generated>
+    <value> 0.0720943 </value>
+  </crosssection>
+</generatorCounters>
