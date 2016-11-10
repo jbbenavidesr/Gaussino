@@ -166,8 +166,8 @@ void GaussRedecaySorter::store_particle(HepMC::GenParticle* part) {
 
   /*Now store it, delete the daugthers and replace the pdg id with the
    * placeholder.*/
-  auto new_id =
-      m_gaussRDStrSvc->registerForRedecay(temp_str_part, part->parent_event()->event_number()-1);
+  auto new_id = m_gaussRDStrSvc->registerForRedecay(
+      temp_str_part, part->parent_event()->event_number() - 1);
   if (new_id == -1) {
     m_store_fail = true;
   }
@@ -188,10 +188,16 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
   if (!m_theSignal) {
     m_theSignal = find_signal(evts);
   }
+
   auto sig_pdg_id = m_theSignal->pdg_id();
   auto PID = LHCb::ParticleID(sig_pdg_id);
   auto sig_info = m_ppSvc->find(PID);
   double inv_mass = 0.9999 * sig_info->mass();
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "Signal generated with " << m_theSignal->generatedMass()
+            << " pp service " << sig_info->mass() << endmsg;
+  }
+
   std::set<HepMC::GenParticle*> heavy_stuff;
   m_current_pileup = 0;
   for (auto& e : *evts) {
@@ -229,11 +235,23 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
           heavy_stuff.insert(part);
       } else {
         LHCb::ParticleID pid(part->pdg_id());
-        if (part->generated_mass() > inv_mass) {
+        auto info = m_ppSvc->find(pid);
+        if (msgLevel(MSG::DEBUG)) {
+          debug() << part->pdg_id() << " generated with "
+                  << part->generatedMass() << " pp service "
+                  << (info ? info->mass() : -1) << endmsg;
+        }
+        if (info->mass() >= inv_mass) {
           heavy_stuff.insert(part);
           debug() << "Event " << m_current_pileup
                   << ": This should be redecayed: " << endmsg;
           printChildren(part);
+        }
+        if (part->generatedMass() < inv_mass && info->mass() >= inv_mass) {
+          warning() << "Warning, decision depnds on mass used: "
+                    << part->pdg_id() << " generated with "
+                    << part->generatedMass() << " pp service "
+                    << (info ? info->mass() : -1) << endmsg;
         }
         // if signal is KS then decay also K0
         else if ((m_theSignal->pdg_id() == 310) && (pid.abspid() == 311))
