@@ -236,14 +236,9 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
       } else {
         LHCb::ParticleID pid(part->pdg_id());
         auto info = m_ppSvc->find(pid);
-        if (msgLevel(MSG::DEBUG)) {
-          debug() << part->pdg_id() << " generated with "
-                  << part->generatedMass() << " pp service "
-                  << (info ? info->mass() : -1) << endmsg;
-        }
         if (info->mass() >= inv_mass) {
           heavy_stuff.insert(part);
-          debug() << "Event " << m_current_pileup
+          debug() << "Event " << m_current_pileup << " Parent event: " << part->parent_event()->event_number()
                   << ": This should be redecayed: " << endmsg;
           printChildren(part);
         }

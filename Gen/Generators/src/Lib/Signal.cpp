@@ -65,6 +65,7 @@ Signal::Signal( const std::string& type,
     m_signalBr ( 0.0 ) { 
     declareProperty( "SignalPIDList" , m_pidVector ) ;
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
+    declareProperty( "AllowReverting" , m_allow_reverting = true ) ;
     
     m_bHadC.assign( 0 ) ;  m_antibHadC.assign( 0 ) ;
     m_cHadC.assign( 0 ) ;  m_anticHadC.assign( 0 ) ;
@@ -314,6 +315,10 @@ HepMC::GenParticle * Signal::chooseAndRevert( const ParticleVector &
   if ( theSignal -> momentum().pz() < 0 ) {
     revertEvent( theSignal -> parent_event() ) ;
     isInverted = true ;
+    if(!m_allow_reverting){
+      hasFailed=true;
+    
+    }
   }
 
   // now force the particle to decay
