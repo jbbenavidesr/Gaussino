@@ -132,8 +132,8 @@ void EvtBsMuMuKK::initProbMax()
                           + sqrt(p30Jpsi_mid_CMS*p30Kp_mid_CMS)*X_J(1,p30Jpsi_mid_CMS,1)*p30Jpsi_mid_CMS
                           *1.2*getArg(0)/int_const_NR ;
                           
-   std::cout << "kin_upper_limit " << kin_upper_limit << std::endl;
-   std::cout << "height_max " <<  abs2(hm) << std::endl; 
+   report(INFO,"EvtGen") << "kin_upper_limit " << kin_upper_limit << std::endl;
+   report(INFO,"EvtGen") << "height_max " <<  abs2(hm) << std::endl; 
    setProbMax(abs2(hm));    
 }
 
