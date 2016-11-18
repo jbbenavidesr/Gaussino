@@ -7,7 +7,8 @@ gaudi_add_module(LbDtoKpipipi_v1
                  src/DtoKpipipi_v1.cpp)
 gaudi_add_module(LbDtopiKpipi_v1
                  src/DtopiKpipi_v1.cpp)
-
+gaudi_add_module(LbDtoKKpipi_v1
+                 src/DtoKKpipi_v1.cpp)
 
 add_custom_target(ampgen_source_files 
                   COMMAND ${env_cmd} --xml ${env_xml}
