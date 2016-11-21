@@ -2,22 +2,11 @@
 # used projects.
 find_file(inherit_heptools_module InheritHEPTools.cmake)
 
-# FIXME: generator versions must be moved to another file
-set(generators_versions
-    alpgen         2.1.4
-    herwig++       2.7.1
-    hijing         1.383bs.2
-    lhapdf         6.1.4
-    photos++       3.56
-    powheg-box-v2  r3043.lhcb
-    pythia6        427.2
-    pythia8        219
-    rivet          2.4.2
-    tauola++       1.1.6
-    thepeg         1.9.2p1
-    crmc           1.5.6
-    yoda           1.5.9
-    )
+if(EXISTS ${CMAKE_SOURCE_DIR}/generators_versions.txt)
+  file(READ ${CMAKE_SOURCE_DIR}/generators_versions.txt generators_versions)
+  string(REGEX REPLACE "[ \t\n]+" ";" generators_versions "${generators_versions}")
+  set(generators_versions ${generators_versions})
+endif()
 
 # Process the lines of LCG_generators_*.txt file to extract the
 # needed generators (variable generators_versions)
