@@ -52,7 +52,7 @@ macro(check_generators)
     math(EXPR _idx "${_idx} + 2")
   endwhile()
   if(_missing_generators)
-    message(FATAL_ERROR "Missing generators: ${_missing_generators}")
+    message(WARNING "Missing generators: ${_missing_generators}")
   endif()
 endmacro()
 
