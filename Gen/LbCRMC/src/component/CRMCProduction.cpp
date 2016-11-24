@@ -472,6 +472,20 @@ void CRMCProduction::createDefaultCRMCConfiguration() {
                                   tmp_minImpactParameter.str() + "\n");
       m_defaultSettings.push_back("set bmaxim " + 
                                   tmp_maxImpactParameter.str() + "\n");
+  } else 
+  {
+    // special case for PbPb: generate only peripheral events
+    if ( ( m_projectileID == 1000822080 ) && ( m_targetID == 1000822080 ) )
+    {
+      std::ostringstream tmp_minImpactParameter;
+      std::ostringstream tmp_maxImpactParameter;
+      tmp_minImpactParameter << 8. ;
+      tmp_maxImpactParameter << 22. ;
+      m_defaultSettings.push_back("set bminim " + 
+                                  tmp_minImpactParameter.str() + "\n");
+      m_defaultSettings.push_back("set bmaxim " + 
+                                  tmp_maxImpactParameter.str() + "\n");      
+    } 
   }
  
   if( m_addUserSettingsToDefault){
