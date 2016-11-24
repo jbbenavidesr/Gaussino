@@ -13,6 +13,32 @@ __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 ,
 
 gen = Generation()
 
+def peripheralEventsOnlyPbPb():
+    gen.addTool( MinimumBias )
+    gen.MinimumBias.addTool(CRMCProduction)
+    gen.addTool( Special )
+    gen.Special.addTool( CRMCProduction )
+    gen.addTool( Inclusive )
+    gen.Inclusive.addTool( CRMCProduction )
+    gen.addTool( SignalPlain )
+    gen.SignalPlain.addTool( CRMCProduction )
+
+    gen.MinimumBias.CRMCProduction.ImpactParameter = True
+    gen.MinimumBias.CRMCProduction.MinImpactParameter = 8.
+    gen.MinimumBias.CRMCProduction.MaxImpactParameter = 22.
+
+    gen.Special.CRMCProduction.ImpactParameter = True
+    gen.Special.CRMCProduction.MinImpactParameter = 8.
+    gen.Special.CRMCProduction.MaxImpactParameter = 22.
+
+    gen.Inclusive.CRMCProduction.ImpactParameter = True
+    gen.Inclusive.CRMCProduction.MinImpactParameter = 8.
+    gen.Inclusive.CRMCProduction.MaxImpactParameter = 22.
+
+    gen.SignalPlain.CRMCProduction.ImpactParameter = True
+    gen.SignalPlain.CRMCProduction.MinImpactParameter = 8.
+    gen.SignalPlain.CRMCProduction.MaxImpactParameter = 22.
+
 def finalConfiguration():
     event_type = gen.getProp('EventType')
     gauss = Gauss()
@@ -94,6 +120,10 @@ def finalConfiguration():
     boostAlg = BoostForEpos( p_x = boost_px , p_y= boost_py , p_z = boost_pz ,
                              e = boost_e )
     genSequence.Members += [ boostAlg ]
+
+    # for PbPb, apply centrality cuts:
+    if gauss.getProp( 'B1Particle' ) == 'Pb' and gauss.getProp( 'B2Particle' ) == 'Pb':
+        peripheralEventsOnlyPbPb()
 
 from Gaudi.Configuration import appendPostConfigAction
 appendPostConfigAction( finalConfiguration )
