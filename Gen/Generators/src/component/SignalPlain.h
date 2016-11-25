@@ -35,6 +35,5 @@ class SignalPlain : public Signal {
                          LHCb::GenCollisions * theCollisions ) ;  
 
  private:
-  void printChildren(HepMC::GenParticle* part, int level=0);
 };
 #endif // GENERATORS_SIGNALPLAIN_H
