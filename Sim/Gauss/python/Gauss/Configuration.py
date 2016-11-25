@@ -2795,12 +2795,12 @@ class Gauss(LHCbConfigurableUser):
                 TESNode = "/Event/"+self.slot_(slot)+"Signal/"
                 simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
                 simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
-                gdh = GenInit('SignalDummyGenHeader')
+                gdh = GenInit('SignalGen')
                 self.setBeamParameters(self.defineCrossingList(), gdh)
 
                 gdh.MCHeader = TESNode+"Gen/Header"
                 gdh.CreateBeam = False
-                sdh = SimInit('SignalDummyMCHeader')
+                sdh = SimInit('SignalSim')
                 grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
                 grdfilter.IsPhaseNotEqual = 0
                 simSlotSignal.Members += [ grdfilter]
@@ -3608,6 +3608,13 @@ class Gauss(LHCbConfigurableUser):
         the correct GaussRedecay Service instances for the different spillover
         slots"""
         n_redecays = self.Redecay['N']
+
+        genInit = GenInit('SignalGen')
+        genInitT0 = GenInit("GaussGen")
+        if genInitT0.isPropertySet("RunNumber"):
+            genInit.RunNumber = genInitT0.RunNumber
+        if genInitT0.isPropertySet("FirstEventNumber"):
+            genInit.FirstEventNumber = genInitT0.FirstEventNumber
 
         for slot in SpillOverSlots:
             svcname = 'GaussRedecay' + slot
