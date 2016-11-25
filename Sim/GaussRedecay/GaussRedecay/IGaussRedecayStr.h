@@ -1,40 +1,35 @@
-// $Id: IGaussRedecayStr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
-// ============================================================================
-// ============================================================================
-//
-// ============================================================================
 #ifndef GAUSS_IGAUSSRDSTR_H
 #define GAUSS_IGAUSSRDSTR_H 1
 /// STD and STL
 //#include   <utility>
 /// Include files from the Framework
+#include "GaudiKernel/IService.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
-#include "GaudiKernel/IService.h"
 
 // From Geant4
 #include "G4Event.hh"
 #include "G4PrimaryVertex.hh"
 
 class MCCloner;
-#include "Event/Particle.h"
-#include "Event/MCParticle.h"
-#include "Event/MCHit.h"
+#include "Event/GenCollision.h"
 #include "Event/MCCaloHit.h"
+#include "Event/MCHit.h"
+#include "Event/MCParticle.h"
 #include "Event/MCRichHit.h"
 #include "Event/MCRichOpticalPhoton.h"
 #include "Event/MCRichSegment.h"
 #include "Event/MCRichTrack.h"
-#include "Event/GenCollision.h"
+#include "Event/Particle.h"
 
 static const InterfaceID IID_IGaussRedecayStr(517635934, 1, 0);
 
 /** @class IGaussRedecayStr IGaussRedecayStr.h GiGa/IGaussRedecayStr.h
  *
- *  definition of the abstract interface to Geant4 Service
- *   for event-by-event communications with Geant4
+ *  Abstract interface to the storage of GaussRedecay
  *
- *  @author Vanya Belyaev
+ *
+ *  @author Dominik Muller
  */
 
 class IGaussRedecayStr : virtual public IService {
@@ -53,7 +48,7 @@ class IGaussRedecayStr : virtual public IService {
   virtual StatusCode finalize() = 0;
 
   public:
-  struct Particle{
+  struct Particle {
     int pdg_id = 0;
     Gaudi::LorentzVector momentum;
     Gaudi::XYZTPoint point;
@@ -67,6 +62,11 @@ class IGaussRedecayStr : virtual public IService {
    *  @return int temp particle id unique for this Particle
    */
   virtual int registerForRedecay(Particle part, int pileup_id) = 0;
+
+  /*This function rolls over all saved pileup events and returns the map of
+   * objects to redecay in this one pile up. It relies on the caller to call
+   * it n-redecay times.*/
+
   virtual std::map<int, Particle>* getRegisteredForRedecay() = 0;
   virtual int getNPileUp() = 0;
   virtual std::set<int> getUsedPlaceholderIDs() = 0;
@@ -120,4 +120,3 @@ class IGaussRedecayStr : virtual public IService {
 // ============================================================================
 #endif  ///< GIGA_GIGASVC_H
 // ============================================================================
-

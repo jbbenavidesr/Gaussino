@@ -1,4 +1,3 @@
-// $Id: GiGaPhysG4RDTag.cpp,v 1.6 2009-10-20 07:35:07 marcin Exp $
 // Include files 
 
 // from Gaudi

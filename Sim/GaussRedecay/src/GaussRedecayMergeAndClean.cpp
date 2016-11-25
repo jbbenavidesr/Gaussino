@@ -26,7 +26,7 @@
 // Implementation file for class : GaussRedecayMergeAndClean
 //
 //
-// 2016-03-15 : Gloria Corti
+// 2016-03-15 : Dominik Muller
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
@@ -255,7 +255,7 @@ void GaussRedecayMergeAndClean::fix_connections(int placeholder,
   auto sig_tag = findPlaceholder(m_mcparticles.second, placeholder);
   auto sig_tag_prod_vtx = const_cast<LHCb::MCVertex*>(sig_tag->originVertex());
   auto signal_vertex = *begin(sig_tag->endVertices());
-  // This vertex should only have one children, the
+  // This vertex should only have one child, the
   // actual signal with same abs pid as stored.
   if (signal_vertex->products().size() != 1) {
     error() << "Tagged signal vertex has not exactly 1 child." << endmsg;

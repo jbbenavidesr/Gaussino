@@ -1,4 +1,3 @@
-// $Id: GaussRedecayCtrFilter.h,v 1.4 2007-01-12 15:23:41 ranjard Exp $
 #ifndef GaussRedecayPrintMCParticles_H
 #define GaussRedecayPrintMCParticles_H 1
 

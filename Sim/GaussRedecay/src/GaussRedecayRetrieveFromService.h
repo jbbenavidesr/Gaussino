@@ -11,9 +11,9 @@ class IGaussRedecayCtr;  ///< GaussRedecay counter service
 
 /** @class GaussRedecayRetrieveFromService GaussRedecayRetrieveFromService.h
  *
- *  An algorithm to control processing in a GaudiSequencer.
- *  Following members of the sequence are only processed
- *  if a new event needs to be generated
+ *  An algorithm that gets the lists of MC objects from the cloner and puts
+ *  them back into the TES. From this moment on, the actual memory for the
+ *  objects is owned by the TES.
  *
  *  @author Dominik Muller
  *  @date   2016-3-21

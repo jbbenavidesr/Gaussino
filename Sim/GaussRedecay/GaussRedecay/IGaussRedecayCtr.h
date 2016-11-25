@@ -1,17 +1,10 @@
-// $Id: IGaussRedecayCtr.h,v 0.1 2015-12-10 18:58:18 ibelyaev Exp $
-// ============================================================================
-// ============================================================================
-//
-// ============================================================================
 #ifndef GAUSS_IGAUSSRDCTR_H
 #define GAUSS_IGAUSSRDCTR_H 1
-/// STD and STL
-//#include   <utility>
 /// Include files from the Framework
 #include "GaudiKernel/IService.h"
 
 /** @class IGaussRedecayCtr IGaussRedecayCtr.h GiGa/IGaussRedecayCtr.h
- *
+ * Interface to the GaussRedecay service to control the program flow
  *
  *
  *

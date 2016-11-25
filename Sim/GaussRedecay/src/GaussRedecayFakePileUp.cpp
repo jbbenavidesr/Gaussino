@@ -1,6 +1,3 @@
-// $Id: GaussRedecayFakePileUp.cpp,v 1.6 2009-04-07 16:11:21 gcorti Exp $
-// Include files 
-
 // local
 #include "GaussRedecayFakePileUp.h"
 
@@ -13,7 +10,7 @@
 //-----------------------------------------------------------------------------
 // Implementation file for class : GaussRedecayFakePileUp
 //
-// 2005-08-17 : Patrick Robbe
+// 2005-08-17 : Dominik Muller
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory

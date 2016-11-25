@@ -1,4 +1,3 @@
-// $Id: GaussRedecay.cpp,v 1.18 2009-12-17 11:00:12 marcocle Exp $
 #define GAUSSRD_CPP 1
 
 // Include files
@@ -106,9 +105,10 @@ bool GaussRedecay::registerNewEvent() {
   if (m_phase == 0) {
     return true;
   }
+  /*In any case, have it reset the rolling n pileup iterator*/
+  m_first_access = true;
   // Have to handle two different cases, need to rerun the generation in case
   // of counter==0 or counter==max, otherwise just do some cleanup.
-  m_first_access = true;
   if (m_rd_counter == 0 || m_rd_counter == m_max_rd_counter) {
     if (msgLevel(MSG::DEBUG)) {
       debug() << " Redecay counter " << m_rd_counter

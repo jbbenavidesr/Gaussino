@@ -1,4 +1,3 @@
-// $Id: GaussRedecayFakePileUp.h,v 1.4 2009-04-07 16:11:21 gcorti Exp $
 #ifndef GENERATORS_FIXEDLUMINOSITY_H
 #define GENERATORS_FIXEDLUMINOSITY_H 1
 

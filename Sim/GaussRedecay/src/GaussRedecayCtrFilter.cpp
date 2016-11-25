@@ -14,7 +14,7 @@
 // Implementation file for class : GaussRedecayCtrFilter
 //
 //
-// 2016-03-15 : Gloria Corti
+// 2016-03-15 : Dominik Muller
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory

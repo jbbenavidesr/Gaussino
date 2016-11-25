@@ -207,7 +207,7 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
     auto evt = e->pGenEvt();
     /*Get the invariant mass of the particle to decay everything that is
      * heavier.
-     * Multiplied by a factor just smaller than one to all prevent floating
+     * Multiplied by a factor just smaller than one to prevent floating
      * point
      * precision problems when checking particles identical to the signal
      * itself.*/
@@ -235,18 +235,15 @@ void GaussRedecaySorter::store_heavier_than_signal(LHCb::HepMCEvents* evts) {
           heavy_stuff.insert(part);
       } else {
         LHCb::ParticleID pid(part->pdg_id());
+        /*Use the ppSvc for here as well as generated_mass() changes in each
+         * event.*/
         auto info = m_ppSvc->find(pid);
         if (info->mass() >= inv_mass) {
           heavy_stuff.insert(part);
-          debug() << "Event " << m_current_pileup << " Parent event: " << part->parent_event()->event_number()
+          debug() << "Event " << m_current_pileup
+                  << " Parent event: " << part->parent_event()->event_number()
                   << ": This should be redecayed: " << endmsg;
           printChildren(part);
-        }
-        if (part->generatedMass() < inv_mass && info->mass() >= inv_mass) {
-          warning() << "Warning, decision depnds on mass used: "
-                    << part->pdg_id() << " generated with "
-                    << part->generatedMass() << " pp service "
-                    << (info ? info->mass() : -1) << endmsg;
         }
         // if signal is KS then decay also K0
         else if ((m_theSignal->pdg_id() == 310) && (pid.abspid() == 311))

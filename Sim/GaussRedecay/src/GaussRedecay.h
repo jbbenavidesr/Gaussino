@@ -1,4 +1,3 @@
-// $Id: GaussRedecay.h,v 1.9 2009-10-14 13:50:02 gcorti Exp $
 #ifndef REDECAY_SERVICE_H
 #define REDECAY_SERVICE_H 1
 
@@ -79,6 +78,7 @@ class GaussRedecay : public Service,
   virtual int registerForRedecay(Particle part, int pileup_id) override;
   virtual std::map<int, Particle> *getRegisteredForRedecay() override;
   int getNPileUp() override {return m_sig_map.size();};
+
   /** Registers a new event, returns false if the UD is already simulated and
    * should be reused.
    *  Returns true if everything needs to be redone and deletes the internal
