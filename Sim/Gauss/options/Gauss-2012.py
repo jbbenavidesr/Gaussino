@@ -16,6 +16,6 @@ importOptions("$APPCONFIGOPTS/Gauss/NoPacking.py")
 #--Set database tags 
 from Configurables import LHCbApp
 LHCbApp().DDDBtag   = "dddb-20150928"
-LHCbApp().CondDBtag = "sim-20160321-2-md100"
+LHCbApp().CondDBtag = "sim-20160321-2-vc-md100"
 
 
