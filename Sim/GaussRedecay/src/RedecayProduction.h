@@ -24,38 +24,35 @@ public:
     RedecayProduction(const std::string& type, const std::string& name,
                       const IInterface* parent);
 
-    /// Default destructor.
-    virtual ~RedecayProduction();
-
     /// Set of functions we need for this
-    virtual StatusCode initialize() override;
-    virtual StatusCode finalize() override;
-    virtual StatusCode generateEvent(HepMC::GenEvent*,
+    StatusCode initialize() override;
+    StatusCode finalize() override;
+    StatusCode generateEvent(HepMC::GenEvent*,
                                      LHCb::GenCollision*) override;
 
     // set of functions which need a dummy implementation as they are abstract
     // in IProductionTool and some are called in ExternalGenerator so be sure to
     // not do something silly
-    virtual StatusCode initializeGenerator() override {
+    StatusCode initializeGenerator() override {
         return StatusCode::SUCCESS;
     };
-    virtual void setStable(const LHCb::ParticleProperty*) override {}
-    virtual void updateParticleProperties(
+    void setStable(const LHCb::ParticleProperty*) override {}
+    void updateParticleProperties(
         const LHCb::ParticleProperty*) override {}
-    virtual void turnOnFragmentation() override {}
-    virtual void turnOffFragmentation() override {}
-    virtual StatusCode hadronize(HepMC::GenEvent*,
+    void turnOnFragmentation() override {}
+    void turnOffFragmentation() override {}
+    StatusCode hadronize(HepMC::GenEvent*,
                                  LHCb::GenCollision*) override {
         return StatusCode::SUCCESS;
     }
-    virtual void savePartonEvent(HepMC::GenEvent*) override {}
-    virtual void retrievePartonEvent(HepMC::GenEvent*) override {}
-    virtual void printRunningConditions() override {}
-    virtual bool isSpecialParticle(
+    void savePartonEvent(HepMC::GenEvent*) override {}
+    void retrievePartonEvent(HepMC::GenEvent*) override {}
+    void printRunningConditions() override {}
+    bool isSpecialParticle(
         const LHCb::ParticleProperty*) const override {
         return false;
     }
-    virtual StatusCode setupForcedFragmentation(const int) override {
+    StatusCode setupForcedFragmentation(const int) override {
         return StatusCode::SUCCESS;
     }
 

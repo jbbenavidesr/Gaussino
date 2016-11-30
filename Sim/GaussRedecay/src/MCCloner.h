@@ -22,7 +22,6 @@ class MCCloner {
   public:
   friend class GaussRedecayMergeAndClean;
   MCCloner();
-  virtual ~MCCloner();
 
   LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp);
   LHCb::MCParticle* getStoredMCP(const LHCb::MCParticle* mcp);

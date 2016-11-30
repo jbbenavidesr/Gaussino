@@ -31,8 +31,6 @@ class GaussRedecaySorter : public GaudiAlgorithm {
   public:
   GaussRedecaySorter(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRedecaySorter();  ///< Destructor
-
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 

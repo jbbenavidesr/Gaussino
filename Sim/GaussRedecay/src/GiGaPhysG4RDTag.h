@@ -24,8 +24,6 @@ public:
   ( const std::string& type   ,
     const std::string& name   ,
     const IInterface*  parent ) ;
-  
-  virtual ~GiGaPhysG4RDTag();
 
 
 public:

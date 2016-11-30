@@ -49,17 +49,17 @@ class GaussRedecay : public Service,
   /**  initialize
    *   @return status code
    */
-  virtual StatusCode initialize() override;
+  StatusCode initialize() override;
 
   /**  initialize
    *   @return status code
    */
-  virtual StatusCode finalize() override;
+  StatusCode finalize() override;
 
-  virtual StatusCode queryInterface(const InterfaceID& iid, void** pI) override;
+  StatusCode queryInterface(const InterfaceID& iid, void** pI) override;
 
   // Implementation of the control interface IGaussRedecayCtr
-  virtual size_t numberOfRedecays() const override { return m_max_rd_counter; };
+  size_t numberOfRedecays() const override { return m_max_rd_counter; };
 
   /** Allows any algorithm to query the service and ask what we currently up
    * to.
@@ -68,15 +68,15 @@ class GaussRedecay : public Service,
    * 2 - Signal simulation phase
    *  @return int
    */
-  virtual int getPhase() const override;
-  virtual void setPhase(int p) override { m_phase = p; }
+  int getPhase() const override;
+  void setPhase(int p) override { m_phase = p; }
 
-  virtual int getRedecayMode() const override { return m_rd_mode; }
+  int getRedecayMode() const override { return m_rd_mode; }
 
   // Implementation of the storage interface IGaussRedecayStr
 
-  virtual int registerForRedecay(Particle part, int pileup_id) override;
-  virtual std::map<int, Particle> *getRegisteredForRedecay() override;
+  int registerForRedecay(Particle part, int pileup_id) override;
+  std::map<int, Particle> *getRegisteredForRedecay() override;
   int getNPileUp() override {return m_sig_map.size();};
 
   /** Registers a new event, returns false if the UD is already simulated and
@@ -87,7 +87,7 @@ class GaussRedecay : public Service,
    *  @return bool
    */
 
-  virtual bool registerNewEvent() override;
+  bool registerNewEvent() override;
 
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.
@@ -98,41 +98,41 @@ class GaussRedecay : public Service,
    *  @param Optional string. e.g. TES location
    */
 
-  virtual LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
-  virtual LHCb::MCParticles* getClonedMCPs() override;
+  LHCb::MCParticle* cloneMCP(const LHCb::MCParticle* mcp) override;
+  LHCb::MCParticles* getClonedMCPs() override;
 
-  virtual LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) override;
-  virtual LHCb::MCVertices* getClonedMCVs() override;
+  LHCb::MCVertex* cloneMCV(const LHCb::MCVertex* mcVertex) override;
+  LHCb::MCVertices* getClonedMCVs() override;
 
-  virtual LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit,
+  LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit,
                                   const std::string& vol) override;
-  virtual LHCb::MCHits* getClonedMCHits(const std::string& vol) override;
+  LHCb::MCHits* getClonedMCHits(const std::string& vol) override;
 
-  virtual LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
+  LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
                                           const std::string& vol) override;
-  virtual LHCb::MCCaloHits* getClonedMCCaloHits(
+  LHCb::MCCaloHits* getClonedMCCaloHits(
       const std::string& vol) override;
 
-  virtual LHCb::MCRichHit* cloneMCRichHit(
+  LHCb::MCRichHit* cloneMCRichHit(
       const LHCb::MCRichHit* mchit) override;
-  virtual LHCb::MCRichHits* getClonedMCRichHits() override;
+  LHCb::MCRichHits* getClonedMCRichHits() override;
 
-  virtual LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(
+  LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(
       const LHCb::MCRichOpticalPhoton* mchit) override;
-  virtual LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() override;
+  LHCb::MCRichOpticalPhotons* getClonedMCRichOpticalPhotons() override;
 
-  virtual LHCb::MCRichSegment* cloneMCRichSegment(
+  LHCb::MCRichSegment* cloneMCRichSegment(
       const LHCb::MCRichSegment* mchit) override;
-  virtual LHCb::MCRichSegments* getClonedMCRichSegments() override;
+  LHCb::MCRichSegments* getClonedMCRichSegments() override;
 
-  virtual LHCb::MCRichTrack* cloneMCRichTrack(
+  LHCb::MCRichTrack* cloneMCRichTrack(
       const LHCb::MCRichTrack* mchit) override;
-  virtual LHCb::MCRichTracks* getClonedMCRichTracks() override;
+  LHCb::MCRichTracks* getClonedMCRichTracks() override;
 
-  virtual LHCb::GenCollision* cloneGenCollision(
+  LHCb::GenCollision* cloneGenCollision(
       const LHCb::GenCollision* mchit) override;
-  virtual LHCb::GenCollisions* getClonedGenCollisions() override;
-  virtual std::set<int> getUsedPlaceholderIDs() override;
+  LHCb::GenCollisions* getClonedGenCollisions() override;
+  std::set<int> getUsedPlaceholderIDs() override;
 
   protected:
   /** standard constructor
@@ -143,7 +143,7 @@ class GaussRedecay : public Service,
   GaussRedecay(const std::string& name, ISvcLocator* svc);
 
   /// (virtual destructor)
-  virtual ~GaussRedecay();
+  ~GaussRedecay();
 
   private:
   MCCloner* m_mc_cloner;

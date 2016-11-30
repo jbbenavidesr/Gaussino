@@ -39,11 +39,6 @@ GaussRedecayCtrFilter::GaussRedecayCtrFilter(const std::string& Name, ISvcLocato
 }
 
 //=============================================================================
-// Destructor
-//=============================================================================
-GaussRedecayCtrFilter::~GaussRedecayCtrFilter() {}
-
-//=============================================================================
 // Initialization
 //=============================================================================
 StatusCode GaussRedecayCtrFilter::initialize() {

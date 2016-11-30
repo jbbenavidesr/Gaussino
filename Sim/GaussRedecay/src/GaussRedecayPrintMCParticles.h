@@ -22,8 +22,6 @@ class GaussRedecayPrintMCParticles : public GaudiAlgorithm {
   /// Standard constructor
   GaussRedecayPrintMCParticles(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRedecayPrintMCParticles();  ///< Destructor
-
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 

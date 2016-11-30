@@ -25,8 +25,6 @@ class GaussRedecayFakePileUp : public GaudiTool, virtual public IPileUpTool {
   GaussRedecayFakePileUp(const std::string& type, const std::string& name,
                          const IInterface* parent);
 
-  virtual ~GaussRedecayFakePileUp();  ///< Destructor
-
   virtual StatusCode initialize();
 
   virtual StatusCode finalize();

@@ -53,6 +53,14 @@ from Configurables import ( PackMCParticle, PackMCVertex,
                             UnpackMCParticle, UnpackMCVertex,
                             CompareMCParticle, CompareMCVertex )
 
+# All GaussRedecay includes
+from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
+                            GaussRedecayRetrieveFromService,
+                            GaussRedecayPrintMCParticles,
+                            GaussRedecayCtrFilter,
+                            GaussRedecaySorter,
+                            GaussRedecayMergeAndClean)
+
 from DetCond.Configuration import CondDB
 
 ## @class Gauss

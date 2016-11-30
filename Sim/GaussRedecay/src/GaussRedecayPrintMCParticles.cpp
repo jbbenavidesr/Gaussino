@@ -61,11 +61,6 @@ GaussRedecayPrintMCParticles::GaussRedecayPrintMCParticles(
 }
 
 //=============================================================================
-// Destructor
-//=============================================================================
-GaussRedecayPrintMCParticles::~GaussRedecayPrintMCParticles() {}
-
-//=============================================================================
 // Initialization
 //=============================================================================
 StatusCode GaussRedecayPrintMCParticles::initialize() {

@@ -19,7 +19,6 @@
  */
 class G4RDTag : public G4ParticleDefinition {
   public:
-  virtual ~G4RDTag();  // virtual desctructor
   static G4RDTag* Definition(int pdg_id=default_pdg_id);
   static G4ParticleDefinition* make_definition(int pdg_id=default_pdg_id);
 

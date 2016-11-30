@@ -28,8 +28,6 @@ class GaussRedecayMergeAndClean : public GaudiAlgorithm {
   /// Standard constructor
   GaussRedecayMergeAndClean(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRedecayMergeAndClean();  ///< Destructor
-
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 

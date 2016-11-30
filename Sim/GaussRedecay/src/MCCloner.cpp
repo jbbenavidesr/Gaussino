@@ -168,5 +168,3 @@ void MCCloner::clear() {
   }
   clear_no_deletion();
 }
-
-MCCloner::~MCCloner() {}

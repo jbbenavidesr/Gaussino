@@ -30,11 +30,6 @@ GaussRedecayFakePileUp::GaussRedecayFakePileUp( const std::string& type,
 }
 
 //=============================================================================
-// Destructor 
-//=============================================================================
-GaussRedecayFakePileUp::~GaussRedecayFakePileUp( ) { ; }
-
-//=============================================================================
 // Initialize method
 //=============================================================================
 StatusCode GaussRedecayFakePileUp::initialize( ) {

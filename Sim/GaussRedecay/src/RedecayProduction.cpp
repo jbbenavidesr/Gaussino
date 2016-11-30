@@ -28,8 +28,6 @@ RedecayProduction::RedecayProduction(const std::string& type,
   declareProperty("GaussRedecay", m_gaussRDSvcName = "GaussRedecay");
 }
 
-RedecayProduction::~RedecayProduction() {}
-
 StatusCode RedecayProduction::initialize() {
   // Print the initialization banner.
   always() << "============================================================="
@@ -71,7 +69,14 @@ StatusCode RedecayProduction::generateEvent(
               << mom.eta() << ", " << mom.phi() << ", " << mom.E() << ")"
               << endmsg;
     }
-    // create HepMC Vertex
+    /*Structure of this event: -N> particle, X vertex*/
+    /*-beam-> X -tag1-> X -redecay1-> */
+    /*          -tag2-> X -redecay2-> */
+    /*          -tag3-> X -redecay3-> */
+    /*          etc ... */
+
+    
+    
     auto v = new HepMC::GenVertex(
         HepMC::FourVector(origin.X(), origin.Y(), origin.Z(), origin.T()));
     if (dummy_vertex == nullptr) {

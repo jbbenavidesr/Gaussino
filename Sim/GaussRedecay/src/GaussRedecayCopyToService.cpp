@@ -69,11 +69,6 @@ GaussRedecayCopyToService::GaussRedecayCopyToService(const std::string& Name,
 }
 
 //=============================================================================
-// Destructor
-//=============================================================================
-GaussRedecayCopyToService::~GaussRedecayCopyToService() {}
-
-//=============================================================================
 // Initialization
 //=============================================================================
 StatusCode GaussRedecayCopyToService::initialize() {

@@ -71,11 +71,6 @@ GaussRedecayRetrieveFromService::GaussRedecayRetrieveFromService(const std::stri
 }
 
 //=============================================================================
-// Destructor
-//=============================================================================
-GaussRedecayRetrieveFromService::~GaussRedecayRetrieveFromService() {}
-
-//=============================================================================
 // Initialization
 //=============================================================================
 StatusCode GaussRedecayRetrieveFromService::initialize() {

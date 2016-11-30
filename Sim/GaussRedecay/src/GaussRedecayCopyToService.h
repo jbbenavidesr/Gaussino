@@ -21,8 +21,6 @@ class GaussRedecayCopyToService : public GaudiAlgorithm {
   /// Standard constructor
   GaussRedecayCopyToService(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRedecayCopyToService();  ///< Destructor
-
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 

@@ -24,8 +24,6 @@ public:
     GaussRedecayRetrieveFromService(const std::string& Name,
                                     ISvcLocator* SvcLoc);
 
-    virtual ~GaussRedecayRetrieveFromService();  ///< Destructor
-
     virtual StatusCode initialize();  ///< Algorithm initialization
     virtual StatusCode execute();     ///< Algorithm execution
 

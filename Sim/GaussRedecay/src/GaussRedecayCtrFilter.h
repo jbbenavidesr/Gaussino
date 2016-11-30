@@ -20,8 +20,6 @@ class GaussRedecayCtrFilter : public GaudiAlgorithm {
   /// Standard constructor
   GaussRedecayCtrFilter(const std::string& Name, ISvcLocator* SvcLoc);
 
-  virtual ~GaussRedecayCtrFilter();  ///< Destructor
-
   virtual StatusCode initialize();  ///< Algorithm initialization
   virtual StatusCode execute();     ///< Algorithm execution
 

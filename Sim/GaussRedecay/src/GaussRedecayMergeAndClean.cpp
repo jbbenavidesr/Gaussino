@@ -71,11 +71,6 @@ GaussRedecayMergeAndClean::GaussRedecayMergeAndClean(const std::string& Name,
 }
 
 //=============================================================================
-// Destructor
-//=============================================================================
-GaussRedecayMergeAndClean::~GaussRedecayMergeAndClean() {}
-
-//=============================================================================
 // Initialization
 //=============================================================================
 StatusCode GaussRedecayMergeAndClean::initialize() {
