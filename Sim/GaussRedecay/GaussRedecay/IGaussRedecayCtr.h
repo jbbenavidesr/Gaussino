@@ -2,6 +2,7 @@
 #define GAUSS_IGAUSSRDCTR_H 1
 /// Include files from the Framework
 #include "GaudiKernel/IService.h"
+#include "GaudiKernel/System.h"
 
 /** @class IGaussRedecayCtr IGaussRedecayCtr.h GiGa/IGaussRedecayCtr.h
  * Interface to the GaussRedecay service to control the program flow
@@ -11,14 +12,11 @@
  *  @author Dominik Muller dominik.muller@cern.ch
  */
 
-static const InterfaceID IID_IGaussRedecayCtr(5623694057, 1, 0);
-
-class IGaussRedecayCtr : virtual public IService {
+class GAUDI_API IGaussRedecayCtr : virtual public IService {
   friend class GaussRedecayCtrFilter;
 
   public:
-  /// Retrieve interface ID
-  static const InterfaceID& interfaceID() { return IID_IGaussRedecayCtr; };
+  DeclareInterfaceID(IGaussRedecayCtr, 1, 0);
 
   /**  initialize
    *   @return status code

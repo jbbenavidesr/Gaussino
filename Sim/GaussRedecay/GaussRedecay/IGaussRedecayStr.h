@@ -4,6 +4,7 @@
 //#include   <utility>
 /// Include files from the Framework
 #include "GaudiKernel/IService.h"
+#include "GaudiKernel/System.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
 
@@ -22,8 +23,6 @@ class MCCloner;
 #include "Event/MCRichTrack.h"
 #include "Event/Particle.h"
 
-static const InterfaceID IID_IGaussRedecayStr(517635934, 1, 0);
-
 /** @class IGaussRedecayStr IGaussRedecayStr.h GiGa/IGaussRedecayStr.h
  *
  *  Abstract interface to the storage of GaussRedecay
@@ -32,10 +31,9 @@ static const InterfaceID IID_IGaussRedecayStr(517635934, 1, 0);
  *  @author Dominik Muller
  */
 
-class IGaussRedecayStr : virtual public IService {
+class GAUDI_API IGaussRedecayStr : virtual public IService {
   public:
-  /// Retrieve interface ID
-  static const InterfaceID& interfaceID() { return IID_IGaussRedecayStr; };
+  DeclareInterfaceID(IGaussRedecayStr, 1, 0);
 
   /**  initialize
    *   @return status code
