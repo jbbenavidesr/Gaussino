@@ -59,4 +59,3 @@ for p in plots :
 		Plot( dataTree, "energy", p, path+"/Kaons", models , ["Kplus","Kminus"] , materials , 2 , thicks[0], True )
 	if "Piplus" in pguns and "Piminus" in pguns :
 		Plot( dataTree, "energy", p, path+"/Pions", models , ["Piplus","Piminus"] , materials , 2 , thicks[0], True )
-
