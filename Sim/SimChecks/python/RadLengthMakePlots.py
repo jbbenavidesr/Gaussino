@@ -1,6 +1,8 @@
 from ROOT import *
 import os 
 
+pwd = os.getcwd()
+
 #detectros = ["Velo", "Rich1", "Magnet", "OT1", "OT2", "OT3", "Rich2", "Detached muon", "Ecal", "Hcal", "Muon"]
 #name = dicts( zip(range(1,len(detectors)),detectors) )
 name = { 1 : "Velo", 2: "Rich1", 3 : "Magnet", 4 : "OT1", 5 : "OT2", 6 : "OT3", 7 : "Rich2", 8 : "Detached muon", 9 : "Ecal", 10 : "Hcal", 11 : "Muon"}
@@ -15,9 +17,9 @@ def makePlots(fileName = "Rad_merged.root", path = "plots/", type = "rad") :
 	else :
 		print "File or tree not found"
 
-	fout = TFile("RadLengthOut.root","recreate")
+	fout = TFile("%s/Rad_length/root_files/RadLengthOut.root" % pwd,"recreate")
 	os.system("mkdir -p " + path)
-	txtfile = open(type+"LenghtOut.txt","w")
+	txtfile = open("%s/Rad_length/data_tables/" % pwd +type+"LengthOut.txt","w")
 
 	nplanes = 11
 

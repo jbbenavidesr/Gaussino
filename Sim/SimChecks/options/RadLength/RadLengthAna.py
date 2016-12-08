@@ -1,11 +1,11 @@
 #################################################################################
-## Example to run the Radiation lenght scan of the detector                    ##
+## Example to run the Radiation length scan of the detector                    ##
 ## In this .py a geometry containing scoring planes is loaded                  ##
 ## and the radiation lenght tool is activated.                                 ##
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
-##  @author : L.Pescatore                                                      ##
-##  @date   : last modified on 2016-03-22                                      ##
+##  @author : K.Zarebski                                                       ##
+##  @date   : last modified on 2016-11-08                                      ##
 #################################################################################
 
 from Gaudi.Configuration import *
@@ -17,6 +17,10 @@ from Configurables import CondDB, LHCbApp
 
 importOptions("$GAUSSROOT/options/Gauss-2011.py")
 CondDB.LocalTags = { "DDDB" : [ "radlength-20141010", "radlength-20141003", "radlength-20140908" ] }
+
+pwd = os.getcwd()
+
+print "Output Location is %s" % pwd
 
 from Configurables import Gauss
 from Gauss.Configuration import *
@@ -45,9 +49,7 @@ appendPostConfigAction(scoringGeo)
 
 # --- Save ntuple with hadronic cross section information
 ApplicationMgr().ExtSvc += [ "NTupleSvc" ]
-NTupleSvc().Output = [ "FILE2 DATAFILE='Rad.root' TYP='ROOT' OPT='NEW'" ]
-
-
+NTupleSvc().Output = [ "FILE2 DATAFILE='%s/Rad_length/root_files/Rad.root' TYP='ROOT' OPT='NEW'" % pwd ]
 
 # --- activate RadLenghtColl tool
 def addMyTool():
