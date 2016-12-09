@@ -4,7 +4,7 @@
 ## and the radiation lenght tool is activated.                                 ##
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
-##  @author : L.Pescatore  (Modified by K.Zarebski)                            ##
+##  @author : K.Zarebski                                                       ##
 ##  @date   : last modified on 2016-11-08                                      ##
 #################################################################################
 

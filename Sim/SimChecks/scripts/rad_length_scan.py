@@ -5,7 +5,7 @@
 ## You can run this simply by "python rad_length_scan.py"                      ##
 ## Twiki at: https://twiki.cern.ch/twiki/bin/view/LHCb/RadLengthStudies        ##
 ##                                                                             ##
-##  @author : L.Pescatore (Modified by K. Zarebski)                            ##
+##  @author : K. Zarebski                                                      ##
 ##  @date   : last modified on 2016-12-07                                      ##
 #################################################################################
 
