@@ -15,7 +15,7 @@
 	<text>$GAUSSOPTS/GenStandAlone.py</text>
 	<text>$GAUSSROOT/tests/options/testGauss-NoOutput.py</text>
   	<text>$GAUSSROOT/tests/options/testGauss-gen-10evts-defaults.py</text>
-	<text>$APPCONFIGOPTS/Gauss/Pbp-Beam2510GeV-6500GeV-md100-pre2016-fix1.py</text>  	
+	<text>$APPCONFIGOPTS/Gauss/Pbp-Beam2560GeV-6500GeV-md100-pre2016-fix1.py</text>  	
 </set></argument>
 <argument name="exit_code"><integer>0</integer></argument>
 <argument name="use_temp_dir"><enumeral>false</enumeral></argument>

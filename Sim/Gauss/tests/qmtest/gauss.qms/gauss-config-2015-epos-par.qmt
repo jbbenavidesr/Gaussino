@@ -32,7 +32,7 @@
 		<text>$GAUSSROOT/tests/options/testGauss-NoOutput.py</text>
 		<text>$GAUSSROOT/tests/options/testGauss-config-defaults.py</text>
                 <text>$GAUSSROOT/tests/options/testGauss-QMTests.py</text>
-		<text>$APPCONFIGOPTS/Gauss/pAr-Beam6500GeV-0GeV-md100-2015-fix1.py</text>
+		<text>$APPCONFIGOPTS/Gauss/Test-pAr-Beam6500GeV-0GeV-md100-2015-fix1.py</text>
 	</set>
 </argument>
 <argument name="exit_code">
