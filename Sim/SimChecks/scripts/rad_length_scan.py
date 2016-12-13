@@ -21,8 +21,16 @@ home = os.environ['HOME']
 simchecks_local = os.environ["SIMCHECKSROOT"]
 
 base = simchecks_local + "/options/RadLength/"
-from RadLengthMakePlots import makePlots
 
+# alexander.mazurov@cern.ch:
+# Need to add gaudi_install_python_modules() to CMakeLists.txt
+# Reorganize python directory:
+# - python/SimChecks/__init__.py
+# - python/SimChecks/RadLengthMakePlots
+# - python/SimChecks/Target
+# - python/SimChecks/Target/__init__.py
+sys.path.append(os.path.join(simchecks_local,'python'))
+from RadLengthMakePlots import makePlots
 
 outputpath = pwd_str + '/Rad_length/root_files/'
 outputpathpdf = pwd_str + '/Rad_length/pdf_files/'
