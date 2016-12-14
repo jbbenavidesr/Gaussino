@@ -83,13 +83,12 @@ class EvtBsMuMuKK : public EvtDecayAmp
                         double phis,
                         int eta  );
   
-  int gen_q();
-  
   private:
   double MBs, MJpsi, Mf0, Mphi, MKp, MKm, MK0, Mpip, Mpi0, Mmu, Gamma0phi;
   double kin_lower_limit, kin_upper_limit, kin_middle;
   double p30Kp_mid_CMS, p30Kp_ll_CMS, p30Kp_phi_CMS; 
   double p30Jpsi_mid_CMS, p30Jpsi_ll_CMS, p30Jpsi_phi_CMS;
   double int_const_NR, int_Flatte_f0, int_BW_phi;
+  double eV_factor;
 };
 #endif //EVTBSMUMUKK_HH

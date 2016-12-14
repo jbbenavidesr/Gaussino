@@ -38,7 +38,7 @@
 #include "EvtGenModels/EvtBsMuMuKK.hh"
 
 const double pi = EvtConst::pi;
-EvtComplex I = EvtComplex(0.,1.);
+const EvtComplex I = EvtComplex(0.,1.);
 const double sq2 = sqrt(2.);
 
 void EvtBsMuMuKK::init()
@@ -46,7 +46,7 @@ void EvtBsMuMuKK::init()
   // PDG masses
   MBs   = EvtPDL::getMass(EvtPDL::getId("B_s0"));
   MJpsi = EvtPDL::getMeanMass(EvtPDL::getId("J/psi"));
-  Mf0   = 0.9499; //EvtPDL::getMeanMass(EvtPDL::getId("f_0"));
+  Mf0   = getArg(22);//EvtPDL::getMeanMass(EvtPDL::getId("f_0"));
   Mphi  = EvtPDL::getMeanMass(EvtPDL::getId("phi"));
   MKp   = EvtPDL::getMass(EvtPDL::getId("K+"));
   MKm   = EvtPDL::getMass(EvtPDL::getId("K-"));
@@ -56,16 +56,25 @@ void EvtBsMuMuKK::init()
   Mmu   = EvtPDL::getMass(EvtPDL::getId("mu+"));
   
   Gamma0phi =  EvtPDL::getWidth(EvtPDL::getId("phi"));
+    
+  if(getArg(24) == 0){
+      eV_factor = 1000.;
+  }else if(getArg(24) == 1){
+      eV_factor = 1.;
+  }else{
+      report(ERROR,"EvtGen") << "Argument with value " << getArg(24) << " must be 0 or 1" << std::endl;
+      assert(0);
+  }
  
   kin_lower_limit  = 2.03*MKp;
   
-  kin_upper_limit = 1.2; //1.2;ATTENTION CHANGE BACK TO 2.269 for the next round
+  kin_upper_limit = getArg(23);
   
   kin_middle = 0.5*(kin_upper_limit+kin_lower_limit);
     
-  int_const_NR = sqrt(Int_const_sq(2*MKp, kin_upper_limit, 0, 1)); 
+  int_const_NR = sqrt(Int_const_sq(2.*MKp, kin_upper_limit, 0, 1)); 
     
-  int_Flatte_f0 = sqrt(Int_Flatte_sq( Mf0, 2*MKp, kin_upper_limit, 0, 1)); 
+  int_Flatte_f0 = sqrt(Int_Flatte_sq( Mf0, 2.*MKp, kin_upper_limit, 0, 1)); 
 
   p30Kp_mid_CMS = sqrt((pow(kin_middle,2) - pow(MKp+MKm,2)) * (pow(kin_middle,2) - pow(MKp-MKm,2)))/(2.*kin_middle);
 
@@ -82,7 +91,7 @@ void EvtBsMuMuKK::init()
   int_BW_phi = sqrt(Int_Breit_Wigner_sq( Gamma0phi, Mphi, 1, 0, p30Kp_phi_CMS, 2*MKp, kin_upper_limit ));
   
   //Number of arguments in the .dec file
-  checkNArg(22);
+  checkNArg(25);
 
   //4 daughters
   checkNDaug(4);
@@ -121,7 +130,6 @@ void EvtBsMuMuKK::init()
 
 void EvtBsMuMuKK::initProbMax() 
 {
-    // TODO Find a more elaborate way to set this
    const double f_phi = 1. - getArg(0) - getArg(4);
    
    const EvtComplex hm =  sqrt(p30Jpsi_phi_CMS*p30Kp_phi_CMS)*(1.-getArg(4)-getArg(0))*X_J(1,p30Kp_phi_CMS,0)*p30Kp_phi_CMS
@@ -157,7 +165,7 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
     const double delta_f0               = getArg(5);
     const double delta_phi_0            = getArg(9);
     const double delta_phi_perp         = getArg(13);
-    const double delta_phi_par          = getArg(16);
+    const double delta_phi_par          = getArg(16)+pi;
     
     // phiS
     // --- phi
@@ -180,19 +188,27 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
     const double lambda_phi_par_abs     = getArg(18);
 
     //Time dependence  
-    static double Gamma      = getArg(19);
-    static double deltaGamma = getArg(20);
-    static double ctau       = 1./Gamma;
+    const double Gamma      = getArg(19);
+    const double deltaGamma = getArg(20);
+    const double ctau       = 1./Gamma;
     
-    static double deltaMs = getArg(21);
+    const double deltaMs = getArg(21);
+    
+    EvtId other_b;
+    
+    double time(0.0);
+    
+    EvtCPUtil::getInstance()->OtherB(p,time,other_b);
     
     //This overrules the lifetimes made in OtherB
-    const double time = -log(EvtRandom::Flat())*(ctau);//ctau has same dimensions as t
+    time = -log(EvtRandom::Flat())*ctau;
+    //ctau has same dimensions as t
     
-    if(p->getParent())
+    if (EvtCPUtil::getInstance()->isBsMixed(p)) {
         p->getParent()->setLifetime(time);
-    else
+    } else {
         p->setLifetime(time);
+    }
 
     double mt = exp(-0.25*deltaGamma*time);
     double pt = exp(+0.25*deltaGamma*time);
@@ -201,9 +217,15 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
                             + pt*EvtComplex(cos(0.5*deltaMs*time),sin(-0.5*deltaMs*time)));
     EvtComplex gminus = 0.5*( mt*EvtComplex(cos(0.5*deltaMs*time),sin( 0.5*deltaMs*time))
                             - pt*EvtComplex(cos(0.5*deltaMs*time),sin(-0.5*deltaMs*time)));
-
-    const int q = gen_q();
-    p->setAttribute("q",q);
+    
+    EvtId BS0 = EvtPDL::getId("B_s0");                                                                
+    EvtId BSB = EvtPDL::getId("anti-B_s0");
+         
+    int q(1);
+    if (other_b==BSB)
+    { q = -1; } 
+    else if (other_b==BS0)
+    { q = 1; } 
     
     EvtComplex a_S_NR       = Amp_time_q(q, gplus, gminus, delta_S_NR,     lambda_S_NR_abs,     A_S_NR,     phis_S_NR,     -1 );
     EvtComplex a_f0         = Amp_time_q(q, gplus, gminus, delta_f0,       lambda_f0_abs,       A_f0,       phis_f0,       -1 );
@@ -246,10 +268,10 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
     EvtVector4R p4Bs   = p4mup + p4mum + p4KK;
     
     // Kp momentum in the KK CMS
-    const double p3Kp_KK_CMS  = sqrt((p4KK.mass2() - pow(MKp+MKm,2)) * (p4KK.mass2()-  pow(MKp-MKm,2)))/(2.*p4KK.mass());
+    double p3Kp_KK_CMS  = sqrt((p4KK.mass2() - pow(MKp+MKm,2)) * (p4KK.mass2()-  pow(MKp-MKm,2)))/(2.*p4KK.mass());
     
     // J/psi momentum in the KK CMS
-    const double p3Jpsi_KK_CMS = sqrt((p4Bs.mass2()- pow(p4KK.mass()+MJpsi,2)) * (p4Bs.mass2()-pow(p4KK.mass()-MJpsi,2)))/(2.*p4Bs.mass());
+    double p3Jpsi_KK_CMS = sqrt((p4Bs.mass2()- pow(p4KK.mass()+MJpsi,2)) * (p4Bs.mass2()-pow(p4KK.mass()-MJpsi,2)))/(2.*p4Bs.mass());
 
     // Mass lineshape
     // Non-resonant S wave
@@ -262,62 +284,60 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
     EvtComplex BW_phi = Breit_Wigner( Gamma0phi, Mphi, p4KK.mass(), 1, p30Kp_phi_CMS, p3Kp_KK_CMS )/int_BW_phi;
         
     // Barrier factors: Always taking the lowest Bs L
-    const double X_KK_0 = 1.;
-    const double X_KK_1  = X_J(1,p3Kp_KK_CMS,0);
-    const double X_NR_Jpsi_1 = X_J(1,p3Jpsi_KK_CMS,1);
-    const double X_f0_Jpsi_1 = X_J(1,p3Jpsi_KK_CMS,1);
-    const double X_phi_Jpsi_0 = 1.;
+    double X_KK_0 = 1.;
+    double X_KK_1  = X_J(1,p3Kp_KK_CMS,0);
+    double X_NR_Jpsi_1 = X_J(1,p3Jpsi_KK_CMS,1);
+    double X_f0_Jpsi_1 = X_J(1,p3Jpsi_KK_CMS,1);
+    double X_phi_Jpsi_0 = 1.;
     
     // Birth momentum factors: pow(p3(K+),LR)* pow(p3(J/psi),LB) 
-    const double f_PHSP = sqrt(p3Jpsi_KK_CMS*p3Kp_KK_CMS);
-    const double f_BMF_NR  = 1.*p3Jpsi_KK_CMS;
-    const double f_BMF_f0  = 1.*p3Jpsi_KK_CMS;
-    const double f_BMF_phi = p3Kp_KK_CMS*1.;
+    double f_PHSP = sqrt(p3Jpsi_KK_CMS*p3Kp_KK_CMS);
+    double f_BMF_NR  = 1.*p3Jpsi_KK_CMS;
+    double f_BMF_f0  = 1.*p3Jpsi_KK_CMS;
+    double f_BMF_phi = p3Kp_KK_CMS*1.;
     
     // TODO Angular distribution and sum over KK states
-    double costheta_K, costheta_mu, chi;
-    
-    costheta_K  = EvtDecayAngle(p4Bs,p4KK,p4Kp);
-    costheta_mu = EvtDecayAngle(p4Bs,p4mumu,p4mup); 
-    chi         = EvtDecayAngleChi(p4Bs,p4mup,p4mum,p4Kp,p4Km);
+    double costheta_K  = EvtDecayAngle(p4Bs,p4KK,p4Kp);
+    double costheta_mu = EvtDecayAngle(p4Bs,p4mumu,p4mup); 
+    double chi         = EvtDecayAngleChi(p4Bs,p4mup,p4mum,p4Kp,p4Km);
 
     // Build helicity amplitudes
-    const EvtComplex H0_phi = a0_phi ;
-    const EvtComplex Hp_phi = (apar_phi + aperp_phi)/sq2;
-    const EvtComplex Hm_phi = (apar_phi - aperp_phi)/sq2;
+    EvtComplex H0_phi = a0_phi ;
+    EvtComplex Hp_phi = (apar_phi + aperp_phi)/sq2;
+    EvtComplex Hm_phi = (apar_phi - aperp_phi)/sq2;
     
     // muon polarization +1
     // KK Spin-0 NR
-    const EvtComplex mp_hS_NR  = a_S_NR*angular_distribution(0,0,1,costheta_K,costheta_mu,chi);
+    EvtComplex mp_hS_NR  = a_S_NR*angular_distribution(0,0,1,costheta_K,costheta_mu,chi);
     
     // KK Spin-0 f0
-    const EvtComplex mp_h_f0   = a_f0*angular_distribution(0,0,1,costheta_K,costheta_mu,chi);
+    EvtComplex mp_h_f0   = a_f0*angular_distribution(0,0,1,costheta_K,costheta_mu,chi);
 
     // KK Spin-1
-    const EvtComplex mp_h0_phi = H0_phi*angular_distribution(1,0,1, costheta_K,costheta_mu,chi);
-    const EvtComplex mp_hp_phi = Hp_phi*angular_distribution(1,1,1, costheta_K,costheta_mu,chi);
-    const EvtComplex mp_hm_phi = Hm_phi*angular_distribution(1,-1,1,costheta_K,costheta_mu,chi);
+    EvtComplex mp_h0_phi = H0_phi*angular_distribution(1,0,1, costheta_K,costheta_mu,chi);
+    EvtComplex mp_hp_phi = Hp_phi*angular_distribution(1,1,1, costheta_K,costheta_mu,chi);
+    EvtComplex mp_hm_phi = Hm_phi*angular_distribution(1,-1,1,costheta_K,costheta_mu,chi);
     
     // Sum over KK states:
-    const EvtComplex Amp_tot_plus = f_PHSP*(P_NR*X_KK_0*X_NR_Jpsi_1*f_BMF_NR*mp_hS_NR +
-					    F_f0*X_KK_0*X_f0_Jpsi_1*f_BMF_f0*mp_h_f0 + 
-					    BW_phi*X_KK_1*X_phi_Jpsi_0*f_BMF_phi*(mp_h0_phi + mp_hp_phi + mp_hm_phi));
+    EvtComplex Amp_tot_plus = f_PHSP*(P_NR*X_KK_0*X_NR_Jpsi_1*f_BMF_NR*mp_hS_NR +
+				      F_f0*X_KK_0*X_f0_Jpsi_1*f_BMF_f0*mp_h_f0 + 
+				      BW_phi*X_KK_1*X_phi_Jpsi_0*f_BMF_phi*(mp_h0_phi + mp_hp_phi + mp_hm_phi));
 
     // muon polarization -1
     // KK Spin-0 NR
-    const EvtComplex mm_hS_NR  = a_S_NR*angular_distribution(0,0,-1,costheta_K,costheta_mu,chi);
+    EvtComplex mm_hS_NR  = a_S_NR*angular_distribution(0,0,-1,costheta_K,costheta_mu,chi);
     
     // KK Spin-0
-    const EvtComplex mm_h_f0   = a_f0*angular_distribution(0,0,-1,costheta_K,costheta_mu,chi); 
+    EvtComplex mm_h_f0   = a_f0*angular_distribution(0,0,-1,costheta_K,costheta_mu,chi); 
 
     // KK Spin-1
-    const EvtComplex mm_h0_phi = H0_phi*angular_distribution(1,0,-1, costheta_K,costheta_mu,chi);
-    const EvtComplex mm_hp_phi = Hp_phi*angular_distribution(1,+1,-1,costheta_K,costheta_mu,chi);
-    const EvtComplex mm_hm_phi = Hm_phi*angular_distribution(1,-1,-1,costheta_K,costheta_mu,chi);
+    EvtComplex mm_h0_phi = H0_phi*angular_distribution(1,0,-1, costheta_K,costheta_mu,chi);
+    EvtComplex mm_hp_phi = Hp_phi*angular_distribution(1,+1,-1,costheta_K,costheta_mu,chi);
+    EvtComplex mm_hm_phi = Hm_phi*angular_distribution(1,-1,-1,costheta_K,costheta_mu,chi);
     
-    const EvtComplex Amp_tot_minus = f_PHSP*(P_NR*X_KK_0*X_NR_Jpsi_1*f_BMF_NR*mm_hS_NR + 
-                                             F_f0*X_KK_0*X_f0_Jpsi_1*f_BMF_f0*mm_h_f0 + 
-                                             BW_phi*X_KK_1*X_phi_Jpsi_0*f_BMF_phi*(mm_h0_phi + mm_hp_phi + mm_hm_phi));
+    EvtComplex Amp_tot_minus = f_PHSP*(P_NR*X_KK_0*X_NR_Jpsi_1*f_BMF_NR*mm_hS_NR + 
+				       F_f0*X_KK_0*X_f0_Jpsi_1*f_BMF_f0*mm_h_f0 + 
+				       BW_phi*X_KK_1*X_phi_Jpsi_0*f_BMF_phi*(mm_h0_phi + mm_hp_phi + mm_hm_phi));
     
     vertex(0, 0, 0);
     vertex(0, 1, Amp_tot_plus);
@@ -329,7 +349,7 @@ void EvtBsMuMuKK::decay( EvtParticle *p )
 EvtComplex EvtBsMuMuKK::get_rho(const double m0, 
                                 const double m) 
 {    
-    const double rho_sq = 1.-4.*m0*m0/(m*m);
+    double rho_sq = 1.-4.*m0*m0/(m*m);
     EvtComplex rho;
    
     if(rho_sq > 0. ) {
@@ -347,53 +367,53 @@ double EvtBsMuMuKK::Int_const_sq(  const double M_KK_ll,
                                    const int JR, 
                                    const int JB  )
 {
-    int bins = 1000;
+    const int bins = 1000;
     
-    double bin_width   = (M_KK_ul-M_KK_ll)/static_cast<double>(bins);
+    const double bin_width   = (M_KK_ul-M_KK_ll)/static_cast<double>(bins);
     
     EvtComplex const_sq_int = 0;
     
     for(int i = 0; i < bins; i++) {
-        const double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
-        const double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
+        double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
+        double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
         
-        const double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
-        const double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
+        double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
+        double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
             
-        const double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
-        const double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
         
-        const double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
-        const double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
+        double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
+        double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
         
-        const double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
-        const double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
+        double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
+        double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
         
-        const double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
-        const double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
+        double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
+        double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
         
-        const double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
-        const double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
+        double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
+        double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
         
-        const double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
-        const double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
+        double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
+        double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
         
-        const EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i;
-        const EvtComplex a_st_i = conj(a_i);
-        const EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f; 
-        const EvtComplex a_st_f = conj(a_f);
+        EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i;
+        EvtComplex a_st_i = conj(a_i);
+        EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f; 
+        EvtComplex a_st_f = conj(a_f);
                                         
         const_sq_int += 0.5*bin_width*(a_i*a_st_i+a_f*a_st_f);
     }
     
-    return real(const_sq_int);
+    return sqrt(abs2((const_sq_int)));
 }
  
 EvtComplex EvtBsMuMuKK::Flatte( const double m0, 
                                 const double m )
 {
-    const double gpipi = 0.167; // GeV units
-    const double gKK = 3.05*gpipi;
+    double gpipi = eV_factor*0.167;
+    double gKK = 3.05*gpipi;
 
     EvtComplex Flatte_0 = 1./(m0*m0 - m*m - I*m0*
                               (gpipi*((2./3.)*get_rho(Mpip, m)+ (1./3.)*get_rho(Mpi0,m)) 
@@ -408,49 +428,49 @@ double EvtBsMuMuKK::Int_Flatte_sq( const double m0,
                                    const int JR, 
                                    const int JB  )
 {
-    int bins = 1000;
+    const int bins = 1000;
     
-    double bin_width = (M_KK_ul-M_KK_ll)/static_cast<double>(bins);
+    const double bin_width = (M_KK_ul-M_KK_ll)/static_cast<double>(bins);
     
     EvtComplex flatte_sq_int = 0;
     
     for (int i = 0; i < bins; i++) {
-        const double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
-        const double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
+        double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
+        double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
         
-        const double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
-        const double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
+        double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
+        double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
             
-        const double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
-        const double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
         
-        const double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
-        const double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
+        double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
+        double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
         
-        const double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
-        const double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
+        double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
+        double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
         
-        const double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
-        const double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
+        double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
+        double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
         
-        const double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
-        const double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
+        double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
+        double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
         
-        const double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
-        const double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
+        double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
+        double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
         
-        const EvtComplex Flatte_i = Flatte(m0, M_KK_i);
-        const EvtComplex Flatte_f = Flatte(m0, M_KK_f);
+        EvtComplex Flatte_i = Flatte(m0, M_KK_i);
+        EvtComplex Flatte_f = Flatte(m0, M_KK_f);
         
-        const EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i*Flatte_i;
-        const EvtComplex a_st_i = conj(a_i);
-        const EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f*Flatte_f;
-        const EvtComplex a_st_f = conj(a_f);
+        EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i*Flatte_i;
+        EvtComplex a_st_i = conj(a_i);
+        EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f*Flatte_f;
+        EvtComplex a_st_f = conj(a_f);
                                         
         flatte_sq_int += 0.5*bin_width*(a_i*a_st_i+a_f*a_st_f);
     }
     
-    return real(flatte_sq_int);
+    return sqrt(abs2(flatte_sq_int));
 }
 
 EvtComplex EvtBsMuMuKK::Breit_Wigner( const double Gamma0, 
@@ -482,52 +502,51 @@ double EvtBsMuMuKK::Int_Breit_Wigner_sq( const double Gamma0,
     EvtComplex bw_int = 0.; 
     
     for (int i = 0; i < bins; i++) {
-        const double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
-        const double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
+        double M_KK_i = M_KK_ll + static_cast<double>(i)*bin_width;
+        double M_KK_f = M_KK_ll + static_cast<double>(i+1)*bin_width;
         
-        const double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
-        const double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
+        double p3Kp_KK_CMS_i = sqrt((pow(M_KK_i,2) - pow(MKp+MKm,2)) * (pow(M_KK_i,2) - pow(MKp-MKm,2)))/(2.*M_KK_i);
+        double p3Kp_KK_CMS_f = sqrt((pow(M_KK_f,2) - pow(MKp+MKm,2)) * (pow(M_KK_f,2) - pow(MKp-MKm,2)))/(2.*M_KK_f);
             
-        const double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
-        const double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_i = sqrt((pow(MBs,2) - pow(M_KK_i+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_i-MJpsi,2)))/(2.*MBs);
+        double p3Jpsi_Bs_CMS_f = sqrt((pow(MBs,2) - pow(M_KK_f+MJpsi,2)) * (pow(MBs,2) - pow(M_KK_f-MJpsi,2)))/(2.*MBs);
         
-        const double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
-        const double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
+        double f_PHSP_i = sqrt(p3Kp_KK_CMS_i*p3Jpsi_Bs_CMS_i);
+        double f_PHSP_f = sqrt(p3Kp_KK_CMS_f*p3Jpsi_Bs_CMS_f);
         
-        const double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
-        const double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
+        double f_MBF_KK_i = pow(p3Kp_KK_CMS_i,JR);
+        double f_MBF_KK_f = pow(p3Kp_KK_CMS_f,JR);
         
-        const double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
-        const double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
+        double f_MBF_Bs_i = pow(p3Jpsi_Bs_CMS_i,JB);
+        double f_MBF_Bs_f = pow(p3Jpsi_Bs_CMS_f,JB);
         
-        const double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
-        const double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
+        double X_JR_i = X_J(JR,p3Kp_KK_CMS_i,0);
+        double X_JR_f = X_J(JR,p3Kp_KK_CMS_f,0);
         
-        const double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
-        const double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
+        double X_JB_i = X_J(JB,p3Jpsi_Bs_CMS_i,1);
+        double X_JB_f = X_J(JB,p3Jpsi_Bs_CMS_f,1);
         
-        const EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i*Breit_Wigner(Gamma0, m0, M_KK_i, JR, q0, p3Kp_KK_CMS_i);
-        const EvtComplex a_st_i = conj(a_i);
-        const EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f*Breit_Wigner(Gamma0, m0, M_KK_f, JR, q0, p3Kp_KK_CMS_f); 
-        const EvtComplex a_st_f = conj(a_f);
+        EvtComplex a_i = f_PHSP_i*f_MBF_KK_i*f_MBF_Bs_i*X_JR_i*X_JB_i*Breit_Wigner(Gamma0, m0, M_KK_i, JR, q0, p3Kp_KK_CMS_i);
+        EvtComplex a_st_i = conj(a_i);
+        EvtComplex a_f = f_PHSP_f*f_MBF_KK_f*f_MBF_Bs_f*X_JR_f*X_JB_f*Breit_Wigner(Gamma0, m0, M_KK_f, JR, q0, p3Kp_KK_CMS_f); 
+        EvtComplex a_st_f = conj(a_f);
                     
         bw_int += 0.5*bin_width*(a_i*a_st_i+a_f*a_st_f);
     }
-    return real(bw_int);
+    return sqrt(abs2(bw_int));
 }
 
-// Blatt-Weisskopf barrier factors (using GeV)
+// Blatt-Weisskopf barrier factors
 double EvtBsMuMuKK::X_J(const int J, 
                         const double q,
-                        const int isB
-                       )
+                        const int isB)
 {
     double r_BW = 1.;
     
     if (isB==0) {
-        r_BW = 1.5;
+        r_BW = 1.5/eV_factor;
     } else if (isB==1) {
-        r_BW = 5.;
+        r_BW = 5./eV_factor;
     }
        
     double zsq = pow(r_BW*q,2);
@@ -587,12 +606,4 @@ EvtComplex EvtBsMuMuKK::Amp_time_q(int q,
       amp_time = amp_time * eta * (gplus + eta*pow(lambda_abs,-1.*q)*EvtComplex(cos(q*phis),sin(q*phis))*gminus);
   }
   return amp_time;
-}
-
-// Flavour generation
-int EvtBsMuMuKK::gen_q()
-{
-  int flavour(1);
-  if( EvtRandom::Flat() < 0.5 ) {flavour = -1;}
-  return flavour;
 }
