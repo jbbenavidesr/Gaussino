@@ -3,7 +3,65 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
-<P>
+<H1><A NAME="v49r6">2016-12-16 - Gauss v49r6</A></H1>
+<H2><A NAME="Note"Release for Sim09b productions</A></H2>
+
+This version uses projects:
+   LCG_79 (HepMC 2.06.09, ROOT 6.04.02), Gaudi v26r4, LHCb v39r1, 
+   Geant4 v96r4p3 (geant4.9.6.p04 + LHCb patches)
+   and SQLDDDB v7r*, ParamFiles v8r*, FieldMap v5r*, AppConfig v3r*, Geant4Files v96r*, GDMLData v1r*
+
+<p>
+This version uses (via LCG_79/MCGenerators):
+   pythia8 186 (with LHCb Tune1), lhapdf 6.1.4, photos++ 3.56, <b>tauola++ 1.1.6b.lhcb</b>, pythia 6.427.2,
+   hijing 1.383bs.2, crmc 1.5.6 (epos), alpgen 2.1.4, powhegbox r2092, herwig++ 2.7.1, thepeg 1.9.2p1
+   rivet 2.4.2, yoda 1.5.9
+
+<p>
+This version uses (private LHCb generators versions):
+   <b>EvtGen</b>, EvtGenExtras, Mint, AmpGen, BcVegPy, GenXicc, HidValley
+   and DecFiles v29r*, LHAPDFSets v2r*, BcVegPyData v2r*, GenXiccData v3r*, PGunsData v1r*
+
+<p>
+This version is released on Sim09 branch
+
+<h2>Updates to generators</h2>
+
+<dl>
+
+<dt>[MR !53] LHCBGAUSS-937: New Bs to J/psi K K model, EvtBsMuMuKK
+<dd>    
+This contains the new EvtGen model named EvtBsMuMuKK for generating Bs to J/psi K K decays for Sim09.
+This will also be suitable for the master branch.
+
+<dt>[MR !57] LHCBGAUSS-772: PbPb peripheral events by default
+<dd>
+Generate by default peripheral PbPb events
+
+<dt>[MR !60] LHCBGAUSS-906: Add BeamSpotMarkovChainSampleVertex
+<dd>
+Adds a new beamspot smearing tool that implements a fully correlated (x,y,z,t) sampling using a Markov Chain sampler 
+and a full 4D PDF that describes the intersection of two bunches.
+It can be optionally used.
+
+<dt>[MR !52] LHCBGAUSS-910: Added D02KKpipi model to AmpGen
+<dd>
+Add the D02KKpipi model to AmpGen in Sim09 and also into the master branch.
+
+</dl>
+
+<h2>General</h2>
+
+<dl>
+
+<dt>[MR !56] LHCBGAUSS-907: Update example options to match what used in Sim09b
+<dd>
+Example options for 2010, 2011, 2012 and 2015 have been modified to pick up the set of options and tags used in Sim0b
+Example options for 2013 (@ 2.76 TeV) and 2016 average conditions have been added
+
+</dl>
+
+
 <b>BEWARE: 
 <ul>
 <li>As from version v49r2, the Sim09 branch of the project is maintained only in Git
@@ -88,8 +146,8 @@ r PbPb.
 
 <dt>[MR !45] Updates to the EvtFlatQ2 EvtGen model for B to X lepton lepton decays
 <dd> See LHCBGAUSS-911 
-<p> The EvtFlatQ2 model has been extended to work for any B to X lepton lepton decays to generate a flat q2 distribu
-    
+<p> The EvtFlatQ2 model has been extended to work for any B to X lepton lepton decays to generate a flat q2 distribution
+ (for detector efficiency studies). It also includes a phase space correction to make the distribution flat in the
 
 !==============================================================================
 
