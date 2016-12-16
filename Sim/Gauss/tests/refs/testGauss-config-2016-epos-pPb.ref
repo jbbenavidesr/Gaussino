@@ -1,4 +1,3 @@
-CTEST_FULL_OUTPUT
 # --> Including file '/nightlies/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_Sim09/Sim/Gauss/options/Gauss-DEV.py'
 # <-- End of file '/nightlies/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_Sim09/Sim/Gauss/options/Gauss-DEV.py'
 # --> Including file '/afs/cern.ch/lhcb/software/releases/DBASE/Gen/DecFiles/v29r10/options/30000000.py'
@@ -63,11 +62,11 @@ Ecut value = 5.0
 # GaussTape.ItemList    = ['/Event/Gen/Header#1', '/Event/MC/Header#1', '/Event/Gen/BeamParameters#1', '/Event/Gen/Collisions#1', '/Event/pSim/MCVertices#1', '/Event/pSim/MCParticles#1', '/Event/pSim/Velo/Hits#1', '/Event/pSim/PuVeto/Hits#1', '/Event/pSim/IT/Hits#1', '/Event/pSim/OT/Hits#1', '/Event/pSim/TT/Hits#1', '/Event/pSim/Muon/Hits#1', '/Event/pSim/Spd/Hits#1', '/Event/pSim/Prs/Hits#1', '/Event/pSim/Ecal/Hits#1', '/Event/pSim/Hcal/Hits#1', '/Event/pSim/Rich/Hits#1', '/Event/pSim/Rich/OpticalPhotons#1', '/Event/pSim/Rich/Tracks#1', '/Event/pSim/Rich/Segments#1', '/Event/Link/MC/Particles2MCRichTracks#1', '/Event/Link/MC/Rich/Hits2MCRichOpticalPhotons#1']
 # GaussTape.OptItemList = ['/Event/Gen/HepMCEvents#1']
 # WARNING: Default global tags will be overridden with the latest ones available for '2016' data type: {'DDDB': 'dddb-20150724', 'SIMCOND': 'sim-20161124-2-vc-md100'}
-# WARNING: Latest unbound local tags on top of the latest global tags of 2016 data type(s) are added: {'DDDB': ['velo-20160312']}
+# WARNING: Latest unbound local tags on top of the latest global tags of 2016 data type(s) are added: {'DDDB': ['velo-20160312'], 'SIMCOND': ['velo-20161215-2016PbpAt8TeV', 'velo-20161215-2016pPbAt8TeV']}
 ApplicationMgr    SUCCESS 
 ====================================================================================================================================
                                                    Welcome to Gauss version Sim09
-                                          running on lbbuild79.cern.ch on Thu Dec 15 02:43:35 2016
+                                          running on lbbuild85.cern.ch on Fri Dec 16 02:47:25 2016
 ====================================================================================================================================
 ApplicationMgr       INFO Application Manager Configured successfully
 DetectorPersistencySvc     INFO Added successfully Conversion service:XmlCnvSvc
@@ -139,6 +138,10 @@ GiGa                       INFO Used Physics List Object is GiGaPhysListModular/
 GiGa                       INFO Stacking Action Object is not required to be loaded
 COOLConfSvc                INFO CORAL Connection Retrial Period set to 60s
 COOLConfSvc                INFO CORAL Connection Retrial Time-Out set to 900s
+SIMCOND_1                  INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/v7r999/db/SIMCOND.db/SIMCOND"
+SIMCOND_1                  INFO Using TAG "velo-20161215-2016PbpAt8TeV"
+SIMCOND_0                  INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/v7r999/db/SIMCOND.db/SIMCOND"
+SIMCOND_0                  INFO Using TAG "velo-20161215-2016pPbAt8TeV"
 DDDB_0                     INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/v7r999/db/DDDB.db/DDDB"
 DDDB_0                     INFO Using TAG "velo-20160312"
 DDDB                       INFO Connected to database "sqlite_file:/afs/cern.ch/lhcb/software/DEV/nightlies/DBASE/Det/SQLDDDB/v7r999/db/DDDB.db/DDDB"
@@ -239,7 +242,7 @@ GaussSequencer            DEBUG ==> Initialise
 GaussSequencer            DEBUG Added algorithm Generator
 GaussSequencer            DEBUG Added algorithm Simulation
 GaussSequencer             INFO Member list: GaudiSequencer/Generator, GaudiSequencer/Simulation
-ToolSvc.SequencerTime...   INFO This machine has a speed about   2.70 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   2.16 times the speed of a 2.8 GHz Xeon.
 GaussSequencer            DEBUG The tool of type 'SequencerTimerTool' has been added with the name 'ToolSvc.SequencerTimerTool'
 GaussSequencer            DEBUG Releasing tool 'ToolSvc.SequencerTimerTool'
 GaussSequencer            DEBUG The tool 'ToolSvc.SequencerTimerTool' of type 'SequencerTimerTool' is released
@@ -603,7 +606,7 @@ MODOP=5 -- corrects Energy from mass+flow
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.186      |  | 
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change:  8 Jul 2014  |  | 
  |  |   P       Y      T    H   H   I   A   A                                      |  | 
- |  |   P       Y      T    H   H  III  A   A    Now is 15 Dec 2016 at 02:44:04    |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 16 Dec 2016 at 02:47:50    |  | 
  |  |                                                                              |  | 
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  | 
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
@@ -661,7 +664,7 @@ MODOP=5 -- corrects Energy from mass+flow
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.186      |  | 
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change:  8 Jul 2014  |  | 
  |  |   P       Y      T    H   H   I   A   A                                      |  | 
- |  |   P       Y      T    H   H  III  A   A    Now is 15 Dec 2016 at 02:44:04    |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 16 Dec 2016 at 02:47:50    |  | 
  |  |                                                                              |  | 
  |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  | 
  |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
@@ -791,7 +794,7 @@ Generation.MinimumBias    DEBUG The tool of type 'EvtGenDecay' has been added wi
 Generation.MinimumBia...SUCCESS =============================================================
 Generation.MinimumBia...SUCCESS  LbCRMC : Using as production engine CRMCProduction
 Generation.MinimumBia...SUCCESS =============================================================
-Generation.MinimumBia...SUCCESS LbCRMC : Created temporary file /tmp/lbcrmc.DyUodm for generator's parameters
+Generation.MinimumBia...SUCCESS LbCRMC : Created temporary file /tmp/lbcrmc.KXrgwD for generator's parameters
 Generation.MinimumBia...  DEBUG Property update for OutputLevel : new value = 2
 Generation.MinimumBia...  DEBUG Initialize base class GaudiCommon<AlgTool>
 Generation.MinimumBia...  DEBUG could not locate CounterSummarySvc, no counter summary will be made
@@ -845,7 +848,7 @@ Generation.MinimumBia...SUCCESS  MC model: 0 (EPOS LHC)
 Generation.MinimumBia...SUCCESS  Projectile id and momentum: 2212 (id), 6500 (GeV)
 Generation.MinimumBia...SUCCESS  Target id and momentum: 1000822080 (id), -2560 (GeV)
 Generation.MinimumBia...SUCCESS  Nucleon-Nucleon center-of-mass energy: 8158.43 (GeV)
-Generation.MinimumBia...SUCCESS  Configuration file: /tmp/lbcrmc.DyUodm
+Generation.MinimumBia...SUCCESS  Configuration file: /tmp/lbcrmc.KXrgwD
 Generation.MinimumBia...SUCCESS _________________________________________________________________
 Generation.MinimumBias    DEBUG The tool of type 'XmlCounterLogFile' has been added with the name 'ToolSvc.XmlCounterLogFile'
 Generation                DEBUG The tool of type 'MinimumBias' has been added with the name 'Generation.MinimumBias'
@@ -4428,35 +4431,46 @@ Fragment: A =   1, Z =   1, U = -3.700e-05 MeV  IsStable= 1
           P = (4.163e+01,1.817e+00,-3.272e+01) MeV   E = 9.398e+02 MeV
 
 SIMCOND.TimeOutChecker     INFO Disconnect from database after being idle for 120s (will reconnect if needed)
-DDDB_0.TimeOutChecker      INFO Disconnect from database after being idle for 120s (will reconnect if needed)
+WARNING: G4QPDGToG4Particle is deprecated and will be removed in GEANT4 version 10.0.
+SIMCOND_0.TimeOutChecker   INFO Disconnect from database after being idle for 120s (will reconnect if needed)
+SIMCOND_1.TimeOutChecker   INFO Disconnect from database after being idle for 120s (will reconnect if needed)
 DDDB.TimeOutChecker        INFO Disconnect from database after being idle for 120s (will reconnect if needed)
+DDDB_0.TimeOutChecker      INFO Disconnect from database after being idle for 120s (will reconnect if needed)
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : GeomField1001
+      issued by : G4MagInt_Driver::AccurateAdvance()
+Proposed step is zero; hstep = 0 !
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
 GiGaGeo.CaloSP            DEBUG  #GaussSensPlaneHits=   0 
-GiGaGeo.Spd             SUCCESS  #Hits=  432 #SubHits=  504 #Slots= 2975 Energy=    1.72[GeV] 
-GiGaGeo.Prs             SUCCESS  #Hits=  619 #SubHits=  809 #Slots= 4790 Energy=     5.1[GeV] 
-GiGaGeo.Ecal            SUCCESS  #Hits= 2488 #SubHits= 5023 #Slots= 5852 Energy=    74.9[GeV] 
-GiGaGeo.Hcal            SUCCESS  #Hits=  398 #SubHits=  656 #Slots=  824 Energy=     9.5[GeV] 
+GiGaGeo.Spd             SUCCESS  #Hits=  389 #SubHits=  441 #Slots= 2592 Energy=    1.84[GeV] 
+GiGaGeo.Prs             SUCCESS  #Hits=  635 #SubHits=  774 #Slots= 4575 Energy=    5.27[GeV] 
+GiGaGeo.Ecal            SUCCESS  #Hits= 2613 #SubHits= 5072 #Slots= 6072 Energy=      88[GeV] 
+GiGaGeo.Hcal            SUCCESS  #Hits=  443 #SubHits=  778 #Slots= 1010 Energy=     8.7[GeV] 
 GiGaFlush                 DEBUG  Dump G4 event object 
-GiGaFlush                  INFO  GiGaUtil::DumpG4Event 0x1ff4ece0 **************************************************
+GiGaFlush                  INFO  GiGaUtil::DumpG4Event 0x200677b0 **************************************************
  GiGaUtil::DumpG4Event  EventID                : 0
  GiGaUtil::DumpG4Event  NumberOfPrimaryVertex  : 1
- GiGaUtil::DumpG4Event  #StoredTrajectories    : 3927
+ GiGaUtil::DumpG4Event  #StoredTrajectories    : 3624
  GiGaUtil::DumpG4Event  # of Hit Collections       : 16
- GiGaUtil::DumpG4Event  Collection: ID = 0 	Name = 'Hits' 	SD = 'VeloPuSDet' 	#Hits = 138
- GiGaUtil::DumpG4Event  Collection: ID = 1 	Name = 'Hits' 	SD = 'VeloSDet' 	#Hits = 2523
- GiGaUtil::DumpG4Event  Collection: ID = 2 	Name = 'Hits' 	SD = 'TTSDet' 	#Hits = 818
- GiGaUtil::DumpG4Event  Collection: ID = 3 	Name = 'Rich1TopHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 1401
- GiGaUtil::DumpG4Event  Collection: ID = 4 	Name = 'Rich1BotHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 1465
- GiGaUtil::DumpG4Event  Collection: ID = 5 	Name = 'Rich2LeftHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 1623
- GiGaUtil::DumpG4Event  Collection: ID = 6 	Name = 'Rich2RightHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 3184
- GiGaUtil::DumpG4Event  Collection: ID = 7 	Name = 'Hits' 	SD = 'BcmSDet' 	#Hits = 0
+ GiGaUtil::DumpG4Event  Collection: ID = 0 	Name = 'Hits' 	SD = 'VeloPuSDet' 	#Hits = 137
+ GiGaUtil::DumpG4Event  Collection: ID = 1 	Name = 'Hits' 	SD = 'VeloSDet' 	#Hits = 2476
+ GiGaUtil::DumpG4Event  Collection: ID = 2 	Name = 'Hits' 	SD = 'TTSDet' 	#Hits = 662
+ GiGaUtil::DumpG4Event  Collection: ID = 3 	Name = 'Rich1TopHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 1050
+ GiGaUtil::DumpG4Event  Collection: ID = 4 	Name = 'Rich1BotHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 2676
+ GiGaUtil::DumpG4Event  Collection: ID = 5 	Name = 'Rich2LeftHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 2096
+ GiGaUtil::DumpG4Event  Collection: ID = 6 	Name = 'Rich2RightHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 4726
+ GiGaUtil::DumpG4Event  Collection: ID = 7 	Name = 'Hits' 	SD = 'BcmSDet' 	#Hits = 1
  GiGaUtil::DumpG4Event  Collection: ID = 8 	Name = 'CaloSPHits' 	SD = 'CaloSP' 	#Hits = 0
- GiGaUtil::DumpG4Event  Collection: ID = 9 	Name = 'SpdHits' 	SD = 'Spd' 	#Hits = 432
- GiGaUtil::DumpG4Event  Collection: ID = 10 	Name = 'PrsHits' 	SD = 'Prs' 	#Hits = 619
- GiGaUtil::DumpG4Event  Collection: ID = 11 	Name = 'EcalHits' 	SD = 'Ecal' 	#Hits = 2488
- GiGaUtil::DumpG4Event  Collection: ID = 12 	Name = 'HcalHits' 	SD = 'Hcal' 	#Hits = 398
- GiGaUtil::DumpG4Event  Collection: ID = 13 	Name = 'Hits' 	SD = 'MuonSDet' 	#Hits = 1129
- GiGaUtil::DumpG4Event  Collection: ID = 14 	Name = 'Hits' 	SD = 'ITSDet' 	#Hits = 780
- GiGaUtil::DumpG4Event  Collection: ID = 15 	Name = 'Hits' 	SD = 'OTSDet' 	#Hits = 2443
+ GiGaUtil::DumpG4Event  Collection: ID = 9 	Name = 'SpdHits' 	SD = 'Spd' 	#Hits = 389
+ GiGaUtil::DumpG4Event  Collection: ID = 10 	Name = 'PrsHits' 	SD = 'Prs' 	#Hits = 635
+ GiGaUtil::DumpG4Event  Collection: ID = 11 	Name = 'EcalHits' 	SD = 'Ecal' 	#Hits = 2613
+ GiGaUtil::DumpG4Event  Collection: ID = 12 	Name = 'HcalHits' 	SD = 'Hcal' 	#Hits = 443
+ GiGaUtil::DumpG4Event  Collection: ID = 13 	Name = 'Hits' 	SD = 'MuonSDet' 	#Hits = 753
+ GiGaUtil::DumpG4Event  Collection: ID = 14 	Name = 'Hits' 	SD = 'ITSDet' 	#Hits = 552
+ GiGaUtil::DumpG4Event  Collection: ID = 15 	Name = 'Hits' 	SD = 'OTSDet' 	#Hits = 2145
  GiGaUtil::DumpG4Event  GetDCofThisEvent       :  G4DCofThisEvent*          points to NULL
  GiGaUtil::DumpG4Event  IsAborted              : 0
  GiGaUtil::DumpG4Event  GetUserInformation     :  G4VUserEventInformation* points to NULL
@@ -4493,22 +4507,22 @@ GetMuonHits               DEBUG ==> Execute
 GetMuonHits               DEBUG GetTrackerHitsAlg:: The object of type 'ObjectVector<LHCb::MCHit>' is registered in TS at address 'MC/Muon/Hits'
 MainEventDataPacking      DEBUG ==> Execute
 PackMCParticle            DEBUG The object of type 'KeyedContainer<LHCb::MCParticle,Containers::KeyedObjectManager<Containers::hashmap> >' has been retrieved from TS at address 'MC/Particles'
-PackMCParticle            DEBUG MC/Particles contains 4486 MCParticles to convert.
+PackMCParticle            DEBUG MC/Particles contains 4116 MCParticles to convert.
 PackMCParticle            DEBUG PackMCParticle:: The object of type 'LHCb::PackedMCParticles' is registered in TS at address 'pSim/MCParticles'
 PackMCVertex              DEBUG The object of type 'KeyedContainer<LHCb::MCVertex,Containers::KeyedObjectManager<Containers::hashmap> >' has been retrieved from TS at address 'MC/Vertices'
-PackMCVertex              DEBUG MC/Vertices contains 4871 MCVertices to convert.
+PackMCVertex              DEBUG MC/Vertices contains 4405 MCVertices to convert.
 PackMCVertex              DEBUG PackMCVertex:: The object of type 'LHCb::PackedMCVertices' is registered in TS at address 'pSim/MCVertices'
 PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 298 of type Unknown
-PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 3847 of type Unknown
-PackMCVertex              DEBUG time 3.70001e-308 set to zero for vertex 3876 of type Unknown
-PackMCVertex              DEBUG time 2.33294e-308 set to zero for vertex 3957 of type Unknown
-PackMCVertex              DEBUG time 2.23548e-308 set to zero for vertex 4183 of type Unknown
-PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4741 of type Unknown
-PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4761 of type Unknown
-PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4855 of type Unknown
+PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 3051 of type Unknown
+PackMCVertex              DEBUG time 3.70001e-308 set to zero for vertex 3110 of type Unknown
+PackMCVertex              DEBUG time 2.33294e-308 set to zero for vertex 3212 of type Unknown
+PackMCVertex              DEBUG time 2.23548e-308 set to zero for vertex 3551 of type Unknown
+PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4277 of type Unknown
+PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4282 of type Unknown
+PackMCVertex              DEBUG time 2.22507e-308 set to zero for vertex 4359 of type Unknown
 SimMonitor                DEBUG ==> Execute
-GiGaGetMainEvent           INFO Number of extracted MCParticles 'MC/Particles' 	4486
-GiGaGetMainEvent           INFO Number of extracted MCVertices  'MC/Vertices'  	4871
+GiGaGetMainEvent           INFO Number of extracted MCParticles 'MC/Particles' 	4116
+GiGaGetMainEvent           INFO Number of extracted MCVertices  'MC/Vertices'  	4405
 CompareMCParticle       WARNING CompareMCParticle:: Packed MCParticle info truncated. Set VERBOSE OutputLevel for details StatusCode=FAILURE
 GaussSequencer            DEBUG Property update for OutputLevel : new value = 2
 GaussSequencer            DEBUG ==> endRun
@@ -4697,26 +4711,26 @@ GetOTHits                 DEBUG Services to release : GiGa GiGaKine
 GetOTHits                 DEBUG Releasing service 'GiGa'
 GetOTHits                 DEBUG Releasing service 'GiGaKine'
 GetRichHits                INFO Av. # Invalid RICH flags              =    0.00 +- 0.00
-GetRichHits                INFO Av. # MCRichHits              : Rich1 = 2866.00 +-53.54 (100.00 +-0.00%) Rich2 = 4807.00 +-69.33 (100.00 +-0.00%)
+GetRichHits                INFO Av. # MCRichHits              : Rich1 = 3726.00 +-61.04 (100.00 +-0.00%) Rich2 = 6822.00 +-82.60 (100.00 +-0.00%)
 GetRichHits                INFO Av. # Invalid radiator hits   : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
-GetRichHits                INFO Av. # Signal Hits             : Rich1 = 1415.00 +-37.62 ( 49.37 +-0.93%) Rich2 =  995.00 +-31.54 ( 20.70 +-0.58%)
-GetRichHits                INFO Av. # Gas Quartz CK hits      : Rich1 =  126.00 +-11.22 (  4.40 +-0.38%) Rich2 =  262.00 +-16.19 (  5.45 +-0.33%)
-GetRichHits                INFO Av. # HPD Quartz CK hits      : Rich1 = 1163.00 +-34.10 ( 40.58 +-0.92%) Rich2 = 2119.00 +-46.03 ( 44.08 +-0.72%)
-GetRichHits                INFO Av. # Nitrogen CK hits        : Rich1 =    1.00 +- 1.00 (  0.03 +-0.03%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
+GetRichHits                INFO Av. # Signal Hits             : Rich1 = 1840.00 +-42.90 ( 49.38 +-0.82%) Rich2 = 1082.00 +-32.89 ( 15.86 +-0.44%)
+GetRichHits                INFO Av. # Gas Quartz CK hits      : Rich1 =  151.00 +-12.29 (  4.05 +-0.32%) Rich2 =  188.00 +-13.71 (  2.76 +-0.20%)
+GetRichHits                INFO Av. # HPD Quartz CK hits      : Rich1 = 1523.00 +-39.03 ( 40.87 +-0.81%) Rich2 = 4374.00 +-66.14 ( 64.12 +-0.58%)
+GetRichHits                INFO Av. # Nitrogen CK hits        : Rich1 =    1.00 +- 1.00 (  0.03 +-0.03%) Rich2 =    6.00 +- 2.45 (  0.09 +-0.04%)
 GetRichHits                INFO Av. # Aero Filter CK hits     : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
-GetRichHits                INFO Av. # Si back-scattering      : Rich1 =   19.00 +- 4.36 (  0.66 +-0.15%) Rich2 =   31.00 +- 5.57 (  0.64 +-0.12%)
+GetRichHits                INFO Av. # Si back-scattering      : Rich1 =   23.00 +- 4.80 (  0.62 +-0.13%) Rich2 =   30.00 +- 5.48 (  0.44 +-0.08%)
 GetRichHits                INFO Av. # Charged Track hits      : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
-GetRichHits                INFO Av. # Scintillation hits      : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 = 1316.00 +-36.28 ( 27.38 +-0.64%)
-GetRichHits                INFO Av. # All HPD reflection hits : Rich1 =  434.00 +-20.83 ( 15.14 +-0.67%) Rich2 =  882.00 +-29.70 ( 18.35 +-0.56%)
-GetRichHits                INFO   Av. # QW/PC refl. hits      : Rich1 =  224.00 +-14.97 (  7.82 +-0.50%) Rich2 =  416.00 +-20.40 (  8.65 +-0.41%)
-GetRichHits                INFO   Av. # Chromium refl. hits   : Rich1 =  205.00 +-14.32 (  7.15 +-0.48%) Rich2 =  359.00 +-18.95 (  7.47 +-0.38%)
-GetRichHits                INFO   Av. # Air/QW refl. hits     : Rich1 =   98.00 +- 9.90 (  3.42 +-0.34%) Rich2 =  180.00 +-13.42 (  3.74 +-0.27%)
-GetRichHits                INFO   Av. # Air/PC refl. hits     : Rich1 =    1.00 +- 1.00 (  0.03 +-0.03%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
+GetRichHits                INFO Av. # Scintillation hits      : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 = 1065.00 +-32.63 ( 15.61 +-0.44%)
+GetRichHits                INFO Av. # All HPD reflection hits : Rich1 =  684.00 +-26.15 ( 18.36 +-0.63%) Rich2 = 1332.00 +-36.50 ( 19.53 +-0.48%)
+GetRichHits                INFO   Av. # QW/PC refl. hits      : Rich1 =  331.00 +-18.19 (  8.88 +-0.47%) Rich2 =  710.00 +-26.65 ( 10.41 +-0.37%)
+GetRichHits                INFO   Av. # Chromium refl. hits   : Rich1 =  341.00 +-18.47 (  9.15 +-0.47%) Rich2 =  475.00 +-21.79 (  6.96 +-0.31%)
+GetRichHits                INFO   Av. # Air/QW refl. hits     : Rich1 =  157.00 +-12.53 (  4.21 +-0.33%) Rich2 =  268.00 +-16.37 (  3.93 +-0.24%)
+GetRichHits                INFO   Av. # Air/PC refl. hits     : Rich1 =    1.00 +- 1.00 (  0.03 +-0.03%) Rich2 =    1.00 +- 1.00 (  0.01 +-0.01%)
 GetRichHits                INFO   Av. # PC/QW refl. hits      : Rich1 =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2 =    0.00 +- 0.00 (  0.00 +-0.00%)
-GetRichHits                INFO   Av. # Silicon refl. hits    : Rich1 =    2.00 +- 1.41 (  0.07 +-0.05%) Rich2 =    1.00 +- 1.00 (  0.02 +-0.02%)
-GetRichHits                INFO   Av. # Kovar refl. hits      : Rich1 =    3.00 +- 1.73 (  0.10 +-0.06%) Rich2 =    9.00 +- 3.00 (  0.19 +-0.06%)
-GetRichHits                INFO   Av. # Kapton refl. hits     : Rich1 =   48.00 +- 6.93 (  1.67 +-0.24%) Rich2 =  182.00 +-13.49 (  3.79 +-0.28%)
-GetRichHits                INFO Av. # Signal CK MCRichHits    : Aero  =    0.00 +- 0.00 (  0.00 +-0.00%) Rich1Gas = 1415.00 +-37.62 ( 49.37 +-0.93%) Rich2Gas =  995.00 +-31.54 ( 20.70 +-0.58%)
+GetRichHits                INFO   Av. # Silicon refl. hits    : Rich1 =    1.00 +- 1.00 (  0.03 +-0.03%) Rich2 =    3.00 +- 1.73 (  0.04 +-0.03%)
+GetRichHits                INFO   Av. # Kovar refl. hits      : Rich1 =    8.00 +- 2.83 (  0.21 +-0.08%) Rich2 =    5.00 +- 2.24 (  0.07 +-0.03%)
+GetRichHits                INFO   Av. # Kapton refl. hits     : Rich1 =   66.00 +- 8.12 (  1.77 +-0.22%) Rich2 =  223.00 +-14.93 (  3.27 +-0.22%)
+GetRichHits                INFO Av. # Signal CK MCRichHits    : Aero  =    0.00 +- 0.00 (  0.00 +-0.00%) Rich1Gas = 1840.00 +-42.90 ( 49.38 +-0.82%) Rich2Gas = 1082.00 +-32.89 ( 15.86 +-0.44%)
 GetRichHits                INFO Av. # Rayleigh scattered hits : Aero  =    0.00 +- 0.00 (  0.00 +-0.00%) Rich1Gas =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2Gas =    0.00 +- 0.00 (  0.00 +-0.00%)
 GetRichHits                INFO Av. # MCParticle-less hits    : Aero  =    0.00 +- 0.00 (  0.00 +-0.00%) Rich1Gas =    0.00 +- 0.00 (  0.00 +-0.00%) Rich2Gas =    0.00 +- 0.00 (  0.00 +-0.00%)
 GetRichHits                INFO Av. # Aero hits per tile     :
@@ -4736,16 +4750,16 @@ GetRichHits                INFO           tile = 12 hits =    0.00 +- 0.00 / eve
 GetRichHits                INFO           tile = 13 hits =    0.00 +- 0.00 / event
 GetRichHits                INFO           tile = 14 hits =    0.00 +- 0.00 / event
 GetRichHits                INFO           tile = 15 hits =    0.00 +- 0.00 / event
-GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Rich1Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  1576.00 +- 39.70 / event
-GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Rich2Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  2426.00 +- 49.25 / event
-GetRichPhotons             INFO Av. # MCRichOpticalPhotons : GasQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =   388.00 +- 19.70 / event
-GetRichPhotons             INFO Av. # MCRichOpticalPhotons : HPDQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  3282.00 +- 57.29 / event
-GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Nitrogen[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =     1.00 +-  1.00 / event
-GetRichSegments            INFO Av. # MCRichSegments       : Rich1Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =    81.00 +-  9.00 / event
-GetRichSegments            INFO Av. # MCRichSegments       : Rich2Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =   283.00 +- 16.82 / event
+GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Rich1Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  2051.00 +- 45.29 / event
+GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Rich2Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  2254.00 +- 47.48 / event
+GetRichPhotons             INFO Av. # MCRichOpticalPhotons : GasQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =   339.00 +- 18.41 / event
+GetRichPhotons             INFO Av. # MCRichOpticalPhotons : HPDQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =  5897.00 +- 76.79 / event
+GetRichPhotons             INFO Av. # MCRichOpticalPhotons : Nitrogen[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =     7.00 +-  2.65 / event
+GetRichSegments            INFO Av. # MCRichSegments       : Rich1Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =    97.00 +-  9.85 / event
+GetRichSegments            INFO Av. # MCRichSegments       : Rich2Gas[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =   250.00 +- 15.81 / event
 GetRichSegments            INFO Av. # MCRichSegments       : GasQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =    41.00 +-  6.40 / event
-GetRichSegments            INFO Av. # MCRichSegments       : HPDQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =    28.00 +-  5.29 / event
-GetRichSegments            INFO Av. # MCRichSegments       : Nitrogen[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =     1.00 +-  1.00 / event
+GetRichSegments            INFO Av. # MCRichSegments       : HPDQuartzWin[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =    41.00 +-  6.40 / event
+GetRichSegments            INFO Av. # MCRichSegments       : Nitrogen[NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14][NON-XML-CHAR-0x14] =     5.00 +-  2.24 / event
 GetRichTracks              INFO Av. # MCRichTracks         : Overall =     0.00 +-  0.00
 RichHits                  DEBUG ==> Finalize
 RichHits                  DEBUG Finalize base class GaudiAlgorithm
@@ -4795,46 +4809,46 @@ PackMCVertex            SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/
 PackMCVertex            SUCCESS  #WARNINGS   = 8        Message = 'PackedVertex.tof underflow, set to 0.'
 MCVeloHitPacker         SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       2523 |     2523.0 |     0.0000 |      2523.0 |      2523.0 |
+ | "# PackedData"                                  |         1 |       2476 |     2476.0 |     0.0000 |      2476.0 |      2476.0 |
 MCPuVetoHitPacker       SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |        138 |     138.00 |     0.0000 |      138.00 |      138.00 |
+ | "# PackedData"                                  |         1 |        137 |     137.00 |     0.0000 |      137.00 |      137.00 |
 MCTTHitPacker           SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |        818 |     818.00 |     0.0000 |      818.00 |      818.00 |
+ | "# PackedData"                                  |         1 |        662 |     662.00 |     0.0000 |      662.00 |      662.00 |
 MCITHitPacker           SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |        780 |     780.00 |     0.0000 |      780.00 |      780.00 |
+ | "# PackedData"                                  |         1 |        552 |     552.00 |     0.0000 |      552.00 |      552.00 |
 MCOTHitPacker           SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       2443 |     2443.0 |     0.0000 |      2443.0 |      2443.0 |
+ | "# PackedData"                                  |         1 |       2145 |     2145.0 |     0.0000 |      2145.0 |      2145.0 |
 MCMuonHitPacker         SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       1129 |     1129.0 |     0.0000 |      1129.0 |      1129.0 |
+ | "# PackedData"                                  |         1 |        753 |     753.00 |     0.0000 |      753.00 |      753.00 |
 MCPrsHitPacker          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       4790 |     4790.0 |     0.0000 |      4790.0 |      4790.0 |
+ | "# PackedData"                                  |         1 |       4575 |     4575.0 |     0.0000 |      4575.0 |      4575.0 |
 MCSpdHitPacker          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       2975 |     2975.0 |     0.0000 |      2975.0 |      2975.0 |
+ | "# PackedData"                                  |         1 |       2592 |     2592.0 |     0.0000 |      2592.0 |      2592.0 |
 MCEcalHitPacker         SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       5852 |     5852.0 |     0.0000 |      5852.0 |      5852.0 |
+ | "# PackedData"                                  |         1 |       6072 |     6072.0 |     0.0000 |      6072.0 |      6072.0 |
 MCHcalHitPacker         SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |        824 |     824.00 |     0.0000 |      824.00 |      824.00 |
+ | "# PackedData"                                  |         1 |       1010 |     1010.0 |     0.0000 |      1010.0 |      1010.0 |
 MCRichHitPacker         SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
+ | "# PackedData"                                  |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
 MCRichOpPhotPacker      SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
+ | "# PackedData"                                  |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
 MCRichSegmentPacker     SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "# PackedData"                                  |         1 |        434 |     434.00 |     0.0000 |      434.00 |      434.00 |
 MCRichTrackPacker       SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# PackedData"                                  |         1 |        353 |     353.00 |     0.0000 |      353.00 |      353.00 |
+ | "# PackedData"                                  |         1 |        332 |     332.00 |     0.0000 |      332.00 |      332.00 |
 MainEventDataPacking      DEBUG ==> Finalize
 MainEventDataPacking      DEBUG Finalize base class GaudiAlgorithm
 MainEventDataPacking      DEBUG Tools to release :
@@ -4846,42 +4860,42 @@ MakeMainSim               DEBUG Services to release :
 VeloGaussMoni              INFO ------------------------------------------------------
 VeloGaussMoni              INFO                 - VeloGaussMoni table -                 
 VeloGaussMoni              INFO ------------------------------------------------------
-VeloGaussMoni              INFO | Number of MCHits/Event:       2523+/-0
-VeloGaussMoni              INFO | Number of PileUpMCHits/Event: 138+/-0
+VeloGaussMoni              INFO | Number of MCHits/Event:       2476+/-0
+VeloGaussMoni              INFO | Number of PileUpMCHits/Event: 137+/-0
 VeloGaussMoni              INFO ------------------------------------------------------
 TTHitMonitor               INFO *** Summary ***
-TTHitMonitor               INFO #hits per event: 818
-TTHitMonitor               INFO Mean beta * gamma: 906.687
-TTHitMonitor               INFO Most Probable deposited charge: 0.153574
-TTHitMonitor               INFO Half Sample width 0.0571898
+TTHitMonitor               INFO #hits per event: 662
+TTHitMonitor               INFO Mean beta * gamma: 1129.48
+TTHitMonitor               INFO Most Probable deposited charge: 0.153442
+TTHitMonitor               INFO Half Sample width 0.0424245
 TTHitMonitor            SUCCESS Booked 7 Histogram(s) : 1D=7 
 TTHitMonitor            SUCCESS Number of counters : 3
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "DeltaRay"                                      |        83 |         83 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
- | "betaGamma"                                     |       818 |   741669.9 |     906.69 |     3301.9 |     0.26083 |      21921. |
- | "numberHits"                                    |         1 |        818 |     818.00 |     0.0000 |      818.00 |      818.00 |
+ | "DeltaRay"                                      |        33 |         33 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
+ | "betaGamma"                                     |       662 |   747716.6 |     1129.5 |     4767.9 |   0.0078956 |      59895. |
+ | "numberHits"                                    |         1 |        662 |     662.00 |     0.0000 |      662.00 |      662.00 |
 ITHitMonitor               INFO *** Summary ***
-ITHitMonitor               INFO #hits per event: 780
-ITHitMonitor               INFO Mean beta * gamma: 2924.34
-ITHitMonitor               INFO Most Probable deposited charge: 0.116869
-ITHitMonitor               INFO Half Sample width 0.0450569
+ITHitMonitor               INFO #hits per event: 552
+ITHitMonitor               INFO Mean beta * gamma: 2798.44
+ITHitMonitor               INFO Most Probable deposited charge: 0.119574
+ITHitMonitor               INFO Half Sample width 0.048684
 ITHitMonitor            SUCCESS Booked 9 Histogram(s) : 1D=9 
 ITHitMonitor            SUCCESS Number of counters : 3
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "DeltaRay"                                      |        34 |         34 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
- | "betaGamma"                                     |       780 |    2280984 |     2924.3 |     9287.2 |     0.34595 |      59848. |
- | "numberHits"                                    |         1 |        780 |     780.00 |     0.0000 |      780.00 |      780.00 |
+ | "DeltaRay"                                      |        23 |         23 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
+ | "betaGamma"                                     |       552 |    1544739 |     2798.4 |     10485. |     0.15597 |      59895. |
+ | "numberHits"                                    |         1 |        552 |     552.00 |     0.0000 |      552.00 |      552.00 |
 OTHitMonitor               INFO *** Summary ***
-OTHitMonitor               INFO #hits per event: 2443
-OTHitMonitor               INFO Mean beta * gamma: 1302.46
-OTHitMonitor               INFO Most Probable deposited charge: 0.196076
-OTHitMonitor               INFO Half Sample width 0.0738756
+OTHitMonitor               INFO #hits per event: 2145
+OTHitMonitor               INFO Mean beta * gamma: 1182.64
+OTHitMonitor               INFO Most Probable deposited charge: 0.195592
+OTHitMonitor               INFO Half Sample width 0.067975
 OTHitMonitor            SUCCESS Booked 9 Histogram(s) : 1D=9 
 OTHitMonitor            SUCCESS Number of counters : 3
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "DeltaRay"                                      |       116 |        116 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
- | "betaGamma"                                     |      2443 |    3181920 |     1302.5 |     3882.2 |   0.0060249 |      21921. |
- | "numberHits"                                    |         1 |       2443 |     2443.0 |     0.0000 |      2443.0 |      2443.0 |
+ | "DeltaRay"                                      |       126 |        126 |     1.0000 |     0.0000 |      1.0000 |      1.0000 |
+ | "betaGamma"                                     |      2145 |    2536761 |     1182.6 |     3497.2 |   0.0051138 |      21570. |
+ | "numberHits"                                    |         1 |       2145 |     2145.0 |     0.0000 |      2145.0 |      2145.0 |
 SpdMonitor              SUCCESS Booked 19 Histogram(s) : 1D=19 
 PrsMonitor              SUCCESS Booked 19 Histogram(s) : 1D=19 
 EcalMonitor             SUCCESS Booked 19 Histogram(s) : 1D=19 
@@ -4890,376 +4904,376 @@ MuonHitChecker             INFO ------------------------------------------------
 MuonHitChecker             INFO        Muon Monitoring Table 
 MuonHitChecker             INFO -----------------------------------------------------------------
 MuonHitChecker             INFO  M1        M2        M3        M4        M5 
-MuonHitChecker             INFO 159.000  7.000  283.000  37.000  2.000   R1
-MuonHitChecker             INFO 184.000  2.000  34.000  0.000  0.000   R2
-MuonHitChecker             INFO 169.000  4.000  17.000  0.000  0.000   R3
-MuonHitChecker             INFO 217.000  14.000  0.000  0.000  0.000   R4
+MuonHitChecker             INFO 143.000  31.000  10.000  11.000  1.000   R1
+MuonHitChecker             INFO 114.000  21.000  45.000  0.000  0.000   R2
+MuonHitChecker             INFO 137.000  8.000  2.000  0.000  0.000   R3
+MuonHitChecker             INFO 199.000  20.000  4.000  7.000  0.000   R4
 MuonHitChecker             INFO -----------------------------------------------------------------
 MuonHitChecker             INFO -------    Integrated over regions    ---------------------------
 MuonHitChecker             INFO -----------------------------------------------------------------
-MuonHitChecker             INFO 729.000  27.000  334.000  37.000  2.000   allR
+MuonHitChecker             INFO 593.000  80.000  61.000  18.000  1.000   allR
 MuonHitChecker             INFO  number of hit generate doutside gaps volume 0
 CompareMCParticle       SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/1/0
 CompareMCParticle       SUCCESS  #WARNINGS   = 1        Message = 'Packed MCParticle info truncated. Set VERBOSE OutputLevel for details'
 UnpackPuVetoHits        SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |        138 |     138.00 |     0.0000 |      138.00 |      138.00 |
+ | "# UnPackedData"                                |         1 |        137 |     137.00 |     0.0000 |      137.00 |      137.00 |
 CheckPuVetoHits         SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |       138 |-5.805718e-07 |-4.2070e-09 | 2.9010e-07 | -4.9034e-07 |  4.9874e-07 |
- | "Diff.    - Displacement y"                     |       138 |-7.165718e-06 |-5.1925e-08 | 2.6235e-07 | -4.9901e-07 |  4.9971e-07 |
- | "Diff.    - Displacement z"                     |       138 |-4.789684e-06 |-3.4708e-08 | 2.9690e-07 | -4.9541e-07 |  4.9016e-07 |
- | "Diff.    - Energy"                             |       138 |-4.913213e-07 |-3.5603e-09 | 6.0682e-07 | -9.9876e-07 |  9.9957e-07 |
- | "Diff.    - Entry Point x"                      |       138 |0.0005374085 | 3.8943e-06 | 2.7441e-05 | -4.9303e-05 |  4.8028e-05 |
- | "Diff.    - Entry Point y"                      |       138 |-0.0001417838 |-1.0274e-06 | 2.8939e-05 | -4.9263e-05 |  4.8750e-05 |
- | "Diff.    - Entry Point z"                      |       138 |0.0001343458 | 9.7352e-07 | 2.6114e-05 | -4.9026e-05 |  4.6407e-05 |
- | "Diff.    - Parent |P|"                         |       138 |0.0008093884 | 5.8651e-06 |  0.0029657 |  -0.0049229 |   0.0048999 |
- | "Diff.    - TOF"                                |       138 |-4.789632e-05 |-3.4707e-07 | 2.9069e-06 | -4.9865e-06 |  4.9192e-06 |
- | "Original - Displacement x"                     |       138 | -0.5901216 | -0.0042762 |   0.026622 |    -0.10073 |    0.052628 |
- | "Original - Displacement y"                     |       138 |  0.4463008 |  0.0032341 |   0.031550 |   -0.074478 |     0.10947 |
- | "Original - Displacement z"                     |       138 |  -41.39777 |   -0.29998 | 0.00019089 |    -0.30086 |    -0.29891 |
- | "Original - Energy"                             |       138 |   16.00324 |    0.11597 |   0.067537 |    0.066904 |     0.60598 |
- | "Original - Entry Point x"                      |       138 |  -16.55646 |   -0.11997 |     16.642 |     -40.504 |      35.600 |
- | "Original - Entry Point y"                      |       138 |   238.1701 |     1.7259 |     19.707 |     -40.372 |      41.040 |
- | "Original - Entry Point z"                      |       138 |  -36414.18 |    -263.87 |     41.369 |     -315.91 |     -218.95 |
- | "Original - Parent |P|"                         |       138 |    1098410 |     7959.5 |     11208. |      10.334 |      59299. |
- | "Original - TOF"                                |       138 |   110.5623 |    0.80118 |    0.13941 |     0.64100 |      1.0609 |
- | "Unpacked - Displacement x"                     |       138 |  -0.590121 | -0.0042762 |   0.026622 |    -0.10073 |    0.052628 |
- | "Unpacked - Displacement y"                     |       138 |   0.446308 |  0.0032341 |   0.031550 |   -0.074478 |     0.10947 |
- | "Unpacked - Displacement z"                     |       138 |  -41.39777 |   -0.29998 | 0.00019094 |    -0.30086 |    -0.29891 |
- | "Unpacked - Energy"                             |       138 |   16.00324 |    0.11597 |   0.067537 |    0.066904 |     0.60598 |
- | "Unpacked - Entry Point x"                      |       138 |    -16.557 |   -0.11998 |     16.642 |     -40.504 |      35.600 |
- | "Unpacked - Entry Point y"                      |       138 |   238.1702 |     1.7259 |     19.707 |     -40.372 |      41.040 |
- | "Unpacked - Entry Point z"                      |       138 |  -36414.18 |    -263.87 |     41.369 |     -315.91 |     -218.95 |
- | "Unpacked - Parent |P|"                         |       138 |    1098410 |     7959.5 |     11208. |      10.330 |      59299. |
- | "Unpacked - TOF"                                |       138 |   110.5624 |    0.80118 |    0.13941 |     0.64100 |      1.0609 |
+ | "Diff.    - Displacement x"                     |       137 |-3.848352e-06 |-2.8090e-08 | 3.0419e-07 | -4.9325e-07 |  4.9743e-07 |
+ | "Diff.    - Displacement y"                     |       137 |-2.665465e-06 |-1.9456e-08 | 2.9524e-07 | -4.9682e-07 |  4.8376e-07 |
+ | "Diff.    - Displacement z"                     |       137 |2.095706e-06 | 1.5297e-08 | 2.7689e-07 | -4.9744e-07 |  4.9686e-07 |
+ | "Diff.    - Energy"                             |       137 |5.244871e-06 | 3.8284e-08 | 5.7999e-07 | -9.5589e-07 |  9.9747e-07 |
+ | "Diff.    - Entry Point x"                      |       137 |0.0002260941 | 1.6503e-06 | 3.0055e-05 | -4.9923e-05 |  4.9709e-05 |
+ | "Diff.    - Entry Point y"                      |       137 |-0.0007819533 |-5.7077e-06 | 3.0202e-05 | -4.8255e-05 |  4.8331e-05 |
+ | "Diff.    - Entry Point z"                      |       137 |7.079683e-05 | 5.1677e-07 | 2.8804e-05 | -4.8798e-05 |  4.9775e-05 |
+ | "Diff.    - Parent |P|"                         |       137 |-0.03996837 |-0.00029174 |  0.0028163 |  -0.0049571 |   0.0046385 |
+ | "Diff.    - TOF"                                |       137 |-2.061785e-05 |-1.5050e-07 | 2.7962e-06 | -4.8649e-06 |  4.8143e-06 |
+ | "Original - Displacement x"                     |       137 |-0.09319585 |-0.00068026 |   0.022138 |   -0.061937 |    0.047234 |
+ | "Original - Displacement y"                     |       137 | 0.07042433 | 0.00051405 |   0.025617 |   -0.077376 |    0.054565 |
+ | "Original - Displacement z"                     |       137 |  -40.14512 |   -0.29303 |   0.038100 |    -0.30027 |   -0.011188 |
+ | "Original - Energy"                             |       137 |   15.49212 |    0.11308 |   0.083048 |   0.0038809 |     0.86103 |
+ | "Original - Entry Point x"                      |       137 |   131.0432 |    0.95652 |     16.965 |     -40.626 |      35.623 |
+ | "Original - Entry Point y"                      |       137 |   74.43362 |    0.54331 |     19.620 |     -43.066 |      37.572 |
+ | "Original - Entry Point z"                      |       137 |  -36679.55 |    -267.73 |     41.249 |     -315.92 |     -218.95 |
+ | "Original - Parent |P|"                         |       137 |    1130296 |     8250.3 |     11132. |      4.4278 |      59298. |
+ | "Original - TOF"                                |       137 |   111.0495 |    0.81058 |    0.13704 |     0.64099 |      1.0237 |
+ | "Unpacked - Displacement x"                     |       137 |  -0.093192 |-0.00068023 |   0.022138 |   -0.061937 |    0.047234 |
+ | "Unpacked - Displacement y"                     |       137 |   0.070427 | 0.00051407 |   0.025617 |   -0.077376 |    0.054565 |
+ | "Unpacked - Displacement z"                     |       137 |  -40.14512 |   -0.29303 |   0.038100 |    -0.30027 |   -0.011188 |
+ | "Unpacked - Energy"                             |       137 |   15.49211 |    0.11308 |   0.083048 |   0.0038800 |     0.86103 |
+ | "Unpacked - Entry Point x"                      |       137 |    131.043 |    0.95652 |     16.965 |     -40.626 |      35.623 |
+ | "Unpacked - Entry Point y"                      |       137 |    74.4344 |    0.54332 |     19.620 |     -43.066 |      37.572 |
+ | "Unpacked - Entry Point z"                      |       137 |  -36679.55 |    -267.73 |     41.249 |     -315.92 |     -218.95 |
+ | "Unpacked - Parent |P|"                         |       137 |    1130296 |     8250.3 |     11132. |      4.4300 |      59298. |
+ | "Unpacked - TOF"                                |       137 |   111.0496 |    0.81058 |    0.13704 |     0.64099 |      1.0237 |
 UnpackVeloHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       2523 |     2523.0 |     0.0000 |      2523.0 |      2523.0 |
+ | "# UnPackedData"                                |         1 |       2476 |     2476.0 |     0.0000 |      2476.0 |      2476.0 |
 CheckVeloHits           SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |      2523 |-1.095266e-05 |-4.3411e-09 | 2.9073e-07 | -4.9970e-07 |  4.9991e-07 |
- | "Diff.    - Displacement y"                     |      2523 |1.845638e-06 | 7.3153e-10 | 2.8964e-07 | -4.9915e-07 |  4.9951e-07 |
- | "Diff.    - Displacement z"                     |      2523 |1.576545e-05 | 6.2487e-09 | 2.9449e-07 | -4.9995e-07 |  4.9989e-07 |
- | "Diff.    - Energy"                             |      2523 |5.779024e-06 | 2.2905e-09 | 5.7954e-07 | -9.9944e-07 |  9.9750e-07 |
- | "Diff.    - Entry Point x"                      |      2523 |-9.075413e-05 |-3.5971e-08 | 2.9203e-05 | -4.9983e-05 |  4.9997e-05 |
- | "Diff.    - Entry Point y"                      |      2523 |0.0007583055 | 3.0056e-07 | 2.9132e-05 | -4.9997e-05 |  4.9991e-05 |
- | "Diff.    - Entry Point z"                      |      2523 |0.002327371 | 9.2246e-07 | 2.9013e-05 | -4.9987e-05 |  4.9982e-05 |
- | "Diff.    - Parent |P|"                         |      2523 |  0.2415328 | 9.5732e-05 |  0.0028998 |  -0.0049982 |   0.0049871 |
- | "Diff.    - TOF"                                |      2523 |-5.920769e-05 |-2.3467e-08 | 2.9262e-06 | -4.9964e-06 |  4.9954e-06 |
- | "Original - Displacement x"                     |      2523 |  -2.525759 | -0.0010011 |    0.15264 |     -2.3948 |      3.9520 |
- | "Original - Displacement y"                     |      2523 |  -7.076401 | -0.0028048 |    0.11796 |     -2.8338 |      1.3745 |
- | "Original - Displacement z"                     |      2523 |   316.2558 |    0.12535 |    0.26811 |    -0.30965 |     0.30060 |
- | "Original - Energy"                             |      2523 |   326.0426 |    0.12923 |    0.17355 |  0.00010445 |      3.8626 |
- | "Original - Entry Point x"                      |      2523 |   3419.948 |     1.3555 |     15.103 |     -42.409 |      43.238 |
- | "Original - Entry Point y"                      |      2523 |  -3764.849 |    -1.4922 |     17.905 |     -43.916 |      43.677 |
- | "Original - Entry Point z"                      |      2523 |   404185.6 |     160.20 |     258.06 |     -175.80 |      751.27 |
- | "Original - Parent |P|"                         |      2523 |1.663868e+07 |     6594.8 |     13377. |      1.4546 |  2.0737e+05 |
- | "Original - TOF"                                |      2523 |   2206.864 |    0.87470 |     1.6878 |    0.025815 |      40.951 |
- | "Unpacked - Displacement x"                     |      2523 |  -2.525748 | -0.0010011 |    0.15264 |     -2.3948 |      3.9520 |
- | "Unpacked - Displacement y"                     |      2523 |  -7.076403 | -0.0028048 |    0.11796 |     -2.8338 |      1.3745 |
- | "Unpacked - Displacement z"                     |      2523 |   316.2557 |    0.12535 |    0.26811 |    -0.30965 |     0.30060 |
- | "Unpacked - Energy"                             |      2523 |   326.0426 |    0.12923 |    0.17355 |  0.00010400 |      3.8626 |
- | "Unpacked - Entry Point x"                      |      2523 |   3419.948 |     1.3555 |     15.103 |     -42.409 |      43.238 |
- | "Unpacked - Entry Point y"                      |      2523 |   -3764.85 |    -1.4922 |     17.905 |     -43.916 |      43.677 |
- | "Unpacked - Entry Point z"                      |      2523 |   404185.6 |     160.20 |     258.06 |     -175.80 |      751.27 |
- | "Unpacked - Parent |P|"                         |      2523 |1.663868e+07 |     6594.8 |     13377. |      1.4500 |  2.0737e+05 |
- | "Unpacked - TOF"                                |      2523 |   2206.864 |    0.87470 |     1.6878 |    0.025820 |      40.951 |
+ | "Diff.    - Displacement x"                     |      2476 |6.902201e-06 | 2.7876e-09 | 2.8974e-07 | -4.9956e-07 |  4.9883e-07 |
+ | "Diff.    - Displacement y"                     |      2476 |1.956663e-05 | 7.9025e-09 | 2.8753e-07 | -4.9970e-07 |  4.9955e-07 |
+ | "Diff.    - Displacement z"                     |      2476 |6.597476e-06 | 2.6646e-09 | 2.8907e-07 | -4.9979e-07 |  4.9961e-07 |
+ | "Diff.    - Energy"                             |      2476 |1.403241e-06 | 5.6674e-10 | 5.6824e-07 | -9.9995e-07 |  9.9777e-07 |
+ | "Diff.    - Entry Point x"                      |      2476 |0.001778146 | 7.1815e-07 | 2.8601e-05 | -4.9999e-05 |  4.9996e-05 |
+ | "Diff.    - Entry Point y"                      |      2476 |-1.351608e-05 |-5.4588e-09 | 2.8849e-05 | -4.9949e-05 |  4.9983e-05 |
+ | "Diff.    - Entry Point z"                      |      2476 |0.001780429 | 7.1907e-07 | 2.8903e-05 | -4.9981e-05 |  4.9943e-05 |
+ | "Diff.    - Parent |P|"                         |      2476 | -0.1046809 |-4.2278e-05 |  0.0028662 |  -0.0049991 |   0.0049983 |
+ | "Diff.    - TOF"                                |      2476 |0.0001439748 | 5.8148e-08 | 2.9208e-06 | -4.9977e-06 |  4.9960e-06 |
+ | "Original - Displacement x"                     |      2476 |    1.90894 | 0.00077098 |    0.10421 |    -0.95174 |      3.6274 |
+ | "Original - Displacement y"                     |      2476 |  -13.77588 | -0.0055638 |    0.10784 |     -2.6112 |      1.3590 |
+ | "Original - Displacement z"                     |      2476 |   310.7493 |    0.12550 |    0.26524 |    -0.30123 |     0.30085 |
+ | "Original - Energy"                             |      2476 |   381.2566 |    0.15398 |    0.30302 |   0.0010762 |      4.2795 |
+ | "Original - Entry Point x"                      |      2476 |   3979.701 |     1.6073 |     15.365 |     -42.556 |      44.683 |
+ | "Original - Entry Point y"                      |      2476 |  -428.5966 |   -0.17310 |     17.413 |     -43.571 |      43.597 |
+ | "Original - Entry Point z"                      |      2476 |   393638.8 |     158.98 |     255.57 |     -175.79 |      751.21 |
+ | "Original - Parent |P|"                         |      2476 |1.654868e+07 |     6683.6 |     13581. |      1.6318 |  2.0737e+05 |
+ | "Original - TOF"                                |      2476 |   1971.123 |    0.79609 |    0.70171 |    0.025732 |      2.7111 |
+ | "Unpacked - Displacement x"                     |      2476 |   1.908933 | 0.00077097 |    0.10421 |    -0.95174 |      3.6274 |
+ | "Unpacked - Displacement y"                     |      2476 |   -13.7759 | -0.0055638 |    0.10784 |     -2.6112 |      1.3590 |
+ | "Unpacked - Displacement z"                     |      2476 |   310.7493 |    0.12550 |    0.26524 |    -0.30123 |     0.30085 |
+ | "Unpacked - Energy"                             |      2476 |   381.2566 |    0.15398 |    0.30302 |   0.0010760 |      4.2795 |
+ | "Unpacked - Entry Point x"                      |      2476 |   3979.699 |     1.6073 |     15.365 |     -42.556 |      44.683 |
+ | "Unpacked - Entry Point y"                      |      2476 |  -428.5966 |   -0.17310 |     17.413 |     -43.571 |      43.596 |
+ | "Unpacked - Entry Point z"                      |      2476 |   393638.8 |     158.98 |     255.57 |     -175.79 |      751.21 |
+ | "Unpacked - Parent |P|"                         |      2476 |1.654868e+07 |     6683.6 |     13581. |      1.6300 |  2.0737e+05 |
+ | "Unpacked - TOF"                                |      2476 |   1971.123 |    0.79609 |    0.70171 |    0.025730 |      2.7111 |
 UnpackTTHits            SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |        818 |     818.00 |     0.0000 |      818.00 |      818.00 |
+ | "# UnPackedData"                                |         1 |        662 |     662.00 |     0.0000 |      662.00 |      662.00 |
 CheckTTHits             SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |       818 |1.349897e-05 | 1.6502e-08 | 2.8484e-07 | -4.9655e-07 |  4.9793e-07 |
- | "Diff.    - Displacement y"                     |       818 |2.944213e-07 | 3.5993e-10 | 2.8990e-07 | -4.9899e-07 |  4.9921e-07 |
- | "Diff.    - Displacement z"                     |       818 |-3.808994e-06 |-4.6565e-09 | 1.0111e-07 | -4.9890e-07 |  4.8693e-07 |
- | "Diff.    - Energy"                             |       818 |-7.15902e-06 |-8.7519e-09 | 5.6210e-07 | -9.9921e-07 |  9.9873e-07 |
- | "Diff.    - Entry Point x"                      |       818 |-6.694858e-05 |-8.1844e-08 | 2.7969e-05 | -4.9868e-05 |  4.9645e-05 |
- | "Diff.    - Entry Point y"                      |       818 |0.0008285734 | 1.0129e-06 | 2.9663e-05 | -4.9948e-05 |  4.9876e-05 |
- | "Diff.    - Entry Point z"                      |       818 |6.546061e-05 | 8.0025e-08 | 7.8977e-06 | -4.8863e-05 |  4.9942e-05 |
- | "Diff.    - Parent |P|"                         |       818 | -0.1393256 |-0.00017032 |  0.0029347 |  -0.0049908 |   0.0049581 |
- | "Diff.    - TOF"                                |       818 |-8.104928e-05 |-9.9082e-08 | 2.9135e-06 | -4.9897e-06 |  4.9834e-06 |
- | "Original - Displacement x"                     |       818 |   1.358922 |  0.0016613 |    0.52461 |     -5.1386 |      3.4241 |
- | "Original - Displacement y"                     |       818 |  -7.682654 | -0.0093920 |    0.23862 |     -1.8579 |      2.5339 |
- | "Original - Displacement z"                     |       818 |    240.551 |    0.29407 |    0.37235 |    -0.50000 |     0.50000 |
- | "Original - Energy"                             |       818 |   264.3426 |    0.32316 |    0.47422 |   0.0018120 |      3.7353 |
- | "Original - Entry Point x"                      |       818 |  -19034.85 |    -23.270 |     302.85 |     -788.44 |      773.91 |
- | "Original - Entry Point y"                      |       818 |   1943.245 |     2.3756 |     277.25 |     -656.32 |      654.13 |
- | "Original - Entry Point z"                      |       818 |    2032301 |     2484.5 |     136.35 |      2322.0 |      2648.0 |
- | "Original - Parent |P|"                         |       818 |    3253339 |     3977.2 |     8416.6 |      1.4233 |      72653. |
- | "Original - TOF"                                |       818 |   9351.181 |     11.432 |     5.2099 |      7.8375 |      31.915 |
- | "Unpacked - Displacement x"                     |       818 |   1.358909 |  0.0016613 |    0.52461 |     -5.1386 |      3.4241 |
- | "Unpacked - Displacement y"                     |       818 |  -7.682654 | -0.0093920 |    0.23862 |     -1.8579 |      2.5339 |
- | "Unpacked - Displacement z"                     |       818 |    240.551 |    0.29407 |    0.37235 |    -0.50000 |     0.50000 |
- | "Unpacked - Energy"                             |       818 |   264.3426 |    0.32316 |    0.47422 |   0.0018120 |      3.7353 |
- | "Unpacked - Entry Point x"                      |       818 |  -19034.85 |    -23.270 |     302.85 |     -788.44 |      773.91 |
- | "Unpacked - Entry Point y"                      |       818 |   1943.244 |     2.3756 |     277.25 |     -656.32 |      654.13 |
- | "Unpacked - Entry Point z"                      |       818 |    2032301 |     2484.5 |     136.35 |      2322.0 |      2648.0 |
- | "Unpacked - Parent |P|"                         |       818 |    3253340 |     3977.2 |     8416.6 |      1.4200 |      72653. |
- | "Unpacked - TOF"                                |       818 |   9351.181 |     11.432 |     5.2099 |      7.8375 |      31.915 |
+ | "Diff.    - Displacement x"                     |       662 |-1.056764e-05 |-1.5963e-08 | 2.8942e-07 | -4.9996e-07 |  4.9792e-07 |
+ | "Diff.    - Displacement y"                     |       662 |3.538275e-06 | 5.3448e-09 | 2.9618e-07 | -4.9984e-07 |  4.9934e-07 |
+ | "Diff.    - Displacement z"                     |       662 |1.108825e-06 | 1.6750e-09 | 8.8706e-08 | -4.9717e-07 |  4.9717e-07 |
+ | "Diff.    - Energy"                             |       662 |-1.763988e-06 |-2.6646e-09 | 5.8840e-07 | -9.9505e-07 |  9.9943e-07 |
+ | "Diff.    - Entry Point x"                      |       662 |0.0008308057 | 1.2550e-06 | 2.8609e-05 | -4.9844e-05 |  4.9945e-05 |
+ | "Diff.    - Entry Point y"                      |       662 |0.000260087 | 3.9288e-07 | 2.8864e-05 | -4.9532e-05 |  4.9983e-05 |
+ | "Diff.    - Entry Point z"                      |       662 |-0.0003312657 |-5.0040e-07 | 6.8948e-06 | -4.9627e-05 |  4.7964e-05 |
+ | "Diff.    - Parent |P|"                         |       662 | -0.1046538 |-0.00015809 |  0.0029074 |  -0.0049697 |   0.0049957 |
+ | "Diff.    - TOF"                                |       662 |8.555475e-06 | 1.2924e-08 | 2.9192e-06 | -4.9810e-06 |  4.9992e-06 |
+ | "Original - Displacement x"                     |       662 |   51.00101 |   0.077041 |    0.37540 |     -1.4083 |      5.1196 |
+ | "Original - Displacement y"                     |       662 |  -4.512311 | -0.0068162 |    0.24755 |     -1.8749 |      4.2074 |
+ | "Original - Displacement z"                     |       662 |   249.7573 |    0.37728 |    0.30712 |    -0.50000 |     0.50000 |
+ | "Original - Energy"                             |       662 |   178.2923 |    0.26932 |    0.41505 |  0.00062001 |      4.0826 |
+ | "Original - Entry Point x"                      |       662 |   2018.751 |     3.0495 |     280.98 |     -792.39 |      773.07 |
+ | "Original - Entry Point y"                      |       662 |  -13450.89 |    -20.319 |     243.61 |     -606.99 |      658.78 |
+ | "Original - Entry Point z"                      |       662 |    1648804 |     2490.6 |     136.50 |      2322.0 |      2648.0 |
+ | "Original - Parent |P|"                         |       662 |    3165396 |     4781.6 |     9220.3 |      1.4288 |      72652. |
+ | "Original - TOF"                                |       662 |   6778.855 |     10.240 |     4.8026 |      7.8372 |      37.006 |
+ | "Unpacked - Displacement x"                     |       662 |   51.00102 |   0.077041 |    0.37540 |     -1.4083 |      5.1196 |
+ | "Unpacked - Displacement y"                     |       662 |  -4.512315 | -0.0068162 |    0.24755 |     -1.8749 |      4.2074 |
+ | "Unpacked - Displacement z"                     |       662 |   249.7573 |    0.37728 |    0.30712 |    -0.50000 |     0.50000 |
+ | "Unpacked - Energy"                             |       662 |   178.2923 |    0.26932 |    0.41505 |  0.00062000 |      4.0826 |
+ | "Unpacked - Entry Point x"                      |       662 |    2018.75 |     3.0495 |     280.98 |     -792.39 |      773.07 |
+ | "Unpacked - Entry Point y"                      |       662 |  -13450.89 |    -20.319 |     243.61 |     -606.99 |      658.78 |
+ | "Unpacked - Entry Point z"                      |       662 |    1648804 |     2490.6 |     136.50 |      2322.0 |      2648.0 |
+ | "Unpacked - Parent |P|"                         |       662 |    3165396 |     4781.6 |     9220.3 |      1.4300 |      72652. |
+ | "Unpacked - TOF"                                |       662 |   6778.855 |     10.240 |     4.8026 |      7.8372 |      37.006 |
 UnpackITHits            SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |        780 |     780.00 |     0.0000 |      780.00 |      780.00 |
+ | "# UnPackedData"                                |         1 |        552 |     552.00 |     0.0000 |      552.00 |      552.00 |
 CheckITHits             SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |       780 |6.96982e-06 | 8.9357e-09 | 2.8521e-07 | -4.9428e-07 |  4.9832e-07 |
- | "Diff.    - Displacement y"                     |       780 |9.617403e-06 | 1.2330e-08 | 2.8516e-07 | -4.9844e-07 |  4.9922e-07 |
- | "Diff.    - Displacement z"                     |       780 |7.224276e-06 | 9.2619e-09 | 2.8896e-07 | -4.9973e-07 |  4.9939e-07 |
- | "Diff.    - Energy"                             |       780 |-2.250254e-05 |-2.8849e-08 | 5.6077e-07 | -9.9920e-07 |  9.9969e-07 |
- | "Diff.    - Entry Point x"                      |       780 |-0.001115474 |-1.4301e-06 | 2.8796e-05 | -4.9927e-05 |  4.9840e-05 |
- | "Diff.    - Entry Point y"                      |       780 |-0.0009642718 |-1.2362e-06 | 2.8471e-05 | -4.9750e-05 |  4.9935e-05 |
- | "Diff.    - Entry Point z"                      |       780 |0.0001982251 | 2.5413e-07 | 2.8880e-05 | -4.9840e-05 |  4.9868e-05 |
- | "Diff.    - Parent |P|"                         |       780 | 0.05907318 | 7.5735e-05 |  0.0028562 |  -0.0049666 |   0.0049736 |
- | "Diff.    - TOF"                                |       780 |7.421386e-05 | 9.5146e-08 | 2.9001e-06 | -4.9818e-06 |  4.9984e-06 |
- | "Original - Displacement x"                     |       780 |  -3.531433 | -0.0045275 |    0.18908 |     -1.4191 |      1.2869 |
- | "Original - Displacement y"                     |       780 |  -8.007555 |  -0.010266 |    0.15722 |     -3.1865 |     0.79946 |
- | "Original - Displacement z"                     |       780 |   253.3353 |    0.32479 |    0.17819 |    -0.41311 |     0.41093 |
- | "Original - Energy"                             |       780 |   126.1099 |    0.16168 |    0.15089 |   0.0014731 |      1.4376 |
- | "Original - Entry Point x"                      |       780 |  -19429.73 |    -24.910 |     236.88 |     -616.78 |      606.49 |
- | "Original - Entry Point y"                      |       780 |   29782.94 |     38.183 |     84.852 |     -205.05 |      210.80 |
- | "Original - Entry Point z"                      |       780 |    6499802 |     8333.1 |     533.30 |      7667.7 |      9171.9 |
- | "Original - Parent |P|"                         |       780 |    5339754 |     6845.8 |     13807. |      1.4672 |      72642. |
- | "Original - TOF"                                |       780 |   22087.55 |     28.317 |     2.0085 |      25.670 |      35.580 |
- | "Unpacked - Displacement x"                     |       780 |   -3.53144 | -0.0045275 |    0.18908 |     -1.4191 |      1.2869 |
- | "Unpacked - Displacement y"                     |       780 |  -8.007565 |  -0.010266 |    0.15722 |     -3.1865 |     0.79946 |
- | "Unpacked - Displacement z"                     |       780 |   253.3352 |    0.32479 |    0.17819 |    -0.41311 |     0.41093 |
- | "Unpacked - Energy"                             |       780 |   126.1099 |    0.16168 |    0.15089 |   0.0014740 |      1.4376 |
- | "Unpacked - Entry Point x"                      |       780 |  -19429.73 |    -24.910 |     236.88 |     -616.78 |      606.49 |
- | "Unpacked - Entry Point y"                      |       780 |   29782.94 |     38.183 |     84.852 |     -205.05 |      210.80 |
- | "Unpacked - Entry Point z"                      |       780 |    6499802 |     8333.1 |     533.30 |      7667.7 |      9171.9 |
- | "Unpacked - Parent |P|"                         |       780 |    5339754 |     6845.8 |     13807. |      1.4700 |      72642. |
- | "Unpacked - TOF"                                |       780 |   22087.55 |     28.317 |     2.0085 |      25.670 |      35.580 |
+ | "Diff.    - Displacement x"                     |       552 |1.701397e-06 | 3.0822e-09 | 2.7982e-07 | -4.9637e-07 |  4.9538e-07 |
+ | "Diff.    - Displacement y"                     |       552 |-1.834378e-06 |-3.3231e-09 | 2.9754e-07 | -4.9979e-07 |  4.9677e-07 |
+ | "Diff.    - Displacement z"                     |       552 |7.659247e-06 | 1.3875e-08 | 2.7907e-07 | -4.9993e-07 |  4.9992e-07 |
+ | "Diff.    - Energy"                             |       552 |-3.514213e-07 |-6.3663e-10 | 5.7613e-07 | -9.9994e-07 |  9.9066e-07 |
+ | "Diff.    - Entry Point x"                      |       552 |-0.0001139297 |-2.0639e-07 | 2.8815e-05 | -4.9928e-05 |  4.9845e-05 |
+ | "Diff.    - Entry Point y"                      |       552 |0.0006189833 | 1.1213e-06 | 2.8338e-05 | -4.9838e-05 |  4.9836e-05 |
+ | "Diff.    - Entry Point z"                      |       552 |-0.0004704996 |-8.5235e-07 | 2.8554e-05 | -4.9742e-05 |  4.9847e-05 |
+ | "Diff.    - Parent |P|"                         |       552 |-0.02661268 |-4.8211e-05 |  0.0027945 |  -0.0049462 |   0.0049805 |
+ | "Diff.    - TOF"                                |       552 |-3.715886e-05 |-6.7317e-08 | 2.8909e-06 | -4.9960e-06 |  4.9994e-06 |
+ | "Original - Displacement x"                     |       552 |    2.90892 |  0.0052698 |    0.39810 |     -2.6924 |      4.0221 |
+ | "Original - Displacement y"                     |       552 |   9.951926 |   0.018029 |    0.15271 |    -0.72577 |      2.3498 |
+ | "Original - Displacement z"                     |       552 |   163.5558 |    0.29630 |    0.21536 |    -0.41037 |     0.41135 |
+ | "Original - Energy"                             |       552 |    115.668 |    0.20954 |    0.34830 |  0.00061385 |      3.8748 |
+ | "Original - Entry Point x"                      |       552 |   8387.464 |     15.195 |     269.12 |     -632.75 |      632.15 |
+ | "Original - Entry Point y"                      |       552 |   -4811.36 |    -8.7162 |     105.21 |     -200.41 |      212.51 |
+ | "Original - Entry Point z"                      |       552 |    4610965 |     8353.2 |     548.30 |      7667.7 |      9172.1 |
+ | "Original - Parent |P|"                         |       552 |    5434534 |     9845.2 |     16274. |      1.4236 |      72642. |
+ | "Original - TOF"                                |       552 |   15952.68 |     28.900 |     2.7055 |      25.671 |      40.030 |
+ | "Unpacked - Displacement x"                     |       552 |   2.908918 |  0.0052698 |    0.39810 |     -2.6924 |      4.0221 |
+ | "Unpacked - Displacement y"                     |       552 |   9.951928 |   0.018029 |    0.15271 |    -0.72577 |      2.3498 |
+ | "Unpacked - Displacement z"                     |       552 |   163.5558 |    0.29630 |    0.21536 |    -0.41037 |     0.41135 |
+ | "Unpacked - Energy"                             |       552 |    115.668 |    0.20954 |    0.34830 |  0.00061400 |      3.8748 |
+ | "Unpacked - Entry Point x"                      |       552 |   8387.464 |     15.195 |     269.12 |     -632.75 |      632.15 |
+ | "Unpacked - Entry Point y"                      |       552 |  -4811.361 |    -8.7162 |     105.21 |     -200.41 |      212.51 |
+ | "Unpacked - Entry Point z"                      |       552 |    4610965 |     8353.2 |     548.30 |      7667.7 |      9172.1 |
+ | "Unpacked - Parent |P|"                         |       552 |    5434534 |     9845.2 |     16274. |      1.4200 |      72642. |
+ | "Unpacked - TOF"                                |       552 |   15952.68 |     28.900 |     2.7055 |      25.671 |      40.030 |
 UnpackOTHits            SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       2443 |     2443.0 |     0.0000 |      2443.0 |      2443.0 |
+ | "# UnPackedData"                                |         1 |       2145 |     2145.0 |     0.0000 |      2145.0 |      2145.0 |
 CheckOTHits             SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |      2443 |2.354962e-05 | 9.6396e-09 | 2.8734e-07 | -4.9964e-07 |  4.9997e-07 |
- | "Diff.    - Displacement y"                     |      2443 |6.583431e-06 | 2.6948e-09 | 2.8939e-07 | -4.9938e-07 |  4.9999e-07 |
- | "Diff.    - Displacement z"                     |      2443 |-1.215186e-05 |-4.9742e-09 | 2.8422e-07 | -4.9907e-07 |  4.9983e-07 |
- | "Diff.    - Energy"                             |      2443 |-1.92225e-05 |-7.8684e-09 | 5.7213e-07 | -9.9985e-07 |  9.9947e-07 |
- | "Diff.    - Entry Point x"                      |      2443 |-0.001508547 |-6.1750e-07 | 2.8763e-05 | -4.9995e-05 |  4.9974e-05 |
- | "Diff.    - Entry Point y"                      |      2443 |4.684538e-05 | 1.9175e-08 | 2.8823e-05 | -4.9988e-05 |  4.9982e-05 |
- | "Diff.    - Entry Point z"                      |      2443 |-0.001100958 |-4.5066e-07 | 2.8705e-05 | -4.9965e-05 |  4.9985e-05 |
- | "Diff.    - Parent |P|"                         |      2443 | 0.03404897 | 1.3937e-05 |  0.0029372 |  -0.0049994 |   0.0049996 |
- | "Diff.    - TOF"                                |      2443 |-2.533227e-05 |-1.0369e-08 | 2.8301e-06 | -4.9985e-06 |  4.9997e-06 |
- | "Original - Displacement x"                     |      2443 |  -1406.047 |   -0.57554 |     9.3110 |     -69.189 |      88.831 |
- | "Original - Displacement y"                     |      2443 |  -275.3415 |   -0.11271 |     3.7908 |     -37.294 |      28.909 |
- | "Original - Displacement z"                     |      2443 |   18265.68 |     7.4767 |     6.4543 |     -10.788 |      10.834 |
- | "Original - Energy"                             |      2443 |   701.6739 |    0.28722 |    0.33685 |  0.00035059 |      4.5729 |
- | "Original - Entry Point x"                      |      2443 |  -382408.2 |    -156.53 |     1270.2 |     -3122.0 |      3009.1 |
- | "Original - Entry Point y"                      |      2443 |  -25664.36 |    -10.505 |     667.13 |     -2420.4 |      2357.4 |
- | "Original - Entry Point z"                      |      2443 |2.10881e+07 |     8632.1 |     571.91 |      7849.3 |      9411.1 |
- | "Original - Parent |P|"                         |      2443 |    8415487 |     3444.7 |     6482.7 |      1.4225 |      50971. |
- | "Original - TOF"                                |      2443 |   79311.54 |     32.465 |     9.9118 |      26.309 |      140.50 |
- | "Unpacked - Displacement x"                     |      2443 |  -1406.048 |   -0.57554 |     9.3110 |     -69.189 |      88.831 |
- | "Unpacked - Displacement y"                     |      2443 |  -275.3415 |   -0.11271 |     3.7908 |     -37.294 |      28.909 |
- | "Unpacked - Displacement z"                     |      2443 |   18265.68 |     7.4767 |     6.4543 |     -10.788 |      10.834 |
- | "Unpacked - Energy"                             |      2443 |   701.6739 |    0.28722 |    0.33685 |  0.00035000 |      4.5729 |
- | "Unpacked - Entry Point x"                      |      2443 |  -382408.2 |    -156.53 |     1270.2 |     -3122.0 |      3009.1 |
- | "Unpacked - Entry Point y"                      |      2443 |  -25664.36 |    -10.505 |     667.13 |     -2420.4 |      2357.4 |
- | "Unpacked - Entry Point z"                      |      2443 |2.10881e+07 |     8632.1 |     571.91 |      7849.3 |      9411.1 |
- | "Unpacked - Parent |P|"                         |      2443 |    8415487 |     3444.7 |     6482.7 |      1.4200 |      50971. |
- | "Unpacked - TOF"                                |      2443 |   79311.54 |     32.465 |     9.9118 |      26.309 |      140.50 |
+ | "Diff.    - Displacement x"                     |      2145 |2.099073e-06 | 9.7859e-10 | 2.8906e-07 | -4.9998e-07 |  4.9967e-07 |
+ | "Diff.    - Displacement y"                     |      2145 |3.938309e-06 | 1.8360e-09 | 2.8449e-07 | -4.9958e-07 |  4.9900e-07 |
+ | "Diff.    - Displacement z"                     |      2145 |-2.41313e-05 |-1.1250e-08 | 2.8855e-07 | -4.9678e-07 |  4.9969e-07 |
+ | "Diff.    - Energy"                             |      2145 |2.409533e-07 | 1.1233e-10 | 5.7679e-07 | -9.9934e-07 |  1.0000e-06 |
+ | "Diff.    - Entry Point x"                      |      2145 |-0.0006821579 |-3.1802e-07 | 2.9183e-05 | -4.9958e-05 |  4.9967e-05 |
+ | "Diff.    - Entry Point y"                      |      2145 |-0.0002816948 |-1.3133e-07 | 2.8577e-05 | -4.9999e-05 |  4.9982e-05 |
+ | "Diff.    - Entry Point z"                      |      2145 |0.0003529531 | 1.6455e-07 | 2.8634e-05 | -4.9860e-05 |  4.9911e-05 |
+ | "Diff.    - Parent |P|"                         |      2145 | 0.07699131 | 3.5893e-05 |  0.0028254 |  -0.0049990 |   0.0049952 |
+ | "Diff.    - TOF"                                |      2145 |-0.0002502541 |-1.1667e-07 | 2.8764e-06 | -4.9988e-06 |  4.9968e-06 |
+ | "Original - Displacement x"                     |      2145 |  -1119.554 |   -0.52194 |     9.0776 |     -89.534 |      132.70 |
+ | "Original - Displacement y"                     |      2145 |  -470.6283 |   -0.21941 |     8.6822 |     -99.112 |      265.54 |
+ | "Original - Displacement z"                     |      2145 |   15428.32 |     7.1927 |     6.7924 |     -11.036 |      11.686 |
+ | "Original - Energy"                             |      2145 |   639.8624 |    0.29830 |    0.37751 |  0.00022570 |      6.0443 |
+ | "Original - Entry Point x"                      |      2145 |  -350234.8 |    -163.28 |     1355.3 |     -3149.1 |      2964.6 |
+ | "Original - Entry Point y"                      |      2145 |  -31084.42 |    -14.492 |     770.54 |     -2378.3 |      2422.7 |
+ | "Original - Entry Point z"                      |      2145 |1.848533e+07 |     8617.9 |     564.42 |      7847.1 |      9416.1 |
+ | "Original - Parent |P|"                         |      2145 |    8601446 |     4010.0 |     6874.9 |      1.4308 |      50976. |
+ | "Original - TOF"                                |      2145 |   74436.82 |     34.702 |     15.263 |      26.301 |      151.05 |
+ | "Unpacked - Displacement x"                     |      2145 |  -1119.554 |   -0.52194 |     9.0776 |     -89.534 |      132.70 |
+ | "Unpacked - Displacement y"                     |      2145 |  -470.6283 |   -0.21941 |     8.6822 |     -99.112 |      265.54 |
+ | "Unpacked - Displacement z"                     |      2145 |   15428.32 |     7.1927 |     6.7924 |     -11.036 |      11.686 |
+ | "Unpacked - Energy"                             |      2145 |   639.8624 |    0.29830 |    0.37751 |  0.00022600 |      6.0443 |
+ | "Unpacked - Entry Point x"                      |      2145 |  -350234.8 |    -163.28 |     1355.3 |     -3149.1 |      2964.6 |
+ | "Unpacked - Entry Point y"                      |      2145 |  -31084.42 |    -14.492 |     770.54 |     -2378.3 |      2422.7 |
+ | "Unpacked - Entry Point z"                      |      2145 |1.848533e+07 |     8617.9 |     564.42 |      7847.1 |      9416.1 |
+ | "Unpacked - Parent |P|"                         |      2145 |    8601446 |     4010.0 |     6874.9 |      1.4300 |      50976. |
+ | "Unpacked - TOF"                                |      2145 |   74436.82 |     34.702 |     15.263 |      26.301 |      151.05 |
 UnpackRichHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
+ | "# UnPackedData"                                |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
 UnpackRichOpPhot        SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
+ | "# UnPackedData"                                |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
 UnpackRichSegments      SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "# UnPackedData"                                |         1 |        434 |     434.00 |     0.0000 |      434.00 |      434.00 |
 UnpackRichTracks        SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |        353 |     353.00 |     0.0000 |      353.00 |      353.00 |
+ | "# UnPackedData"                                |         1 |        332 |     332.00 |     0.0000 |      332.00 |      332.00 |
 CheckRichHits           SUCCESS Number of counters : 15
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Energy"                             |      7673 |-5.324213e-14 |-6.9389e-18 |     0.0000 | -6.9389e-18 | -6.9389e-18 |
- | "Diff.    - Entry Point x"                      |      7673 |0.0003940841 | 5.1360e-08 | 2.8726e-05 | -4.9991e-05 |  4.9975e-05 |
- | "Diff.    - Entry Point y"                      |      7673 |-0.005974602 |-7.7865e-07 | 2.8882e-05 | -4.9995e-05 |  4.9994e-05 |
- | "Diff.    - Entry Point z"                      |      7673 |-0.001434181 |-1.8691e-07 | 2.8713e-05 | -4.9999e-05 |  4.9999e-05 |
- | "Diff.    - TOF"                                |      7673 |0.000408787 | 5.3276e-08 | 2.8827e-06 | -4.9975e-06 |  4.9983e-06 |
- | "Original - Energy"                             |      7673 |     153.46 |   0.020000 |     0.0000 |    0.020000 |    0.020000 |
- | "Original - Entry Point x"                      |      7673 |   -6703905 |    -873.70 |     3063.7 |     -4150.7 |      4151.0 |
- | "Original - Entry Point y"                      |      7673 |  -157905.2 |    -20.579 |     805.98 |     -1390.5 |      1392.1 |
- | "Original - Entry Point z"                      |      7673 |5.636355e+07 |     7345.7 |     4448.5 |      1330.5 |      11094. |
- | "Original - TOF"                                |      7673 |   270579.9 |     35.264 |     22.743 |      6.8097 |      178.32 |
- | "Unpacked - Energy"                             |      7673 |     153.46 |   0.020000 |     0.0000 |    0.020000 |    0.020000 |
- | "Unpacked - Entry Point x"                      |      7673 |   -6703905 |    -873.70 |     3063.7 |     -4150.7 |      4151.0 |
- | "Unpacked - Entry Point y"                      |      7673 |  -157905.2 |    -20.579 |     805.98 |     -1390.5 |      1392.1 |
- | "Unpacked - Entry Point z"                      |      7673 |5.636355e+07 |     7345.7 |     4448.5 |      1330.5 |      11094. |
- | "Unpacked - TOF"                                |      7673 |   270579.9 |     35.264 |     22.743 |      6.8097 |      178.32 |
+ | "Diff.    - Energy"                             |     10548 |-7.319145e-14 |-6.9389e-18 |     0.0000 | -6.9389e-18 | -6.9389e-18 |
+ | "Diff.    - Entry Point x"                      |     10548 |-0.004392286 |-4.1641e-07 | 2.8718e-05 | -4.9973e-05 |  4.9994e-05 |
+ | "Diff.    - Entry Point y"                      |     10548 |-2.362397e-05 |-2.2397e-09 | 2.9056e-05 | -4.9975e-05 |  4.9996e-05 |
+ | "Diff.    - Entry Point z"                      |     10548 |0.001667596 | 1.5810e-07 | 2.8962e-05 | -4.9986e-05 |  4.9999e-05 |
+ | "Diff.    - TOF"                                |     10548 |0.0001967027 | 1.8648e-08 | 2.8624e-06 | -4.9986e-06 |  4.9981e-06 |
+ | "Original - Energy"                             |     10548 |     210.96 |   0.020000 |     0.0000 |    0.020000 |    0.020000 |
+ | "Original - Entry Point x"                      |     10548 |-1.057522e+07 |    -1002.6 |     3041.9 |     -4150.3 |      4150.8 |
+ | "Original - Entry Point y"                      |     10548 |  -559235.7 |    -53.018 |     822.84 |     -1391.5 |      1391.5 |
+ | "Original - Entry Point z"                      |     10548 |8.002425e+07 |     7586.7 |     4427.6 |      1330.0 |      11095. |
+ | "Original - TOF"                                |     10548 |   345125.7 |     32.720 |     18.547 |      6.7659 |      139.00 |
+ | "Unpacked - Energy"                             |     10548 |     210.96 |   0.020000 |     0.0000 |    0.020000 |    0.020000 |
+ | "Unpacked - Entry Point x"                      |     10548 |-1.057522e+07 |    -1002.6 |     3041.9 |     -4150.3 |      4150.8 |
+ | "Unpacked - Entry Point y"                      |     10548 |  -559235.7 |    -53.018 |     822.84 |     -1391.5 |      1391.5 |
+ | "Unpacked - Entry Point z"                      |     10548 |8.002425e+07 |     7586.7 |     4427.6 |      1330.0 |      11095. |
+ | "Unpacked - TOF"                                |     10548 |   345125.7 |     32.720 |     18.547 |      6.7659 |      139.00 |
 CheckRichOpPhot         SUCCESS Number of counters : 72
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Aero. Exit x"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Diff.    - Aero. Exit y"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Diff.    - Aero. Exit z"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Diff.    - Cherenkov Phi"                      |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Diff.    - Cherenkov Theta"                    |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Diff.    - Emission Point x"                   |      7673 |0.002367648 | 3.0857e-07 | 2.9075e-05 | -4.9985e-05 |  4.9987e-05 |
- | "Diff.    - Emission Point y"                   |      7673 |0.0006694545 | 8.7248e-08 | 2.8895e-05 | -4.9985e-05 |  5.0000e-05 |
- | "Diff.    - Emission Point z"                   |      7673 |-0.001741972 |-2.2703e-07 | 2.8812e-05 | -5.0000e-05 |  4.9926e-05 |
- | "Diff.    - Energy"                             |      7673 |-6.301661e-10 |-8.2128e-14 | 5.7620e-12 | -1.0004e-11 |  1.0004e-11 |
- | "Diff.    - HPD In. Point x"                    |      7673 |0.001638174 | 2.1350e-07 | 2.8713e-05 | -4.9984e-05 |  4.9955e-05 |
- | "Diff.    - HPD In. Point y"                    |      7673 | 0.00167797 | 2.1868e-07 | 2.8804e-05 | -5.0000e-05 |  4.9991e-05 |
- | "Diff.    - HPD In. Point z"                    |      7673 |-0.001826856 |-2.3809e-07 | 2.8800e-05 | -4.9992e-05 |  4.9999e-05 |
- | "Diff.    - HPD QW Point x"                     |      7673 |-0.00161213 |-2.1010e-07 | 2.4277e-05 | -4.9987e-05 |  4.9992e-05 |
- | "Diff.    - HPD QW Point y"                     |      7673 |-0.0007121137 |-9.2808e-08 | 2.4350e-05 | -4.9922e-05 |  4.9999e-05 |
- | "Diff.    - HPD QW Point z"                     |      7673 |-0.0004992302 |-6.5063e-08 | 2.4364e-05 | -4.9988e-05 |  4.9963e-05 |
- | "Diff.    - Parent Momentum x"                  |      7673 |   1.030887 | 0.00013435 |  0.0028454 |  -0.0049976 |   0.0050000 |
- | "Diff.    - Parent Momentum y"                  |      7673 | -0.3269365 |-4.2609e-05 |  0.0028396 |  -0.0049881 |   0.0049915 |
- | "Diff.    - Parent Momentum z"                  |      7673 |  0.1337967 | 1.7437e-05 |  0.0028444 |  -0.0049974 |   0.0049976 |
- | "Diff.    - Prim. Mirr. x"                      |      7673 |0.0009317611 | 1.2143e-07 | 1.7826e-05 | -4.9945e-05 |  4.9939e-05 |
- | "Diff.    - Prim. Mirr. y"                      |      7673 |-0.0001572626 |-2.0496e-08 | 1.7554e-05 | -4.9834e-05 |  4.9997e-05 |
- | "Diff.    - Prim. Mirr. z"                      |      7673 |0.002502602 | 3.2616e-07 | 1.7760e-05 | -4.9992e-05 |  4.9916e-05 |
- | "Diff.    - Sec. Mirr. x"                       |      7673 |0.000749444 | 9.7673e-08 | 1.8220e-05 | -4.9971e-05 |  4.9930e-05 |
- | "Diff.    - Sec. Mirr. y"                       |      7673 |0.001916654 | 2.4979e-07 | 1.8453e-05 | -4.9921e-05 |  4.9936e-05 |
- | "Diff.    - Sec. Mirr. z"                       |      7673 |0.002837657 | 3.6982e-07 | 1.8226e-05 | -4.9928e-05 |  4.9907e-05 |
- | "Original - Aero. Exit x"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Aero. Exit y"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Aero. Exit z"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Cherenkov Phi"                      |      7673 |   24217.13 |     3.1561 |     1.8327 |  0.00015731 |      6.2822 |
- | "Original - Cherenkov Theta"                    |      7673 |   4886.932 |    0.63690 |    0.56804 |   0.0075484 |      2.8563 |
- | "Original - Emission Point x"                   |      7673 |   -6159159 |    -802.71 |     2223.9 |     -4052.0 |      4018.3 |
- | "Original - Emission Point y"                   |      7673 |     182587 |     23.796 |     577.14 |     -3160.2 |      2724.5 |
- | "Original - Emission Point z"                   |      7673 |5.516955e+07 |     7190.1 |     4402.0 |      990.41 |      11757. |
- | "Original - Energy"                             |      7673 | 0.03332124 | 4.3427e-06 | 1.0820e-06 |  1.7647e-06 |  6.8605e-06 |
- | "Original - HPD In. Point x"                    |      7673 |   -6563460 |    -855.40 |     2994.7 |     -4146.9 |      4144.1 |
- | "Original - HPD In. Point y"                    |      7673 |  -168540.8 |    -21.965 |     752.78 |     -1292.6 |      1355.1 |
- | "Original - HPD In. Point z"                    |      7673 |5.598548e+07 |     7296.4 |     4445.7 |      1261.4 |      11083. |
- | "Original - HPD QW Point x"                     |      7673 |   -3640233 |    -474.42 |     2587.3 |     -4081.1 |      4076.7 |
- | "Original - HPD QW Point y"                     |      7673 |  -257569.1 |    -33.568 |     632.97 |     -1284.4 |      1308.1 |
- | "Original - HPD QW Point z"                     |      7673 |4.011114e+07 |     5227.6 |     5005.2 |      0.0000 |      11068. |
- | "Original - Parent Momentum x"                  |      7673 |  -135642.9 |    -17.678 |     697.60 |     -4676.1 |      3266.9 |
- | "Original - Parent Momentum y"                  |      7673 |  -109056.4 |    -14.213 |     452.26 |     -3217.8 |      3275.2 |
- | "Original - Parent Momentum z"                  |      7673 |2.736612e+07 |     3566.5 |     8019.9 |     -311.40 |      72470. |
- | "Original - Prim. Mirr. x"                      |      7673 |  -128588.4 |    -16.759 |     255.22 |     -1485.1 |      1498.0 |
- | "Original - Prim. Mirr. y"                      |      7673 |   22438.52 |     2.9243 |     214.34 |     -1254.4 |      1343.7 |
- | "Original - Prim. Mirr. z"                      |      7673 |1.788229e+07 |     2330.5 |     4176.1 |      0.0000 |      11699. |
- | "Original - Sec. Mirr. x"                       |      7673 |  -286663.3 |    -37.360 |     872.74 |     -2824.1 |      2839.2 |
- | "Original - Sec. Mirr. y"                       |      7673 |    -154116 |    -20.085 |     335.15 |     -1071.0 |      1087.6 |
- | "Original - Sec. Mirr. z"                       |      7673 |1.683037e+07 |     2193.5 |     3796.8 |      0.0000 |      9880.7 |
- | "Unpacked - Aero. Exit x"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Unpacked - Aero. Exit y"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Unpacked - Aero. Exit z"                       |      7673 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Unpacked - Cherenkov Phi"                      |      7673 |   24217.13 |     3.1561 |     1.8327 |  0.00015731 |      6.2822 |
- | "Unpacked - Cherenkov Theta"                    |      7673 |   4886.932 |    0.63690 |    0.56804 |   0.0075484 |      2.8563 |
- | "Unpacked - Emission Point x"                   |      7673 |   -6159159 |    -802.71 |     2223.9 |     -4052.0 |      4018.3 |
- | "Unpacked - Emission Point y"                   |      7673 |     182587 |     23.796 |     577.14 |     -3160.2 |      2724.5 |
- | "Unpacked - Emission Point z"                   |      7673 |5.516955e+07 |     7190.1 |     4402.0 |      990.41 |      11757. |
- | "Unpacked - Energy"                             |      7673 | 0.03332125 | 4.3427e-06 | 1.0820e-06 |  1.7647e-06 |  6.8605e-06 |
- | "Unpacked - HPD In. Point x"                    |      7673 |   -6563460 |    -855.40 |     2994.7 |     -4146.9 |      4144.1 |
- | "Unpacked - HPD In. Point y"                    |      7673 |  -168540.8 |    -21.965 |     752.78 |     -1292.6 |      1355.1 |
- | "Unpacked - HPD In. Point z"                    |      7673 |5.598548e+07 |     7296.4 |     4445.7 |      1261.4 |      11083. |
- | "Unpacked - HPD QW Point x"                     |      7673 |   -3640233 |    -474.42 |     2587.3 |     -4081.1 |      4076.7 |
- | "Unpacked - HPD QW Point y"                     |      7673 |  -257569.1 |    -33.568 |     632.97 |     -1284.4 |      1308.1 |
- | "Unpacked - HPD QW Point z"                     |      7673 |4.011114e+07 |     5227.6 |     5005.2 |      0.0000 |      11068. |
- | "Unpacked - Parent Momentum x"                  |      7673 |  -135643.9 |    -17.678 |     697.60 |     -4676.1 |      3266.9 |
- | "Unpacked - Parent Momentum y"                  |      7673 |  -109056.1 |    -14.213 |     452.26 |     -3217.8 |      3275.2 |
- | "Unpacked - Parent Momentum z"                  |      7673 |2.736612e+07 |     3566.5 |     8019.9 |     -311.40 |      72470. |
- | "Unpacked - Prim. Mirr. x"                      |      7673 |  -128588.4 |    -16.759 |     255.22 |     -1485.1 |      1498.0 |
- | "Unpacked - Prim. Mirr. y"                      |      7673 |   22438.52 |     2.9243 |     214.34 |     -1254.4 |      1343.7 |
- | "Unpacked - Prim. Mirr. z"                      |      7673 |1.788229e+07 |     2330.5 |     4176.1 |      0.0000 |      11699. |
- | "Unpacked - Sec. Mirr. x"                       |      7673 |  -286663.3 |    -37.360 |     872.74 |     -2824.1 |      2839.2 |
- | "Unpacked - Sec. Mirr. y"                       |      7673 |    -154116 |    -20.085 |     335.15 |     -1071.0 |      1087.6 |
- | "Unpacked - Sec. Mirr. z"                       |      7673 |1.683037e+07 |     2193.5 |     3796.8 |      0.0000 |      9880.7 |
+ | "Diff.    - Aero. Exit x"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Diff.    - Aero. Exit y"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Diff.    - Aero. Exit z"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Diff.    - Cherenkov Phi"                      |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Diff.    - Cherenkov Theta"                    |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Diff.    - Emission Point x"                   |     10548 |3.947625e-05 | 3.7425e-09 | 2.8870e-05 | -4.9998e-05 |  4.9989e-05 |
+ | "Diff.    - Emission Point y"                   |     10548 |-0.0002184062 |-2.0706e-08 | 2.8794e-05 | -4.9986e-05 |  5.0000e-05 |
+ | "Diff.    - Emission Point z"                   |     10548 |-0.001489292 |-1.4119e-07 | 2.8967e-05 | -4.9983e-05 |  4.9993e-05 |
+ | "Diff.    - Energy"                             |     10548 |-9.014229e-10 |-8.5459e-14 | 5.7863e-12 | -1.0004e-11 |  1.0004e-11 |
+ | "Diff.    - HPD In. Point x"                    |     10548 |0.0003190855 | 3.0251e-08 | 2.8934e-05 | -5.0000e-05 |  4.9978e-05 |
+ | "Diff.    - HPD In. Point y"                    |     10548 |0.0008341572 | 7.9082e-08 | 2.9023e-05 | -4.9991e-05 |  4.9997e-05 |
+ | "Diff.    - HPD In. Point z"                    |     10548 |0.0001166045 | 1.1055e-08 | 2.8873e-05 | -4.9997e-05 |  4.9988e-05 |
+ | "Diff.    - HPD QW Point x"                     |     10548 |0.0009546055 | 9.0501e-08 | 2.3086e-05 | -5.0000e-05 |  4.9993e-05 |
+ | "Diff.    - HPD QW Point y"                     |     10548 |0.002242793 | 2.1263e-07 | 2.2918e-05 | -4.9994e-05 |  4.9978e-05 |
+ | "Diff.    - HPD QW Point z"                     |     10548 |-0.00100878 |-9.5637e-08 | 2.3156e-05 | -4.9960e-05 |  4.9997e-05 |
+ | "Diff.    - Parent Momentum x"                  |     10548 | 0.04996697 | 4.7371e-06 |  0.0028004 |  -0.0049980 |   0.0049923 |
+ | "Diff.    - Parent Momentum y"                  |     10548 |  0.9799924 | 9.2908e-05 |  0.0028541 |  -0.0049979 |   0.0049974 |
+ | "Diff.    - Parent Momentum z"                  |     10548 |  -2.036441 |-0.00019306 |  0.0028485 |  -0.0049996 |   0.0049966 |
+ | "Diff.    - Prim. Mirr. x"                      |     10548 |0.001243757 | 1.1791e-07 | 1.5669e-05 | -4.9994e-05 |  4.9916e-05 |
+ | "Diff.    - Prim. Mirr. y"                      |     10548 |3.403809e-05 | 3.2270e-09 | 1.5723e-05 | -4.9955e-05 |  4.9986e-05 |
+ | "Diff.    - Prim. Mirr. z"                      |     10548 |-0.0007845332 |-7.4377e-08 | 1.5809e-05 | -4.9999e-05 |  4.9971e-05 |
+ | "Diff.    - Sec. Mirr. x"                       |     10548 |-0.001831191 |-1.7361e-07 | 1.6276e-05 | -4.9975e-05 |  4.9869e-05 |
+ | "Diff.    - Sec. Mirr. y"                       |     10548 |-0.0008081206 |-7.6614e-08 | 1.6277e-05 | -4.9991e-05 |  4.9984e-05 |
+ | "Diff.    - Sec. Mirr. z"                       |     10548 |0.0001093967 | 1.0371e-08 | 1.6457e-05 | -4.9985e-05 |  4.9954e-05 |
+ | "Original - Aero. Exit x"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Aero. Exit y"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Aero. Exit z"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Cherenkov Phi"                      |     10548 |   32585.85 |     3.0893 |     1.8904 |  0.00036377 |      6.2817 |
+ | "Original - Cherenkov Theta"                    |     10548 |   6725.806 |    0.63764 |    0.48717 |   0.0085210 |      2.9263 |
+ | "Original - Emission Point x"                   |     10548 |-1.072998e+07 |    -1017.3 |     2514.9 |     -4032.6 |      3968.7 |
+ | "Original - Emission Point y"                   |     10548 |  -98051.66 |    -9.2958 |     596.84 |     -2189.2 |      2247.7 |
+ | "Original - Emission Point z"                   |     10548 |7.861452e+07 |     7453.0 |     4405.1 |      990.28 |      11821. |
+ | "Original - Energy"                             |     10548 |  0.0454635 | 4.3102e-06 | 1.1501e-06 |  1.7528e-06 |  6.8917e-06 |
+ | "Original - HPD In. Point x"                    |     10548 |-1.033776e+07 |    -980.07 |     2972.1 |     -4111.1 |      4076.5 |
+ | "Original - HPD In. Point y"                    |     10548 |  -413843.1 |    -39.234 |     773.64 |     -1388.5 |      1306.4 |
+ | "Original - HPD In. Point z"                    |     10548 |7.950946e+07 |     7537.9 |     4425.9 |      1263.7 |      11086. |
+ | "Original - HPD QW Point x"                     |     10548 |   -4584445 |    -434.63 |     2357.6 |     -4072.1 |      4072.6 |
+ | "Original - HPD QW Point y"                     |     10548 |  -418576.2 |    -39.683 |     640.56 |     -1310.1 |      1297.2 |
+ | "Original - HPD QW Point z"                     |     10548 |4.739377e+07 |     4493.2 |     4960.0 |      0.0000 |      11075. |
+ | "Original - Parent Momentum x"                  |     10548 |   258340.4 |     24.492 |     666.18 |     -5241.5 |      3284.2 |
+ | "Original - Parent Momentum y"                  |     10548 |    -605496 |    -57.404 |     417.19 |     -3201.6 |      1646.5 |
+ | "Original - Parent Momentum z"                  |     10548 |2.934688e+07 |     2782.2 |     7564.6 |     -641.23 |      73850. |
+ | "Original - Prim. Mirr. x"                      |     10548 |  -95122.15 |    -9.0180 |     190.86 |     -1450.9 |      1458.5 |
+ | "Original - Prim. Mirr. y"                      |     10548 |  -208711.5 |    -19.787 |     169.37 |     -1395.7 |      1319.1 |
+ | "Original - Prim. Mirr. z"                      |     10548 |1.637431e+07 |     1552.4 |     3423.9 |      0.0000 |      11694. |
+ | "Original - Sec. Mirr. x"                       |     10548 |   143067.8 |     13.564 |     686.93 |     -2850.5 |      2851.0 |
+ | "Original - Sec. Mirr. y"                       |     10548 |  -380317.4 |    -36.056 |     303.49 |     -1043.7 |      1063.2 |
+ | "Original - Sec. Mirr. z"                       |     10548 |1.514085e+07 |     1435.4 |     3141.9 |      0.0000 |      9879.2 |
+ | "Unpacked - Aero. Exit x"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Unpacked - Aero. Exit y"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Unpacked - Aero. Exit z"                       |     10548 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Unpacked - Cherenkov Phi"                      |     10548 |   32585.85 |     3.0893 |     1.8904 |  0.00036377 |      6.2817 |
+ | "Unpacked - Cherenkov Theta"                    |     10548 |   6725.806 |    0.63764 |    0.48717 |   0.0085210 |      2.9263 |
+ | "Unpacked - Emission Point x"                   |     10548 |-1.072998e+07 |    -1017.3 |     2514.9 |     -4032.6 |      3968.7 |
+ | "Unpacked - Emission Point y"                   |     10548 |  -98051.66 |    -9.2958 |     596.84 |     -2189.2 |      2247.7 |
+ | "Unpacked - Emission Point z"                   |     10548 |7.861452e+07 |     7453.0 |     4405.1 |      990.28 |      11821. |
+ | "Unpacked - Energy"                             |     10548 |  0.0454635 | 4.3102e-06 | 1.1501e-06 |  1.7528e-06 |  6.8917e-06 |
+ | "Unpacked - HPD In. Point x"                    |     10548 |-1.033776e+07 |    -980.07 |     2972.1 |     -4111.1 |      4076.5 |
+ | "Unpacked - HPD In. Point y"                    |     10548 |  -413843.1 |    -39.234 |     773.64 |     -1388.5 |      1306.4 |
+ | "Unpacked - HPD In. Point z"                    |     10548 |7.950946e+07 |     7537.9 |     4425.9 |      1263.7 |      11086. |
+ | "Unpacked - HPD QW Point x"                     |     10548 |   -4584445 |    -434.63 |     2357.6 |     -4072.1 |      4072.6 |
+ | "Unpacked - HPD QW Point y"                     |     10548 |  -418576.2 |    -39.683 |     640.56 |     -1310.1 |      1297.2 |
+ | "Unpacked - HPD QW Point z"                     |     10548 |4.739377e+07 |     4493.2 |     4960.0 |      0.0000 |      11075. |
+ | "Unpacked - Parent Momentum x"                  |     10548 |   258340.4 |     24.492 |     666.18 |     -5241.5 |      3284.2 |
+ | "Unpacked - Parent Momentum y"                  |     10548 |    -605497 |    -57.404 |     417.19 |     -3201.6 |      1646.5 |
+ | "Unpacked - Parent Momentum z"                  |     10548 |2.934689e+07 |     2782.2 |     7564.6 |     -641.23 |      73850. |
+ | "Unpacked - Prim. Mirr. x"                      |     10548 |  -95122.15 |    -9.0180 |     190.86 |     -1450.9 |      1458.5 |
+ | "Unpacked - Prim. Mirr. y"                      |     10548 |  -208711.5 |    -19.787 |     169.37 |     -1395.7 |      1319.1 |
+ | "Unpacked - Prim. Mirr. z"                      |     10548 |1.637431e+07 |     1552.4 |     3423.9 |      0.0000 |      11694. |
+ | "Unpacked - Sec. Mirr. x"                       |     10548 |   143067.8 |     13.564 |     686.93 |     -2850.5 |      2851.0 |
+ | "Unpacked - Sec. Mirr. y"                       |     10548 |  -380317.4 |    -36.056 |     303.49 |     -1043.7 |      1063.2 |
+ | "Unpacked - Sec. Mirr. z"                       |     10548 |1.514085e+07 |     1435.4 |     3141.9 |      0.0000 |      9879.2 |
 CheckRichSegments       SUCCESS Number of counters : 18
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Traj. Momenta x"                    |      3301 | 0.08459816 | 2.5628e-05 |  0.0028191 |  -0.0049976 |   0.0050000 |
- | "Diff.    - Traj. Momenta y"                    |      3301 |-0.03344546 |-1.0132e-05 |  0.0028820 |  -0.0049881 |   0.0049915 |
- | "Diff.    - Traj. Momenta z"                    |      3301 | 0.07336428 | 2.2225e-05 |  0.0028148 |  -0.0049974 |   0.0049976 |
- | "Diff.    - Traj. Point x"                      |      3301 |0.003153271 | 9.5525e-07 | 2.8728e-05 | -4.9974e-05 |  4.9998e-05 |
- | "Diff.    - Traj. Point y"                      |      3301 |0.001795908 | 5.4405e-07 | 2.8767e-05 | -4.9917e-05 |  4.9975e-05 |
- | "Diff.    - Traj. Point z"                      |      3301 |-0.001400363 |-4.2422e-07 | 2.7864e-05 | -4.9932e-05 |  4.9982e-05 |
- | "Original - Traj. Momenta x"                    |      3301 |  -74454.22 |    -22.555 |     739.20 |     -4676.1 |      3266.9 |
- | "Original - Traj. Momenta y"                    |      3301 |  -74564.54 |    -22.588 |     504.72 |     -3217.8 |      3275.2 |
- | "Original - Traj. Momenta z"                    |      3301 |1.435343e+07 |     4348.2 |     8801.0 |     -311.40 |      72470. |
- | "Original - Traj. Point x"                      |      3301 |   -1750679 |    -530.35 |     1919.8 |     -4052.0 |      4018.3 |
- | "Original - Traj. Point y"                      |      3301 |  -4046.068 |    -1.2257 |     541.69 |     -3189.6 |      2872.2 |
- | "Original - Traj. Point z"                      |      3301 | 2.4666e+07 |     7472.3 |     4313.4 |      990.00 |      11832. |
- | "Unpacked - Traj. Momenta x"                    |      3301 |   -74454.3 |    -22.555 |     739.20 |     -4676.1 |      3266.9 |
- | "Unpacked - Traj. Momenta y"                    |      3301 |  -74564.51 |    -22.588 |     504.72 |     -3217.8 |      3275.2 |
- | "Unpacked - Traj. Momenta z"                    |      3301 |1.435343e+07 |     4348.2 |     8801.0 |     -311.40 |      72470. |
- | "Unpacked - Traj. Point x"                      |      3301 |   -1750679 |    -530.35 |     1919.8 |     -4052.0 |      4018.3 |
- | "Unpacked - Traj. Point y"                      |      3301 |   -4046.07 |    -1.2257 |     541.69 |     -3189.6 |      2872.2 |
- | "Unpacked - Traj. Point z"                      |      3301 | 2.4666e+07 |     7472.3 |     4313.4 |      990.00 |      11832. |
+ | "Diff.    - Traj. Momenta x"                    |      3747 |  0.1937008 | 5.1695e-05 |  0.0028887 |  -0.0049980 |   0.0049923 |
+ | "Diff.    - Traj. Momenta y"                    |      3747 |  0.4136812 | 0.00011040 |  0.0028709 |  -0.0049979 |   0.0049974 |
+ | "Diff.    - Traj. Momenta z"                    |      3747 | -0.2637054 |-7.0378e-05 |  0.0028558 |  -0.0049996 |   0.0049966 |
+ | "Diff.    - Traj. Point x"                      |      3747 |-0.001376935 |-3.6748e-07 | 2.8457e-05 | -5.0000e-05 |  4.9955e-05 |
+ | "Diff.    - Traj. Point y"                      |      3747 |-0.001254025 |-3.3467e-07 | 2.8794e-05 | -4.9973e-05 |  4.9996e-05 |
+ | "Diff.    - Traj. Point z"                      |      3747 |0.000930729 | 2.4839e-07 | 2.8281e-05 | -4.9934e-05 |  4.9987e-05 |
+ | "Original - Traj. Momenta x"                    |      3747 |  -92553.33 |    -24.701 |     853.99 |     -5241.5 |      3284.2 |
+ | "Original - Traj. Momenta y"                    |      3747 |    -199374 |    -53.209 |     479.39 |     -3201.6 |      1646.5 |
+ | "Original - Traj. Momenta z"                    |      3747 |1.533116e+07 |     4091.6 |     9051.7 |     -641.23 |      73850. |
+ | "Original - Traj. Point x"                      |      3747 |   -2467326 |    -658.48 |     2119.7 |     -4032.6 |      3968.7 |
+ | "Original - Traj. Point y"                      |      3747 |  -81923.98 |    -21.864 |     554.41 |     -2308.7 |      2356.1 |
+ | "Original - Traj. Point z"                      |      3747 |2.68308e+07 |     7160.6 |     4451.3 |      983.65 |      11832. |
+ | "Unpacked - Traj. Momenta x"                    |      3747 |  -92553.52 |    -24.701 |     853.99 |     -5241.5 |      3284.2 |
+ | "Unpacked - Traj. Momenta y"                    |      3747 |  -199374.4 |    -53.209 |     479.39 |     -3201.6 |      1646.5 |
+ | "Unpacked - Traj. Momenta z"                    |      3747 |1.533116e+07 |     4091.6 |     9051.7 |     -641.23 |      73850. |
+ | "Unpacked - Traj. Point x"                      |      3747 |   -2467326 |    -658.48 |     2119.7 |     -4032.6 |      3968.7 |
+ | "Unpacked - Traj. Point y"                      |      3747 |  -81923.98 |    -21.864 |     554.41 |     -2308.7 |      2356.1 |
+ | "Unpacked - Traj. Point z"                      |      3747 |2.68308e+07 |     7160.6 |     4451.3 |      983.65 |      11832. |
 UnpackSpdHits           SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       2975 |     2975.0 |     0.0000 |      2975.0 |      2975.0 |
+ | "# UnPackedData"                                |         1 |       2592 |     2592.0 |     0.0000 |      2592.0 |      2592.0 |
 CheckSpdHits            SUCCESS Number of counters : 6
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Energy"                             |      2975 | 0.00132512 | 4.4542e-07 | 2.8771e-05 | -4.9945e-05 |  4.9949e-05 |
- | "Diff.    - TOF"                                |      2975 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Energy"                             |      2975 |   1716.582 |    0.57700 |     1.9076 |  1.7421e-05 |      44.907 |
- | "Original - TOF"                                |      2975 |       4633 |     1.5573 |     1.7006 |     -1.0000 |      6.0000 |
- | "Unpacked - Energy"                             |      2975 |    1716.58 |    0.57700 |     1.9076 |      0.0000 |      44.907 |
- | "Unpacked - TOF"                                |      2975 |       4633 |     1.5573 |     1.7006 |     -1.0000 |      6.0000 |
+ | "Diff.    - Energy"                             |      2592 |0.003510401 | 1.3543e-06 | 2.8907e-05 | -4.9968e-05 |  4.9943e-05 |
+ | "Diff.    - TOF"                                |      2592 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Energy"                             |      2592 |   1839.167 |    0.70956 |     2.9382 |  1.0692e-05 |      94.456 |
+ | "Original - TOF"                                |      2592 |       4088 |     1.5772 |     1.7034 |     -1.0000 |      7.0000 |
+ | "Unpacked - Energy"                             |      2592 |   1839.164 |    0.70955 |     2.9382 |      0.0000 |      94.456 |
+ | "Unpacked - TOF"                                |      2592 |       4088 |     1.5772 |     1.7034 |     -1.0000 |      7.0000 |
 UnpackPrsHits           SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       4790 |     4790.0 |     0.0000 |      4790.0 |      4790.0 |
+ | "# UnPackedData"                                |         1 |       4575 |     4575.0 |     0.0000 |      4575.0 |      4575.0 |
 CheckPrsHits            SUCCESS Number of counters : 6
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Energy"                             |      4790 |-0.001402896 |-2.9288e-07 | 2.8865e-05 | -4.9998e-05 |  4.9992e-05 |
- | "Diff.    - TOF"                                |      4790 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Energy"                             |      4790 |   5096.245 |     1.0639 |     4.0583 |  9.0176e-06 |      86.952 |
- | "Original - TOF"                                |      4790 |       7392 |     1.5432 |     1.7029 |     -1.0000 |      8.0000 |
- | "Unpacked - Energy"                             |      4790 |   5096.246 |     1.0639 |     4.0583 |      0.0000 |      86.952 |
- | "Unpacked - TOF"                                |      4790 |       7392 |     1.5432 |     1.7029 |     -1.0000 |      8.0000 |
+ | "Diff.    - Energy"                             |      4575 |-0.000169453 |-3.7039e-08 | 2.9066e-05 | -4.9942e-05 |  4.9956e-05 |
+ | "Diff.    - TOF"                                |      4575 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Energy"                             |      4575 |   5266.534 |     1.1512 |     4.4340 |  4.1305e-06 |      102.40 |
+ | "Original - TOF"                                |      4575 |       7114 |     1.5550 |     1.7117 |     -1.0000 |      10.000 |
+ | "Unpacked - Energy"                             |      4575 |   5266.534 |     1.1512 |     4.4340 |      0.0000 |      102.39 |
+ | "Unpacked - TOF"                                |      4575 |       7114 |     1.5550 |     1.7117 |     -1.0000 |      10.000 |
 UnpackEcalHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       5852 |     5852.0 |     0.0000 |      5852.0 |      5852.0 |
+ | "# UnPackedData"                                |         1 |       6072 |     6072.0 |     0.0000 |      6072.0 |      6072.0 |
 CheckEcalHits           SUCCESS Number of counters : 6
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Energy"                             |      5852 |-0.0005513503 |-9.4216e-08 | 2.8851e-05 | -4.9991e-05 |  5.0000e-05 |
- | "Diff.    - TOF"                                |      5852 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Energy"                             |      5852 |   74894.59 |     12.798 |     68.859 |  4.9179e-06 |      3750.9 |
- | "Original - TOF"                                |      5852 |        919 |    0.15704 |    0.39621 |      0.0000 |      7.0000 |
- | "Unpacked - Energy"                             |      5852 |   74894.59 |     12.798 |     68.859 |      0.0000 |      3750.9 |
- | "Unpacked - TOF"                                |      5852 |        919 |    0.15704 |    0.39621 |      0.0000 |      7.0000 |
+ | "Diff.    - Energy"                             |      6072 | -0.0031816 |-5.2398e-07 | 2.8494e-05 | -4.9933e-05 |  4.9997e-05 |
+ | "Diff.    - TOF"                                |      6072 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Energy"                             |      6072 |    88033.3 |     14.498 |     86.241 |  1.6658e-10 |      3816.4 |
+ | "Original - TOF"                                |      6072 |       1083 |    0.17836 |    0.41779 |      0.0000 |      8.0000 |
+ | "Unpacked - Energy"                             |      6072 |    88033.3 |     14.498 |     86.241 |      0.0000 |      3816.4 |
+ | "Unpacked - TOF"                                |      6072 |       1083 |    0.17836 |    0.41779 |      0.0000 |      8.0000 |
 UnpackHcalHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |        824 |     824.00 |     0.0000 |      824.00 |      824.00 |
+ | "# UnPackedData"                                |         1 |       1010 |     1010.0 |     0.0000 |      1010.0 |      1010.0 |
 CheckHcalHits           SUCCESS Number of counters : 6
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Energy"                             |       824 |-0.001615865 |-1.9610e-06 | 2.9261e-05 | -4.9926e-05 |  4.9979e-05 |
- | "Diff.    - TOF"                                |       824 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
- | "Original - Energy"                             |       824 |    9495.87 |     11.524 |     41.485 |  0.00011212 |      759.79 |
- | "Original - TOF"                                |       824 |        148 |    0.17961 |    0.42583 |     -1.0000 |      2.0000 |
- | "Unpacked - Energy"                             |       824 |   9495.871 |     11.524 |     41.485 |  0.00010000 |      759.79 |
- | "Unpacked - TOF"                                |       824 |        148 |    0.17961 |    0.42583 |     -1.0000 |      2.0000 |
+ | "Diff.    - Energy"                             |      1010 |0.000912932 | 9.0389e-07 | 2.9178e-05 | -4.9881e-05 |  4.9943e-05 |
+ | "Diff.    - TOF"                                |      1010 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+ | "Original - Energy"                             |      1010 |    8702.63 |     8.6165 |     26.360 |  0.00024602 |      422.09 |
+ | "Original - TOF"                                |      1010 |        218 |    0.21584 |    0.47193 |     -1.0000 |      4.0000 |
+ | "Unpacked - Energy"                             |      1010 |   8702.629 |     8.6165 |     26.360 |  0.00020000 |      422.09 |
+ | "Unpacked - TOF"                                |      1010 |        218 |    0.21584 |    0.47193 |     -1.0000 |      4.0000 |
 UnpackMuonHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "# UnPackedData"                                |         1 |       1129 |     1129.0 |     0.0000 |      1129.0 |      1129.0 |
+ | "# UnPackedData"                                |         1 |        753 |     753.00 |     0.0000 |      753.00 |      753.00 |
 CheckMuonHits           SUCCESS Number of counters : 27
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "Diff.    - Displacement x"                     |      1129 |-6.949183e-06 |-6.1552e-09 | 2.8270e-07 | -4.9934e-07 |  4.9997e-07 |
- | "Diff.    - Displacement y"                     |      1129 |-1.119585e-05 |-9.9166e-09 | 2.8722e-07 | -4.9914e-07 |  4.9751e-07 |
- | "Diff.    - Displacement z"                     |      1129 |5.340185e-07 | 4.7300e-10 | 2.8336e-07 | -4.9661e-07 |  4.9941e-07 |
- | "Diff.    - Energy"                             |      1129 |1.343652e-05 | 1.1901e-08 | 5.6930e-07 | -9.9317e-07 |  9.9940e-07 |
- | "Diff.    - Entry Point x"                      |      1129 |-0.000740038 |-6.5548e-07 | 2.8942e-05 | -4.9993e-05 |  4.9918e-05 |
- | "Diff.    - Entry Point y"                      |      1129 |-0.001231496 |-1.0908e-06 | 2.9070e-05 | -4.9844e-05 |  4.9932e-05 |
- | "Diff.    - Entry Point z"                      |      1129 |0.0004007405 | 3.5495e-07 | 2.8944e-05 | -4.9910e-05 |  4.9983e-05 |
- | "Diff.    - Parent |P|"                         |      1129 |-0.008685212 |-7.6928e-06 |  0.0028737 |  -0.0049984 |   0.0049946 |
- | "Diff.    - TOF"                                |      1129 |0.0003068961 | 2.7183e-07 | 2.8588e-06 | -4.9977e-06 |  4.9822e-06 |
- | "Original - Displacement x"                     |      1129 |  -336.3118 |   -0.29788 |     6.2695 |     -192.37 |      19.148 |
- | "Original - Displacement y"                     |      1129 |   -146.103 |   -0.12941 |     5.6293 |     -168.89 |      21.682 |
- | "Original - Displacement z"                     |      1129 |   4751.013 |     4.2082 |     1.9096 |     -5.0854 |      5.0617 |
- | "Original - Energy"                             |      1129 |   4.347077 |  0.0038504 |   0.019024 |  1.2273e-05 |     0.27689 |
- | "Original - Entry Point x"                      |      1129 |  -201936.3 |    -178.86 |     1319.2 |     -4790.0 |      3885.1 |
- | "Original - Entry Point y"                      |      1129 |   210515.8 |     186.46 |     788.43 |     -2931.5 |      4019.1 |
- | "Original - Entry Point z"                      |      1129 |1.539407e+07 |     13635. |     2078.5 |      11953. |      19032. |
- | "Original - Parent |P|"                         |      1129 |    2585828 |     2290.4 |     6404.6 |      1.4373 |      50940. |
- | "Original - TOF"                                |      1129 |   52942.48 |     46.893 |     6.9731 |      39.971 |      69.130 |
- | "Unpacked - Displacement x"                     |      1129 |  -336.3118 |   -0.29788 |     6.2695 |     -192.37 |      19.148 |
- | "Unpacked - Displacement y"                     |      1129 |   -146.103 |   -0.12941 |     5.6293 |     -168.89 |      21.682 |
- | "Unpacked - Displacement z"                     |      1129 |   4751.013 |     4.2082 |     1.9096 |     -5.0854 |      5.0617 |
- | "Unpacked - Energy"                             |      1129 |   4.347064 |  0.0038504 |   0.019024 |  1.2000e-05 |     0.27689 |
- | "Unpacked - Entry Point x"                      |      1129 |  -201936.3 |    -178.86 |     1319.2 |     -4790.0 |      3885.1 |
- | "Unpacked - Entry Point y"                      |      1129 |   210515.8 |     186.46 |     788.43 |     -2931.5 |      4019.1 |
- | "Unpacked - Entry Point z"                      |      1129 |1.539407e+07 |     13635. |     2078.5 |      11953. |      19032. |
- | "Unpacked - Parent |P|"                         |      1129 |    2585828 |     2290.4 |     6404.6 |      1.4400 |      50940. |
- | "Unpacked - TOF"                                |      1129 |   52942.48 |     46.893 |     6.9731 |      39.971 |      69.130 |
+ | "Diff.    - Displacement x"                     |       753 |-4.424172e-06 |-5.8754e-09 | 2.8167e-07 | -4.9980e-07 |  4.9240e-07 |
+ | "Diff.    - Displacement y"                     |       753 |7.594374e-06 | 1.0085e-08 | 2.8484e-07 | -4.9957e-07 |  4.9973e-07 |
+ | "Diff.    - Displacement z"                     |       753 |-1.126817e-06 |-1.4964e-09 | 2.8674e-07 | -4.9841e-07 |  4.9724e-07 |
+ | "Diff.    - Energy"                             |       753 |-1.029377e-05 |-1.3670e-08 | 5.6732e-07 | -9.9580e-07 |  9.9994e-07 |
+ | "Diff.    - Entry Point x"                      |       753 |-0.001901057 |-2.5246e-06 | 2.8768e-05 | -4.9936e-05 |  4.9736e-05 |
+ | "Diff.    - Entry Point y"                      |       753 |0.0001886943 | 2.5059e-07 | 2.8555e-05 | -4.9986e-05 |  4.9864e-05 |
+ | "Diff.    - Entry Point z"                      |       753 |-0.0007218197 |-9.5859e-07 | 2.7893e-05 | -4.9989e-05 |  4.9951e-05 |
+ | "Diff.    - Parent |P|"                         |       753 | 0.03429082 | 4.5539e-05 |  0.0030183 |  -0.0049737 |   0.0049944 |
+ | "Diff.    - TOF"                                |       753 |0.0001026836 | 1.3637e-07 | 2.8722e-06 | -4.9866e-06 |  4.9841e-06 |
+ | "Original - Displacement x"                     |       753 |   9.277273 |   0.012320 |     3.2602 |     -33.805 |      22.713 |
+ | "Original - Displacement y"                     |       753 |  -82.10803 |   -0.10904 |     3.2038 |     -14.738 |      41.649 |
+ | "Original - Displacement z"                     |       753 |   2817.133 |     3.7412 |     2.4612 |     -5.0442 |      5.1500 |
+ | "Original - Energy"                             |       753 |    7.82855 |   0.010396 |   0.053776 |  3.7998e-12 |     0.53448 |
+ | "Original - Entry Point x"                      |       753 |   24611.32 |     32.684 |     1586.8 |     -3865.2 |      4683.9 |
+ | "Original - Entry Point y"                      |       753 |  -111846.3 |    -148.53 |     1079.2 |     -4026.1 |      3853.9 |
+ | "Original - Entry Point z"                      |       753 |    9753258 |     12953. |     1671.1 |      11953. |      19020. |
+ | "Original - Parent |P|"                         |       753 |    2011132 |     2670.8 |     5980.8 |      1.5149 |      50960. |
+ | "Original - TOF"                                |       753 |   34822.89 |     46.246 |     9.4066 |      39.972 |      96.106 |
+ | "Unpacked - Displacement x"                     |       753 |   9.277277 |   0.012320 |     3.2602 |     -33.805 |      22.713 |
+ | "Unpacked - Displacement y"                     |       753 |  -82.10804 |   -0.10904 |     3.2038 |     -14.738 |      41.649 |
+ | "Unpacked - Displacement z"                     |       753 |   2817.133 |     3.7412 |     2.4612 |     -5.0442 |      5.1500 |
+ | "Unpacked - Energy"                             |       753 |    7.82856 |   0.010396 |   0.053776 |      0.0000 |     0.53448 |
+ | "Unpacked - Entry Point x"                      |       753 |   24611.32 |     32.684 |     1586.8 |     -3865.2 |      4683.9 |
+ | "Unpacked - Entry Point y"                      |       753 |  -111846.3 |    -148.53 |     1079.2 |     -4026.1 |      3853.9 |
+ | "Unpacked - Entry Point z"                      |       753 |    9753258 |     12953. |     1671.1 |      11953. |      19020. |
+ | "Unpacked - Parent |P|"                         |       753 |    2011132 |     2670.8 |     5980.8 |      1.5100 |      50960. |
+ | "Unpacked - TOF"                                |       753 |   34822.89 |     46.246 |     9.4066 |      39.972 |      96.106 |
 SimMonitor                DEBUG ==> Finalize
 SimMonitor                DEBUG Finalize base class GaudiAlgorithm
 SimMonitor                DEBUG Tools to release :
@@ -5295,10 +5309,10 @@ GiGaGeo.MuonSDet          DEBUG Services to release :
 GiGaGeo.Hcal              DEBUG  ==> Finalize the base class GaudiTool 
 GiGaGeo.Hcal            SUCCESS Number of counters : 4
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "#energy"                                       |         1 |    9.49587 |     9.4959 | 4.4936e-08 |      9.4959 |      9.4959 |
- | "#hits"                                         |         1 |        398 |     398.00 |     0.0000 |      398.00 |      398.00 |
- | "#subhits"                                      |         1 |        656 |     656.00 |     0.0000 |      656.00 |      656.00 |
- | "#tslots"                                       |         1 |        824 |     824.00 |     0.0000 |      824.00 |      824.00 |
+ | "#energy"                                       |         1 |    8.70263 |     8.7026 | 5.6620e-08 |      8.7026 |      8.7026 |
+ | "#hits"                                         |         1 |        443 |     443.00 |     0.0000 |      443.00 |      443.00 |
+ | "#subhits"                                      |         1 |        778 |     778.00 |     0.0000 |      778.00 |      778.00 |
+ | "#tslots"                                       |         1 |       1010 |     1010.0 |     0.0000 |      1010.0 |      1010.0 |
 GiGaGeo.Hcal              DEBUG Tools to release :
 GiGaGeo.Hcal              DEBUG Services to release : DetectorDataSvc HistogramDataSvc
 GiGaGeo.Hcal              DEBUG Releasing service 'DetectorDataSvc'
@@ -5306,10 +5320,10 @@ GiGaGeo.Hcal              DEBUG Releasing service 'HistogramDataSvc'
 GiGaGeo.Ecal              DEBUG  ==> Finalize the base class GaudiTool 
 GiGaGeo.Ecal            SUCCESS Number of counters : 4
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "#energy"                                       |         1 |   74.89459 |     74.895 | 2.2794e-07 |      74.895 |      74.895 |
- | "#hits"                                         |         1 |       2488 |     2488.0 |     0.0000 |      2488.0 |      2488.0 |
- | "#subhits"                                      |         1 |       5023 |     5023.0 |     0.0000 |      5023.0 |      5023.0 |
- | "#tslots"                                       |         1 |       5852 |     5852.0 |     0.0000 |      5852.0 |      5852.0 |
+ | "#energy"                                       |         1 |    88.0333 |     88.033 | 6.5021e-07 |      88.033 |      88.033 |
+ | "#hits"                                         |         1 |       2613 |     2613.0 |     0.0000 |      2613.0 |      2613.0 |
+ | "#subhits"                                      |         1 |       5072 |     5072.0 |     0.0000 |      5072.0 |      5072.0 |
+ | "#tslots"                                       |         1 |       6072 |     6072.0 |     0.0000 |      6072.0 |      6072.0 |
 GiGaGeo.Ecal              DEBUG Tools to release :
 GiGaGeo.Ecal              DEBUG Services to release : DetectorDataSvc HistogramDataSvc
 GiGaGeo.Ecal              DEBUG Releasing service 'DetectorDataSvc'
@@ -5317,10 +5331,10 @@ GiGaGeo.Ecal              DEBUG Releasing service 'HistogramDataSvc'
 GiGaGeo.Prs               DEBUG  ==> Finalize the base class GaudiTool 
 GiGaGeo.Prs             SUCCESS Number of counters : 4
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "#energy"                                       |         1 |   5.096245 |     5.0962 | 4.1629e-08 |      5.0962 |      5.0962 |
- | "#hits"                                         |         1 |        619 |     619.00 |     0.0000 |      619.00 |      619.00 |
- | "#subhits"                                      |         1 |        809 |     809.00 |     0.0000 |      809.00 |      809.00 |
- | "#tslots"                                       |         1 |       4790 |     4790.0 |     0.0000 |      4790.0 |      4790.0 |
+ | "#energy"                                       |         1 |   5.266534 |     5.2665 | 4.1775e-08 |      5.2665 |      5.2665 |
+ | "#hits"                                         |         1 |        635 |     635.00 |     0.0000 |      635.00 |      635.00 |
+ | "#subhits"                                      |         1 |        774 |     774.00 |     0.0000 |      774.00 |      774.00 |
+ | "#tslots"                                       |         1 |       4575 |     4575.0 |     0.0000 |      4575.0 |      4575.0 |
 GiGaGeo.Prs               DEBUG Tools to release :
 GiGaGeo.Prs               DEBUG Services to release : DetectorDataSvc HistogramDataSvc
 GiGaGeo.Prs               DEBUG Releasing service 'DetectorDataSvc'
@@ -5328,10 +5342,10 @@ GiGaGeo.Prs               DEBUG Releasing service 'HistogramDataSvc'
 GiGaGeo.Spd               DEBUG  ==> Finalize the base class GaudiTool 
 GiGaGeo.Spd             SUCCESS Number of counters : 4
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
- | "#energy"                                       |         1 |   1.716582 |     1.7166 | 9.3132e-10 |      1.7166 |      1.7166 |
- | "#hits"                                         |         1 |        432 |     432.00 |     0.0000 |      432.00 |      432.00 |
- | "#subhits"                                      |         1 |        504 |     504.00 |     0.0000 |      504.00 |      504.00 |
- | "#tslots"                                       |         1 |       2975 |     2975.0 |     0.0000 |      2975.0 |      2975.0 |
+ | "#energy"                                       |         1 |   1.839167 |     1.8392 | 6.3508e-09 |      1.8392 |      1.8392 |
+ | "#hits"                                         |         1 |        389 |     389.00 |     0.0000 |      389.00 |      389.00 |
+ | "#subhits"                                      |         1 |        441 |     441.00 |     0.0000 |      441.00 |      441.00 |
+ | "#tslots"                                       |         1 |       2592 |     2592.0 |     0.0000 |      2592.0 |      2592.0 |
 GiGaGeo.Spd               DEBUG Tools to release :
 GiGaGeo.Spd               DEBUG Services to release : DetectorDataSvc HistogramDataSvc
 GiGaGeo.Spd               DEBUG Releasing service 'DetectorDataSvc'
@@ -5368,7 +5382,7 @@ MainEventGaussSim.Mai...  DEBUG  ==> Finalize the base class GaudiTool
 MainEventGaussSim.Mai...SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "Delta Memory/MB"                               |         0 |          0 |     0.0000 |     0.0000 | 1.7977e+308 |-1.7977e+308 |
- | "Total Memory/MB"                               |         1 |   2030.852 |     2030.9 | 1.4392e-05 |      2030.9 |      2030.9 |
+ | "Total Memory/MB"                               |         1 |   2058.284 |     2058.3 | 1.0620e-05 |      2058.3 |      2058.3 |
 MainEventGaussSim.Mai...  DEBUG Tools to release :
 MainEventGaussSim.Mai...  DEBUG Services to release : HistogramDataSvc
 MainEventGaussSim.Mai...  DEBUG Releasing service 'HistogramDataSvc'
@@ -5394,12 +5408,12 @@ GaussGen.GaussGenMemory   DEBUG  ==> Finalize the base class GaudiTool
 GaussGen.GaussGenMemory SUCCESS Number of counters : 2
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "Delta Memory/MB"                               |         0 |          0 |     0.0000 |     0.0000 | 1.7977e+308 |-1.7977e+308 |
- | "Total Memory/MB"                               |         1 |   1952.692 |     1952.7 | 1.0988e-05 |      1952.7 |      1952.7 |
+ | "Total Memory/MB"                               |         1 |   1980.116 |     1980.1 |     0.0000 |      1980.1 |      1980.1 |
 GaussGen.GaussGenMemory   DEBUG Tools to release :
 GaussGen.GaussGenMemory   DEBUG Services to release : HistogramDataSvc
 GaussGen.GaussGenMemory   DEBUG Releasing service 'HistogramDataSvc'
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
-ToolSvc.SequencerTime...   INFO This machine has a speed about   2.70 times the speed of a 2.8 GHz Xeon.
+ToolSvc.SequencerTime...   INFO This machine has a speed about   2.16 times the speed of a 2.8 GHz Xeon.
 ToolSvc.SequencerTime...   INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
 ToolSvc.SequencerTime...   INFO --------------------------------------------------------------------------------------------------
@@ -5413,140 +5427,140 @@ TimingAuditor.TIMER        INFO ------------------------------------------------
 TimingAuditor.TIMER        INFO This machine has a speed about   2.68 times the speed of a 2.8 GHz Xeon.
 TimingAuditor.TIMER        INFO Algorithm          (millisec) |    <user> |   <clock> |      min       max | entries | total (s) |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
-TimingAuditor.TIMER        INFO EVENT LOOP                    | 439692.379 | 441066.365 | 441066.365  441066.4 |       1 |   441.066 |
-TimingAuditor.TIMER        INFO  GaussSequencer               | 439689.451 | 441063.348 | 441063.348  441063.3 |       1 |   441.063 |
-TimingAuditor.TIMER        INFO   Generator                   |  3159.978 |  3200.160 | 3200.160    3200.2 |       1 |     3.200 |
-TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |  3159.976 |  3200.145 | 3200.145    3200.1 |       1 |     3.200 |
-TimingAuditor.TIMER        INFO     GaussGen                  |     2.386 |     2.519 |    2.519       2.5 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO     Generation                |  3155.091 |  3196.066 | 3196.066    3196.1 |       1 |     3.196 |
-TimingAuditor.TIMER        INFO     GenMonitor                |     1.243 |     1.250 |    1.250       1.2 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO      GenMonitorAlg            |     1.166 |     1.182 |    1.182       1.2 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO     BoostForEpos              |     0.263 |     0.269 |    0.269       0.3 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO   Simulation                  | 436529.410 | 437863.123 | 437863.123  437863.1 |       1 |   437.863 |
-TimingAuditor.TIMER        INFO    GiGaStore                  |     0.021 |     0.024 |    0.024       0.0 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO    Geo                        | 51566.962 | 51693.070 | 51693.070   51693.1 |       1 |    51.693 |
-TimingAuditor.TIMER        INFO    MainEventSeq               | 384962.311 | 386169.927 | 386169.927  386169.9 |       1 |   386.170 |
-TimingAuditor.TIMER        INFO     MainEventGaussSim         |     5.174 |     5.322 |    5.322       5.3 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO     MainSimulation            | 384956.863 | 386164.334 | 386164.334  386164.3 |       1 |   386.164 |
-TimingAuditor.TIMER        INFO      MakeMainSim              | 384523.570 | 385730.895 | 385730.895  385730.9 |       1 |   385.731 |
-TimingAuditor.TIMER        INFO       GenToSim                | 37906.822 | 37995.972 | 37995.972   37996.0 |       1 |    37.996 |
-TimingAuditor.TIMER        INFO       GiGaFlush               | 346339.322 | 347457.004 | 347457.004  347457.0 |       1 |   347.457 |
-TimingAuditor.TIMER        INFO       GiGaCheckEvent          |     0.042 |     0.046 |    0.046       0.0 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO       SimToMCTruth            |    21.053 |    21.059 |   21.059      21.1 |       1 |     0.021 |
-TimingAuditor.TIMER        INFO       DetectorsHits           |   213.502 |   213.956 |  213.956     214.0 |       1 |     0.214 |
-TimingAuditor.TIMER        INFO        GetPuVetoHits          |     2.495 |     2.565 |    2.565       2.6 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        GetVeloHits            |     4.871 |     4.875 |    4.875       4.9 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        GetTTHits              |     7.487 |     7.579 |    7.579       7.6 |       1 |     0.008 |
-TimingAuditor.TIMER        INFO        GetITHits              |     5.986 |     5.994 |    5.994       6.0 |       1 |     0.006 |
-TimingAuditor.TIMER        INFO        GetOTHits              |    13.495 |    13.566 |   13.566      13.6 |       1 |     0.014 |
-TimingAuditor.TIMER        INFO        RichHits               |   150.740 |   150.808 |  150.808     150.8 |       1 |     0.151 |
-TimingAuditor.TIMER        INFO         GetRichHits           |    50.769 |    50.822 |   50.822      50.8 |       1 |     0.051 |
-TimingAuditor.TIMER        INFO         GetRichPhotons        |    30.151 |    30.160 |   30.160      30.2 |       1 |     0.030 |
-TimingAuditor.TIMER        INFO         GetRichSegments       |    36.535 |    36.557 |   36.557      36.6 |       1 |     0.037 |
-TimingAuditor.TIMER        INFO         GetRichTracks         |     3.334 |     4.312 |    4.312       4.3 |       1 |     0.004 |
-TimingAuditor.TIMER        INFO         MCPartToMCRichTrack   |     1.391 |     1.394 |    1.394       1.4 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO         MCRichHitToMCRichOpPho|    27.344 |    27.354 |   27.354      27.4 |       1 |     0.027 |
-TimingAuditor.TIMER        INFO        GetSpdHits             |     3.039 |     3.114 |    3.114       3.1 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        GetPrsHits             |     3.122 |     3.125 |    3.125       3.1 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        GetEcalHits            |     8.345 |     8.354 |    8.354       8.4 |       1 |     0.008 |
-TimingAuditor.TIMER        INFO        GetHcalHits            |     1.288 |     1.345 |    1.345       1.3 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        GetMuonHits            |    12.419 |    12.475 |   12.475      12.5 |       1 |     0.012 |
-TimingAuditor.TIMER        INFO       MainEventDataPacking    |    42.648 |    42.704 |   42.704      42.7 |       1 |     0.043 |
-TimingAuditor.TIMER        INFO        PackMCParticle         |     3.333 |     3.341 |    3.341       3.3 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        PackMCVertex           |     2.680 |     2.692 |    2.692       2.7 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     0.930 |     0.934 |    0.934       0.9 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.075 |     0.079 |    0.079       0.1 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.106 |     0.111 |    0.111       0.1 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.106 |     0.127 |    0.127       0.1 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.382 |     0.392 |    0.392       0.4 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCMuonHitPacker        |     0.214 |     0.221 |    0.221       0.2 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.770 |     0.828 |    0.828       0.8 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.262 |     0.269 |    0.269       0.3 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     1.017 |     0.466 |    0.466       0.5 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCHcalHitPacker        |     0.000 |     0.114 |    0.114       0.1 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        MCRichHitPacker        |     1.036 |     1.456 |    1.456       1.5 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |    28.547 |    28.555 |   28.555      28.6 |       1 |     0.029 |
-TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     2.248 |     2.253 |    2.253       2.3 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.591 |     0.590 |    0.590       0.6 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO      SimMonitor               |   433.236 |   433.385 |  433.385     433.4 |       1 |     0.433 |
-TimingAuditor.TIMER        INFO       GiGaGetMainEvent        |     0.326 |     0.335 |    0.335       0.3 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO       MainMCTruthMonitor      |     1.906 |     1.977 |    1.977       2.0 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO       GiGaGetHitsAlg          |     1.208 |     1.214 |    1.214       1.2 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO       DetectorsMonitor        |    52.634 |    52.632 |   52.632      52.6 |       1 |     0.053 |
-TimingAuditor.TIMER        INFO        VeloGaussMoni          |    14.449 |    14.456 |   14.456      14.5 |       1 |     0.014 |
-TimingAuditor.TIMER        INFO        TTHitMonitor           |     5.182 |     5.187 |    5.187       5.2 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        ITHitMonitor           |     2.912 |     2.916 |    2.916       2.9 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        OTHitMonitor           |    11.858 |    11.861 |   11.861      11.9 |       1 |     0.012 |
-TimingAuditor.TIMER        INFO        SpdMonitor             |     3.483 |     3.492 |    3.492       3.5 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        PrsMonitor             |     4.173 |     4.169 |    4.169       4.2 |       1 |     0.004 |
-TimingAuditor.TIMER        INFO        EcalMonitor            |     4.624 |     4.636 |    4.636       4.6 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        HcalMonitor            |     1.566 |     1.565 |    1.565       1.6 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO        MuonHitChecker         |     4.216 |     4.223 |    4.223       4.2 |       1 |     0.004 |
-TimingAuditor.TIMER        INFO       DataUnpackTest          |   377.050 |   377.132 |  377.132     377.1 |       1 |     0.377 |
-TimingAuditor.TIMER        INFO        UnpackMCVertex         |     4.834 |     4.845 |    4.845       4.8 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        UnpackMCParticle       |     5.143 |     5.148 |    5.148       5.1 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        CompareMCVertex        |     2.515 |     2.515 |    2.515       2.5 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        CompareMCParticle      |     2.722 |     2.803 |    2.803       2.8 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        UnpackPuVetoHits       |     0.699 |     0.700 |    0.700       0.7 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        CheckPuVetoHits        |     1.904 |     1.907 |    1.907       1.9 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO        UnpackVeloHits         |     1.333 |     1.341 |    1.341       1.3 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        CheckVeloHits          |    20.415 |    20.414 |   20.414      20.4 |       1 |     0.020 |
-TimingAuditor.TIMER        INFO        UnpackTTHits           |     0.251 |     0.258 |    0.258       0.3 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        CheckTTHits            |     6.679 |     6.680 |    6.680       6.7 |       1 |     0.007 |
-TimingAuditor.TIMER        INFO        UnpackITHits           |     0.210 |     0.216 |    0.216       0.2 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        CheckITHits            |     6.360 |     6.368 |    6.368       6.4 |       1 |     0.006 |
-TimingAuditor.TIMER        INFO        UnpackOTHits           |     0.528 |     0.527 |    0.527       0.5 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        CheckOTHits            |    20.138 |    20.144 |   20.144      20.1 |       1 |     0.020 |
-TimingAuditor.TIMER        INFO        UnpackRichHits         |     1.927 |     1.932 |    1.932       1.9 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO        UnpackRichOpPhot       |     5.103 |     5.115 |    5.115       5.1 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        UnpackRichSegments     |     2.822 |     2.825 |    2.825       2.8 |       1 |     0.003 |
-TimingAuditor.TIMER        INFO        UnpackRichTracks       |     0.581 |     0.582 |    0.582       0.6 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        CheckRichHits          |    34.656 |    34.669 |   34.669      34.7 |       1 |     0.035 |
-TimingAuditor.TIMER        INFO        CheckRichOpPhot        |   199.162 |   199.155 |  199.155     199.2 |       1 |     0.199 |
-TimingAuditor.TIMER        INFO        CheckRichSegments      |    21.074 |    21.082 |   21.082      21.1 |       1 |     0.021 |
-TimingAuditor.TIMER        INFO        CheckRichTracks        |     0.814 |     0.852 |    0.852       0.9 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        UnpackSpdHits          |     2.007 |     2.089 |    2.089       2.1 |       1 |     0.002 |
-TimingAuditor.TIMER        INFO        CheckSpdHits           |     4.211 |     5.058 |    5.058       5.1 |       1 |     0.005 |
-TimingAuditor.TIMER        INFO        UnpackPrsHits          |     0.402 |     0.406 |    0.406       0.4 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        CheckPrsHits           |     7.571 |     7.570 |    7.570       7.6 |       1 |     0.008 |
-TimingAuditor.TIMER        INFO        UnpackEcalHits         |     0.492 |     0.503 |    0.503       0.5 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        CheckEcalHits          |     9.596 |     9.597 |    9.597       9.6 |       1 |     0.010 |
-TimingAuditor.TIMER        INFO        UnpackHcalHits         |     0.176 |     0.181 |    0.181       0.2 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        CheckHcalHits          |     1.344 |     1.349 |    1.349       1.3 |       1 |     0.001 |
-TimingAuditor.TIMER        INFO        UnpackMuonHits         |     1.025 |     0.321 |    0.321       0.3 |       1 |     0.000 |
-TimingAuditor.TIMER        INFO        CheckMuonHits          |     8.717 |     9.414 |    9.414       9.4 |       1 |     0.009 |
+TimingAuditor.TIMER        INFO EVENT LOOP                    | 403356.547 | 410844.804 | 410844.804  410844.8 |       1 |   410.845 |
+TimingAuditor.TIMER        INFO  GaussSequencer               | 403354.227 | 410842.507 | 410842.507  410842.5 |       1 |   410.843 |
+TimingAuditor.TIMER        INFO   Generator                   |  1879.196 |  1948.342 | 1948.342    1948.3 |       1 |     1.948 |
+TimingAuditor.TIMER        INFO    GeneratorSlotMainSeq       |  1879.166 |  1948.308 | 1948.308    1948.3 |       1 |     1.948 |
+TimingAuditor.TIMER        INFO     GaussGen                  |     3.503 |     3.601 |    3.601       3.6 |       1 |     0.004 |
+TimingAuditor.TIMER        INFO     Generation                |  1873.816 |  1942.848 | 1942.848    1942.8 |       1 |     1.943 |
+TimingAuditor.TIMER        INFO     GenMonitor                |     1.518 |     1.508 |    1.508       1.5 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO      GenMonitorAlg            |     1.452 |     1.436 |    1.436       1.4 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO     BoostForEpos              |     0.293 |     0.298 |    0.298       0.3 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO   Simulation                  | 401474.961 | 408894.089 | 408894.089  408894.1 |       1 |   408.894 |
+TimingAuditor.TIMER        INFO    GiGaStore                  |     0.034 |     0.038 |    0.038       0.0 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO    Geo                        | 65061.116 | 66575.076 | 66575.076   66575.1 |       1 |    66.575 |
+TimingAuditor.TIMER        INFO    MainEventSeq               | 336413.633 | 342318.830 | 342318.830  342318.8 |       1 |   342.319 |
+TimingAuditor.TIMER        INFO     MainEventGaussSim         |     5.267 |     5.329 |    5.329       5.3 |       1 |     0.005 |
+TimingAuditor.TIMER        INFO     MainSimulation            | 336407.439 | 342312.589 | 342312.589  342312.6 |       1 |   342.313 |
+TimingAuditor.TIMER        INFO      MakeMainSim              | 335908.501 | 341811.816 | 341811.816  341811.8 |       1 |   341.812 |
+TimingAuditor.TIMER        INFO       GenToSim                | 37731.910 | 38422.832 | 38422.832   38422.8 |       1 |    38.423 |
+TimingAuditor.TIMER        INFO       GiGaFlush               | 297665.665 | 302874.960 | 302874.960  302875.0 |       1 |   302.875 |
+TimingAuditor.TIMER        INFO       GiGaCheckEvent          |     0.046 |     0.049 |    0.049       0.0 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO       SimToMCTruth            |    22.232 |    22.527 |   22.527      22.5 |       1 |     0.023 |
+TimingAuditor.TIMER        INFO       DetectorsHits           |   424.234 |   426.784 |  426.784     426.8 |       1 |     0.427 |
+TimingAuditor.TIMER        INFO        GetPuVetoHits          |     2.846 |     2.850 |    2.850       2.9 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        GetVeloHits            |     5.515 |     5.700 |    5.700       5.7 |       1 |     0.006 |
+TimingAuditor.TIMER        INFO        GetTTHits              |     7.161 |     7.278 |    7.278       7.3 |       1 |     0.007 |
+TimingAuditor.TIMER        INFO        GetITHits              |     6.854 |     7.086 |    7.086       7.1 |       1 |     0.007 |
+TimingAuditor.TIMER        INFO        GetOTHits              |    13.395 |    13.560 |   13.560      13.6 |       1 |     0.014 |
+TimingAuditor.TIMER        INFO        RichHits               |   363.475 |   365.040 |  365.040     365.0 |       1 |     0.365 |
+TimingAuditor.TIMER        INFO         GetRichHits           |   191.616 |   192.705 |  192.705     192.7 |       1 |     0.193 |
+TimingAuditor.TIMER        INFO         GetRichPhotons        |    55.765 |    55.857 |   55.857      55.9 |       1 |     0.056 |
+TimingAuditor.TIMER        INFO         GetRichSegments       |    59.808 |    59.838 |   59.838      59.8 |       1 |     0.060 |
+TimingAuditor.TIMER        INFO         GetRichTracks         |     3.717 |     3.721 |    3.721       3.7 |       1 |     0.004 |
+TimingAuditor.TIMER        INFO         MCPartToMCRichTrack   |     0.900 |     0.905 |    0.905       0.9 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO         MCRichHitToMCRichOpPho|    51.396 |    51.782 |   51.782      51.8 |       1 |     0.052 |
+TimingAuditor.TIMER        INFO        GetSpdHits             |     2.523 |     2.529 |    2.529       2.5 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        GetPrsHits             |     2.298 |     2.296 |    2.296       2.3 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        GetEcalHits            |     7.328 |     7.431 |    7.431       7.4 |       1 |     0.007 |
+TimingAuditor.TIMER        INFO        GetHcalHits            |     1.405 |     1.499 |    1.499       1.5 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        GetMuonHits            |    11.235 |    11.362 |   11.362      11.4 |       1 |     0.011 |
+TimingAuditor.TIMER        INFO       MainEventDataPacking    |    64.154 |    64.462 |   64.462      64.5 |       1 |     0.064 |
+TimingAuditor.TIMER        INFO        PackMCParticle         |     2.803 |     2.807 |    2.807       2.8 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        PackMCVertex           |     2.846 |     2.933 |    2.933       2.9 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        MCVeloHitPacker        |     1.311 |     1.320 |    1.320       1.3 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        MCPuVetoHitPacker      |     0.085 |     0.089 |    0.089       0.1 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCTTHitPacker          |     0.095 |     0.100 |    0.100       0.1 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCITHitPacker          |     0.092 |     0.097 |    0.097       0.1 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCOTHitPacker          |     0.331 |     0.329 |    0.329       0.3 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCMuonHitPacker        |     0.203 |     0.209 |    0.209       0.2 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCPrsHitPacker         |     0.782 |     0.784 |    0.784       0.8 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        MCSpdHitPacker         |     0.171 |     0.177 |    0.177       0.2 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCEcalHitPacker        |     0.295 |     0.303 |    0.303       0.3 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCHcalHitPacker        |     0.085 |     0.090 |    0.090       0.1 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        MCRichHitPacker        |     1.297 |     1.386 |    1.386       1.4 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        MCRichOpPhotPacker     |    50.640 |    50.781 |   50.781      50.8 |       1 |     0.051 |
+TimingAuditor.TIMER        INFO        MCRichSegmentPacker    |     2.215 |     2.220 |    2.220       2.2 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        MCRichTrackPacker      |     0.555 |     0.559 |    0.559       0.6 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO      SimMonitor               |   498.866 |   500.701 |  500.701     500.7 |       1 |     0.501 |
+TimingAuditor.TIMER        INFO       GiGaGetMainEvent        |     0.374 |     0.439 |    0.439       0.4 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO       MainMCTruthMonitor      |     1.754 |     1.756 |    1.756       1.8 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO       GiGaGetHitsAlg          |     1.368 |     1.386 |    1.386       1.4 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO       DetectorsMonitor        |    44.133 |    44.230 |   44.230      44.2 |       1 |     0.044 |
+TimingAuditor.TIMER        INFO        VeloGaussMoni          |    13.460 |    13.525 |   13.525      13.5 |       1 |     0.014 |
+TimingAuditor.TIMER        INFO        TTHitMonitor           |     4.239 |     4.246 |    4.246       4.2 |       1 |     0.004 |
+TimingAuditor.TIMER        INFO        ITHitMonitor           |     1.570 |     1.590 |    1.590       1.6 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        OTHitMonitor           |     7.261 |     7.293 |    7.293       7.3 |       1 |     0.007 |
+TimingAuditor.TIMER        INFO        SpdMonitor             |     3.082 |     3.094 |    3.094       3.1 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        PrsMonitor             |     4.191 |     4.197 |    4.197       4.2 |       1 |     0.004 |
+TimingAuditor.TIMER        INFO        EcalMonitor            |     4.773 |     4.790 |    4.790       4.8 |       1 |     0.005 |
+TimingAuditor.TIMER        INFO        HcalMonitor            |     1.658 |     1.659 |    1.659       1.7 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        MuonHitChecker         |     3.697 |     3.707 |    3.707       3.7 |       1 |     0.004 |
+TimingAuditor.TIMER        INFO       DataUnpackTest          |   451.105 |   452.785 |  452.785     452.8 |       1 |     0.453 |
+TimingAuditor.TIMER        INFO        UnpackMCVertex         |     3.298 |     3.304 |    3.304       3.3 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        UnpackMCParticle       |     3.304 |     3.309 |    3.309       3.3 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        CompareMCVertex        |     2.030 |     2.035 |    2.035       2.0 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        CompareMCParticle      |     2.355 |     2.433 |    2.433       2.4 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        UnpackPuVetoHits       |     0.610 |     0.623 |    0.623       0.6 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckPuVetoHits        |     1.966 |     1.971 |    1.971       2.0 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        UnpackVeloHits         |     1.234 |     1.241 |    1.241       1.2 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckVeloHits          |    19.287 |    20.311 |   20.311      20.3 |       1 |     0.020 |
+TimingAuditor.TIMER        INFO        UnpackTTHits           |     0.272 |     0.279 |    0.279       0.3 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        CheckTTHits            |     5.673 |     5.718 |    5.718       5.7 |       1 |     0.006 |
+TimingAuditor.TIMER        INFO        UnpackITHits           |     0.236 |     0.242 |    0.242       0.2 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        CheckITHits            |     4.916 |     4.921 |    4.921       4.9 |       1 |     0.005 |
+TimingAuditor.TIMER        INFO        UnpackOTHits           |     0.541 |     0.540 |    0.540       0.5 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckOTHits            |    17.484 |    17.497 |   17.497      17.5 |       1 |     0.017 |
+TimingAuditor.TIMER        INFO        UnpackRichHits         |     2.647 |     2.664 |    2.664       2.7 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        UnpackRichOpPhot       |     5.281 |     5.289 |    5.289       5.3 |       1 |     0.005 |
+TimingAuditor.TIMER        INFO        UnpackRichSegments     |     2.634 |     2.636 |    2.636       2.6 |       1 |     0.003 |
+TimingAuditor.TIMER        INFO        UnpackRichTracks       |     0.650 |     0.659 |    0.659       0.7 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckRichHits          |    46.677 |    46.731 |   46.731      46.7 |       1 |     0.047 |
+TimingAuditor.TIMER        INFO        CheckRichOpPhot        |   270.225 |   270.687 |  270.687     270.7 |       1 |     0.271 |
+TimingAuditor.TIMER        INFO        CheckRichSegments      |    24.490 |    24.497 |   24.497      24.5 |       1 |     0.024 |
+TimingAuditor.TIMER        INFO        CheckRichTracks        |     0.783 |     0.786 |    0.786       0.8 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        UnpackSpdHits          |     1.466 |     1.477 |    1.477       1.5 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckSpdHits           |     4.879 |     4.893 |    4.893       4.9 |       1 |     0.005 |
+TimingAuditor.TIMER        INFO        UnpackPrsHits          |     0.446 |     0.445 |    0.445       0.4 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        CheckPrsHits           |     7.301 |     7.311 |    7.311       7.3 |       1 |     0.007 |
+TimingAuditor.TIMER        INFO        UnpackEcalHits         |     0.613 |     0.612 |    0.612       0.6 |       1 |     0.001 |
+TimingAuditor.TIMER        INFO        CheckEcalHits          |     9.993 |    10.000 |   10.000      10.0 |       1 |     0.010 |
+TimingAuditor.TIMER        INFO        UnpackHcalHits         |     0.212 |     0.218 |    0.218       0.2 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        CheckHcalHits          |     1.629 |     1.637 |    1.637       1.6 |       1 |     0.002 |
+TimingAuditor.TIMER        INFO        UnpackMuonHits         |     0.991 |     0.248 |    0.248       0.2 |       1 |     0.000 |
+TimingAuditor.TIMER        INFO        CheckMuonHits          |     5.623 |     6.394 |    6.394       6.4 |       1 |     0.006 |
 TimingAuditor.TIMER        INFO --------------------------------------------------------------------------------------------------
 GiGa.TrackSeq.PostTrack SUCCESS Exceptions/Errors/Warnings/Infos Statistics : 0/0/1/0
-GiGa.TrackSeq.PostTrack SUCCESS  #WARNINGS   = 10317    Message = 'RichHpd/Pmt/Mcp PhotoelectricProcess  RichHpd/Pmt/Mcp SiEnergyLossProcess particles not kept'
+GiGa.TrackSeq.PostTrack SUCCESS  #WARNINGS   = 13813    Message = 'RichHpd/Pmt/Mcp PhotoelectricProcess  RichHpd/Pmt/Mcp SiEnergyLossProcess particles not kept'
 GiGa.GiGaMgr               INFO GiGaRunManager:: GiGaRunManager Finalization
-Generation.MinimumBia...SUCCESS LbCRMC : Cleanup: removing CRMC temporary options file /tmp/lbcrmc.DyUodm
+Generation.MinimumBia...SUCCESS LbCRMC : Cleanup: removing CRMC temporary options file /tmp/lbcrmc.KXrgwD
 *****Chrono*****           INFO ****************************************************************************************************
 *****Chrono*****           INFO  The Final CPU consumption ( Chrono ) Table (ordered)
 *****Chrono*****           INFO ****************************************************************************************************
-GiGa.GiGaMgr::process...   INFO Time User   : Tot=  346  [s]                                             #=  1
-ChronoStatSvc              INFO Time User   : Tot= 8.57[min]                                             #=  1
+GiGa.GiGaMgr::process...   INFO Time User   : Tot=  298  [s]                                             #=  1
+ChronoStatSvc              INFO Time User   : Tot= 8.37[min]                                             #=  1
 *****Chrono*****           INFO ****************************************************************************************************
 ******Stat******           INFO ****************************************************************************************************
 ******Stat******           INFO  The Final stat Table (not ordered)
 ******Stat******           INFO ****************************************************************************************************
 ******Stat******           INFO      Counter     |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
-******Stat******           INFO  "#Ecal MCHits"  |         1 |       5852 |     5852.0 |     0.0000 |      5852.0 |      5852.0 |
-******Stat******           INFO  "#Hcal MCHits"  |         1 |        824 |     824.00 |     0.0000 |      824.00 |      824.00 |
-******Stat******           INFO  "#IT MCHits"    |         1 |        780 |     780.00 |     0.0000 |      780.00 |      780.00 |
-******Stat******           INFO  "#MCParticles"  |         1 |       4486 |     4486.0 |     0.0000 |      4486.0 |      4486.0 |
-******Stat******           INFO  "#MCRichOpPhoto |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
+******Stat******           INFO  "#Ecal MCHits"  |         1 |       6072 |     6072.0 |     0.0000 |      6072.0 |      6072.0 |
+******Stat******           INFO  "#Hcal MCHits"  |         1 |       1010 |     1010.0 |     0.0000 |      1010.0 |      1010.0 |
+******Stat******           INFO  "#IT MCHits"    |         1 |        552 |     552.00 |     0.0000 |      552.00 |      552.00 |
+******Stat******           INFO  "#MCParticles"  |         1 |       4116 |     4116.0 |     0.0000 |      4116.0 |      4116.0 |
+******Stat******           INFO  "#MCRichOpPhoto |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
 ******Stat******           INFO  "#MCRichSegment |         1 |        434 |     434.00 |     0.0000 |      434.00 |      434.00 |
-******Stat******           INFO  "#MCRichTracks" |         1 |        353 |     353.00 |     0.0000 |      353.00 |      353.00 |
-******Stat******           INFO  "#MCVertices"   |         1 |       4871 |     4871.0 |     0.0000 |      4871.0 |      4871.0 |
-******Stat******           INFO  "#Muon MCHits"  |         1 |       1129 |     1129.0 |     0.0000 |      1129.0 |      1129.0 |
-******Stat******           INFO  "#OT MCHits"    |         1 |       2443 |     2443.0 |     0.0000 |      2443.0 |      2443.0 |
-******Stat******           INFO  "#Prs MCHits"   |         1 |       4790 |     4790.0 |     0.0000 |      4790.0 |      4790.0 |
-******Stat******           INFO  "#Rich MCHits"  |         1 |       7673 |     7673.0 |     0.0000 |      7673.0 |      7673.0 |
-******Stat******           INFO  "#Rich1 MCHits" |         1 |       2866 |     2866.0 |     0.0000 |      2866.0 |      2866.0 |
-******Stat******           INFO  "#Rich2 MCHits" |         1 |       4807 |     4807.0 |     0.0000 |      4807.0 |      4807.0 |
-******Stat******           INFO  "#Spd MCHits"   |         1 |       2975 |     2975.0 |     0.0000 |      2975.0 |      2975.0 |
-******Stat******           INFO  "#TT MCHits"    |         1 |        818 |     818.00 |     0.0000 |      818.00 |      818.00 |
-******Stat******           INFO  "#Velo MCHits"  |         1 |       2523 |     2523.0 |     0.0000 |      2523.0 |      2523.0 |
+******Stat******           INFO  "#MCRichTracks" |         1 |        332 |     332.00 |     0.0000 |      332.00 |      332.00 |
+******Stat******           INFO  "#MCVertices"   |         1 |       4405 |     4405.0 |     0.0000 |      4405.0 |      4405.0 |
+******Stat******           INFO  "#Muon MCHits"  |         1 |        753 |     753.00 |     0.0000 |      753.00 |      753.00 |
+******Stat******           INFO  "#OT MCHits"    |         1 |       2145 |     2145.0 |     0.0000 |      2145.0 |      2145.0 |
+******Stat******           INFO  "#Prs MCHits"   |         1 |       4575 |     4575.0 |     0.0000 |      4575.0 |      4575.0 |
+******Stat******           INFO  "#Rich MCHits"  |         1 |      10548 |     10548. |     0.0000 |      10548. |      10548. |
+******Stat******           INFO  "#Rich1 MCHits" |         1 |       3726 |     3726.0 |     0.0000 |      3726.0 |      3726.0 |
+******Stat******           INFO  "#Rich2 MCHits" |         1 |       6822 |     6822.0 |     0.0000 |      6822.0 |      6822.0 |
+******Stat******           INFO  "#Spd MCHits"   |         1 |       2592 |     2592.0 |     0.0000 |      2592.0 |      2592.0 |
+******Stat******           INFO  "#TT MCHits"    |         1 |        662 |     662.00 |     0.0000 |      662.00 |      662.00 |
+******Stat******           INFO  "#Velo MCHits"  |         1 |       2476 |     2476.0 |     0.0000 |      2476.0 |      2476.0 |
 ******Stat******           INFO ****************************************************************************************************
 ChronoStatSvc.finalize()   INFO  Service finalized successfully 
 ApplicationMgr             INFO Application Manager Finalized successfully
