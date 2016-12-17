@@ -31,7 +31,7 @@ if stdout.find(expected_string) == -1:
 	causes.append('missing string')
 	result['GaudiTest.expected_string'] = result.Quote(expected_string)
 else:
-	expected_string2 = &quot;1 events processed&quot;
+	expected_string2 = &quot;10 events processed&quot;
 	if stdout.find(expected_string2) == -1:
 		causes.append('missing string')
 		result['GaudiTest.expected_string'] = result.Quote(expected_string2)

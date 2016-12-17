@@ -4443,7 +4443,7 @@ GiGaFlush                  INFO  GiGaUtil::DumpG4Event 0x21a2e1a0 **************
  GiGaUtil::DumpG4Event  #StoredTrajectories    : 10
  GiGaUtil::DumpG4Event  # of Hit Collections       : 16
  GiGaUtil::DumpG4Event  Collection: ID = 0 	Name = 'Hits' 	SD = 'VeloPuSDet' 	#Hits = 0
- GiGaUtil::DumpG4Event  Collection: ID = 1 	Name = 'Hits' 	SD = 'VeloSDet' 	#Hits = 0
+ GiGaUtil::DumpG4Event  Collection: ID = 1 	Name = 'Hits' 	SD = 'VeloSDet' 	#Hits = 2
  GiGaUtil::DumpG4Event  Collection: ID = 2 	Name = 'Hits' 	SD = 'TTSDet' 	#Hits = 0
  GiGaUtil::DumpG4Event  Collection: ID = 3 	Name = 'Rich1TopHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 0
  GiGaUtil::DumpG4Event  Collection: ID = 4 	Name = 'Rich1BotHC' 	SD = 'HpdSiliconSensDet' 	#Hits = 0
@@ -4826,7 +4826,8 @@ MakeMainSim               DEBUG Services to release :
 VeloGaussMoni              INFO ------------------------------------------------------
 VeloGaussMoni              INFO                 - VeloGaussMoni table -                 
 VeloGaussMoni              INFO ------------------------------------------------------
-VeloGaussMoni              INFO | ==> No MCHits found! 
+VeloGaussMoni              INFO | Number of MCHits/Event:       2+/-0
+VeloGaussMoni              INFO | Number of PileUpMCHits/Event: 0+/-0
 VeloGaussMoni              INFO ------------------------------------------------------
 TTHitMonitor               INFO *** Summary ***
 TTHitMonitor               INFO #hits per event: 0
