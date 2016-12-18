@@ -76,13 +76,13 @@ preprocessor = (normalizeExamples +
          orig = r"(Added stream file:)(.*/)([\w.]+/[a-z]{1,10})(.root)",
          repl = r"\1\3") + 
      RegexpReplacer(when = "Generation.MinimumBia...SUCCESS LbCRMC : Created temporary file",
-         orig = r"(file \/tmp\/lbcrmc.)([\w.]+[0-9a-z]{1,6})( for generator)",
+         orig = r"(file \/tmp\/lbcrmc\.)(.{6})( for generator)",
          repl = r"\1\3") + 
      RegexpReplacer(when = "Generation.MinimumBia...SUCCESS  Configuration file",
-         orig = r"(file: \/tmp\/lbcrmc.)([\w.]+[0-9a-z]{1,6})",
+         orig = r"(file: \/tmp\/lbcrmc\.)(.{6})",
          repl = r"\1") + 
-     RegexpReplacer(when = "Generation.MinimumBia...SUCCESS  LbCRMC : Cleanup:",
-         orig = r"(file \/tmp\/lbcrmc.)([\w.]+[0-9a-z]{1,6})",
+     RegexpReplacer(when = "Generation.MinimumBia...SUCCESS LbCRMC : Cleanup:",
+         orig = r"(file \/tmp\/lbcrmc\.)(.{6})",
          repl = r"\1") + 
      RegexpReplacer(when = "MagneticFieldSvc           INFO Opened magnetic field file",
          orig = r"(Opened magnetic field file : )(.*/)([\w.]+/[0-9a-z_]{1,14})(.cdf)",
@@ -92,7 +92,6 @@ preprocessor = (normalizeExamples +
          repl = replacenumbers ) +
      LineSkipper(["TimingAuditor.TIMER", "ToolSvc.SequencerTime..."]) + 
      LineSkipper(["INFO Disconnect from database after being idle"]) +
-     LineSkipper(["G4Transportation constructor> set fShortStepOptimisation to false"]) +
      LineSkipper(regexps=[r"MainEventGaussSim\s*DEBUG event 1 memory.*",
                           r"GaussGen\s*DEBUG event 1 memory.*"]) + 
      RegexpReplacer(when = "Loading simulation attributes",
