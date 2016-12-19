@@ -4882,6 +4882,7 @@ UnpackPuVetoHits        SUCCESS Number of counters : 1
 UnpackVeloHits          SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "# UnPackedData"                                |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+CheckVeloHits           SUCCESS Number of counters : 27
 UnpackTTHits            SUCCESS Number of counters : 1
  |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
  | "# UnPackedData"                                |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
