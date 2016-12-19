@@ -1,7 +1,6 @@
 #include "AmpGen/Utilities.h"
 #include "AmpGen/ParticlePropertiesList.h"
 #include "AmpGen/MsgService.h"
-#include "AmpGen/TeXFormat.h"
 #include "AmpGen/EventType.h"
 
 
@@ -58,7 +57,10 @@ std::string EventType::mother() const { return m_mother ; }
 std::string EventType::operator[]( const unsigned int& index ) const { return m_particleNames[index] ; }
 double EventType::mass( const unsigned int & index ) const { return m_particleMasses[index] ; }
 double EventType::motherMass() const { return m_motherMass ; }
-std::string EventType::label( const unsigned int& index, bool isRoot) const { return getTexFromPDG( m_particleNames[index], isRoot ) ; }
+
+std::string EventType::label( const unsigned int& index, bool isRoot) const { 
+  return ParticlePropertiesList::getMe()->get(m_particleNames[index])->texName() ; 
+}
 
 
 EventType::EventType( const std::vector<std::string>& particleNames ) : m_mother( particleNames[0] )   {

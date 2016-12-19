@@ -43,8 +43,7 @@ NamedParameterBase::NamedParameterBase(const std::string& name_in
 				       , const char* fname
 				       , NamedParameterBase::VERBOSITY vb
 				       )
-  : INamedParameter()
-  , _name(name_in)
+  : _name(name_in)
   , _gotInitialised(false)
   , _quiet(vb==NamedParameterBase::QUIET)
 {
@@ -75,8 +74,8 @@ NamedParameterBase::NamedParameterBase(const std::string& name_in
   }
 }
 NamedParameterBase::NamedParameterBase(const NamedParameterBase& other)
-  : INamedParameter()
-  , _name(other._name)
+  : 
+    _name(other._name)
   , _ppF(other._ppF)
   , _gotInitialised(other._gotInitialised)
   , _quiet(other._quiet)

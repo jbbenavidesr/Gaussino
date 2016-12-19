@@ -9,7 +9,6 @@ namespace AmpGen {
       Expression m_expression;
       std::string m_name;
       double m_value;
-
       double m_variance;
     public:
       Observable( const Expression& expression, const std::string& name ) : 
@@ -18,26 +17,26 @@ namespace AmpGen {
           const std::vector<Parameter>& params ){
 
         std::vector<double> gradient( params.size() );
-        for( unsigned int i = 0 ; i < params.size() ; ++i )
-          gradient[i] = m_expression.d( params[i] ).realEval();
-        m_value = m_expression.realEval();
+        for( unsigned int i = 0 ; i < params.size() ; ++i ){
+          gradient[i] = std::real( m_expression.d( params[i] ).complexEval() );
+          DEBUG("g["<<i<<"] = " << gradient[i] );
+          DEBUG( m_expression.d(params[i]).to_string() );
+        }
+        m_value = std::real(m_expression.complexEval() );
+        DEBUG("Value = " << m_value );
         m_variance = 0.;
         for( unsigned int i=0;i<params.size();++i){
-          //std::cout << params[i].to_string() << std::endl;
           DEBUG( "gradient " << i << " =  " << gradient[i] );
           for( unsigned int j=0;j<params.size();++j){
             DEBUG( "cov_ " << i << ","<<j<< " = " << covMatrix(i,j) );
             m_variance += gradient[i]*covMatrix(i,j)*gradient[j];
           }
         } 
-        //std::cout << m_variance << std::endl; 
       }
       double getVal() const { return m_value ;}
       double getError() const { return sqrt( fabs( m_variance )); } 
       std::string name() const { return m_name;}
-
       bool operator>( const Observable& other ) const { return fabs(getVal()) > fabs( other.getVal()) ; }
       bool operator<( const Observable& other ) const { return fabs(getVal()) < fabs( other.getVal()) ; }
-
   }; 
 } 

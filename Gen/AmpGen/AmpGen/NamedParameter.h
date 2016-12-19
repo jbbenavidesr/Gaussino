@@ -9,6 +9,7 @@
 
 #include "AmpGen/NamedParameterBase.h"
 #include "AmpGen/NamedParameterStream.h"
+#include "AmpGen/ParsedParameterLine.h"
 
 namespace AmpGen {
 
@@ -40,14 +41,14 @@ namespace AmpGen {
         }
 
       public:
-        
+
         NamedParameter(const std::string& name
             )
           : NamedParameterBase(name, 0, NamedParameterBase::VERBOSE )
         {  
           setFromParsedFile();
         }
-        
+
         NamedParameter(const std::string& name
             , const T& def
             , const char* fname=0
@@ -173,8 +174,7 @@ namespace AmpGen {
           setFromParsedFile();
         }
         NamedParameter(const NamedParameter<T>& other)
-          : INamedParameter()
-            , NamedParameterBase(other)
+          :  NamedParameterBase(other)
             , _valueArray(other._valueArray)
       {  
       }

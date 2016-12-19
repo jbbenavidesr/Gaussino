@@ -1,8 +1,8 @@
 #include "AmpGen/Particle.h"
 #include "AmpGen/IVertex.h"
 #include "AmpGen/Utilities.h"
-#include "AmpGen/TeXFormat.h"
 #include <bitset>
+#include <fstream>
 
 using namespace AmpGen; 
 
@@ -455,7 +455,7 @@ std::pair<unsigned int , unsigned int> Particle::lRange(bool conserveParity) con
   return lLimit;
 }
 
-std::string Particle::getTex(bool isRoot) const {
+std::string Particle::getTeX(bool isRoot) const {
 
   std::string marker = isRoot ? "#" : "\\";
   const std::string leftBrace = isRoot ? "(" : "\\left["; 
@@ -465,15 +465,15 @@ std::string Particle::getTex(bool isRoot) const {
     name = m_props->anti().name();
   }
   if( m_daughters.size() != 0 ){
-    std::string val = m_istop ? "" : getTexFromPDG( name , isRoot) + leftBrace;
+    std::string val = m_istop ? "" : m_props->texName() + leftBrace;
     if( m_istop && m_orbital != m_minL ) val =  leftBrace;
     for( unsigned int i = 0 ; i < m_daughters.size(); ++i  )
-      val+= m_daughters[i]->getTex(isRoot);
+      val+= m_daughters[i]->getTeX(isRoot);
     val+= m_istop ? "" :  rightBrace;
     if( m_istop && m_orbital != m_minL ) val += rightBrace;
     if( m_orbital != m_minL ) val += "^{" + orbitalString() + "}";
     return val;
   }
-  else return getTexFromPDG( name , isRoot);
+  else return m_props->texName();
 }
 

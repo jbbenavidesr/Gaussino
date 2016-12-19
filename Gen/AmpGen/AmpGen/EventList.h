@@ -5,9 +5,11 @@
 #include "AmpGen/Utilities.h"
 #include "AmpGen/CompiledExpression.h"
 #include "AmpGen/EventType.h"
-
 #include "AmpGen/MsgService.h"
+
+
 #include <chrono>
+#include <functional>
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -16,6 +18,7 @@
 #include "TLorentzVector.h"
 #include "TEventList.h"
 #include "TRandom.h"
+
 /// OPEN MP
 //
 #ifdef __USE_OPENMP__
@@ -87,8 +90,8 @@ namespace AmpGen {
           m_event[4*i + 0 ] = -m_event[4*i+0] ;
           m_event[4*i + 1 ] = -m_event[4*i+1] ;
           m_event[4*i + 2 ] = -m_event[4*i+2] ;
-        };
-      };
+        }
+      }
       inline double* getEvent(){ return &(m_event[0]) ; }
       inline const double* getEvent() const { return m_event.data(); }
       void setCache( const std::complex<double>& m_value, const unsigned int& pos )
@@ -153,25 +156,10 @@ namespace AmpGen {
         const double o1p = s( gChi2Indices[index]) ;
         return o1p > domain.first && o1p < domain.second ;
       }
+      double operator[](const unsigned int& i ) const {
+        return m_event[i];
+      }
   };
-
-  template <typename EVENT>
-    struct less_than{
-      unsigned int m_index;
-      less_than(unsigned int index) : m_index(index){};
-      bool operator()(const double& x, const EVENT& o1){
-        return o1.s( gChi2Indices[m_index ] ) > x;
-      }
-    };
-
-  template <typename EVENT>
-    struct sorter{
-      unsigned int m_index;
-      sorter(unsigned int index) : m_index(index){};
-      bool operator()(const EVENT& o1, const EVENT& o2){
-        return o1.s( gChi2Indices[m_index ] ) < o2.s( gChi2Indices[m_index] );
-      }
-    };
 
   class EventList : public std::vector<Event> {
     private: 
@@ -195,23 +183,23 @@ namespace AmpGen {
         double integral=0;
         for( auto& evt : *this ){ integral += evt.weight(cat) ; } 
         return integral;  
-      };
+      }
+
       EventList( const std::string& fname, 
                  const EventType& evtType,
-                 const unsigned int& pdfSize, 
-                 const bool& flipState=false,
-                 const double& scaleFactor=1 );
+                 const unsigned int& pdfSize,
+                 std::function<bool(const Event&)> cut = [](const Event& evt ){ return true ; } );
+      
+      EventList(TTree* tree,
+          const EventType& particles ,
+          const unsigned int& pdfsize,
+          std::function<bool(const Event&)> cut = [](const Event& evt ){ return true ; }  );
+
       EventList( TTree* tree, 
           const std::vector<std::string>& branches, 
           const EventType& evtType, 
           const unsigned int& opt=0 , 
           const std::vector<unsigned int>& eventList = std::vector<unsigned int>() ) ;
-
-      EventList(TTree* tree, 
-          const EventType& particles , 
-          const unsigned int& pdfsize, 
-          const bool& flipState=false, 
-          const double& scaleFactor=1 );
 
       EventList( const EventType& type ); 
       TTree* tree(const std::string& name ) ;   

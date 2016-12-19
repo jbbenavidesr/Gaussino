@@ -1,6 +1,5 @@
 #include "AmpGen/MinuitParameterSet.h"
 #include "AmpGen/NamedParameter.h"
-#include "AmpGen/FitParameter.h"
 #include "AmpGen/Minimiser.h"
 #include "AmpGen/SumPDF.h"
 #include "AmpGen/FastCoherentSum.h"
@@ -28,7 +27,7 @@ int main( int argc , char** argv ){
 
   FastCoherentSum sig( eventType , MPS , eventType.getEventFormat() ,  "", true);
 
-  SumPDF<std::complex<double>, FastCoherentSum&> pdf( sig ); /// PURE signal pdf
+  SumPDF<FastCoherentSum&> pdf( sig ); /// PURE signal pdf
 
   pdf.setPset( &MPS );
   pdf.buildLibrary();

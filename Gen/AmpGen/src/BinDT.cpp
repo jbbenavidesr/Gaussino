@@ -8,6 +8,20 @@ BinDT::BinDT( const std::vector<Event>& evts , const unsigned int& dim,
   m_counter = 0 ;
   m_minEvents = minEvents;
 
+  makeDefaultFunctors(); 
+  std::vector<const Event*> pEvts;
+  for( unsigned int i = 0 ; i < evts.size(); ++i ) pEvts.push_back( &( evts[i] ) );
+  std::queue<unsigned int> iq;
+  refreshQueue( pEvts, iq );
+  m_top = makeNodes( pEvts, iq );
+}
+
+BinDT::BinDT( const std::vector<Event>& evts , const std::vector<std::function<double(const Event&)>> functors ,
+    const unsigned int& minEvents ) : m_functors(functors) {
+  m_dim = m_functors.size();
+  m_counter = 0 ;
+  m_minEvents = minEvents;
+ 
   std::vector<const Event*> pEvts;
   for( unsigned int i = 0 ; i < evts.size(); ++i ) pEvts.push_back( &( evts[i] ) );
   std::queue<unsigned int> iq;
@@ -20,10 +34,22 @@ unsigned int BinDT::getBinNumber( const Event& evt ) const { return (*m_top)(evt
 unsigned int BinDT::size() const { return m_endNodes.size() ; } 
 
 BinDT::BinDT( std::istream& stream ){
+  makeDefaultFunctors();
   readFromStream( stream );
 }
 
+void BinDT::makeDefaultFunctors() {
+  if( m_dim == 5 ){
+    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[0] ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[1] ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[2] ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[3] ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[4] ) ; } );
+  }
+}
+
 BinDT::BinDT( const std::string& filename ){
+  makeDefaultFunctors();
   std::ifstream stream;
   stream.open( filename );
   readFromStream( stream );
@@ -41,7 +67,7 @@ void BinDT::readFromStream( std::istream& stream ){
     std::string address = tokens[0];
     if( topAddress == "" ) topAddress = address;
     if( tokens.size() == 5 ){
-      auto node = std::make_shared<Decision>( stoi(tokens[1]), stod(tokens[2]),nullptr,nullptr);
+      auto node = std::make_shared<Decision>( m_functors[stoi(tokens[1])], stoi(tokens[1]), stod(tokens[2]),nullptr,nullptr);
       nodes[address] = std::make_pair( line, node );
     }
     else {
@@ -67,16 +93,18 @@ void BinDT::serialize( std::ofstream& output ){
 
 void BinDT::serialize(const std::string& filename ){
   std::ofstream output;
+  output.open( filename );
   serialize( output );
-  m_top->serialize(output);
+ 
+//  m_top->serialize(output);
   output.close();
 }
 
 double BinDT::nnUniformity( std::vector<const Event*> evts, const unsigned int& index ) const {
 
-  auto s = [&index]( const Event* evt ){ return evt->s( gChi2Indices[index] );} ; 
+  auto f = m_functors[index];
   std::sort( evts.begin(), evts.end(), [=](
-       const Event* evt1, const Event* evt2 ) { return s( evt1 ) > s(evt2) ; } ) ;
+       const Event* evt1, const Event* evt2 ) { return f( *evt1 ) > f( *evt2) ; } ) ;
   double averageNNdistance = 0 ;
   int size = evts.size();
   for( int i = 0 ; i < size; ++i ){
@@ -84,16 +112,17 @@ double BinDT::nnUniformity( std::vector<const Event*> evts, const unsigned int& 
     int k=i+1;
 
     if( i==0 ){
-      averageNNdistance += fabs( s( evts[i] ) - s( evts[k] ) );
+      averageNNdistance += fabs( f( *evts[i] ) - f( *evts[k] ) );
       continue;
     }
     if( k==size ){
-      averageNNdistance += fabs( s( evts[i] )  - s( evts[j] ) );
+      averageNNdistance += fabs( f( *evts[i] )  - f( *evts[j] ) );
       continue;
     }
     else {
-      double low = fabs( s ( evts[i] )  - s( evts[k] )  );
-      double high = fabs( s( evts[i] ) - s( evts[j] ) );
+      double low = fabs( f( *evts[i] ) - f( *evts[k] )  );
+      double high = fabs(f( *evts[i] ) - f( *evts[j] ) );
+
       averageNNdistance += low > high ? high : low;
     }
   }
@@ -104,16 +133,16 @@ double BinDT::nnUniformity( std::vector<const Event*> evts, const unsigned int& 
     int j=i-1;
     int k=i+1;
     if( i==0 ){
-      sigma += pow( fabs( s( evts[i] ) - s ( evts[k] )  ) -avg, 2 );
+      sigma += pow( fabs( f( *evts[i] ) - f( *evts[k] )  ) -avg, 2 );
       continue;
     }
     if( k==size ){
-      sigma += pow( fabs( s ( evts[i] ) - s( evts[j] ) ) -avg , 2 );
+      sigma += pow( fabs( f( *evts[i] ) - f( *evts[j] ) ) -avg , 2 );
       continue;
     }
     else {
-      double low =  fabs( s( evts[i] ) - s( evts[k] ) );
-      double high = fabs( s( evts[i] ) - s( evts[j] ) );
+      double low =  fabs( f( *evts[i] ) - f( *evts[k] ) );
+      double high = fabs( f( *evts[i] ) - f( *evts[j] ) );
       sigma += fabs(low) > fabs(high) ? pow( high-avg,2) : pow(low-avg,2);
     }
   }

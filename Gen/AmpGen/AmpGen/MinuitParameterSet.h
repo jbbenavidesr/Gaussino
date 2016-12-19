@@ -40,7 +40,9 @@ namespace AmpGen{
       //  double getVal(int i) const;
       MinuitParameter* getParPtr(unsigned int i);
       const MinuitParameter* getParPtr(unsigned int i) const;
-
+      
+      MinuitParameter* getParPtr( const std::string& key ) const;
+      
       std::vector<MinuitParameter*>::const_iterator cbegin() const { return _parPtrList.cbegin() ; }
       std::vector<MinuitParameter*>::const_iterator   cend() const { return _parPtrList.cend() ; }
       

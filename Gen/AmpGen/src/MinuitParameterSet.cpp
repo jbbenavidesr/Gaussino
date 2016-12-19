@@ -4,7 +4,7 @@
 
 #include "TFile.h"
 #include "TNtupleD.h"
-#include "AmpGen/Utils.h"
+//#include "AmpGen/Utils.h"
 
 #include <algorithm>
 #include <iostream>
@@ -13,9 +13,6 @@
 
 using namespace std;
 using namespace AmpGen;
-
-//const char MinuitParameterSet::prtNameChars[] = { '+', '-', '*', '>', ',', '(', ')', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\0' };
-//const char MinuitParameterSet::ntpNameChars[] = { 'p', 'm', 's', '_', '_', '_', '_', 'a', 'b', 'c', 'c', 'e', 'f', 'g', 'h', 'i', 'j', '\0' };
 
 const char MinuitParameterSet::prtNameChars[] = { '+', '-', '*', '>', ',', '(', ')', '[', ']', '\0'};
 const char MinuitParameterSet::ntpNameChars[] = { '#', '~', 's', '_', '_', '_', '_', '_', '_', '\0'};
@@ -91,6 +88,13 @@ const MinuitParameter* MinuitParameterSet::getParPtr(unsigned int i) const{
   return _parPtrList[i];
 }
 
+
+MinuitParameter* MinuitParameterSet::getParPtr(const std::string& key) const{
+for( auto& param : _parPtrList )
+  if( param->name() == key ) return param; 
+return 0;
+}
+
 void MinuitParameterSet::deleteListAndObjects(){
   for(std::vector<MinuitParameter*>::iterator it = _parPtrList.begin();
       it != _parPtrList.end(); it++){
@@ -140,7 +144,7 @@ std::string MinuitParameterSet::ntpNames() const{
   for(unsigned int i=0; i < size(); i++){
     if(0 == getParPtr(i)) continue;
     if(0 != getParPtr(i)->iFixInit()) continue;
-    std::string name = "p" + anythingToString(i) + "_" 
+    std::string name = "p" + std::to_string(i) + "_" 
       + prtToNtpName(getParPtr(i)->name());
     str += (name + "_mean" + ":"); n++;
     str += (name + "_init" + ":"); n++;

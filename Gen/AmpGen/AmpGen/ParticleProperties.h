@@ -8,121 +8,125 @@
 
 #include "AmpGen/MultiQuarkContent.h"
 
-class ParticleProperties{
-  static const char* pionString;
- protected:
-  mutable double _mass, _mErrPlus, _mErrMinus;
-  double _width, _wErrPlus, _wErrMinus;
-  std::string _Isospin; // isospin
-  int _Gparity; // G-parity
-  std::string _JtotalSpin; // total spin
-  int _Parity; // Parity
-  int _Cqm; // Charge 'parity'
-  char _Aformat; // anti-particle format character
-  int _pdg_id;
-  std::string _charge;
-  int _Rexist; //  likelihood of existence, baryons only
-  char _Status; // status (estalished or not etc)
-  std::string _name;
-  std::string _quarks;
+namespace AmpGen { 
+  class ParticleProperties{
+    //  static const char* pionString;
+    protected:
+      mutable double _mass, _mErrPlus, _mErrMinus;
+      double _width, _wErrPlus, _wErrMinus;
+      std::string _Isospin; // isospin
+      int _Gparity; // G-parity
+      std::string _JtotalSpin; // total spin
+      int _Parity; // Parity
+      int _Cqm; // Charge 'parity'
+      char _Aformat; // anti-particle format character
+      int _pdg_id;
+      std::string _charge;
+      int _Rexist; //  likelihood of existence, baryons only
+      char _Status; // status (estalished or not etc)
+      std::string _name;
+      std::string _quarks;
+      std::string _texName; 
+      MultiQuarkContent _netQuarkContent;
 
-  MultiQuarkContent _netQuarkContent;
+      double _Radius;
+      static double _defaultRadius;
+      static double _defaultCharmRadius;
 
-  double _Radius;
-  static double _defaultRadius;
-  static double _defaultCharmRadius;
+      bool _isValid;
 
-  bool _isValid;
-  
-  void setRadius();
+      void setRadius();
 
-  void antiQuarks();
-  void antiQuarkContent();
-  void antiCharge();
- public:
-  double mass() const{return _mass;}
-  double mErrPlus()const{return _mErrPlus;}
-  double mErrMinus()const{return _mErrMinus;}
-  
-  void setMass(double m) const;  
-    
-  double width() const{ return _width;}
-  double wErrPlus()const{return _wErrPlus;}
-  double wErrMinus()const{return _wErrMinus;}
+      void antiQuarks();
+      void antiQuarkContent();
+      void antiCharge();
+    public:
+      double mass() const{return _mass;}
+      double mErrPlus()const{return _mErrPlus;}
+      double mErrMinus()const{return _mErrMinus;}
 
-  std::string I()const{return _Isospin;} // isospin
-  int G()const{return _Gparity;}; // G-parity
-  std::string J()const{return _JtotalSpin;} // total spin
-  int P()const{return _Parity;} // Parity
-  int C()const{return _Cqm;} // Charge 'parity'
-  int pdg_id()const{return _pdg_id;}
-  std::string charge()const{return _charge;}
-  int R()const{return _Rexist;} //  likelihood of existence, baryons only
-  char S()const{return _Status;} // status (estalished or not etc)
-  std::string name() const;
-  std::string quarks() const{return _quarks;}
-  const MultiQuarkContent& netQuarkContent() const{return _netQuarkContent;}
-/*
-  double lifetime() const;
-  double ctau() const;
-  double ctau_in_microns() const;
-  double lifetime_in_ns() const;
-  double lifetime_in_ps() const;
-*/
-  double radius() const;
+      void setMass(double m) const;  
 
-  std::string ScalarVectorPseudoAxialVectorTensor() const;
-  std::string SVPAT() const{
-    return ScalarVectorPseudoAxialVectorTensor();
-  }
-  bool isVector() const{return ScalarVectorPseudoAxialVectorTensor() == "V";}
-  bool isScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "S";}
-  bool isPseudoScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "P";}
-  bool isAxialVector() const{return ScalarVectorPseudoAxialVectorTensor() == "A";}
-  bool isTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "T";}
-  bool isPseudoTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "PT";}
+      double width() const{ return _width;}
+      double wErrPlus()const{return _wErrPlus;}
+      double wErrMinus()const{return _wErrMinus;}
+      
+      std::string I()const{return _Isospin;} // isospin
+      int G()const{return _Gparity;}; // G-parity
+      std::string J()const{return _JtotalSpin;} // total spin
+      int P()const{return _Parity;} // Parity
+      int C()const{return _Cqm;} // Charge 'parity'
+      int pdg_id()const{return _pdg_id;}
+      std::string charge()const{return _charge;}
+      int R()const{return _Rexist;} //  likelihood of existence, baryons only
+      char S()const{return _Status;} // status (estalished or not etc)
+      std::string name() const;
+      std::string texName() const { return _texName ; }
+      void setLabel( const std::string& label ){ _texName = label ; } 
+      std::string quarks() const{return _quarks;}
+      const MultiQuarkContent& netQuarkContent() const{return _netQuarkContent;}
+      /*
+         double lifetime() const;
+         double ctau() const;
+         double ctau_in_microns() const;
+         double lifetime_in_ns() const;
+         double lifetime_in_ps() const;
+         */
+      double radius() const;
 
-  //  double mass_in_GeV() const{return mass()/1000.0;}
+      std::string ScalarVectorPseudoAxialVectorTensor() const;
+      std::string SVPAT() const{
+        return ScalarVectorPseudoAxialVectorTensor();
+      }
+      bool isVector() const{return ScalarVectorPseudoAxialVectorTensor() == "V";}
+      bool isScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "S";}
+      bool isPseudoScalar() const{return ScalarVectorPseudoAxialVectorTensor() == "P";}
+      bool isAxialVector() const{return ScalarVectorPseudoAxialVectorTensor() == "A";}
+      bool isTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "T";}
+      bool isPseudoTensor() const{return ScalarVectorPseudoAxialVectorTensor() == "PT";}
 
-  bool isValid() const{return _isValid;}
+      //  double mass_in_GeV() const{return mass()/1000.0;}
 
-  bool hasDistinctAnti() const;
-  bool isItsOwnAnti() const{return ! hasDistinctAnti();}
+      bool isValid() const{return _isValid;}
 
-  ParticleProperties(std::string pdg_string="");
+      bool hasDistinctAnti() const;
+      bool barred() const ; 
+      bool isItsOwnAnti() const{return ! hasDistinctAnti();}
 
-  void print(std::ostream& out = std::cout) const;
+      ParticleProperties(const std::string& pdg_string="");
 
-  bool operator==(const ParticleProperties& rhs) const{
-    if(_pdg_id==0 && rhs._pdg_id==0){
-      return name() == rhs.name();
-    }
-    return _pdg_id == rhs._pdg_id;
-  }
-  bool operator<(const ParticleProperties& rhs) const{
-    if(_pdg_id==0 || rhs._pdg_id==0){
-      return name() < rhs.name();
-    }
-    return _pdg_id < rhs._pdg_id;
-  }
-  bool operator>(const ParticleProperties& rhs) const{
-    return ! (*this == rhs || *this < rhs);
-  }
-  bool operator<=(const ParticleProperties& rhs) const{
-    return (*this < rhs || *this == rhs);
-  }
-  bool operator>=(const ParticleProperties& rhs) const{
-    return (*this > rhs || *this == rhs);
-  }
+      void print(std::ostream& out = std::cout) const;
 
-  bool antiThis();
-  ParticleProperties anti() const;
+      bool operator==(const ParticleProperties& rhs) const{
+        if(_pdg_id==0 && rhs._pdg_id==0){
+          return name() == rhs.name();
+        }
+        return _pdg_id == rhs._pdg_id;
+      }
+      bool operator<(const ParticleProperties& rhs) const{
+        if(_pdg_id==0 || rhs._pdg_id==0){
+          return name() < rhs.name();
+        }
+        return _pdg_id < rhs._pdg_id;
+      }
+      bool operator>(const ParticleProperties& rhs) const{
+        return ! (*this == rhs || *this < rhs);
+      }
+      bool operator<=(const ParticleProperties& rhs) const{
+        return (*this < rhs || *this == rhs);
+      }
+      bool operator>=(const ParticleProperties& rhs) const{
+        return (*this > rhs || *this == rhs);
+      }
 
-  bool isNonResonant() const;
+      bool antiThis();
+      ParticleProperties anti() const;
 
-};
+      bool isNonResonant() const;
 
-std::ostream& operator<<(std::ostream& out, const ParticleProperties& pp);
+  };
+}
+std::ostream& operator<<(std::ostream& out, const AmpGen::ParticleProperties& pp);
 
 #endif
 //

@@ -163,7 +163,7 @@ class Particle {
     bool conservesParity( unsigned int L=0) const {
       return parity() == daughter(0)->parity()*daughter(1)->parity()*( L % 2 == 0 ? 1 : -1 );
     }
-    std::string getTex(bool isRoot = false) const;
+    std::string getTeX(bool isRoot = false) const;
     std::string makeUniqueString();
     bool isStable() const;
 

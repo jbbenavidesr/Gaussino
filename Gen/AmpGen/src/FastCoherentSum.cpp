@@ -1,5 +1,6 @@
 #include "AmpGen/FastCoherentSum.h"
 #include "AmpGen/resolveParameters.h"
+#include "AmpGen/LatexTable.h"
 
 using namespace AmpGen; 
 
@@ -23,8 +24,8 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
     std::map<std::string, std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*>> tmpParams;
     std::map<std::string, AmpGen::MinuitParameter*> otherParameters; 
 
-    for( unsigned int i =0 ;i < mps.size(); ++i ){
-      AmpGen::MinuitParameter* parameter = mps.getParPtr(i);
+    for( unsigned int i =0 ; i < mps.size(); ++i ){
+     AmpGen::MinuitParameter* parameter = mps.getParPtr(i);
       const std::string paramName = parameter->name();
       auto tokens = split( paramName, '_');
       std::string thisDecayName;
@@ -93,7 +94,6 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
       DEBUG("Got expression for this tree");
       m_pdfs.emplace_back( expression , name , extendEventFormat, dbThis?&dbExpressions:NULL );
      
-  //    m_addressMapping.clear(); 
       auto newAddresses = resolveParameters( &(*m_pdfs.rbegin()) , otherParameters );
       for( auto& addr : newAddresses ) m_addressMapping.push_back( addr );
      
@@ -108,7 +108,7 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
       }
       m_coefficients.push_back( 
           std::complex<double>( parameters.first->mean() , parameters.second->mean() ) );
-      m_minuitparameters.push_back( parameters );
+      m_minuitParameters.push_back( parameters );
     }
     DEBUG("Configured all parameters");
     if( m_pdfs.size() == 0 ) 
@@ -204,60 +204,52 @@ void FastCoherentSum::debug( const unsigned int& N, const std::string& nameMustC
   INFO( "Pdf = " << prob( m_events->at(N) )); 
 }
 
-std::vector<std::string> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit , std::ostream& stream){
+std::vector<ProcessParameters> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit ){  
+  return fitFractions(minuit.covMatrixFull() );
+}
+
+std::vector<ProcessParameters> FastCoherentSum::fitFractions( const TMatrixTSym<double>& covMatrix){
+  
   std::vector<Complex> co;
   std::vector<std::string> formatted;
-  auto covMatrix = minuit.covMatrixFull();
-  DEBUG("Covariance matrix size = " << covMatrix.GetNcols() << " x " << covMatrix.GetNrows()  );
-
-  for( unsigned int i=0;i<m_minuitparameters.size();++i ) 
-    co.push_back( Complex( AmpGen::FitParameter( m_minuitparameters[i].first) , 
-          AmpGen::FitParameter( m_minuitparameters[i].second ) ) );
-
-  DEBUG("Collected 2x" << m_minuitparameters.size() << " parameters" );
-  std::vector<Parameter> params;
-  for( auto& param : m_minuitparameters ){
-    params.push_back( Parameter( param.first->name() ) );
-    params.push_back( Parameter( param.second->name() ) );
-  }
-  DEBUG("Collected " << params.size() << 
-      " named parameters ( normalisations = " << m_normalisations.size() );
-  Expression normalisation; 
-  Expression diagonalFitFraction; 
-  for( unsigned int i=0;i<m_minuitparameters.size();++i){
-    normalisation = normalisation + co[i].norm()*m_normalisations[i][i].real();
-    diagonalFitFraction = diagonalFitFraction + co[i].norm()*m_normalisations[i][i].real();
-    for( unsigned int j=i+1; j < m_minuitparameters.size(); ++j )
-      normalisation = normalisation + 2*( co[i]*co[j].conj()*m_normalisations[i][j] ).real() ; 
-  }
-  DEBUG("Calculated normalisations");
   std::vector<Observable> fractions;
   std::vector<Observable> interferenceTerms;
-  std::vector<std::string> latexTable;
+  std::vector<ProcessParameters> latexTable;
+  std::vector<Parameter> params;
+  Expression normalisation; 
+  Expression diagonalFitFraction; 
+  for( auto& p : m_minuitParameters ){
+    unsigned int s = params.size();
+    params.push_back( Parameter( p.first->name() , p.first->mean()  ,true,true) );
+    params.push_back( Parameter( p.first->name(), p.second->mean() ,true,true) );
+    co.push_back( Complex(params[s],params[s+1]  )); 
+  }
+  for( unsigned int i=0;i<m_minuitParameters.size();++i){
 
-  for( unsigned int i=0;i<m_minuitparameters.size();++i){
+    diagonalFitFraction = diagonalFitFraction + co[i].norm()*m_normalisations[i][i].real();
+    for( unsigned int j=0; j < m_minuitParameters.size(); ++j )
+      normalisation = normalisation + co[i] * co[j].conj() * m_normalisations[i][j] ;
+  }
+  for( unsigned int i=0;i<m_minuitParameters.size();++i){
 
     Observable FF( co[i].norm()*m_normalisations[i][i].real() / normalisation ,
         m_decayTrees[i]->uniqueString() );
     FF.evaluate( covMatrix , params );
     fractions.push_back(FF);
-    for( unsigned int j=i+1; j < m_minuitparameters.size(); ++j ){
+    for( unsigned int j=i+1; j < m_minuitParameters.size(); ++j ){
       Complex fij = co[i]*co[j].conj()*m_normalisations[i][j] ;
       Observable IF( fij.real() / normalisation,
           m_decayTrees[i]->uniqueString() + " x " + m_decayTrees[j]->uniqueString() );
       IF.evaluate( covMatrix, params);
       interferenceTerms.push_back( IF);
     }   
-    stream << m_decayTrees[i]->uniqueString() << " : " 
-      << FF.getVal() << " " << FF.getError() << " " 
-      << m_minuitparameters[i].first->mean() << " " 
-      << m_minuitparameters[i].first->err() << " " 
-      << m_minuitparameters[i].second->mean() << " " 
-      << m_minuitparameters[i].second->err() << std::endl;
-    std::string latexString = numberWithError(FF.getVal(),FF.getError(),4) + " & " +
-      numberWithError(m_minuitparameters[i].first->mean() , m_minuitparameters[i].first->err(),3) + " & " +
-      numberWithError(m_minuitparameters[i].second->mean() , m_minuitparameters[i].second->err(),3) ;  
-    formatted.push_back( latexString );
+    ProcessParameters paramsForThisProcess;
+    auto re = *m_minuitParameters[i].first;
+    auto im = *m_minuitParameters[i].second;
+    paramsForThisProcess.setAmplitude( std::complex<double>(re.mean(),im.mean()), std::complex<double>(re.err(),im.err()));
+    paramsForThisProcess.setFraction( FF.getVal(), FF.getError());
+    paramsForThisProcess.setParticle( m_decayTrees[i] );
+    latexTable.push_back( paramsForThisProcess );
   }
   Observable OFF( diagonalFitFraction / normalisation ,"SumOfFitFractions");
   OFF.evaluate( covMatrix, params ); 
@@ -275,13 +267,7 @@ std::vector<std::string> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit
       << std::setw(7)  << " +/- " << fraction->getError() << std::endl;
 
   std::cout << "#################################################" << std::endl; 
-
-  std::cout << "Re(Interference) (+/-) stat." << std::endl;
-  for( auto& fraction : interferenceTerms )
-    std::cout << std::setw(55) << fraction.name() << "   " 
-      << std::setw(7)  << fraction.getVal() 
-      << std::setw(7)  << " +/- " << fraction.getError() << std::endl;
-  return formatted ; 
+  return latexTable ; 
 }
 
 void FastCoherentSum::makeBinary( const std::string& fname, const double& normalisation ){

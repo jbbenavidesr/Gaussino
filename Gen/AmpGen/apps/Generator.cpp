@@ -43,13 +43,11 @@ int main( int /*argc */, char** /*argv*/ ){
 
   FastCoherentSum sig( eventType , MPS , accepted.getExtendedEventFormat(),  "", true);
 
-  SumPDF<std::complex<double>, FastCoherentSum&> pdf( sig ); /// PURE signal pdf
+  SumPDF<FastCoherentSum&> pdf( sig ); /// PURE signal pdf
   pdf.setPset( &MPS );
   pdf.buildLibrary();
-  typedef FCNLibrary<std::complex<double>> pdfLib;
 
-  if( ! pdf.link( pdfLib::OPTIONS::RECOMPILE | pdfLib::OPTIONS::DEBUG, 
-        std::string( getenv("PWD") ) + std::string( "/functions") ) ){
+  if( ! pdf.link( FCNLibrary::OPTIONS::RECOMPILE | FCNLibrary::OPTIONS::DEBUG ) ){
     ERROR("Library linking / creation failed, exiting");
     return 0 ;
   }

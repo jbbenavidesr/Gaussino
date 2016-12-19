@@ -1,5 +1,5 @@
-#ifndef BINDT 
-#define BINDT 
+#ifndef BINDT_H
+#define BINDT_H
 #include "AmpGen/EventList.h"
 #include <queue>
 #include <iomanip>
@@ -20,13 +20,15 @@ namespace AmpGen {
       class Decision : public INode {
 
         public :
-          Decision( const unsigned int& index,
+          Decision( std::function<double(const Event&)>& functor,
+              const unsigned int& index, 
               const double& value ,
               std::shared_ptr<INode> left,
               std::shared_ptr<INode> right ) :
             INode() ,
             m_left(left),
             m_right(right),
+            m_functor(functor),
             m_index(index),
             m_value(value)
         {
@@ -34,10 +36,10 @@ namespace AmpGen {
           if( m_right != nullptr ) m_right->m_parent = this;
         }
           virtual unsigned int operator()( const Event& evt ){
-            return evt.s( gChi2Indices[ m_index]  ) > m_value ? (*m_right)(evt) : (*m_left)(evt) ;
+            return m_functor( evt )  > m_value ? (*m_right)(evt) : (*m_left)(evt) ;
           }
           virtual void serialize( std::ostream& stream ){
-            stream << this << " " << m_index << " " <<   m_value << " " << m_left.get() << " " << m_right.get() << std::endl;
+            stream << this << " " << m_index <<  " " <<   m_value << " " << m_left.get() << " " << m_right.get() << std::endl;
             m_left->serialize(stream);
             m_right->serialize(stream);
           }
@@ -51,6 +53,7 @@ namespace AmpGen {
         private :
           std::shared_ptr<INode> m_left;
           std::shared_ptr<INode> m_right;
+          std::function<double(const Event&)>& m_functor; 
           unsigned int m_index;
           double m_value;
       };
@@ -72,7 +75,9 @@ namespace AmpGen {
     public : 
       BinDT() {};
       BinDT( const std::vector<Event>& evts , const unsigned int& dim,
-          const unsigned int& minEvents  ) ; 
+          const unsigned int& minEvents  ) ;
+      BinDT( const std::vector<Event>& evts, const std::vector<std::function<double(const Event&)>> functors,
+          const unsigned int& minEvents );  
       BinDT( std::istream& stream ) ;
       BinDT( const std::string& filename ) ; 
 
@@ -85,6 +90,7 @@ namespace AmpGen {
       std::vector<std::shared_ptr<EndNode>>::iterator begin(){ return m_endNodes.begin() ; }
       std::vector<std::shared_ptr<EndNode>>::iterator   end(){ return m_endNodes.end() ; }
 
+      void makeDefaultFunctors();
       void refreshQueue( const std::vector<const Event*>& evts, std::queue<unsigned int>& indexQueue ){
         if( evts.size() > m_minEvents * pow( 2 , m_dim ) ){
           for( unsigned int i = 0 ; i < m_dim ;++i) indexQueue.push(i);
@@ -108,19 +114,20 @@ namespace AmpGen {
           m_endNodes.push_back( node );
           return node;
         }
+
         std::sort( evts.begin(), evts.end(),
-            [&index]( const Event* a, const Event* b ) 
-            { return a->s(gChi2Indices[index]) > b->s(gChi2Indices[index]) ; } );
+            [this,&index]( const Event* a, const Event* b ) 
+            { return m_functors[index](*a) > m_functors[index](*b) ; } );
 
         unsigned int midpoint = evts.size() / 2  ;
         midpoint = evts.size() / 2 ;
-        auto& co =  gChi2Indices[index];
+        auto& co =  m_functors[index];
 
         double midposition = evts.size() % 2 == 0 ? 
-          ( evts[midpoint-1]->s(co) + evts[midpoint]->s(co) ) / 2 : 
-          ( evts[midpoint+1]->s(co) + evts[midpoint-1]->s(co) + evts[midpoint]->s(co) ) / 3; 
+          ( co( *evts[midpoint-1] ) + co( *evts[midpoint] ) ) / 2 : 
+          ( co( *evts[midpoint+1] ) + co( *evts[midpoint-1] ) + co( *evts[midpoint] ) ) / 3; 
 
-        midpoint += midposition > evts[midpoint]->s(co);
+        midpoint += midposition > co( *evts[midpoint] );
 
         std::vector<const Event*> leftEvents( evts.begin(), evts.begin() + midpoint );
         std::vector<const Event*> rightEvents( evts.begin() + midpoint, evts.end() );
@@ -128,17 +135,18 @@ namespace AmpGen {
         if( indexQueue.empty() ) refreshQueue( evts, indexQueue ); 
         DEBUG("Making decision node " << index << " " << midposition 
             << "  " << leftEvents.size() << "  " << rightEvents.size() );
-        DEBUG( "left node = " << (*leftEvents.rbegin())->s( gChi2Indices[index] ) 
-            << " right node =  " << (*rightEvents.begin())->s( gChi2Indices[index] )  );
+        DEBUG( "left node = " << co( (*leftEvents.rbegin()) ) 
+            << " right node =  " << co( (*rightEvents.begin()) ) ); 
         std::shared_ptr<INode> left = makeNodes( leftEvents, indexQueue );
         std::shared_ptr<INode> right = makeNodes( rightEvents, indexQueue );
-        std::shared_ptr<INode> node = std::make_shared<Decision>( index , midposition,right,left );
+        std::shared_ptr<INode> node = std::make_shared<Decision>( m_functors[index], index , midposition,right,left );
         return node;
       }
       std::shared_ptr<INode> m_top;
       unsigned int m_counter;
       unsigned int m_dim;
       std::vector<std::shared_ptr<EndNode>> m_endNodes;
+      std::vector<std::function<double(const Event&)>> m_functors; 
       unsigned int m_minEvents;
   };
 }
