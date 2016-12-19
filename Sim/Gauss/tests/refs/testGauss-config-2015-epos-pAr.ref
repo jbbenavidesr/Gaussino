@@ -5202,7 +5202,7 @@ ChronoStatSvc              INFO Time User   : Tot=  185  [s]                    
 ******Stat******           INFO  "#Rich2 MCHits" |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
 ******Stat******           INFO  "#Spd MCHits"   |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
 ******Stat******           INFO  "#TT MCHits"    |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
-******Stat******           INFO  "#Velo MCHits"  |         1 |          0 |     0.0000 |     0.0000 |      0.0000 |      0.0000 |
+******Stat******           INFO  "#Velo MCHits"  |         1 |          2 |     2.0000 |     0.0000 |      2.0000 |      2.0000 |
 ******Stat******           INFO ****************************************************************************************************
 ChronoStatSvc.finalize()   INFO  Service finalized successfully 
 ApplicationMgr             INFO Application Manager Finalized successfully
