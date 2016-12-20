@@ -54,6 +54,15 @@ namespace AmpGen {
 
       bool link( const unsigned int& options=FCNLibrary::OPTIONS::RECOMPILE,
           const std::string& name="") ;
+      bool isReady() const {
+        for( auto& expression : m_objects ){
+          if( ! expression.second->isReady() ){
+            ERROR( expression.second->name() << " not linked" );
+            return false;
+          }
+        }
+        return true;
+      }
   };
 }
 #endif

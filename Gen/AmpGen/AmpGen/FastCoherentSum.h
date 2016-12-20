@@ -6,8 +6,6 @@
 #include "AmpGen/MinuitParameter.h"
 #include "AmpGen/ParticlePropertiesList.h"
 #include "AmpGen/Minimiser.h"
-
-/// CGEN 
 #include "AmpGen/Particle.h"
 #include "AmpGen/CompiledExpression.h"
 #include "AmpGen/Observable.h"
@@ -15,6 +13,7 @@
 #include "AmpGen/Utilities.h"
 #include "AmpGen/EventType.h"
 #include "AmpGen/CacheTransfer.h"
+#include "AmpGen/FitFraction.h"
 
 /// STL
 #include <iomanip>
@@ -28,7 +27,6 @@
 #include <fstream>
 
 namespace AmpGen { 
-  class ProcessParameters;
 
   class FastCoherentSum {
     protected:
@@ -112,7 +110,7 @@ namespace AmpGen {
           unsigned int options = 0 ) ;
 
       //// get the value of the PDF at this point //// 
-      std::complex<double> getVal( const Event& evt ){
+      std::complex<double> getVal( const Event& evt ) const {
         std::complex<double> value(0.,0.);
         for( unsigned int i=0;i<m_coefficients.size();++i){
           value += m_coefficients[i]*evt.getCache(m_cacheAddresses[i]);
@@ -152,8 +150,8 @@ namespace AmpGen {
       void debug( const unsigned int& N=0, const std::string& nameMustContain="") ; 
       double weightIntegral(){ return m_weightIntegral ; }
 
-      std::vector<AmpGen::ProcessParameters> fitFractions(AmpGen::Minimiser& minuit); 
-      std::vector<AmpGen::ProcessParameters> fitFractions(const TMatrixTSym<double>& covMatrix); 
+      std::vector<FitFraction> fitFractions(AmpGen::Minimiser& minuit); 
+      std::vector<FitFraction> fitFractions(const TMatrixD& covMatrix); 
 
       void makeBinary( const std::string& fname , const double& normalisation=1) ; 
   }; 

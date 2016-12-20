@@ -33,7 +33,7 @@ namespace AmpGen {
       }
       void prepare() ; 
       double norm() const ; 
-      std::vector<AmpGen::ProcessParameters> fitFractions(AmpGen::Minimiser& minuit ) ;
+      std::vector<FitFraction> fitFractions(AmpGen::Minimiser& minuit ) ;
 
   };
 }

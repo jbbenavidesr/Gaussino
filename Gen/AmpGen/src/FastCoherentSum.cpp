@@ -110,6 +110,11 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
           std::complex<double>( parameters.first->mean() , parameters.second->mean() ) );
       m_minuitParameters.push_back( parameters );
     }
+    for( unsigned int i = 0 ; i < m_decayTrees.size(); ++i){
+      std::string name = m_decayTrees[i]->uniqueString();
+      m_minuitParameters[i].first->setName( name +"_Re");
+      m_minuitParameters[i].second->setName( name +"_Im");
+    }
     DEBUG("Configured all parameters");
     if( m_pdfs.size() == 0 ) 
       WARNING("No expressions found for amplitude with prefix = " << m_prefix ); 
@@ -204,17 +209,16 @@ void FastCoherentSum::debug( const unsigned int& N, const std::string& nameMustC
   INFO( "Pdf = " << prob( m_events->at(N) )); 
 }
 
-std::vector<ProcessParameters> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit ){  
+std::vector<FitFraction> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit ){  
   return fitFractions(minuit.covMatrixFull() );
 }
 
-std::vector<ProcessParameters> FastCoherentSum::fitFractions( const TMatrixTSym<double>& covMatrix){
+std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatrix){
   
   std::vector<Complex> co;
-  std::vector<std::string> formatted;
   std::vector<Observable> fractions;
   std::vector<Observable> interferenceTerms;
-  std::vector<ProcessParameters> latexTable;
+  std::vector<FitFraction> outputFractions; 
   std::vector<Parameter> params;
   Expression normalisation; 
   Expression diagonalFitFraction; 
@@ -243,18 +247,11 @@ std::vector<ProcessParameters> FastCoherentSum::fitFractions( const TMatrixTSym<
       IF.evaluate( covMatrix, params);
       interferenceTerms.push_back( IF);
     }   
-    ProcessParameters paramsForThisProcess;
-    auto re = *m_minuitParameters[i].first;
-    auto im = *m_minuitParameters[i].second;
-    paramsForThisProcess.setAmplitude( std::complex<double>(re.mean(),im.mean()), std::complex<double>(re.err(),im.err()));
-    paramsForThisProcess.setFraction( FF.getVal(), FF.getError());
-    paramsForThisProcess.setParticle( m_decayTrees[i] );
-    latexTable.push_back( paramsForThisProcess );
+    outputFractions.emplace_back( m_decayTrees[i]->uniqueString(), FF.getVal(),FF.getError(), m_decayTrees[i] );
   }
   Observable OFF( diagonalFitFraction / normalisation ,"SumOfFitFractions");
   OFF.evaluate( covMatrix, params ); 
   INFO( "Diagonal Fit Fraction = " << numberWithError( OFF.getVal() , OFF.getError(),4)  );
-  formatted.push_back( numberWithError( OFF.getVal(), OFF.getError(),4) );
   DEBUG( fractions.size() << " fit fraction observables");
   DEBUG( interferenceTerms.size() << " interference observables");
 
@@ -267,7 +264,7 @@ std::vector<ProcessParameters> FastCoherentSum::fitFractions( const TMatrixTSym<
       << std::setw(7)  << " +/- " << fraction->getError() << std::endl;
 
   std::cout << "#################################################" << std::endl; 
-  return latexTable ; 
+  return outputFractions ; 
 }
 
 void FastCoherentSum::makeBinary( const std::string& fname, const double& normalisation ){

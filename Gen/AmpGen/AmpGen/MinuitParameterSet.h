@@ -17,7 +17,6 @@ namespace AmpGen{
   class MinuitParameterSet{
     protected:
       std::vector<MinuitParameter*> _parPtrList;
-
       static const char ntpNameChars[];
       static const char prtNameChars[];
       static std::string prtToNtpName(const std::string& s_in);
@@ -26,7 +25,6 @@ namespace AmpGen{
       bool setAllIndices();
     public:
 
-    
       MinuitParameterSet();
       MinuitParameterSet(const MinuitParameterSet& other);
 

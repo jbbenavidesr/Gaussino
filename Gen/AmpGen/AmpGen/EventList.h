@@ -99,6 +99,9 @@ namespace AmpGen {
       unsigned int cacheSize(){ return m_cache.size() ; } 
       inline std::complex<double> getCache(const unsigned int& pos) const { return m_cache[pos];}
       inline std::vector<std::complex<double>>::const_iterator cacheBegin() const {return m_cache.cbegin(); }
+      void resizeCache( const unsigned int& new_size ){
+        m_cache.resize(new_size);
+      }
       double* pWeight(){ return &(m_weights[0]); }
       double* pGenPdf(){ return &m_genPdf; }
       double weight() const { return m_weights.size() == 0 ? 1 : *(m_weights.rbegin()); } /// get the last weight added to the stack /// 

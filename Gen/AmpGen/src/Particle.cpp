@@ -56,7 +56,6 @@ void Particle::parseModifier( const std::string& mod ){
   else if( mod == "0" ) m_spinConfigurationNumber=0;
   else if( mod == "1" ) m_spinConfigurationNumber=1;
   else if( mod == "2" ) m_spinConfigurationNumber=2;
-
   else if ( LineshapeFactory::isLineshape(mod)) m_lineshape = mod ; 
 }
 

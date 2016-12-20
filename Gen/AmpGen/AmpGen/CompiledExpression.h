@@ -29,6 +29,7 @@ namespace AmpGen {
       virtual std::string name() const =0;   
       virtual void compile( std::ostream& stream , bool debug ) const=0 ;
       virtual bool link( void* handle , bool dbThis=false )=0;
+      virtual bool isReady() const = 0 ;  
 };
 
   template <class RETURN_TYPE> class CompiledExpression : public ICompiledExpression {

@@ -1,4 +1,4 @@
-#include "TMatrixTSym.h"
+#include "TMatrixD.h"
 
 #include "AmpGen/Expression.h"
 #include "AmpGen/MsgService.h"
@@ -13,7 +13,7 @@ namespace AmpGen {
     public:
       Observable( const Expression& expression, const std::string& name ) : 
         m_expression(expression), m_name(name) , m_value(0) , m_variance(0) {}
-      void evaluate( const TMatrixTSym<double>& covMatrix,
+      void evaluate( const TMatrixD& covMatrix,
           const std::vector<Parameter>& params ){
 
         std::vector<double> gradient( params.size() );

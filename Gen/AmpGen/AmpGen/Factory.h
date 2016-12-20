@@ -2,6 +2,7 @@
 #define FACTORY_H
 #include "AmpGen/MsgService.h"
 #include <map>
+#include <cxxabi.h>
 
 namespace AmpGen { 
   template < class TYPE , class KEY_TYPE=std::string>
@@ -18,7 +19,8 @@ namespace AmpGen {
           auto ptrToStatic = getMe();
           auto raw_base = ptrToStatic->m_terms.find( type );
           if( raw_base == ptrToStatic->m_terms.end() ){
-            ERROR( type << " not found in factory" );
+            int status=0;
+            ERROR( type << " not found in Factory<"<< abi::__cxa_demangle(typeid(TYPE).name(), 0, 0, &status)<<",KEY="<<abi::__cxa_demangle(typeid(KEY_TYPE).name(), 0, 0, &status) <<" >" );
             return nullptr;
           }
           auto objectToReturn = raw_base->second->create();

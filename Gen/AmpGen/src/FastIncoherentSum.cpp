@@ -48,7 +48,8 @@ void FastIncoherentSum::prepare(){
   }
   m_norm = norm(); /// update normalisation 
 }
-std::vector<ProcessParameters> FastIncoherentSum::fitFractions(
+
+std::vector<FitFraction> FastIncoherentSum::fitFractions(
     AmpGen::Minimiser& minuit ){
   std::vector<Complex> co;
   auto covMatrix = minuit.covMatrixFull();
@@ -56,7 +57,7 @@ std::vector<ProcessParameters> FastIncoherentSum::fitFractions(
     co.push_back( Complex( Parameter( p.first->name() , p.second->mean() ) , 
           Parameter( p.second->name(), p.second->mean() ) ) );
   }
-  std::vector<ProcessParameters> latexTable;
+  std::vector<FitFraction> outputFractions;
   std::string pfx = (m_prefix == "" ? "" : m_prefix +"_");
 
   std::vector<Parameter> params;
@@ -75,21 +76,12 @@ std::vector<ProcessParameters> FastIncoherentSum::fitFractions(
         m_decayTrees[i]->uniqueString() );
 
     FF.evaluate( covMatrix, params );
-    fractions.push_back(FF);
-
-    auto re = *m_minuitParameters[i].first;
-    auto im = *m_minuitParameters[i].second ;
-    ProcessParameters paramsForThisProcess;
-    paramsForThisProcess.setAmplitude( std::complex<double>(re.mean(),im.mean()), std::complex<double>(re.err(),im.err()));
-    paramsForThisProcess.setFraction( FF.getVal(), FF.getError());
-    paramsForThisProcess.setParticle( m_decayTrees[i]);
-    latexTable.push_back( paramsForThisProcess );
-
+    outputFractions.emplace_back( m_decayTrees[i]->uniqueString(), FF.getVal(), FF.getError(), m_decayTrees[i] );
   }
   std::sort( fractions.begin(), fractions.end() );
   for( auto fraction = fractions.begin() ; fraction != fractions.end(); ++fraction )
     std::cout << std::setw(55) << pfx+fraction->name() << "   " 
       << std::setw(7)  << fraction->getVal() 
       << std::setw(7)  << " +/- " << fraction->getError() << std::endl;
-  return latexTable;
+  return outputFractions; 
 } 

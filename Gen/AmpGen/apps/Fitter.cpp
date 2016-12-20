@@ -17,6 +17,7 @@
 #include "AmpGen/CoherenceFactor.h"
 #include "AmpGen/Kinematics.h"
 #include "AmpGen/Plots.h"
+#include "AmpGen/FitResult.h"
 #include "AmpGen/LatexTable.h"
 #include "AmpGen/MintUtilities.h"
 #include "AmpGen/IExtendLikelihood.h"
@@ -51,11 +52,10 @@ void randomizeStartingPoint( MinuitParameterSet& MPS , TRandom3& rand, bool Spli
 template<typename PDF > Minimiser* doFit( PDF& pdf , 
     EventList& data, 
     EventList& mc, 
-    std::ofstream& outlog, 
     MinuitParameterSet& MPS ){
 
-  FitQuality fq(0,0,0); 
   const std::string fLib = NamedParameter<std::string>("Lib",std::string("")).getVal();
+  const std::string logFile = NamedParameter<std::string>("LogFile",std::string("Fitter.log")).getVal();
   unsigned int nBins = NamedParameter<unsigned int>("nBins",100).getVal();
   bool debug = NamedParameter<unsigned int>("debug",0).getVal();
 
@@ -97,33 +97,11 @@ template<typename PDF > Minimiser* doFit( PDF& pdf ,
 
   Chi2Estimator chi2(data, mc , 15 );
 
-  TMatrixTSym<double> cov = mini->covMatrixFull();
-  std::vector<std::string> params;
   MinuitParameterSet& mps = *(mini->parSet());
-  unsigned int nParam=0;
-  for( unsigned int i = 0 ; i < mps.size(); ++i){
-    if( mps.getParPtr(i)->iFixInit() == 0 ) nParam++;
-    params.push_back( mps.getParPtr(i)->name() );
-  }
-
-  for(int i = 0 ; i < cov.GetNrows(); ++i){
-    outlog << "Parameter " << params[i] << "  " 
-      << mps.getParPtr(i)->mean() << "  " 
-      << mps.getParPtr(i)->err()  << "  ";
-    for(int j = 0 ; j < cov.GetNcols(); ++j)
-      outlog << cov[i][j] << " ";
-    outlog << std::endl;
-  }
-
-  INFO( "Chi2 per bin = " << chi2.chi2() / chi2.nBins()  );
-  INFO( "Chi2 per dof = " << chi2.chi2() / (chi2.nBins() - nParam-1 ) );
-  INFO( "-2LL         = " << pdf.getVal() );
-  INFO( "Fit Status   = " << mini->GetStatus() );
-
-  double ndof = chi2.nBins() - nParam -1;
-  fq.set( chi2.chi2() / ndof , pdf.getVal(), ndof );
-  outlog << "FitQuality " << chi2.chi2() << " " << ndof << " " << pdf.getVal() << "\n";
-  auto fitfractions = std::get<0>(pdf.pdfs()).fitFractions( *mini  ) ;
+  FitResult fr( mps, std::get<0>(pdf.pdfs()).fitFractions( *mini  ), mini->covMatrixFull(),
+      chi2.chi2(), chi2.nBins(), pdf.getVal(),  mini->GetStatus() );
+  fr.writeToFile( logFile);
+  
   INFO( "Time = " << (std::clock() - time )  / (double)CLOCKS_PER_SEC );
   return mini;
 }
@@ -134,7 +112,6 @@ int main(int argc , char* argv[] ){
   std::string mcFile   = NamedParameter<std::string>("SgIntegratorFname");
   std::string flatMC   = NamedParameter<std::string>("MCCoherence","NONE");
 
-  std::string logFile  = NamedParameter<std::string>("LogFile",(std::string)"Fitter.log");   
   std::string plotFile = NamedParameter<std::string>("Plots",(std::string)"plots.root");
   std::string latexOut = NamedParameter<std::string>("Plots",(std::string)"fit.tex");
   std::string epsFile  = NamedParameter<std::string>("EpsFile",(std::string)"default.eps");
@@ -209,8 +186,6 @@ int main(int argc , char* argv[] ){
   SumPDF<FastCoherentSum&, FastIncoherentSum&, FastCoherentSum&> 
     signalAndTwoBackground( pdf, bkg, misID );
 
-  std::ofstream logstream;
-  logstream.open( logFile );
   TFile* output = TFile::Open(plotFile.c_str(),"RECREATE");
   output->cd();
 
@@ -218,22 +193,21 @@ int main(int argc , char* argv[] ){
 
   if( fPDF == 1.0 ){
     INFO("Fitting with single background");
-    mini = doFit( signalPDF, events, eventsMC, logstream, MPS  );
+    mini = doFit( signalPDF, events, eventsMC, MPS  );
   }
   else if( fPDF == 0.0 && fComb == 1.0 ){
     INFO("Fitting pure combinatoric background" ); 
-    mini = doFit( bkgPDF, events, eventsMC, logstream, MPS  );
+    mini = doFit( bkgPDF, events, eventsMC, MPS  );
   }
   else if( fMisID == 0 ){
     INFO("Fitting with one background");
-    mini = doFit( signalAndOneBackground, events, eventsMC, logstream, MPS  );
+    mini = doFit( signalAndOneBackground, events, eventsMC, MPS  );
   }
   else if( fMisID != 0  ) {
-    mini = doFit( signalAndTwoBackground, events, eventsMC, logstream, MPS );
+    mini = doFit( signalAndTwoBackground, events, eventsMC, MPS );
   }
 
   int status = mini->GetStatus();
-  logstream << "status " << status << std::endl; 
   if( status != 0 ){
     ERROR("Fit not converged!");
   }
@@ -267,7 +241,7 @@ int main(int argc , char* argv[] ){
     plot1D( events, eventsMC, rho_hcos     , pipi_mid         , pdf , rho_axis  , "hCos_pipi_mid"  )  ;
     plot1D( events, eventsMC, acoplanarity , kstarrho_window  , pdf , aco_axis  , "aco_kstarrho" ) ;
 
-    plot1D( events, eventsMC, kstar_hcos   , kpi_high         , pdf ,  kpi_axis  , "hCos_kpi_high"  ) ;
+    plot1D( events, eventsMC, kstar_hcos   , kpi_high         , pdf , kpi_axis  , "hCos_kpi_high"  ) ;
     plot1D( events, eventsMC, kstar_hcos   , no_cut           , pdf , kpi_axis  , "hCos_kpi_all" ) ;
     plot1D( events, eventsMC, rho_hcos     , no_cut           , pdf , rho_axis  , "hCos_pipi_all" ) ;
 
@@ -327,11 +301,9 @@ int main(int argc , char* argv[] ){
     output->cd();
   };
 
-  logstream << "End Log" << std::endl; 
 
   output->Write();
   output->Close();
-  logstream.close(); 
   INFO("Finalising output");
 
   return 0;

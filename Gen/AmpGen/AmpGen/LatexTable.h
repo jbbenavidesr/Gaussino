@@ -2,95 +2,14 @@
 #define LATEXTABLE_H
 #include "AmpGen/Particle.h"
 #include "AmpGen/Utilities.h"
+#include "AmpGen/FitResult.h"
 #include <map>
 #include <algorithm>
 #include <fstream>
-
+/*
 namespace AmpGen {
 
-  struct FitQuality {
-    double chi2;
-    double LL;
-    double dof;
-    FitQuality( const double& m_chi2, const double& m_LL, const double& m_dof ) : chi2(m_chi2), LL( m_LL ) , dof( m_dof ) {}
-    void set ( const double& m_chi2, const double& m_LL, const double& m_dof ) { chi2 = (m_chi2) ;  LL = ( m_LL ) ;  dof = ( m_dof ) ; } 
-  };
-
-
-  class ProcessParameters
-  {
-
-    std::complex<double> m_amp;
-    std::complex<double> m_err;
-
-    double m_frac,
-           m_frac_err;
-    std::shared_ptr<AmpGen::Particle> m_particle; 
-    public: 
-
-    void setParticle( const std::shared_ptr<AmpGen::Particle>& particle ){
-      m_particle = particle; 
-    }
-    std::shared_ptr<AmpGen::Particle> particle() const { return m_particle ; } 
-    ProcessParameters() : 
-      m_amp(std::complex<double>(0,0)),
-      m_err(std::complex<double>(0,0)),
-      m_frac(0),
-      m_frac_err(0) {};
-
-    ProcessParameters( const std::string& params ){
-      auto tokens = split( params, ' ' );
-      if( tokens.size() == 1 ){
-        m_frac = 0;
-        m_frac_err = 0;
-        m_amp = std::complex<double>(0,0);
-        m_err = std::complex<double>(0,0);
-      } else {
-        if( tokens.size() != 8 ){
-          ERROR("Not enough tokens in " << params );
-        }  
-        m_frac = stod( tokens[2] ) ;
-        m_frac_err = stod( tokens[3] );
-        m_amp = std::complex<double>( stod(tokens[4]), stod(tokens[6] ) );
-        m_err = std::complex<double>( stod(tokens[5]), stod(tokens[7] ) );
-      }
-    }
-    void setAmplitude( const std::complex<double>& amp, const std::complex<double>& err){
-      m_amp = amp;
-      m_err = err;
-    }
-
-    void setAmplitude( double re, double im, double re_err=0, double im_err=0){
-      setAmplitude( std::complex<double>( re,im ),
-          std::complex<double>( re_err, im_err) );
-    }
-
-    double re() const { return m_amp.real(); } 
-    double im() const { return m_amp.imag(); } 
-    double re_err() const { return m_err.real(); } 
-    double im_err() const { return m_err.imag(); } 
-    std::string label() const { return m_particle->getTeX() ; }
-    std::string name() const { return m_particle->uniqueString() ; } 
-    double frac() const { return m_frac;}
-    double frac_err() const { return m_frac_err;}
-    std::complex<double> amp() const { return m_amp; }
-    void setFraction( double frac, double frac_stat ){
-      m_frac = frac;
-      m_frac_err = frac_stat;
-    }
-    void operator*=(const std::complex<double>& other){
-      m_amp*=other;
-    }
-    void operator+=(const ProcessParameters& other){
-      m_amp += other.amp();
-    }
-    std::string toTeX(const std::string& description ) const {
-      return "$" + label() + "$"+description +"& $"+numberWithError(frac(),frac_err(),4)+"$ & $"+numberWithError(re(),re_err(),4)+"$ & $"+numberWithError(im(),im_err(),4)+"$";
-    }
-  };
-
   class LatexTable { 
-
 
     std::vector<std::string> m_ordering ;
     std::string fname;
@@ -148,7 +67,7 @@ namespace AmpGen {
       }
       std::string delim = incoherent ? "" : div;
       model << delim << " $\\chi^2/ $ dof & dof & $\\mathcal{F}$" << endl;
-      model << delim << fq.chi2 << div << fq.dof << div << fq.LL << endl; 
+      model << delim << fq.chi2/fq.dof() << div << fq.dof() << div << fq.LL << endl; 
       model << "\\bottomrule" << std::endl; 
       model << "\\end{tabular}" << std::endl;
       model.close();
@@ -158,7 +77,7 @@ namespace AmpGen {
 
   };
 }
-
+*/
 //std::ostream& operator<<(std::ostream& os, const AmpGen::ProcessParameters& p){
 //    return os << p.frac() << " " << p.frac_err() << " " << p.re() << " " << p.re_err() << " " << p.im() << " " << p.im_err(); 
 //}

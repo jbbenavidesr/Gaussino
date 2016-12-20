@@ -1,6 +1,9 @@
 #ifndef EVENTTYPE_H
 #define EVENTTYPE_H 1
 
+#include <vector>
+#include <map>
+
 namespace AmpGen { 
   class EventType { /// is a particle ordering /// 
     private:
