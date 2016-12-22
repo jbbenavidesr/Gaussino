@@ -11,18 +11,17 @@ namespace AmpGen {
       double m_value;
       double m_variance;
     public:
-      Observable( const Expression& expression, const std::string& name ) : 
+      Observable( Expression expression, const std::string& name ) : 
         m_expression(expression), m_name(name) , m_value(0) , m_variance(0) {}
       void evaluate( const TMatrixD& covMatrix,
-          const std::vector<Parameter>& params ){
+          std::vector<Parameter>& params ){
 
         std::vector<double> gradient( params.size() );
         for( unsigned int i = 0 ; i < params.size() ; ++i ){
-          gradient[i] = std::real( m_expression.d( params[i] ).complexEval() );
-          DEBUG("g["<<i<<"] = " << gradient[i] );
-          DEBUG( m_expression.d(params[i]).to_string() );
+          gradient[i] = m_expression.d( params[i] ).realEval() ;
+          DEBUG( "d["<<m_name<<"]/d["<<params[i].m_name << "] = g["<<i<<"] = " << m_expression.d(params[i]).realEval() );
         }
-        m_value = std::real(m_expression.complexEval() );
+        m_value = m_expression.realEval() ;
         DEBUG("Value = " << m_value );
         m_variance = 0.;
         for( unsigned int i=0;i<params.size();++i){

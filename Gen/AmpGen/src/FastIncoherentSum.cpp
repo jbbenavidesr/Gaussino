@@ -1,5 +1,6 @@
 #include "AmpGen/FastIncoherentSum.h"
 #include "AmpGen/LatexTable.h"
+#include "AmpGen/Observable.h"
 
 using namespace AmpGen;
 
@@ -49,25 +50,45 @@ void FastIncoherentSum::prepare(){
   m_norm = norm(); /// update normalisation 
 }
 
-std::vector<FitFraction> FastIncoherentSum::fitFractions(
-    AmpGen::Minimiser& minuit ){
-  std::vector<Complex> co;
-  auto covMatrix = minuit.covMatrixFull();
-  for( auto& p : m_minuitParameters ){
-    co.push_back( Complex( Parameter( p.first->name() , p.second->mean() ) , 
-          Parameter( p.second->name(), p.second->mean() ) ) );
+std::vector<FitFraction> FastIncoherentSum::fitFractions(AmpGen::Minimiser& minuit ){  
+  std::vector<MinuitParameter*> params;
+  for( unsigned int i = 0 ; i < minuit.nPars(); ++i ) {
+    params.push_back( minuit.getParPtr(i) );
   }
+  return fitFractions(minuit.covMatrixFull(), params );
+}
+
+
+std::vector<FitFraction> FastIncoherentSum::fitFractions(
+    const TMatrixD& covMatrix, const std::vector<MinuitParameter*>& minuitParameters ){
+  std::vector<Complex> co;
+  WARNING("This code is not properly tested - use at your peril"); 
+  std::map<std::string,Parameter*> mapping;
+  std::vector<Parameter> params;
+  for( unsigned int i = 0 ; i < minuitParameters.size();++i ){
+    auto p = minuitParameters[i];
+    params.push_back( Parameter( p->name() , p->mean()  ,true,true) );
+    DEBUG("Mapping " << p->name() << " to " << i );
+  }
+  for( unsigned int i=0;i<params.size();++i){
+    mapping[minuitParameters[i]->name()] = &(params[i]);
+  }
+  for(auto& p : m_minuitParameters ){
+    auto re = mapping.find(p.first->name());
+    auto im = mapping.find(p.second->name());
+    DEBUG("Looking for " << p.first->name() << " " << p.second->name()  << (re == mapping.end()) << "  " << (im == mapping.end()) );
+    Expression realPart = (re == mapping.end()) ? Expression(Constant(p.first->mean())) : Expression(*re->second);
+    Expression imagPart = (im == mapping.end()) ? Expression(Constant(p.second->mean())):Expression(*im->second);
+    co.push_back( Complex(realPart,imagPart )); 
+  }
+
   std::vector<FitFraction> outputFractions;
   std::string pfx = (m_prefix == "" ? "" : m_prefix +"_");
 
-  std::vector<Parameter> params;
-  for( unsigned int i = 0 ; i < minuit.nPars(); ++i ) 
-    params.push_back( Parameter( minuit.getParPtr(i)->name() ) );
-
   Expression normalisation; 
   for( unsigned int i=0;i<m_minuitParameters.size();++i){
-    normalisation = normalisation + co[i].norm()*m_normalisations[0][i].real();
-  }
+    normalisation = normalisation + co[i].norm()*m_normalisations[0][i].real();  }
+
   std::vector<Observable> fractions;
   INFO("Making : " << m_minuitParameters.size() << " fractions ... " ) ; 
   for( unsigned int i=0;i<m_minuitParameters.size();++i){

@@ -1,6 +1,7 @@
 #include "AmpGen/FastCoherentSum.h"
 #include "AmpGen/resolveParameters.h"
 #include "AmpGen/LatexTable.h"
+#include "AmpGen/Observable.h"
 
 using namespace AmpGen; 
 
@@ -25,7 +26,7 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
     std::map<std::string, AmpGen::MinuitParameter*> otherParameters; 
 
     for( unsigned int i =0 ; i < mps.size(); ++i ){
-     AmpGen::MinuitParameter* parameter = mps.getParPtr(i);
+      AmpGen::MinuitParameter* parameter = mps.getParPtr(i);
       const std::string paramName = parameter->name();
       auto tokens = split( paramName, '_');
       std::string thisDecayName;
@@ -93,10 +94,10 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
         (*m_decayTrees.rbegin())->getExpression(dbThis?&dbExpressions:NULL);    
       DEBUG("Got expression for this tree");
       m_pdfs.emplace_back( expression , name , extendEventFormat, dbThis?&dbExpressions:NULL );
-     
+
       auto newAddresses = resolveParameters( &(*m_pdfs.rbegin()) , otherParameters );
       for( auto& addr : newAddresses ) m_addressMapping.push_back( addr );
-     
+
       std::pair<AmpGen::MinuitParameter*,AmpGen::MinuitParameter*> parameters = p.second;
       if (parameters.first == 0 || parameters.second == 0 ){
         ERROR("Amplitude " << name 
@@ -111,7 +112,8 @@ FastCoherentSum::FastCoherentSum( const EventType& type ,
       m_minuitParameters.push_back( parameters );
     }
     for( unsigned int i = 0 ; i < m_decayTrees.size(); ++i){
-      std::string name = m_decayTrees[i]->uniqueString();
+      std::string pfx = m_prefix == "" ? "" : m_prefix +"_";
+      std::string name = pfx+m_decayTrees[i]->uniqueString(); // ensure normal ordering 
       m_minuitParameters[i].first->setName( name +"_Re");
       m_minuitParameters[i].second->setName( name +"_Im");
     }
@@ -195,7 +197,7 @@ void FastCoherentSum::prepare(){
     auto t_end = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
     double total = std::chrono::duration<double, std::milli>(t_end-t_total).count() ;
-    INFO( this << " prepare performance : nIntegrals = " << nIntegrals << ", time = " << time << " ms, total prepare time = " << total  << " integrals = " << iTime );
+    INFO( "Performance : nIntegrals = " << nIntegrals << ", time = " << time << " ms, total prepare time = " << total  << " integrals = " << iTime );
   }
   m_norm = norm(); /// update normalisation 
 }
@@ -210,11 +212,15 @@ void FastCoherentSum::debug( const unsigned int& N, const std::string& nameMustC
 }
 
 std::vector<FitFraction> FastCoherentSum::fitFractions(AmpGen::Minimiser& minuit ){  
-  return fitFractions(minuit.covMatrixFull() );
+  std::vector<MinuitParameter*> params;
+  for( unsigned int i = 0 ; i < minuit.nPars(); ++i ) {
+    params.push_back( minuit.getParPtr(i) );
+  }
+  return fitFractions(minuit.covMatrixFull(), params );
 }
 
-std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatrix){
-  
+std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatrix, const std::vector<MinuitParameter*>& minuitParameters ){
+  INFO("Improved normalisation calculation---");  
   std::vector<Complex> co;
   std::vector<Observable> fractions;
   std::vector<Observable> interferenceTerms;
@@ -222,17 +228,33 @@ std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatri
   std::vector<Parameter> params;
   Expression normalisation; 
   Expression diagonalFitFraction; 
-  for( auto& p : m_minuitParameters ){
-    unsigned int s = params.size();
-    params.push_back( Parameter( p.first->name() , p.first->mean()  ,true,true) );
-    params.push_back( Parameter( p.first->name(), p.second->mean() ,true,true) );
-    co.push_back( Complex(params[s],params[s+1]  )); 
+  std::map<std::string,Parameter*> mapping;
+  for( unsigned int i = 0 ; i < minuitParameters.size();++i ){
+    auto p = minuitParameters[i];
+//    INFO( "Mapping for " << p->name() );
+    params.push_back( Parameter( p->name() , p->mean()  ,true,true) );
+    DEBUG("Mapping " << p->name() << " to " << i );
+//    mapping[ p->name() ] = &(params[i]);
   }
+  for( unsigned int i=0;i<params.size();++i){
+    mapping[minuitParameters[i]->name()] = &(params[i]);
+  }
+  for(auto& p : m_minuitParameters ){
+    auto re = mapping.find(p.first->name());
+    auto im = mapping.find(p.second->name());
+    DEBUG("Looking for " << p.first->name() << " " << p.second->name()  << (re == mapping.end()) << "  " << (im == mapping.end()) );
+    Expression realPart = (re == mapping.end()) ? Expression(Constant(p.first->mean())) : Expression(*re->second);
+    Expression imagPart = (im == mapping.end()) ? Expression(Constant(p.second->mean())):Expression(*im->second);
+    co.push_back( Complex(realPart,imagPart )); 
+  }
+  
   for( unsigned int i=0;i<m_minuitParameters.size();++i){
 
     diagonalFitFraction = diagonalFitFraction + co[i].norm()*m_normalisations[i][i].real();
-    for( unsigned int j=0; j < m_minuitParameters.size(); ++j )
-      normalisation = normalisation + co[i] * co[j].conj() * m_normalisations[i][j] ;
+    normalisation = normalisation + co[i].norm()*m_normalisations[i][i].real();
+    for( unsigned int j=i+1; j < m_minuitParameters.size(); ++j )
+      normalisation = normalisation + 2 * m_normalisations[i][j].real() * ( co[i].real() * co[j].real() + co[i].imag() * co[j].imag() )
+        + 2 * m_normalisations[i][j].imag() * ( co[j].imag() * co[i].real() - co[i].imag() * co[j].real() );
   }
   for( unsigned int i=0;i<m_minuitParameters.size();++i){
 
@@ -259,11 +281,9 @@ std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatri
   std::sort( interferenceTerms.begin(), interferenceTerms.end() );
 
   for( auto fraction = fractions.begin() ; fraction != fractions.end(); ++fraction )
-    std::cout << std::setw(55) << fraction->name() << "   " 
+    INFO( std::setw(55) << fraction->name() << "   " 
       << std::setw(7)  << fraction->getVal() 
-      << std::setw(7)  << " +/- " << fraction->getError() << std::endl;
-
-  std::cout << "#################################################" << std::endl; 
+      << std::setw(7)  << " +/- " << fraction->getError() );
   return outputFractions ; 
 }
 

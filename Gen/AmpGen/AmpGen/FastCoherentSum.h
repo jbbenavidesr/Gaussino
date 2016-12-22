@@ -8,7 +8,6 @@
 #include "AmpGen/Minimiser.h"
 #include "AmpGen/Particle.h"
 #include "AmpGen/CompiledExpression.h"
-#include "AmpGen/Observable.h"
 #include "AmpGen/EventList.h"
 #include "AmpGen/Utilities.h"
 #include "AmpGen/EventType.h"
@@ -151,7 +150,7 @@ namespace AmpGen {
       double weightIntegral(){ return m_weightIntegral ; }
 
       std::vector<FitFraction> fitFractions(AmpGen::Minimiser& minuit); 
-      std::vector<FitFraction> fitFractions(const TMatrixD& covMatrix); 
+      std::vector<FitFraction> fitFractions(const TMatrixD& covMatrix, const std::vector<MinuitParameter*>& minuitParameters); 
 
       void makeBinary( const std::string& fname , const double& normalisation=1) ; 
   }; 
