@@ -40,11 +40,11 @@ BinDT::BinDT( std::istream& stream ){
 
 void BinDT::makeDefaultFunctors() {
   if( m_dim == 5 ){
-    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[0] ) ; } );
-    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[1] ) ; } );
-    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[2] ) ; } );
-    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[3] ) ; } );
-    m_functors.push_back( [](const Event& evt){ return evt.s( gChi2Indices[4] ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( 1,2,3 ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( 0,1 ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( 0,2 ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( 2,3 ) ; } );
+    m_functors.push_back( [](const Event& evt){ return evt.s( 0,1,2 ) ; } );
   }
 }
 

@@ -55,10 +55,8 @@ int main( int /*argc */, char** /*argv*/ ){
   TRandom3 rnd;
   
   signalGenerator.setRandom( &rnd );
-  signalGenerator.fillEventList( accepted, nEvents ) ; 
-  
-  //, []( const Event& evt ){ return evt.s(0,1) > 1000*1000 ; }  );
-  
+  signalGenerator.fillEventList( accepted, nEvents ) ;  
+
   INFO("Making output files");
   TFile* f = TFile::Open( output.c_str(),"RECREATE");
   f->cd();

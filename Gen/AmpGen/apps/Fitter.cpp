@@ -18,7 +18,6 @@
 #include "AmpGen/Kinematics.h"
 #include "AmpGen/Plots.h"
 #include "AmpGen/FitResult.h"
-#include "AmpGen/LatexTable.h"
 #include "AmpGen/MintUtilities.h"
 #include "AmpGen/IExtendLikelihood.h"
 
@@ -101,7 +100,7 @@ template<typename PDF > Minimiser* doFit( PDF& pdf ,
   FitResult fr( mps, std::get<0>(pdf.pdfs()).fitFractions( *mini  ), mini->covMatrixFull(),
       chi2.chi2(), chi2.nBins(), pdf.getVal(),  mini->GetStatus() );
   fr.writeToFile( logFile);
-  
+ // std::get<1>(pdf.pdfs()).fitFractions( *mini  ),
   INFO( "Time = " << (std::clock() - time )  / (double)CLOCKS_PER_SEC );
   return mini;
 }
@@ -212,7 +211,7 @@ int main(int argc , char* argv[] ){
     ERROR("Fit not converged!");
   }
   INFO("Completed fit");
-
+  bkg.fitFractions(*mini);
   /// From here is just making plots and finalising the output //// 
   output->cd();
 

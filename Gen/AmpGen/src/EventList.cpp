@@ -8,15 +8,15 @@ EventList::EventList( const std::string& fname,
     const EventType& evtType,
     const unsigned int& pdfSize,
     std::function<bool(const Event&)> cut ) :   
-      EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
+  EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
       evtType,
       pdfSize,
       cut ) {} 
 
-EventList::EventList( const EventType& type ) : 
-  m_eventType(type), 
-  m_extendedEventData( m_eventType.getEventFormat() ) { 
-  }
+  EventList::EventList( const EventType& type ) : 
+    m_eventType(type), 
+    m_extendedEventData( m_eventType.getEventFormat() ) { 
+    }
 
 EventList::EventList(TTree* tree,
     const EventType& particles ,
@@ -52,7 +52,6 @@ EventList::EventList(TTree* tree,
   double t_taken = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
   INFO("EventList.size() = " << std::vector<Event>::size() << " time taken = " << t_taken << "ms");
 }
-
 
 EventList::EventList( TTree* tree, 
     const std::vector<std::string>& branches, 
@@ -96,7 +95,6 @@ EventList::EventList( TTree* tree,
     if( hasEventList && eventList[evt] > tree->GetEntries() ){
       ERROR("Trying to read out of bounds : " << eventList[evt]);
     };
-    //INFO("Getting event " << eventList[evt] );
     tree->GetEntry( hasEventList ? eventList[evt] : evt );
 
     for( auto shuffled : shuffles ){
@@ -112,6 +110,7 @@ EventList::EventList( TTree* tree,
     std::vector<Event>::push_back( temp );
   } 
 }
+
 
 TTree* EventList::tree(const std::string& name ){
   TTree* outputTree = new TTree(name.c_str() , name.c_str() );
@@ -134,8 +133,6 @@ TTree* EventList::tree(const std::string& name ){
     tmp = evt ;
     genPdf = evt.genPdf();
     weight = evt.weight();
-    //if( weight / genPdf > 0.05 ) continue; 
-    //INFO("Filling weight = " << weight << " genPdf = " << genPdf );
     outputTree->Fill();
   }
   return outputTree; 

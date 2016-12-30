@@ -26,8 +26,6 @@
 #endif
 
 namespace AmpGen { 
-  static std::vector<std::vector<unsigned int>> gChi2Indices = { {1,2,3},{0,1},{0,2},{2,3},{0,1,2} };
-
 
   struct plotAxis { 
     std::string name;
@@ -62,11 +60,17 @@ namespace AmpGen {
         return false; 
       };
       Event( const unsigned int& N, const unsigned int& cacheSize=0 ) : 
-        m_event(std::vector<double>(N)), 
+        m_event(N), 
         m_cache(cacheSize), 
         m_genPdf(1),
-        m_weights(std::vector<double>(1,0)) 
+        m_weights(1,0) 
     {};
+      Event( const double* data, const unsigned int& N, const unsigned int& cacheSize=0) :
+        m_event(data, data+N),
+        m_cache(cacheSize),
+        m_genPdf(1),
+        m_weights(1,1) {
+      }
       void dumpCache(){
         for( unsigned int i = 0 ; i < m_cache.size(); ++i){
           INFO("Cache adddress [" << i << "] = " << m_cache[i] );
@@ -143,8 +147,7 @@ namespace AmpGen {
       double s( const std::vector<unsigned int>& indices ) const {
         if( indices.size() == 2 ) return s( indices[0], indices[1] );
         if( indices.size() == 3 ) return s( indices[0], indices[1], indices[2] );
-        double E=0;
-        double px=0;
+        double E=0;        double px=0;
         double py=0;
         double pz=0;
         for( auto& i : indices ){
@@ -154,10 +157,6 @@ namespace AmpGen {
           pz+=get(i*4+2);
         }
         return E*E -px*px - py*py - pz*pz;
-      }
-      bool isIn( const unsigned int& index, const std::pair<double,double>& domain , bool dbThis=false) const {
-        const double o1p = s( gChi2Indices[index]) ;
-        return o1p > domain.first && o1p < domain.second ;
       }
       double operator[](const unsigned int& i ) const {
         return m_event[i];
@@ -180,6 +179,9 @@ namespace AmpGen {
       inline double* getEvent( const unsigned int& index )  { 
         return (*this)[index].getEvent()  ; 
       }
+      inline const double* getEvent( const unsigned int& index ) const { 
+        return (*this)[index].getEvent()  ; 
+      }
       EventList() {} ; 
 
       double integral( const unsigned int& cat=0) const {
@@ -192,7 +194,7 @@ namespace AmpGen {
                  const EventType& evtType,
                  const unsigned int& pdfSize,
                  std::function<bool(const Event&)> cut = [](const Event& evt ){ return true ; } );
-      
+       
       EventList(TTree* tree,
           const EventType& particles ,
           const unsigned int& pdfsize,

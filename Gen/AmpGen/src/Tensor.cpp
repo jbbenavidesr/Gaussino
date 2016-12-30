@@ -434,28 +434,4 @@ void Tensor::print() const {
 
   }
 }
-/*
-TensorHelper Tensor::operator()( ) const {
-    return TensorHelper(*this,{} );
-}
-*/
-TensorHelper Tensor::operator()( const std::vector<LorentzIndex>& indices ) const {
-  return TensorHelper(*this,indices );
-}
-TensorHelper Tensor::operator()( const LorentzIndex& a) const { 
-  return TensorHelper(*this,{a}) ;  
-}
-TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b ) const { 
-  return TensorHelper(*this,{a,b}) ; 
-}
-TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
-    const LorentzIndex& c ) const {
-  return TensorHelper(*this,{a,b,c}) ;
-}
-
-
-TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
-    const LorentzIndex& c, const LorentzIndex& d ) const {
-  return TensorHelper(*this,{a,b,c,d}) ;
-}
 

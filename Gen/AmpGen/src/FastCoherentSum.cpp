@@ -1,6 +1,5 @@
 #include "AmpGen/FastCoherentSum.h"
 #include "AmpGen/resolveParameters.h"
-#include "AmpGen/LatexTable.h"
 #include "AmpGen/Observable.h"
 
 using namespace AmpGen; 
@@ -167,37 +166,33 @@ void FastCoherentSum::prepare(){
   }
   if( m_sim == 0 ) return; 
   auto t_start = std::chrono::high_resolution_clock::now();
-  double iTime=0;
-
   unsigned int nIntegrals = 0 ;
-  std::vector<std::vector<bool>> integralHasChanged( m_pdfs.size(), std::vector<bool>(m_pdfs.size(), 0 ));
+  unsigned int size=m_pdfs.size();
+  std::vector<bool> integralHasChanged( size*size ,0);
+
   for( auto& i : changedPdfIndices ){
     for( unsigned int j = 0 ; j < m_pdfs.size(); ++j){
-      if( j==i ){
-        if( !integralHasChanged[i][j] ) {
-          auto iStart = std::chrono::high_resolution_clock::now();
-          m_normalisations[i][j] = m_sim->integrate( m_pdfs[i], m_pdfs[j], false );
-          iTime += std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() -iStart).count() ; 
-          nIntegrals++;
-          integralHasChanged[i][j] = true;
+      if( !integralHasChanged[i*size+j] ) {
+        m_normalisations[i][j] = m_sim->integrate( m_pdfs[i], m_pdfs[j], false );
+        nIntegrals++;
+        integralHasChanged[i*size+j] = true;
+        if( i != j ){
+          m_normalisations[j][i] = std::conj( m_normalisations[i][j] );
+          integralHasChanged[j*size+i] = true;
         }
       }
-      else if( !integralHasChanged[i][j] ){
-        auto iStart = std::chrono::high_resolution_clock::now();
-        m_normalisations[i][j] = m_sim->integrate( m_pdfs[i], m_pdfs[j] , false ) ;
-        iTime += std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() -iStart).count() ; 
-        m_normalisations[j][i] = std::conj( m_normalisations[i][j] );
-        nIntegrals++;
-        integralHasChanged[i][j] = true;
-        integralHasChanged[j][i] = true;
-      }
+
     }
   }
+  double iTime = std::chrono::duration<double, std::milli>(
+      std::chrono::high_resolution_clock::now() -t_start ).count() ; 
   if( changedPdfIndices.size() != 0 && m_prepareCalls == m_lastPrint ){
     auto t_end = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
     double total = std::chrono::duration<double, std::milli>(t_end-t_total).count() ;
-    INFO( "Performance : nIntegrals = " << nIntegrals << ", time = " << time << " ms, total prepare time = " << total  << " integrals = " << iTime );
+    INFO( "Performance : nIntegrals = " << nIntegrals 
+        << ", time = " << time << " ms, total prepare time = " 
+        << total  << " integrals = " << iTime );
   }
   m_norm = norm(); /// update normalisation 
 }
@@ -231,10 +226,10 @@ std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatri
   std::map<std::string,Parameter*> mapping;
   for( unsigned int i = 0 ; i < minuitParameters.size();++i ){
     auto p = minuitParameters[i];
-//    INFO( "Mapping for " << p->name() );
+    //    INFO( "Mapping for " << p->name() );
     params.push_back( Parameter( p->name() , p->mean()  ,true,true) );
     DEBUG("Mapping " << p->name() << " to " << i );
-//    mapping[ p->name() ] = &(params[i]);
+    //    mapping[ p->name() ] = &(params[i]);
   }
   for( unsigned int i=0;i<params.size();++i){
     mapping[minuitParameters[i]->name()] = &(params[i]);
@@ -247,7 +242,7 @@ std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatri
     Expression imagPart = (im == mapping.end()) ? Expression(Constant(p.second->mean())):Expression(*im->second);
     co.push_back( Complex(realPart,imagPart )); 
   }
-  
+
   for( unsigned int i=0;i<m_minuitParameters.size();++i){
 
     diagonalFitFraction = diagonalFitFraction + co[i].norm()*m_normalisations[i][i].real();
@@ -282,8 +277,8 @@ std::vector<FitFraction> FastCoherentSum::fitFractions( const TMatrixD& covMatri
 
   for( auto fraction = fractions.begin() ; fraction != fractions.end(); ++fraction )
     INFO( std::setw(55) << fraction->name() << "   " 
-      << std::setw(7)  << fraction->getVal() 
-      << std::setw(7)  << " +/- " << fraction->getError() );
+        << std::setw(7)  << fraction->getVal() 
+        << std::setw(7)  << " +/- " << fraction->getError() );
   return outputFractions ; 
 }
 

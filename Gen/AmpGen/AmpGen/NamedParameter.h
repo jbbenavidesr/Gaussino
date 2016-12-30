@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "AmpGen/NamedParameterBase.h"
-#include "AmpGen/NamedParameterStream.h"
 #include "AmpGen/ParsedParameterLine.h"
 
 namespace AmpGen {
@@ -31,8 +30,7 @@ namespace AmpGen {
             return false;
           }
           for(unsigned int i=1; i< vsl.size(); i++){
-            //      std::stringstream strm(vsl[i]);
-            NamedParameterStream strm(vsl[i]);
+            std::stringstream strm(vsl[i]);
             T tmpVal;
             strm >> tmpVal;
             setVal(tmpVal, i-1);

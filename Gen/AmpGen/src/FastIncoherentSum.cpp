@@ -1,5 +1,4 @@
 #include "AmpGen/FastIncoherentSum.h"
-#include "AmpGen/LatexTable.h"
 #include "AmpGen/Observable.h"
 
 using namespace AmpGen;
