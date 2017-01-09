@@ -89,8 +89,12 @@ std::string replaceAll( const std::string& input,
   return output;
 }
 
-std::string RootTeX( const std::string& input ){
-  return replaceAll( input, "\\", "#" );
+std::string convertTeXtoROOT( std::string input ){
+  input = replaceAll( input, "\\", "#" );
+  input = replaceAll( input, "#xspace","");
+  input = replaceAll( input, "#kern0.2em#overline{#kern-0.2em","#bar{");
+  input = replaceAll( input, "^*","^{*}");
+  return input;
 }
 
 /// extracts tree structures of the form X{Y,Z,A} 

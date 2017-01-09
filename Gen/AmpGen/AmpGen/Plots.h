@@ -95,8 +95,8 @@ namespace AmpGen {
           const std::string name = pdf_i.name()+"x"+pdf_j.name();
           TH1D* real_projection = new TH1D(name.c_str(),"",axis.nBins, axis.min, axis.max );
           real_projection->GetXaxis()->SetTitle( axis.title.c_str() );
-          std::string title = pdf.getTexTitle(i, true).c_str() ;
-          if( i!=j ) title += " x " + pdf.getTexTitle(j,true) ;
+          std::string title = convertTeXtoROOT( pdf.getTexTitle(i) ).c_str() ;
+          if( i!=j ) title += " x " + convertTeXtoROOT( pdf.getTexTitle(j)) ;
           real_projection->SetTitle( title.c_str());
           for( auto& evtAndValue : eventData ){
             double f = evtAndValue.second;

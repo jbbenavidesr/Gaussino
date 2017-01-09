@@ -59,7 +59,8 @@ double EventType::mass( const unsigned int & index ) const { return m_particleMa
 double EventType::motherMass() const { return m_motherMass ; }
 
 std::string EventType::label( const unsigned int& index, bool isRoot) const { 
-  return ParticlePropertiesList::getMe()->get(m_particleNames[index])->texName() ; 
+  const std::string label = ParticlePropertiesList::getMe()->get(m_particleNames[index])->texName() ; 
+  return isRoot ? convertTeXtoROOT(label) : label; 
 }
 
 

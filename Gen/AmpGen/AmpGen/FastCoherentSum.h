@@ -63,8 +63,8 @@ namespace AmpGen {
       };
       std::vector<std::shared_ptr<Particle>> decayTrees() const 
       { return m_decayTrees ; }
-      std::string getTexTitle( const unsigned int& i , bool isRoot=false)
-      { return m_decayTrees[i]->getTeX(isRoot) ; }
+      std::string getTexTitle( const unsigned int& i )
+      { return m_decayTrees[i]->getTeX() ; }
       std::complex<double> norm ( const unsigned int& x, const unsigned int & y ) const 
       { return m_normalisations[x][y] ; }
       std::string uniqueString( const unsigned int& index ) const 

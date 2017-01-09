@@ -459,11 +459,10 @@ std::pair<unsigned int , unsigned int> Particle::lRange(bool conserveParity) con
   return lLimit;
 }
 
-std::string Particle::getTeX(bool isRoot) const {
+std::string Particle::getTeX() const {
 
-  std::string marker = isRoot ? "#" : "\\";
-  const std::string leftBrace = isRoot ? "(" : "\\left["; 
-  const std::string rightBrace = isRoot ? ")" : "\\right]";
+  const std::string leftBrace = "\\left["; 
+  const std::string rightBrace = "\\right]";
   std::string name = m_name ;
   if( ! m_istop && m_conjThis ){ 
     name = m_props->anti().name();
@@ -472,7 +471,7 @@ std::string Particle::getTeX(bool isRoot) const {
     std::string val = m_istop ? "" : m_props->texName() + leftBrace;
     if( m_istop && m_orbital != m_minL ) val =  leftBrace;
     for( unsigned int i = 0 ; i < m_daughters.size(); ++i  )
-      val+= m_daughters[i]->getTeX(isRoot);
+      val+= m_daughters[i]->getTeX();
     val+= m_istop ? "" :  rightBrace;
     if( m_istop && m_orbital != m_minL ) val += rightBrace;
     if( m_orbital != m_minL ) val += "^{" + orbitalString() + "}";

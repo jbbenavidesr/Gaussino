@@ -55,7 +55,7 @@ std::string replaceAll( const std::string& input,
     const std::string& toReplace, 
     const std::string& replaceWith) ;
 
-std::string RootTeX( const std::string& input );
+std::string convertTeXtoROOT( std::string input );
 
 /// extracts tree structures of the form X{Y,Z,A} 
 // where Y and Z and A are also tree elements, by finding
