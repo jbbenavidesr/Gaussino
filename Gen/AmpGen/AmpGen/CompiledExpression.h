@@ -144,7 +144,7 @@ namespace AmpGen {
       };
 
       bool isReady() const { return m_fcn != 0 ; } 
-      RETURN_TYPE getVal( const double* event) const {
+      RETURN_TYPE operator()( const double* event) const {
         return (*m_fcn)( event, &(m_externals[0]) );
       }
       void debug( const double* event) const {

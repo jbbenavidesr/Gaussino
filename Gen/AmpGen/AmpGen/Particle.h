@@ -195,7 +195,7 @@ class Particle {
     Tensor SpinTensor(std::vector<DBSYMBOL>* db=0);
     Expression FormFactor(std::vector<DBSYMBOL>* db=0) const ;
     /// key functions 
-    Expression getExpression(std::vector<DBSYMBOL>* db=0 , const unsigned int& i=0);
+    Expression getExpression(std::vector<DBSYMBOL>* db=0 , const unsigned int& index=0);
 }; } 
 
 #endif

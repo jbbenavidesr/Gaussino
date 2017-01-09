@@ -241,7 +241,7 @@ namespace AmpGen {
           DEBUG("updating cache for : " << particle.name() << " on " << std::vector<Event>::size() << " events" );
           #pragma omp parallel for
           for( unsigned int i = 0 ; i < std::vector<Event>::size(); ++i ){
-            auto val = particle.getVal( (*this)[i].getEvent() );
+            auto val = particle( (*this)[i].getEvent() );
             (*this)[i].setCache( val, index );
           }
         }

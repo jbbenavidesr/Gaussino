@@ -310,7 +310,7 @@ Expression Particle::Lineshape(std::vector<DBSYMBOL>* db) const{
   return total ;
 }
 
-Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned int& i) {
+Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned int& index) {
 
   Expression total(0);
   auto finalStateParticles = getFinalStateParticles();
@@ -336,7 +336,7 @@ Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned in
       for( unsigned int i = 0 ; i < indices.size() ; ++i ){
         finalStateParticles[i]->setIndex( indices[i] );
       }
-      const Expression spinPart = hasModifier("BgSpin0") ? Constant(1) : SpinTensor(db).get(i);
+      const Expression spinPart = hasModifier("BgSpin0") ? Constant(1) : SpinTensor(db).get(index);
       DEBUG("Got spin matrix element -> calculating lineshape product");
       if( sumAmplitudes ) total = total + Lineshape(db) * spinPart;
       else {

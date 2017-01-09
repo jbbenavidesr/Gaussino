@@ -223,9 +223,9 @@ int main(int argc , char* argv[] ){
     auto kpi_mid   = [](const Event& evt){ return fabs( sqrt( evt.s({0,1}) ) - 897.6 ) < 75;  } ;
     auto pipi_mid  = [](const Event& evt){ return fabs( sqrt( evt.s({2,3}) ) - 770. ) < 100; } ;
     auto kpi_high  = [](const Event& evt){ return evt.s({0,1}) > 1100*1100;  } ;
-    auto pipi_high = [](const Event& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
-    auto kpi_low   = [](const Event& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
-    auto pipi_low  = [](const Event& evt){ return evt.s({2,3}) < 550*550; };
+    //auto pipi_high = [](const Event& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
+    //auto kpi_low   = [](const Event& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
+    //auto pipi_low  = [](const Event& evt){ return evt.s({2,3}) < 550*550; };
     auto no_cut    = [](const Event& evt){ return 1; };
     auto kstarrho_window = [&kpi_mid,&pipi_mid](const Event& evt){ return kpi_mid(evt) && pipi_mid(evt) ; };
 

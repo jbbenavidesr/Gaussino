@@ -50,21 +50,21 @@ DEFINE_VERTEX( S_VS_P, pid(0,1,0,1) )  {
   DEBUG("P-wave part = " );
   Tensor p_wave = Orbital_PWave(P,Q) ;
   Tensor p_v1 = V1(mu) * p_wave(-mu);
-  
+
   return p_v1 * V2[0] / GeV; } 
 
 
-DEFINE_VERTEX( V_SS_P , pid(1,0,0,1) ){ 
-  DEBUG("Getting p-wave object");
-  Tensor p_wave = Orbital_PWave( P, Q ) ; 
-  DEBUG( "Got p-wave object");
-  Expression scalar_part = V1[0] * V2[0] / GeV; 
-  DEBUG( "Rank = " << p_wave.rank() );
+  DEFINE_VERTEX( V_SS_P , pid(1,0,0,1) ){ 
+    DEBUG("Getting p-wave object");
+    Tensor p_wave = Orbital_PWave( P, Q ) ; 
+    DEBUG( "Got p-wave object");
+    Expression scalar_part = V1[0] * V2[0] / GeV; 
+    DEBUG( "Rank = " << p_wave.rank() );
 
-  Tensor returnValue = p_wave * scalar_part ;
-  DEBUG( "Return rank = " << returnValue.rank() );
-  return returnValue;
-} 
+    Tensor returnValue = p_wave * scalar_part ;
+    DEBUG( "Return rank = " << returnValue.rank() );
+    return returnValue;
+  } 
 
 DEFINE_VERTEX( V_VS_P , pid(1,1,0,1) ) {
   Tensor L  = Orbital_PWave(P,Q) / GeV ; /// orbital part ////
@@ -119,15 +119,24 @@ DEFINE_VERTEX( S_TS_D , pid(0,2,0,2) ) {
   return V2[0] * Tensor( { dot (orbital, V1 ) / (GeV*GeV) } , {1} ) ; 
 } 
 
-
 DEFINE_VERTEX( S_TV_D , pid(0,2,1,2) ) {
-  Tensor term1 = V1 (alpha, beta ) * Orbital_DWave( P, Q ) ( -beta, -nu ) ; 
+  Tensor term1 = V1 (alpha, beta ) * Orbital_DWave( P, Q ) ( -beta, -nu )  ;
   Tensor term2 = LeviCivita()(-mu,-nu,-alpha,-beta) * P( alpha ) * V2( beta ) ; // Antisymmetric( P, V2 );
-  return Tensor( {dot( term1, term2 )} );
-} 
+  return Tensor( {dot( term1, term2 )} ) / (GeV*GeV*GeV);
+}
 
 DEFINE_VERTEX( S_TT_S , pid(0,2,2,0) ){ return Tensor( {dot(V1,V2)} ) ; }
 
-DEFINE_VERTEX( V_TS_P , pid(1,2,0,1) ){ 
-  return ( V1(mu) * Orbital_PWave(P, Q )(-mu) ) * V2[0] ; 
-} 
+DEFINE_VERTEX( V_TS_P , pid(1,2,0,1) ){
+  Tensor S = Spin1ProjectionOperator(P);
+  Tensor L = Orbital_PWave( P,Q) / (GeV);
+  return  ( S(-mu,-nu) * L(-alpha) * V1(nu,alpha) ) * V2[0] ;
+}
+
+
+DEFINE_VERTEX( V_TS_D , pid(1,2,0,2) ){
+  Tensor L = (-1) * Orbital_PWave( P,Q);
+  Tensor coupling = LeviCivita()(-mu,-nu,-alpha,-beta) * P(nu) * Q(alpha);
+  return coupling(-mu,-nu) * V1(nu,alpha) * L(-alpha) / (GeV*GeV*GeV);
+}
+
