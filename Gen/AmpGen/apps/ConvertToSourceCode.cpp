@@ -34,7 +34,7 @@ int main( int argc , char** argv ){
 
   /// This is just to calculate the overall normalisation of the PDF 
   pdf.link();
-  Generator phsp( sig, eventType );
+  Generator<FastCoherentSum> phsp( sig, eventType );
   TRandom3 rnd;
 
   phsp.setRandom( &rnd );

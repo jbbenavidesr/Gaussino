@@ -140,7 +140,7 @@ int main(int argc , char* argv[] ){
   MinuitParameterSet MPS = MPSFromStream();
   EventType evtType( evtType_particles );
 
-  EventList events ( dataFile , evtType , MPS.size() / 2 ) ;
+  EventList events ( dataFile , evtType ,0 ) ;
 
   FastCoherentSum pdf( evtType 
       , MPS 

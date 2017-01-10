@@ -173,7 +173,10 @@ namespace AmpGen {
         PARITY        = (1<<0),
         GETPDF  = (1<<1)
       };
-
+      void resetCache() {
+        m_pdf_index.clear();
+        for( auto& evt : *this ) evt.resizeCache(0) ; 
+      }
       EventType getEventType() const { return m_eventType; }
       void setEventType( const EventType& type ){ m_eventType = type ; } 
       inline double* getEvent( const unsigned int& index )  { 
@@ -188,6 +191,14 @@ namespace AmpGen {
         double integral=0;
         for( auto& evt : *this ){ integral += evt.weight(cat) ; } 
         return integral;  
+      }
+      void add( const EventList& evts ){
+        resetCache();
+        WARNING("Adding event lists invalidates cache state" );
+        for( auto& evt : evts ){
+          push_back( evt ); 
+          rbegin()->resizeCache(0);
+        }
       }
 
       EventList( const std::string& fname, 
@@ -228,8 +239,10 @@ namespace AmpGen {
           if( pdfIndex != m_pdf_index.end() ) return pdfIndex->second ;
           else { 
             unsigned int size = m_pdf_index.size();
-            if( size > std::vector<Event>::at(0).cacheSize() )
-              ERROR("Cache index " << size << " exceeds cache size = " << std::vector<Event>::at(0).cacheSize() );
+            if( size >= std::vector<Event>::at(0).cacheSize() ){
+              WARNING("Cache index " << size << " exceeds cache size = " << std::vector<Event>::at(0).cacheSize() );
+              for( auto& evt : *this ) evt.resizeCache( size+1 ); 
+            }
             updateCache( particle, m_pdf_index.size() );
             m_pdf_index[particle.hash()]=size;
             return size;

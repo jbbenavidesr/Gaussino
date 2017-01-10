@@ -51,7 +51,7 @@ int main( int /*argc */, char** /*argv*/ ){
     ERROR("Library linking / creation failed, exiting");
     return 0 ;
   }
-  Generator signalGenerator( sig, eventType );
+  Generator<FastCoherentSum> signalGenerator( sig, eventType );
   TRandom3 rnd;
   
   signalGenerator.setRandom( &rnd );

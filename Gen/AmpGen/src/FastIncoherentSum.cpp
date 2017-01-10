@@ -33,16 +33,16 @@ void FastIncoherentSum::prepare(){
     if( pdf.hasExternalsChanged() || m_prepareCalls == 1 ){
       if( m_prepareCalls == 1 ){
         int addr = -1; 
-        if( m_events != 0 ) addr =  m_events->cacheIndex( pdf ) ;
-        if( m_sim    != 0 ) addr =  m_sim->cacheIndex( pdf ) ; 
-        if( addr != - 1 ) m_cacheAddresses.push_back(addr);
+        if( m_events != 0  ) addr =  m_events->cacheIndex( pdf ) ;
+        if( m_sim    != 0  ) addr =  m_sim->cacheIndex( pdf ) ; 
+        if( addr     != -1 ) m_cacheAddresses.push_back(addr);
         else ERROR("No data to evaluate FCNs"); 
       }
       else {
         m_events->updateCache( pdf, m_cacheAddresses[ i ] );
         if( m_sim != 0 ) m_sim->updateCache( pdf, m_cacheAddresses[i] );
       }     
-      m_normalisations[0][i] = m_sim->integrate( m_pdfs[i], m_pdfs[i], false );
+      if( m_sim != 0 ) m_normalisations[0][i] = m_sim->integrate( m_pdfs[i], m_pdfs[i], false );
       pdf.resetExternals();
     }
   }

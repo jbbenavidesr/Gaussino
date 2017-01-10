@@ -157,7 +157,7 @@ void FastCoherentSum::prepare(){
       auto t_end = std::chrono::high_resolution_clock::now();
       double time = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
       if( m_prepareCalls > m_lastPrint + 100 || m_prepareCalls == 1 ){
-        DEBUG(pdf.name() << " ( t = " << time << " ms, nCalls = " << m_prepareCalls << ")" );    
+        INFO(pdf.name() << " ( t = " << time << " ms, nCalls = " << m_prepareCalls << ")" );    
         m_lastPrint = m_prepareCalls;
       }
       changedPdfIndices.push_back( i ); 
