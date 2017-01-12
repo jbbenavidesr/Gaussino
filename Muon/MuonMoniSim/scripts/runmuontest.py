@@ -6,7 +6,9 @@
 ## The name of the input histogram can be can be changed in          ## 
 ## the MuonMoniSim.py options file. Number of events can be          ## 
 ## changed in the Gauss-Job.py options file, default is 50000.       ##
-## To run the script do:                                             ##
+## This should be run automatically when runmuonmonisimtest.sh is    ##
+## executed                                                          ##
+## To run without using runmuonmonisimtest.sh do:                    ##
 ## lb-run Gauss [Gauss version]  python runmuontest.py               ##
 ## or if doing devleopment replace lb-run Gauss with path/to/run     ##
 ## @author : R.Calladine                                             ## 
