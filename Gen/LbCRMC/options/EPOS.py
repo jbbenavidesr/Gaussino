@@ -100,10 +100,10 @@ def finalConfiguration():
         elif event_type == 42112010:
             gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 23
             gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
-                                                    "WeakSingleBoson:ffbar2gmZ = on", # Z0/gamma* production
-                                                    "23:mMin = 2.",                   # min mass of Z0 in GeV
-                                                    "TimeShower:mMaxGamma = 2.",      # max inv mass 
-                                                    "PhaseSpace:mHatMin = 2.",        # constrain inv mass
+                                                    "WeakSingleBoson:ffbar2gmZ = on"
+                                                    "23:mMin = 2.",
+                                                    "TimeShower:mMaxGamma = 2.",
+                                                    "PhaseSpace:mHatMin = 2.",
                                                     "23:onMode = off",                # turn it off
                                                     "23:onIfMatch = 13 -13",          # decay to muon only
                                                     ]            
