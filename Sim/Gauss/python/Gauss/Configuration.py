@@ -3538,6 +3538,24 @@ class Gauss(LHCbConfigurableUser):
             GaussRedecayCtrFilter(
                 'CheckIfSignalSim2' + slot).GaussRedecay = svcname
 
+        # Copy over the information from the <eventtype>.py file
+        from Configurables import Generation
+        from Configurables import GaussRedecayMergeAndClean
+        from Configurables import RedecayProduction
+        from Configurables import GaussRedecayFakePileUp
+        gen = Generation("GenerationSignal")
+        gen.addTool(GaussRedecayFakePileUp)
+        gen.PileUpTool = "GaussRedecayFakePileUp"
+        gen.VertexSmearingTool = ""
+        gen.EventType = Generation().EventType
+        gen.SampleGenerationTool = "SignalPlain"
+        from Configurables import SignalPlain
+        gen.addTool(SignalPlain)
+        gen.SignalPlain.ProductionTool = "RedecayProduction"
+        gen.SignalPlain.addTool(RedecayProduction)
+        gen.SignalPlain.CutTool = Generation().SignalPlain.CutTool
+        gen.SignalPlain.SignalPIDList = Generation().SignalPlain.SignalPIDList
+        gen.SignalPlain.RevertWhenBackward = False
 
     def configureRedecaySim( self, SpillOverSlots ):
 
