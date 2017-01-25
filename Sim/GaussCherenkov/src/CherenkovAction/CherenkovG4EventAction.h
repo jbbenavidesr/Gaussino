@@ -18,7 +18,8 @@
 #include "CkvG4EventHitCount.h"
 #include "CherenkovG4HitRecon.h"
 #include "GaussRICH/RichG4InputMon.h"
-
+#include "CherenkovG4HistoHitTime.h"
+ 
 /** @class CherenkovG4EventAction CherenkovG4EventAction.h src/RichActions/CherenkovG4EventAction.h
  *  
  *
@@ -147,6 +148,9 @@ public:
     m_RichG4HitReconUseStdRadHit= afl;}
  
   bool IsRichG4FirstEvent() {return m_IsRichG4FirstEvent;}
+
+  
+
 private:
  
   CherenkovG4EventAction() ; ///< no default constructor
@@ -197,6 +201,10 @@ private:
   bool m_CkvG4HitReconUseOnlySignalHit;
   bool m_CkvG4HitReconUseOnlyHighMom;
 
+  bool m_CkvHistoHitTimeActivate;
+  std::string m_CkvHistoHitTimeNtupleFileName;
+  
+  
 
 };
 
