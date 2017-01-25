@@ -65,8 +65,7 @@ StatusCode MomentumSpectrum::initialize() {
   info() << "Particle type chosen randomly from :";
   PIDs::iterator icode ;
   for ( icode = m_pdgCodes.begin(); icode != m_pdgCodes.end(); ++icode ) {
-    const LHCb::ParticleProperty * particle =
-      ppSvc->find( LHCb::ParticleID( *icode ) ) ;
+    const LHCb::ParticleProperty * particle = ppSvc->find( LHCb::ParticleID( *icode ) ) ;
     m_masses.push_back( ( particle->mass() ) ) ;
     m_names.push_back( particle->particle() ) ;
     info() << " " << particle->particle() ;
@@ -142,7 +141,11 @@ void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 
 	// -- Sample components of momentum according to template in histogram
 	LHCb::GenHeader* evt =  get<LHCb::GenHeader>(  LHCb::GenHeaderLocation::Default );
-	gRandom->SetSeed(evt->runNumber() * evt->evtNumber());
+	// Use the cantor pairing function to obtain an unique seed
+	auto runNr = evt->runNumber();
+	auto evtNr = evt->evtNumber();
+	auto uniqueSeed = (runNr + evtNr) * (runNr + evtNr + 1)/2 + evtNr;
+	gRandom->SetSeed( uniqueSeed );
 	if ( m_binningVars == "pxpypz" ) {
 		double px(0), py(0), pz(0);
 		m_hist3d->GetRandom3(px, py, pz);
