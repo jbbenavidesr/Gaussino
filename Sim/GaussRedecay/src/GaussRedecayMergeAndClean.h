@@ -9,6 +9,7 @@
 
 class MCCloner;
 class IGaussRedecayStr;
+class IGaussRedecayCtr;
 namespace LHCb {
 class MCVertex;
 class MCParticle;
@@ -47,6 +48,7 @@ class GaussRedecayMergeAndClean : public GaudiAlgorithm {
   LHCb::MCParticle* findPlaceholder(const LHCb::MCParticles* parts, int placeholder);
   std::string m_gaussRDSvcName;
   IGaussRedecayStr* m_gaussRDStrSvc;
+  IGaussRedecayCtr* m_gaussRDCtrSvc;
   MCCloner* m_temp_cloner = nullptr;
 
   std::string m_particlesLocation;
@@ -60,6 +62,7 @@ class GaussRedecayMergeAndClean : public GaudiAlgorithm {
   std::string m_signal_tes_prefix;
   std::string m_hepMCEventLocation;
   std::string m_genCollisionLocation;
+  std::string m_mcHeader;
 
   std::pair<LHCb::MCParticles*, LHCb::MCParticles*> m_mcparticles;
   std::pair<LHCb::MCVertices*, LHCb::MCVertices*> m_mcvertices;

@@ -36,15 +36,23 @@ class GAUDI_API IGaussRedecayCtr : virtual public IService {
    *
    *  @return bool
    */
-  virtual bool registerNewEvent() = 0;
+  virtual bool registerNewEvent(unsigned long long evtNumber,
+                                unsigned long long runNumber) = 0;
   virtual size_t numberOfRedecays() const = 0;
 
-  /** Returns the phase of the redecay flow.
-   * 0: Nominal simulation
-   * 1: Generating a full new event
-   * 2: Doing the signal (re)decay right now
+  /** Registers a new event, returns false if the UD is already simulated and
+   * should be reused.
+   *  Returns true if everything needs to be redone and deletes the internal
+   * storage objects.
    *
-   *  @return int
+   *  @return bool
+   */
+  virtual unsigned long long getEncodedOriginalEvtInfo() = 0;
+
+  /** Returns the encoded event information (original eventnumber, original runnumber)
+   * Encoded using cantor pairing
+   *
+   *  @return unsigned long long
    */
   virtual int getPhase() const = 0;
   virtual void setPhase(int p) = 0;

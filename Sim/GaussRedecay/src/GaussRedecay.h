@@ -71,13 +71,22 @@ class GaussRedecay : public Service,
   int getPhase() const override;
   void setPhase(int p) override { m_phase = p; }
 
+  /** Registers a new event, returns false if the UD is already simulated and
+   * should be reused.
+   *  Returns true if everything needs to be redone and deletes the internal
+   * storage objects.
+   *
+   *  @return bool
+   */
+  unsigned long long getEncodedOriginalEvtInfo() override;
+
   int getRedecayMode() const override { return m_rd_mode; }
 
   // Implementation of the storage interface IGaussRedecayStr
 
   int registerForRedecay(Particle part, int pileup_id) override;
-  std::map<int, Particle> *getRegisteredForRedecay() override;
-  int getNPileUp() override {return m_sig_map.size();};
+  std::map<int, Particle>* getRegisteredForRedecay() override;
+  int getNPileUp() override { return m_sig_map.size(); };
 
   /** Registers a new event, returns false if the UD is already simulated and
    * should be reused.
@@ -87,7 +96,8 @@ class GaussRedecay : public Service,
    *  @return bool
    */
 
-  bool registerNewEvent() override;
+  bool registerNewEvent(unsigned long long evtNumber,
+                        unsigned long long runNumber) override;
 
   /** Functions to save the different MC objects.
    *  string argument allows storage split by the string.
@@ -105,16 +115,14 @@ class GaussRedecay : public Service,
   LHCb::MCVertices* getClonedMCVs() override;
 
   LHCb::MCHit* cloneMCHit(const LHCb::MCHit* mchit,
-                                  const std::string& vol) override;
+                          const std::string& vol) override;
   LHCb::MCHits* getClonedMCHits(const std::string& vol) override;
 
   LHCb::MCCaloHit* cloneMCCaloHit(const LHCb::MCCaloHit* mchit,
-                                          const std::string& vol) override;
-  LHCb::MCCaloHits* getClonedMCCaloHits(
-      const std::string& vol) override;
+                                  const std::string& vol) override;
+  LHCb::MCCaloHits* getClonedMCCaloHits(const std::string& vol) override;
 
-  LHCb::MCRichHit* cloneMCRichHit(
-      const LHCb::MCRichHit* mchit) override;
+  LHCb::MCRichHit* cloneMCRichHit(const LHCb::MCRichHit* mchit) override;
   LHCb::MCRichHits* getClonedMCRichHits() override;
 
   LHCb::MCRichOpticalPhoton* cloneMCRichOpticalPhoton(
@@ -125,8 +133,7 @@ class GaussRedecay : public Service,
       const LHCb::MCRichSegment* mchit) override;
   LHCb::MCRichSegments* getClonedMCRichSegments() override;
 
-  LHCb::MCRichTrack* cloneMCRichTrack(
-      const LHCb::MCRichTrack* mchit) override;
+  LHCb::MCRichTrack* cloneMCRichTrack(const LHCb::MCRichTrack* mchit) override;
   LHCb::MCRichTracks* getClonedMCRichTracks() override;
 
   LHCb::GenCollision* cloneGenCollision(
@@ -155,7 +162,9 @@ class GaussRedecay : public Service,
   int m_phase;
   int m_rd_mode;
   int m_g4_reserve;
-  bool m_g4_initialized=false;
+  unsigned long long m_org_evtNumber = 0;
+  unsigned long long m_org_runNumber = 0;
+  bool m_g4_initialized = false;
 
   // Signal information storage
   std::map<int, std::map<int, Particle>> m_sig_map;

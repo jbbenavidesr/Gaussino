@@ -3400,6 +3400,13 @@ class Gauss(LHCbConfigurableUser):
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
 
 
+        # Add Redecay tag particle physics list if necessary
+        if self.Redecay['active']:
+            from Configurables import GiGaPhysG4RDTag
+            gmpl.addTool(GiGaPhysG4RDTag)
+            gmpl.PhysicsConstructors.append(gmpl.GiGaPhysG4RDTag)
+
+
         ## --- LHCb specific physics:
         if  (lhcbPhys == True):
             if (richPmt == True):
@@ -3594,16 +3601,27 @@ class Gauss(LHCbConfigurableUser):
                                                    GenHeader = TESNode + "Gen/Header" ,
                                                    MCHeader = TESNode + "MC/Header" ) ]
 
-            #simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
-                                     #RequireObjects = [ TESNode + "Gen/HepMCEvents" ] )
-            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation",
-                                     IgnoreFilterPassed = True)
-            mainSimSequence.Members += [ simSeq ]
+            # We might not have a HepMC events in the redecays, hence
+            # the requirement is removed and explicitly checked using an
+            # algorithm running at the beginning.
+            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation" )
 
+            # simSeq used to have a requireObjects. Cannot do that anymore
+            # as redecay events do not have a HepMC event. Hence make a filter
+            # that decides based on the original event.
+            hepmcfilterseq = GaudiSequencer('HepMCFilterSeq' + self.slotName(slot), ModeOR=True)
+            hepmcfilter = GaussRedecayCtrFilter('HepMCFilter' + self.slotName(slot))
+            hepmcfilter.CheckFor = TESNode + "Gen/HepMCEvents"
+            hepmcfilterseq.Members += [hepmcfilter]
+
+            mainSimSequence.Members += [ hepmcfilterseq]
+            hepmcfilterseq.Members += [simSeq]
 
             simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",
                                          RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
-            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim")
+            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim",
+                                            ModeOR=True)
+
             simSlotSeq.Members += [simSlotFullSeq]
             simSeq.Members += [simSlotSeq]
 
@@ -3621,23 +3639,29 @@ class Gauss(LHCbConfigurableUser):
             # redecay, setting to 2 ignored otherwise!
             grdfilter = GaussRedecayCtrFilter(
                 'CheckIfFullOrUESim{}'.format(slot))
-            grdfilter.IsPhaseNotEqual = 2
-            # grdfilter.SetPhase = 2
+            grdfilter.IsPhaseEqual = 2
             simSlotFullSeq.Members += [ grdfilter]
+
+            # Migrate the actual work into a new sequence, only activated when
+            # the previous filter return false due to the OR mode
+            simSlotFullSeqImpl = GaudiSequencer(
+                "Make"+self.slotName(slot)+"FullSimImpl")
+            simSlotFullSeq.Members += [ simSlotFullSeqImpl]
+
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                LookForUnknownParticles = True )
-            simSlotFullSeq.Members += [ genToSim ]
+            simSlotFullSeqImpl.Members += [ genToSim ]
 
-            simSlotFullSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
-            simSlotFullSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
+            simSlotFullSeqImpl.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
+            simSlotFullSeqImpl.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
             simToMC = SimulationToMCTruth( "SimToMCTruth"+slot )
-            simSlotFullSeq.Members += [ simToMC ]
+            simSlotFullSeqImpl.Members += [ simToMC ]
 
             ## Detectors hits
             TESNode = TESNode + "MC/"
             detHits = GaudiSequencer( "DetectorsHits" + slot )
-            simSlotFullSeq.Members += [ detHits ]
-            simSlotFullSeq.Members += [ GaussRedecayCopyToService(
+            simSlotFullSeqImpl.Members += [ detHits ]
+            simSlotFullSeqImpl.Members += [ GaussRedecayCopyToService(
                 'GaussRedecayCopyToService{}'.format(slot)
             ) ]
 
@@ -3651,39 +3675,45 @@ class Gauss(LHCbConfigurableUser):
             # ################################################
             if slot == '':
                 TESNode = "/Event/"+self.slot_(slot)+"Signal/"
-                simSlotSignal = GaudiSequencer( "Make"+self.slotName(slot)+"Signal")
-                simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim")
+                simSlotSignal = GaudiSequencer( "SignalSimulation")
+
                 gdh = GenInit('SignalGen')
                 self.setBeamParameters(self.defineCrossingList(), gdh)
 
                 gdh.MCHeader = TESNode+"Gen/Header"
                 gdh.CreateBeam = False
                 sdh = SimInit('SignalSim')
-                grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
-                grdfilter.IsPhaseNotEqual = 0
-                simSlotSignal.Members += [ grdfilter]
-                simSeq.Members += [ gdh]
-                simSlotSignal.Members += [ sdh]
-                simSlotSignal.Members += [Generation("GenerationSignal")]
-                simSlotSignal.Members += [simSlotSignalSeq]
-                simSeq.Members += [simSlotSignal]
 
-                simSlotSignal.RootInTES = '{}Signal'.format(slot)
+                sdh.MCHeader = TESNode+"MC/Header"
+
+                simSlotSignal.Members += [ gdh]
+                simSlotSignal.Members += [ sdh]
+
+                simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim", ModeOR=True)
+                simSlotSignalSeqImpl = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSimImpl")
+                simSeq.Members += [simSlotSignal]
+                simSlotSignal.Members += [simSlotSignalSeq]
+
+                grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
+                grdfilter.IsPhaseEqual = 0
+                simSlotSignalSeq.Members = [grdfilter, simSlotSignalSeqImpl]
+
+                simSlotSignalSeqImpl.Members += [Generation("GenerationSignal")]
+                simSlotSignalSeqImpl.RootInTES = '{}Signal'.format(slot)
 
                 genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
                                                 LookForUnknownParticles = True )
                 # genToSim.SelectiveSimulationStep = 2
-                simSlotSignalSeq.Members += [ genToSim ]
+                simSlotSignalSeqImpl.Members += [ genToSim ]
 
-                simSlotSignalSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
-                simSlotSignalSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
+                simSlotSignalSeqImpl.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
+                simSlotSignalSeqImpl.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
                 simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
-                simSlotSignalSeq.Members += [ simToMC ]
+                simSlotSignalSeqImpl.Members += [ simToMC ]
 
-                TESNode = TESNode + "MC/"
                 detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
-                simSlotSignalSeq.Members += [ detHits ]
-                simSlotSignalSeq.Members += [ GaussRedecayPrintMCParticles('SignalPrint') ]
+                simSlotSignalSeqImpl.Members += [ detHits ]
+                simSlotSignalSeqImpl.Members += [ GaussRedecayPrintMCParticles('SignalPrint') ]
 
                 configuredRichSim = [ False ]
                 for det in self.getProp('DetectorSim')['Detectors']:
@@ -3692,9 +3722,9 @@ class Gauss(LHCbConfigurableUser):
             # ##############################################
             # End signal part
             # ##############################################
-            loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim" )
+            loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim", ModeOR=True )
             grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim2{}'.format(slot))
-            grdfilter.IsPhaseEqual = 2
+            grdfilter.IsPhaseNotEqual = 2
             loadSlotSeq.RootInTES = slot
             loadSlotSeq.Members += [
                 grdfilter,
@@ -3702,8 +3732,8 @@ class Gauss(LHCbConfigurableUser):
             simSeq.Members += [loadSlotSeq]
             if slot == '':
                 grdfilter = GaussRedecayCtrFilter('CheckIfMerge')
-                grdfilter.IsPhaseNotEqual = 0
-                mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim" )
+                grdfilter.IsPhaseEqual = 0
+                mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim", ModeOR=True )
                 GaussRedecayMergeAndClean().MCHitsLocation = GaussRedecayCopyToService().MCHitsLocation
                 GaussRedecayMergeAndClean().MCCaloHitsLocation = GaussRedecayCopyToService().MCCaloHitsLocation
                 mergeSlotSeq.Members += [

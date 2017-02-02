@@ -37,6 +37,9 @@ class GaussRedecayCtrFilter : public GaudiAlgorithm {
   int m_isPhase;
   int m_isPhaseNot;
   int m_setPhase;
+  std::string m_check_for = "";
+  bool m_checked = false;
+  std::string m_genHeader ; ///< Location where to store Gen Header
 };
 
 #endif  // GaussRedecayCtrFilter_H

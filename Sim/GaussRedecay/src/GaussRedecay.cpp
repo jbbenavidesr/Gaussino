@@ -100,7 +100,8 @@ StatusCode GaussRedecay::queryInterface(const InterfaceID& id, void** ppI) {
 // Check if the counter is at the max value and return true if a new event
 // should be generated
 //=============================================================================
-bool GaussRedecay::registerNewEvent() {
+bool GaussRedecay::registerNewEvent(unsigned long long evtNumber,
+                                    unsigned long long runNumber) {
   // In case phase is 0, the entire redecay part should be ignored.
   if (m_phase == 0) {
     return true;
@@ -117,6 +118,9 @@ bool GaussRedecay::registerNewEvent() {
     // close the loop and increment already for the next event.
     m_rd_counter = 1;
     m_phase = 1;
+    // Store the original event and run number
+    m_org_evtNumber = evtNumber;
+    m_org_runNumber = runNumber;
     /*trigger new event generation and clean up. Check if the MC cloner
      * already
      * exists (should be the case except for the very first event)*/
@@ -197,6 +201,15 @@ std::set<int> GaussRedecay::getUsedPlaceholderIDs() {
     }
   }
   return ids;
+}
+
+unsigned long long GaussRedecay::getEncodedOriginalEvtInfo() {
+  /*Cantor pair the two numbers*/
+  unsigned long long paired = (m_org_evtNumber + m_org_runNumber) *
+                                  (m_org_evtNumber + m_org_runNumber + 1) / 2 +
+                              m_org_runNumber;
+
+  return paired;
 }
 
 // Following are all the boring redirections for the MCCloner class.

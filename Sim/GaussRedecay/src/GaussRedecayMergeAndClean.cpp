@@ -21,6 +21,7 @@
 #include "LHCbMath/LHCbMath.h"
 #include "MCCloner.h"
 
+#include "GaussRedecay/IGaussRedecayCtr.h"
 #include "GaussRedecay/IGaussRedecayStr.h"
 //-----------------------------------------------------------------------------
 // Implementation file for class : GaussRedecayMergeAndClean
@@ -68,6 +69,7 @@ GaussRedecayMergeAndClean::GaussRedecayMergeAndClean(const std::string& Name,
                   m_hepMCEventLocation = LHCb::HepMCEventLocation::Default);
   declareProperty("GenCollisionLocation",
                   m_genCollisionLocation = LHCb::GenCollisionLocation::Default);
+  declareProperty("MCHeader", m_mcHeader = LHCb::MCHeaderLocation::Default);
 }
 
 //=============================================================================
@@ -80,6 +82,7 @@ StatusCode GaussRedecayMergeAndClean::initialize() {
   }
 
   m_gaussRDStrSvc = svc<IGaussRedecayStr>(m_gaussRDSvcName, true);
+  m_gaussRDCtrSvc = svc<IGaussRedecayCtr>(m_gaussRDSvcName, true);
 
   return StatusCode::SUCCESS;
 }
@@ -186,6 +189,12 @@ StatusCode GaussRedecayMergeAndClean::execute() {
       return StatusCode::FAILURE;
     }
   }
+
+  // Lastly, store the event number and run number information of the original
+  // candidate
+  // encoded in the evtTime in the MCHeader
+  get<LHCb::MCHeader>(m_mcHeader)
+      ->setEvtTime(m_gaussRDCtrSvc->getEncodedOriginalEvtInfo());
 
   return StatusCode::SUCCESS;
 }
