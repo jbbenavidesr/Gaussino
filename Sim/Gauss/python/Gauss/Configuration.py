@@ -3550,19 +3550,16 @@ class Gauss(LHCbConfigurableUser):
         from Configurables import GaussRedecayMergeAndClean
         from Configurables import RedecayProduction
         from Configurables import GaussRedecayFakePileUp
+
         gen = Generation("GenerationSignal")
         gen.addTool(GaussRedecayFakePileUp)
         gen.PileUpTool = "GaussRedecayFakePileUp"
         gen.VertexSmearingTool = ""
-        gen.EventType = Generation().EventType
-        gen.SampleGenerationTool = "SignalPlain"
-        from Configurables import SignalPlain
-        gen.addTool(SignalPlain)
-        gen.SignalPlain.ProductionTool = "RedecayProduction"
-        gen.SignalPlain.addTool(RedecayProduction)
-        gen.SignalPlain.CutTool = Generation().SignalPlain.CutTool
-        gen.SignalPlain.SignalPIDList = Generation().SignalPlain.SignalPIDList
-        gen.SignalPlain.RevertWhenBackward = False
+        sgt = getattr(gen, gen.SampleGenerationTool.split('/')[-1])
+        sgt.ProductionTool = "RedecayProduction"
+        sgt.addTool(RedecayProduction)
+        sgt.RevertWhenBackward = False
+
 
     def configureRedecaySim( self, SpillOverSlots ):
 
@@ -3698,7 +3695,7 @@ class Gauss(LHCbConfigurableUser):
                 grdfilter.IsPhaseEqual = 0
                 simSlotSignalSeq.Members = [grdfilter, simSlotSignalSeqImpl]
 
-                simSlotSignalSeqImpl.Members += [Generation("GenerationSignal")]
+                simSlotSignalSeqImpl.Members += [Generation().clone("GenerationSignal")]
                 simSlotSignalSeqImpl.RootInTES = '{}Signal'.format(slot)
 
                 genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
