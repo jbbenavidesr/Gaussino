@@ -15,13 +15,14 @@ import os
 from tempfile import NamedTemporaryFile
 from ROOT import *
 
-pwd = os.environ['PWD']
-outputpath = pwd
-out = 'Rad.root'
+pwd = os.getcwd()
+outputpath = 'Rad_length/root_files/'
+outputpathpdf = 'Rad_length/pdf_files/'
+out = 'Rad_velo_z.root'
 zmin = 0.    #in mm minimum 0.01
 zmax = 100.    #in mm minimum 0.01
-step = 10.   #in mm minimum 0.01
-nevts = 2000
+step = 100.#10.   #in mm minimum 0.01
+nevts = 1#2000
 
 ###########################################
 
@@ -33,7 +34,8 @@ from GaudiKernel.SystemOfUnits import *
 from Configurables import MomentumRange
 
 ParticleGun = ParticleGun("ParticleGun")
-ParticleGun.EventType = 53210205
+#ParticleGun.EventType = 53210205
+ParticleGun.EventType = 53210168
 
 from Configurables import MaterialEval
 ParticleGun.addTool(MaterialEval, name="MaterialEval")
@@ -61,7 +63,7 @@ giga.StepSeq.RadLengthColl.orig_y = {y:.2f}
 giga.StepSeq.RadLengthColl.orig_z = {z:.2f}
 
 
-NTupleSvc().Output = ["FILE2 DATAFILE='Rad_{x}_{y}_{z}.root' TYP='ROOT' OPT='NEW'"]
+NTupleSvc().Output = ["FILE2 DATAFILE='{pwd}/Rad_length/root_files/Rad_{x}_{y}_{z}.root' TYP='ROOT' OPT='NEW'"]
 
 from Gauss.Configuration import *
 LHCbApp().EvtMax = {nevts}
@@ -70,7 +72,8 @@ LHCbApp().EvtMax = {nevts}
 
 ############# Run tool and reate tuple
 
-os.system("mkdir -p plots")
+os.system("mkdir -p Rad_length/root_files")
+os.system("mkdir -p Rad_length/pdf_files")
 cmd = "gaudirun.py {base}/Gauss-Job.py {base}/RadLengthAna_VELO.py ".format(base=base)
 
 s = 100.
@@ -80,18 +83,18 @@ print "Starting scan! Points: ", z_to_scan
 
 for zz in z_to_scan :
 	with NamedTemporaryFile(suffix=".py") as tmp :
-		tmp.write(pguntmp.format(x=0.0,y=0.0,z=zz,nevts=nevts))
+		tmp.write(pguntmp.format(pwd = pwd,x=0.0,y=0.0,z=zz,nevts=nevts))
 		tmp.flush()
 		
 		os.system(cmd+tmp.name)
 
-output=outputpath+'/'+out
-merge_command = 'hadd -f {output} {pwd}/Rad_*.root'.format(output=output, pwd=pwd)
+output=outputpath+out
+merge_command = 'hadd -f {output} {pwd}/Rad_*.root'.format(output=output, pwd='Rad_length/root_files')
 os.system(merge_command)
 
 ### Make output plot
 
-f = TFile(out)
+f = TFile(outputpath+out)
 t = f.Get("RadLengthColl/tree")
 hout = TGraphErrors()
 print "z\tAvg\tErr"
@@ -113,6 +116,4 @@ hout.SetMarkerColor(1)
 hout.SetMarkerSize(1.)
 hout.Draw("AP")
 #hout.SetMinimum(0.)
-c.Print("Avg_rad_length_vs_z.pdf")
-
-
+c.Print(outputpathpdf + "Avg_rad_length_vs_z.pdf")

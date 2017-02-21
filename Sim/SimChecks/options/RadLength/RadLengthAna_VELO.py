@@ -4,8 +4,8 @@
 ## and the radiation lenght tool is activated.                                 ##
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
-##  @author : L.Pescatore                                                      ##
-##  @date   : last modified on 2016-03-22                                      ##
+##  @author : K.Zarebski                                                       ##
+##  @date   : last modified on 2016-11-08                                      ##
 #################################################################################
 
 from Gaudi.Configuration import *
@@ -21,6 +21,8 @@ CondDB.LocalTags = { "DDDB" : [ "radlength-20141010", "radlength-20141003", "rad
 from Configurables import Gauss
 from Gauss.Configuration import *
 import sys
+
+pwd = os.getcwd()
 
 Gauss().Production = 'PGUN'
 Gauss().DeltaRays = False
@@ -41,11 +43,12 @@ appendPostConfigAction(scoringGeo)
 
 # --- Save ntuple with hadronic cross section information
 ApplicationMgr().ExtSvc += [ "NTupleSvc" ]
-NTupleSvc().Output = ["FILE2 DATAFILE='Rad_VELO.root' TYP='ROOT' OPT='NEW'"]
+
+NTupleSvc().Output = ["FILE2 DATAFILE='%s/Rad_length/root_files/Rad_VELO.root' TYP='ROOT' OPT='NEW'" % pwd]
 
 
 
-# --- activate RadLenghtColl tool
+# --- activate RadLengthColl tool
 def addMyTool():
     from Configurables import GiGa, GiGaStepActionSequence
     giga = GiGa()
@@ -70,4 +73,3 @@ appendPostConfigAction(trackNeutrinos)
 #giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
 #giga.StepSeq.addTool( RadLengthColl )
 #giga.StepSeq.RadLengthColl.OutputLevel = DEBUG
-
