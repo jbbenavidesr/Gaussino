@@ -86,5 +86,7 @@ private:
   // Minimum value of Xicc+ PT
   double m_minXiccPT;
 
+  // Minimum value of daughter track PT 
+  double m_minDaughterPT;
 };
 #endif // GENERATORS_XICCDAUGHTERSINLHCBANDWITHMINPT_H
