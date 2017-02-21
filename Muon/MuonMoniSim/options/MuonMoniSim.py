@@ -14,6 +14,6 @@ MuonMultipleScatteringTest = MuonMultipleScatteringChecker("MuonMultipleScatteri
 MuonMultipleScatteringTest.HistoDir = "MuonMultipleScatteringChecker/MuonMultipleScatteringTest"
 MuonMultipleScatteringTest.OutputLevel = INFO
 
-GaudiSequencer( "DetectorsMonitor" ).Members += [ MuonHitCheckerTest,MuonMultipleScatteringTest]
+GaudiSequencer("DetectorsMonitor").Members += [ MuonHitCheckerTest, MuonMultipleScatteringTest ]
 
 HistogramPersistencySvc().OutputFile ='MuonMoniSim_histos.root'
