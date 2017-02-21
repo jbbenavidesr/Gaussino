@@ -65,8 +65,49 @@ def finalConfiguration():
         gen.Special.SignalPythia8.Commands += [ 'Beams:pxB = %.2f' % pxB ,
                                                 'Beams:pyB = %.2f' % pyB ,
                                                 'Beams:pzB = %.2f' % pzB ,
-                                                'Init:showProcesses = on' ] 
-        #
+                                                'Init:showProcesses = on' ]
+
+        ## specific parameters for the generation of quarkonia or W/Z
+        ## inclusive J/psi
+        if event_type/1000000 == 24:
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' , 'Onia:all=on' ]
+        ## other inclusive charmonium
+        elif event_type/1000000 == 28:
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' , 'Onia:all=on' ]
+        ## inclusive bottomonium
+        elif event_type/1000000 == 18:
+            signal_pid = gen.Special.UpsilonDaughtersInLHCb.getProp( 'SignalPID' )
+            if signal_pid:
+                gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = math.fabs( signal_pid )
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' , 'Bottomonium:all=on' ]
+        ## Z -> mu mu
+        elif event_type == 42112000:
+            gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 23
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
+                                                    "WeakSingleBoson:ffbar2gmZ = on", #Z0/gamma* production
+                                                    "WeakZ0:gmZmode = 2", #Z0 only
+                                                    "23:onMode = off", #turn it off
+                                                    "23:onIfMatch = 13 -13" ] # only mu mu
+        ## W -> mu nu_mu
+        elif event_type == 42311000:
+            gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 24
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
+                                                    "WeakSingleBoson:ffbar2W = on",
+                                                    "24:onMode = off",
+                                                    "24:onIfMatch = 13 -14",
+                                                    "24:onIfMatch = -13 14" ]
+        ## DY -> mu mu, mass > 2 GeV
+        elif event_type == 42112010:
+            gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 23
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
+                                                    "WeakSingleBoson:ffbar2gmZ = on"
+                                                    "23:mMin = 2.",
+                                                    "TimeShower:mMaxGamma = 2.",
+                                                    "PhaseSpace:mHatMin = 2.",
+                                                    "23:onMode = off",                # turn it off
+                                                    "23:onIfMatch = 13 -13",          # decay to muon only
+                                                    ]            
+            
         gen.Special.CRMCProduction.ProjectileID = __ion_pdg_id__[  gauss.getProp('B1Particle') ]
         gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
         gen.Special.CRMCProduction.ProjectileMomentum = pzA
