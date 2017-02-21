@@ -1,7 +1,7 @@
 from Configurables import MinimumBias, Generation, CRMCProduction,Pythia8Production
 from Configurables import Special, Inclusive, SignalPlain, FixedNInteractions
 from Configurables import DaughtersInLHCbKeepOnlySignal, Gauss, BoostForEpos, GaudiSequencer
-from Configurables import AsymmetricCollidingBeams
+from Configurables import AsymmetricCollidingBeams, SignalRepeatedHadronization
 from GaudiKernel import SystemOfUnits
 
 import math
@@ -38,6 +38,8 @@ def finalConfiguration():
     gen.Inclusive.CRMCProduction.TargetMomentum = pzB
     gen.SignalPlain.CRMCProduction.ProjectileMomentum = pzA
     gen.SignalPlain.CRMCProduction.TargetMomentum = pzB
+    gen.SignalRepeatedHadronization.CRMCProduction.ProjectileMomentum = pzA
+    gen.SignalRepeatedHadronization.CRMCProduction.TargetMomentum = pzB
 
 
     if event_type != 30000000: ## embedding
@@ -51,7 +53,7 @@ def finalConfiguration():
         gen.Special.CutTool = "DaughtersInLHCbKeepOnlySignal"
         gen.Special.addTool( DaughtersInLHCbKeepOnlySignal )
 
-        signal_pid = gen.SignalPlain.getProp( 'SignalPIDList' )
+        signal_pid = gen.SignalPlain.getProp( 'SignalPIDList' )+gen.SignalRepeatedHadronization.getProp('SignalPIDList')
         if len(signal_pid) > 0:
             gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = math.fabs( signal_pid[ 0 ] )
         #
@@ -123,6 +125,7 @@ def finalConfiguration():
     gen.Special.CRMCProduction.Frame = "nucleon-nucleon"
     gen.Inclusive.CRMCProduction.Frame = "nucleon-nucleon"
     gen.SignalPlain.CRMCProduction.Frame = "nucleon-nucleon"
+    gen.SignalRepeatedHadronization.CRMCProduction.Frame = "nucleon-nucleon"
 
     ## then boost the EPOS interactions in the correct frame
     genSequence = GaudiSequencer( "GeneratorSlotMainSeq" )
@@ -149,6 +152,8 @@ gen.addTool( Inclusive )
 gen.Inclusive.addTool( CRMCProduction )
 gen.addTool( SignalPlain )
 gen.SignalPlain.addTool( CRMCProduction )
+gen.addTool( SignalRepeatedHadronization )
+gen.SignalRepeatedHadronization.addTool( CRMCProduction )
 
 configuration_commands = [
   "fdpmjetpho dat $CRMC_TABS/phojet_fitpar.dat",
@@ -186,3 +191,8 @@ gen.SignalPlain.CRMCProduction.SwitchOffEventTruncation = True
 gen.SignalPlain.CRMCProduction.ProduceTables = False
 gen.SignalPlain.CRMCProduction.AddUserSettingsToDefault = True
 gen.SignalPlain.CRMCProduction.Commands += configuration_commands
+
+gen.SignalRepeatedHadronization.CRMCProduction.SwitchOffEventTruncation = True 
+gen.SignalRepeatedHadronization.CRMCProduction.ProduceTables = False
+gen.SignalRepeatedHadronization.CRMCProduction.AddUserSettingsToDefault = True
+gen.SignalRepeatedHadronization.CRMCProduction.Commands += configuration_commands
