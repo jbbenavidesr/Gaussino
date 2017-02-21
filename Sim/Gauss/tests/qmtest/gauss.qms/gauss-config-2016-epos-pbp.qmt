@@ -32,7 +32,7 @@
 		<text>$GAUSSROOT/tests/options/testGauss-NoOutput.py</text>
 		<text>$GAUSSROOT/tests/options/testGauss-config-defaults.py</text>
                 <text>$GAUSSROOT/tests/options/testGauss-QMTests.py</text>
-		<text>$APPCONFIGOPTS/Gauss/Pbp-Beam2510GeV-6500GeV-md100-pre2016-fix1.py</text>
+		<text>$APPCONFIGOPTS/Gauss/Pbp-Beam2560GeV-6500GeV-md100-pre2016-fix1.py</text>
 	</set>
 </argument>
 <argument name="exit_code">
@@ -72,6 +72,12 @@ preprocessor = (normalizeExamples +
      RegexpReplacer(when = "RFileCnv                   INFO opening Root file",
          orig = r"(opening Root file \")(.*/)([\w]+/[a-z.]{1,14}\")",
          repl = r"\1\3") + 
+     RegexpReplacer(when = " Geant4 version Name",
+         orig = r"(Geant4 version Name)(.*)(\(.*\))",
+         repl = r"\1") +
+     RegexpReplacer(when = "read from",
+         orig = r"(read from )(.*)( \.\.\.)",
+         repl = r"\1\3") +
      RegexpReplacer(when = "HistogramDataSvc           INFO Added stream file",
          orig = r"(Added stream file:)(.*/)([\w.]+/[a-z]{1,10})(.root)",
          repl = r"\1\3") + 
@@ -81,9 +87,23 @@ preprocessor = (normalizeExamples +
      RegexpReplacer(when = "  KORB:" ,
          orig = r"(  KORB: [a-zA-Z0-9*]+\s*=|  KORB: [A-Z0-9- ]+:)([0-9. \t-E]+)\n",
          repl = replacenumbers ) +
+     RegexpReplacer(when = "Generation.MinimumBia...SUCCESS LbCRMC : Created temporary file",
+         orig = r"(file \/tmp\/lbcrmc\.)(.{6})( for generator)",
+         repl = r"\1\3") +
+     RegexpReplacer(when = "Generation.MinimumBia...SUCCESS  Configuration file",
+         orig = r"(file: \/tmp\/lbcrmc\.)(.{6})",
+         repl = r"\1") +
+     RegexpReplacer(when = "Generation.MinimumBia...SUCCESS LbCRMC : Cleanup:",
+         orig = r"(file \/tmp\/lbcrmc\.)(.{6})",
+         repl = r"\1") +
+     RegexpReplacer(when = "GetRichPhotons             INFO Av. # MCRichOpticalPhotons :",
+         orig = r"(MCRichOpticalPhotons :)(.*)(= .*event)",
+         repl = r"\1\3") +
+     RegexpReplacer(when = "GetRichPhotons             INFO Av. # MCRichOpticalPhotons :",
+         orig = r"(MCRichSegments       :)(.*)(= .*event)",
+         repl = r"\1\3") +
      LineSkipper(["TimingAuditor.TIMER", "ToolSvc.SequencerTime..."]) + 
      LineSkipper(["INFO Disconnect from database after being idle"]) +
-     LineSkipper(["G4Transportation constructor> set fShortStepOptimisation to false"]) +
      LineSkipper(regexps=[r"MainEventGaussSim\s*DEBUG event 1 memory.*",
                           r"GaussGen\s*DEBUG event 1 memory.*"]) + 
      RegexpReplacer(when = "Loading simulation attributes",
