@@ -5,12 +5,6 @@
 #include <algorithm>
 #include "AmpGen/Expression.h"
 #include "AmpGen/MsgService.h"
-/*
-   void printVector( const std::vector<unsigned int>& vect ){
-   for( auto& a : vect ) std::cout << "[" << a << "]";
-   std::cout << std::endl; 
-   }
-   */
 
 namespace AmpGen { 
 
@@ -39,7 +33,7 @@ namespace AmpGen {
       Tensor ( const std::vector<unsigned int>& _dim) : 
         m_dim(_dim), 
         m_elements(nElements(),Constant(0.)) 
-        {};
+    {};
 
       bool rankMatches( const Tensor& other ){
         bool success = true;
@@ -68,21 +62,21 @@ namespace AmpGen {
       TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b ) const;
       TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c) const;
       TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c, 
-                               const LorentzIndex& d) const ; 
+          const LorentzIndex& d) const ; 
 
       /*
-      template < class ... indices > TensorHelper operator() (indices... indexSet ) const {
-        return TensorHelper( *this, { indexSet...} );
-      }
-      */
+         template < class ... indices > TensorHelper operator() (indices... indexSet ) const {
+         return TensorHelper( *this, { indexSet...} );
+         }
+         */
       TensorHelper operator()( const std::vector<LorentzIndex>& indices ) const ; 
 
       Tensor() ; 
       Tensor( const std::vector<double>&      elements, 
-              const std::vector<unsigned int>& _dim)  ;
+          const std::vector<unsigned int>& _dim)  ;
 
       Tensor( const std::vector<std::string>& elements, 
-              const std::vector<unsigned int>& _dim, bool  resolved=false) ;
+          const std::vector<unsigned int>& _dim, bool  resolved=false) ;
 
       Tensor( const std::vector<Expression>&  elements, const std::vector<unsigned int>& _dim ) ;
       Tensor( const std::vector<Expression>&  elements );
@@ -156,20 +150,20 @@ namespace AmpGen {
   class TensorHelper {
     public: 
 
-    operator Tensor() { return m_tensor ; } 
-    TensorHelper( const Tensor& tensor, const std::vector<LorentzIndex>& indices ) : 
-      m_tensor(tensor) {
-        if( m_tensor.rank() != indices.size() ){
-          ERROR("Setting wrong number of indices ! check logic ( this = " 
-              << indices.size() << ", " <<  m_tensor.nDim() << " )" );
+      operator Tensor() { return m_tensor ; } 
+      TensorHelper( const Tensor& tensor, const std::vector<LorentzIndex>& indices ) : 
+        m_tensor(tensor) {
+          if( m_tensor.rank() != indices.size() ){
+            ERROR("Setting wrong number of indices ! check logic ( this = " 
+                << indices.size() << ", " <<  m_tensor.nDim() << " )" );
+          }
+          else m_indices = indices ; 
         }
-        else m_indices = indices ; 
-      }
-    std::vector<LorentzIndex> indices() const { return m_indices ; } 
-    const Tensor& tensor() const { return m_tensor ; } 
+      std::vector<LorentzIndex> indices() const { return m_indices ; } 
+      const Tensor& tensor() const { return m_tensor ; } 
     private :
-    Tensor m_tensor;
-    std::vector<LorentzIndex> m_indices;
+      Tensor m_tensor;
+      std::vector<LorentzIndex> m_indices;
   };
 
   TensorHelper operator*( const TensorHelper& t1, const TensorHelper& t2 );

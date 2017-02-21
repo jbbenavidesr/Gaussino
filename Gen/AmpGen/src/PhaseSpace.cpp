@@ -80,7 +80,6 @@ Double_t PhaseSpace::Generate()
     wt=fWtMax;
     for (n=1; n<fNt-1; n++) rno[n]=rndm();   // fNt-2 random numbers
     std::sort( rno.begin()+1, rno.begin()+fNt  );
-    //    qsort(rno+1 ,fNt-2 ,sizeof(Double_t) ,DoubleMax);  // sort them
 
     rno[fNt-1] = 1;
     double sum=0;
@@ -88,15 +87,18 @@ Double_t PhaseSpace::Generate()
       sum      += fMass[n];
       invMas[n] = rno[n]*fTeCmTm + sum;
     }
-    //
-    //-----> compute the weight of the current event
-    //
     for (n=0; n<fNt-1; n++) {
       pd[n] = PDK(invMas[n+1],invMas[n],fMass[n+1]);
       wt *= pd[n];
     }
   } while ( wt < rndm() );
-
+  
+  /* 
+     only compute the full event if is phaseSpace -> very large 
+     speed increase compared with default ROOT implementation 
+     if trying to generate "unweighted" event. 
+     also, this is much more intuitive 
+  */
 
   //
   //-----> complete specification of event (Raubold-Lynch method)

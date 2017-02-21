@@ -111,6 +111,7 @@ namespace AmpGen {
         DEBUG("Closing the transfer");
       }; 
 
-  }; } 
+  }; 
+} 
 
 #endif

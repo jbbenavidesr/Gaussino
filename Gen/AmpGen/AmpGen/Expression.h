@@ -252,8 +252,8 @@ namespace AmpGen {
       }
     } 
     virtual Expression d(const Parameter& div)  ; 
-    virtual std::complex<double> complexEval() const { return std::complex<double>() ; }
-    virtual double realEval() const { return double(); }
+    virtual std::complex<double> complexEval() const { return std::complex<double>(m_defaultValue,0) ; }
+    virtual double realEval() const { return m_defaultValue; }
 
     virtual void resolveDependencies( std::map < std::string, std::pair< unsigned int , double> >& dependencies ) {
       if( ! m_resolved &&  !m_isEventProperty ){

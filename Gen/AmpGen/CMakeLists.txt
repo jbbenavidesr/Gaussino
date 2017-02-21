@@ -7,7 +7,7 @@ find_package(ROOT COMPONENTS RIO Hist Matrix Graf Minuit Tree MathCore Physics)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -Wno-unused-function -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -Wno-unused-function -Wno-unused-parameter -ldl")
 
 gaudi_add_library(AmpGen
                   src/*.cpp

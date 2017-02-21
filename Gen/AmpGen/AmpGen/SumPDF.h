@@ -5,6 +5,7 @@
 
 /// AmpGen ////
 #include "AmpGen/Minimisable.h"
+#include "AmpGen/IExtendLikelihood.h"
 
 #include <omp.h>
 /* A tuple PDF is the log likliehood of the form 
@@ -31,16 +32,22 @@ namespace AmpGen {
       for_each<I + 1, FuncT, Tp...>(t, f);
     }
 
-  template< class RETURN_TYPE, class ...TYPES> 
-    class SumPDF : public Minimisable, public FCNLibrary<RETURN_TYPE> {
+  template< class ...TYPES> 
+    class SumPDF : public Minimisable, public FCNLibrary {
       public:
         SumPDF( const TYPES & ...  _pdfs ) : m_pdfs( std::tuple<TYPES...>(_pdfs...) ) {}
         std::tuple<TYPES...> m_pdfs;
         EventList* m_events;
+        std::vector<IExtendLikelihood*> m_extendedTerms; 
+
+        std::tuple<TYPES...> pdfs() const { return m_pdfs; }
         virtual bool compile(const std::string& fname, bool debug=false ){
           buildLibrary();
-          return FCNLibrary<RETURN_TYPE>::compile( fname , debug );
+          return FCNLibrary::compile( fname , debug );
         }
+        //// these structs essentially play the role of auto lambdas
+        //// due to requirement that we have c++11 compatiblity. 
+
         struct do_prepare {
           template<class TYPE> void operator() (TYPE& obj ){ obj.prepare() ; }
         };
@@ -60,11 +67,11 @@ namespace AmpGen {
           template<class TYPE> void operator() (TYPE& obj ){ obj.setMC(events); }
           EventList& events;
         };
-        template <class RT>
         struct do_build_library {
-          do_build_library( FCNLibrary<RT>* rt ) : lib(rt) {}
-          template<class TYPE> void operator()( TYPE& obj ){ lib->add( obj.getExpressions() ) ; }
-          FCNLibrary<RT>* lib;    
+          do_build_library( FCNLibrary* rt ) : lib(rt) {}
+           template <class TYPE>
+           void operator()( TYPE& obj ){ lib->add( obj.getExpressions() ) ; }
+          FCNLibrary* lib;    
         };
         struct do_debug {
           do_debug( const unsigned int& _N, const std::string& _nameMustContain ) : 
@@ -101,26 +108,30 @@ namespace AmpGen {
           double LL=0;
           for_each( m_pdfs, do_prepare() );
           double prob;
-#pragma omp parallel for private(prob) reduction(+:LL)
+          #pragma omp parallel for private(prob) reduction(+:LL)
           for(unsigned int i = 0 ; i < m_events->size(); ++i ){
             prob=0;
             auto& evt = (*m_events)[i];
             for_each( this->m_pdfs, do_sum( evt, prob ) ) ;
             LL += log( prob );
-          } 
-          //INFO( "FCN = " << std::setprecision(10) << -2*LL);
+          }
+          for( auto& extendTerm : m_extendedTerms ) 
+            LL += extendTerm->getVal();
           return -2*LL; 
         }
         void setEvents( EventList& events ){
           m_events = &events;
           for_each( m_pdfs, do_set_events(events) );
         }
+        void addExtendedTerm( IExtendLikelihood* m_term ){
+          m_extendedTerms.push_back( m_term );
+        }
         void setMC( EventList& mc ){
           for_each( m_pdfs, do_set_mc(mc));
         }
         void buildLibrary(){
           INFO("Building library for " << nPDFs() );
-          for_each( m_pdfs, do_build_library<RETURN_TYPE>(this) );
+          for_each( m_pdfs, do_build_library(this) );
         }
         void debug(const unsigned int& N=0, const std::string& nameMustContain=""){
           for_each( m_pdfs, do_debug(N,nameMustContain) );
@@ -141,21 +152,6 @@ namespace AmpGen {
             if( size != 1 ) evt.setWeight( population * probability , counter); /// normalise ////
           }
         }
-        /*
-           double norm(EventList<Event>& evts ){
-           double norm=0;
-           for( auto& evt : evts ){
-           for_each( m_pdfs, [&norm,&evt](auto & pdf) {
-           double num = pdf.prob(evt) * evt.weight(0) ;
-           double den = ( evt.genPdf() * pdf.weightIntegral() );
-           norm += num / den; 
-           }
-           );
-           } 
-           return norm; 
-           };
-           */
-        //   unsigned int nPDFs(){ return std::tuple_size<std::tuple<TYPES...>>::value ; } 
         std::size_t nPDFs(){ return sizeof...(TYPES) ; } 
     }; 
 } 

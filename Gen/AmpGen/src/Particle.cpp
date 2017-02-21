@@ -1,8 +1,8 @@
 #include "AmpGen/Particle.h"
 #include "AmpGen/IVertex.h"
 #include "AmpGen/Utilities.h"
-#include "AmpGen/TeXFormat.h"
 #include <bitset>
+#include <fstream>
 
 using namespace AmpGen; 
 
@@ -53,10 +53,10 @@ void Particle::parseModifier( const std::string& mod ){
   if( mod == "S" ) m_orbital = 0;
   else if( mod == "P" ) m_orbital = 1;
   else if( mod == "D" ) m_orbital = 2;
+  else if( mod == "F" ) m_orbital = 3; 
   else if( mod == "0" ) m_spinConfigurationNumber=0;
   else if( mod == "1" ) m_spinConfigurationNumber=1;
   else if( mod == "2" ) m_spinConfigurationNumber=2;
-
   else if ( LineshapeFactory::isLineshape(mod)) m_lineshape = mod ; 
 }
 
@@ -197,7 +197,7 @@ Tensor Particle::P() const {
           (m_parity_factor) * Parameter( index+"_Px",0, false,true), 
           (m_parity_factor) * Parameter( index+"_Py",0, false,true),
           (m_parity_factor) * Parameter( index+"_Pz",0, false,true),
-                              Parameter( index+"_E" ,0, false,true) } , {4} ) ;
+          Parameter( index+"_E" ,0, false,true) } , {4} ) ;
     }
     else ERROR( "Stable particle " <<  m_index << "is unindexed!" );
   } 
@@ -246,7 +246,7 @@ std::string Particle::modifierString() const {
   std::vector<std::string> otherModifiers = {"BgSpin0","Inco","NoSym"};
   for( auto& mod : otherModifiers ){
     if( hasModifier( mod ) ) 
-       modString += ( modString == "["  ? "" : ";" ) + mod;
+      modString += ( modString == "["  ? "" : ";" ) + mod;
   }
   modString += "]";
   return modString; 
@@ -284,20 +284,20 @@ Expression Particle::Lineshape(std::vector<DBSYMBOL>* db) const{
 
   if( db!= 0 && ! isStable() ) db->push_back( DBSYMBOL( uniqueString(), Parameter("NULL", 0,true) ) );
   Expression total(1.);
-    
+
   if( m_istop && m_daughters.size() == 2 ){   
     std::string topShape =  m_lineshape == "BW" ? "FormFactor" : m_lineshape;                              
     const Expression s = mass() * mass();
     DEBUG("Getting lineshape for " << m_name << " = " << topShape );
     total = total* LineshapeFactory::getLineshape( topShape , 
-                                s, daughter(0)->massSq(), daughter(1)->massSq(), 
-                                m_name, m_orbital, db) ;
+        s, daughter(0)->massSq(), daughter(1)->massSq(), 
+        m_name, m_orbital, db) ;
   }
   if( m_daughters.size() == 0 ) return total;
   if( !m_istop && m_daughters.size() == 2 ){
     auto propagator = LineshapeFactory::getLineshape( m_lineshape, 
-      massSq(), daughter(0)->massSq(), daughter(1)->massSq(), 
-      m_name, m_orbital, db );
+        massSq(), daughter(0)->massSq(), daughter(1)->massSq(), 
+        m_name, m_orbital, db );
     auto daughter0_shape = daughter(0)->Lineshape(db);
     auto daughter1_shape = daughter(1)->Lineshape(db);
     return propagator*daughter0_shape*daughter1_shape;
@@ -310,12 +310,14 @@ Expression Particle::Lineshape(std::vector<DBSYMBOL>* db) const{
   return total ;
 }
 
-Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned int& i) {
+Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned int& index) {
 
   Expression total(0);
   auto finalStateParticles = getFinalStateParticles();
   std::sort( finalStateParticles.begin(), finalStateParticles.end(), 
-      []( const std::shared_ptr<Particle>& p1, const std::shared_ptr<Particle>& p2){ return p1->index() < p2->index() ; } ); /// get the final state particles ordered by index /// 
+      []( const std::shared_ptr<Particle>& p1, const std::shared_ptr<Particle>& p2){ 
+      return p1->index() < p2->index() ; 
+      } ); /// get the final state particles ordered by index /// 
   std::vector<std::string> permutation0_names ; 
   std::vector<unsigned int> indices( finalStateParticles.size() ) ;
   std::iota( indices.begin() , indices.end() , 0 );
@@ -334,7 +336,7 @@ Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned in
       for( unsigned int i = 0 ; i < indices.size() ; ++i ){
         finalStateParticles[i]->setIndex( indices[i] );
       }
-      const Expression spinPart = hasModifier("BgSpin0") ? Constant(1) : SpinTensor(db).get(i);
+      const Expression spinPart = hasModifier("BgSpin0") ? Constant(1) : SpinTensor(db).get(index);
       DEBUG("Got spin matrix element -> calculating lineshape product");
       if( sumAmplitudes ) total = total + Lineshape(db) * spinPart;
       else {
@@ -353,7 +355,7 @@ Expression Particle::getExpression(std::vector<DBSYMBOL>* db , const unsigned in
 
   } while( doBoseSymmetrisation && std::next_permutation( indices.begin(), indices.end() ) );
   if( db != 0 ) add_debug( total, db );
-  
+
   if( sumAmplitudes ) return total / Sqrt( nPermutations );
   else {
     Expression sqrted = Sqrt( total / nPermutations );
@@ -368,7 +370,9 @@ Tensor Particle::SpinTensor( std::vector<DBSYMBOL>* db) {
   else if( m_daughters.size() == 2  ){
     DEBUG("Getting spin tensor for " << TwoParticleHash() );
     Tensor value = 
-      VertexFactory::getSpinFactor( P(), Q(), daughter(0)->SpinTensor(db), daughter(1)->SpinTensor(db),  TwoParticleHash(), db );
+      VertexFactory::getSpinFactor( P(), Q(), 
+          daughter(0)->SpinTensor(db), daughter(1)->SpinTensor(db),  
+          TwoParticleHash(), db );
     if( m_istop && db != 0 ) add_debug( value[0] , db ) ; 
     DEBUG("Returning spin tensor");
     return value; 
@@ -387,10 +391,10 @@ Tensor Particle::FinalStateSpinTensor() const {
     auto m = Sqrt( dot(p,p) );
     Expression norm = 1 / ( m *Sqrt(2) ); 
     Tensor pol_plus = -norm * Tensor( {
-       Complex(m+pX*pX/(pE+m),-pX*pY/(pE+m)),
-       Complex(pY*pX/(pE+m), -pY*pY/(pE+m) - m),
-       Complex(pZ*pX/(pE+m), -pZ*pY/(pE+m)),
-       Complex(pX,-pY) }  ); 
+        Complex(m+pX*pX/(pE+m),-pX*pY/(pE+m)),
+        Complex(pY*pX/(pE+m), -pY*pY/(pE+m) - m),
+        Complex(pZ*pX/(pE+m), -pZ*pY/(pE+m)),
+        Complex(pX,-pY) }  ); 
     Tensor pol_zero = Tensor( {
         Complex(pX*pZ/(pE+m)/m,0.),
         Complex(pY*pZ/(pE+m)/m, 0.),
@@ -404,13 +408,13 @@ Tensor Particle::FinalStateSpinTensor() const {
     return pol_plus + pol_zero + pol_minus;
 
   }  
-  else return Tensor( std::vector<double>({1.}), std::vector<unsigned int>({0}) ) ; // std::vector<unsigned int>() ) ;
+  else return Tensor( std::vector<double>({1.}), std::vector<unsigned int>({0}) ) ; 
 }
 
 bool Particle::checkExists(){
   bool success = true;
   if( m_daughters.size() == 2 ){
-    success &= VertexFactory::isVertex(TwoParticleHash()) ; //gSpinProjectors.find( TwoParticleHash() ) != gSpinProjectors.end();
+    success &= VertexFactory::isVertex(TwoParticleHash()) ;
     if( !success ){
       ERROR( uniqueString() );
       ERROR( "Spin configuration not found J = " << spin() 
@@ -455,25 +459,24 @@ std::pair<unsigned int , unsigned int> Particle::lRange(bool conserveParity) con
   return lLimit;
 }
 
-std::string Particle::getTex(bool isRoot) const {
+std::string Particle::getTeX() const {
 
-  std::string marker = isRoot ? "#" : "\\";
-  const std::string leftBrace = isRoot ? "(" : "\\left["; 
-  const std::string rightBrace = isRoot ? ")" : "\\right]";
+  const std::string leftBrace = "\\left["; 
+  const std::string rightBrace = "\\right]";
   std::string name = m_name ;
   if( ! m_istop && m_conjThis ){ 
     name = m_props->anti().name();
   }
   if( m_daughters.size() != 0 ){
-    std::string val = m_istop ? "" : getTexFromPDG( name , isRoot) + leftBrace;
+    std::string val = m_istop ? "" : m_props->texName() + leftBrace;
     if( m_istop && m_orbital != m_minL ) val =  leftBrace;
     for( unsigned int i = 0 ; i < m_daughters.size(); ++i  )
-      val+= m_daughters[i]->getTex(isRoot);
+      val+= m_daughters[i]->getTeX();
     val+= m_istop ? "" :  rightBrace;
     if( m_istop && m_orbital != m_minL ) val += rightBrace;
     if( m_orbital != m_minL ) val += "^{" + orbitalString() + "}";
     return val;
   }
-  else return getTexFromPDG( name , isRoot);
+  else return m_props->texName();
 }
 

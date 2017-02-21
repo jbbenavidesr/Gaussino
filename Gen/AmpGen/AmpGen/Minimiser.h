@@ -14,13 +14,11 @@ class TGraph;
 namespace AmpGen {
 
   class MinuitParameter;
-
   class Minimiser : public TMinuit{
     mutable Double_t arglist[10];
     mutable Int_t ierflg;
     protected:
     bool  _useAnalyticGradient;  
-    static Minimiser* _defaultMinimiser;
     static int _defaultMaxCalls;
 
     MinuitParameterSet* _parSet;
@@ -67,7 +65,6 @@ namespace AmpGen {
     bool fcnOK() const;
 
     double getFCNVal();
-//    void FCNGradient(Double_t* grad);
 
     bool initialiseVariables();
 

@@ -24,11 +24,8 @@ namespace AmpGen {
     Double_t     fWtMax;          // maximum weigth
     std::vector<TLorentzVector> fDecPro;
     TRandom* fRand;
-    //std::mt19937 fGen; //(123);
-    //std::uniform_real_distribution<double> fRand ; //(0.0, 1.0);
   
     double rndm(){ return fRand->Rndm() ; } 
-     //TRandom*     fRand; 
     Double_t PDK(Double_t a, Double_t b, Double_t c);
 
     public:

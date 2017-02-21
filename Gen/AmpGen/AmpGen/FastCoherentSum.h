@@ -6,16 +6,13 @@
 #include "AmpGen/MinuitParameter.h"
 #include "AmpGen/ParticlePropertiesList.h"
 #include "AmpGen/Minimiser.h"
-
-/// CGEN 
 #include "AmpGen/Particle.h"
 #include "AmpGen/CompiledExpression.h"
-#include "AmpGen/Observable.h"
-#include "AmpGen/FitParameter.h"
 #include "AmpGen/EventList.h"
 #include "AmpGen/Utilities.h"
 #include "AmpGen/EventType.h"
 #include "AmpGen/CacheTransfer.h"
+#include "AmpGen/FitFraction.h"
 
 /// STL
 #include <iomanip>
@@ -29,6 +26,7 @@
 #include <fstream>
 
 namespace AmpGen { 
+
   class FastCoherentSum {
     protected:
 
@@ -43,7 +41,7 @@ namespace AmpGen {
       std::vector<CompiledExpression<std::complex<double>>> m_pdfs;    
       std::vector<std::complex<double>> m_coefficients;
       std::vector<std::pair<AmpGen::MinuitParameter*,
-        AmpGen::MinuitParameter*>> m_minuitparameters; //// minuit link ///
+        AmpGen::MinuitParameter*>> m_minuitParameters; //// minuit link ///
       std::vector<std::vector<std::complex<double>>> m_normalisations; //// bilinear normalisation terms ////
       double m_norm; 
       EventList* m_events;
@@ -65,8 +63,8 @@ namespace AmpGen {
       };
       std::vector<std::shared_ptr<Particle>> decayTrees() const 
       { return m_decayTrees ; }
-      std::string getTexTitle( const unsigned int& i , bool isRoot=false)
-      { return m_decayTrees[i]->getTex(isRoot) ; }
+      std::string getTexTitle( const unsigned int& i )
+      { return m_decayTrees[i]->getTeX() ; }
       std::complex<double> norm ( const unsigned int& x, const unsigned int & y ) const 
       { return m_normalisations[x][y] ; }
       std::string uniqueString( const unsigned int& index ) const 
@@ -93,7 +91,7 @@ namespace AmpGen {
           m_events = 0;
           m_sim = 0 ; 
         };
-      };
+      }
       void setEvents( EventList& list ){
         DEBUG("Setting events to size = " << list.size() ); 
         reset();
@@ -111,7 +109,7 @@ namespace AmpGen {
           unsigned int options = 0 ) ;
 
       //// get the value of the PDF at this point //// 
-      std::complex<double> getVal( const Event& evt ){
+      std::complex<double> getVal( const Event& evt ) const {
         std::complex<double> value(0.,0.);
         for( unsigned int i=0;i<m_coefficients.size();++i){
           value += m_coefficients[i]*evt.getCache(m_cacheAddresses[i]);
@@ -125,8 +123,8 @@ namespace AmpGen {
       }
       double norm() const {
         std::complex<double> norm(0,0);
-        for( unsigned int i=0;i<m_minuitparameters.size();++i){
-          for( unsigned int j=0;j<m_minuitparameters.size();++j){
+        for( unsigned int i=0;i<m_minuitParameters.size();++i){
+          for( unsigned int j=0;j<m_minuitParameters.size();++j){
             auto val = m_normalisations[i][j]*m_coefficients[i]*std::conj(m_coefficients[j]);
             norm += val ;
           }
@@ -134,9 +132,9 @@ namespace AmpGen {
         return norm.real();
       }
       void transferParameters(){
-        for( unsigned int i=0;i<m_minuitparameters.size();++i ){
+        for( unsigned int i=0;i<m_minuitParameters.size();++i ){
           m_coefficients[i]=std::complex<double>( 
-              m_minuitparameters[i].first->mean(), m_minuitparameters[i].second->mean() );
+              m_minuitParameters[i].first->mean(), m_minuitParameters[i].second->mean() );
         }
       }
       void prepare() ;
@@ -151,7 +149,8 @@ namespace AmpGen {
       void debug( const unsigned int& N=0, const std::string& nameMustContain="") ; 
       double weightIntegral(){ return m_weightIntegral ; }
 
-      std::vector<std::string> fitFractions(AmpGen::Minimiser& minuit , std::ostream& stream); 
+      std::vector<FitFraction> fitFractions(AmpGen::Minimiser& minuit); 
+      std::vector<FitFraction> fitFractions(const TMatrixD& covMatrix, const std::vector<MinuitParameter*>& minuitParameters); 
 
       void makeBinary( const std::string& fname , const double& normalisation=1) ; 
   }; 

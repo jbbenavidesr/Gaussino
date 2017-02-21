@@ -24,8 +24,9 @@ namespace AmpGen {
     // 
 
     static ParticlePropertiesList* ptr;
+    std::map<int, std::pair<std::string,std::string>> m_latexLabels; 
 
-    ParticlePropertiesList(std::string fname_in="mass_width.csv");
+    ParticlePropertiesList(const std::string& fname_in="mass_width.csv");
     static std::string _MintDalitzSpecialParticles;
     protected:
     static std::vector<std::string> _dirList;
@@ -42,8 +43,8 @@ namespace AmpGen {
     static FILE* findThisFile(const std::string& fname);
     bool readFiles();
     std::list<ParticleProperties> theList;
-    std::map<std::string, std::list<ParticleProperties>::iterator > byName;
-    std::map<int, std::list<ParticleProperties>::iterator > byID;
+    std::map<std::string, ParticleProperties* > byName;
+    std::map<int, ParticleProperties* > byID;
 
     public:
     static const ParticlePropertiesList* getMe();
@@ -55,19 +56,20 @@ namespace AmpGen {
       std::vector<std::string> particleNames;
       for( auto& particle : byName ) particleNames.push_back( particle.first ); 
       return particleNames; 
-    }  
+    } 
+    std::vector<int> getParticleIds() const {
+      std::vector<int> particleIds;
+      for( auto& particle : byID ) particleIds.push_back(particle.first );
+      return particleIds; 
+    } 
     void print(std::ostream& out=std::cout) const;
-
-
+    void readLatexLabels( );
     // fast fuss-free access:
     static double mass(const std::string& name);
     static double mass(int PDG);
     static double width(const std::string& name);
     static double width(int PDG);
-
   };
-
-
   std::ostream& operator<<(std::ostream& out, const ParticlePropertiesList& ppl);
 }
 #endif

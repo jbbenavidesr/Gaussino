@@ -17,8 +17,9 @@
 #include "AmpGen/CoherenceFactor.h"
 #include "AmpGen/Kinematics.h"
 #include "AmpGen/Plots.h"
-#include "AmpGen/LatexTable.h"
+#include "AmpGen/FitResult.h"
 #include "AmpGen/MintUtilities.h"
+#include "AmpGen/IExtendLikelihood.h"
 
 #include "TMatrixD.h"
 #include "TVectorD.h"
@@ -27,7 +28,7 @@
 #include "TH2D.h"
 #include "TCanvas.h"
 
-typedef AmpGen::FCNLibrary<std::complex<double>> pdfLib;
+typedef AmpGen::FCNLibrary pdfLib;
 
 using namespace AmpGen;
 
@@ -50,37 +51,44 @@ void randomizeStartingPoint( MinuitParameterSet& MPS , TRandom3& rand, bool Spli
 template<typename PDF > Minimiser* doFit( PDF& pdf , 
     EventList& data, 
     EventList& mc, 
-    std::ofstream& outlog, 
-    MinuitParameterSet& MPS,
-    FitQuality& fq ){
+    MinuitParameterSet& MPS ){
 
-  const std::string fLib = NamedParameter<std::string>("Lib",(std::string)"functions").getVal();
+  const std::string fLib = NamedParameter<std::string>("Lib",std::string("")).getVal();
+  const std::string logFile = NamedParameter<std::string>("LogFile",std::string("Fitter.log")).getVal();
+  unsigned int nBins = NamedParameter<unsigned int>("nBins",100).getVal();
+  bool debug = NamedParameter<unsigned int>("debug",0).getVal();
+
+  std::vector<std::string> ll_config_terms = 
+    getVectorArgument<std::string>("LLExtend",std::string(""));
+
+  for( auto& ll_config : ll_config_terms ){
+    auto ll_name = split( ll_config , ' ' )[0];
+    auto ll_term = Factory<IExtendLikelihood>::get( ll_name );
+    if( ll_term != 0 ){
+      ll_term->configure( ll_config , MPS );
+      pdf.addExtendedTerm( ll_term );
+    } 
+    else {
+      ERROR("LL term : " << ll_name << " not recognised" );
+    }
+  }  
 
   auto time = std::clock();
   pdf.setPset( &MPS );
   pdf.buildLibrary();
   pdf.setEvents( data );
   pdf.setMC( mc );
+  int options = fLib == "" ? FCNLibrary::OPTIONS::RECOMPILE | ( FCNLibrary::OPTIONS::DEBUG && debug ) : 0;
 
-  if( fLib == "functions"){
-    pdf.compile( "/tmp/MintFcnLib"+std::to_string(::getpid()));
-    bool debug = NamedParameter<unsigned int>("debug",1).getVal();
-    pdf.link( pdfLib::OPTIONS::RECOMPILE | ( pdfLib::OPTIONS::DEBUG && debug ) , 
-      "/tmp/MintFcnLib"+std::to_string(::getpid()) );
-    if( debug )
-      pdf.debug(); 
-  }
-  else {   
-    pdf.link( 0 , fLib );
-  }
+  pdf.link( options, fLib );
+
+  if( debug ) pdf.debug();
   INFO("Fitting PDF with " << pdf.nPDFs() << " components");
   Minimiser* mini = new Minimiser(&pdf);
   mini->doFit(); 
   pdf.reweight( mc, data.size(), 1 );
-  unsigned int nBins = NamedParameter<unsigned int>("nBins",100).getVal();
-  INFO("Making plots for " << pdf.nPDFs() << " categories" );
   for( unsigned int i = 0 ; i < pdf.nPDFs() ;++i){
-    std::cout << "Making plots for category " << i << std::endl; 
+    INFO( "Making plots for category " << i );
     auto mc_plots = 
       mc.makePlots("MC_Category"+std::to_string(i+1)+"_",nBins, i+1);
     for( auto& plot : mc_plots ) plot->Write();
@@ -88,35 +96,11 @@ template<typename PDF > Minimiser* doFit( PDF& pdf ,
 
   Chi2Estimator chi2(data, mc , 15 );
 
-  TMatrixTSym<double> cov = mini->covMatrixFull();
-  outlog << "Covariance Matrix:" << std::endl;
-  std::vector<std::string> params;
   MinuitParameterSet& mps = *(mini->parSet());
-  unsigned int nParam=0;
-  for( unsigned int i = 0 ; i < mps.size(); ++i){
-    if( mps.getParPtr(i)->iFixInit() == 0 ) nParam++;
-    params.push_back( mps.getParPtr(i)->name() );
-  }
-
-  for(int i = 0 ; i < cov.GetNrows(); ++i){
-    outlog << params[i]                << "  " 
-      << mps.getParPtr(i)->mean() << "  " 
-      << mps.getParPtr(i)->err()  << "  ";
-    for(int j = 0 ; j < cov.GetNcols(); ++j)
-      outlog << cov[i][j] << " ";
-    outlog << std::endl;
-  }
-
-  INFO( "Chi2 per bin = " << chi2.chi2() / chi2.nBins()  );
-  INFO( "Chi2 per dof = " << chi2.chi2() / (chi2.nBins() - nParam-1 ) );
-
-  fq.set( chi2.chi2() / ( chi2.nBins() - nParam-1 ) , pdf.getVal(), ( chi2.nBins() - nParam-1 ) );
-  outlog <<
-    "End Covariance Matrix\n" <<
-    "Chi2 per bin : " << chi2.chi2() / chi2.nBins() << std::endl <<
-    "Chi2 per dof : " << chi2.chi2() / ( chi2.nBins() - nParam-1 ) << std::endl <<
-    "Likliehood   : " << pdf.getVal() << std::endl;
-  INFO( " & " << chi2.chi2() / (chi2.nBins() - nParam-1 ) << " & " << chi2.nBins() - nParam -1 << " & " << pdf.getVal() );
+  FitResult fr( mps, std::get<0>(pdf.pdfs()).fitFractions( *mini  ), mini->covMatrixFull(),
+      chi2.chi2(), chi2.nBins(), pdf.getVal(),  mini->GetStatus() );
+  fr.writeToFile( logFile);
+ // std::get<1>(pdf.pdfs()).fitFractions( *mini  ),
   INFO( "Time = " << (std::clock() - time )  / (double)CLOCKS_PER_SEC );
   return mini;
 }
@@ -127,28 +111,28 @@ int main(int argc , char* argv[] ){
   std::string mcFile   = NamedParameter<std::string>("SgIntegratorFname");
   std::string flatMC   = NamedParameter<std::string>("MCCoherence","NONE");
 
-  std::string logFile  = NamedParameter<std::string>("LogFile",(std::string)"Fitter.log");   
   std::string plotFile = NamedParameter<std::string>("Plots",(std::string)"plots.root");
   std::string latexOut = NamedParameter<std::string>("Plots",(std::string)"fit.tex");
   std::string epsFile  = NamedParameter<std::string>("EpsFile",(std::string)"default.eps");
 
   unsigned int nThreads    = NamedParameter<unsigned int>("nCores",1);
-  unsigned int changeLabel = NamedParameter<unsigned int>("ChangeMCLabel",0);  
   unsigned int nBins       = NamedParameter<unsigned int>("nBins",100);
   unsigned int morePlots   = NamedParameter<unsigned int>("makeExtendedPlots",0);
-  
+
   std::vector<std::string> evtType_particles = NamedParameter<std::string>("EventType").getVector();
 
   double fPDF     = NamedParameter<double>("fPDF",1.0);
   double fComb    = NamedParameter<double>("fComb",1.0);
   double fMisID   = NamedParameter<double>("fMisID",0.0);
   double prescale = NamedParameter<double>("Prescale",1.0).getVal();
-  
+
   /// coherence factor ///
   double globalPhase      = NamedParameter<double>     ("Coherence::GlobalPhase",2.967);
   std::string binningName = NamedParameter<std::string>("Coherence::BinningName",std::string(""));
   unsigned int co_nBins   = NamedParameter<unsigned int>("Coherence::nBins"      ,4);
-
+  unsigned int seed       = NamedParameter<unsigned int>("Seed",0);
+  TRandom3* rndm = new TRandom3();
+  rndm->SetSeed( seed );
 
   omp_set_num_threads( nThreads );
   omp_set_dynamic(0);
@@ -156,20 +140,7 @@ int main(int argc , char* argv[] ){
   MinuitParameterSet MPS = MPSFromStream();
   EventType evtType( evtType_particles );
 
-  if( argc == 2 ){
-    unsigned int n = atoi(argv[1]);
-    TRandom3* rand  = new TRandom3();
-    INFO("Set Seed = " << n );
-    
-    rand->SetSeed( n );
-    gRandom = rand; 
-    logFile = logFile + "." + argv[1]; // logTokens[0]+argv[1]+"."+logTokens[1];
-    auto nameTokens = split( dataFile, '.');
-    dataFile = nameTokens[0] + argv[1] +".root";
-    INFO("Writing to log = " << logFile );
-    INFO("Writing plots = " << plotFile );
-  }
-  EventList events ( dataFile , evtType , MPS.size() / 2 ) ;
+  EventList events ( dataFile , evtType ,0 ) ;
 
   FastCoherentSum pdf( evtType 
       , MPS 
@@ -188,7 +159,7 @@ int main(int argc , char* argv[] ){
       , events.getExtendedEventFormat()
       , "MisID"
       , FastCoherentSum::OPTIONS::DEBUG );
-  
+
   if( ! pdf.isStateGood() || ! bkg.isStateGood() || ! misID.isStateGood() ){
     ERROR("Amplitude incorrectly configured");
     return -1;
@@ -197,47 +168,50 @@ int main(int argc , char* argv[] ){
   pdf.setWeight( fPDF );
   bkg.setWeight( fComb ); 
   misID.setWeight( fMisID );
-  
-  EventList eventsMC( mcFile , evtType , MPS.size() / 2  , changeLabel, prescale );
+  TTree* tree_mc_events = (TTree*)TFile::Open( mcFile.c_str(), "READ")->Get("DalitzEventList") ;
+  if( tree_mc_events == nullptr ){
+    ERROR("Could not find : " << mcFile << ".DalitzEventList" );
+    return -1;
+  }
+  EventList eventsMC( tree_mc_events , evtType , MPS.size() / 2 ,
+      [&rndm,&prescale](const Event&){return prescale==1 || rndm->Uniform(0,1) < prescale; }  );
 
-  SumPDF<std::complex<double>, FastCoherentSum&> signalPDF( pdf ); /// PURE signal pdf
+  SumPDF<FastCoherentSum&> signalPDF( pdf ); /// PURE signal pdf
 
-  SumPDF<std::complex<double>, FastIncoherentSum&> bkgPDF( bkg );
-  SumPDF<std::complex<double>, FastCoherentSum&, FastIncoherentSum&> 
+  SumPDF<FastIncoherentSum&> bkgPDF( bkg );
+  SumPDF<FastCoherentSum&, FastIncoherentSum&> 
     signalAndOneBackground( pdf, bkg );
 
-  SumPDF<std::complex<double>, FastCoherentSum&, FastIncoherentSum&, FastCoherentSum&> 
+  SumPDF<FastCoherentSum&, FastIncoherentSum&, FastCoherentSum&> 
     signalAndTwoBackground( pdf, bkg, misID );
 
-  std::ofstream logstream;
-  logstream.open( logFile );
   TFile* output = TFile::Open(plotFile.c_str(),"RECREATE");
   output->cd();
-  FitQuality fq(0,0,0);
 
   Minimiser* mini = 0 ;
+
   if( fPDF == 1.0 ){
     INFO("Fitting with single background");
-    mini = doFit( signalPDF, events, eventsMC, logstream, MPS , fq );
+    mini = doFit( signalPDF, events, eventsMC, MPS  );
   }
   else if( fPDF == 0.0 && fComb == 1.0 ){
     INFO("Fitting pure combinatoric background" ); 
-    mini = doFit( bkgPDF, events, eventsMC, logstream, MPS ,fq );
+    mini = doFit( bkgPDF, events, eventsMC, MPS  );
   }
   else if( fMisID == 0 ){
     INFO("Fitting with one background");
-    mini = doFit( signalAndOneBackground, events, eventsMC, logstream, MPS ,fq );
+    mini = doFit( signalAndOneBackground, events, eventsMC, MPS  );
   }
   else if( fMisID != 0  ) {
-    mini = doFit( signalAndTwoBackground, events, eventsMC, logstream, MPS, fq );
+    mini = doFit( signalAndTwoBackground, events, eventsMC, MPS );
   }
+
   int status = mini->GetStatus();
-   logstream << "status " << status << std::endl; 
   if( status != 0 ){
     ERROR("Fit not converged!");
-  };
+  }
   INFO("Completed fit");
-
+  bkg.fitFractions(*mini);
   /// From here is just making plots and finalising the output //// 
   output->cd();
 
@@ -249,9 +223,9 @@ int main(int argc , char* argv[] ){
     auto kpi_mid   = [](const Event& evt){ return fabs( sqrt( evt.s({0,1}) ) - 897.6 ) < 75;  } ;
     auto pipi_mid  = [](const Event& evt){ return fabs( sqrt( evt.s({2,3}) ) - 770. ) < 100; } ;
     auto kpi_high  = [](const Event& evt){ return evt.s({0,1}) > 1100*1100;  } ;
-    auto pipi_high = [](const Event& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
-    auto kpi_low   = [](const Event& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
-    auto pipi_low  = [](const Event& evt){ return evt.s({2,3}) < 550*550; };
+    //auto pipi_high = [](const Event& evt){ return evt.s({2,3}) > 1000.*1000.; } ;
+    //auto kpi_low   = [](const Event& evt){ return evt.s({0,1}) < 1200.*1200.; } ;
+    //auto pipi_low  = [](const Event& evt){ return evt.s({2,3}) < 550*550; };
     auto no_cut    = [](const Event& evt){ return 1; };
     auto kstarrho_window = [&kpi_mid,&pipi_mid](const Event& evt){ return kpi_mid(evt) && pipi_mid(evt) ; };
 
@@ -265,8 +239,8 @@ int main(int argc , char* argv[] ){
     plot1D( events, eventsMC, kstar_hcos   , kpi_mid          , pdf , kpi_axis  , "hCos_kpi_mid"  ) ;
     plot1D( events, eventsMC, rho_hcos     , pipi_mid         , pdf , rho_axis  , "hCos_pipi_mid"  )  ;
     plot1D( events, eventsMC, acoplanarity , kstarrho_window  , pdf , aco_axis  , "aco_kstarrho" ) ;
-    
-    plot1D( events, eventsMC, kstar_hcos   , kpi_high         , pdf ,  kpi_axis  , "hCos_kpi_high"  ) ;
+
+    plot1D( events, eventsMC, kstar_hcos   , kpi_high         , pdf , kpi_axis  , "hCos_kpi_high"  ) ;
     plot1D( events, eventsMC, kstar_hcos   , no_cut           , pdf , kpi_axis  , "hCos_kpi_all" ) ;
     plot1D( events, eventsMC, rho_hcos     , no_cut           , pdf , rho_axis  , "hCos_pipi_all" ) ;
 
@@ -275,32 +249,34 @@ int main(int argc , char* argv[] ){
     plot1D( events, eventsMC, TripleProduct , kstarrho_window , pdf , triple_axis  , "tp_kstarrho" ) ;
     plot1D( events, eventsMC, TripleProduct , kpi_high        , pdf , triple_axis  , "tp_kpi_high"  ) ;
 
-  auto defaultAxes = eventsMC.defaultProjections();
+    /*
+    auto defaultAxes = eventsMC.defaultProjections();
 
-  for( unsigned int i = 0 ; i < defaultAxes.size(); ++i ){
-    auto axis = defaultAxes[i];
-    auto sij = [&axis]( const Event& evt){ 
-      //INFO( "returning : " << evt.s( axis.indices ) / (1000.*1000.) );
-      return evt.s( axis.indices) / (1000.*1000.) ; } ;
-    gFile->cd();
-    makePerAmplitudePlot( eventsMC, pdf ,sij, no_cut, axis, "MC_"+axis.name+"_allAmps");
- 
-   for( unsigned int j = i +1 ; j < defaultAxes.size(); ++j){
-    auto& yAxis = defaultAxes[j];
-    auto s2 = [&yAxis]( const Event& evt){
-              return evt.s( yAxis.indices) / (1000.*1000.) ; } ;
-          
-      makePerAmplitudePlot2D( eventsMC, bkg, sij, s2, no_cut, axis, yAxis, "MC_" + axis.name + "_"+yAxis.name +"_allAmps");
-    };
+    for( unsigned int i = 0 ; i < defaultAxes.size(); ++i ){
+      auto axis = defaultAxes[i];
+      auto sij = [&axis]( const Event& evt){ 
+        //INFO( "returning : " << evt.s( axis.indices ) / (1000.*1000.) );
+        return evt.s( axis.indices) / (1000.*1000.) ; } ;
+      gFile->cd();
+      makePerAmplitudePlot( eventsMC, pdf ,sij, no_cut, axis, "MC_"+axis.name+"_allAmps");
 
-    plot1D( events, eventsMC, sij,  kpi_mid  , pdf , axis , axis.name+"_kpi_mid" ) ;
-    plot1D( events, eventsMC, sij,  pipi_mid , pdf, axis , axis.name+"_pipi_mid"  ) ;
-    plot1D( events, eventsMC, sij,  kpi_high , pdf, axis , axis.name+"_kpi_high"  ) ;
-    plot1D( events, eventsMC, sij,  pipi_high, pdf, axis , axis.name+"_pipi_high"  ) ;
-    plot1D( events, eventsMC, sij,  pipi_low , pdf, axis , axis.name+"_pipi_low"  ) ;
-    plot1D( events, eventsMC, sij,  kpi_low  , pdf, axis , axis.name+"_kpi_low"  ) ;
-  }
+      for( unsigned int j = i +1 ; j < defaultAxes.size(); ++j){
+        auto& yAxis = defaultAxes[j];
+        auto s2 = [&yAxis]( const Event& evt){
+          return evt.s( yAxis.indices) / (1000.*1000.) ; } ;
 
+        makePerAmplitudePlot2D( eventsMC, bkg, sij, s2, no_cut, axis, 
+          yAxis, "MC_" + axis.name + "_"+yAxis.name +"_allAmps");
+      };
+
+      plot1D( events, eventsMC, sij,  kpi_mid  , pdf , axis , axis.name+"_kpi_mid" ) ;
+      plot1D( events, eventsMC, sij,  pipi_mid , pdf, axis , axis.name+"_pipi_mid"  ) ;
+      plot1D( events, eventsMC, sij,  kpi_high , pdf, axis , axis.name+"_kpi_high"  ) ;
+      plot1D( events, eventsMC, sij,  pipi_high, pdf, axis , axis.name+"_pipi_high"  ) ;
+      plot1D( events, eventsMC, sij,  pipi_low , pdf, axis , axis.name+"_pipi_low"  ) ;
+      plot1D( events, eventsMC, sij,  kpi_low  , pdf, axis , axis.name+"_kpi_low"  ) ;
+    }
+    */
   }
 
   mini->covMatrixFull().Write();
@@ -308,69 +284,25 @@ int main(int argc , char* argv[] ){
   if( mini == 0 ){   
     return 0 ; 
   }
-  if( fComb == 1 ){
-    std::vector<std::string> fitfractions = bkg.fitFractions( *mini , logstream ) ;
-    LatexTable( latexOut ).makeTable( bkg.decayTrees() , fitfractions, fq , true );
-  }
-  else  {
-    std::vector<std::string> fitfractions = pdf.fitFractions( *mini , logstream );
-    LatexTable( latexOut ).makeTable( pdf.decayTrees() , fitfractions, fq );
-  }
 
   if( flatMC != "NONE" ){
 
     EventList flatEvts( flatMC , evtType , MPS.size() / 2  );
-    /*
-    TH2D* coherence = new TH2D("coherenceFactor","coherenceFactor",200,0,1,100,-M_PI,M_PI);
-    auto covariance = mini->covMatrix(); 
-    TDecompChol decomposed( covariance );
-    decomposed.Decompose();
-    TMatrixD A = decomposed.GetU();
-    std::vector<IMinuitParameter*> floatingParams;
-    std::vector<double> initialValues;
-    for( unsigned int i = 0 ; i < MPS.size(); ++i){
-      if( MPS.getParPtr(i)->iFixInit() == 0 ){
-        floatingParams.push_back( MPS.getParPtr(i) );
-        initialValues.push_back( MPS.getParPtr(i)->mean() );
-      };
-    }
-     */ 
     signalAndTwoBackground.setMC( flatEvts );
     signalAndTwoBackground.getVal();
-   
+
     CoherenceFactor rk3pi( &flatEvts, &pdf, &misID );
     rk3pi.setGlobalPhase( globalPhase );
     rk3pi.makeCoherentMapping( co_nBins ) ;
     rk3pi.writeToFile("test.dat");
     rk3pi.getNumberOfEventsInEachBin( events );
 
-
-    //rk3pi.getFitFractions( *mini );
-    //rk3pi.getNumberOfEventsInEachBin( events );    
-   /*
-    TRandom3* randomMatrixErrorPropagator = new TRandom3();
-    
-    for( unsigned int i = 0 ; i < 10000 ; ++i ){
-      GAUSSIAN_PERTURBATION( floatingParams, A, randomMatrixErrorPropagator );
-      signalAndTwoBackground.getVal();
-      auto coh = rk3pi.getGlobalCoherence(flatMC);
-      coherence->Fill( std::abs(coh), std::arg(coh));
-      INFO( "RK3pi = " << std::abs( coh ) << " delta = " << std::arg( coh ) ); 
-      for( unsigned int i = 0 ; i < floatingParams.size() ; ++i ) 
-        floatingParams[i]->setCurrentFitVal( initialValues[i] );
-    }
-    */
     output->cd();
-  //  coherence->Write(); 
   };
-  
-  logstream << "End Log" << std::endl; 
-  
-//  TCanvas* c1 = MakePlots( output );
-//  c1->SaveAs( epsFile.c_str() );
+
+
   output->Write();
   output->Close();
-  logstream.close(); 
   INFO("Finalising output");
 
   return 0;

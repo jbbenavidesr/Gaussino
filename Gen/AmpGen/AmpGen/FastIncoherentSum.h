@@ -33,8 +33,10 @@ namespace AmpGen {
       }
       void prepare() ; 
       double norm() const ; 
-      std::vector<std::string> fitFractions(AmpGen::Minimiser& minuit , std::ofstream& stream ) ;
-
+      //// warning - these functions are not properly tested /// 
+      std::vector<FitFraction> fitFractions(AmpGen::Minimiser& minuit ) ;
+     std::vector<FitFraction> fitFractions(
+    const TMatrixD& covMatrix, const std::vector<MinuitParameter*>& minuitParameters );
   };
 }
 

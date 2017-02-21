@@ -7,6 +7,25 @@
 
 using namespace AmpGen ;
 
+TensorHelper Tensor::operator()( const std::vector<LorentzIndex>& indices ) const {
+  return TensorHelper(*this,indices );
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a) const { 
+  return TensorHelper(*this,{a}) ;  
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b ) const { 
+  return TensorHelper(*this,{a,b}) ; 
+}
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
+    const LorentzIndex& c ) const {
+  return TensorHelper(*this,{a,b,c}) ;
+}
+
+
+TensorHelper Tensor::operator()( const LorentzIndex& a, const LorentzIndex& b,
+    const LorentzIndex& c, const LorentzIndex& d ) const {
+  return TensorHelper(*this,{a,b,c,d}) ;
+}
 TensorHelper AmpGen::operator * ( const TensorHelper& t1, const TensorHelper& t2 ){
   std::vector<std::pair<unsigned int, unsigned int>> contractions; 
 
