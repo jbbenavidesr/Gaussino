@@ -193,15 +193,10 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                             leg.AddEntry(grPDG, dict._all_pguns[pguns[pg + 1]].GetLatex("LEG") + " / " + dict._all_pguns[pguns[pg]].GetLatex("LEG") + " PDG", "P")
 
                 nm += 1
-<<<<<<< HEAD
                 Material = mat=ord(materials[0][0])
                 plot_var = Dx if xvar == "energy" else E0
 		plot_var_label = "Thickness" if xvar == "energy" else "Energy"
                 gr.SetName("{}-{}_Mod-{}_PGun-{}".format(plot_var_label, plot_var, m, pg))
-=======
-                plot_var = E0 if xvar == "energy" else Dx
-                gr.SetName("{}_Mod-{}_PGun-{}".format(plot_var, m, pg))
->>>>>>> 126b26079dd5945b456eee1b040fea2730f2ba12
                 grs.append(gr)
 
         ratiotxt.write("\\hline\n\\end{tabular}")
@@ -396,15 +391,10 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                         label += " (" + model + ")"
                     leg.AddEntry(gr, label, "P")
 
-<<<<<<< HEAD
                     plot_var = Dx if xvar == "energy" else E0
 		    plot_var_label = "Thickness" if xvar == "energy" else "Energy"
                     plot_var = E0 if xvar == "energy" else Dx
                     gr.SetName("{}-{}_Mat-{}_Mod-{}_PGun-{}".format(plot_var_label, plot_var, material, model, pg))
-=======
-                    plot_var = E0 if xvar == "energy" else Dx
-                    gr.SetName("Mat-{}_Mod-{}_PGun-{}".format(material, model, pg))
->>>>>>> 126b26079dd5945b456eee1b040fea2730f2ba12
                     grs.append(gr)
 
                     if plotData and n0 == len(models) - 1 and materials[0] == "Al":
