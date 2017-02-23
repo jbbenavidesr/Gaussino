@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-echo "Running Target Test with All Options"
+echo "Running Target Test with Shorter Option List for Testing"
 
 make_events_script=$SIMCHECKSROOT/options/Target/MakeEvents.py
 
