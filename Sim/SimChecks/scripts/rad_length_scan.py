@@ -16,20 +16,11 @@ pwd = os.getcwd()
 pwd_str = pwd
 home = os.environ['HOME']
 
-#######NEEDS TO BE CHANGED TO LOCATION OF SIMCHECKS IN MAIN GAUSS####################
-#simchecks_local = home + '/private/Gauss/Sim/SimChecks'
 simchecks_local = os.environ["SIMCHECKSROOT"]
 
 base = simchecks_local + "/options/RadLength/"
+sys.path.append(os.path.join(simchecks_local, 'python'))
 
-# alexander.mazurov@cern.ch:
-# Need to add gaudi_install_python_modules() to CMakeLists.txt
-# Reorganize python directory:
-# - python/SimChecks/__init__.py
-# - python/SimChecks/RadLengthMakePlots
-# - python/SimChecks/Target
-# - python/SimChecks/Target/__init__.py
-sys.path.append(os.path.join(simchecks_local,'python'))
 from RadLengthMakePlots import makePlots
 
 outputpath = pwd_str + '/Rad_length/root_files/'
@@ -43,13 +34,12 @@ os.system("mkdir -p %s/Rad_length/" % pwd)
 os.system("mkdir -p %s/Rad_length/root_files/" % pwd)
 os.system("mkdir -p %s/Rad_length/data_tables/" % pwd)
 cmd = "gaudirun.py {base}/MaterialEvalGun.py {base}/Gauss-Job.py {base}".format(base=base)
-os.system(cmd+"RadLengthAna.py")
-os.system(cmd+"RadLengthAna_VELO.py")
-    
-output=outputpath+out
+os.system(cmd + "RadLengthAna.py")
+os.system(cmd + "RadLengthAna_VELO.py")
+
+output = outputpath + out
 merge_command = 'hadd -f {output} {pwd}/Rad.root {pwd}/Rad_VELO.root'.format(output=output, pwd='%s/Rad_length/root_files' % pwd)
 os.system(merge_command)
 
-makePlots(outputpath + out,outputpathpdf,"rad")
-makePlots(outputpath + out,outputpathpdf,"inter")
-
+makePlots(outputpath + out, outputpathpdf, "rad")
+makePlots(outputpath + out, outputpathpdf, "inter")
