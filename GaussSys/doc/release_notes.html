@@ -3,6 +3,141 @@ Package : GaussSys
 Package manager : Gloria Corti
 Purpose: LHCb Simulation program
 
+<H1><A NAME="v49r7">2017-03-06 - Gauss v49r7</A></H1>
+<H2><A NAME="Note"Release for Sim09b productions</A></H2>
+
+This version uses projects:
+   LCG_79 (HepMC 2.06.09, ROOT 6.04.02), Gaudi v26r4, LHCb v39r1, 
+   Geant4 v96r4p3 (geant4.9.6.p04 + LHCb patches)
+   and SQLDDDB v7r*, ParamFiles v8r*, FieldMap v5r*, AppConfig v3r*, Geant4Files v96r*, GDMLData v1r*
+
+<p>
+This version uses (via LCG_79/MCGenerators):
+   pythia8 186 (with LHCb Tune1), lhapdf 6.1.4, photos++ 3.56, <b>tauola++ 1.1.6b.lhcb</b>, pythia 6.427.2,
+   hijing 1.383bs.2, crmc 1.5.6 (epos), alpgen 2.1.4, powhegbox r2092, herwig++ 2.7.1, thepeg 1.9.2p1
+   rivet 2.4.2, yoda 1.5.9
+
+<p>
+This version uses (private LHCb generators versions):
+   EvtGen, EvtGenExtras, Mint, <b>AmpGen</b>, BcVegPy, GenXicc, HidValley
+   and DecFiles v29r*, LHAPDFSets v2r*, BcVegPyData v2r*, GenXiccData v3r*, PGunsData v1r*
+
+<p>
+This version is released on Sim09 branch
+
+<h2>Updates to generators</h2>
+
+<dl>
+  <dt>[MR !81] LHCBGAUSS-1021: Improvement of signal embedding
+    <dd>
+      Improve signal embedding by allowing signal particles with displaced vertices with respect to the primary vertex. Needed for production of
+signal with EPOS.
+    </dd>
+  </dt>
+  <dt>[MR !73] LHCBGAUSS-952: Improve EPOS options
+    <dd> 
+      Improve the EPOS.py option file to generate charmonium, bottomium, Z , W and Drell Yan
+    </dd>
+  </dt>
+  <dt>[MR !72] LHCBGAUSS-980: fix wrong uncertainty of fit fractions in AmpGen
+    <dd>
+      To merge also into Sim09-upgrade as well as master
+    </dd>  
+  <dt>[MR !80] LHCBGAUSS-1023: Add filter on PT in Xicc generator cuts
+    <dd>    
+      Add property for filtering on daughter PT for Xicc generator level cuts in XiccDaughtersInLHCbAndWithMinPT.cpp
+    </dd>
+  </dt>
+  <dt>[MR !74] LHCBGAUSS-1005: LambdacD cut for GenCuts
+    <dd>    
+      The goal is to create the DaughtersInLHCbAndCutsForLambdacD after the DaughtersInLHCbAndCutsForDstarD one.
+    </dd>
+  </dt>
+</dl>
+
+<h2>New fast Simulation option</h2>
+
+<dl>
+  <dt>[MR !58] LHCBGAUSS-955: Re-use of the underlying event
+<dd>
+    This merge request contains the code for re-using the underlying event and only simulating the signal parts again.
+    
+    The main part of the code exists in its own package `Sim/GaussRedecay`with only minimal changes to existing parts of Gauss except 
+the main Gauss Configurable. Please ask away, I will go over the code and add additional comments as well.
+    
+    ### Slides
+    Some slides to clarify the procedure
+    * [Fast simulation meeting 24.11.2016](https://indico.cern.ch/event/588836/contributions/2374451/attachments/1377416/2092184/reuse
+_update.pdf)
+    * [Fast simulation meeting 13.10.2016](https://indico.cern.ch/event/576720/contributions/2334442/attachments/1354566/2046421/redec
+ay_report_13_10_16.pdf)
+    * [A&S week 10.5.2016](https://indico.cern.ch/event/442259/contributions/2159561/attachments/1270722/1882889/available_fast_mc.pdf
+)
+    * [Simulation meeting 12.4.2016](https://indico.cern.ch/event/505110/contributions/1183150/attachments/1256852/1855758/SignalRedec
+ay.pdf)
+    
+    ### Running the code
+    For running the it, the only options needed are those below (with 27163003 as event type):
+    ```
+    from Configurables import Gauss
+    Gauss().Redecay['active']=True
+    from Configurables import GaussRedecayFakePileUp
+    gen = Generation("GenerationSignal")
+    gen.addTool(GaussRedecayFakePileUp)
+    gen.PileUpTool = "GaussRedecayFakePileUp"
+    gen.VertexSmearingTool = ""
+    gen.EventType = 27163003
+    gen.SampleGenerationTool = "SignalPlain"
+    from Configurables import SignalPlain
+    gen.addTool(SignalPlain)
+    gen.SignalPlain.ProductionTool = "RedecayProduction"
+    gen.SignalPlain.addTool(RedecayProduction)
+    gen.SignalPlain.CutTool = "DaughtersInLHCb"
+    gen.SignalPlain.SignalPIDList = [413, -413]
+    gen.SignalPlain.AllowReverting = False
+    ```
+    Most of which could be added to the main configurable, depending on the desired flexibility for allowing different SampleGeneratio
+nTools.
+    
+    ### Remaining issues
+    
+    * Ideally, one wants to propagate information about the redecay through to the user's creating their ntuples, most importantly the
+ event and run number of the original event a set of redecayed events was based on to be able to group the events. Idea's how to do th
+is most elegantly are highly welcome.
+    * Set up a todo list to ensure compatibility with the new Gaudi framework.
+</dl>
+
+<h2>Updates to Monitors</h2>
+
+<dl>
+  <dt>[MR !68] LHCBGAUSS-874: Muon/MuonMoniSim
+    <dd>
+      Adds options file to run Muon Hit and MultipleScattering Checkers in Gauss and a script runmuontest.py to run Gauss using these options. 
+Tested locally and working with CMT and CMake.
+    </dd>
+  </dt>
+  <dt>[MR !71] LHCBGAUSS-878: Matteo's update to the MonitorTiming for Sim09
+    <dd>    
+      Latest revision of the detailed timing test (MonitorTiming) for Sim09
+    </dd>
+  </dt>
+  <dt>[MR !62] Simchecks package add missing aliases</dt>
+  <dt>[MR !63] Fix simchecks radlength test</dt>
+</dl>
+
+<h2>General</h2>
+
+<dl>
+  <dt>[MR !75] Update references for nightly tests
+    <dd>
+      References for nightly tests need to be update since options used have been changed, as well as new latest tags made available.
+    </dd>
+  </dt>
+  <dt>[MR !65] LHCBGAUSS-772: Update to fix EPOS QMtests</dt>
+  <dt>[MR !59] Fix problem with compilation with CMake</dt>
+</dl>
+
+
 <H1><A NAME="v49r6">2016-12-16 - Gauss v49r6</A></H1>
 <H2><A NAME="Note"Release for Sim09b productions</A></H2>
 
