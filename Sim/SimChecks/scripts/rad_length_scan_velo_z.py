@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #################################################################################
 ## This option file helps you save time by running in sequence                 ##
-## the radiation lenght tool with particle fired from different positions      ##
+## the radiation length tool with particle fired from different positions      ##
 ## along the Z axis. Only the plane after the velo is activated.               ##
 ## You can run this simply by "python rad_length_scan.py"                      ##
 ## Twiki at: https://twiki.cern.ch/twiki/bin/view/LHCb/RadLengthStudies        ##
 ##                                                                             ##
-##  @author : L.Pescatore                                                      ##
-##  @date   : last modified on 2015-06-29                                      ##
+##  @author : K.Zarebski                                                       ##
+##  @date   : last modified on 2017-01-31                                      ##
 #################################################################################
 
 import sys
@@ -19,14 +19,16 @@ pwd = os.getcwd()
 outputpath = 'Rad_length/root_files/'
 outputpathpdf = 'Rad_length/pdf_files/'
 out = 'Rad_velo_z.root'
-zmin = 0.    #in mm minimum 0.01
-zmax = 100.    #in mm minimum 0.01
-step = 100.#10.   #in mm minimum 0.01
-nevts = 1#2000
-
+zmin = 0.    # in mm minimum 0.01
+zmax = 100.    # in mm minimum 0.01
+step = 10.   # in mm minimum 0.01
+nevts = 2000
 ###########################################
 
-base = os.environ["SIMCHECKSROOT"] + "/options/RadLength/"
+simchecks_local = os.environ["SIMCHECKSROOT"]
+base = os.path.join(simchecks_local, "/options/RadLength/")
+
+sys.path.append(os.path.join(simchecks_local, 'python'))
 
 pguntmp = '''from Gaudi.Configuration import *
 from Configurables import ParticleGun
@@ -68,44 +70,41 @@ NTupleSvc().Output = ["FILE2 DATAFILE='{pwd}/Rad_length/root_files/Rad_{x}_{y}_{
 from Gauss.Configuration import *
 LHCbApp().EvtMax = {nevts}
 '''
-
-
 ############# Run tool and reate tuple
 
 os.system("mkdir -p Rad_length/root_files")
 os.system("mkdir -p Rad_length/pdf_files")
-cmd = "gaudirun.py {base}/Gauss-Job.py {base}/RadLengthAna_VELO.py ".format(base=base)
+cmd = "gaudirun.py {0} {1} ".format(os.path.join(base, 'Gauss-Job.py'), os.path.join(base, 'RadLengthAna_VELO.py'))
 
 s = 100.
-z_to_scan = [ x/s for x in range(int(s*zmin),int(s*(zmax+step)),int(s*step)) ]
+z_to_scan = [x / s for x in range(int(s * zmin), int(s * (zmax + step)), int(s * step))]
 
 print "Starting scan! Points: ", z_to_scan
 
-for zz in z_to_scan :
-	with NamedTemporaryFile(suffix=".py") as tmp :
-		tmp.write(pguntmp.format(pwd = pwd,x=0.0,y=0.0,z=zz,nevts=nevts))
-		tmp.flush()
-		
-		os.system(cmd+tmp.name)
+for zz in z_to_scan:
+    with NamedTemporaryFile(suffix=".py") as tmp:
+        tmp.write(pguntmp.format(pwd=pwd, x=0.0, y=0.0, z=zz, nevts=nevts))
+        tmp.flush()
 
-output=outputpath+out
-merge_command = 'hadd -f {output} {pwd}/Rad_*.root'.format(output=output, pwd='Rad_length/root_files')
+        os.system(cmd + tmp.name)
+
+output = outputpath + out
+merge_command = 'hadd -f {output} {rootfiles}/Rad_*.root'.format(output=output, rootfiles=os.path.join(pwd, 'Rad_length/root_files'))
 os.system(merge_command)
-
 ### Make output plot
 
-f = TFile(outputpath+out)
+f = TFile(outputpath + out)
 t = f.Get("RadLengthColl/tree")
 hout = TGraphErrors()
 print "z\tAvg\tErr"
-for i,zz in enumerate(z_to_scan) :
-	t.Draw("cumradlgh>>h","(TMath::Abs(origz - %f) < 1e-5)" % zz)
-	h = gPad.GetPrimitive("h")
-	avg     = h.GetMean()
-	avg_err = h.GetMeanError()
-	print '{0:.3f}\t{1:.5f}\t{2:.5f}'.format(zz,avg,avg_err)
-	hout.SetPoint(i,zz,avg)
-	hout.SetPointError(i,0.,avg_err)
+for i, zz in enumerate(z_to_scan):
+    t.Draw("cumradlgh>>h", "(TMath::Abs(origz - %f) < 1e-5)" % zz)
+    h = gPad.GetPrimitive("h")
+    avg = h.GetMean()
+    avg_err = h.GetMeanError()
+    print '{0:.3f}\t{1:.5f}\t{2:.5f}'.format(zz, avg, avg_err)
+    hout.SetPoint(i, zz, avg)
+    hout.SetPointError(i, 0., avg_err)
 
 c = TCanvas()
 hout.GetXaxis().SetTitle("z [mm]")
