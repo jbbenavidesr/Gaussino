@@ -12,7 +12,7 @@ This allows us to check things work correctly before including them in the offic
 # Contributions to the Gauss GitLab project
 
 When you contribute new or modified code to Gauss ensure to start by getting a copy of the package(s) you need to modify from the branch you intend this code to be for. 
-Due to the fact that the majority of people contributing code will want it to be deployed in Sim09, this is the default branch that will be used for your pull and merge requests unless you specify otherwise. 
+Due to the fact that the majority of people contributing code will want it to be deployed in Sim09, and you should specify this branch for your pull and merge requests. 
 
 For example if you want to contribute a new generator levels cut for Sim09, once you have your satellite project, you can just check out the package from the Sim09 branch
 ```
@@ -38,7 +38,7 @@ When you are ready for the code to be tested with the next Gauss candidate relea
 For Gauss you do not need to start with WIP the title of the merge request’s. You can start it with the jira ticket (LHCBGAUSS-1345 in the example above). If you do not do so put the Jira ticket in the description.
 This will introduce a direct link between the Jira task and the merge request that will later be carried on in the release notes and web documentation.
 
-When creating the merge request you need to select the branch you want this to be applied to. By default this will be the Sim09 branch. If that is not the case you should change it to either Sim09-upgrade or master. In case you want the code to be also propagated to those you should add a comment to this extent into the merge request. The Gauss manager will take care of doing so to start with and give instructions on how to do so yourself once we are all more GitLab proficient.
+When creating the merge request you need to select the branch you want this to be applied to. The default is master so be sure to change it to either Sim09 or Sim09-upgrade if you need to. In case you want the code to be also propagated to those you should add a comment to this extent into the merge request. The Gauss manager will take care of doing so to start with and give instructions on how to do so yourself once we are all more GitLab proficient.
 
 # Testing and reviewing the code you submitted
 In order to test the code provided for new releases we have various nightly slots. In particular for Gauss we have setup two dedicated nightly slots: 
