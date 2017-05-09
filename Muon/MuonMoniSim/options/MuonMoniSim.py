@@ -5,7 +5,7 @@ from Configurables import MuonMultipleScatteringChecker
 
 MuonMultipleScatteringTest = MuonMultipleScatteringChecker("MuonMultipleScatteringTest")
 MuonMultipleScatteringTest.HistoDir = "MuonMultipleScatteringChecker/MuonMultipleScatteringTest"
-MuonMultipleScatteringTest.OutputLevel = DEBUG
+MuonMultipleScatteringTest.OutputLevel = INFO
 # Uncommment for monitor ntuples
 #MuonMultipleScatteringTest.fillNtuple = True
 
