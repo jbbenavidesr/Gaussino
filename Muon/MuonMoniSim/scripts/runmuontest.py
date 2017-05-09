@@ -1,3 +1,5 @@
+#!/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_87/Python/2.7.10/x86_64-slc6-gcc49-opt/bin/python
+
 #######################################################################
 ## This script runs the Muon tests and stores the output as a        ##
 ## ROOT file in the MuonTestResults folder in the same               ##
@@ -5,15 +7,15 @@
 ## into LHCbPR.                                                      ##
 ## The name of the input histogram can be can be changed in          ## 
 ## the MuonMoniSim.py options file. Number of events can be          ## 
-## changed in the Gauss-Job.py options file, default is 50000.       ##
-## This should be run automatically when runmuonmonisimtest.sh is    ##
-## executed                                                          ##
-## To run without using runmuonmonisimtest.sh do:                    ##
-## lb-run Gauss [Gauss version]  python runmuontest.py               ##
+## changed in the Gauss-Job.py options file, default is 1000.        ##
+## To run do:                                                        ##
+## lb-run Gauss [Gauss version]  python path/to/runmuontest.py       ##
 ## or if doing devleopment replace lb-run Gauss with path/to/run     ##
 ## @author : R.Calladine                                             ## 
-## @date   : last modified 2016-12-12                                ##
+## @date   : last modified 2017-05-08                                ##
 #######################################################################
+
+
 
 import sys, os, json
 
@@ -23,7 +25,7 @@ pwd = os.getcwd()
 
 os.system("mkdir -p {pwd}/MuonTestResults".format(pwd=pwd))
 
-cmd = "gaudirun.py {mu_path}/options/Gauss-Job.py {mu_path}/options/MuonMoniSim.py".format(mu_path=mu_path)
+cmd = "gaudirun.py {mu_path}/options/MuonMoniSim.py".format(mu_path=mu_path)
 os.system(cmd)
 
 os.system("mv ./MuonMoniSim_histos.root {pwd}/MuonTestResults".format(pwd=pwd))
