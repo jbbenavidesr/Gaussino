@@ -3,6 +3,8 @@
 ################################################################################
 gaudi_subdir(MuonMoniSim v3r0p1)
 
+gaudi_install_scripts()
+
 gaudi_depends_on_subdirs(Det/MuonDet
                          Event/MCEvent
                          GaudiAlg)
