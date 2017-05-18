@@ -395,7 +395,7 @@ void Pythia8Production::updateParticleProperties(const LHCb::ParticleProperty*
 
   // Set the mass, width and lifetime (only non-resonant).
   pd.m0(id, thePP->mass() / Gaudi::Units::GeV);
-  if (id == 6 || (id >= 23 || id <= 37)) return;
+  if (id == 6 || (id >= 23 && id <= 37)) return;
   double lifetime = thePP->lifetime()*Gaudi::Units::c_light;
   if (lifetime <= 1.e-4 * Gaudi::Units::mm || 
       lifetime >= 1.e16 * Gaudi::Units::mm) lifetime = 0;
