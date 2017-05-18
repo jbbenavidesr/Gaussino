@@ -1,6 +1,6 @@
 ##############################################################################
 # File for running Gauss with Sim08 configuration and beam conditions as in
-# production for 2013 data (1.38 TeV beams, nu=0.36, no spill-over)
+# production for 2012 data (4.0 TeV beams, nu=2.5, no spill-over)
 #
 # Syntax is:
 #   gaudirun.py Gauss-2012.py <someInputJobConfiguration>.py
