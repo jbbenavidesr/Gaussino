@@ -27,4 +27,7 @@ gaudi_add_library(EvtGen
                   NO_PUBLIC_HEADERS
                   INCLUDE_DIRS HepMC CLHEP Tauola++ Pythia8 Photos++
                   LINK_LIBRARIES HepMC CLHEP Tauola++ Pythia8 Photos++ pythia6forgauss)
+                  
+gaudi_env(SET PYTHIA8DATA ${PYTHIA8_XML})
+
 

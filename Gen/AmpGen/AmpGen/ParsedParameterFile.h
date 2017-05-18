@@ -12,32 +12,32 @@
 
 namespace AmpGen {
 
-class ParsedParameterFile{
- protected:
-  static const ParsedParameterLine dummyLine;// will be invalid;
-  static const char _ignoreLinesStartingWith[];
+  class ParsedParameterFile{
+    protected:
+      static const ParsedParameterLine dummyLine;// will be invalid;
+      static const char _ignoreLinesStartingWith[];
 
-  std::map<std::string, ParsedParameterLine> _lines;
-  bool _statusOK;
+      std::map<std::string, ParsedParameterLine> _lines;
+      bool _statusOK;
 
 
-  static bool ignoreThisLine(const std::string& line);
-  void readStream(std::istream& is);
- public:
-  ParsedParameterFile(std::istream& inputStream = std::cin);
-  ParsedParameterFile(const std::string& fname);
-  ParsedParameterFile(const ParsedParameterFile& other);
+      static bool ignoreThisLine(const std::string& line);
+      void readStream(std::istream& is);
+    public:
+      ParsedParameterFile(std::istream& inputStream = std::cin);
+      ParsedParameterFile(const std::string& fname);
+      ParsedParameterFile(const ParsedParameterFile& other);
 
-  unsigned int numLines() const; // number of lines;
-  bool OK()const;
+      unsigned int numLines() const; // number of lines;
+      bool OK()const;
 
-  const ParsedParameterLine& find(const std::string& name) const;
+      const ParsedParameterLine& find(const std::string& name) const;
 
-  std::map<std::string, ParsedParameterLine>::iterator begin(){ return _lines.begin(); }
-  std::map<std::string, ParsedParameterLine>::iterator end(){ return _lines.end(); }
+      std::map<std::string, ParsedParameterLine>::iterator begin(){ return _lines.begin(); }
+      std::map<std::string, ParsedParameterLine>::iterator end(){ return _lines.end(); }
 
-  void print(std::ostream& os=std::cout) const;
-};
+      void print(std::ostream& os=std::cout) const;
+  };
 }// namespace AmpGen;
 std::ostream& operator<<(std::ostream& os, const AmpGen::ParsedParameterFile& ppf);
 

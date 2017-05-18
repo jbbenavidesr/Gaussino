@@ -11,17 +11,7 @@
 using namespace std;
 using namespace AmpGen;
 
-Minimiser* Minimiser::_defaultMinimiser=0;
 int Minimiser::_defaultMaxCalls=100000; // 100k (a lot!)
-
-Minimiser* Minimiser::getDefaultMinimiser(){
-
-  if(0 == _defaultMinimiser){
-    _defaultMinimiser = new Minimiser;
-  }
-  return _defaultMinimiser;
-}
-
 
 Minimiser::Minimiser(Minimisable* fitFunction)
   : TMinuit(0)
@@ -104,7 +94,6 @@ bool Minimiser::init(){
 	      << std::endl;
     return false;
   }
-
   MakeSpace(nPars());
 
   if(dbThis) cout << "... made space, now initialising variables" << endl;

@@ -1,19 +1,20 @@
 // author: Jonas Rademacker (Jonas.Rademacker@bristol.ac.uk)
 // status:  Mon 9 Feb 2009 19:18:04 GMT
 #include "AmpGen/ParticleProperties.h"
-#include "AmpGen/CLHEPPhysicalConstants.h"
-#include "AmpGen/CLHEPSystemOfUnits.h"
-#include "AmpGen/Utils.h"
 
 
-#include <cstdio>
-#include <cstring>
+//#include <cstdio>
+//#include <cstring>
 #include <algorithm>
+
+#include "AmpGen/Utilities.h"
 
 using namespace std;
 using namespace AmpGen;
 
-const char* ParticleProperties::pionString = "1.3957018E+02 ,3.5E-04,3.5E-04,2.5284E-14  ,5.0E-18,5.0E-18,1  ,-,0   ,-, ,B,    211,   +, ,R,pi               ,uD              ";
+//const char* ParticleProperties::pionString = "1.3957018E+02 ,3.5E-04,3.5E-04,2.5284E-14  ,5.0E-18,5.0E-18,1  ,-,0   ,-, ,B,    211,   +, ,R,pi               ,uD              ";
+
+static const double GeV = 1000; 
 
 double ParticleProperties::_defaultRadius = 1.5/GeV; //1.5/GeV;
 double ParticleProperties::_defaultCharmRadius = 5.0/GeV;
@@ -29,7 +30,7 @@ void ParticleProperties::print(ostream& out) const{
       << "\n quark content: " << quarks()
       << "\n net-quark-content " << netQuarkContent()
       << "\n is its own antiparticle? " << (isItsOwnAnti() ? "yes" : "no")
-      << "\n lifetime " << lifetime_in_ps() << " ps"
+//      << "\n lifetime " << lifetime_in_ps() << " ps"
       << "\n radius " << radius()*GeV << " /GeV"
      << endl;
 }
@@ -42,60 +43,27 @@ void ParticleProperties::print(ostream& out) const{
 8.0403E+04    ,2.9E+01,2.9E+01,2.14E+03    ,4.0E+01,4.0E+01,   , ,1   , , ,B,     24,   +, ,R,W                ,                
 */
 
-ParticleProperties::ParticleProperties(std::string pdg_string)
+ParticleProperties::ParticleProperties(const std::string& pdg_string)
   : _netQuarkContent()
 {
   bool debugThis=false;
 
   _isValid=false;
-  if(pdg_string.empty()) return;
+  if(pdg_string==""||pdg_string.empty()) return;
   if(pdg_string[0] == '*') return;
-
-  replace(pdg_string.begin(), pdg_string.end(), '\n', ','); // add a ',' to the end
-  remove(pdg_string.begin(), pdg_string.end(), ' '); // remove white space
-  
-  static const unsigned int nFields=18;
-  std::string s[nFields];
-  unsigned int first= 0;
-  unsigned int counter=0;
-  unsigned int charCounter=0;
-  while(counter < nFields){
-    if(pdg_string[charCounter] == ','){
-      int n=charCounter-first;
-      if(n<0)n=0;
-      
-      std::string tempString = " ";
-      if(n >= 1) tempString = pdg_string.substr(first, n);
-      if(debugThis){
-	cout << " tempString for charCounter = " << charCounter
-	     << ", and counter = " << counter
-	     << " is: " << tempString << endl;
-      }
-      if(tempString.empty()){
-	s[counter] = " ";
-      }else{
-	s[counter] = tempString;
-      }
-
-      ++counter;
-      first = charCounter+1;
-    }
-    if(charCounter < pdg_string.size()-1) charCounter++;
+  auto s = split(pdg_string,',',false);
+  if( s.size() != 18 ){
+    DEBUG("Invalid line : " << pdg_string );
+    return;
   }
-  if(counter != nFields) return; // sth wrong
-
-  if(debugThis){
-    cout << "the strings : ";
-    for(unsigned int i=0; i<nFields; i++) cout << s[i] << "\n";
-    cout << endl;
-  }
-
-  _mass       = atof(s[0].c_str());
-  _mErrPlus   = atof(s[1].c_str());
-  _mErrMinus  = atof(s[2].c_str());
-  _width      = atof(s[3].c_str());
-  _wErrPlus   = atof(s[4].c_str());
-  _wErrMinus  = atof(s[5].c_str());
+  for( auto& st : s ) 
+    trim(st); 
+  _mass       = stod(s[0]);
+  _mErrPlus   = stod(s[1]);
+  _mErrMinus  = stod(s[2]);
+  _width      = stod(s[3]);
+  _wErrPlus   = stod(s[4]);
+  _wErrMinus  = stod(s[5]);
   
   _Isospin    =      s[6];
   char Gchar  =      s[7][0];
@@ -189,6 +157,11 @@ void ParticleProperties::antiCharge(){
 bool ParticleProperties::hasDistinctAnti() const{
   return ! (_Aformat == ' ');
 }
+
+bool ParticleProperties::barred() const {
+  return _Aformat == 'F';
+}
+
 bool ParticleProperties::antiThis(){
   if(! hasDistinctAnti()) return false;
   antiCharge();
@@ -210,7 +183,7 @@ std::string ParticleProperties::name() const{
   fullName += _charge;
   return fullName;
 }
-
+/*
 double ParticleProperties::lifetime() const{
   if(width()<0) return -9999.0;
   if(width() == 0) return 9.9999e109;
@@ -228,7 +201,7 @@ double ParticleProperties::ctau() const{
 double ParticleProperties::ctau_in_microns() const{
   return ctau()/micrometer;
 }
-
+*/
 double ParticleProperties::radius() const{
   return _Radius;
   // not set in mass_width.csv, but in normal options file

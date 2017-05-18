@@ -41,7 +41,7 @@ from Configurables import ( SimInit, GiGaGeo, GiGaInputStream, GiGa,
 from Configurables import ( GenerationToSimulation, GiGaFlushAlgorithm,
                             GiGaCheckEventStatus, SimulationToMCTruth,
                             GiGaGetEventAlg, GiGaGetHitsAlg,
-                            GetTrackerHitsAlg, GetCaloHitsAlg, 
+                            GetTrackerHitsAlg, GetCaloHitsAlg,
                             GetMCRichHitsAlg, GetMCRichOpticalPhotonsAlg,
                             GetMCRichSegmentsAlg, #GetMCRichTracksAlg,
                             Rich__MC__MCPartToMCRichTrackAlg,
@@ -53,7 +53,13 @@ from Configurables import ( PackMCParticle, PackMCVertex,
                             UnpackMCParticle, UnpackMCVertex,
                             CompareMCParticle, CompareMCVertex )
 
-from Configurables import (GaussRICHConf, GaussCherenkovConf)
+# All GaussRedecay includes
+from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
+                            GaussRedecayRetrieveFromService,
+                            GaussRedecayPrintMCParticles,
+                            GaussRedecayCtrFilter,
+                            GaussRedecaySorter,
+                            GaussRedecayMergeAndClean)
 
 from DetCond.Configuration import CondDB
 
@@ -68,8 +74,8 @@ class Gauss(LHCbConfigurableUser):
         'velo', 'puveto', 'vp',
         'tt' , 'ut',
         'it' , 'sl',
-        'ot' , 'ft', 
-        'rich',  'rich1', 'rich2', 'torch' , 
+        'ot' , 'ft',
+        'rich',  'rich1', 'rich2', 'torch' ,
         'calo',  'spd', 'prs', 'ecal', 'hcal' ,
         'muon' ,
         'magnet',
@@ -86,7 +92,7 @@ class Gauss(LHCbConfigurableUser):
 
     ## Map to contain PDG ids for beam particles
     __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 , 'p': 2212 , 'Ne': 1000100200 , 'He': 1000020040 , 'Kr': 1000360840 ,
-                       'Xe': 1000541320 } 
+                       'Xe': 1000541320 }
 
     ## Steering options
     __slots__ = {
@@ -134,12 +140,11 @@ class Gauss(LHCbConfigurableUser):
         ## type of particle in the beam or in the fixed target
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
-        , "CurrentRICHSimRunOption" : 'GTB'
-        , "UpgradeRICHSimRunOption"  : 'GTB'
+        , "Redecay" : {"N": 100, 'active': False, 'rd_mode': 1}
       }
-    
+
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
-    _propertyDocDct = { 
+    _propertyDocDct = {
         'Histograms'     : """ Type of histograms: ['NONE','DEFAULT'] """
        ,'DatasetName'    : """ String used to build output file names """
        ,"DataType"       : """ Must specify 'Upgrade' for upgrade simulations, otherwise not used """
@@ -159,16 +164,15 @@ class Gauss(LHCbConfigurableUser):
        ,"BeamPipe"       : """Switch for beampipe definition; BeamPipeOn: On everywhere, BeamPipeOff: Off everywhere, BeamPipeInDet: Only in named detectors """
        ,"ReplaceWithGDML": """Replace a list of specified volumes with GDML description from file provided """
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
-       ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """  
-       ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """  
+       ,"Redecay"        : """ Dict with redecay settings, default: {'N': 100, 'active': False, 'rd_mode': 1}."""
        }
     KnownHistOptions     = ['NONE','DEFAULT']
     TrackingSystem       = ['VELO','TT','IT','OT']
     PIDSystem            = ['RICH','CALO','MUON']
-    
+
     Run1DataTypes = [ "2009", "2010", "2011", "2012", "2013" ]
     Run2DataTypes = [ "2015", "2016" ]
-        
+
     _beamPipeStates = ['beampipeon', 'beampipeoff', 'beampipeindet']
 
     _incompatibleDetectors = {
@@ -181,7 +185,7 @@ class Gauss(LHCbConfigurableUser):
 
     _beamPipeElements = {
         #"upstreamregion" : [
-        #"/dd/Structure/LHCb/UpstreamRegion/PipeUpstream" , 
+        #"/dd/Structure/LHCb/UpstreamRegion/PipeUpstream" ,
         #"/dd/Structure/LHCb/UpstreamRegion/MBXWHUp" ],
         #"beforemagnetregion" : [
         #    "/dd/Structure/LHCb/BeforeMagnetRegion/PipeJunctionBeforeVelo",
@@ -220,28 +224,28 @@ class Gauss(LHCbConfigurableUser):
             #"/dd/Structure/LHCb/DownstreamRegion/AfterMuon/MBXWSDown" ]
         }
 
-    
+
 #"""
 #Helper
 #HELPER
 #
-#  ><<     ><<             ><<                            
-#  ><<     ><<             ><<                            
+#  ><<     ><<             ><<
+#  ><<     ><<             ><<
 #  ><<     ><<    ><<      ><< >< ><<      ><<     >< ><<<
-#  ><<<<<< ><<  ><   ><<   ><< ><  ><<   ><   ><<   ><<   
-#  ><<     ><< ><<<<< ><<  ><< ><   ><< ><<<<< ><<  ><<   
-#  ><<     ><< ><          ><< ><< ><<  ><          ><<   
-#  ><<     ><<   ><<<<     ><< ><<        ><<<<     ><<<   
-#                              ><<                        
+#  ><<<<<< ><<  ><   ><<   ><< ><  ><<   ><   ><<   ><<
+#  ><<     ><< ><<<<< ><<  ><< ><   ><< ><<<<< ><<  ><<
+#  ><<     ><< ><          ><< ><< ><<  ><          ><<
+#  ><<     ><<   ><<<<     ><< ><<        ><<<<     ><<<
+#                              ><<
 #
-#"""    
+#"""
     ##
     ##
     def slotName(self,slot) :
         name = slot
         if slot == '' : name = "Main"
         return name
-    
+
     ##
     ## Helper functions for spill-over
     def slot_( self, slot ):
@@ -271,7 +275,7 @@ class Gauss(LHCbConfigurableUser):
 
     def setLHCbAppDetectors(self):
         from Configurables import LHCbApp
-        # If detectors set in LHCbApp then use those        
+        # If detectors set in LHCbApp then use those
         if hasattr(LHCbApp(),"Detectors"):
             if not LHCbApp().Detectors:
                 LHCbApp().Detectors = self.getProp("DetectorGeo")["Detectors"]
@@ -289,14 +293,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 
-# ><< ><<                                                                        
-# ><    ><<                                                ><                    
-# ><     ><<    ><<        ><<     ><<< ><< ><<  >< ><<       >< ><<      ><<    
-# ><<< ><     ><   ><<   ><<  ><<   ><<  ><  ><< ><  ><<  ><< ><  ><<   ><   ><< 
+# ><< ><<
+# ><    ><<                                                ><
+# ><     ><<    ><<        ><<     ><<< ><< ><<  >< ><<       >< ><<      ><<
+# ><<< ><     ><   ><<   ><<  ><<   ><<  ><  ><< ><  ><<  ><< ><  ><<   ><   ><<
 # ><     ><< ><<<<< ><< ><<   ><<   ><<  ><  ><< ><   ><< ><< ><   ><< ><<<<< ><<
-# ><      >< ><         ><<   ><<   ><<  ><  ><< ><< ><<  ><< ><< ><<  ><        
-# ><<<< ><<    ><<<<      ><< ><<< ><<<  ><  ><< ><<      ><< ><<        ><<<<   
-#                                                ><<          ><<                
+# ><      >< ><         ><<   ><<   ><<  ><  ><< ><< ><<  ><< ><< ><<  ><
+# ><<<< ><<    ><<<<      ><< ><<< ><<<  ><  ><< ><<      ><< ><<        ><<<<
+#                                                ><<          ><<
 
     def validateBeamPipeSwitch ( self, bpString ):
         import string
@@ -322,7 +326,7 @@ class Gauss(LHCbConfigurableUser):
                 # remove all instances of the element
                 while element in geo.StreamItems:
                     geo.StreamItems.remove(element)
-                    
+
     def defineBeamPipeGeo ( self, geo, basePieces, detPieces ):
         # Add all BeamPipe Elements in the BeamPipeElements dictionary
 
@@ -371,7 +375,7 @@ class Gauss(LHCbConfigurableUser):
                                    FileName = gdmlFile )
             giGaGeo.addTool(gdmlTool, gdmlToolName)
             giGaGeo.GdmlReaders.append(gdmlToolName)
-            
+
             # Remove the corresponding geometry from the Geo.InputStreams
             for item in gdmlDict["volsToReplace"]:
                 if item in geo.StreamItems:
@@ -384,31 +388,31 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#><<         ><<             ><<               ><<<<<     ><<<<<     ><<<<<     ><< ><<   
-# ><<       ><<              ><<               ><<   ><<  ><<   ><<  ><<   ><<  ><    ><< 
+#><<         ><<             ><<               ><<<<<     ><<<<<     ><<<<<     ><< ><<
+# ><<       ><<              ><<               ><<   ><<  ><<   ><<  ><<   ><<  ><    ><<
 #  ><<     ><<      ><<      ><<    ><<        ><<    ><< ><<    ><< ><<    ><< ><     ><<
-#   ><<   ><<     ><   ><<   ><<  ><<  ><<     ><<    ><< ><<    ><< ><<    ><< ><<< ><   
+#   ><<   ><<     ><   ><<   ><<  ><<  ><<     ><<    ><< ><<    ><< ><<    ><< ><<< ><
 #    ><< ><<     ><<<<< ><<  ><< ><<    ><<    ><<    ><< ><<    ><< ><<    ><< ><     ><<
 #     ><<<<      ><          ><<  ><<  ><<     ><<   ><<  ><<   ><<  ><<   ><<  ><      ><
-#      ><<         ><<<<    ><<<    ><<        ><<<<<     ><<<<<     ><<<<<     ><<<< ><< 
+#      ><<         ><<<<    ><<<    ><<        ><<<<<     ><<<<<     ><<<<<     ><<<< ><<
 #"""
 
     def checkVeloDDDB( self ):
         """
         Check if the Velo geometry is compatible with the chosen tags
         """
-        # set validity limits for  Velo geometry      
+        # set validity limits for  Velo geometry
         # first postMC09 Velo geometry
-        GTagLimit1 = "head-20091120"       
+        GTagLimit1 = "head-20091120"
         GTagLimit1 = GTagLimit1.split('-')[1].strip()
-        VeloLTagLimit1 = "velo-20091116"       
+        VeloLTagLimit1 = "velo-20091116"
         VeloLTagLimit1 = VeloLTagLimit1.split('-')[1].strip()
         # Thomas L. Velo geometry
-        GTagLimit2 = "head-20100119"       
+        GTagLimit2 = "head-20100119"
         GTagLimit2 = GTagLimit2.split('-')[1].strip()
-        VeloLTagLimit2 = "velo-20100114"       
+        VeloLTagLimit2 = "velo-20100114"
         VeloLTagLimit2 = VeloLTagLimit2.split('-')[1].strip()
-        
+
         # DDDB global tag used
         DDDBDate = LHCbApp().DDDBtag
         DDDBDate = DDDBDate.split('-')[1].strip()
@@ -425,7 +429,7 @@ class Gauss(LHCbConfigurableUser):
 
         # Put this here rather than as an argument
         VeloPostMC09 = 0
-        # check if the selected tags require one of the postMC09 Velo geometries 
+        # check if the selected tags require one of the postMC09 Velo geometries
         if (DDDBDate >= GTagLimit1) or (cdbVeloDate >= VeloLTagLimit1):
             VeloPostMC09 = 1
         if (DDDBDate >= GTagLimit2) or (cdbVeloDate >= VeloLTagLimit2):
@@ -437,13 +441,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-# ><<         ><< ><<<<<<<< ><<           ><<<<     
-#  ><<       ><<  ><<       ><<         ><<    ><<  
+# ><<         ><< ><<<<<<<< ><<           ><<<<
+#  ><<       ><<  ><<       ><<         ><<    ><<
 #   ><<     ><<   ><<       ><<       ><<        ><<
 #    ><<   ><<    ><<<<<<   ><<       ><<        ><<
 #     ><< ><<     ><<       ><<       ><<        ><<
-#      ><<<<      ><<       ><<         ><<     ><< 
-#       ><<       ><<<<<<<< ><<<<<<<<     ><<<<     
+#      ><<<<      ><<       ><<         ><<     ><<
+#       ><<       ><<<<<<<< ><<<<<<<<     ><<<<
 #"""
 
 
@@ -483,12 +487,12 @@ class Gauss(LHCbConfigurableUser):
         Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamWakeFieldCone")
         Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamWakeFieldCone")
         if (VeloPostMC09==1):
-            # description postMC09 of Velo (head-20091120), problem with Velo Tank simulation  
+            # description postMC09 of Velo (head-20091120), problem with Velo Tank simulation
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
         elif (VeloPostMC09==2):
-            # Thomas L. newer description postMC09 of Velo 
+            # Thomas L. newer description postMC09 of Velo
             # --- Velo Right
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFBoxRight")
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/DetSupportRight")
@@ -504,17 +508,17 @@ class Gauss(LHCbConfigurableUser):
         else:
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamVacTank")
             Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamVacTank")
-        
+
         Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFFoilRight")
         Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFFoilLeft")
     ##
-    ##         
+    ##
 
 
     def defineVeloGeo( self , basePieces , detPieces ):
         # Alter in place BasePieces
         # check if the new velo geometry is required with the chosen DDDB tags
-        
+
         VeloP = self.checkVeloDDDB()
         if (VeloP==1 or VeloP==2):
             basePieces['BeforeMagnetRegion']=[]
@@ -540,6 +544,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
 
@@ -564,12 +569,12 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#><<         ><< ><<<<<<<< ><<           ><<<<      ><<<<<<<                
-# ><<       ><<  ><<       ><<         ><<    ><<   ><<    ><<  ><          
+#><<         ><< ><<<<<<<< ><<           ><<<<      ><<<<<<<
+# ><<       ><<  ><<       ><<         ><<    ><<   ><<    ><<  ><
 #  ><<     ><<   ><<       ><<       ><<        ><< ><<    ><<     ><<   ><<
-#   ><<   ><<    ><<<<<<   ><<       ><<        ><< ><<<<<<<   ><<   >< ><< 
-#    ><< ><<     ><<       ><<       ><<        ><< ><<        ><<    ><    
-#     ><<<<      ><<       ><<         ><<     ><<  ><<        ><<  ><  ><< 
+#   ><<   ><<    ><<<<<<   ><<       ><<        ><< ><<<<<<<   ><<   >< ><<
+#    ><< ><<     ><<       ><<       ><<        ><< ><<        ><<    ><
+#     ><<<<      ><<       ><<         ><<     ><<  ><<        ><<  ><  ><<
 #      ><<       ><<<<<<<< ><<<<<<<<     ><<<<      ><<        ><< ><<   ><<
 #"""
 
@@ -592,6 +597,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
 
@@ -600,7 +606,7 @@ class Gauss(LHCbConfigurableUser):
 
     def configureVPMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         ## in case of a non default detector, need to be overwritten
-        #detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot ) 
+        #detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot )
         from Configurables import VPGaussMoni
         detMoniSeq.Members += [ VPGaussMoni( "VPGaussMoni" + slot ) ]
 
@@ -609,7 +615,7 @@ class Gauss(LHCbConfigurableUser):
             from Configurables import DataPacking__Unpack_LHCb__MCVPHitPacker_
             checkHits.VeloHits =  'MC/VP/Hits'
             # This is not done in the PuVeto Moni config
-            #checkHits.PuVetoHits = ''             
+            #checkHits.PuVetoHits = ''
             upVP = DataPacking__Unpack_LHCb__MCVPHitPacker_("UnpackVPHits"+slot,
                                                                       OutputName = "MC/VP/HitsTest" )
             packCheckSeq.Members += [upVP]
@@ -628,7 +634,7 @@ class Gauss(LHCbConfigurableUser):
 #  ><<  ><<     ><< ><<        ><<     ><<
 #  ><<    ><<   ><<  ><<   ><< ><<     ><<
 #  ><<      ><< ><<    ><<<<   ><<     ><<
-#                                       
+#
 #"""
 
 
@@ -653,7 +659,7 @@ class Gauss(LHCbConfigurableUser):
     def defineRichPhys( self, gmpl ):
         gmpl.PhysicsConstructors.append("GiGaPhysConstructorOp")
         gmpl.PhysicsConstructors.append("GiGaPhysConstructorHpd")
-        
+
     ##
     ##
     def configureRichSim (self, slot, detHits ):
@@ -669,13 +675,13 @@ class Gauss(LHCbConfigurableUser):
         detHits.Members += [ richHitsSeq ]
         richHitsSeq.Members = [ GetMCRichHitsAlg( "GetRichHits"+slot),
                                 GetMCRichOpticalPhotonsAlg("GetRichPhotons"+slot),
-                                GetMCRichSegmentsAlg("GetRichSegments"+slot), 
-                                GetMCRichTracksAlg("GetRichTracks"+slot), 
+                                GetMCRichSegmentsAlg("GetRichSegments"+slot),
+                                GetMCRichTracksAlg("GetRichTracks"+slot),
                                 Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot),
                                 Rich__MC__MCRichHitToMCRichOpPhotAlg("MCRichHitToMCRichOpPhot"+slot) ]
 
 
-    def configureRichMoni ( self, slot, packCheckSeq, detMoniSeq, checkHits, configuredRichMoni ): 
+    def configureRichMoni ( self, slot, packCheckSeq, detMoniSeq, checkHits, configuredRichMoni ):
 
         # reinstate checkHits default value
         checkHits.RichHits = 'MC/Rich/Hits'
@@ -696,7 +702,7 @@ class Gauss(LHCbConfigurableUser):
                                                                       OutputName = "MC/Rich/TracksTest" )
             packCheckSeq.Members += [upRichHit,upRichOpPh,upRichSeg,upRichTrk]
 
-            
+
             from Configurables import DataPacking__Check_LHCb__MCRichHitPacker_
             from Configurables import DataPacking__Check_LHCb__MCRichOpticalPhotonPacker_
             from Configurables import DataPacking__Check_LHCb__MCRichSegmentPacker_
@@ -717,13 +723,13 @@ class Gauss(LHCbConfigurableUser):
             
 #"""
 #  ><<<<<<<     ><<     ><<    ><<     ><<    ><<<<<<<   ><<       ><< ><<< ><<<<<<
-#  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<    ><< >< ><<   ><<<      ><<    
-#  ><<    ><<   ><< ><<        ><<     ><<    ><<    ><< ><< ><< > ><<      ><<    
-#  >< ><<       ><< ><<        ><<<<<< ><<    ><<<<<<<   ><<  ><<  ><<      ><<    
-#  ><<  ><<     ><< ><<        ><<     ><<    ><<        ><<   ><  ><<      ><<    
-#  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<        ><<       ><<      ><<    
-#  ><<      ><< ><<    ><<<<   ><<     ><<    ><<        ><<       ><<      ><<    
-#                                                                                
+#  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<    ><< >< ><<   ><<<      ><<
+#  ><<    ><<   ><< ><<        ><<     ><<    ><<    ><< ><< ><< > ><<      ><<
+#  >< ><<       ><< ><<        ><<<<<< ><<    ><<<<<<<   ><<  ><<  ><<      ><<
+#  ><<  ><<     ><< ><<        ><<     ><<    ><<        ><<   ><  ><<      ><<
+#  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<        ><<       ><<      ><<
+#  ><<      ><< ><<    ><<<<   ><<     ><<    ><<        ><<       ><<      ><<
+#
 #"""
 
     def defineRich1MaPmtGeoDet( self , detPieces ):
@@ -765,13 +771,13 @@ class Gauss(LHCbConfigurableUser):
         detHits.Members += [ richHitsSeq ]
         richHitsSeq.Members = [ GetMCCkvHitsAlg( "GetRichHits"+slot),
                                 GetMCCkvOpticalPhotonsAlg("GetRichPhotons"+slot),
-                                GetMCCkvSegmentsAlg("GetRichSegments"+slot), 
-                                GetMCCkvTracksAlg("GetRichTracks"+slot), 
-                                Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot), 
+                                GetMCCkvSegmentsAlg("GetRichSegments"+slot),
+                                GetMCCkvTracksAlg("GetRichTracks"+slot),
+                                Rich__MC__MCPartToMCRichTrackAlg("MCPartToMCRichTrack"+slot),
                                 Rich__MC__MCRichHitToMCRichOpPhotAlg("MCRichHitToMCRichOpPhot"+slot) ]
 
 
-    def configureRichMaPmtMoni ( self, slot, packCheckSeq, detMoniSeq, checkHits, configuredRichMoni ): 
+    def configureRichMaPmtMoni ( self, slot, packCheckSeq, detMoniSeq, checkHits, configuredRichMoni ):
         checkHits.RichHits = 'MC/Rich/Hits'
 
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
@@ -790,7 +796,7 @@ class Gauss(LHCbConfigurableUser):
                                                                       OutputName = "MC/Rich/TracksTest" )
             packCheckSeq.Members += [upRichHit,upRichOpPh,upRichSeg,upRichTrk]
 
-            
+
             from Configurables import DataPacking__Check_LHCb__MCRichHitPacker_
             from Configurables import DataPacking__Check_LHCb__MCRichOpticalPhotonPacker_
             from Configurables import DataPacking__Check_LHCb__MCRichSegmentPacker_
@@ -821,7 +827,7 @@ class Gauss(LHCbConfigurableUser):
 #     ><<     ><<        ><< ><<  ><<     ><<        ><<     ><<
 #     ><<       ><<     ><<  ><<    ><<    ><<   ><< ><<     ><<
 #     ><<         ><<<<      ><<      ><<    ><<<<   ><<     ><<
-#                                                               
+#
 #"""
     def defineTorchGeo( self ):
         log.warning("Geo not defined for TORCH")
@@ -832,7 +838,7 @@ class Gauss(LHCbConfigurableUser):
         pass
 
     def configureTorchMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
-        #detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot ) 
+        #detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot )
         log.warning ("Moni not defined for TORCH")
         pass
 
@@ -841,12 +847,12 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #><<< ><<<<<< ><<< ><<<<<<
-#     ><<          ><<    
-#     ><<          ><<    
-#     ><<          ><<    
-#     ><<          ><<    
-#     ><<          ><<    
-#     ><<          ><<    
+#     ><<          ><<
+#     ><<          ><<
+#     ><<          ><<
+#     ><<          ><<
+#     ><<          ><<
+#     ><<          ><<
 #"""
 
 
@@ -866,6 +872,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
     def configureTTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -879,8 +886,8 @@ class Gauss(LHCbConfigurableUser):
         myZStationXMax = 150.*SystemOfUnits.cm
         myZStationYMax = 150.*SystemOfUnits.cm
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "TTHitMonitor" + slot ,
                 mcPathString = "MC/TT/Hits",
                 zStations = myZStations,
@@ -889,7 +896,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-                
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
 
             from Configurables import DataPacking__Unpack_LHCb__MCTTHitPacker_
@@ -903,12 +910,12 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 # ><<     ><< ><<< ><<<<<<
-# ><<     ><<      ><<    
-# ><<     ><<      ><<    
-# ><<     ><<      ><<    
-# ><<     ><<      ><<    
-# ><<     ><<      ><<    
-#   ><<<<<         ><<    
+# ><<     ><<      ><<
+# ><<     ><<      ><<
+# ><<     ><<      ><<
+# ><<     ><<      ><<
+# ><<     ><<      ><<
+#   ><<<<<         ><<
 #"""
 
 
@@ -928,6 +935,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
     def configureUTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -941,8 +949,8 @@ class Gauss(LHCbConfigurableUser):
         myZStationXMax = 150.*SystemOfUnits.cm
         myZStationYMax = 150.*SystemOfUnits.cm
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "UTHitMonitor" + slot ,
                 mcPathString = "MC/UT/Hits",
                 zStations = myZStations,
@@ -951,7 +959,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-                
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
 
             from Configurables import DataPacking__Unpack_LHCb__MCUTHitPacker_
@@ -966,13 +974,13 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #  ><<  ><<< ><<<<<<
-#  ><<       ><<    
-#  ><<       ><<    
-#  ><<       ><<    
-#  ><<       ><<    
-#  ><<       ><<    
-#  ><<       ><<    
-#                
+#  ><<       ><<
+#  ><<       ><<
+#  ><<       ><<
+#  ><<       ><<
+#  ><<       ><<
+#  ><<       ><<
+#
 #"""
 
     def defineITGeo( self , detPieces ):
@@ -994,6 +1002,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
     def configureITMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1016,8 +1025,8 @@ class Gauss(LHCbConfigurableUser):
         #        9363.0*SystemOfUnits.mm
         #        ]
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "ITHitMonitor" + slot ,
                 mcPathString = "MC/IT/Hits",
                 zStations = myZStations,
@@ -1027,7 +1036,7 @@ class Gauss(LHCbConfigurableUser):
             ]
 
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCITHitPacker_
             upIT   = DataPacking__Unpack_LHCb__MCITHitPacker_("UnpackITHits"+slot,
@@ -1040,7 +1049,7 @@ class Gauss(LHCbConfigurableUser):
 #"""
 #
 #     Si IT
-#                
+#
 #"""
 
     def defineSLGeo( self , detPieces ):
@@ -1063,6 +1072,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
         pass
 
     #def configureSLMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1079,8 +1089,8 @@ class Gauss(LHCbConfigurableUser):
         myZStationXMax = 150.*SystemOfUnits.cm
         myZStationYMax = 150.*SystemOfUnits.cm
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "SLHitMonitor" + slot ,
                 mcPathString = "MC/SL/Hits",
                 zStations = myZStations,
@@ -1090,7 +1100,7 @@ class Gauss(LHCbConfigurableUser):
             ]
 
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCSLHitPacker_
             upSL   = DataPacking__Unpack_LHCb__MCSLHitPacker_("UnpackSLHits"+slot,
@@ -1103,13 +1113,13 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #   ><<<<<<<< ><<< ><<<<<<
-#   ><<            ><<    
-#   ><<            ><<    
-#   ><<<<<<        ><<    
-#   ><<            ><<    
-#   ><<            ><<    
-#   ><<            ><<    
-#                      
+#   ><<            ><<
+#   ><<            ><<
+#   ><<<<<<        ><<
+#   ><<            ><<
+#   ><<            ><<
+#   ><<            ><<
+#
 #"""
     def defineFTGeo( self , detPieces ):
         self.removeBeamPipeElements( "t" )
@@ -1130,6 +1140,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
     def configureFTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
@@ -1146,8 +1157,8 @@ class Gauss(LHCbConfigurableUser):
         myZStationXMax = 100.*SystemOfUnits.cm
         myZStationYMax = 100.*SystemOfUnits.cm
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "FTHitMonitor" + slot ,
                 mcPathString = "MC/FT/Hits",
                 zStations = myZStations,
@@ -1155,7 +1166,7 @@ class Gauss(LHCbConfigurableUser):
                 yMax = myZStationYMax
                 )
             ]
-        if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :            
+        if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCFTHitPacker_
             upFT = DataPacking__Unpack_LHCb__MCFTHitPacker_("UnpackFTHits"+slot,
@@ -1167,12 +1178,12 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #    ><<<<      ><<< ><<<<<<
-#  ><<    ><<        ><<    
-#><<        ><<      ><<    
-#><<        ><<      ><<    
-#><<        ><<      ><<    
-#  ><<     ><<       ><<    
-#    ><<<<           ><<    
+#  ><<    ><<        ><<
+#><<        ><<      ><<
+#><<        ><<      ><<
+#><<        ><<      ><<
+#  ><<     ><<       ><<
+#    ><<<<           ><<
 #"""
 
     def defineOTGeo( self , detPieces ):
@@ -1195,6 +1206,7 @@ class Gauss(LHCbConfigurableUser):
             Detectors = [ '/dd/Structure/LHCb/' + region + '/' + det ]
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
     def configureOTMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
@@ -1216,8 +1228,8 @@ class Gauss(LHCbConfigurableUser):
         #        9039.0*SystemOfUnits.mm
         #        ]
 
-        detMoniSeq.Members += [ 
-            MCHitMonitor( 
+        detMoniSeq.Members += [
+            MCHitMonitor(
                 "OTHitMonitor" + slot ,
                 mcPathString = "MC/OT/Hits",
                 zStations = myZStations,
@@ -1226,7 +1238,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCOTHitPacker_
             upOT   = DataPacking__Unpack_LHCb__MCOTHitPacker_("UnpackOTHits"+slot,
@@ -1234,13 +1246,13 @@ class Gauss(LHCbConfigurableUser):
             from Configurables import DataPacking__Check_LHCb__MCOTHitPacker_
             cOT   = DataPacking__Check_LHCb__MCOTHitPacker_("CheckOTHits"+slot )
             packCheckSeq.Members += [upOT, cOT]
-     
+
 
 
 #"""
-#   ><<       ><<                              
-#   >< ><<   ><<<                              
-#   ><< ><< > ><< ><<  ><<    ><<     ><< ><<  
+#   ><<       ><<
+#   >< ><<   ><<<
+#   ><< ><< > ><< ><<  ><<    ><<     ><< ><<
 #   ><<  ><<  ><< ><<  ><<  ><<  ><<   ><<  ><<
 #   ><<   ><  ><< ><<  ><< ><<    ><<  ><<  ><<
 #   ><<       ><< ><<  ><<  ><<  ><<   ><<  ><<
@@ -1261,43 +1273,44 @@ class Gauss(LHCbConfigurableUser):
                                   CollectionName = det + 'SDet/Hits',
                                   Detectors = ['/dd/Structure/LHCb/DownstreamRegion/'+det] )
         detHits.Members += [ moni ]
+        self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
 
     def configureMuonMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
         det = "Muon"
         checkHits.MuonHits = 'MC/Muon/Hits'
-        
+
         detMoniSeq.Members += [ MuonHitChecker( det + "HitChecker" + slot,
                                                 FullDetail = True )]
-## The following should only be done in expert checks        
+## The following should only be done in expert checks
 #        from Configurables import MuonMultipleScatteringChecker
 #        detMoniSeq.Members += [
 #            MuonMultipleScatteringChecker( "MuonMultipleScatteringChecker"+ slot )]
 
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
-            
+
             from Configurables import DataPacking__Unpack_LHCb__MCMuonHitPacker_
             upMu   = DataPacking__Unpack_LHCb__MCMuonHitPacker_("UnpackMuonHits"+slot,
                                                                 OutputName = "MC/Muon/HitsTest" )
             from Configurables import DataPacking__Check_LHCb__MCMuonHitPacker_
             cMu   = DataPacking__Check_LHCb__MCMuonHitPacker_("CheckMuonHits"+slot )
             packCheckSeq.Members += [upMu, cMu]
-            
+
 
 
 
 #"""
-#       ><<          ><        ><<           ><<<<     
-#    ><<   ><<      >< <<      ><<         ><<    ><<  
+#       ><<          ><        ><<           ><<<<
+#    ><<   ><<      >< <<      ><<         ><<    ><<
 #   ><<            ><  ><<     ><<       ><<        ><<
 #   ><<           ><<   ><<    ><<       ><<        ><<
 #   ><<          ><<<<<< ><<   ><<       ><<        ><<
-#    ><<   ><<  ><<       ><<  ><<         ><<     ><< 
-#      ><<<<   ><<         ><< ><<<<<<<<     ><<<<     
-#                                                   
+#    ><<   ><<  ><<       ><<  ><<         ><<     ><<
+#      ><<<<   ><<         ><< ><<<<<<<<     ><<<<
+#
 #"""
 
     def defineSpdGeo( self, detPieces ):
@@ -1317,54 +1330,58 @@ class Gauss(LHCbConfigurableUser):
     def defineHcalGeo( self, detPieces ):
         region = 'DownstreamRegion'
         detPieces[region]+=['Hcal']
-        
+
 
     def configureSpdSim ( self, slot, detHits ):
         det = "Spd"
-        moni = GetCaloHitsAlg( 
+        moni = GetCaloHitsAlg(
             "Get"+det+"Hits"+slot,
             MCHitsLocation = 'MC/' + det + '/Hits',
             CollectionName = det + 'Hits'
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mccalohits(slot, 'MC/' + det + '/Hits')
 
     def configurePrsSim ( self, slot, detHits ):
         det = "Prs"
-        moni = GetCaloHitsAlg( 
+        moni = GetCaloHitsAlg(
             "Get"+det+"Hits"+slot,
             MCHitsLocation = 'MC/' + det + '/Hits',
             CollectionName = det + 'Hits'
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mccalohits(slot, 'MC/' + det + '/Hits')
 
     def configureEcalSim ( self, slot, detHits ):
         det = "Ecal"
-        moni = GetCaloHitsAlg( 
+        moni = GetCaloHitsAlg(
             "Get"+det+"Hits"+slot,
             MCHitsLocation = 'MC/' + det + '/Hits',
             CollectionName = det + 'Hits'
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mccalohits(slot, 'MC/' + det + '/Hits')
 
     def configureHcalSim ( self, slot, detHits ):
         det = "Hcal"
-        moni = GetCaloHitsAlg( 
+        moni = GetCaloHitsAlg(
             "Get"+det+"Hits"+slot,
             MCHitsLocation = 'MC/' + det + '/Hits',
             CollectionName = det + 'Hits'
             )
         detHits.Members += [ moni ]
+        self.configure_redecay_mccalohits(slot, 'MC/' + det + '/Hits')
 
 
 
 
-    def configureSpdMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ): 
+    def configureSpdMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
         checkHits.CaloHits.append('MC/Spd/Hits')
 
         det = "Spd"
-        detMoniSeq.Members += [ 
-            MCCaloMonitor( 
+        detMoniSeq.Members += [
+            MCCaloMonitor(
                 det + "Monitor" + slot,
                 OutputLevel = 4,
                 Detector = det,
@@ -1374,7 +1391,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCSpdHitPacker_
             upSpd  = DataPacking__Unpack_LHCb__MCSpdHitPacker_("UnpackSpdHits"+slot,
@@ -1385,13 +1402,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 
-    def configurePrsMoni( self, slot, packCheckSeq, detMoniSeq, checkHits): 
+    def configurePrsMoni( self, slot, packCheckSeq, detMoniSeq, checkHits):
         # reinstate checkHits default value
         checkHits.CaloHits.append('MC/Prs/Hits')
 
         det = "Prs"
-        detMoniSeq.Members += [ 
-            MCCaloMonitor( 
+        detMoniSeq.Members += [
+            MCCaloMonitor(
                 det + "Monitor" + slot,
                 OutputLevel = 4,
                 Detector = 'Prs',
@@ -1401,7 +1418,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCPrsHitPacker_
             upPrs  = DataPacking__Unpack_LHCb__MCPrsHitPacker_("UnpackPrsHits"+slot,
@@ -1413,13 +1430,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 
-    def configureEcalMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ): 
+    def configureEcalMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
         checkHits.CaloHits.append('MC/Ecal/Hits')
 
         det = "Ecal"
-        detMoniSeq.Members += [ 
-            MCCaloMonitor( 
+        detMoniSeq.Members += [
+            MCCaloMonitor(
                 det + "Monitor" + slot,
                 OutputLevel = 4,
                 Detector = det,
@@ -1429,7 +1446,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCEcalHitPacker_
             upEcal = DataPacking__Unpack_LHCb__MCEcalHitPacker_("UnpackEcalHits"+slot,
@@ -1441,13 +1458,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 
-    def configureHcalMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ): 
+    def configureHcalMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
         # reinstate checkHits default value
         checkHits.CaloHits.append('MC/Hcal/Hits')
 
         det = "Hcal"
-        detMoniSeq.Members += [ 
-            MCCaloMonitor( 
+        detMoniSeq.Members += [
+            MCCaloMonitor(
                 det + "Monitor" + slot,
                 OutputLevel = 4,
                 Detector = det,
@@ -1457,7 +1474,7 @@ class Gauss(LHCbConfigurableUser):
                 )
             ]
         if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-            
+
             packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
             from Configurables import DataPacking__Unpack_LHCb__MCHcalHitPacker_
             upHcal = DataPacking__Unpack_LHCb__MCHcalHitPacker_("UnpackHcalHits"+slot,
@@ -1466,7 +1483,7 @@ class Gauss(LHCbConfigurableUser):
             cHcal = DataPacking__Check_LHCb__MCHcalHitPacker_("CheckHcalHits"+slot)
             packCheckSeq.Members += [upHcal,cHcal]
 
-    
+
 ########################################################################################################
 #
 # Herschel
@@ -1484,17 +1501,17 @@ class Gauss(LHCbConfigurableUser):
         pieces = ['PipeJunctionBeforeVelo', 'BeforeVelo']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
       # Add the AfterMuon part of the Downstream region.
       region = 'DownstreamRegion'
       if detPieces.has_key(region):
         pieces = ['AfterMuon']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
       # Add the entire Upstream, BeforeUpstream, and AfterDownstream regions.
       geo = GiGaInputStream('Geo')
-      regions = ['UpstreamRegion', 'BeforeUpstreamRegion', 
+      regions = ['UpstreamRegion', 'BeforeUpstreamRegion',
                  'AfterDownstreamRegion']
       for region in regions:
         if detPieces.has_key(region):
@@ -1507,15 +1524,15 @@ class Gauss(LHCbConfigurableUser):
       year = self.getProp("DataType")
       if year not in self.Run2DataTypes:
         raise RuntimeError( "Asking to simulate Herschel response but not present in %s" %year )
-        
+
       det = "HC"
       getHits = GetTrackerHitsAlg("Get" + det + "Hits" + slot)
       getHits.MCHitsLocation = "MC/" + det + "/Hits"
       getHits.CollectionName = det + "SDet/Hits"
-      getHits.Detectors = ["/dd/Structure/LHCb/UpstreamRegion/HCB0", 
-                           "/dd/Structure/LHCb/UpstreamRegion/HCB1", 
-                           "/dd/Structure/LHCb/BeforeUpstreamRegion/HCB2", 
-                           "/dd/Structure/LHCb/DownstreamRegion/AfterMuon/HCF1", 
+      getHits.Detectors = ["/dd/Structure/LHCb/UpstreamRegion/HCB0",
+                           "/dd/Structure/LHCb/UpstreamRegion/HCB1",
+                           "/dd/Structure/LHCb/BeforeUpstreamRegion/HCB2",
+                           "/dd/Structure/LHCb/DownstreamRegion/AfterMuon/HCF1",
                            "/dd/Structure/LHCb/AfterDownstreamRegion/HCF2"]
       detHits.Members += [getHits]
 
@@ -1548,7 +1565,7 @@ class Gauss(LHCbConfigurableUser):
         pieces = ['PipeJunctionBeforeVelo', 'BeforeVelo']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
       # Add the entire Upstream region.
       geo = GiGaInputStream('Geo')
       region = 'UpstreamRegion'
@@ -1561,7 +1578,7 @@ class Gauss(LHCbConfigurableUser):
         pieces = ['AfterMuon']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
 
     def configureBcmSim(self, slot, detHits):
       det = "Bcm"
@@ -1569,7 +1586,7 @@ class Gauss(LHCbConfigurableUser):
       getHits.MCHitsLocation = "MC/" + det + "/Hits"
       getHits.CollectionName = det + "SDet/Hits"
       getHits.Detectors = ["/dd/Structure/LHCb/BeforeMagnetRegion/BeforeVelo/BcmUp",
-                           "/dd/Structure/LHCb/MagnetRegion/BcmDown"] 
+                           "/dd/Structure/LHCb/MagnetRegion/BcmDown"]
       detHits.Members += [getHits]
 
     def configureBcmMoni(self, slot, packCheckSeq, detMoniSeq, checkHits):
@@ -1593,7 +1610,7 @@ class Gauss(LHCbConfigurableUser):
         cBcm = DataPacking__Check_LHCb__MCBcmHitPacker_("CheckBcmHits" + slot)
         packCheckSeq.Members += [cBcm]
 
-    
+
 ########################################################################################################
 #
 # Beam Loss Scintillators
@@ -1608,17 +1625,17 @@ class Gauss(LHCbConfigurableUser):
         pieces = ['PipeJunctionBeforeVelo', 'BeforeVelo']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
       # Add the non-standard pieces of the Upstream region,
       # unless the Upstream region has been added as a whole.
-      geo = GiGaInputStream('Geo') 
+      geo = GiGaInputStream('Geo')
       region = 'UpstreamRegion'
       path = '/dd/Structure/LHCb/' + region
       if detPieces.has_key(region) and path not in geo.StreamItems:
         pieces = ['BlockWallUpstr']
         for piece in pieces:
           if piece in detPieces[region]: continue
-          detPieces[region] += [piece] 
+          detPieces[region] += [piece]
 
     def configureBlsSim(self, slot, detHits):
       det = "Bls"
@@ -1633,7 +1650,7 @@ class Gauss(LHCbConfigurableUser):
       for iDet in idBLS:
          getHits.Detectors.append("/dd/Structure/LHCb/BeforeMagnetRegion/BeforeVelo/Bls"+iDet)
       detHits.Members += [getHits]
-      
+
 
     def configureBlsMoni(self, slot, packCheckSeq, detMoniSeq, checkHits):
       from Configurables import BlsHitChecker
@@ -1658,16 +1675,16 @@ class Gauss(LHCbConfigurableUser):
         cBls = DataPacking__Check_LHCb__MCBlsHitPacker_("CheckBlsHits" + slot)
         packCheckSeq.Members += [cBls]
 
-    
+
 #"""
-#    ><<       ><<                                             ><<  
-#    >< ><<   ><<<                                             ><<  
+#    ><<       ><<                                             ><<
+#    >< ><<   ><<<                                             ><<
 #    ><< ><< > ><<    ><<        ><<    ><< ><<      ><<     ><>< ><
-#    ><<  ><<  ><<  ><<  ><<   ><<  ><<  ><<  ><<  ><   ><<    ><<  
-#    ><<   ><  ><< ><<   ><<  ><<   ><<  ><<  ><< ><<<<< ><<   ><<  
-#    ><<       ><< ><<   ><<   ><<  ><<  ><<  ><< ><           ><<  
-#    ><<       ><<   ><< ><<<      ><<  ><<<  ><<   ><<<<       ><< 
-#                           ><<                                 
+#    ><<  ><<  ><<  ><<  ><<   ><<  ><<  ><<  ><<  ><   ><<    ><<
+#    ><<   ><  ><< ><<   ><<  ><<   ><<  ><<  ><< ><<<<< ><<   ><<
+#    ><<       ><< ><<   ><<   ><<  ><<  ><<  ><< ><           ><<
+#    ><<       ><<   ><< ><<<      ><<  ><<<  ><<   ><<<<       ><<
+#                           ><<
 #"""
 
     def defineMagnetGeo( self , basePieces, detPieces ):
@@ -1688,7 +1705,7 @@ class Gauss(LHCbConfigurableUser):
             GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
             GiGaGeo().FieldMgr.Global        = True
             GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
-            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" ) 
+            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
             GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
 
 
@@ -1701,7 +1718,7 @@ class Gauss(LHCbConfigurableUser):
             GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
             GiGaGeo().FieldMgr.Global        = True
             GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
-            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" ) 
+            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
             GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
 
         if "HC" in simDets:
@@ -1726,16 +1743,16 @@ class Gauss(LHCbConfigurableUser):
 
 
 
-    
+
 #"""
-# ><<<<<<<            ><<         ><<              ><<             
-# ><<    ><<           ><<       ><<               ><<             
-# ><<    ><< ><<  ><<   ><<     ><<      ><<     ><>< ><    ><<    
-# ><<<<<<<   ><<  ><<    ><<   ><<     ><   ><<    ><<    ><<  ><< 
+# ><<<<<<<            ><<         ><<              ><<
+# ><<    ><<           ><<       ><<               ><<
+# ><<    ><< ><<  ><<   ><<     ><<      ><<     ><>< ><    ><<
+# ><<<<<<<   ><<  ><<    ><<   ><<     ><   ><<    ><<    ><<  ><<
 # ><<        ><<  ><<     ><< ><<     ><<<<< ><<   ><<   ><<    ><<
-# ><<        ><<  ><<      ><<<<      ><           ><<    ><<  ><< 
-# ><<          ><<><<       ><<         ><<<<       ><<     ><<    
-#                                                                 
+# ><<        ><<  ><<      ><<<<      ><           ><<    ><<  ><<
+# ><<          ><<><<       ><<         ><<<<       ><<     ><<
+#
 #"""
 
     def definePuVetoGeo( self ):
@@ -1754,6 +1771,7 @@ class Gauss(LHCbConfigurableUser):
                 Detectors = [ '/dd/Structure/LHCb/' + region + '/Velo' ]
                 )
             detHits.Members += [ moni ]
+            self.configure_redecay_mchits(slot, 'MC/' + det  + '/Hits')
 
     def configurePuVetoMoni( self, slot, packCheckSeq, detMoniSeq, checkHits ):
 
@@ -1820,14 +1838,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#    ><<                          ><<    ><<                             ><<  
-# ><<   ><<                     ><       ><<                             ><<  
+#    ><<                          ><<    ><<                             ><<
+# ><<   ><<                     ><       ><<                             ><<
 #><<          ><<    ><< ><<  ><>< ><    ><< ><< ><<   >< ><<  ><<  ><<><>< ><
-#><<        ><<  ><<  ><<  ><<  ><<      ><<  ><<  ><< ><  ><< ><<  ><<  ><<  
-#><<       ><<    ><< ><<  ><<  ><<      ><<  ><<  ><< ><   ><<><<  ><<  ><<  
-# ><<   ><< ><<  ><<  ><<  ><<  ><<      ><<  ><<  ><< ><< ><< ><<  ><<  ><<  
-#   ><<<<     ><<    ><<<  ><<  ><<      ><< ><<<  ><< ><<       ><<><<   ><< 
-#                                                      ><<                    
+#><<        ><<  ><<  ><<  ><<  ><<      ><<  ><<  ><< ><  ><< ><<  ><<  ><<
+#><<       ><<    ><< ><<  ><<  ><<      ><<  ><<  ><< ><   ><<><<  ><<  ><<
+# ><<   ><< ><<  ><<  ><<  ><<  ><<      ><<  ><<  ><< ><< ><< ><<  ><<  ><<
+#   ><<<<     ><<    ><<<  ><<  ><<      ><< ><<<  ><< ><<       ><<><<   ><<
+#                                                      ><<
 #"""
 
     def configureInput(self):
@@ -1842,14 +1860,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#    ><<                                ><<         ><<<<<                   ><<          
-# ><<   ><< ><<                         ><<         ><<   ><<   ><           ><<          
-#><<        ><<         ><<        ><<< ><<  ><<    ><<    ><<        ><<< ><>< ><  ><<<< 
-#><<        >< ><     ><   ><<   ><<    ><< ><<     ><<    ><< ><<  ><<      ><<   ><<    
-#><<        ><<  ><< ><<<<< ><< ><<     ><><<       ><<    ><< ><< ><<       ><<     ><<< 
+#    ><<                                ><<         ><<<<<                   ><<
+# ><<   ><< ><<                         ><<         ><<   ><<   ><           ><<
+#><<        ><<         ><<        ><<< ><<  ><<    ><<    ><<        ><<< ><>< ><  ><<<<
+#><<        >< ><     ><   ><<   ><<    ><< ><<     ><<    ><< ><<  ><<      ><<   ><<
+#><<        ><<  ><< ><<<<< ><< ><<     ><><<       ><<    ><< ><< ><<       ><<     ><<<
 # ><<   ><< ><   ><< ><          ><<    ><< ><<     ><<   ><<  ><<  ><<      ><<       ><<
 #   ><<<<   ><<  ><<   ><<<<       ><<< ><<  ><<    ><<<<<     ><<    ><<<    ><<  ><< ><<
-#                                                                                         
+#
 #"""
 
     ## Raise an error if DetectorGeo/DetectorSim/DetectorMoni are not compatible
@@ -1875,7 +1893,7 @@ class Gauss(LHCbConfigurableUser):
                 raise RuntimeError ( "Incompatible detectors: %s in %s section." %(myList, section) )
 
 
-        
+
     ##
     def outputName(self):
         """
@@ -1901,13 +1919,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-# ><<<<<                  ><<   ><<<<<<<                                        ><<  
-# ><<   ><<             ><      ><<    ><<                          ><          ><<  
+# ><<<<<                  ><<   ><<<<<<<                                        ><<
+# ><<   ><<             ><      ><<    ><<                          ><          ><<
 # ><<    ><<   ><<    ><>< ><   ><<    ><<   ><<    >< ><<< ><<<<       ><<<< ><>< ><
-# ><<    ><< ><   ><<   ><<     ><<<<<<<   ><   ><<  ><<   ><<     ><< ><<      ><<  
-# ><<    ><<><<<<< ><<  ><<     ><<       ><<<<< ><< ><<     ><<<  ><<   ><<<   ><<  
-# ><<   ><< ><          ><<     ><<       ><         ><<       ><< ><<     ><<  ><<  
-# ><<<<<      ><<<<     ><<     ><<         ><<<<   ><<<   ><< ><< ><< ><< ><<   ><< 
+# ><<    ><< ><   ><<   ><<     ><<<<<<<   ><   ><<  ><<   ><<     ><< ><<      ><<
+# ><<    ><<><<<<< ><<  ><<     ><<       ><<<<< ><< ><<     ><<<  ><<   ><<<   ><<
+# ><<   ><< ><          ><<     ><<       ><         ><<       ><< ><<     ><<  ><<
+# ><<<<<      ><<<<     ><<     ><<         ><<<<   ><<<   ><< ><< ><< ><< ><<   ><<
 #"""
 
 
@@ -1916,13 +1934,13 @@ class Gauss(LHCbConfigurableUser):
 #"""
 #
 # ><<<<<<<                                   ><< <<                        ><<                            ><<
-# ><<    ><<                               ><<    ><<  ><               ><<   ><<                       ><   
+# ><<    ><<                               ><<    ><<  ><               ><<   ><<                       ><
 # ><<    ><< >< ><<<   ><<     >< ><<       ><<           ><<< ><< ><< ><<          ><<     ><< ><<   ><>< ><
-# ><<<<<<<    ><<    ><<  ><<  ><  ><<        ><<     ><<  ><<  ><  ><<><<        ><<  ><<   ><<  ><<   ><<  
-# ><<         ><<   ><<    ><< ><   ><<          ><<  ><<  ><<  ><  ><<><<       ><<    ><<  ><<  ><<   ><<  
-# ><<         ><<    ><<  ><<  ><< ><<     ><<    ><< ><<  ><<  ><  ><< ><<   ><< ><<  ><<   ><<  ><<   ><<  
-# ><<        ><<<      ><<     ><<           ><< <<   ><< ><<<  ><  ><<   ><<<<     ><<     ><<<  ><<   ><<  
-#                              ><<                                                                           
+# ><<<<<<<    ><<    ><<  ><<  ><  ><<        ><<     ><<  ><<  ><  ><<><<        ><<  ><<   ><<  ><<   ><<
+# ><<         ><<   ><<    ><< ><   ><<          ><<  ><<  ><<  ><  ><<><<       ><<    ><<  ><<  ><<   ><<
+# ><<         ><<    ><<  ><<  ><< ><<     ><<    ><< ><<  ><<  ><  ><< ><<   ><< ><<  ><<   ><<  ><<   ><<
+# ><<        ><<<      ><<     ><<           ><< <<   ><< ><<<  ><  ><<   ><<<<     ><<     ><<<  ><<   ><<
+#                              ><<
 #
 #"""
 
@@ -1931,7 +1949,7 @@ class Gauss(LHCbConfigurableUser):
         SimConf().setProp("Writer","GaussTape")
         self.setOtherProps( SimConf(), ["SpilloverPaths","EnablePack","Phases","DataType"] )
 
-        
+
         # CRJ : Propagate detector list to SimConf. Probably could be simplified a bit
         #       by sychronising the options in Gauss() and SimConf()
         detlist = []
@@ -1968,14 +1986,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#      ><<                                                              ><<                     ><<  
-#   ><<   ><<                                  ><                       ><<        ><           ><<  
+#      ><<                                                              ><<                     ><<
+#   ><<   ><<                                  ><                       ><<        ><           ><<
 #  ><<        >< ><<<   ><<     ><<<<  ><<<<      ><< ><<      ><<      ><<            ><<<<  ><>< ><
-#  ><<         ><<    ><<  ><< ><<    ><<     ><<  ><<  ><<  ><<  ><<   ><<       ><< ><<       ><<  
-#  ><<         ><<   ><<    ><<  ><<<   ><<<  ><<  ><<  ><< ><<   ><<   ><<       ><<   ><<<    ><<  
-#   ><<   ><<  ><<    ><<  ><<     ><<    ><< ><<  ><<  ><<  ><<  ><<   ><<       ><<     ><<   ><<  
-#     ><<<<   ><<<      ><<    ><< ><<><< ><< ><< ><<<  ><<      ><<    ><<<<<<<< ><< ><< ><<    ><< 
-#                                                            ><<                                    
+#  ><<         ><<    ><<  ><< ><<    ><<     ><<  ><<  ><<  ><<  ><<   ><<       ><< ><<       ><<
+#  ><<         ><<   ><<    ><<  ><<<   ><<<  ><<  ><<  ><< ><<   ><<   ><<       ><<   ><<<    ><<
+#   ><<   ><<  ><<    ><<  ><<     ><<    ><< ><<  ><<  ><<  ><<  ><<   ><<       ><<     ><<   ><<
+#     ><<<<   ><<<      ><<    ><< ><<><< ><< ><< ><<<  ><<      ><<    ><<<<<<<< ><< ><< ><<    ><<
+#                                                            ><<
 #"""
     def defineCrossingList( self ):
         crossingList = [ '' ]
@@ -1988,11 +2006,11 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #
-#  ><< ><<                                          ><<<<<<<                                                      
-#  ><    ><<                                        ><<    ><<                                                    
-#  ><     ><<    ><<        ><<     ><<< ><< ><<    ><<    ><<    ><<     >< ><<<    ><<     ><<< ><< ><<   ><<<< 
-#  ><<< ><     ><   ><<   ><<  ><<   ><<  ><  ><<   ><<<<<<<    ><<  ><<   ><<     ><<  ><<   ><<  ><  ><< ><<    
-#  ><     ><< ><<<<< ><< ><<   ><<   ><<  ><  ><<   ><<        ><<   ><<   ><<    ><<   ><<   ><<  ><  ><<   ><<< 
+#  ><< ><<                                          ><<<<<<<
+#  ><    ><<                                        ><<    ><<
+#  ><     ><<    ><<        ><<     ><<< ><< ><<    ><<    ><<    ><<     >< ><<<    ><<     ><<< ><< ><<   ><<<<
+#  ><<< ><     ><   ><<   ><<  ><<   ><<  ><  ><<   ><<<<<<<    ><<  ><<   ><<     ><<  ><<   ><<  ><  ><< ><<
+#  ><     ><< ><<<<< ><< ><<   ><<   ><<  ><  ><<   ><<        ><<   ><<   ><<    ><<   ><<   ><<  ><  ><<   ><<<
 #  ><      >< ><         ><<   ><<   ><<  ><  ><<   ><<        ><<   ><<   ><<    ><<   ><<   ><<  ><  ><<     ><<
 #  ><<<< ><<    ><<<<      ><< ><<< ><<<  ><  ><<   ><<          ><< ><<< ><<<      ><< ><<< ><<<  ><  ><< ><< ><<
 #"""
@@ -2037,11 +2055,11 @@ class Gauss(LHCbConfigurableUser):
         genInit.YLuminousRegion         = meanY
         genInit.ZLuminousRegion         = meanZ
         genInit.BunchLengthRMS          = sigmaS
-    
+
         gen_t0 = Generation("Generation")
-        
+
         # the following is for beam gas events, the values are just to give the
-        # nominal beam conditions in the data but 1 single interaction is 
+        # nominal beam conditions in the data but 1 single interaction is
         # forced selecting the appropriate pileup tool in the eventtype
         gen_t0.addTool(FixedNInteractions,name="FixedNInteractions")
         gen_t0.FixedNInteractions.NInteractions = 1
@@ -2061,11 +2079,11 @@ class Gauss(LHCbConfigurableUser):
         ## Setup EPOS particle type
         gen_t0.MinimumBias.addTool(CRMCProduction,name="CRMCProduction")
         if ( B1Particle not in self.__ion_pdg_id__.keys() ):
-            raise RuntimeError( "Unknown particle type: %s"  % B1Particle ) 
+            raise RuntimeError( "Unknown particle type: %s"  % B1Particle )
         if ( B2Particle not in self.__ion_pdg_id__.keys() ):
-            raise RuntimeError( "Unknown particle type: %s"  % B2Particle ) 
-        gen_t0.MinimumBias.CRMCProduction.ProjectileID = self.__ion_pdg_id__[ B1Particle ] 
-        gen_t0.MinimumBias.CRMCProduction.TargetID = self.__ion_pdg_id__[ B2Particle ] 
+            raise RuntimeError( "Unknown particle type: %s"  % B2Particle )
+        gen_t0.MinimumBias.CRMCProduction.ProjectileID = self.__ion_pdg_id__[ B1Particle ]
+        gen_t0.MinimumBias.CRMCProduction.TargetID = self.__ion_pdg_id__[ B2Particle ]
         gen_t0.MinimumBias.CRMCProduction.ProjectileMomentum = beamMom / SystemOfUnits.GeV
         gen_t0.MinimumBias.CRMCProduction.TargetMomentum = b2Mom / SystemOfUnits.GeV
 
@@ -2100,7 +2118,7 @@ class Gauss(LHCbConfigurableUser):
         else:
             textOptionHijing+= "hijinginit frame CMS"
         gen_t0.MinimumBias.HijingProduction.Commands += [ textOptionHijing ]
-        
+
     #--For beam gas events (with hijing) only the energy of the beams is set
     ## end of functions to set beam paramters and propagate them
     ##########################################################################
@@ -2108,24 +2126,25 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#      ><<                             ><<       ><<<<                        
-#   ><<   ><<                        ><        ><    ><<                      
-#  ><<           ><<     ><< ><<   ><>< ><    ><<            ><<     ><< ><<  
+#      ><<                             ><<       ><<<<
+#   ><<   ><<                        ><        ><    ><<
+#  ><<           ><<     ><< ><<   ><>< ><    ><<            ><<     ><< ><<
 #  ><<         ><<  ><<   ><<  ><<   ><<      ><<          ><   ><<   ><<  ><<
 #  ><<        ><<    ><<  ><<  ><<   ><<      ><<   ><<<< ><<<<< ><<  ><<  ><<
 #   ><<   ><<  ><<  ><<   ><<  ><<   ><<       ><<    ><  ><          ><<  ><<
 #     ><<<<      ><<     ><<<  ><<   ><<        ><<<<<      ><<<<    ><<<  ><<
-#                                                                           
+#
 #"""
     def configureGen( self, SpillOverSlots ):
         """
         Set up the generator execution sequence and its sub-phases
         """
-        
+
 ##         if "Gen" not in self.getProp("MainSequence") :
 ##             log.warning("No generator phase. Need input file")
 ##             return
 
+        do_redecay = self.Redecay['active']
         if self.evtMax() <= 0:
             raise RuntimeError( "Generating events but selected '%s' events. Use LHCbApp().EvtMax " %self.evtMax() )
 
@@ -2152,7 +2171,7 @@ class Gauss(LHCbConfigurableUser):
                     genInit.RunNumber = genInitT0.RunNumber
                 if genInitT0.isPropertySet("FirstEventNumber"):
                     genInit.FirstEventNumber = genInitT0.FirstEventNumber
-                    
+
 
             genProc = 0
             genType = self.getProp("Production").upper()
@@ -2161,38 +2180,48 @@ class Gauss(LHCbConfigurableUser):
             if genType not in KnownGenTypes:
                 raise RuntimeError("Unknown Generation type '%s'"%genType)
             if genType == 'PHYS':
-                genProc = Generation("Generation"+slot) 
+                genProc = Generation("Generation"+slot)
             elif genType == 'PGUN':
                 genProc = ParticleGun("ParticleGun"+slot)
             else:
                 genProc = MIBackground("MIBackground"+slot)
 
             genProc.GenHeaderLocation = TESNode+"Gen/Header"
-            genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents" 
+            genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents"
             genProc.GenCollisionLocation = TESNode+"Gen/Collisions"
 
             if slot != '':
-                genProc.PileUpTool = 'FixedLuminosityForSpillOver' 
+                genProc.PileUpTool = 'FixedLuminosityForSpillOver'
 
-            genSequence.Members += [ genInit , genProc ]
+            if do_redecay:
+                # This filter checks if a new event needs to be generated,
+                # if not rest of the sequencer is not run.
+                gaussrdfilter = GaussRedecayCtrFilter('RegisterNewEvent{}'.format(slot))
+                gaussrdfilter.RegisterNewEvent = True
+                genSequence.Members += [ genInit, gaussrdfilter, genProc ]
+            else:
+                genSequence.Members += [ genInit , genProc ]
             # When HC simulation is switched on the very forward protons must be
             # removed from the HepMC record since they cause showers in it
             if 'HC' in self.getProp('DetectorSim')['Detectors']:
                 genMask = MaskParticles("MaskDiffractiveProton"+slot,
                                         HepMCEventLocation = TESNode+"Gen/HepMCEvents")
                 genSequence.Members += [genMask]
-                
-            
+
+            if slot == '' and do_redecay:
+                genSequence.Members += [ GaussRedecaySorter() ]
+
+
     ## end of Gen configuration
     ##########################################################################
 
 
 #"""
-#     ><<                             ><<    ><<<<<<<                                                 
-#  ><<   ><<                        ><       ><<    ><< ><<                                           
-# ><<           ><<     ><< ><<   ><>< ><    ><<    ><< ><<         ><<      ><<<<     ><<      ><<<< 
-# ><<         ><<  ><<   ><<  ><<   ><<      ><<<<<<<   >< ><     ><<  ><<  ><<      ><   ><<  ><<    
-# ><<        ><<    ><<  ><<  ><<   ><<      ><<        ><<  ><< ><<   ><<    ><<<  ><<<<< ><<   ><<< 
+#     ><<                             ><<    ><<<<<<<
+#  ><<   ><<                        ><       ><<    ><< ><<
+# ><<           ><<     ><< ><<   ><>< ><    ><<    ><< ><<         ><<      ><<<<     ><<      ><<<<
+# ><<         ><<  ><<   ><<  ><<   ><<      ><<<<<<<   >< ><     ><<  ><<  ><<      ><   ><<  ><<
+# ><<        ><<    ><<  ><<  ><<   ><<      ><<        ><<  ><< ><<   ><<    ><<<  ><<<<< ><<   ><<<
 #  ><<   ><<  ><<  ><<   ><<  ><<   ><<      ><<        ><   ><< ><<   ><<      ><< ><             ><<
 #    ><<<<      ><<     ><<<  ><<   ><<      ><<        ><<  ><<   ><< ><<< ><< ><<   ><<<<    ><< ><<
 #"""
@@ -2215,11 +2244,19 @@ class Gauss(LHCbConfigurableUser):
         ### Check for configuration consistency
         if ( ( "GenToMCTree" in self.getProp("Phases") ) and ( "Simulation" in self.getProp("Phases") ) ):
             raise RuntimeError("GenToMCTree and Simulation cannot be part of Phases simultaneously")
-                
+
         self.configureGen( SpillOverSlots )
         if "GenToMCTree" in self.getProp("Phases"):
-            self.configureSkipGeant4( SpillOverSlots ) 
-        self.configureSim( SpillOverSlots )
+            self.configureSkipGeant4( SpillOverSlots )
+        if self.Redecay['active']:
+            # Use a different configure sim function for redecay events instead
+            # of having a lot of conditional parts in the original function.
+            self.configureRedecaySim( SpillOverSlots )
+            # Now configure all the redecay objects and link them together
+            # correctly.
+            self.configureRedecay(SpillOverSlots)
+        else:
+            self.configureSim( SpillOverSlots )
         self.configureMoni( SpillOverSlots ) #(expert or default)
     ## end of phase configuration
     ##########################################################################
@@ -2227,14 +2264,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-# ><<<<<                    ><<       ><<<<                 ><<                       ><<  
-# ><<   ><<               ><        ><<    ><<              ><<                       ><<  
+# ><<<<<                    ><<       ><<<<                 ><<                       ><<
+# ><<   ><<               ><        ><<    ><<              ><<                       ><<
 # ><<    ><<    ><<     ><>< ><   ><<        ><< ><<  ><< ><>< >< >< ><<   ><<  ><< ><>< ><
-# ><<    ><<  ><   ><<    ><<     ><<        ><< ><<  ><<   ><<   ><  ><<  ><<  ><<   ><<  
-# ><<    ><< ><<<<< ><<   ><<     ><<        ><< ><<  ><<   ><<   ><   ><< ><<  ><<   ><<  
-# ><<   ><<  ><           ><<       ><<     ><<  ><<  ><<   ><<   ><< ><<  ><<  ><<   ><<  
-# ><<<<<       ><<<<      ><<         ><<<<        ><<><<    ><<  ><<        ><<><<    ><< 
-#                                                                 ><<                      
+# ><<    ><<  ><   ><<    ><<     ><<        ><< ><<  ><<   ><<   ><  ><<  ><<  ><<   ><<
+# ><<    ><< ><<<<< ><<   ><<     ><<        ><< ><<  ><<   ><<   ><   ><< ><<  ><<   ><<
+# ><<   ><<  ><           ><<       ><<     ><<  ><<  ><<   ><<   ><< ><<  ><<  ><<   ><<
+# ><<<<<       ><<<<      ><<         ><<<<        ><<><<    ><<  ><<        ><<><<    ><<
+#                                                                 ><<
 #"""
 
     def defineOutput( self, SpillOverSlots ):
@@ -2248,7 +2285,7 @@ class Gauss(LHCbConfigurableUser):
         if output == 'NONE':
             log.warning("No event data output produced")
             return
-        
+
         simWriter = SimConf().writer()
 
         # define default file extensions depending on the phase that has been run
@@ -2276,7 +2313,7 @@ class Gauss(LHCbConfigurableUser):
         if fileExtension in ['.gen','.xgen','.xsim']:
             saveHepMC = True
         SimConf().setProp("SaveHepMC", saveHepMC )
-       
+
         outputFile=""
         from GaudiConf import IOHelper
         if simWriter.isPropertySet( "Output" ):
@@ -2284,38 +2321,30 @@ class Gauss(LHCbConfigurableUser):
         else:
             outputFile=self.outputName() + fileExtension
 
-        # Merge genFSRs
-        if self.getProp("WriteFSR"):
-            seqGenFSR = GaudiSequencer("GenFSRSeq")
-            ApplicationMgr().TopAlg += [ seqGenFSR ]
-
-            if self.getProp("MergeGenFSR"):
-                seqGenFSR.Members += [ "GenFSRMerge" ]
-                                                  
         IOHelper().outStream( outputFile, simWriter, self.getProp("WriteFSR") )
-        
+
         simWriter.RequireAlgs.append( 'GaussSequencer' )
         if not FileCatalog().isPropertySet("Catalogs"):
             FileCatalog().Catalogs = [ "xmlcatalog_file:NewCatalog.xml" ]
-        
+
 #"""
 #
-# ><<<<<                    ><<   ><<       ><<                            ><<                             
-# ><<   ><<               ><      >< ><<   ><<<                       ><   ><<                             
-# ><<    ><<    ><<     ><>< ><   ><< ><< > ><<    ><<     ><< ><<       ><>< ><    ><<     >< ><<<  ><<<< 
-# ><<    ><<  ><   ><<    ><<     ><<  ><<  ><<  ><<  ><<   ><<  ><< ><<   ><<    ><<  ><<   ><<    ><<    
-# ><<    ><< ><<<<< ><<   ><<     ><<   ><  ><< ><<    ><<  ><<  ><< ><<   ><<   ><<    ><<  ><<      ><<< 
+# ><<<<<                    ><<   ><<       ><<                            ><<
+# ><<   ><<               ><      >< ><<   ><<<                       ><   ><<
+# ><<    ><<    ><<     ><>< ><   ><< ><< > ><<    ><<     ><< ><<       ><>< ><    ><<     >< ><<<  ><<<<
+# ><<    ><<  ><   ><<    ><<     ><<  ><<  ><<  ><<  ><<   ><<  ><< ><<   ><<    ><<  ><<   ><<    ><<
+# ><<    ><< ><<<<< ><<   ><<     ><<   ><  ><< ><<    ><<  ><<  ><< ><<   ><<   ><<    ><<  ><<      ><<<
 # ><<   ><<  ><           ><<     ><<       ><<  ><<  ><<   ><<  ><< ><<   ><<    ><<  ><<   ><<        ><<
 # ><<<<<       ><<<<      ><<     ><<       ><<    ><<     ><<<  ><< ><<    ><<     ><<     ><<<    ><< ><<
 #
 #"""
-    
+
     def defineMonitors( self ):
 
         from Configurables import ApplicationMgr, AuditorSvc, SequencerTimerTool
         ApplicationMgr().ExtSvc += [ 'AuditorSvc' ]
         ApplicationMgr().AuditAlgorithms = True
-        AuditorSvc().Auditors += [ 'TimingAuditor' ] 
+        AuditorSvc().Auditors += [ 'TimingAuditor' ]
         #SequencerTimerTool().OutputLevel = WARNING
 
         # Set printout level and longer algorithm" identifier in printout
@@ -2327,11 +2356,11 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#   ><< <<                                        ><<     ><<               ><<                     
-# ><<    ><<                                      ><<     ><<  ><           ><<                     
-#  ><<          ><<     ><<     ><<    ><<        ><<     ><<      ><<<<  ><>< ><    ><<      ><<<< 
-#    ><<      ><<  ><<   ><<   ><<   ><   ><<     ><<<<<< ><< ><< ><<       ><<    ><<  ><<  ><<    
-#       ><<  ><<   ><<    ><< ><<   ><<<<< ><<    ><<     ><< ><<   ><<<    ><<   ><<    ><<   ><<< 
+#   ><< <<                                        ><<     ><<               ><<
+# ><<    ><<                                      ><<     ><<  ><           ><<
+#  ><<          ><<     ><<     ><<    ><<        ><<     ><<      ><<<<  ><>< ><    ><<      ><<<<
+#    ><<      ><<  ><<   ><<   ><<   ><   ><<     ><<<<<< ><< ><< ><<       ><<    ><<  ><<  ><<
+#       ><<  ><<   ><<    ><< ><<   ><<<<< ><<    ><<     ><< ><<   ><<<    ><<   ><<    ><<   ><<<
 # ><<    ><< ><<   ><<     ><><<    ><            ><<     ><< ><<     ><<   ><<    ><<  ><<      ><<
 #   ><< <<     ><< ><<<     ><<       ><<<<       ><<     ><< ><< ><< ><<    ><<     ><<     ><< ><<
 #"""
@@ -2357,13 +2386,13 @@ class Gauss(LHCbConfigurableUser):
         if ( histOpt == 'NONE') :
             log.warning("No histograms produced")
             return
-        
+
         # Use a default histogram file name if not already set
         if not HistogramPersistencySvc().isPropertySet( "OutputFile" ):
             histosName = self.getProp("DatasetName")
             histosName = self.outputName() + '-histos.root'
             HistogramPersistencySvc().OutputFile = histosName
-            
+
 
 
 
@@ -2375,14 +2404,14 @@ class Gauss(LHCbConfigurableUser):
 #GEO
 #Geo
 #
-#     ><<<<                         
-#   ><    ><<                       
-#  ><<            ><<        ><<    
-#  ><<          ><   ><<   ><<  ><< 
+#     ><<<<
+#   ><    ><<
+#  ><<            ><<        ><<
+#  ><<          ><   ><<   ><<  ><<
 #  ><<   ><<<< ><<<<< ><< ><<    ><<
-#   ><<    ><  ><          ><<  ><< 
-#    ><<<<<      ><<<<       ><<    
-#                                 
+#   ><<    ><  ><          ><<  ><<
+#    ><<<<<      ><<<<       ><<
+#
 #"""
 
 
@@ -2421,13 +2450,13 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#  ><<<<<                    ><<       ><<<<                         
-#  ><<   ><<               ><        ><    ><<                       
-#  ><<    ><<    ><<     ><>< ><    ><<            ><<        ><<    
-#  ><<    ><<  ><   ><<    ><<      ><<          ><   ><<   ><<  ><< 
+#  ><<<<<                    ><<       ><<<<
+#  ><<   ><<               ><        ><    ><<
+#  ><<    ><<    ><<     ><>< ><    ><<            ><<        ><<
+#  ><<    ><<  ><   ><<    ><<      ><<          ><   ><<   ><<  ><<
 #  ><<    ><< ><<<<< ><<   ><<      ><<   ><<<< ><<<<< ><< ><<    ><<
-#  ><<   ><<  ><           ><<       ><<    ><  ><          ><<  ><< 
-#  ><<<<<       ><<<<      ><<        ><<<<<      ><<<<       ><<    
+#  ><<   ><<  ><           ><<       ><<    ><  ><          ><<  ><<
+#  ><<<<<       ><<<<      ><<        ><<<<<      ><<<<       ><<
 #
 #"""
 
@@ -2487,7 +2516,7 @@ class Gauss(LHCbConfigurableUser):
             self.defineSLGeo( detPieces )
         else:
             log.warning("Geo Detector not known : %s" %(det))
-            
+
     def defineDetectorGeoStream ( self, geo, giGaGeo, det ):
         import string
         lDet = det.lower()
@@ -2514,7 +2543,7 @@ class Gauss(LHCbConfigurableUser):
                 for gdmlDict in self.getProp("ReplaceWithGDML"):
                     self.defineGDMLGeo ( geo, giGaGeo, gdmlDict )
 
-            
+
 
 
     def defineGeo( self ):
@@ -2541,7 +2570,7 @@ class Gauss(LHCbConfigurableUser):
         # DDDB structure may change in future
         self.defineGeoBasePieces( basePieces )
 
-        # Define beampipe 
+        # Define beampipe
         self.validateBeamPipeSwitch ( self.getProp("BeamPipe") )
         if ("BeamPipeOn" == self.getProp("BeamPipe")):
             # BeamPipe on - add BP elements
@@ -2581,7 +2610,7 @@ class Gauss(LHCbConfigurableUser):
             for key in detPieces.keys():
                 print "%s : %s" %(key, detPieces[key])
             print "\nkey : detPieces[key]"
-            
+
             for key in sorted(detPieces.keys()):
                 print "%s : %s" %(key, detPieces[key])
 
@@ -2609,9 +2638,9 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#     ><<                             ><<      ><< <<                    
-#  ><<   ><<                        ><       ><<    ><<  ><              
-# ><<           ><<     ><< ><<   ><>< ><     ><<           ><<< ><< ><< 
+#     ><<                             ><<      ><< <<
+#  ><<   ><<                        ><       ><<    ><<  ><
+# ><<           ><<     ><< ><<   ><>< ><     ><<           ><<< ><< ><<
 # ><<         ><<  ><<   ><<  ><<   ><<         ><<     ><<  ><<  ><  ><<
 # ><<        ><<    ><<  ><<  ><<   ><<            ><<  ><<  ><<  ><  ><<
 #  ><<   ><<  ><<  ><<   ><<  ><<   ><<      ><<    ><< ><<  ><<  ><  ><<
@@ -2650,7 +2679,7 @@ class Gauss(LHCbConfigurableUser):
             self.configureHcalSim( slot, detHits )
         elif det == "hc":
             self.configureHCSim(slot, detHits)
-        # GC - 20160323 Bcm and Bls off for now    
+        # GC - 20160323 Bcm and Bls off for now
         ## elif det == "bcm":
         ##    self.configureBcmSim(slot, detHits)
         ## elif det == "bls":
@@ -2671,7 +2700,7 @@ class Gauss(LHCbConfigurableUser):
         elif det == "sl":
             self.configureSLSim( slot, detHits )
         else:
-            if det != "magnet": 
+            if det != "magnet":
             ## Magnetic field defined in defineMagnetGeoField called
             ## via defineDetectorGeoStream in defineGeo
                 log.warning("Sim Detector not known : %s" %(det))
@@ -2683,11 +2712,11 @@ class Gauss(LHCbConfigurableUser):
         """
         Set up the simulation sequence
         """
-        
+
         if "Simulation" not in self.getProp("Phases"):
             log.warning("No simulation phase.")
             return
-        
+
         ApplicationMgr().ExtSvc += [ "GiGa" ]
         EventPersistencySvc().CnvServices += [ "GiGaKine" ]
 
@@ -2697,7 +2726,7 @@ class Gauss(LHCbConfigurableUser):
 
         gigaStore = GiGaDataStoreAlgorithm( "GiGaStore" )
         gigaStore.ConversionServices = [ "GiGaKine" ]
-        gaussSimulationSeq.Members += [ gigaStore ] 
+        gaussSimulationSeq.Members += [ gigaStore ]
 
         self.defineGeo()
 
@@ -2708,7 +2737,7 @@ class Gauss(LHCbConfigurableUser):
         for slot in SpillOverSlots:
 
             TESNode = "/Event/"+self.slot_(slot)
-            
+
             mainSimSequence = GaudiSequencer( self.slotName(slot)+"EventSeq" )
 
             gaussSimulationSeq.Members += [ mainSimSequence ]
@@ -2732,7 +2761,7 @@ class Gauss(LHCbConfigurableUser):
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                LookForUnknownParticles = True )
             simSlotSeq.Members += [ genToSim ]
-            
+
             simSlotSeq.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
             simSlotSeq.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
             simToMC = SimulationToMCTruth( "SimToMCTruth"+slot )
@@ -2740,40 +2769,40 @@ class Gauss(LHCbConfigurableUser):
 
             ## Detectors hits
             TESNode = TESNode + "MC/"
-            detHits = GaudiSequencer( "DetectorsHits" + slot )  
+            detHits = GaudiSequencer( "DetectorsHits" + slot )
             simSlotSeq.Members += [ detHits ]
 
             # Slight trick - configuredRichSim is a list and therefore MUTABLE!
             configuredRichSim = [ False ]
             for det in self.getProp('DetectorSim')['Detectors']:
                 self.configureDetectorSim( slot, detHits, det, configuredRichSim )
-            
+
 
             # Data packing ...
             if self.getProp("EnablePack") :
                 packing = GaudiSequencer(self.slotName(slot)+"EventDataPacking")
                 simSlotSeq.Members += [ packing ]
-                SimConf().PackingSequencers[slot] = packing             
+                SimConf().PackingSequencers[slot] = packing
         # End of Sim Configuration
 
-    
+
 
 
 #"""
-#  ><<       ><<                         
+#  ><<       ><<
 #  >< ><<   ><<<                       ><
-#  ><< ><< > ><<    ><<     ><< ><<      
+#  ><< ><< > ><<    ><<     ><< ><<
 #  ><<  ><<  ><<  ><<  ><<   ><<  ><< ><<
 #  ><<   ><  ><< ><<    ><<  ><<  ><< ><<
 #  ><<       ><<  ><<  ><<   ><<  ><< ><<
 #  ><<       ><<    ><<     ><<<  ><< ><<
-#                                      
+#
 #
 #"""
 
 
     def configureGeneratorMoni ( self, SpillOverSlots ):
-            
+
         # Monitors for the generator:
         for slot in SpillOverSlots:
 
@@ -2795,8 +2824,8 @@ class Gauss(LHCbConfigurableUser):
             #                                                   Addresses = [TESLocation] ) ]
 
 
-    def configureDetectorMoni( 
-        self, 
+    def configureDetectorMoni(
+        self,
         slot,
         packCheckSeq,
         detMoniSeq,
@@ -2842,7 +2871,7 @@ class Gauss(LHCbConfigurableUser):
             self.configureHcalMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         elif det == "hc":
             self.configureHCMoni(slot, packCheckSeq, detMoniSeq, checkHits)
-        # GC - 20160323 Bls and Bc off for now    
+        # GC - 20160323 Bls and Bc off for now
         ## elif det == "bcm":
         ##     self.configureBcmMoni(slot, packCheckSeq, detMoniSeq, checkHits)
         ## elif det == "bls":
@@ -2869,7 +2898,7 @@ class Gauss(LHCbConfigurableUser):
         elif det == "sl":
             self.configureSLMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         else:
-            log.warning("Moni Detector not known : %s" %(det))            
+            log.warning("Moni Detector not known : %s" %(det))
 
     def resetCheckHits( self, checkHits ):
         checkHits.TTHits     = ''
@@ -2895,15 +2924,15 @@ class Gauss(LHCbConfigurableUser):
 
 
     def configureSimulationMoni( self, SpillOverSlots ):
-        
+
         configuredRichMoni = [ False , False ]
-            
+
         # Monitors for simulation
         for slot in SpillOverSlots:
             # Reset param to configure rich for slots.
             configuredRichMoni[0] = False
             TESNode = "/Event/"+self.slot_(slot)
-     
+
             simSequence = GaudiSequencer( self.slotName(slot)+"Simulation" )
             simMoniSeq = GaudiSequencer( "SimMonitor" + slot )
             simSequence.Members += [ simMoniSeq ]
@@ -2915,9 +2944,9 @@ class Gauss(LHCbConfigurableUser):
 
             # Basic monitors
             simMoniSeq.Members += [
-                GiGaGetEventAlg("GiGaGet"+self.slotName(slot)+"Event"), 
+                GiGaGetEventAlg("GiGaGet"+self.slotName(slot)+"Event"),
                 MCTruthMonitor( self.slotName(slot)+"MCTruthMonitor" ) ]
-            
+
             # can switch off detectors, or rather switch them on (see options
             # of algorithm)
             checkHits = GiGaGetHitsAlg( "GiGaGetHitsAlg" + slot )
@@ -2950,16 +2979,16 @@ class Gauss(LHCbConfigurableUser):
             # OverWrite some things if using VP
             #self.configureVPMoni( checkHits )
 
-                  
+
             #if moniOpt == 'Debug':
             #    checkHits.OutputLevel = DEBUG
 
-            detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot ) 
+            detMoniSeq = GaudiSequencer( "DetectorsMonitor" + slot )
             simMoniSeq.Members += [ detMoniSeq ]
 
             packCheckSeq = None
             if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-                
+
                 packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
                 simMoniSeq.Members += [packCheckSeq]
 
@@ -2968,7 +2997,7 @@ class Gauss(LHCbConfigurableUser):
                 upMCP = UnpackMCParticle( "UnpackMCParticle"+slot,
                                           OutputName = "MC/ParticlesTest" )
                 packCheckSeq.Members += [ upMCV, upMCP ]
-                
+
                 compMCV = CompareMCVertex( "CompareMCVertex"+slot,
                                            TestName = "MC/VerticesTest" )
                 compMCP = CompareMCParticle( "CompareMCParticle"+slot,
@@ -2980,15 +3009,15 @@ class Gauss(LHCbConfigurableUser):
             # Define detectors
             for det in self.getProp('DetectorMoni')['Detectors']:
                 self.configureDetectorMoni(slot, packCheckSeq, detMoniSeq, checkHits, det, configuredRichMoni)
-            
+
 
 #"""
-#     ><<                             ><<    ><<<<<                  ><<              ><<<<<<<                      ><<     
-#  ><<   ><<                        ><       ><<   ><<               ><<              ><<    ><<                    ><<     
+#     ><<                             ><<    ><<<<<                  ><<              ><<<<<<<                      ><<
+#  ><<   ><<                        ><       ><<   ><<               ><<              ><<    ><<                    ><<
 # ><<           ><<     ><< ><<   ><>< ><    ><<    ><<    ><<     ><>< ><    ><<     ><<    ><<    ><<        ><<< ><<  ><<
-# ><<         ><<  ><<   ><<  ><<   ><<      ><<    ><<  ><<  ><<    ><<    ><<  ><<  ><<<<<<<    ><<  ><<   ><<    ><< ><< 
-# ><<        ><<    ><<  ><<  ><<   ><<      ><<    ><< ><<   ><<    ><<   ><<   ><<  ><<        ><<   ><<  ><<     ><><<   
-#  ><<   ><<  ><<  ><<   ><<  ><<   ><<      ><<   ><<  ><<   ><<    ><<   ><<   ><<  ><<        ><<   ><<   ><<    ><< ><< 
+# ><<         ><<  ><<   ><<  ><<   ><<      ><<    ><<  ><<  ><<    ><<    ><<  ><<  ><<<<<<<    ><<  ><<   ><<    ><< ><<
+# ><<        ><<    ><<  ><<  ><<   ><<      ><<    ><< ><<   ><<    ><<   ><<   ><<  ><<        ><<   ><<  ><<     ><><<
+#  ><<   ><<  ><<  ><<   ><<  ><<   ><<      ><<   ><<  ><<   ><<    ><<   ><<   ><<  ><<        ><<   ><<   ><<    ><< ><<
 #    ><<<<      ><<     ><<<  ><<   ><<      ><<<<<       ><< ><<<    ><<    ><< ><<< ><<          ><< ><<<    ><<< ><<  ><<
 #
 #"""
@@ -2996,7 +3025,7 @@ class Gauss(LHCbConfigurableUser):
 #        # Data packing checks
 #        for slot in SpillOverSlots:
 #            if self.getProp("EnablePack") and self.getProp("DataPackingChecks") :
-#                
+#
 #                packCheckSeq = GaudiSequencer( "DataUnpackTest"+slot )
 #                simMoniSeq.Members += [packCheckSeq]
 #
@@ -3005,7 +3034,7 @@ class Gauss(LHCbConfigurableUser):
 #                upMCP = UnpackMCParticle( "UnpackMCParticle"+slot,
 #                                          OutputName = "MC/ParticlesTest" )
 #                packCheckSeq.Members += [ upMCV, upMCP ]
-#                
+#
 #                compMCV = CompareMCVertex( "CompareMCVertex"+slot,
 #                                           TestName = "MC/VerticesTest" )
 #                compMCP = CompareMCParticle( "CompareMCParticle"+slot,
@@ -3017,14 +3046,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#    ><<                             ><<    ><<       ><<                         
+#    ><<                             ><<    ><<       ><<
 # ><<   ><<                        ><       >< ><<   ><<<                       ><
-#><<           ><<     ><< ><<   ><>< ><    ><< ><< > ><<    ><<     ><< ><<      
+#><<           ><<     ><< ><<   ><>< ><    ><< ><< > ><<    ><<     ><< ><<
 #><<         ><<  ><<   ><<  ><<   ><<      ><<  ><<  ><<  ><<  ><<   ><<  ><< ><<
 #><<        ><<    ><<  ><<  ><<   ><<      ><<   ><  ><< ><<    ><<  ><<  ><< ><<
 # ><<   ><<  ><<  ><<   ><<  ><<   ><<      ><<       ><<  ><<  ><<   ><<  ><< ><<
 #   ><<<<      ><<     ><<<  ><<   ><<      ><<       ><<    ><<     ><<<  ><< ><<
-#                                                                                 
+#
 #"""
 
 
@@ -3035,7 +3064,7 @@ class Gauss(LHCbConfigurableUser):
         # Per-detector configuration done here:
         self.configureSimulationMoni( SpillOverSlots )
         #self.configureDataPackingMoni( SpillOverSlots , simMoniSeq )
-                
+
         #if histOpt == 'Expert':
         #    # For the moment do nothing
         #    log.Warning("Not yet implemented")
@@ -3049,14 +3078,14 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#     ><<                             ><<       ><<<<                            
-#  ><<   ><<                        ><        ><    ><<   ><                     
-# ><<           ><<     ><< ><<   ><>< ><    ><<                ><<       ><<    
-# ><<         ><<  ><<   ><<  ><<   ><<      ><<         ><<  ><<  ><<  ><<  ><< 
-# ><<        ><<    ><<  ><<  ><<   ><<      ><<   ><<<< ><< ><<   ><< ><<   ><< 
-#  ><<   ><<  ><<  ><<   ><<  ><<   ><<       ><<    ><  ><<  ><<  ><< ><<   ><< 
+#     ><<                             ><<       ><<<<
+#  ><<   ><<                        ><        ><    ><<   ><
+# ><<           ><<     ><< ><<   ><>< ><    ><<                ><<       ><<
+# ><<         ><<  ><<   ><<  ><<   ><<      ><<         ><<  ><<  ><<  ><<  ><<
+# ><<        ><<    ><<  ><<  ><<   ><<      ><<   ><<<< ><< ><<   ><< ><<   ><<
+#  ><<   ><<  ><<  ><<   ><<  ><<   ><<       ><<    ><  ><<  ><<  ><< ><<   ><<
 #    ><<<<      ><<     ><<<  ><<   ><<        ><<<<<    ><<      ><<    ><< ><<<
-#                                                              ><<               
+#                                                              ><<
 #"""
     ##
     ##
@@ -3097,12 +3126,10 @@ class Gauss(LHCbConfigurableUser):
                  
                   
          ## setup the Physics list and the productions cuts
-         ## the following 2 lines commented out.        
-         #if skipG4:
-         #    richPmt = False
-         
-         self.setPhysList(richUpgradeConfig)
-         
+         if skipG4:
+             richPmt = False
+         self.setPhysList(richPmt)
+
          ## Mandatory G4 Run action
          giga.addTool( GiGaRunActionSequence("RunSeq") , name="RunSeq" )
          giga.RunAction = "GiGaRunActionSequence/RunSeq"
@@ -3112,11 +3139,11 @@ class Gauss(LHCbConfigurableUser):
              if 'HC' in self.getProp('DetectorSim')['Detectors']:
                giga.RunSeq.TrCuts.MinZ = -125.0 * SystemOfUnits.m
                giga.RunSeq.TrCuts.MaxZ =  125.0 * SystemOfUnits.m
-             # GC - 20160323 Bcm off for now  
+             # GC - 20160323 Bcm off for now
              ## elif 'Bcm' in self.getProp('DetectorSim')['Detectors']:
              ##   giga.RunSeq.TrCuts.MinZ = -25.0 * SystemOfUnits.m
-             giga.RunSeq.Members += [ "TrCutsRunAction/TrCuts" ] 
-             giga.RunSeq.addTool( GiGaRunActionCommand("RunCommand") , name = "RunCommand" ) 
+             giga.RunSeq.Members += [ "TrCutsRunAction/TrCuts" ]
+             giga.RunSeq.addTool( GiGaRunActionCommand("RunCommand") , name = "RunCommand" )
              giga.RunSeq.Members += [ "GiGaRunActionCommand/RunCommand" ]
              giga.RunSeq.RunCommand.BeginOfRunCommands = [
                  "/tracking/verbose 0",
@@ -3124,10 +3151,10 @@ class Gauss(LHCbConfigurableUser):
                  "/process/eLoss/verbose -1" ]
 
          giga.EventAction = "GiGaEventActionSequence/EventSeq"
-         giga.addTool( GiGaEventActionSequence("EventSeq") , name="EventSeq" ) 
+         giga.addTool( GiGaEventActionSequence("EventSeq") , name="EventSeq" )
          giga.EventSeq.Members += [ "GaussEventActionHepMC/HepMCEvent" ]
 
-         giga.TrackingAction =   "GiGaTrackActionSequence/TrackSeq" 
+         giga.TrackingAction =   "GiGaTrackActionSequence/TrackSeq"
          giga.addTool( GiGaTrackActionSequence("TrackSeq") , name = "TrackSeq" )
          giga.TrackSeq.Members += [ "GaussPreTrackAction/PreTrack" ]
 
@@ -3147,21 +3174,32 @@ class Gauss(LHCbConfigurableUser):
                 mGaussCherenkovConf.ApplyGaussCherenkovConfiguration(giga)
                     
              else:
-                 #keep the old options for backward compatibility for now. It may be removed in the future                 
-                 self.GaussCherenkovOldSetup(giga,UpgradeRichPmtDetector,skipG4 )
-         else:
-            
-             if (self.getProp("CurrentRICHSimRunOption") != "clunker" ):
-                mGaussRICHConf= GaussRICHConf()
-                mGaussRICHConf.InitializeGaussRICHConfiguration()
-                mGaussRICHConf.setRichDetectorExistFlag(Run1Run2RichDetector)
-                mGaussRICHConf.setSkipGeant4RichFlag(skipG4 )
-                mGaussRICHConf.ApplyGaussRICHConfiguration(giga)
-                
+                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+
+             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
+                 importOptions("$GAUSSRICHROOT/options/Rich.opts")
+                 if self.getProp("DataType") in self.Run2DataTypes :
+                     importOptions("$GAUSSRICHROOT/options/RichRemoveAerogel.opts")
+
              else:
-                 #keep the old options for backward compatibility for now. It may be removed in the future.
-                 self.GaussRICHOldSetup(giga,Run1Run2RichDetector ,skipG4 )
-                  
+                 if not skipG4:
+                     giga.ModularPL.addTool( GiGaPhysConstructorOp,
+                                             name = "GiGaPhysConstructorOp" )
+                     giga.ModularPL.addTool( GiGaPhysConstructorHpd,
+                                             name = "GiGaPhysConstructorHpd" )
+                     giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+                     giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+
+             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
+                 giga.ModularPL.addTool( GiGaPhysConstructorOp,
+                                         name="GiGaPhysConstructorOp" )
+                 giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
+                 giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
+                 giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
+                 if self.getProp("RICHRandomHits") == True :
+                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsActivate = True
+                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsProbabilityFactor = 0.5
+
 
           
 
@@ -3169,23 +3207,23 @@ class Gauss(LHCbConfigurableUser):
 
          giga.TrackSeq.Members += [ "GaussPostTrackAction/PostTrack" ]
          giga.TrackSeq.Members += [ "GaussTrackActionHepMC/HepMCTrack" ]
-         giga.TrackSeq.addTool( GaussPostTrackAction("PostTrack") , name = "PostTrack" ) 
+         giga.TrackSeq.addTool( GaussPostTrackAction("PostTrack") , name = "PostTrack" )
 
          giga.TrackSeq.PostTrack.StoreAll          = False
          giga.TrackSeq.PostTrack.StorePrimaries    = True
          giga.TrackSeq.PostTrack.StoreMarkedTracks = True
          giga.TrackSeq.PostTrack.StoreForcedDecays = True
          giga.TrackSeq.PostTrack.StoreByOwnEnergy   = True
-         giga.TrackSeq.PostTrack.OwnEnergyThreshold = 100.0 * SystemOfUnits.MeV 
+         giga.TrackSeq.PostTrack.OwnEnergyThreshold = 100.0 * SystemOfUnits.MeV
 
          giga.TrackSeq.PostTrack.StoreByChildProcess  = True
          giga.TrackSeq.PostTrack.StoredChildProcesses = [ "RichG4Cerenkov", "Decay" ]
-         giga.TrackSeq.PostTrack.StoreByOwnProcess  = True 
+         giga.TrackSeq.PostTrack.StoreByOwnProcess  = True
          giga.TrackSeq.PostTrack.StoredOwnProcesses = [ "Decay" ]
          giga.StepSeq.Members += [ "GaussStepAction/GaussStep" ]
 
 
-         giga.addTool( GiGaRunManager("GiGaMgr") , name="GiGaMgr" ) 
+         giga.addTool( GiGaRunManager("GiGaMgr") , name="GiGaMgr" )
          giga.GiGaMgr.RunTools += [ "GiGaSetSimAttributes" ]
          giga.GiGaMgr.RunTools += [ "GiGaRegionsTool" ]
          giga.GiGaMgr.addTool( GiGaSetSimAttributes() , name = "GiGaSetSimAttributes" )
@@ -3245,14 +3283,14 @@ class Gauss(LHCbConfigurableUser):
 
 #"""
 #
-#     ><<                             ><<       ><<<<                
-#  ><<   ><<                        ><        ><    ><<        ><<   
-# ><<           ><<     ><< ><<   ><>< ><    ><<             > ><<   
-# ><<         ><<  ><<   ><<  ><<   ><<      ><<            >< ><<   
-# ><<        ><<    ><<  ><<  ><<   ><<      ><<   ><<<<  ><<  ><<   
+#     ><<                             ><<       ><<<<
+#  ><<   ><<                        ><        ><    ><<        ><<
+# ><<           ><<     ><< ><<   ><>< ><    ><<             > ><<
+# ><<         ><<  ><<   ><<  ><<   ><<      ><<            >< ><<
+# ><<        ><<    ><<  ><<  ><<   ><<      ><<   ><<<<  ><<  ><<
 #  ><<   ><<  ><<  ><<   ><<  ><<   ><<       ><<    ><  ><<<< >< ><<
-#    ><<<<      ><<     ><<<  ><<   ><<        ><<<<<          ><<   
-#                                                                   
+#    ><<<<      ><<     ><<<  ><<   ><<        ><<<<<          ><<
+#
 #
 #"""
 
@@ -3273,7 +3311,7 @@ class Gauss(LHCbConfigurableUser):
         self.getProp('DetectorSim')['Detectors'] = []
         self.getProp('DetectorGeo')['Detectors'] = []
         self.getProp('DetectorMoni')['Detectors'] = []
-        
+
         ApplicationMgr().ExtSvc += [ "GiGa" ]
 
         gaussSkipGeant4Seq = GaudiSequencer( "SkipGeant4" )
@@ -3285,7 +3323,7 @@ class Gauss(LHCbConfigurableUser):
         for slot in SpillOverSlots:
 
             TESNode = "/Event/"+self.slot_(slot)
-            
+
             mainSkipGeant4Sequence = GaudiSequencer( self.slotName(slot)+"EventSeq" )
 
             gaussSkipGeant4Seq.Members += [ mainSkipGeant4Sequence ]
@@ -3309,7 +3347,7 @@ class Gauss(LHCbConfigurableUser):
             genToSim = GenerationToSimulation( "GenToSim" + slot,
                                                SkipGeant = True )
             skipGeant4SlotSeq.Members += [ genToSim ]
-            
+
             # Data packing ...
             if self.getProp("EnablePack") :
                 packing = GaudiSequencer(self.slotName(slot)+"EventDataPacking")
@@ -3318,30 +3356,30 @@ class Gauss(LHCbConfigurableUser):
 
 
 #"""
-#   ><< <<                ><<      ><<<<<<<                             
-# ><<    ><<              ><<      ><<    ><< ><<                       
-#  ><<          ><<     ><>< ><    ><<    ><< ><<      ><<   ><<  ><<<< 
-#    ><<      ><   ><<    ><<      ><<<<<<<   >< ><     ><< ><<  ><<    
-#       ><<  ><<<<< ><<   ><<      ><<        ><<  ><<    ><<<     ><<< 
+#   ><< <<                ><<      ><<<<<<<
+# ><<    ><<              ><<      ><<    ><< ><<
+#  ><<          ><<     ><>< ><    ><<    ><< ><<      ><<   ><<  ><<<<
+#    ><<      ><   ><<    ><<      ><<<<<<<   >< ><     ><< ><<  ><<
+#       ><<  ><<<<< ><<   ><<      ><<        ><<  ><<    ><<<     ><<<
 # ><<    ><< ><           ><<      ><<        ><   ><<     ><<       ><<
 #   ><< <<     ><<<<       ><<     ><<        ><<  ><<    ><<    ><< ><<
-#                                                       ><<             
+#                                                       ><<
 #"""
 
     def setPhysList( self, richUpgradeConfig ):
 
         giga = GiGa()
-        giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" ) 
+        giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" )
         giga.PhysicsList = "GiGaPhysListModular/ModularPL"
         gmpl = giga.ModularPL
 
-        ## set production cuts 
+        ## set production cuts
         ecut = 5.0 * SystemOfUnits.mm
         if not self.getProp("DeltaRays"):
             ecut = 10000.0 * SystemOfUnits.m
         print 'Ecut value =', ecut
         gmpl.CutForElectron = ecut
-        gmpl.CutForPositron = 5.0 * SystemOfUnits.mm 
+        gmpl.CutForPositron = 5.0 * SystemOfUnits.mm
         gmpl.CutForGamma    = 5.0 * SystemOfUnits.mm
 
         ## set up the physics list
@@ -3352,15 +3390,15 @@ class Gauss(LHCbConfigurableUser):
         otherPhys  = ''
         if self.getProp('PhysicsList').has_key('Other'):
             otherPhys = self.getProp('PhysicsList')['Other']
-        
+
         def gef(name):
             import Configurables
             return getattr(Configurables, "GiGaExtPhysics_%s_" % name)
         def addConstructor(template, name):
             gmpl.addTool(gef(template), name = name)
             gmpl.PhysicsConstructors.append(getattr(gmpl, name))
-        
-        ## --- EM physics: 
+
+        ## --- EM physics:
         if  (emPhys == "Opt1"):
             addConstructor("G4EmStandardPhysics_option1", "EmOpt1Physics")
         elif(emPhys == "Opt2"):
@@ -3381,12 +3419,12 @@ class Gauss(LHCbConfigurableUser):
                 gmpl.EmOpt1LHCbPhysics.ApplyCuts = False
             if(emPhys.find("OldForE") != -1 ):
                 gmpl.EmOpt1LHCbPhysics.NewModelForE = False
-            
+
             #gmpl.EmOpt1LHCbPhysics.OutputLevel = VERBOSE
         else:
             raise RuntimeError("Unknown Em PhysicsList chosen ('%s')"%emPhys)
-            
-        ## --- general  physics (common to all PL): 
+
+        ## --- general  physics (common to all PL):
         if (genPhys == True):
         ## Decays
             addConstructor("G4DecayPhysics", "DecayPhysics" )
@@ -3399,7 +3437,7 @@ class Gauss(LHCbConfigurableUser):
             addConstructor("G4IonPhysics", "IonPhysics")
         elif (genPhys == False):
             log.warning("The general physics (Decays, hadron elastic, ion ...) is disabled")
-        else:        
+        else:
             raise RuntimeError("Unknown setting for GeneralPhys PhysicsList chosen ('%s')"%genPhys)
 
         ## --- Hadron physics:
@@ -3420,7 +3458,7 @@ class Gauss(LHCbConfigurableUser):
             addConstructor("G4HadronElasticPhysicsHP", "ElasticPhysicsHP")
             addConstructor("HadronPhysicsQGSP_BERT_HP", "QGSP_BERT_HPPhysics")
             addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
-            # overwrite the defaut value of the HighPrecision property of the 
+            # overwrite the defaut value of the HighPrecision property of the
             # G4HadronElasticPhysics constructor: no longer true, use dedicated
             # constructor
             #gmpl.ElasticPhysics.HighPrecision = True
@@ -3429,12 +3467,12 @@ class Gauss(LHCbConfigurableUser):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("HadronPhysicsQGSP_BERT_CHIPS", "QGSP_BERT_CHIPSPhysics")
             addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
-            addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")            
+            addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         elif(hadronPhys == "QGSP_FTFP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("HadronPhysicsQGSP_FTFP_BERT", "QGSP_FTFP_BERTPhysics")
             addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
-            addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")            
+            addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         elif(hadronPhys == "FTFP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("HadronPhysicsFTFP_BERT", "FTFP_BERTPhysics")
@@ -3442,20 +3480,27 @@ class Gauss(LHCbConfigurableUser):
             addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         else:
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
-        
-        
-        ## --- LHCb specific physics: 
+
+
+        # Add Redecay tag particle physics list if necessary
+        if self.Redecay['active']:
+            from Configurables import GiGaPhysG4RDTag
+            gmpl.addTool(GiGaPhysG4RDTag)
+            gmpl.PhysicsConstructors.append(gmpl.GiGaPhysG4RDTag)
+
+
+        ## --- LHCb specific physics:
         if  (lhcbPhys == True):
             if (richUpgradeConfig == True):
                 self.defineRichMaPmtPhys(gmpl)
             else:
                 self.defineRichPhys(gmpl)
 
-        ## LHCb particles unknown to default Geant4                
+        ## LHCb particles unknown to default Geant4
             gmpl.PhysicsConstructors.append("GiGaPhysUnknownParticles")
         elif (lhcbPhys == False):
             log.warning("The lhcb-related physics (RICH processed, UnknownParticles) is disabled")
-        else:        
+        else:
             raise RuntimeError("Unknown setting for LHCbPhys PhysicsList chosen ('%s')"%lhcbPhys)
 
         ## and other exotic physics
@@ -3464,21 +3509,21 @@ class Gauss(LHCbConfigurableUser):
             gmpl.PhysicsConstructors.append("GiGaHiggsParticles")
         else:
             if (otherPhys != '' ):
-               raise RuntimeError("Unknown setting for OtherPhys PhysicsList chosen ('%s')"%otherPhys) 
-       
+               raise RuntimeError("Unknown setting for OtherPhys PhysicsList chosen ('%s')"%otherPhys)
+
 
 
 #"""
 #      ><                           ><<                 ><<                             ><<
-#     >< <<                         ><<              ><<   ><<                        ><   
+#     >< <<                         ><<              ><<   ><<                        ><
 #    ><  ><<     >< ><<   >< ><<    ><< ><<   ><<   ><<           ><<     ><< ><<   ><>< ><
-#   ><<   ><<    ><  ><<  ><  ><<   ><<  ><< ><<    ><<         ><<  ><<   ><<  ><<   ><<  
-#  ><<<<<< ><<   ><   ><< ><   ><<  ><<    ><<<     ><<        ><<    ><<  ><<  ><<   ><<  
-# ><<       ><<  ><< ><<  ><< ><<   ><<     ><<      ><<   ><<  ><<  ><<   ><<  ><<   ><<  
-#><<         ><< ><<      ><<      ><<<    ><<         ><<<<      ><<     ><<<  ><<   ><<  
-#                ><<      ><<            ><<                                               
+#   ><<   ><<    ><  ><<  ><  ><<   ><<  ><< ><<    ><<         ><<  ><<   ><<  ><<   ><<
+#  ><<<<<< ><<   ><   ><< ><   ><<  ><<    ><<<     ><<        ><<    ><<  ><<  ><<   ><<
+# ><<       ><<  ><< ><<  ><< ><<   ><<     ><<      ><<   ><<  ><<  ><<   ><<  ><<   ><<
+#><<         ><< ><<      ><<      ><<<    ><<         ><<<<      ><<     ><<<  ><<   ><<
+#                ><<      ><<            ><<
 #"""
-             
+
     ##
     ##
     ## Apply the configuration
@@ -3497,17 +3542,17 @@ class Gauss(LHCbConfigurableUser):
         self.checkIncompatibleDetectors()
 
         self.setLHCbAppDetectors()
-        
+
         #propagate info to SimConf
         self.propagateSimConf()
-        
+
         #Construct Crossing List
         crossingList = self.defineCrossingList()
 
         # We want to pass this GenInit object to configure phases later
         from Configurables import ( Generation )
         genInitPrime = GenInit( "GaussGen" )
-        
+
         self.setBeamParameters( crossingList, genInitPrime )
         # PSZ - everything happens here
         self.configurePhases( crossingList  )  # in Boole, defineOptions() in Brunel
@@ -3519,7 +3564,7 @@ class Gauss(LHCbConfigurableUser):
 
         self.defineMonitors()
         self.saveHistos()
-        
+
         GaudiKernel.ProcessJobOptions.PrintOn()
         log.info( self )
         GaudiKernel.ProcessJobOptions.PrintOff()
@@ -3527,4 +3572,267 @@ class Gauss(LHCbConfigurableUser):
         # Print out TES contents at the end of each event
         #from Configurables import StoreExplorerAlg
         #GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
-    
+
+# _____          _
+#|  __ \        | |
+#| |__) |___  __| | ___  ___ __ _ _   _
+#|  _  // _ \/ _` |/ _ \/ __/ _` | | | |
+#| | \ \  __/ (_| |  __/ (_| (_| | |_| |
+#|_|  \_\___|\__,_|\___|\___\__,_|\__, |
+#                                  __/ |
+#                                 |___/
+
+    def configure_redecay_mchits(self, slot, loc):
+        if 'Signal' not in slot:
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCHitsLocation += [loc]
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCHitsLocation += [loc]
+
+
+    def configure_redecay_mccalohits(self, slot, loc):
+        if 'Signal' not in slot:
+            GaussRedecayCopyToService('GaussRedecayCopyToService' + slot).MCCaloHitsLocation += [loc]
+            GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService' + slot).MCCaloHitsLocation += [loc]
+
+
+    def configureRedecay(self, SpillOverSlots ):
+        """Apply final configuration to the redecay configurables, especially set
+        the correct GaussRedecay Service instances for the different spillover
+        slots"""
+        n_redecays = self.Redecay['N']
+        rd_mode = self.Redecay['rd_mode']
+
+        genInit = GenInit('SignalGen')
+        genInitT0 = GenInit("GaussGen")
+        if genInitT0.isPropertySet("RunNumber"):
+            genInit.RunNumber = genInitT0.RunNumber
+        if genInitT0.isPropertySet("FirstEventNumber"):
+            genInit.FirstEventNumber = genInitT0.FirstEventNumber
+
+        for slot in SpillOverSlots:
+            svcname = 'GaussRedecay' + slot
+            ApplicationMgr().ExtSvc += ['GaussRedecay/GaussRedecay' + slot]
+            GaussRedecay(svcname).Phase = 1
+            GaussRedecay(svcname).nRedecay = n_redecays
+            GaussRedecay(svcname).RedecayMode = rd_mode
+
+            if slot == '':
+                continue
+            GaussRedecayCopyToService(
+                'GaussRedecayCopyToService' + slot).GaussRedecay = svcname
+            GaussRedecayRetrieveFromService(
+                'GaussRedecayRetrieveFromService' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'RegisterNewEvent' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'CheckIfFullOrUESim' + slot).GaussRedecay = svcname
+            GaussRedecayCtrFilter(
+                'CheckIfSignalSim2' + slot).GaussRedecay = svcname
+
+        # Copy over the information from the <eventtype>.py file
+        from Configurables import Generation
+        from Configurables import GaussRedecayMergeAndClean
+        from Configurables import RedecayProduction
+        from Configurables import GaussRedecayFakePileUp
+
+        gen = Generation("GenerationSignal")
+        gen.addTool(GaussRedecayFakePileUp)
+        gen.PileUpTool = "GaussRedecayFakePileUp"
+        gen.VertexSmearingTool = ""
+        sgt = getattr(gen, gen.SampleGenerationTool.split('/')[-1])
+        sgt.ProductionTool = "RedecayProduction"
+        sgt.addTool(RedecayProduction)
+        sgt.RevertWhenBackward = False
+
+
+    def configureRedecaySim( self, SpillOverSlots ):
+
+        """
+        Set up the simulation sequence
+        """
+
+        if "Simulation" not in self.getProp("Phases"):
+            log.warning("No simulation phase.")
+            return
+
+        ApplicationMgr().ExtSvc += [ "GiGa" ]
+        EventPersistencySvc().CnvServices += [ "GiGaKine" ]
+
+        gaussSimulationSeq = GaudiSequencer( "Simulation" )
+        gaussSeq = GaudiSequencer("GaussSequencer")
+        gaussSeq.Members += [ gaussSimulationSeq ]
+
+        gigaStore = GiGaDataStoreAlgorithm( "GiGaStore" )
+        gigaStore.ConversionServices = [ "GiGaKine" ]
+        gaussSimulationSeq.Members += [ gigaStore ]
+
+        self.defineGeo()
+
+        self.configureGiGa()
+
+        for slot in SpillOverSlots:
+
+            TESNode = "/Event/"+self.slot_(slot)
+
+            mainSimSequence = GaudiSequencer( self.slotName(slot)+"EventSeq" )
+
+            gaussSimulationSeq.Members += [ mainSimSequence ]
+
+            mainSimSequence.Members +=  [ SimInit( self.slotName(slot)+"EventGaussSim",
+                                                   GenHeader = TESNode + "Gen/Header" ,
+                                                   MCHeader = TESNode + "MC/Header" ) ]
+
+            # We might not have a HepMC events in the redecays, hence
+            # the requirement is removed and explicitly checked using an
+            # algorithm running at the beginning.
+            simSeq = GaudiSequencer( self.slotName(slot)+"Simulation" )
+
+            # simSeq used to have a requireObjects. Cannot do that anymore
+            # as redecay events do not have a HepMC event. Hence make a filter
+            # that decides based on the original event.
+            hepmcfilterseq = GaudiSequencer('HepMCFilterSeq' + self.slotName(slot), ModeOR=True)
+            hepmcfilter = GaussRedecayCtrFilter('HepMCFilter' + self.slotName(slot))
+            hepmcfilter.CheckFor = TESNode + "Gen/HepMCEvents"
+            hepmcfilterseq.Members += [hepmcfilter]
+
+            mainSimSequence.Members += [ hepmcfilterseq]
+            hepmcfilterseq.Members += [simSeq]
+
+            simSlotSeq = GaudiSequencer( "Make"+self.slotName(slot)+"Sim",
+                                         RequireObjects = [ TESNode + "Gen/HepMCEvents" ])
+            simSlotFullSeq = GaudiSequencer( "Make"+self.slotName(slot)+"FullSim",
+                                            ModeOR=True)
+
+            simSlotSeq.Members += [simSlotFullSeq]
+            simSeq.Members += [simSlotSeq]
+
+            # CRJ : Set RootInTES - Everything down stream will then use the correct location
+            #       (assuming they use GaudiAlg get and put) so no need to set data locations
+            #       by hand any more ...
+            if slot != '' : simSlotFullSeq.RootInTES = slot
+
+            # Following is the main sim of the event, either normal event or
+            # the underlying event component for redecay, filter out if this
+            # event does not need this information.
+            #
+            # Make a filter to turn this part off for the signal redecay part.
+            # Ask whether phase is 1 and set it to 2 later on. Only applies for
+            # redecay, setting to 2 ignored otherwise!
+            grdfilter = GaussRedecayCtrFilter(
+                'CheckIfFullOrUESim{}'.format(slot))
+            grdfilter.IsPhaseEqual = 2
+            simSlotFullSeq.Members += [ grdfilter]
+
+            # Migrate the actual work into a new sequence, only activated when
+            # the previous filter return false due to the OR mode
+            simSlotFullSeqImpl = GaudiSequencer(
+                "Make"+self.slotName(slot)+"FullSimImpl")
+            simSlotFullSeq.Members += [ simSlotFullSeqImpl]
+
+            genToSim = GenerationToSimulation( "GenToSim" + slot,
+                                               LookForUnknownParticles = True )
+            simSlotFullSeqImpl.Members += [ genToSim ]
+
+            simSlotFullSeqImpl.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot ) ]
+            simSlotFullSeqImpl.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot ) ]
+            simToMC = SimulationToMCTruth( "SimToMCTruth"+slot )
+            simSlotFullSeqImpl.Members += [ simToMC ]
+
+            ## Detectors hits
+            TESNode = TESNode + "MC/"
+            detHits = GaudiSequencer( "DetectorsHits" + slot )
+            simSlotFullSeqImpl.Members += [ detHits ]
+            simSlotFullSeqImpl.Members += [ GaussRedecayCopyToService(
+                'GaussRedecayCopyToService{}'.format(slot)
+            ) ]
+
+            # Slight trick - configuredRichSim is a list and therefore MUTABLE!
+            configuredRichSim = [ False ]
+            for det in self.getProp('DetectorSim')['Detectors']:
+                self.configureDetectorSim( slot, detHits, det, configuredRichSim )
+
+            # ################################################
+            # Signal part here
+            # ################################################
+            if slot == '':
+                TESNode = "/Event/"+self.slot_(slot)+"Signal/"
+                simSlotSignal = GaudiSequencer( "SignalSimulation")
+
+                gdh = GenInit('SignalGen')
+                self.setBeamParameters(self.defineCrossingList(), gdh)
+
+                gdh.MCHeader = TESNode+"Gen/Header"
+                gdh.CreateBeam = False
+                sdh = SimInit('SignalSim')
+
+                sdh.MCHeader = TESNode+"MC/Header"
+
+                simSlotSignal.Members += [ gdh]
+                simSlotSignal.Members += [ sdh]
+
+                simSlotSignalSeq = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSim", ModeOR=True)
+                simSlotSignalSeqImpl = GaudiSequencer( "Make"+self.slotName(slot)+"SignalSimImpl")
+                simSeq.Members += [simSlotSignal]
+                simSlotSignal.Members += [simSlotSignalSeq]
+
+                grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim')
+                grdfilter.IsPhaseEqual = 0
+                simSlotSignalSeq.Members = [grdfilter, simSlotSignalSeqImpl]
+
+                simSlotSignalSeqImpl.Members += [Generation().clone("GenerationSignal")]
+                simSlotSignalSeqImpl.RootInTES = '{}Signal'.format(slot)
+
+                genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
+                                                LookForUnknownParticles = True )
+                # genToSim.SelectiveSimulationStep = 2
+                simSlotSignalSeqImpl.Members += [ genToSim ]
+
+                simSlotSignalSeqImpl.Members += [ GiGaFlushAlgorithm( "GiGaFlush"+slot + 'Signal' ) ]
+                simSlotSignalSeqImpl.Members += [ GiGaCheckEventStatus( "GiGaCheckEvent"+slot + 'Signal' ) ]
+                simToMC = SimulationToMCTruth( "SimToMCTruth"+slot + 'Signal' )
+                simSlotSignalSeqImpl.Members += [ simToMC ]
+
+                detHits = GaudiSequencer( "DetectorsHits" + slot + 'Signal' )
+                simSlotSignalSeqImpl.Members += [ detHits ]
+                simSlotSignalSeqImpl.Members += [ GaussRedecayPrintMCParticles('SignalPrint') ]
+
+                configuredRichSim = [ False ]
+                for det in self.getProp('DetectorSim')['Detectors']:
+                    self.configureDetectorSim( slot+'Signal', detHits, det, configuredRichSim )
+
+            # ##############################################
+            # End signal part
+            # ##############################################
+            loadSlotSeq = GaudiSequencer( "Load"+self.slotName(slot)+"Sim", ModeOR=True )
+            grdfilter = GaussRedecayCtrFilter('CheckIfSignalSim2{}'.format(slot))
+            grdfilter.IsPhaseNotEqual = 2
+            loadSlotSeq.RootInTES = slot
+            loadSlotSeq.Members += [
+                grdfilter,
+                GaussRedecayRetrieveFromService('GaussRedecayRetrieveFromService{}'.format(slot))]
+            simSeq.Members += [loadSlotSeq]
+            if slot == '':
+                grdfilter = GaussRedecayCtrFilter('CheckIfMerge')
+                grdfilter.IsPhaseEqual = 0
+                mergeSlotSeq = GaudiSequencer( "Merge"+self.slotName(slot)+"Sim", ModeOR=True )
+                GaussRedecayMergeAndClean().MCHitsLocation = GaussRedecayCopyToService().MCHitsLocation
+                GaussRedecayMergeAndClean().MCCaloHitsLocation = GaussRedecayCopyToService().MCCaloHitsLocation
+                mergeSlotSeq.Members += [
+                    #StoreExplorerAlg('BeforeMerge'),
+                    grdfilter,
+                    GaussRedecayMergeAndClean()]
+                    #GaussRedecayPrintMCParticles('FullPrint'),
+                    #StoreExplorerAlg('AfterMerge')]
+                simSeq.Members += [mergeSlotSeq]
+                GaudiSequencer('RichHitsSignal').Members = GaudiSequencer('RichHitsSignal').Members[:4]
+            richpaddingSlotSeq = GaudiSequencer( "RichPadding"+self.slotName(slot) )
+            richpaddingSlotSeq.RootInTES = slot
+            richpaddingSlotSeq.Members = GaudiSequencer('RichHits' + slot).Members[4:]
+            GaudiSequencer('RichHits' + slot).Members = GaudiSequencer('RichHits' + slot).Members[:4]
+            simSeq.Members += [richpaddingSlotSeq]
+
+
+            # Data packing ...
+            if self.getProp("EnablePack") :
+                packing = GaudiSequencer(self.slotName(slot)+"EventDataPacking")
+                simSeq.Members += [ packing ]
+                SimConf().PackingSequencers[slot] = packing

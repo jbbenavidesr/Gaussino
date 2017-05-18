@@ -161,9 +161,13 @@ StatusCode Generation::initialize() {
     tool< ISampleGenerationTool >( m_sampleGenerationToolName , this ) ;
   
   // Retrieve vertex smearing tool
-  if ( "" != m_vertexSmearingToolName ) 
+  if ( "" == m_vertexSmearingToolName ) {
+    info() << "No vertex smearing tool is defined. Will not smear anything." 
+           << endmsg ;
+  } else {
     m_vertexSmearingTool = 
       tool< IVertexSmearingTool >( m_vertexSmearingToolName , this ) ;
+  }
   
   // Retrieve full gen event cut tool
   if ( "" != m_fullGenEventCutToolName ) m_fullGenEventCutTool =
@@ -310,9 +314,11 @@ StatusCode Generation::execute() {
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
           (*itEvents) -> pGenEvt() -> set_event_number( ++iPile ) ;
-          if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
-            sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
-          if ( ! sc.isSuccess() ) return sc ;
+          if(m_vertexSmearingTool){
+            if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
+                sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
+            if ( ! sc.isSuccess() ) return sc ;
+          }
         }
       }
 
@@ -635,25 +641,4 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
   if ( ( 0 == bQuark ) && ( bHadron > 0 ) ) ++theCounter[ PromptB ] ;
   if ( ( 0 == cQuark ) && ( 0 == bHadron ) && ( cHadron > 0 ) ) 
     ++theCounter[ PromptC ];
-}
-
-//=============================================================================                                                                                   
-// Interaction counters in FSR                                                                                                                                    
-//=============================================================================                                                                                   
-void Generation::updateFSRCounters( interactionCounter & theCounter,
-                                    LHCb::GenFSR* m_genFSR,
-                                    const std::string option)
-{
-  int key = 0; 
-  longlong count = 0;
-  std::string name[7]= {"Oneb","Threeb","PromptB","Onec","Threec","PromptC","bAndc"};  
-  std::string cname = "";
-
-  for(int i=0; i<7; i++)
-  {
-    cname = name[i]+option;
-    key = LHCb::GenCountersFSR::CounterKeyToType(cname);
-    count = theCounter[i];
-    m_genFSR->incrementGenCounter(key,count); 
-  } 
 }

@@ -2,6 +2,7 @@
 // status:  Mon 9 Feb 2009 19:18:04 GMT
 #include "AmpGen/ParticlePropertiesList.h"
 #include "AmpGen/MsgService.h"
+#include "AmpGen/Utilities.h"
 
 #include <string>
 #include <fstream>
@@ -29,18 +30,13 @@ const ParticlePropertiesList* ParticlePropertiesList::getMe(){
 }
 
 void ParticlePropertiesList::printCannotFindWarning(const std::string& where
-						    , const std::string& what){
-  cout << "WARNING in ParticlceProperties::" << where
-       << " Got ParticlePropertiesList, but couldn't find "
-       << what
-       << endl;
+    , const std::string& what){
+  WARNING( "Got ParticlePropertiesList, but couldn't find " << what << " in " << where );
 }
 void ParticlePropertiesList::printCannotFindWarning(const std::string& where
-						    , int what){
-  cout << "WARNING in ParticlceProperties::" << where
-       << " Got ParticlePropertiesList, but couldn't find "
-       << what
-       << endl;
+    , int what){
+
+  WARNING( "Got ParticlePropertiesList, but couldn't find " << what << " in " << where );
 }
 
 double ParticlePropertiesList::mass(const std::string& name) {
@@ -85,7 +81,7 @@ const std::vector<std::string>& ParticlePropertiesList::dirList(){
 void ParticlePropertiesList::fillDirList(){
   _dirList.clear();
 
-//   Get directory to AmpGenROOT
+  //   Get directory to AmpGenROOT
 
   std::string MintRoot(".");
   char * Mintenv(0);
@@ -93,7 +89,7 @@ void ParticlePropertiesList::fillDirList(){
   if (NULL != Mintenv){
     MintRoot = Mintenv;
   }
-  
+
   _dirList.push_back("");
   _dirList.push_back( MintRoot + "/options/");
   _dirList.push_back("../");
@@ -124,7 +120,7 @@ FILE* ParticlePropertiesList::findThisFile(const std::string& fname){
       it != dirList().end();
       it++){
 
-	std::string tryThisDir = (*it);
+    std::string tryThisDir = (*it);
     std::string fullFname = tryThisDir + fname;
     if(verbose) INFO( "Trying: " << fullFname ) ;
     FILE* f=fopen(fullFname.c_str(), "r");
@@ -139,66 +135,69 @@ FILE* ParticlePropertiesList::findThisFile(const std::string& fname){
   return (FILE*) 0;
 }
 
-ParticlePropertiesList::ParticlePropertiesList(std::string fname_in){
+ParticlePropertiesList::ParticlePropertiesList(const std::string& fname_in){
   _fname=fname_in;
-
   if(! readFiles()){
     ERROR( "Problem reading file " << _fname );
   }
-  
 }
+
+void ParticlePropertiesList::readLatexLabels(){
+  std::string fname_in = getenv("AMPGENROOT")+std::string("/options/pdgID_to_latex.dat");
+  auto lines = vectorFromFile( fname_in );
+  m_latexLabels.clear();
+  for( auto& line : lines ){
+    auto tokens = split( line, ' ' );
+    m_latexLabels[ stoi( tokens[0] ) ] = 
+      std::make_pair( tokens[1], tokens[2] );
+  }
+}
+
 
 bool ParticlePropertiesList::readFiles(){
   bool shoutIfTwice=true;
   int counter=0;
+  readLatexLabels();
   while(FILE* f = findFiles()){
     INFO("Reading " << counter << "th file" );
     if(0==f) return false;
-    
+
     static const int lineLength=800;
     char line[lineLength]={'\0'};
-    
+
     while(fgets(line, lineLength, f)){
       ParticleProperties P(line);
+      auto label = m_latexLabels.find( P.pdg_id() );
+      if( label != m_latexLabels.end() )
+        P.setLabel( label->second.first );
       if(! P.isValid()) continue;
-      
+
       theList.push_back(P);
       if(P.hasDistinctAnti()){
-	P.antiThis();
-	theList.push_back(P);
+        P.antiThis();
+        if( label != m_latexLabels.end() ) 
+          P.setLabel( label->second.second );
+        theList.push_back(P);
       }
     }
     fclose(f);
   }
-
-
   // make maps for fast particle finding:
-  for(std::list<ParticleProperties>::iterator it= theList.begin();
-      it != theList.end(); it++){
-    //std::cout << it->name() << std::endl; 
-    byName[it->name()] = it;
-    if(shoutIfTwice && it->pdg_id() != 0){
-      map<int, list<ParticleProperties>::iterator >::iterator found = byID.find(it->pdg_id());
+  for(auto& it : theList ){
+    byName[it.name()] = &it;
+    if(shoutIfTwice && it.pdg_id() != 0){
+      auto found = byID.find(it.pdg_id());
       if(found != byID.end()){
-       WARNING(
-	     "pdg_id " << it->pdg_id() << " used twice, here: " 
-	     << (found->second)->name()
-	     << ", and here: " << it->name() );
-/*
-	cout << " Important: Note that this is probably not be a MintDalitz error - "
-	     << "\n some particles (the 'non-established' ones) have the same PDG code."
-	     << "\n To use those realiably, you'll need to put your own copy of the"
-	     << "\n mass_width.cvs file, put it into your run-directory, and edit the file"
-	     << "\n so that your particle has a unique PID code."
-	     << "\n -----------------------"
-	     << endl;
-*/
+        WARNING(
+            "pdg_id " << it.pdg_id() << " used twice, here: " 
+            << (found->second)->name()
+            << ", and here: " << it.name() );
       }
 
     }
-    byID[it->pdg_id()] = it;
+    byID[it.pdg_id()] = &it;
   }
-  
+
   return true;
 }
 
@@ -211,18 +210,14 @@ void ParticlePropertiesList::print(std::ostream& out) const{
 }
 
 const ParticleProperties* ParticlePropertiesList::get(const std::string& name) const{
-     std::map<std::string, std::list<ParticleProperties>::iterator >::const_iterator it 
-       = byName.find(name);
-     if(it == byName.end()) return 0;
-     
-     return &(*(it->second));
+  auto it = byName.find(name);
+  if(it == byName.end()) return 0;
+  return it->second;
 }
 const ParticleProperties* ParticlePropertiesList::get(int id) const{
-     std::map<int, std::list<ParticleProperties>::iterator >::const_iterator it 
-       = byID.find(id);
-     if(it == byID.end()) return 0;
-     
-     return &(*(it->second));
+  auto it = byID.find(id);
+  if(it == byID.end()) return 0;
+  return it->second;
 }
 
 std::ostream& operator<<(std::ostream& out, const ParticlePropertiesList& ppl){

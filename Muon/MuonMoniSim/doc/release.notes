@@ -4,6 +4,14 @@
 ! Purpose       : Monitoring for the muon system for simulated data
 !-----------------------------------------------------------------------------
 
+!======================= MuonMoniSim v3r2 2016-12-15 =========================
+! 2016-12-13 - Ryan Calladine
+ - Adds options files MuonMoniSim.py and Gauss-Job.py to include the
+   MuonHitChecker and MuonMultipleScatteringChecker and to set the number
+   of events to be generated.
+ - Adds runmuontest.py to run Gauss with these options files and output
+   histograms in MuonTestResults directory
+
 !======================= MuonMoniSim v3r0p1 2015-01-16 =======================
 ! 2014-11-25 - Gloria Corti
  - Fixes for compilation warnings with --pedantic

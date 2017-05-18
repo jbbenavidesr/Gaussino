@@ -163,7 +163,7 @@ class Particle {
     bool conservesParity( unsigned int L=0) const {
       return parity() == daughter(0)->parity()*daughter(1)->parity()*( L % 2 == 0 ? 1 : -1 );
     }
-    std::string getTex(bool isRoot = false) const;
+    std::string getTeX() const;
     std::string makeUniqueString();
     bool isStable() const;
 
@@ -195,7 +195,7 @@ class Particle {
     Tensor SpinTensor(std::vector<DBSYMBOL>* db=0);
     Expression FormFactor(std::vector<DBSYMBOL>* db=0) const ;
     /// key functions 
-    Expression getExpression(std::vector<DBSYMBOL>* db=0 , const unsigned int& i=0);
+    Expression getExpression(std::vector<DBSYMBOL>* db=0 , const unsigned int& index=0);
 }; } 
 
 #endif

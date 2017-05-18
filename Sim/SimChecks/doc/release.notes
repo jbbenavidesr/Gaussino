@@ -3,7 +3,14 @@
 ! Responsible : Peter Griffith, Luca Pescatore
 ! Purpose     : 
 !-----------------------------------------------------------------------------
+! 2017-02-02 - Kristian Zarebski
+ - Updated Target test to create ROOT file plots as well as PDFs in the 
+   directory 'ROOTGraphs'
 
+! 2016-12-08 - Kristian Zarebski
+ - Updated RadLength Test to output to single folder location in preparation
+   for integration into LHCbPR
+ - Updated Target test to have general options file for running in LHCbPR
 !========================== SimChecks v1r8 2016-05-25 ========================
 ! 2016-03-22 - Dmitry Popov
  - Removed the settings which do not change the Gauss' defaults, replaced
