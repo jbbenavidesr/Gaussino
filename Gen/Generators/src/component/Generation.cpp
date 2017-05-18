@@ -642,3 +642,26 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
   if ( ( 0 == cQuark ) && ( 0 == bHadron ) && ( cHadron > 0 ) ) 
     ++theCounter[ PromptC ];
 }
+
+
+//=============================================================================
+// Interaction counters in FSR                                              
+//=============================================================================                   
+
+void Generation::updateFSRCounters( interactionCounter & theCounter,
+                                    LHCb::GenFSR* m_genFSR,
+                                    const std::string option)
+{
+  int key = 0; 
+  longlong count = 0;
+  std::string name[7]= {"Oneb","Threeb","PromptB","Onec","Threec","PromptC","bAndc"};  
+  std::string cname = "";
+
+  for(int i=0; i<7; i++)
+  {
+    cname = name[i]+option;
+    key = LHCb::GenCountersFSR::CounterKeyToType(cname);
+    count = theCounter[i];
+    m_genFSR->incrementGenCounter(key,count); 
+  } 
+}
