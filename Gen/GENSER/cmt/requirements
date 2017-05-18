@@ -3,7 +3,7 @@
 # Maintainer : Patrick ROBBE, Gloria CORTI
 #============================================================================
 package GENSER
-version v16r4
+version v17r0
 
 # Structure, i.e. directories to process. 
 #============================================================================
@@ -34,7 +34,7 @@ macro alpgen_native_version "2.1.4"
 
 #-- Powheg-box
 #============================================================================
-macro powhegbox_native_version "r2092"
+macro powhegbox_native_version "r3043.lhcb"
 
 #-- Photos++ and Taula++ 
 #============================================================================
@@ -45,9 +45,9 @@ macro tauolapp_native_version "1.1.6b.lhcb"
 #-- Pythia 8
 #   PYTHIA8DATA is needed by EvtGen, -lpythia8tohepmc for LbPythia8
 #============================================================================
-macro pythia8_native_version "186"
-macro_append pythia8_linkopts " -lpythia8tohepmc "
-set PYTHIA8DATA $(pythia8_home)/xmldoc
+macro pythia8_native_version "219"
+#macro_append pythia8_linkopts " -lpythia8tohepmc " # it is no longer in 219
+set PYTHIA8DATA $(pythia8_home)/share/Pythia8/xmldoc
 
 #-- Pythia 6
 #============================================================================
@@ -57,10 +57,11 @@ macro_remove pythia6_linkopts " -lpythia6_pdfdummy " \
                         WIN32 " pythia6_pdfdummy.lib "
 
 #-- Rivet for reference analysis with comparison with published data and
-#-- Professor for tuning
+#-- Professor for tuning, also needs Yoda for Rivet 2.0
 #============================================================================
 macro rivet_native_version "2.4.2"
 macro yoda_native_version "1.5.9"
+
 
 #-- Redefine symbols of MCGenerators libraries
 #-- Pythia 6
@@ -77,15 +78,6 @@ include_dirs $(GENSERROOT)/src/pythia6
 
 # force the order of link for pythia6
 macro_append GENSER_linkopts " $(pythia6_linkopts) "
-
-# same for EPOS
-library      eposforgauss   epos/*.F
-
-apply_pattern linker_library library=eposforgauss
-
-# force the order of link for epos
-macro_append GENSER_linkopts " $(epos_linkopts) "
-
 
 #-- Hijing
 #============================================================================
