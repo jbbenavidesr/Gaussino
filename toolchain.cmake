@@ -7,14 +7,14 @@ set(generators_versions
     alpgen      2.1.4
     herwig++    2.7.1
     hijing      1.383bs.2
-    lhapdf      6.1.4
+    lhapdf      6.1.6.cxxstd
     photos++    3.56
-    powheg-box  r2092
+    powheg-box  r3043.lhcb
     pythia6     427.2
-    pythia8     186
-    rivet       2.4.2
+    pythia8     219
+    rivet       2.5.2
     tauola++    1.1.6b.lhcb
-    thepeg      1.9.2p1
+    thepeg      2.0.3
     crmc        1.5.6
     yoda        1.5.9
     )
