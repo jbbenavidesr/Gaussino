@@ -53,6 +53,9 @@ from Configurables import ( PackMCParticle, PackMCVertex,
                             UnpackMCParticle, UnpackMCVertex,
                             CompareMCParticle, CompareMCVertex )
 
+# Various options for the RICH
+from Configurables import (GaussRICHConf, GaussCherenkovConf)
+
 # All GaussRedecay includes
 from Configurables import ( GaussRedecay, GaussRedecayCopyToService,
                             GaussRedecayRetrieveFromService,
@@ -141,6 +144,8 @@ class Gauss(LHCbConfigurableUser):
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
         , "Redecay" : {"N": 100, 'active': False, 'rd_mode': 1}
+        , "CurrentRICHSimRunOption" : 'GTB'
+        , "UpgradeRICHSimRunOption"  : 'GTB'
       }
 
     _detectorsDefaults = {"Detectors": ['PuVeto', 'Velo', 'TT', 'IT', 'OT', 'Rich1', 'Rich2', 'Spd', 'Prs', 'Ecal', 'Hcal', 'Muon', 'Magnet'] }
@@ -165,6 +170,8 @@ class Gauss(LHCbConfigurableUser):
        ,"ReplaceWithGDML": """Replace a list of specified volumes with GDML description from file provided """
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
        ,"Redecay"        : """ Dict with redecay settings, default: {'N': 100, 'active': False, 'rd_mode': 1}."""
+       ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """  
+       ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """          
        }
     KnownHistOptions     = ['NONE','DEFAULT']
     TrackingSystem       = ['VELO','TT','IT','OT']
@@ -2321,6 +2328,14 @@ class Gauss(LHCbConfigurableUser):
         else:
             outputFile=self.outputName() + fileExtension
 
+        # Merge genFSRs
+        if self.getProp("WriteFSR"):
+            seqGenFSR = GaudiSequencer("GenFSRSeq")
+            ApplicationMgr().TopAlg += [ seqGenFSR ]
+
+            if self.getProp("MergeGenFSR"):
+                seqGenFSR.Members += [ "GenFSRMerge" ]
+                                                  
         IOHelper().outStream( outputFile, simWriter, self.getProp("WriteFSR") )
 
         simWriter.RequireAlgs.append( 'GaussSequencer' )
@@ -3126,9 +3141,11 @@ class Gauss(LHCbConfigurableUser):
                  
                   
          ## setup the Physics list and the productions cuts
-         if skipG4:
-             richPmt = False
-         self.setPhysList(richPmt)
+         ## the following 2 lines commented out.        
+         #if skipG4:
+         #    richPmt = False
+         
+         self.setPhysList(richUpgradeConfig)
 
          ## Mandatory G4 Run action
          giga.addTool( GiGaRunActionSequence("RunSeq") , name="RunSeq" )
@@ -3174,35 +3191,24 @@ class Gauss(LHCbConfigurableUser):
                 mGaussCherenkovConf.ApplyGaussCherenkovConfiguration(giga)
                     
              else:
-                 SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
+                 #keep the old options for backward compatibility for now. It may be removed in the future
+                 #The method has the following in but it shoul not be tied to the RICH!!
+                 #SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
 
-             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
-                 importOptions("$GAUSSRICHROOT/options/Rich.opts")
-                 if self.getProp("DataType") in self.Run2DataTypes :
-                     importOptions("$GAUSSRICHROOT/options/RichRemoveAerogel.opts")
+                 self.GaussCherenkovOldSetup(giga,UpgradeRichPmtDetector,skipG4 )
+         else:
 
+             if (self.getProp("CurrentRICHSimRunOption") != "clunker" ):
+                mGaussRICHConf= GaussRICHConf()
+                mGaussRICHConf.InitializeGaussRICHConfiguration()
+                mGaussRICHConf.setRichDetectorExistFlag(Run1Run2RichDetector)
+                mGaussRICHConf.setSkipGeant4RichFlag(skipG4 )
+                mGaussRICHConf.ApplyGaussRICHConfiguration(giga)
+                
              else:
-                 if not skipG4:
-                     giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                             name = "GiGaPhysConstructorOp" )
-                     giga.ModularPL.addTool( GiGaPhysConstructorHpd,
-                                             name = "GiGaPhysConstructorHpd" )
-                     giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
-                     giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
-
-             if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
-                 giga.ModularPL.addTool( GiGaPhysConstructorOp,
-                                         name="GiGaPhysConstructorOp" )
-                 giga.ModularPL.GiGaPhysConstructorOp.RichActivateRichPhysicsProcVerboseTag = True
-                 giga.StepSeq.Members += [ "RichG4StepAnalysis4/RichStepAgelExit" ]
-                 giga.StepSeq.Members += [ "RichG4StepAnalysis5/RichStepMirrorRefl" ]
-                 if self.getProp("RICHRandomHits") == True :
-                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsActivate = True
-                     giga.ModularPL.GiGaPhysConstructorOp.Rich2BackgrHitsProbabilityFactor = 0.5
-
-
+                 #keep the old options for backward compatibility for now. It may be removed in the future.
+                 self.GaussRICHOldSetup(giga,Run1Run2RichDetector ,skipG4 )
           
-
          # End of RICH simulation configuration
 
          giga.TrackSeq.Members += [ "GaussPostTrackAction/PostTrack" ]
