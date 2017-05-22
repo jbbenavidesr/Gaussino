@@ -218,7 +218,7 @@ StatusCode GenerationToSimulation::execute() {
 	 mctruthList.end() != it; ++it) {
       HepMC::GenVertex* prodVertex = (*it)->production_vertex();
       if (!prodVertex) 
-        warning() << "The particle has no production vertex !!" << endreq;
+        warning() << "The particle has no production vertex !!" << endmsg;
       else if (0 == prodVertex->id())
         convert(*it, origVertex, primaryVertex, 0, 0);
     }
@@ -364,7 +364,7 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
 
       // Attach root particle to G4 primary vertex.
       if (pvertexg4) pvertexg4->SetPrimary(g4P);
-      else error() << "Primary vertex points to NULL !" << endreq ;
+      else error() << "Primary vertex points to NULL !" << endmsg ;
 
     // Set mother link.
     } else {
@@ -443,7 +443,7 @@ unsigned char GenerationToSimulation::transferToGeant4
       if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id())) 
         warning() << "The particle " << p -> pdg_id() 
 		  << " is not known to Geant4 but travels a finite distance" 
-		  << endreq;
+		  << endmsg;
     return 1;
   }
 
@@ -461,7 +461,7 @@ unsigned char GenerationToSimulation::transferToGeant4
     if (!G4ParticleTable::GetParticleTable()->FindParticle(p->pdg_id())) 
       warning() << "The particle " << p -> pdg_id() 
 		<< " is not known to Geant4 but travels a finite distance" 
-		<< endreq;
+		<< endmsg;
   return 1;
 }
 
@@ -559,7 +559,7 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex
     HepMC::GenParticle* P = genEvent->beam_particles().first;
     HepMC::GenVertex*   V = P->end_vertex();
     if (V) result = V->position(); 
-    else error() << "The beam particles have no end vertex!" << endreq;
+    else error() << "The beam particles have no end vertex!" << endmsg;
   // Second method, use the singal vertex stored in HepMC.
   } else if ( 0 != genEvent -> signal_process_vertex() ) {
     HepMC::GenVertex* V = genEvent->signal_process_vertex();
@@ -575,9 +575,9 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex
         V = P->end_vertex();
         if (V) result = V->position();
         else error() << "The first particle has no production vertex and "
-		     << "no end vertex !" << endreq ;
+		     << "no end vertex !" << endmsg ;
       }
-    } else error() << "No particle with barcode equal to 1!" << endreq;
+    } else error() << "No particle with barcode equal to 1!" << endmsg;
   }
   return result;
 }

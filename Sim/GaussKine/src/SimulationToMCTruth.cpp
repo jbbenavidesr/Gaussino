@@ -147,7 +147,7 @@ StatusCode SimulationToMCTruth::execute() {
 
   // Check if event is empty
   if( g4Event -> GetNumberOfPrimaryVertex() == 0 ) {
-    warning() << "The g4Event has zero primary vertices!" << endreq ;
+    warning() << "The g4Event has zero primary vertices!" << endmsg ;
     return StatusCode::SUCCESS;
   }
 
@@ -157,8 +157,8 @@ StatusCode SimulationToMCTruth::execute() {
   while( 0 != g4Vertex ) {
     LHCb::MCVertex * primVtx = findPrimaryVertex( Gaudi::XYZPoint( g4Vertex -> GetPosition() ) ) ;
     if ( 0 == primVtx ) {
-      warning() << "The MCVertex primary vertex does not exist already !" << endreq ;
-      warning() << "It will be recreated now but this is not normal." << endreq ;
+      warning() << "The MCVertex primary vertex does not exist already !" << endmsg ;
+      warning() << "It will be recreated now but this is not normal." << endmsg ;
       primVtx = new LHCb::MCVertex();
       m_vertexContainer -> insert( primVtx ) ;
       primariesVtx.push_back( primVtx );
@@ -291,7 +291,7 @@ void SimulationToMCTruth::convert( const HepMC::GenParticle * part ,
       if ( 0 == m_ppSvc -> find( LHCb::ParticleID( part->pdg_id() ) ) ) 
 	  warning() << "The particle with pdg_id " << part->pdg_id()
 		    << " is not known to LHCb. " 
-		    << "Mass is " << part -> generated_mass() << endreq ;
+		    << "Mass is " << part -> generated_mass() << endmsg ;
     } 
     
     // Check if the particle from Geant4 has already a link to a MCParticle
