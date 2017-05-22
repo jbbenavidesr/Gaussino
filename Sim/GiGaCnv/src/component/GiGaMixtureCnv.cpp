@@ -76,7 +76,7 @@ StatusCode GiGaMixtureCnv::updateRep
 {
   ///
   { MsgStream log( msgSvc() , name() ); 
-  log << MSG::VERBOSE << "UpdateRep::start" << endreq; } 
+  log << MSG::VERBOSE << "UpdateRep::start" << endmsg; } 
   ///
   if( 0 == object   ) { return Error("UpdateRep::DataObject* points to NULL");}
   Mixture* mixture =  dynamic_cast<Mixture*>( object ) ;  
@@ -161,7 +161,7 @@ StatusCode GiGaMixtureCnv::updateRep
     }
   /// 
   { MsgStream log( msgSvc() , name() ); 
-  log << MSG::VERBOSE << "UpdateRep::end for"+mixtureName << endreq; } 
+  log << MSG::VERBOSE << "UpdateRep::end for"+mixtureName << endmsg; } 
   ///
   return StatusCode::SUCCESS; 
   /// 

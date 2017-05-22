@@ -217,7 +217,7 @@ StatusCode GiGaCnvBase::Print
   const MSG::Level & level   ) const
 {
   MsgStream log( msgSvc() , name() ); 
-  log << level << Message << endreq   ; 
+  log << level << Message << endmsg   ; 
   return  Status; 
 }
 
@@ -344,14 +344,14 @@ StatusCode GiGaCnvBase::finalize ()
           << " Exceptions/Errors/Warnings statistics:  " 
           << m_exceptions .size () << "/"
           << m_errors     .size () << "/"
-          << m_warnings   .size () << endreq ; 
+          << m_warnings   .size () << endmsg ; 
       // print exceptions counter 
       for( Counter::const_iterator excp = m_exceptions.begin() ;
            excp != m_exceptions.end() ; ++excp )
         {
           log << MSG::ALWAYS 
               << " #EXCEPTIONS= " << excp->second  
-              << " Message='"     << excp->first    << "'" << endreq ; 
+              << " Message='"     << excp->first    << "'" << endmsg ; 
         }  
       // print errors counter 
       for( Counter::const_iterator error = m_errors.begin() ;
@@ -359,7 +359,7 @@ StatusCode GiGaCnvBase::finalize ()
         {
           log << MSG::ALWAYS 
               << " #ERRORS    = " << error->second  
-              << " Message='"     << error->first    << "'" << endreq ; 
+              << " Message='"     << error->first    << "'" << endmsg ; 
         }  
       // print warnings
       for( Counter::const_iterator warning = m_warnings.begin() ;
@@ -367,7 +367,7 @@ StatusCode GiGaCnvBase::finalize ()
         {
           log << MSG::ALWAYS 
               << " #WARNINGS  = " << warning->second  
-              << " Message='"     << warning->first  << "'" << endreq ; 
+              << " Message='"     << warning->first  << "'" << endmsg ; 
         }  
     }
   ///

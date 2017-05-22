@@ -124,7 +124,7 @@ StatusCode GiGaElementCnv::updateRep
   typedef Element::Isotopes::iterator Iterator;
   ///
   { MsgStream log( msgSvc() , name() ); 
-  log << MSG::VERBOSE << "UpdateRep::start" << endreq; } 
+  log << MSG::VERBOSE << "UpdateRep::start" << endmsg; } 
   ///
   if( 0 == Object   ) 
     { return Error("UpdateRep::DataObject* points to NULL"); } 
@@ -230,7 +230,7 @@ StatusCode GiGaElementCnv::updateRep
     }
   ///
   { MsgStream log( msgSvc() , name() ); 
-  log << MSG::VERBOSE << "UpdateRep::end" << endreq; } 
+  log << MSG::VERBOSE << "UpdateRep::end" << endmsg; } 
   ///
   return StatusCode::SUCCESS; 
   /// 
