@@ -31,9 +31,9 @@
 #include "Event/MCRichTrack.h"
 #include "Event/MCParticle.h"
 
-// RichKernel
-#include "RichKernel/RichStatDivFunctor.h"
-#include "RichKernel/RichPoissonEffFunctor.h"
+// RichUtils
+#include "RichUtils/RichStatDivFunctor.h"
+#include "RichUtils/RichPoissonEffFunctor.h"
 
 // Relations
 #include "Relations/Relation1D.h"

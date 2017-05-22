@@ -1,5 +1,3 @@
-// $Id: MCCaloMonitor.cpp,v 1.10 2009-10-23 10:45:22 jonrob Exp $
-
 // Include files
 
 // STL
@@ -9,7 +7,6 @@
 
 // from Gaudi
 #include "Kernel/CaloCellID.h"
-#include "GaudiKernel/DeclareFactoryEntries.h"
 // from Event
 #include "Event/MCHit.h"
 #include "Event/MCParticle.h"
@@ -20,9 +17,6 @@
 
 // Gaudi Histograms:
 #include "GaudiAlg/GaudiHistoAlg.h"
-// CaloKernel
-#include "CaloKernel/CaloException.h"
-#include "CaloKernel/CaloCollection.h"
 
 // local
 #include "MCCaloMonitor.h"
