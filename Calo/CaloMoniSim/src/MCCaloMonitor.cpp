@@ -85,7 +85,7 @@ StatusCode MCCaloMonitor::initialize() {
   StatusCode sc = GaudiHistoAlg::initialize(); // must be executed first
   if ( sc.isFailure() ) return sc;  // error printed already by GaudiAlgorithm
 
-  info() << "==> Initialise Monitoring " << m_Detector << endreq;
+  info() << "==> Initialise Monitoring " << m_Detector << endmsg;
 
   m_hDir = m_Detector;
   m_nameOfMCHits = "MC/" + m_Detector + "/Hits";
@@ -130,7 +130,7 @@ StatusCode MCCaloMonitor::initialize() {
   m_detector = getDet<DeCalorimeter>(m_GeometryRoot + m_Detector);
   if( 0 == m_detector ) {
     error() <<
-      "Cannot locate Detector Element ="<< m_GeometryRoot+m_Detector << endreq;
+      "Cannot locate Detector Element ="<< m_GeometryRoot+m_Detector << endmsg;
     return StatusCode::FAILURE ;
   }
   
@@ -144,7 +144,7 @@ StatusCode MCCaloMonitor::execute() {
 
   ++m_nEvents;
   m_nEvents  = 1;
-  debug() << "Execute Monitoring " << m_Detector << endreq;
+  debug() << "Execute Monitoring " << m_Detector << endmsg;
 
   MCCaloHits::const_iterator iHit;
 
@@ -244,7 +244,7 @@ StatusCode MCCaloMonitor::execute() {
 //=============================================================================
 StatusCode MCCaloMonitor::finalize() {
 
-  info()<< "Finalize Monitoring " << m_Detector << endreq;
+  info()<< "Finalize Monitoring " << m_Detector << endmsg;
   return GaudiHistoAlg::finalize();  // must be called after all other actions
 }
 

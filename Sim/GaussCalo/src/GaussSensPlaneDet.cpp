@@ -157,7 +157,7 @@ StatusCode GaussSensPlaneDet::finalize    ()
                  (long) sqrt ( fabs( m_hits2 - m_hits * m_hits ) )      ,
                  (long) m_hitsMin                                       ,
                  (long) m_hitsMax                                       )
-           << endreq ;
+           << endmsg ;
     }
   // finalize the base class
   return GiGaSensDetBase::finalize();
@@ -221,7 +221,7 @@ void GaussSensPlaneDet::EndOfEvent( G4HCofThisEvent* /* HCE */ )
 
   MsgStream log ( msgSvc() , name() ) ;
   log << MSG::DEBUG <<
-    format ( " #GaussSensPlaneHits=%4d ", nhits ) << endreq ;
+    format ( " #GaussSensPlaneHits=%4d ", nhits ) << endmsg ;
 }
 
 
