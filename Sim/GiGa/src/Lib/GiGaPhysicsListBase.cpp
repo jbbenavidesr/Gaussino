@@ -103,11 +103,11 @@ StatusCode   GiGaPhysicsListBase::initialize     ()
   MsgStream log( msgSvc () , name () ) ;
   log << MSG::DEBUG 
       << " Production cuts *COULD* be set separately for following particles: " 
-      << endreq ;
+      << endmsg ;
   log << MSG::DEBUG 
-      << " \tGamma      : \t" << cutForGamma       () / mm << " mm" << endreq 
-      << " \tElectron   : \t" << cutForElectron    () / mm << " mm" << endreq 
-      << " \tPositron   : \t" << cutForPositron    () / mm << " mm" << endreq;
+      << " \tGamma      : \t" << cutForGamma       () / mm << " mm" << endmsg 
+      << " \tElectron   : \t" << cutForElectron    () / mm << " mm" << endmsg 
+      << " \tPositron   : \t" << cutForPositron    () / mm << " mm" << endmsg;
   //
   return StatusCode::SUCCESS ;
 }
