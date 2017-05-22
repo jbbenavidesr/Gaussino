@@ -9,7 +9,7 @@ set(generators_versions
     hijing      1.383bs.2
     lhapdf      6.1.6.cxxstd
     photos++    3.56
-    powheg-box  r3043.lhcb
+    powheg-box-v2  r3043.lhcb
     pythia6     427.2
     pythia8     219
     rivet       2.5.2
