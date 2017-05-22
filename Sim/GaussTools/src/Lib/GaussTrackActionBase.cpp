@@ -93,7 +93,7 @@ StatusCode GaussTrackActionBase::finalize   ()
     always () << " Number of marked  GaussTrajectories       " ;
     always () .stream() << m_marked         ;
     always () << "('" << name() << "')"     ;
-    always () << endreq ;
+    always () << endmsg ;
   }
   
   if ( 0 != m_nTrajectories ) 
@@ -101,7 +101,7 @@ StatusCode GaussTrackActionBase::finalize   ()
     always () << " Number of created GaussTrajectories       " ;
     always () .stream() << m_nTrajectories  ;
     always () << "('" << name() << "')"     ;
-    always () << endreq ;
+    always () << endmsg ;
   }
   
   if ( 0 != m_nTrackInfos  ) 
@@ -109,7 +109,7 @@ StatusCode GaussTrackActionBase::finalize   ()
     always () << " Number of created GaussTrackInformation   " ;
     always () . stream() << m_nTrackInfos  ;
     always () << "('" << name() << "')"     ;
-    always () << endreq ;
+    always () << endmsg ;
   }
   
   return GiGaTrackActionBase::finalize   () ; 
