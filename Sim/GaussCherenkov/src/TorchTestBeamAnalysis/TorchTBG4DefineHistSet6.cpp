@@ -42,7 +42,7 @@ TorchTBG4DefineHistSet6::~TorchTBG4DefineHistSet6() {}
 void TorchTBG4DefineHistSet6::BookTorchTBCherenkovG4HistogramSet6() {
    MsgStream TorchG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                                          "TorchTBG4HistoSet6" );
-  TorchG4Histolog << MSG::INFO << "Now Booking TorchTB histo    Set6" << endreq;
+  TorchG4Histolog << MSG::INFO << "Now Booking TorchTB histo    Set6" << endmsg;
  
   std::string title;
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();  

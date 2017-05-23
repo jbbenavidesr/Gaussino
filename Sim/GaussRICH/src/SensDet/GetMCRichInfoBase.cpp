@@ -45,7 +45,7 @@ StatusCode GetMCRichInfoBase::initialize()
   {
     info() << " '" << RichG4HitCollectionName()->RichHCName(iii) << "'";
   }
-  info() << endreq;
+  info() << endmsg;
 
   info() << "Using";
   if ( richIsActive(Rich::Rich1) ) info() << " Rich1";

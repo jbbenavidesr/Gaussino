@@ -48,7 +48,7 @@ RichG4ReconPmt::RichG4ReconPmt(){
   if( !Rich1DE ){
     RichG4PmtReconlog << MSG::ERROR
                       << "Can't retrieve " << DeRichLocations::Rich1 << " for PmtRecon"
-                      << endreq;
+                      << endmsg;
   }else {
 
     m_PmtAnodeXSize=
@@ -103,7 +103,7 @@ RichG4ReconPmt::RichG4ReconPmt(){
 
     //   RichG4PmtReconlog << MSG::INFO<<" Pmt local Z location of Si sisurface phcath Qw external "  
     //                  <<m_PmtAnodeZLocation<<"  "<<m_PmtAnodeSurfaceZLocation<<"   "
-    //                  <<m_PmtPhCathZLocation <<"   "<<m_PmtQwSurfaceZLocation<<endreq;
+    //                  <<m_PmtPhCathZLocation <<"   "<<m_PmtQwSurfaceZLocation<<endmsg;
     
 
   }

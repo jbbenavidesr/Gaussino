@@ -128,7 +128,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
   // RichG4ReconTransformPmtlog<<MSG::INFO
   //                <<"Now creating Pmt transform "
   //                <<  aRichDetNum
-  //                              << "  "<<aPmtNumber <<endreq;
+  //                              << "  "<<aPmtNumber <<endmsg;
 
 
   if(aRichDetNum == 0 ) {
@@ -141,7 +141,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
       RichG4ReconTransformPmtlog << MSG::ERROR
                                  << "Can't retrieve " << DeRichLocations::Rich1
                                  << " for RichG4TransformPmt"
-                                 << endreq;
+                                 << endmsg;
 
     }else {
 
@@ -160,7 +160,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
 
       //   RichG4ReconTransformPmtlog<<MSG::INFO
       //  <<"Now creating Pmt transform for rich1 hpd "
-      //                          <<aPmtNumber<<endreq;
+      //                          <<aPmtNumber<<endmsg;
 
       if(apva) {
         //  RichG4ReconTransformPmtlog<<MSG::INFO
@@ -168,14 +168,14 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
         //                          <<apva->name() <<"   "
         //                          <<apva->lvolumeName()<<"  "
         //                          <<apva->lvolume()-> noPVolumes()
-        //                          <<endreq;
+        //                          <<endmsg;
 
         const Gaudi::Transform3D & apvaTrans = apva->matrix();
         const Gaudi::Transform3D & apvaTransInv = apva->matrixInv();
         // for test print the names of sub volumes
         // RichG4ReconTransformPmtlog<<MSG::INFO
         //                           <<"rich1 test of hpd number "
-        //                           <<aPmtNumber<<endreq;
+        //                           <<aPmtNumber<<endmsg;
 
         //  for (int it=0;it< (int) apva->lvolume()-> noPVolumes(); it++) {
         //  RichG4ReconTransformPmtlog<<MSG::INFO
@@ -183,14 +183,14 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
         //                         <<it<<"  "
         //                         <<  apva->lvolume()->
         //                      pvolume(it)->name()
-        //                         <<endreq;
+        //                         <<endmsg;
 
 
         // }
 
         //   RichG4ReconTransformPmtlog<<MSG::INFO
         //                     <<"IN rich1 current hpd num = "
-        //                     <<aPmtNumber<<endreq;
+        //                     <<aPmtNumber<<endmsg;
 
         const IPVolume* apvb = (aPmtModuleNumber < m_Rich1PmtModuleMaxH0) ?
           apva->lvolume()->pvolume(m_Rich1MagShPvName0):
@@ -203,7 +203,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
           //                        <<apvb->name() <<"   "
           //                        <<apvb->lvolumeName()
           //                        <<"  "<<aPmtNumber
-          //                        <<endreq;
+          //                        <<endmsg;
 
           const Gaudi::Transform3D & apvbTrans= apvb->matrix();
           const Gaudi::Transform3D & apvbTransInv= apvb->matrixInv();
@@ -223,7 +223,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
             //         << " Rich1PhotDetSup pvol lvol "
             //                       <<apvc->name() <<"   "
             //                      <<apvc->lvolumeName()
-            //                      <<endreq;
+            //                      <<endmsg;
             // now account for the fact that the index is
             // restarted int he bottom ph det sup vol.
 
@@ -250,13 +250,13 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
             //->pvolume( aPmtModuleIndex);
             //            RichG4ReconTransformPmtlog<<MSG::INFO<<"Module Num Index Name"
             //                          <<aPmtModuleIndex<<"  "<<aPmtModuleNumber<<"   "
-            //                          <<m_Rich1PmtModuleMasterNameSuf[aPmtModuleNumber]<<endreq;
+            //                          <<m_Rich1PmtModuleMasterNameSuf[aPmtModuleNumber]<<endmsg;
 
             CherenkovPmtLensUtil* aCherenkovPmtLensUtil= CherenkovPmtLensUtil::getInstance();
             bool isLensModule= aCherenkovPmtLensUtil->isPmtModuleWithLens(aPmtModuleNumber);
             std::string aPrefStr= isLensModule? m_Rich1PmtModuleMasterNamePrefLens:m_Rich1PmtModuleMasterNamePrefClassic;
             //    RichG4ReconTransformPmtlog<<MSG::INFO<<" Now look for Module "
-            //                          <<aPrefStr+m_Rich1PmtModuleMasterNameSuf[aPmtModuleNumber]<<endreq;
+            //                          <<aPrefStr+m_Rich1PmtModuleMasterNameSuf[aPmtModuleNumber]<<endmsg;
             
             
             const IPVolume* apvd = apvc->lvolume()
@@ -266,12 +266,12 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
               //         << " Rich1PmtModulemaster pvol lvol num index "
               //                    <<apvd->name() <<"   "
               //                    <<apvd->lvolumeName()
-              //                              <<"  "<< aPmtModuleNumber<<endreq;
+              //                              <<"  "<< aPmtModuleNumber<<endmsg;
                   
                   //                                  <<"  "<< aPmtModuleIndex
-                  //                <<endreq;
+                  //                <<endmsg;
               //   RichG4ReconTransformPmtlog<<MSG::INFO<<" Pmt num in Module  "
-              //      <<aPmtModuleNumber<<"  "<<aPmtNumberInModule<<endreq;
+              //      <<aPmtModuleNumber<<"  "<<aPmtNumberInModule<<endmsg;
                
 
               const Gaudi::Transform3D & apvdTrans= apvd->matrix();
@@ -286,7 +286,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
                 const Gaudi::Transform3D & apvfTransInv= apvf->matrixInv();
               
                 // RichG4ReconTransformPmtlog<<MSG::INFO<<" Pmt num in Module Vol names "<<
-                //  aPmtNumberInModule << apvf->name()<<"   "<<apvf->lvolumeName()<<endreq;
+                //  aPmtNumberInModule << apvf->name()<<"   "<<apvf->lvolumeName()<<endmsg;
                 
 
                 const IPVolume* apvg =  apvf->lvolume()
@@ -296,7 +296,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
                   //      << " Rich1hpdsubmaster pvol lvol "
                   //                  <<apvf->name() <<"   "
                   //                  <<apvf->lvolumeName()
-                  //                  <<endreq;
+                  //                  <<endmsg;
 
                   const Gaudi::Transform3D & apvgTrans= apvg->matrix();
                  const Gaudi::Transform3D & apvgTransInv= apvg->matrixInv();
@@ -341,19 +341,19 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
       RichG4ReconTransformPmtlog << MSG::ERROR
                                  << "Can't retrieve " << DeRichLocations::Rich2
                                  << " for RichG4TransformPmt"
-                                 << endreq;
+                                 << endmsg;
 
     }else {
 
       //        RichG4ReconTransformPmtlog<<MSG::INFO
       //                       <<"Now creating Pmt transform for rich2 "
-      //                       <<endreq;
+      //                       <<endmsg;
 
       //      RichG4ReconTransformPmtlog<<MSG::INFO
       //        << " Rich2Master lvol num sub vol "
       //                         <<Rich2DE->geometry()->lvolume()->name()
       //              <<"  "<<Rich2DE->geometry()->lvolume()-> noPVolumes()
-      //                         <<endreq;
+      //                         <<endmsg;
       //
       // for (int it2=0;it2< (int) Rich2DE->geometry()->lvolume()
       //               -> noPVolumes(); it2++) {
@@ -362,7 +362,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
       //                         <<it2<<"  "
       //                         << Rich2DE->geometry() ->lvolume()->
       //                      pvolume(it2)->name()
-      //                         <<endreq;
+      //                         <<endmsg;
       //
       //
       // }
@@ -375,7 +375,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
         Rich2DE->geometry()->toGlobalMatrix();
 
       //      Gaudi::XYZPoint testk(0.0,0.0,0.0);
-      // RichG4ReconTransformPmtlog<<MSG::INFO<<"test K  "<<testk<<"   "<<aRich2MasterTrans*testk<<endreq;
+      // RichG4ReconTransformPmtlog<<MSG::INFO<<"test K  "<<testk<<"   "<<aRich2MasterTrans*testk<<endmsg;
       
       //        const IPVolume* bpva = (aPmtNumber< m_Rich2PmtArrayMaxH0)?
       //  aRich2MasterLogVol->
@@ -394,7 +394,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
         //       RichG4ReconTransformPmtlog<<MSG::INFO
         //                   <<" pmt num hpdpanel name "
         //                  <<aPmtModuleNumber<<"   "
-        //                  << bpva->name()<<endreq;
+        //                  << bpva->name()<<endmsg;
         int aPmtModuleIndexR2=  aPmtModuleNumber;
          if(  aPmtModuleNumber >= m_Rich2PmtModuleMaxH0) {
           aPmtModuleIndexR2 = aPmtModuleNumber - m_Rich2PmtModuleMaxH0;
@@ -416,7 +416,7 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
           const Gaudi::Transform3D & bpvbTransInv = bpvb->matrixInv();
 
           //  RichG4ReconTransformPmtlog<<MSG::INFO<<" Now get Rich2 bpvs pmtModule  pmtModuleinSide PmtNumInModule   "
-          //      << aPmtModuleNumber <<"    "<< aPmtModuleIndexR2<<"   "<<aPmtNumberInModule<< endreq;
+          //      << aPmtModuleNumber <<"    "<< aPmtModuleIndexR2<<"   "<<aPmtNumberInModule<< endmsg;
           
           const IPVolume* bpvc =
                bpvb->lvolume()->pvolume(aPmtModuleIndexR2);
@@ -454,11 +454,11 @@ RichG4ReconTransformPmt::RichG4ReconTransformPmt( int aRichDetNum,
 
 
             // Gaudi::XYZPoint testkall(0.0,0.0,0.0);
-            // RichG4ReconTransformPmtlog<<MSG::INFO<<"test Kall  "<<testkall<<"   "<<m_PmtGlobalToLocal *testkall<<endreq;
+            // RichG4ReconTransformPmtlog<<MSG::INFO<<"test Kall  "<<testkall<<"   "<<m_PmtGlobalToLocal *testkall<<endmsg;
 
             //           Gaudi::XYZPoint testkallInv(0.0,0.0,0.0);
             //  RichG4ReconTransformPmtlog<<MSG::INFO<<"test KallInv  "<<testkallInv<<"   "
-            //              <<  m_PmtLocalToGlobal  *testkallInv<<endreq;
+            //              <<  m_PmtLocalToGlobal  *testkallInv<<endmsg;
 
 
           }

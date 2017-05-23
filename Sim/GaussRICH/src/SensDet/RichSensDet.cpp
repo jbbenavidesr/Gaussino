@@ -163,7 +163,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
   G4ThreeVector CurPEOrigin;
   // log << MSG::VERBOSE <<" Track Def  and creator proc "
   // << aTrack->GetDefinition()
-  // <<"    "<<aTrack->GetCreatorProcess()-> GetProcessName() <<endreq;
+  // <<"    "<<aTrack->GetCreatorProcess()-> GetProcessName() <<endmsg;
 
   G4String aCreatorProcessName = "NullProcess";
   const G4VProcess* aProcess = aTrack->GetCreatorProcess();
@@ -183,9 +183,9 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
       << "," << CurGlobalPos.z() << ")"
       << " PV="    << CurPV->GetName()
       << " LV="    << CurLV->GetName()
-      << " edep in MeV ="  << CurEdep << endreq;
+      << " edep in MeV ="  << CurEdep << endmsg;
   log << MSG::VERBOSE << " PE Origin X Y Z "<<CurPEOrigin.x()
-      <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endreq;
+      <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endmsg;
 
   G4double CurGlobalZ=CurGlobalPos.z();
 
@@ -193,7 +193,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
 
   if( CurGlobalZ <= 0.0 ) {
     log << MSG::ERROR << "Inadmissible Rich Hit Z coordinate = "
-        <<  CurGlobalZ <<endreq;
+        <<  CurGlobalZ <<endmsg;
   }else if ( CurGlobalZ < MaxZHitInRich1Detector() ) {
     // hit coordinate in Rich1
     CurrentRichDetNumber=0;
@@ -206,7 +206,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
 
   if(CurrentRichDetSector < 0 || CurrentRichDetSector > 1 ) {
     log << MSG::ERROR <<"Inadmisible Rich Det Sector=  "<<CurrentRichDetSector
-        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endreq;
+        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endmsg;
   }
 
   G4Navigator* theNavigator =
@@ -224,14 +224,14 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
     TransformPoint(CurPEOrigin);
 
   log << MSG::VERBOSE << "Now in ProcessHits() of RichSensDet LocalPos X Y Z "
-      <<CurLocalPos.x() <<"  "<<CurLocalPos.y()<<"   "<<CurLocalPos.z()<<endreq;
+      <<CurLocalPos.x() <<"  "<<CurLocalPos.y()<<"   "<<CurLocalPos.z()<<endmsg;
 
 
   G4int CurrentPixelXNum=  PixelXNum(CurLocalPos.x());
   G4int CurrentPixelYNum=  PixelYNum(CurLocalPos.y());
   log << MSG::VERBOSE <<
     "Now in ProcessHits() of RichSensDet : PixelX and Y = " <<
-    CurrentPixelXNum << "   " << CurrentPixelYNum<<endreq;
+    CurrentPixelXNum << "   " << CurrentPixelYNum<<endmsg;
 
   //  G4int CurOptPhotID= aTrack->GetParentID();
 
@@ -308,13 +308,13 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
                 <<" Track id of charged tk opt phot pe "
                 << CurOptPhotMotherChTrackID <<"   "
                 <<  CurOptPhotID<<"   "
-                << aTrack->GetTrackID() << endreq;
+                << aTrack->GetTrackID() << endmsg;
             if( CurElectronBackScatFlag > 0) {
               log << MSG::VERBOSE << "Now in RichSensDet ProcessHits() backscattered eln  "
-                  << CurElectronBackScatFlag << endreq;
+                  << CurElectronBackScatFlag << endmsg;
             }
             //log<<MSG::INFO<<" Now in processHits Photon source info "<<CurPhotonSourceProcInfo
-            //   <<endreq;
+            //   <<endmsg;
             
 
             if(  aPEInfo->  VerbosePeTagFlag() ) {
@@ -451,7 +451,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
     bool EnableThisHitStore=true;
     G4bool FlagThisHitAsDuplicate=false;
     log << MSG::VERBOSE<<" Avoid duplicate  Hits  "<< m_RichAviodDuplicateHitsActivate
-           <<"   "<<m_RichFlagDuplicateHitsActivate<< endreq;
+           <<"   "<<m_RichFlagDuplicateHitsActivate<< endmsg;
     G4int CurPixelNumInHpd = m_RichGeomProperty ->GetPixelNumInHpd( CurrentPixelXNum, CurrentPixelYNum);
     
     if(m_RichAviodDuplicateHitsActivate || m_RichFlagDuplicateHitsActivate  ) { 
@@ -475,7 +475,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
       if(FlagThisHitAsDuplicate ) {
         
         //log << MSG::VERBOSE<<"Current Rich Hpd hit is duplicate HpdNum Pixel PixelX PixelY "<<CurrentHpdNumber<<"  "
-        //   << CurPixelNumInHpd  <<"   "<<  CurrentPixelXNum <<"   "<<CurrentPixelYNum<<endreq;
+        //   << CurPixelNumInHpd  <<"   "<<  CurrentPixelXNum <<"   "<<CurrentPixelYNum<<endmsg;
       //  G4int nHitInCurColl = (m_RichHC[CurrentRichCollectionSet])->entries();
       //  int iha=0;
       //  bool foundDup=false;
@@ -489,12 +489,12 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
       //        ( aPixelXNumEx == CurrentPixelXNum) && ( aPixelYNumEx == CurrentPixelYNum)) {
       //      foundDup=true;
       //      log << MSG::INFO<<" Duplicate Hit number Det hpd pixelXY "<< iha << "  "<<aRichDetNumEx <<"   "
-      //          <<  anHpdNumEx<<"   "<< aPixelXNumEx<<"    "<<aPixelYNumEx<<endreq;
+      //          <<  anHpdNumEx<<"   "<< aPixelXNumEx<<"    "<<aPixelYNumEx<<endmsg;
       //    }  
       //    iha++;
       //  }
       //  if( !(foundDup) ) {
-      //    log << MSG::INFO<<"DuplicateHpd NotFound Please check "<<endreq;
+      //    log << MSG::INFO<<"DuplicateHpd NotFound Please check "<<endmsg;
       //    
       //  }
       //  
@@ -525,7 +525,7 @@ bool RichSensDet::ProcessHits( G4Step* aStep ,
 
     log << MSG::VERBOSE
         << "RichSensdet: Current collection set and Hit number stored  ActivationOfRepatedHits  = "
-        << CurrentRichCollectionSet << "  " << NumHitsInCurHC << "    "<<EnableThisHitStore<< endreq;
+        << CurrentRichCollectionSet << "  " << NumHitsInCurHC << "    "<<EnableThisHitStore<< endmsg;
     
     
   }// end test on collection set existance
@@ -561,7 +561,7 @@ void RichSensDet::Initialize(G4HCofThisEvent*  HCE) {
   log << MSG::VERBOSE << "Richsensdet: Initialize. SensDetName, colName: "
       <<SensitiveDetectorName<<"  "<<collectionName[0]
       <<"  "<<collectionName[1]<<"  "
-      <<collectionName[2]<<"  "<<collectionName[3]<<endreq;
+      <<collectionName[2]<<"  "<<collectionName[3]<<endmsg;
 
   // G4String CurCollName;
   RichG4HitsCollection* CurColl;
@@ -582,7 +582,7 @@ void RichSensDet::Initialize(G4HCofThisEvent*  HCE) {
     HCE->AddHitsCollection( m_HpdHCID[ihhc] , m_RichHC[ihhc]  );
   }
 
-  // log << MSG::INFO<<" resetting SensDet Counters in current Event "<<endreq;
+  // log << MSG::INFO<<" resetting SensDet Counters in current Event "<<endmsg;
   
    ResetHpdMapInCurrentEvent();
   

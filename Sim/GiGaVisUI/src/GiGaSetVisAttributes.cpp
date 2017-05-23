@@ -183,7 +183,7 @@ StatusCode GiGaSetVisAttributes::process ( const std::string& vol ) const
   // Marco Pappagallo - 2008-10-16, fix ERROR message in following if block
   if( "World" == vol) {
     debug() << "World volume exists only in Geant4 world: no xml associated!"
-            << endreq;
+            << endmsg;
     return StatusCode::SUCCESS;
   }
 

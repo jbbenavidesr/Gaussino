@@ -141,7 +141,7 @@ StatusCode  CkvCommonSensDet::ProcessRichPmtHits( G4Step* aStep , G4TouchableHis
      int CurrentRichDetNumber =-1;
      if( CurGlobalZ <= 0.0 ) {
          CkvCommonSensDetlog << MSG::ERROR << "Inadmissible Rich Hit Z coordinate = "
-             <<  CurGlobalZ <<endreq;
+             <<  CurGlobalZ <<endmsg;
      }else {
 
         if ( CurGlobalZ < MaxZHitInRich1Detector() ) {
@@ -163,7 +163,7 @@ StatusCode  CkvCommonSensDet::ProcessRichPmtHits( G4Step* aStep , G4TouchableHis
    G4int CurrentRichDetSector = CurTT ->GetReplicaNumber(4);
    if(CurrentRichDetSector < 0 || CurrentRichDetSector > 1 ) {
      CkvCommonSensDetlog << MSG::ERROR <<"Inadmisible Rich Det Sector=  "<<CurrentRichDetSector
-        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endreq;
+        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endmsg;
    }
    G4Navigator* theNavigator =
     G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
@@ -269,14 +269,14 @@ StatusCode  CkvCommonSensDet::ProcessRichPmtHits( G4Step* aStep , G4TouchableHis
             //    <<" Track id of charged tk opt phot pe "
             //    << CurOptPhotMotherChTrackID <<"   "
             //    <<  CurOptPhotID<<"   "
-            //    << aTrack->GetTrackID() << endreq;
+            //    << aTrack->GetTrackID() << endmsg;
 
             if( CurElectronBackScatFlag > 0) {
               CkvCommonSensDetlog << MSG::DEBUG << "Now in CkvSensDet ProcessHits() backscattered eln  "
-                  << CurElectronBackScatFlag << endreq;
+                  << CurElectronBackScatFlag << endmsg;
             }
             //CkvCommonSensDetlog<<MSG::INFO<<" Now in processHits Photon source info "<<CurPhotonSourceProcInfo
-            //   <<endreq;
+            //   <<endmsg;
             
 
             if(  aPEInfo->  VerbosePeTagFlag() ) {
@@ -316,9 +316,9 @@ StatusCode  CkvCommonSensDet::ProcessRichPmtHits( G4Step* aStep , G4TouchableHis
 
               //if(CurrentRichDetNumber == 1 ) {
                 //  log << MSG::INFO<<" Mirr1 xyz  Mirr2 xyz "<<CurMirror1PhotonReflPosition<<"  "
-                //    << CurMirror2PhotonReflPosition<<endreq;
+                //    << CurMirror2PhotonReflPosition<<endmsg;
                 // log << MSG::INFO<<" Mirr1 xyz  Mirr2 xyz "<<CurMirror1PhotonDetectorCopyNum<<"  "
-                //    << CurMirror2PhotonDetectorCopyNum <<endreq;
+                //    << CurMirror2PhotonDetectorCopyNum <<endmsg;
               // }
   
 
@@ -418,7 +418,7 @@ StatusCode  CkvCommonSensDet::ProcessRichPmtHits( G4Step* aStep , G4TouchableHis
     
     //test print 
     if( FlagThisHitAsDuplicate ) {
-      CkvCommonSensDetlog << MSG::VERBOSE<<" Rich PMT Duplicate hit "<<CurrentPmtNumber<<"  "<<CurPixelNumInPmt<<endreq;
+      CkvCommonSensDetlog << MSG::VERBOSE<<" Rich PMT Duplicate hit "<<CurrentPmtNumber<<"  "<<CurPixelNumInPmt<<endmsg;
     }
     
 

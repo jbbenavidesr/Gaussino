@@ -81,7 +81,7 @@ RichG4CkvRecon::RichG4CkvRecon()
   MsgStream RichG4CkvReconlog( msgSvc,"RichG4CkvRecon");
   //     RichG4CkvReconlog << MSG::VERBOSE
   //             << "Now creating RichG4CkvRecon "
-  //             << endreq;
+  //             << endmsg;
 
 
   SmartDataPtr<DetectorElement> Rich1DE(detSvc, Rich1DeStructurePathName);
@@ -124,7 +124,7 @@ RichG4CkvRecon::RichG4CkvRecon()
   if( !Rich1DE ){
     RichG4CkvReconlog << MSG::ERROR
                       << "Can't retrieve " + Rich1DeStructurePathName+ " for CkvRecon"
-                      << endreq;
+                      << endmsg;
   }else {
 
 
@@ -163,7 +163,7 @@ RichG4CkvRecon::RichG4CkvRecon()
       Rich1DE->param<double>( "Rich1Mirror1NominalRadiusC");
 
     RichG4CkvReconlog << MSG::DEBUG<< "Rich1 Spherical Mirror1 top  COC and Rad "<< m_SphMirrCC [0] [0]<<"  "<< m_SphMirrCC [0] [1]
-		      <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
+		      <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endmsg;
 
 
 
@@ -184,7 +184,7 @@ RichG4CkvRecon::RichG4CkvRecon()
 
     RichG4CkvReconlog << MSG::DEBUG<< "Rich1 Spherical Mirror1 bottom  COC and Rad "
          << m_SphMirrCC [1] [0]<<"  "<< m_SphMirrCC [1] [1]
-		      <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
+		      <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endmsg;
 
 
     m_HpdSiDetThickness =   Rich1DE->
@@ -220,7 +220,7 @@ RichG4CkvRecon::RichG4CkvRecon()
   if( !Rich2DE ){
     RichG4CkvReconlog << MSG::ERROR
                       << "Can't retrieve "+  Rich2DeStructurePathName +" for CkvRecon"
-                      << endreq;
+                      << endmsg;
   } else {
 
     //    std::vector<double> r2NominalCoC = Rich2DE->param<std::vector<double> >("Rich2NominalCoC");
@@ -242,10 +242,10 @@ RichG4CkvRecon::RichG4CkvRecon()
 
     RichG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 left  COC and Rad "<< m_SphMirrCC [2] [0]
           <<"  "<< m_SphMirrCC [2] [1]
-		      <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+		      <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endmsg;
     RichG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 right  COC and Rad "<< m_SphMirrCC [3] [0]<<"  "
                       << m_SphMirrCC [3] [1]
-		                  <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+		                  <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endmsg;
 
   }
 
@@ -255,7 +255,7 @@ RichG4CkvRecon::RichG4CkvRecon()
   //                  <<  m_HpdSiPixelYSize<<"  "
   //                  << m_HpdSiDetThickness<<"  "
   //                  <<  m_HpdSiNumPixelX<<"   "
-  //                  <<  m_HpdSiNumPixelY<< endreq;
+  //                  <<  m_HpdSiNumPixelY<< endmsg;
   //
 
   if( Rich1DE && Rich2DE ) {
@@ -264,12 +264,12 @@ RichG4CkvRecon::RichG4CkvRecon()
 
       //    RichG4CkvReconlog << MSG::INFO
       //           << "Now looping through the rich det for transforms"
-      //           << endreq;
+      //           << endmsg;
 
       for (int ih=0; ih<m_NumHpdRich[idet] ; ih++ ) {
         //  RichG4CkvReconlog << MSG::INFO
         //         << " Now looping through hpds for transforms  "
-        //                << idet <<"  "<<ih << endreq;
+        //                << idet <<"  "<<ih << endmsg;
 
 
         m_HpdTransforms[idet][ih] = new RichG4ReconTransformHpd (idet, ih);
@@ -294,7 +294,7 @@ RichG4CkvRecon::RichG4CkvRecon()
   //             << "Num richdet numHpdIn r1 r2  "<<
   //      m_NumRichDet<<"    "<< m_NumHpdRich[0]
   //                      <<"   "<< m_NumHpdRich[1]
-  //             << endreq;
+  //             << endmsg;
 
 }
 
@@ -347,7 +347,7 @@ RichG4CkvRecon::ReconPhDetPlaneCoordFromLocalCoord (const Gaudi::XYZPoint & aLoc
   //                  <<aLocalHitCoord.x()
   //              <<"   "<<aLocalHitCoord.y()
   //                  <<"   "<<aLocalHitCoord.z()
-  //                  <<endreq;
+  //                  <<endmsg;
 
   if(aLocalHitCoord.x() == -10000.0 ||
      aLocalHitCoord.y() == -10000.0 ||
@@ -355,7 +355,7 @@ RichG4CkvRecon::ReconPhDetPlaneCoordFromLocalCoord (const Gaudi::XYZPoint & aLoc
 
     RichG4CkvReconlog << MSG::ERROR
                       <<" Hpd local Hit coord not set "
-                      <<endreq;
+                      <<endmsg;
   }else {
 
 
@@ -399,7 +399,7 @@ RichG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoo
   MsgStream RichG4CkvReconlog( msgSvc,"RichG4CkvRecon");
   //  RichG4CkvReconlog << MSG::INFO
   //                  <<" Now in ReconPhCoordFromLocalCoord "
-  //                  <<endreq;
+  //                  <<endmsg;
 
 
   Gaudi::XYZPoint acurGlobalHitPhCath (0.0,0.0,0.0);
@@ -411,7 +411,7 @@ RichG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoo
   //                  <<aLocalHitCoord.x()
   //              <<"   "<<aLocalHitCoord.y()
   //                  <<"   "<<aLocalHitCoord.z()
-  //                  <<endreq;
+  //                  <<endmsg;
 
 
   if(m_curLocalHitCoord.x() == -10000.0 ||
@@ -420,7 +420,7 @@ RichG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoo
 
     RichG4CkvReconlog << MSG::ERROR
                       <<" Hpd local Hit coord not set "
-                      <<endreq;
+                      <<endmsg;
   }else {
 
 
@@ -438,7 +438,7 @@ RichG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoo
     //                  <<curLocalHitPhCath.x()
     //              <<"   "<<curLocalHitPhCath.y()
     //                 <<"   "<<curLocalHitPhCath.z()
-    //                  <<endreq;
+    //                  <<endmsg;
 
 
     // now convert to the global coord system.
@@ -460,7 +460,7 @@ RichG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XYZPoint & aLocalHitCoo
         //                <<acurGlobalHitPhCath.x()
         //            <<"   "<<acurGlobalHitPhCath.y()
         //               <<"   "<<acurGlobalHitPhCath.z()
-        //                <<endreq;
+        //                <<endmsg;
 
       }
 
@@ -522,26 +522,26 @@ RichG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaudi::XYZPoint & aDetect
   MsgStream RichG4CkvReconlog( msgSvc,"RichG4CkvRecon");
   //  G4cout<<"  Now in  ReconReflectionPointOnSPhMirror G4cout"<<G4endl;
 
-  //  RichG4CkvReconlog<<MSG::INFO <<" Now in  ReconReflectionPointOnSPhMirror  " << endreq;
+  //  RichG4CkvReconlog<<MSG::INFO <<" Now in  ReconReflectionPointOnSPhMirror  " << endmsg;
 
   m_curEmisPt=aEmissionPoint;
   m_curDetPoint=aDetectionPoint;
 
   //  RichG4CkvReconlog<<MSG::INFO <<" current richdet and flat mirror "<<aRichDetNum<<"  "<<aFlatMirrNum
-  //                << endreq;
+  //                << endmsg;
 
 
   Gaudi::XYZPoint curFlatMCoC =  m_CurReconFlatMirr-> FlatMirrorCoC(aRichDetNum,aFlatMirrNum);
 
   //  RichG4CkvReconlog<<MSG::INFO <<" current richdet and flat mirror flatmirrorcoc "<<aRichDetNum<<"  "<<aFlatMirrNum
-  //                <<"  "<<curFlatMCoC<< endreq;
+  //                <<"  "<<curFlatMCoC<< endmsg;
 
-  //    RichG4CkvReconlog<<MSG::INFO <<" current emission pt "<< m_curEmisPt<<endreq;
-  //  RichG4CkvReconlog<<MSG::INFO <<" current detection pt "<<m_curDetPoint <<endreq;
+  //    RichG4CkvReconlog<<MSG::INFO <<" current emission pt "<< m_curEmisPt<<endmsg;
+  //  RichG4CkvReconlog<<MSG::INFO <<" current detection pt "<<m_curDetPoint <<endmsg;
 
 
   Gaudi::XYZPoint aSphReflPt = ReconReflectionPointOnSPhMirrorStdInput() ;
-  //  RichG4CkvReconlog<<" current Sph Mirror pt first iteration "<<aSphReflPt   <<endreq;
+  //  RichG4CkvReconlog<<" current Sph Mirror pt first iteration "<<aSphReflPt   <<endmsg;
 
   // for now 5 iterations
 
@@ -780,7 +780,7 @@ double RichG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aReflPoin
   //                    <<" Agel Ckv Phot dir outside "
   //                    << PhotDir.x()<<"  "
   //                    << PhotDir.y()<<"  "
-  //                    << PhotDir.z()<<endreq;
+  //                    << PhotDir.z()<<endmsg;
 
 
 
@@ -822,7 +822,7 @@ double RichG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aReflPoin
   //                 <<  aCkvWithoutCorrection<<"   "
   //                 << aCkvWithCorrection<<"      "
   //                 << " Agel Ckv Angle exit Incident "
-  //                 <<  aPhotDirAgelExit<<"   "<< angleIncident<<endreq;
+  //                 <<  aPhotDirAgelExit<<"   "<< angleIncident<<endmsg;
 
 
   return aCkvWithCorrection;

@@ -129,7 +129,7 @@ StatusCode GetMCCkvHitsAlg::execute()
         return Warning( "Null RICH hit collection "+colName, StatusCode::SUCCESS );
       }
       const int numberofhits = myCollection->entries();  // num of hits in this collection
-      //info()<<"GetMcHitsAlg Numhits "<<numberofhits<<"  "<<colName<<endreq;
+      //info()<<"GetMcHitsAlg Numhits "<<numberofhits<<"  "<<colName<<endmsg;
       
       // reserve space
       totalSize += numberofhits;  // count the total num of hits in all collections.
@@ -349,7 +349,7 @@ StatusCode GetMCCkvHitsAlg::execute()
 
         if ( msgLevel(MSG::VERBOSE) )
         {
-          verbose() << "Created MCRichHit " << *mchit << endreq;
+          verbose() << "Created MCRichHit " << *mchit << endmsg;
         }
 
       } // end loop on hits in the collection
@@ -421,7 +421,7 @@ LHCb::RichSmartID GetMCCkvHitsAlg::assembleMCPmtRichSmartID(const CkvG4Hit * aHi
   //  info()<<"Local hit pos "<<aHit-> GetLocalPos() <<endmsg;
   // info()<<"Global hit pos "<< aHit->GetGlobalPos() <<endmsg;
 
-  // info()<<"smartIdAssembly  RichDet side "<<   CurRich <<"   "<<CurSide<<endreq;
+  // info()<<"smartIdAssembly  RichDet side "<<   CurRich <<"   "<<CurSide<<endmsg;
   
   // info()<<"smartIdInput from Pmt  rich side M P PxX PxY lensflag "<<iRich<<"   "<<iSide<<"  "
   //       <<CurPInM<<"   "<<CurM<<"   "<<CurPiX<<"   "<<CurPiY<<" CurPdLensFlag  "<<CurPdLensFlag<<endmsg; 
@@ -586,7 +586,7 @@ StatusCode GetMCCkvHitsAlg::finalize()
   printStat( "Av. # MCParticle-less hits",    m_nomcpHits );
 
   // number of hits in each aerogel tile
-  //  info() << "Av. # Aero hits per tile     :" << endreq;
+  //  info() << "Av. # Aero hits per tile     :" << endmsg;
   //   const int maxTileID =
   //  (aRMIdValues-> Rich1AgelTile15CkvRadiatorNum()) - (aRMIdValues-> Rich1AgelTile0CkvRadiatorNum());
   // for ( int iTile = 0; iTile <= maxTileID; ++iTile )
@@ -594,7 +594,7 @@ StatusCode GetMCCkvHitsAlg::finalize()
   //  info() << "          tile = "; 
   //   if (iTile<10) { info() << " "; }
   //  info() << iTile << " hits = "
-  //         << occ(m_aeroTileHits[iTile],m_nEvts) << " / event" << endreq;
+  //         << occ(m_aeroTileHits[iTile],m_nEvts) << " / event" << endmsg;
   //  }
 
   return GetMCCkvInfoBase::finalize();
@@ -604,7 +604,7 @@ void GetMCCkvHitsAlg::printStat( std::string name, DMap & a )
 {
   const Rich::StatDivFunctor    occ("%7.2f +-%5.2f");
   const Rich::PoissonEffFunctor eff("%6.2f +-%4.2f");
-  //  info() << "Now in printStat Dmap  "<<SuperRichFlag()<<"  "<<  name <<"   "<<m_nEvts<<endreq;
+  //  info() << "Now in printStat Dmap  "<<SuperRichFlag()<<"  "<<  name <<"   "<<m_nEvts<<endmsg;
   
   name.resize(30,' ');
   // if(!SuperRichFlag() ) {
@@ -634,7 +634,7 @@ void GetMCCkvHitsAlg::printStat( std::string name, RMap & a )
 {
   const Rich::StatDivFunctor    occ("%7.2f +-%5.2f");
   const Rich::PoissonEffFunctor eff("%6.2f +-%4.2f");
-  //  info() << "Now in printStat Rmap "<<SuperRichFlag()<<"  "<< name <<"  "<<m_nEvts<<endreq;
+  //  info() << "Now in printStat Rmap "<<SuperRichFlag()<<"  "<< name <<"  "<<m_nEvts<<endmsg;
 
   name.resize(30,' ');
   //  info() << name

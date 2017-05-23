@@ -92,13 +92,13 @@ StatusCode MCPartToMCRichTrackAlg::addEvent( const std::string & evtLoc )
   if ( !exist<LHCb::MCRichTracks>( evtLoc ) )
   {
     if ( msgLevel(MSG::DEBUG) )
-    { debug() << "Cannot locate MCRichTracks at " << evtLoc << endreq; }
+    { debug() << "Cannot locate MCRichTracks at " << evtLoc << endmsg; }
     return StatusCode::SUCCESS;
   }
   const LHCb::MCRichTracks * mcTracks = get<LHCb::MCRichTracks>( evtLoc );
   if ( msgLevel(MSG::DEBUG) )
   { debug() << "Successfully located " << mcTracks->size()
-            << " MCRichTracks at " << evtLoc << endreq; }
+            << " MCRichTracks at " << evtLoc << endmsg; }
 
   // add links to linker
   for ( LHCb::MCRichTracks::const_iterator iTk = mcTracks->begin();
@@ -112,7 +112,7 @@ StatusCode MCPartToMCRichTrackAlg::addEvent( const std::string & evtLoc )
       {
         if ( msgLevel(MSG::VERBOSE) )
         { verbose() << "Linking MCParticle " << mcP->key()
-                    << " to MCRichTrack " << mcT->key() << endreq; }
+                    << " to MCRichTrack " << mcT->key() << endmsg; }
         linker()->link( mcP, mcT );
       }
       else
@@ -127,7 +127,7 @@ StatusCode MCPartToMCRichTrackAlg::addEvent( const std::string & evtLoc )
   }
 
   if ( msgLevel(MSG::DEBUG) )
-  { debug() << "Finished processing MCRichTracks at " << evtLoc << endreq; }
+  { debug() << "Finished processing MCRichTracks at " << evtLoc << endmsg; }
 
   return StatusCode::SUCCESS;
 }

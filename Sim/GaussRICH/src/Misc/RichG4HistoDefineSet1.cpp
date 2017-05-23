@@ -69,7 +69,7 @@ RichG4HistoDefineSet1::~RichG4HistoDefineSet1() {  }
 void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
 
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
-  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1" << endmsg;
   std::string title;
 
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
@@ -78,12 +78,12 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
 
 
   RichG4Histolog << MSG::INFO<<"Current Histo Path for Set1 Histograms is    "
-                               <<m_RichG4HistoPathSet1<<endreq;
+                               <<m_RichG4HistoPathSet1<<endmsg;
 
   m_hNumTotHitRich1= CurHistoSvc->book(m_RichG4HistoPathSet1+"1",
                              title,100,0.0,200.0);
   if(! m_hNumTotHitRich1) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -92,7 +92,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
     //    m_hGlobalRich1PEOriginXY = CurHistoSvc->book(m_RichG4HistoPathSet1+"2",
     //  title,300,-2000.0,2000.0,300,-2000.0, 2000.0);
     // if(!m_hGlobalRich1PEOriginXY ) {
-    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
     //    }
 
@@ -116,7 +116,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
     //  ->book(m_RichG4HistoPathSet1+"120",title,300,-2000.0,
     //    2000.0,300,-2000.0, 2000.0);
     // if(!m_hGlobalPEOriginAgelXY ) {
-    // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+    // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
     //  }
 
@@ -125,7 +125,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   //  m_hGlobalPEOriginAgelTopXY = CurHistoSvc->book(m_RichG4HistoPathSet1+"122",
   //  title,300,-750.0,750.0,100,-250.0, 250.0);
   // if(!m_hGlobalPEOriginAgelTopXY ) {
-  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   // }
   //  title="GlobalPE Origin from Agel Bot Proj Y vs X for Rich1 ";
@@ -133,7 +133,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   // m_hGlobalPEOriginAgelBotXY = CurHistoSvc->book(m_RichG4HistoPathSet1+"124",
   //  title,300,-750.0,750.0,100,-250.0, 250.0);
   // if(!m_hGlobalPEOriginAgelBotXY ) {
-  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   // }
   
@@ -150,7 +150,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
     //    ->book(m_RichG4HistoPathSet1+"150",title,300,-2000.0,
     //                2000.0,300,-2000.0, 2000.0);
     //  if(!m_hGlobalPEOriginC4F10XY ) {
-    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
     //  }
   title="GlobalPhotoelectron Origin from CF4 Y vs X for Rich2 ";
@@ -159,7 +159,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   //  book(m_RichG4HistoPathSet1+"170",title,
   //            300,-5000.0,5000.0,300,-5000.0, 5000.0);
   //  if(!m_hGlobalPEOriginCF4XY ) {
-  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   //  }
   title="GlobalPhotoelectron Origin from CF4 Y vs positive X for Rich2 ";
@@ -168,7 +168,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
          ->book(m_RichG4HistoPathSet1+"172",title,
                 200,2500.0,4500.0,200,-1000.0, 1000.0);
   if(!m_hGlobalPEOriginCF4PosXY ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -177,7 +177,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   // m_hGlobalPEOriginC4F10TopXY = CurHistoSvc->book(m_RichG4HistoPathSet1+"152",
   //          title,300,-750.0,750.0,100,-250.0, 250.0);
   // if(!m_hGlobalPEOriginC4F10TopXY ) {
-  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   // }
   // title="GlobalPE Origin from C4F10 Bot Proj Y vs X for Rich1 ";
@@ -185,7 +185,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   //  m_hGlobalPEOriginC4F10BotXY = CurHistoSvc->book(m_RichG4HistoPathSet1+"154",
   //            title,300,-750.0,750.0,100,-250.0, 250.0);
   // if(!m_hGlobalPEOriginC4F10BotXY ) {
-  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   // }
 
@@ -194,7 +194,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hWaveLenBeforeRich1Mirror1 = CurHistoSvc->book(m_RichG4HistoPathSet1+"40",
                        title,200,150.0,950.0);
   if(!m_hWaveLenBeforeRich1Mirror1 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -203,7 +203,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hWaveLenAfterRich1Mirror1 = CurHistoSvc->book(m_RichG4HistoPathSet1+"42",
                    title,200,150.0,950.0);
   if(!m_hWaveLenAfterRich1Mirror1 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -212,7 +212,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hWaveLenBeforeRich1GasQW = CurHistoSvc->book(m_RichG4HistoPathSet1+"50",
                title,200,150.0,950.0);
   if(!m_hWaveLenBeforeRich1GasQW ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -221,14 +221,14 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hWaveLenAfterRich1GasQW = CurHistoSvc
              ->book(m_RichG4HistoPathSet1+"52",title,200,150.0,950.0);
   if(!m_hWaveLenAfterRich1GasQW ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
   title="Photon Wavelength before  Rich1 QE ";
   m_hWaveLenBeforeRich1QE = CurHistoSvc->book(m_RichG4HistoPathSet1+"60",title,
 					      200,150.0,950.0);
   if(!m_hWaveLenBeforeRich1QE){
-    RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq; 
+    RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg; 
 
   } 
 
@@ -236,7 +236,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hWaveLenAfterRich1QE = CurHistoSvc->book(m_RichG4HistoPathSet1+"62",title,
 					     200,150.0,950.0);
   if(!m_hWaveLenAfterRich1QE){
-    RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+    RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
    
   }
 
@@ -247,7 +247,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
     // 300,-2000.0,2000.0,300,-2000.0, 2000.0);
 
     //    if(!m_hGlobalHitXY ) {
-    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+    //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
     //    }
   
@@ -258,7 +258,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hCkvAgelRich1= 
          CurHistoSvc->book(m_RichG4HistoPathSet1+"10",title,1200,0.1,0.40);
   if(! m_hCkvAgelRich1) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -268,7 +268,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hCkvC4F10Rich1= CurHistoSvc->book(m_RichG4HistoPathSet1+"20",title,
                                                     1200,0.03,0.07);
   if(! m_hCkvC4F10Rich1) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
   title="Cherenkov Angle in CF4 from G4 ";
@@ -277,18 +277,18 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hCkvCF4Rich2= CurHistoSvc->book(m_RichG4HistoPathSet1+"70",
              title,1200,0.0,0.05);
   if(! m_hCkvCF4Rich2) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
   title="Cherenkov Photon Production Z Coord from G4 ";
 
-  //  RichG4Histolog << MSG::INFO<<"Current Histo Path  "<<m_RichG4HistoPath<<endreq;
+  //  RichG4Histolog << MSG::INFO<<"Current Histo Path  "<<m_RichG4HistoPath<<endmsg;
 
   m_hCkvZEmissionPtRich1= CurHistoSvc->book(m_RichG4HistoPathSet1+"25",
                  title,1300,900,2200);
   if(! m_hCkvZEmissionPtRich1) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -297,7 +297,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   //  m_hRefIndC4F10Rich1= CurHistoSvc->book(m_RichG4HistoPathSet1+"22",
   //    title,200,150.0,950.0,200,0.001,0.002);
   // if(! m_hRefIndC4F10Rich1) {
-  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  // RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   //  }
 
@@ -306,7 +306,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   m_hRefIndCF4Rich2= CurHistoSvc->book(m_RichG4HistoPathSet1+"72",title,
               200,150.0,950.0,200,0.0001,0.001);
   if(! m_hRefIndCF4Rich2) {
-  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -315,7 +315,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type1() {
   //  m_hRefIndAgelRich1= CurHistoSvc->book(m_RichG4HistoPathSet1+"12",title,
   //  200,150.0,950.0,200,0.01,0.08);
   //  if(! m_hRefIndAgelRich1) {
-  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+  //  RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   //  }
 
@@ -361,7 +361,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
 
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
 
-  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1A" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1A" << endmsg;
 
 
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
@@ -372,7 +372,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumScintPhotRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1040",
                        title,200,0.0,200.0);
   if(!m_hStepNumScintPhotRich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -381,7 +381,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumScintPhotLBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1041",
                        title,200,0.0,500.0);
   if(!m_hStepNumScintPhotLBARich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -390,7 +390,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumScintPhotSBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1042",
                        title,202,-1.0,100.0);
   if(!m_hStepNumScintPhotSBARich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -399,7 +399,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumScintPhotSBA2Rich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1043",
                        title,202,-1.0,100.0);
   if(!m_hStepNumScintPhotSBA2Rich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -408,7 +408,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumCkvPhotRich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1044",
                        title,202,-1.0,100.0);
   if(!m_hStepNumCkvPhotRich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -417,7 +417,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumCkvPhotLBARich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1045",
                        title,500,0.0,500.0);
   if(!m_hStepNumCkvPhotLBARich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -426,7 +426,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type2() {
   m_hStepNumCkvPhotSBA2Rich2  = CurHistoSvc->book(m_RichG4HistoPathSet1+"1046",
                        title,201,-1.0,200.0);
   if(!m_hStepNumCkvPhotSBA2Rich2 ) {
-   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endreq;
+   RichG4Histolog << MSG::ERROR<<"Failed to book histo   "<<title<<endmsg;
 
   }
 
@@ -436,7 +436,7 @@ void RichG4HistoDefineSet1::bookRichG4HistogramsSet1Type3() {
 
  MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), "RichG4HistoSet1" );
 
-  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1B" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set1B" << endmsg;
 
 
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();

@@ -49,7 +49,7 @@ StatusCode GetMCCkvInfoBase::initialize()
   {
     info() << " '" << RichG4HitCollectionName()->RichHCName(iii) << "'";
   }
-  info() << endreq;
+  info() << endmsg;
 
   // if(!m_SuperRichFlag) {
     

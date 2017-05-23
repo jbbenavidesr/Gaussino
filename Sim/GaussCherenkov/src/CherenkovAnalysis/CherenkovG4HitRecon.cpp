@@ -123,7 +123,7 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
     //  <<"CherenkovG4HitRecon Current Rich for the hit "<<irichdet<<endmsg;
     
     Current_RichG4CollectionID =RichG4CollectionID[ihcol];
-    // CherenkovG4HitReconlog<<MSG::INFO<<" hitcol hitcolID "<<ihcol<<"   "<<Current_RichG4CollectionID<<endreq;
+    // CherenkovG4HitReconlog<<MSG::INFO<<" hitcol hitcolID "<<ihcol<<"   "<<Current_RichG4CollectionID<<endmsg;
     
     if(Current_RichG4CollectionID >=0 ) {
       HCE = anEvent->GetHCofThisEvent();
@@ -165,7 +165,7 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
            // if( aRichDetNum  == 0 ) {
 
            //            CherenkovG4HitReconlog<<MSG::DEBUG<<" Now Plot XY of  aGlobalHitCoordTest " << aGlobalHitCoordTest 
-           //          << "   "<< LocalHitCoord<< endreq;
+           //          << "   "<< LocalHitCoord<< endmsg;
             
            // }
           
@@ -217,7 +217,7 @@ void CherenkovG4HitRecon::RichG4GetOccupancies( const G4Event* anEvent,
             //  {
             //    
             //   CherenkovG4HitReconlog<<MSG::INFO<<" X coord in rich1 recon xcoord rawxcoord module pmt  "<< aXcoord 
-            //                          <<"  "<<aGlobalHitCoordTest.x()<< "   "<< aPmtNum  <<"  "<< aPmtModuleNum <<endreq;
+            //                          <<"  "<<aGlobalHitCoordTest.x()<< "   "<< aPmtNum  <<"  "<< aPmtModuleNum <<endmsg;
             //  }
             //  
             //  
@@ -265,7 +265,7 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
   int NumTkIdRich1Gas  = TkIdVectRich1Gas.size();
   int NumTkIdRich2Gas =  TkIdVectRich2Gas.size();
   //   CherenkovG4HitReconlog<<MSG::DEBUG<<" NumTrkid rich1 rich2 "<<NumTkIdRich1Gas <<"  "
-  //                      <<NumTkIdRich2Gas<<endreq;
+  //                      <<NumTkIdRich2Gas<<endmsg;
   RichG4RadiatorMaterialIdValues* aRMIdValues =
       RichG4RadiatorMaterialIdValues::RichG4RadiatorMaterialIdValuesInstance();
   
@@ -494,7 +494,7 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
 
           }else {
 
-            // CherenkovG4HitReconlog<<MSG::DEBUG<<" Now recon only sat  hits "<<NumTkIdRich1Gas<<"  "<<NumTkIdRich2Gas<< endreq;
+            // CherenkovG4HitReconlog<<MSG::DEBUG<<" Now recon only sat  hits "<<NumTkIdRich1Gas<<"  "<<NumTkIdRich2Gas<< endmsg;
            
             // first for agel saturated  hits
             int itagel=0;
@@ -582,9 +582,9 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
             while ((aRadiatornum == (aRMIdValues-> Rich2GaseousCkvRadiatorNum() ))  && (itr2s < NumTkIdRich2Gas) ) {
                
               //   CherenkovG4HitReconlog<<MSG::DEBUG<<" Now recon Rich2 sat  hits "<<NumTkIdRich2Gas
-              //                       <<"  "<<itr2s<<"   "<<  TkIdVectRich2Gas[itr2s] <<"  "<< ChtkId<<endreq;
+              //                       <<"  "<<itr2s<<"   "<<  TkIdVectRich2Gas[itr2s] <<"  "<< ChtkId<<endmsg;
            //   CherenkovG4HitReconlog<<MSG::DEBUG<<" Recon rich2 chtk Mom mass "<<aChTrackTotMom<<
-           //       "     "<<ChTkPDGMass<<endreq;
+           //       "     "<<ChTkPDGMass<<endmsg;
 
 
               if( TkIdVectRich2Gas[itr2s] ==  ChtkId ) {
@@ -642,7 +642,7 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
               if(areflectedInPmt || (aPhotSource == 2 ) ) SelectThisHit =false;
           }
           
-          // CherenkovG4HitReconlog<<MSG::DEBUG<< "Selected Hit  Pixelgapval "<< SelectThisHit <<"   "<<aHitInPixelGap <<endreq;
+          // CherenkovG4HitReconlog<<MSG::DEBUG<< "Selected Hit  Pixelgapval "<< SelectThisHit <<"   "<<aHitInPixelGap <<endmsg;
           
 
           if(  SelectThisHit ) {
@@ -655,13 +655,13 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
             //                                  <<aPmtNum<<endmsg;
 
             //  CherenkovG4HitReconlog<<MSG::DEBUG<<" Sidet Pixel X Y num are "
-            //                  <<aPixelXNum<<"   "<<aPixelYNum<<endreq;
+            //                  <<aPixelXNum<<"   "<<aPixelYNum<<endmsg;
 
 
             //  CherenkovG4HitReconlog<<MSG::DEBUG<<" Local ph cath coord is "
             //                 << LocalPhcathCoord.x()<<"    "
             //                 <<  LocalPhcathCoord.y()<<"    "
-            //                 <<  LocalPhcathCoord.z()<<endreq;
+            //                 <<  LocalPhcathCoord.z()<<endmsg;
          
 
             // now convert to clhep like param and store then in
@@ -670,17 +670,17 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
             // CherenkovG4HitReconlog<<MSG::INFO<<" EmisPt is "
             //                  <<EmissPt.x()<<"   "
             //                  <<EmissPt.y()<<"   "
-            //                  <<EmissPt.z()<<endreq;
+            //                  <<EmissPt.z()<<endmsg;
      //
             //  CherenkovG4HitReconlog<<MSG::DEBUG<<" Rich1 Mid radiator for 0 1 2 rad is "
             //                  << m_MidRich1AgelZ<<"  "
             //                  <<   m_MidRich1GasZ<<"   "
-            //                  <<  m_MidRich2GasZ<<endreq;
+            //                  <<  m_MidRich2GasZ<<endmsg;
 
             // CherenkovG4HitReconlog<<MSG::DEBUG<<"TkMom is  "
             //                 <<TkMom.x()<<"   "
             //                <<TkMom.y()<<"   "
-            //                 <<TkMom.z()<<endreq;
+            //                 <<TkMom.z()<<endmsg;
 
 
 
@@ -780,7 +780,7 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
                 // CherenkovG4HitReconlog<<MSG::DEBUG<<
                 //  " Agel Exit pos "<<EmisPtUseAgelExit.x()
                 //      <<"   " <<EmisPtUseAgelExit.y()
-                //      <<"    "<< EmisPtUseAgelExit.z()<<endreq;
+                //      <<"    "<< EmisPtUseAgelExit.z()<<endmsg;
 
 
 
@@ -957,7 +957,7 @@ void CherenkovG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEven
                                     << ", true one: " << TrueAngleOnFM
                                     << ", rec-true: " <<  AngleOnFM-TrueAngleOnFM
                                     << "; dist from SphMirror: " << trueSMDist 
-                                    << endreq;
+                                    << endmsg;
 
              
              

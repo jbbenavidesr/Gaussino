@@ -113,7 +113,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
           {
             warning() << "No pointer to MCParticle for "
                       << " MCRichHit associated to trackID: "
-                      << iii << "  " << ihit << "   " << traid << endreq;
+                      << iii << "  " << ihit << "   " << traid << endmsg;
           }
           else
           {
@@ -133,7 +133,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
           if ( msgLevel(MSG::DEBUG) )
           {
             debug() << "RichG4Hit " << ihit << " has no radiator information !"
-                    << endreq;
+                    << endmsg;
           }
         }
 
@@ -160,7 +160,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
 
       debug() << "Creating MCRichSegment " << mcSeg->key()
               << " for MCParticle " << mcPart->key()
-              << " in " << rad << endreq;
+              << " in " << rad << endmsg;
 
       // Count segments
       ++m_hitTally[rad];
@@ -173,10 +173,10 @@ StatusCode GetMCRichSegmentsAlg::execute()
         if ( msgLevel(MSG::VERBOSE) )
         {
           verbose()
-            << " Hit : Prod-pnt  " << Gaudi::XYZPoint((*iHit).first->GetPhotEmisPt()) << endreq
-            << "     : Pre-step  " << Gaudi::XYZPoint((*iHit).first->ChTrackCkvPreStepPos()) << endreq
-            << "     : post-step " << Gaudi::XYZPoint((*iHit).first->ChTrackCkvPostStepPos()) << endreq
-            << "     : tk Mon.   " << Gaudi::XYZVector((*iHit).first->ChTrackMomVect()) << endreq;
+            << " Hit : Prod-pnt  " << Gaudi::XYZPoint((*iHit).first->GetPhotEmisPt()) << endmsg
+            << "     : Pre-step  " << Gaudi::XYZPoint((*iHit).first->ChTrackCkvPreStepPos()) << endmsg
+            << "     : post-step " << Gaudi::XYZPoint((*iHit).first->ChTrackCkvPostStepPos()) << endmsg
+            << "     : tk Mon.   " << Gaudi::XYZVector((*iHit).first->ChTrackMomVect()) << endmsg;
         }
 
         // Add momentum to list of momenta
@@ -199,7 +199,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
       // Finally, loop over sorted trajectory points and add to segment in order
       if ( msgLevel(MSG::DEBUG) )
       {
-        debug() << " Found " << momenta.size() << " trajectory points" << endreq;
+        debug() << " Found " << momenta.size() << " trajectory points" << endmsg;
       }
       for ( MomentaAtZ::const_iterator iMom = momenta.begin();
             iMom != momenta.end(); ++iMom )
@@ -210,7 +210,7 @@ StatusCode GetMCRichSegmentsAlg::execute()
         {
           debug()
             << "  Added trajectory momentum " << (*iMom).first
-            << " at " << (*iMom).second << endreq;
+            << " at " << (*iMom).second << endmsg;
         }
       }
 
@@ -238,7 +238,7 @@ StatusCode GetMCRichSegmentsAlg::finalize()
     std::string name = Rich::text((*iM).first);
     name.resize(' ',20);
     info() << "Av. # MCRichSegments       : " << name << " = "
-           << occ((*iM).second,m_nEvts) << " / event" << endreq;
+           << occ((*iM).second,m_nEvts) << " / event" << endmsg;
   }
 
   return GetMCRichInfoBase::finalize();

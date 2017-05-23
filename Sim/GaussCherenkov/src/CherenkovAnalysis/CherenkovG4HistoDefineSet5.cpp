@@ -43,7 +43,7 @@ void CherenkovG4HistoDefineSet5::bookCherenkovG4HistogramsSet5()
   
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                                          "RichG4HistoSet5" );
-  RichG4Histolog << MSG::INFO << "Now Booking Cherenkov histo    Set5" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Cherenkov histo    Set5" << endmsg;
   std::string title;
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();  
   title = "Overall Occupancy in RICH1 ";

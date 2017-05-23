@@ -40,7 +40,7 @@ void RichG4HistoDefineSet3::bookRichG4HistogramsSet3() {
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                                          "RichG4HistoSet3" );
 
-  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set3" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set3" << endmsg;
   std::string title;
 
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
@@ -277,7 +277,7 @@ void RichG4HistoDefineSet3::bookRichG4HistogramsSet3() {
    m_hNumRich2GasHpdKaptonRefl = CurHistoSvc->book(m_RichG4HistoPathSet3+"896",
                       title,100, 0.0, 100.0 );
 
-  RichG4Histolog << MSG::INFO << "End of Booking Rich G4 Histo Set3" << endreq;
+  RichG4Histolog << MSG::INFO << "End of Booking Rich G4 Histo Set3" << endmsg;
    
 }
 

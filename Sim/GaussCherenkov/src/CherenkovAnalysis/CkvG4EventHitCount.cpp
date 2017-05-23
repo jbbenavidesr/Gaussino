@@ -1940,7 +1940,7 @@ void CkvG4EventHitCount::CkvG4CountFullAcceptSatHits(const G4Event* anEvent,
                    <<(int) TrajNumHitGasRich2FA.size()<<"; Sat hits, Rich1: " 
                    <<(int) TrajSatNumHitGasRich1FA.size()<<", Rich2: "
                    <<(int) TrajSatNumHitGasRich2FA.size() 
-                   <<endreq;
+                   <<endmsg;
 
     aRichCounter-> setNumHitFullAcceptSatPerTrackR1Gas(TrajNumHitGasRich1FA);
     aRichCounter-> setNumHitFullAcceptSatPerTrackR2Gas(TrajNumHitGasRich2FA);

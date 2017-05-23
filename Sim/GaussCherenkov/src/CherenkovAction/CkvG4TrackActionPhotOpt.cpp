@@ -139,7 +139,7 @@ StatusCode CkvG4TrackActionPhotOpt::initialize()
        }
        
        log <<MSG::INFO<<" Rich PhotoDet (PMT)  Max QE from DB and UsedInThisRun are  "
-                <<m_MaxPhdQuantumEffFromDB<<"    "<< m_Rich1TotPhotonSuppressFactor<<endreq;
+                <<m_MaxPhdQuantumEffFromDB<<"    "<< m_Rich1TotPhotonSuppressFactor<<endmsg;
        
 
        //       m_Rich1TotPhotonSuppressFactor=   

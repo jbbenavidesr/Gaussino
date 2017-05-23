@@ -34,7 +34,7 @@ RichG4GeomProp::RichG4GeomProp(IDataProviderSvc* detSvc, IMessageSvc* msgSvc)
   if( !Rich1DESD )
   {
     log << MSG::ERROR
-        << "Can't retrieve "+ Rich1DeStructurePathName+ " from RichGeomProp" << endreq;
+        << "Can't retrieve "+ Rich1DeStructurePathName+ " from RichGeomProp" << endmsg;
   }
   else
   {
@@ -87,23 +87,23 @@ RichG4GeomProp::RichG4GeomProp(IDataProviderSvc* detSvc, IMessageSvc* msgSvc)
     log << MSG::DEBUG << "Total Number of hpds in Rich1 from RichGeomProp=  "
         << m_NumberOfHPDsInRich1
         <<"     MaximumZ coord hit in Rich1 fromRichGeomProp = "
-        << m_MaxZHitInRich1Det<< endreq;
+        << m_MaxZHitInRich1Det<< endmsg;
   }
 
   log << MSG::DEBUG<<"Pixel boundary X coord at 0 1 2 16 32 =   "
       <<m_PixelXBoundary[0] <<"   "<<m_PixelXBoundary[1]<<"   "
       <<m_PixelXBoundary[2] <<"   "<<m_PixelXBoundary[16]
-      <<"   "<<m_PixelXBoundary[32]<<endreq;
+      <<"   "<<m_PixelXBoundary[32]<<endmsg;
   log << MSG::DEBUG<<"Pixel boundary Y coord at 0 1 2 16 32 =   "
       <<m_PixelYBoundary[0] <<"   "<<m_PixelYBoundary[1]<<"   "
       <<m_PixelYBoundary[2] <<"   "<<m_PixelYBoundary[16]
-      <<"   "<<m_PixelYBoundary[32]<<endreq;
+      <<"   "<<m_PixelYBoundary[32]<<endmsg;
 
   SmartDataPtr<DetectorElement> Rich2DESD(detSvc, Rich2DeStructurePathName);
   if( !Rich2DESD )
   {
     log << MSG::ERROR
-        << "Can't retrieve " +  Rich2DeStructurePathName + " from RichGeomProp" << endreq;
+        << "Can't retrieve " +  Rich2DeStructurePathName + " from RichGeomProp" << endmsg;
   }
   else
   {
