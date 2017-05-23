@@ -114,7 +114,7 @@ CRMCProduction::~CRMCProduction() {
   // Temporary CRMC parameters file cleanup
   if (m_tempParamFileName.length()) {
     always() << "LbCRMC : Cleanup: removing CRMC temporary options file " 
-             << m_tempParamFileName << endreq;
+             << m_tempParamFileName << endmsg;
     remove(m_tempParamFileName.c_str());
   }
   
@@ -128,7 +128,7 @@ CRMCProduction::~CRMCProduction() {
 // Initialize method
 //=============================================================================
 StatusCode CRMCProduction::initialize() {
-  debug() << "CRMCProduction::initialize called" << endreq;
+  debug() << "CRMCProduction::initialize called" << endmsg;
 
   StatusCode sc = GaudiTool::initialize();
   if (sc.isFailure())
@@ -179,7 +179,7 @@ StatusCode CRMCProduction::initialize() {
 // Initialize generator
 //=============================================================================
 StatusCode CRMCProduction::initializeGenerator() {
-  debug() << "CRMCProduction::initializeGenerator called" << endreq;
+  debug() << "CRMCProduction::initializeGenerator called" << endmsg;
 
   m_CRMCEngine = new CRMCWrapper();
 
@@ -213,7 +213,7 @@ StatusCode CRMCProduction::initializeGenerator() {
 // Finilize method
 //=============================================================================
 StatusCode CRMCProduction::finalize() {
-  debug() << "CRMCProduction::finalize called" << endreq;
+  debug() << "CRMCProduction::finalize called" << endmsg;
 
   return GaudiTool::finalize();
 }
@@ -223,7 +223,7 @@ StatusCode CRMCProduction::finalize() {
 //=============================================================================
 StatusCode CRMCProduction::generateEvent(HepMC::GenEvent *theEvent, 
                                          LHCb::GenCollision *) {
-  debug() << "CRMCProduction::generateEvent called" << endreq;
+  debug() << "CRMCProduction::generateEvent called" << endmsg;
 
   // Check generator object is valid
   assert(m_CRMCEngine);
@@ -271,14 +271,14 @@ StatusCode CRMCProduction::generateEvent(HepMC::GenEvent *theEvent,
 // Set stable the given particle in CRMC
 //=============================================================================
 void CRMCProduction::setStable(const LHCb::ParticleProperty *) {
-  debug() << "CRMCProduction::setStable called" << endreq;
+  debug() << "CRMCProduction::setStable called" << endmsg;
 }
 
 //=============================================================================
 // Update particle properties
 //=============================================================================
 void CRMCProduction::updateParticleProperties(const LHCb::ParticleProperty *) {
-  debug() << "CRMCProduction::updateParticleProperties called" << endreq;
+  debug() << "CRMCProduction::updateParticleProperties called" << endmsg;
 }
 
 //=============================================================================
@@ -292,21 +292,21 @@ bool CRMCProduction::isSpecialParticle(const LHCb::ParticleProperty *) const {
 // Switch on the fragmentation
 //=============================================================================
 void CRMCProduction::turnOnFragmentation() {
-  debug() << "CRMCProduction::turnOnFragmentation called" << endreq;
+  debug() << "CRMCProduction::turnOnFragmentation called" << endmsg;
 }
 
 //=============================================================================
 // Switch off the fragmentation
 //=============================================================================
 void CRMCProduction::turnOffFragmentation() {
-  debug() << "CRMCProduction::turnOffFragmentation called" << endreq;
+  debug() << "CRMCProduction::turnOffFragmentation called" << endmsg;
 }
 
 //=============================================================================
 // Setup forced fragmentation
 //=============================================================================
 StatusCode CRMCProduction::setupForcedFragmentation(const int) {
-  debug() << "CRMCProduction::setupForcedFragmentation called" << endreq;
+  debug() << "CRMCProduction::setupForcedFragmentation called" << endmsg;
   return StatusCode::SUCCESS;
 }
 
@@ -314,7 +314,7 @@ StatusCode CRMCProduction::setupForcedFragmentation(const int) {
 // Hadronize the event
 //=============================================================================
 StatusCode CRMCProduction::hadronize(HepMC::GenEvent *, LHCb::GenCollision *) {
-  debug() << "CRMCProduction::hadronize called" << endreq;
+  debug() << "CRMCProduction::hadronize called" << endmsg;
   return StatusCode::SUCCESS;
 }
 
@@ -322,21 +322,21 @@ StatusCode CRMCProduction::hadronize(HepMC::GenEvent *, LHCb::GenCollision *) {
 // Save the partonic event
 //=============================================================================
 void CRMCProduction::savePartonEvent(HepMC::GenEvent *) {
-  debug() << "CRMCProduction::savePartonEvent called" << endreq;
+  debug() << "CRMCProduction::savePartonEvent called" << endmsg;
 }
 
 //=============================================================================
 // Reload the partonic event
 //=============================================================================
 void CRMCProduction::retrievePartonEvent(HepMC::GenEvent *) {
-  debug() << "CRMCProduction::retrievePartonEvent called" << endreq;
+  debug() << "CRMCProduction::retrievePartonEvent called" << endmsg;
 }
 
 //=============================================================================
 // Print the running conditions
 //=============================================================================
 void CRMCProduction::printRunningConditions() {
-  debug() << "CRMCProduction::printRunningConditions called" << endreq;
+  debug() << "CRMCProduction::printRunningConditions called" << endmsg;
 }
 
 //=============================================================================
