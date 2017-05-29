@@ -427,7 +427,7 @@ void RichG4EventAction::EndOfEventAction( const G4Event* anEvent  /* event */ )
   if(trajectoryContainer){n_trajectories=trajectoryContainer->entries();
   msg << MSG::DEBUG << "     " << n_trajectories
       << " Tracks are stored in Trajectorycontainer in event       "
-      <<CurEventNum << endreq;
+      <<CurEventNum << endmsg;
   }
 
 
@@ -447,7 +447,7 @@ void RichG4EventAction::EndOfEventAction( const G4Event* anEvent  /* event */ )
       if(RHC){
         G4int nHitInCurColl = RHC->entries();
         msg << MSG::DEBUG << "EndEvAction      "<< nHitInCurColl
-            <<"   are stored in RichHitCollection set   "<<ihcol<< endreq;
+            <<"   are stored in RichHitCollection set   "<<ihcol<< endmsg;
         if(ihcol == 0 || ihcol == 1 ) {
           nHitTotRich1 += nHitInCurColl;
 
@@ -470,7 +470,7 @@ void RichG4EventAction::EndOfEventAction( const G4Event* anEvent  /* event */ )
   if(   DrawRichHits ||   PrintRichHits ) {
 
     for (int ihcold=0; ihcold<m_NumRichColl; ++ihcold ) {
-      msg << MSG::INFO << "Now drawing Rich hits for collection  "<<ihcold <<endreq;
+      msg << MSG::INFO << "Now drawing Rich hits for collection  "<<ihcold <<endmsg;
       if(m_RichG4CollectionID[ihcold] >=0 ) {
         HCE = anEvent->GetHCofThisEvent();
         RichG4HitsCollection* RHCD=NULL;
@@ -550,7 +550,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
       << "    "<<  NumHitAgelRich1
       <<"   TotalNumRich2Hits =  "<<NumTotHitRich2 
       << "  TotalNumHitsNoRadiator  =   "<<NumTotHitNoRadiator
-      << endreq;
+      << endmsg;
 
   for(int ihgas=0; ihgas < (int) NumHitSatGasRich1.size() ; ++ihgas ) {
     if(  NumHitSatGasRich1[ihgas]> 0 )
@@ -558,7 +558,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
 
       msg << MSG::DEBUG <<"Rich1 Hits: tklistNum SaturatedPerTrackFromGas  "
           <<ihgas <<"   "<< NumHitSatGasRich1[ihgas]
-          <<endreq;
+          <<endmsg;
     }
 
   }
@@ -566,7 +566,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
     if( NumHitSatAgelRich1[ihagel] > 0    ){
       msg << MSG::DEBUG <<"Rich1 Hits: tklistNum SaturatedPerTrackFromAgel  "
           <<ihagel <<"   "<< NumHitSatAgelRich1[ihagel]
-          <<endreq;
+          <<endmsg;
 
     }
 
@@ -579,7 +579,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
 
       msg << MSG::DEBUG <<"Rich2 Hits: tklistNum SaturatedPerTrackFromRich2Gas  "
           <<ihgas2 <<"   "<< NumHitSatGasRich2[ihgas2]
-          <<endreq;
+          <<endmsg;
     }
 
   }
@@ -588,10 +588,10 @@ void RichG4EventAction::PrintRichG4HitCounters()
   msg << MSG::DEBUG <<"Rich1Hits: SinglePartGun FromPrimaryPartFromGas "
       <<"   FromPrimaryPartFromAerogel   "
       << NumHitSinglePartGunPrimaryGasRich1<<"     "
-      << NumHitSinglePartGunPrimaryAgelRich1<<endreq;
+      << NumHitSinglePartGunPrimaryAgelRich1<<endmsg;
 
   msg << MSG::DEBUG <<"Rich2Hits: SinglePartGun FromPrimaryPartFromRich2Gas "
-      << NumHitSinglePartGunPrimaryGasRich2<<endreq;
+      << NumHitSinglePartGunPrimaryGasRich2<<endmsg;
 
 
   int aNumPhotProdRich1Gas = aRichG4Counter->NumPhotProdRich1Gas() ;
@@ -617,7 +617,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
       <<"   "<<aNumPhotGasOnRich1Mirror2<<"   "
       <<aNumPhotGasOnGasQW<<"    "<< aNumPhotGasOnHpdQW<<"   "
       <<aNumPhotGasBeforeQE <<"   "<< aNumPhotGasAfterQE
-      <<"  "<< aNumPeGasSiDet <<endreq;
+      <<"  "<< aNumPeGasSiDet <<endmsg;
 
 
   int aNumPhotProdRich1Agel =
@@ -654,7 +654,7 @@ void RichG4EventAction::PrintRichG4HitCounters()
       <<"   "<<aNumPhotAgelOnRich1Mirror2<<"   "
       <<aNumPhotAgelOnGasQW<<"    "<< aNumPhotAgelOnHpdQW<<"   "
       <<aNumPhotAgelBeforeQE <<"   "<< aNumPhotAgelAfterQE
-      <<"  "<< aNumPeAgelSiDet <<endreq;
+      <<"  "<< aNumPeAgelSiDet <<endmsg;
 
 
   //    cout<<"End of PrintRich G4Hits "<<endl;

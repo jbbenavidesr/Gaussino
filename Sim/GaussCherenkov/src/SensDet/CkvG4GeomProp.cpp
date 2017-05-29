@@ -65,7 +65,7 @@ CkvG4GeomProp::CkvG4GeomProp(IDataProviderSvc* detSvc, IMessageSvc* msgSvc)
   if( !RichDESD )
   {
     log << MSG::ERROR
-        << "Can't retrieve "+ Rich1DeStructurePathName+ " or "+  SuperRichDeStructurePathName +  " from RichGeomProp" << endreq;
+        << "Can't retrieve "+ Rich1DeStructurePathName+ " or "+  SuperRichDeStructurePathName +  " from RichGeomProp" << endmsg;
   }
   else
   {
@@ -188,35 +188,35 @@ CkvG4GeomProp::CkvG4GeomProp(IDataProviderSvc* detSvc, IMessageSvc* msgSvc)
     //  log << MSG::DEBUG << "Total Number of pmts in Rich1 from RichGeomProp=  "
     //    << m_NumberOfPMTsInRich1
     //    <<"     MaximumZ coord hit in Rich1 fromRichGeomProp = "
-    //    << m_MaxZHitInRich1Det<< endreq;
+    //    << m_MaxZHitInRich1Det<< endmsg;
   }
 
   //  log << MSG::DEBUG<<"Pixel boundary X coord at 0 1 2 16 32 =   "
   //    <<m_PixelXBoundary[0] <<"   "<<m_PixelXBoundary[1]<<"   "
   //    <<m_PixelXBoundary[2] <<"   "<<m_PixelXBoundary[16]
-  //    <<"   "<<m_PixelXBoundary[32]<<endreq;
+  //    <<"   "<<m_PixelXBoundary[32]<<endmsg;
   // log << MSG::DEBUG<<"Pixel boundary Y coord at 0 1 2 16 32 =   "
   //    <<m_PixelYBoundary[0] <<"   "<<m_PixelYBoundary[1]<<"   "
   //    <<m_PixelYBoundary[2] <<"   "<<m_PixelYBoundary[16]
-  //    <<"   "<<m_PixelYBoundary[32]<<endreq;
+  //    <<"   "<<m_PixelYBoundary[32]<<endmsg;
 
   // log << MSG::VEBOSE<<"Pmt Pixel boundary X coord at 0 1 67 =   "
   //    <<m_PmtPixelXBoundary[0] <<"   "<<m_PmtPixelXBoundary[1]<<"   "
   //    <<m_PmtPixelXBoundary[2] <<"   "<<m_PmtPixelXBoundary[3]<<"   "
   //    <<m_PmtPixelXBoundary[4] <<"   "<<m_PmtPixelXBoundary[5]<<"   "
-  //    <<m_PmtPixelXBoundary[6] <<"   "<<m_PmtPixelXBoundary[7]<<endreq;
+  //    <<m_PmtPixelXBoundary[6] <<"   "<<m_PmtPixelXBoundary[7]<<endmsg;
   // log << MSG::VERBOSE<<"Pmt Pixel boundary Y coord at 0 1 67 =   "
   //    <<m_PmtPixelYBoundary[0] <<"   "<<m_PmtPixelYBoundary[1]<<"   "
   //    <<m_PmtPixelYBoundary[2] <<"   "<<m_PmtPixelYBoundary[3]<<"   "
   //    <<m_PmtPixelYBoundary[4] <<"   "<<m_PmtPixelYBoundary[5]<<"   "
-  //    <<m_PmtPixelYBoundary[6] <<"   "<<m_PmtPixelYBoundary[7]<<endreq;
+  //    <<m_PmtPixelYBoundary[6] <<"   "<<m_PmtPixelYBoundary[7]<<endmsg;
 
 
   //  SmartDataPtr<DetectorElement> Rich2DESD(detSvc, Rich2DeStructurePathName);
 //  if( !Rich2DESD )
 //  {
 //    log << MSG::ERROR
-//        << "Can't retrieve " +  Rich2DeStructurePathName + " from RichGeomProp" << endreq;
+//        << "Can't retrieve " +  Rich2DeStructurePathName + " from RichGeomProp" << endmsg;
 //  }
 //  else
 //  {  }

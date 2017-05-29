@@ -176,7 +176,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
   RichG4Counters* aRichCounter =  RichG4Counters::getInstance();
 
     RichG4HitReconlog<<MSG::VERBOSE<<
-    "Now reconstruting ckv angle"<<endreq;
+    "Now reconstruting ckv angle"<<endmsg;
 
   const std::vector<int> & TkIdVectRich1Gas =
     aRichCounter -> TrackIdTraverseRich1Gas();
@@ -340,8 +340,8 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
               // RichG4HitReconlog<<MSG::INFO<<"test for agel hit recon "<<aRadiatornum
               //                 <<"  "<<itagel<<"   "<<NumTkIdRich1Agel<<"   "<<  TkIdVectRich1Agel[itagel]<<"   "
-              //                 << ChtkId <<"   "<<aPhotRayleighFlag<<endreq;
-              //  RichG4HitReconlog<<MSG::INFO<<"agel hit beta "<<ChTkBeta<<"  "<<m_chtkBetaSaturatedCut<<endreq;
+              //                 << ChtkId <<"   "<<aPhotRayleighFlag<<endmsg;
+              //  RichG4HitReconlog<<MSG::INFO<<"agel hit beta "<<ChTkBeta<<"  "<<m_chtkBetaSaturatedCut<<endmsg;
               
               if( TkIdVectRich1Agel[itagel] ==  ChtkId ) {
                 // select only those are not rayleigh scattered.
@@ -452,16 +452,16 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             //  "For the RichG4Hit hitnum  RichDet collection hpd "
             //                  <<iha<<"   "<<aRichDetNum<<"   "
             //                  << ihcol<<"   "<< anHpdNum
-            //   <<endreq;
+            //   <<endmsg;
 
             // RichG4HitReconlog<<MSG::INFO<<" Sidet Pixel X Y num are "
-            //                  <<aPixelXNum<<"   "<<aPixelYNum<<endreq;
+            //                  <<aPixelXNum<<"   "<<aPixelYNum<<endmsg;
 
 
             //  RichG4HitReconlog<<MSG::DEBUG<<" Local ph cath coord is "
             //                 << LocalPhcathCoord.x()<<"    "
             //                 <<  LocalPhcathCoord.y()<<"    "
-            //                 <<  LocalPhcathCoord.z()<<endreq;
+            //                 <<  LocalPhcathCoord.z()<<endmsg;
 
 
             // now convert to clhep like param and store then in
@@ -470,17 +470,17 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             // RichG4HitReconlog<<MSG::INFO<<" EmisPt is "
             //                  <<EmissPt.x()<<"   "
             //                  <<EmissPt.y()<<"   "
-            //                  <<EmissPt.z()<<endreq;
+            //                  <<EmissPt.z()<<endmsg;
             //
             //  RichG4HitReconlog<<MSG::INFO<<" Rich1 Mid radiator for 0 1 2 rad is "
             //                  << m_MidRich1AgelZ<<"  "
             //                  <<   m_MidRich1GasZ<<"   "
-            //                  <<  m_MidRich2GasZ<<endreq;
+            //                  <<  m_MidRich2GasZ<<endmsg;
 
             // RichG4HitReconlog<<MSG::INFO<<"TkMom is  "
             //                 <<TkMom.x()<<"   "
             //                <<TkMom.y()<<"   "
-            //                 <<TkMom.z()<<endreq;
+            //                 <<TkMom.z()<<endmsg;
 
 
 
@@ -575,12 +575,12 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
                 // RichG4HitReconlog<<MSG::INFO<<
                 //  " Agel Exit pos "<<EmisPtUseAgelExit.x()
                 //      <<"   " <<EmisPtUseAgelExit.y()
-                //      <<"    "<< EmisPtUseAgelExit.z()<<endreq;
+                //      <<"    "<< EmisPtUseAgelExit.z()<<endmsg;
 
                 // RichG4HitReconlog<<MSG::INFO<<
                 //  "Agel True emis pt "<<EmisPtUseTrueEmissPt.x()<<"   "
                 //                 <<EmisPtUseTrueEmissPt.y()<<"   "
-                //                 <<EmisPtUseTrueEmissPt.z()<<"   "<<endreq;
+                //                 <<EmisPtUseTrueEmissPt.z()<<"   "<<endmsg;
                 
 
                 // EmisPtUseAgelExit  =  m_RichG4CkvRec->
@@ -1043,7 +1043,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
 
  
             //  RichG4HitReconlog << MSG::INFO<<" Reflection pt D3E3, D4E3 D7E3  D4E1  "<< aReflPointD3E3 <<"     "
-            //                  <<aReflPointD4E3<< "   "<<aReflPointD7E3<< "  "<<aReflPointD4E1<<endreq;
+            //                  <<aReflPointD4E3<< "   "<<aReflPointD7E3<< "  "<<aReflPointD4E1<<endmsg;
             
                    
 
@@ -1122,7 +1122,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
               // test print 
               // RichG4HitReconlog << MSG::INFO<<" Ckv angle D3E3 D4E3 D7E3  D4E1  "<<m_RichG4ReconResult-> ckvAngleD3E3()<<"   "
               //                   <<m_RichG4ReconResult-> ckvAngleD4E3()<<"   "<<m_RichG4ReconResult-> ckvAngleD7E3()<<"    "
-              //                  <<m_RichG4ReconResult-> ckvAngleD4E1()<<endreq;
+              //                  <<m_RichG4ReconResult-> ckvAngleD4E1()<<endmsg;
               
 
             }
@@ -1132,7 +1132,7 @@ void RichG4HitRecon::RichG4ReconstructCherenkovAngle( const G4Event* anEvent,
             if(m_RichG4HistoFillSet4Ckv) {
               //              RichG4HitReconlog << MSG::INFO
               //  << " Now filling Ckv Angle histo "
-              //                << m_RichG4ReconResult-> ckvAngleD4E1() << endreq;
+              //                << m_RichG4ReconResult-> ckvAngleD4E1() << endmsg;
 
               m_RichG4HistoFillSet4Ckv->
                 FillRichG4HistoSet4(aHit,m_RichG4ReconResult );

@@ -153,7 +153,7 @@ void CkvG4RunAction::EndOfRunAction( const G4Run* run )
 {
   if( 0 == run )
   { Warning("EndOfRunAction:: G4Run* points to NULL!") ; }
-  //  info()<<" Now in CkvG4RunAction End of run action "<<endreq;
+  //  info()<<" Now in CkvG4RunAction End of run action "<<endmsg;
   
   // the part for the interactive running of G4 commented out.
   /// get Geant4 UI manager

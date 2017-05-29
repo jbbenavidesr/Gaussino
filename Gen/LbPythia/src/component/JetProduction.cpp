@@ -236,7 +236,7 @@ StatusCode JetProduction::initialize( ) {
     error() << "One of the rms value has been set to zero : ParticlesSigma=" 
             << m_particlessigma << " ThetaSigma="<< m_thetasigma << " PhiSigma="
             << m_phisigma << " EnergySigma=" << m_energysigma << "\n"
-            << "Please set it to a non-zero value" << endreq;
+            << "Please set it to a non-zero value" << endmsg;
   }
 
   // Set size of common blocks in HEPEVT: note these correspond to stdhep
@@ -299,20 +299,20 @@ StatusCode JetProduction::initializeGenerator( ) {
     // update the table
     info() << " CALL PYUPDA(" << m_particleDataLevel 
            << ","  << m_particleDataUnit
-           << "/'" << m_particleDataInput <<"') " << endreq ;
+           << "/'" << m_particleDataInput <<"') " << endmsg ;
     Pythia::PyUpda( m_particleDataLevel  , m_particleDataUnit ) ;
 
     // close the file 
     F77Utils::close ( m_particleDataUnit ) ;
     always() <<" Particle Data Table  has been read from the file '" 
-             << m_particleDataInput << "'" << endreq ;  
+             << m_particleDataInput << "'" << endmsg ;  
   }
   
   // use PYGIVE commands (if any) (as THE LAST action)
   for ( CommandVector::const_iterator item = m_pygive.begin() ; 
         m_pygive.end() != item ; ++item ) {
     // use FORTRAN PYGIVE routine
-    debug() << " CALL PYGIVE(' " << (*item) << "')" << endreq ;
+    debug() << " CALL PYGIVE(' " << (*item) << "')" << endmsg ;
     const int mstu_13 = Pythia::pydat1().mstu(13) ;
     Pythia::pydat1().mstu(13) =1   ;
     Pythia::PyGive( *item ) ;
@@ -495,7 +495,7 @@ void JetProduction::hardProcessInfo( LHCb::GenCollision * theCollision ) {
           << Pythia::pypars().pari(17) << " " 
           << Pythia::pypars().pari(33) << " " 
           << Pythia::pypars().pari(34)
-          << endreq ;
+          << endmsg ;
 } 
 
 //=============================================================================
@@ -765,7 +765,7 @@ void JetProduction::printRunningConditions( )
   if ( m_initializationListingLevel >= 0 ) {
     info() << " CALL PYLIST(" <<  m_initializationListingLevel << ") " 
            << " using MSTU(1/2)=" << m_ini_mstu_1 << "/" << m_ini_mstu_2 
-           << endreq ;
+           << endmsg ;
     //
     const int mstu_1 = Pythia::pydat1().mstu(1) ;
     const int mstu_2 = Pythia::pydat1().mstu(2) ;
@@ -807,12 +807,12 @@ void JetProduction::printRunningConditions( )
     // update the table 
     info() << " CALL PYUPDA(1," 
            << m_particleDataUnit<<"/'" << m_particleDataOutput << "') " 
-           << endreq ;
+           << endmsg ;
     Pythia::PyUpda( 1 , m_particleDataUnit ) ;
     // close the file 
     F77Utils::close ( m_particleDataUnit ) ;
     always() <<" Particle Data Table  has been dump to  the file '" 
-             << m_particleDataOutput << "'" << endreq;
+             << m_particleDataOutput << "'" << endmsg;
   }
 }
 
@@ -1012,10 +1012,10 @@ double JetProduction::generateValue( const int mode, const double mean,
       i++;
     } while ( ( (tmp<min) || (tmp>max) ) && (i<maxtries) );
     if ( i>=maxtries ) {
-      error() << "Could not generate value in range within 1000 trials."<<endreq;
-      error() << tmp << " not in [ " << min << " , " << max << " ]" << endreq;
+      error() << "Could not generate value in range within 1000 trials."<<endmsg;
+      error() << tmp << " not in [ " << min << " , " << max << " ]" << endmsg;
       error() << "Please check consistency between the given " 
-              << "sigma value and the (min, max) domain." << endreq;
+              << "sigma value and the (min, max) domain." << endmsg;
     }
     return tmp;
 
@@ -1024,8 +1024,8 @@ double JetProduction::generateValue( const int mode, const double mean,
     return tmp;
 
   default :
-    error() << "Unknown Generation Mode" << endreq;
-    error() << "Please set Mode =1 (gaussian) or =2 (flat)" << endreq;
+    error() << "Unknown Generation Mode" << endmsg;
+    error() << "Please set Mode =1 (gaussian) or =2 (flat)" << endmsg;
     return 0.;
   }  
 }

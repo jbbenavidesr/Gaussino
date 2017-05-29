@@ -49,7 +49,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
 
 
   //  m_numMcpInTorchTB  to be accessed from the TorchTB detector element
-  TorchTBMcplog<<MSG::INFO <<" Number of Mcps in Torch Testbeam "<<m_numMcpInTorchTB <<endreq;
+  TorchTBMcplog<<MSG::INFO <<" Number of Mcps in Torch Testbeam "<<m_numMcpInTorchTB <<endmsg;
 
     m_TorchTBMcpMaxQuantumEff=1.0;
   
@@ -59,7 +59,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   //  SmartDataPtr<DetectorElement> Rich1DE(detSvc,Rich1DeStructurePathName );
   //  if( !Rich1DE ){
   //  TorchTBMcplog << MSG::ERROR
-  //             << "Can't retrieve  "<< Rich1DeStructurePathName << endreq;
+  //             << "Can't retrieve  "<< Rich1DeStructurePathName << endmsg;
   // }
   
   //
@@ -86,16 +86,16 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   // converted from percentage to absolute values.
   // the future the following may be transferred to the pmtqe class.
 
-  TorchTBMcplog << MSG::INFO<<" Now filling Torch Tb QE tables at init "<<endreq;
+  TorchTBMcplog << MSG::INFO<<" Now filling Torch Tb QE tables at init "<<endmsg;
   
   
   FillTBMcpQETablesAtInit ( detSvc, msgSvc );
 
   TorchTBMcplog << MSG::INFO
-	     << "Filled the MCP QE tables for Torch TB  "<<endreq;
+	     << "Filled the MCP QE tables for Torch TB  "<<endmsg;
 
  TorchTBMcplog << MSG::INFO
-	     << "Now get  the MCP HV for Torch TB  "<<endreq;
+	     << "Now get  the MCP HV for Torch TB  "<<endmsg;
 
   //Now get the PMT High Voltage
   SmartDataPtr<TabulatedProperty>tabHV(detSvc,TorchTBMcpHVMatTabPropPath);
@@ -104,7 +104,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   if(!tabHV) {
     TorchTBMcplog << MSG::ERROR
                <<"TorchTBMcpProperties: "
-               <<" Can't retrieve "+ TorchTBMcpHVMatTabPropPath <<endreq;
+               <<" Can't retrieve "+ TorchTBMcpHVMatTabPropPath <<endmsg;
 
 
   }else {
@@ -114,7 +114,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   }
   if(m_TorchTBMcpVerboseLevel >0) {
     TorchTBMcplog << MSG::INFO
-               <<"Mcp HighVoltage value = "<<McpHVSingle<<endreq;
+               <<"Mcp HighVoltage value = "<<McpHVSingle<<endmsg;
   }
   m_TorchTBMcpHighVoltage=McpHVSingle;
 
@@ -130,7 +130,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   //SmartDataPtr<DetectorElement> TorchTBMcpQWDE(detSvc, (TorchTBDeStructurePathName+TorchTBMcpQwDeSubPathName));
   // if(!TorchTBMcpQWDE) {
   //  TorchTBMcplog << MSG::ERROR
-  //             <<"Can't retrieve "+TorchTBDeStructurePathName+TorchTBMcpQwDeSubPathName<<endreq;
+  //             <<"Can't retrieve "+TorchTBDeStructurePathName+TorchTBMcpQwDeSubPathName<<endmsg;
 
   //  }else{
 
@@ -138,13 +138,13 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
   //    mcpQWlvname=TorchTBMcpQWDE->geometry()->lvolumeName();
   //  }else{
   //    TorchTBMcplog << MSG::ERROR
-  //               <<"Erroneous Log Vol for Mcp QW log vol " <<endreq;
+  //               <<"Erroneous Log Vol for Mcp QW log vol " <<endmsg;
   //  }
   //  }
   //  if(m_TorchTBMcpVerboseLevel >0 ){
 
     TorchTBMcplog << MSG::INFO
-               <<"Mcp Qw Log Volname =  "<<mcpQWlvname<<endreq;
+               <<"Mcp Qw Log Volname =  "<<mcpQWlvname<<endmsg;
     //  }
   
     m_TorchTBMcpQWLogVolName = mcpQWlvname;
@@ -152,7 +152,7 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
     // if(!TorchTBMcpPCDE) {
     // TorchTBMcplog << MSG::ERROR
     //           <<"Can't retrieve " +TorchTBDeStructurePathName+TorchTBMcpPhCathDeSubPathname
-    //           <<endreq;
+    //           <<endmsg;
 
     //  }else{
 
@@ -161,14 +161,14 @@ void TorchTBMcpProperties::InitializeTorchTBMcpProperties() {
     //   mcpPhCathlvname = TorchTBMcpPCDE->geometry()->lvolumeName();
     // }else{
     //  TorchTBMcplog << MSG::ERROR
-    //             <<"Erroneous Log Vol for Mcp PhCathode log vol " <<endreq;
+    //             <<"Erroneous Log Vol for Mcp PhCathode log vol " <<endmsg;
       // }
     //
     //  }
 //  if(m_TorchTBMcpVerboseLevel >0 ){
 
     TorchTBMcplog << MSG::INFO
-               <<"Pmt Ph Cathode Log Volname =  "<<mcpPhCathlvname<<endreq;
+               <<"Pmt Ph Cathode Log Volname =  "<<mcpPhCathlvname<<endmsg;
 
     //  }
   m_TorchTBMcpPhCathodeLogVolName = mcpPhCathlvname;
@@ -183,7 +183,7 @@ void TorchTBMcpProperties::InitializeTorchTBAnodeDetParam() {
   MsgStream TorchTBMcplog( msgSvc, "TorchTBMcpProperties" );
   if( !TorchTBDE ){
     TorchTBMcplog << MSG::ERROR
-               << "Can't retrieve  "<< TorchTBDeStructurePathName <<" for anode param "<< endreq;
+               << "Can't retrieve  "<< TorchTBDeStructurePathName <<" for anode param "<< endmsg;
   }
   else
   {
@@ -206,12 +206,12 @@ void  TorchTBMcpProperties::FillTBMcpQETablesAtInit( IDataProviderSvc* detSvc,
 
     TabulatedProperty::Table table;
      SmartDataPtr<TabulatedProperty> tabQE(detSvc, m_TorchCurQEMatPathname );
-     TorchTBMcpPropLogQE<<MSG::INFO<<" Now getting the QE from "<<m_TorchCurQEMatPathname<<endreq;
+     TorchTBMcpPropLogQE<<MSG::INFO<<" Now getting the QE from "<<m_TorchCurQEMatPathname<<endmsg;
 
       if(!tabQE) { 
          TorchTBMcpPropLogQE << MSG::ERROR
 				  <<"TorchTBMcpPropertiesQE: Can't retrieve "
-      				  <<  m_TorchCurQEMatPathname << endreq;
+      				  <<  m_TorchCurQEMatPathname << endmsg;
 
       } else {
         table = tabQE->table();
@@ -238,7 +238,7 @@ void  TorchTBMcpProperties::FillTBMcpQETablesAtInit( IDataProviderSvc* detSvc,
 
         TorchTBMcpPropLogQE << MSG::WARNING
 		       <<" TorchTBMcpProperties: Zero number of bins for Mcp QE .Check db for "
-                          << "Current Mcp "<< i<<endreq;
+                          << "Current Mcp "<< i<<endmsg;
       }
     
     }// end loop over mcps

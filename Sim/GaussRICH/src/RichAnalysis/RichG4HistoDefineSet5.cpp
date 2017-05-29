@@ -41,7 +41,7 @@ void RichG4HistoDefineSet5::bookRichG4HistogramsSet5() {
   
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                                          "RichG4HistoSet5" );
-  RichG4Histolog << MSG::INFO << "Now Booking RichG4 histo    Set5" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking RichG4 histo    Set5" << endmsg;
   std::string title;
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();  
   title = "Overall Occupancy in RICH1 with HPDs";

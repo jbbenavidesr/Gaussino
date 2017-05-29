@@ -145,7 +145,7 @@ StatusCode GetMCRichTracksAlg::execute()
       {
         debug()
           << "Creating MCRichTrack for MCParticle " << mcPart->key()
-          << endreq;
+          << endmsg;
       }
 
       // Loop over segments for this track
@@ -158,7 +158,7 @@ StatusCode GetMCRichTracksAlg::execute()
         if ( msgLevel(MSG::DEBUG) )
         {
           debug() << " Adding " << (*iSeg)->radiator()
-                  << " MCRichSegment " << (*iSeg)->key() << endreq;
+                  << " MCRichSegment " << (*iSeg)->key() << endmsg;
         }
       }
 
@@ -174,13 +174,13 @@ StatusCode GetMCRichTracksAlg::execute()
       if ( msgLevel(MSG::DEBUG) )
       {
         debug() << " Total number of trajectory points = " << traj->GetPointEntries()
-                << endreq;
+                << endmsg;
         if ( msgLevel(MSG::VERBOSE) )
         {
           for ( int iPoint = 0; iPoint < traj->GetPointEntries(); ++iPoint )
           {
             verbose() << "  TrajPoint " << iPoint << " "
-                      << traj->point(iPoint)->GetPosition() << endreq;
+                      << traj->point(iPoint)->GetPosition() << endmsg;
           }
         }
       }
@@ -208,7 +208,7 @@ StatusCode GetMCRichTracksAlg::finalize()
   const Rich::StatDivFunctor occ;
 
   info() << "Av. # MCRichTracks         : Overall = "
-         << occ(m_hitTally,m_nEvts) << endreq;
+         << occ(m_hitTally,m_nEvts) << endmsg;
 
   return GetMCRichInfoBase::finalize();  // must be called after all other actions
 }

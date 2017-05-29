@@ -133,8 +133,8 @@ StatusCode HidValleyProduction::initialize()
           m_pygive.begin() ; m_pygive.end() != item ; ++item ) 
   {
     // use FORTRAN PYGIVE routine
-    debug  () << " CALL PYGIVE(' " << (*item) << "')" << endreq ;
-    always () << " CALL PYGIVE(' " << (*item) << "')" << endreq ;
+    debug  () << " CALL PYGIVE(' " << (*item) << "')" << endmsg ;
+    always () << " CALL PYGIVE(' " << (*item) << "')" << endmsg ;
     const int mstu_13 = Pythia::pydat1().mstu(13) ;
     Pythia::pydat1().mstu(13) =1   ;
     Pythia::PyGive( *item ) ;

@@ -233,15 +233,15 @@ StatusCode RichG4TrackActionPhotOpt::initialize()
 
        log << MSG::INFO <<" Rich HPD MaxQE SiDetEff  and  OverallEff  for  Aerogel Rich1Gas Rich2Gas  "
            << m_MaxHpdQuantumEffFromDB<<"    " <<  m_RichHpdSiDetEfficiency <<"   "<< m_RichHpdReadoutEffWithAerogel <<"    "
-           << m_RichHpdReadoutEffWithRich1Gas  <<"   "<< m_RichHpdReadoutEffWithRich2Gas  <<endreq;       
+           << m_RichHpdReadoutEffWithRich1Gas  <<"   "<< m_RichHpdReadoutEffWithRich2Gas  <<endmsg;       
        log << MSG::INFO <<"  Rich Max Mirror reflectivity R1M1 R1M2 R2M1 R2M2  ConvSup R1 R2 " 
            << m_MaxRich1Mirror1Reflect << "   "<< m_MaxRich1Mirror2Reflect<<"   "
            << m_MaxRich2Mirror1Reflect << "   "<< m_MaxRich2Mirror2Reflect << "    "
-           <<  m_Rich1EffConvolutionSuppressFactor<<"   "<< m_Rich2EffConvolutionSuppressFactor  <<endreq;
+           <<  m_Rich1EffConvolutionSuppressFactor<<"   "<< m_Rich2EffConvolutionSuppressFactor  <<endmsg;
 
        log << MSG::INFO <<" Total Photon suppress factor for Aerogel Rich1Gas Rich2Gas "
           << m_Rich1AerogelTotPhotonSuppressFactor <<"    "<<  m_Rich1GasTotPhotonSuppressFactor <<"    "
-          << m_Rich2GasTotPhotonSuppressFactor <<endreq;
+          << m_Rich2GasTotPhotonSuppressFactor <<endmsg;
        
 
      

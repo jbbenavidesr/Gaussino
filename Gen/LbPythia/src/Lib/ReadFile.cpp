@@ -134,7 +134,7 @@ StatusCode LbPythia::ReadFile::generateEvent
 ( HepMC::GenEvent*    event     , 
   LHCb::GenCollision* collision ) 
 {
-  debug () << "LbPythia::ReadFile::generateEvent" << endreq ;
+  debug () << "LbPythia::ReadFile::generateEvent" << endmsg ;
   //
   StatusCode sc = PythiaProduction::generateEvent ( event , collision ) ;
   //

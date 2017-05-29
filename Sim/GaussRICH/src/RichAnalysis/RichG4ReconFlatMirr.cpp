@@ -59,7 +59,7 @@ RichG4ReconFlatMirr::RichG4ReconFlatMirr(  )
   IMessageSvc*  msgSvc = RichG4SvcLocator::RichG4MsgSvc ();
   MsgStream RichG4ReconFlatMirrlog( msgSvc,"RichG4ReconFlatMirr");
   //  RichG4ReconFlatMirrlog << MSG::INFO <<
-  //  "Now creating RichG4ReconFlatMirr "<<endreq;
+  //  "Now creating RichG4ReconFlatMirr "<<endmsg;
   // Now for the orientation of the flat mirror.
   // for the array   m_RichFlatMirrorNominalOrientation
   // the first element 0->3 correspond to the flat mirrors
@@ -169,7 +169,7 @@ void RichG4ReconFlatMirr::setRich1FlatMirrorParam( )
     //           << "Flat Mirr param in rich1  " 
     //                         << r1m2A<<"  "<<r1m2B
     //                         <<"   "<<r1m2C
-    //                         <<"   "<<r1m2D<< endreq;
+    //                         <<"   "<<r1m2D<< endmsg;
     //
     //    double r0c0X =  Rich1DE->param<double>("Rich1Mirror2NominalCCLHCbXR0C0");
     // double r0c0Y =  Rich1DE->param<double>("Rich1Mirror2NominalCCLHCbYR0C0");
@@ -183,7 +183,7 @@ void RichG4ReconFlatMirr::setRich1FlatMirrorParam( )
     // double r2delY =   Rich1DE->param<double>("Rich1Mirror2CoCNominalDeltaY");
     // double r2delZ =   Rich1DE->param<double>("Rich1Mirror2CoCNominalDeltaZ");
 	  //    double r2rad=     Rich1DE->param<double>("Rich1Mirror2NominalRadiusC");
-	  //   RichG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endreq;
+	  //   RichG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endmsg;
    
     
     for(int im=0; im< m_Rich1NumSecMirror; ++im) { 
@@ -194,7 +194,7 @@ void RichG4ReconFlatMirr::setRich1FlatMirrorParam( )
      if(!Rich1M2 ) {
 
        RichG4ReconFlatMirrlog << MSG::ERROR<<       
-       "Rich1 mirror2 detelem does not exist . Mirror num "<<im << endreq;
+       "Rich1 mirror2 detelem does not exist . Mirror num "<<im << endmsg;
        
      }else {
        
@@ -204,7 +204,7 @@ void RichG4ReconFlatMirr::setRich1FlatMirrorParam( )
       const SolidSphere* aSphereSolid = getCurMirrorSolid (0,im );
           
       double r2rad = aSphereSolid->insideRadius();
-      // RichG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endreq;
+      // RichG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endmsg;
       
       m_RichSecMirrCoCRad[im] [0] = mcoc.x();
       m_RichSecMirrCoCRad[im] [1] = mcoc.y();
@@ -213,7 +213,7 @@ void RichG4ReconFlatMirr::setRich1FlatMirrorParam( )
 
       //  RichG4ReconFlatMirrlog << MSG::INFO<< "Rich1 Mirror2 num CoCxyz rad "<<
       //                        im<<"  "<< mcoc.x()<<"  "
-      //			     << mcoc.y()<<"  "<< mcoc.z()<<"  "<<r2rad <<endreq;
+      //			     << mcoc.y()<<"  "<< mcoc.z()<<"  "<<r2rad <<endmsg;
      
       
 
@@ -259,7 +259,7 @@ void RichG4ReconFlatMirr::setRich2FlatMirrorParam( )
     //                       << "Flat Mirr nominal param in rich2  "
     //                       << r2m2A<<"  "<<r2m2B
     //                       <<"   "<<r2m2C
-    //                       <<"   "<<r2m2D<< endreq;
+    //                       <<"   "<<r2m2D<< endmsg;
     //
     
         
@@ -270,7 +270,7 @@ void RichG4ReconFlatMirr::setRich2FlatMirrorParam( )
       // SmartDataPtr<DetectorElement> Rich2M2(detSvc, apath);
     if(!Rich2M2) {
        RichG4ReconFlatMirrlog << MSG::ERROR<<       
-      "Rich2 mirror2 detelem does not exist . Mirror num "<<im<< endreq;
+      "Rich2 mirror2 detelem does not exist . Mirror num "<<im<< endmsg;
        
     }else {
       
@@ -289,7 +289,7 @@ void RichG4ReconFlatMirr::setRich2FlatMirrorParam( )
 
       //  RichG4ReconFlatMirrlog << MSG::INFO<< "Rich2 Mirror2 num CoCxyz rad "<<
       //                        im<<"  "<< mcoc.x()<<"  "
-      //                       << mcoc.y()<<"  "<< mcoc.z()<<"   "<<r2rad <<endreq; 
+      //                       << mcoc.y()<<"  "<< mcoc.z()<<"   "<<r2rad <<endmsg; 
       //
     }    
       
@@ -376,7 +376,7 @@ const SolidSphere* RichG4ReconFlatMirr::getCurMirrorSolid (int aRichDetNum, int 
   if(!aMDet ) {
        RichG4ReconFlatMirrlog << MSG::ERROR<<       
          "Rich mirror detelem does not exist . richdet Mirror num "<< aRichDetNum
-                              << aFlatMirrorNum << endreq;
+                              << aFlatMirrorNum << endmsg;
       
   }else {
     
@@ -415,7 +415,7 @@ DetectorElement* RichG4ReconFlatMirr::getMirrorDetElem (int aRichDetNum, int aMi
     }else {
 
       RichG4ReconFlatMirrlog << MSG::ERROR<<" Unknown sec mirror num in Rich1  "
-       << aMirrorNum<<endreq;
+       << aMirrorNum<<endmsg;
       
     }
     
@@ -433,13 +433,13 @@ DetectorElement* RichG4ReconFlatMirr::getMirrorDetElem (int aRichDetNum, int aMi
     }else {
      
       RichG4ReconFlatMirrlog << MSG::ERROR<<" Unknown sec mirror num in Rich2  "
-       << aMirrorNum<<endreq;
+       << aMirrorNum<<endmsg;
     }
     
   } else {
     
       RichG4ReconFlatMirrlog << MSG::ERROR<<" Unknown Rich det num   "
-       << aRichDetNum <<endreq;
+       << aRichDetNum <<endmsg;
     
   }
   

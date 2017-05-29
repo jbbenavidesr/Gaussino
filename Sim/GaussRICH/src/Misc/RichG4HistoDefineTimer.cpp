@@ -42,7 +42,7 @@ void RichG4HistoDefineTimer::bookRichG4TimerHistograms()
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                            "RichG4HistoTimer" );
   RichG4Histolog << MSG::INFO 
-                 << "Now Booking Rich G4 Histo Timer" << endreq;
+                 << "Now Booking Rich G4 Histo Timer" << endmsg;
   std::string title;
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
 

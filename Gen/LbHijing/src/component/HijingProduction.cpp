@@ -77,7 +77,7 @@ HijingProduction::~HijingProduction(){ ; }
 // Initialize method
 //=============================================================================
 StatusCode HijingProduction::initialize() {
-  debug() << "HijingProduction::initialize called" << endreq;
+  debug() << "HijingProduction::initialize called" << endmsg;
   
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
@@ -127,7 +127,7 @@ StatusCode HijingProduction::initialize() {
 //=============================================================================
 StatusCode HijingProduction::generateEvent( HepMC::GenEvent * theEvent , 
                                             LHCb::GenCollision* /*theCollision*/ ) {
-  debug() << "HijingProduction::generateEvent called" << endreq;
+  debug() << "HijingProduction::generateEvent called" << endmsg;
   Hijing::HijingEvnt(m_frame, m_bmin, m_bmax);
   
   // Convert to HepEvt format
@@ -188,7 +188,7 @@ StatusCode HijingProduction::generateEvent( HepMC::GenEvent * theEvent ,
 // Set stable the given particle in Hijing
 //=============================================================================
 void HijingProduction::setStable( const LHCb::ParticleProperty* /*thePP*/ ) {
-  debug() << "HijingProduction::setStable called" << endreq;
+  debug() << "HijingProduction::setStable called" << endmsg;
 }
 
 //=============================================================================
@@ -196,35 +196,35 @@ void HijingProduction::setStable( const LHCb::ParticleProperty* /*thePP*/ ) {
 //=============================================================================
 void HijingProduction::updateParticleProperties( const LHCb::ParticleProperty* 
                                                  /*thePP*/ ) {
-  debug() << "HijingProduction::updateParticleProperties called" << endreq;
+  debug() << "HijingProduction::updateParticleProperties called" << endmsg;
 }
 
 //=============================================================================
 // Turn on fragmentation in Hijing
 //=============================================================================
 void HijingProduction::turnOnFragmentation() {
-  debug() << "HijingProduction::turnOnFragmentation called" << endreq;
+  debug() << "HijingProduction::turnOnFragmentation called" << endmsg;
 }
 
 //=============================================================================
 // Turn off fragmentation in Hijing
 //=============================================================================
 void HijingProduction::turnOffFragmentation() {
-  debug() << "HijingProduction::turnOffFragmentation called" << endreq;
+  debug() << "HijingProduction::turnOffFragmentation called" << endmsg;
 }
 
 //=============================================================================
 // Save parton event
 //=============================================================================
 void HijingProduction::savePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
-  debug() << "HijingProduction::savePartonEvent called" << endreq;
+  debug() << "HijingProduction::savePartonEvent called" << endmsg;
 }
 
 //=============================================================================
 // Load parton event
 //=============================================================================
 void HijingProduction::retrievePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
-  debug() << "HijingProduction::retrievePartonEvent called" << endreq;
+  debug() << "HijingProduction::retrievePartonEvent called" << endmsg;
 }
 
 //=============================================================================
@@ -232,7 +232,7 @@ void HijingProduction::retrievePartonEvent( HepMC::GenEvent * /* theEvent */ ) {
 //=============================================================================
 StatusCode HijingProduction::hadronize( HepMC::GenEvent* /*theEvent*/ , 
                                         LHCb::GenCollision* /*theCollision*/) {
-  debug() << "HijingProduction::hadronize called" << endreq;
+  debug() << "HijingProduction::hadronize called" << endmsg;
   return StatusCode::SUCCESS;
 }
 
@@ -240,7 +240,7 @@ StatusCode HijingProduction::hadronize( HepMC::GenEvent* /*theEvent*/ ,
 // Debug print out to be printed after all initializations
 //=============================================================================
 void HijingProduction::printRunningConditions() {
-  debug() << "HijingProduction::printRunningConditions called" << endreq;
+  debug() << "HijingProduction::printRunningConditions called" << endmsg;
 }
 
 //=============================================================================
@@ -248,7 +248,7 @@ void HijingProduction::printRunningConditions() {
 //=============================================================================
 bool HijingProduction::isSpecialParticle( const LHCb::ParticleProperty * thePP ) const
 {
-  debug() << "HijingProduction::isSpecialParticle called" << endreq;
+  debug() << "HijingProduction::isSpecialParticle called" << endmsg;
   switch ( thePP -> pid().abspid() )
   {
   case 1:
@@ -342,7 +342,7 @@ bool HijingProduction::isSpecialParticle( const LHCb::ParticleProperty * thePP )
 // Setup for forced fragmentation 
 //=============================================================================
 StatusCode HijingProduction::setupForcedFragmentation( const int /*thePdgId*/ ) {
-  debug() << "HijingProduction::setupForcedFragmentation called" << endreq;
+  debug() << "HijingProduction::setupForcedFragmentation called" << endmsg;
   return StatusCode::SUCCESS;
 }
 
@@ -352,7 +352,7 @@ StatusCode HijingProduction::setupForcedFragmentation( const int /*thePdgId*/ ) 
 StatusCode HijingProduction::parseHijingCommands( const CommandVector &
                                                   theCommandVector ) {
   
-  debug() << "HijingProduction::parseHijingCommands called" << endreq;
+  debug() << "HijingProduction::parseHijingCommands called" << endmsg;
   
   for ( CommandVector::const_iterator iter = theCommandVector.begin();
         theCommandVector.end() != iter; ++iter ) {

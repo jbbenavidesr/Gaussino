@@ -6,7 +6,7 @@
 #include "GaussRICH/GetMCRichInfoBase.h"
 
 // rich kernel
-#include "RichKernel/RichMap.h"
+#include "RichUtils/RichMap.h"
 
 /** @class GetMCRichOpticalPhotonsAlg GetMCRichOpticalPhotonsAlg.h
  *

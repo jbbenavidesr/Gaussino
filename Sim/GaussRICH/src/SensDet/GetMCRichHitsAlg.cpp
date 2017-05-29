@@ -315,7 +315,7 @@ StatusCode GetMCRichHitsAlg::execute()
 
         if ( msgLevel(MSG::VERBOSE) )
         {
-          verbose() << "Created MCRichHit " << *mchit << endreq;
+          verbose() << "Created MCRichHit " << *mchit << endmsg;
         }
 
       } // end loop on hits in the collection
@@ -371,7 +371,7 @@ StatusCode GetMCRichHitsAlg::finalize()
   printStat( "Av. # MCParticle-less hits",    m_nomcpHits );
 
   // number of hits in each aerogel tile
-  info() << "Av. # Aero hits per tile     :" << endreq;
+  info() << "Av. # Aero hits per tile     :" << endmsg;
   const int maxTileID =
     (aRMIdValues-> Rich1AgelTile15CkvRadiatorNum()) - (aRMIdValues-> Rich1AgelTile0CkvRadiatorNum());
   for ( int iTile = 0; iTile <= maxTileID; ++iTile )
@@ -379,7 +379,7 @@ StatusCode GetMCRichHitsAlg::finalize()
     info() << "          tile = "; 
     if (iTile<10) { info() << " "; }
     info() << iTile << " hits = "
-           << occ(m_aeroTileHits[iTile],m_nEvts) << " / event" << endreq;
+           << occ(m_aeroTileHits[iTile],m_nEvts) << " / event" << endmsg;
   }
 
   return GetMCRichInfoBase::finalize();

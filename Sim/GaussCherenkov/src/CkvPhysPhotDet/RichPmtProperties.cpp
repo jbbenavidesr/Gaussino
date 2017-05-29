@@ -87,10 +87,10 @@ void RichPmtProperties::InitializePmtProperties( ) {
   
   m_numberOfRichHitCollections= m_SuperRichFlag ? 6: 4;
 
-  // RichPmtlog<<MSG::INFO<< "Num Rich NumCol "<< m_numberOfRichDetectors<<"   "<<m_numberOfRichHitCollections<<endreq;
+  // RichPmtlog<<MSG::INFO<< "Num Rich NumCol "<< m_numberOfRichDetectors<<"   "<<m_numberOfRichHitCollections<<endmsg;
   
   std::vector<DetectorElement*> R_DE = getRichMasterDetectorElements ();
-  // RichPmtlog<<MSG::INFO<< "Detelem for Rich  "<< R_DE<<endreq;
+  // RichPmtlog<<MSG::INFO<< "Detelem for Rich  "<< R_DE<<endmsg;
   
   if  ( (!m_SuperRichFlag)  && ( R_DE[0] ) ) {
       
@@ -115,10 +115,10 @@ void RichPmtProperties::InitializePmtProperties( ) {
 
     //  RichPmtlog << MSG::DEBUG<<" Rich Pmt Copy Num In Panels Begin Values  "<<m_pmtNumBegInHitCollection[0]
     //           <<"  "<<m_pmtNumBegInHitCollection[1]<<"   "<<m_pmtNumBegInHitCollection[2]<<"  "
-    //            <<m_pmtNumBegInHitCollection[3]<<endreq;
+    //            <<m_pmtNumBegInHitCollection[3]<<endmsg;
     //  RichPmtlog << MSG::DEBUG<<" Rich Pmt Copy Num In Panels End Values  "<<m_pmtNumEndInHitCollection[0]
     //           <<"  "<<m_pmtNumEndInHitCollection[1]<<"   "<<m_pmtNumEndInHitCollection[2]<<"  "
-    //           <<m_pmtNumEndInHitCollection[3]<<endreq;
+    //           <<m_pmtNumEndInHitCollection[3]<<endmsg;
     
 
     m_PmtMaxQuantumEffFromDB=  R_DE[0]->param<double>("RichPmtMaxQE");
@@ -134,7 +134,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
     m_Rich1MaxZHitCoord = R_DE[0]->param<double>("Rich1MaxDownstreamZHitCoord");
   
     if ( m_PmtVerboseLevel >0 ) {
-       RichPmtlog << MSG::INFO <<"Max Z Hit coord in Rich1 = "<<m_Rich1MaxZHitCoord  <<endreq;
+       RichPmtlog << MSG::INFO <<"Max Z Hit coord in Rich1 = "<<m_Rich1MaxZHitCoord  <<endmsg;
     }  
 
     // the following line to be un commented after
@@ -151,11 +151,11 @@ void RichPmtProperties::InitializePmtProperties( ) {
       } 
       
       // RichPmtlog << MSG::INFO << "Classic RICH1 Total Number of pmts used   MaxNumPmt  = "
-      //            << m_numPmtTotUsedRich[0] <<"   "<< m_numPmtTotRich[0]  <<endreq;
+      //            << m_numPmtTotUsedRich[0] <<"   "<< m_numPmtTotRich[0]  <<endmsg;
       
       // RichPmtlog << MSG::INFO
       //            << "Classic RICH2: Total Number of pmts Used MaxNumPmt = "
-      //            << m_numPmtTotUsedRich[1] << "   "<<  m_numPmtTotRich[1] <<endreq;
+      //            << m_numPmtTotUsedRich[1] << "   "<<  m_numPmtTotRich[1] <<endmsg;
       
     } // end test R_DE[1]
      
@@ -172,12 +172,12 @@ void RichPmtProperties::InitializePmtProperties( ) {
       m_numPmtTotUsedRich[2] = m_numPmtTotRich[2];
     }
     
-    //    RichPmtlog<<MSG::INFO<<"SR tot num pmt "<<m_numPmtTotRich[2]<<endreq;
+    //    RichPmtlog<<MSG::INFO<<"SR tot num pmt "<<m_numPmtTotRich[2]<<endmsg;
     
 
     m_PmtMaxQuantumEffFromDB=  R_DE[2]->param<double>("RichPmtMaxQE");
 
-    //    RichPmtlog<<MSG::INFO<<"SR max QE "<<   m_PmtMaxQuantumEffFromDB <<endreq;
+    //    RichPmtlog<<MSG::INFO<<"SR max QE "<<   m_PmtMaxQuantumEffFromDB <<endmsg;
     
     setPmtMaximumQuantumEfficiency();
          
@@ -187,7 +187,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
      m_MaxPhotonEnergyInRICH=  R_DE[2]->param<double> ("RichMaxPhotonEnergy");
 
      //     RichPmtlog<<MSG::INFO<<"SR max QE ph en min max  "<< m_PmtMaxQuantumEffFromDB<<"   "
-     //           << m_MinPhotonEnergyInRICH<<"  "<< m_MaxPhotonEnergyInRICH  <<endreq;
+     //           << m_MinPhotonEnergyInRICH<<"  "<< m_MaxPhotonEnergyInRICH  <<endmsg;
     
 
 
@@ -262,7 +262,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
   // converted from percentage to absolute values.
   // the future the following may be transferred to the pmtqe class.
 
-    //    RichPmtlog << MSG::INFO<<"Now fill QE  for SR "<<endreq;
+    //    RichPmtlog << MSG::INFO<<"Now fill QE  for SR "<<endmsg;
 
    FillPmtQETablesAtInit ( detSvc, msgSvc );
 
@@ -271,15 +271,15 @@ void RichPmtProperties::InitializePmtProperties( ) {
   //  FillPmtDemagTablesAtInit ( detSvc, msgSvc );
 
    //   RichPmtlog << MSG::INFO
-   //   << "Filled the PMT QE, PSF and Demag tables for  RICH  "<<endreq;
+   //   << "Filled the PMT QE, PSF and Demag tables for  RICH  "<<endmsg;
 
 
    RichPmtlog << MSG::INFO << "Classic RICH1 Total Number of pmts used   MaxNumPmt  = "
-              << m_numPmtTotUsedRich[0] <<"   "<< m_numPmtTotRich[0]  <<endreq;
+              << m_numPmtTotUsedRich[0] <<"   "<< m_numPmtTotRich[0]  <<endmsg;
    
    RichPmtlog << MSG::INFO
               << "Classic RICH2: Total Number of pmts Used MaxNumPmt = "
-              << m_numPmtTotUsedRich[1] << "   "<<  m_numPmtTotRich[1] <<endreq;
+              << m_numPmtTotUsedRich[1] << "   "<<  m_numPmtTotRich[1] <<endmsg;
 
 
   //Now get the PMT High Voltage
@@ -289,7 +289,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
   if(!tabHV) {
     RichPmtlog << MSG::ERROR
                <<"RichPmtProperties: "
-               <<" Can't retrieve "+ RichPmtHVMatTabPropPath <<endreq;
+               <<" Can't retrieve "+ RichPmtHVMatTabPropPath <<endmsg;
 
 
   }else {
@@ -299,7 +299,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
   }
   //  if(m_PmtVerboseLevel >0) {
   RichPmtlog << MSG::INFO
-               <<"Pmt HighVoltage value = "<<PmtHVSingle<<endreq;
+               <<"Pmt HighVoltage value = "<<PmtHVSingle<<endmsg;
     // }
     m_RichPmtHighVoltage=PmtHVSingle;
 
@@ -313,7 +313,7 @@ void RichPmtProperties::InitializePmtProperties( ) {
   
   if(m_PmtVerboseLevel >0 ){
     RichPmtlog << MSG::INFO
-               <<"Pmt QW to Si Max Dist = "<< m_RichPmtQWToSiDist <<endreq;
+               <<"Pmt QW to Si Max Dist = "<< m_RichPmtQWToSiDist <<endmsg;
   }
 
    setQWPhCathNames ();
@@ -334,7 +334,7 @@ void RichPmtProperties::InitializeSiDetParam() {
 
 
  if( !R_DE ){
-    RichPmtlog << MSG::ERROR<< "Can't retrieve  "<< aRDePath <<" for sidet param "<< endreq;
+    RichPmtlog << MSG::ERROR<< "Can't retrieve  "<< aRDePath <<" for sidet param "<< endmsg;
   }
   else
   {
@@ -374,13 +374,13 @@ void  RichPmtProperties::FillPmtQETablesAtInit( IDataProviderSvc* detSvc,
   //  DeRichSystem* richsys = getRichSystemDetectorElement ();
 
   //  if(!richsys) {
-  //   RichPmtPropLogQE << MSG::ERROR << "Could not get RichSystem!"<<endreq;
+  //   RichPmtPropLogQE << MSG::ERROR << "Could not get RichSystem!"<<endmsg;
   //  return;
   // }
 
   /// Returns a list of all active PMTs identified by their RichSmartID
   //  const LHCb::RichSmartID::Vector pmtlist = richsys->activePMTRichSmartIDs();
-  //RichPmtPropLogQE << MSG::INFO <<"QE pmtlist.size()="<<pmtlist.size()<<endreq;
+  //RichPmtPropLogQE << MSG::INFO <<"QE pmtlist.size()="<<pmtlist.size()<<endmsg;
 
   //  LHCb::RichSmartID::Vector::const_iterator i;
   //  for( i=pmtlist.begin(); i!=pmtlist.end(); ++i ) {
@@ -401,10 +401,10 @@ void  RichPmtProperties::FillPmtQETablesAtInit( IDataProviderSvc* detSvc,
   }
   
     //int ih = richsys->copyNumber(*i).data() - nPmtInRich1*irichdet;//runs 0->195 and 0->287
-    //if(irichdet>1) RichPmtPropLogQE<<MSG::ERROR<<"Error in PMT numbering scheme!"<<endreq;
+    //if(irichdet>1) RichPmtPropLogQE<<MSG::ERROR<<"Error in PMT numbering scheme!"<<endmsg;
 //     RichPmtPropLogQE <<MSG::INFO<<"QE DePMTLocation="<<location
 //                      <<"  CopyNr="<<richsys->copyNumber(*i)
-//                      << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endreq;
+//                      << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endmsg;
 
     TabulatedProperty::Table table;
     TabulatedProperty::Table tableSupSet3;
@@ -421,7 +421,7 @@ void  RichPmtProperties::FillPmtQETablesAtInit( IDataProviderSvc* detSvc,
     // if(  ( !iDePmt ) || (m_UseNominalPmtQE)  ) {
     // if( (m_UseNominalPmtQE)  ) {
       //      RichPmtPropLogQE << MSG::INFO << "No PMT in Conditions DB at "<<location
-		  //     <<"Using Old QE default table for this PMT!"<<endreq;
+		  //     <<"Using Old QE default table for this PMT!"<<endmsg;
 
     if(m_CurQETableSourceOption != 0 ) {
       if( m_CurQETableSourceOption == 1 ) { m_CurQEMatPathname= RichPmtCBABorosilicateQeffMatTabPropPath;
@@ -439,16 +439,16 @@ void  RichPmtProperties::FillPmtQETablesAtInit( IDataProviderSvc* detSvc,
     }
 
      SmartDataPtr<TabulatedProperty> tabQE(detSvc, m_CurQEMatPathname );
-     RichPmtPropLogQE<<MSG::INFO<<" Now getting the QE from "<<m_CurQEMatPathname<<endreq;
+     RichPmtPropLogQE<<MSG::INFO<<" Now getting the QE from "<<m_CurQEMatPathname<<endmsg;
 
     //  SmartDataPtr<TabulatedProperty> tabQE(detSvc, RichPmtBorosilicateQeffMatTabPropPath);
-    // RichPmtPropLogQE<<MSG::INFO<<" Now getting QE from "<<RichPmtBorosilicateQeffMatTabPropPath<<endreq;    
+    // RichPmtPropLogQE<<MSG::INFO<<" Now getting QE from "<<RichPmtBorosilicateQeffMatTabPropPath<<endmsg;    
 
      if(!tabQE) { 
        RichPmtPropLogQE << MSG::ERROR
                         <<"RichPmtPropertiesQE: Can't retrieve "
-                        << m_CurQEMatPathname << endreq;
-       //				  <<RichPmtBorosilicateQeffMatTabPropPath  << endreq;
+                        << m_CurQEMatPathname << endmsg;
+       //				  <<RichPmtBorosilicateQeffMatTabPropPath  << endmsg;
      } else {
        table = tabQE->table();
      }
@@ -680,7 +680,7 @@ void  RichPmtProperties::FillPmtQETablesAtInit( IDataProviderSvc* detSvc,
           RichPmtPropLogQE << MSG::WARNING
                            <<" RichPmtProperties: Zero number of bins for pmt QE .Check db for "
                            << "Current richdet pmtInRichDet "<< irichdet<<"  "<<ih
-                           <<endreq;
+                           <<endmsg;
         }
         
       }// end loop over pmts
@@ -816,11 +816,11 @@ void RichPmtProperties::FillPmtPSFTablesAtInit ( IDataProviderSvc* detSvc, IMess
   if( (!tabPSF) ) {
     RichPmtPropLogPSF << MSG::ERROR
                <<"RichPmtProperties PSF: "
-                      <<" Can't retrieve  "+RichPmtPsfMatTabPropPath <<endreq;
+                      <<" Can't retrieve  "+RichPmtPsfMatTabPropPath <<endmsg;
     
       //<< " or " <<RichPmtPsfPhEnMatTabPropPath
       //                <<"  or "<<RichPmtPsfRadialMatTabPropPath               
-    //           <<endreq;
+    //           <<endmsg;
 
 
   }else {
@@ -851,7 +851,7 @@ void RichPmtProperties::FillPmtPSFTablesAtInit ( IDataProviderSvc* detSvc, IMess
 
   }
   if(m_PmtVerboseLevel >0 ) {
-    RichPmtPropLogPSF << MSG::INFO <<"Pmt PSF value =  "<<PmtPsfSingle<<endreq;
+    RichPmtPropLogPSF << MSG::INFO <<"Pmt PSF value =  "<<PmtPsfSingle<<endmsg;
   }
 
   //Now populate the classes for each of the pmts.
@@ -955,7 +955,7 @@ std::vector<DetectorElement*> RichPmtProperties::getRichMasterDetectorElements (
     SmartDataPtr<DetectorElement> SuperRDE(  detSvc,SuperRichDeStructurePathName );
     a_DE[2]= SuperRDE;
     if(!SuperRDE) {
-       RichPmtlog << MSG::ERROR << "Can't retrieve  SuperRichDE  from "<< SuperRichDeStructurePathName << endreq;
+       RichPmtlog << MSG::ERROR << "Can't retrieve  SuperRichDE  from "<< SuperRichDeStructurePathName << endmsg;
     }    
 
 
@@ -968,10 +968,10 @@ std::vector<DetectorElement*> RichPmtProperties::getRichMasterDetectorElements (
     a_DE[1]=     Rich2DE;
 
     if( !Rich1DE ){
-       RichPmtlog << MSG::ERROR << "Can't retrieve  Rich1DE  from "<< Rich1DeStructurePathName << endreq;
+       RichPmtlog << MSG::ERROR << "Can't retrieve  Rich1DE  from "<< Rich1DeStructurePathName << endmsg;
      }
     if( !Rich2DE ){
-       RichPmtlog << MSG::WARNING << "Can't retrieve  Rich1DE  from "<< Rich2DeStructurePathName << endreq;
+       RichPmtlog << MSG::WARNING << "Can't retrieve  Rich1DE  from "<< Rich2DeStructurePathName << endmsg;
      }
 
 
@@ -1039,28 +1039,28 @@ void   RichPmtProperties::setQWPhCathNames () {
     SmartDataPtr<DetectorElement> SRichLPmtLensDE(detSvc, ( aRDePath + SuperRichLPmtLensDeSubPathName ));
     if(!SRichLPmtQWDE) {
      RichPmtlog << MSG::ERROR
-                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtQwDeSubPathName <<endreq;
+                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtQwDeSubPathName <<endmsg;
     }else {
            if(SRichLPmtQWDE->geometry()->hasLVolume()){
              m_LPmtQWLogVolName =SRichLPmtQWDE->geometry()->lvolumeName();
 
              
            }else {
-                 RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt QW log vol " <<endreq;
+                 RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt QW log vol " <<endmsg;
             
            }       
     }
     
     if(!SRichLPmtPCDE) {
       RichPmtlog << MSG::ERROR
-                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtPhCathDeSubPathname <<endreq;
+                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtPhCathDeSubPathname <<endmsg;
        
     }else {
       if(  SRichLPmtPCDE->geometry()->hasLVolume()){ 
           m_LPmtPhCathodeLogVolName = SRichLPmtPCDE->geometry()->lvolumeName();     
 
       }else {
-                 RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt PhCath log vol " <<endreq;
+                 RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt PhCath log vol " <<endmsg;
                  
       }  
       
@@ -1068,13 +1068,13 @@ void   RichPmtProperties::setQWPhCathNames () {
     if( !SRichLPmtLensDE ) {
        
       RichPmtlog << MSG::ERROR
-                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtLensDeSubPathName <<endreq;
+                <<"SuperRich Can't retrieve "+aRDePath + SuperRichLPmtLensDeSubPathName <<endmsg;
        
     }else {
       if( SRichLPmtLensDE ->geometry()->hasLVolume()){ 
        m_LPmtLensLogVolName    =SRichLPmtLensDE  ->geometry()->lvolumeName();     
       }else {
-        RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt Lens log vol " <<endreq;
+        RichPmtlog << MSG::ERROR <<"Erroneous Log Vol for SuperRich  Pmt Lens log vol " <<endmsg;
                  
       }  
       
@@ -1105,18 +1105,18 @@ void   RichPmtProperties::setQWPhCathNames () {
     if(RichPmtPCDE->geometry()->hasLVolume())  m_PmtPhCathodeLogVolName = RichPmtPCDE->geometry()->lvolumeName();
 
 
-    //    if(RichGrandPmtQWDE)  {  RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem QW " <<endreq; 
+    //    if(RichGrandPmtQWDE)  {  RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem QW " <<endmsg; 
     // }else {
     //  RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem QW Not found "<< aR2DePath<<"  "
-    //                               << RichGrandPmtQwDeSubPathName   <<endreq; 
+    //                               << RichGrandPmtQwDeSubPathName   <<endmsg; 
     //  }
     //
     // 
-    //  if(  RichGrandPmtPCDE)  { RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem Phcath " <<endreq;   
+    //  if(  RichGrandPmtPCDE)  { RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem Phcath " <<endmsg;   
     //  }else {
     //
     //  RichPmtlog << MSG::INFO << " RichGrandPMTQE  Detelem Phcath not found "<<aR2DePath<<"  "
-    //                                    <<RichGrandPmtQwDeSubPathName    <<endreq;
+    //                                    <<RichGrandPmtQwDeSubPathName    <<endmsg;
     //  
     // }
     
@@ -1129,7 +1129,7 @@ void   RichPmtProperties::setQWPhCathNames () {
       if( RichGrandPmtPCDE->geometry()->hasLVolume()) m_GrandPmtPhCathodeLogVolName = RichGrandPmtPCDE->geometry()->lvolumeName();   
      
       // RichPmtlog << MSG::INFO << " RichGrandPMTQE Log vol names "<<m_GrandPmtQWLogVolName<<"   "
-      //           <<m_GrandPmtPhCathodeLogVolName << endreq;
+      //           <<m_GrandPmtPhCathodeLogVolName << endmsg;
       
     }
     
@@ -1141,7 +1141,7 @@ void   RichPmtProperties::setQWPhCathNames () {
     if( R_DET ){
       if(R_DET->exists("Rich1PmtLensPresence") ) {         
         if( ( R_DET->param<int> ("Rich1PmtLensPresence")) == 1 ) {
-         RichPmtlog << MSG::ERROR<<"Expecting Rich1PmtLens,  but Can't retrieve "+aRDePath + RichLPmtQwDeSubPathName<<endreq;
+         RichPmtlog << MSG::ERROR<<"Expecting Rich1PmtLens,  but Can't retrieve "+aRDePath + RichLPmtQwDeSubPathName<<endmsg;
          
         }
         

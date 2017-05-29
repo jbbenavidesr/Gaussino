@@ -190,7 +190,7 @@ void Special::generatePileUp() {
   }
 
   if ( 0 == m_pileUpProductionTool ) {
-    fatal() << "No pile up production tool defined !" << endreq ;    
+    fatal() << "No pile up production tool defined !" << endmsg ;    
     return ;  
   }
 
