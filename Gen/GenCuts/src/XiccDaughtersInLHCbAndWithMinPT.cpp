@@ -45,6 +45,7 @@ XiccDaughtersInLHCbAndWithMinPT::XiccDaughtersInLHCbAndWithMinPT( const std::str
   declareProperty( "DecayTool" ,       m_decayToolName   = "EvtGenDecay") ;
   declareProperty( "BaryonState",      m_BaryonState     = "Xi_cc+"); // double heavy baryon to be looked for
   declareProperty( "MinXiccPT",        m_minXiccPT       = 2000 * Gaudi::Units::MeV );
+  declareProperty( "MinDaughterPT",    m_minDaughterPT = -999 * Gaudi::Units::MeV );
 
 }
 
@@ -166,6 +167,7 @@ bool XiccDaughtersInLHCbAndWithMinPT::passCuts( const HepMC::GenParticle * theSi
       Exception( "No Xicc in the signal decay chain !");
   
   double angle( 0. ) ;
+  double pt( 0. ) ;
   double firstpz = stables.front() -> momentum().pz() ;
   
   debug() << "New event" << endmsg ;
@@ -217,6 +219,14 @@ bool XiccDaughtersInLHCbAndWithMinPT::passCuts( const HepMC::GenParticle * theSi
         angle/Gaudi::Units::mrad << " mrad)"<<endmsg;
       return false ;
     }
+
+    pt = (*it) -> momentum().perp() ;
+    if(pt<m_minDaughterPT) {
+        debug() << "particle " << pid << " has PT"<<
+            pt/Gaudi::Units::MeV<< " MeV)"<<endmsg;
+        return false ;
+    }
+
   }
 
   // check Xicc

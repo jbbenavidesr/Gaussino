@@ -9,8 +9,6 @@
 #include <iostream>
 #include <vector>
 
-#include "AmpGen/INamedParameter.h"
-
 // forward declaration
 namespace AmpGen{
   class NamedParameterBase;
@@ -18,62 +16,63 @@ namespace AmpGen{
 
 // ... makes this possible as friend of NamedParameterBase
 std::stringstream& operator>>(std::stringstream& is
-			      , AmpGen::NamedParameterBase& npb);
+    , AmpGen::NamedParameterBase& npb);
 
 // back to main definitions/declarations:
 namespace AmpGen{
 
-class ParsedParameterFile;
-class ParsedParameterFileList; //forward declaration
+  class ParsedParameterFile;
+  class ParsedParameterFileList; //forward declaration
+  class ParsedParameterLine; 
+ 
+  class NamedParameterBase {
+    protected:
+      static bool IveSaidItOnce;
+      std::string _name;
+      //  static ParsedParameterFile* _ppF;
+      ParsedParameterFile* _ppF;
+      static ParsedParameterFileList* getFlist();
+      static std::string _defaultFile; // if "", read default-stream
+      static std::istream* _defaultStreamPtr; // default of this default is &std:cin
 
-class NamedParameterBase : virtual public INamedParameter{
- protected:
-  static bool IveSaidItOnce;
-  std::string _name;
-  //  static ParsedParameterFile* _ppF;
-  ParsedParameterFile* _ppF;
-  static ParsedParameterFileList* getFlist();
-  static std::string _defaultFile; // if "", read default-stream
-  static std::istream* _defaultStreamPtr; // default of this default is &std:cin
+      virtual bool setFromParsedLine(const ParsedParameterLine& line) = 0;
+      virtual bool setFromParsedFile();
+      bool _gotInitialised;
 
-  virtual bool setFromParsedLine(const ParsedParameterLine& line) = 0;
-  virtual bool setFromParsedFile();
-  bool _gotInitialised;
+      bool _quiet;
 
-  bool _quiet;
+    public:
+      enum VERBOSITY{VERBOSE=0, QUIET=1};
 
- public:
-  enum VERBOSITY{VERBOSE=0, QUIET=1};
+      static bool setDefaultInputFile(const std::string& fname);
+      static bool setDefaultInputStream(std::istream& str = std::cin);
 
-  static bool setDefaultInputFile(const std::string& fname);
-  static bool setDefaultInputStream(std::istream& str = std::cin);
+      bool setPPF(ParsedParameterFile* ppF_in = 0);
+      bool read();
+      bool read(std::istream& is);
+      bool read(const std::string& fname);
 
-  bool setPPF(ParsedParameterFile* ppF_in = 0);
-  bool read();
-  bool read(std::istream& is);
-  bool read(const std::string& fname);
+      bool reloadFile(const std::string& id);
 
-  bool reloadFile(const std::string& id);
+      bool setFromInitString(const std::string& str);
+      bool setFromInitStringNoName(const std::string& str_in);
 
-  bool setFromInitString(const std::string& str);
-  bool setFromInitStringNoName(const std::string& str_in);
+      NamedParameterBase(const std::string& name_in=""
+          , const char* fname=0
+          , VERBOSITY = VERBOSE);
+      NamedParameterBase(const NamedParameterBase& other);
+      virtual ~NamedParameterBase();
 
-  NamedParameterBase(const std::string& name_in=""
-		     , const char* fname=0
-		     , VERBOSITY = VERBOSE);
-  NamedParameterBase(const NamedParameterBase& other);
-  virtual ~NamedParameterBase();
+      virtual const std::string& name() const{
+        return _name;
+      }
 
-  virtual const std::string& name() const{
-    return _name;
-  }
+      void quiet(bool beSo=true){_quiet = beSo;}
+      bool gotInitialised() const{return _gotInitialised;}
 
-  void quiet(bool beSo=true){_quiet = beSo;}
-  bool gotInitialised() const{return _gotInitialised;}
-
-  friend std::stringstream& ::operator>>(std::stringstream& is
-				       , AmpGen::NamedParameterBase& npb);
-};
+      friend std::stringstream& ::operator>>(std::stringstream& is
+          , AmpGen::NamedParameterBase& npb);
+  };
 
 }//namespace AmpGen
 

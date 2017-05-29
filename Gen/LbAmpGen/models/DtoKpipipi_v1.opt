@@ -1,7 +1,6 @@
-Mother    D0
-EventType K- pi+ pi+ pi-
+EventType D0 K- pi+ pi+ pi-
 NEvents 500000
-sourceFile            "../src/DtoKpipipi_v1.cpp"
+sourceFile            "DtoKpipipi_v1.cpp"
 
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Re                            0 1 0.1
 D0[D]{K*(892)bar0{K-,pi+},rho(770)0{pi+,pi-}}_Im                            0 0 0.1

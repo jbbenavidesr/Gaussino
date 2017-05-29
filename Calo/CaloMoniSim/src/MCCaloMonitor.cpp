@@ -1,5 +1,3 @@
-// $Id: MCCaloMonitor.cpp,v 1.10 2009-10-23 10:45:22 jonrob Exp $
-
 // Include files
 
 // STL
@@ -9,7 +7,6 @@
 
 // from Gaudi
 #include "Kernel/CaloCellID.h"
-#include "GaudiKernel/DeclareFactoryEntries.h"
 // from Event
 #include "Event/MCHit.h"
 #include "Event/MCParticle.h"
@@ -20,9 +17,6 @@
 
 // Gaudi Histograms:
 #include "GaudiAlg/GaudiHistoAlg.h"
-// CaloKernel
-#include "CaloKernel/CaloException.h"
-#include "CaloKernel/CaloCollection.h"
 
 // local
 #include "MCCaloMonitor.h"
@@ -85,7 +79,7 @@ StatusCode MCCaloMonitor::initialize() {
   StatusCode sc = GaudiHistoAlg::initialize(); // must be executed first
   if ( sc.isFailure() ) return sc;  // error printed already by GaudiAlgorithm
 
-  info() << "==> Initialise Monitoring " << m_Detector << endreq;
+  info() << "==> Initialise Monitoring " << m_Detector << endmsg;
 
   m_hDir = m_Detector;
   m_nameOfMCHits = "MC/" + m_Detector + "/Hits";
@@ -130,7 +124,7 @@ StatusCode MCCaloMonitor::initialize() {
   m_detector = getDet<DeCalorimeter>(m_GeometryRoot + m_Detector);
   if( 0 == m_detector ) {
     error() <<
-      "Cannot locate Detector Element ="<< m_GeometryRoot+m_Detector << endreq;
+      "Cannot locate Detector Element ="<< m_GeometryRoot+m_Detector << endmsg;
     return StatusCode::FAILURE ;
   }
   
@@ -144,7 +138,7 @@ StatusCode MCCaloMonitor::execute() {
 
   ++m_nEvents;
   m_nEvents  = 1;
-  debug() << "Execute Monitoring " << m_Detector << endreq;
+  debug() << "Execute Monitoring " << m_Detector << endmsg;
 
   MCCaloHits::const_iterator iHit;
 
@@ -244,7 +238,7 @@ StatusCode MCCaloMonitor::execute() {
 //=============================================================================
 StatusCode MCCaloMonitor::finalize() {
 
-  info()<< "Finalize Monitoring " << m_Detector << endreq;
+  info()<< "Finalize Monitoring " << m_Detector << endmsg;
   return GaudiHistoAlg::finalize();  // must be called after all other actions
 }
 

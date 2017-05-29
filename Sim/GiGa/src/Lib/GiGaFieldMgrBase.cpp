@@ -201,10 +201,10 @@ StatusCode GiGaFieldMgrBase::createStepper () const
   types.push_back( "HelixHeum"           ) ;
   
   log << MSG::VERBOSE 
-      << " \t The available steppers are: " << endreq ;
+      << " \t The available steppers are: " << endmsg ;
   for( Types::const_iterator step = types.begin() ;
        types.end() != step ; ++step ) 
-    { log << MSG::VERBOSE << " \t\t (G4)" << *step << endreq ; }
+    { log << MSG::VERBOSE << " \t\t (G4)" << *step << endmsg ; }
   
   if      ( types  [0] == m_stepperType ) 
     { m_stepper = new G4ExplicitEuler      ( equation ) ; }
@@ -234,7 +234,7 @@ StatusCode GiGaFieldMgrBase::createStepper () const
   
   log << MSG::DEBUG 
       << " Stepper of type '" + 
-    GiGaUtil::ObjTypeName( m_stepper ) + "' is created " << endreq ;
+    GiGaUtil::ObjTypeName( m_stepper ) + "' is created " << endmsg ;
   
   return StatusCode::SUCCESS ;
 }
@@ -288,7 +288,7 @@ StatusCode GiGaFieldMgrBase::createFieldMgr () const
   if( 0 == mag ) 
     {
       log << MSG::INFO << "createFieldMgr(): null magnetic field"
-          << endreq;
+          << endmsg;
       return StatusCode::SUCCESS; ///// return
     }  
   

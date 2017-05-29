@@ -1,0 +1,29 @@
+#============================================================================
+# Created    : 2016-03-24
+# Maintainer : Dominik Muller
+#============================================================================
+package GaussRedecay
+version v1r0
+
+# Structure, i.e. directories to process. 
+#============================================================================
+branches GaussRedecay doc cmt src
+
+# Used packages
+#============================================================================
+use Generators        v* Gen
+use MCEvent           v* Event
+use PhysEvent         v* Event
+use GenEvent          v* Event
+use GiGa              v* Sim
+
+apply_pattern install_more_includes more=GaussRedecay
+
+# Component library building rule
+#============================================================================
+macro GaussRedecay_linkopts " -Wl,--no-as-needed $(lhapdf_linkopts) -Wl,--as-needed "
+library     GaussRedecay     *.cpp
+
+# define component library link options
+#============================================================================
+apply_pattern component_library library=GaussRedecay

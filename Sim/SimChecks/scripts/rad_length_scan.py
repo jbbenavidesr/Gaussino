@@ -5,32 +5,41 @@
 ## You can run this simply by "python rad_length_scan.py"                      ##
 ## Twiki at: https://twiki.cern.ch/twiki/bin/view/LHCb/RadLengthStudies        ##
 ##                                                                             ##
-##  @author : L.Pescatore                                                      ##
-##  @date   : last modified on 2015-06-16                                      ##
+##  @author : K. Zarebski                                                      ##
+##  @date   : last modified on 2016-12-07                                      ##
 #################################################################################
 
 import sys
 import os
 
-base = os.environ["SIMCHECKSROOT"] + "/options/RadLength/"
+pwd = os.getcwd()
+pwd_str = pwd
+home = os.environ['HOME']
+
+simchecks_local = os.environ["SIMCHECKSROOT"]
+
+base = simchecks_local + "/options/RadLength/"
+sys.path.append(os.path.join(simchecks_local, 'python'))
+
 from RadLengthMakePlots import makePlots
 
-pwd = os.environ['PWD']
-outputpath = pwd
+outputpath = pwd_str + '/Rad_length/root_files/'
+outputpathpdf = pwd_str + '/Rad_length/pdf_files/'
+
 out = 'Rad_merged.root'
 if(len(sys.argv) == 2):
     out = sys.argv[1]
 
-os.system("mkdir -p plots")
+os.system("mkdir -p %s/Rad_length/" % pwd)
+os.system("mkdir -p %s/Rad_length/root_files/" % pwd)
+os.system("mkdir -p %s/Rad_length/data_tables/" % pwd)
 cmd = "gaudirun.py {base}/MaterialEvalGun.py {base}/Gauss-Job.py {base}".format(base=base)
-os.system(cmd+"RadLengthAna.py")
-os.system(cmd+"RadLengthAna_VELO.py")
-    
-output=outputpath+'/'+out
-merge_command = 'hadd -f {output} {pwd}/Rad.root {pwd}/Rad_VELO.root'.format(output=output, pwd=pwd)
+os.system(cmd + "RadLengthAna.py")
+os.system(cmd + "RadLengthAna_VELO.py")
+
+output = outputpath + out
+merge_command = 'hadd -f {output} {pwd}/Rad.root {pwd}/Rad_VELO.root'.format(output=output, pwd='%s/Rad_length/root_files' % pwd)
 os.system(merge_command)
 
-makePlots(out,"plots/","rad")
-makePlots(out,"plots/","inter")
-
-    
+makePlots(outputpath + out, outputpathpdf, "rad")
+makePlots(outputpath + out, outputpathpdf, "inter")

@@ -253,7 +253,7 @@ void CaloSensDet::Initialize( G4HCofThisEvent* HCE )
             << m_collection->GetName   ()
             << "' for SensDet='"
             << m_collection->GetSDname ()
-            <<"'" << endreq ;
+            <<"'" << endmsg ;
   }
   //
   m_hitmap.clear() ;
@@ -308,7 +308,7 @@ void CaloSensDet::EndOfEvent ( G4HCofThisEvent* /* HCE */ )
   {
     always() << boost::format
       ( " #Hits=%5d #SubHits=%5d #Slots=%5d Energy=%8.3g[GeV] " )
-      % nhits % nshits % nslots % energy << endreq ;
+      % nhits % nshits % nslots % energy << endmsg ;
   }
 
 }

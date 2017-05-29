@@ -18,8 +18,8 @@
 //
 //------------------------------------------------------------------------
 
-#ifndef EvtCGEN_HH
-#define EvtCGEN_HH
+#ifndef EvtLBAMPGEN_HH
+#define EvtLBAMPGEN_HH
 
 #include "EvtGenBase/EvtDecayProb.hh"
 #include "EvtGenBase/EvtGenKine.hh"

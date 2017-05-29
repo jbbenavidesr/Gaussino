@@ -132,17 +132,17 @@ StatusCode GiGaSensDetBudget::finalize   ()
   // printout 
   MsgStream log( msgSvc() , name() ) ;
   const std::string stars( 80 , '*' );
-  log << MSG::INFO   << stars                                << endreq ;
+  log << MSG::INFO   << stars                                << endmsg ;
   log << MSG::ALWAYS << " Sorted Material budget listing "             ;
   if( m_material ) { log << " Materials " ; }
   if( m_lvolume  ) { log << " LogVols   " ; }
   if( m_pvolume  ) { log << " PhysVols  " ; }
-  log << endreq ;
+  log << endmsg ;
   typedef std::pair<double,const std::string*> Entry   ;
   typedef std::vector<Entry>                   Entries ;
   if( m_material )
     {
-      log << MSG::INFO   << stars                                << endreq ;
+      log << MSG::INFO   << stars                                << endmsg ;
       Entries tmp  ;      
       double total = 0 ;
       for( Budget::const_iterator it1 = m_budgetM.begin() ; 
@@ -158,15 +158,15 @@ StatusCode GiGaSensDetBudget::finalize   ()
           log << MSG::INFO 
               << " Budget: "       << Local::print( ri->first )
               << " Material   : '" <<            *(ri->second)  
-              << "'" << endreq ;
+              << "'" << endmsg ;
         }
       log << MSG::ALWAYS << " Total Evaluated Budget ( Materials   ) = " ;
-      log << Local::print( total ) << endreq  ;
+      log << Local::print( total ) << endmsg  ;
       tmp.clear();
     }
   if( m_lvolume )
     {    
-      log << MSG::INFO   << stars                                << endreq ;
+      log << MSG::INFO   << stars                                << endmsg ;
       Entries tmp  ;      
       double total = 0 ;
       for( Budget::const_iterator it1 = m_budgetL.begin() ; 
@@ -182,15 +182,15 @@ StatusCode GiGaSensDetBudget::finalize   ()
           log << MSG::INFO 
               << " Budget: "       << Local::print( ri->first )
               << " LogVolume  : '" <<            *(ri->second)  
-              << "'" << endreq ;
+              << "'" << endmsg ;
         }
       log << MSG::ALWAYS << " Total Evaluated Budget ( LogVolumes  ) = " ;
-      log << Local::print( total ) << endreq  ;
+      log << Local::print( total ) << endmsg  ;
       tmp.clear();
     }
   if( m_pvolume )
     {    
-      log << MSG::INFO   << stars                                << endreq ;
+      log << MSG::INFO   << stars                                << endmsg ;
       Entries tmp  ;      
       double total = 0 ;
       for( Budget::const_iterator it1 = m_budgetP.begin() ; 
@@ -206,13 +206,13 @@ StatusCode GiGaSensDetBudget::finalize   ()
           log << MSG::INFO 
               << " Budget: "       << Local::print( ri->first )
               << " PhysVolume : '" <<            *(ri->second)  
-              << "'" << endreq ;
+              << "'" << endmsg ;
         }
       log << MSG::ALWAYS << " Total Evaluated Budget ( PhysVolumes ) = " ;
-      log << Local::print( total ) << endreq  ;
+      log << Local::print( total ) << endmsg  ;
       tmp.clear();
     }
-  log << MSG::INFO << stars << endreq ;  
+  log << MSG::INFO << stars << endmsg ;  
   // clear the budget tables 
   m_budgetL.clear () ;  
   m_budgetP.clear () ;

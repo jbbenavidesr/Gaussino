@@ -98,7 +98,7 @@ StatusCode GiGaDetectorElementCnv::createRep( DataObject*     Object  ,
       log << MSG::WARNING 
           << " IGeometryInfo*/ILVolume* is not available for DE="      
           << de->name()    
-          << " Consider it just as a holder of daughter DEs"  << endreq; 
+          << " Consider it just as a holder of daughter DEs"  << endmsg; 
       /// geometry information is not available, 
       /// consider DE just as a collection of daughter DetectorElements  
       for( IDetectorElement::IDEContainer::iterator ic = de->childBegin() ; 
@@ -144,7 +144,7 @@ StatusCode GiGaDetectorElementCnv::updateRep( DataObject*     Object  ,
   ///
   MsgStream log( msgSvc() , name() ); 
   log << MSG::DEBUG << "updateRep::start " 
-      << Object->registry()->identifier() << endreq; 
+      << Object->registry()->identifier() << endmsg; 
   ///
   if( 0 == Object                 ) 
     { return Error("updateRep::DataObject* points to NULL"); } 
@@ -183,7 +183,7 @@ StatusCode GiGaDetectorElementCnv::updateRep( DataObject*     Object  ,
   //      log << MSG::INFO 
   //      << "DE=" << de->name() 
   //      << " was already EXPLICITELY/IMPLICITELY converted for PV=" 
-  //      << pv->GetName() << endreq; 
+  //      << pv->GetName() << endmsg; 
   //      return StatusCode::SUCCESS; 
   //      }                          /// RETURN !!!
   //      ///

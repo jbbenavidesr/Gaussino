@@ -11,8 +11,21 @@ namespace AmpGen {
     return TLorentzVector( evt.address( 4*ref ) );
   }
 
-  double acoplanarity( const Event& evt ){
+  TLorentzVector pFromEvent( const Event& evt, const std::vector<unsigned int>& ref){
+    double px =0 ;
+    double py =0 ;
+    double pz =0 ;
+    double pE =0 ;
+    for( auto& r : ref ){
+      px += evt[4*r];
+      py += evt[4*r+1];
+      pz += evt[4*r+2];
+      pE += evt[4*r+3];
+    }
+    return TLorentzVector(px,py,pz,pE);
+  }
 
+  double acoplanarity( const Event& evt ){
     TLorentzVector p0 = pFromEvent( evt, 0 ) ;
     TLorentzVector p1 = pFromEvent( evt, 1 ) ; 
     TLorentzVector p2 = pFromEvent( evt, 2 ) ;
@@ -54,23 +67,26 @@ namespace AmpGen {
     }
   };
 
+
   struct HelicityCosine {
-    unsigned int _i, _j;
-    std::vector<unsigned int> _pR;
-    HelicityCosine( const unsigned int& p1, 
-        const unsigned int& p2, 
+    std::vector<unsigned int> _i, _j, _pR;
+    HelicityCosine( 
+        const std::vector<unsigned int>& p1, 
+        const std::vector<unsigned int>& p2, 
         const std::vector<unsigned int>& pR ) : _i(p1), _j(p2), _pR(pR) {}
+    HelicityCosine( const unsigned int& i, const unsigned int& j, const std::vector<unsigned int>& pR ) : _i(1,i),_j(1,j),_pR(pR){}
 
     double operator() ( __gnu_cxx::__normal_iterator<const Event*, std::vector<Event, std::allocator<Event> > >& evt ) const { return (*this)(*evt);} 
     double operator() ( std::vector<Event>::iterator evt ) const { return (*this)(*evt); } 
     double operator() ( const Event& evt ) const {
-      TLorentzVector PR;
-      for( auto& i : _pR ) PR += pFromEvent( evt , i ) ;
-      TLorentzVector pi = pFromEvent(evt, _i );
-      TLorentzVector pj = pFromEvent(evt, _j );
+      
+      TLorentzVector PR = pFromEvent(evt,_pR);
+      TLorentzVector pi = pFromEvent(evt,_i);
+      TLorentzVector pj = pFromEvent(evt,_j);
       return Product( pi, pj, PR ) / sqrt( Product( pi,pi,PR) * Product( pj,pj,PR));
     }
   };
+
 
   double trihedralAngle( const Event& evt ){
 
@@ -103,6 +119,36 @@ namespace AmpGen {
     TVector3 f = DecayPlane.Unit();
     return P2.Dot(f);
   }
+
+  double PHI( const Event& evt ){
+    TLorentzVector pA_4vec = pFromEvent( evt, 0 ) ;
+    TLorentzVector pB_4vec = pFromEvent( evt, 1 ) ;
+    TLorentzVector pC_4vec = pFromEvent( evt, 3 ) ;
+    TLorentzVector pD_4vec = pFromEvent( evt, 2 ) ;
+    TLorentzVector pM = pA_4vec + pB_4vec + pC_4vec + pD_4vec ;
+    pA_4vec.Boost( - pM.BoostVector() );
+    pB_4vec.Boost( - pM.BoostVector() );
+    pC_4vec.Boost( - pM.BoostVector() );
+    pD_4vec.Boost( - pM.BoostVector() );
+    TLorentzVector pAB_4vec = pA_4vec + pB_4vec;
+    TLorentzVector pCD_4vec = pC_4vec + pD_4vec;
+    TVector3 pAB_3vec = pAB_4vec.Vect();
+    TVector3 pCD_3vec = pCD_4vec.Vect();
+    TVector3 pA_3vec = pA_4vec.Vect();
+    TVector3 pB_3vec = pB_4vec.Vect();
+    TVector3 pC_3vec = pC_4vec.Vect();
+    TVector3 pD_3vec = pD_4vec.Vect();
+    TVector3 zhat = pAB_3vec.Unit();
+    TVector3 yhat = (pA_3vec.Cross(pB_3vec)).Unit();
+    TVector3 xhat = (yhat.Cross(zhat)).Unit();
+    TVector3 yhatPrime = (pC_3vec.Cross(pD_3vec)).Unit();
+
+    Double_t cosPhi = (yhat.Dot(yhatPrime));
+    Double_t sinPhi = (xhat.Dot(yhatPrime));
+    Double_t phi    = TMath::ATan2(sinPhi,cosPhi);
+    return phi > 0 ? phi : phi + 2*M_PI;
+  }
+
 
   /// boost event input along direction n 
   std::vector<double> boost( const std::vector<double>& input, const std::vector<double>& n, const double& v ){

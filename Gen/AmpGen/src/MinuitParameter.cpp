@@ -116,13 +116,14 @@ MinuitParameter::MinuitParameter(const std::string& name
   , _minInit(mi)
   , _maxInit(ma)
   , _pset(0)
-  , _psetIndex(-9999)
 {
   DEBUG("Building parameter : " << name );
   
   setParSet(&setPtr);
   resetToInit();
 }
+
+
 
 void MinuitParameter::resetToInit(){
   _meanResult   = _currentFitVal = _meanInit;

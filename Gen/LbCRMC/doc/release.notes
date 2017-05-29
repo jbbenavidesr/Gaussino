@@ -4,6 +4,24 @@
 ! Purpose     : LHCb SW interface to CRMC/EPOS
 !-----------------------------------------------------------------------------
 
+! 2016-10-31 - Laure Massacrier
+  - Update of ImparatParam_PERIPH.py for all type of production tools
+
+! 2016-09-22 - Laure Massacrier
+  - Change name of EPOSPythia8.py to EPOS-PSIwithPythia8.py
+  - Remove python/LbCRMC directory from Git
+
+! 2016-09-13 - Laure Massacrier
+  - Remove crmc.param option file which is not used
+  - Add ImpactParam_PERIPH.py to set the impact parameter range of the collision for peripheral events
+
+! 2016-09-13 - Laure Massacrier
+  - Remove lines suggested by Gloria in embedding script EPOSPythia8.py
+
+! 2016-07-21 - Laure Massacrier
+  - Apply a fix so that the mass of the particles calculated from the particle 4-vector (p,E) matches the particle generated mass
+  - Add a first version of the python script to make the embedding of the J/psi in the EPOS underlying event
+
 ! 2016-06-30 - Laure Massacrier
   - Fix the table path in EPOS_CMS.py and EPOS_TARGET.py for production environment
 

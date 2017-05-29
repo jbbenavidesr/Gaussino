@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "AmpGen/Utils.h"
+//#include "AmpGen/Utils.h"
 using namespace std;
 using namespace AmpGen;
 
@@ -79,12 +79,13 @@ void ParsedParameterFile::readStream(std::istream& is){
 
 const ParsedParameterLine&
 ParsedParameterFile::find(const std::string& name) const{
-  return keyFinder(name, _lines, dummyLine);
+  auto it = _lines.find(name);
+  return it != _lines.end() ? it->second : dummyLine ; 
 }
 
 void ParsedParameterFile::print(std::ostream& os) const{
   int i=0;
-  for(map<string, ParsedParameterLine>::const_iterator it = _lines.begin();
+  for(std::map<string, ParsedParameterLine>::const_iterator it = _lines.begin();
       it != _lines.end();
       it++, i++){
     os << " " << i << ") " << it->second << endl;

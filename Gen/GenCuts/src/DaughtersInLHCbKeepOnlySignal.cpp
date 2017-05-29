@@ -217,18 +217,28 @@ bool DaughtersInLHCbKeepOnlySignal::applyCut( ParticleVector & theParticleVector
   if ( theParticleVector.empty() ) return false ;
   std::vector< HepMC::GenVertex * > vertexVector ;
   
+  // create one vertex for the signal particle
   HepMC::GenVertex * theNewVertex = copyHepMCParticle( theSignal , vertexVector ) ;
+  // create one vertex for the beam particles (primary vertex)
   std::pair< HepMC::GenParticle * , HepMC::GenParticle * >  beam = 
     theEvent -> beam_particles();
   HepMC::GenParticle * b1 = new HepMC::GenParticle( *beam.first ) ;
   HepMC::GenParticle * b2 = new HepMC::GenParticle( *beam.second ) ;
-  theNewVertex -> add_particle_in( b1 ) ;
-  theNewVertex -> add_particle_in( b2 ) ;
+  HepMC::GenVertex * thePV = 
+    new HepMC::GenVertex( beam.first -> end_vertex() -> position() ) ;
+  thePV -> add_particle_in( b1 ) ;
+  thePV -> add_particle_in( b2 ) ;
+  // create a documentation particle, identical to the signal
+  HepMC::GenParticle * docParticle = new HepMC::GenParticle( *theSignal ) ;
+  docParticle -> set_status( LHCb::HepMCEvent::DocumentationParticle ) ;
+  thePV -> add_particle_out( docParticle ) ;
+  theNewVertex -> add_particle_in( docParticle ) ;
 
   // clear event
   HepMC::GenEvent* newEvent = const_cast< HepMC::GenEvent *>( theEvent );
   newEvent -> clear() ;
 
+  newEvent -> add_vertex( thePV ) ;
   newEvent -> add_vertex( theNewVertex ) ;
   std::vector< HepMC::GenVertex * >::iterator vIt ;
   for ( vIt = vertexVector.begin() ; vertexVector.end() != vIt ; ++vIt )

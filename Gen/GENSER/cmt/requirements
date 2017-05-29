@@ -39,7 +39,7 @@ macro powhegbox_native_version "r3043.lhcb"
 #-- Photos++ and Taula++
 #============================================================================
 macro photospp_native_version "3.56"
-macro tauolapp_native_version "1.1.6"
+macro tauolapp_native_version "1.1.6b.lhcb"
 
 
 #-- Pythia 8
@@ -78,15 +78,6 @@ include_dirs $(GENSERROOT)/src/pythia6
 
 # force the order of link for pythia6
 macro_append GENSER_linkopts " $(pythia6_linkopts) "
-
-# same for EPOS
-library      eposforgauss   epos/*.F
-
-apply_pattern linker_library library=eposforgauss
-
-# force the order of link for epos
-macro_append GENSER_linkopts " $(epos_linkopts) "
-
 
 #-- Hijing
 #============================================================================

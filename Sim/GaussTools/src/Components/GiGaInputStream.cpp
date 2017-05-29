@@ -50,7 +50,7 @@ StatusCode GiGaInputStream::execute()
   if( !m_execute ) { return StatusCode::SUCCESS; } 
   ///
   MsgStream log( msgSvc() , name() ); 
-  log << MSG::VERBOSE << " execute:: start" << endreq; 
+  log << MSG::VERBOSE << " execute:: start" << endmsg; 
   ///
   if( m_executeOnce      ) { m_execute  = false; }  
   ///
@@ -94,7 +94,7 @@ StatusCode GiGaInputStream::execute()
   ///
   m_dataSelector.clear(); 
   ///
-  log << MSG::VERBOSE << "Execute::end" << endreq;  
+  log << MSG::VERBOSE << "Execute::end" << endmsg;  
   ///
   return status; 
   ///

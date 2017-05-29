@@ -1,21 +1,21 @@
 #include "AmpGen/EventType.h"
 #include "AmpGen/EventList.h"
-#include "AmpGen/FastCoherentSum.h"
 
 #include "TGenPhaseSpace.h"
 #include "AmpGen/PhaseSpace.h"
 
 namespace AmpGen { 
+  template <class PDF>
   class Generator {
     private:
-      FastCoherentSum& m_pdf;
+      PDF& m_pdf;
       EventType m_eventType;
       AmpGen::PhaseSpace m_gps;
       TGenPhaseSpace m_gps_root;
       unsigned int m_generatorBlock;
       TRandom* m_rnd; 
     public:
-      Generator( FastCoherentSum& pdf, const EventType& type ) : 
+      Generator( PDF& pdf, const EventType& type ) : 
         m_pdf( pdf ), 
         m_eventType( type ),
         m_generatorBlock(1000000),
@@ -24,7 +24,6 @@ namespace AmpGen {
       TLorentzVector motherP(0,0,0,m_eventType.motherMass() );
       m_gps.SetDecay( m_eventType.motherMass(), m_eventType.masses() );  
       m_gps_root.SetDecay( motherP, m_eventType.size() , m_eventType.masses().data() );
-
     }
       void setRandom(TRandom* rand ){ 
         m_rnd = rand ; 
@@ -78,7 +77,7 @@ namespace AmpGen {
       void fillEventList( EventList& list, 
                           const unsigned int& N,
                           bool useRoot=false ){
-        fillEventList( list, N ,  [](auto& evt ){ return 1; } , useRoot);
+        fillEventList( list, N ,  []( const Event& evt ){ return 1; } , useRoot);
 
       }
 

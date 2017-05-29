@@ -191,5 +191,8 @@ protected:
 
   /// Temporary ector to obtain PIDs from job options.
   std::vector< int > m_pidVector   ;
+
+  /// Boolean to control if signal should be reverted if backward
+  bool m_revertWhenBackward = true;
 };
 #endif // GENERATORS_SIGNAL_H

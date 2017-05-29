@@ -128,7 +128,7 @@ void GaussMonitor::CheckLifeTime::check ( const bool iErr ) const
                  << "' \tActual is "  << lTime         << "+-" 
                  <<  ltErr  << "("    << cnt.flagRMS() << ")"
                  << "\tNominal is "   << nominal       << " [mm] "
-                 << endreq ;
+                 << endmsg ;
       if ( iErr ) { Error   ( ">3 sigma deviation for '" +(*ip)+ "'") ; }
     }
     else if ( std::fabs ( diff ) > 2 * ltErr ) 
@@ -137,7 +137,7 @@ void GaussMonitor::CheckLifeTime::check ( const bool iErr ) const
                  << "' \tActual is "  << lTime         << "+-"           
                  << ltErr << "("      << cnt.flagRMS() << ")"
                  << "\tNominal is "   << nominal       << " [mm] "
-                 << endreq ;
+                 << endmsg ;
       if ( iErr ) { Error   ( ">2 sigma deviation for '" +(*ip)+ "'") ; }
     }
     else if ( std::fabs ( diff ) > 1 * ltErr ) 
@@ -146,7 +146,7 @@ void GaussMonitor::CheckLifeTime::check ( const bool iErr ) const
                  << "' \tActual is "  << lTime         << "+-"    
                  << ltErr << "("      << cnt.flagRMS() << ")"
                  << "\tNominal is "   << nominal       << " [mm] "
-                 << endreq ;
+                 << endmsg ;
       if ( iErr ) { Warning ( ">1 sigma deviation for '" +(*ip)+ "'") ; }
     }
     else if ( std::fabs ( diff ) > 0.5 * ltErr ) 
@@ -155,7 +155,7 @@ void GaussMonitor::CheckLifeTime::check ( const bool iErr ) const
                  << "' \tActual is "    << lTime  << "+-" 
                  << ltErr << "(" << cnt.flagRMS() << ")"
                  << "\tNominal is "   << nominal  << " [mm] "
-                 << endreq ;
+                 << endmsg ;
     }
     else 
     { 
@@ -163,7 +163,7 @@ void GaussMonitor::CheckLifeTime::check ( const bool iErr ) const
                  << "' \tActual is "    << lTime  << "+-" 
                  << ltErr << "(" << cnt.flagRMS() << ")"
                  << "\tNominal is "   << nominal  << " [mm] "
-                 << endreq ;
+                 << endmsg ;
     }
   }
 }

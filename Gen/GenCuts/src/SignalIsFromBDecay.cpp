@@ -49,7 +49,7 @@ bool SignalIsFromBDecay::applyCut( ParticleVector & theParticleVector ,
   const
 {
   if ( msgLevel(MSG::DEBUG) )
-    debug() << "Passed " << theParticleVector.size() << " Particles" << endreq;
+    debug() << "Passed " << theParticleVector.size() << " Particles" << endmsg;
 
   // Apply from B cuts
   bool fromB = false;
@@ -58,14 +58,14 @@ bool SignalIsFromBDecay::applyCut( ParticleVector & theParticleVector ,
   {
     if ( msgLevel(MSG::DEBUG) )
     {
-      debug() << " -> Particle PDG Code = " << (*it)->pdg_id() << endreq;
+      debug() << " -> Particle PDG Code = " << (*it)->pdg_id() << endmsg;
     }
     fromB = isFromB(*it);
     if ( fromB ) break;
   }
   if ( msgLevel(MSG::DEBUG) )
   {
-    debug() << " -> Particle is from B = " << fromB << endreq;
+    debug() << " -> Particle is from B = " << fromB << endmsg;
   }
 
   // print the event record in verbose mode
@@ -97,7 +97,7 @@ bool SignalIsFromBDecay::isFromB( const HepMC::GenParticle * part,
     if ( msgLevel(MSG::DEBUG) )
     {
       debug() << std::string(tree_level,' ')
-              << " -> Particle PDG Code = " << (*it)->pdg_id() << endreq;
+              << " -> Particle PDG Code = " << (*it)->pdg_id() << endmsg;
     }
     if ( isFromB(*it,tree_level+1) ) return true;
   }

@@ -112,7 +112,7 @@ void GiGaMagFieldGlobal::GetFieldValue
           << " Field[tesla]=("
           << m_field.x() / tesla << ","
           << m_field.y() / tesla << ","
-          << m_field.z() / tesla << ")" << endreq ;
+          << m_field.z() / tesla << ")" << endmsg ;
     }
   ///
   *(B+0) = m_field.x();

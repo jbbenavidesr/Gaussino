@@ -271,7 +271,7 @@ StatusCode MuonHitChecker::finalize() {
     }
   }
   info()<<" allR"<<endmsg;
-  info()<<" number of hit generate doutside gaps volume "<<  m_hit_outside_gaps<<endreq;
+  info()<<" number of hit generate doutside gaps volume "<<  m_hit_outside_gaps<<endmsg;
   
   return StatusCode::SUCCESS;
 }

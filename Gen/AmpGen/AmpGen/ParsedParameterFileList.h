@@ -10,36 +10,36 @@
 
 /* It's a singleton - there can only be one instance
    of ParsedParameterFileList in any program.
-*/
+   */
 
 namespace AmpGen{
 
-class ParsedParameterFile; // forward declaration.
+  class ParsedParameterFile; // forward declaration.
 
-class ParsedParameterFileList{
-  ParsedParameterFileList();
-  static ParsedParameterFileList* ptr;
- protected:
-  std::map<std::string, ParsedParameterFile*> _fileMap;
-  std::map<const std::istream*, ParsedParameterFile*> _streamMap;
-  void deleteFileMap();
-  void deleteStreamMap();
-  void deleteAll();
- public:
-  static ParsedParameterFileList* getMe();
+  class ParsedParameterFileList{
+    ParsedParameterFileList();
+    static ParsedParameterFileList* ptr;
+    protected:
+    std::map<std::string, ParsedParameterFile*> _fileMap;
+    std::map<const std::istream*, ParsedParameterFile*> _streamMap;
+    void deleteFileMap();
+    void deleteStreamMap();
+    void deleteAll();
+    public:
+    static ParsedParameterFileList* getMe();
 
-  ParsedParameterFile* getParsedFile(const std::string& fname);
-  ParsedParameterFile* getParsedFile(std::istream& is);
+    ParsedParameterFile* getParsedFile(const std::string& fname);
+    ParsedParameterFile* getParsedFile(std::istream& is);
 
-  void deleteFile(const std::string& fname);
-  void deleteStream(const std::istream& istream);
+    void deleteFile(const std::string& fname);
+    void deleteStream(const std::istream& istream);
 
-  ParsedParameterFile* reloadFile(const std::string& id);
+    ParsedParameterFile* reloadFile(const std::string& id);
 
-  ~ParsedParameterFileList(){
-    deleteAll();
-  }
-};
+    ~ParsedParameterFileList(){
+      deleteAll();
+    }
+  };
 }//namespace AmpGen
 #endif
 //
