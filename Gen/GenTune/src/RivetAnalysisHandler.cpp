@@ -191,7 +191,7 @@ StatusCode RivetAnalysisHandler::initialize()
   _reqCrossSection = false;
   foreach (const string& a, m_analysisNames) {
     info() << "Loading Rivet analysis " << a << " ... ";
-    Rivet::Analysis* analysis = Rivet::AnalysisLoader::getAnalysis(a);
+    auto analysis = Rivet::AnalysisLoader::getAnalysis(a);
     if ( 0 == analysis ) {
       info() << "[ \x1B[31mFAILED\x1B[0m; Skipping... ]" << endmsg;
       continue;
@@ -207,7 +207,6 @@ StatusCode RivetAnalysisHandler::initialize()
     string logName = "Rivet.Analysis." + a;
     // TODO: Sincronizat cu nivelul de logging de la Rivet odata ce s-a produs separarea
     Rivet::Log::setLevel(logName, rivetLevel(jobMsgLvl));
-    delete analysis;
   }; // end analysis foreach loop
   if (nAna == 0) { // verify non-zero analysis plugins loaded
     fatal() << "No analysis plugin left to run in current Rivet job. Exiting..." << endmsg;
