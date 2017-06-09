@@ -28,6 +28,8 @@ public:
   virtual StatusCode execute   ();    ///< Algorithm execution
   virtual StatusCode finalize  ();    ///< Algorithm finalization
 
+  bool m_detailedMonitor; //was in private
+
 protected:
 
   std::vector<int> m_numberOfGaps;
@@ -37,7 +39,7 @@ private:
   int nhit[5][4],cnt[5][4];
   int nhit_ri[5],cnt_ri[5];
 
-  bool m_detailedMonitor;
+  
   int m_hit_outside_gaps;
   
   std::string m_mcHeader ; ///< Location of MC Header

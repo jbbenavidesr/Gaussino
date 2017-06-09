@@ -200,7 +200,7 @@ StatusCode MuonMultipleScatteringChecker::execute() {
             if(c_station[i2]>ista)ista=int(c_station[i2]);
             
             name = "dxdTx_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta Tx vs delta x after MF"+boost::lexical_cast<std::string>(ista);
+            title = "delta x vs delta theta x after MF"+boost::lexical_cast<std::string>(ista);
             double xmax, xmin;
             xmax=20;            xmin=-xmax;
             double ymax, ymin;
@@ -208,22 +208,22 @@ StatusCode MuonMultipleScatteringChecker::execute() {
             ymin=-ymax;
             plot2D(deltaTx*1000, deltax, name,title, xmin, xmax, ymin, ymax, 201, 201);
             name = "dydTy_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta Ty vs delta y after MF"+boost::lexical_cast<std::string>(ista);
+            title = "delta y vs delta theta y after MF"+boost::lexical_cast<std::string>(ista);
             plot2D(deltaTy*1000, deltay, name,title, xmin, xmax, ymin, ymax, 201, 201);
             
-            name = "dxp_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta x vs p after MF"+boost::lexical_cast<std::string>(ista);
+            name = "pdx_MF"+boost::lexical_cast<std::string>(ista);
+            title = "p vs delta x after MF"+boost::lexical_cast<std::string>(ista);
             plot2D(deltax,c_p[i1]/Gaudi::Units::GeV, name,title, ymin, ymax, 0., 100., 201, 20);
             
-            name = "dyp_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta y vs p after MF"+boost::lexical_cast<std::string>(ista);
+            name = "pdy_MF"+boost::lexical_cast<std::string>(ista);
+            title = "p vs delta y after MF"+boost::lexical_cast<std::string>(ista);
             plot2D(deltay,c_p[i1]/Gaudi::Units::GeV, name,title, ymin, ymax, 0., 100., 201, 20);
             
-            name = "dTxp_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta Tx vs p after MF"+boost::lexical_cast<std::string>(ista);
+            name = "pdTx_MF"+boost::lexical_cast<std::string>(ista);
+            title = "p vs delta theta x after MF"+boost::lexical_cast<std::string>(ista);
             plot2D(deltaTx*1000,c_p[i1]/Gaudi::Units::GeV, name,title,xmin, xmax, 0., 100., 201, 20);
-            name = "dTyp_MF"+boost::lexical_cast<std::string>(ista);
-            title = "delta Ty vs p after MF"+boost::lexical_cast<std::string>(ista);
+            name = "pdTy_MF"+boost::lexical_cast<std::string>(ista);
+            title = "p vs delta theta y after MF"+boost::lexical_cast<std::string>(ista);
             plot2D(deltaTy*1000,c_p[i1]/Gaudi::Units::GeV, name,title,xmin, xmax, 0., 100., 201, 20);
           }        
         }        
