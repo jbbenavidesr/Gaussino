@@ -90,7 +90,7 @@ void GetMCRichInfoBase::getRichG4CollectionRange()
 //=============================================================================
 //  sysExecute
 //=============================================================================
-StatusCode GetMCRichInfoBase::sysExecute()
+StatusCode GetMCRichInfoBase::sysExecute(const EventContext& ctx)
 {
   // reset pointers
   m_relationTable = NULL;
