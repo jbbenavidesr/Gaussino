@@ -5,7 +5,8 @@ gaudi_subdir(LbMIB v7r0p2)
 
 gaudi_depends_on_subdirs(Event/GenEvent
                          GaudiAlg
-                         Kernel/PartProp)
+                         Kernel/PartProp
+                         Kernel/LHCbKernel)
 
 gaudi_add_module(LbMIB
                  src/*.cpp
