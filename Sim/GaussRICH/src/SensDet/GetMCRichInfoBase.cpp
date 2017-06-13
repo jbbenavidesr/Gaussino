@@ -95,7 +95,7 @@ StatusCode GetMCRichInfoBase::sysExecute(const EventContext& ctx)
   // reset pointers
   m_relationTable = NULL;
   // execute
-  return Rich::AlgBase::sysExecute();
+  return Rich::AlgBase::sysExecute(const EventContext& ctx);
 } 
 
 //=============================================================================
