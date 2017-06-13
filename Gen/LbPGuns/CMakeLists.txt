@@ -11,7 +11,7 @@ gaudi_depends_on_subdirs(Det/DetDesc
 
 gaudi_add_module(LbPGuns
                  src/*.cpp
-                 LINK_LIBRARIES DetDescLib GenEvent GaudiAlgLib GeneratorsLib)
+                 LINK_LIBRARIES DetDescLib GenEvent GaudiAlgLib LHCbKernel GeneratorsLib)
 
 gaudi_install_headers(LbPGuns)
 
