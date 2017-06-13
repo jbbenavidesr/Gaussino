@@ -104,12 +104,12 @@ void GetMCCkvInfoBase::getRichG4CollectionRange()
 //=============================================================================
 //  sysExecute
 //=============================================================================
-StatusCode GetMCCkvInfoBase::sysExecute()
+StatusCode GetMCCkvInfoBase::sysExecute(const EventContext& ctx)
 {
   // reset pointers
   m_relationTable = NULL;
   // execute
-  return Rich::AlgBase::sysExecute();
+  return Rich::AlgBase::sysExecute(const EventContext& ctx);
 } 
 
 //=============================================================================
