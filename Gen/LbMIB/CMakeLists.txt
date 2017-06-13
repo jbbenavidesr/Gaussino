@@ -11,7 +11,7 @@ gaudi_depends_on_subdirs(Event/GenEvent
 gaudi_add_module(LbMIB
                  src/*.cpp
                  INCLUDE_DIRS AIDA
-                 LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib)
+                 LINK_LIBRARIES GenEvent GaudiAlgLib LHCbKernel PartPropLib)
 
 gaudi_install_python_modules()
 
