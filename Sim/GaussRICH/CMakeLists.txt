@@ -11,6 +11,7 @@ gaudi_depends_on_subdirs(Det/RichDet
                          Sim/GaussTools)
 
 find_package(AIDA)
+find_package(ROOT)
 
 include_directories(src/SensDet src/PhysProcess src/RichAction src/Misc
                     src/PhysPhotDet src/RichAnalysis /src/srcG4)
