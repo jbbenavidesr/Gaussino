@@ -6,7 +6,7 @@
 #include "GaussCherenkov/GetMCCkvInfoBase.h"
 
 // rich kernel
-#include "RichKernel/RichMap.h"
+#include "RichUtils/RichMap.h"
 
 /** @class GetMCCkvSegmentsAlg GetMCCkvSegmentsAlg.h
  *
