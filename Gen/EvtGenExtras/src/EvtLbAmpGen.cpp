@@ -16,6 +16,7 @@
 #include "EvtGenBase/EvtRadCorr.hh"
 // Gaudi
 #include "GaudiKernel/System.h"
+#include "GaudiKernel/GaudiException.h"
 
 // C++
 #include <string>
@@ -53,46 +54,43 @@ void splitByDelim(const std::string &s, char delim, std::vector<std::string>& el
 
 void EvtLbAmpGen::init(){
 
-  /// The argument is the decfile is the name of the 
-  /// shared library to load
+  /// The argument is the decfile is the name of the shared library to load
   
-  if ( getNArg() != 1 )
-    throw std::invalid_argument( "Not enough arguments in DECFILE" );
-  
+  if ( getNArg() != 1 ){
+    GaudiException( "Not enough arguments in DECFILE", "EvtGen",StatusCode::FAILURE );
+  }
   std::vector<std::string> directories; 
 
   directories.push_back( System::getEnv( "PWD" ) );
   splitByDelim( System::getEnv("LD_LIBRARY_PATH"), ':', directories );
-
-  /// loop over the current path and all of LD_LIBRARY_PATH
-  /// looking for the requested shared library. If the shared library is 
-  /// found, we take that one.  
+  /*
+   loop over the current path and all of LD_LIBRARY_PATH
+   looking for the requested shared library. If the shared library is 
+   found, we take that one.  
+  */
   m_handle = nullptr;
   for( auto& is : directories ){ 
     std::string libName = is + "/libLb" + getArgStr(0) + ".so";
-    std::cout << "INFO: checking for shared library: " << libName << std::endl; 
+    report(INFO,"EvtGen") << "INFO: checking for shared library: " << libName << std::endl; 
     struct stat buffer;
-    if( stat( libName.c_str(), &buffer ) != 0 ) 
-      continue; 
+    if( stat( libName.c_str(), &buffer ) != 0 ) continue; 
     m_handle = dlopen( libName.c_str() ,RTLD_NOW); 
     report( INFO, "EvtGen" ) << "Loaded library " << libName << std::endl; 
-    if( m_handle == nullptr )
-      throw std::runtime_error( "Library could not be linked");
-    
+    if( m_handle == nullptr ){
+      GaudiException( "Library could not be linked", "EvtGen", StatusCode::FAILURE );
+    }
     break; 
   } 
   if( m_handle == nullptr ){
-    throw std::invalid_argument( "Library not found " + getArgStr(0) );
-    //    std::cout << "ERROR : " << dlerror() << std::endl; 
+    GaudiException( "Library not found " + getArgStr(0), "EvtGen",StatusCode::FAILURE );
   }
   /// The total amplitude is always referred to as FCN
-  bool linked = m_fcn.set( m_handle, "FCN");
-  if( !linked ) 
-    throw std::runtime_error("Library does not contain FCN");
+  if( ! m_fcn.set( m_handle, "FCN") ){
+    GaudiException("Library does not contain FCN","EvtGen",StatusCode::FAILURE );
+  }
   /// set the buffer size to 4* 4 vectors + 1 proper time. 
   m_evtBuffer.resize(4 * getNDaug() + 1 );
 
-  EvtRadCorr::setNeverRadCorr();
 }
 
 void EvtLbAmpGen::initProbMax(){
@@ -116,20 +114,24 @@ void EvtLbAmpGen::decay( EvtParticle *p){
     m_evtBuffer[ 4*i + 3 ] = 1000 * p4.get(0);
     total += p4;
   };
-  /// we put the lifetime in the event buffer for future proofing. 
-  /// won't work naively as the accept-reject uses the same lifetime 
-  /// multiple times. 
+  /* 
+   Pput the lifetime in the event buffer for future proofing. 
+   won't work naively as the accept-reject uses the same lifetime 
+   multiple times. 
+  */
   m_evtBuffer[ 4*getNDaug() ] = p->getLifetime(); 
  
   /*
    Get probability of event - PDFs assume particles, not antiparticles
    therefore, an additional minus sign is required 
    if generating anti particles in the P-odd amplitudes
-   With assumption of CP in charm sector
+   With assumption of no CPV in charm sector
    For systems with larger CPV, can include two different amplitudes.
   */
-  double prob = m_fcn( &(m_evtBuffer[0]) , 1 /* p->getPDGId() > 0 ? 1 : -1*/ ) ;
-  if( prob > 1 ) report(ERROR,"EvtGen") << " prob > prob(max) !" << std::endl; 
+  double prob = m_fcn( &(m_evtBuffer[0]) ,p->getPDGId() > 0 ? 1 : -1 ) ;
+  if( prob > 1 ){
+    report(ERROR,"EvtGen") << " prob > prob(max) !" << std::endl; 
+  }
   setProb( prob );
 }
 

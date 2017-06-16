@@ -390,20 +390,20 @@ StatusCode PythiaProduction::initializeGenerator( ) {
     // update the table
     info() << " CALL PYUPDA(" << m_particleDataLevel 
            << ","  << m_particleDataUnit
-           << "/'" << m_particleDataInput <<"') " << endreq ;
+           << "/'" << m_particleDataInput <<"') " << endmsg ;
     Pythia::PyUpda( m_particleDataLevel  , m_particleDataUnit ) ;
 
     // close the file 
     F77Utils::close ( m_particleDataUnit ) ;
     always() <<" Particle Data Table  has been read from the file '" 
-             << m_particleDataInput << "'" << endreq ;  
+             << m_particleDataInput << "'" << endmsg ;  
   }
   
   // use PYGIVE commands (if any) (as THE LAST action)
   for ( CommandVector::const_iterator item = m_pygive.begin() ; 
         m_pygive.end() != item ; ++item ) {
     // use FORTRAN PYGIVE routine
-    debug() << " CALL PYGIVE(' " << (*item) << "')" << endreq ;
+    debug() << " CALL PYGIVE(' " << (*item) << "')" << endmsg ;
     const int mstu_13 = Pythia::pydat1().mstu(13) ;
     Pythia::pydat1().mstu(13) =1   ;
     Pythia::PyGive( *item ) ;
@@ -447,7 +447,7 @@ StatusCode PythiaProduction::initializeGenerator( ) {
       for( std::vector<int>::const_iterator i = m_pdecaylist.begin();
            i != m_pdecaylist.end(); i++ ){
         Pythia::PySlha( 2 , *i , status ) ;
-        debug() << "Updating Particle "<< *i <<", Status " << status <<endreq;
+        debug() << "Updating Particle "<< *i <<", Status " << status <<endmsg;
         if(status != 0) return Error( "Could not update particle " ) ;
       }
       sc = F77Utils::close( lunUnit2 , msgLevel( MSG::INFO ) ) ;
@@ -893,7 +893,7 @@ void PythiaProduction::hardProcessInfo( LHCb::GenCollision * theCollision ) {
           << Pythia::pypars().pari(17) << " " 
           << Pythia::pypars().pari(33) << " " 
           << Pythia::pypars().pari(34)
-          << endreq ;
+          << endmsg ;
 } 
 
 //=============================================================================
@@ -1223,7 +1223,7 @@ void PythiaProduction::printRunningConditions( )
   if ( m_initializationListingLevel >= 0 ) {
     info() << " CALL PYLIST(" <<  m_initializationListingLevel << ") " 
            << " using MSTU(1/2)=" << m_ini_mstu_1 << "/" << m_ini_mstu_2 
-           << endreq ;
+           << endmsg ;
     //
     const int mstu_1 = Pythia::pydat1().mstu(1) ;
     const int mstu_2 = Pythia::pydat1().mstu(2) ;
@@ -1265,12 +1265,12 @@ void PythiaProduction::printRunningConditions( )
     // update the table 
     info() << " CALL PYUPDA(1," 
            << m_particleDataUnit<<"/'" << m_particleDataOutput << "') " 
-           << endreq ;
+           << endmsg ;
     Pythia::PyUpda( 1 , m_particleDataUnit ) ;
     // close the file 
     F77Utils::close ( m_particleDataUnit ) ;
     always() <<" Particle Data Table  has been dump to  the file '" 
-             << m_particleDataOutput << "'" << endreq;
+             << m_particleDataOutput << "'" << endmsg;
   }
 }
 
@@ -1443,7 +1443,7 @@ StatusCode PythiaProduction::toHepMC
       MsgStream& log = warning() ;
       if ( !HepMC::HEPEVT_Wrapper::check_hepevt_consistency ( log.stream() ) )
       {
-        log << endreq ;
+        log << endmsg ;
         Warning ( "Inconsistencies in HEPEVT structure are found" ) ; 
       } 
     }

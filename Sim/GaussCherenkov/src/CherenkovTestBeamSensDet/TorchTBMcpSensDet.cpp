@@ -127,18 +127,18 @@ bool TorchTBMcpSensDet::ProcessHits( G4Step* aStep ,
       << "," << CurGlobalPos.z() << ")"
       << " PV="    << CurPV->GetName()
       << " LV="    << CurLV->GetName()
-      << " edep in MeV ="  << CurEdep << endreq;
+      << " edep in MeV ="  << CurEdep << endmsg;
   log << MSG::DEBUG << " PE Origin X Y Z "<<CurPEOrigin.x()
-      <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endreq;
+      <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endmsg;
 
   G4double CurGlobalZ=CurGlobalPos.z();
   if( CurGlobalZ <= 0.0 ) {
     log << MSG::ERROR << "Inadmissible MCP  Hit Z coordinate = "
-        <<  CurGlobalZ <<endreq;
+        <<  CurGlobalZ <<endmsg;
   }
   
   G4int CurrentMcpNumber= CurTT -> GetReplicaNumber(2);
-  log << MSG::DEBUG <<" Mcp SensDet current mcp number "<<CurrentMcpNumber<<endreq;
+  log << MSG::DEBUG <<" Mcp SensDet current mcp number "<<CurrentMcpNumber<<endmsg;
   
 
   G4Navigator* theNavigator =
@@ -209,7 +209,7 @@ bool TorchTBMcpSensDet::ProcessHits( G4Step* aStep ,
   G4int CurPETrackID=aTrack->GetTrackID();
   G4int CurPETrackPDG=aTrack->GetDefinition()->GetPDGEncoding();
 
-  log<<MSG::DEBUG<<" Now create a new hit class instance :"<<endreq;
+  log<<MSG::DEBUG<<" Now create a new hit class instance :"<<endmsg;
   
   CkvG4Hit * newHit = new CkvG4Hit();
   newHit -> SetEdep( CurEdep);
@@ -243,7 +243,7 @@ bool TorchTBMcpSensDet::ProcessHits( G4Step* aStep ,
   }
 
   int NumHitsInCurHC =m_TorchHC ->insert( newHit );
-  log << MSG::DEBUG << "NumHit in curent Hit coll for Torch TB Mcp "<<NumHitsInCurHC<<endreq;
+  log << MSG::DEBUG << "NumHit in curent Hit coll for Torch TB Mcp "<<NumHitsInCurHC<<endmsg;
   
   return true;
   
@@ -254,7 +254,7 @@ void TorchTBMcpSensDet::Initialize(G4HCofThisEvent*  HCE )
 {
   MsgStream log( msgSvc() , name() );
   log << MSG::INFO << "TorchTbMcpSensDet Init Sensdet name CollName "
-      << SensitiveDetectorName <<"   "<< collectionName[0]<<  endreq;
+      << SensitiveDetectorName <<"   "<< collectionName[0]<<  endmsg;
   
   
   m_TorchHC =new  CkvG4HitsCollection(SensitiveDetectorName,collectionName[0]);

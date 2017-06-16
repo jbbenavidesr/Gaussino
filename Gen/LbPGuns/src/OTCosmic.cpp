@@ -181,7 +181,7 @@ void OTCosmic::generateParticle( Gaudi::LorentzVector & fourMomentum ,
       int n = m_scintsolid->intersectionTicks( m_bottransform.Inverse() * globalpostop,
 					       m_bottransform.Inverse() * globaldir, ticks) ;
       if(n==2) {
-	info() << "accepted trigger: " << Emu << " " << theta1 << " " << phi1 << endreq ;
+	info() << "accepted trigger: " << Emu << " " << theta1 << " " << phi1 << endmsg ;
 	// still need to generate the phase 
 	double time = m_tmin ;
 	if( m_tmin < m_tmax ) time += m_flatgenerator() * (m_tmax - m_tmin) ;
@@ -203,5 +203,5 @@ void OTCosmic::printCounters() {
 	 << "Fraction rejected by energy threshold: " 
 	 << m_rejectedbyenergycut/double(ntot) << std::endl
 	 << "Fraction rejected by acceptance:       " 
-	 << m_rejectedbyscintacceptance/double(m_events +m_rejectedbyscintacceptance) << endreq ;
+	 << m_rejectedbyscintacceptance/double(m_events +m_rejectedbyscintacceptance) << endmsg ;
 }

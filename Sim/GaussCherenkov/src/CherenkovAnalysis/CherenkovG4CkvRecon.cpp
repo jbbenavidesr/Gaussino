@@ -88,7 +88,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
   MsgStream CherenkovG4CkvReconlog( msgSvc,"CherenkovG4CkvRecon");
   //      CherenkovG4CkvReconlog << MSG::VERBOSE
   //             << "Now creating CherenkovG4CkvRecon "
-  //             << endreq;
+  //             << endmsg;
 
 
   SmartDataPtr<DetectorElement> Rich1DE(detSvc, Rich1DeStructurePathName);
@@ -102,7 +102,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
     CherenkovG4CkvReconlog << MSG::ERROR
                            << "Can't retrieve " + Rich1DeStructurePathName+ " for CkvRecon"
-                           << endreq;
+                           << endmsg;
   }else {
 
     m_NumRichDet = Rich1DE->param<int>("RichNumberOfDetectors");
@@ -119,7 +119,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
 
     //  CherenkovG4CkvReconlog<<MSG::INFO<<"Number of pmts in rich1 rich2 "
-    //                  << m_NumPmtRich[0] <<"   "<<m_NumPmtRich[1]<<endreq;
+    //                  << m_NumPmtRich[0] <<"   "<<m_NumPmtRich[1]<<endmsg;
 
     //    m_NumRichDet =
     //  Rich1DE->userParameterAsInt("RichNumberOfDetectors");
@@ -138,7 +138,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
     m_Rich2_PmtTransforms.resize(m_NumPmtRich[1]);
 
      CherenkovG4CkvReconlog <<MSG::INFO<<" Size of pmt transforms "
-                           << (int) m_Rich1_PmtTransforms.size()<<"  "<<(int) m_Rich2_PmtTransforms.size()<<endreq;
+                           << (int) m_Rich1_PmtTransforms.size()<<"  "<<(int) m_Rich2_PmtTransforms.size()<<endmsg;
 
     //    std::vector<double> r1NominalCoC = Rich1DE->param<std::vector<double> >("Rich1NominalCoC");
     std::vector<double> r1NominalCoC = Rich1DE->param<std::vector<double> >("NominalSphMirrorCoC");
@@ -180,7 +180,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
     CherenkovG4CkvReconlog << MSG::DEBUG
                            << "Rich1 Spherical Mirror1 top  COC and Rad "<< m_SphMirrCC [0] [0]<<"  "<< m_SphMirrCC [0] [1]
-                           <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
+                           <<"  "<< m_SphMirrCC [0] [2]<<"  "<<m_SphMirrRad [0]<<endmsg;
 
 
 
@@ -201,7 +201,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich1 Spherical Mirror1 bottom  COC and Rad "
                            << m_SphMirrCC [1] [0]<<"  "<< m_SphMirrCC [1] [1]
-                           <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endreq;
+                           <<"  "<< m_SphMirrCC [1] [2]<<"  "<<m_SphMirrRad [0]<<endmsg;
 
 
 
@@ -292,7 +292,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
   if( !Rich2DE ){
     CherenkovG4CkvReconlog << MSG::ERROR
                       << "Can't retrieve "+  Rich2DeStructurePathName +" for CkvRecon"
-                      << endreq;
+                      << endmsg;
   } else {
 
     //    std::vector<double> r2NominalCoC = Rich2DE->param<std::vector<double> >("Rich2NominalCoC");
@@ -313,10 +313,10 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 left  COC and Rad "<< m_SphMirrCC [2] [0]
                            <<"  "<< m_SphMirrCC [2] [1]
-                           <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+                           <<"  "<< m_SphMirrCC [2] [2]<<"  "<<m_SphMirrRad [1]<<endmsg;
     CherenkovG4CkvReconlog << MSG::DEBUG<< "Rich2 Spherical Mirror1 right  COC and Rad "<< m_SphMirrCC [3] [0]<<"  "
                            << m_SphMirrCC [3] [1]
-                           <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endreq;
+                           <<"  "<< m_SphMirrCC [3] [2]<<"  "<<m_SphMirrRad [1]<<endmsg;
 
   }
 
@@ -326,7 +326,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
   //                  <<  m_HpdSiPixelYSize<<"  "
   //                  << m_HpdSiDetThickness<<"  "
   //                  <<  m_HpdSiNumPixelX<<"   "
-  //                  <<  m_HpdSiNumPixelY<< endreq;
+  //                  <<  m_HpdSiNumPixelY<< endmsg;
   //
 
   if( Rich1DE && Rich2DE ) {
@@ -335,16 +335,16 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
       //   CherenkovG4CkvReconlog << MSG::INFO
       //           << "Now looping through the rich det for transforms"
-      //           << endreq;
+      //           << endmsg;
 
       for (int ih=0; ih<m_NumPmtRich[idet] ; ih++ ) {
         //                CherenkovG4CkvReconlog << MSG::DEBUG
         //         << " Now looping through pmt for transforms  "
-        //                << idet <<"  "<<ih << endreq;
+        //                << idet <<"  "<<ih << endmsg;
        std::vector<int> aPmtVV=  GetPmtModuleNumber(ih);
 
        //     CherenkovG4CkvReconlog <<MSG::INFO<<"Transform creation for "<<idet <<"   "
-       //                        << ih <<"   "<<aPmtVV[0]<<"   "<<aPmtVV[1]<<endreq;
+       //                        << ih <<"   "<<aPmtVV[0]<<"   "<<aPmtVV[1]<<endmsg;
 
 
        //        m_PmtTransforms[idet][ih] = new RichG4ReconTransformPmt (idet, aPmtVV[0], aPmtVV[1]);
@@ -371,19 +371,19 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
 
 
         // CherenkovG4CkvReconlog <<MSG::INFO<<"Transform for idet ih "<< idet <<"  "<< ih<<"  "
-        //                             <<m_Rich1_PmtTransforms[idet][ih]  <<endreq;
+        //                             <<m_Rich1_PmtTransforms[idet][ih]  <<endmsg;
 
 
 
         //      Gaudi::XYZPoint testkallst(0.0,0.0,0.0);
         //  CherenkovG4CkvReconlog  <<MSG::INFO<<"test Kallst "<<testkallst<<"   "
-        //                         << (( m_Rich1_PmtTransforms[ih] )-> PmtLocalToGlobal())  * testkallst<<endreq;
+        //                         << (( m_Rich1_PmtTransforms[ih] )-> PmtLocalToGlobal())  * testkallst<<endmsg;
 
         //             if(idet ==0 ) {
 
         //   Gaudi::XYZPoint testkr1st(0.0,0.0,0.0);
         //    CherenkovG4CkvReconlog  <<MSG::INFO<<"test Kr1st "<<testkr1st<<"   "
-        //                            << ((m_Rich1_PmtTransforms[ih])-> PmtLocalToGlobal())  * testkr1st<<endreq;
+        //                            << ((m_Rich1_PmtTransforms[ih])-> PmtLocalToGlobal())  * testkr1st<<endmsg;
         //    }
 
         //   }else if (idet == 1 ) {
@@ -391,7 +391,7 @@ CherenkovG4CkvRecon::CherenkovG4CkvRecon()
         //
         //     Gaudi::XYZPoint testkr2st(0.0,0.0,0.0);
         //      CherenkovG4CkvReconlog  <<MSG::INFO<<"test Kr2st "<<testkr2st<<"   "
-        //                           << ((m_Rich2_PmtTransforms[ih])-> PmtLocalToGlobal())  * testkr2st<<endreq;
+        //                           << ((m_Rich2_PmtTransforms[ih])-> PmtLocalToGlobal())  * testkr2st<<endmsg;
         //
         //   }
 
@@ -552,12 +552,12 @@ Gaudi::XYZPoint  CherenkovG4CkvRecon::GetCoordInPhDetPanelPlane(const Gaudi::XYZ
 
     CherenkovG4CkvReconlog << MSG::ERROR
                       <<" For Pmt occupancy Pmt local Hit coord not set "
-                      <<endreq;
+                      <<endmsg;
 
   }else {
 
     //  CherenkovG4CkvReconlog << MSG::INFO<<"CoordInPhDetPanelPlane Localcoord Lensflag" <<aLocalHitCoord<<"   "
-    //                       <<aPmtLensFlag<<endreq;
+    //                       <<aPmtLensFlag<<endmsg;
 
     Gaudi::XYZPoint curLocalHitPhCath =
       m_RichG4ReconPmt->ReconHitOnPhCathFromLocalHitCoord(aLocalHitCoord);
@@ -568,14 +568,14 @@ Gaudi::XYZPoint  CherenkovG4CkvRecon::GetCoordInPhDetPanelPlane(const Gaudi::XYZ
 
     }
     //  CherenkovG4CkvReconlog << MSG::INFO<<"CoordInPhDetPanelPlane Phcath Detplane "<<curLocalHitPhCath<<"   "
-    //                       << curLocalHitDetPlane<<endreq;
+    //                       << curLocalHitDetPlane<<endmsg;
 
     //int mdu = m_CurrentPmtNum/16;
 
     // if( m_CurrentRichDetNum == 0 ) {
 
       // CherenkovG4CkvReconlog << MSG::INFO<<" Rich num Pmt num mNum "<<m_CurrentRichDetNum<<"  "<<m_CurrentPmtNum<<"  "
-      //                    <<mdu<<endreq;
+      //                    <<mdu<<endmsg;
 
     //  }
 
@@ -587,24 +587,24 @@ Gaudi::XYZPoint  CherenkovG4CkvRecon::GetCoordInPhDetPanelPlane(const Gaudi::XYZ
       RichG4ReconTransformPmt* CurPmtTransformB =
         (m_CurrentRichDetNum ==0) ? m_Rich1_PmtTransforms[m_CurrentPmtNum]: m_Rich2_PmtTransforms[m_CurrentPmtNum];
       // CherenkovG4CkvReconlog << MSG::INFO<<" Get PMT transform  RDEt PMTNum "
-      //                       <<m_CurrentRichDetNum<<"   "<<  m_CurrentPmtNum<<"  "<<endreq;
+      //                       <<m_CurrentRichDetNum<<"   "<<  m_CurrentPmtNum<<"  "<<endmsg;
 
       if(CurPmtTransformB) {
         Gaudi::Transform3D PmttoPhDetTransform = CurPmtTransformB -> PmtLocalToPmtPhDetPanel();
         aPhDetCoordPoint  = PmttoPhDetTransform * curLocalHitDetPlane;
 
         //test print
-        // CherenkovG4CkvReconlog << MSG::INFO<<" Ph coord pt "<<aPhDetCoordPoint <<endreq;
+        // CherenkovG4CkvReconlog << MSG::INFO<<" Ph coord pt "<<aPhDetCoordPoint <<endmsg;
 
         //  Gaudi::Transform3D PmttoGlobalTransform  =   CurPmtTransformB -> PmtLocalToGlobal();
         //  Gaudi::XYZPoint phcathGlob =   PmttoGlobalTransform * curLocalHitDetPlane;
-        //   CherenkovG4CkvReconlog << MSG::INFO<<"Phcath GlobalPt  "<<phcathGlob<<endreq;
+        //   CherenkovG4CkvReconlog << MSG::INFO<<"Phcath GlobalPt  "<<phcathGlob<<endmsg;
         //end test print
 
       }else {
 
-        CherenkovG4CkvReconlog << MSG::INFO<<"PMTNum No Transform Recon "<< m_CurrentPmtNum<< endreq;
-        CherenkovG4CkvReconlog << MSG::INFO<<" Did not get Pmt transforms for reconstruction  PMT NUM"<< m_CurrentPmtNum<< endreq;
+        CherenkovG4CkvReconlog << MSG::INFO<<"PMTNum No Transform Recon "<< m_CurrentPmtNum<< endmsg;
+        CherenkovG4CkvReconlog << MSG::INFO<<" Did not get Pmt transforms for reconstruction  PMT NUM"<< m_CurrentPmtNum<< endmsg;
 
       }
 
@@ -612,7 +612,7 @@ Gaudi::XYZPoint  CherenkovG4CkvRecon::GetCoordInPhDetPanelPlane(const Gaudi::XYZ
 
    }
   }
-  //  CherenkovG4CkvReconlog << MSG::INFO<<"  PhDetCoord  "<<  aPhDetCoordPoint<<endreq;
+  //  CherenkovG4CkvReconlog << MSG::INFO<<"  PhDetCoord  "<<  aPhDetCoordPoint<<endmsg;
 
   return   aPhDetCoordPoint;
 
@@ -626,7 +626,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
   MsgStream CherenkovG4CkvReconlog( msgSvc,"CherenkovG4CkvRecon");
   //  CherenkovG4CkvReconlog << MSG::INFO
-  //                  <<" Now in ReconPhCoordFromLocalCoord "<<endreq;
+  //                  <<" Now in ReconPhCoordFromLocalCoord "<<endmsg;
 
 
   Gaudi::XYZPoint acurGlobalHitPhCath (0.0,0.0,0.0);
@@ -638,7 +638,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
   //                  <<aLocalHitCoord.x()
   //              <<"   "<<aLocalHitCoord.y()
   //                  <<"   "<<aLocalHitCoord.z()
-  //                  <<endreq;
+  //                  <<endmsg;
 
 
   if(m_curLocalHitCoord.x() == -10000.0 ||
@@ -647,7 +647,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
 
     CherenkovG4CkvReconlog << MSG::ERROR
                       <<" Pmt local Hit coord not set "
-                      <<endreq;
+                      <<endmsg;
   }else {
 
 
@@ -659,25 +659,25 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
     Gaudi::XYZPoint curLocalHitPhCath =
       aRichG4ReconPmt->ReconHitOnPhCathFromLocalHitCoord(m_curLocalHitCoord);
 
-    // CherenkovG4CkvReconlog <<MSG::INFO << "QWRec curLocalHitPhCath"<<curLocalHitPhCath<<endreq;
+    // CherenkovG4CkvReconlog <<MSG::INFO << "QWRec curLocalHitPhCath"<<curLocalHitPhCath<<endmsg;
 
     // CherenkovG4CkvReconlog << MSG::INFO <<"Current rich det pmt  "<<m_CurrentRichDetNum<<"    "
-    //                       <<m_CurrentPmtNum<<endreq;
+    //                       <<m_CurrentPmtNum<<endmsg;
 
     //CherenkovG4CkvReconlog << MSG::INFO <<"RichReconCkv  Local Hit coord on SiDet before mag "
-    //                       <<m_curLocalHitCoord <<endreq;
+    //                       <<m_curLocalHitCoord <<endmsg;
 
     //  CherenkovG4CkvReconlog << MSG::INFO
     //                  <<" RichReconCkv Local Hit coord on PhCathode after mag "
     //                  <<curLocalHitPhCath.x()
     //              <<"   "<<curLocalHitPhCath.y()
     //               <<"   "<<curLocalHitPhCath.z()
-    //                  <<endreq;
+    //                  <<endmsg;
     //
     //            CherenkovG4CkvReconlog << MSG::DEBUG
     //                      << "Current rich det pmt Num  "
     //                      << m_CurrentRichDetNum<<"  "
-    //                      <<m_CurrentPmtNum<<endreq;
+    //                      <<m_CurrentPmtNum<<endmsg;
 
 
     // now convert to the global coord system.
@@ -697,7 +697,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
 
         //            Gaudi::XYZPoint testkallpmt(0.0,0.0,0.0);
         //     CherenkovG4CkvReconlog <<MSG::INFO<<"test Kallpmt   "<<testkallpmt<<"   "
-        //                  << PmttoGlobalTransform *testkallpmt<<endreq;
+        //                  << PmttoGlobalTransform *testkallpmt<<endmsg;
 
 
         acurGlobalHitPhCath =
@@ -706,14 +706,14 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordFromLocalCoord (const Gaudi::XY
         m_curGlobalHitPhCath = acurGlobalHitPhCath;
 
         //         CherenkovG4CkvReconlog << MSG::INFO  <<
-        //     "QWRec Global Hit coord on PhCathode "<<m_curGlobalHitPhCath<<endreq;
+        //     "QWRec Global Hit coord on PhCathode "<<m_curGlobalHitPhCath<<endmsg;
 
         //        CherenkovG4CkvReconlog << MSG::INFO
         //               <<" Global Hit coord on PhCathode  "
         //              <<acurGlobalHitPhCath.x()
         //            <<"   "<<acurGlobalHitPhCath.y()
         //               <<"   "<<acurGlobalHitPhCath.z()
-        //                <<endreq;
+        //                <<endmsg;
 
       }
 
@@ -755,7 +755,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
 
     CherenkovG4CkvReconlog << MSG::ERROR
                       <<" Pmt local Hit coord not set "
-                      <<endreq;
+                      <<endmsg;
   }else {
 
 
@@ -767,7 +767,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
     Gaudi::XYZPoint curLocalHitPhCath =
       aRichG4ReconPmt->ReconHitOnPhCathFromLocalHitCoord(m_curLocalHitCoord);
     Gaudi::XYZPoint curLocalHitDetPlane = curLocalHitPhCath;
-    // CherenkovG4CkvReconlog<<MSG::INFO <<" LensFlag RegReconFlag " <<aLensFlag<< "  "<<aRegReconFlag<<endreq;
+    // CherenkovG4CkvReconlog<<MSG::INFO <<" LensFlag RegReconFlag " <<aLensFlag<< "  "<<aRegReconFlag<<endmsg;
 
     if(  aLensFlag > 0 ) {
       if( aRegReconFlag == 0 ) {
@@ -784,28 +784,28 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
     }
 
     // CherenkovG4CkvReconlog << MSG::INFO <<"Current rich det pmt  "<<m_CurrentRichDetNum<<"    "
-    //                       <<m_CurrentPmtNum<<endreq;
+    //                       <<m_CurrentPmtNum<<endmsg;
 
     // CherenkovG4CkvReconlog << MSG::INFO <<"RichReconCkv  Local Hit coord on SiDet before mag "
-    //                        <<m_curLocalHitCoord <<endreq;
+    //                        <<m_curLocalHitCoord <<endmsg;
     // CherenkovG4CkvReconlog << MSG::INFO <<"RichReconCkv Hit on PhCath Det Plane "
-    //                        <<curLocalHitPhCath<<"  "<<curLocalHitDetPlane <<endreq;
+    //                        <<curLocalHitPhCath<<"  "<<curLocalHitDetPlane <<endmsg;
 
     // CherenkovG4CkvReconlog << MSG::INFO
     //                  <<" RichReconCkv Local Hit coord on PhCathode after mag "
     //                  <<curLocalHitPhCath.x()
     //              <<"   "<<curLocalHitPhCath.y()
     //               <<"   "<<curLocalHitPhCath.z()
-    //                  <<endreq;
+    //                  <<endmsg;
 
     //            CherenkovG4CkvReconlog << MSG::DEBUG
     //                      << "Current rich det pmt Num  "
     //                      << m_CurrentRichDetNum<<"  "
-    //                      <<m_CurrentPmtNum<<endreq;
+    //                      <<m_CurrentPmtNum<<endmsg;
 
 
     // now convert to the global coord system.
-    // CherenkovG4CkvReconlog << MSG::INFO<<" Currentrdet pmt "<< m_CurrentRichDetNum<<"  "<< m_CurrentPmtNum<<endreq;
+    // CherenkovG4CkvReconlog << MSG::INFO<<" Currentrdet pmt "<< m_CurrentRichDetNum<<"  "<< m_CurrentPmtNum<<endmsg;
 
     if( m_CurrentRichDetNum >=0 &&  m_CurrentPmtNum >=0 ) {
 
@@ -823,7 +823,7 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
 
         //            Gaudi::XYZPoint testkallpmt(0.0,0.0,0.0);
         //     CherenkovG4CkvReconlog <<MSG::INFO<<"test Kallpmt   "<<testkallpmt<<"   "
-        //                  << PmttoGlobalTransform *testkallpmt<<endreq;
+        //                  << PmttoGlobalTransform *testkallpmt<<endmsg;
 
 
         acurGlobalHitPhCath =
@@ -832,12 +832,12 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconPhCoordDetPlaneFromLocalCoord (const G
         m_curGlobalHitPhCath = acurGlobalHitPhCath;
 
         //         CherenkovG4CkvReconlog << MSG::INFO
-        //                               <<" Global Hit coord on PhCathode  "<<m_curGlobalHitPhCath<<endreq;
+        //                               <<" Global Hit coord on PhCathode  "<<m_curGlobalHitPhCath<<endmsg;
 
                   //              <<acurGlobalHitPhCath.x()
         //            <<"   "<<acurGlobalHitPhCath.y()
         //               <<"   "<<acurGlobalHitPhCath.z()
-        //                <<endreq;
+        //                <<endmsg;
 
       }
 
@@ -905,26 +905,26 @@ Gaudi::XYZPoint CherenkovG4CkvRecon::ReconReflectionPointOnSPhMirror (const Gaud
   MsgStream CherenkovG4CkvReconlog( msgSvc,"CherenkovG4CkvRecon");
   //  G4cout<<"  Now in  ReconReflectionPointOnSPhMirror G4cout"<<G4endl;
 
-  //  CherenkovG4CkvReconlog<<MSG::INFO <<" Now in  ReconReflectionPointOnSPhMirror  " << endreq;
+  //  CherenkovG4CkvReconlog<<MSG::INFO <<" Now in  ReconReflectionPointOnSPhMirror  " << endmsg;
 
   m_curEmisPt   = aEmissionPoint;
   m_curDetPoint = aDetectionPoint;
 
   //  CherenkovG4CkvReconlog<<MSG::INFO <<" current richdet and flat mirror "<<aRichDetNum<<"  "<<aFlatMirrNum
-  //                << endreq;
+  //                << endmsg;
 
 
   Gaudi::XYZPoint curFlatMCoC =  m_CurReconFlatMirr-> FlatMirrorCoC(aRichDetNum,aFlatMirrNum);
 
   //  CherenkovG4CkvReconlog<<MSG::INFO <<" current richdet and flat mirror flatmirrorcoc "<<aRichDetNum<<"  "<<aFlatMirrNum
-  //                <<"  "<<curFlatMCoC<< endreq;
+  //                <<"  "<<curFlatMCoC<< endmsg;
 
-  //    CherenkovG4CkvReconlog<<MSG::INFO <<" current emission pt "<< m_curEmisPt<<endreq;
-  //  CherenkovG4CkvReconlog<<MSG::INFO <<" current detection pt "<<m_curDetPoint <<endreq;
+  //    CherenkovG4CkvReconlog<<MSG::INFO <<" current emission pt "<< m_curEmisPt<<endmsg;
+  //  CherenkovG4CkvReconlog<<MSG::INFO <<" current detection pt "<<m_curDetPoint <<endmsg;
 
 
   Gaudi::XYZPoint aSphReflPt = ReconReflectionPointOnSPhMirrorStdInput() ;
-  //  CherenkovG4CkvReconlog<<" current Sph Mirror pt first iteration "<<aSphReflPt   <<endreq;
+  //  CherenkovG4CkvReconlog<<" current Sph Mirror pt first iteration "<<aSphReflPt   <<endmsg;
 
   // for now 5 iterations
 
@@ -1167,7 +1167,7 @@ double CherenkovG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aRef
   //                    <<" Agel Ckv Phot dir outside "
   //                    << PhotDir.x()<<"  "
   //                    << PhotDir.y()<<"  "
-  //                    << PhotDir.z()<<endreq;
+  //                    << PhotDir.z()<<endmsg;
 
 
 
@@ -1209,7 +1209,7 @@ double CherenkovG4CkvRecon::CherenkovThetaInAerogel(const Gaudi::XYZPoint & aRef
   //                 <<  aCkvWithoutCorrection<<"   "
   //                 << aCkvWithCorrection<<"      "
   //                 << " Agel Ckv Angle exit Incident "
-  //                 <<  aPhotDirAgelExit<<"   "<< angleIncident<<endreq;
+  //                 <<  aPhotDirAgelExit<<"   "<< angleIncident<<endmsg;
 
 
   return aCkvWithCorrection;

@@ -198,7 +198,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
   G4ThreeVector CurPEOrigin;
   // log << MSG::VERBOSE <<" Track Def  and creator proc "
   // << aTrack->GetDefinition()
-  // <<"    "<<aTrack->GetCreatorProcess()-> GetProcessName() <<endreq;
+  // <<"    "<<aTrack->GetCreatorProcess()-> GetProcessName() <<endmsg;
 
   G4String aCreatorProcessName = "NullProcess";
   const G4VProcess* aProcess = aTrack->GetCreatorProcess();
@@ -220,9 +220,9 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
   //    << "," << CurGlobalPos.z() << ")"
   //    << " PV="    << CurPV->GetName()
   //    << " LV="    << CurLV->GetName()
-  //    << " edep in MeV ="  << CurEdep << endreq;
+  //    << " edep in MeV ="  << CurEdep << endmsg;
   // log << MSG::INFO << " PE Origin X Y Z "<<CurPEOrigin.x()
-  //     <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endreq;
+  //     <<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<endmsg;
 
   G4double CurGlobalZ=CurGlobalPos.z();
 
@@ -232,7 +232,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
 
   if( CurGlobalZ <= 0.0 ) {
     log << MSG::ERROR << "Inadmissible Rich Hit Z coordinate = "
-        <<  CurGlobalZ <<endreq;
+        <<  CurGlobalZ <<endmsg;
   }else {
     
     if(m_SuperRichFlag) {
@@ -270,7 +270,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
    }
    
    // log<< MSG::VERBOSE<<" SensDet PmtNumber Module RichDet Number  LensFlag "<< CurrentPmtNumber <<"   "
-   //   << CurrentPmtModuleNumber<<"  "<<CurrentRichDetNumber<<"  "<<CurModuleWithLensFlag<< endreq;
+   //   << CurrentPmtModuleNumber<<"  "<<CurrentRichDetNumber<<"  "<<CurModuleWithLensFlag<< endmsg;
 
    G4int curSuperRichDet =0;
    
@@ -285,7 +285,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
 
   if(CurrentRichDetSector < 0 || CurrentRichDetSector > 1 ) {
     log << MSG::ERROR <<"Inadmisible Rich Det Sector=  "<<CurrentRichDetSector
-        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endreq;
+        <<"  Current RichDetNum =   "<<CurrentRichDetNumber<<endmsg;
   }
 
   G4Navigator* theNavigator =
@@ -312,14 +312,14 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
   //if(CurrentRichDetNumber == 0 ) {
   //  
   //  log << MSG::DEBUG << "Now in ProcessHits() of CkvSensDet LocalPos X Y Z "
-  //    <<CurLocalPos.x() <<"  "<<CurLocalPos.y()<<"   "<<CurLocalPos.z()<<endreq;
+  //    <<CurLocalPos.x() <<"  "<<CurLocalPos.y()<<"   "<<CurLocalPos.z()<<endmsg;
 
   //         log << MSG::DEBUG << "Now in ProcessHits() of CkvSensDet Global Pos X Y Z "
-  //   <<CurGlobalPos.x() <<"  "<<CurGlobalPos.y()<<"   "<<CurGlobalPos.z()<<endreq;
+  //   <<CurGlobalPos.x() <<"  "<<CurGlobalPos.y()<<"   "<<CurGlobalPos.z()<<endmsg;
 
   //         log << MSG::DEBUG<<" Pe origin localxyz global xyz "<< CurPEOriginLocal.x()<<"   "
   //     <<CurPEOriginLocal.y()<<"   "<< CurPEOriginLocal.z()<<"   "
-  //    <<CurPEOrigin.x()<<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<"   "<<endreq;
+  //    <<CurPEOrigin.x()<<"   "<<CurPEOrigin.y()<<"   "<<CurPEOrigin.z()<<"   "<<endmsg;
     
   // }
   
@@ -447,14 +447,14 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
             //    <<" Track id of charged tk opt phot pe "
             //    << CurOptPhotMotherChTrackID <<"   "
             //    <<  CurOptPhotID<<"   "
-            //    << aTrack->GetTrackID() << endreq;
+            //    << aTrack->GetTrackID() << endmsg;
 
             if( CurElectronBackScatFlag > 0) {
               log << MSG::DEBUG << "Now in CkvSensDet ProcessHits() backscattered eln  "
-                  << CurElectronBackScatFlag << endreq;
+                  << CurElectronBackScatFlag << endmsg;
             }
             //log<<MSG::INFO<<" Now in processHits Photon source info "<<CurPhotonSourceProcInfo
-            //   <<endreq;
+            //   <<endmsg;
             
 
             if(  aPEInfo->  VerbosePeTagFlag() ) {
@@ -494,9 +494,9 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
 
               //if(CurrentRichDetNumber == 1 ) {
                 //  log << MSG::INFO<<" Mirr1 xyz  Mirr2 xyz "<<CurMirror1PhotonReflPosition<<"  "
-                //    << CurMirror2PhotonReflPosition<<endreq;
+                //    << CurMirror2PhotonReflPosition<<endmsg;
                 // log << MSG::INFO<<" Mirr1 xyz  Mirr2 xyz "<<CurMirror1PhotonDetectorCopyNum<<"  "
-                //    << CurMirror2PhotonDetectorCopyNum <<endreq;
+                //    << CurMirror2PhotonDetectorCopyNum <<endmsg;
               // }
   
 
@@ -641,7 +641,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
     bool EnableThisHitStore=true;
     G4bool FlagThisHitAsDuplicate=false;
     //  log << MSG::VERBOSE<<" Avoid duplicate  Hits  "<< m_RichPmtAviodDuplicateHitsActivate
-    //       <<"   "<<m_RichPmtFlagDuplicateHitsActivate<< endreq;
+    //       <<"   "<<m_RichPmtFlagDuplicateHitsActivate<< endmsg;
     G4int CurPixelNumInPmt = m_RichGeomProperty ->GetPixelNumInPmt( CurrentPixelXNum, CurrentPixelYNum);
 
     if(m_RichPmtAviodDuplicateHitsActivate || m_RichPmtFlagDuplicateHitsActivate  ) { 
@@ -663,7 +663,7 @@ bool CkvSensDet::ProcessHits( G4Step* aStep ,
     
     //test print 
     if( FlagThisHitAsDuplicate ) {
-      log << MSG::VERBOSE<<" Rich PMT Duplicate hit "<<CurrentPmtNumber<<"  "<<CurPixelNumInPmt<<endreq;
+      log << MSG::VERBOSE<<" Rich PMT Duplicate hit "<<CurrentPmtNumber<<"  "<<CurPixelNumInPmt<<endmsg;
     }
     
 

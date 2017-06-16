@@ -108,7 +108,7 @@ void GiGaPhysUnknownParticles::ConstructProcess()
     G4ProcessManager     * pmanager = particle -> GetProcessManager() ;
 //    if ( m_decayProcess.IsApplicable( *particle ) ) {
 //      debug() << "### Decays for " << particle -> GetParticleName() 
-//              << endreq ;
+//              << endmsg ;
 //      pmanager -> AddProcess( &m_decayProcess ) ;
       // set ordering for PostStepDoIt and AtRestDoIt
 //      pmanager -> SetProcessOrdering( &m_decayProcess , idxPostStep ) ;
@@ -119,7 +119,7 @@ void GiGaPhysUnknownParticles::ConstructProcess()
       pmanager -> AddProcess( &m_unknownDecay ) ;
       pmanager -> SetProcessOrdering( &m_unknownDecay , idxPostStep ) ;
       debug() << "### Unknown Decays for " << particle -> GetParticleName() 
-              << endreq ;
+              << endmsg ;
       if ( msgLevel( MSG::DEBUG) ) 
         pmanager -> DumpInfo() ;
     }

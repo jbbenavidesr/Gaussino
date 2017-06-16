@@ -5,224 +5,118 @@
 #include <algorithm>
 #include "AmpGen/Expression.h"
 #include "AmpGen/MsgService.h"
-/*
-   void printVector( const std::vector<unsigned int>& vect ){
-   for( auto& a : vect ) std::cout << "[" << a << "]";
-   std::cout << std::endl; 
-   }
-   */
 
 namespace AmpGen { 
+
+  class TensorHelper ; 
   struct LorentzIndex {
     std::string m_name;
     bool m_isUpper;
     bool operator==( const LorentzIndex& other ) const { return m_name == other.m_name ; } 
     bool operator!=(const  LorentzIndex& other ) const { return m_name != other.m_name ; }
     bool isUpper() const { return m_isUpper; };
-    LorentzIndex( const std::string& name="" , bool isUpper=false) : m_name(name), m_isUpper(isUpper) {}
+    LorentzIndex( const std::string& name="" , bool isUpper=false) : 
+      m_name(name), m_isUpper(isUpper) {}
     LorentzIndex operator-() const { return LorentzIndex( m_name , !m_isUpper) ; } /// contravariant to covariant swap operator // 
-  }; }
+  }; 
 
-namespace AmpGen { 
-  struct Tensor {
+  class Tensor {
 
-    std::string m_name;
-    std::vector<unsigned int> m_dim;
-    std::vector<Expression> m_elements;
-    std::vector<LorentzIndex> m_indices ;
+    private :  
+      std::vector<unsigned int> m_dim;
+      std::vector<Expression> m_elements;
 
-    Tensor ( const std::vector<unsigned int>& _dim) : 
-      m_dim(_dim), 
-      m_elements(nElements(),Constant(0.)),
-      m_indices(_dim.size() ) {};
+    public: 
+      const std::vector<unsigned int>& dims() const { return m_dim ; }
+      unsigned int nDim() const { return m_dim.size() ; } 
 
-    bool rankMatches( const Tensor& other ){
-      bool success = true;
-      if( m_dim.size() != other.m_dim.size() ) return false ; 
-      for( unsigned int i = 0 ; i < m_dim.size(); ++i ) 
-        success &= m_dim[i] == other.m_dim[i];
-      return success; 
-    };
-    Expression& operator[] ( const unsigned int& i ) { return m_elements[i] ; }
-    Expression& operator[] ( const std::vector<unsigned int>& co ) { return (*this)[index(co)] ; }
-    Tensor operator()( const LorentzIndex& a){
-      if( m_indices.size() != 1 ){
-        ERROR("Setting wrong number of indices ! check logic ( indices = 1; this = " << m_indices.size() << ", " << m_dim.size() << " )" );
-        return Tensor(std::vector<unsigned int>{0});
-      }
-      m_indices[0] = a;
+      Tensor ( const std::vector<unsigned int>& _dim) : 
+        m_dim(_dim), 
+        m_elements(nElements(),Constant(0.)) 
+    {};
 
-      return *this;
-    }
-    Tensor operator()( const LorentzIndex& a, const LorentzIndex& b ){
-      if( m_indices.size() != 2 ){
-        ERROR("Setting wrong number of indices ! check logic ( indices = 2; this = " << m_indices.size() << ", " << m_dim.size() << " )" );
-        return Tensor(std::vector<unsigned int>{0});
-      }
-      m_indices[0] = a;
-      m_indices[1] = b;
-      return *this;
-    }
-    Tensor Invert() const ; 
-    Tensor operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c ){
-      if( m_indices.size() != 3 ){
-        ERROR("Setting wrong number of indices ! check logic ( indices = 3; this = " << m_indices.size() << ", " << m_dim.size() << " )" );
-        return Tensor(std::vector<unsigned int>({0}));
-      }
-      m_indices[0] = a;
-      m_indices[1] = b;
-      m_indices[2] = c;
-      return *this;
-    }
-
-    Tensor operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c, const LorentzIndex& d){
-      if( m_indices.size() != 4 ){
-        ERROR("Setting wrong number of indices ! check logic ( indices = 4; this = " << m_indices.size() << ", " << m_dim.size() << " )" );
-        return Tensor(std::vector<unsigned int>({0}));
-      }
-      m_indices[0] = a;
-      m_indices[1] = b;
-      m_indices[2] = c;
-      m_indices[3] = d;
-      return *this; 
-    }
-
-    Tensor operator[]( const std::vector<LorentzIndex>& indices ){ 
-      if( indices.size() != m_indices.size() ){
-        ERROR("Setting wrong number of indices ! check logic ( indices = " << indices.size() << " this = " << m_indices.size() << ", " << m_dim.size() << " )" );
-        return Tensor(std::vector<unsigned int>({0}));
-      }
-      for( unsigned int i = 0 ; i < indices.size(); ++i ) m_indices[i] = indices[i];
-      return *this; 
-    }
-
-    Tensor operator | ( Tensor other ) ; 
-
-    Tensor ( std::vector<double> elements, 
-        std::vector<unsigned int> _dim) : 
-      m_dim(_dim),
-      m_indices(_dim.size() )
-    {
-      for( auto& x : elements ) append( x );
-    }
-
-    Tensor ( const std::vector<std::string>& elements, 
-        const std::vector<unsigned int>& _dim, 
-        bool  resolved=false) : m_dim(_dim),
-    m_indices(_dim.size() ) 
-    {
-      for( auto& x : elements ) append( x , resolved );
-    }
-    Expression Determinant() const;
-    Tensor(){};
-    Tensor( std::vector<Expression> elements, 
-        const std::vector<unsigned int>& _m_dim ) : 
-      m_dim(_m_dim) ,  
-      m_elements(elements),
-      m_indices(_m_dim.size()) {
-        if( nElements() != m_elements.size() ){
-          ERROR("Dimensions do not match number of m_elements!");
-        }
+      bool rankMatches( const Tensor& other ){
+        bool success = true;
+        if( m_dim.size() != other.m_dim.size() ) return false ; 
+        for( unsigned int i = 0 ; i < m_dim.size(); ++i ) 
+          success &= m_dim[i] == other.m_dim[i];
+        return success; 
       };
-    Tensor( const std::vector<Expression>& elements ) : 
-      Tensor( elements, std::vector<unsigned int>({(unsigned int)elements.size()})) {} ; 
+      /// Low level access of elements, either by coordinates or by index /// 
+      Expression& operator[] ( const unsigned int& i ) { return m_elements[i] ; }
+      Expression& operator[] ( const std::vector<unsigned int>& co ) { return (*this)[index(co)] ; }
+      const Expression& operator[] ( const unsigned int& i ) const { return m_elements[i] ; }
+      const Expression& operator[] ( const std::vector<unsigned int>& co ) const { return (*this)[index(co)] ; }
 
-    void setName( const std::string& name ){ m_name = name ; }
-    std::string name() const { return m_name; }
-    /// get an element of the tensor from the index 
-    Expression get( const unsigned int& co ) { 
-      if( co >= m_elements.size() )
-        ERROR( "Element (" + std::to_string(co) + " ) out of range (0" 
-            << ", " << m_elements.size() << ")" );
-      return (m_elements[co]); 
-    }
-    Expression get( const unsigned int& co ) const {
-      if( co >= m_elements.size() )
-        ERROR( "Element (" + std::to_string(co) + " ) out of range (0"
-            << ", " << m_elements.size() << ")" );
-      return (m_elements[co]);
-    }
-    std::string to_string() { 
-      std::string value = "{";
-      for( unsigned int i=0; i < m_dim[0] ; ++i ){
-        value += "{";
-        for( unsigned int j = 0 ; j < m_dim[1] ; ++j ){
-          value += (*this)[{i,j}].to_string() + ( i == m_dim[0] -1 && j == m_dim[1] -1 ? "" : ",") ;
-        }
+      Expression get( const unsigned int& co ) ;
+      Expression get( const unsigned int& co ) const ;
+
+      Tensor Invert() const; 
+
+      /// TensorHelper access to class members 
+      /// High level access is done via these commands, i.e. () operators 
+      /// low levels access is done via [] operators /// 
+      TensorHelper operator()( ) const ; 
+
+      TensorHelper operator()( const LorentzIndex& a) const; 
+      TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b ) const;
+      TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c) const;
+      TensorHelper operator()( const LorentzIndex& a, const LorentzIndex& b, const LorentzIndex& c, 
+          const LorentzIndex& d) const ; 
+
+      /*
+         template < class ... indices > TensorHelper operator() (indices... indexSet ) const {
+         return TensorHelper( *this, { indexSet...} );
+         }
+         */
+      TensorHelper operator()( const std::vector<LorentzIndex>& indices ) const ; 
+
+      Tensor() ; 
+      Tensor( const std::vector<double>&      elements, 
+          const std::vector<unsigned int>& _dim)  ;
+
+      Tensor( const std::vector<std::string>& elements, 
+          const std::vector<unsigned int>& _dim, bool  resolved=false) ;
+
+      Tensor( const std::vector<Expression>&  elements, const std::vector<unsigned int>& _dim ) ;
+      Tensor( const std::vector<Expression>&  elements );
+
+      Expression Determinant() const;
+
+      /// get an element of the tensor from the index 
+      std::string to_string() ;
+
+      unsigned int rank() const ; 
+      int metricSgn(const std::vector<unsigned int>& coordinates ) const ; 
+      int metricSgn( const unsigned int& index ) const ;
+      void append( const Expression& expression ) ;
+      void append( const double& value) ;
+      void append( const std::string& name , bool resolved=true) ;
+      Expression get( const std::vector<unsigned int>& _co ) const ;
+      unsigned int size() const ;  
+      unsigned int index( const std::vector<unsigned int>& _co ) const ;
+      /// get the coordinates of a given index ////
+      std::vector<unsigned int> coords( const unsigned int& index ) const ;
+
+      /// get the number of d.o.f.s of a Tensor of given rank and dimension  
+      unsigned int nElements() const ; 
+
+      bool isScalar() const {
+        return size() == 1 && m_dim[0] == 1;
       };
-      return value + "}"; 
-    };
-
-    unsigned int rank() const { return m_dim.size() ; } 
-    int metricSgn(const std::vector<unsigned int>& coordinates ) const {
-      int sgn=1;
-      for( auto& coord : coordinates ) 
-        sgn *= ( coord == 3 ) ? 1 : -1; 
-      return sgn;
-    }
-    int metricSgn( const unsigned int& index ) const {
-      return metricSgn( coords(index) ); 
-    }
-    void append( const Expression& expression ) { m_elements.push_back( expression ); }
-    void append( const double& value) { m_elements.push_back( Expression( Constant( value ) )); }
-    void append( const std::string& name , bool resolved=true) { m_elements.push_back( Expression( Parameter(name , 0 , resolved ) ) ); }
-    Expression get( const std::vector<unsigned int>& _co ) const { return (m_elements[index( _co ) ]); }
-    unsigned int size() const { return m_elements.size(); } 
-    unsigned int index( const std::vector<unsigned int>& _co ) const {
-      unsigned int _index = 0 ;
-      unsigned int dproduct = 1;
-      for( unsigned int i = 0 ; i < _co.size() ; ++i ){
-        _index += _co[i] * dproduct;
-        dproduct *= m_dim[i];
+      bool isSpin1() const {
+        return size() == 1 && m_dim[0] == 4;
       }
-      if( _index > nElements() )
-        ERROR( "Element (" + std::to_string(_index) +") out of range" );
-      return _index; 
-    }
-
-    /// get the coordinates of a given index ////
-    std::vector<unsigned int> coords( const unsigned int& index ) const { 
-      std::vector<unsigned int> returnValue; 
-      unsigned int index_temp = index; 
-      for( unsigned int j=1; j < m_dim.size()+1; ++j ){
-        unsigned int dproduct=1;
-        for( unsigned int i = 0 ; i < m_dim.size() -j; ++i ){
-          dproduct*=m_dim[i];
-        }
-        unsigned int val = ( index_temp - ( index_temp % dproduct ) ) /dproduct ; 
-        index_temp -= dproduct*val;
-        returnValue.push_back(val);
+      bool isSpin2() const {
+        return size() == 2 && m_dim[0] == 4 && m_dim[1] == 4;
       }
-      std::reverse( returnValue.begin(), returnValue.end() );   
-      return returnValue;
-    } 
-    /// get the number of d.o.f.s of a Tensor of given rank and dimension  
-    unsigned int nElements() const {
-      unsigned int dim=1;
-      //std::string dString;
-      for( auto& d : m_dim ){ 
-        dim *= ( d != 0 ) ? d : 1;
-        //  dString += "x" + std::to_string(d);
-      }
-      //INFO( dim << "    " << dString ) ;
-      return dim; 
-    }
-    bool isScalar() const {
-      return size() == 1 && m_dim[0] == 1;
-    };
-    bool isSpin1() const {
-      return size() == 1 && m_dim[0] == 4;
-    }
-    bool isSpin2() const {
-      return size() == 2 && m_dim[0] == 4 && m_dim[1] == 4;
-    }
-    // eliminate col i in dim d.
-    Tensor Eliminate(const unsigned int& i, const unsigned int& d ) const ;
-    //// print operator 
-    void print() const ;
+      // eliminate col i in dim d.
+      Tensor Eliminate(const unsigned int& i, const unsigned int& d ) const ;
+      //// print operator 
+      void print() const ;
 
-    //// contraction operator of the form A_{abcd}*B_{defg} 
-  //  Tensor operator*( const Tensor& other ); 
+      //// contraction operator of the form A_{abcd}*B_{defg} 
+      //  Tensor operator*( const Tensor& other ); 
   };  
 
   //// operators ////
@@ -246,14 +140,44 @@ namespace AmpGen {
 
 
   Tensor LeviCivita(const unsigned int& rank=4 ); 
-  Tensor outer_product( Tensor A, Tensor B, std::vector<unsigned int> orderingA={}, std::vector<unsigned int> orderingB={} ) ; 
-
 
   Expression dot( Tensor A, Tensor B );
   Tensor Orbital_PWave( Tensor A, Tensor B);
   Tensor Orbital_DWave( Tensor A, Tensor B);
   Tensor Spin1ProjectionOperator( Tensor A );
   Tensor Spin2ProjectionOperator( Tensor A );
+
+  class TensorHelper {
+    public: 
+
+      operator Tensor() { return m_tensor ; } 
+      TensorHelper( const Tensor& tensor, const std::vector<LorentzIndex>& indices ) : 
+        m_tensor(tensor) {
+          if( m_tensor.rank() != indices.size() ){
+            ERROR("Setting wrong number of indices ! check logic ( this = " 
+                << indices.size() << ", " <<  m_tensor.nDim() << " )" );
+          }
+          else m_indices = indices ; 
+        }
+      std::vector<LorentzIndex> indices() const { return m_indices ; } 
+      const Tensor& tensor() const { return m_tensor ; } 
+    private :
+      Tensor m_tensor;
+      std::vector<LorentzIndex> m_indices;
+  };
+
+  TensorHelper operator*( const TensorHelper& t1, const TensorHelper& t2 );
+  TensorHelper operator+( const TensorHelper& t1, const TensorHelper& t2 );
+  TensorHelper operator-( const TensorHelper& t1, const TensorHelper& t2 );
+
+  TensorHelper operator/( const TensorHelper& t1, const Expression& t2);
+  TensorHelper operator*( const Expression& t1, const TensorHelper& t2);
+  TensorHelper operator*( const TensorHelper& t1, const Expression& t2);
+
+  TensorHelper operator/( const TensorHelper& t1, const double& t2);
+  TensorHelper operator*( const double& t1, const TensorHelper& t2);
+  TensorHelper operator*( const TensorHelper& t1, const double& t2);
+
 }
 
 #endif

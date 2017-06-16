@@ -161,9 +161,13 @@ StatusCode Generation::initialize() {
     tool< ISampleGenerationTool >( m_sampleGenerationToolName , this ) ;
   
   // Retrieve vertex smearing tool
-  if ( "" != m_vertexSmearingToolName ) 
+  if ( "" == m_vertexSmearingToolName ) {
+    info() << "No vertex smearing tool is defined. Will not smear anything." 
+           << endmsg ;
+  } else {
     m_vertexSmearingTool = 
       tool< IVertexSmearingTool >( m_vertexSmearingToolName , this ) ;
+  }
   
   // Retrieve full gen event cut tool
   if ( "" != m_fullGenEventCutToolName ) m_fullGenEventCutTool =
@@ -310,9 +314,11 @@ StatusCode Generation::execute() {
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
           (*itEvents) -> pGenEvt() -> set_event_number( ++iPile ) ;
-          if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
-            sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
-          if ( ! sc.isSuccess() ) return sc ;
+          if(m_vertexSmearingTool){
+            if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
+                sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
+            if ( ! sc.isSuccess() ) return sc ;
+          }
         }
       }
 
@@ -637,9 +643,11 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
     ++theCounter[ PromptC ];
 }
 
-//=============================================================================                                                                                   
-// Interaction counters in FSR                                                                                                                                    
-//=============================================================================                                                                                   
+
+//=============================================================================
+// Interaction counters in FSR                                              
+//=============================================================================                   
+
 void Generation::updateFSRCounters( interactionCounter & theCounter,
                                     LHCb::GenFSR* m_genFSR,
                                     const std::string option)

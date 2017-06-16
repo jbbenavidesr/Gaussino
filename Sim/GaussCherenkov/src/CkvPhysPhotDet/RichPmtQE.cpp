@@ -293,7 +293,7 @@ void RichPmtQE::setCurrentPmtQEen(int jpmtnum, int jrichdetnum,
                                   const std::vector<double> & qeffener) {
   //   RichPmtQElog << MSG::INFO
   //  <<"set pmt QEen: pmtnum detnum numbins "<<jpmtnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
   m_curPmtNum= jpmtnum;
   m_curRichDetNum=jrichdetnum;
   setAnPmtQEen(jnumQEbins,jqeffvect,qeffener);
@@ -305,7 +305,7 @@ void RichPmtQE::setAnPmtQEen(int jnumQEbins,
                              const std::vector<double> & qeffener) {
 
   //   RichPmtQElog << MSG::INFO
-  //   <<"set pmt QEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set pmt QEen: NumQEbins "<<jnumQEbins<<endmsg;
 
   m_numPmtQEbins= jnumQEbins;
   if(m_numPmtQEbins != (int) m_PmtQEff.size())m_PmtQEff.resize(m_numPmtQEbins);
@@ -326,7 +326,7 @@ void RichPmtQE::setAnPmtQEen(int jnumQEbins,
 //                                  const std::vector<double> & aPCRIener) {
   //   RichPmtQElog << MSG::INFO
   //  <<"set pmt QEen: pmtnum detnum numbins "<<jpmtnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
 //  m_curPmtNum= jpmtnum;
 //  m_curRichDetNum=jrichdetnum;
 //  setAnPmtPCRIen(jnumPCRIbins,aPCRIvect,aPCRIener);
@@ -338,7 +338,7 @@ void RichPmtQE::setAnPmtQEen(int jnumQEbins,
 //                             const std::vector<double> & aPCRIener) {
 
   //   RichPmtQElog << MSG::INFO
-  //   <<"set pmt QEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set pmt QEen: NumQEbins "<<jnumQEbins<<endmsg;
 
 //  m_numPmtPCRIbins= jnumPCRIbins;
 //  if(m_numPmtPCRIbins != (int) m_PmtPCRI.size())m_PmtPCRI.resize(m_numPmtPCRIbins);
@@ -358,7 +358,7 @@ void RichPmtQE::setAnPmtQEen(int jnumQEbins,
 //                                  const std::vector<double> & aQWRIener) {
   //   RichPmtQElog << MSG::INFO
   //  <<"set pmt QEen: pmtnum detnum numbins "<<jpmtnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
 //  m_curPmtNum= jpmtnum;
 //  m_curRichDetNum=jrichdetnum;
 //  setAnPmtQWRIen(jnumQWRIbins,aQWRIvect,aQWRIener);
@@ -370,7 +370,7 @@ void RichPmtQE::setAnPmtQEen(int jnumQEbins,
 //                             const std::vector<double> & aQWRIener) {
 
   //   RichPmtQElog << MSG::INFO
-  //   <<"set pmtQEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set pmtQEen: NumQEbins "<<jnumQEbins<<endmsg;
 
 //  m_numPmtQWRIbins= jnumQWRIbins;
 //  if(m_numPmtQWRIbins != (int) m_PmtQWRI.size())m_PmtQWRI.resize(m_numPmtQWRIbins);

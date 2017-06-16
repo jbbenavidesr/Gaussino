@@ -215,7 +215,7 @@ bool BiasedBB::applyCut( ParticleVector & theParticleVector ,
       if(hasDeltaPhi) continue;
     } 
   }
-  debug()<<"Size "<< theParticleVector.size()<<" deltaPhi "<<hasDeltaPhi<<" dphi= "<<dbg_maxDphi<<endreq;
+  debug()<<"Size "<< theParticleVector.size()<<" deltaPhi "<<hasDeltaPhi<<" dphi= "<<dbg_maxDphi<<endmsg;
   
   return (  theParticleVector.size() >=  m_nBMin  && hasDeltaPhi ) ;
 }

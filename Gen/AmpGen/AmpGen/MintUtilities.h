@@ -6,34 +6,14 @@
 #include "AmpGen/ParsedParameterFileList.h"
 #include "AmpGen/NamedParameterBase.h"
 
-
-
-static bool isNumber( const std::string& word ){
-  bool _isNumber = true;
-  std::string::const_iterator k = word.begin();
-  _isNumber &= isdigit(*k) || (*k == '.' ) || ( *k == '-' ) ;
-  for( k = k+1; k <  word.end(); ++k)
-    _isNumber &= isdigit(*k) || (*k == '.');
-  return _isNumber;
-}
-
-static bool isInteger( const std::string& word ){
-  bool _isInteger = true;
-  for(std::string::const_iterator k = word.begin(); k != word.end(); ++k)
-    _isInteger &= isdigit(*k);
-  return _isInteger;
-}
-
-
 static AmpGen::MinuitParameter* tryParameter( const std::vector<std::string>& line, AmpGen::MinuitParameterSet& mps ){
-  // the minimum is a name, a fix flag , a mean, and a step;
-  //INFO( line[0] <<  isInteger( line[1] ) << "    " <<  isNumber( line[2] ) << "   " <<  isNumber( line[3] ) );
-  if( line.size() == 4 && isInteger( line[1] ) && isNumber( line[2] ) && isNumber( line[3] ) ){
-    //INFO("Got Parameter : " << line[0] );
-    return new AmpGen::MinuitParameter( line[0], stoi( line[1]), stod(line[2]), stod(line[3]) ,0.,0., mps );
+  double min,max,step,value;
+  int flag;
+  if( line.size() == 4 && isInteger( line[1], flag  ) && isNumber( line[2] , value ) && isNumber( line[3],step ) ){
+    return new AmpGen::MinuitParameter( line[0], flag,value,step,0.,0., mps );
   }
-  if( line.size() == 6 && isInteger( line[1] ) && isNumber( line[2] ) && isNumber( line[3] ) && isNumber(line[4]) && isNumber(line[5]) )
-    return new AmpGen::MinuitParameter( line[0], stoi(line[1]), stod(line[2]), stod(line[3]), stod(line[4]), stod(line[5]) , mps);
+  if( line.size() == 6 && isInteger( line[1], flag ) && isNumber( line[2], value ) && isNumber(line[3] , step ) && isNumber(line[4], min) && isNumber(line[5],max) )
+    return new AmpGen::MinuitParameter( line[0], flag,value,step,min,max , mps);
   return 0;
 }
 
@@ -49,5 +29,15 @@ static AmpGen::MinuitParameterSet MPSFromStream(const std::string& fname="" ){
   return mps; 
 }
 
-
+template <class TYPE> 
+  std::vector<TYPE> getVectorArgument( const std::string& name, const TYPE& default_value ){
+  std::vector<TYPE> return_container;
+  unsigned int x=0;
+  TYPE obj = default_value; 
+  do {
+    obj = AmpGen::NamedParameter<TYPE>(name+std::to_string(x++), default_value );
+    if( obj != TYPE() ) return_container.push_back( obj );
+  } while( obj != default_value );
+  return return_container; 
+}
 #endif

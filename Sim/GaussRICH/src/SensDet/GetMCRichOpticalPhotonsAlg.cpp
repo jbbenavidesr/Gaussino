@@ -173,7 +173,7 @@ StatusCode GetMCRichOpticalPhotonsAlg::finalize()
     std::string name = Rich::text((*iM).first);
     name.resize(' ',20);
     info() << "Av. # MCRichOpticalPhotons : " << name << " = "
-           << occ((*iM).second,m_nEvts) << " / event" << endreq;
+           << occ((*iM).second,m_nEvts) << " / event" << endmsg;
   }
 
   return GetMCRichInfoBase::finalize();  // must be called after all other actions

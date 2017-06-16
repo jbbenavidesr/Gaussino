@@ -8,6 +8,7 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          Gen/EvtGen
                          Gen/EvtGenExtras
                          Kernel/MCInterfaces
+                         Kernel/LHCbKernel
                          Kernel/PartProp)
 
 find_package(Boost COMPONENTS filesystem system)
@@ -25,5 +26,5 @@ gaudi_add_library(GeneratorsLib
 gaudi_add_module(Generators
                  src/component/*.cpp
                  INCLUDE_DIRS Boost Kernel/MCInterfaces
-                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib EvtGen EvtGenExtras GeneratorsLib)
+                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel EvtGen EvtGenExtras GeneratorsLib)
 

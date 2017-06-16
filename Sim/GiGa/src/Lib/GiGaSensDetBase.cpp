@@ -105,7 +105,7 @@ StatusCode GiGaSensDetBase::initialize()
         << " Path="          << G4VSensitiveDetector::GetPathName()   
         << " Name="          << G4VSensitiveDetector::GetName() 
         << " FullPathName="  << G4VSensitiveDetector::GetFullPathName() 
-        << endreq;  
+        << endmsg;  
     ///
   }
   ///
@@ -116,7 +116,7 @@ StatusCode GiGaSensDetBase::initialize()
         << System::typeinfoName( typeid (*this) )  
         << "::initialize() Sensitive Detector is " 
         << ( !isActive() ? "*NOT* activated " : "activated" ) 
-        <<  endreq; /// ATTENTION !!! 
+        <<  endmsg; /// ATTENTION !!! 
   }
   ///
   return Print("GiGaSensDetBase initialized successfully" ,

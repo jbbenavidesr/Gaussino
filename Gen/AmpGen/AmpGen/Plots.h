@@ -5,7 +5,7 @@
 #include "TFile.h"
 #include "AmpGen/MinuitParameterSet.h"
 #include "AmpGen/Utilities.h"
-
+#include <chrono>
 /// takes an event, plots 
 namespace AmpGen { 
 
@@ -17,6 +17,7 @@ namespace AmpGen {
                  const PDF&          pdf,
                  const plotAxis&    axis,
                  const std::string& name ){
+
        plot1D( data, func, cut, axis, "Data_"+name);
        makePerAmplitudePlot( mc, pdf, func, cut, axis, name );
     }
@@ -73,6 +74,14 @@ namespace AmpGen {
       TDirectory* dir = gFile->mkdir( plotName.c_str() );
       dir->cd();
       INFO("Making plot : " << plotName << "   " << axis.name.c_str() );
+      
+      std::vector<std::pair<const Event*,double>> eventData; 
+      eventData.reserve( evts.size() ); 
+      for( auto& evt : evts ){
+        if( cut(evt) ) 
+          eventData.emplace_back( &evt, func(evt) );
+      }
+      
       for( unsigned int i = 0 ; i < pdf.size(); ++i){
 
         for( unsigned int j=i;j<pdf.size();++j){
@@ -84,15 +93,14 @@ namespace AmpGen {
           unsigned int index_i = pdf.cacheAddress(i);
           unsigned int index_j = pdf.cacheAddress(j);
           const std::string name = pdf_i.name()+"x"+pdf_j.name();
-          INFO("Making plot : " << plotName << "/" << name );
           TH1D* real_projection = new TH1D(name.c_str(),"",axis.nBins, axis.min, axis.max );
           real_projection->GetXaxis()->SetTitle( axis.title.c_str() );
-          std::string title = pdf.getTexTitle(i, true).c_str() ;
-          if( i!=j ) title += " x " + pdf.getTexTitle(j,true) ;
+          std::string title = convertTeXtoROOT( pdf.getTexTitle(i) ).c_str() ;
+          if( i!=j ) title += " x " + convertTeXtoROOT( pdf.getTexTitle(j)) ;
           real_projection->SetTitle( title.c_str());
-          for( auto evt = evts.begin() ; evt != evts.end(); ++evt ){
-            if( ! cut(*evt) ) continue; 
-            double f = func(*evt);
+          for( auto& evtAndValue : eventData ){
+            double f = evtAndValue.second;
+            auto evt = evtAndValue.first;
             std::complex<double> pdfValue = 
               evt->getCache(index_i) * amp_i * 
               std::conj( evt->getCache(index_j)*amp_j );  

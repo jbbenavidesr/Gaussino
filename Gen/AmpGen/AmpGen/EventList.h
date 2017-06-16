@@ -5,9 +5,11 @@
 #include "AmpGen/Utilities.h"
 #include "AmpGen/CompiledExpression.h"
 #include "AmpGen/EventType.h"
-
 #include "AmpGen/MsgService.h"
+
+
 #include <chrono>
+#include <functional>
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -16,6 +18,7 @@
 #include "TLorentzVector.h"
 #include "TEventList.h"
 #include "TRandom.h"
+
 /// OPEN MP
 //
 #ifdef __USE_OPENMP__
@@ -23,8 +26,6 @@
 #endif
 
 namespace AmpGen { 
-  static std::vector<std::vector<unsigned int>> gChi2Indices = { {1,2,3},{0,1},{0,2},{2,3},{0,1,2} };
-
 
   struct plotAxis { 
     std::string name;
@@ -59,11 +60,17 @@ namespace AmpGen {
         return false; 
       };
       Event( const unsigned int& N, const unsigned int& cacheSize=0 ) : 
-        m_event(std::vector<double>(N)), 
+        m_event(N), 
         m_cache(cacheSize), 
         m_genPdf(1),
-        m_weights(std::vector<double>(1,0)) 
+        m_weights(1,0) 
     {};
+      Event( const double* data, const unsigned int& N, const unsigned int& cacheSize=0) :
+        m_event(data, data+N),
+        m_cache(cacheSize),
+        m_genPdf(1),
+        m_weights(1,1) {
+      }
       void dumpCache(){
         for( unsigned int i = 0 ; i < m_cache.size(); ++i){
           INFO("Cache adddress [" << i << "] = " << m_cache[i] );
@@ -87,8 +94,8 @@ namespace AmpGen {
           m_event[4*i + 0 ] = -m_event[4*i+0] ;
           m_event[4*i + 1 ] = -m_event[4*i+1] ;
           m_event[4*i + 2 ] = -m_event[4*i+2] ;
-        };
-      };
+        }
+      }
       inline double* getEvent(){ return &(m_event[0]) ; }
       inline const double* getEvent() const { return m_event.data(); }
       void setCache( const std::complex<double>& m_value, const unsigned int& pos )
@@ -96,6 +103,9 @@ namespace AmpGen {
       unsigned int cacheSize(){ return m_cache.size() ; } 
       inline std::complex<double> getCache(const unsigned int& pos) const { return m_cache[pos];}
       inline std::vector<std::complex<double>>::const_iterator cacheBegin() const {return m_cache.cbegin(); }
+      void resizeCache( const unsigned int& new_size ){
+        m_cache.resize(new_size);
+      }
       double* pWeight(){ return &(m_weights[0]); }
       double* pGenPdf(){ return &m_genPdf; }
       double weight() const { return m_weights.size() == 0 ? 1 : *(m_weights.rbegin()); } /// get the last weight added to the stack /// 
@@ -137,8 +147,7 @@ namespace AmpGen {
       double s( const std::vector<unsigned int>& indices ) const {
         if( indices.size() == 2 ) return s( indices[0], indices[1] );
         if( indices.size() == 3 ) return s( indices[0], indices[1], indices[2] );
-        double E=0;
-        double px=0;
+        double E=0;        double px=0;
         double py=0;
         double pz=0;
         for( auto& i : indices ){
@@ -149,29 +158,10 @@ namespace AmpGen {
         }
         return E*E -px*px - py*py - pz*pz;
       }
-      bool isIn( const unsigned int& index, const std::pair<double,double>& domain , bool dbThis=false) const {
-        const double o1p = s( gChi2Indices[index]) ;
-        return o1p > domain.first && o1p < domain.second ;
+      double operator[](const unsigned int& i ) const {
+        return m_event[i];
       }
   };
-
-  template <typename EVENT>
-    struct less_than{
-      unsigned int m_index;
-      less_than(unsigned int index) : m_index(index){};
-      bool operator()(const double& x, const EVENT& o1){
-        return o1.s( gChi2Indices[m_index ] ) > x;
-      }
-    };
-
-  template <typename EVENT>
-    struct sorter{
-      unsigned int m_index;
-      sorter(unsigned int index) : m_index(index){};
-      bool operator()(const EVENT& o1, const EVENT& o2){
-        return o1.s( gChi2Indices[m_index ] ) < o2.s( gChi2Indices[m_index] );
-      }
-    };
 
   class EventList : public std::vector<Event> {
     private: 
@@ -183,10 +173,16 @@ namespace AmpGen {
         PARITY        = (1<<0),
         GETPDF  = (1<<1)
       };
-
+      void resetCache() {
+        m_pdf_index.clear();
+        for( auto& evt : *this ) evt.resizeCache(0) ; 
+      }
       EventType getEventType() const { return m_eventType; }
       void setEventType( const EventType& type ){ m_eventType = type ; } 
       inline double* getEvent( const unsigned int& index )  { 
+        return (*this)[index].getEvent()  ; 
+      }
+      inline const double* getEvent( const unsigned int& index ) const { 
         return (*this)[index].getEvent()  ; 
       }
       EventList() {} ; 
@@ -195,23 +191,31 @@ namespace AmpGen {
         double integral=0;
         for( auto& evt : *this ){ integral += evt.weight(cat) ; } 
         return integral;  
-      };
+      }
+      void add( const EventList& evts ){
+        resetCache();
+        WARNING("Adding event lists invalidates cache state" );
+        for( auto& evt : evts ){
+          push_back( evt ); 
+          rbegin()->resizeCache(0);
+        }
+      }
+
       EventList( const std::string& fname, 
                  const EventType& evtType,
-                 const unsigned int& pdfSize, 
-                 const bool& flipState=false,
-                 const double& scaleFactor=1 );
+                 const unsigned int& pdfSize,
+                 std::function<bool(const Event&)> cut = [](const Event& evt ){ return true ; } );
+       
+      EventList(TTree* tree,
+          const EventType& particles ,
+          const unsigned int& pdfsize,
+          std::function<bool(const Event&)> cut = [](const Event& evt ){ return true ; }  );
+
       EventList( TTree* tree, 
           const std::vector<std::string>& branches, 
           const EventType& evtType, 
           const unsigned int& opt=0 , 
           const std::vector<unsigned int>& eventList = std::vector<unsigned int>() ) ;
-
-      EventList(TTree* tree, 
-          const EventType& particles , 
-          const unsigned int& pdfsize, 
-          const bool& flipState=false, 
-          const double& scaleFactor=1 );
 
       EventList( const EventType& type ); 
       TTree* tree(const std::string& name ) ;   
@@ -235,8 +239,10 @@ namespace AmpGen {
           if( pdfIndex != m_pdf_index.end() ) return pdfIndex->second ;
           else { 
             unsigned int size = m_pdf_index.size();
-            if( size > std::vector<Event>::at(0).cacheSize() )
-              ERROR("Cache index " << size << " exceeds cache size = " << std::vector<Event>::at(0).cacheSize() );
+            if( size >= std::vector<Event>::at(0).cacheSize() ){
+              WARNING("Cache index " << size << " exceeds cache size = " << std::vector<Event>::at(0).cacheSize() );
+              for( auto& evt : *this ) evt.resizeCache( size+1 ); 
+            }
             updateCache( particle, m_pdf_index.size() );
             m_pdf_index[particle.hash()]=size;
             return size;
@@ -248,7 +254,7 @@ namespace AmpGen {
           DEBUG("updating cache for : " << particle.name() << " on " << std::vector<Event>::size() << " events" );
           #pragma omp parallel for
           for( unsigned int i = 0 ; i < std::vector<Event>::size(); ++i ){
-            auto val = particle.getVal( (*this)[i].getEvent() );
+            auto val = particle( (*this)[i].getEvent() );
             (*this)[i].setCache( val, index );
           }
         }

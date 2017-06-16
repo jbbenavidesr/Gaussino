@@ -87,6 +87,54 @@ public:
   std::vector<std::string> subVolumes;
   std::vector<double> cumulated_time_subvol;
   
+  //aggiunta 28/2/16
+  //std::vector<double> cumulated_time_vol_muons;
+  G4Track* track;
+  G4ParticleDefinition* partdef;
+  //G4double totalCumTime_muons;
+  std::vector<int> particletype_velo;
+  std::vector<double> cumulatedtime_velo;
+  std::vector<int> particletype_tt;
+  std::vector<double> cumulatedtime_tt;
+  std::vector<int> particletype_it;
+  std::vector<double> cumulatedtime_it;
+  std::vector<int> particletype_ot;
+  std::vector<double> cumulatedtime_ot;
+  std::vector<int> particletype_rich1;
+  std::vector<double> cumulatedtime_rich1;
+  std::vector<int> particletype_rich2;
+  std::vector<double> cumulatedtime_rich2;
+  std::vector<int> particletype_mag;
+  std::vector<double> cumulatedtime_mag;
+  std::vector<int> particletype_spd;
+  std::vector<double> cumulatedtime_spd;
+  std::vector<int> particletype_prs;
+  std::vector<double> cumulatedtime_prs;
+  std::vector<int> particletype_ecal;
+  std::vector<double> cumulatedtime_ecal;
+  std::vector<int> particletype_hcal;
+  std::vector<double> cumulatedtime_hcal;
+  std::vector<int> particletype_muon;
+  std::vector<double> cumulatedtime_muon;
+  std::vector<int> particletype_pipe;
+  std::vector<double> cumulatedtime_pipe;
+  std::vector<int> particletype_converter;
+  std::vector<double> cumulatedtime_converter;
+  std::vector<int> particletype_other;
+  std::vector<double> cumulatedtime_other;
+  std::vector<int> particletype_All;
+  std::vector<double> cumulatedtime_All;
+
+  std::vector<std::string> detsummary_detname_vec;
+  std::vector<double> detsummary_time_vec;
+  std::vector<double> detsummary_fraction_vec;
+
+  void FillSubdetTiming(int abslundid,double stepTime,std::vector<double>& cumulatedtime_det,std::vector<int>& particletype_vec,std::string det);
+  void WriteSubdetTiming(std:: ofstream& table,std::vector<double> cumulatedtime_det,std::vector<int> particletype_vec,std::string det);
+  std::vector<int> SortList(std::vector<double> vec);
+
+  //fine aggiunta
+  
   //std::vector<std::vector<std::string> > vec_subVolumes;
   
   std::vector<std::string> knownVolumes;

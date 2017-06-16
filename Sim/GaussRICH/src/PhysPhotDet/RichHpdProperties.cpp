@@ -68,12 +68,12 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   
 
   // RichHpdlog << MSG::INFO
-  //           << " Test of Printout from RichHpdProperties" << endreq;
+  //           << " Test of Printout from RichHpdProperties" << endmsg;
 
   SmartDataPtr<DetectorElement> Rich1DE(detSvc,Rich1DeStructurePathName );
   if( !Rich1DE ){
     RichHpdlog << MSG::ERROR
-               << "Can't retrieve  "<< Rich1DeStructurePathName << endreq;
+               << "Can't retrieve  "<< Rich1DeStructurePathName << endmsg;
   }
   else
   {
@@ -90,14 +90,14 @@ void RichHpdProperties::InitializeHpdProperties( ) {
 
 
     RichHpdlog << MSG::INFO << "Total Number of hpds in Rich1 = "
-               << m_numHpdTotRich[0] << endreq;
+               << m_numHpdTotRich[0] << endmsg;
 
     //  RichHpdlog << MSG::DEBUG<<" Rich Hpd Copy Num In Panels Begin Values  "<<m_hpdNumBegInHitCollection[0]
     //           <<"  "<<m_hpdNumBegInHitCollection[1]<<"   "<<m_hpdNumBegInHitCollection[2]<<"  "
-    //            <<m_hpdNumBegInHitCollection[3]<<endreq;
+    //            <<m_hpdNumBegInHitCollection[3]<<endmsg;
     //  RichHpdlog << MSG::DEBUG<<" Rich Hpd Copy Num In Panels End Values  "<<m_hpdNumEndInHitCollection[0]
     //           <<"  "<<m_hpdNumEndInHitCollection[1]<<"   "<<m_hpdNumEndInHitCollection[2]<<"  "
-    //           <<m_hpdNumEndInHitCollection[3]<<endreq;
+    //           <<m_hpdNumEndInHitCollection[3]<<endmsg;
     
     //following line modified to be compatible with recent DetDesc. SE 16-6-2005. 
     m_HpdMaxQuantumEffFromDB=  Rich1DE->param<double>("RichHpdMaxQE");
@@ -119,11 +119,11 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   {
 
     //    RichHpdlog << MSG::ERROR
-    //              << "Can't retrieve "<< Rich2DeStructurePathName << endreq;
+    //              << "Can't retrieve "<< Rich2DeStructurePathName << endmsg;
 
   }else if(!Rich1DE) {
     RichHpdlog <<MSG::ERROR<<"Can't retrieve " << Rich1DeStructurePathName<<"   for Rich2"
-               <<endreq;
+               <<endmsg;
 
   }else {
 
@@ -135,7 +135,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
     m_numHpdTotRich[1]= Rich1DE->param<int>("Rich2TotNumHpd");
     RichHpdlog << MSG::INFO
                << "Total Number of hpds in Rich2 = "
-               << m_numHpdTotRich[1]<<endreq;
+               << m_numHpdTotRich[1]<<endmsg;
 
   }
 
@@ -174,7 +174,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   FillHpdDemagTablesAtInit ( detSvc, msgSvc );
 
   RichHpdlog << MSG::INFO
-	     << "Filled the HPD QE, PSF and Demag tables for  RICH  "<<endreq;
+	     << "Filled the HPD QE, PSF and Demag tables for  RICH  "<<endmsg;
 
 
   //Now get the HPD High Voltage
@@ -184,7 +184,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   if(!tabHV) {
     RichHpdlog << MSG::ERROR
                <<"RichHpdProperties: "
-               <<" Can't retrieve "+ RichHpdHVMatTabPropPath <<endreq;
+               <<" Can't retrieve "+ RichHpdHVMatTabPropPath <<endmsg;
 
 
   }else {
@@ -194,7 +194,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   }
   if(m_HpdVerboseLevel >0) {
     RichHpdlog << MSG::INFO
-               <<"Hpd HighVoltage value = "<<HpdHVSingle<<endreq;
+               <<"Hpd HighVoltage value = "<<HpdHVSingle<<endmsg;
   }
   m_RichHpdHighVoltage=HpdHVSingle;
 
@@ -203,7 +203,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   if( !Rich1DE ){
     RichHpdlog << MSG::ERROR
                << "Can't retrieve "<< Rich1DeStructurePathName<<"   forHpdQw toSiDist "
-               << endreq;
+               << endmsg;
   }else {
 
 
@@ -212,13 +212,13 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   }
   if(m_HpdVerboseLevel >0 ){
     RichHpdlog << MSG::INFO
-               <<"Hpd QW to Si Max Dist = "<<hpdQwtoSiDist <<endreq;
+               <<"Hpd QW to Si Max Dist = "<<hpdQwtoSiDist <<endmsg;
   }
   m_RichHpdQWToSiDist= hpdQwtoSiDist;
   if(m_HpdVerboseLevel >1 ){
 
     RichHpdlog << MSG::INFO << "Hpd QW to Si Max Dist =  "
-               <<m_RichHpdQWToSiDist << endreq;
+               <<m_RichHpdQWToSiDist << endmsg;
   }
 
 
@@ -227,7 +227,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   if( !Rich1DE ){
     RichHpdlog << MSG::ERROR
                << "Can't retrieve "<< Rich1DeStructurePathName << " for MaxZhit in Rich1 "
-               << endreq;
+               << endmsg;
   }else {
 
     // modif to to be comaptible with recent Detdesc SE 16-6-2005.
@@ -236,14 +236,14 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   }
   if ( m_HpdVerboseLevel >0 ) {
     RichHpdlog << MSG::INFO
-               <<"Max Z Hit coord in Rich1 = "<<MaxZHitInRich1 <<endreq;
+               <<"Max Z Hit coord in Rich1 = "<<MaxZHitInRich1 <<endmsg;
   }
   m_Rich1MaxZHitCoord=  MaxZHitInRich1;
 
   if(m_HpdVerboseLevel >1 ){
 
     RichHpdlog << MSG::INFO << "Max Z coord for a hit in Rich1 =  "
-               << m_Rich1MaxZHitCoord << endreq;
+               << m_Rich1MaxZHitCoord << endmsg;
   }
 
   // Now get the quartz window name and the photocathode name.
@@ -253,7 +253,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   SmartDataPtr<DetectorElement> RichHpdQWDE(detSvc, (Rich1DeStructurePathName+RichHpdQwDeSubPathName));
   if(!RichHpdQWDE) {
     RichHpdlog << MSG::ERROR
-               <<"Can't retrieve "+Rich1DeStructurePathName+RichHpdQwDeSubPathName<<endreq;
+               <<"Can't retrieve "+Rich1DeStructurePathName+RichHpdQwDeSubPathName<<endmsg;
 
   }else{
 
@@ -261,20 +261,20 @@ void RichHpdProperties::InitializeHpdProperties( ) {
       hpdQWlvname=RichHpdQWDE->geometry()->lvolumeName();
     }else{
       RichHpdlog << MSG::ERROR
-                 <<"Erroneous Log Vol for Hpd QW log vol " <<endreq;
+                 <<"Erroneous Log Vol for Hpd QW log vol " <<endmsg;
     }
   }
   if(m_HpdVerboseLevel >0 ){
 
     RichHpdlog << MSG::INFO
-               <<"Hpd Qw Log Volname =  "<<hpdQWlvname<<endreq;
+               <<"Hpd Qw Log Volname =  "<<hpdQWlvname<<endmsg;
   }
   m_HpdQWLogVolName = hpdQWlvname;
   SmartDataPtr<DetectorElement> RichHpdPCDE(detSvc, (Rich1DeStructurePathName+RichHpdPaCathDeSubPathname));
   if(!RichHpdPCDE) {
     RichHpdlog << MSG::ERROR
                <<"Can't retrieve " +Rich1DeStructurePathName+RichHpdPaCathDeSubPathname
-               <<endreq;
+               <<endmsg;
 
   }else{
 
@@ -283,7 +283,7 @@ void RichHpdProperties::InitializeHpdProperties( ) {
       hpdPhCathlvname = RichHpdPCDE->geometry()->lvolumeName();
     }else{
       RichHpdlog << MSG::ERROR
-                 <<"Erroneous Log Vol for Hpd PhCathode log vol " <<endreq;
+                 <<"Erroneous Log Vol for Hpd PhCathode log vol " <<endmsg;
     }
 
     // modif to be compatible with recent Detdesc. SE 16-6-2005.
@@ -294,9 +294,9 @@ void RichHpdProperties::InitializeHpdProperties( ) {
   if(m_HpdVerboseLevel >0 ){
 
     RichHpdlog << MSG::INFO
-               <<"Hpd Ph Cathode Log Volname =  "<<hpdPhCathlvname<<endreq;
+               <<"Hpd Ph Cathode Log Volname =  "<<hpdPhCathlvname<<endmsg;
     RichHpdlog << MSG::INFO
-               <<"Hpd Ph Cathode Rinner = "<< phcathRinn<<endreq;
+               <<"Hpd Ph Cathode Rinner = "<< phcathRinn<<endmsg;
   }
   m_HpdPhCathodeLogVolName = hpdPhCathlvname;
 
@@ -313,7 +313,7 @@ void RichHpdProperties::InitializeSiDetParam() {
   MsgStream RichHpdlog( msgSvc, "RichHpdProperties" );
   if( !Rich1DE ){
     RichHpdlog << MSG::ERROR
-               << "Can't retrieve  "<< Rich1DeStructurePathName <<" for sidet param "<< endreq;
+               << "Can't retrieve  "<< Rich1DeStructurePathName <<" for sidet param "<< endmsg;
   }
   else
   {
@@ -346,7 +346,7 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
   //New stuff: QE tables from condDB (M.Musy 27/01/08)
   SmartDataPtr<DeRichSystem> richsys( detSvc, DeRichLocations::RichSystem );
   if(!richsys) {
-    RichHpdPropLogQE << MSG::ERROR << "Could not get RichSystem!"<<endreq;
+    RichHpdPropLogQE << MSG::ERROR << "Could not get RichSystem!"<<endmsg;
     return;
   }
 
@@ -354,7 +354,7 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
   //const LHCb::RichSmartID::Vector hpdlist = richsys->activeHPDRichSmartIDs(); 
   // this is chaged to allHPDSmartIds to take care of disabled HPDs as well. SE Feb10-2011
   const LHCb::RichSmartID::Vector& hpdlist = richsys->allPDRichSmartIDs();   
-  //RichHpdPropLogQE << MSG::INFO <<"QE hpdlist.size()="<<hpdlist.size()<<endreq;
+  //RichHpdPropLogQE << MSG::INFO <<"QE hpdlist.size()="<<hpdlist.size()<<endmsg;
 
   LHCb::RichSmartID::Vector::const_iterator i;
   for( i=hpdlist.begin(); i!=hpdlist.end(); ++i ) {
@@ -362,10 +362,10 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
     int irichdet = (*i).rich();
     int nHpdInRich1 = m_RichHpdQEList[0].size();
     int ih = richsys->copyNumber(*i).data() - nHpdInRich1*irichdet;//runs 0->195 and 0->287
-    if(irichdet>1) RichHpdPropLogQE<<MSG::ERROR<<"Error in HPD numbering scheme!"<<endreq;
+    if(irichdet>1) RichHpdPropLogQE<<MSG::ERROR<<"Error in HPD numbering scheme!"<<endmsg;
 //     RichHpdPropLogQE <<MSG::INFO<<"QE DeHPDLocation="<<location
 //                      <<"  CopyNr="<<richsys->copyNumber(*i)
-//                      << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endreq;
+//                      << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endmsg;
 
     TabulatedProperty::Table table;
 
@@ -373,11 +373,11 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
     SmartDataPtr<DeRichPD> iDeHpd( detSvc, location );
     if(  ( !iDeHpd ) || (m_UseNominalHpdQE)  ) {
       RichHpdPropLogQE << MSG::WARNING << "No HPD in Conditions DB at "<<location
-		       <<"Using Old QE default table for this HPD!"<<endreq;
+		       <<"Using Old QE default table for this HPD!"<<endmsg;
       SmartDataPtr<TabulatedProperty> tabQE(detSvc, RichHpdQeffMatTabPropPath);
       if(!tabQE) RichHpdPropLogQE << MSG::ERROR
 				  <<"RichHpdPropertiesQE: Can't retrieve "
-				  << RichHpdQeffMatTabPropPath << endreq;
+				  << RichHpdQeffMatTabPropPath << endmsg;
       else {
           table = tabQE->table();
       }  
@@ -410,7 +410,7 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
       RichHpdPropLogQE << MSG::WARNING
 		       <<" RichHpdProperties: Zero number of bins for hpd QE .Check db for "
 		       << "Current richdet hpdInRichDet "<< irichdet<<"  "<<ih
-		       <<endreq;
+		       <<endmsg;
     }
 
     //debug stuff
@@ -418,7 +418,7 @@ void  RichHpdProperties::FillHpdQETablesAtInit( IDataProviderSvc* detSvc,
 //         const Rich::TabulatedProperty1D* qe_table = iDeHpd->pdQuantumEff();
 //         double qe = qe_table->value(ene/1000000.0);
 //         RichHpdPropLogQE <<MSG::INFO<<"energy="<<ene<<" wavel="<<1243.125/ene
-//                          <<" ---> " << qe <<endreq;
+//                          <<" ---> " << qe <<endmsg;
 //       }
 
   }
@@ -561,7 +561,7 @@ void RichHpdProperties::FillHpdPSFTablesAtInit ( IDataProviderSvc* detSvc, IMess
                <<"RichHpdProperties PSF: "
                       <<" Can't retrieve  "+RichHpdPsfMatTabPropPath << " or " <<RichHpdPsfPhEnMatTabPropPath
                       <<"  or "<<RichHpdPsfRadialMatTabPropPath               
-               <<endreq;
+               <<endmsg;
 
 
   }else {
@@ -613,7 +613,7 @@ void RichHpdProperties::FillHpdPSFTablesAtInit ( IDataProviderSvc* detSvc, IMess
   }
   
   if(m_HpdVerboseLevel >0 ) {
-    RichHpdPropLogPSF << MSG::INFO <<"Hpd PSF value =  "<<HpdPsfSingle<<endreq;
+    RichHpdPropLogPSF << MSG::INFO <<"Hpd PSF value =  "<<HpdPsfSingle<<endmsg;
   }
 
   //Now populate the classes for each of the hpds.
@@ -653,7 +653,7 @@ void  RichHpdProperties::FillHpdDemagTablesAtInit ( IDataProviderSvc* detSvc,
     //New stuff
     SmartDataPtr<DeRichSystem> richsys(detSvc, DeRichLocations::RichSystem );
     if(!richsys) {
-      RichHpdPropLogDemag << MSG::ERROR << "Could not get RichSystem!"<<endreq;
+      RichHpdPropLogDemag << MSG::ERROR << "Could not get RichSystem!"<<endmsg;
       return;
     }
 
@@ -665,10 +665,10 @@ void  RichHpdProperties::FillHpdDemagTablesAtInit ( IDataProviderSvc* detSvc,
 	int irichdet = (*i).rich();
 	int nHpdInRich = m_RichHpdDeMagList[0].size();
 	int ih       = richsys->copyNumber(*i).data() - nHpdInRich*irichdet;//runs 0->195 and 0->288
-	if(irichdet>1) RichHpdPropLogDemag<<MSG::ERROR<<"Error in numbering scheme!"<<endreq;
+	if(irichdet>1) RichHpdPropLogDemag<<MSG::ERROR<<"Error in numbering scheme!"<<endmsg;
 // 	RichHpdPropLogDemag<<MSG::INFO<<"DeHPDLocation="<<location
 // 			   <<"  CopyNr="<<richsys->copyNumber(*i)
-// 			   << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endreq;
+// 			   << "  Nr.in Rich"<<irichdet+1<<"="<<ih<<endmsg;
 
 	m_RichHpdDeMagList[irichdet][ih]= new RichHpdDeMag(detSvc, ih, irichdet);
 
@@ -693,10 +693,10 @@ void  RichHpdProperties::FillHpdDemagTablesAtInit ( IDataProviderSvc* detSvc,
 // 				<<" ---> " <<"back to r_cathode="<<rback_cathode
 // 	      //        <<"  Dphi_anode="<<deltaphi_anode
 // 	      //<<" ---> " <<"back to Dphi_cathode="<<deltaphi_back_cathode
-// 				<<endreq;
+// 				<<endmsg;
 // 	  }
 
-	} else { RichHpdPropLogDemag << MSG::ERROR << "No HPD in "<<location<<endreq; }
+	} else { RichHpdPropLogDemag << MSG::ERROR << "No HPD in "<<location<<endmsg; }
 
       }
 
@@ -707,7 +707,7 @@ void  RichHpdProperties::FillHpdDemagTablesAtInit ( IDataProviderSvc* detSvc,
     std::vector<double> HpdDemagFacDefault;
     if(!tabDemagDefault) {
       RichHpdPropLogDemag << MSG::ERROR <<"RichHpdProperties Demagnification:   "
-			  <<" Can't retrieve" +RichHpdDemagMatTabPropPath <<endreq;
+			  <<" Can't retrieve" +RichHpdDemagMatTabPropPath <<endmsg;
     } else {
       TabulatedProperty::Table tableDem = tabDemagDefault->table();
       TabulatedProperty::Table::iterator itd;

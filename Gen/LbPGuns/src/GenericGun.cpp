@@ -172,14 +172,14 @@ double GenericGun::generateValue( const int mode, const double val,
     } while ( ( (tmp<min) || (tmp > max) ) && (i < maxtries));
     if(i>maxtries) {
       error() << "Cant generate value in range (min, max) "
-              << val << "\t" << min << "\t" << max << endreq;
+              << val << "\t" << min << "\t" << max << endmsg;
     }
     return tmp;
   case SPGGenMode::FlatMode :
     tmp = m_flatGenerator() * ( max - min ) + min ;
     return tmp;
   default:
-    error() << "Unknown Generation Mode" << endreq;
+    error() << "Unknown Generation Mode" << endmsg;
     return 0.;
   }
 }

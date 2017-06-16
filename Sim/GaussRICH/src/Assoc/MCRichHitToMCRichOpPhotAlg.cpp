@@ -106,13 +106,13 @@ StatusCode MCRichHitToMCRichOpPhotAlg::addEvent( const std::string & evtLoc )
   if ( !exist<LHCb::MCRichOpticalPhotons>(evtLoc) )
   {
     if ( msgLevel(MSG::DEBUG) )
-    { debug() << "Cannot locate MCRichOpticalPhotons at " << evtLoc << endreq; }
+    { debug() << "Cannot locate MCRichOpticalPhotons at " << evtLoc << endmsg; }
     return StatusCode::SUCCESS;
   }
   const LHCb::MCRichOpticalPhotons * mcPhotons = get<LHCb::MCRichOpticalPhotons>(evtLoc); 
   if ( msgLevel(MSG::DEBUG) )
   { debug() << "Successfully located " << mcPhotons->size()
-            << " MCRichOpticalPhotons at " << evtLoc << endreq; }
+            << " MCRichOpticalPhotons at " << evtLoc << endmsg; }
 
   // add links to linker
   for ( LHCb::MCRichOpticalPhotons::const_iterator iPhot = mcPhotons->begin();
@@ -126,7 +126,7 @@ StatusCode MCRichHitToMCRichOpPhotAlg::addEvent( const std::string & evtLoc )
       {
         if ( msgLevel(MSG::VERBOSE) )
         { verbose() << "Linking MCRichHit " << mchit->sensDetID()
-                    << " to MCRichOpticalPhoton " << mcPhot->key() << endreq; }
+                    << " to MCRichOpticalPhoton " << mcPhot->key() << endmsg; }
         linker()->link( mchit, *iPhot );
       }
       else
@@ -141,7 +141,7 @@ StatusCode MCRichHitToMCRichOpPhotAlg::addEvent( const std::string & evtLoc )
   }
 
   if ( msgLevel(MSG::DEBUG) )
-  { debug() << "Finished processing MCRichOpticalPhotons at " << evtLoc << endreq; }
+  { debug() << "Finished processing MCRichOpticalPhotons at " << evtLoc << endmsg; }
 
   return StatusCode::SUCCESS;
 }

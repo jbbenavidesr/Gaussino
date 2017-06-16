@@ -1,13 +1,13 @@
 # Package of Non-Standard EvtGen Models
 
 package     EvtGenExtras
-version     v3r12p1
+version     v3r13
  
 branches    cmt doc EvtGenModels src
 
 use         EvtGen  v* Gen
 use         GSL     v* LCG_Interfaces
-use			Mint	v* Gen
+use         Mint     v* Gen
 
 include_dirs  $(EVTGENEXTRASROOT)
 

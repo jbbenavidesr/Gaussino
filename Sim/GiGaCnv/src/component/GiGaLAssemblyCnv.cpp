@@ -130,7 +130,7 @@ StatusCode GiGaLAssemblyCnv::updateRep
   MsgStream log( msgSvc() , name() );
   log << MSG::DEBUG 
       << " new Volume/GiGaAssembly is created with the name '"
-      << lv->name() + "'" << endreq ;  
+      << lv->name() + "'" << endmsg ;  
   ///
   for( ILVolume::PVolumes::const_iterator ipv = lv->pvBegin() ; 
        lv->pvEnd() != ipv ; ++ipv )

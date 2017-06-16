@@ -885,7 +885,7 @@ void GeneratorAnalysis::bHadronInfo( LHCb::ParticleID m_mPID,
         }
       }
       if ( ! valid ) 
-        warning() << "Unknown B code " << m_dPID << endreq ;
+        warning() << "Unknown B code " << m_dPID << endmsg ;
       if( produceHistos() )
        if ( valid ) m_bMesonFraction->fill((double)( (int) type ) - 0.1 );
     }

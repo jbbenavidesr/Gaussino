@@ -169,11 +169,11 @@ void GiGaPhysConstructorOp::ConstructProcess()
    // IDetectorElement* Rich1DE = getDet<IDetectorElement> (Rich1DeStructurePathName );
    // if( !Rich1DE ){
    //  msg << MSG::INFO <<" No RICH1 detector element. Possibly RICH system not activated. " 
-   //        <<" Hence No RICH Optical Physics Process Activated"<<endreq;
+   //        <<" Hence No RICH Optical Physics Process Activated"<<endmsg;
    //  setRICHOpticalPhysProcActivation(false); 
    // }
   
-   msg << MSG::DEBUG <<"RICH Optical Process activation status "<< activateRICHOpticalPhysProcStatus ()<<endreq;
+   msg << MSG::DEBUG <<"RICH Optical Process activation status "<< activateRICHOpticalPhysProcStatus ()<<endmsg;
   
   //  ConstructPeProcess();
   if( activateRICHOpticalPhysProcStatus () )  ConstructOp();
@@ -221,7 +221,7 @@ void  GiGaPhysConstructorOp::ConstructPeProcess()
         // Rebuild the physics tables for every process for this particle type
   //      G4ProcessVector* pVector = 
   //        (particle->GetProcessManager())->GetProcessList();
-  //      msg << MSG::DEBUG << "size ProcList pe- "<< pVector->size()<< endreq;
+  //      msg << MSG::DEBUG << "size ProcList pe- "<< pVector->size()<< endmsg;
   //      
   //      for ( j=0; j < pVector->size(); ++j) 
   //        {
@@ -230,7 +230,7 @@ void  GiGaPhysConstructorOp::ConstructPeProcess()
   //      particle->DumpTable();
   //      pmanager->DumpInfo();
   //      G4int  an1 =  pmanager ->GetProcessListLength() ;
-  //      msg << MSG::DEBUG << "Num proc for pe so far = " << an1 << endreq;
+  //      msg << MSG::DEBUG << "Num proc for pe so far = " << an1 << endmsg;
   //    }
   // }
   
@@ -276,7 +276,7 @@ void GiGaPhysConstructorOp::ConstructOp() {
   MsgStream msg(msgSvc(), name());
   
   msg << MSG::DEBUG <<" Activation for verbose Output in Rich Optical Proc = "
-      << m_RichActivateVerboseProcessInfoTag << endreq;
+      << m_RichActivateVerboseProcessInfoTag << endmsg;
 
   RichG4Cerenkov*   theCerenkovProcess = 
              new RichG4Cerenkov("RichG4Cerenkov", fOptical );
@@ -322,7 +322,7 @@ void GiGaPhysConstructorOp::ConstructOp() {
   }
 
   // msg<<MSG::INFO<<" Rich hit smear value "<< m_RichAerogelHitSmearValue << "  "
-  //      <<m_Rich1GasHitSmearValue<<"  "<<m_Rich2GasHitSmearValue<<endreq;
+  //      <<m_Rich1GasHitSmearValue<<"  "<<m_Rich2GasHitSmearValue<<endmsg;
 
  
   theCerenkovProcess->SetVerboseLevel(0);
@@ -349,17 +349,17 @@ void GiGaPhysConstructorOp::ConstructOp() {
 
   G4int MaxNumPhotons = (G4int)m_MaxPhotonsPerRichCherenkovStep; 
   // msg << MSG::DEBUG << " Global value of Max Number of Photons per Cherenkov step=  "
-  //    << MaxNumPhotons << endreq;
+  //    << MaxNumPhotons << endmsg;
   msg<<MSG::DEBUG << "  Apply Flag for MaxNumCherenkov Phot per Step Radiator "
-     <<   m_ApplyMaxPhotCkvLimitPerRadiator <<endreq;
+     <<   m_ApplyMaxPhotCkvLimitPerRadiator <<endmsg;
   if(m_ApplyMaxPhotCkvLimitPerRadiator) {
     msg<< MSG::DEBUG <<" Agel Rich1Gas Rich2Gas have different Max Phot per Cherenkov Step = "  
        << m_MaxPhotonsPerRichCherenkovStepInRich1Agel<<"   "
        << m_MaxPhotonsPerRichCherenkovStepInRich1Gas<<"    "
-       << m_MaxPhotonsPerRichCherenkovStepInRich2Gas  <<endreq;    
+       << m_MaxPhotonsPerRichCherenkovStepInRich2Gas  <<endmsg;    
   }else {
     msg<<MSG::DEBUG <<"All Radiators have the same Max Phot per Cherenkov Step=  "
-       << m_MaxPhotonsPerRichCherenkovStep <<endreq;
+       << m_MaxPhotonsPerRichCherenkovStep <<endmsg;
     
   }
   
@@ -391,7 +391,7 @@ void GiGaPhysConstructorOp::ConstructOp() {
   
   //msg<<MSG::INFO <<" GiGaPhys Op : Cherenkov RICH2 background flag and probability  "
   // <<m_CherenkovAddBackgrRich2<<
-  //  "   "<<m_CherenkovRich2BackgrProbFactor<<endreq;
+  //  "   "<<m_CherenkovRich2BackgrProbFactor<<endmsg;
   
 
 

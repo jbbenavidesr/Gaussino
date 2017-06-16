@@ -49,7 +49,7 @@ StatusCode GetMCCkvInfoBase::initialize()
   {
     info() << " '" << RichG4HitCollectionName()->RichHCName(iii) << "'";
   }
-  info() << endreq;
+  info() << endmsg;
 
   // if(!m_SuperRichFlag) {
     
@@ -104,12 +104,12 @@ void GetMCCkvInfoBase::getRichG4CollectionRange()
 //=============================================================================
 //  sysExecute
 //=============================================================================
-StatusCode GetMCCkvInfoBase::sysExecute()
+StatusCode GetMCCkvInfoBase::sysExecute(const EventContext& ctx)
 {
   // reset pointers
   m_relationTable = NULL;
   // execute
-  return Rich::AlgBase::sysExecute();
+  return Rich::AlgBase::sysExecute(ctx);
 } 
 
 //=============================================================================

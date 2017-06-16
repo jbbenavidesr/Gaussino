@@ -564,7 +564,7 @@ G4VPhysicalVolume* GiGaGeo::world ()
   if( 0 != m_worldPV ) { return m_worldPV ; } /// already created
   ///
   { MsgStream log(msgSvc(),name());
-  log << MSG::DEBUG << " Create the WORLD volume!" << endreq; }
+  log << MSG::DEBUG << " Create the WORLD volume!" << endmsg; }
   // create it!
   G4Material* MAT = material ( m_worldMaterial );
   if( 0 == MAT )

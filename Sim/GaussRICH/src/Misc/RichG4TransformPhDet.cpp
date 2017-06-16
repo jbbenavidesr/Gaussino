@@ -87,7 +87,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
       RichG4TransformPhDetlog << MSG::ERROR
                                  << "Can't retrieve " << DeRichLocations::Rich1
                                  << " for RichG4TransformPhDet"
-                                 << endreq;
+                                 << endmsg;
 
     }else {
 
@@ -106,7 +106,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
 
       //   RichG4TransformPhDetlog<<MSG::INFO
       //  <<"Now creating Hpd transform for rich1 hpd "
-      //                          <<aHpdNumber<<endreq;
+      //                          <<aHpdNumber<<endmsg;
 
       if(apva) {
         //  RichG4TransformPhDetlog<<MSG::INFO
@@ -114,14 +114,14 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
         //                          <<apva->name() <<"   "
         //                          <<apva->lvolumeName()<<"  "
         //                          <<apva->lvolume()-> noPVolumes()
-        //                          <<endreq;
+        //                          <<endmsg;
 
         const Gaudi::Transform3D & apvaTrans = apva->matrix();
         const Gaudi::Transform3D & apvaTransInv = apva->matrixInv();
         // for test print the names of sub volumes
         // RichG4TransformPhDetlog<<MSG::INFO
         //                           <<"rich1 test of hpd number "
-        //                           <<aHpdNumber<<endreq;
+        //                           <<aHpdNumber<<endmsg;
 
         //  for (int it=0;it< (int) apva->lvolume()-> noPVolumes(); it++) {
         //  RichG4TransformPhDetlog<<MSG::INFO
@@ -129,7 +129,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
         //                         <<it<<"  "
         //                         <<  apva->lvolume()->
         //                      pvolume(it)->name()
-        //                         <<endreq;
+        //                         <<endmsg;
 
 
         // }
@@ -147,7 +147,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
           //             << " Rich1Magsh pvol lvol hpdnum "
           //                        <<apvb->name() <<"   "
           //                        <<apvb->lvolumeName
-          //                        <<endreq;
+          //                        <<endmsg;
 
           const Gaudi::Transform3D & apvbTrans= apvb->matrix();
           const Gaudi::Transform3D & apvbTransInv= apvb->matrixInv();
@@ -160,7 +160,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
             //         << " Rich1PhotDetSup pvol lvol "
             //                      <<apvc->name() <<"   "
             //                      <<apvc->lvolumeName()
-            //                      <<endreq;
+            //                      <<endmsg;
             // now account for the fact that the index is
             // restarted int he bottom ph det sup vol.
 
@@ -189,19 +189,19 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
          RichG4TransformPhDetlog << MSG::ERROR
                                  << "Can't retrieve " << DeRichLocations::Rich2
                                  << " for RichG4TransformPhDet"
-                                 << endreq;
+                                 << endmsg;
 
           }else {
 
       //       RichG4TransformPhDetlog<<MSG::INFO
       //                       <<"Now creating Hpd transform for rich2 "
-      //                       <<endreq;
+      //                       <<endmsg;
 
       //  RichG4TransformPhDetlog<<MSG::INFO
       //        << " Rich2Master lvol num sub vol "
       //                         <<Rich2DE->geometry()->lvolume()->name()
       //              <<"  "<<Rich2DE->geometry()->lvolume()-> noPVolumes()
-      //                         <<endreq;
+      //                         <<endmsg;
 
       // for (int it2=0;it2< (int) Rich2DE->geometry()->lvolume()
       //               -> noPVolumes(); it2++) {
@@ -210,7 +210,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
       //                         <<it2<<"  "
       //                         << Rich2DE->geometry() ->lvolume()->
       //                      pvolume(it2)->name()
-      //                         <<endreq;
+      //                         <<endmsg;
       //
       //
       // }
@@ -235,7 +235,7 @@ RichG4TransformPhDet::RichG4TransformPhDet(int aRichDetNum , int aSectorNum) {
       if(bpva) {
         // RichG4ReconTransformPhDetlog<<MSG::INFO
         //                  <<" hpd num hpdpanel name "
-        //                  << bpva->name()<<endreq;
+        //                  << bpva->name()<<endmsg;
 
         const Gaudi::Transform3D & bpvaTrans = bpva->matrix();
         const Gaudi::Transform3D & bpvaTransInv = bpva->matrixInv();

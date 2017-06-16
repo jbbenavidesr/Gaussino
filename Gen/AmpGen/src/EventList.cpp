@@ -4,48 +4,33 @@
 
 using namespace AmpGen ;
 
-
 EventList::EventList( const std::string& fname,
     const EventType& evtType,
     const unsigned int& pdfSize,
-    const bool& flipState,
-    const double& scaleFactor ) :   
-      EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
+    std::function<bool(const Event&)> cut ) :   
+  EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
       evtType,
       pdfSize,
-      flipState,
-      scaleFactor ) {};
+      cut ) {} 
 
-/*
-EventList::EventList( const std::string& fname,
-    const std::vector<std::string>& branches,
-    const EventType& evtType,
-    const unsigned int& opt ) : 
-  EventList( (TTree*)TFile::Open( fname.c_str(), "READ")->Get("DalitzEventList") ,
-      branches,
-      evtType,
-      opt ) {};  
-*/
+  EventList::EventList( const EventType& type ) : 
+    m_eventType(type), 
+    m_extendedEventData( m_eventType.getEventFormat() ) { 
+    }
 
-EventList::EventList( const EventType& type ) : 
-  m_eventType(type), 
-  m_extendedEventData( m_eventType.getEventFormat() ) { 
-  }
-EventList::EventList(TTree* tree, 
-    const EventType& particles , 
-    const unsigned int& pdfsize, 
-    const bool& flipState, 
-    const double& scaleFactor ) : EventList( particles) {
+EventList::EventList(TTree* tree,
+    const EventType& particles ,
+    const unsigned int& pdfsize,
+    std::function<bool(const Event&)> cut ) : EventList( particles) {
   auto t_start = std::chrono::high_resolution_clock::now();
 
   INFO("Building eventlist with " << tree->GetEntries() );
   Event temp(4*particles.size(), pdfsize);
   std::vector<Event>::reserve( tree->GetEntries() );
-  auto finalStatesMintStyle = particles.getPickledFinalStates(flipState);
+  auto finalStatesMintStyle = particles.getPickledFinalStates();
   for( unsigned int ip=0;ip<particles.size();++ip ){
     std::string prefix="_"+std::to_string(ip+1)+"_"+finalStatesMintStyle[ip];
     DEBUG("Adding branches for " << prefix );
-
     tree->SetBranchAddress((prefix+"_Px").c_str() ,temp.address(4*ip+0) );
     tree->SetBranchAddress((prefix+"_Py").c_str() ,temp.address(4*ip+1) );
     tree->SetBranchAddress((prefix+"_Pz").c_str() ,temp.address(4*ip+2) );
@@ -58,12 +43,10 @@ EventList::EventList(TTree* tree,
     tree->GetEntry(i);
     if( temp.isNaN() ){
       ERROR("Event is " << i << " is NaN - skipping");
-      continue; 
-    };   
-
-    if( temp.genPdf() == 0 ) *(temp.pGenPdf()) = 1.;
-    if( scaleFactor == 1 ) std::vector<Event>::push_back(temp);
-    else if( scaleFactor > gRandom->Uniform(0,1) ) std::vector<Event>::push_back(temp);
+      continue;
+    };
+    if( temp.genPdf() == 0 ) *(temp.pGenPdf()) = 1;
+    if( cut( temp) ) std::vector<Event>::push_back(temp);
   }
   auto t_end = std::chrono::high_resolution_clock::now();
   double t_taken = std::chrono::duration<double, std::milli>(t_end-t_start).count() ;
@@ -112,7 +95,6 @@ EventList::EventList( TTree* tree,
     if( hasEventList && eventList[evt] > tree->GetEntries() ){
       ERROR("Trying to read out of bounds : " << eventList[evt]);
     };
-    //INFO("Getting event " << eventList[evt] );
     tree->GetEntry( hasEventList ? eventList[evt] : evt );
 
     for( auto shuffled : shuffles ){
@@ -128,6 +110,7 @@ EventList::EventList( TTree* tree,
     std::vector<Event>::push_back( temp );
   } 
 }
+
 
 TTree* EventList::tree(const std::string& name ){
   TTree* outputTree = new TTree(name.c_str() , name.c_str() );
@@ -150,8 +133,6 @@ TTree* EventList::tree(const std::string& name ){
     tmp = evt ;
     genPdf = evt.genPdf();
     weight = evt.weight();
-    //if( weight / genPdf > 0.05 ) continue; 
-    //INFO("Filling weight = " << weight << " genPdf = " << genPdf );
     outputTree->Fill();
   }
   return outputTree; 

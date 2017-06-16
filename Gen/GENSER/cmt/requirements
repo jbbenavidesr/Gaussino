@@ -5,7 +5,7 @@
 package GENSER
 version v17r0
 
-# Structure, i.e. directories to process. 
+# Structure, i.e. directories to process.
 #============================================================================
 branches doc cmt src
 
@@ -16,7 +16,7 @@ use GaudiPolicy  v*
 
 #-- LHAPDF
 #============================================================================
-macro lhapdf_native_version "6.1.4"
+macro lhapdf_native_version "6.1.6.cxxstd"
 use lhapdf     v* LCG_GeneratorsInterfaces
 use LHAPDFSets v*
 
@@ -36,10 +36,10 @@ macro alpgen_native_version "2.1.4"
 #============================================================================
 macro powhegbox_native_version "r3043.lhcb"
 
-#-- Photos++ and Taula++ 
+#-- Photos++ and Taula++
 #============================================================================
 macro photospp_native_version "3.56"
-macro tauolapp_native_version "1.1.6"
+macro tauolapp_native_version "1.1.6b.lhcb"
 
 
 #-- Pythia 8
@@ -74,19 +74,10 @@ macro_append pythia6forgauss_shlibflags "$(pythia6_home)/lib/pydata.o -lnsl -lcr
 
 ## FIXME: Move to include of install area
 ##apply_pattern install_more_includes more=GENSER
-include_dirs $(GENSERROOT)/src/pythia6   
+include_dirs $(GENSERROOT)/src/pythia6
 
 # force the order of link for pythia6
 macro_append GENSER_linkopts " $(pythia6_linkopts) "
-
-# same for EPOS
-library      eposforgauss   epos/*.F
-
-apply_pattern linker_library library=eposforgauss
-
-# force the order of link for epos
-macro_append GENSER_linkopts " $(epos_linkopts) "
-
 
 #-- Hijing
 #============================================================================

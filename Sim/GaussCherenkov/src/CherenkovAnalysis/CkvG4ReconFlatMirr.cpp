@@ -64,7 +64,7 @@ CkvG4ReconFlatMirr::CkvG4ReconFlatMirr(  )
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
   MsgStream CkvG4ReconFlatMirrlog( msgSvc,"CkvG4ReconFlatMirr");
   //  CkvG4ReconFlatMirrlog << MSG::INFO <<
-  //  "Now creating CkvG4ReconFlatMirr "<<endreq;
+  //  "Now creating CkvG4ReconFlatMirr "<<endmsg;
   // Now for the orientation of the flat mirror.
   // for the array   m_RichFlatMirrorNominalOrientation
   // the first element 0->3 correspond to the flat mirrors
@@ -210,7 +210,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
           m_RichFlatMirrorNominalOrientation[1][3]= r1m2NorRight[3];
   
           // CkvG4ReconFlatMirrlog << MSG::INFO<<"Horiz Rich1 Flat mirror orientation "<<
-          //  r1m2NorLeft <<"   "<<r1m2NorRight<<endreq;
+          //  r1m2NorLeft <<"   "<<r1m2NorRight<<endmsg;
           
       }     
    }
@@ -221,7 +221,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
                          << r1m2B <<"  "
                          << r1m2C <<"  "
                          << r1m2D 
-                         << endreq;
+                         << endmsg;
     
    // double r0c0X =  Rich1DE->param<double>("Rich1Mirror2NominalCCLHCbXR0C0");
    // double r0c0Y =  Rich1DE->param<double>("Rich1Mirror2NominalCCLHCbYR0C0");
@@ -235,7 +235,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
    // double r2delY =   Rich1DE->param<double>("Rich1Mirror2CoCNominalDeltaY");
    // double r2delZ =   Rich1DE->param<double>("Rich1Mirror2CoCNominalDeltaZ");
    //    double r2rad=     Rich1DE->param<double>("Rich1Mirror2NominalRadiusC");
-   //   CkvG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endreq;
+   //   CkvG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endmsg;
    
     
    for(int im=0; im< m_Rich1NumSecMirror; ++im) { 
@@ -246,7 +246,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
      if( !Rich1M2 ) {
 
        CkvG4ReconFlatMirrlog << MSG::ERROR<<       
-       "Rich1 mirror2 detelem does not exist . Mirror num "<<im << endreq;
+       "Rich1 mirror2 detelem does not exist . Mirror num "<<im << endmsg;
        
      }else {
        
@@ -256,7 +256,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
        const SolidSphere* aSphereSolid = getCurMirrorSolid (0,im );
           
        double r2rad = aSphereSolid->insideRadius();
-       // CkvG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endreq;
+       // CkvG4ReconFlatMirrlog << MSG::INFO<<"Rich1 Mirror2 nominal radius "<< r2rad<<endmsg;
       
        m_RichSecMirrCoCRad[im] [0] = mcoc.x();
        m_RichSecMirrCoCRad[im] [1] = mcoc.y();
@@ -265,7 +265,7 @@ void CkvG4ReconFlatMirr::setRich1FlatMirrorParam( )
        
        CkvG4ReconFlatMirrlog << MSG::DEBUG<< "Rich1 Mirror2 num CoCxyz rad "<< im 
                              <<"  "<< mcoc.x()<<"  "
-                             << mcoc.y()<<"  "<< mcoc.z()<<"  "<<r2rad <<endreq;      
+                             << mcoc.y()<<"  "<< mcoc.z()<<"  "<<r2rad <<endmsg;      
        
      }  
     }    
@@ -306,7 +306,7 @@ void CkvG4ReconFlatMirr::setRich2FlatMirrorParam( )
     //                       << "Flat Mirr nominal param in rich2  "
     //                       << r2m2A<<"  "<<r2m2B
     //                       <<"   "<<r2m2C
-    //                       <<"   "<<r2m2D<< endreq;
+    //                       <<"   "<<r2m2D<< endmsg;
     //
     
         
@@ -317,7 +317,7 @@ void CkvG4ReconFlatMirr::setRich2FlatMirrorParam( )
       // SmartDataPtr<DetectorElement> Rich2M2(detSvc, apath);
       if( !Rich2M2 ) {
         CkvG4ReconFlatMirrlog << MSG::ERROR<<       
-          "Rich2 mirror2 detelem does not exist . Mirror num "<<im<< endreq;
+          "Rich2 mirror2 detelem does not exist . Mirror num "<<im<< endmsg;
         
       }else {
         
@@ -334,7 +334,7 @@ void CkvG4ReconFlatMirr::setRich2FlatMirrorParam( )
         
         //  CkvG4ReconFlatMirrlog << MSG::INFO<< "Rich2 Mirror2 num CoCxyz rad "<<
         //                        im<<"  "<< mcoc.x()<<"  "
-        //                       << mcoc.y()<<"  "<< mcoc.z()<<"   "<<r2rad <<endreq; 
+        //                       << mcoc.y()<<"  "<< mcoc.z()<<"   "<<r2rad <<endmsg; 
         //
       }    
       
@@ -349,9 +349,9 @@ Gaudi::XYZPoint  CkvG4ReconFlatMirr::FlatMirrorReflect(const Gaudi::XYZPoint & H
 
   IMessageSvc*  msgSvc = CkvG4SvcLocator::RichG4MsgSvc ();
   MsgStream CkvG4ReconFlatMirrlog( msgSvc,"RichG4ReconFlatMirr");
-  //CkvG4ReconFlatMirrlog<<MSG::INFO<<" Now in Flat mirror reflect "<<  FlatMirrorType<<"  aHitCoordQW  "<< HitCoordQw<< endreq;
+  //CkvG4ReconFlatMirrlog<<MSG::INFO<<" Now in Flat mirror reflect "<<  FlatMirrorType<<"  aHitCoordQW  "<< HitCoordQw<< endmsg;
   // CkvG4ReconFlatMirrlog<<MSG::INFO<<"Flat mirr reflect orientation "
-  //      << m_RichFlatMirrorNominalOrientation[FlatMirrorType] [3] <<endreq;
+  //      << m_RichFlatMirrorNominalOrientation[FlatMirrorType] [3] <<endmsg;
   
 
   Gaudi::Plane3D aMPlane(m_RichFlatMirrorNominalOrientation[FlatMirrorType][0],
@@ -463,7 +463,7 @@ const SolidSphere* CkvG4ReconFlatMirr::getCurMirrorSolid (int aRichDetNum, int a
     CkvG4ReconFlatMirrlog << MSG::ERROR<< "Rich mirror detelem does not exist . richdet Mirror num "
                           << aRichDetNum
                           << aFlatMirrorNum 
-                          << endreq;
+                          << endmsg;
       
   }else {
 
@@ -499,7 +499,7 @@ DetectorElement* CkvG4ReconFlatMirr::getMirrorDetElem (int aRichDetNum, int aMir
       
       CkvG4ReconFlatMirrlog << MSG::ERROR<<" Unknown sec mirror num in Rich1  "
                             << aMirrorNum 
-                            <<endreq;
+                            <<endmsg;
       
     }
     
@@ -517,13 +517,13 @@ DetectorElement* CkvG4ReconFlatMirr::getMirrorDetElem (int aRichDetNum, int aMir
     }else {
      
       CkvG4ReconFlatMirrlog << MSG::ERROR<<" Unknown sec mirror num in Rich2  "
-       << aMirrorNum<<endreq;
+       << aMirrorNum<<endmsg;
     }
     
   } else {
     
       CkvG4ReconFlatMirrlog << MSG::ERROR<<" Unknown Rich det num   "
-       << aRichDetNum <<endreq;
+       << aRichDetNum <<endmsg;
     
   }
 

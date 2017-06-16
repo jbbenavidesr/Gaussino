@@ -293,7 +293,7 @@ void RichHpdQE::setCurrentHpdQEen(int jhpdnum, int jrichdetnum,
                                   const std::vector<double> & qeffener) {
   //   RichHpdQElog << MSG::INFO
   //  <<"set hpd QEen: hpdnum detnum numbins "<<jhpdnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
   m_curHpdNum= jhpdnum;
   m_curRichDetNum=jrichdetnum;
   setAnHpdQEen(jnumQEbins,jqeffvect,qeffener);
@@ -305,7 +305,7 @@ void RichHpdQE::setAnHpdQEen(int jnumQEbins,
                              const std::vector<double> & qeffener) {
 
   //   RichHpdQElog << MSG::INFO
-  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endmsg;
 
   m_numHpdQEbins= jnumQEbins;
   if(m_numHpdQEbins != (int) m_HpdQEff.size())m_HpdQEff.resize(m_numHpdQEbins);
@@ -326,7 +326,7 @@ void RichHpdQE::setAnHpdQEen(int jnumQEbins,
 //                                  const std::vector<double> & aPCRIener) {
   //   RichHpdQElog << MSG::INFO
   //  <<"set hpd QEen: hpdnum detnum numbins "<<jhpdnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
 //  m_curHpdNum= jhpdnum;
 //  m_curRichDetNum=jrichdetnum;
 //  setAnHpdPCRIen(jnumPCRIbins,aPCRIvect,aPCRIener);
@@ -338,7 +338,7 @@ void RichHpdQE::setAnHpdQEen(int jnumQEbins,
 //                             const std::vector<double> & aPCRIener) {
 
   //   RichHpdQElog << MSG::INFO
-  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endmsg;
 
 //  m_numHpdPCRIbins= jnumPCRIbins;
 //  if(m_numHpdPCRIbins != (int) m_HpdPCRI.size())m_HpdPCRI.resize(m_numHpdPCRIbins);
@@ -358,7 +358,7 @@ void RichHpdQE::setAnHpdQEen(int jnumQEbins,
 //                                  const std::vector<double> & aQWRIener) {
   //   RichHpdQElog << MSG::INFO
   //  <<"set hpd QEen: hpdnum detnum numbins "<<jhpdnum<<"  "<<jrichdetnum
-  //    <<"   "<<jnumQEbins<<endreq;
+  //    <<"   "<<jnumQEbins<<endmsg;
 //  m_curHpdNum= jhpdnum;
 //  m_curRichDetNum=jrichdetnum;
 //  setAnHpdQWRIen(jnumQWRIbins,aQWRIvect,aQWRIener);
@@ -370,7 +370,7 @@ void RichHpdQE::setAnHpdQEen(int jnumQEbins,
 //                             const std::vector<double> & aQWRIener) {
 
   //   RichHpdQElog << MSG::INFO
-  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endreq;
+  //   <<"set hpd QEen: NumQEbins "<<jnumQEbins<<endmsg;
 
 //  m_numHpdQWRIbins= jnumQWRIbins;
 //  if(m_numHpdQWRIbins != (int) m_HpdQWRI.size())m_HpdQWRI.resize(m_numHpdQWRIbins);

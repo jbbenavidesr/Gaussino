@@ -31,9 +31,9 @@
 #include "Event/MCRichTrack.h"
 #include "Event/MCParticle.h"
 
-// RichKernel
-#include "RichKernel/RichStatDivFunctor.h"
-#include "RichKernel/RichPoissonEffFunctor.h"
+// RichUtils
+#include "RichUtils/RichStatDivFunctor.h"
+#include "RichUtils/RichPoissonEffFunctor.h"
 
 // Relations
 #include "Relations/Relation1D.h"
@@ -66,7 +66,7 @@ public:
 
   virtual StatusCode initialize();    ///< Algorithm initialization
   virtual StatusCode finalize  ();    ///< Algorithm finalization
-  virtual StatusCode sysExecute();    ///< Algorithm system execute
+  virtual StatusCode sysExecute(const EventContext& ctx);    ///< Algorithm system execute
 
 protected:
 

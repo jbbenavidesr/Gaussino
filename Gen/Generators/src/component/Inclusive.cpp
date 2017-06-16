@@ -89,7 +89,7 @@ StatusCode Inclusive::initialize( ) {
   for ( it = m_pids.begin() ; it != m_pids.end() ; ++it ) {
     const LHCb::ParticleProperty * prop = ppSvc -> find( LHCb::ParticleID( *it ) ) ;
     if ( 0 == prop ) 
-      warning() << "PDG Code " << (*it) << " does not exist." << endreq ;
+      warning() << "PDG Code " << (*it) << " does not exist." << endmsg ;
     else {
       info() << prop -> particle() << " " ;      
       if ( LHCb::ParticleID( prop -> pdgID() ).hasBottom() ) bottom = true ;

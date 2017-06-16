@@ -17,8 +17,6 @@ namespace AmpGen{
   class MinuitParameterSet{
     protected:
       std::vector<MinuitParameter*> _parPtrList;
-      static MinuitParameterSet* _defaultMinuitParameterSet;
-
       static const char ntpNameChars[];
       static const char prtNameChars[];
       static std::string prtToNtpName(const std::string& s_in);
@@ -26,7 +24,6 @@ namespace AmpGen{
       bool addToEnd(MinuitParameter* parPtr);
       bool setAllIndices();
     public:
-      static MinuitParameterSet* getDefaultSet();
 
       MinuitParameterSet();
       MinuitParameterSet(const MinuitParameterSet& other);
@@ -41,6 +38,14 @@ namespace AmpGen{
       //  double getVal(int i) const;
       MinuitParameter* getParPtr(unsigned int i);
       const MinuitParameter* getParPtr(unsigned int i) const;
+      
+      MinuitParameter* getParPtr( const std::string& key ) const;
+      
+      std::vector<MinuitParameter*>::const_iterator cbegin() const { return _parPtrList.cbegin() ; }
+      std::vector<MinuitParameter*>::const_iterator   cend() const { return _parPtrList.cend() ; }
+      
+      std::vector<MinuitParameter*>::iterator begin() { return _parPtrList.begin() ; }
+      std::vector<MinuitParameter*>::iterator   end() { return _parPtrList.end() ; }
 
 
       // regarding the two routines below:
@@ -64,8 +69,6 @@ namespace AmpGen{
       void print(std::ostream& os = std::cout) const;
       void printVariable(std::ostream& os = std::cout) const;
       void printResultVsInput(std::ostream& os = std::cout) const;
-
-
 
   };
 

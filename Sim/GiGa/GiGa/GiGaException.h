@@ -102,8 +102,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.tag() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << _ex  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << _ex  << endmsg; \
         Stat _stat( _ss , _ex.tag() ); }             
 
 #define ___GIGA_PRINT_GAUDI___(_tag,_method,_ms,_ss,_ex)   \
@@ -115,8 +115,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.tag() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << _ex  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << _ex  << endmsg; \
         Stat _stat( _ss , _ex.tag() ); }             
 
 #define ___GIGA_PRINT_STD_____(_tag,_method,_ms,_ss,_ex)   \
@@ -128,9 +128,9 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.what() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
         _log2 << MSG::ERROR << "*std::exception* what=" \
-       << _ex.what()  << endreq; \
+       << _ex.what()  << endmsg; \
         Stat _stat( _ss , "*std::exception*" ); }             
 
 #define ___GIGA_PRINT_ALL_____(_tag,_method,_ms,_ss)   \
@@ -141,8 +141,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , "*UNKNOWN exception*" ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << "*UNKNOWN exception*"  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << "*UNKNOWN exception*"  << endmsg; \
         Stat _stat( _ss , "*UNKNOWN exception*" ); }             
 
 #define ___GIGA_CATCH_GIGA____(_body) catch( const GiGaException  & _ex ) \
@@ -282,8 +282,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.tag() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << _ex  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << _ex  << endmsg; \
         Stat _stat( _ss , _ex.tag() ); }             
 
 #define ___GIGA_PRINT_GAUDI___(_tag,_method,_ms,_ss,_ex)   \
@@ -295,8 +295,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.tag() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << _ex  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << _ex  << endmsg; \
         Stat _stat( _ss , _ex.tag() ); }             
 
 #define ___GIGA_PRINT_STD_____(_tag,_method,_ms,_ss,_ex)   \
@@ -308,9 +308,9 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , _ex.what() ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
         _log2 << MSG::ERROR << "*std::exception* what=" \
-       << _ex.what()  << endreq; \
+       << _ex.what()  << endmsg; \
         Stat _stat( _ss , "*std::exception*" ); }             
 
 #define ___GIGA_PRINT_ALL_____(_tag,_method,_ms,_ss)   \
@@ -321,8 +321,8 @@ public:
         { _str += " from " ; _str += _method ; } \
         MsgStream _log1( _ms , _tag ); \
         MsgStream _log2( _ms , "*UNKNOWN exception*" ); \
-        _log1 << MSG::ERROR << _str << " : " << endreq; \
-        _log2 << MSG::ERROR << "*UNKNOWN exception*"  << endreq; \
+        _log1 << MSG::ERROR << _str << " : " << endmsg; \
+        _log2 << MSG::ERROR << "*UNKNOWN exception*"  << endmsg; \
         Stat _stat( _ss , "*UNKNOWN exception*" ); }             
 
 #define ___GIGA_CATCH_GIGA____(_body) catch( const GiGaException  & _ex ) \

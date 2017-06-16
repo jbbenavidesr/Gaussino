@@ -52,7 +52,7 @@ RichG4ReconHpd::RichG4ReconHpd():
   if( !Rich1DE ){
     RichG4HpdReconlog << MSG::ERROR
                       << "Can't retrieve " << DeRichLocations::Rich1 << " for HpdRecon"
-                      << endreq;
+                      << endmsg;
   }else {
 
     m_HpdSiDetXSize=
@@ -120,7 +120,7 @@ RichG4ReconHpd::RichG4ReconHpd():
     // test print 
     // for(int ii=0; ii< m_NumParamHpdQwRefractCorr; ++ii ) {
     //  RichG4HpdReconlog<<MSG::INFO<<" Hpd Qw refraction corr param "<<
-    //    ii<<"   "<< m_HpdQwRefractCorr[ii]<<endreq;
+    //    ii<<"   "<< m_HpdQwRefractCorr[ii]<<endmsg;
     // }
 
     m_HpdQwOuterRadius =  Rich1DE->param<double> ("RichHpdQWOuterSphericalRadius");
@@ -141,7 +141,7 @@ RichG4ReconHpd::RichG4ReconHpd():
     //                 <<m_HpdPhCathodeToSiDetMaxDist
     //                 <<"  "<<m_HpdSiDetZLocation
     //                 <<"  "<< m_HpdPhCathodeRad<< "  "
-    //                     <<PhCathiodeCoCZ<< endreq;
+    //                     <<PhCathiodeCoCZ<< endmsg;
 
     // test print
     //   double Rich1Mirr2NominalCCLHCbXR0C0 =
@@ -188,31 +188,31 @@ RichG4ReconHpd::RichG4ReconHpd():
     //                 <<Rich1Mirr2NominalCCLHCbXR0C0<<"    "
     //                 << Rich1Mirr2NominalCCLHCbYR0C0<<"   "
     //                 <<Rich1Mirr2NominalCCLHCbZR0C0<<"    "
-    //                 <<Rich1Mirr2NominalRadiusC<<endreq;
+    //                 <<Rich1Mirr2NominalRadiusC<<endmsg;
     //  RichG4HpdReconlog<<MSG::INFO
     //                  <<" Rich1Mirror2r0c2 XYZ radius "
     //                 <<Rich1Mirr2NominalCCLHCbXR0C2<<"    "
     //                 << Rich1Mirr2NominalCCLHCbYR0C2<<"   "
     //                 <<Rich1Mirr2NominalCCLHCbZR0C2<<"    "
-    //                 <<Rich1Mirr2NominalRadiusC<<endreq;
+    //                 <<Rich1Mirr2NominalRadiusC<<endmsg;
     //  RichG4HpdReconlog<<MSG::INFO
     //                 <<" Rich1Mirror2r2c0 XYZ radius "
     //                 <<Rich1Mirr2NominalCCLHCbXR2C0<<"    "
     //                 << Rich1Mirr2NominalCCLHCbYR2C0<<"   "
     //                 <<Rich1Mirr2NominalCCLHCbZR2C0<<"    "
-    //                 <<Rich1Mirr2NominalRadiusC<<endreq;
+    //                 <<Rich1Mirr2NominalRadiusC<<endmsg;
     //  RichG4HpdReconlog<<MSG::INFO
     //                 <<" Rich1Mirror2r2c2 XYZ radius "
     //                 <<Rich1Mirr2NominalCCLHCbXR2C2<<"    "
     //                 << Rich1Mirr2NominalCCLHCbYR2C2<<"   "
     //                 <<Rich1Mirr2NominalCCLHCbZR2C2<<"    "
-    //                 <<Rich1Mirr2NominalRadiusC<<endreq;
+    //                 <<Rich1Mirr2NominalRadiusC<<endmsg;
     //
     //  RichG4HpdReconlog<<MSG::INFO
     //                 <<" Rich1Mirror2 delta xyz "
     //                 <<Rich1Mirror2CoCNominalDeltaX<<"    "
     //                 <<Rich1Mirror2CoCNominalDeltaY<<"    "
-    //                 <<Rich1Mirror2CoCNominalDeltaZ<<endreq;
+    //                 <<Rich1Mirror2CoCNominalDeltaZ<<endmsg;
     //
      // end of test print
   }
@@ -224,7 +224,7 @@ RichG4ReconHpd::RichG4ReconHpd():
   if(!tabDemag) {
    RichG4HpdReconlog << MSG::ERROR <<"RichG4CkvRecon: Can't retrieve  "
      <<" /dd/Materials/RichMaterialTabProperties/HpdDemagnification "
-               <<endreq;
+               <<endmsg;
 
   }else{
 
@@ -290,7 +290,7 @@ Gaudi::XYZPoint RichG4ReconHpd::GetLocalPointWithQwCorr(const Gaudi::XYZPoint & 
     //double delZ = aZNew-aZOld;
     // double zPhNew= zPh+delZ;
     // RichG4HpdReconlog<<MSG::INFO<<"PHcath  Z ph calc aZOld aZNew delZ zPh zPhNew  "<<aZOld<<"   "
-    //                 <<aZNew<<"  "<<delZ<<" "<<zPh<<"  "<< zPhNew<<endreq;
+    //                 <<aZNew<<"  "<<delZ<<" "<<zPh<<"  "<< zPhNew<<endmsg;
     
 
     double zphNewInHpd =ConvertHpdSiliconZToHpdSystem(m_HpdPhCathodeToSiDetMaxDist-m_HpdPhCathodeRad+ aZNew);
@@ -300,9 +300,9 @@ Gaudi::XYZPoint RichG4ReconHpd::GetLocalPointWithQwCorr(const Gaudi::XYZPoint & 
    //    Gaudi::XYZPoint aNewC= Gaudi::XYZPoint(xPhNew,yPhNew,zPhNewInHpd);
 
     //  RichG4HpdReconlog<<MSG::INFO<<"PHcath correction before after "<<   aPhCathPoint 
-    //                 <<"   "<< xPhNew <<"  "<<yPhNew<<"  "<<zphNewInHpd<<"   "<<aZNew<< endreq;
+    //                 <<"   "<< xPhNew <<"  "<<yPhNew<<"  "<<zphNewInHpd<<"   "<<aZNew<< endmsg;
     //  RichG4HpdReconlog<<MSG::INFO<<"PHcath correction Z "<< m_HpdPhCathodeToSiDetMaxDist<<"   "
-    //                 <<  m_HpdPhCathodeRad <<"  "<<m_HpdQwOuterRadius<<"   "<< m_HpdSiDetZLocation<<endreq;
+    //                 <<  m_HpdPhCathodeRad <<"  "<<m_HpdQwOuterRadius<<"   "<< m_HpdSiDetZLocation<<endmsg;
     
     return Gaudi::XYZPoint(xPhNew,   yPhNew, zphNewInHpd);
 }
@@ -356,7 +356,7 @@ RichG4ReconHpd::ReconHitOnPhCathFromLocalHitCoord ( const Gaudi::XYZPoint & aLoc
 
   // RichG4HpdReconlog<<MSG::INFO<<" Current demag fact in recon "
   // <<   m_HpdCrossFocusParameters[0] <<"  "
-  //     << m_HpdCrossFocusParameters[1] <<endreq;
+  //     << m_HpdCrossFocusParameters[1] <<endmsg;
 
   if(m_HpdCrossFocusParameters[0] !=0.0 ) {
      rsi = pow( (xsi*xsi + ysi*ysi), 0.5);
@@ -427,7 +427,7 @@ RichG4ReconHpd::ReconHitOnPhCathFromLocalHitCoord ( const Gaudi::XYZPoint & aLoc
     rph = rphUncorr + rphCorrection ;
     rphsq= rph*rph;
     //  RichG4HpdReconlog<<MSG::INFO<<"  Correction applied to radius "<< rphUncorr<<"   "
-    //                 <<rphCorrection<<"   "<< rph<<endreq;
+    //                 <<rphCorrection<<"   "<< rph<<endmsg;
     
     
     if(rphUncorr != 0.0 ) {
@@ -457,20 +457,20 @@ RichG4ReconHpd::ReconHitOnPhCathFromLocalHitCoord ( const Gaudi::XYZPoint & aLoc
 
 
   //   RichG4HpdReconlog<<MSG::INFO<<" ReconHitOnPhCathFromLocalHitCoord rsi rph rphLin rphtest"
-  //                 << rsi<<"  "<< rph<<"   "<<rphLin<<"  "<< rphtest<<endreq;
-               // rphtest<<endreq;
+  //                 << rsi<<"  "<< rph<<"   "<<rphLin<<"  "<< rphtest<<endmsg;
+               // rphtest<<endmsg;
   //  RichG4HpdReconlog<<MSG::INFO
   //         <<" ReconHitOnPhCathFromLocalHitCoord "
   //         <<"  xsi ysi xph yph xphlin yphlin zph phcathrad delZ "
   //       <<xsi<< " " <<ysi<<" "<<xph<<"  "<<yph<<"  "<< xphLin<<"  "<<  yphLin<<"  "
   //        <<zph<<"  "<<m_HpdPhCathodeRad<<"  "
-  //    <<delZ<<endreq;
+  //    <<delZ<<endmsg;
   zPhInHpd =   ConvertHpdSiliconZToHpdSystem(zph) ;
 
   // RichG4HpdReconlog<<MSG::INFO<<" Local cord for recon input output " <<aLocalHitCoord<<"    "
-  //                 <<xph<<"   "<<yph<<"   "<<zPhInHpd<<"   "<<zph<< endreq;
+  //                 <<xph<<"   "<<yph<<"   "<<zPhInHpd<<"   "<<zph<< endmsg;
   // RichG4HpdReconlog<<MSG::INFO<<"Z Coord in recon "<<   delZ <<"  "
-  //                 <<rCathodeMaxRadius<<"   "<<m_HpdPhCathodeToSiDetMaxDist<<endreq;
+  //                 <<rCathodeMaxRadius<<"   "<<m_HpdPhCathodeToSiDetMaxDist<<endmsg;
   
     return Gaudi::XYZPoint(xph,yph, zPhInHpd);
 }

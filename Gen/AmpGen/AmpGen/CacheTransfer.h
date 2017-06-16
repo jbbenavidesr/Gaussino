@@ -1,3 +1,6 @@
+#ifndef CACHETRANSFER_H
+#define CACHETRANSFER_H
+
 #include "AmpGen/CompiledExpression.h"
 #include "AmpGen/MinuitParameter.h"
 #include "TMatrixD.h"
@@ -5,9 +8,10 @@
 
 
 namespace AmpGen { 
+  template <class T>
   class CacheTransfer {
     protected: 
-      CompiledExpression<std::complex<double>>* m_destination;
+      CompiledExpression<T>* m_destination;
       unsigned int m_address;
       AmpGen::MinuitParameter* m_source;    
     public:
@@ -16,7 +20,7 @@ namespace AmpGen {
       };
       CacheTransfer(){};
       CacheTransfer( AmpGen::MinuitParameter* source,
-          CompiledExpression<std::complex<double>>* sink,
+          CompiledExpression<T>* sink,
           const unsigned int& address ) :
         m_destination( sink ),
         m_address(address),
@@ -24,11 +28,11 @@ namespace AmpGen {
 
   };
 
-
-  class SplineTransfer : public CacheTransfer {
+  template <class T>
+  class SplineTransfer : public CacheTransfer<T> {
     private:
 
-      CompiledExpression<std::complex<double>>* m_destination;
+      CompiledExpression<T>* m_destination;
 
       TMatrixD m_transferMatrix;
       std::vector<AmpGen::MinuitParameter*> m_y_parameters;
@@ -39,7 +43,7 @@ namespace AmpGen {
       unsigned int m_f_address;
 
     public:
-      SplineTransfer( const SplineTransfer& other ) : CacheTransfer(),
+      SplineTransfer( const SplineTransfer& other ) : CacheTransfer<T>(),
       m_transferMatrix( other.m_transferMatrix ),
       m_y_parameters( other.m_y_parameters ),
       m_min( other.m_min ),
@@ -60,7 +64,7 @@ namespace AmpGen {
       void setCurveAddress( const unsigned int& address){ m_f_address = (address); } 
       //   SplineTransfer( const SplineTransfer& other ) : 
       SplineTransfer(
-          CompiledExpression<std::complex<double>>* sink,
+           CompiledExpression<T>* sink,
           const unsigned int& N,
           const double& min,
           const double& max  ) :
@@ -107,50 +111,7 @@ namespace AmpGen {
         DEBUG("Closing the transfer");
       }; 
 
-  }; } 
+  }; 
+} 
 
-
-/*
-   static std::map< std::string, std::shared_ptr<SplineTransfer> > 
-   getSplineParameterMapping( CompiledExpression<std::complex<double>>& sink, 
-   const std::map<std::string, std::pair< unsigned int, double> >& splineParameters, const std::map<std::string, AmpGen::MinuitParameter*>& otherParameters ){
-
-   std::map<std::string, std::shared_ptr<SplineTransfer> > splines; 
-
-   for( auto param : splineParameters ){
-
-   auto tokens = split( param.first , ':' );
-   const std::string particleName = tokens[0];
-   const std::string splineName = tokens[0] + "::"+tokens[1]+"::"+tokens[2];
-   DEBUG("Spline parameter for " << param.first << " configuring");
-   auto
-   thisSpline = splines.find(splineName);
-   if( thisSpline == splines.end() ){
-   double min =
-   AmpGen::NamedParameter<double>(particleName+"::Spline::Min",0.).getVal();
-   double max =
-   AmpGen::NamedParameter<double>(particleName+"::Spline::Max",1800*1800).getVal();
-   unsigned int nBins =
-   AmpGen::NamedParameter<unsigned int>(particleName+"::Spline::N",10).getVal();
-   splines[splineName] =
-   std::make_shared<SplineTransfer>( &sink, nBins , min, max ) ;
-   thisSpline = splines.find( splineName );
-   }
-   auto it = otherParameters.find( param.first );
-   unsigned int index = stoi((*tokens.rbegin()));
-   if ( it != otherParameters.end() ){
-   DEBUG(" -> to " << (*it).second <<"    " <<  param.first << "    " << (*it).second->mean() );
-   thisSpline->second->set( index , (*it).second );
-   if( index == 0 )
-   thisSpline->second->setAddress( param.second.first );
-   }
-
-   else if( *(tokens.rbegin()+1) == "C"  ){
-   if( index == 0 ) thisSpline->second->setCurveAddress( param.second.first );
-   }
-   else
-   ERROR( param.first << " spline parameter not understood");
-   }
-   return splines; 
-   }
-   */
+#endif

@@ -69,6 +69,7 @@ Signal::Signal( const std::string& type,
     m_signalBr ( 0.0 ) { 
     declareProperty( "SignalPIDList" , m_pidVector ) ;
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
+    declareProperty( "RevertWhenBackward" , m_revertWhenBackward = true ) ;
     
     m_bHadC.assign( 0 ) ;  m_antibHadC.assign( 0 ) ;
     m_cHadC.assign( 0 ) ;  m_anticHadC.assign( 0 ) ;
@@ -315,7 +316,7 @@ HepMC::GenParticle * Signal::chooseAndRevert( const ParticleVector &
   } else if ( 1 == nPart ) theSignal = theParticleList.front() ;
   else return 0 ;
 
-  if ( theSignal -> momentum().pz() < 0 ) {
+  if ( theSignal -> momentum().pz() < 0 && m_revertWhenBackward ) {
     revertEvent( theSignal -> parent_event() ) ;
     isInverted = true ;
   }

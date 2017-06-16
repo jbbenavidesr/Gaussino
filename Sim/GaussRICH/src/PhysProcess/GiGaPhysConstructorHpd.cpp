@@ -97,13 +97,13 @@ void GiGaPhysConstructorHpd::ConstructProcess()
   //  IDetectorElement* Rich1DE = getDet<IDetectorElement> (Rich1DeStructurePathName );
   // if( !Rich1DE ){
   //  msg << MSG::INFO  <<" No RICH1 detector element. Possibly RICH system not activated. " 
-  //         <<" Hence No RICH HPD Physics Process Activated"<<endreq;
+  //         <<" Hence No RICH HPD Physics Process Activated"<<endmsg;
   //  setRICHHPDPhysProcActivation(false); 
   // }
 
 
     ConstructPeGenericProcess();
-    msg << MSG::DEBUG <<" RICHHPDPhysProcess Activation status  " << activateRICHHPDPhysProcStatus() << endreq;
+    msg << MSG::DEBUG <<" RICHHPDPhysProcess Activation status  " << activateRICHHPDPhysProcStatus() << endmsg;
     
 
     if( activateRICHHPDPhysProcStatus() ){    
@@ -136,19 +136,19 @@ void GiGaPhysConstructorHpd::ConstructPeGenericProcess() {
         G4ProcessVector* pVector = 
           (particle->GetProcessManager())->GetProcessList();
         // msg << MSG::DEBUG << "size of ProcList for pe-  so far  "
-        //  <<(G4int)  pVector->size() << endreq;
+        //  <<(G4int)  pVector->size() << endmsg;
         if( (G4int)  pVector->size() > 0 ) { 
           //  msg << MSG::DEBUG 
-          //  <<" For pe-  disassociating following processes "<<  endreq; 
+          //  <<" For pe-  disassociating following processes "<<  endmsg; 
           //  pmanager->DumpInfo();
           for(G4int ip=0; ip < (G4int)  pVector->size() ; ++ip ){
        	    pmanager->RemoveProcess(ip);
           }
-          //  msg << MSG::DEBUG <<" For pe- end of process cleanup "<<  endreq; 
+          //  msg << MSG::DEBUG <<" For pe- end of process cleanup "<<  endmsg; 
           pmanager ->AddProcess(theTransportationProcess,-1,1,2);
          } else {
            //  msg << MSG::DEBUG 
-           //   <<"  pe-  only has no process so far"<<  endreq;
+           //   <<"  pe-  only has no process so far"<<  endmsg;
         
            pmanager ->AddProcess(theTransportationProcess,-1,1,2);          
          }

@@ -43,7 +43,7 @@ void RichG4HistoDefineSet4::bookRichG4HistogramsSet4()
 
   MsgStream RichG4Histolog(RichG4SvcLocator::RichG4MsgSvc(), 
                                          "RichG4HistoSet4" );
-  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set4" << endreq;
+  RichG4Histolog << MSG::INFO << "Now Booking Rich G4 Histo Set4" << endmsg;
   
   IHistogramSvc* CurHistoSvc = RichG4SvcLocator::RichG4HistoSvc();
 
