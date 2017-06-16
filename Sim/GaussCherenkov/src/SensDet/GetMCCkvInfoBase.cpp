@@ -109,7 +109,7 @@ StatusCode GetMCCkvInfoBase::sysExecute(const EventContext& ctx)
   // reset pointers
   m_relationTable = NULL;
   // execute
-  return Rich::AlgBase::sysExecute(const EventContext& ctx);
+  return Rich::AlgBase::sysExecute(ctx);
 } 
 
 //=============================================================================
