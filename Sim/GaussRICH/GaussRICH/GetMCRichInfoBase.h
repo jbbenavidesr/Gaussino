@@ -65,7 +65,7 @@ public:
 
   virtual StatusCode initialize();    ///< Algorithm initialization
   virtual StatusCode finalize  ();    ///< Algorithm finalization
-  virtual StatusCode sysExecute();    ///< Algorithm system execute
+  virtual StatusCode sysExecute(const EventContext& ctx);    ///< Algorithm system execute
 
 protected:
 

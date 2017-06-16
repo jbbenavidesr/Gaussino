@@ -11,6 +11,7 @@ gaudi_depends_on_subdirs(Det/RichDet
                          Sim/GaussTools)
 
 find_package(AIDA)
+find_package(ROOT COMPONENTS Tree)
 
 include_directories(src/SensDet src/PhysProcess src/RichAction src/Misc
                     src/PhysPhotDet src/RichAnalysis /src/srcG4)
@@ -22,7 +23,7 @@ gaudi_add_library(GaussRICHLib
                   src/SensDet/*.cpp
                   PUBLIC_HEADERS GaussRICH
                   INCLUDE_DIRS AIDA
-                  LINK_LIBRARIES RichDetLib LinkerEvent MCEvent RelationsLib RichKernelLib GaussToolsLib)
+                  LINK_LIBRARIES RichDetLib LinkerEvent MCEvent RelationsLib RichKernelLib GaussToolsLib ROOT)
 
 gaudi_add_module(GaussRICH
                  src/*.cpp
