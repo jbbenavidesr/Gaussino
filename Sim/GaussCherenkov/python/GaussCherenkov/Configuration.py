@@ -3,8 +3,6 @@ Configuration tools for GaussCherenkov
 
 """
 from Gaudi.Configuration import *
-from Gauss.Configuration import *
-from Configurables import Gauss
 
 import GaudiKernel.ProcessJobOptions
 from GaudiKernel import SystemOfUnits
