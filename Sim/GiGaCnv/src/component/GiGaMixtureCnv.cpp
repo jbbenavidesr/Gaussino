@@ -14,8 +14,8 @@
 // GiGacnv 
 #include "GiGaCnv/GiGaCnvUtils.h"
 /// Geant4 
-#include "G4Element.hh"
-#include "G4Material.hh"
+#include "Geant4/G4Element.hh"
+#include "Geant4/G4Material.hh"
 /// local 
 #include "AddTabulatedProperties.h"
 #include "GiGaMixtureCnv.h" 

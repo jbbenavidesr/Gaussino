@@ -17,9 +17,9 @@
 #include "DetDesc/IGeometryInfo.h"
 
 // from Geant4
-#include "G4LogicalVolume.hh"
-#include "G4VisAttributes.hh"
-#include "G4PVPlacement.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4PVPlacement.hh"
 
 // from GiGa
 #include "GiGa/IGiGaSensDet.h"

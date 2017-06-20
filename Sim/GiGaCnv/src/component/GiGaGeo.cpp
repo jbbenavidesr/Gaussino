@@ -23,31 +23,31 @@
 #include "DetDesc/Solids.h"
 
 // from Geant4
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4Material.hh"
-#include "G4Box.hh"
-#include "G4Cons.hh"
-#include "G4Sphere.hh"
-#include "G4Trd.hh"
-#include "G4Trap.hh"
-#include "G4Tubs.hh"
-#include "G4Polycone.hh"
-#include "G4IntersectionSolid.hh"
-#include "G4SubtractionSolid.hh"
-#include "G4UnionSolid.hh"
-#include "G4GeometryManager.hh"
-#include "G4SolidStore.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4PhysicalVolumeStore.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4PVPlacement.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4Box.hh"
+#include "Geant4/G4Cons.hh"
+#include "Geant4/G4Sphere.hh"
+#include "Geant4/G4Trd.hh"
+#include "Geant4/G4Trap.hh"
+#include "Geant4/G4Tubs.hh"
+#include "Geant4/G4Polycone.hh"
+#include "Geant4/G4IntersectionSolid.hh"
+#include "Geant4/G4SubtractionSolid.hh"
+#include "Geant4/G4UnionSolid.hh"
+#include "Geant4/G4GeometryManager.hh"
+#include "Geant4/G4SolidStore.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
+#include "Geant4/G4PhysicalVolumeStore.hh"
 
-#include "G4UserLimits.hh"
-#include "G4VisAttributes.hh"
-#include "G4FieldManager.hh"
-#include "G4TransportationManager.hh"
-#include "G4SDManager.hh"
-#include "G4MagIntegratorStepper.hh"
+#include "Geant4/G4UserLimits.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4FieldManager.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4MagIntegratorStepper.hh"
 
 // from GiGa
 #include "GiGa/IGiGaSensDet.h"
@@ -92,9 +92,9 @@ GiGaGeo::GiGaGeo( const std::string& serviceName,
   declareProperty( "WorldLogicalVolumeName",  m_worldNameLV = "World" );
   declareProperty( "WorldMaterial",   m_worldMaterial = "/dd/Materials/Air");
 
-  declareProperty( "XsizeOfWorldVolume" , m_worldX = 50. * m );
-  declareProperty( "YsizeOfWorldVolume" , m_worldY = 50. * m );
-  declareProperty( "ZsizeOfWorldVolume" , m_worldZ = 50. * m );
+  declareProperty( "XsizeOfWorldVolume" , m_worldX = 50. * CLHEP::m );
+  declareProperty( "YsizeOfWorldVolume" , m_worldY = 50. * CLHEP::m );
+  declareProperty( "ZsizeOfWorldVolume" , m_worldZ = 50. * CLHEP::m );
 
   declareProperty( "GlobalSensitivity" , m_budget = "");
   // Probably obsolete: need to check if WorldMagneticField can be removed

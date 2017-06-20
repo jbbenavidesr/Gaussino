@@ -15,7 +15,7 @@
 #include "DetDesc/Material.h"
 #include "DetDesc/TabulatedProperty.h"
 /// Geant4 
-#include "G4MaterialPropertiesTable.hh"
+#include "Geant4/G4MaterialPropertiesTable.hh"
 
 /** @function AddTabulatedProperty AddTabnulatedProperties.h 
  *  

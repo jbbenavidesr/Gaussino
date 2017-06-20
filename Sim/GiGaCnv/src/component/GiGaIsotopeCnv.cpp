@@ -12,8 +12,8 @@
 #include "GiGa/IGiGaSetUpSvc.h"
 #include "GiGa/GiGaException.h"
 /// Geant4
-#include "G4Isotope.hh"
-#include "G4Material.hh"
+#include "Geant4/G4Isotope.hh"
+#include "Geant4/G4Material.hh"
 /// local
 #include "AddTabulatedProperties.h"
 #include "GiGaIsotopeCnv.h"

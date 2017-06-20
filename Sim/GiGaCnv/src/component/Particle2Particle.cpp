@@ -30,8 +30,8 @@
 #include "GiGa/GiGaException.h"
 /// GiGaCnv 
 /// G4 
-#include "G4ParticleDefinition.hh"
-#include "G4PrimaryParticle.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4PrimaryParticle.hh"
 // local
 #include "Particle2Particle.h"
 

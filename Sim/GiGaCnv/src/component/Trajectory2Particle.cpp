@@ -19,7 +19,7 @@
 #include "GiGa/GiGaTrajectory.h"
 #include "GiGa/GiGaException.h"
 // from G4
-#include "G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleDefinition.hh"
 
 // local
 #include "Trajectory2Particle.h"
