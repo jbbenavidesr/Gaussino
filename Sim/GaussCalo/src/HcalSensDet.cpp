@@ -24,12 +24,12 @@
 #include "GaussTools/GaussTrackInformation.h"
 
 // Geant4
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4EnergyLossTables.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4EnergyLossTables.hh"
 
 // GiGaCnv
 #include "GiGaCnv/GiGaVolumeUtils.h"

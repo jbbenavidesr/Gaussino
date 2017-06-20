@@ -25,12 +25,12 @@
 #include "GaussTools/GaussTrackInformation.h"
 
 // Geant4
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4EnergyLossTables.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4EnergyLossTables.hh"
 
 // GiGaCnv
 #include "GiGaCnv/GiGaVolumeUtils.h"
@@ -95,7 +95,7 @@ EcalSensDet::EcalSensDet
     , m_a_global_outer_ecal  ( 0.03  ) // global non uniformity amplitude
   // outer ecal
     , m_a_reflection_height ( 0.09 ) // reflection on the edges - height
-    , m_a_reflection_width  ( 6. * mm ) // reflection on the edges - width
+    , m_a_reflection_width  ( 6. * CLHEP::mm ) // reflection on the edges - width
 {
   ///
   declareProperty ( "a_local_inner_ecal"   ,  m_a_local_inner_ecal ) ;

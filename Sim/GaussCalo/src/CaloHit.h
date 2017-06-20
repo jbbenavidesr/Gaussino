@@ -35,8 +35,8 @@
 // GiGa 
 #include "GiGa/GiGaUtil.h"
 // G4 
-#include "G4VHit.hh"
-#include "G4THitsCollection.hh"
+#include "Geant4/G4VHit.hh"
+#include "Geant4/G4THitsCollection.hh"
 // local 
 #include "CaloSim.h"
 #include "CaloSubHit.h"

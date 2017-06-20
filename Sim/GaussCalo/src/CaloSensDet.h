@@ -17,8 +17,8 @@
 #include "CaloHit.h"
 
 // GEANT4
-#include "G4Material.hh"
-#include "G4MaterialCutsCouple.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4MaterialCutsCouple.hh"
 
 #include "CLHEP/Geometry/Transform3D.h"
 

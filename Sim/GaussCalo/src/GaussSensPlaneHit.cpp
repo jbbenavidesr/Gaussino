@@ -18,7 +18,7 @@
 // from GiGa
 #include "GiGa/GiGaUtil.h"
 // Geant4
-#include "G4Allocator.hh"
+#include "Geant4/G4Allocator.hh"
 // local
 #include "GaussSensPlaneHit.h"
 // ============================================================================
