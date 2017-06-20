@@ -22,10 +22,10 @@
 #include    "GaudiKernel/IRndmGenSvc.h"
 
 // from G4 
-#include    "G4UIsession.hh"
-#include    "G4VVisManager.hh"
-#include    "G4ParticleTable.hh"
-#include    "G4ParticlePropertyTable.hh"  
+#include    "Geant4/G4UIsession.hh"
+#include    "Geant4/G4VVisManager.hh"
+#include    "Geant4/G4ParticleTable.hh"
+#include    "Geant4/G4ParticlePropertyTable.hh"  
 
 // from GiGa
 #include    "GiGa/IGiGaPhysicsList.h"

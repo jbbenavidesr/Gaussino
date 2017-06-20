@@ -24,10 +24,10 @@
 #include    "GiGa.h"
 
 // G4 
-#include    "G4Event.hh"
-#include    "G4VHitsCollection.hh"
-#include    "G4HCofThisEvent.hh"
-#include    "G4SDManager.hh"
+#include    "Geant4/G4Event.hh"
+#include    "Geant4/G4VHitsCollection.hh"
+#include    "Geant4/G4HCofThisEvent.hh"
+#include    "Geant4/G4SDManager.hh"
 
 /**  @file 
  *   Implementation of class GiGa  

@@ -20,16 +20,16 @@
 // Local
 #include "GiGaRunManager.h"
 /// G4 
-#include "G4StateManager.hh"
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4VUserDetectorConstruction.hh"
-#include "G4VUserPhysicsList.hh"
-#include "G4UserRunAction.hh"
-#include "G4UserEventAction.hh"
-#include "G4UserStackingAction.hh"
-#include "G4UserSteppingAction.hh"
-#include "G4UserTrackingAction.hh"
-#include "G4UIsession.hh"
+#include "Geant4/G4StateManager.hh"
+#include "Geant4/G4VUserPrimaryGeneratorAction.hh"
+#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "Geant4/G4VUserPhysicsList.hh"
+#include "Geant4/G4UserRunAction.hh"
+#include "Geant4/G4UserEventAction.hh"
+#include "Geant4/G4UserStackingAction.hh"
+#include "Geant4/G4UserSteppingAction.hh"
+#include "Geant4/G4UserTrackingAction.hh"
+#include "Geant4/G4UIsession.hh"
 
 // ============================================================================
 /** @file
