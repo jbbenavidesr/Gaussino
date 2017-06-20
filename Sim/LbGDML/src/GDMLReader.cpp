@@ -1,12 +1,12 @@
 // Gaudi
 #include "GaudiKernel/ToolFactory.h"
 // Geant4
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4AssemblyVolume.hh"
-#include "G4GDMLParser.hh"
-#include "G4VisAttributes.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4PVPlacement.hh"
+#include "Geant4/G4AssemblyVolume.hh"
+#include "Geant4/G4GDMLParser.hh"
+#include "Geant4/G4VisAttributes.hh"
 // Local
 #include "GDMLReader.h"
 
@@ -83,9 +83,9 @@ StatusCode GDMLReader::import(G4VPhysicalVolume* world) {
   /// Set the position of the GDML assembly in the LHCb world.
   G4ThreeVector transAssembly(m_tx, m_ty, m_tz);
   G4RotationMatrix* rotAssembly = new G4RotationMatrix();
-  rotAssembly->rotateX(m_rx * deg);
-  rotAssembly->rotateY(m_ry * deg);
-  rotAssembly->rotateZ(m_rz * deg);
+  rotAssembly->rotateX(m_rx * CLHEP::deg);
+  rotAssembly->rotateY(m_ry * CLHEP::deg);
+  rotAssembly->rotateZ(m_rz * CLHEP::deg);
   /// Place the assembly volume in the LHCb world.
   gdmlAssembly->MakeImprint(world->GetLogicalVolume(),
                             transAssembly, rotAssembly);

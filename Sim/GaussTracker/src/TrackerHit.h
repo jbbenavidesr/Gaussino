@@ -11,9 +11,9 @@
  */
 
 #include "GaussTools/GaussHitBase.h"
-#include "G4THitsCollection.hh"
-#include "G4Allocator.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/G4THitsCollection.hh"
+#include "Geant4/G4Allocator.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 class TrackerHit : public GaussHitBase
 {

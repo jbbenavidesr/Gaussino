@@ -11,9 +11,9 @@
 // VisSvc
 #include "VisSvc/IVisualizationSvc.h"
 // Geant4 
-#include "G4VisAttributes.hh"
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
 // GiGa
 //#include "GiGa/GiGaMACROs.h"
 // local 
