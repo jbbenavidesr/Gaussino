@@ -13,7 +13,7 @@
 // GiGa 
 #include "GiGa/IGiGaPhysicsList.h"
 // Geant4 
-#include "G4VUserPhysicsList.hh"
+#include "Geant4/G4VUserPhysicsList.hh"
 
 /** @class IGiGaPhysList IGiGaPhysList.h GiGa/IGiGaPhysList.h
  *

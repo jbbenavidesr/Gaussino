@@ -24,9 +24,9 @@
 // ============================================================================
 // Geant4
 // ============================================================================
-#include "G4Step.hh"
-#include "G4StepPoint.hh"
-#include "G4VProcess.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4StepPoint.hh"
+#include "Geant4/G4VProcess.hh"
 // ============================================================================
 #include "GiGa/DumpG4Step.h"
 #include "GiGa/DumpG4Track.h"

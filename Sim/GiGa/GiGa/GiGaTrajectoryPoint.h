@@ -24,8 +24,8 @@
 // GiGa
 #include "GiGa/GiGaUtil.h"
 // G4
-#include "G4TrajectoryPoint.hh"
-#include "G4VTrajectoryPoint.hh"
+#include "Geant4/G4TrajectoryPoint.hh"
+#include "Geant4/G4VTrajectoryPoint.hh"
 
 class G4VProcess ;
 

@@ -38,18 +38,18 @@
 // ============================================================================
 /// from Geant4
 // ============================================================================
-#include "G4Polyline.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4Allocator.hh"
-#include "G4VisAttributes.hh"
-#include "G4VVisManager.hh"
+#include "Geant4/G4Polyline.hh"
+#include "Geant4/G4Circle.hh"
+#include "Geant4/G4Colour.hh"
+#include "Geant4/G4Allocator.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4VVisManager.hh"
 ///
-#include "G4OpticalPhoton.hh"
-#include "G4Step.hh"
-#include "G4Track.hh"
-#include "G4SteppingManager.hh"
-#include "G4ParticleDefinition.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4SteppingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
 
 using CLHEP::HepLorentzVector;
 
@@ -126,7 +126,7 @@ GiGaTrajectory::GiGaTrajectory   ( const G4Track* aTrack )
     std::cout << " GiGaTrajectory  GeGlobalTime ERROR Time is not finite"
               << " action : time = 1000 ns " << std::endl << std::flush ;
 
-    time = 1000 * ns ;
+    time = 1000 * CLHEP::ns;
     // throw GiGaException ( "GiGaTrajectory(): Time is not finite ") ; }
   }
   ///

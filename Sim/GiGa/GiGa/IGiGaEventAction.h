@@ -13,7 +13,7 @@
 // base classes from GiGa
 #include "GiGa/IGiGaInterface.h"
 // G4 
-#include "G4UserEventAction.hh"
+#include "Geant4/G4UserEventAction.hh"
 
 /** @interface IGiGaEventAction IGiGaEventAction.h "GiGa/IGiGaEventAction.h"
  *

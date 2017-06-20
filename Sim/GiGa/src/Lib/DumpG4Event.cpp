@@ -12,11 +12,11 @@
 // ============================================================================
 // Geant4
 // ============================================================================
-#include "G4Event.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4VHitsCollection.hh"
-#include "G4DCofThisEvent.hh"
-#include "G4TrajectoryContainer.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4DCofThisEvent.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
 // ============================================================================
 // GiGa 
 // ============================================================================

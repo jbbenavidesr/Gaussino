@@ -13,7 +13,7 @@
 // GiGa 
 #include "GiGa/IGiGaInterface.h"
 // G4 
-#include "G4UserRunAction.hh"
+#include "Geant4/G4UserRunAction.hh"
 
 /** @class IGiGaRunAction IGiGaRunAction.h GiGa/IGiGaRunAction.h
  *  

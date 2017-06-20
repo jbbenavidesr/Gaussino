@@ -24,11 +24,11 @@
 // ============================================================================
 // Geant4
 // ============================================================================
-#include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4VProcess.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Material.hh"     
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4Material.hh"     
 // ============================================================================
 // GiGa 
 // ============================================================================

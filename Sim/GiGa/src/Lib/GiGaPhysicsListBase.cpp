@@ -50,9 +50,9 @@ GiGaPhysicsListBase::GiGaPhysicsListBase
   const std::string& name   , 
   const IInterface*  parent ) 
   : GiGaBase ( type , name , parent )
-  , m_cutForGamma       ( -1 * km ) 
-  , m_cutForElectron    ( -1 * km ) 
-  , m_cutForPositron    ( -1 * km ) 
+  , m_cutForGamma       ( -1 * CLHEP::km )
+  , m_cutForElectron    ( -1 * CLHEP::km )
+  , m_cutForPositron    ( -1 * CLHEP::km )
 {
   // 
   declareInterface<IGiGaPhysicsList> ( this ) ;
@@ -105,9 +105,9 @@ StatusCode   GiGaPhysicsListBase::initialize     ()
       << " Production cuts *COULD* be set separately for following particles: " 
       << endmsg ;
   log << MSG::DEBUG 
-      << " \tGamma      : \t" << cutForGamma       () / mm << " mm" << endmsg 
-      << " \tElectron   : \t" << cutForElectron    () / mm << " mm" << endmsg 
-      << " \tPositron   : \t" << cutForPositron    () / mm << " mm" << endmsg;
+      << " \tGamma    : \t" << cutForGamma() / CLHEP::mm << " mm" << endmsg
+      << " \tElectron : \t" << cutForElectron() / CLHEP::mm << " mm" << endmsg
+      << " \tPositron : \t" << cutForPositron() / CLHEP::mm << " mm" << endmsg;
   //
   return StatusCode::SUCCESS ;
 }

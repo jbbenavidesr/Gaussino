@@ -13,7 +13,7 @@
 // GiGa 
 #include "GiGa/IGiGaPhysicsConstructor.h"
 // Geant4 
-#include "G4VPhysicsConstructor.hh"
+#include "Geant4/G4VPhysicsConstructor.hh"
 
 /** @class IGiGaPhysConstructor GiGa/IGiGaPhysConstructor.h
  *

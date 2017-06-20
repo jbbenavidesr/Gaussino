@@ -22,7 +22,7 @@
 /// STL
 #include <vector>
 /// base "interface" class
-#include "G4VTrajectory.hh"
+#include "Geant4/G4VTrajectory.hh"
 /// GiGa
 #include "GiGa/GiGaTrajectoryPoint.h"
 ///
