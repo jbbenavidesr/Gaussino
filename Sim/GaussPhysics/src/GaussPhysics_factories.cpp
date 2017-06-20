@@ -13,38 +13,38 @@
  */
 
 // Geant4 physics lists
-#include "G4DecayPhysics.hh"
+#include "Geant4/G4DecayPhysics.hh"
 
 #// EM physics 
-#include "G4EmStandardPhysics_option1.hh"
-#include "G4EmStandardPhysics_option2.hh"
-#include "G4EmStandardPhysics_option3.hh"
-#include "G4EmStandardPhysics.hh"
-#include "G4EmExtraPhysics.hh"
-#include "G4EmStandardPhysics_option1LHCb.hh"
-#include "G4EmStandardPhysics_option1NoApplyCuts.hh"
-#include "G4EmStandardPhysics_LHCbTest.hh"
+#include "Geant4/G4EmStandardPhysics_option1.hh"
+#include "Geant4/G4EmStandardPhysics_option2.hh"
+#include "Geant4/G4EmStandardPhysics_option3.hh"
+#include "Geant4/G4EmStandardPhysics.hh"
+#include "Geant4/G4EmExtraPhysics.hh"
+#include "Geant4/G4EmStandardPhysics_option1LHCb.hh"
+#include "Geant4/G4EmStandardPhysics_option1NoApplyCuts.hh"
+#include "Geant4/G4EmStandardPhysics_LHCbTest.hh"
 
 // Ion and hadrons
-#include "G4IonPhysics.hh"
-#include "G4QStoppingPhysics.hh"
-#include "G4HadronElasticPhysics.hh"
-#include "G4HadronElasticPhysicsLHEP.hh"
-#include "G4HadronElasticPhysicsHP.hh"
-#include "G4NeutronTrackingCut.hh"
+#include "Geant4/G4IonPhysics.hh"
+//#include "Geant4/G4QStoppingPhysics.hh"             // Removed from G4r10
+#include "Geant4/G4HadronElasticPhysics.hh"
+//#include "Geant4/G4HadronElasticPhysicsLHEP.hh"     // Removed from G4r10
+#include "Geant4/G4HadronElasticPhysicsHP.hh"
+#include "Geant4/G4NeutronTrackingCut.hh"
 
 // LHEP hadrons
-#include "HadronPhysicsLHEP.hh"
+//#include "Geant4/HadronPhysicsLHEP.hh"              // Removed from G4r10
 
 // QGSP hadrons
-#include "HadronPhysicsQGSP.hh"
-#include "HadronPhysicsQGSP_BERT.hh"
-#include "HadronPhysicsQGSP_BERT_HP.hh"
-#include "HadronPhysicsQGSP_BERT_CHIPS.hh"
-#include "HadronPhysicsQGSP_FTFP_BERT.hh"
+//#include "Geant4/G4HadronPhysicsQGSP.hh"            // Removed from G4r10
+#include "Geant4/G4HadronPhysicsQGSP_BERT.hh"
+#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
+//#include "Geant4/G4HadronPhysicsQGSP_BERT_CHIPS.hh" // Removed from G4r10
+#include "Geant4/G4HadronPhysicsQGSP_FTFP_BERT.hh"
 
 // FTFP hadrons
-#include "HadronPhysicsFTFP_BERT.hh"
+#include "Geant4/G4HadronPhysicsFTFP_BERT.hh"
 
 // Declaration of the External Physics list Factories
 typedef GiGaExtPhysics< G4DecayPhysics > DecayFactory;
@@ -71,33 +71,38 @@ DECLARE_TOOL_FACTORY( EmExtraPhysFactory )
 
 typedef GiGaExtPhysics< G4IonPhysics > IonPhysFactory;
 DECLARE_TOOL_FACTORY( IonPhysFactory )
-typedef GiGaExtPhysics< G4QStoppingPhysics > QStopPhysFactory;
-DECLARE_TOOL_FACTORY( QStopPhysFactory )
+// Removed in G4r10
+//typedef GiGaExtPhysics< G4QStoppingPhysics > QStopPhysFactory;
+//DECLARE_TOOL_FACTORY( QStopPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysics > HadElPhysFactory;
 DECLARE_TOOL_FACTORY( HadElPhysFactory )
-typedef GiGaExtPhysics< G4HadronElasticPhysicsLHEP > HadElLHEPPhysFactory;
-DECLARE_TOOL_FACTORY( HadElLHEPPhysFactory )
+// Removed in G4r10
+//typedef GiGaExtPhysics< G4HadronElasticPhysicsLHEP > HadElLHEPPhysFactory;
+//DECLARE_TOOL_FACTORY( HadElLHEPPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysicsHP > HadElHPPhysFactory;
 DECLARE_TOOL_FACTORY( HadElHPPhysFactory )
 
 typedef GiGaExtPhysics< G4NeutronTrackingCut > NeuTrkCutFactory;
 DECLARE_TOOL_FACTORY( NeuTrkCutFactory )
 
-typedef GiGaExtPhysics< HadronPhysicsLHEP > HadPhysLHEPFactory;
-DECLARE_TOOL_FACTORY( HadPhysLHEPFactory )
+// Removed in G4r10
+//typedef GiGaExtPhysics< HadronPhysicsLHEP > HadPhysLHEPFactory;
+//DECLARE_TOOL_FACTORY( HadPhysLHEPFactory )
 
-typedef GiGaExtPhysics< HadronPhysicsQGSP > HadPhysQGSPFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSPFactory )
-typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT > HadPhysQGSP_BERTFactory;
+// Removed in G4r10
+//typedef GiGaExtPhysics< HadronPhysicsQGSP > HadPhysQGSPFactory;
+//DECLARE_TOOL_FACTORY( HadPhysQGSPFactory )
+typedef GiGaExtPhysics< G4HadronPhysicsQGSP_BERT > HadPhysQGSP_BERTFactory;
 DECLARE_TOOL_FACTORY( HadPhysQGSP_BERTFactory )
-typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_HP > HadPhysQGSP_BERT_HPFactory;
+typedef GiGaExtPhysics< G4HadronPhysicsQGSP_BERT_HP > HadPhysQGSP_BERT_HPFactory;
 DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_HPFactory )
-typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_CHIPS > HadPhysQGSP_BERT_CHIPSFactory;
-DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_CHIPSFactory )
-typedef GiGaExtPhysics< HadronPhysicsQGSP_FTFP_BERT > HadPhysQGSP_FTFP_BERTFactory;
+// Removed in G4r10
+//typedef GiGaExtPhysics< HadronPhysicsQGSP_BERT_CHIPS > HadPhysQGSP_BERT_CHIPSFactory;
+//DECLARE_TOOL_FACTORY( HadPhysQGSP_BERT_CHIPSFactory )
+typedef GiGaExtPhysics< G4HadronPhysicsQGSP_FTFP_BERT > HadPhysQGSP_FTFP_BERTFactory;
 DECLARE_TOOL_FACTORY( HadPhysQGSP_FTFP_BERTFactory )
 
-typedef GiGaExtPhysics< HadronPhysicsFTFP_BERT > HadPhysFTFP_BERTFactory;
+typedef GiGaExtPhysics< G4HadronPhysicsFTFP_BERT > HadPhysFTFP_BERTFactory;
 DECLARE_TOOL_FACTORY( HadPhysFTFP_BERTFactory )
 
 
@@ -204,7 +209,8 @@ public:
 };
 
 
-template <>
+// Removed in G4r10
+/*template <>
 class GiGaExtPhysicsExtender<G4QStoppingPhysics> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
@@ -216,7 +222,7 @@ public:
   }
 private:
   bool m_useMuonMinusCapture;
-};
+};*/
 
 
 template <>
@@ -238,16 +244,17 @@ public:
 //  bool m_glauber;
 };
 
-template <>
+// Removed in G4r10
+/*template <>
 class GiGaExtPhysicsExtender<G4HadronElasticPhysicsLHEP> {
 public:
-  inline void addPropertiesTo(AlgTool */*tool*/) {
+  inline void addPropertiesTo(AlgTool *tool) {
   // No specific properties
   }
-  inline G4HadronElasticPhysicsLHEP *newInstance(const std::string &/*name*/, int verbosity) const {
+  inline G4HadronElasticPhysicsLHEP *newInstance(const std::string &name, int verbosity) const {
     return new G4HadronElasticPhysicsLHEP(verbosity);
-  }  
-};
+  }
+};*/
 
 template <>
 class GiGaExtPhysicsExtender<G4HadronElasticPhysicsHP> {
@@ -257,89 +264,90 @@ public:
   }
   inline G4HadronElasticPhysicsHP *newInstance(const std::string &/*name*/, int verbosity) const {
     return new G4HadronElasticPhysicsHP(verbosity);
-  }  
+  }
 };
 
-
-template <>
+// Removed in G4r10
+/*template <>
 class GiGaExtPhysicsExtender<HadronPhysicsQGSP> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP");
   }
-  inline HadronPhysicsQGSP *newInstance(const std::string &name, int /*verbosity*/) const {
+  inline HadronPhysicsQGSP *newInstance(const std::string &name, int verbosity) const {
     return new HadronPhysicsQGSP(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
-};
+};*/
 
 template <>
-class GiGaExtPhysicsExtender<HadronPhysicsQGSP_BERT> {
+class GiGaExtPhysicsExtender<G4HadronPhysicsQGSP_BERT> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT");
   }
-  inline HadronPhysicsQGSP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
-    return new HadronPhysicsQGSP_BERT(name, m_quasiElastic);
+  inline G4HadronPhysicsQGSP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
+    return new G4HadronPhysicsQGSP_BERT(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
 };
 
 template <>
-class GiGaExtPhysicsExtender<HadronPhysicsQGSP_BERT_HP> {
+class GiGaExtPhysicsExtender<G4HadronPhysicsQGSP_BERT_HP> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT_HP");
   }
-  inline HadronPhysicsQGSP_BERT_HP *newInstance(const std::string &name, int /*verbosity*/) const {
-    return new HadronPhysicsQGSP_BERT_HP(name, m_quasiElastic);
+  inline G4HadronPhysicsQGSP_BERT_HP *newInstance(const std::string &name, int /*verbosity*/) const {
+    return new G4HadronPhysicsQGSP_BERT_HP(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
 };
 
-template <>
+// Removed in G4r10
+/*template <>
 class GiGaExtPhysicsExtender<HadronPhysicsQGSP_BERT_CHIPS> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT_HP");
   }
-  inline HadronPhysicsQGSP_BERT_CHIPS *newInstance(const std::string &name, int /*verbosity*/) const {
+  inline HadronPhysicsQGSP_BERT_CHIPS *newInstance(const std::string &name, int verbosity) const {
     return new HadronPhysicsQGSP_BERT_CHIPS(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
-};
+};*/
 
 template <>
-class GiGaExtPhysicsExtender<HadronPhysicsQGSP_FTFP_BERT> {
+class GiGaExtPhysicsExtender<G4HadronPhysicsQGSP_FTFP_BERT> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = true,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_FTFP_BERT");
   }
-  inline HadronPhysicsQGSP_FTFP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
-    return new HadronPhysicsQGSP_FTFP_BERT(name, m_quasiElastic);
+  inline G4HadronPhysicsQGSP_FTFP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
+    return new G4HadronPhysicsQGSP_FTFP_BERT(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;
 };
 
 template <>
-class GiGaExtPhysicsExtender<HadronPhysicsFTFP_BERT> {
+class GiGaExtPhysicsExtender<G4HadronPhysicsFTFP_BERT> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("QuasiElastic", m_quasiElastic = false,
                           "Parameter 'quasiElastic' for the constructor of HadronPhysicsFTFP_BERT");
   }
-  inline HadronPhysicsFTFP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
-    return new HadronPhysicsFTFP_BERT(name, m_quasiElastic);
+  inline G4HadronPhysicsFTFP_BERT *newInstance(const std::string &name, int /*verbosity*/) const {
+    return new G4HadronPhysicsFTFP_BERT(name, m_quasiElastic);
   }
 private:
   bool m_quasiElastic;

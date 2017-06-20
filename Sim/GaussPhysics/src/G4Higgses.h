@@ -7,7 +7,7 @@
 // ============================================================================
 // GEANT4
 // ============================================================================
-#include "G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleDefinition.hh"
 // ============================================================================
 /** @class G4H_10
  *  Helper class for implementation of various higgses and v-particles 

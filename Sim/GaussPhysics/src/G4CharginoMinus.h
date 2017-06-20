@@ -3,9 +3,9 @@
 #ifndef G4CharginoMinus_h
 #define G4CharginoMinus_h 1 
 
-#include "globals.hh"
-#include "G4ios.hh"
-#include "G4ParticleDefinition.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4ParticleDefinition.hh"
 
 /** @class  G4CharginoMinus G4CharginoMinus.h 
  *  

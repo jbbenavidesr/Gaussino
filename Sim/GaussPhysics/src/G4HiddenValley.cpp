@@ -4,7 +4,7 @@
 #include <iomanip>
 
 #include "G4HiddenValley.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      HiddenValley                        ###
@@ -31,11 +31,11 @@ G4HiddenValley * G4HiddenValley::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 35.0*GeV , 5.e-10*MeV , 0. ,
+      new G4ParticleDefinition( name , 35.0*CLHEP::GeV , 5.e-10*CLHEP::MeV , 0. ,
                                 1,              +1,             0,
                                 0,              0,             0,
                                 "baryon", 0,  1, 36,
-                                false,     0.1*ns,          NULL,
+                                false,     0.1*CLHEP::ns,          NULL,
                                 false, "HVpion");
   }
   theInstance = reinterpret_cast<G4HiddenValley*>(anInstance);

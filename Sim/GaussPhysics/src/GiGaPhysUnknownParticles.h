@@ -7,8 +7,8 @@
 // GiGa 
 // ============================================================================
 #include "GiGa/GiGaPhysConstructorBase.h"
-#include "G4Decay.hh"
-#include "G4UnknownDecay.hh"
+#include "Geant4/G4Decay.hh"
+#include "Geant4/G4UnknownDecay.hh"
 // ============================================================================
 // forward declarations 
 template <class TYPE> class GiGaFactory;

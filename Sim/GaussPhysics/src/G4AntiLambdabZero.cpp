@@ -4,7 +4,7 @@
 #include <iomanip>
 
 #include "G4AntiLambdabZero.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      AntiLambdabZero                        ###
@@ -31,11 +31,11 @@ G4AntiLambdabZero * G4AntiLambdabZero::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 5.624*GeV , 5e-10*MeV , 0. ,
+      new G4ParticleDefinition( name , 5.624*CLHEP::GeV , 5e-10*CLHEP::MeV , 0. ,
                                 1,              +1,             0,
                                 0,              0,             0,
                                 "baryon", 0,  1, -5122,
-                                false,     1.2e-3*ns,          NULL,
+                                false,     1.2e-3*CLHEP::ns,          NULL,
                                 false, "lambda_b" );
   }
   theInstance = reinterpret_cast<G4AntiLambdabZero*>(anInstance);

@@ -1,7 +1,7 @@
 // $Id: G4XibZero.cpp,v 1.1 2009-01-07 14:04:24 robbep Exp $
 
 #include "G4XibMinus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      XibMinus                        ###
@@ -29,11 +29,11 @@ G4XibMinus * G4XibMinus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 5.840*GeV , 5.e-10*MeV , -1 ,
+      new G4ParticleDefinition( name , 5.840*CLHEP::GeV , 5.e-10*CLHEP::MeV , -1 ,
                                 1,              +1,             0,
                                 0,              0,             0,
                                 "baryon", 0,  1,5132,
-                                false,     1.36e-3*ns,          NULL,
+                                false,     1.36e-3*CLHEP::ns,          NULL,
                                 false, "xi_b-" );
   }
   theInstance = reinterpret_cast<G4XibMinus*>(anInstance);
