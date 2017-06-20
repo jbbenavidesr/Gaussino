@@ -7,7 +7,7 @@
 // GiGa
 //#include "GiGa/GiGaMACROs.h"
 // G4 
-#include "G4ParticleTypes.hh"
+#include "Geant4/G4ParticleTypes.hh"
 // local
 #include "GiGaPhysListGeantino.h"
 

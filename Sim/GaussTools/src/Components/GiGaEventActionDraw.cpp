@@ -8,8 +8,8 @@
 #include "GiGaEventActionDraw.h"
 
 // G4 
-#include "G4VVisManager.hh"
-#include "G4Event.hh"
+#include "Geant4/G4VVisManager.hh"
+#include "Geant4/G4Event.hh"
 
 /** @file 
  *

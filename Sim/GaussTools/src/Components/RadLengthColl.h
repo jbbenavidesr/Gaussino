@@ -4,13 +4,13 @@
 
 // Include files
 /// Geant4
-#include "G4Timer.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessManager.hh"
-#include "G4Event.hh"
+#include "Geant4/G4Timer.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4Event.hh"
 // GiGa
 #include "GiGa/GiGaStepActionBase.h"
-#include "G4SteppingManager.hh"
+#include "Geant4/G4SteppingManager.hh"
 #include "GaudiKernel/IHistogramSvc.h"
 #include "GaudiKernel/NTuple.h"
 #include "GaudiKernel/INTupleSvc.h"

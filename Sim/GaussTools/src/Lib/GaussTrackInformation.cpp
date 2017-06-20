@@ -22,7 +22,7 @@
 // local
 #include "GaussTools/GaussTrackInformation.h"
 // G4 
-#include "G4Allocator.hh"
+#include "Geant4/G4Allocator.hh"
 
 // ============================================================================
 /** @file 

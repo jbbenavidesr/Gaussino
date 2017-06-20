@@ -10,9 +10,9 @@
 #include "GaudiKernel/MsgStream.h"
 
 // GEANT4
-#include "G4LogicalVolume.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PVPlacement.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4PVPlacement.hh"
 
 // Local
 #include "GaussGeoAssembly.h"

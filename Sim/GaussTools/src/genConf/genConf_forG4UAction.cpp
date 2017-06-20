@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "G4RunManager.hh"
-#include "G4VUserPhysicsList.hh"
+#include "Geant4/G4RunManager.hh"
+#include "Geant4/G4VUserPhysicsList.hh"
 
 namespace 
 {

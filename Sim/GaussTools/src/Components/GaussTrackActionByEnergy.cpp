@@ -6,8 +6,8 @@
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 // Geant4
-#include "G4TrackingManager.hh"
-#include "G4VProcess.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4VProcess.hh"
 
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
@@ -40,11 +40,11 @@ DECLARE_TOOL_FACTORY( GaussTrackActionByEnergy )
 GaussTrackActionByEnergy::GaussTrackActionByEnergy
 ( const std::string& type   ,
   const std::string& name   ,
-  const IInterface*  parent ) 
-  : GaussTrackActionZ   ( type , name , parent ) 
+  const IInterface*  parent )
+  : GaussTrackActionZ   ( type , name , parent )
   //
-  , m_storeByEnergy ( true    )  
-  , m_threshold     ( 1 * GeV )  
+  , m_storeByEnergy ( true    )
+  , m_threshold     ( 1 * CLHEP::GeV )
   , m_rejectRICHphe ( true )
 {
   declareProperty ( "StoreEnergy" , m_storeByEnergy ) ;

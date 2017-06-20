@@ -10,9 +10,9 @@
 #include "GaussTools/GaussTrackInformation.h"
 #include "GiGa/GiGaUtil.h"
 ///
-#include "G4Step.hh"
-#include "G4Track.hh"
-#include "G4SteppingManager.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4SteppingManager.hh"
 
 // ============================================================================
 namespace GaussTrajectoryLocal

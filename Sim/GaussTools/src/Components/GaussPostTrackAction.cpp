@@ -4,12 +4,12 @@
 /// CLHEP
 #include "CLHEP/Geometry/Point3D.h"
 /// Geant4 
-#include "G4Track.hh"
-#include "G4TrackVector.hh"
-#include "G4TrackingManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4PrimaryParticle.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TrackVector.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4PrimaryParticle.hh"
 /// GaudiKernel
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/MsgStream.h"
@@ -71,10 +71,10 @@ GaussPostTrackAction::GaussPostTrackAction
   ///  this is for ex used for tracks that generated hits in tracking devices
     , m_storeMarkedTracks     ( true   )
   /// threshold for own kinetic energy 
-    , m_ownEnergyThreshold    ( 10*TeV ) 
-  /// threshold for child kinetic energy 
-    , m_childEnergyThreshold  ( 10*TeV ) 
-  /// container of names of own   types 
+    , m_ownEnergyThreshold    ( 10 * CLHEP::TeV )
+  /// threshold for child kinetic energy
+    , m_childEnergyThreshold  ( 10 * CLHEP::TeV )
+  /// container of names of own   types
     , m_ownStoredTypesNames   (        )   
   /// container of names of child types 
     , m_childStoredTypesNames (        ) 
@@ -89,7 +89,7 @@ GaussPostTrackAction::GaussPostTrackAction
     , m_storeByOwnProcess ( false )
     , m_ownStoredProcess()
     , m_storeUpToZmax( true )
-    , m_zMaxToStore(12280.0 * mm)
+    , m_zMaxToStore(12280.0 * CLHEP::mm)
     , m_rejectRICHphe ( true )
     , m_rejectOptPhot ( true )
 {

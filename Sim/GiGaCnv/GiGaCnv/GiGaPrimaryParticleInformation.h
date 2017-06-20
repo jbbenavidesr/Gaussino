@@ -27,8 +27,8 @@
 // ============================================================================
 // G4 
 // ============================================================================
-#include "G4VUserPrimaryParticleInformation.hh"
-#include "G4ios.hh"
+#include "Geant4/G4VUserPrimaryParticleInformation.hh"
+#include "Geant4/G4ios.hh"
 // ============================================================================
 // Event
 #include "Event/HepMCEvent.h"

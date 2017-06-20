@@ -8,9 +8,9 @@
 #include "CLHEP/Units/SystemOfUnits.h"
 
 // Geant4
-#include "G4TrackingManager.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessType.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessType.hh"
 
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"

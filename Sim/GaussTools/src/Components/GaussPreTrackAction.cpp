@@ -4,11 +4,11 @@
 /// CLHEP
 #include "CLHEP/Geometry/Point3D.h"
 /// Geant4 
-#include "G4Track.hh"
-#include "G4TrackVector.hh"
-#include "G4TrackingManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TrackVector.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
 /// GaudiKernel
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/MsgStream.h"

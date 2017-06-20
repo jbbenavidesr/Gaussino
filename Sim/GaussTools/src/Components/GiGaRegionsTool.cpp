@@ -15,9 +15,9 @@
 #include "GiGaRegionsTool.h"
 
 // G4 
-#include "G4Region.hh"
-#include "G4LogicalVolume.hh"
-#include "G4ProductionCuts.hh"
+#include "Geant4/G4Region.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4ProductionCuts.hh"
 
 // ============================================================================
 /** @file 

@@ -6,9 +6,9 @@
 #include "GaudiKernel/PropertyMgr.h"
 
 // G4
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ProcessManager.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ProcessManager.hh"
 
 // local
 #include "MinEkineCuts.h"

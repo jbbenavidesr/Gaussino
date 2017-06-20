@@ -3,8 +3,8 @@
 #define GAUSSTOOLS_COMPONENTS_LOOPCUTS_H 1
 
 // Include files
-#include "G4ios.hh"
-#include "globals.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
 #include "SpecialCuts.h"
 
 /** @class LoopCuts LoopCuts.h Components/LoopCuts.h

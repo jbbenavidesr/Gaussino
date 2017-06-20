@@ -2,10 +2,10 @@
 // Include files 
 
 // from G4
-#include "G4Step.hh"
-#include "G4UserLimits.hh"
-#include "G4VParticleChange.hh"
-#include "G4EnergyLossTables.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4UserLimits.hh"
+#include "Geant4/G4VParticleChange.hh"
+#include "Geant4/G4EnergyLossTables.hh"
 
 // local
 #include "MinEkineCuts.h"

@@ -1,9 +1,9 @@
 // $Id: SpecialCuts.cpp,v 1.8 2009-04-05 17:34:01 gcorti Exp $
 // Include files 
 // Geant4
-#include "G4VParticleChange.hh"
-#include "G4Track.hh"
-#include "G4Step.hh"
+#include "Geant4/G4VParticleChange.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
 
 // local
 #include "SpecialCuts.h"

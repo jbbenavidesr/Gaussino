@@ -18,7 +18,7 @@
 #include "GiGa/GiGaUtil.h"
 
 // Geant4
-#include "G4TrackingManager.hh"
+#include "Geant4/G4TrackingManager.hh"
 
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"

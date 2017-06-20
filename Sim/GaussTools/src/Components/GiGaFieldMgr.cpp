@@ -6,10 +6,10 @@
 //#include "GiGa/GiGaMACROs.h"
 
 // GEANT4 
-#include "G4ChordFinder.hh"
-#include "G4FieldManager.hh"
-#include "G4TransportationManager.hh"
-#include "G4ChordFinder.hh"
+#include "Geant4/G4ChordFinder.hh"
+#include "Geant4/G4FieldManager.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4ChordFinder.hh"
 
 // local 
 #include "GiGaFieldMgr.h"

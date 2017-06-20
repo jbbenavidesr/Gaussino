@@ -8,7 +8,7 @@
 // GiGa
 #include "GiGa/GiGaUtil.h"
 /// Geant4 
-#include "G4VUserTrackInformation.hh" 
+#include "Geant4/G4VUserTrackInformation.hh" 
 /// GaussTools
 #include "GaussTools/GaussHitBase.h"
 #include "GaussTools/DetTrackInfo.h"

@@ -6,9 +6,9 @@
 // CLHEP
 #include "CLHEP/Units/SystemOfUnits.h"
 // Geant4
-#include "G4TrackingManager.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessType.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessType.hh"
 
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
@@ -43,17 +43,17 @@ DECLARE_TOOL_FACTORY( GaussTrackActionByEnergyProcess )
 GaussTrackActionByEnergyProcess::GaussTrackActionByEnergyProcess
 ( const std::string& type   ,
   const std::string& name   ,
-  const IInterface*  parent ) 
-  : GaussTrackActionZ   ( type , name , parent ) 
+  const IInterface*  parent )
+  : GaussTrackActionZ   ( type , name , parent )
   //
-  , m_ownProcs    () 
+  , m_ownProcs    ()
   , m_childProcs  ()
-  , m_ownPTypes   ( 1 , (int) fDecay ) 
-  , m_childPTypes () 
-  , m_threshold   ( 100 * MeV )
+  , m_ownPTypes   ( 1 , (int) fDecay )
+  , m_childPTypes ()
+  , m_threshold   ( 100 * CLHEP::MeV )
 {
   declareProperty ( "OwnProcesses"      , m_ownProcs    ) ;
-  declareProperty ( "ChildProcesses"    , m_childProcs  ) ;  
+  declareProperty ( "ChildProcesses"    , m_childProcs  ) ;
   declareProperty ( "OwnProcessTypes"   , m_ownPTypes   ) ;
   declareProperty ( "ChildProcessTypes" , m_childPTypes ) ;
   declareProperty ( "Threshold"         , m_threshold   ) ;

@@ -2,7 +2,7 @@
 // (based on CMS code by P.Arce) 
 //
 #include "GaussG4UserLimits.h"
-#include "G4Track.hh"
+#include "Geant4/G4Track.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 inline const G4String& GaussG4UserLimits::GetType() const
