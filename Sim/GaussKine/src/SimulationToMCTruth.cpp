@@ -21,8 +21,8 @@
 #include "GiGaCnv/GiGaKineRefTable.h"
 
 // From Geant4 
-#include "G4Event.hh"
-#include "G4PrimaryVertex.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4PrimaryVertex.hh"
 
 // From GaussTools
 #include "GaussTools/MCTruthManager.h"
@@ -388,8 +388,8 @@ bool SimulationToMCTruth::isEndOfWorldVertex( HepMC::GenVertex * ev ) {
   if ( 0 == ev ) return true ;
   if ( 0 != ev -> particles_out_size() ) return false ;
   HepMC::ThreeVector V = ev -> point3d() ;
-  if ( ( 50.0 * m == std::fabs(V.x()) ) || ( 50.0 * m == std::fabs(V.y()) ) || 
-      ( 50.0 * m == std::fabs(V.z()) ) ) 
+  if ( ( 50.0 * Gaudi::Units::m == std::fabs(V.x()) ) || ( 50.0 * Gaudi::Units::m == std::fabs(V.y()) ) ||
+      ( 50.0 * Gaudi::Units::m == std::fabs(V.z()) ) )
     return true ;
   return false ;
 }
