@@ -9,8 +9,8 @@
 #include "GaudiKernel/StatusCode.h"
 
 // From Geant4
-#include "G4Event.hh"
-#include "G4PrimaryVertex.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4PrimaryVertex.hh"
 
 class MCCloner;
 #include "Event/GenCollision.h"
