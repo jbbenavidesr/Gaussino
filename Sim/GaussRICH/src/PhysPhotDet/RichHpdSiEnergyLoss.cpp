@@ -24,7 +24,8 @@
 RichHpdSiEnergyLoss::RichHpdSiEnergyLoss(const G4String& processName,
                                         G4ProcessType   aType )
 
-  : G4VEnergyLoss(processName, aType ),
+//  : G4VEnergyLoss(processName, aType ),
+  : G4VContinuousDiscreteProcess(processName, aType),
     MinKineticEnergy(1.*CLHEP::keV),
     MipEnergyHpdSiEloss(1.0*CLHEP::GeV),
     finalRangeforSiDetStep(0.15*CLHEP::mm),
