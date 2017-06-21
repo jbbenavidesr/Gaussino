@@ -2,11 +2,11 @@
 // Include files 
 
 #include "TorchTBMcpEnergyLoss.h"
-#include "G4Material.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4Navigator.hh"
-#include "G4TransportationManager.hh"
-#include "G4Electron.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4Navigator.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4Electron.hh"
 #include "GaussRICH/RichPhotoElectron.h"
 #include "GaussRICH/RichPEInfoAttach.h"
 #include "TorchTBGaussPathNames.h"
@@ -14,8 +14,8 @@
 #include <algorithm>
 #include <math.h>
 #include <vector>
-#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
 #include "TorchTBMcpProperties.h"
 
 

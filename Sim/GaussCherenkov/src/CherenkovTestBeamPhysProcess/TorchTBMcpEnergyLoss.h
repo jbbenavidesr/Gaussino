@@ -3,16 +3,16 @@
 #define CHERENKOVTESTBEAMPHYSPROCESS_TORCHTBMCPENERGYLOSS_H 1
 
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <vector>
-#include "G4VEnergyLoss.hh"
+#include "Geant4/G4VEnergyLoss.hh"
 #include "Randomize.hh"
-#include "G4VParticleChange.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Track.hh"
-#include "G4Step.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ios.hh"
+#include "Geant4/G4VParticleChange.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ios.hh"
 #include "GiGa/GiGaBase.h"
 
 

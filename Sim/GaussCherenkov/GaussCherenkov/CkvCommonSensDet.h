@@ -8,8 +8,8 @@
 #include "CkvG4GeomProp.h"
 #include <map>
 
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
 #include "GaudiKernel/StatusCode.h"
 
 /** @class CkvCommonSensDet CkvCommonSensDet.h GaussCherenkov/CkvCommonSensDet.h

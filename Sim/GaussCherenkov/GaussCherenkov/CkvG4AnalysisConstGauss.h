@@ -1,8 +1,8 @@
 #ifndef GAUSSCHERENKOV_CKVG4ANALYSISCONSTGAUSS_H
 #define GAUSSCHERENKOV_CKVG4ANALYSISCONSTGAUSS_H 1
-#include "globals.hh"
-#include "G4ThreeVector.hh"
-#include "G4Step.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4ThreeVector.hh"
+#include "Geant4/G4Step.hh"
 static const G4double ZUpsRich1Analysis =975.0*mm; 
 static const G4double ZDnsRich1Analysis =2200.0*mm;
 static const G4double AgelZBeginAnalysis=1110.0*mm;

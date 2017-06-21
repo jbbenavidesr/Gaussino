@@ -2,10 +2,10 @@
 #ifndef GAUSSCHERENKOV_CKVG4HIT_H 
 #define GAUSSCHERENKOV_CKVG4HIT_H 1
 #include "GaussTools/GaussHitBase.h"
-#include "G4VHit.hh"
-#include "G4THitsCollection.hh"
-#include "G4Allocator.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/G4VHit.hh"
+#include "Geant4/G4THitsCollection.hh"
+#include "Geant4/G4Allocator.hh"
+#include "Geant4/G4ThreeVector.hh"
 #include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
 #include "GaussRICH/RichG4HpdReflectionFlag.h"
 #include <vector>

@@ -1,7 +1,7 @@
 #ifndef CHERENKOVTESTBEAMPHYSPROCESS_TORCHTBGAUSSPATHNAMES_H
 #define CHERENKOVTESTBEAMPHYSPROCESS_TORCHTBGAUSSPATHNAMES_H 1
 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 
 static const G4String TorchTBMcpQeffMatTabPropPath="/dd/Materials/TorchTestBeamMaterialTabProperties/NominalMCPQuantumEff";

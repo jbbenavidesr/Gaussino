@@ -5,7 +5,7 @@
 #include "GaudiKernel/IDataProviderSvc.h"
 #include "GaudiKernel/IMessageSvc.h"
 
-#include "G4ios.hh"
+#include "Geant4/G4ios.hh"
 
 
 #include "GaussCherenkov/RichPmtQE.h"

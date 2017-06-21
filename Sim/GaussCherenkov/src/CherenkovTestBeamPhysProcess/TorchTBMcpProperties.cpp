@@ -11,7 +11,7 @@
 #include "DetDesc/TabulatedProperty.h"
 #include "boost/lexical_cast.hpp"
 #include "GaussRICH/RichG4SvcLocator.h"
-#include "G4Material.hh"
+#include "Geant4/G4Material.hh"
 
 
 // create with a large number of hpds and then adjust

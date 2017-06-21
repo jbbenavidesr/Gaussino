@@ -4,7 +4,7 @@
 
 // Include files
 #include <vector>
-#include "G4ThreeVector.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 
 /** @class CherenkovG4Counters CherenkovG4Counters.h CherenkovAnalysis/CherenkovG4Counters.h
