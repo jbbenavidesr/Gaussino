@@ -15,7 +15,7 @@
 // CLHEP
 // #include "CLHEP/Units/PhysicalConstants.h"
 //#include "Kernel/SystemOfUnits.h"
-#include "globals.hh"
+#include "Geant4/globals.hh"
 //
 //   Author SE 21-8-2002 
 //
