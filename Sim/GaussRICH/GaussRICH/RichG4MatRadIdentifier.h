@@ -3,7 +3,7 @@
 #define GAUSSRICH_RICHG4MATRADIDENTIFIER_H 1
 
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <map>
 #include <vector>
 /** @class RichG4MatRadIdentifier RichG4MatRadIdentifier.h Misc/RichG4MatRadIdentifier.h

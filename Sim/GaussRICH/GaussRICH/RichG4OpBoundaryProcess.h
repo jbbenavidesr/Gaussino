@@ -55,20 +55,20 @@
 // Includes
 /////////////
 
-#include "globals.hh"
-#include "templates.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/templates.hh"
 #include "geomdefs.hh"
-#include "Randomize.hh"
-#include "G4Track.hh"
-#include "G4Step.hh"
-#include "G4VDiscreteProcess.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4LogicalBorderSurface.hh"
-#include "G4LogicalSkinSurface.hh"
-#include "G4OpticalSurface.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4TransportationManager.hh"
+#include "Geant4/Randomize.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4VDiscreteProcess.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4LogicalBorderSurface.hh"
+#include "Geant4/G4LogicalSkinSurface.hh"
+#include "Geant4/G4OpticalSurface.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4TransportationManager.hh"
 
 // Class Description:
 // Discrete Process -- reflection/refraction at optical interfaces.

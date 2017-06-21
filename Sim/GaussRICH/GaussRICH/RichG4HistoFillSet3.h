@@ -3,7 +3,7 @@
 #define GAUSSRICH_RICHG4HISTOFILLSET3_H 1
 
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
 
 /** @class RichG4HistoFillSet3 RichG4HistoFillSet3.h 

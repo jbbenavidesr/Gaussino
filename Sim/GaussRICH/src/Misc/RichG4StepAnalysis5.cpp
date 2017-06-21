@@ -1,14 +1,14 @@
 // $Id: RichG4StepAnalysis5.cpp,v 1.11 2009-09-13 13:07:18 seaso Exp $
 // Include files 
 
-#include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4Step.hh"
 // Gaudi
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/IDataProviderSvc.h"

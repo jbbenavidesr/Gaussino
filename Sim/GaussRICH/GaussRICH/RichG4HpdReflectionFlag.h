@@ -3,7 +3,7 @@
 #define GaussRICH_RICHG4HPDREFLECTIONFLAG_H 1
 
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 
 /** @class RichG4HpdReflectionFlag RichG4HpdReflectionFlag.h Misc/RichG4HpdReflectionFlag.h

@@ -11,7 +11,7 @@
  *  @date   2007-10-29
  */
 #include "RichInfo.h"
-#include "G4Track.hh"
+#include "Geant4/G4Track.hh"
 
 extern void setRichHpdQwPcReflInfo(const G4Track& aPhotonTk,G4int aFlag);
 extern G4int getRichHpdQwPcReflInfo(const G4Track& aPhotonTk);

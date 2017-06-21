@@ -8,7 +8,7 @@
 #include "GaussRICH/RichG4RadiatorMaterialIdValues.h" 
 #include "GaussRICH/RichG4GaussPathNames.h"
 // from G4
-#include "G4Material.hh"
+#include "Geant4/G4Material.hh"
 #include <utility>
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4MatRadIdentifier

@@ -1,6 +1,6 @@
 // $Id: RichG4QwAnalysis.cpp,v 1.2 2006-02-27 14:10:30 seaso Exp $
 // Include files 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 #include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IHistogramSvc.h"
@@ -16,10 +16,10 @@
 // local
 #include "GaussRICH/RichG4QwAnalysis.h"
 #include "GaussRICH/RichG4SvcLocator.h"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4VProcess.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4VProcess.hh"
 #include <TFile.h>
 #include <TTree.h>
 

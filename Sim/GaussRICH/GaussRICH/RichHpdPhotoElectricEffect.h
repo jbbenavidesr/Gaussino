@@ -1,14 +1,14 @@
 #ifndef RichHpdPhotoElectricEffect_h
 #define RichHpdPhotoElectricEffect_h 1
 #include <vector>
-#include "globals.hh"
-#include "Randomize.hh"
-#include "G4ios.hh"
-#include "G4VDiscreteProcess.hh"
-#include "G4DynamicParticle.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Step.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/Randomize.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4VDiscreteProcess.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Step.hh"
 
 #include "GiGa/GiGaBase.h"
 

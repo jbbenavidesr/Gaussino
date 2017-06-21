@@ -2,7 +2,7 @@
 #define RichHpdDeMag_h 1
 
 #include <vector>
-#include "G4ThreeVector.hh"
+#include "Geant4/G4ThreeVector.hh"
 #include "RichDet/Rich1DTabFunc.h"
 
 // class for the hpd demagnification factor.

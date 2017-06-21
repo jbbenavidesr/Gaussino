@@ -5,7 +5,7 @@
 // Include files
 
 #include "GaudiKernel/NTuple.h"
-#include "G4Track.hh" 
+#include "Geant4/G4Track.hh" 
 
  class TFile;
  class TTree;

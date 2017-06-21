@@ -21,11 +21,11 @@
 #include "GiGaCnv/GiGaKineRefTable.h"
 
 // from Geant4
-#include "G4TrajectoryContainer.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4VHitsCollection.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4SDManager.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4SDManager.hh"
 
 // from LHCb
 #include "Event/MCRichTrack.h"

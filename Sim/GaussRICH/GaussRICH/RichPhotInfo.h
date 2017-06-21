@@ -4,8 +4,8 @@
 // Information carried by the Photons made in RICH
 // that are carried along using the G4TrackInformation.
 
-#include "globals.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 class RichPhotInfo {
 

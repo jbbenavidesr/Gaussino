@@ -3,8 +3,8 @@
 #define GAUSSRICH_RICHG4ANALYSISPHOTELEC_H 1
 
 // Include files
-#include "globals.hh"
-#include "G4Step.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4Step.hh"
 
 
 //extern void RichG4AnalysisPhotElecA ( const G4Step& aStep,

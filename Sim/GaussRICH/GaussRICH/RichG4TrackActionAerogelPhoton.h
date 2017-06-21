@@ -8,7 +8,7 @@
 // GiGa
 #include "GiGa/GiGaTrackActionBase.h"
 /// Geant4
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 /** @class RichG4TrackActionAerogelPhoton RichG4TrackActionAerogelPhoton.h RichAction/RichG4TrackActionAerogelPhoton.h
  *  
