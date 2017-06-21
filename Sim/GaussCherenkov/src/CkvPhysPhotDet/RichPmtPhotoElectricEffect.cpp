@@ -357,7 +357,7 @@ RichPmtPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
 
     // Shift the electron origin by 0.004 mm to avoid multiple scattering in the
     // photocathode.
-    G4double ElecOriginTolerence= 0.004*mm;
+    G4double ElecOriginTolerence= 0.004 * CLHEP::mm;
     G4ThreeVector LocalElectronOrigin (LocalElectronOriginInit.x(),
                                        LocalElectronOriginInit.y(),
                                        LocalElectronOriginInit.z()- ElecOriginTolerence );

@@ -9,7 +9,7 @@
 #include "GaussRICH/RichG4AnalysisPhotElec.h"
 #include "GaussRICH/RichG4AnalysisConstGauss.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
-#include "Randomize.hh"
+#include "Geant4/Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
@@ -20,13 +20,13 @@
 RichPmtSiEnergyLoss::RichPmtSiEnergyLoss(const G4String& processName,
                                         G4ProcessType   aType )
 
-  : G4VEnergyLoss(processName, aType ),
-    MinKineticEnergy(1.*keV),
-    MipEnergyPmtSiEloss(1.0*GeV),
-    finalRangeforSiDetStep(0.15*mm),
-    PhElectronMaxEnergy(25.0*keV) 
+//: G4VEnergyLoss(processName, aType),
+  : G4VContinuousDiscreteProcess(processName, aType),
+    MinKineticEnergy(1. * CLHEP::keV),
+    MipEnergyPmtSiEloss(1.0 * CLHEP::GeV),
+    finalRangeforSiDetStep(0.15 * CLHEP::mm),
+    PhElectronMaxEnergy(25.0 * CLHEP::keV)
 {
-  
   // The following three initializations moved to GiGaPhysConstructorPmt and InitializePmtProcParam so that they can be
   // set through the options files. The defaults are as indicated below. SE 5-10-2007
   // the pixelchipefficiency is set to 1 for now. the  SiHitDetGlobalEff is the product of the other two efficiencies.

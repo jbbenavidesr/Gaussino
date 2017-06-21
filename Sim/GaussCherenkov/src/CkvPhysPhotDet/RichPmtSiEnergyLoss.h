@@ -3,8 +3,11 @@
 
 #include "Geant4/globals.hh"
 #include <vector>
-#include "Geant4/G4VEnergyLoss.hh"
-#include "Randomize.hh"
+
+// #include "Geant4/G4VEnergyLoss.hh" // Removed from G4r10?
+#include "Geant4/G4VContinuousDiscreteProcess.hh"
+
+#include "Geant4/Randomize.hh"
 #include "Geant4/G4VParticleChange.hh"
 #include "Geant4/G4DynamicParticle.hh"
 #include "Geant4/G4Track.hh"
@@ -13,10 +16,10 @@
 #include "Geant4/G4ios.hh"
 #include "GiGa/GiGaBase.h"
 
-class RichPmtSiEnergyLoss :  public G4VEnergyLoss {
+// class RichPmtSiEnergyLoss : public G4VEnergyLoss {
+class RichPmtSiEnergyLoss : public G4VContinuousDiscreteProcess {
 
-public:  
-
+public:
   RichPmtSiEnergyLoss(const G4String& processName ,G4ProcessType   aType = fUserDefined  );
 
   virtual ~RichPmtSiEnergyLoss();

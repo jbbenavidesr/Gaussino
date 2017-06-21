@@ -135,6 +135,7 @@ void GiGaPhysConstructorPhotoDetector::ConstructPeGenericProcess() {
   //  G4ParticleDefinition* photoelectronDef = 
   //  RichPhotoElectron::PhotoElectron();
   G4Transportation* theTransportationProcess= new G4Transportation();
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
@@ -196,20 +197,15 @@ void GiGaPhysConstructorPhotoDetector::ConstructPmtSiEnLoss()
 
 
   TorchTBMcpEnergyLoss* theTorchTBMcpEnergyLossProcess =0;
-  
 
   if( m_ActivateTorchTBMcpEnergyLossProc) {
-    
    theTorchTBMcpEnergyLossProcess =  new TorchTBMcpEnergyLoss("TorchTBMcpEnergyLossProcess", fUserDefined  );
    theTorchTBMcpEnergyLossProcess->setMcpAnodeDetEff(m_TorchTBMcpAnodeEfficiency );
    theTorchTBMcpEnergyLossProcess->setMcpAnodePixelChipEff(m_TorchMcpAnodeReadoutChipEfficiency);
    theTorchTBMcpEnergyLossProcess->InitializeMcpProcParam();
-   
   }
-  
-  
 
-
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();

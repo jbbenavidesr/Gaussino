@@ -10,7 +10,7 @@
 #include "GaussRICH/RichPhotoElectron.h"
 #include "GaussRICH/RichPEInfoAttach.h"
 #include "TorchTBGaussPathNames.h"
-#include "Randomize.hh"
+#include "Geant4/Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
@@ -31,12 +31,13 @@
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-TorchTBMcpEnergyLoss::TorchTBMcpEnergyLoss(const G4String& processName, G4ProcessType   aType ) 
-  : G4VEnergyLoss(processName, aType ),
-    m_MinKineticEnergy(1.*keV),
-    m_MipEnergyMcpAnodeEloss(1.0*GeV),
-    m_finalRangeforAnodeStep(0.15*mm),
-    m_PhElectronMaxEnergy(25.0*keV),
+TorchTBMcpEnergyLoss::TorchTBMcpEnergyLoss(const G4String& processName, G4ProcessType aType)
+//: G4VEnergyLoss(processName, aType),
+  : G4VContinuousDiscreteProcess(processName, aType),
+    m_MinKineticEnergy(1. * CLHEP::keV),
+    m_MipEnergyMcpAnodeEloss(1.0 * CLHEP::GeV),
+    m_finalRangeforAnodeStep(0.15 * CLHEP::mm),
+    m_PhElectronMaxEnergy(25.0 * CLHEP::keV),
     m_AnodeHitDetGlobalEff(1.0),
     m_McpAnodeEff(1.0),
     m_McpAnodeChipEff(1.0)

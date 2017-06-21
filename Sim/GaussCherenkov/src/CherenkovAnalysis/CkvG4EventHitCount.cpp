@@ -12,16 +12,16 @@
 #include "GaussRICH/RichG4HpdReflectionFlag.h"
 
 //GEANT4
-#include "G4Event.hh"
-#include "G4EventManager.hh"
-#include "G4TrajectoryContainer.hh"
-#include "G4Trajectory.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4VHitsCollection.hh"
-#include "G4SDManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4TrajectoryPoint.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
+#include "Geant4/G4Trajectory.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4TrajectoryPoint.hh"
 #include <vector>
 #include <iterator>
 #include <math.h>
@@ -46,47 +46,45 @@ CkvG4EventHitCount::CkvG4EventHitCount(  ) {
 
   ChTkBetaSaturatedCut = 0.9999;
 
-  //  m_Rich1InitSlopeRMin= 0.015*rad;
-  // m_Rich1InitSlopeXMin= 0.015*rad;
-  // m_Rich1InitSlopeXMax= 0.30*rad;
-  // m_Rich1InitSlopeYMin = 0.015*rad;
-  // m_Rich1InitSlopeYMax=  0.30*rad;
+  // m_Rich1InitSlopeRMin = 0.015 * CLHEP::rad;
+  // m_Rich1InitSlopeXMin = 0.015 * CLHEP::rad;
+  // m_Rich1InitSlopeXMax = 0.30 * CLHEP::rad;
+  // m_Rich1InitSlopeYMin = 0.015 * CLHEP::rad;
+  // m_Rich1InitSlopeYMax = 0.30 * CLHEP::rad;
 
-  m_Rich1InitSlopeRMin= 0.05*rad;
-  m_Rich1InitSlopeXMin= 0.05*rad;
-  m_Rich1InitSlopeXMax= 0.20*rad;
-  m_Rich1InitSlopeYMin = 0.05*rad;
-  m_Rich1InitSlopeYMax=  0.20*rad;
+  m_Rich1InitSlopeRMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeXMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeXMax = 0.20 * CLHEP::rad;
+  m_Rich1InitSlopeYMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeYMax = 0.20 * CLHEP::rad;
 
-  //  m_MomRich1AgelMin = 3.0*GeV;
-  // m_MomRich1GasMin = 3.0*GeV;
+  // m_MomRich1AgelMin = 3.0 * CLHEP::GeV;
+  // m_MomRich1GasMin = 3.0 * CLHEP::GeV;
 
-   m_MomRich1AgelMin = 10.0*GeV;
-   m_MomRich1GasMin = 10.0*GeV;
-   m_MomRich2GasMin = 15.0*GeV;
-  //m_MomRich1AgelMin = 20.0*GeV;
-  //m_MomRich1GasMin = 20.0*GeV;
+   m_MomRich1AgelMin = 10.0 * CLHEP::GeV;
+   m_MomRich1GasMin = 10.0 * CLHEP::GeV;
+   m_MomRich2GasMin = 15.0 * CLHEP::GeV;
+  // m_MomRich1AgelMin = 20.0 * CLHEP::GeV;
+  // m_MomRich1GasMin = 20.0 * CLHEP::GeV;
   m_MinTkPtRich1FiducialRegion= 1;
-  // m_MomRich2GasMin = 30.0*GeV;
-  // m_MomRich2GasMin = 20.0*GeV;
-  //  m_MomRich2GasMin = 20.0*GeV;
+  // m_MomRich2GasMin = 30.0 * CLHEP::GeV;
+  // m_MomRich2GasMin = 20.0 * CLHEP::GeV;
+  // m_MomRich2GasMin = 20.0 * CLHEP::GeV;
 
-  //  m_Rich2InitSlopeRMin= 0.015*rad;
-  //  m_Rich2InitSlopeXMin= 0.015*rad;
-  // m_Rich2InitSlopeXMax= 0.20*rad;
-  // m_Rich2InitSlopeYMin = 0.015*rad;
-  // m_Rich2InitSlopeYMax=  0.20*rad;
+  // m_Rich2InitSlopeRMin = 0.015 * CLHEP::rad;
+  // m_Rich2InitSlopeXMin = 0.015 * CLHEP::rad;
+  // m_Rich2InitSlopeXMax = 0.20 * CLHEP::rad;
+  // m_Rich2InitSlopeYMin = 0.015 * CLHEP::rad;
+  // m_Rich2InitSlopeYMax = 0.20 * CLHEP::rad;
 
-  m_Rich2InitSlopeRMin= 0.05*rad;
-  m_Rich2InitSlopeXMin= 0.05*rad;
-  m_Rich2InitSlopeXMax= 0.20*rad;
-  m_Rich2InitSlopeYMin = 0.05*rad;
-  m_Rich2InitSlopeYMax=  0.20*rad;
-  m_MinTkPtRich2FiducialRegion= 1;
-  m_MinC4F10HighMomCutForYield= 60.0*GeV;
-  m_MinCF4HighMomCutForYield= 60.0*GeV;
-
-
+  m_Rich2InitSlopeRMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeXMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeXMax = 0.20 * CLHEP::rad;
+  m_Rich2InitSlopeYMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeYMax = 0.20 * CLHEP::rad;
+  m_MinTkPtRich2FiducialRegion = 1;
+  m_MinC4F10HighMomCutForYield = 60.0 * CLHEP::GeV;
+  m_MinCF4HighMomCutForYield = 60.0 * CLHEP::GeV;
 }
 CkvG4EventHitCount::~CkvG4EventHitCount(  ) {
 }
@@ -1728,15 +1726,15 @@ void CkvG4EventHitCount::CkvG4CountFullAcceptSatHits(const G4Event* anEvent,
         if(RHC){
           G4int nHitInCurColl = RHC->entries();
           for (G4int iha=0; iha<nHitInCurColl ; iha++ ) {
-            
+
             CkvG4Hit* aHit = (*RHC)[iha];
             int ChtkId =  (int) (aHit-> GetChTrackID());
             double ChtkMom= aHit-> ChTrackTotMom();
             double ChTkMass= aHit-> RichChTrackMass() ;
-            bool aSelectTk= (ChtkMom > (50*GeV)) && (ChTkMass > (100.0*MeV));
-            
+            bool aSelectTk= (ChtkMom > (50 * CLHEP::GeV)) && (ChTkMass > (100.0 * CLHEP::MeV));
+
             G4ThreeVector ChtkMomVect = aHit->ChTrackMomVect();
-            
+
             bool trajAlreadyStoredR1FA=true;;
             bool trajAlreadyStoredR2FA=true;;
 
@@ -1747,7 +1745,7 @@ void CkvG4EventHitCount::CkvG4CountFullAcceptSatHits(const G4Event* anEvent,
                                                   TrajIdVectR1FA.end(),
                                                   ChtkId);
               if( p == TrajIdVectR1FA.end() ) trajAlreadyStoredR1FA=false;
-              
+
             } else {
 
               trajAlreadyStoredR1FA=false;
@@ -1761,7 +1759,7 @@ void CkvG4EventHitCount::CkvG4CountFullAcceptSatHits(const G4Event* anEvent,
                                                   TrajIdVectR2FA.end(),
                                                   ChtkId);
               if( p == TrajIdVectR2FA.end() ) trajAlreadyStoredR2FA=false;
-              
+
             } else {
 
               trajAlreadyStoredR2FA=false;

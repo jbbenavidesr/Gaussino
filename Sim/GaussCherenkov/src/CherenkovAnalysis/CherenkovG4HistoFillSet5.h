@@ -3,7 +3,7 @@
 #define CHERENKOVANALYSIS_CHERENKOVG4HISTOFILLSET5_H 1
 
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include "GaussCherenkov/CkvG4Hit.h"
 #include <vector>
 #include "GaudiKernel/Point3DTypes.h"

@@ -11,7 +11,7 @@
 #include "GaussRICH/RichG4HitCoordResult.h"
 #include "GaussCherenkov/CkvG4ReconFlatMirr.h"
 
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 
 /** @class CherenkovG4HitRecon CherenkovG4HitRecon.h RichAnalysis/CherenkovG4HitRecon.h
  *

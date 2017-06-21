@@ -60,8 +60,8 @@ void TorchTBMcpPhotoElectricEffect::setMcpPhElecParam()
   
   m_MaxAnyMcpQEff=aMcpProperty->TorchTBMcpMaxQuantumEff();
   m_McpPhElectronKE=aMcpProperty->TorchTBMcpHighVoltage();
-  m_elecOrigTolerence= 0.004*mm;
-  
+  m_elecOrigTolerence = 0.004 * CLHEP::mm;
+
   // m_PhCathodeToAnodeDetMaxDist=
 
 }

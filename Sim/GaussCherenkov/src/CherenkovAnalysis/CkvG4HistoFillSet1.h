@@ -3,7 +3,7 @@
 #define RICHANALYSIS_CKVG4HISTOFILLSET1_H 1
 
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
 
 /** @class CkvG4HistoFillSet1 CkvG4HistoFillSet1.h 

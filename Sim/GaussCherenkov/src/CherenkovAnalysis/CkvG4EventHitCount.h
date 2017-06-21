@@ -4,9 +4,9 @@
 
 // Include files
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
-#include "globals.hh"
+#include "Geant4/globals.hh"
 /** @class CkvG4EventHitCount CkvG4EventHitCount.h
  * RichAnalysis/CkvG4EventHitCount.h
  *

@@ -57,13 +57,13 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#include "G4ios.hh"
+#include "Geant4/G4ios.hh"
 #include "GaussCherenkov/CkvG4OpBoundaryProcess.h"
 #include "GaussRICH/RichG4AnalysisConstGauss.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussCherenkov/CkvG4GaussPathNames.h"
 #include "TorchTBGaussPathNames.h"
-#include "G4GeometryTolerance.hh"
+#include "Geant4/G4GeometryTolerance.hh"
 
 #include "GaussTools/GaussTrackInformation.h"
 #include "GaussRICH/RichInfo.h"
@@ -469,9 +469,9 @@ CkvG4OpBoundaryProcess::GetFacetNormal(const G4ThreeVector& Momentum,
 	   do {
 	      do {
 	         alpha = G4RandGauss::shoot(0.0,sigma_alpha);
-	      } while (G4UniformRand()*f_max > std::sin(alpha) || alpha >= halfpi );
+	      } while (G4UniformRand() * f_max > std::sin(alpha) || alpha >= CLHEP::halfpi);
 
-	      G4double phi = G4UniformRand()*twopi;
+	      G4double phi = G4UniformRand() * CLHEP::twopi;
 
 	      G4double SinAlpha = std::sin(alpha);
 	      G4double CosAlpha = std::cos(alpha);
