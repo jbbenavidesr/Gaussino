@@ -62,8 +62,8 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#include "G4ios.hh"
-#include "G4EmProcessSubType.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4EmProcessSubType.hh"
 #include "GaussRICH/RichG4CherenkovPhotProdTag.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4Scintillation.h"
@@ -293,7 +293,9 @@ RichG4Scintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
         if (emSaturation) {
            MeanNumberOfPhotons = ScintillationYield*
-                              (emSaturation->VisibleEnergyDeposition(&aStep));
+//                            (emSaturation->VisibleEnergyDeposition(&aStep));
+                              (emSaturation->VisibleEnergyDepositionAtAStep(&aStep));
+
         } else {
            MeanNumberOfPhotons = ScintillationYield*TotalEnergyDeposit;
         }
@@ -348,7 +350,7 @@ RichG4Scintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         
         for (G4int scnt = 1; scnt <= nscnt; scnt++) {
 
-            G4double ScintillationTime = 0.*ns;
+            G4double ScintillationTime = 0. * CLHEP::ns;
             G4PhysicsOrderedFreeVector* ScintillationIntegral = NULL;
 
             if (scnt == 1) {
@@ -439,7 +441,7 @@ RichG4Scintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 G4double cost = 1. - 2.*G4UniformRand();
                 G4double sint = sqrt((1.-cost)*(1.+cost));
 
-		G4double phi = twopi*G4UniformRand();
+		G4double phi = CLHEP::twopi * G4UniformRand();
 		G4double sinp = sin(phi);
 		G4double cosp = cos(phi);
 
@@ -461,7 +463,7 @@ RichG4Scintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
                 G4ThreeVector perp = photonMomentum.cross(photonPolarization);
 
-		phi = twopi*G4UniformRand();
+		phi = CLHEP::twopi * G4UniformRand();
 		sinp = sin(phi);
 		cosp = cos(phi);
 

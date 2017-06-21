@@ -57,7 +57,7 @@
 
 #include "Geant4/globals.hh"
 #include "Geant4/templates.hh"
-#include "geomdefs.hh"
+#include "Geant4/geomdefs.hh"
 #include "Geant4/Randomize.hh"
 #include "Geant4/G4Track.hh"
 #include "Geant4/G4Step.hh"
@@ -326,7 +326,7 @@ G4ThreeVector RichG4OpBoundaryProcess::
 
   G4ThreeVector vec2 = vec1.cross(normal);
 
-  G4double phi = twopi*G4UniformRand();
+  G4double phi = CLHEP::twopi * G4UniformRand();
   G4double cosphi = std::cos(phi);
   G4double sinphi = std::sin(phi);
 

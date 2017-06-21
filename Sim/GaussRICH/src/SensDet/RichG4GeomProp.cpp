@@ -11,7 +11,7 @@
 
 #include "DetDesc/DetectorElement.h"
 
-#include "G4ios.hh"
+#include "Geant4/G4ios.hh"
 #include <vector>
 
 //-----------------------------------------------------------------------------
