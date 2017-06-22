@@ -37,3 +37,5 @@ gaudi_add_module(GaussRICH
                  GENCONF_PRELOAD GaussToolsGenConfHelperLib)
 
 gaudi_env(SET GAUSSRICHOPTS \${GAUSSRICHROOT}/options)
+gaudi_install_python_modules()
+
