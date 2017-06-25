@@ -40,3 +40,4 @@ gaudi_add_module(GaussCherenkov
                                 RichKernelLib GaussRICHLib GaussToolsLib
                  GENCONF_PRELOAD GaussToolsGenConfHelperLib)
 
+gaudi_install_python_modules()
