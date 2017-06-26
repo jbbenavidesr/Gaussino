@@ -49,6 +49,7 @@ CkvG4Hit::CkvG4Hit(const CkvG4Hit & right  )
     m_PhiCkvAtProd(right.m_PhiCkvAtProd ),
     m_ChTrackTotMom(right.m_ChTrackTotMom ),
     m_ChTrackMomVect(right.m_ChTrackMomVect ),
+    m_ChTrackOriginPos(right.m_ChTrackOriginPos),
     m_RichHitGlobalTime ( right.m_RichHitGlobalTime ),
     m_RichChTrackMass ( right.m_RichChTrackMass ),
     m_ChTrackCkvPreStepPos(right.m_ChTrackCkvPreStepPos ),
@@ -102,6 +103,7 @@ const CkvG4Hit& CkvG4Hit::operator=(const CkvG4Hit &right)
   m_PhiCkvAtProd=right.m_PhiCkvAtProd;
   m_ChTrackTotMom=right.m_ChTrackTotMom;
   m_ChTrackMomVect=right.m_ChTrackMomVect;
+  m_ChTrackOriginPos = right.m_ChTrackOriginPos;
   m_RichHitGlobalTime = right.m_RichHitGlobalTime;
   m_RichChTrackMass = right.m_RichChTrackMass;
   m_ChTrackCkvPreStepPos=right.m_ChTrackCkvPreStepPos;
@@ -197,8 +199,8 @@ void CkvG4Hit::Print()
   G4cout<<"RichG4Hit:  "<<"AtProduction CherenkovPhi ="<< m_PhiCkvAtProd
         <<G4endl;
 
-  G4cout<<"RichG4Hit:  "<<"OpticalPhotonEnergy MotherChTrackMom: "<<
-    m_PhotEnergyAtProd<<"     "<< m_ChTrackTotMom<<G4endl;
+  G4cout<<"RichG4Hit:  "<<"OpticalPhotonEnergy MotherChTrackMom  OriginPos: "<<
+    m_PhotEnergyAtProd<<"     "<< m_ChTrackTotMom<<"   "<<m_ChTrackOriginPos<<G4endl;
 
 
   G4cout<<"RichG4Hit: "<<"TrackID: MotherCh OptPhot PE: "

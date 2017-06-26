@@ -89,6 +89,8 @@ private:
   G4double m_PhiCkvAtProd;      ///< Cherenkov Angle Phi (rad) at Ckv production.
   G4double m_ChTrackTotMom;     ///< Total momentum (MeV) of the mother of Photon at Ckv Production.
   G4ThreeVector m_ChTrackMomVect; ///< Three Momentum of the mother of Photon at Ckv Production.
+  G4ThreeVector m_ChTrackOriginPos;  //  XYZ orgin location of the charged track which is the mother of Photon 
+
   // Only with RichVerboseTag mode
   G4double m_RichHitGlobalTime;    ///< Global time for RichHit.
   G4double m_RichChTrackMass;          ///< PDG mass of the Mother of the optical photon.
@@ -281,6 +283,13 @@ public:
   {m_ChTrackMomVect=aChTrackMomVect; }
 
   inline const G4ThreeVector & ChTrackMomVect() const {return m_ChTrackMomVect; }
+
+
+  inline void SetChTrackOriginPos (const G4ThreeVector aChTrackOriginPos) 
+  {m_ChTrackOriginPos = aChTrackOriginPos;}
+  
+  inline const  G4ThreeVector & ChTrackOriginPos() const 
+  {  return m_ChTrackOriginPos; }
 
   inline void SetRichHitGlobalTime(const G4double aRichHitGlobalTime )
   {  m_RichHitGlobalTime= aRichHitGlobalTime;}

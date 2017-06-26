@@ -73,7 +73,9 @@ CherenkovG4EventAction::CherenkovG4EventAction( const std::string& type   ,
     m_RichG4InputMonActivate(false),
     m_IsRichG4FirstEvent(true),
     m_CkvG4HitReconUseOnlySignalHit(false),
-    m_CkvG4HitReconUseOnlyHighMom(false)
+    m_CkvG4HitReconUseOnlyHighMom(false),
+    m_CkvHistoHitTimeActivate(false),
+    m_CkvHistoHitTimeNtupleFileName("DummyNtupleHitTimeFileName")
 {
   declareProperty( "RichEventActionVerbose",
                    m_RichEventActionVerboseLevel );
@@ -119,6 +121,11 @@ CherenkovG4EventAction::CherenkovG4EventAction( const std::string& type   ,
   declareProperty("RichG4HitReconUseHighMomTk",
                   m_CkvG4HitReconUseOnlyHighMom);
 
+  declareProperty("CkvHistoHitTimeActivate", m_CkvHistoHitTimeActivate);
+ 
+  declareProperty("CkvHistoHitTimeNtupleFileName", m_CkvHistoHitTimeNtupleFileName);
+  
+  
   // m_RichHitCName= new CkvG4HitCollName();
   // m_NumRichColl=m_RichHitCName->RichHCSize();
 
@@ -183,12 +190,30 @@ StatusCode CherenkovG4EventAction::initialize()
   if(!m_RichHitCName)  m_RichHitCName= new CkvG4HitCollName();
 
 
+  // G4cout<<" flag m_CkvHistoHitTimeActivate "<< m_CkvHistoHitTimeActivate <<   G4endl;
+  
+
+  if(m_CkvHistoHitTimeActivate) {
+    CherenkovG4HistoHitTime* aCherenkovG4HistoHitTime=CherenkovG4HistoHitTime::getCherenkovG4HistoHitTimeInstance();
+    aCherenkovG4HistoHitTime->SetCkvAnaNtupHitTimeFileName((G4String) m_CkvHistoHitTimeNtupleFileName);
+    
+    aCherenkovG4HistoHitTime->InitCherenkovG4NtupHitTime();
+  }
+  
+  
+
   return sc;  
   
 }
+
 StatusCode CherenkovG4EventAction::finalize() 
 {
- 
+   if(m_CkvHistoHitTimeActivate) {
+    CherenkovG4HistoHitTime* aCherenkovG4HistoHitTime=CherenkovG4HistoHitTime::getCherenkovG4HistoHitTimeInstance();
+    aCherenkovG4HistoHitTime -> EndofRunG4NtupHitTime();
+    
+   }
+   
   return GiGaEventActionBase::finalize();
 
  
@@ -496,8 +521,14 @@ void CherenkovG4EventAction::EndOfEventAction( const G4Event* anEvent  /* event 
     }
   }
 
+  // G4cout<<" End event : flag m_CkvHistoHitTimeActivate "<< m_CkvHistoHitTimeActivate <<   G4endl;
+ 
 
-
+  if(m_CkvHistoHitTimeActivate) {
+    CherenkovG4HistoHitTime* aCherenkovG4HistoHitTime=CherenkovG4HistoHitTime::getCherenkovG4HistoHitTimeInstance();
+    aCherenkovG4HistoHitTime->FillG4NtupHitTime(anEvent,m_NumRichColl, m_RichG4CollectionID);
+    
+  }
 
 
 

@@ -5,6 +5,17 @@
 !               etc for RICH Upgrade
 !-----------------------------------------------------------------------------
 
+!2017-01-24 - Sajan Easo 
+- For special studies for Future upgrade, the 'Hit time' information is setup to be stored in an ntuple
+  in CherenkovG4HistoHitTime.h and CherenkovG4HistoHitTime.cpp.
+  It also gets the time and space coordinates of the origin of the charged track into the same ntuple.
+  By default all these are switched off.
+  In order to activate these from the 'event action', one needs the following lines in the
+  options file used for running.  
+    GiGa.EventSeq.addTool(CherenkovG4EventAction, name="CkvG4Event") 
+    GiGa.EventSeq.CkvG4Event.CkvHistoHitTimeActivate = True
+    GiGa.EventSeq.CkvG4Event.CkvHistoHitTimeNtupleFileName=NtupleOutputFileName
+
 !2016-06-15 -Sajan Easo
  - Created a GaussCherenkov Configurable in  python/GaussCherenkov/Configuration.py 
    This has various options in its 'slots'. 
