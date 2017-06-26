@@ -11,14 +11,14 @@
 #include <TTree.h>
 
 
-#include "G4EventManager.hh"
-#include "G4TrajectoryContainer.hh"
-#include "G4Trajectory.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4VHitsCollection.hh"
-#include "G4SDManager.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
+#include "Geant4/G4Trajectory.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4SDManager.hh"
 #include "GaussCherenkov/CkvG4Hit.h"
-#include "G4TrajectoryPoint.hh"
+#include "Geant4/G4TrajectoryPoint.hh"
 
 
 #include "GiGa/IGiGaSvc.h"
