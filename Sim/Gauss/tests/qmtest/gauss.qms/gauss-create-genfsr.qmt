@@ -1,0 +1,43 @@
+<?xml version="1.0" ?><!DOCTYPE extension  PUBLIC '-//QM/2.3/Extension//EN'  'http://www.codesourcery.com/qm/dtds/2.3/-//qm/2.3/extension//en.dtd'>
+<extension class="GaudiTest.GaudiExeTest" kind="test">
+  <argument name="program"><text>gaudirun.py</text></argument>
+  <argument name="timeout"><integer>600</integer></argument>
+  <argument name="args"><set>
+      <text>$DECFILESROOT/options/13114005.py</text>
+      <text>$LBPYTHIAROOT/options/Pythia.py</text>
+      <text>$GAUSSOPTS/GenStandAlone.py</text>
+      <text>$GAUSSROOT/tests/options/testGauss-create-genfsr.py</text>
+</set></argument>
+  <argument name="validator"><text>
+import xml.etree.ElementTree as ET
+import os
+
+file = ET.parse('GeneratorLogFSR.xml')
+root = file.getroot()
+
+expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/GeneratorLogFSR_expected_creation.xml'))
+expected_root = expected_file.getroot()
+
+flag = True
+
+for counter in root.findall('counter'):
+        name = counter.get('name')
+        value = int(counter.find('value').text)
+
+        for expected_counter in expected_root.findall('counter'):
+                expected_name = expected_counter.get('name')
+                if name == expected_name:
+                        expected_value = int(expected_counter.find('value').text)
+
+        if value != expected_value:
+                flag = False
+                break
+
+if flag == False:
+        causes.append('Counter value different from what expected')
+
+if os.path.exists('GeneratorLogFSR.xml'):
+        os.remove('GeneratorLogFSR.xml')
+  </text></argument>
+</extension>
+
