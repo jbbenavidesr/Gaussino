@@ -47,9 +47,7 @@ SigmaProcess:alphaSorder = 2
 # pdf selection
 # be carefull it changes (behind the scene) pythia8 settings
 # -------------------------------
-PDF:useLHAPDF = on 
-PDF:LHAPDFset = CT09MCS 
-PDF:LHAPDFmember = 0
+PDF:pSet = LHAPDF6:CT09MCS/0
 # -------------------------------
 # First tuning for pythia8 and ct09mcs: Tune 1
 # -------------------------------
