@@ -3505,12 +3505,12 @@ class Gauss(LHCbConfigurableUser):
         if(hadronPhys == "QGSP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("G4HadronPhysicsQGSP_BERT", "QGSP_BERTPhysics")
-            # addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
+            addConstructor("G4StoppingPhysics", "StoppingPhysics")
             addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         elif(hadronPhys == "QGSP_BERT_HP"):
             addConstructor("G4HadronElasticPhysicsHP", "ElasticPhysicsHP")
             addConstructor("G4HadronPhysicsQGSP_BERT_HP", "QGSP_BERT_HPPhysics")
-            # addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
+            addConstructor("G4StoppingPhysics", "StoppingPhysics")
             # overwrite the defaut value of the HighPrecision property of the
             # G4HadronElasticPhysics constructor: no longer true, use dedicated
             # constructor
@@ -3519,12 +3519,12 @@ class Gauss(LHCbConfigurableUser):
         elif(hadronPhys == "QGSP_FTFP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("G4HadronPhysicsQGSP_FTFP_BERT", "QGSP_FTFP_BERTPhysics")
-            # addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
+            addConstructor("G4StoppingPhysics", "StoppingPhysics")
             addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         elif(hadronPhys == "FTFP_BERT"):
             addConstructor("G4HadronElasticPhysics", "ElasticPhysics")
             addConstructor("G4HadronPhysicsFTFP_BERT", "FTFP_BERTPhysics")
-            # addConstructor("G4QStoppingPhysics", "QStoppingPhysics")
+            addConstructor("G4StoppingPhysics", "StoppingPhysics")
             addConstructor("G4NeutronTrackingCut", "NeutronTrkCut")
         else:
             raise RuntimeError("Unknown Hadron PhysicsList chosen ('%s')"%hadronPhys)
