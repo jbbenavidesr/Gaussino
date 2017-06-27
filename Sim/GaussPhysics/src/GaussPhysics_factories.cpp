@@ -27,7 +27,7 @@
 
 // Ion and hadrons
 #include "Geant4/G4IonPhysics.hh"
-//#include "Geant4/G4QStoppingPhysics.hh"             // Removed from G4r10
+#include "Geant4/G4StoppingPhysics.hh"                // G4QStoppingPhysics.hh -> G4StoppingPhysics.hh in G4r10
 #include "Geant4/G4HadronElasticPhysics.hh"
 //#include "Geant4/G4HadronElasticPhysicsLHEP.hh"     // Removed from G4r10
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
@@ -71,9 +71,8 @@ DECLARE_TOOL_FACTORY( EmExtraPhysFactory )
 
 typedef GiGaExtPhysics< G4IonPhysics > IonPhysFactory;
 DECLARE_TOOL_FACTORY( IonPhysFactory )
-// Removed in G4r10
-//typedef GiGaExtPhysics< G4QStoppingPhysics > QStopPhysFactory;
-//DECLARE_TOOL_FACTORY( QStopPhysFactory )
+typedef GiGaExtPhysics< G4StoppingPhysics > StopPhysFactory;
+DECLARE_TOOL_FACTORY( StopPhysFactory )
 typedef GiGaExtPhysics< G4HadronElasticPhysics > HadElPhysFactory;
 DECLARE_TOOL_FACTORY( HadElPhysFactory )
 // Removed in G4r10
@@ -209,20 +208,19 @@ public:
 };
 
 
-// Removed in G4r10
-/*template <>
-class GiGaExtPhysicsExtender<G4QStoppingPhysics> {
+template <>
+class GiGaExtPhysicsExtender<G4StoppingPhysics> {
 public:
   inline void addPropertiesTo(AlgTool *tool) {
     tool->declareProperty("UseMuonMinusCapture", m_useMuonMinusCapture = true,
-                          "Parameter 'UseMuonMinusCapture' for the constructor of G4QStoppingPhysics");
+                          "Parameter 'UseMuonMinusCapture' for the constructor of G4StoppingPhysics");
   }
-  inline G4QStoppingPhysics *newInstance(const std::string &name, int verbosity) const {
-    return new G4QStoppingPhysics(name, verbosity, m_useMuonMinusCapture);
+  inline G4StoppingPhysics *newInstance(const std::string &name, int verbosity) const {
+    return new G4StoppingPhysics(name, verbosity, m_useMuonMinusCapture);
   }
 private:
   bool m_useMuonMinusCapture;
-};*/
+};
 
 
 template <>
