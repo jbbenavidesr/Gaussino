@@ -384,6 +384,12 @@ StatusCode GaussGeo::convertGeometry() {
   for (const auto& counter : m_objects_counters) {
     info() << "=    " << counter.first << " : \t" << counter.second << endmsg;
   }
+
+  // Print out geometrical figures counters
+  info() << "=" << endmsg << "=    Constructed figures"  << endmsg << "=" << endmsg;
+  for (const auto& counter : m_figures_counters) {
+    info() << "=    " << counter.first << " : \t" << counter.second << endmsg;
+  }
   info() << "================================" << endmsg;
 
   if (outputLevel() == MSG::VERBOSE) {
@@ -799,6 +805,14 @@ StatusCode GaussGeo::convertIsotope(DataObject* object) {
                 isotope->A());
 
   G4bool g4_warning = false;
+  // Create an element - used in the element conversion
+  if (G4Element::GetElement(isotope->registry()->identifier(), g4_warning) == nullptr) {
+    new G4Element(isotope->registry()->identifier(),
+                  "",
+                  (int) isotope->Z(),
+                  isotope->A());
+  }
+
   if (G4Material::GetMaterial(isotope->registry()->identifier(), g4_warning) != nullptr) {
     if (outputLevel() == MSG::VERBOSE) {
       verbose() << m_str_prefix << "<= convertIsotope()" << endmsg;
@@ -816,13 +830,6 @@ StatusCode GaussGeo::convertIsotope(DataObject* object) {
                                (G4State)isotope->state(),
                                isotope->temperature(),
                                isotope->pressure());
-
-std::cout << "======================================================" << std::endl;
-std::cout << "======================================================" << std::endl;
-std::cout << g4_material->GetName() << "  " << g4_material->GetZ() << "  " << g4_material->GetA() << "  " << g4_material->GetDensity() << std::endl;
-std::cout << *(G4Isotope::GetIsotopeTable()) << std::endl;
-std::cout << "======================================================" << std::endl;
-std::cout << "======================================================" << std::endl;
 
   // Copy properties
   if (!isotope->tabulatedProperties().empty()) {
@@ -1224,6 +1231,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidBox* solid_box = dynamic_cast<const SolidBox*>(isolid);
     if (solid_type == "SolidBox" && solid_box != nullptr) {
+      m_figures_counters["G4Box"]++;
       return new G4Box(solid_box->name(),
                        solid_box->xHalfLength(),
                        solid_box->yHalfLength(),
@@ -1234,6 +1242,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidCons* solid_cons = dynamic_cast<const SolidCons*>(isolid);
     if (solid_type == "SolidCons" && solid_cons != nullptr) {
+      m_figures_counters["G4Cons"]++;
       return new G4Cons(solid_cons->name(),
                         solid_cons->innerRadiusAtMinusZ(),
                         solid_cons->outerRadiusAtMinusZ(),
@@ -1248,6 +1257,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidSphere* solid_sphere = dynamic_cast<const SolidSphere*>(isolid);
     if (solid_type == "SolidSphere" && solid_sphere != nullptr) {
+      m_figures_counters["G4Sphere"]++;
       return new G4Sphere(solid_sphere->name(),
                           solid_sphere->insideRadius(),
                           solid_sphere->outerRadius(),
@@ -1261,6 +1271,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidTrd* solid_trd = dynamic_cast<const SolidTrd*>(isolid);
     if (solid_type == "SolidTrd" && solid_trd != nullptr) {
+      m_figures_counters["G4Trd"]++;
       return new G4Trd(solid_trd->name(),
                        solid_trd->xHalfLength1(),
                        solid_trd->xHalfLength2(),
@@ -1273,6 +1284,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidTubs* solid_tubs = dynamic_cast<const SolidTubs*>(isolid);
     if (solid_type == "SolidTubs" && solid_tubs != nullptr) {
+      m_figures_counters["G4Tubs"]++;
       return new G4Tubs(solid_tubs->name(),
                         solid_tubs->innerRadius(),
                         solid_tubs->outerRadius(),
@@ -1285,6 +1297,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
   {
     const SolidTrap* solid_trap = dynamic_cast<const SolidTrap*>(isolid);
     if (solid_type == "SolidTrap" && solid_trap != nullptr) {
+      m_figures_counters["G4Trap"]++;
       return new G4Trap(solid_trap->name(),
                         solid_trap->zHalfLength(),
                         solid_trap->theta(),
@@ -1314,6 +1327,7 @@ G4VSolid* GaussGeo::solid(const ISolid* isolid) {
         r_outer[i] = solid_polycone->RMax(i);
       }
 
+      m_figures_counters["G4Polycone"]++;
       G4VSolid* g4_solid = new G4Polycone(solid_polycone->name(),
                                           solid_polycone->startPhiAngle(),
                                           solid_polycone->deltaPhiAngle(),
@@ -2017,7 +2031,7 @@ StatusCode GaussGeo::detectorElementSupportPath(const IDetectorElement* det_elem
 
   // Get the parent geometryInfo
   IGeometryInfo* parent_geo_info = det_element->geometry()->supportIGeometryInfo();
-  if (NULL == parent_geo_info) {
+  if (parent_geo_info == nullptr) {
     return sc;
   }
 
