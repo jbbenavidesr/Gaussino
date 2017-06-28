@@ -89,6 +89,7 @@ class GaussGeo : public Service,
   bool m_clear_stores;
 
   std::map <std::string, unsigned int> m_objects_counters;  // Counters by object class ID
+  std::map <std::string, unsigned int> m_figures_counters;  // Counters by geometrical figure
 
   // GDML readers to be called when creating world volume
   std::vector<std::string> m_gdml_readers_names;
