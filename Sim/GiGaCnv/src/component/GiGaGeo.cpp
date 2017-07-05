@@ -385,18 +385,20 @@ G4VSolid*  GiGaGeo::g4BoolSolid( const SolidBoolean* Sd )
             Sd->name()) ; return 0; }
   ///
   G4VSolid* g4total = first;
-  typedef SolidBoolean::SolidChildrens::const_iterator CI;
-  for( CI it = Sd->childBegin() ; Sd->childEnd() != it ; ++it )
+
+  // typedef SolidBoolean::SolidChildrens::const_iterator CI;
+  // for( CI it = Sd->childBegin() ; Sd->childEnd() != it ; ++it )
+  for (const auto& child: Sd->children())
     {
-      const SolidChild* child = *it ;
-      G4VSolid* g4child = solid( child->solid() );
+      // const SolidChild* child = *it ;
+      G4VSolid* g4child = solid( child.solid() );
       if( 0 == g4child )
         { Error("g4BoolSolid, could not convert solid for Boolean solid=" +
                 Sd->name())  ; return 0; }
 
       // Get a Clhep matrix to use with Geant4
       HepGeom::Transform3D clhepMatrix =
-        LHCb::math2clhep::transform3D( child->matrix() );
+        LHCb::math2clhep::transform3D( child.matrix() );
 
       if      ( 0 != sSub    )
         {
@@ -421,19 +423,19 @@ G4VSolid*  GiGaGeo::g4BoolSolid( const SolidBoolean* Sd )
                                                                    temp[1][3],
                                                                    temp[2][3]));
           g4total =
-            new G4SubtractionSolid  ( Sd->first()->name()+"-"+child->name() ,
+            new G4SubtractionSolid  ( Sd->first()->name()+"-"+child.name() ,
                                       g4total , g4child ,
                                       newtransf.inverse() ) ;
 
         }
       else if ( 0 != sInt    )
         { g4total =
-            new G4IntersectionSolid ( Sd->first()->name()+"*"+child->name() ,
+            new G4IntersectionSolid ( Sd->first()->name()+"*"+child.name() ,
                                       g4total , g4child ,
                                       clhepMatrix.inverse() ) ; }
       else if ( 0 != sUni    )
         { g4total =
-            new G4UnionSolid        ( Sd->first()->name()+"+"+child->name() ,
+            new G4UnionSolid        ( Sd->first()->name()+"+"+child.name() ,
                                       g4total , g4child ,
                                       clhepMatrix.inverse() ) ; }
       else

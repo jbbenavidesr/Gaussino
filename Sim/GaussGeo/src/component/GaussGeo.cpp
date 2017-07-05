@@ -1397,16 +1397,15 @@ G4VSolid* GaussGeo::solidBoolToG4Solid(const SolidBoolean* solid_bool) {
   }
 
   G4VSolid* g4_resulting_solid = first_solid;
-  // typedef SolidBoolean::SolidChildrens::const_iterator CI;
-  for (auto it = solid_bool->childBegin(); solid_bool->childEnd() != it; ++it) {
-    const SolidChild* solid_child = *it;
-    G4VSolid* g4_solid_child = solid(solid_child->solid());
+  for (const auto& solid_child: solid_bool->children()) {
+    G4VSolid* g4_solid_child = solid(solid_child.solid());
+
     if (g4_solid_child == nullptr) {
       error() << "Failed to convert solid for SolidBoolean: " << solid_bool->name() << endmsg;
     }
 
     // CLHEP matrix for G4
-    HepGeom::Transform3D clhep_matrix = LHCb::math2clhep::transform3D(solid_child->matrix());
+    HepGeom::Transform3D clhep_matrix = LHCb::math2clhep::transform3D(solid_child.matrix());
 
     if (solid_subtr != nullptr) {
       double matrix_elems[3][4];
@@ -1430,17 +1429,17 @@ G4VSolid* GaussGeo::solidBoolToG4Solid(const SolidBoolean* solid_bool) {
                                                                          matrix_elems[1][3],
                                                                          matrix_elems[2][3]));
 
-      g4_resulting_solid = new G4SubtractionSolid(solid_bool->first()->name() + "-" + solid_child->name(),
+      g4_resulting_solid = new G4SubtractionSolid(solid_bool->first()->name() + "-" + solid_child.name(),
                                                   g4_resulting_solid,
                                                   g4_solid_child,
                                                   new_transform.inverse());
     } else if (solid_inter != nullptr) {
-      g4_resulting_solid = new G4IntersectionSolid(solid_bool->first()->name() + "*" + solid_child->name(),
+      g4_resulting_solid = new G4IntersectionSolid(solid_bool->first()->name() + "*" + solid_child.name(),
                                                    g4_resulting_solid,
                                                    g4_solid_child,
                                                    clhep_matrix.inverse());
     } else if (solid_union != nullptr) {
-      g4_resulting_solid = new G4UnionSolid(solid_bool->first()->name() + "+" + solid_child->name(),
+      g4_resulting_solid = new G4UnionSolid(solid_bool->first()->name() + "+" + solid_child.name(),
                                             g4_resulting_solid,
                                             g4_solid_child,
                                             clhep_matrix.inverse());
