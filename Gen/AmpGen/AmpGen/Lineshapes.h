@@ -2,6 +2,7 @@
 #define BW_H
 
 #include <map>
+#include <vector>
 #include "AmpGen/Expression.h"
 #include "AmpGen/Factory.h"
 

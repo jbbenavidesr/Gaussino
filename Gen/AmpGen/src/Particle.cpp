@@ -3,6 +3,7 @@
 #include "AmpGen/Utilities.h"
 #include <bitset>
 #include <fstream>
+#include <numeric>
 
 using namespace AmpGen; 
 

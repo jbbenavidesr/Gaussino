@@ -71,6 +71,7 @@
 #include <sstream>
 #include <complex>
 #include <map>
+#include <vector>
 
 #include "AmpGen/MsgService.h"
 /// Forward definitions of the expressions

@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "AmpGen/Utilities.h"
 #include <fstream>
 #include "AmpGen/MsgService.h"
