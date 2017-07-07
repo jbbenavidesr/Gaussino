@@ -10,6 +10,8 @@
 #include "LbPGuns/IParticleGunTool.h"
 #include "GaudiKernel/RndmGenerators.h"
 
+#include "Event/GenHeader.h"
+
 // from ROOT
 #include "TH1.h"
 #include "TH2D.h"
@@ -71,10 +73,17 @@ class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
   /// Variables used to bin the histogram
   std::string m_binningVars;
 
+  /// Save run and event number
+  bool newEvent(const LHCb::GenHeader* evt);
+  longlong m_runnumber = -1;
+  longlong m_evtnumber = -1;
+
   /// Histogram pointers (ready for TH2D if using ptpz binning or TH3D if using pxpypz binning
   TH1* m_hist;
   TH2D* m_hist2d;
   TH3D* m_hist3d;
+
+
 };
 
 #endif // PARTICLEGUNS_MOMENTUMSPECTRUM_H
