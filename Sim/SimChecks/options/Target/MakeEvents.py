@@ -10,6 +10,7 @@
 import sys
 import os
 import re
+import subprocess
 
 from Target.TargetCreateEvents import RunTargetJobs
 from optparse import OptionParser
@@ -28,7 +29,7 @@ def getArgsChar(line):
     return x
 
 pwd = os.getcwd()
-os.system("mkdir -p {}/TargetOutput".format(pwd))
+subprocess.check_call("mkdir -p {}/TargetOutput".format(pwd), shell=True)
 output_directory = os.path.join(pwd, "TargetOutput")
 
 parser = OptionParser()
@@ -52,12 +53,12 @@ from Target.TargetPlots import Plot
 
 plots = ["RATIO_TOTAL", "RATIO_INEL", "TOTAL", "INEL", "EL", "MULTI", "MULTI_NCH", "MULTI_GAMMA", "ASYM_INEL"]
 
-file = TFile(os.path.join(output_directory, "ROOTFiles/TargetsPlots.root"))
-dataTree = file.Get("summaryTree")
+file_ = TFile(os.path.join(output_directory, "ROOTFiles/TargetsPlots.root"))
+dataTree = file_.Get("summaryTree")
 
-os.system("mkdir -p {}/Kaons".format(output_directory))
-os.system("mkdir -p {}/Protons".format(output_directory))
-os.system("mkdir -p {}/Pions".format(output_directory))
+subprocess.check_call("mkdir -p {}/Kaons".format(output_directory), shell=True)
+subprocess.check_call("mkdir -p {}/Protons".format(output_directory), shell=True)
+subprocess.check_call("mkdir -p {}/Pions".format(output_directory), shell=True)
 
 for t in thicks:
     for p in plots:
@@ -68,3 +69,5 @@ for t in thicks:
             Plot(dataTree, "energy", p, os.path.join(output_directory, "Kaons"), models, ["Kplus", "Kminus"], materials, 2, t, True)
         if "Piplus" in pguns and "Piminus" in pguns:
             Plot(dataTree, "energy", p, os.path.join(output_directory, "Pions"), models, ["Piplus", "Piminus"], materials, 2, t, True)
+
+subprocess.check_call( 'hadd -f {} {}'.format( os.path.join(output_directory, 'ROOTGraphs/TargetTestAllPlots.root'), os.path.join(output_directory, 'ROOTGraphs/*.root') ), shell=True )
