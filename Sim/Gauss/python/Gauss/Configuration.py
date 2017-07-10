@@ -3634,20 +3634,40 @@ class Gauss(LHCbConfigurableUser):
             GaussRedecayCtrFilter(
                 'CheckIfSignalSim2' + slot).GaussRedecay = svcname
 
-        # Copy over the information from the <eventtype>.py file
-        from Configurables import Generation
-        from Configurables import GaussRedecayMergeAndClean
         from Configurables import RedecayProduction
         from Configurables import GaussRedecayFakePileUp
 
-        gen = Generation("GenerationSignal")
-        gen.addTool(GaussRedecayFakePileUp)
-        gen.PileUpTool = "GaussRedecayFakePileUp"
-        gen.VertexSmearingTool = ""
-        sgt = getattr(gen, gen.SampleGenerationTool.split('/')[-1])
-        sgt.ProductionTool = "RedecayProduction"
-        sgt.addTool(RedecayProduction)
-        sgt.RevertWhenBackward = False
+        sig_gen = Generation('GenerationSignal')
+        org_gen = Generation('Generation')
+
+        sig_gen.EventType = org_gen.EventType
+        sig_gen.SampleGenerationTool = "SignalPlain"
+        sig_gen.addTool(SignalPlain)
+
+        sig_gen.PileUpTool = "GaussRedecayFakePileUp"
+        sig_gen.addTool(GaussRedecayFakePileUp)
+        sig_gen.VertexSmearingTool = ""
+
+        # Signal SampleGenerationTool
+        sig_sgt = sig_gen.SignalPlain
+        sig_sgt.ProductionTool = "RedecayProduction"
+        sig_sgt.addTool(RedecayProduction)
+        sig_sgt.RevertWhenBackward = False
+
+        # Original SampleGenerationTool to get the PIDList and CutTool
+        org_sgt_name = org_gen.SampleGenerationTool.split('/')[-1]
+        org_sgt = getattr(org_gen, org_sgt_name)
+        sig_sgt.SignalPIDList = org_sgt.SignalPIDList
+
+        # Copy the CutTool if it exists
+        if hasattr(org_sgt, 'CutTool'):
+            org_ctl_name = org_sgt.CutTool.split('/')[-1]
+            sig_sgt.CutTool = org_sgt.CutTool
+            # Check if the cuttool is configured, might not be in case of
+            # simple ones like DaughtersInLHCb
+            if hasattr(org_sgt, org_ctl_name):
+                org_ctl = getattr(org_sgt, org_ctl_name)
+                sig_sgt.addTool(org_ctl, org_ctl_name)
 
 
     def configureRedecaySim( self, SpillOverSlots ):
@@ -3784,7 +3804,7 @@ class Gauss(LHCbConfigurableUser):
                 grdfilter.IsPhaseEqual = 0
                 simSlotSignalSeq.Members = [grdfilter, simSlotSignalSeqImpl]
 
-                simSlotSignalSeqImpl.Members += [Generation().clone("GenerationSignal")]
+                simSlotSignalSeqImpl.Members += [Generation("GenerationSignal")]
                 simSlotSignalSeqImpl.RootInTES = '{}Signal'.format(slot)
 
                 genToSim = GenerationToSimulation( "GenToSim" + slot + 'Signal',
