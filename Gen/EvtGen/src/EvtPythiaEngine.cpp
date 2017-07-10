@@ -29,6 +29,7 @@
 #include "EvtGenModels/EvtPythia6CommandConverter.hh"
 
 #include "Pythia8/Event.h"
+#include "Pythia8/ParticleData.h"
 
 #include <iostream>
 #include <sstream>
@@ -430,54 +431,94 @@ void EvtPythiaEngine::updateParticleLists() {
     EvtId particleId = EvtPDL::getEntry(iPDL);
     int aliasInt = particleId.getAlias();
 
+    int PDGCode = EvtPDL::getStdHep(particleId);
+    
+    // Update mass, lifetime, ...
+    double mass = EvtPDL::getMass(particleId);
+    double width = EvtPDL::getWidth(particleId);
+    double lifetime = EvtPDL::getctau(particleId);
+    double mmin = EvtPDL::getMinMass(particleId);
+    double mmax = EvtPDL::getMaxMass(particleId);
+
+    // Particle data pointers
+    Pythia8::ParticleDataEntry * entry_generic =
+      _genericPartData.particleDataEntryPtr(PDGCode);
+    Pythia8::ParticleDataEntry * entry_alias =
+      _aliasPartData.particleDataEntryPtr(PDGCode);
+
+    if (entry_generic != 0) {
+
+      entry_generic->setM0(mass);
+      entry_generic->setMWidth(width);
+      entry_generic->setTau0(lifetime);
+
+      if (width != 0.0) {
+        entry_generic->setMMin(mmin);
+        entry_generic->setMMax(mmax);
+      }
+
+    } else {
+      report(INFO,"EvtGen") << "PythiaEngine list update, particle with PDG code " 
+			    << PDGCode << " is not known to Pythia8" << endl;
+    }
+
+    if (entry_alias != 0) {
+
+      entry_alias->setM0(mass);
+      entry_alias->setMWidth(width);
+      entry_alias->setTau0(lifetime);
+
+      if (width != 0.0) {
+        entry_alias->setMMin(mmin);
+        entry_alias->setMMax(mmax);
+      }
+
+    } else {
+      report(INFO,"EvtGen") << "PythiaEngine list update, alias particle with PDG code " 
+			    << PDGCode << " is not known to Pythia8" << endl;
+    }
+    
     // Check which particles have a Pythia decay defined.
     // Get the list of all possible decays for the particle, using the alias integer.
     // If the particle is not actually an alias, aliasInt = idInt.
 
     // Should change isJetSet to isPythia eventually.
     bool hasPythiaDecays = EvtDecayTable::getInstance()->hasPythia(aliasInt);
-
+    
     if (hasPythiaDecays) {
-
+      
       int isAlias = particleId.isAlias();
-
-      int PDGCode = EvtPDL::getStdHep(particleId);
-
+            
       // Decide what generator to use depending on ether we have 
       // an alias particle or not
       _thePythiaGenerator = _genericPythiaGen;
       _theParticleData = _genericPartData;
       if (isAlias == 1) {
-	_thePythiaGenerator = _aliasPythiaGen;
-	_theParticleData = _aliasPartData;
+        _thePythiaGenerator = _aliasPythiaGen;
+        _theParticleData = _aliasPartData;
       }
-
+      
       // Find the Pythia particle name given the standard PDG code integer
       std::string dataName = _theParticleData.name(PDGCode);
       bool alreadyStored(false);
       if (_addedPDGCodes.find(abs(PDGCode)) != _addedPDGCodes.end()) {alreadyStored = true;}
-
+      
       if (dataName == " " && alreadyStored == false) {
-
+        
         // Particle and its antiparticle does not exist in the Pythia database.
-	// Create a new particle, then create the new decay modes.
-	this->createPythiaParticle(particleId, PDGCode);
-
-      } else {
-       
-	// Particle exists in the Pythia database.
-	// Could update mass/lifetime values here. For now just use Pythia defaults.
-
-      }
-
+        // Create a new particle, then create the new decay modes.
+        this->createPythiaParticle(particleId, PDGCode);
+        
+      } 
+      
       // For the particle, create the Pythia decay modes.
       // Update Pythia data tables.
       this->updatePythiaDecayTable(particleId, aliasInt, PDGCode);
-
+      
     } // Loop over Pythia decays
-
+    
   } // Loop over EvtPDL entries
-
+  
   //report(INFO,"EvtGen")<<"Writing out changed generic Pythia decay list"<<endl;
   //_genericPythiaGen->particleData.listChanged();
 
