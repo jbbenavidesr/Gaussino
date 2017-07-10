@@ -161,6 +161,7 @@
 #include "EvtGenModels/EvtKStopizmumu.hh"
 #include "EvtGenModels/EvtBsMuMuKK.hh"
 #include "EvtGenModels/EvtGenericDalitz.hh"
+#include "EvtGenModels/EvtVtoSll.hh"
 
 #include "EvtGenModels/EvtModelReg.hh"
 using std::fstream;
@@ -309,6 +310,7 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
 
     modelist.registerModel(new EvtKStopizmumu);    
     modelist.registerModel(new EvtBsMuMuKK);
+    modelist.registerModel(new EvtVtoSll);
 
     modelist.registerModel(new EvtGenericDalitz());
 
