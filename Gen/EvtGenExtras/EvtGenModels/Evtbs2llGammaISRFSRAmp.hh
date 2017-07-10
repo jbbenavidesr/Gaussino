@@ -37,15 +37,15 @@ class Evtbs2llGammaISRFSRAmp {
                   double mu, int Nf, int sr, int res_swch, int ias,
                   double Egamma_min, 
                   double CKM_A, double CKM_lambda, 
-                  double CKM_barrho, double CKM_bareta);
-
-    double CalcMaxProb(EvtId parnum, EvtId photnum, EvtId l1num, EvtId l2num, 
+                  double CKM_barrho, double CKM_bareta, double mumumass_min);
+  
+  double CalcMaxProb(EvtId parnum, EvtId photnum, EvtId l1num, EvtId l2num, 
 		               Evtbs2llGammaFF *formFactors,
                        EvtbTosllWilsCoeffNLO *WilsCoeff, 
                        double mu, int Nf, int sr, int res_swch, int ias, 
                        double Egamma_min,
                        double CKM_A, double CKM_lambda, 
-                       double CKM_barrho, double CKM_bareta);
+                     double CKM_barrho, double CKM_bareta, double mumumass_min);
 
     double lambda(double a, double b, double c); 
 

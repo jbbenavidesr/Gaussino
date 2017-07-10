@@ -79,8 +79,8 @@ void Evtbs2llGammaISRFSRAmp::CalcAmp(EvtParticle *parent,
                                int res_swch, int ias,
                                double Egamma_min, 
                                double CKM_A, double CKM_lambda, 
-                               double CKM_barrho, double CKM_bareta){
-
+                                     double CKM_barrho, double CKM_bareta,
+                                     double mumumass_min){      
 //  FILE *mytest;
 
   int iG=0;          // photon is the first daughter particle
@@ -233,7 +233,7 @@ void Evtbs2llGammaISRFSRAmp::CalcAmp(EvtParticle *parent,
   EvtComplex a1,c7gam,c9eff_b2q,c9eff_barb2barq,c10a;
 
   // foton energy cut and removal of the J/psi amd psi' resonant area 
-  if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)){
+  if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)||(q2<=mumumass_min*mumumass_min)){
     c1              = 0.0;
     c2              = 0.0;
     a1              = unit1*0.0;
@@ -260,7 +260,7 @@ void Evtbs2llGammaISRFSRAmp::CalcAmp(EvtParticle *parent,
   EvtComplex Fta_b2q, Fta_barb2barq;
 
   // foton energy cut and removal of the J/psi amd psi' resonant area
-  if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)){
+  if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)||(q2<=mumumass_min*mumumass_min)){
     fb            = 0.0;
     Fa            = unit1*0.0;
     Fv            = unit1*0.0;
@@ -464,7 +464,7 @@ void Evtbs2llGammaISRFSRAmp::CalcAmp(EvtParticle *parent,
       E3=(epsG*hatp)*brammS;
 
       // foton energy cut and removal of the J/psi amd psi' resonant area
-      if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)){
+      if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)||(q2<=mumumass_min*mumumass_min)){
          CKM_factor=0.0*unit1; 
       }
 
@@ -559,7 +559,7 @@ void Evtbs2llGammaISRFSRAmp::CalcAmp(EvtParticle *parent,
       E3=(barepsG*hatp)*brammS;
 
       // foton energy cut and removal of the J/psi amd psi' resonant area
-      if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)){
+      if(Egam < Egamma_min||(res_swch==1&&q2>=9.199&&q2<=15.333)||(q2<=mumumass_min*mumumass_min)){
          CKM_factor=0.0*unit1; 
       }
 
@@ -605,7 +605,8 @@ double Evtbs2llGammaISRFSRAmp::CalcMaxProb(EvtId parnum, EvtId photnum,
                                      int res_swch, int ias,
 			                         double Egamma_min,
                                      double CKM_A, double CKM_lambda, 
-                                     double CKM_barrho, double CKM_bareta){
+                                           double CKM_barrho, double CKM_bareta,
+                                           double mumumass_min){
 
   double maxfoundprob = -100.0; // maximum of the probability
 
@@ -789,7 +790,7 @@ double Evtbs2llGammaISRFSRAmp::CalcMaxProb(EvtId parnum, EvtId photnum,
           // "maximum amplitude" kinematical configuration
           CalcAmp(root_part, amp, formFactors, WilsCoeff, 
                   mu, Nf, sr, res_swch, ias,
-                  Egamma_min, CKM_A, CKM_lambda, CKM_barrho, CKM_bareta);
+                  Egamma_min, CKM_A, CKM_lambda, CKM_barrho, CKM_bareta, mumumass_min);
                   
 
           // Now find the probability at this q2 and cos theta lepton point
