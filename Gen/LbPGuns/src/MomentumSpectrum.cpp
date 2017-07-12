@@ -129,8 +129,8 @@ StatusCode MomentumSpectrum::initialize() {
 //===========================================================================
 void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 					 Gaudi::LorentzVector & origin , int & pdgId ) {
-
-	// -- Determine which particle is generated
+  
+        // -- Determine which particle is generated
 	unsigned int currentType = (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
 	// protect against funnies
 	if ( currentType >= m_pdgCodes.size() ) currentType = 0;
@@ -141,11 +141,13 @@ void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 
 	// -- Sample components of momentum according to template in histogram
 	LHCb::GenHeader* evt =  get<LHCb::GenHeader>(  LHCb::GenHeaderLocation::Default );
-	// Use the cantor pairing function to obtain an unique seed
-	auto runNr = evt->runNumber();
-	auto evtNr = evt->evtNumber();
-	auto uniqueSeed = (runNr + evtNr) * (runNr + evtNr + 1)/2 + evtNr;
-	gRandom->SetSeed( uniqueSeed );
+	auto cantor_pairing = [](const longlong& x, const longlong& y) -> unsigned long{
+	  return ((x + y) * (x + y + 1))/2 + y;
+	};
+	if (newEvent(evt)){
+	  auto uniqueSeed = cantor_pairing( evt->runNumber(), evt->evtNumber());
+	  gRandom->SetSeed( uniqueSeed );
+	}
 	if ( m_binningVars == "pxpypz" ) {
 		double px(0), py(0), pz(0);
 		m_hist3d->GetRandom3(px, py, pz);
@@ -176,5 +178,21 @@ void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 	if (msgLevel(MSG::DEBUG))
 		debug() << " -> " << m_names[ currentType ] << endmsg
 	           << "   P   = " << momentum << endmsg ;
+}
+
+bool MomentumSpectrum::newEvent(const LHCb::GenHeader* evt)
+{
+  auto runNr = evt->runNumber();
+  auto evtNr = evt->evtNumber();
+  if ( runNr == m_runnumber && evtNr == m_evtnumber ){
+    return false;
+  }
+  if ( runNr != m_runnumber ){
+    m_runnumber = evt->runNumber();
+  }
+  if ( evtNr != m_evtnumber ){
+    m_evtnumber = evt->evtNumber();
+  }
+  return true;
 }
 
