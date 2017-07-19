@@ -229,16 +229,16 @@ StatusCode GaussGeo::initialize() {
   }
   info() << "============================================" << endmsg;
 
+  if (outputLevel() == MSG::DEBUG || outputLevel() == MSG::VERBOSE) {
+    printConfiguraion();
+  }
+
   // Convert geometry
   {
     StatusCode sc = convertGeometry();
     if (sc.isFailure()) {
       return reportError("Failed to convert geometry!", sc);
     }
-  }
-
-  if (outputLevel() == MSG::VERBOSE) {
-    printConfiguraion();
   }
 
   if (outputLevel() == MSG::VERBOSE) {
@@ -1610,7 +1610,7 @@ void GaussGeo::printConfiguraion() const {
           << "/" << this->name() << "  #properties = " << properties.size() << endmsg;
 
   for (const auto& property_item : properties) {
-    debug() << "Property ['Name': Value] = " << (property_item) << endmsg;
+    debug() << "Property ['Name': Value] = " << (*property_item) << endmsg;
   }
 }
 
