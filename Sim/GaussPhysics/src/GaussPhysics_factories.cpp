@@ -15,15 +15,17 @@
 // Geant4 physics lists
 #include "Geant4/G4DecayPhysics.hh"
 
-#// EM physics 
+// EM physics
 #include "Geant4/G4EmStandardPhysics_option1.hh"
 #include "Geant4/G4EmStandardPhysics_option2.hh"
 #include "Geant4/G4EmStandardPhysics_option3.hh"
 #include "Geant4/G4EmStandardPhysics.hh"
 #include "Geant4/G4EmExtraPhysics.hh"
-#include "Geant4/G4EmStandardPhysics_option1LHCb.hh"
-#include "Geant4/G4EmStandardPhysics_option1NoApplyCuts.hh"
-#include "Geant4/G4EmStandardPhysics_LHCbTest.hh"
+
+// LHCb Physics Lists
+#include "LHCbG4PhysLists/G4EmStandardPhysics_option1LHCb.h"
+#include "LHCbG4PhysLists/G4EmStandardPhysics_option1NoApplyCuts.h"
+#include "LHCbG4PhysLists/G4EmStandardPhysics_LHCbTest.h"
 
 // Ion and hadrons
 #include "Geant4/G4IonPhysics.hh"
