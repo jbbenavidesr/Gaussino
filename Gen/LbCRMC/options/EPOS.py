@@ -102,7 +102,7 @@ def finalConfiguration():
         elif event_type == 42112010:
             gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 23
             gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
-                                                    "WeakSingleBoson:ffbar2gmZ = on"
+                                                    "WeakSingleBoson:ffbar2gmZ = on" ,
                                                     "23:mMin = 2.",
                                                     "TimeShower:mMaxGamma = 2.",
                                                     "PhaseSpace:mHatMin = 2.",
