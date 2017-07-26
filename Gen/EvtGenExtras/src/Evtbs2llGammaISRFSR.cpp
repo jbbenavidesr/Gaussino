@@ -74,7 +74,7 @@ EvtDecayBase* Evtbs2llGammaISRFSR::clone(){
 void Evtbs2llGammaISRFSR::init(){
 
   // check that there are 10 arguments
-  checkNArg(10);
+  checkNArg(10, 11);
   // check that there are 3 daughteres
   checkNDaug(3);
 
@@ -134,11 +134,12 @@ void Evtbs2llGammaISRFSR::initProbMax(){
   double CKM_lambda = getArg(7); 
   double CKM_barrho = getArg(8); 
   double CKM_bareta = getArg(9);
-
-
+  double mumumass_min = 0.;
+  if(getNArg() == 11) mumumass_min = getArg(10);
+  
   mymaxprob = _calcamp->CalcMaxProb(parnum, photnum, l1num, l2num, 
                                     _mntffmodel, _wilscoeff, mu, Nf, sr, res_swch, ias, 
-                                    Egamma_min, CKM_A, CKM_lambda, CKM_barrho, CKM_bareta);
+                                    Egamma_min, CKM_A, CKM_lambda, CKM_barrho, CKM_bareta,mumumass_min);
 
 
   if(mymaxprob <= 0.0){
@@ -167,13 +168,16 @@ void Evtbs2llGammaISRFSR::decay( EvtParticle *p ){
   double CKM_lambda = getArg(7); 
   double CKM_barrho = getArg(8); 
   double CKM_bareta = getArg(9);
+  double mumumass_min = 0.;
+  if(getNArg() == 11) mumumass_min = getArg(10);
 
+  
   p->initializePhaseSpace(getNDaug(),getDaugs());
 
   // The class "Evtbs2llGammaFFMNT" is the derived class of the 
   // class  "Evtbs2llGammaFF" (see the file "Evtbs2llGammaFF.hh") 
   _calcamp->CalcAmp(p,_amp2,_mntffmodel, _wilscoeff, mu, Nf, sr, res_swch, ias,  
-                       Egamma_min, CKM_A,CKM_lambda,CKM_barrho,CKM_bareta);
+                    Egamma_min, CKM_A,CKM_lambda,CKM_barrho,CKM_bareta, mumumass_min);
 
 //  report(NOTICE,"EvtGen") << "\n " 
 //<< "\n The function Evtbs2llGammaISRFSR::decay(...) passed with arguments:"
