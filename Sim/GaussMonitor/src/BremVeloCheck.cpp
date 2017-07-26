@@ -55,6 +55,7 @@
 //-----------------------------------------------------------------------------
 // Implementation file for class : BremVeloCheck
 // 2014-06-12 Peter Noel Griffith  
+// 2015-29-05 Geogios Chatzikonstantinidis(Update the BreamVeloCheck)
 //-----------------------------------------------------------------------------
 
 
@@ -241,17 +242,14 @@ void BremVeloCheck::PostUserTrackingAction ( const G4Track* track )
 				
 				m_dptype[index]    = drproctype;
 				m_dpstype[index]   = drprocsubtype;
-				m_ndaugh   = numDaugh;
-				h_photon_E->fill(numDaugh);
-				h_nphotons->fill(ekine);
+				h_photon_E->fill(ekine);
 				h_photon_posXZ->fill(dtr_x,dtr_z);
-
 			}
 			else
 			{
 				continue;
 			}
-
+      
       
 			if( dtr->GetParentID() != track->GetTrackID() ) 
 			{
@@ -260,10 +258,10 @@ void BremVeloCheck::PostUserTrackingAction ( const G4Track* track )
 				debug() << " --- daughter getparent id " << dtr->GetParentID() << endmsg;
 			}
 		}
-
-
+    m_ndaugh   = numDaugh;
+    h_nphotons->fill(m_ndaugh);
+    
 		m_ntuple->write();
-
 		return;
 	}
 
