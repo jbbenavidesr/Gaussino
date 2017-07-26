@@ -14,6 +14,7 @@ gaudi_depends_on_subdirs(Det/RichDet
 find_package(AIDA)
 
 gaudi_add_module(GaussCherenkov
+                 src/*.cpp
                  src/SensDet/*.cpp
                  src/CherenkovPhysProcess/*.cpp
                  src/CkvPhysPhotDet/*.cpp
