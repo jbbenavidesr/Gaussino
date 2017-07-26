@@ -18,6 +18,24 @@ vardef = {"TOTAL": "xsec", "INEL": "inel_xsec", "EL": "el_xsec",
         "PERC_NCH": "percNCh", "PERC_MINUS": "percMinus", "PERC_PLUS": "percPlus",
         "MULTI_GAMMA": "multi_gamma", "MULTI": "multi"}
 
+
+plots_title_dict = { 'vardef' : { 'TOTAL'             : 'Total_CrossSection'                ,
+				  'INEL'              : 'InElastic_CrossSection'            ,
+				  'EL'                : 'Elastic_CrossSection'              ,
+				  'MULTI_NCH'         : 'Multiplicity_NeutralCharge'        ,
+				  'MULTI_NCH_NOGAMMA' : 'Multiplicity_NeutralCharge_NoGamma',
+				  'PERC_NCH'          : 'Percent_NeutralCharged'            ,
+				  'PERC_MINUS'        : 'Percent_NegativelyCharged'         ,
+				  'PERC_PLUS'         : 'Percent_PositivelyCharged'         ,
+				  'MULTI_GAMMA'       : 'Multiplicity_Gamma'                ,
+				  'MULTI'             : 'Multiplicity'                      ,
+				  'RATIO_TOTAL'       : 'Total_CrossSection_Ratio'          ,
+				  'ASYM_TOTAL'        : 'Total_CrossSection_Asymmetry'      ,
+				  'RATIO_INEL'        : 'InElastic_CrossSection_Ratio'      ,
+				  'ASYM_INEL'         : 'InElastic_CrossSection_Asymmetry'  ,
+				  'RATIO_EL'          : 'Elastic_CrossSection_Ratio'        ,
+				  'ASYM_EL'           : 'Elastic_CrossSection_Asymmetry'  } }
+
 colors = [1, 2, 4, 6, 8, 9, 38, 12, 18, 41, 5, 3, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35]
 
 
@@ -55,7 +73,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
         if(xvar == "energy"):
             ratiotxt = open(os.path.join(outputPath, "data_tables/%s_in%imm.txt") % (finalPlot, Dx), "w")
         else:
-            ratiotxt = open(os.path.join(outputPath, "data_tables/%s_for%iGeV.txt") % (fialPlot, E0), "w")
+            ratiotxt = open(os.path.join(outputPath, "data_tables/%s_for%iGeV.txt") % (finalPlot, E0), "w")
         ratiotxt.write("\\begin{tabular}\n")
 
         grs = []
@@ -92,12 +110,19 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                     continue
 
                 if(has_error):
-                    dataTree.Draw(xvar + ":" + var + ":" + var + "_err", "", "colz")
-                    gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+		    try:
+                        dataTree.Draw(xvar + ":" + var + ":" + var + "_err", "", "colz")
+                        gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+		    except:
+			print("ERROR: Could not generate Graph: '{}+/-{} vs {}+/-{}'".format(xvar, var, errx, var+'_err' ))
+			continue
                 else:
-                    dataTree.Draw(xvar + ":" + var)
-                    gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
-
+		    try:
+                    	dataTree.Draw(xvar + ":" + var)
+                    	gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
+		    except:
+			 print("ERROR: Could not generate Graph: '{} vs {}'".format(xvar, var))
+			 continue
                 ty1 = dataTree.GetV2()
                 terry1 = dataTree.GetV3()
                 y1 = []
@@ -121,11 +146,19 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                 dataTree.SetEntryList(list2)
 
                 if(has_error):
-                    dataTree.Draw(xvar + ":" + var + ":" + var + "_err")
-                    gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+		    try:
+                        dataTree.Draw(xvar + ":" + var + ":" + var + "_err")
+                        gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+		    except:
+			print("ERROR: Could not generate Graph: '{}+/-{} vs {}+/-{}'".format(xvar, var, errx, var+'_err' ))
+			continue
                 else:
-                    dataTree.Draw(xvar + ":" + var)
-                    gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
+		    try:
+                    	dataTree.Draw(xvar + ":" + var)
+                    	gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
+		    except:
+			print("ERROR: Could not generate Graph: '{} vs {}'".format(xvar, var))
+			continue
 
                 tx = dataTree.GetV1()
                 ty2 = dataTree.GetV2()
@@ -194,9 +227,9 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
 
                 nm += 1
                 Material = mat=ord(materials[0][0])
-                plot_var = Dx if xvar == "energy" else E0
+                plot_var = '{}mm'.format(Dx) if xvar == "energy" else '{}GeV'.format(E0)
 		plot_var_label = "Thickness" if xvar == "energy" else "Energy"
-                gr.SetName("{}-{}_Mod-{}_PGun-{}".format(plot_var_label, plot_var, m, pg))
+                gr.SetName("{}_{}-{}_Model-{}-PGun-{}".format(plots_title_dict['vardef'][finalPlot], plot_var_label, plot_var, m, pg))
                 grs.append(gr)
 
         ratiotxt.write("\\hline\n\\end{tabular}")
@@ -213,13 +246,23 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
         output_rootFile = os.path.join(outputPath, "ROOTGraphs/{}".format(finalPlot + mystr.replace(" ", "_") + ".root"))
         out_file = TFile.Open(output_rootFile, "recreate")
 
+
+	ratio_title_y = '#sigma^{{{group}}}_{{antipart}}/#sigma^{{{group}}}_{{part}}'
+
         for gg in grs:
 
             gg.GetYaxis().SetTitleOffset(1.5)
             gg.SetTitle(titleMultigr)
             if(finalPlot.find("RATIO") > -1):
-                gg.GetYaxis().SetTitle("Ratio")
-                gg.GetYaxis().SetRangeUser(0, 3.)
+		if 'INEL' in finalPlot:
+	            gg.GetYaxis().SetTitle(ratio_title_y.format(group='inel'))
+            	elif 'TOTAL' in finalPlot:
+		    gg.GetYaxis().SetTitle(ratio_title_y.format(group='total'))
+		elif 'EL' in finalPlot:
+		    gg.GetYaxis().SetTitle(ratio_title_y.format(group='el'))
+		else:
+		    pass
+	        gg.GetYaxis().SetRangeUser(0, 3.)
             else:
                 gg.GetYaxis().SetTitle("Asym (%)")
 
@@ -369,11 +412,19 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                     gr = 0
 
                     if(finalPlot == "MULTI" or finalPlot == "TOTAL" or finalPlot == "INEL" or finalPlot == "EL"):
-                        dataTree.Draw(xvar + ":" + var + ":" + var + "_err", "", "colz")
-                        gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+		         try:
+                             dataTree.Draw(xvar + ":" + var + ":" + var + "_err", "", "colz")
+                             gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2(), errx, dataTree.GetV3())
+                         except:
+                             print("ERROR: Could not generate Graph: '{}+/-{} vs {}+/-{}'".format(xvar, var, errx, var+'_err' ))
+			     continue
                     else:
-                        dataTree.Draw(xvar + ":" + var)
-                        gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
+			try:
+                             dataTree.Draw(xvar + ":" + var)
+                             gr = TGraphErrors(entries, dataTree.GetV1(), dataTree.GetV2())
+                        except:
+                             print("ERROR: Could not generate Graph: '{} vs {}'".format(xvar, var))
+			     continue
 
                     if(nh % 2 == 0):
                         gr.SetMarkerColor(colors[int(nh / 2. - 1)])
@@ -391,10 +442,9 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                         label += " (" + model + ")"
                     leg.AddEntry(gr, label, "P")
 
-                    plot_var = Dx if xvar == "energy" else E0
 		    plot_var_label = "Thickness" if xvar == "energy" else "Energy"
-                    plot_var = E0 if xvar == "energy" else Dx
-                    gr.SetName("{}-{}_Mat-{}_Mod-{}_PGun-{}".format(plot_var_label, plot_var, material, model, pg))
+                    plot_var = '{}GeV'.format(E0) if xvar == "thickness" else '{}mm'.format(Dx)
+                    gr.SetName("{}_{}-{}_Mat-{}_Mod-{}_PGun-{}".format(plots_title_dict['vardef'][finalPlot], plot_var_label, plot_var, material, model, pg))
                     grs.append(gr)
 
                     if plotData and n0 == len(models) - 1 and materials[0] == "Al":
