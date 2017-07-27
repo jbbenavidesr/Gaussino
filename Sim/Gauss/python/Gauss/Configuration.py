@@ -27,7 +27,7 @@ from Configurables import ( GenInit, Generation, MinimumBias, Inclusive,
                             CollidingBeams, FixedTarget,
                             BeamSpotSmearVertex, FlatZSmearVertex,
                             EvtGenDecay )
-from Configurables import ( SimInit, GiGaGeo, GiGaInputStream, GiGa,
+from Configurables import ( SimInit, GaussGeo, GiGaGeo, GiGaInputStream, GiGa,
                             GiGaDataStoreAlgorithm,
                             GiGaPhysListModular, GiGaRunActionSequence,
                             TrCutsRunAction, GiGaRunActionCommand,
@@ -143,6 +143,7 @@ class Gauss(LHCbConfigurableUser):
         ## type of particle in the beam or in the fixed target
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
+        , "UseGaussGeo" : True
         , "Redecay" : {"N": 100, 'active': False, 'rd_mode': 1}
         , "CurrentRICHSimRunOption" : 'GTB'
         , "UpgradeRICHSimRunOption"  : 'GTB'
@@ -169,6 +170,7 @@ class Gauss(LHCbConfigurableUser):
        ,"BeamPipe"       : """Switch for beampipe definition; BeamPipeOn: On everywhere, BeamPipeOff: Off everywhere, BeamPipeInDet: Only in named detectors """
        ,"ReplaceWithGDML": """Replace a list of specified volumes with GDML description from file provided """
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
+       ,"UseGaussGeo"    : """Use GaussGeo (True: default) or GiGaGeo (False) for geometry conversion"""
        ,"Redecay"        : """ Dict with redecay settings, default: {'N': 100, 'active': False, 'rd_mode': 1}."""
        ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """  
        ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """          
@@ -231,6 +233,9 @@ class Gauss(LHCbConfigurableUser):
             #"/dd/Structure/LHCb/DownstreamRegion/AfterMuon/MBXWSDown" ]
         }
 
+    # List of geometry objects which will be converted, it's content is used in
+    # GaussGeo or in GiGaInputStream if GiGaGeo is used for conversion
+    _listOfGeoObjects_ = []
 
 #"""
 #Helper
@@ -317,24 +322,22 @@ class Gauss(LHCbConfigurableUser):
 
     def removeBeamPipeElements( self, det ):
         det = det.lower()
-        geo = GiGaInputStream('Geo')
         # Remove beampipe elements in <det> - will be included automatically
         if det in self._beamPipeElements.keys():
             for element in self._beamPipeElements[det]:
                 # remove all instances of the element
-                while element in geo.StreamItems:
-                    geo.StreamItems.remove(element)
+                while element in self._listOfGeoObjects_:
+                    self._listOfGeoObjects_.remove(element)
 
     def removeAllBeamPipeElements( self ):
-        geo = GiGaInputStream('Geo')
         # Remove all beampipe elements
         for det in self._beamPipeElements.keys():
             for element in self._beamPipeElements[det]:
                 # remove all instances of the element
-                while element in geo.StreamItems:
-                    geo.StreamItems.remove(element)
+                while element in self._listOfGeoObjects_:
+                    self._listOfGeoObjects_.remove(element)
 
-    def defineBeamPipeGeo ( self, geo, basePieces, detPieces ):
+    def defineBeamPipeGeo ( self, basePieces, detPieces ):
         # Add all BeamPipe Elements in the BeamPipeElements dictionary
 
         # Here commences a hack to deal with daft DDDB structure
@@ -352,7 +355,7 @@ class Gauss(LHCbConfigurableUser):
             if region in ignoreList:
                 continue
             for element in self._beamPipeElements[region]:
-                geo.StreamItems.append(element)
+                self._listOfGeoObjects_.append(element)
 
         # Finally add in the TT or UT beampipe if we're not defining the detectors but want the BP anyway depending on DataType
         # Nasty and unclean - change the DDDB s.t. it makes sense please!
@@ -363,13 +366,13 @@ class Gauss(LHCbConfigurableUser):
             ):
             if self.getProp("DataType") not in ["Upgrade"]:
                 for element in self._beamPipeElements["tt"]:
-                    geo.StreamItems.append(element)
+                    self._listOfGeoObjects_.append(element)
             else:
                 for element in self._beamPipeElements["ut"]:
-                    geo.StreamItems.append(element)
+                    self._listOfGeoObjects_.append(element)
 
 
-    def defineGDMLGeo ( self, geo, giGaGeo, gdmlDict ):
+    def defineGDMLGeo ( self, geoCnvSvc, gdmlDict ):
 
         # Define the GDML reader tool and add it to the sequence
         from Configurables import GDMLReader
@@ -380,13 +383,13 @@ class Gauss(LHCbConfigurableUser):
             gdmlToolName = os.path.splitext(os.path.basename(gdmlFile))[0]
             gdmlTool = GDMLReader( gdmlToolName,
                                    FileName = gdmlFile )
-            giGaGeo.addTool(gdmlTool, gdmlToolName)
-            giGaGeo.GdmlReaders.append(gdmlToolName)
+            geoCnvSvc.addTool(gdmlTool, gdmlToolName)
+            geoCnvSvc.GdmlReaders.append(gdmlToolName)
 
             # Remove the corresponding geometry from the Geo.InputStreams
             for item in gdmlDict["volsToReplace"]:
-                if item in geo.StreamItems:
-                    geo.StreamItems.remove(item)
+                if item in self._listOfGeoObjects_:
+                    self._listOfGeoObjects_.remove(item)
                 else:
                     raise RuntimeError("ERROR: Volume not in list of existing volumes, '%s'" %item)
         else:
@@ -468,19 +471,17 @@ class Gauss(LHCbConfigurableUser):
         File containing the list of detector element to explicitely set
         to have misalignement in the VELO.
         """
-        Geo = GiGaInputStream('Geo')
-
         # remove Automatically included detector elements
         self.removeBeamPipeElements( "velo" )
 
 
-        if "/dd/Structure/LHCb/BeforeMagnetRegion/Velo" in Geo.StreamItems:
-            Geo.StreamItems.remove("/dd/Structure/LHCb/BeforeMagnetRegion/Velo")
+        if "/dd/Structure/LHCb/BeforeMagnetRegion/Velo" in self._listOfGeoObjects_:
+            self._listOfGeoObjects_.remove("/dd/Structure/LHCb/BeforeMagnetRegion/Velo")
 
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU00")
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU02")
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU01")
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU03")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU00")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModulePU02")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU01")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ModulePU03")
 
         txt = "/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ModuleXX"
         import math
@@ -489,35 +490,35 @@ class Gauss(LHCbConfigurableUser):
             if len(nr) == 1 : nr = '0'+str(i)
             temp1 = txt.replace('XX',nr)
             if math.modf(float(nr)/2.)[0] > 0.1 :  temp1 = temp1.replace('Left','Right')
-            Geo.StreamItems.append(temp1)
+            self._listOfGeoObjects_.append(temp1)
 
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamWakeFieldCone")
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamWakeFieldCone")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamWakeFieldCone")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamWakeFieldCone")
         if (VeloPostMC09==1):
             # description postMC09 of Velo (head-20091120), problem with Velo Tank simulation
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
         elif (VeloPostMC09==2):
             # Thomas L. newer description postMC09 of Velo
             # --- Velo Right
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFBoxRight")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/DetSupportRight")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ConstSysRight")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFBoxRight")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/DetSupportRight")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/ConstSysRight")
             # --- Velo Left
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFBoxLeft")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/DetSupportLeft")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ConstSysLeft")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFBoxLeft")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/DetSupportLeft")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/ConstSysLeft")
             # --- Velo
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownstreamPipeSections")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpstreamPipeSections")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VacTank")
         else:
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamVacTank")
-            Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamVacTank")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/UpStreamVacTank")
+            self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/DownStreamVacTank")
 
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFFoilRight")
-        Geo.StreamItems.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFFoilLeft")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloRight/RFFoilRight")
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/BeforeMagnetRegion/Velo/VeloLeft/RFFoilLeft")
     ##
     ##
 
@@ -649,19 +650,16 @@ class Gauss(LHCbConfigurableUser):
         self.removeBeamPipeElements( "rich1" )
         detPieces['BeforeMagnetRegion']+=['Rich1']
 
-    def defineRich1GeoStream( self , geo ):
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces"]
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/RichHPDSurfaces"]
+    def defineRich1GeoStream( self ):
+        self._listOfGeoObjects_.append("/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces")
+        self._listOfGeoObjects_.append("/dd/Geometry/BeforeMagnetRegion/Rich1/RichHPDSurfaces")
 
     def defineRich2GeoDet( self , detPieces ):
         self.removeBeamPipeElements( "rich2" )
         detPieces['AfterMagnetRegion']+=['Rich2']
 
-    def defineRich2GeoStream( self , geo ):
-        geo.StreamItems += ["/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces"]
-        #_________________________________
-
-
+    def defineRich2GeoStream( self ):
+        self._listOfGeoObjects_.append("/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces")
 
     def defineRichPhys( self, gmpl ):
         gmpl.PhysicsConstructors.append("GiGaPhysConstructorOp")
@@ -727,7 +725,7 @@ class Gauss(LHCbConfigurableUser):
         elif (GaussRICHConf().getProp("MakeRichG4MonitorHistoSet2") ):
             if not configuredRichMoni[1]:
                 configuredRichMoni[1] = True
-            
+
 #"""
 #  ><<<<<<<     ><<     ><<    ><<     ><<    ><<<<<<<   ><<       ><< ><<< ><<<<<<
 #  ><<    ><<   ><<  ><<   ><< ><<     ><<    ><<    ><< >< ><<   ><<<      ><<
@@ -743,21 +741,21 @@ class Gauss(LHCbConfigurableUser):
         self.removeBeamPipeElements( "rich1" )
         detPieces['BeforeMagnetRegion']+=['Rich1']
 
-    def defineRich1MaPmtGeoStream( self , geo , giGaGeo ):
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces"]
-        geo.StreamItems += ["/dd/Geometry/BeforeMagnetRegion/Rich1/RichPMTSurfaces"]
-        giGaGeo.UseAlignment = False
-        giGaGeo.AlignAllDetectors = False
+    def defineRich1MaPmtGeoStream( self, geoCnvSvc ):
+        self._listOfGeoObjects_.append("/dd/Geometry/BeforeMagnetRegion/Rich1/Rich1Surfaces")
+        self._listOfGeoObjects_.append("/dd/Geometry/BeforeMagnetRegion/Rich1/RichPMTSurfaces")
+        geoCnvSvc.UseAlignment = False
+        geoCnvSvc.AlignAllDetectors = False
 
 
     def defineRich2MaPmtGeoDet( self , detPieces ):
         self.removeBeamPipeElements( "rich2" )
         detPieces['AfterMagnetRegion']+=['Rich2']
 
-    def defineRich2MaPmtGeoStream( self , geo, giGaGeo ):
-        geo.StreamItems += ["/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces"]
-        giGaGeo.UseAlignment = False
-        giGaGeo.AlignAllDetectors = False
+    def defineRich2MaPmtGeoStream( self, geoCnvSvc ):
+        self._listOfGeoObjects_.append("/dd/Geometry/AfterMagnetRegion/Rich2/Rich2Surfaces")
+        geoCnvSvc.UseAlignment = False
+        geoCnvSvc.AlignAllDetectors = False
 
 
     def defineRichMaPmtPhys( self, gmpl):
@@ -1517,15 +1515,18 @@ class Gauss(LHCbConfigurableUser):
           if piece in detPieces[region]: continue
           detPieces[region] += [piece]
       # Add the entire Upstream, BeforeUpstream, and AfterDownstream regions.
-      geo = GiGaInputStream('Geo')
       regions = ['UpstreamRegion', 'BeforeUpstreamRegion',
                  'AfterDownstreamRegion']
       for region in regions:
         if detPieces.has_key(region):
           detPieces[region] = []
-        geo.StreamItems.append("/dd/Structure/LHCb/" + region)
+        self._listOfGeoObjects_.append("/dd/Structure/LHCb/" + region)
+
       # Extend the world volume.
-      GiGaGeo().ZsizeOfWorldVolume = 300.0 * SystemOfUnits.m
+      if self.getProp('UseGaussGeo'):
+        GaussGeo().ZsizeOfWorldVolume = 300.0 * SystemOfUnits.m
+      else:
+        GiGaGeo().ZsizeOfWorldVolume = 300.0 * SystemOfUnits.m
 
     def configureHCSim(self, slot, detHits):
       year = self.getProp("DataType")
@@ -1574,11 +1575,10 @@ class Gauss(LHCbConfigurableUser):
           if piece in detPieces[region]: continue
           detPieces[region] += [piece]
       # Add the entire Upstream region.
-      geo = GiGaInputStream('Geo')
       region = 'UpstreamRegion'
       if detPieces.has_key(region):
         detPieces[region] = []
-      geo.StreamItems.append("/dd/Structure/LHCb/" + region)
+      self._listOfGeoObjects_.append("/dd/Structure/LHCb/" + region)
       # Add the AfterMuon part of the Downstream region.
       region = 'DownstreamRegion'
       if detPieces.has_key(region):
@@ -1635,10 +1635,9 @@ class Gauss(LHCbConfigurableUser):
           detPieces[region] += [piece]
       # Add the non-standard pieces of the Upstream region,
       # unless the Upstream region has been added as a whole.
-      geo = GiGaInputStream('Geo')
       region = 'UpstreamRegion'
       path = '/dd/Structure/LHCb/' + region
-      if detPieces.has_key(region) and path not in geo.StreamItems:
+      if detPieces.has_key(region) and path not in self._listOfGeoObjects_:
         pieces = ['BlockWallUpstr']
         for piece in pieces:
           if piece in detPieces[region]: continue
@@ -1699,39 +1698,51 @@ class Gauss(LHCbConfigurableUser):
         path = "dd/Structure/LHCb/MagnetRegion/"
         detPieces["MagnetRegion"] = ['Magnet','BcmDown']
         # PSZ - check why this is here
-        if False:
-            for element in detPieces['MagnetRegion']:
-                myElement = path + element
-                if myElement in geo.StreamItems:
-                    geo.StreamItems.remove([ path + element ])
+        #if False:
+        #    for element in detPieces['MagnetRegion']:
+        #        myElement = path + element
+        #        if myElement in self._listOfGeoObjects_:
+        #            self._listOfGeoObjects_.remove([ path + element ])
 
         # PSZ - clean me up
-        if False:
-            GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
-            GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
-            GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
-            GiGaGeo().FieldMgr.Global        = True
-            GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
-            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
-            GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
+        #if False:
+        #    GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
+        #    GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
+        #    GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
+        #    GiGaGeo().FieldMgr.Global        = True
+        #    GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
+        #    GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
+        #    GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
 
 
-    def defineMagnetGeoField( self, giGaGeo ):
+    def defineMagnetGeoField( self ):
         # Only bother with the FIELD Geometry if simulated.
         simDets = self.getProp('DetectorSim')['Detectors']
         if "Magnet" in simDets or "HC" in simDets:
-            GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
-            GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
-            GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
-            GiGaGeo().FieldMgr.Global        = True
-            GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
-            GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
-            GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
+            if self.getProp('UseGaussGeo'):
+                GaussGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
+                GaussGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
+                GaussGeo().FieldMgr.Stepper       = "ClassicalRK4"
+                GaussGeo().FieldMgr.Global        = True
+                GaussGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
+                GaussGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
+                GaussGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
+            else:
+                GiGaGeo().FieldManager           = "GiGaFieldMgr/FieldMgr"
+                GiGaGeo().addTool( GiGaFieldMgr("FieldMgr"), name="FieldMgr" )
+                GiGaGeo().FieldMgr.Stepper       = "ClassicalRK4"
+                GiGaGeo().FieldMgr.Global        = True
+                GiGaGeo().FieldMgr.MagneticField = "GiGaMagFieldGlobal/LHCbField"
+                GiGaGeo().FieldMgr.addTool( GiGaMagFieldGlobal("LHCbField"), name="LHCbField" )
+                GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MagneticFieldSvc"
 
         if "HC" in simDets:
             from Configurables import MagneticFieldSvc, MultipleMagneticFieldSvc
             # Use MultipleMagneticFieldSvc instead of default MagneticFieldSvc.
-            GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MultipleMagneticFieldSvc"
+            if self.getProp('UseGaussGeo'):
+                GaussGeo().FieldMgr.LHCbField.MagneticFieldService = "MultipleMagneticFieldSvc"
+            else:
+                GiGaGeo().FieldMgr.LHCbField.MagneticFieldService = "MultipleMagneticFieldSvc"
             # Add LHCb dipole magnet and compensators.
             if "Magnet" in simDets:
               MultipleMagneticFieldSvc().MagneticFieldServices += ["MagneticFieldSvc"]
@@ -2459,19 +2470,19 @@ class Gauss(LHCbConfigurableUser):
         #basePieces['DownstreamRegion']=['PipeDownstream','PipeSupportsDownstream','PipeBakeoutDownstream']
 
     # This is where everything is parsed into geo items
-    def defineStreamItemsGeo( self, geo, basePieces, detPieces ):
+    def defineStreamItemsGeo( self, basePieces, detPieces ):
         for region in basePieces.keys():
             path = "/dd/Structure/LHCb/"+region+"/"
             if len(detPieces[region])==0 : continue
             # This should preserve order
             for element in basePieces[region] + detPieces[region]:
                 myStreamItem = path + element
-                if myStreamItem not in geo.StreamItems:
-                    geo.StreamItems += [ myStreamItem ]
+                if myStreamItem not in self._listOfGeoObjects_:
+                    self._listOfGeoObjects_.append(myStreamItem)
             #for element in detPieces[region]:
             #    myStreamItem = path + element
-            #    if myStreamItem not in geo.StreamItems:
-            #        geo.StreamItems += [ myStreamItem ]
+            #    if myStreamItem not in self._listOfGeoObjects_:
+            #        self._listOfGeoObjects_.append(myStreamItem)
 
 
 
@@ -2543,31 +2554,31 @@ class Gauss(LHCbConfigurableUser):
         else:
             log.warning("Geo Detector not known : %s" %(det))
 
-    def defineDetectorGeoStream ( self, geo, giGaGeo, det ):
+    def defineDetectorGeoStream ( self, geoCnvSvc, det ):
         import string
         lDet = det.lower()
         if lDet not in self.__knownDetectors__:
             log.warning("Geo Stream Detector not known : %s" %(det))
 
         if lDet == "rich1":
-            self.defineRich1GeoStream( geo )
+            self.defineRich1GeoStream()
         elif lDet == "rich2":
-            self.defineRich2GeoStream( geo )
+            self.defineRich2GeoStream()
         elif lDet == "rich1pmt":
-            self.defineRich1MaPmtGeoStream( geo,  giGaGeo )
+            self.defineRich1MaPmtGeoStream( geoCnvSvc )
         elif lDet == "rich2pmt":
-            self.defineRich2MaPmtGeoStream( geo, giGaGeo )
+            self.defineRich2MaPmtGeoStream( geoCnvSvc )
         elif lDet == "magnet":
-            self.defineMagnetGeoField( giGaGeo )
+            self.defineMagnetGeoField()
 
 
 
-    def defineGDMLGeoStream ( self, geo, giGaGeo ):
+    def defineGDMLGeoStream ( self, geoCnvSvc ):
         if self.getProp("ReplaceWithGDML"):
             gdmlOpt = self.getProp("ReplaceWithGDML")
             if gdmlOpt[0]["volsToReplace"]:
                 for gdmlDict in self.getProp("ReplaceWithGDML"):
-                    self.defineGDMLGeo ( geo, giGaGeo, gdmlDict )
+                    self.defineGDMLGeo ( geoCnvSvc, gdmlDict )
 
 
 
@@ -2580,7 +2591,9 @@ class Gauss(LHCbConfigurableUser):
                                DataProviderSvcName  = "DetectorDataSvc" )
 
         gaussSimulationSeq = GaudiSequencer("Simulation")
-        gaussSimulationSeq.Members += [ geo ]
+
+        if not self.getProp('UseGaussGeo'):
+            gaussSimulationSeq.Members += [ geo ]
 
         # Detector geometry to simulate
         detPieces = {'BeforeUpstreamRegion':[], 'UpstreamRegion':[],
@@ -2600,14 +2613,19 @@ class Gauss(LHCbConfigurableUser):
         self.validateBeamPipeSwitch ( self.getProp("BeamPipe") )
         if ("BeamPipeOn" == self.getProp("BeamPipe")):
             # BeamPipe on - add BP elements
-            self.defineBeamPipeGeo ( geo, basePieces, detPieces )
+            self.defineBeamPipeGeo ( basePieces, detPieces )
+
+        # Set geometry conversion service
+        geoCnvSvc = None
+        if self.getProp('UseGaussGeo'):
+            geoCnvSvc = GaussGeo()
+        else:
+            geoCnvSvc = GiGaGeo()
 
         # Use information from SIMCOND and GeometryInfo
         # Allows to be set to False by RichXPmt
-        giGaGeo = GiGaGeo()
-        giGaGeo.UseAlignment      = True
-        giGaGeo.AlignAllDetectors = True
-
+        geoCnvSvc.UseAlignment      = True
+        geoCnvSvc.AlignAllDetectors = True
 
         # Define detectors
         for det in self.getProp('DetectorGeo')['Detectors']:
@@ -2615,20 +2633,25 @@ class Gauss(LHCbConfigurableUser):
             self.defineDetectorGeo( basePieces, detPieces, det )
 
         # StreamItems definition needs to be after det definition
-        self.defineStreamItemsGeo( geo, basePieces, detPieces )
+        self.defineStreamItemsGeo( basePieces, detPieces )
 
         # Define detector streams for RICHes
         for det in self.getProp('DetectorGeo')['Detectors']:
             det = "%s" %det
-            self.defineDetectorGeoStream( geo, giGaGeo, det )
+            self.defineDetectorGeoStream( geoCnvSvc, det )
 
         # Seperate Calo opts
         # Returns a list containing all the elments common to both lists
-        if [det for det in ['Spd', 'Prs', 'Ecal', 'Hcal'] if det in self.getProp('DetectorGeo')['Detectors']]:
-            importOptions("$GAUSSCALOROOT/options/Calo.opts")
+        if self.getProp('UseGaussGeo'):
+            if [det for det in ['Spd', 'Prs', 'Ecal', 'Hcal'] if det in self.getProp('DetectorGeo')['Detectors']]:
+                importOptions("$GAUSSCALOROOT/options/GaussGeo-Calo.py")
+        else:
+            if [det for det in ['Spd', 'Prs', 'Ecal', 'Hcal'] if det in self.getProp('DetectorGeo')['Detectors']]:
+                importOptions("$GAUSSCALOROOT/options/Calo.opts")
+
 
         # Call GDML description
-        self.defineGDMLGeoStream( geo, giGaGeo )
+        self.defineGDMLGeoStream( geoCnvSvc )
 
         if self.getProp("Debug"):
             print "\nDEBUG Detector Geometry Elements:"
@@ -2648,12 +2671,12 @@ class Gauss(LHCbConfigurableUser):
             for key in sorted(basePieces.keys()):
                 print "%s : %s" %(key, basePieces[key])
 
-            print "\ngeo StreamItems:"
-            for item in geo.StreamItems:
+            print "\ngeo items:"
+            for item in self._listOfGeoObjects_:
                 print "%s" %(item)
 
-            print "\ngeo StreamItems SORTED:"
-            mySortedGeoStream = geo.StreamItems[:]
+            print "\ngeo items SORTED:"
+            mySortedGeoStream = self._listOfGeoObjects_[:]
             mySortedGeoStream.sort()
             for item in mySortedGeoStream:
                 print "%s" %(item)
@@ -2661,6 +2684,13 @@ class Gauss(LHCbConfigurableUser):
         # No BP requested - therefore remove all elements from Geo.StreamItems
         if ("BeamPipeOff" == self.getProp("BeamPipe")):
             self.removeAllBeamPipeElements()
+
+        # Populate the list of geometry elements in the requested conversion service
+        for el in self._listOfGeoObjects_:
+            if self.getProp('UseGaussGeo'):
+                GaussGeo().GeoItemsNames.append(el)
+            else:
+                geo.StreamItems.append(el)
 
 
 #"""
@@ -2757,11 +2787,13 @@ class Gauss(LHCbConfigurableUser):
         self.defineGeo()
 
         self.configureGiGa()
-         
 
-        
+        if self.getProp('UseGaussGeo'):
+            GiGa().GeometrySource = "GaussGeo"
+        else:
+            GiGa().GeometrySource = "GiGaGeo"
+
         for slot in SpillOverSlots:
-
             TESNode = "/Event/"+self.slot_(slot)
 
             mainSimSequence = GaudiSequencer( self.slotName(slot)+"EventSeq" )
@@ -3576,6 +3608,7 @@ class Gauss(LHCbConfigurableUser):
         # Print out TES contents at the end of each event
         #from Configurables import StoreExplorerAlg
         #GaudiSequencer("GaussSequencer").Members += [ StoreExplorerAlg() ]
+
 
 # _____          _
 #|  __ \        | |
