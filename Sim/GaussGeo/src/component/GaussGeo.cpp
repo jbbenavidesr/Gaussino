@@ -212,7 +212,13 @@ StatusCode GaussGeo::initialize() {
   for (const auto& geo_item_name : m_geo_items_names) {
     verbose() << geo_item_name << endmsg;
     SmartDataPtr<DataObject> obj(detectorDataSvc(), geo_item_name);
-    m_data_selector.push_back(obj);
+
+    // If the service can not find the elemnt by name - ignore it
+    if (!obj) {
+      warning() << "DetectorDataSvc returned a NULL DataObject for '" << geo_item_name << "', excluding it from the conversion!" << endmsg;
+    } else {
+      m_data_selector.push_back(obj);
+    }
   }
 
   // Print variables set via Gauss Python Configurable
@@ -404,7 +410,7 @@ StatusCode GaussGeo::convertGeometry() {
 //=============================================================================
 StatusCode GaussGeo::convertGeoObject(DataObject* object) {
   if (object == nullptr) {
-    return reportError("GeoObject is invalid!");
+    return reportError("GeoObject is invalid (points to NULL)!");
   }
 
   if (object->clID() == Surface::classID()) {
