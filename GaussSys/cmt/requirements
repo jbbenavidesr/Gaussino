@@ -115,9 +115,6 @@ use GenTune             v*    Gen
 # GMDL
 use LbGDML              v*    Sim
 
-# Visualization configuration
-use XmlVis              v*    Vis
-
 # Test packages for new releases or installations on new platforms
 use GenTests            v*    Gen
 use SimChecks           v*    Sim
