@@ -215,7 +215,8 @@ StatusCode GaussGeo::initialize() {
 
     // If the service can not find the elemnt by name - ignore it
     if (!obj) {
-      warning() << "DetectorDataSvc returned a NULL DataObject for '" << geo_item_name << "', excluding it from the conversion!" << endmsg;
+      fatal() << "DetectorDataSvc returned a NULL DataObject for '" << geo_item_name << "', aborting conversion!" << endmsg;
+      return StatusCode::FAILURE;
     } else {
       m_data_selector.push_back(obj);
     }
