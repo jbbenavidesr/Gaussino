@@ -1,5 +1,5 @@
 from Gaudi.Configuration import *
-from Gauss.Configuration import *
+from hadronTestGauss.Configuration import *
 
 particles = {'Piminus': -211, 'Piplus': 211, 'Kminus': -321, 'Kplus': 321, 'p': 2212, 'pbar': -2212}
 Zplane = {'Al': {1: 200, 5: 400, 10: 600}, 'Be': {1: 800, 5: 1000, 10: 1200}, 'Si': {1: 1400, 5: 1600, 10: 1800}}
@@ -10,15 +10,15 @@ def targetGeo():
 
     try:
         from Configurables import GaussGeo
-        geo = GaussGeo()
-       #geo.GeoItemsNames = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
-        geo.GeoItemsNames = ["/dd/Structure/TargetDet"]
+        hadronTestGeo = GaussGeo()
+       #hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+        hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet"]
         print("Using 'GaussGeo' for Geometry Input")
     except:
         from Configurables import GiGaInputStream
-        geo = GiGaInputStream('Geo')
-       #geo.StreamItems = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
-        geo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
+        hadronTestGeo = GiGaInputStream('Geo')
+       #hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+        hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
         print("'GaussGeo' Not Found using 'GigaGeo' for Geometry Input")
 
     from Configurables import SimulationSvc
@@ -27,9 +27,9 @@ def targetGeo():
 
 def addMyTool():
     from Configurables import GiGa, GiGaTrackActionSequence
-    giga = GiGa()
-    giga.addTool(GiGaTrackActionSequence("TrackSeq"), name="TrackSeq")
-    giga.TrackSeq.Members.append("GaussTargetMultiplicity")
+    hadronTestGiGa = GiGa()
+    hadronTestGiGa.addTool(GiGaTrackActionSequence("TrackSeq"), name="TrackSeq")
+    hadronTestGiGa.TrackSeq.Members.append("GaussTargetMultiplicity")
 
 
 def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEvts=10000):
@@ -41,7 +41,7 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
 
     target = 'Target_' + str(targetThick) + 'mm' + targetMat
 
-    Gauss()
+    hadronTestGauss = hadronTestGauss
 
     DDDBConf().DbRoot = "conddb:/TargetsDet.xml"
     if 'v45' not in os.environ["GAUSSROOT"]:
@@ -54,40 +54,40 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
     #DDDBConf(DbRoot = "/afs/cern.ch/user/s/seaso/public/Simulation/
     #upgrade/Gauss_Target/DB/myDDDB-Upgrade-TargetGeom-January2014/TargetsDet.xml")
 
-    Gauss.DetectorGeo = {"Detectors": []}
-    Gauss.DetectorSim = {"Detectors": []}
-    Gauss.DetectorMoni = {"Detectors": []}
+    hadronTestGauss.DetectorGeo = {"Detectors": []}
+    hadronTestGauss.DetectorSim = {"Detectors": []}
+    hadronTestGauss.DetectorMoni = {"Detectors": []}
 
-    Gauss.DataType = "Upgrade"
-    Gauss.PhysicsList = {"Em": 'NoCuts', "Hadron": physList, "GeneralPhys": True, "LHCbPhys": True}
+    hadronTestGauss.DataType = "Upgrade"
+    hadronTestGauss.PhysicsList = {"Em": 'NoCuts', "Hadron": physList, "GeneralPhys": True, "LHCbPhys": True}
 
-    # --- activate special targets geometry
+    # --- activate special targets hadronTestGeometry
     appendPostConfigAction(targetGeo)
 
     # --- Switch off delta rays
-    Gauss.DeltaRays = False
+    hadronTestGauss.DeltaRays = False
 
     # --- activate GaussTargetMultiplicity tool
     appendPostConfigAction(addMyTool)
 
     # --- Configure the tool
     from Configurables import GiGa, GiGaTrackActionSequence, GaussTargetMultiplicity
-    giga = GiGa()
-    giga.addTool(GiGaTrackActionSequence("TrackSeq"), name="TrackSeq")
-    giga.TrackSeq.addTool(GaussTargetMultiplicity)
-    giga.TrackSeq.GaussTargetMultiplicity.InteractionVolumeName = ["/dd/Structure/TargetDet/" + target + "#pv" + target.replace('Target', 'Targ')]
-    giga.TrackSeq.GaussTargetMultiplicity.InteractionVolumeString = [target]
-    giga.TrackSeq.GaussTargetMultiplicity.TargetMaterial = [targetMat]
-    giga.TrackSeq.GaussTargetMultiplicity.TargetThickness = [targetThick]
-    giga.TrackSeq.GaussTargetMultiplicity.PhysicsList = [physList]
-    giga.TrackSeq.GaussTargetMultiplicity.ProjectileEnergy = [projEng]
-    giga.TrackSeq.GaussTargetMultiplicity.ProjectilePdgID = [particles[projID]]
-    #giga.TrackSeq.GaussTargetMultiplicity.OutputLevel = DEBUG
+    hadronTestGiGa = GiGa()
+    hadronTestGiGa.addTool(GiGaTrackActionSequence("TrackSeq"), name="TrackSeq")
+    hadronTestGiGa.TrackSeq.addTool(GaussTargetMultiplicity)
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.InteractionVolumeName = ["/dd/Structure/TargetDet/{}#pv{}".format(target,target.replace('Target', 'Targ')]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.InteractionVolumeString = [target]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.TargetMaterial = [targetMat]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.TargetThickness = [targetThick]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.PhysicsList = [physList]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.ProjectileEnergy = [projEng]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.ProjectilePdgID = [particles[projID]]
+    #hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.OutputLevel = DEBUG
 
     from Configurables import CondDB, LHCbApp, DDDBConf, CondDBAccessSvc
     from Configurables import Gauss
 
-    Gauss().Production = 'PGUN'
+    hadronTestGauss.Production = 'PGUN'
 
     #--Generator phase, set random numbers
     GaussGen = GenInit("GaussGen")
@@ -97,10 +97,10 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
     #--Number of events
     LHCbApp().EvtMax = nEvts
 
-    Gauss().Production = 'PGUN'
+    hadronTestGauss.Production = 'PGUN'
 
-    Gauss().OutputType = 'NONE'
-    Gauss().Histograms = 'NONE'
+    hadronTestGauss.OutputType = 'NONE'
+    hadronTestGauss.Histograms = 'NONE'
 
     #--- Save ntuple with hadronic cross section information
     ApplicationMgr().ExtSvc += ["NTupleSvc"]
