@@ -1,5 +1,5 @@
 from Gaudi.Configuration import *
-from hadronTestGauss.Configuration import *
+from Gauss.Configuration import *
 
 particles = {'Piminus': -211, 'Piplus': 211, 'Kminus': -321, 'Kplus': 321, 'p': 2212, 'pbar': -2212}
 Zplane = {'Al': {1: 200, 5: 400, 10: 600}, 'Be': {1: 800, 5: 1000, 10: 1200}, 'Si': {1: 1400, 5: 1600, 10: 1800}}
@@ -41,7 +41,7 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
 
     target = 'Target_' + str(targetThick) + 'mm' + targetMat
 
-    hadronTestGauss = hadronTestGauss
+    hadronTestGauss = Gauss()
 
     DDDBConf().DbRoot = "conddb:/TargetsDet.xml"
     if 'v45' not in os.environ["GAUSSROOT"]:
@@ -75,7 +75,7 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
     hadronTestGiGa = GiGa()
     hadronTestGiGa.addTool(GiGaTrackActionSequence("TrackSeq"), name="TrackSeq")
     hadronTestGiGa.TrackSeq.addTool(GaussTargetMultiplicity)
-    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.InteractionVolumeName = ["/dd/Structure/TargetDet/{}#pv{}".format(target,target.replace('Target', 'Targ')]
+    hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.InteractionVolumeName = ["/dd/Structure/TargetDet/{}#pv{}".format(target,target.replace('Target', 'Targ'))]
     hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.InteractionVolumeString = [target]
     hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.TargetMaterial = [targetMat]
     hadronTestGiGa.TrackSeq.GaussTargetMultiplicity.TargetThickness = [targetThick]
