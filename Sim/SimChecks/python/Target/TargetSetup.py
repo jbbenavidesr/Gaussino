@@ -7,10 +7,19 @@ Zorig = {'Al': {1: 100, 5: 300, 10: 500}, 'Be': {1: 700, 5: 900, 10: 1100}, 'Si'
 
 
 def targetGeo():
-    from Configurables import GiGaInputStream
-    geo = GiGaInputStream('Geo')
-    #   geo.StreamItems      = ["/dd/Structure/TargetDet/"+target] #Adds only the target you are currently looking at
-    geo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
+
+    try:
+        from Configurables import GaussGeo
+        geo = GaussGeo()
+       #geo.GeoItemsNames = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+        geo.GeoItemsNames = ["/dd/Structure/TargetDet"]
+        print("Using 'GaussGeo' for Geometry Input")
+    except:
+        from Configurables import GiGaInputStream
+        geo = GiGaInputStream('Geo')
+       #geo.StreamItems = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+        geo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
+        print("'GaussGeo' Not Found using 'GigaGeo' for Geometry Input")
 
     from Configurables import SimulationSvc
     SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
