@@ -33,4 +33,5 @@ gaudi_project(Gauss v52r0
                    Gen/DecFiles VERSION v29r*
                    LHAPDFSets VERSION v2r*
                    MIBData VERSION v3r*
-                   ParamFiles VERSION v8r*)
+                   ParamFiles VERSION v8r*
+                   Vis/XmlVis VERSION v2r*)
