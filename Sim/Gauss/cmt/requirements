@@ -17,7 +17,7 @@ branches src doc options cmt job python
 use DDDB               v*     Det            -no_auto_imports
 use ParamFiles         v8r*                  -no_auto_imports
 use FieldMap           v5r*                  -no_auto_imports
-use DecFiles           v29r*  Gen            -no_auto_imports
+use DecFiles           v30r*  Gen            -no_auto_imports
 use LHAPDFSets         v2r*                  -no_auto_imports
 use MIBData            v3r*                  -no_auto_imports
 use BcVegPyData        v2r*                  -no_auto_imports

@@ -30,7 +30,7 @@ gaudi_project(Gauss v52r0
                    FieldMap VERSION v5r*
                    GenXiccData VERSION v3r*
                    Gen/PGunsData VERSION v1r*
-                   Gen/DecFiles VERSION v29r*
+                   Gen/DecFiles VERSION v30r*
                    LHAPDFSets VERSION v2r*
                    MIBData VERSION v3r*
                    ParamFiles VERSION v8r*
