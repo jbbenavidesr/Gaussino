@@ -143,7 +143,7 @@ class Gauss(LHCbConfigurableUser):
         ## type of particle in the beam or in the fixed target
         , "B1Particle" : 'p'
         , "B2Particle" : 'p'
-        , "UseGaussGeo" : True
+        , "UseGaussGeo" : False
         , "Redecay" : {"N": 100, 'active': False, 'rd_mode': 1}
         , "CurrentRICHSimRunOption" : 'GTB'
         , "UpgradeRICHSimRunOption"  : 'GTB'
