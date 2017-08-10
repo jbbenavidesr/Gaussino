@@ -9,6 +9,7 @@
 #include "GaudiKernel/IRndmGenSvc.h" 
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
+#include "GaudiKernel/Transform3DTypes.h"
 
 // from Event
 #include "Event/HepMCEvent.h"
@@ -38,6 +39,9 @@ FlatSmearVertex::FlatSmearVertex( const std::string& type,
     declareProperty( "zVertexMin" , m_zmin = 0.0 * Gaudi::Units::mm ) ;
     declareProperty( "zVertexMax" , m_zmax = 0.0 * Gaudi::Units::mm ) ;
     declareProperty( "BeamDirection", m_zDir = 0 );
+    declareProperty( "Tilt", m_tilt = false );
+    declareProperty( "TiltAngle", m_tiltAngle = -3.601e-3 );
+    
 }
 
 //=============================================================================
@@ -106,6 +110,15 @@ StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
         ++vit ) {
     Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
     pos += dpos ;
+
+    if (m_tilt) {
+      Gaudi::LorentzVector negT( 0, 0, (fabs(m_zmax-m_zmin)<1e-3 ? -m_zmax : 0), 0 );
+      Gaudi::LorentzVector posT( 0, 0, (fabs(m_zmax-m_zmin)<1e-3 ? +m_zmax : 0), 0 );
+      Gaudi::RotationX rotX( m_zmax==m_zmin ? m_tiltAngle : 0 );
+      pos = pos + negT;
+      pos = rotX(pos);
+      pos = pos + posT;
+    }
     (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
                                                pos.t() ) ) ;
   }

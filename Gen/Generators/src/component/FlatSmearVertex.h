@@ -56,6 +56,9 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   /// interaction to zero (default = 1, as for beam 1)
   int m_zDir;
 
+  bool m_tilt;
+  double m_tiltAngle;
+    
   Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };
 #endif // PARTICLEGUNS_FLATSMEARVERTEX_H
