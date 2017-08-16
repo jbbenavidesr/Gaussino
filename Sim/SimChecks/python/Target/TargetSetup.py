@@ -6,20 +6,20 @@ Zplane = {'Al': {1: 200, 5: 400, 10: 600}, 'Be': {1: 800, 5: 1000, 10: 1200}, 'S
 Zorig = {'Al': {1: 100, 5: 300, 10: 500}, 'Be': {1: 700, 5: 900, 10: 1100}, 'Si': {1: 1300, 5: 1500, 10: 1700}}
 
 
-def targetGeo():
+def targetGaussGeo():
+    from Configurables import GaussGeo
+    hadronTestGeo = GaussGeo()
+    #hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+    hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet"]
 
-    try:
-        from Configurables import GaussGeo
-        hadronTestGeo = GaussGeo()
-       #hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
-        hadronTestGeo.GeoItemsNames = ["/dd/Structure/TargetDet"]
-        print("Using 'GaussGeo' for Geometry Input")
-    except:
-        from Configurables import GiGaInputStream
-        hadronTestGeo = GiGaInputStream('Geo')
-       #hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
-        hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
-        print("'GaussGeo' Not Found using 'GigaGeo' for Geometry Input")
+    from Configurables import SimulationSvc
+    SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
+
+def targetGiGaGeo():
+    from Configurables import GiGaInputStream
+    hadronTestGeo = GiGaInputStream('Geo')
+   #hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet/"+target]  #Adds only the target you are currently looking at
+    hadronTestGeo.StreamItems = ["/dd/Structure/TargetDet"]          # Adds all targets at once
 
     from Configurables import SimulationSvc
     SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
@@ -62,7 +62,19 @@ def setup_Target_GaussJob(physList, targetThick, targetMat, projEng, projID, nEv
     hadronTestGauss.PhysicsList = {"Em": 'NoCuts', "Hadron": physList, "GeneralPhys": True, "LHCbPhys": True}
 
     # --- activate special targets hadronTestGeometry
-    appendPostConfigAction(targetGeo)
+
+    if 'UseGaussGeo' in dir(hadronTestGauss):
+        try:
+           assert hadronTestGauss.UseGaussGeo == True
+           print("Using 'GaussGeo' for Geometry Input.")
+           appendPostConfigAction(targetGaussGeo) 
+        except:
+           print("Using 'GiGaGeo' for Geometry Input.")
+           appendPostConfigAction(targetGiGaGeo)
+
+    else:
+        print("'GaussGeo' not found in current Gauss version, using 'GiGaGeo' instead.")
+        appendPostConfigAction(targetGiGaGeo)
 
     # --- Switch off delta rays
     hadronTestGauss.DeltaRays = False
