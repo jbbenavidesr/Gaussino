@@ -9,38 +9,39 @@ from Gaudi.Configuration import *
 from Configurables import Gauss
 
 ## # Here are beam settings as for various nu (i.e. mu and Lumi per bunch with
-## # 25 ns spill-over are selected
-## nu=2.9 (i.e. mu=2=(nu/0.699, Lumi/bunch=0.31451*(10**30), Lumi=0.88*(10**33)
-importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu2.9-25ns.py") 
-## nu=4.3 (i.e. mu=3, Lumi=1.32*(10**33)
-#importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu4.3-25ns.py")
-## nu=5.7 (i.e. mu=4, Lumi=1.77*(10**33)
-#importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu5.7.2-25ns.py")
-## nu=7.2 (i.e. mu=5, Lumi=2.21*(10**33)
-#importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu7.2-25ns.py")
+## # 25 ns bunch spacing are given
+## This is the Run3 default luminosity 
+##   nu=7.6 (i.e. mu=5.31, Lumi=2.0*(10**33) with2400 colliding bunches)
+importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu7.6-HorExtAngle.py")
+## Nominal Lumi to begin with
+##   nu=3.8 (i.e. mu=2.66, Lumi=1.0*(10**33) )
+#importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu3.8-HorExtAngle.py")
+## For robustness studies
+##   nu=11.4 (i.e. mu=4, Lumi=1.77*(10**33) )
+#importOptions("$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu11.4-HorExtAngle.py")
 
-## # The spill-over is switched off for quick tests
-Gauss().SpilloverPaths = []
+
+## # The spill-over is off for quick tests
+## to enable spill-over use the followign options
+#importOptions("$APPCONFIGOPTS/Gauss/EnableSpillover-25ns.py")
 
 # And the upgrade database is picked up 
-# How to select the baseline upgrade configuration or alternative
-# configurations will be added in the future
+# The baseline upgrade configuration is given here with the latest supported global tag for this
+# version of Gauss - the FT neutron shield is added by hand in the Baseline options
 from Configurables import LHCbApp
 from Configurables import CondDB
 
 Gauss().DataType     = "Upgrade" 
 CondDB().Upgrade     = True
-LHCbApp().DDDBtag    = "dddb-20121018"
-LHCbApp().CondDBtag  = "simcond-20121001-vc-md100"
+LHCbApp().DDDBtag   = "dddb-20161117"
+LHCbApp().CondDBtag = "sim-20160927-vc-md100"
+# To be compatible with the latest version of DecFiles is necessary to use the new particle table
+CondDB().LocalTags["DDDB"] = ["ParticleTable-20170725"]
 
 ## Choose the detector configuration to run selecting the appropriate file
 # Existing detector with MapPMT in RICHes and no Aerogel
-importOptions("$GAUSSOPTS/Gauss-Upgrade-Reference.py") 
-# Upgrade combinations 
-#importOptions("$GAUSSOPTS/Gauss-Upgrade-VL-UT-FT.py")
-#importOptions("$GAUSSOPTS/Gauss-Upgrade-VL-UT-FT-noRich1.py")
-#importOptions("$GAUSSOPTS/Gauss-Upgrade-VP-UT-FT.py")
-#importOptions("$GAUSSOPTS/Gauss-Upgrade-VP-UT-FT-noRich1.py")
+importOptions("$GAUSSOPTS/Gauss-Upgrade-Baseline.py") 
+
 
 
 
