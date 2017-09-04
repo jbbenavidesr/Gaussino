@@ -2194,6 +2194,8 @@ class Gauss(LHCbConfigurableUser):
             genInit = GenInit("GaussGen"+slot,
                               MCHeader = TESNode+"Gen/Header")
 
+            FSRNode = "/FileRecords/"+self.slot_(slot)
+
             if slot != '':
                 genInitT0 = GenInit("GaussGen")
                 if genInitT0.isPropertySet("RunNumber"):
@@ -2218,6 +2220,7 @@ class Gauss(LHCbConfigurableUser):
             genProc.GenHeaderLocation = TESNode+"Gen/Header"
             genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents"
             genProc.GenCollisionLocation = TESNode+"Gen/Collisions"
+            genProc.GenFSRLocation = FSRNode+"GenFSR"
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
