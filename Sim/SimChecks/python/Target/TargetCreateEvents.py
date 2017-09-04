@@ -21,7 +21,7 @@ setup_Target_GaussJob("{model}",{thick},"{material}",{energy},"{particle}",{nevt
 '''
 
 
-def RunTargetJobs(path, models, particlesTodo, energies, materialsTodo, thicks, nevts=1e4):
+def RunTargetJobs(path, models, particlesTodo, energies, materialsTodo, thicks, nevts=1e4, use_gauss_geo=''):
 
     #Creating option file for analysis with all the options available
 
@@ -75,8 +75,7 @@ def RunTargetJobs(path, models, particlesTodo, energies, materialsTodo, thicks, 
                                         nevts=nevts
                                         ))
                             tmp.flush()
-                            subprocess.call(['gaudirun.py', tmp.name])
-
+                            subprocess.check_call('gaudirun.py --option="{}" {}'.format(use_gauss_geo, tmp.name), shell=True)
                             os.remove("targets_tmpfile.py")
 
                             time.sleep(2)

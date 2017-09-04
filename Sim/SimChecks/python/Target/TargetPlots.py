@@ -19,7 +19,7 @@ vardef = {"TOTAL": "xsec", "INEL": "inel_xsec", "EL": "el_xsec",
         "MULTI_GAMMA": "multi_gamma", "MULTI": "multi"}
 
 
-plots_title_dict = { 'vardef' : { 'TOTAL'             : 'Total_CrossSection'                ,
+plots_title_plotterDict = { 'vardef' : { 'TOTAL'             : 'Total_CrossSection'                ,
 				  'INEL'              : 'InElastic_CrossSection'            ,
 				  'EL'                : 'Elastic_CrossSection'              ,
 				  'MULTI_NCH'         : 'Multiplicity_NeutralCharge'        ,
@@ -39,9 +39,9 @@ plots_title_dict = { 'vardef' : { 'TOTAL'             : 'Total_CrossSection'    
 colors = [1, 2, 4, 6, 8, 9, 38, 12, 18, 41, 5, 3, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35]
 
 
-def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[], E0=-1, Dx=-1, plotData=False):
+def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[], E0=-1, Dx=-1, plotData=False, makePDFs=False):
 
-    dict = Plotter()
+    plotterDict = Plotter()
 
     leg = TLegend(0.10, 0.1, 0.9, 0.9)
     leg.SetTextSize(0.05)
@@ -80,7 +80,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
 
         for pg in range(0, len(pguns) - 1, 2):
 
-            ratiotxt.write("\\multicolumn{2}{c}{ratio " + str(dict._all_pguns[pguns[pg + 1]].GetLatex("$")) + "/" + str(dict._all_pguns[pguns[pg]].GetLatex("$")) + "} \\\\ \\hline \n")
+            ratiotxt.write("\\multicolumn{2}{c}{ratio " + str(plotterDict._all_pguns[pguns[pg + 1]].GetLatex("$")) + "/" + str(plotterDict._all_pguns[pguns[pg]].GetLatex("$")) + "} \\\\ \\hline \n")
             nm = 0
             for m in models:
 
@@ -88,7 +88,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
 
                 varexp = "h_" + str(pg) + m
                 select_template = "model == {mod} && material == {mat} && pGun == {part}"
-                select = select_template.format(mod=ord(m[0]), mat=ord(materials[0][0]), part=dict._all_pguns[pguns[pg]]._pdgID)
+                select = select_template.format(mod=ord(m[0]), mat=ord(materials[0][0]), part=plotterDict._all_pguns[pguns[pg]]._pdgID)
 
                 if(xvar == "energy"):
                     select += " && thickness == " + str(Dx)
@@ -133,7 +133,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                         erry1.append(terry1[i])
 
                 varexp = "h_" + str(pg + 1) + m
-                select = select_template.format(mod=ord(m[0]), mat=ord(materials[0][0]), part=dict._all_pguns[pguns[pg + 1]]._pdgID)
+                select = select_template.format(mod=ord(m[0]), mat=ord(materials[0][0]), part=plotterDict._all_pguns[pguns[pg + 1]]._pdgID)
 
                 if(xvar == "energy"):
                     select += " && thickness == " + str(Dx)
@@ -199,7 +199,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                 gr.SetMarkerColor(colors[pg / 2])
                 gr.SetMarkerStyle(20 + nm)
 
-                label = dict._all_pguns[pguns[pg + 1]].GetLatex("LEG") + " / " + dict._all_pguns[pguns[pg]].GetLatex("LEG")
+                label = plotterDict._all_pguns[pguns[pg + 1]].GetLatex("LEG") + " / " + plotterDict._all_pguns[pguns[pg]].GetLatex("LEG")
                 if(len(models) > 1):
                     label += " (" + m + ")"
                 leg.AddEntry(gr, label, "P")
@@ -207,11 +207,11 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                 if(plotData and (find(finalPlot, "TOTAL") > -1 or find(finalPlot, "INEL") > -1) and find(finalPlot, "RATIO") > -1):
 
                     grPDG = 0
-                    if(dict._all_pguns[pguns[pg]].GetName() == "p" and dict._all_pguns[pguns[pg + 1]].GetName() == "pbar"):
+                    if(plotterDict._all_pguns[pguns[pg]].GetName() == "p" and plotterDict._all_pguns[pguns[pg + 1]].GetName() == "pbar"):
                         grPDG = TGraphErrors(5, array('d', pdgenergies), array('d', pdgRatios_p))
-                    elif(dict._all_pguns[pguns[pg]].GetName() == "Piplus" and dict._all_pguns[pguns[pg + 1]].GetName() == "Piminus"):
+                    elif(plotterDict._all_pguns[pguns[pg]].GetName() == "Piplus" and plotterDict._all_pguns[pguns[pg + 1]].GetName() == "Piminus"):
                         grPDG = TGraphErrors(5, array('d', pdgenergies), array('d', pdgRatios_pi))
-                    elif(dict._all_pguns[pguns[pg]].GetName() == "Kplus" and dict._all_pguns[pguns[pg + 1]].GetName() == "Kminus"):
+                    elif(plotterDict._all_pguns[pguns[pg]].GetName() == "Kplus" and plotterDict._all_pguns[pguns[pg + 1]].GetName() == "Kminus"):
                         grPDG = TGraphErrors(5, array('d', pdgenergies), array('d', pdgRatios_K))
 
                     if grPDG:
@@ -223,13 +223,13 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                         grPDG.SetMarkerSize(1.2)
                         if nm == len(models) - 1:
                             grs.append(grPDG)
-                            leg.AddEntry(grPDG, dict._all_pguns[pguns[pg + 1]].GetLatex("LEG") + " / " + dict._all_pguns[pguns[pg]].GetLatex("LEG") + " PDG", "P")
+                            leg.AddEntry(grPDG, plotterDict._all_pguns[pguns[pg + 1]].GetLatex("LEG") + " / " + plotterDict._all_pguns[pguns[pg]].GetLatex("LEG") + " PDG", "P")
 
                 nm += 1
                 Material = mat=ord(materials[0][0])
                 plot_var = '{}mm'.format(Dx) if xvar == "energy" else '{}GeV'.format(E0)
 		plot_var_label = "Thickness" if xvar == "energy" else "Energy"
-                gr.SetName("{}_{}-{}_Model-{}-PGun-{}".format(plots_title_dict['vardef'][finalPlot], plot_var_label, plot_var, m, pg))
+                gr.SetName("{}_{}-{}_Model-{}-PGun-{}".format(plots_title_plotterDict['vardef'][finalPlot], plot_var_label, plot_var, m, pg))
                 grs.append(gr)
 
         ratiotxt.write("\\hline\n\\end{tabular}")
@@ -284,7 +284,8 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
         c.cd()
         gr_pad.Draw()
         leg_pad.Draw()
-        c.Print(os.path.join(outputPath, finalPlot + mystr.replace(" ", "_") + ".pdf"))
+        if makePDFs:
+            c.Print(os.path.join(outputPath, finalPlot + mystr.replace(" ", "_") + ".pdf"))
         c.Clear()
 
     else:
@@ -323,7 +324,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
 
         grs = []
 
-        PintOverSigmaFactor = Dx / (1000. * dict._all_materials[materials[0]].GetSigmaDxOverPintFactor() * 1000.)
+        PintOverSigmaFactor = Dx / (1000. * plotterDict._all_materials[materials[0]].GetSigmaDxOverPintFactor() * 1000.)
 
         #COMPAS Inelastic Xsec data in Al
         COMPAS_p_x = [1.52, 5., 9., 20., 30., 60.]
@@ -395,7 +396,7 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
                     varexp = "h_" + str(nh)
                     nh += 1
 
-                    select = "model == " + str(ord(model[0])) + " && material == " + str(ord(material[0])) + " && pGun == " + str(dict._all_pguns[pg].GetPDG())
+                    select = "model == " + str(ord(model[0])) + " && material == " + str(ord(material[0])) + " && pGun == " + str(plotterDict._all_pguns[pg].GetPDG())
                     if(xvar == "energy"):
                         select += " && thickness == " + str(Dx)
                     elif(xvar == "thickness"):
@@ -437,41 +438,41 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
 
                     n2 += 1
 
-                    label = dict._all_pguns[pg].GetLatex("LEG") + " in " + material
+                    label = plotterDict._all_pguns[pg].GetLatex("LEG") + " in " + material
                     if(len(models) > 1):
                         label += " (" + model + ")"
                     leg.AddEntry(gr, label, "P")
 
 		    plot_var_label = "Thickness" if xvar == "energy" else "Energy"
                     plot_var = '{}GeV'.format(E0) if xvar == "thickness" else '{}mm'.format(Dx)
-                    gr.SetName("{}_{}-{}_Mat-{}_Mod-{}_PGun-{}".format(plots_title_dict['vardef'][finalPlot], plot_var_label, plot_var, material, model, pg))
+                    gr.SetName("{}_{}-{}_Mat-{}_Mod-{}_PGun-{}".format(plots_title_plotterDict['vardef'][finalPlot], plot_var_label, plot_var, material, model, pg))
                     grs.append(gr)
 
                     if plotData and n0 == len(models) - 1 and materials[0] == "Al":
                         if find(finalPlot, "TOTAL") > -1:
-                            if dict._all_pguns[pg].GetName() == "p":
+                            if plotterDict._all_pguns[pg].GetName() == "p":
                                 COMPASTot_p_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                                 grs.append(COMPASTot_p_gr)
                                 leg.AddEntry(COMPASTot_p_gr, "COMPAS p total in Al", "P")
-                            elif dict._all_pguns[pg].GetName() == "pbar":
+                            elif plotterDict._all_pguns[pg].GetName() == "pbar":
                                 COMPASTot_pbar_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                                 grs.append(COMPASTot_pbar_gr)
                                 leg.AddEntry(COMPASTot_pbar_gr, "COMPAS #bar{p} total in Al", "P")
                         elif find(finalPlot, "INEL") > -1:
-                            if dict._all_pguns[pg].GetName() == "p":
+                            if plotterDict._all_pguns[pg].GetName() == "p":
                                 COMPAS_p_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                                 grs.append(COMPAS_p_gr)
                                 leg.AddEntry(COMPAS_p_gr, "COMPAS p inel in Al", "P")
-                            elif dict._all_pguns[pg].GetName() == "pbar":
+                            elif plotterDict._all_pguns[pg].GetName() == "pbar":
                                 COMPAS_pbar_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                                 grs.append(COMPAS_pbar_gr)
                                 leg.AddEntry(COMPAS_pbar_gr, "COMPAS #bar{p} inel in Al", "P")
                     elif plotData and n0 == len(models) - 1 and materials[0] == "Be" and find(finalPlot, "INEL") > -1:
-                        if dict._all_pguns[pg].GetName() == "p":
+                        if plotterDict._all_pguns[pg].GetName() == "p":
                             COMPAS_inBe_p_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                             grs.append(COMPAS_inBe_p_gr)
                             leg.AddEntry(COMPAS_inBe_p_gr, "COMPAS p inel in Be", "P")
-                        elif dict._all_pguns[pg].GetName() == "pbar":
+                        elif plotterDict._all_pguns[pg].GetName() == "pbar":
                             COMPAS_inBe_pbar_gr.SetMarkerColor(4)  # colors[int(nh/2.-1)])
                             grs.append(COMPAS_inBe_pbar_gr)
                             leg.AddEntry(COMPAS_inBe_pbar_gr, "COMPAS #bar{p} inel in Be", "P")
@@ -541,7 +542,8 @@ def Plot(dataTree, xvar, finalPlot, outputPath, models=[], pguns=[], materials=[
         c.cd()
         gr_pad.Draw()
         leg_pad.Draw()
-        c.Print(printname)
+        if makePDFs:
+            c.Print(printname)
         c.Clear()
 
 

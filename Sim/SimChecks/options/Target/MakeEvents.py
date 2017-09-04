@@ -13,7 +13,7 @@ import re
 import subprocess
 
 from Target.TargetCreateEvents import RunTargetJobs
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 def getArgsNum(line):
@@ -32,21 +32,28 @@ pwd = os.getcwd()
 subprocess.check_call("mkdir -p {}/TargetOutput".format(pwd), shell=True)
 output_directory = os.path.join(pwd, "TargetOutput")
 
-parser = OptionParser()
-parser.add_option("--physList", default="['FTFP_BERT','QGSP_BERT']", dest="physList", help="Specify a single Physics List to be used, default set to both FTFP_BERT and QGSP_BERT")
-parser.add_option("--energyList", default="[1,2,5,10,100]", dest="energies", help="Specify which energies (in GeV) to use for particle guns")
-parser.add_option("--materialList", default="['Al']", dest="materials", help="Specify the Target materials")
-parser.add_option("--thicknessList", default="[1]", dest="thickness", help="Specify the Target thickness")
-parser.add_option("--pgunList", default="['p', 'pbar', 'Kplus', 'Kminus','Piplus, 'Piminus']", dest="pguns", help="Specify the particle gun")
-(opts, args) = parser.parse_args()
-
+parser = ArgumentParser('MakeTargetTestEvents')
+parser.add_argument("--physList", default="['FTFP_BERT','QGSP_BERT']", dest="physList", help="Specify a single Physics List to be used, default set to both FTFP_BERT and QGSP_BERT")
+parser.add_argument("--energyList", default="[1,2,5,10,100]", dest="energies", help="Specify which energies (in GeV) to use for particle guns")
+parser.add_argument("--materialList", default="['Al']", dest="materials", help="Specify the Target materials")
+parser.add_argument("--thicknessList", default="[1]", dest="thickness", help="Specify the Target thickness")
+parser.add_argument("--pgunList", default="['p', 'pbar', 'Kplus', 'Kminus','Piplus, 'Piminus']", dest="pguns", help="Specify the particle gun")
+parser.add_argument("--use-gauss-geo", dest="gauss_geo", default=False, action='store_true', help='Use GaussGeo instead of GigaGeo for geometry initialisation if option available in Gauss version')
+parser.add_argument("--use-giga-geo", dest="giga_geo", default=False, action='store_true', help='Use GiGaGeo instead of GaussGeo for geometry initialisation if option available in Gauss version')
+opts = parser.parse_args()
 energies = getArgsNum(opts.energies)
 models = getArgsChar(opts.physList)
 materials = getArgsChar(opts.materials)   # 'Al' 'Be' 'Si'
 thicks = getArgsNum(opts.thickness)    # in mm 1, 5, 10 (only)
 pguns = getArgsChar(opts.pguns)       # Available: 'Piminus' 'Piplus' 'Kminus' 'Kplus' 'p' 'pbar'
 
-RunTargetJobs(output_directory, models, pguns, energies, materials, thicks)
+gauss_geo_opts = ''
+if opts.gauss_geo:
+  gauss_geo_opts = 'from Configurables import Gauss; Gauss().UseGaussGeo = True'
+elif opts.giga_geo:
+  gauss_geo_opts = 'from Configurables import Gauss; Gauss().UseGaussGeo = False'
+
+RunTargetJobs(output_directory, models, pguns, energies, materials, thicks, use_gauss_geo=gauss_geo_opts)
 
 from ROOT import *
 from Target.TargetPlots import Plot
