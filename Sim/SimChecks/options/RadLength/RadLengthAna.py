@@ -5,34 +5,39 @@
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
 ##  @author : K.Zarebski                                                       ##
-##  @date   : last modified on 2016-11-08                                      ##
+##  @date   : last modified on 2017-10-06                                      ##
 #################################################################################
 
-from Gaudi.Configuration import *
-from Gauss.Configuration import *
-from Configurables import CondDB, LHCbApp
-#from Configurables import DDDBConf, CondDBAccessSvc
-#DDDBConf(DbRoot = "myDDDB/lhcb.xml")
+from Gauss.Configuration import importOptions, appendPostConfigAction
+from Configurables import CondDB, LHCbApp, Gauss
+import sys
 
 importOptions("$GAUSSROOT/options/Gauss-2011.py")
 CondDB.LocalTags = {"DDDB": ["radlength-20141010", "radlength-20141003", "radlength-20140908"]}
 
-pwd = os.getcwd()
+rad_length_gauss = Gauss()
 
-print "Output Location is %s" % pwd
+rad_length_gauss.Production = 'PGUN'
+rad_length_gauss.DeltaRays = False
 
-from Configurables import Gauss
-from Gauss.Configuration import *
-import sys
+def scoringGeoGauss():
+    from Configurables import GaussGeo
+    geo = GaussGeo()
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane2"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane3"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/AfterMagnetRegion/T/Scoring_Plane4"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/AfterMagnetRegion/T/Scoring_Plane5"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/AfterMagnetRegion/T/Scoring_Plane6"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/AfterMagnetRegion/Scoring_Plane7"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane8"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane9"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane10"]
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane11"]
+    
 
-Gauss().Production = 'PGUN'
-Gauss().DeltaRays = False
-
-
-def scoringGeo():
+def scoringGeoGiGa():
     from Configurables import GiGaInputStream
     geo = GiGaInputStream('Geo')
-
     geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane2"]
     geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane3"]
     geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/T/Scoring_Plane4"]
@@ -44,14 +49,23 @@ def scoringGeo():
     geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane10"]
     geo.StreamItems += ["/dd/Structure/LHCb/DownstreamRegion/Scoring_Plane11"]
 
-appendPostConfigAction(scoringGeo)
+def choose_geo():
+    if 'UseGaussGeo' in dir(rad_length_gauss):
+        try:
+            assert rad_length_gauss.UseGaussGeo == True
+            print("Using 'GaussGeo' for Geometry Input.")
+            appendPostConfigAction(scoringGeoGauss)
+        except:
+            print("Using 'GiGaGeo' for Geometry Input.")
+            appendPostConfigAction(scoringGeoGiGa)
+    
+    else:
+        print("'GaussGeo' not found in current Gauss version, using 'GiGaGeo' instead.")
+        appendPostConfigAction(scoringGeoGiGa)
 
-# --- Save ntuple with hadronic cross section information
-ApplicationMgr().ExtSvc += ["NTupleSvc"]
-NTupleSvc().Output = ["FILE2 DATAFILE='%s/Rad_length/root_files/Rad.root' TYP='ROOT' OPT='NEW'" % pwd]
+appendPostConfigAction(choose_geo)
 
-
-# --- activate RadLenghtColl tool
+# --- activate RadLengthColl tool
 def addMyTool():
     from Configurables import GiGa, GiGaStepActionSequence
     giga = GiGa()
@@ -68,10 +82,3 @@ def trackNeutrinos():
     giga.RunSeq.TrCuts.DoNotTrackParticles = []
 
 appendPostConfigAction(trackNeutrinos)
-
-# --- Configure the tool
-#from Configurables import GiGa, GiGaStepActionSequence, RadLengthColl
-#giga = GiGa()
-#giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
-#giga.StepSeq.addTool( RadLengthColl )
-#giga.StepSeq.RadLengthColl.OutputLevel = DEBUG
