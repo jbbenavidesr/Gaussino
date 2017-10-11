@@ -77,7 +77,7 @@ class Gauss(LHCbConfigurableUser):
         'velo', 'puveto', 'vp',
         'tt' , 'ut',
         'it' , 'sl',
-        'ot' , 'ft',
+        'ot' , 'ft', 'ft-noshield',
         'rich',  'rich1', 'rich2', 'torch' ,
         'calo',  'spd', 'prs', 'ecal', 'hcal' ,
         'muon' ,
@@ -1126,13 +1126,16 @@ class Gauss(LHCbConfigurableUser):
 #   ><<            ><<
 #
 #"""
-    def defineFTGeo( self , detPieces ):
+    def defineFTGeo( self , detType , detPieces ):
         self.removeBeamPipeElements( "t" )
         region = "AfterMagnetRegion"
         if 'T' not in detPieces[region]:
             detPieces[region]+=['T/FT']
         if 'T/PipeInT' not in detPieces[region]:
             detPieces[region]+=['T/PipeInT']
+        if detType == "ft":
+            region = "DownstreamRegion"
+            detPieces[region]+=['NeutronShielding']
 
 
     def configureFTSim( self, slot, detHits ):
@@ -1897,10 +1900,12 @@ class Gauss(LHCbConfigurableUser):
             # Could do something smarter here
             for det in self.getProp('DetectorSim')['Detectors']:
                 if self.getProp('DetectorGeo')['Detectors'].count(det) == 0 :
-                    raise RuntimeError("Simulation has been required for '%s' sub-detector but it has been removed from Geometry" %det)
+                    if (det not in ['FT', 'FT-NoShield']) or ( ('FT' not in self.getProp('DetectorGeo')['Detectors']) and ('FT-NoShield' not in self.getProp('DetectorGeo')['Detectors']) ):
+                        raise RuntimeError("Simulation has been required for '%s' sub-detector but it has been removed from Geometry" %det)
             for det in self.getProp('DetectorMoni')['Detectors']:
                 if self.getProp('DetectorSim')['Detectors'].count(det) == 0 :
-                    raise RuntimeError("Monitoring has been required for '%s' sub-detector but it has been removed from Simulation" %det)
+                    if (det not in ['FT', 'FT-NoShield']) or ( ('FT' not in self.getProp('DetectorSim')['Detectors']) and ('FT-NoShield' not in self.getProp('DetectorSim')['Detectors']) ):
+                        raise RuntimeError("Monitoring has been required for '%s' sub-detector but it has been removed from Simulation" %det)
 
 
     def checkIncompatibleDetectors ( self ) :
@@ -1990,7 +1995,8 @@ class Gauss(LHCbConfigurableUser):
         # PSZ - add upgrade detectors here
         if 'VP'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['VP']
         if 'UT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['UT']
-        if 'FT'      in self.getProp('DetectorSim')['Detectors'] : detlist += ['FT']
+        if ('FT' in self.getProp('DetectorSim')['Detectors']) or ('FT-NoShield' in self.getProp('DetectorSim')['Detectors']) :
+            detlist += ['FT']
         if 'SL'    in self.getProp('DetectorSim')['Detectors'] : detlist += ['SL']
         # if Skip4 then dont propagate the detector list
         if "GenToMCTree" in self.getProp("Phases"):
@@ -2546,8 +2552,8 @@ class Gauss(LHCbConfigurableUser):
             self.defineVPGeo( detPieces )
         elif lDet == "torch":
             self.defineTorchGeo()
-        elif lDet == "ft":
-            self.defineFTGeo( detPieces )
+        elif (lDet == "ft") or (lDet == "ft-noshield"):
+            self.defineFTGeo( lDet, detPieces )
         elif lDet == "rich1pmt":
             self.defineRich1MaPmtGeoDet( detPieces )
         elif lDet == "rich2pmt":
@@ -2750,7 +2756,7 @@ class Gauss(LHCbConfigurableUser):
             self.configureVPSim( slot, detHits )
         elif det == "torch":
             self.configureTorchSim( slot, detHits )
-        elif det == "ft":
+        elif (det == "ft") or (det == "ft-noshield"):
             self.configureFTSim( slot, detHits )
         elif det in ['rich1pmt', 'rich2pmt']:
             if not configuredRichSim[0]:
@@ -2944,7 +2950,7 @@ class Gauss(LHCbConfigurableUser):
             self.configureVPMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         elif det == "torch":
             self.configureTorchMoni( slot, packCheckSeq, detMoniSeq, checkHits )
-        elif det == "ft":
+        elif (det == "ft") or (det =="ft-noshield"):
             self.configureFTMoni( slot, packCheckSeq, detMoniSeq, checkHits )
         elif (det == "rich1pmt") or (det == "rich2pmt"):
             if not configuredRichMoni[0]:
