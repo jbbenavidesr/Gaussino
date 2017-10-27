@@ -3,6 +3,9 @@
 ! Responsible	: Sajan Easo
 ! Purpose     : collection of sensitive detectors, G4 actions, etc for RICH
 !-----------------------------------------------------------------------------
+!2017-10-23 - Sajan Easo
+ - Updates to use the optimization  using Max mirror reflectivity, in a way,  without interferring with reconstruction.
+ - TabulatedFunction1D usage in RichHpdDEmag updated to make it work with the recent version of this function. 
 !2016-06-28 - Sajan Easo
  - Added some safety features for backward compatibilty in GiGaPhysConstructorHpd for using the old options file
  - Added some safety features in RichG4TrackActionRich2Photon.cpp
