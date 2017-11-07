@@ -73,7 +73,7 @@
 // Class Description:
 // Discrete Process -- reflection/refraction at optical interfaces.
 // Class inherits publicly from G4VDiscreteProcess.                  
-// Class Description - End:             
+// Class Description -  End:             
 
 /////////////////////
 // Class Definition
@@ -140,12 +140,16 @@ public: // With description
 
 	void           SetModel(G4OpticalSurfaceModel model);
 	// Set the optical surface model to be followed 
-        // (glisur || unified). 
+        // (glisur || unified).
 
-       void SettheMaxPhotStepNumInBoundaryProc(int aMaxStepNum) {
+   void SettheMaxPhotStepNumInBoundaryProc(int aMaxStepNum) {
          theMaxPhotStepNumInBoundaryProc=aMaxStepNum;
-       }
+   }
 
+
+  void setMaximumMirrReflUse(G4int aMxrUse)
+  {mMaximumMirrReflUse  =  aMxrUse;}
+  
 private:
 
 	void G4Swap(G4double* a, G4double* b) const;
@@ -173,6 +177,7 @@ private:
 	void ChooseReflection();
 	void DoAbsorption();
 	void DoReflection();
+
 
 private:
 
@@ -208,12 +213,16 @@ private:
 	G4double theReflectivity;
 	G4double theEfficiency;
 	G4double prob_sl, prob_ss, prob_bs;
+  G4int mMaximumMirrReflUse;
+  
 
 };
 
 ////////////////////
 // Inline methods
 ////////////////////
+
+
 
 inline
 void RichG4OpBoundaryProcess::G4Swap(G4double* a, G4double* b) const

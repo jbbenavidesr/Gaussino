@@ -256,17 +256,38 @@ RichG4OpBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep
                   }
               }
 
-              G4MaterialPropertyVector* PropertyPointer;
+       G4MaterialPropertyVector* PropertyPointer;
 
-	      PropertyPointer = 
-	      aMaterialPropertiesTable->GetProperty("REFLECTIVITY");
-	      if (PropertyPointer) { 
-                      theReflectivity =
-                        //   PropertyPointer->GetProperty(thePhotonMomentum);
-		      PropertyPointer->Value(thePhotonMomentum);
-              } else {
+       PropertyPointer = 
+                aMaterialPropertiesTable->GetProperty("REFLECTIVITY");
+       if(mMaximumMirrReflUse) {
+         if ( aMaterialPropertiesTable->GetProperty("SCALEDREFLECTIVITY") ) 
+           PropertyPointer = aMaterialPropertiesTable->GetProperty("SCALEDREFLECTIVITY");
+         
+          // test print
+
+         // if(Material2->GetName().find("Mirror") != std::string::npos ) {
+         //   G4double aWL = thePhotonMomentum !=0.0 ? 1243.125/ thePhotonMomentum : 0.0;
+           
+         //   G4cout << " Now using scaled reflectivity "<< Material1->GetName() <<"  "
+         //   <<  Material2->GetName() << "   "<<
+         //     thePhotonMomentum<<"   "<< aWL<<"  "<< PropertyPointer->Value(thePhotonMomentum) <<G4endl;
+         // }else {
+         //   G4cout<< " Scaledrefl   null pointer for other surfaces =   " <<  aMaterialPropertiesTable->GetProperty("SCALEDREFLECTIVITY") 
+         //        <<G4endl;
+         //  }
+         
+           //end test print Material2->GetName()  
+       }
+
+
+
+       if (PropertyPointer) { 
+                      theReflectivity = PropertyPointer->Value(thePhotonMomentum);
+       } else {
                       theReflectivity = 1.0;
-              }
+       }
+                        //   PropertyPointer->GetProperty(thePhotonMomentum);
 
 	      PropertyPointer = 
 	      aMaterialPropertiesTable->GetProperty("EFFICIENCY");

@@ -33,10 +33,10 @@
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
 #include "GaussRICH/RichScintilParamAdmin.h"
+#include "GaussRICH/RichG4SvcLocator.h"
 
-
-// #include "DetDesc/DetectorElement.h"
-// #include "RichDet/DeRichSystem.h"
+#include "DetDesc/DetectorElement.h"
+#include "RichDet/DeRichSystem.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GiGaPhysConstructorOp
@@ -286,7 +286,23 @@ void GiGaPhysConstructorOp::ConstructOp() {
     new RichG4OpRayleigh("RichG4OpRayleigh", fOptical);
   RichG4OpBoundaryProcess* theBoundaryProcess = 
     new RichG4OpBoundaryProcess("RichG4OpBoundary", fOptical );
+  // Now adding the flag for scaled  reflectivity
+
+  G4int  aMaxReflUse= 0;
+
+ IDataProviderSvc* detSvc = RichG4SvcLocator:: RichG4detSvc ();
+ SmartDataPtr<DetectorElement> Rich1DE(detSvc,Rich1DeStructurePathName  );  
+
+  if( Rich1DE) {
+      if(Rich1DE ->exists("RichUseMirrorMaxReflectivityFlag")){
+        aMaxReflUse= (G4int) Rich1DE ->param<int> ("RichUseMirrorMaxReflectivityFlag");
+       }   
+  }
+
+  theBoundaryProcess ->setMaximumMirrReflUse( aMaxReflUse);
   
+  
+ 
   //  G4cout<<"Now creating Photoelectric  processes"<<G4endl;
   RichHpdPhotoElectricEffect* theRichHpdPhotoElectricProcess= 
     new RichHpdPhotoElectricEffect(this,
