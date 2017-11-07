@@ -33,10 +33,8 @@ from Configurables import CondDB
 
 Gauss().DataType     = "Upgrade" 
 CondDB().Upgrade     = True
-LHCbApp().DDDBtag   = "dddb-20161117"
-LHCbApp().CondDBtag = "sim-20160927-vc-md100"
-# To be compatible with the latest version of DecFiles is necessary to use the new particle table
-CondDB().LocalTags["DDDB"] = ["ParticleTable-20170725"]
+LHCbApp().DDDBtag   = "dddb-20171010"
+LHCbApp().CondDBtag = "sim-20170301-vc-md100"
 
 ## Choose the detector configuration to run selecting the appropriate file
 # Existing detector with MapPMT in RICHes and no Aerogel

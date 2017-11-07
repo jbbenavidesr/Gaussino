@@ -26,13 +26,12 @@
 </argument>
 <argument name="args">
 	<set>
-		<text>$APPCONFIGOPTS/Gauss/Beam7000GeV-md100-nu7.6-HorExtAngle.py</text>
+		<text>$GAUSSROOT/options/Gauss-Upgrade.py</text>
 		<text>$DECFILESROOT/options/10000000.py</text>
 		<text>$LBPYTHIA8ROOT/options/Pythia8.py</text>
 		<text>$APPCONFIGOPTS/Gauss/G4PL_FTFP_BERT_EmNoCuts.py</text>
-		<text>$APPCONFIGOPTS/Gauss/Gauss-Upgrade-Baseline-20150522.py</text>
-		<text>$GAUSSROOT/tests/options/testGauss-Upgrade-DBTags.py</text>
 		<text>$GAUSSROOT/tests/options/testGauss-NoOutput.py</text>
+		<text>$GAUSSROOT/tests/options/testGauss-1evt.py</text>
 		<text>$APPCONFIGOPTS/Conditions/IgnoreCaliboffDB_LHCBv38r7.py</text>
 	</set>
 </argument>
