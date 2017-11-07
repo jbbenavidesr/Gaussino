@@ -5,7 +5,7 @@
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
 ##  @author : K.Zarebski                                                       ##
-##  @date   : last modified on 2016-11-08                                      ##
+##  @date   : last modified on 2017-06-09                                      ##
 #################################################################################
 
 from Gaudi.Configuration import *
@@ -32,7 +32,6 @@ Gauss().DeltaRays = False
 def scoringGeo():
     from Configurables import GiGaInputStream
     geo = GiGaInputStream('Geo')
-
     geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane2"]
     geo.StreamItems += ["/dd/Structure/LHCb/MagnetRegion/Scoring_Plane3"]
     geo.StreamItems += ["/dd/Structure/LHCb/AfterMagnetRegion/T/Scoring_Plane4"]
@@ -68,6 +67,16 @@ def trackNeutrinos():
     giga.RunSeq.TrCuts.DoNotTrackParticles = []
 
 appendPostConfigAction(trackNeutrinos)
+
+from Configurables import GiGaPhysConstructorOp, GiGaPhysConstructorHpd
+giga = GiGa()
+giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" )
+giga.ModularPL.addTool( GiGaPhysConstructorOp, name = "GiGaPhysConstructorOp" )
+giga.ModularPL.addTool( GiGaPhysConstructorHpd, name = "GiGaPhysConstructorHpd" )
+giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
+
+
 
 # --- Configure the tool
 #from Configurables import GiGa, GiGaStepActionSequence, RadLengthColl

@@ -26,7 +26,7 @@ nevts = 2000
 ###########################################
 
 simchecks_local = os.environ["SIMCHECKSROOT"]
-base = os.path.join(simchecks_local, "/options/RadLength/")
+base = os.path.join(simchecks_local, "options/RadLength")
 
 sys.path.append(os.path.join(simchecks_local, 'python'))
 
