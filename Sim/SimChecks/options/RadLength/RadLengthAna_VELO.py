@@ -5,7 +5,7 @@
 ## In order for this to work you also need Gauss-Job.py and MaterialEvalGun.py ##
 ##                                                                             ##
 ##  @author : K.Zarebski                                                       ##
-##  @date   : last modified on 2016-11-08                                      ##
+##  @date   : last modified on 2017-06-09                                      ##
 #################################################################################
 
 from Gaudi.Configuration import *
@@ -30,7 +30,6 @@ Gauss().DetectorGeo = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
 Gauss().DetectorSim = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
 Gauss().DetectorMoni = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
 
-importOptions("$GAUSSOPTS/RICHesOff.py")
 
 
 def scoringGeo():
@@ -64,6 +63,14 @@ def trackNeutrinos():
     giga.RunSeq.TrCuts.DoNotTrackParticles = []
 
 appendPostConfigAction(trackNeutrinos)
+
+from Configurables import GiGaPhysConstructorOp, GiGaPhysConstructorHpd
+giga = GiGa()
+giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" )
+giga.ModularPL.addTool( GiGaPhysConstructorOp, name = "GiGaPhysConstructorOp" )
+giga.ModularPL.addTool( GiGaPhysConstructorHpd, name = "GiGaPhysConstructorHpd" )
+giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
+giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
 
 
 
