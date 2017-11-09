@@ -13,6 +13,7 @@
 import xml.etree.ElementTree as ET
 import os
 
+file = 0
 if os.path.exists('GeneratorLogFSR.xml'):
         file = ET.parse('GeneratorLogFSR.xml')
 else:
@@ -25,7 +26,6 @@ expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/testGauss-cre
 expected_root = expected_file.getroot()
 
 flag = True
-
 for counter in root.findall('counter'):
         name = counter.get('name')
         value = int(counter.find('value').text)
