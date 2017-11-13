@@ -55,6 +55,7 @@
 // 2005-07-19 : Yasmine Sarah Amhis
 // 2009-05-29 : Silvia Migliranzi
 // 2015-06-29 : Luca Pescatore
+// 2017-06-09 : Kristian Zarebski
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
@@ -145,16 +146,16 @@ StatusCode RadLengthColl::initialize()  {
 
 	// Initialize ntuple variables:
 	m_ntrk      = 0;
-	for (m_ntrk = 0; m_ntrk < 100; ++m_ntrk) 
+	for (int m_ntrk_i = 0; m_ntrk_i < 100; ++m_ntrk_i) 
 	{
-		m_planeID[m_ntrk]= 0;
-		m_Xpos[m_ntrk] = -9999.0;
-		m_Ypos[m_ntrk] = -9999.0;
-		m_Zpos[m_ntrk] = -9999.0;
-		m_eta[m_ntrk] = -9999.0;
-		m_phi[m_ntrk] = -9999.0;
-		m_cumradlgh[m_ntrk] = -9999.0;
-		m_p2pradlgh[m_ntrk] = -9999.0;
+		m_planeID[m_ntrk_i]= 0;
+		m_Xpos[m_ntrk_i] = -9999.0;
+		m_Ypos[m_ntrk_i] = -9999.0;
+		m_Zpos[m_ntrk_i] = -9999.0;
+		m_eta[m_ntrk_i] = -9999.0;
+		m_phi[m_ntrk_i] = -9999.0;
+		m_cumradlgh[m_ntrk_i] = -9999.0;
+		m_p2pradlgh[m_ntrk_i] = -9999.0;
 	}
 
 
@@ -300,16 +301,16 @@ void RadLengthColl::UserSteppingAction ( const G4Step* theStep )
 
 		if(m_ntrk >= m_ntrk->range().distance())
 		{
-			return;
-			debug() << "Array overflow!----- !" << endmsg;
+			info() << "Array overflow!----- !" << endmsg;
 			getchar();
 			m_ntrk=0;
+			return;
 		}
 
 		writestatus = ntupleSvc()->writeRecord(ntname);
 		if(! writestatus.isSuccess() )
 		{
-			debug() << "CANNOT Write m_matScan_Plane" << endmsg;
+			info() << "CANNOT Write m_matScan_Plane" << endmsg;
 			return;
 		}
 	}

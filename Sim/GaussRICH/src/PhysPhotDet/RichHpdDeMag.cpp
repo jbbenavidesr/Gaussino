@@ -37,18 +37,19 @@ void RichHpdDeMag::setCurrentHPDDemag(const std::vector<double> & demagVect)
 }
 
 ///////////////////////NEW STUFF USING Rich1DTabFunc///////////////////////
-// This modified to be compatible with recent removal of a typedef for this function.
+// This modified to be compatible with recent  removal of a typedef for this function.
 // Now using the full name SE 01-05-2016
+// modified to the compatible with recent removal of nDataPoints() method  Oct20-2017
 
 void RichHpdDeMag::setCurrentDemagnification( const Rich::TabulatedFunction1D * r, 
 					      const Rich::TabulatedFunction1D * phi )
 {
-  if(r->nDataPoints()==0) {
-    std::cout <<"RichHpdDeMag ERROR: r demag Rich TabulatedFunction1D empty. "<<std::endl;
+  if( !( r->valid()) ) {
+    std::cout <<"RichHpdDeMag ERROR: r demag Rich TabulatedFunction1D Not Valid , possibly empty. "<<std::endl;
     return;
   }
-  if(phi->nDataPoints()==0) {
-    std::cout <<"RichHpdDeMag ERROR: phi demag Rich TabulatedFunction1D empty. "<<std::endl;
+  if( !(phi->valid())) {
+    std::cout <<"RichHpdDeMag ERROR: phi demag Rich TabulatedFunction1D Not Valid, possibly empty . "<<std::endl;
     return;
   }
 
