@@ -3,6 +3,7 @@
   <argument name="program"><text>gaudirun.py</text></argument>
   <argument name="timeout"><integer>600</integer></argument>
   <argument name="args"><set>
+      <text>$GAUSSOPTS/Gauss-2012.py</text>
       <text>$DECFILESROOT/options/13114005.py</text>
       <text>$LBPYTHIAROOT/options/Pythia.py</text>
       <text>$GAUSSOPTS/GenStandAlone.py</text>
@@ -12,14 +13,19 @@
 import xml.etree.ElementTree as ET
 import os
 
-file = ET.parse('GeneratorLogFSR.xml')
+file = 0
+if os.path.exists('GeneratorLogFSR.xml'):
+        file = ET.parse('GeneratorLogFSR.xml')
+else:
+        causes.append('No output file found')
+
 root = file.getroot()
 
-expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/GeneratorLogFSR_expected_creation.xml'))
+expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/testGauss-create-genfsr.xml'))
+
 expected_root = expected_file.getroot()
 
 flag = True
-
 for counter in root.findall('counter'):
         name = counter.get('name')
         value = int(counter.find('value').text)

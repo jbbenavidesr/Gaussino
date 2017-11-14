@@ -18,4 +18,3 @@ from Configurables import LHCbApp
 LHCbApp().DDDBtag   = "dddb-20171030-2"
 LHCbApp().CondDBtag = "sim-20160321-2-vc-md100"
 
-

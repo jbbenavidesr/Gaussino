@@ -11,15 +11,19 @@
 import xml.etree.ElementTree as ET
 import os
 
-file = ET.parse('GeneratorLogFSR.xml')
+file = 0
+if os.path.exists('GeneratorLogFSR.xml'):
+        file = ET.parse('GeneratorLogFSR.xml')
+else:
+        causes.append('No output file found')
+
 root = file.getroot()
 
-expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/GeneratorLogFSR_expected_merging.xml'))
+expected_file = ET.parse(os.path.expandvars('$GAUSSROOT/tests/refs/testGauss-merge-genfsr.xml'))
 
 expected_root = expected_file.getroot()
 
 flag = True
-
 for expected_counter in expected_root.findall('counter'):
         expected_name = expected_counter.get('name')
         expected_value = int(expected_counter.find('value').text)
@@ -37,7 +41,9 @@ if flag == False:
         causes.append('Counter value different from what expected')
 
 if os.path.exists('GeneratorLogFSR.xml'):
-    os.remove('GeneratorLogFSR.xml')
+        os.remove('GeneratorLogFSR.xml')
+if os.path.exists('genFSR_2012_Gauss_created.xgen'):
+        os.remove('genFSR_2012_Gauss_created.xgen')
   </text></argument>
 </extension>
 

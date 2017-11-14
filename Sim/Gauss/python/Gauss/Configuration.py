@@ -2226,9 +2226,10 @@ class Gauss(LHCbConfigurableUser):
             genProc.GenHeaderLocation = TESNode+"Gen/Header"
             genProc.HepMCEventLocation = TESNode+"Gen/HepMCEvents"
             genProc.GenCollisionLocation = TESNode+"Gen/Collisions"
-            
-            if genProc.isPropertySet("GenFSRLocation"):
-                genProc.GenFSRLocation = FSRNode+"GenFSR"
+
+            if "GenFSRLocation" in genProc.properties():
+                if not genProc.isPropertySet("GenFSRLocation"):
+                    genProc.GenFSRLocation = FSRNode+"GenFSR"
 
             if slot != '':
                 genProc.PileUpTool = 'FixedLuminosityForSpillOver'
