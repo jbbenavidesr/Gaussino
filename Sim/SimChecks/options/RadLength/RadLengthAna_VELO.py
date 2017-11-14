@@ -23,22 +23,42 @@ import sys
 
 pwd = os.getcwd()
 
-Gauss().Production = 'PGUN'
-Gauss().DeltaRays = False
+rad_length_velo_gauss = Gauss()
 
-Gauss().DetectorGeo = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
-Gauss().DetectorSim = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
-Gauss().DetectorMoni = {"Detectors": ['PuVeto', 'Velo', 'Rich1', 'Rich2']}
+rad_length_velo_gauss.Production = 'PGUN'
+rad_length_velo_gauss.DeltaRays = False
+
+rad_length_velo_gauss.DetectorGeo = {"Detectors": ['PuVeto', 'Velo']}
+rad_length_velo_gauss.DetectorSim = {"Detectors": ['PuVeto', 'Velo']}
+rad_length_velo_gauss.DetectorMoni = {"Detectors": ['PuVeto', 'Velo']}
 
 
-
-def scoringGeo():
+def scoringGeoGiGa():
     from Configurables import GiGaInputStream
     geo = GiGaInputStream('Geo')
 
     geo.StreamItems += ["/dd/Structure/LHCb/BeforeMagnetRegion/Scoring_Plane1"]
 
-appendPostConfigAction(scoringGeo)
+def scoringGeoGauss():
+    from Configurables import GaussGeo
+    geo = GaussGeo()
+    geo.GeoItemsNames += ["/dd/Structure/LHCb/BeforeMagnetRegion/Scoring_Plane1"]
+
+def choose_geo():
+    if 'UseGaussGeo' in dir(rad_length_velo_gauss):
+        try:
+            assert rad_length_velo_gauss.UseGaussGeo == True
+            print("Using 'GaussGeo' for Geometry Input.")
+            appendPostConfigAction(scoringGeoGauss)
+        except:
+            print("Using 'GiGaGeo' for Geometry Input.")
+            appendPostConfigAction(scoringGeoGiGa)
+
+    else:
+        print("'GaussGeo' not found in current Gauss version, using 'GiGaGeo' instead.")
+        appendPostConfigAction(scoringGeoGiGa)
+
+appendPostConfigAction(choose_geo)
 
 # --- Save ntuple with hadronic cross section information
 ApplicationMgr().ExtSvc += ["NTupleSvc"]
@@ -63,20 +83,3 @@ def trackNeutrinos():
     giga.RunSeq.TrCuts.DoNotTrackParticles = []
 
 appendPostConfigAction(trackNeutrinos)
-
-from Configurables import GiGaPhysConstructorOp, GiGaPhysConstructorHpd
-giga = GiGa()
-giga.addTool( GiGaPhysListModular("ModularPL") , name="ModularPL" )
-giga.ModularPL.addTool( GiGaPhysConstructorOp, name = "GiGaPhysConstructorOp" )
-giga.ModularPL.addTool( GiGaPhysConstructorHpd, name = "GiGaPhysConstructorHpd" )
-giga.ModularPL.GiGaPhysConstructorOp.RichOpticalPhysicsProcessActivate = False
-giga.ModularPL.GiGaPhysConstructorHpd.RichHpdPhysicsProcessActivate = False
-
-
-
-# --- Configure the tool
-#from Configurables import GiGa, GiGaStepActionSequence, RadLengthColl
-#giga = GiGa()
-#giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
-#giga.StepSeq.addTool( RadLengthColl )
-#giga.StepSeq.RadLengthColl.OutputLevel = DEBUG

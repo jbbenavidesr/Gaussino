@@ -5,11 +5,11 @@
 ##  @date   : last modified on 2017-06-09                                      ##
 #################################################################################
 
-from ROOT import *
+import ROOT
 import os
 import json
 import logging
-logger = logging.getLogger('RADLENGTHMAKEPLOTS')
+logger = logging.getLogger('RadLengthMakePlots')
 logging.basicConfig()
 logger.setLevel('INFO')
 
@@ -32,15 +32,16 @@ name = {1: "Velo",
 
 def getErrorRMS(hist):
     logger.debug("Calculating Error for Histogram '%s'", hist.GetName())
-    return hist.GetRMS() / TMath.Sqrt(hist.GetEntries())
+    return hist.GetRMS() / ROOT.TMath.Sqrt(hist.GetEntries())
 
 
-def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
+def makePlots(fileName="Rad_merged.root", output_dir="plots", plot_type="rad", pdfs_dir=None, data_dir=None, debug='INFO'):
 
-    gROOT.Reset()
+    logger.setLevel(debug)
+    ROOT.gROOT.Reset()
 
     logger.debug("Opening file '%s' for reading", fileName)
-    f = TFile.Open(fileName)
+    f = ROOT.TFile.Open(fileName)
 
     logger.debug("Checking for tree")
     tree = f.Get("RadLengthColl/tree")
@@ -54,44 +55,48 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
 
     try:
         logger.debug("Creating Directories for output...")
-        os.mkdirs(path)
+        os.mkdirs(output_dir)
     except:
         logger.debug("Directory exists, continuing...")
 	pass
 
-    logger.debug("Creating LaTeX tables in text files")
-    txtfile = open("{}/Rad_length/data_tables/{}LengthOut.txt".format(pwd, type_), "w")
+
+    if plot_type == "rad":
+        nplot_type = "Radiation"
+        if data_dir:
+            logger.debug("Creating LaTeX tables in text files")
+            txtfile = open(os.path.join(data_dir, "{}LengthOut.txt".format(plot_type)), "w")
+            txtfile.write("Position    \t& n_{X0}^{tot} \\\\ \n")
+    elif plot_type == "inter":
+        nplot_type = "Interaction"
+        if data_dir:
+            logger.debug("Creating LaTeX tables in text files")
+            txtfile = open(os.path.join(data_dir, "{}LengthOut.txt".format(plot_type)), "w")
+            txtfile.write("Position    \t& lambda_{I}^{tot} \\\\ \n")
+    else:
+        assert False, "Could not write Data Tables to Text File"
 
     logger.debug("Creating Output ROOT files")
-    graphsOut = TFile.Open(os.path.join(pwd,"Rad_length/root_files", "{}RadPlots.root".format(type_)), "recreate")
+    graphsOut = ROOT.TFile.Open(os.path.join(output_dir, "{}_Length_Plots.root".format(nplot_type)), "NEW")
     try:
        assert graphsOut, "Failed to Create File"
     except:
-       logging.error("Could not create ROOT file '%s'", os.path.join(pwd,"Rad_length/root_files", "{}RadPlots.root".format(type_)))
+       logging.error("Could not create ROOT file '%s'", os.path.join(output_dir, "{}_Length_Plots.root".format(nplot_type)))
        raise Exception
     graphsOut.cd()
 
     nplanes = 11
 
-    logger.debug("Creating new TCanvas")
-    c = TCanvas("RadCanvas", "RadLength Canvas")
+    logger.debug("Creating new ROOT.TCanvas")
+    c = ROOT.TCanvas("RadCanvas", "RadLength Canvas")
 
     logger.debug("Creating TGraphErrors objects")
-    cumul = TGraphErrors()
-    cumulZ = TGraphErrors()
-    p2p = TGraphErrors()
+    cumul = ROOT.TGraphErrors()
+    cumulZ = ROOT.TGraphErrors()
+    p2p = ROOT.TGraphErrors()
 
     p = 0
 
-
-    if type_ == "rad":
-        ntype_ = " radiation "
-        txtfile.write("Position    \t& n_{X0}^{tot} \\\\ \n")
-    elif type_ == "inter":
-        ntype_ = " interaction "
-        txtfile.write("Position    \t& lambda_{I}^{tot} \\\\ \n")
-    else:
-        assert False
 
     p2p_list = []
     cumul_listZ = []
@@ -104,13 +109,13 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
 
         logger.debug("Creating Plots for Plane '%s'", name[i])
         select = "ID == {}".format(i)
-        namehisto = "cumulative_{}length_{}".format('radiation' if type_ == 'rad' else 'interaction', name[i])
-        var = "cum{}lgh>>{}".format(type_, namehisto)
+        namehisto = "Cumulative_{}_Length_{}".format(nplot_type, name[i])
+        var = "cum{}lgh>>{}".format(plot_type, namehisto)
         logger.debug("Drawing from Tree: '%s'", var) 
         tree.Draw(var, select)
 
         logger.debug("Retrieving Histogram")
-        h1 = gDirectory.Get(namehisto)
+        h1 = ROOT.gDirectory.Get(namehisto)
         try:
             assert h1.GetEntries() > 0, "Failed to get Histogram"
         except:
@@ -122,31 +127,33 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
 
         logger.debug("Setting Histogram Labels")
 
-        if type_ == "rad":
+        if plot_type == "rad":
             h1.GetXaxis().SetTitle("n_{X0}^{tot}")
         else:
             h1.GetXaxis().SetTitle("#lambda_{I}^{tot}")
 
         h1.GetYaxis().SetTitle("N_{evt}")
-        h1.SetTitle("Cumulative {} length ({})".format(ntype_, name[i]))
+        h1.SetTitle("Cumulative {} Length ({})".format(nplot_type, name[i]))
 
-        namefile = os.path.join(path, '{}.pdf'.format(namehisto))
-
+        if pdfs_dir:
+            namefile = os.path.join(pdfs_dir, '{}.pdf'.format(namehisto))
+            c.Print(namefile)
 
 
         logger.debug("Adding Data Point to TGraph: %s %s %s %s %s", p, i, h1.GetMean(), 0, h1.GetMeanError())
         cumul.SetPoint(p, i, h1.GetMean())
         cumul.SetPointError(p, 0, h1.GetMeanError())
-        logger.debug("Writing Result to Text File")
-        txtfile.write('{0:13}'.format(name[i]) + "\t& " + '{:5.4f} \\pm {:5.4f}'.format(h1.GetMean(), h1.GetMeanError()) + " \t \\\\ \n")
+        if data_dir:
+            logger.debug("Writing Result to Text File")
+            txtfile.write('{0:13}'.format(name[i]) + "\t& " + '{:5.4f} \\pm {:5.4f}'.format(h1.GetMean(), h1.GetMeanError()) + " \t \\\\ \n")
 
         cumul_list.append([i, h1.GetMean(), h1.GetMeanError()])
-        namehisto = "Z_" + type_ + "_ID" + str(i)
-        var = "Zpos>>" + namehisto
+        namehisto = "Zposition_{}_{}".format(nplot_type, name[i])
+        var = "Zpos>>{}".format(namehisto)
         logger.debug("Drawing from Tree: '%s'", var) 
         tree.Draw(var, select)
         logger.debug("Retrieving Histogram")
-        hZ = gDirectory.Get(namehisto)
+        hZ = ROOT.gDirectory.Get(namehisto)
         try:
             assert hZ.GetEntries() > 0, "Failed to get Histogram"
         except:
@@ -155,23 +162,17 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
             elif hZ.GetEntries() < 1:
                logger.error("Histogram Contains no Entries!")
             raise Exception
-        namehisto = "Z_" + type_ + "_ID" + str(i)
-        var = "Zpos>>" + namehisto
-        logger.debug("Drawing from Tree: '%s'", var) 
-        tree.Draw(var, select)
-        logger.debug("Retrieving Histogram")
-        hZ = gDirectory.Get(namehisto)
         logger.debug("Adding Data Point to TGraph: %s %s %s %s %s", p, hZ.GetMean(), h1.GetMean(), getErrorRMS(hZ), getErrorRMS(h1))
         cumulZ.SetPoint(p, hZ.GetMean(), h1.GetMean())
         cumulZ.SetPointError(p, getErrorRMS(hZ), getErrorRMS(h1))
 
         cumul_listZ.append([hZ.GetMean(), h1.GetMean(), getErrorRMS(hZ), getErrorRMS(h1)])
-        namehisto = "p2p_" + type_ + "lgh_ID" + str(i)
-        var = "p2p" + type_ + "lgh>>" + namehisto
+        namehisto = "Plane2Plane_{}_{}".format(nplot_type, name[i])
+        var = "p2p{}lgh >> {}".format(plot_type, namehisto)
         logger.debug("Drawing from Tree: '%s'", var) 
         tree.Draw(var, select)
         logger.debug("Retrieving Histogram")
-        h2 = gDirectory.Get(namehisto)
+        h2 = ROOT.gDirectory.Get(namehisto)
         try:
             assert h2.GetEntries() > 0, "Failed to get Histogram"
         except:
@@ -180,26 +181,28 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
             elif h2.GetEntries() < 1:
                logger.error("Histogram Contains no Entries!")
             raise Exception
-        if(type_ == "rad"):
+        if(plot_type == "rad"):
             h2.GetXaxis().SetTitle("n_{X0}^{p2p}")
         else:
             h2.GetXaxis().SetTitle("#lambda_{I}^{p2p}")
         h2.GetYaxis().SetTitle("N_{evt}")
-        h2.SetTitle("Plane-to-plane " + ntype_ + " length (" + name[i] + ")")
+        h2.SetTitle("Plane-to-Plane {} Length ({})".format(nplot_type, name[i]))
         p2p.SetPoint(p, i, h2.GetMean())
         p2p.SetPointError(p, 0, getErrorRMS(h2))
         logger.debug("Adding Data Point to TGraph: %s %s %s %s %s", p, i, h2.GetMean(), 0, getErrorRMS(h2))
-        namefile = path + namehisto + ".pdf"
+        if pdfs_dir:
+          namefile = pdfs_dir + namehisto + ".pdf"
+          c.Print(namefile)
         p2p_list.append([i, h2.GetMean(), getErrorRMS(h2)])
 
         c.SetLogy(0)
-        gStyle.SetOptStat(0)
-        namehisto = 'cumul_{}_length_profile_{}'.format('radiation' if type_ == 'rad' else 'interaction', name[i])
-        var = "cum" + type_ + "lgh:eta:phi>>" + namehisto + "(100,-3.3,3.3,100,2.,5.)"
+        ROOT.gStyle.SetOptStat(0)
+        namehisto = 'Cumulative_{}_Length_2DScan_EtaPhi_{}'.format(nplot_type, name[i])
+        var = "cum{}lgh:eta:phi>>{}(100,-3.3,3.3,100,2.,5.)".format(plot_type, namehisto)
         logger.debug("Drawing from Tree: '%s'", var) 
         tree.Draw(var, select, "profs")
         logger.debug("Retrieving Histogram")
-        hh = gDirectory.Get(namehisto)
+        hh = ROOT.gDirectory.Get(namehisto)
         try:
             assert hh.GetEntries() > 0, "Failed to get Histogram"
         except:
@@ -211,14 +214,14 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
         logger.debug("Setting Histogram Labels")
         hh.GetXaxis().SetTitle("#phi")
         hh.GetYaxis().SetTitle("#eta")
-        hh.SetTitle("Cumulative {} Length ({})".format('Radiation' if ntype_ == 'rad' else 'Interaction', name[i]))
+        hh.SetTitle("Cumulative {} Length ({})".format(nplot_type, name[i]))
         hh.Draw("colz")
-        namehisto = 'p2p_{}_length_profile_{}'.format('radiation' if type_ == 'rad' else 'interaction', name[i])
-        var = "p2p" + type_ + "lgh:eta:phi>>" + namehisto + "(100,-3.3,3.3,100,2.,5.)"
+        namehisto = 'Plane2Plane_{}_Length_Profile_{}'.format(nplot_type, name[i])
+        var = "p2p{}lgh:eta:phi>>{}(100,-3.3,3.3,100,2.,5.)".format(plot_type, namehisto)
         logger.debug("Drawing from Tree: '%s'", var) 
         tree.Draw(var, select, "profs")
         logger.debug("Retrieving Histogram")
-        hh2 = gDirectory.Get(namehisto)
+        hh2 = ROOT.gDirectory.Get(namehisto)
         try:
             assert hh2.GetEntries() > 0, "Failed to get Histogram"
         except:
@@ -230,11 +233,12 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
         logger.debug("Setting Histogram Labels")
         hh2.GetXaxis().SetTitle("#phi")
         hh2.GetYaxis().SetTitle("#eta")
-        hh2.SetTitle("Plane-to-Plane {} Length ({})".format('Radiation' if ntype_ == 'rad' else 'Interaction', name[i]))
+        hh2.SetTitle("Plane-to-Plane {} Length ({})".format(nplot_type, name[i]))
         hh2.Draw("colz")
-        namefile = os.path.join(path, '{}.pdf'.format(namehisto))
-        c.Print(namefile)
-        gStyle.SetOptStat(0)
+        if pdfs_dir:
+            namefile = os.path.join(pdfs_dir, '{}.pdf'.format(namehisto))
+            c.Print(namefile)
+        ROOT.gStyle.SetOptStat(0)
 
         logger.debug("Writing Histograms")
         hh.Write()
@@ -245,45 +249,46 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
 
         p += 1
 
-    logger.debug("Writing JSON strings")
-    file_p2p = open('%s/Rad_length/data_tables/p2p_%slength.json' % (pwd, type_), 'w')
-    file_p2p.write(json.dumps(p2p_list))
+    if data_dir:
+        logger.debug("Writing JSON strings")
+        file_p2p = open(os.path.join(data_dir, 'p2p_{}length.json'.format(plot_type)), 'w')
+        file_p2p.write(json.dumps(p2p_list))
 
-    file_cumulz = open('%s/Rad_length/data_tables/cumulz_%slength.json' % (pwd, type_), 'w')
-    file_cumulz.write(json.dumps(cumul_listZ))
-    file_cumul = open('%s/Rad_length/data_tables/cumul_%slength.json' % (pwd, type_), 'w')
-    file_cumul.write(json.dumps(cumul_list))
-    gStyle.SetOptStat(0)
+        file_cumulz = open(os.path.join(data_dir, 'cumulz_{}length.json'.format(plot_type)), 'w')
+        file_cumulz.write(json.dumps(cumul_listZ))
+        file_cumul = open(os.path.join(data_dir,'cumul_{}length.json'.format(plot_type)), 'w')
+        file_cumul.write(json.dumps(cumul_list))
+    ROOT.gStyle.SetOptStat(0)
     c.SetLogy()
 
-    logger.debug("Drawing from Tree: '%s' with cut '%s'", "cum" + type_ + "lgh:eta>>hh1(100,2,5)", 'ID == 11') 
-    tree.Draw("cum" + type_ + "lgh:eta>>hh1(100,2,5)", "ID == 11", "prof")
-    radlgh_eta = gDirectory.Get("hh1")
+    logger.debug("Drawing from Tree: '%s' with cut '%s'", "cum{}lgh:eta>>hh1(100,2,5)".format(plot_type), 'ID == 11') 
+    tree.Draw("cum{}lgh:eta>>hh1(100,2,5)".format(plot_type), "ID == 11", "prof")
+    radlgh_eta = ROOT.gDirectory.Get("hh1")
     try:
        assert radlgh_eta.GetEntries() > 0, "Failed to get Histogram"
     except:
        if not radlgh_eta:
-          logger.error("Could not find histogram object '%s'", "Drawing from Tree: '%s' with cut '%s'", "cum" + type_ + "lgh:eta>>hh1(100,2,5)")
+          logger.error("Could not find histogram object '%s'", "Drawing from Tree: '%s' with cut '%s'", "cum{}lgh:eta>>hh1(100,2,5)".format(plot_type))
        elif radlgh_eta.GetEntries() < 1:
           logger.error("Histogram Contains no Entries!")
        raise Exception
-    radlgh_eta.SetName("cumulative_{}_length_vs_Eta".format(ntype_))
+    radlgh_eta.SetName("Cumulative_{}_Length_vs_Eta".format(nplot_type))
     logger.debug("Setting TGraphErrors Labels")
-    cumul.SetName("cumulative_{}_length_vs_ID".format(ntype_))
-    cumul.GetXaxis().SetTitle("ID plane")
+    cumul.SetName("Cumulative_{}_Length_vs_ScoringPlaneID".format(nplot_type))
+    cumul.GetXaxis().SetTitle("Scoring Plane ID")
     cumul.GetYaxis().SetTitle("<n_{X0}^{tot}>")
-    cumul.SetTitle("Cumulative " + ntype_ + " length")
-    cumulZ.SetName("cumulative_{}_length_vs_Z".format(ntype_))
-    cumulZ.GetXaxis().SetTitle("Z (mm)")
+    cumul.SetTitle("Cumulative {} Length".format(nplot_type))
+    cumulZ.SetName("Cumulative_{}_Length_vs_Zpos".format(nplot_type))
+    cumulZ.GetXaxis().SetTitle("Z/mm")
     cumulZ.GetYaxis().SetTitle("<n_{X0}^{tot}>")
-    cumulZ.SetTitle("Cumulative " + ntype_ + " length")
+    cumulZ.SetTitle("Cumulative {} Length".format(nplot_type))
     p2p.GetXaxis().SetTitle("ID plane")
-    p2p.SetName("p2p_{}_length_vs_ID".format(ntype_))
+    p2p.SetName("Plane2Plane_{}_Length_vs_ScoringPlaneID".format(nplot_type))
     p2p.GetYaxis().SetTitle("<n_{X0}^{p2p}>")
-    p2p.SetTitle("Plane-to-plane " + ntype_ + " length")
+    p2p.SetTitle("Plane-to-Plane {} Length".format(nplot_type))
     radlgh_eta.GetXaxis().SetTitle("#eta")
     radlgh_eta.GetYaxis().SetTitle("<n_{X0}^{tot}>")
-    radlgh_eta.SetTitle("Cumulative " + ntype_ + " length")
+    radlgh_eta.SetTitle("Cumulative {} Length ".format(nplot_type))
     cumul.SetMarkerStyle(22)
     cumul.SetMarkerSize(0.8)
     cumul.SetMarkerColor(1)
@@ -296,14 +301,15 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
     radlgh_eta.SetMarkerStyle(22)
     radlgh_eta.SetMarkerSize(0.8)
     radlgh_eta.SetMarkerColor(1)
-    p2p.Draw("AP")
-    c.Print(os.path.join(path, "p2p_" + type_ + "Length.pdf"))
-    cumul.Draw("AP")
-    c.Print(os.path.join(path, "cum" + type_ + "Length.pdf"))
-    cumulZ.Draw("AP")
-    c.Print(os.path.join(path, "cum" + type_ + "Length_vs_Z.pdf"))
-    radlgh_eta.Draw()
-    c.Print(os.path.join(path, "cum" + type_ + "Length_vs_eta.pdf"))
+    if pdfs_dir:
+        p2p.Draw("AP")
+        c.Print(os.path.join(pdfs_dir, "p2p_" + plot_type + "Length.pdf"))
+        cumul.Draw("AP")
+        c.Print(os.path.join(pdfs_dir, "cum" + plot_type + "Length.pdf"))
+        cumulZ.Draw("AP")
+        c.Print(os.path.join(pdfs_dir, "cum" + plot_type + "Length_vs_Z.pdf"))
+        radlgh_eta.Draw()
+        c.Print(os.path.join(pdfs_dir, "cum" + plot_type + "Length_vs_eta.pdf"))
 
 
     logger.debug("Writing Graphs")
@@ -315,22 +321,18 @@ def makePlots(fileName="Rad_merged.root", path="plots/", type_="rad"):
     graphsOut.Write()
     graphsOut.Close()
 
-
-
-
-
 if __name__ == "__main__":
 
     import sys
 
     fileName = "Rad_merged.root"
     outpath = "plots/"
-    type_ = "rad"
+    plot_type = "rad"
 
     args = 0
     for ag in sys.argv:
         if(ag == "-inter"):
-            type_ = "inter"
+            plot_type = "inter"
             args += 1
         if(ag == "-f"):
             args += 2
@@ -343,4 +345,4 @@ if __name__ == "__main__":
             args += 2
             outpath = sys.argv[args]
 
-    makePlots(fileName, outpath, type_)
+    makePlots(fileName, outpath, plot_type)
