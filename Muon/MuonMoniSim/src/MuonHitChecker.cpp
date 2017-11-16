@@ -271,7 +271,7 @@ StatusCode MuonHitChecker::finalize() {
     }
   }
   info()<<" allR"<<endmsg;
-  info()<<" number of hit generate doutside gaps volume "<<  m_hit_outside_gaps<<endmsg;
+  info()<<" number of hits generated outside gaps volume "<<  m_hit_outside_gaps<<endmsg;
   
   return StatusCode::SUCCESS; // what was here before but this doesn't finalise the GaudiTupleAlg like in the multiplescattering checker 
   
