@@ -24,11 +24,10 @@ DECLARE_ALGORITHM_FACTORY( MuonHitChecker )
 // Standard constructor, initializes variables
 //=============================================================================
 MuonHitChecker::MuonHitChecker( const std::string& name,
-                            ISvcLocator* pSvcLocator)
-  : GaudiTupleAlg ( name , pSvcLocator ),
-    m_detailedMonitor   ( false ) 
+				ISvcLocator* pSvcLocator)
+  : GaudiTupleAlg ( name , pSvcLocator )   
 {
-  declareProperty( "DetailedMonitor"         ,m_detailedMonitor );
+  declareProperty( "DetailedMonitor"         ,m_detailedMonitor=false );
   declareProperty( "MCHeader" , m_mcHeader = LHCb::MCHeaderLocation::Default ) ;
   declareProperty( "MuonHits" , m_muonHits = LHCb::MCHitLocation::Muon ) ;
   m_hit_outside_gaps=0;
@@ -199,10 +198,11 @@ StatusCode MuonHitChecker::execute() {
   }  
 
   // book vectors of histos
-  if(m_detailedMonitor && (fullDetail() == true) ) {
+  if(m_detailedMonitor == true) { 
 
-    Tuple nt1 = nTuple(41,"MC HITS",CLID_ColumnWiseTuple);
-
+    Tuple nt1 = nTuple(1,"MC HITS",CLID_ColumnWiseTuple);
+    info() << "Doing ntuple stuff"
+           << endmsg;
     //    nt1->column("Run", m_run,0,1000000);
     int pippo=m_evt;
     nt1->column("Event",pippo,0,10000);
@@ -271,9 +271,11 @@ StatusCode MuonHitChecker::finalize() {
     }
   }
   info()<<" allR"<<endmsg;
-  info()<<" number of hit generate doutside gaps volume "<<  m_hit_outside_gaps<<endmsg;
+  info()<<" number of hits generated outside gaps volume "<<  m_hit_outside_gaps<<endmsg;
   
-  return StatusCode::SUCCESS;
+  return StatusCode::SUCCESS; // what was here before but this doesn't finalise the GaudiTupleAlg like in the multiplescattering checker 
+  
+  // return GaudiTupleAlg::finalize();
 }
 
 

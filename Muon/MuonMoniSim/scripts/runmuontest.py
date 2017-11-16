@@ -1,32 +1,40 @@
-#######################################################################
-## This script runs the Muon tests and stores the output as a        ##
-## ROOT file in the MuonTestResults folder in the same               ##
-## directory the scirpt is run in for use of a handler to move data  ##
-## into LHCbPR.                                                      ##
-## The name of the input histogram can be can be changed in          ## 
-## the MuonMoniSim.py options file. Number of events can be          ## 
-## changed in the Gauss-Job.py options file, default is 50000.       ##
-## This should be run automatically when runmuonmonisimtest.sh is    ##
-## executed                                                          ##
-## To run without using runmuonmonisimtest.sh do:                    ##
-## lb-run Gauss [Gauss version]  python runmuontest.py               ##
-## or if doing devleopment replace lb-run Gauss with path/to/run     ##
-## @author : R.Calladine                                             ## 
-## @date   : last modified 2016-12-12                                ##
-#######################################################################
+# Runs the Muon Multiple Scattering Test for different EM Physics Lists
+# To run the test execute the bash script muonmonisim.sh prefixing with
+# ./run or lb-run Gauss <version> where appropriate.
+# Output can be found in the MuonTestResults directory which will be
+# created in the directory from where the script is run.
+# @author : R.Calladine                                             
+# @date   : last modified 2017-06-07                                
 
-import sys, os, json
+
+import sys, os
 
 #Environment variable created when Gauss is built
 mu_path = os.environ['MUONMONISIMROOT']
+
+phys_list_dict = { 'EmStd' : '{}/options/G4PL_EmStd.py'.format(mu_path),
+                   'EmOpt1' : '{}/options/G4PL_EmOpt1.py'.format(mu_path),
+                   'EmOpt2' : '{}/options/G4PL_EmOpt2.py'.format(mu_path),
+                   'EmOpt3' : '{}/options/G4PL_EmOpt3.py'.format(mu_path),
+                   'EmNoCuts' : '{}/options/G4PL_EmNoCuts.py'.format(mu_path),
+                   'EmLHCb' : '{}/options/G4PL_EmLHCb.py'.format(mu_path),
+                   'EmLHCbNoCuts' : '{}/options/G4PL_EmLHCbNoCuts.py'.format(mu_path),
+                 }
+
+import argparse
+
+parser = argparse.ArgumentParser( 'MuonMoniSim options to run with different Geant4 EM Physics Lists' )
+
+parser.add_argument( 'physList', help='G4 EM Physics List', choices=[key for key in phys_list_dict] )
+
+args = parser.parse_args()
+
 pwd = os.getcwd()
 
-os.system("mkdir -p {pwd}/MuonTestResults".format(pwd=pwd))
+os.system("mkdir -p {}/MuonTestResults".format(pwd))
 
-cmd = "gaudirun.py {mu_path}/options/Gauss-Job.py {mu_path}/options/MuonMoniSim.py".format(mu_path=mu_path)
+cmd = "gaudirun.py {}/options/MuonMoniSim.py {} ".format(mu_path, phys_list_dict[args.physList])
 os.system(cmd)
 
-os.system("mv ./MuonMoniSim_histos.root {pwd}/MuonTestResults".format(pwd=pwd))
-
-
-
+os.system("mv ./MuonMoniSim_histos.root {}/MuonTestResults".format(pwd))
+os.system("mv {}/MuonTestResults/MuonMoniSim_histos.root {}/MuonTestResults/MuonMoniSim_{}.root".format(pwd,pwd,args.physList)) 
