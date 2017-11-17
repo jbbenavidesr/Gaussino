@@ -5,6 +5,12 @@
 !-----------------------------------------------------------------------------
 
 !======================= MuonMoniSim v3r2 2016-12-15 =========================
+! 2017-10-11 - Ryan Calladine
+- Cleans up the directories with muonmonisim.sh running the test through
+  runmuontest.py using options files already located in $PRCONFIG and 
+  $APPCONFIG. This change means the test runs over multiple physics lists.
+
+!======================= MuonMoniSim v3r2 2016-12-15 =========================
 ! 2016-12-13 - Ryan Calladine
  - Adds options files MuonMoniSim.py and Gauss-Job.py to include the
    MuonHitChecker and MuonMultipleScatteringChecker and to set the number

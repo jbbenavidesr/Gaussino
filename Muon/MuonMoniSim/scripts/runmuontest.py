@@ -1,4 +1,3 @@
-# Runs the Muon Multiple Scattering Test for different EM Physics Lists
 # To run the test execute the bash script muonmonisim.sh prefixing with
 # ./run or lb-run Gauss <version> where appropriate.
 # Output can be found in the MuonTestResults directory which will be
@@ -12,13 +11,10 @@ import sys, os
 #Environment variable created when Gauss is built
 mu_path = os.environ['MUONMONISIMROOT']
 
-phys_list_dict = { 'EmStd' : '{}/options/G4PL_EmStd.py'.format(mu_path),
-                   'EmOpt1' : '{}/options/G4PL_EmOpt1.py'.format(mu_path),
-                   'EmOpt2' : '{}/options/G4PL_EmOpt2.py'.format(mu_path),
-                   'EmOpt3' : '{}/options/G4PL_EmOpt3.py'.format(mu_path),
-                   'EmNoCuts' : '{}/options/G4PL_EmNoCuts.py'.format(mu_path),
-                   'EmLHCb' : '{}/options/G4PL_EmLHCb.py'.format(mu_path),
-                   'EmLHCbNoCuts' : '{}/options/G4PL_EmLHCbNoCuts.py'.format(mu_path),
+phys_list_dict = { 
+                   'EmOpt1' : '$APPCONFIGOPTS/Gauss/G4PL_FTFP_BERT_EmOpt1.py',
+                   'EmNoCuts' : '$APPCONFIGOPTS/Gauss/G4PL_FTFP_BERT_EmNoCuts.py',
+                   'EmNoCutsNoLHCb' :  '$APPCONFIGOPTS/Gauss/G4PL_FTFP_BERT_EmNoCuts_noLHCbphys.py'
                  }
 
 import argparse
@@ -33,7 +29,7 @@ pwd = os.getcwd()
 
 os.system("mkdir -p {}/MuonTestResults".format(pwd))
 
-cmd = "gaudirun.py {}/options/MuonMoniSim.py {} ".format(mu_path, phys_list_dict[args.physList])
+cmd = "gaudirun.py $PRCONFIGOPTS/Gauss/PRTEST-2016-SIM-PGun-59990002-5Kevts-MuonMoni.py  {}".format( phys_list_dict[args.physList])
 os.system(cmd)
 
 os.system("mv ./MuonMoniSim_histos.root {}/MuonTestResults".format(pwd))
