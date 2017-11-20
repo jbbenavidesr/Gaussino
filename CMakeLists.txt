@@ -22,8 +22,8 @@ endmacro()
 # Declare project name and version
 gaudi_project(Gauss v52r0
               FORTRAN
-              USE LHCb v42r3
-                  Geant4 v96r4p4
+              USE LHCb v42r6p2
+                  Geant4 v96r4p7
               DATA AppConfig VERSION v3r*
                    BcVegPyData VERSION v2r*
                    Det/GDMLData VERSION v1r*
