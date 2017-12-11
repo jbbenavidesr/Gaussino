@@ -10,8 +10,8 @@
 # --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/AppConfig/v3r343/options/Gauss/RICHRandomHits.py'
 # <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/AppConfig/v3r343/options/Gauss/RICHRandomHits.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-2015.py'
-# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/30000000.py'
-# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/30000000.py'
+# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/30000000.py'
+# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/30000000.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/tests/options/testGauss-NoOutput.py'
@@ -5240,7 +5240,7 @@ GaussGen                  DEBUG The tool 'ToolSvc.EvtCounter' of type 'EvtCounte
 GaussGen                  DEBUG Services to release :
 Generation                DEBUG ==> Finalize
 Generation                DEBUG The object of type 'LHCb::GenFSR*' has been retrieved from TS at address '/FileRecords/GenFSR'
-Generation              SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: Generation.MinimumBias  DecFiles version: v30r6  njobs:1
+Generation              SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: Generation.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: AllEvt  key: 0  value: 5 / EvtGenerated  key: 2  value: 1 / IntGenerated  key: 3  value: 2 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 2 / OnebGen  key: 10  value: 0 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 0 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 0 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 / AllsubProcess  key: 100  value: 2 / non-diffractive  key: 201  value: 1 / A B -> A B elastic  key: 202  value: 1 / A B -> X B single diffractive  key: 203  value: 1 / A B -> A X single diffractive  key: 204  value: 1 /
 
@@ -5300,7 +5300,7 @@ GeneratorSlotMainSeq      DEBUG Services to release :
 GaussGenPrevPrev        SUCCESS ==================================================================
 GaussGenPrevPrev        SUCCESS 1 events processed
 GaussGenPrevPrev        SUCCESS ==================================================================
-GenerationPrevPrev      SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationPrevPrev.MinimumBias  DecFiles version: v30r6  njobs:1
+GenerationPrevPrev      SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationPrevPrev.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: EvtGenerated  key: 2  value: 1 / IntGenerated  key: 3  value: 1 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 1 / OnebGen  key: 10  value: 0 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 0 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 0 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 /
 
@@ -5329,7 +5329,7 @@ GenMonitorAlgPrevPrev   SUCCESS Booked 21 Histogram(s) : 1D=19 2D=2
 GaussGenPrev            SUCCESS ==================================================================
 GaussGenPrev            SUCCESS 1 events processed
 GaussGenPrev            SUCCESS ==================================================================
-GenerationPrev          SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationPrev.MinimumBias  DecFiles version: v30r6  njobs:1
+GenerationPrev          SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationPrev.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: EvtGenerated  key: 2  value: 1 / IntGenerated  key: 3  value: 1 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 1 / OnebGen  key: 10  value: 0 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 0 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 0 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 /
 
@@ -5358,7 +5358,7 @@ GenMonitorAlgPrev       SUCCESS Booked 21 Histogram(s) : 1D=19 2D=2
 GaussGenNext            SUCCESS ==================================================================
 GaussGenNext            SUCCESS 1 events processed
 GaussGenNext            SUCCESS ==================================================================
-GenerationNext          SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationNext.MinimumBias  DecFiles version: v30r6  njobs:1
+GenerationNext          SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationNext.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: EvtGenerated  key: 2  value: 1 / IntGenerated  key: 3  value: 1 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 1 / OnebGen  key: 10  value: 0 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 0 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 0 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 /
 
@@ -5387,7 +5387,7 @@ GenMonitorAlgNext       SUCCESS Booked 21 Histogram(s) : 1D=19 2D=2
 GaussGenNextNext        SUCCESS ==================================================================
 GaussGenNextNext        SUCCESS 1 events processed
 GaussGenNextNext        SUCCESS ==================================================================
-GenerationNextNext      SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationNextNext.MinimumBias  DecFiles version: v30r6  njobs:1
+GenerationNextNext      SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: GenerationNextNext.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: EvtGenerated  key: 2  value: 1 / IntGenerated  key: 3  value: 1 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 1 / OnebGen  key: 10  value: 1 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 1 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 1 / OnebAcc  key: 17  value: 1 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 1 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 1 /
 

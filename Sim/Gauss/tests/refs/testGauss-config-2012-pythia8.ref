@@ -10,8 +10,8 @@
 # --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/AppConfig/v3r343/options/Gauss/NoPacking.py'
 # <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/AppConfig/v3r343/options/Gauss/NoPacking.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-2012.py'
-# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/10000000.py'
-# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/10000000.py'
+# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/10000000.py'
+# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/10000000.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/tests/options/testGauss-NoOutput.py'
@@ -5405,7 +5405,7 @@ GaussGen                  DEBUG The tool 'ToolSvc.EvtCounter' of type 'EvtCounte
 GaussGen                  DEBUG Services to release :
 Generation                DEBUG ==> Finalize
 Generation                DEBUG The object of type 'LHCb::GenFSR*' has been retrieved from TS at address '/FileRecords/GenFSR'
-Generation              SUCCESS READ FSR: { Event type: 10000000  Hard Generator: Pythia8  Generation method: Generation.Inclusive  DecFiles version: v30r6  njobs:1
+Generation              SUCCESS READ FSR: { Event type: 10000000  Hard Generator: Pythia8  Generation method: Generation.Inclusive  DecFiles version: v30r7  njobs:1
 
  generator counters: AllEvt  key: 0  value: 77 / ZeroInt  key: 1  value: 4 / EvtGenerated  key: 2  value: 73 / IntGenerated  key: 3  value: 213 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 6 / OnebGen  key: 10  value: 1 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 21 / ThreecGen  key: 14  value: 2 / PromptCGen  key: 15  value: 1 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 1 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 / BeforeLevelCut  key: 26  value: 1 / AfterLevelCut  key: 27  value: 1 / BplusGen  key: 32  value: 1 / BminusGen  key: 33  value: 1 / BplusAcc  key: 43  value: 1 / BminusAcc  key: 44  value: 1 / antiD0Gen  key: 56  value: 1 / antiD0Acc  key: 65  value: 1 / BstarGen  key: 76  value: 2 / BstarAcc  key: 79  value: 2 / DstarGen  key: 86  value: 1 / DstarAcc  key: 89  value: 1 / AllsubProcess  key: 100  value: 213 / non-diffractive  key: 201  value: 116 / A B -> A B elastic  key: 202  value: 44 / A B -> X B single diffractive  key: 203  value: 15 / A B -> A X single diffractive  key: 204  value: 19 / A B -> X X double diffractive  key: 205  value: 19 /
 

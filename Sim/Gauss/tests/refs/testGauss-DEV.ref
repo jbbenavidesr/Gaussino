@@ -1,7 +1,7 @@
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-DEV.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-DEV.py'
-# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/30000000.py'
-# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/30000000.py'
+# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/30000000.py'
+# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/30000000.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-Job.py'
@@ -711,7 +711,7 @@ ApplicationMgr             INFO Application Manager Stopped successfully
 GaussGen                SUCCESS ==================================================================
 GaussGen                SUCCESS 5 events processed
 GaussGen                SUCCESS ==================================================================
-Generation              SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: Generation.MinimumBias  DecFiles version: v30r6  njobs:1
+Generation              SUCCESS READ FSR: { Event type: 30000000  Hard Generator: Pythia8  Generation method: Generation.MinimumBias  DecFiles version: v30r7  njobs:1
 
  generator counters: AllEvt  key: 0  value: 5 / EvtGenerated  key: 2  value: 5 / IntGenerated  key: 3  value: 10 / EvtAccepted  key: 4  value: 5 / IntAccepted  key: 5  value: 10 / OnebGen  key: 10  value: 0 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 0 / ThreecGen  key: 14  value: 0 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 0 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 / AllsubProcess  key: 100  value: 10 / non-diffractive  key: 201  value: 5 / A B -> A B elastic  key: 202  value: 3 / A B -> X B single diffractive  key: 203  value: 1 / A B -> X X double diffractive  key: 205  value: 1 /
 

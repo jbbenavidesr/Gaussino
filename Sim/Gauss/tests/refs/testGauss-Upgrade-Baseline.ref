@@ -4,8 +4,8 @@
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-Upgrade-Baseline.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-Upgrade-Baseline.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Sim/Gauss/options/Gauss-Upgrade.py'
-# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/10000000.py'
-# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r6/options/10000000.py'
+# --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/10000000.py'
+# <-- End of file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/Gen/DecFiles/v30r7/options/10000000.py'
 # --> Including file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # <-- End of file '/build/jenkins-tests/workspace/nightly-builds/tests/build/GAUSS/GAUSS_HEAD/Gen/LbPythia8/options/Pythia8.py'
 # --> Including file '/cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/AppConfig/v3r343/options/Gauss/G4PL_FTFP_BERT_EmNoCuts.py'
@@ -678,7 +678,7 @@ ApplicationMgr             INFO Application Manager Stopped successfully
 GaussGen                SUCCESS ==================================================================
 GaussGen                SUCCESS 1 events processed
 GaussGen                SUCCESS ==================================================================
-Generation              SUCCESS READ FSR: { Event type: 10000000  Hard Generator: Pythia8  Generation method: Generation.Inclusive  DecFiles version: v30r6  njobs:1
+Generation              SUCCESS READ FSR: { Event type: 10000000  Hard Generator: Pythia8  Generation method: Generation.Inclusive  DecFiles version: v30r7  njobs:1
 
  generator counters: AllEvt  key: 0  value: 11 / EvtGenerated  key: 2  value: 11 / IntGenerated  key: 3  value: 70 / EvtAccepted  key: 4  value: 1 / IntAccepted  key: 5  value: 9 / OnebGen  key: 10  value: 1 / ThreebGen  key: 11  value: 0 / PromptBGen  key: 12  value: 0 / OnecGen  key: 13  value: 6 / ThreecGen  key: 14  value: 2 / PromptCGen  key: 15  value: 0 / bAndcGen  key: 16  value: 0 / OnebAcc  key: 17  value: 1 / ThreebAcc  key: 18  value: 0 / PromptBAcc  key: 19  value: 0 / OnecAcc  key: 20  value: 0 / ThreecAcc  key: 21  value: 0 / PromptCAcc  key: 22  value: 0 / bAndcAcc  key: 23  value: 0 / BeforeLevelCut  key: 26  value: 1 / AfterLevelCut  key: 27  value: 1 / BplusGen  key: 32  value: 1 / antiBs0Gen  key: 35  value: 1 / BplusAcc  key: 43  value: 1 / antiBs0Acc  key: 46  value: 1 / D0Gen  key: 55  value: 1 / antiD0Gen  key: 56  value: 1 / DsminusGen  key: 60  value: 1 / D0Acc  key: 64  value: 1 / antiD0Acc  key: 65  value: 1 / DsminusAcc  key: 69  value: 1 / BGen  key: 75  value: 1 / BstarGen  key: 76  value: 1 / BAcc  key: 78  value: 1 / BstarAcc  key: 79  value: 1 / DGen  key: 85  value: 1 / DstarGen  key: 86  value: 2 / DAcc  key: 88  value: 1 / DstarAcc  key: 89  value: 2 / AllsubProcess  key: 100  value: 70 / non-diffractive  key: 201  value: 38 / A B -> A B elastic  key: 202  value: 18 / A B -> X B single diffractive  key: 203  value: 4 / A B -> A X single diffractive  key: 204  value: 7 / A B -> X X double diffractive  key: 205  value: 3 /
 
