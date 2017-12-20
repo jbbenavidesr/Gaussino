@@ -14,7 +14,7 @@ importOptions("$APPCONFIGOPTS/Gauss/DataType-2016.py")
 importOptions("$APPCONFIGOPTS/Gauss/RICHRandomHits.py")
 
 
-#--Set database tags for 2016 as in Sim09b for average conditions
+#--Set database tags for 2016 as in Sim10dev for average conditions
 from Configurables import LHCbApp
 LHCbApp().DDDBtag   = "dddb-20171030-3"
 LHCbApp().CondDBtag = "sim-20170721-2-vc-md100"
