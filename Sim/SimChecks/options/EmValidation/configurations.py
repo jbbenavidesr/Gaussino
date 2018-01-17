@@ -11,5 +11,5 @@ def config():
 	pgunID = 11
 	pgunE = 0.1
 	emPL = 'NoCuts'
-	return {'veloType':'velo','pgunID':pgunID,'pgunE':pgunE,'nEvts': 100,'dRays':False,'emPL':emPL,
+	return {'veloType':'velo','pgunID':pgunID,'pgunE':pgunE,'nEvts': 1000,'dRays':False,'emPL':emPL,
 		'saveSim':False,'runGenerator':True,'testType':'both'}
