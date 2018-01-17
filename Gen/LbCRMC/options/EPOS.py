@@ -13,6 +13,7 @@ __ion_pdg_id__ = { 'Pb': 1000822080 , 'Ar': 1000180400 ,
 
 gen = Generation()
 
+
 def finalConfiguration():
     event_type = gen.getProp('EventType')
     gauss = Gauss()
@@ -52,11 +53,10 @@ def finalConfiguration():
         #
         gen.Special.CutTool = "DaughtersInLHCbKeepOnlySignal"
         gen.Special.addTool( DaughtersInLHCbKeepOnlySignal )
-
         signal_pid = gen.SignalPlain.getProp( 'SignalPIDList' )+gen.SignalRepeatedHadronization.getProp('SignalPIDList')
         if len(signal_pid) > 0:
             gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = math.fabs( signal_pid[ 0 ] )
-        #
+
         gen.Special.ProductionTool = "Pythia8Production/SignalPythia8"
         gen.Special.PileUpProductionTool = "CRMCProduction"
         gen.Special.ReinitializePileUpGenerator = False
@@ -68,7 +68,7 @@ def finalConfiguration():
                                                 'Beams:pyB = %.2f' % pyB ,
                                                 'Beams:pzB = %.2f' % pzB ,
                                                 'Init:showProcesses = on' ]
-
+        
         ## specific parameters for the generation of quarkonia or W/Z
         ## inclusive J/psi
         if event_type/1000000 == 24:
@@ -102,7 +102,7 @@ def finalConfiguration():
         elif event_type == 42112010:
             gen.Special.DaughtersInLHCbKeepOnlySignal.SignalPID = 23
             gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
-                                                    "WeakSingleBoson:ffbar2gmZ = on" ,
+                                                    "WeakSingleBoson:ffbar2gmZ = on",
                                                     "23:mMin = 2.",
                                                     "TimeShower:mMaxGamma = 2.",
                                                     "PhaseSpace:mHatMin = 2.",
@@ -110,6 +110,26 @@ def finalConfiguration():
                                                     "23:onIfMatch = 13 -13",          # decay to muon only
                                                     ]            
             
+        ## q g => gamma X
+        elif event_type == 49000225:
+            gen.Special.CutTool = ""
+            gen.Special.SignalPythia8.Commands += [ 'SoftQCD:all=off' ,
+                                                    'PromptPhoton:qg2qgamma = on' ,
+                                                    'PhaseSpace:ptHatMin = 1.0' ,
+                                                    'PhaseSpace:ptHatMax = 5.0']
+            from Configurables import LoKi__FullGenEventCut, GenerationToSimulation
+            gen.FullGenEventCutTool = "LoKi::FullGenEventCut/twoToTwoInAcc"
+            gen.addTool( LoKi__FullGenEventCut, "twoToTwoInAcc" )
+            twoToTwoInAcc = gen.twoToTwoInAcc
+            twoToTwoInAcc.Code = "( ( count ( out1 ) > 0 ) & ( count ( out2 ) > 0 ) )"
+            twoToTwoInAcc.Preambulo += [
+                "from GaudiKernel.SystemOfUnits import GeV, mrad",
+                "isGoodGamma = ( ('gamma' == GABSID ) & ( GTHETA < 4000.0*mrad ) & ( GP > 1.0*GeV ) )",
+                "FromMesonDecay = ( GNINTREE( ('gamma' == GABSID )  , HepMC.parents ) )", # gamma is from a hadron decay ?
+                "out1 = ((isGoodGamma) & (FromMesonDecay==1))", # must be a good gamma not from a hadron "1 "1#"4 decay
+                "out2 = ( ( GMESON ) & ( GTHETA < 400.0*mrad ) & ( GP > 1.0*GeV ) )"]
+            GenerationToSimulation("GenToSim").KeepCode = "( ( GABSID == 21 ) )"
+
         gen.Special.CRMCProduction.ProjectileID = __ion_pdg_id__[  gauss.getProp('B1Particle') ]
         gen.Special.CRMCProduction.TargetID = __ion_pdg_id__[ gauss.getProp('B2Particle') ]
         gen.Special.CRMCProduction.ProjectileMomentum = pzA
