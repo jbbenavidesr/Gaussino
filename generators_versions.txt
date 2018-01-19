@@ -5,7 +5,7 @@ lhapdf         6.1.6.cxxstd
 photos++       3.56
 powheg-box-v2  r3043.lhcb
 pythia6        427.2
-pythia8        223
+pythia8        230
 rivet          2.5.4
 tauola++       1.1.6b.lhcb
 thepeg         2.1.1
