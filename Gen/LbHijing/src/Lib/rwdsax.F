@@ -1,7 +1,0 @@
-C
-C
-	FUNCTION RWDSAX(X)
-	IMPLICIT REAL*8(A-H,O-Z)
-      	RWDSAX=X*X*WDSAX(X)
-      	RETURN
-      	END

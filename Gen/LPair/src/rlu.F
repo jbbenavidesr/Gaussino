@@ -1,5 +1,0 @@
-      FUNCTION RLU(IDUMMY)
-      REAL*8 CPYR
-      RLU = CPYR(IDUMMY)
-      RETURN
-      END

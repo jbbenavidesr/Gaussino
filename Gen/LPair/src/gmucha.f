@@ -1,2 +1,0 @@
-      SUBROUTINE GMUCHA
-      END
