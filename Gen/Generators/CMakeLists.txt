@@ -21,10 +21,10 @@ gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
                   INCLUDE_DIRS Kernel/MCInterfaces
-                  LINK_LIBRARIES GenEvent GaudiAlgLib EvtGen EvtGenExtras PartPropLib)
+                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib)
 
 gaudi_add_module(Generators
                  src/component/*.cpp
                  INCLUDE_DIRS Boost Kernel/MCInterfaces
-                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel EvtGen EvtGenExtras GeneratorsLib)
+                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel GeneratorsLib)
 

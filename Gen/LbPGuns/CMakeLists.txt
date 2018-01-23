@@ -3,7 +3,8 @@
 ################################################################################
 gaudi_subdir(LbPGuns v6r1)
 
-gaudi_depends_on_subdirs(Det/DetDesc
+gaudi_depends_on_subdirs(
+                         #FIXME: Det/DetDesc
                          Event/GenEvent
                          GaudiAlg
                          Kernel/LHCbKernel
