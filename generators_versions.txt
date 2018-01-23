@@ -1,13 +1,1 @@
-alpgen         2.1.4
-herwig++       2.7.1
-hijing         1.383bs.2
-lhapdf         6.1.6.cxxstd
-photos++       3.56
-powheg-box-v2  r3043.lhcb
-pythia6        427.2
 pythia8        230
-rivet          2.5.2
-tauola++       1.1.6b.lhcb
-thepeg         2.0.3
-crmc           1.5.6
-yoda           1.5.9

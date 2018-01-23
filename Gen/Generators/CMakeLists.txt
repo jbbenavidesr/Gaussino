@@ -5,8 +5,8 @@ gaudi_subdir(Generators v16r0)
 
 gaudi_depends_on_subdirs(Event/GenEvent
                          GaudiAlg
-                         Gen/EvtGen
-                         Gen/EvtGenExtras
+                         #FIXME: Gen/EvtGen
+                         #FIXME: Gen/EvtGenExtras
                          Kernel/MCInterfaces
                          Kernel/LHCbKernel
                          Kernel/PartProp)

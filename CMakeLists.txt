@@ -1,5 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 
+# Reduce the total number of warnings by A LOT until ROOT has been modified
+option(GAUDI_SUGGEST_OVERRIDE "enable warnings for missing override keyword" OFF)
+# Create the compile commands json for YCM superpowers
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 #---------------------------------------------------------------
 # Load macros and functions for Gaudi-based projects
 find_package(GaudiProject)
@@ -20,10 +25,9 @@ macro(FindG4libs)
 endmacro()
 
 # Declare project name and version
-gaudi_project(Gauss v52r0
-              FORTRAN
-              USE LHCb v42r6p2
-                  Geant4 v96r4p7
+gaudi_project(Gaussino v1r0
+              USE GaudiExtensions v1r0
+                  Geant4 v96r*
               DATA AppConfig VERSION v3r*
                    BcVegPyData VERSION v2r*
                    Det/GDMLData VERSION v1r*
