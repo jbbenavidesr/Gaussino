@@ -12,11 +12,13 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          Kernel/PartProp)
 
 find_package(Boost COMPONENTS filesystem system)
+find_package(Photos++)
 
 string(REPLACE "-pedantic" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
 string(REPLACE "-Wall" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
 string(REPLACE "-Wextra" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
 string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+
 gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
@@ -25,6 +27,6 @@ gaudi_add_library(GeneratorsLib
 
 gaudi_add_module(Generators
                  src/component/*.cpp
-                 INCLUDE_DIRS Boost Kernel/MCInterfaces
-                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel GeneratorsLib)
+                 INCLUDE_DIRS Boost Kernel/MCInterfaces Photos++
+                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel GeneratorsLib Photos++) 
 

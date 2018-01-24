@@ -26,6 +26,7 @@ endmacro()
 
 # Declare project name and version
 gaudi_project(Gaussino v1r0
+              FORTRAN
               USE GaudiExtensions v1r0
                   Geant4 v96r*
               DATA AppConfig VERSION v3r*
