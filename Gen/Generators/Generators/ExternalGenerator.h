@@ -7,7 +7,7 @@
 
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "Generators/ISampleGenerationTool.h"
+#include "GenInterfaces/ISampleGenerationTool.h"
 
 // from LHCb
 #include "Kernel/ParticleID.h"

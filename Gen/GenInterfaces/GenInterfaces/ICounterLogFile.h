@@ -7,7 +7,7 @@
 
 static const InterfaceID IID_ICounterLogFile ( "ICounterLogFile", 1, 0 );
 
-/** @class ICounterLogFile ICounterLogFile.h Generators/ICounterLogFile.h
+/** @class ICounterLogFile ICounterLogFile.h GenInterfaces/ICounterLogFile.h
  *  
  *
  *  @author Patrick Robbe

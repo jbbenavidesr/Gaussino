@@ -10,7 +10,7 @@
 #include "Event/HepMCEvent.h"
 #include "Event/GenCollision.h"
 
-/** @class ISampleGenerationTool ISampleGenerationTool.h "Generators/ISampleGenerationTool.h"
+/** @class ISampleGenerationTool ISampleGenerationTool.h "GenInterfaces/ISampleGenerationTool.h"
  *  
  *  Abstract interface to generation of event samples. Concrete tools implement
  *  the algorithms used to generate the various event types generated in LHCb

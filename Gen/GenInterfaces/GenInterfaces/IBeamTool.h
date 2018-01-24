@@ -7,7 +7,7 @@
 #include "GaudiKernel/IAlgTool.h"
 #include "GaudiKernel/Vector3DTypes.h"
 
-/** @class IBeamTool IBeamTool.h "Generators/IBeamTool.h"
+/** @class IBeamTool IBeamTool.h "GenInterfaces/IBeamTool.h"
  *  
  *  Abstract interface to beam tool providing beam parameters 
  *  for each generated event.

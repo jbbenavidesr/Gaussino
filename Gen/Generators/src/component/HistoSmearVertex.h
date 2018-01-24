@@ -3,7 +3,7 @@
 
 // Include files
 #include "GaudiAlg/GaudiTool.h"
-#include "Generators/IVertexSmearingTool.h"
+#include "GenInterfaces/IVertexSmearingTool.h"
 #include "TH3.h"
 
 /** @class SmearVertex SmearVertex.h "SmearVertex.h"

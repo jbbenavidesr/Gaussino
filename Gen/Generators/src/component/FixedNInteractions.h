@@ -6,7 +6,7 @@
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
 
-#include "Generators/IPileUpTool.h"
+#include "GenInterfaces/IPileUpTool.h"
 
 /** @class FixedNInteractions FixedNInteractions.h "FixedNInteractions.h"
  *  

@@ -3,10 +3,15 @@
 ################################################################################
 gaudi_subdir(LbPythia8 v12r0)
 
-gaudi_depends_on_subdirs(Gen/Generators)
+gaudi_depends_on_subdirs(Gen/GenInterfaces
+                         Event/GenEvent
+                         Kernel/PartProp
+                         GaudiAlg)
 
 find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
-find_package(HepMC COMPONENTS fio)
+find_package(HepMC)
+find_package(Boost COMPONENTS filesystem system)
+find_package(ROOT COMPONENTS GenVector)
 
 if(EXISTS "${PYTHIA8_INCLUDE_DIR}/Pythia8/Pythia.h")
   # include directory changed from Pythia8 175 to 183
@@ -16,12 +21,12 @@ endif()
 gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
-                  INCLUDE_DIRS Pythia8
-                  LINK_LIBRARIES GeneratorsLib Pythia8)
+                  INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces
+                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 HepMC ROOT PartPropLib)
 
 gaudi_add_module(LbPythia8
                  src/component/*.cpp
-                 LINK_LIBRARIES GeneratorsLib LbPythia8Lib HepMC)
+                 LINK_LIBRARIES LbPythia8Lib HepMC)
 
 gaudi_env(SET PYTHIA8XML ${PYTHIA8_XML})
 

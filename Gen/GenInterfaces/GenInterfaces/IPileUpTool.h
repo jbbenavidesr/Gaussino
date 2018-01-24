@@ -6,7 +6,7 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 
-/** @class IPileUpTool IPileUpTool.h "Generators/IPileUpTool.h"
+/** @class IPileUpTool IPileUpTool.h "GenInterfaces/IPileUpTool.h"
  *  
  *  Abstract interface to pile up tools. Generates the number of pile-up
  *  interactions to generate for each event.

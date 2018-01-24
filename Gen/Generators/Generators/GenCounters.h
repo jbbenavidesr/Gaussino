@@ -4,7 +4,7 @@
 
 // Include files
 #include "GaudiKernel/MsgStream.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/ICounterLogFile.h"
 
 #include <cmath>
 #include <numeric>

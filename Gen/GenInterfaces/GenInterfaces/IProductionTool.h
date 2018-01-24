@@ -14,7 +14,7 @@ namespace LHCb { class GenCollision ;
 
 
 
-/** @class IProductionTool IProductionTool.h "Generators/IProductionTool.h"
+/** @class IProductionTool IProductionTool.h "GenInterfaces/IProductionTool.h"
  *  
  *  Abstract interface to production generators. Concrete tools are 
  *  interface to production generators (Pythia, HERWIG, ...) 

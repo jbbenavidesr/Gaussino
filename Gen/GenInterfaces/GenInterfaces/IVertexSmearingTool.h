@@ -11,7 +11,7 @@ namespace LHCb {
   class HepMCEvent ;
 }
 
-/** @class IVertexSmearingTool IVertexSmearingTool.h "Generators/IVertexSmearingTool.h"
+/** @class IVertexSmearingTool IVertexSmearingTool.h "GenInterfaces/IVertexSmearingTool.h"
  *  
  *  Abstract interface to vertex smearing tools. Concrete implementations 
  *  apply vertex smearing algorithms to each generated pile-up interactions.

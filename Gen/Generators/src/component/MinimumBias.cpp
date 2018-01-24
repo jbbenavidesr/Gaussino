@@ -6,7 +6,7 @@
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
-#include "Generators/IProductionTool.h"
+#include "GenInterfaces/IProductionTool.h"
 
 // Event 
 #include "Event/HepMCEvent.h"

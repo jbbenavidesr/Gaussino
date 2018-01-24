@@ -9,7 +9,8 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          #FIXME: Gen/EvtGenExtras
                          Kernel/MCInterfaces
                          Kernel/LHCbKernel
-                         Kernel/PartProp)
+                         Kernel/PartProp
+                         Gen/GenInterfaces)
 
 find_package(Boost COMPONENTS filesystem system)
 find_package(Photos++)
@@ -22,11 +23,11 @@ string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLA
 gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
-                  INCLUDE_DIRS Kernel/MCInterfaces
+                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces
                   LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib)
 
 gaudi_add_module(Generators
                  src/component/*.cpp
-                 INCLUDE_DIRS Boost Kernel/MCInterfaces Photos++
+                 INCLUDE_DIRS Boost Kernel/MCInterfaces  Gen/GenInterfaces Photos++
                  LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel GeneratorsLib Photos++) 
 

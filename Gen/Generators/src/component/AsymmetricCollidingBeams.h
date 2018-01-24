@@ -6,7 +6,7 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/RndmGenerators.h"
 
-#include "Generators/IBeamTool.h"
+#include "GenInterfaces/IBeamTool.h"
 
 // Forward declarations
 class IRndmGenSvc ;

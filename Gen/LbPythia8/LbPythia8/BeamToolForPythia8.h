@@ -12,7 +12,7 @@
 #include "GaudiKernel/Vector3DTypes.h"
 
 // from Generators
-#include "Generators/IBeamTool.h"
+#include "GenInterfaces/IBeamTool.h"
 
 /** @class BeamToolForPythia8 BeamToolForPythia8.h LbPythia8/BeamToolForPythia8.h
  *  Random generator class to interface Gaudi Random Generator to Pythia8
@@ -25,6 +25,9 @@ class BeamToolForPythia8 : virtual public Pythia8::BeamShape {
 
 public:
   // Initialize beam parameters.
+  // FIXME: Does this intentionally hide Pythia8::BeamShape::init?
+  // FIXME: Added it for now to make the warning go away ...
+  using Pythia8::BeamShape::init;
   virtual void init(Pythia8::Settings& settings);
 
   /// Constructor

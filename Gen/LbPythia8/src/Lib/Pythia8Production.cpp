@@ -12,7 +12,7 @@
 #include "Event/CrossSectionsFSR.h"
 
 // Generators.
-#include "Generators/IBeamTool.h"
+#include "GenInterfaces/IBeamTool.h"
 
 // HepMC.
 #include "HepMC/GenEvent.h"
