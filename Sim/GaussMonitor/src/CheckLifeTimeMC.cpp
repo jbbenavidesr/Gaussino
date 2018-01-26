@@ -4,7 +4,7 @@
 // ============================================================================
 // LoKi 
 // ============================================================================
-#include "LoKi/select.h"
+// #include "LoKi/select.h" // removed in LHCb v43r1
 #include "LoKi/MCTypes.h"
 #include "LoKi/MCParticleCuts.h"
 #include "LoKi/MCExtract.h"
@@ -121,8 +121,11 @@ StatusCode GaussMonitor::CheckLifeTimeMC::execute ()
     LHCb::MCParticle::ConstVector good ;
     // extract the particles
     MCCut cut = ( (*ipid) == MCABSID ) ;
-    LoKi::select (  mc->begin() , mc->end() ,
-                    std::back_inserter( good ) , cut ) ;             
+
+    // LoKi::select was removed in LHCb v43r1
+    // LoKi::select(mc->begin(), mc->end(), std::back_inserter(good), cut);
+    std::copy_if(mc->begin(), mc->end(), std::back_inserter(good), cut);
+
     //
     // use the counter 
     const std::string   title = GaussMonitor::cntName ( *ipid ) ;
