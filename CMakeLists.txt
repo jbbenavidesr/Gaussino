@@ -13,12 +13,12 @@ find_package(GaudiProject)
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
-        #message(STATUS "looking for Geant4 ${name} in ${Geant4_LIBRARY_DIRS}")
+        message(STATUS "looking for Geant4 ${name} in ${Geant4_LIBRARY_DIRS} with hints ${Geant4_DIR}/lib")
         find_library(GEANT4_${name}_LIBRARY
                      G4${name}
                      HINTS ${Geant4_DIR}/lib
                      PATHS ${Geant4_LIBRARY_DIRS})
-        #message(STATUS "GEANT4_${name}_LIBRARY -> ${GEANT4_${name}_LIBRARY}")
+        message(STATUS "GEANT4_${name}_LIBRARY -> ${GEANT4_${name}_LIBRARY}")
         list(APPEND GEANT4_LIBS ${GEANT4_${name}_LIBRARY})
     endforeach()
     link_directories(${Geant4_LIBRARY_DIRS})
