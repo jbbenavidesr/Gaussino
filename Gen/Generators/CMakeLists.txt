@@ -7,8 +7,8 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          GaudiAlg
                          #FIXME: Gen/EvtGen
                          #FIXME: Gen/EvtGenExtras
-                         Kernel/MCInterfaces
-                         Kernel/LHCbKernel
+                         #FIXME: Kernel/MCInterfaces
+                         #FIXME: Kernel/LHCbKernel
                          Kernel/PartProp
                          Gen/GenInterfaces)
 
