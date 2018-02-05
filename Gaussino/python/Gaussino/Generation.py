@@ -5,7 +5,8 @@ High level and utility functions to set up the Generation step in Gaussino
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
-from Gaussino.GenUtils import configure_pgun, configure_rnd_init
+from Gaussino.GenUtils import configure_pgun, configure_generation
+from Gaussino.GenUtils import configure_rnd_init
 
 
 class GenPhase(ConfigurableUser):
@@ -16,6 +17,7 @@ class GenPhase(ConfigurableUser):
 
     _production_type_map = {
         'PGUN': configure_pgun,
+        'PHYS': configure_generation,
     }
 
     __slots__ = {
@@ -63,7 +65,7 @@ class GenPhase(ConfigurableUser):
 
         rnd_init = configure_rnd_init()
 
-        seq = GaudiSequencer('Generation')
+        seq = GaudiSequencer('GenerationPhase')
 
         seq.Members = [rnd_init, prod_alg]
 

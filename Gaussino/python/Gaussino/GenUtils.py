@@ -28,6 +28,28 @@ def configure_pgun(**kwargs):
     return pgun
 
 
+def configure_generation(**kwargs):
+    """Simple utility function to create and configure a Generation instance
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: Generation instance
+
+    """
+
+    from Configurables import Generation, MinimumBias, Pythia8Production
+    gen = Generation()
+
+    gen.addTool(MinimumBias, name="MinimumBias")
+    gen.MinimumBias.ProductionTool = "Pythia8Production"
+    gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
+
+    from Configurables import PoissonPileUp
+    gen.addTool(PoissonPileUp, name='PoissonPileUp')
+    gen.PoissonPileUp.PileUpNu = 1
+    gen.PileUpTool = 'PoissonPileUp'
+    return gen
+
+
 def configure_rnd_init(**kwargs):
     """Simple utility function to create and configure an instance GenRndInit
 
