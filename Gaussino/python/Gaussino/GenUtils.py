@@ -38,10 +38,10 @@ def configure_generation(**kwargs):
 
     from Configurables import Generation, MinimumBias, Pythia8Production
     from Configurables import CollidingBeamsWithSvc
-    from .Utilities import configure_beaminfoservice
+    from .Utilities import beaminfoService
     gen = Generation()
     # Only configure BeamInfoSvc here as pgun won't need it
-    configure_beaminfoservice()
+    beaminfoService()
 
     mbias = gen.addTool(MinimumBias, name="MinimumBias")
     mbias.CutTool = ""
@@ -77,3 +77,20 @@ def configure_rnd_init(**kwargs):
     GenRndInit(_name).addTool(SeedingTool, name='SeedingTool')
     GenRndInit(_name).RndInitToolName = 'SeedingTool'
     return GenRndInit(_name)
+
+
+def configure_gen_monitor(**kwargs):
+    """Simple utility function to create and configure a GenMonitorAlg instance
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: GenMonitorAlg instance
+
+    """
+    from Configurables import GenMonitorAlg
+
+    TESLocation = "/Event/Gen/HepMCEvents"
+    return GenMonitorAlg(
+        "GenMonitorAlg",
+        HistoProduce=True,
+        Input=TESLocation
+        )

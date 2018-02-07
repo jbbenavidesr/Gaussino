@@ -172,8 +172,8 @@ class Gauss(LHCbConfigurableUser):
        ,"RandomGenerator": """Name of randon number generator engine: Ranlux or MTwist"""
        ,"UseGaussGeo"    : """Use GaussGeo (True: default) or GiGaGeo (False) for geometry conversion"""
        ,"Redecay"        : """ Dict with redecay settings, default: {'N': 100, 'active': False, 'rd_mode': 1}."""
-       ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """  
-       ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """          
+       ,"CurrentRICHSimRunOption" : """ GaussRICH run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker', 'FareFiasco'] (default 'GTB') """
+       ,"UpgradeRICHSimRunOption" : """ GaussCherenkov run options: ['Formula1', 'GTB', 'SUV','HGV', 'clunker' , 'FareFiasco'] (default 'GTB') """
        }
     KnownHistOptions     = ['NONE','DEFAULT']
     TrackingSystem       = ['VELO','TT','IT','OT']
@@ -2144,7 +2144,7 @@ class Gauss(LHCbConfigurableUser):
         gen_t0.MinimumBias.HijingProduction.Commands += [ textOptionHijing ]
 
     #--For beam gas events (with hijing) only the energy of the beams is set
-    
+
     #--Set location for histogram particle guns based on beam energy
         from Configurables import ParticleGun, MomentumSpectrum
         pgun = ParticleGun("ParticleGun")
@@ -2154,7 +2154,7 @@ class Gauss(LHCbConfigurableUser):
         hFileName = hFileName.replace("Ebeam4000GeV","Ebeam"+txtPInGeV+"GeV")
         pgun.MomentumSpectrum.InputFile = hFileName
         print hFileName
-    
+
     ## end of functions to set beam paramters and propagate them
     ##########################################################################
 
@@ -2369,7 +2369,7 @@ class Gauss(LHCbConfigurableUser):
 
             if self.getProp("MergeGenFSR"):
                 seqGenFSR.Members += [ "GenFSRMerge" ]
-                                                  
+
         IOHelper().outStream( outputFile, simWriter, self.getProp("WriteFSR") )
 
         simWriter.RequireAlgs.append( 'GaussSequencer' )
@@ -3166,23 +3166,23 @@ class Gauss(LHCbConfigurableUser):
          richUpgradeConfig = False
          UpgradeRichPmtDetector=False
          Run1Run2RichDetector=False
-         
+
          giga = GiGa()
 
-         
+
          # PSZ - Use self.getProp('DataType') in future
          # This modification now being applied.  SE
          if self.getProp("DataType") == "Upgrade" :
              richUpgradeConfig=True
 
-         # Do some sanity checks for RICH       
+         # Do some sanity checks for RICH
          if [det for det in ['Rich1Pmt', 'Rich2Pmt'] if det in self.getProp('DetectorSim')['Detectors']]:
              UpgradeRichPmtDetector = True
              if richUpgradeConfig == False :
                  log.warning( "Incompatible Datatype and Detector configuration for RICH Upgrade. Please check your Configration" )
              else:
                  log.info( "Using RICH simulation  configuration for Upgrade Run ")
-         
+
 
          if [det for det in ['Rich1', 'Rich2'] if det in self.getProp('DetectorSim')['Detectors']]:
              Run1Run2RichDetector = True
@@ -3190,16 +3190,16 @@ class Gauss(LHCbConfigurableUser):
                  log.warning( "Incompaticle Datatype and Detector configuration for RICH in RUN1 and RUN2. Please check your Configuration")
              else:
                  log.info( "Using RICH simulation configuration for RUN1 and RUN2 ")
-                 
-         #end of sanity checks for RICH       
 
-                 
-                  
+         #end of sanity checks for RICH
+
+
+
          ## setup the Physics list and the productions cuts
-         ## the following 2 lines commented out.        
+         ## the following 2 lines commented out.
          #if skipG4:
          #    richPmt = False
-         
+
          self.setPhysList(richUpgradeConfig)
 
          ## Mandatory G4 Run action
@@ -3232,9 +3232,9 @@ class Gauss(LHCbConfigurableUser):
 
          giga.SteppingAction =   "GiGaStepActionSequence/StepSeq"
          giga.addTool( GiGaStepActionSequence("StepSeq") , name = "StepSeq" )
-         
+
          #Now Configure the  RICH Simulation. The old setup using options is kept for backward
-         #compatibility and may be removed in the future. 
+         #compatibility and may be removed in the future.
 
          # RICH simulation configuration
          if (richUpgradeConfig):
@@ -3244,7 +3244,7 @@ class Gauss(LHCbConfigurableUser):
                 mGaussCherenkovConf.setUpgradeRichDetExistFlag(UpgradeRichPmtDetector)
                 mGaussCherenkovConf.setSkipUpgradeGeant4Flag(skipG4)
                 mGaussCherenkovConf.ApplyGaussCherenkovConfiguration(giga)
-                    
+
              else:
                  #keep the old options for backward compatibility for now. It may be removed in the future
                  #The method has the following in but it shoul not be tied to the RICH!!
@@ -3259,11 +3259,11 @@ class Gauss(LHCbConfigurableUser):
                 mGaussRICHConf.setRichDetectorExistFlag(Run1Run2RichDetector)
                 mGaussRICHConf.setSkipGeant4RichFlag(skipG4 )
                 mGaussRICHConf.ApplyGaussRICHConfiguration(giga)
-                
+
              else:
                  #keep the old options for backward compatibility for now. It may be removed in the future.
                  self.GaussRICHOldSetup(giga,Run1Run2RichDetector ,skipG4 )
-          
+
          # End of RICH simulation configuration
 
          giga.TrackSeq.Members += [ "GaussPostTrackAction/PostTrack" ]
@@ -3293,19 +3293,19 @@ class Gauss(LHCbConfigurableUser):
          # Second part went here
 
          #return giga
-         
+
     def GaussRICHOldSetup(self,giga,Run1Run2RichDetector=True, skipG4=False):
         #Old setup for GaussRICH which can be removed in the future.
-        
+
         from Configurables import ( GiGaPhysConstructorOp,GiGaPhysConstructorHpd )
         if self.getProp("DataType") in self.Run2DataTypes :
             # Line to remove AEROGEL warnings
             SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
-        else:            
+        else:
             SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/Simulation.xml"
 
         giga.ModularPL.addTool( GiGaPhysConstructorOp,name = "GiGaPhysConstructorOp" )
-        giga.ModularPL.addTool( GiGaPhysConstructorHpd,name = "GiGaPhysConstructorHpd" ) 
+        giga.ModularPL.addTool( GiGaPhysConstructorHpd,name = "GiGaPhysConstructorHpd" )
         if Run1Run2RichDetector:
             importOptions("$GAUSSRICHROOT/options/Rich.opts")
             if self.getProp("DataType") in self.Run2DataTypes :
@@ -3324,7 +3324,7 @@ class Gauss(LHCbConfigurableUser):
 
 
     def GaussCherenkovOldSetup(self, giga, UpgradeRichPmtDetector=True, skipG4=False):
-        #Old set up for GaussCherenkov which can removed in the future                 
+        #Old set up for GaussCherenkov which can removed in the future
         from Configurables import ( GiGaPhysConstructorOpCkv, GiGaPhysConstructorPhotoDetector)
         # Line to remove AEROGEL warnings
         SimulationSvc().SimulationDbLocation = "$GAUSSROOT/xml/SimulationRICHesOff.xml"
@@ -3338,7 +3338,7 @@ class Gauss(LHCbConfigurableUser):
             if skipG4:
                 giga.ModularPL.GiGaPhysConstructorOpCkv.RichOpticalPhysicsProcessActivate = False
                 giga.ModularPL.GiGaPhysConstructorPhotoDetector.RichPmtPhysicsProcessActivate = False
-         
+
 
 
 

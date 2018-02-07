@@ -6,35 +6,32 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaussino.Utilities import configure_ppservice, configure_dataservice
+from Gaussino.Utilities import (ppService, dataService,
+                                auditorService, histogramService)
 from Gaussino.Generation import GenPhase
-
-# ----------------------------------------------------------------------------------
 
 
 class Gaussino(ConfigurableUser):
 
     __used_configurables__ = [GenPhase]
 
-    ## Steering options
     __slots__ = {
-        "Histograms"                    : "DEFAULT"
-        ,"DatasetName"                  : "Gaussino"
-        ,"DataType"                     : ""
-        # Simple lists of sub detectors
-        ,"SpilloverPaths"               : []
-        ,"Phases"                       : ["Generator","Simulation"] # The Gauss phases to include in the SIM file
-        ,"OutputType"                   : 'SIM'
-        ,"EnablePack"                   : True
-        ,"DataPackingChecks"            : True
-        ,"WriteFSR"                     : True
-        ,"MergeGenFSR"                  : False
-        ,"Debug"                        : False
-        ,"BeamPipe"                     : "BeamPipeOn" # _beamPipeSwitch = 1
-        ,"ReplaceWithGDML"              : [ { "volsToReplace": [], "gdmlFile" : "" } ]
-        ,"RandomGenerator"              : 'Ranlux'
-        , "UseGaussGeo"                 : False
-        , "evtMax"                      : -1
+        "Histograms"                    : "DEFAULT"  # NOQA
+        ,"DatasetName"                  : "Gaussino"  # NOQA
+        ,"DataType"                     : ""  # NOQA
+        ,"SpilloverPaths"               : []  # NOQA
+        ,"Phases"                       : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
+        ,"OutputType"                   : 'SIM'  # NOQA
+        ,"EnablePack"                   : True  # NOQA
+        ,"DataPackingChecks"            : True  # NOQA
+        ,"WriteFSR"                     : True  # NOQA
+        ,"MergeGenFSR"                  : False  # NOQA
+        ,"Debug"                        : False  # NOQA
+        ,"BeamPipe"                     : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
+        ,"ReplaceWithGDML"              : [ { "volsToReplace": [], "gdmlFile" : "" } ]  # NOQA
+        ,"RandomGenerator"              : 'Ranlux'  # NOQA
+        , "UseGaussGeo"                 : False  # NOQA
+        , "evtMax"                      : -1  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -54,13 +51,43 @@ class Gaussino(ConfigurableUser):
         self.propagateProperties(names, other)
 
     def __apply_configuration__(self):
-        # Propagate all the necessary information to the configurable for the
-        # GenPhase
-        configure_ppservice()
-        configure_dataservice()
+        ppService()
+        dataService()
+        auditorService()
 
         self.setOtherProps(GenPhase(), ['evtMax'])
         GenPhase().configure_phase()
 
+        histogramService()
+
         ApplicationMgr().EvtMax = self.getProp('evtMax')
         ApplicationMgr().EvtSel = 'NONE'
+
+    @staticmethod
+    def eventType():
+        return GenPhase.eventType()
+
+    def outputName(self):
+        """
+        Build a name for the output file, based on input options.
+        Combines DatasetName, EventType, Number of events and Date
+        """
+        import time
+        outputName = self.getProp("DatasetName")
+        if outputName == "":
+            outputName = 'Gaussino'
+        if self.eventType() != "":
+            if outputName != "":
+                outputName += '-'
+            outputName += self.eventType()
+        if self.evtMax > 0:
+            outputName += '-' + str(self.evtMax) + 'ev'
+        idFile = str(time.localtime().tm_year)
+        if time.localtime().tm_mon < 10:
+            idFile += '0'
+        idFile += str(time.localtime().tm_mon)
+        if time.localtime().tm_mday < 10:
+            idFile += '0'
+        idFile += str(time.localtime().tm_mday)
+        outputName += '-' + idFile
+        return outputName

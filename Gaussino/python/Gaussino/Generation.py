@@ -6,7 +6,7 @@ from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
 from Gaussino.GenUtils import configure_pgun, configure_generation
-from Gaussino.GenUtils import configure_rnd_init
+from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 
 
 class GenPhase(ConfigurableUser):
@@ -59,12 +59,26 @@ class GenPhase(ConfigurableUser):
         evtMax = self.getProp('evtMax')
         if evtMax <= 0:
             raise RuntimeError("Generating events but selected '%s' events." % evtMax)  # NOQA
+
+        # Algorithm that produces the actual HepMC by talking to stuff
         prod_name = self.getProp('Production')
         prod_kwargs = self.getProp('Production_kwargs')
         prod_alg = self._production_type_map[prod_name](**prod_kwargs)
 
+        # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()
 
+        # Algorithm to make some monitoring histograms
+        gen_moni = configure_gen_monitor()
+
         seq = GaudiSequencer('GenerationPhase')
-        seq.Members = [rnd_init, prod_alg]
+        seq.Members = [rnd_init, prod_alg, gen_moni]
         ApplicationMgr().TopAlg += [seq]
+
+    @staticmethod
+    def eventType():
+        from Configurables import Generation
+        evtType = ''
+        if Generation("Generation").isPropertySet("EventType"):
+            evtType = str( Generation("Generation").EventType )
+        return evtType
