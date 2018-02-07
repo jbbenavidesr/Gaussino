@@ -37,16 +37,24 @@ def configure_generation(**kwargs):
     """
 
     from Configurables import Generation, MinimumBias, Pythia8Production
+    from Configurables import CollidingBeamsWithSvc
     gen = Generation()
 
-    gen.addTool(MinimumBias, name="MinimumBias")
+    mbias=gen.addTool(MinimumBias, name="MinimumBias")
+    mbias.CutTool = ""
+    pprod = gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
     gen.MinimumBias.ProductionTool = "Pythia8Production"
-    gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
+    pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
+    pprod.BeamToolName = 'CollidingBeamsWithSvc'
 
     from Configurables import PoissonPileUp
     gen.addTool(PoissonPileUp, name='PoissonPileUp')
     gen.PoissonPileUp.PileUpNu = 1
     gen.PileUpTool = 'PoissonPileUp'
+
+    gen.DecayTool = ""
+    gen.MinimumBias.DecayTool = ""
+
     return gen
 
 
