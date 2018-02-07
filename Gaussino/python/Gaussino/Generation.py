@@ -7,7 +7,6 @@ from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
 from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_rnd_init
-from Gaussino.Utilities import configure_beaminfoservice
 
 
 class GenPhase(ConfigurableUser):
@@ -57,8 +56,6 @@ class GenPhase(ConfigurableUser):
         self.propagateProperties(names, other)
 
     def configure_phase(self):
-        # Necessary services
-        configure_beaminfoservice()
         evtMax = self.getProp('evtMax')
         if evtMax <= 0:
             raise RuntimeError("Generating events but selected '%s' events." % evtMax)  # NOQA

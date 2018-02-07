@@ -38,9 +38,12 @@ def configure_generation(**kwargs):
 
     from Configurables import Generation, MinimumBias, Pythia8Production
     from Configurables import CollidingBeamsWithSvc
+    from .Utilities import configure_beaminfoservice
     gen = Generation()
+    # Only configure BeamInfoSvc here as pgun won't need it
+    configure_beaminfoservice()
 
-    mbias=gen.addTool(MinimumBias, name="MinimumBias")
+    mbias = gen.addTool(MinimumBias, name="MinimumBias")
     mbias.CutTool = ""
     pprod = gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
     gen.MinimumBias.ProductionTool = "Pythia8Production"
@@ -51,6 +54,7 @@ def configure_generation(**kwargs):
     gen.addTool(PoissonPileUp, name='PoissonPileUp')
     gen.PoissonPileUp.PileUpNu = 1
     gen.PileUpTool = 'PoissonPileUp'
+    gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""

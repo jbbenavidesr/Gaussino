@@ -10,6 +10,7 @@ gaudi_depends_on_subdirs(Gen/GenInterfaces
 
 find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
 find_package(HepMC)
+find_package(LHAPDF)
 find_package(Boost COMPONENTS filesystem system)
 find_package(ROOT COMPONENTS GenVector)
 
@@ -22,7 +23,7 @@ gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
                   INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces
-                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 HepMC ROOT PartPropLib)
+                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 HepMC ROOT PartPropLib LHAPDF)
 
 gaudi_add_module(LbPythia8
                  src/component/*.cpp

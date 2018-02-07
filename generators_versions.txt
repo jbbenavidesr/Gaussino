@@ -1,2 +1,3 @@
 pythia8        230
+lhapdf         6.1.6.cxxstd
 photos++       3.56

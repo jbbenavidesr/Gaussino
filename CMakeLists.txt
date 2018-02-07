@@ -29,14 +29,7 @@ gaudi_project(Gaussino v1r0
               FORTRAN
               USE GaudiExtensions v1r0
                   Geant4 v96r*
-              DATA AppConfig VERSION v3r*
-                   BcVegPyData VERSION v2r*
-                   Det/GDMLData VERSION v1r*
-                   FieldMap VERSION v5r*
-                   GenXiccData VERSION v3r*
-                   Gen/PGunsData VERSION v1r*
+              DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*
                    LHAPDFSets VERSION v2r*
-                   MIBData VERSION v3r*
-                   ParamFiles VERSION v8r*
                    Vis/XmlVis VERSION v2r*)
