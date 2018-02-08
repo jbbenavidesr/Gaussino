@@ -7,9 +7,9 @@
 #
 ###########################################################################################################
 import sys,os
+cwd = os.getcwd()
 
-
-sys.path.append(os.environ["SIMCHECKSROOT"]+"/options/EmValidation")
+sys.path.append(cwd)
 from Configurables import Gauss
 from Gauss.Configuration import *
 
