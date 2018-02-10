@@ -63,9 +63,7 @@ class Gaussino(ConfigurableUser):
         ApplicationMgr().EvtMax = self.getProp('evtMax')
         ApplicationMgr().EvtSel = 'NONE'
 
-    @staticmethod
-    def eventType():
-        return GenPhase.eventType()
+    eventType = staticmethod(GenPhase.eventType)
 
     def outputName(self):
         """
