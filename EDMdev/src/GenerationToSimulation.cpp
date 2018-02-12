@@ -54,27 +54,33 @@ StatusCode GenerationToSimulation::execute() {
     // Set ID of all vertices to 0.
     for (auto hepmc_vtx : ev->vertex_range()) hepmc_vtx->set_id(0);
 
-    //FIXME: 
+    // FIXME:
     std::vector<HepMC::GenParticle*> _all_particles;
     _all_particles.reserve(ev->particles_size());
     for (auto _part : ev->particle_range()) {
       _all_particles.push_back(_part);
     }
 
-    // Extract the particles to store in MCParticles based on keep
-    auto seed_particles = _all_particles | ranges::view::filter(keep) |
-                          ranges::action::transform([](auto part) {
-                            auto endVertex = part->end_vertex();
-                            if (endVertex) endVertex->set_id(1);
-                            return part;
-                          }) |
-                          ranges::view::filter([](auto part) {
-                            return part->production_vertex()->id() == 0;
-                          });
+    auto set_prod_id_zero = [](auto part) {
+      auto endVertex = part->end_vertex();
+      if (endVertex) endVertex->set_id(1);
+      return part;
+    };
 
-    for (auto hepmc_part : seed_particles) {
-      convert(hepmc_part, primaryVertex, nullptr);
-    }
+    auto is_prod_vtx_id_zero = [](auto part) {
+      return part->production_vertex()->id() == 0;
+    };
+
+    auto convert_part = [&](auto hepmc_part) {
+      this->convert(hepmc_part, primaryVertex, nullptr);
+      return hepmc_part;
+    };
+
+    // Extract the particles to store in MCParticles based on keep
+    ranges::for_each(_all_particles | ranges::view::filter(keep) |
+                         ranges::action::transform(set_prod_id_zero) |
+                         ranges::view::filter(is_prod_vtx_id_zero),
+                     convert_part);
   }
 
   return StatusCode::SUCCESS;
