@@ -16,49 +16,59 @@
 
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 
-StatusCode GenerationToSimulation::execute() {
-  // Retrieve the HepMCEvents.
-  debug() << "==> Execute" << endmsg;
-  LHCb::HepMCEvents* generationEvents =
-      get<LHCb::HepMCEvents>(m_generationLocation);
-
+std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader> GenerationToSimulation::
+operator()(const LHCb::HepMCEvents& generationEvents) const {
   // Create containers in TES for MCParticles and MCVertices.
-  m_particleContainer = new LHCb::MCParticles();
-  put(m_particleContainer, m_particlesLocation);
+  MCPARTICLES m_particleContainer;
+  MCVERTICES m_vertexContainer;
+  auto n_hepmc_particles = ranges::accumulate(
+      generationEvents | ranges::view::transform([](auto& ev) {
+        return ev->pGenEvt()->particles_size();
+      }),
+      0);
+  auto n_hepmc_vertices = ranges::accumulate(
+      generationEvents | ranges::view::transform([](auto& ev) {
+        return ev->pGenEvt()->vertices_size();
+      }),
+      0);
 
-  m_vertexContainer = new LHCb::MCVertices();
-  put(m_vertexContainer, m_verticesLocation);
+  if (msgLevel(MSG::DEBUG)) {
+    debug() << "Reserving space for " << n_hepmc_particles << "("
+            << n_hepmc_vertices << ") MCParticles(MCVertices)" << endmsg;
+  }
+
+  m_particleContainer.reserve(n_hepmc_particles);
+  m_particleContainer.reserve(n_hepmc_vertices);
 
   // Create some MCHeader.
-  auto mcHeader = new LHCb::MCHeader();
-  put(mcHeader, m_mcHeader);
+  LHCb::MCHeader mcHeader;
+  std::vector<unsigned int> pv_indices;
 
   // Loop over the events (one for each pile-up interaction).
-  for (auto& genEvent : *generationEvents) {
+  for (auto& genEvent : generationEvents) {
     auto ev = genEvent->pGenEvt();
-
-    // Empty the maps of converted particles.
-    m_mcParticleMap.clear();
 
     // Determine the position of the primary vertex.
     auto thePV = primaryVertex(ev);
 
     // Create and add the primary MCVertex.
-    auto primaryVertex = new LHCb::MCVertex();
-    m_vertexContainer->insert(primaryVertex);
-    primaryVertex->setPosition(Gaudi::XYZPoint(thePV.Vect()));
-    primaryVertex->setTime(thePV.T());
-    primaryVertex->setType(LHCb::MCVertex::ppCollision);
-    mcHeader->addToPrimaryVertices(primaryVertex);
+    m_vertexContainer.emplace_back();
+    auto pv_idx = m_vertexContainer.size() - 1;
+    auto& primaryVertex = m_vertexContainer.back();
+    primaryVertex.setPosition(Gaudi::XYZPoint(thePV.Vect()));
+    primaryVertex.setTime(thePV.T());
+    primaryVertex.setType(LHCb::MCVertex::ppCollision);
+    // FIXME: mcheader should properly store the reference instead
 
     // Set ID of all vertices to 0.
     for (auto hepmc_vtx : ev->vertex_range()) hepmc_vtx->set_id(0);
 
-    // FIXME:
+    // FIXME: It must be possible to somehow avoid this copy without ranges::v3
+    // complaining
     std::vector<HepMC::GenParticle*> _all_particles;
     _all_particles.reserve(ev->particles_size());
-    for (auto _part : ev->particle_range()) {
-      _all_particles.push_back(_part);
+    for (auto part : ev->particle_range()) {
+      _all_particles.push_back(part);
     }
 
     auto set_prod_id_zero = [](auto part) {
@@ -72,18 +82,23 @@ StatusCode GenerationToSimulation::execute() {
     };
 
     auto convert_part = [&](auto hepmc_part) {
-      this->convert(hepmc_part, primaryVertex, nullptr);
+      this->convert(hepmc_part, m_vertexContainer.at(pv_idx),
+                    m_particleContainer, m_vertexContainer);
       return hepmc_part;
     };
 
-    // Extract the particles to store in MCParticles based on keep
     ranges::for_each(_all_particles | ranges::view::filter(keep) |
                          ranges::action::transform(set_prod_id_zero) |
                          ranges::view::filter(is_prod_vtx_id_zero),
                      convert_part);
+    pv_indices.push_back(pv_idx);
+  }
+  for (auto i : pv_indices) {
+    mcHeader.addToPrimaryVertices(&m_vertexContainer.at(i));
   }
 
-  return StatusCode::SUCCESS;
+  return std::make_tuple(std::move(m_particleContainer),
+                         std::move(m_vertexContainer), mcHeader);
 }
 
 //=============================================================================
@@ -201,29 +216,15 @@ StatusCode GenerationToSimulation::execute() {
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
 void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
-                                     LHCb::MCVertex* originVertex,
-                                     LHCb::MCParticle* mothermcp) {
-  // Decision to convert the particle.
+                                     LHCb::MCVertex& originVertex,
+                                     MCPARTICLES& mcparticles,
+                                     MCVERTICES& mcvertices) const {
   unsigned char conversionCode = transferToSimulation(particle);
   switch (conversionCode) {
     case 2: {  // Convert to MCParticle.
 
-      // Check if already converted.
-      const int pBarcode = particle->barcode();
-      std::map<int, bool>::const_iterator result =
-          m_mcParticleMap.find(pBarcode);
-      if (result != m_mcParticleMap.end()) return;
-
       // Convert the particle.
-      LHCb::MCVertex* endVertex = 0;
-      LHCb::MCParticle* mcP = makeMCParticle(particle, endVertex);
-      if (originVertex) {
-        mcP->setOriginVertex(originVertex);
-        originVertex->addToProducts(mcP);
-      }
-      m_mcParticleMap.insert(std::make_pair(pBarcode, true));
-      mothermcp = mcP;
-      originVertex = endVertex;
+      makeMCParticle(particle, originVertex, mcparticles, mcvertices);
       break;
     }
     case 3:  // Skip the particle.
@@ -234,12 +235,13 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
   // Convert all daughters of the HepMC particle (recurse).
   auto ev = particle->end_vertex();
   if (ev) {
-    // Create the list.
-    std::vector<HepMC::GenParticle*> dList;
-
-    // Sort by barcode and convert.
+    // This is going to be the MCVertex just created in makeMCParticle()
+    // Getting a number here because the reference will change in the loop
+    // below. FIXME: this is gross
+    auto end_vtx_position = mcvertices.size() - 1;
     for (auto P : ev->particles(HepMC::IteratorRange::children)) {
-      convert(P, originVertex, mothermcp);
+      auto& endvertex = mcvertices.at(end_vtx_position);
+      convert(P, endvertex, mcparticles, mcvertices);
     }
   }
 }
@@ -259,42 +261,47 @@ unsigned char GenerationToSimulation::transferToSimulation(
 //=============================================================================
 // Create an MCParticle from a HepMC GenParticle.
 //=============================================================================
-LHCb::MCParticle* GenerationToSimulation::makeMCParticle(
-    HepMC::GenParticle*& particle, LHCb::MCVertex*& endVertex) const {
+LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
+    HepMC::GenParticle*& particle, LHCb::MCVertex& originVertex,
+    MCPARTICLES& mcparticles, MCVERTICES& mcvertices) const {
   // Create and insert into TES.
-  LHCb::MCParticle* mcp = new LHCb::MCParticle();
-  m_particleContainer->insert(mcp);
+  // LHCb::MCParticle* mcp = new LHCb::MCParticle();
+  mcparticles.emplace_back();
+  auto& mcp = mcparticles.back();
+
+  mcp.setOriginVertex(&originVertex);
+  originVertex.addToProducts(&mcp);
 
   // Set properties.
   Gaudi::LorentzVector mom(particle->momentum());
   LHCb::ParticleID pid(particle->pdg_id());
-  mcp->setMomentum(mom);
-  mcp->setParticleID(pid);
+  mcp.setMomentum(mom);
+  mcp.setParticleID(pid);
 
   // Set the vertex.
-  HepMC::GenVertex* V = particle->end_vertex();
-  if (V) {
-    endVertex = new LHCb::MCVertex();
-    m_vertexContainer->insert(endVertex);
-    endVertex->setPosition(Gaudi::XYZPoint(V->point3d()));
-    endVertex->setTime(V->position().t());
-    endVertex->setMother(mcp);
+  auto hepmc_endvertex = particle->end_vertex();
+  if (hepmc_endvertex) {
+    mcvertices.emplace_back();
+    auto& endVertex = mcvertices.back();
+    endVertex.setPosition(Gaudi::XYZPoint(hepmc_endvertex->point3d()));
+    endVertex.setTime(hepmc_endvertex->position().t());
+    endVertex.setMother(&mcp);
 
     // Check if the particle has oscillated.
-    const HepMC::GenParticle* B = hasOscillated(particle);
+    auto B = hasOscillated(particle);
     if (B) {
-      endVertex->setType(LHCb::MCVertex::OscillatedAndDecay);
+      endVertex.setType(LHCb::MCVertex::OscillatedAndDecay);
       particle = const_cast<HepMC::GenParticle*>(B);
     } else if ((4 == pid.abspid()) || (5 == pid.abspid()))
-      endVertex->setType(LHCb::MCVertex::StringFragmentation);
+      endVertex.setType(LHCb::MCVertex::StringFragmentation);
     else
-      endVertex->setType(LHCb::MCVertex::DecayVertex);
-    mcp->addToEndVertices(endVertex);
+      endVertex.setType(LHCb::MCVertex::DecayVertex);
+    mcp.addToEndVertices(&endVertex);
   }
 
   //  Set the fromSignal flag
   if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
-    mcp->setFromSignal(true);
+    mcp.setFromSignal(true);
   }
 
   return mcp;
