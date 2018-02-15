@@ -8,4 +8,6 @@ Two official branches are currently actively developed in Gauss in addition to t
 The master and official branches are all protected, meaning that code cannot be pushed into them directly but only through merge requests. 
 This allows us to check things work correctly before including them in the official branches for the next release.
 
+Refer to the [Contribution Guidelines](CONTRIBUTING.md) on how to contribute code to the Gauss project
+
 
