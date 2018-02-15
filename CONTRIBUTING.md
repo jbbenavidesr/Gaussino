@@ -42,7 +42,7 @@ The Gauss manager will take care of doing so.
 In order to test the code provided for new releases we have various nightly slots. In particular for Gauss we have setup two dedicated nightly slots: 
 - **lhcb-sim09**, for the continuous build of the next Gauss v49rX release
 - **lhcb-sim09-upgrade**, with the same scope for the next Gauss v50rX
-- **lhcb-gauss-dev, for the continuos build of the master branch and the bext Gauss v52rX (Sim10 preparation)
+- **lhcb-gauss-dev**, for the continuos build of the master branch and the bext Gauss v52rX (Sim10 preparation)
 
 Gauss in lhcb-sim09 is built from the head of the Sim09 GitLab branch,
 while the one in lhcb-sim09-upgrade is built from the Sim09-upgrade branch,
