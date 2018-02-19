@@ -4,6 +4,7 @@
 gaudi_subdir(AmpGen v1r0)
 
 find_package(ROOT COMPONENTS RIO Hist Matrix Graf Minuit Tree MathCore Physics)
+find_package(TBB)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -13,7 +14,7 @@ gaudi_add_library(AmpGen
                   src/*.cpp
                   NO_PUBLIC_HEADERS
 		  INCLUDE_DIRS ROOT
-		  LINK_LIBRARIES ROOT)
+		  LINK_LIBRARIES ROOT TBB)
 
 foreach(app Generator Fitter ConvertToSourceCode)
   gaudi_add_executable(${app} apps/${app}.cpp
