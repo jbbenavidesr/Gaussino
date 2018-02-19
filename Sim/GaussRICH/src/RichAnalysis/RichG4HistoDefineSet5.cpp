@@ -15,7 +15,7 @@
 // Histogramming
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : RichG4HistoDefineSet5

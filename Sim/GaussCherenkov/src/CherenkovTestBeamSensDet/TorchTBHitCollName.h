@@ -3,7 +3,7 @@
 #define CHERENKOVTESTBEAMSENSDET_TORCHTBHITCOLLNAME_H 1
 
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 /** @class TorchTBHitCollName TorchTBHitCollName.h CherenkovTestBeamSensDet/TorchTBHitCollName.h *  
  *

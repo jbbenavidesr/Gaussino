@@ -1,15 +1,15 @@
 // $Id: GiGaPhysUnknownParticles.cpp,v 1.6 2009-10-20 07:35:07 marcin Exp $
-// Include files 
+// Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/PropertyMgr.h"
 #include "GaudiKernel/PhysicalConstants.h"
 
-// G4 
-#include "G4UnknownParticle.hh"
-#include "G4ProcessManager.hh"
-#include "G4ParticleTable.hh"
+// G4
+#include "Geant4/G4UnknownParticle.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // local
 #include "G4BcMesonMinus.h"
@@ -102,6 +102,7 @@ void GiGaPhysUnknownParticles::ConstructParticle()
 //=============================================================================
 void GiGaPhysUnknownParticles::ConstructProcess()
 {
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator -> reset() ;
   while ( (*theParticleIterator)() ) {
     G4ParticleDefinition * particle = theParticleIterator -> value() ;

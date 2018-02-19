@@ -9,50 +9,50 @@
 // local
 #include "GiGaVisManager.h"
 
-#include "G4VisManager.hh"
+#include "Geant4/G4VisManager.hh"
 ///
 // Not needing external packages or libraries...
-#include "G4ASCIITree.hh"
-#include "G4DAWNFILE.hh"
-#include "G4RayTracer.hh"
-#include "G4VRML1File.hh"
-#include "G4VRML2File.hh"
+#include "Geant4/G4ASCIITree.hh"
+#include "Geant4/G4DAWNFILE.hh"
+#include "Geant4/G4RayTracer.hh"
+#include "Geant4/G4VRML1File.hh"
+#include "Geant4/G4VRML2File.hh"
 //
 #ifdef G4VIS_USE_DAWN
-#include "G4FukuiRenderer.hh"
+#include "Geant4/G4FukuiRenderer.hh"
 #endif
 //
 #ifdef G4VIS_USE_OPACS
-#include "G4Wo.hh"
-#include "G4Xo.hh"
+#include "Geant4/G4Wo.hh"
+#include "Geant4/G4Xo.hh"
 #endif
 //
 #ifdef G4VIS_USE_OPENGLX
-#include "G4OpenGLImmediateX.hh"
-#include "G4OpenGLStoredX.hh"
+#include "Geant4/G4OpenGLImmediateX.hh"
+#include "Geant4/G4OpenGLStoredX.hh"
 #endif
 //
 #ifdef G4VIS_USE_OPENGLWIN32
-#include "G4OpenGLImmediateWin32.hh"
-#include "G4OpenGLStoredWin32.hh"
+#include "Geant4/G4OpenGLImmediateWin32.hh"
+#include "Geant4/G4OpenGLStoredWin32.hh"
 #endif
 //
 #ifdef G4VIS_USE_OPENGLXM
-#include "G4OpenGLImmediateXm.hh"
-#include "G4OpenGLStoredXm.hh"
+#include "Geant4/G4OpenGLImmediateXm.hh"
+#include "Geant4/G4OpenGLStoredXm.hh"
 #endif
 //
 #ifdef G4VIS_USE_OIX
-#include "G4OpenInventorX.hh"
+#include "Geant4/G4OpenInventorX.hh"
 #endif
 //
 #ifdef G4VIS_USE_OIWIN32
-#include "G4OpenInventorWin32.hh"
+#include "Geant4/G4OpenInventorWin32.hh"
 #endif
 //
 #ifdef G4VIS_USE_VRML
-#include "G4VRML1.hh"
-#include "G4VRML2.hh"
+#include "Geant4/G4VRML1.hh"
+#include "Geant4/G4VRML2.hh"
 #endif
 //
 namespace GiGaVisManagerLocal 
@@ -124,7 +124,7 @@ namespace GiGaVisManagerLocal
           G4cout << "\nYou have successfully chosen to use " 
                  << "the following graphics systems."
                  << G4endl;
-          PrintAvailableGraphicsSystems ();
+          PrintAvailableGraphicsSystems (G4VisManager::Verbosity::all);
         }
       ///
     };

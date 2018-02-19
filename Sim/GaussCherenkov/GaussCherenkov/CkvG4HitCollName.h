@@ -1,6 +1,6 @@
 #ifndef GaussCherenkov_CkvG4HitCollName_h
 #define GaussCherenkov_CkvG4HitCollName_h 1
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <vector>
 
 class CkvG4HitCollName {

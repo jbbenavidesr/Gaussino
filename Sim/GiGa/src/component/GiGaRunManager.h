@@ -22,8 +22,8 @@
 #include   "GiGa/IGiGaRunManager.h"
 #include   "GiGa/IGiGaTool.h"
 
-// from Geant4 
-#include   "G4RunManager.hh" 
+// from Geant4
+#include   "Geant4/G4RunManager.hh"
 
 // forward declarations
 namespace LHCb { 

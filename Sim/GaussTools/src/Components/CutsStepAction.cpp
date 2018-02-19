@@ -1,11 +1,11 @@
 // ============================================================================
 #include "CLHEP/Geometry/Point3D.h"
 ///
-#include "G4Step.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4Gamma.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
+#include "Geant4/G4Gamma.hh"
 ///
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/DeclareFactoryEntries.h" 
@@ -41,10 +41,11 @@ DECLARE_TOOL_FACTORY( CutsStepAction )
 CutsStepAction::CutsStepAction
 ( const std::string& type   ,
   const std::string& name   ,
-  const IInterface*  parent ) 
-  : GiGaStepActionBase ( type , name , parent )
+  const IInterface*  parent )
+  : GiGaStepActionBase (type, name, parent),
   // tracking cuts
-  , m_trcuteg (1.0*MeV), m_trcuthadr (10.0*MeV)
+  m_trcuteg (1.0 * CLHEP::MeV),
+  m_trcuthadr (10.0 * CLHEP::MeV)
 {
   declareProperty ("TrCutElGamma", m_trcuteg);
   declareProperty ("TrCutHadr", m_trcuthadr);

@@ -16,7 +16,7 @@
 // GiGa 
 #include "GiGa/IGiGaFieldMgr.h" 
 // from G4 
-#include "G4MagneticField.hh"
+#include "Geant4/G4MagneticField.hh"
 
 /** @interface IGiGaMagField IGiGaMagField.h "GiGa/IGiGaMagField.h"
  *

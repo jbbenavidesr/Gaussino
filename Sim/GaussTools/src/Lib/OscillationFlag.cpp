@@ -10,10 +10,10 @@
 // Include files
 
 // Geant4
-#include "G4Track.hh"
-#include "G4DynamicParticle.hh"
-#include "G4PrimaryParticle.hh"
-#include "G4VUserPrimaryParticleInformation.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4PrimaryParticle.hh"
+#include "Geant4/G4VUserPrimaryParticleInformation.hh"
 
 // GiGa
 #include "GiGa/GiGaUtil.h"

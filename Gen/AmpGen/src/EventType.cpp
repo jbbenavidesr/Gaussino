@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "AmpGen/Utilities.h"
 #include "AmpGen/ParticlePropertiesList.h"
 #include "AmpGen/MsgService.h"

@@ -24,12 +24,12 @@
 #include  "GiGaRunManager.h" 
 
 // G4 
-#include  "G4Timer.hh"
-#include  "G4StateManager.hh"
-#include  "G4UIsession.hh"
-#include  "G4UImanager.hh"
-#include  "G4VUserPrimaryGeneratorAction.hh"
-#include  "G4VUserDetectorConstruction.hh"
+#include  "Geant4/G4Timer.hh"
+#include  "Geant4/G4StateManager.hh"
+#include  "Geant4/G4UIsession.hh"
+#include  "Geant4/G4UImanager.hh"
+#include  "Geant4/G4VUserPrimaryGeneratorAction.hh"
+#include  "Geant4/G4VUserDetectorConstruction.hh"
 
 
 //-----------------------------------------------------------------------------

@@ -14,16 +14,16 @@
 #include "GaussRICH/RichG4HpdReflectionFlag.h"
 
 //GEANT4
-#include "G4Event.hh"
-#include "G4EventManager.hh"
-#include "G4TrajectoryContainer.hh"
-#include "G4Trajectory.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4VHitsCollection.hh"
-#include "G4SDManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4TrajectoryPoint.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
+#include "Geant4/G4Trajectory.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4TrajectoryPoint.hh"
 #include <vector>
 #include <iterator>
 #include <math.h>
@@ -44,47 +44,47 @@ RichG4EventHitCount::RichG4EventHitCount(  ) {
 
   ChTkBetaSaturatedCut = 0.9999;
 
-   m_Rich1InitSlopeRMinFull= 0.015*rad;
-   m_Rich1InitSlopeXMinFull = 0.015*rad;
-   m_Rich1InitSlopeXMaxFull = 0.30*rad;
-   m_Rich1InitSlopeYMinFull = 0.015*rad;
-   m_Rich1InitSlopeYMaxFull =  0.30*rad;
+   m_Rich1InitSlopeRMinFull = 0.015 * CLHEP::rad;
+   m_Rich1InitSlopeXMinFull = 0.015 * CLHEP::rad;
+   m_Rich1InitSlopeXMaxFull = 0.30 * CLHEP::rad;
+   m_Rich1InitSlopeYMinFull = 0.015 * CLHEP::rad;
+   m_Rich1InitSlopeYMaxFull = 0.30 * CLHEP::rad;
 
-  m_Rich1InitSlopeRMin= 0.05*rad;
-  m_Rich1InitSlopeXMin= 0.05*rad;
-  m_Rich1InitSlopeXMax= 0.20*rad;
-  m_Rich1InitSlopeYMin = 0.05*rad;
-  m_Rich1InitSlopeYMax=  0.20*rad;
+  m_Rich1InitSlopeRMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeXMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeXMax = 0.20 * CLHEP::rad;
+  m_Rich1InitSlopeYMin = 0.05 * CLHEP::rad;
+  m_Rich1InitSlopeYMax = 0.20 * CLHEP::rad;
 
-  //  m_MomRich1AgelMin = 3.0*GeV;
-  // m_MomRich1GasMin = 3.0*GeV;
+  // m_MomRich1AgelMin = 3.0 * CLHEP::GeV;
+  // m_MomRich1GasMin = 3.0 * CLHEP::GeV;
 
-   m_MomRich1AgelMin = 10.0*GeV;
-   m_MomRich1GasMin = 10.0*GeV;
-   m_MomRich2GasMin = 15.0*GeV;
-  //m_MomRich1AgelMin = 20.0*GeV;
-  //m_MomRich1GasMin = 20.0*GeV;
-  m_MinTkPtRich1FiducialRegion= 1;
-  // m_MomRich2GasMin = 30.0*GeV;
-  // m_MomRich2GasMin = 20.0*GeV;
-  //  m_MomRich2GasMin = 20.0*GeV;
+   m_MomRich1AgelMin = 10.0 * CLHEP::GeV;
+   m_MomRich1GasMin = 10.0 * CLHEP::GeV;
+   m_MomRich2GasMin = 15.0 * CLHEP::GeV;
+  // m_MomRich1AgelMin = 20.0 * CLHEP::GeV;
+  // m_MomRich1GasMin = 20.0 * CLHEP::GeV;
+  m_MinTkPtRich1FiducialRegion = 1;
+  // m_MomRich2GasMin = 30.0 * CLHEP::GeV;
+  // m_MomRich2GasMin = 20.0 * CLHEP::GeV;
+  // m_MomRich2GasMin = 20.0 * CLHEP::GeV;
 
-   m_Rich2InitSlopeRMinFull= 0.015*rad;
-   m_Rich2InitSlopeXMinFull= 0.015*rad;
-   m_Rich2InitSlopeXMaxFull= 0.20*rad;
-   m_Rich2InitSlopeYMinFull = 0.015*rad;
-   m_Rich2InitSlopeYMaxFull=  0.20*rad;
+   m_Rich2InitSlopeRMinFull = 0.015 * CLHEP::rad;
+   m_Rich2InitSlopeXMinFull = 0.015 * CLHEP::rad;
+   m_Rich2InitSlopeXMaxFull = 0.20 * CLHEP::rad;
+   m_Rich2InitSlopeYMinFull = 0.015 * CLHEP::rad;
+   m_Rich2InitSlopeYMaxFull = 0.20 * CLHEP::rad;
 
-  m_Rich2InitSlopeRMin= 0.05*rad;
-  m_Rich2InitSlopeXMin= 0.05*rad;
-  m_Rich2InitSlopeXMax= 0.20*rad;
-  m_Rich2InitSlopeYMin = 0.05*rad;
-  m_Rich2InitSlopeYMax=  0.20*rad;
+  m_Rich2InitSlopeRMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeXMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeXMax = 0.20 * CLHEP::rad;
+  m_Rich2InitSlopeYMin = 0.05 * CLHEP::rad;
+  m_Rich2InitSlopeYMax = 0.20 * CLHEP::rad;
   m_MinTkPtRich2FiducialRegion= 1;
-  //  m_MinC4F10HighMomCutForYield= 60.0*GeV;
-  // m_MinCF4HighMomCutForYield= 60.0*GeV;
-  m_MinC4F10HighMomCutForYield= 40.0*GeV;
-  m_MinCF4HighMomCutForYield= 40.0*GeV;
+  // m_MinC4F10HighMomCutForYield = 60.0 * CLHEP::GeV;
+  // m_MinCF4HighMomCutForYield = 60.0 * CLHEP::GeV;
+  m_MinC4F10HighMomCutForYield = 40.0 * CLHEP::GeV;
+  m_MinCF4HighMomCutForYield = 40.0 * CLHEP::GeV;
 
 }
 RichG4EventHitCount::~RichG4EventHitCount(  ) {

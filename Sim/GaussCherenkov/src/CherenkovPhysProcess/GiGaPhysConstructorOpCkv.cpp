@@ -7,28 +7,28 @@
 #include "GaudiKernel/MsgStream.h"
 
 // G4 
-#include "globals.hh"
-#include "G4ParticleTypes.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleWithCuts.hh"
-#include "G4ProcessManager.hh"
-#include "G4ProcessVector.hh"
-#include "G4VProcess.hh"
-#include "G4ParticleTable.hh"
-#include "G4Material.hh"
-#include "G4Decay.hh"
-#include "G4ios.hh"
-#include "G4Material.hh"
-#include "G4MaterialTable.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4ParticleTypes.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleWithCuts.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4Decay.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4MaterialTable.hh"
 
 // local
 #include "GiGaPhysConstructorOpCkv.h"
 #include "GaussRICH/RichPhotoElectron.h"
-#include "G4Electron.hh"
-#include "G4Transportation.hh"
-//#include "G4MultipleScattering.hh"
-#include "G4ProcessVector.hh"
-#include "G4LossTableManager.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Transportation.hh"
+//#include "Geant4/G4MultipleScattering.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4LossTableManager.hh"
 #include <vector>
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
@@ -253,7 +253,7 @@ void  GiGaPhysConstructorOpCkv::ConstructPeProcess()
 
 //=============================================================================
 #include "GaussRICH/RichG4Cerenkov.h"
-#include "G4OpAbsorption.hh"
+#include "Geant4/G4OpAbsorption.hh"
 #include "GaussRICH/RichG4OpRayleigh.h"
 #include "GaussCherenkov/CkvG4OpBoundaryProcess.h"
 #include "RichPmtPhotoElectricEffect.h"
@@ -422,8 +422,8 @@ void GiGaPhysConstructorOpCkv::ConstructOp() {
   //  SetRichMaxStepNumLimitInRayleigh((G4int) m_MaxAllowedPhotStepNumInRayleigh);
   // theRayleighScatteringProcess->
   //  SetMaxNumRayleighScatAllowed((G4int)  m_MaxNumberRayleighScatAllowed);
-  
 
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
 
   while( (*theParticleIterator)() ){

@@ -5,12 +5,12 @@
 #include "CLHEP/Geometry/Point3D.h"
 
 // from Geant4
-#include "G4Step.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4Gamma.hh" 
-#include "G4Timer.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
+#include "Geant4/G4Gamma.hh" 
+#include "Geant4/G4Timer.hh"
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"

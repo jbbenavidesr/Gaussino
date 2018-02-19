@@ -10,6 +10,7 @@
 
 #include <chrono>
 #include <functional>
+#include <numeric>
 
 #include "TH1D.h"
 #include "TH2D.h"

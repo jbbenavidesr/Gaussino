@@ -10,11 +10,11 @@
 // local
 #include "GiGaSensDetBudget.h"
 // G4 
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Material.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4Material.hh"
 
 // ============================================================================
 /** @file

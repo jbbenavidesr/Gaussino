@@ -1,8 +1,8 @@
 // local
 #include "G4RDTag.h"
 
-#include "G4ParticleTable.hh"
-#include "G4SystemOfUnits.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4SystemOfUnits.hh"
 
 // ######################################################################
 // ###                          RDTag                                 ###

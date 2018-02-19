@@ -1,20 +1,20 @@
 // Include files 
 
-#include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4Step.hh"
 #include <math.h>
 #include <vector>
-#include "G4VProcess.hh"
-#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
-#include "G4TrackingManager.hh"
-#include "G4TrackStatus.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4TrackStatus.hh"
 
 // Gaudi
 #include "GaudiKernel/Kernel.h"

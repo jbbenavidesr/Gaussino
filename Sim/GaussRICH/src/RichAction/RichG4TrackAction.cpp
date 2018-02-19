@@ -8,19 +8,19 @@
 #include "CLHEP/Geometry/Point3D.h"
 
 // Geant4 
-#include "G4Track.hh"
-#include "G4TrackVector.hh"
-#include "G4TrackingManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Electron.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TrackVector.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Electron.hh"
 #include "GaussRICH/RichPhotoElectron.h"
-#include "G4ThreeVector.hh"
-#include "G4OpticalPhoton.hh"
-#include "globals.hh"
+#include "Geant4/G4ThreeVector.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/globals.hh"
 #include <math.h>
-#include "G4VProcess.hh"
+#include "Geant4/G4VProcess.hh"
 
 // Gaudi
 #include "GaudiKernel/MsgStream.h"

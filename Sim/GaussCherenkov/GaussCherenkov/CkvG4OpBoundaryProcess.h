@@ -55,20 +55,20 @@
 // Includes
 /////////////
 
-#include "globals.hh"
-#include "templates.hh"
-#include "geomdefs.hh"
-#include "Randomize.hh"
-#include "G4Track.hh"
-#include "G4Step.hh"
-#include "G4VDiscreteProcess.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4LogicalBorderSurface.hh"
-#include "G4LogicalSkinSurface.hh"
-#include "G4OpticalSurface.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4TransportationManager.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/templates.hh"
+#include "Geant4/geomdefs.hh"
+#include "Geant4/Randomize.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4VDiscreteProcess.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4LogicalBorderSurface.hh"
+#include "Geant4/G4LogicalSkinSurface.hh"
+#include "Geant4/G4OpticalSurface.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4TransportationManager.hh"
 
 // Class Description:
 // Discrete Process -- reflection/refraction at optical interfaces.
@@ -317,7 +317,7 @@ G4ThreeVector CkvG4OpBoundaryProcess::
 
   G4ThreeVector vec2 = vec1.cross(normal);
 
-  G4double phi = twopi*G4UniformRand();
+  G4double phi = CLHEP::twopi * G4UniformRand();
   G4double cosphi = std::cos(phi);
   G4double sinphi = std::sin(phi);
 

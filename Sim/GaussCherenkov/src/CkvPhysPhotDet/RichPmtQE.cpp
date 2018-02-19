@@ -1,5 +1,5 @@
 #include "GaussCherenkov/RichPmtQE.h"
-#include "G4ios.hh"
+#include "Geant4/G4ios.hh"
 
 // initialize the QE vectors with 20 bins are adjust the
 //size after getting the correct size from the db.

@@ -18,8 +18,8 @@
 #include "Event/MCParticle.h"
 #include "Event/MCVertex.h"
 // G4 
-#include "G4PrimaryVertex.hh"
-#include "G4PrimaryParticle.hh"
+#include "Geant4/G4PrimaryVertex.hh"
+#include "Geant4/G4PrimaryParticle.hh"
 // local
 #include "GiGaCnvFunctors.h"
 

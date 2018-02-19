@@ -1,7 +1,7 @@
 #ifndef GAUSSCHERENKOV_CKVG4GAUSSPATHNAMES_H
 #define GAUSSCHERENKOV_CKVG4GAUSSPATHNAMES_H 1
 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 #include "RichDet/DeRich.h"
 

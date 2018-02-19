@@ -6,7 +6,7 @@
 // from GiGa 
 #include "GiGa/IGiGaInterface.h"
 // from Geant4 
-#include "G4VPhysicsConstructor.hh"
+#include "Geant4/G4VPhysicsConstructor.hh"
 
 /** @class IGiGaPhysicsConstructor IGiGaPhysicsConstructor.h
  *  

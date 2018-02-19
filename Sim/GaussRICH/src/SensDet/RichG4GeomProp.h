@@ -2,7 +2,7 @@
 #define RichG4GeomProp_h 1
 
 #include <vector>
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include "GiGa/GiGaBase.h"
 #include "GaudiKernel/IDataProviderSvc.h"
 #include "GaudiKernel/IMessageSvc.h"

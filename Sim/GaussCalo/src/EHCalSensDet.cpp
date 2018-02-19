@@ -23,12 +23,12 @@
 #include "GaussTools/GaussTrackInformation.h"
 
 // Geant4 
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4EnergyLossTables.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4EnergyLossTables.hh"
 
 // GiGaCnv 
 #include "GiGaCnv/GiGaVolumeUtils.h"
@@ -58,12 +58,12 @@
 EHCalSensDet::EHCalSensDet
 ( const std::string& type   ,
   const std::string& name   ,
-  const IInterface*  parent ) 
+  const IInterface*  parent )
   : G4VSensitiveDetector( name  )
-  , CaloSensDet        ( type , name , parent ) 
-  , m_slotWidth( 25 * ns ) 
-{ 
-  declareProperty( "SlotWidth" , m_slotWidth ) ; 
+  , CaloSensDet        ( type , name , parent )
+  , m_slotWidth( 25 * CLHEP::ns )
+{
+  declareProperty( "SlotWidth" , m_slotWidth );
 }
 
 //=============================================================================
@@ -92,7 +92,7 @@ StatusCode EHCalSensDet::timing
         histos().end() != ihist ; ++ihist ) 
     {
       const AIDA::IHistogram1D* histo = *ihist ;
-      const int           bin   = histo -> coordToIndex ( dt / ns ) ;
+      const int           bin   = histo -> coordToIndex ( dt / CLHEP::ns ) ;
       const double        frac  = histo -> binHeight    ( bin     ) ;
       fractions.push_back( frac ) ;
     };

@@ -4,7 +4,7 @@
 // include files 
 
 // G4
-#include "G4VModularPhysicsList.hh"
+#include "Geant4/G4VModularPhysicsList.hh"
 
 // GiGa 
 #include "GiGa/GiGaPhysListBase.h"

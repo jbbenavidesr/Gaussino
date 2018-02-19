@@ -13,7 +13,7 @@
 // GiGa
 #include "GiGa/IGiGaInterface.h"
 // Geant4 
-#include "G4UserStackingAction.hh"
+#include "Geant4/G4UserStackingAction.hh"
 
 /** @class IGiGaStackAction IGiGaStackAction.h GiGa/IGiGaStackAction.h
  *

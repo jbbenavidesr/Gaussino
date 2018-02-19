@@ -3,9 +3,9 @@
 #define GAUSSTOOLS_COMPONENTS_SPECIALCUTS_H 1
 
 // Include files
-#include "G4ios.hh"
-#include "globals.hh"
-#include "G4VProcess.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4VProcess.hh"
 
 /** @class SpecialCuts SpecialCuts.h Components/SpecialCuts.h
  *

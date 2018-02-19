@@ -45,9 +45,9 @@
 //#include "g4std/fstream"
 //#include "g4std/iomanip"
     
-// #include "G4Electron.hh"
+// #include "Geant4/G4Electron.hh"
 #include "GaussRICH/RichPhotoElectron.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
  
 
@@ -75,7 +75,7 @@ RichPhotoElectron* RichPhotoElectron::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
    anInstance = new G4ParticleDefinition(
-                 name,  0.51099906*MeV,       0.0*MeV,    -1.*eplus,
+                 name,  0.51099906*CLHEP::MeV,       0.0*CLHEP::MeV,    -1.*CLHEP::eplus,
                     1,               0,             0,
                     0,               0,             0,
              "lepton",               1,             0,          9000011,

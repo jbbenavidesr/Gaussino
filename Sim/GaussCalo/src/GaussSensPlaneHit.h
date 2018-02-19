@@ -22,7 +22,7 @@
 // GaussTools
 #include "GaussTools/GaussHitBase.h"
 // Geant4
-#include "G4THitsCollection.hh"
+#include "Geant4/G4THitsCollection.hh"
 // ============================================================================
 
 

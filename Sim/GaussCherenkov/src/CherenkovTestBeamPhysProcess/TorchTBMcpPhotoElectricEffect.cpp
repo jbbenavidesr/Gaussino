@@ -3,11 +3,11 @@
 
 #include <gsl/gsl_math.h>
 
-#include "G4TransportationManager.hh"
-#include "G4ParticleDefinition.hh"
-//#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
-#include "G4GeometryTolerance.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+//#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4GeometryTolerance.hh"
 #include "TorchTBGaussPathNames.h"
 #include "GaussRICH/RichPhotoElectron.h"
 #include "GaussRICH/RichPEInfoAttach.h"
@@ -60,8 +60,8 @@ void TorchTBMcpPhotoElectricEffect::setMcpPhElecParam()
   
   m_MaxAnyMcpQEff=aMcpProperty->TorchTBMcpMaxQuantumEff();
   m_McpPhElectronKE=aMcpProperty->TorchTBMcpHighVoltage();
-  m_elecOrigTolerence= 0.004*mm;
-  
+  m_elecOrigTolerence = 0.004 * CLHEP::mm;
+
   // m_PhCathodeToAnodeDetMaxDist=
 
 }

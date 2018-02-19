@@ -5,13 +5,13 @@
 #include "CLHEP/Geometry/Point3D.h"
 #include "CLHEP/Units/SystemOfUnits.h"
 /// Geant4 
-#include "G4Track.hh"
-#include "G4TrackVector.hh"
-#include "G4TrackingManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4PrimaryParticle.hh"
-#include "G4VPhysicalVolume.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TrackVector.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4PrimaryParticle.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
 /// GaudiKernel
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/MsgStream.h"
@@ -380,10 +380,10 @@ void GaussTargetMultiplicity::PostUserTrackingAction ( const G4Track* track )
 			debug() << "daughter Particle Name " << drPartName << endmsg;
 			debug() << "daughter Particle PDG ID " << DauPdgId << endmsg;
 			debug() << " --- daughter isinside  " << m_isinside[index] << endmsg;
-			debug() << "daughter Particle Momentum - x "<< m_daumomx[index]/MeV<<" MeV"<< endmsg;
-			debug() << "daughter Particle Momentum - y "<< m_daumomy[index]/MeV<<" MeV"<< endmsg;
-			debug() << "daughter Particle Momentum - z "<< m_daumomz[index]/MeV<<" MeV"<< endmsg;
-			debug() << "daughter Kinetic Energy "<< m_daukine[index]/MeV<<" MeV"<< endmsg;
+			debug() << "daughter Particle Momentum - x "<< m_daumomx[index] / CLHEP::MeV<<" MeV"<< endmsg;
+			debug() << "daughter Particle Momentum - y "<< m_daumomy[index] / CLHEP::MeV<<" MeV"<< endmsg;
+			debug() << "daughter Particle Momentum - z "<< m_daumomz[index] / CLHEP::MeV<<" MeV"<< endmsg;
+			debug() << "daughter Kinetic Energy "<< m_daukine[index] / CLHEP::MeV<<" MeV"<< endmsg;
 			debug() << "daughter Charge "<< daucharge << endmsg;
 			debug() << "daughter track pointer "<< dtr << endmsg;
 			debug() << "daughter creator process  "<< drproc->GetProcessName()<< endmsg;

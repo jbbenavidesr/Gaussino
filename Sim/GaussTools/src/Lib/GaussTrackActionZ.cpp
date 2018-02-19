@@ -13,7 +13,7 @@
 #include "GiGa/GiGaUtil.h"
 
 // Geant4
-#include "G4TrackingManager.hh"
+#include "Geant4/G4TrackingManager.hh"
 
 // GaussTools 
 #include "GaussTools/GaussTrajectory.h"
@@ -46,8 +46,8 @@ GaussTrackActionZ::GaussTrackActionZ
   const IInterface*  parent ) 
   : GaussTrackActionBase ( type , name , parent ) 
   //
-  , m_zMin ( -1 * km )  // use everywhere 
-  , m_zMax (  1 * km )  // use everywhere
+  , m_zMin ( -1 * CLHEP::km )  // use everywhere
+  , m_zMax (  1 * CLHEP::km )  // use everywhere
   //
 {
   declareProperty ( "zMin" , m_zMin ) ;

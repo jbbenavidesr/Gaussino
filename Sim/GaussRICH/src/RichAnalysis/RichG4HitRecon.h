@@ -10,7 +10,7 @@
 #include "RichG4HistoFillSet5.h"
 #include "GaussRICH/RichG4HitCoordResult.h"
 
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 
 /** @class RichG4HitRecon RichG4HitRecon.h RichAnalysis/RichG4HitRecon.h
  *

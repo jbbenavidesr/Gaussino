@@ -5,9 +5,9 @@
 #include "GaussRICH/RichG4GaussPathNames.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
 #include <math.h>
-#include "G4ThreeVector.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
+#include "Geant4/G4ThreeVector.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
 G4Track* RichG4CherenkovPhotProdTag(const G4Track& aChTrack,
                                     G4Track* aCkvPhotTrack,
                                     const G4double  CkvCosTheta,

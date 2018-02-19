@@ -1,8 +1,8 @@
 #ifndef      GaussRICH_RICHPEINFO_h 
 #define      GaussRICH_RICHPEINFO_h 1
 
-#include "globals.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 class RichPEInfo {
 

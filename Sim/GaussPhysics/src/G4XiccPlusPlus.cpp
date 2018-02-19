@@ -1,7 +1,7 @@
 // $Id: G4XiccPlusPlus.cpp,v 1.1 2014-02-10 14:04:24 Liang Zhong Exp $
 
 #include "G4XiccPlusPlus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      XiccPlusPlus                        ###
@@ -28,11 +28,11 @@ G4XiccPlusPlus * G4XiccPlusPlus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name ,      3.620*GeV ,  5.e-10*MeV ,  +2.*eplus ,
+      new G4ParticleDefinition( name ,      3.620*CLHEP::GeV ,  5.e-10*CLHEP::MeV ,  +2.*CLHEP::eplus ,
                                 1,          +1,          0,
                                 1,          +1,          0,
                                 "baryon",   0,           1,            4422,
-                                false,      0.450e-3*ns, NULL,
+                                false,      0.450e-3*CLHEP::ns, NULL,
                                 false,      "xi_cc" );
   }
   theInstance = reinterpret_cast<G4XiccPlusPlus*>(anInstance);

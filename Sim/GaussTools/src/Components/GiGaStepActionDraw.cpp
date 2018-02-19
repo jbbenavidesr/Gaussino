@@ -6,11 +6,11 @@
 #include "GaudiKernel/MsgStream.h"
 
 // G4
-#include "G4Step.hh"
-#include "G4VVisManager.hh"
-#include "G4Polyline.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4VVisManager.hh"
+#include "Geant4/G4Polyline.hh"
+#include "Geant4/G4Colour.hh"
+#include "Geant4/G4VisAttributes.hh"
 
 // local
 #include "GiGaStepActionDraw.h"

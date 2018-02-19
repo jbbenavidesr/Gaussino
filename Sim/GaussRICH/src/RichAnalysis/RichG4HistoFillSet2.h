@@ -3,7 +3,7 @@
 #define RICHANALYSIS_RICHG4HISTOFILLSET2_H 1
 
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
 
 /** @class RichG4HistoFillSet2 RichG4HistoFillSet2.h

@@ -4,7 +4,7 @@
 #include <iomanip>
 
 #include "G4Neutralino.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                       Neutralino                               ###
@@ -32,11 +32,11 @@ G4Neutralino * G4Neutralino::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 48.00*GeV, 3.12e-13*GeV, 0., 
+      new G4ParticleDefinition( name , 48.00*CLHEP::GeV, 3.12e-13*CLHEP::GeV, 0., 
                                 1,              0,             0,
                                 0,              0,             0,
                                 "supersymmetric", 0,  0,  1000022,
-                                false,     2.12e-3*ns,      NULL,
+                                false,     2.12e-3*CLHEP::ns,      NULL,
                                 false, "Neutralino" );
   }
   theInstance = reinterpret_cast<G4Neutralino*>(anInstance);

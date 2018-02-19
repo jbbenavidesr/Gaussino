@@ -1,7 +1,7 @@
 // $Id: G4AntiXiccMinus.cpp,v 1.1 2011-10-25 14:04:24 Zhenwei Yang Exp $
 
 #include "G4AntiXiccMinus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      AntiXiccMinus                        ###
@@ -28,11 +28,11 @@ G4AntiXiccMinus * G4AntiXiccMinus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name ,          3.59798*GeV ,   5.e-10*MeV ,    -1.*eplus ,
+      new G4ParticleDefinition( name ,          3.59798*CLHEP::GeV ,   5.e-10*CLHEP::MeV ,    -1.*CLHEP::eplus ,
                                 1,              -1,             0,
                                 1,              +1,             0,
                                 "baryon",       0,              -1,             -4412,
-                                false,          0.334e-3*ns,    NULL,
+                                false,          0.334e-3*CLHEP::ns,    NULL,
                                 false,          "xi_cc" );
   }
   theInstance = reinterpret_cast<G4AntiXiccMinus*>(anInstance);

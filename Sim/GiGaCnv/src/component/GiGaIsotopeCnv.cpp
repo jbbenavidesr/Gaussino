@@ -12,8 +12,8 @@
 #include "GiGa/IGiGaSetUpSvc.h"
 #include "GiGa/GiGaException.h"
 /// Geant4
-#include "G4Isotope.hh"
-#include "G4Material.hh"
+#include "Geant4/G4Isotope.hh"
+#include "Geant4/G4Material.hh"
 /// local
 #include "AddTabulatedProperties.h"
 #include "GiGaIsotopeCnv.h"
@@ -129,6 +129,14 @@ StatusCode GiGaIsotopeCnv::updateRep
                  isotope->A                      () );
   ///
   G4bool warning = false;
+  // Create an element - used in the element conversion
+  if (G4Element::GetElement(isotope->registry()->identifier(), warning) == nullptr) {
+    new G4Element(isotope->registry()->identifier(),
+                  "",
+                  (int) isotope->Z(),
+                  isotope->A());
+  }
+
   if( 0 != G4Material::GetMaterial( isotope->registry()->identifier(),warning ) ) 
     { return StatusCode::SUCCESS; }
   /// per each Isotope we could create the "simple material" with the same name

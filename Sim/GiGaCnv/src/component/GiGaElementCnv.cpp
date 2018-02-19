@@ -35,8 +35,8 @@
 #include "GiGa/IGiGaSetUpSvc.h" 
 #include "GiGaCnv/GiGaCnvUtils.h" 
 /// Geant4 includes
-#include "G4Element.hh" 
-#include "G4Material.hh" 
+#include "Geant4/G4Element.hh" 
+#include "Geant4/G4Material.hh" 
 // Local
 #include "AddTabulatedProperties.h" 
 #include "GiGaElementCnv.h" 

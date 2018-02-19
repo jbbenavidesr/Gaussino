@@ -4,7 +4,7 @@
 
 // Include files
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
 
 #include "GaussRICH/RichG4Hit.h"

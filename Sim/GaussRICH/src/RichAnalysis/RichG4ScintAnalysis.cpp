@@ -4,8 +4,8 @@
 // local
 #include "RichG4ScintAnalysis.h"
 #include "GaussRICH/RichG4SvcLocator.h"
-#include "G4Track.hh"
-#include "G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/IDataProviderSvc.h"
 #include "GaudiKernel/IValidity.h"

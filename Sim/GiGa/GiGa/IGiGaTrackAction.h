@@ -13,7 +13,7 @@
 // GiGa
 #include "GiGa/IGiGaInterface.h"
 // Geant4 
-#include "G4UserTrackingAction.hh"
+#include "Geant4/G4UserTrackingAction.hh"
 
 /** @class IGiGaTrackAction IGiGaTrackAction.h GiGa/IGiGaTrackAction.h
  *

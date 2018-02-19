@@ -21,8 +21,8 @@
 #include "DetDesc/CLIDDetectorElement.h" 
 
 // from Geant4
-#include "G4LogicalVolume.hh"
-#include "G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
 
 // from GiGa & GiGaCnv 
 #include "GiGaCnv/IGiGaGeomCnvSvc.h"

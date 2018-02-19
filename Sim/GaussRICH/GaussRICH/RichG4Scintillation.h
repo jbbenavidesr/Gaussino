@@ -56,22 +56,22 @@
 // Includes
 /////////////
 
-#include "globals.hh"
-#include "templates.hh"
-#include "Randomize.hh"
-#include "G4Poisson.hh"
-#include "G4ThreeVector.hh"
-#include "G4ParticleMomentum.hh"
-#include "G4Step.hh"
-#include "G4VRestDiscreteProcess.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh" 
-#include "G4PhysicsTable.hh"
-#include "G4MaterialPropertiesTable.hh"
-#include "G4PhysicsOrderedFreeVector.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/templates.hh"
+#include "Geant4/Randomize.hh"
+#include "Geant4/G4Poisson.hh"
+#include "Geant4/G4ThreeVector.hh"
+#include "Geant4/G4ParticleMomentum.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4VRestDiscreteProcess.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh" 
+#include "Geant4/G4PhysicsTable.hh"
+#include "Geant4/G4MaterialPropertiesTable.hh"
+#include "Geant4/G4PhysicsOrderedFreeVector.hh"
 
-#include "G4EmSaturation.hh"
+#include "Geant4/G4EmSaturation.hh"
 
 
 // Class Description:

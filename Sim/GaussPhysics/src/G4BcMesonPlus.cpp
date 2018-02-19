@@ -4,7 +4,7 @@
 #include <iomanip>
 
 #include "G4BcMesonPlus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      BcMesonPlus                        ###
@@ -31,11 +31,11 @@ G4BcMesonPlus * G4BcMesonPlus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 6.4*GeV , 1e-9*MeV , +1.*eplus ,
+      new G4ParticleDefinition( name , 6.4*CLHEP::GeV , 1e-9*CLHEP::MeV , +1.*CLHEP::eplus ,
                                 0,              -1,             0,
                                 0,              0,             0,
                                 "meson", 0,  0, 541,
-                                false,     0.5e-3*ns,          NULL,
+                                false,     0.5e-3*CLHEP::ns,          NULL,
                                 false, "Bc" );
   }
   theInstance = reinterpret_cast<G4BcMesonPlus*>(anInstance);

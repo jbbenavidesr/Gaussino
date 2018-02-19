@@ -1,7 +1,7 @@
 
 
 #include "G4OmegabMinus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      OmegabMinus                        ###
@@ -29,11 +29,11 @@ G4OmegabMinus * G4OmegabMinus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 6.054*GeV , 5.e-10*MeV , -1 ,
+      new G4ParticleDefinition( name , 6.054*CLHEP::GeV , 5.e-10*CLHEP::MeV , -1 ,
                                 1,              +1,             0,
                                 0,              0,             0,
                                 "baryon", 0,  1, 5332,
-                                false,     1.36e-3*ns,          NULL,
+                                false,     1.36e-3*CLHEP::ns,          NULL,
                                 false, "omega_b-" );
   }
   theInstance = reinterpret_cast<G4OmegabMinus*>(anInstance);

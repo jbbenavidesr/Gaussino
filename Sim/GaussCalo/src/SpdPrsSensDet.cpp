@@ -22,13 +22,13 @@
 #include "GaussTools/GaussTrackInformation.h"
 
 // Geant4
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4EnergyLossTables.hh"
-#include "G4MaterialCutsCouple.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4EnergyLossTables.hh"
+#include "Geant4/G4MaterialCutsCouple.hh"
 
 // GiGaCnv
 #include "GiGaCnv/GiGaVolumeUtils.h"
@@ -78,7 +78,7 @@ SpdPrsSensDet::SpdPrsSensDet
   const IInterface*  parent )
   : G4VSensitiveDetector( name  )
   , CaloSensDet        ( type , name , parent )
-  , m_BX ( 25. * ns )
+  , m_BX ( 25. * CLHEP::ns )
   , m_numBXs (6)
   , m_sDelays ( 3, 0. )
   , m_fracMin ( 1.e-5 )

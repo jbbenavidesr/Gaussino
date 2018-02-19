@@ -3,8 +3,8 @@
 #define GAUSSTOOLS_COMPONENTS_KILLATORIGINCUT_H 1
 
 // Include files
-#include "G4ios.hh"
-#include "globals.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
 #include "SpecialCuts.h"
 
 /** @class KillAtOriginCut KillAtOriginCut.h Components/KillAtOriginCut.h

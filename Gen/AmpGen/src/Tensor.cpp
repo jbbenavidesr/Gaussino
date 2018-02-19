@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "AmpGen/Tensor.h"
 #include "AmpGen/Utilities.h"
 

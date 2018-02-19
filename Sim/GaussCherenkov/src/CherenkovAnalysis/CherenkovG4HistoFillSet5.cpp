@@ -5,16 +5,16 @@
 // local
 
 //GEANT4
-#include "G4Event.hh"
-#include "G4EventManager.hh"
-#include "G4TrajectoryContainer.hh"
-#include "G4Trajectory.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4VHitsCollection.hh"
-#include "G4SDManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4TrajectoryContainer.hh"
+#include "Geant4/G4Trajectory.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4VHitsCollection.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 /// GaudiKernel
 #include "GaudiKernel/IHistogramSvc.h"

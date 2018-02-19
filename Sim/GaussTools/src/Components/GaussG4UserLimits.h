@@ -7,8 +7,8 @@
 
 enum ULtype {ULMinEkine, ULMaxTime, ULMaxStepLength, ULMaxTrackLength, ULMinRange};
 
-#include "globals.hh"
-#include "G4UserLimits.hh" 
+#include "Geant4/globals.hh"
+#include "Geant4/G4UserLimits.hh" 
 #include <map>
 
 class G4Track;

@@ -6,9 +6,9 @@
 #include "GDMLRunAction.h"
 
 /// GDML writer
-#include "G4VPhysicalVolume.hh"
-#include "G4TransportationManager.hh"
-#include "G4GDMLParser.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4GDMLParser.hh"
 
 DECLARE_TOOL_FACTORY(GDMLRunAction)
 

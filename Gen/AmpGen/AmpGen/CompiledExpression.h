@@ -21,6 +21,7 @@
 
 #include <cxxabi.h> /// for unpickling return type names ///
 #include <dlfcn.h>
+#include <vector>
 
 namespace AmpGen { 
   class ICompiledExpression {

@@ -58,12 +58,13 @@ public:
       // properties, the extender (if specialized) will pass some specific
       // arguments to the actual constructor.
 
-      int verb = outputLevel();
-      if      (verb == MSG::DEBUG)    { verb = 1 ;} 
-      else if (verb == MSG::VERBOSE)  { verb = 2 ;} 
-      else                            { verb = 0 ;} 
+      int verb = msgLevel();
+      if (verb == MSG::DEBUG) { verb = 1; }
+      else if (verb == MSG::VERBOSE) { verb = 2; }
+      else { verb = 0; }
 
       m_phys = m_extender.newInstance(name(), verb);
+
       // m_phys -> SetPhysicsName( name() );
     }
     return m_phys ;

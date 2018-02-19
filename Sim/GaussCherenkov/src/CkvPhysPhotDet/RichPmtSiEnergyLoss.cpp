@@ -1,32 +1,32 @@
 #include "RichPmtSiEnergyLoss.h"
-#include "G4Material.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4Navigator.hh"
-#include "G4TransportationManager.hh"
-#include "G4Electron.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4Navigator.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4Electron.hh"
 #include "GaussRICH/RichPhotoElectron.h"
 #include "GaussRICH/RichPEInfoAttach.h"
 #include "GaussRICH/RichG4AnalysisPhotElec.h"
 #include "GaussRICH/RichG4AnalysisConstGauss.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
-#include "Randomize.hh"
+#include "Geant4/Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
-#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
 #include "GaussCherenkov/RichPmtProperties.h"
 
 RichPmtSiEnergyLoss::RichPmtSiEnergyLoss(const G4String& processName,
                                         G4ProcessType   aType )
 
-  : G4VEnergyLoss(processName, aType ),
-    MinKineticEnergy(1.*keV),
-    MipEnergyPmtSiEloss(1.0*GeV),
-    finalRangeforSiDetStep(0.15*mm),
-    PhElectronMaxEnergy(25.0*keV) 
+//: G4VEnergyLoss(processName, aType),
+  : G4VContinuousDiscreteProcess(processName, aType),
+    MinKineticEnergy(1. * CLHEP::keV),
+    MipEnergyPmtSiEloss(1.0 * CLHEP::GeV),
+    finalRangeforSiDetStep(0.15 * CLHEP::mm),
+    PhElectronMaxEnergy(25.0 * CLHEP::keV)
 {
-  
   // The following three initializations moved to GiGaPhysConstructorPmt and InitializePmtProcParam so that they can be
   // set through the options files. The defaults are as indicated below. SE 5-10-2007
   // the pixelchipefficiency is set to 1 for now. the  SiHitDetGlobalEff is the product of the other two efficiencies.

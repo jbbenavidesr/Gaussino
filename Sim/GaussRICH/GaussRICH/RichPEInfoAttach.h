@@ -1,7 +1,7 @@
 #ifndef      GaussRICH_RICHPEINFOATTACH_h 
 #define      GaussRICH_RICHPEINFOATTACH_h 1 
 #include "RichPEInfo.h"
-#include "G4Track.hh"
+#include "Geant4/G4Track.hh"
 
 extern int RichPhotTkRadiatorNumber ( const G4Track& aPhotonTrk );
 

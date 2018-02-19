@@ -9,14 +9,14 @@
 #include "GaudiKernel/MsgStream.h"
 
 // from Geant4 
-#include "G4Step.hh"
-#include "G4Track.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4ios.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4ios.hh"
 
 // local
 #include "GiGaSensDetTracker.h"

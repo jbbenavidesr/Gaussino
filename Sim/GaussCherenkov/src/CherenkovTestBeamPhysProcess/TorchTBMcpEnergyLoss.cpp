@@ -2,20 +2,20 @@
 // Include files 
 
 #include "TorchTBMcpEnergyLoss.h"
-#include "G4Material.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4Navigator.hh"
-#include "G4TransportationManager.hh"
-#include "G4Electron.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4Navigator.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4Electron.hh"
 #include "GaussRICH/RichPhotoElectron.h"
 #include "GaussRICH/RichPEInfoAttach.h"
 #include "TorchTBGaussPathNames.h"
-#include "Randomize.hh"
+#include "Geant4/Randomize.hh"
 #include <algorithm>
 #include <math.h>
 #include <vector>
-#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
 #include "TorchTBMcpProperties.h"
 
 
@@ -31,12 +31,13 @@
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-TorchTBMcpEnergyLoss::TorchTBMcpEnergyLoss(const G4String& processName, G4ProcessType   aType ) 
-  : G4VEnergyLoss(processName, aType ),
-    m_MinKineticEnergy(1.*keV),
-    m_MipEnergyMcpAnodeEloss(1.0*GeV),
-    m_finalRangeforAnodeStep(0.15*mm),
-    m_PhElectronMaxEnergy(25.0*keV),
+TorchTBMcpEnergyLoss::TorchTBMcpEnergyLoss(const G4String& processName, G4ProcessType aType)
+//: G4VEnergyLoss(processName, aType),
+  : G4VContinuousDiscreteProcess(processName, aType),
+    m_MinKineticEnergy(1. * CLHEP::keV),
+    m_MipEnergyMcpAnodeEloss(1.0 * CLHEP::GeV),
+    m_finalRangeforAnodeStep(0.15 * CLHEP::mm),
+    m_PhElectronMaxEnergy(25.0 * CLHEP::keV),
     m_AnodeHitDetGlobalEff(1.0),
     m_McpAnodeEff(1.0),
     m_McpAnodeChipEff(1.0)

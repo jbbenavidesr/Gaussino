@@ -14,8 +14,8 @@
 #include "Kernel/ParticleProperty.h"
 
 // G4
-#include "G4TrackingManager.hh"
-#include "G4PrimaryParticle.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4PrimaryParticle.hh"
 
 // GiGa 
 #include "GiGa/IGiGaSvc.h"

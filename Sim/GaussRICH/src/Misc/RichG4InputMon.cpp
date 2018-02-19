@@ -7,7 +7,7 @@
 #include "GaussRICH/RichG4InputMon.h"
 #include "GaussRICH/RichG4AnalysisConstGauss.h"
 #include "GaussRICH/RichG4GaussPathNames.h"
-#include "G4Material.hh"
+#include "Geant4/G4Material.hh"
 #include <vector>
  
 

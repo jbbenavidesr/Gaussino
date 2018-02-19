@@ -64,8 +64,8 @@
 //  modified to be similar to that in  G4.9.1 on 5-8-2008 SE
 ////////////////////////////////////////////////////////////////////////
 
-#include "G4ios.hh"
-#include "G4Poisson.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4Poisson.hh"
 #include "GaussRICH/RichG4Cerenkov.h"
 // To tag the info regarding photon production.
 #include "GaussRICH/RichG4CherenkovPhotProdTag.h"
@@ -348,7 +348,7 @@ RichG4Cerenkov::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
 		rand = G4UniformRand();
 
-		G4double phi = twopi*rand;
+		G4double phi = CLHEP::twopi * rand;
 		G4double sinPhi = sin(phi);
 		G4double cosPhi = cos(phi);
 
@@ -686,7 +686,7 @@ G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
 			      const G4Material* aMaterial,
 			      G4MaterialPropertyVector* Rindex) const
 {
-	const G4double Rfact = 369.81/(eV * cm);
+	const G4double Rfact = 369.81 / (CLHEP::eV * CLHEP::cm);
 
         if(beta <= 0.0)return 0.0;
 
@@ -756,7 +756,7 @@ G4double RichG4Cerenkov::GetAverageNumberOfPhotons(const G4double charge,
 	}
 	
 	// Calculate number of photons 
-	G4double NumPhotons = Rfact * charge/eplus * charge/eplus *
+	G4double NumPhotons = Rfact * charge / CLHEP::eplus * charge / CLHEP::eplus *
                                  (dp - ge * BetaInverse*BetaInverse);
 
 	return NumPhotons;		

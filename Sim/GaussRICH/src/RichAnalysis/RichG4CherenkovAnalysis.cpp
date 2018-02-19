@@ -2,15 +2,15 @@
 #include "GaussRICH/RichG4SvcLocator.h"
 #include "GaussRICH/RichG4MatRadIdentifier.h"
 #include "GaussRICH/RichG4RadiatorMaterialIdValues.h"
-#include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4Electron.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4PionMinus.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4PionMinus.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
 /// GaudiKernel
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -81,7 +81,7 @@ void RichG4CherenkovAnalysis1(const G4Step& aStep, G4double CosThCkv,
        prePos.z()>= AgelZBeginAnalysis &&  prePos.z() <= AgelZEndAnalysis ) {
       SmartDataPtr<IHistogram1D>hCkvAgelRich1(CurrentHistoSvc,"RICHG4HISTOSET1/10");
       if(BetaInvChPart < BetaInvCut ) {
-        if(( chtken/GeV)  >  energyAgelcut) {
+        if(( chtken / CLHEP::GeV)  >  energyAgelcut) {
 
           if(hCkvAgelRich1) hCkvAgelRich1->fill( ChrAngl ,1.0);
         }
@@ -101,7 +101,7 @@ void RichG4CherenkovAnalysis1(const G4Step& aStep, G4double CosThCkv,
        prePos.z() <=  C4F10ZEndAnalysis ) {
       SmartDataPtr<IHistogram1D>hCkvC4F10Rich1(CurrentHistoSvc,"RICHG4HISTOSET1/20");
       if(BetaInvChPart < BetaInvCut ) {
-        if(( chtken/GeV)  >  energycut) {
+        if(( chtken / CLHEP::GeV)  >  energycut) {
 
           if(hCkvC4F10Rich1)hCkvC4F10Rich1->fill( ChrAngl,1.0);
         }
@@ -118,7 +118,7 @@ void RichG4CherenkovAnalysis1(const G4Step& aStep, G4double CosThCkv,
        (prePos.z() >= CF4ZBeginAnalysis) &&  (prePos.z() <=  CF4ZEndAnalysis) ) {
       SmartDataPtr<IHistogram1D>hCkvCF4Rich2(CurrentHistoSvc,"RICHG4HISTOSET1/70");
       if(BetaInvChPart < BetaInvCut ) {
-        if(( chtken/GeV)  >  energycut) {
+        if(( chtken / CLHEP::GeV)  >  energycut) {
 
           if(hCkvCF4Rich2)hCkvCF4Rich2->fill( ChrAngl,1.0);
         }
@@ -155,7 +155,7 @@ void RichG4CherenkovAnalysis2(const G4Step& cStep) {
 
         //Avoid photons which are already dead.
         if(cParticleKE > 0.0 ){
-          G4double CurPhotWaveLen= PhotMomCnv/((cParticleKE/MeV)*MeVtoeV);
+          G4double CurPhotWaveLen= PhotMomCnv/((cParticleKE / CLHEP::MeV) * MeVtoeV);
           const G4double PhotOriginZ= cTrack->GetVertexPosition().z();
 
           //          const G4ThreeVector & PhotOriginDir=

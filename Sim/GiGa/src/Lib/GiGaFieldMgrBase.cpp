@@ -15,25 +15,25 @@
 // ============================================================================
 // Include files
 // Geant4//
-#include "G4MagneticField.hh"
-#include "G4Mag_UsualEqRhs.hh"
-#include "G4FieldManager.hh"
-#include "G4MagIntegratorStepper.hh"
-#include "G4TransportationManager.hh"
-#include "G4ChordFinder.hh"
-#include "G4PropagatorInField.hh"
+#include "Geant4/G4MagneticField.hh"
+#include "Geant4/G4Mag_UsualEqRhs.hh"
+#include "Geant4/G4FieldManager.hh"
+#include "Geant4/G4MagIntegratorStepper.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4ChordFinder.hh"
+#include "Geant4/G4PropagatorInField.hh"
 // 
-#include "G4ExplicitEuler.hh"
-#include "G4ImplicitEuler.hh"
-#include "G4SimpleRunge.hh"
-#include "G4SimpleHeum.hh"
-#include "G4ClassicalRK4.hh"
-#include "G4CashKarpRKF45.hh"
-#include "G4RKG3_Stepper.hh"
-#include "G4HelixExplicitEuler.hh"
-#include "G4HelixImplicitEuler.hh"
-#include "G4HelixSimpleRunge.hh"
-#include "G4HelixHeum.hh"
+#include "Geant4/G4ExplicitEuler.hh"
+#include "Geant4/G4ImplicitEuler.hh"
+#include "Geant4/G4SimpleRunge.hh"
+#include "Geant4/G4SimpleHeum.hh"
+#include "Geant4/G4ClassicalRK4.hh"
+#include "Geant4/G4CashKarpRKF45.hh"
+#include "Geant4/G4RKG3_Stepper.hh"
+#include "Geant4/G4HelixExplicitEuler.hh"
+#include "Geant4/G4HelixImplicitEuler.hh"
+#include "Geant4/G4HelixSimpleRunge.hh"
+#include "Geant4/G4HelixHeum.hh"
 // GiGa
 #include "GiGa/GiGaFieldMgrBase.h"
 #include "GiGa/GiGaUtil.h"
@@ -77,12 +77,12 @@ GiGaFieldMgrBase::GiGaFieldMgrBase
   : GiGaBase        ( type , name , parent )
     , m_global        ( false )
     , m_manager       ( 0 )
-    , m_minStep       ( 0.01*mm )
-    , m_deltaChord    ( 0.25 * mm )
-    , m_deltaintersection ( 1e-05*mm )
-    , m_deltaonestep      ( 0.001*mm )
-    , m_minimumEpsilonStep( 5e-05*mm )
-    , m_maximumEpsilonStep( 0.001*mm )
+    , m_minStep       ( 0.01 * CLHEP::mm )
+    , m_deltaChord    ( 0.25 * CLHEP::mm )
+    , m_deltaintersection ( 1e-05 * CLHEP::mm )
+    , m_deltaonestep      ( 0.001 * CLHEP::mm )
+    , m_minimumEpsilonStep( 5e-05 * CLHEP::mm )
+    , m_maximumEpsilonStep( 0.001 * CLHEP::mm )
     , m_stepperType   ( "UNDEFINED" )
     , m_stepper       ( 0 )
 {

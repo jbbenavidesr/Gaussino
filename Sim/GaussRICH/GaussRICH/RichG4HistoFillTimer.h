@@ -3,7 +3,7 @@
 #define GAUSSRICH_RICHG4HISTOFILLTIMER_H 1
 
 // Include files
-#include "G4Timer.hh"
+#include "Geant4/G4Timer.hh"
 
 /** @class RichG4HistoFillTimer 
  * RichG4HistoFillTimer.h 

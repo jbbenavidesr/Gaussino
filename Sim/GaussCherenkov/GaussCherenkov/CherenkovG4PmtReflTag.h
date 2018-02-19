@@ -3,9 +3,9 @@
 #define GAUSSCHERENKOV_CHERENKOVG4PMTREFLTAG_H 1
 
 // Include files
-#include "globals.hh"
-#include "G4Track.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/globals.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 
 /** @class CherenkovG4PmtReflTag CherenkovG4PmtReflTag.h CherenkovMisc/CherenkovG4PmtReflTag.h

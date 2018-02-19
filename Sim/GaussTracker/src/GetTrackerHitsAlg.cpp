@@ -14,7 +14,7 @@
 #include "GiGaCnv/GiGaKineRefTable.h"
 
 // from Geant4
-#include "G4HCofThisEvent.hh"
+#include "Geant4/G4HCofThisEvent.hh"
 
 // from LHCb
 #include "Event/MCExtendedHit.h"

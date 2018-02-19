@@ -3,14 +3,14 @@
 
 #include "CLHEP/Geometry/Point3D.h"
 ///
-#include "G4Step.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
 // to enable neutrinos
-#include "G4QNeutrinoPhysics.hh"
-#include "G4Gamma.hh"
-#include "G4Timer.hh"
+//#include "Geant4/G4QNeutrinoPhysics.hh" // Disappeared from G4v10r0
+#include "Geant4/G4Gamma.hh"
+#include "Geant4/G4Timer.hh"
 ///
 #include "GaudiKernel/MsgStream.h"
 //

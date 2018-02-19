@@ -10,7 +10,7 @@
  *  @author Sajan Easo
  *  @date   2011-06-05
  */
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <vector>
 
 class RichG4RadiatorMaterialIdValues {

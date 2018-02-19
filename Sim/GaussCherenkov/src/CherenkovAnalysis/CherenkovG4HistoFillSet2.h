@@ -3,7 +3,7 @@
 #define RICHANALYSIS_CHERENKOVG4HISTOFILLSET2_H 1
 
 // Include files
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 #include <vector>
 
 /** @class CherenkovG4HistoFillSet2 CherenkovG4HistoFillSet2.h

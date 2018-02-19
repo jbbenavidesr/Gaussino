@@ -1,14 +1,14 @@
 // $Id: GiGaCheckEventStatus.cpp,v 1.4 2007-11-21 20:55:54 gcorti Exp $
-// Include files 
+// Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from GiGa
 #include "GiGa/IGiGaSvc.h"
 
 // from Geant4
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 
 // local
 #include "GiGaCheckEventStatus.h"

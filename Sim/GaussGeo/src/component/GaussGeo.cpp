@@ -26,39 +26,39 @@
 #include "ClhepTools/MathCore2Clhep.h"
 
 // GEANT4
-#include "G4Element.hh"
-#include "G4Material.hh"
-#include "G4LogicalVolume.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PVPlacement.hh"
+#include "Geant4/G4Element.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4PVPlacement.hh"
 // For solids
-#include "G4Box.hh"
-#include "G4Cons.hh"
-#include "G4Sphere.hh"
-#include "G4Trd.hh"
-#include "G4Tubs.hh"
-#include "G4Trap.hh"
-#include "G4Polycone.hh"
+#include "Geant4/G4Box.hh"
+#include "Geant4/G4Cons.hh"
+#include "Geant4/G4Sphere.hh"
+#include "Geant4/G4Trd.hh"
+#include "Geant4/G4Tubs.hh"
+#include "Geant4/G4Trap.hh"
+#include "Geant4/G4Polycone.hh"
 // For SolidBoolean
-#include "G4SubtractionSolid.hh"
-#include "G4IntersectionSolid.hh"
-#include "G4UnionSolid.hh"
+#include "Geant4/G4SubtractionSolid.hh"
+#include "Geant4/G4IntersectionSolid.hh"
+#include "Geant4/G4UnionSolid.hh"
 // For surfaces
-#include "G4OpticalSurface.hh"
-#include "G4LogicalSurface.hh"
-#include "G4LogicalSkinSurface.hh"
-#include "G4LogicalBorderSurface.hh"
+#include "Geant4/G4OpticalSurface.hh"
+#include "Geant4/G4LogicalSurface.hh"
+#include "Geant4/G4LogicalSkinSurface.hh"
+#include "Geant4/G4LogicalBorderSurface.hh"
 // Other G4
-#include "G4VisAttributes.hh"
-#include "G4SDManager.hh"
-#include "G4FieldManager.hh"
-#include "G4TransportationManager.hh"
-#include "G4MagIntegratorStepper.hh"
+#include "Geant4/G4VisAttributes.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4FieldManager.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4MagIntegratorStepper.hh"
 // Used for cleanup in finilization
-#include "G4GeometryManager.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4SolidStore.hh"
+#include "Geant4/G4GeometryManager.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
+#include "Geant4/G4PhysicalVolumeStore.hh"
+#include "Geant4/G4SolidStore.hh"
 
 // GiGa
 #include "GiGa/IGiGaSensDet.h"
@@ -1398,15 +1398,17 @@ G4VSolid* GaussGeo::solidBoolToG4Solid(const SolidBoolean* solid_bool) {
 
   G4VSolid* g4_resulting_solid = first_solid;
   // typedef SolidBoolean::SolidChildrens::const_iterator CI;
-  for (auto it = solid_bool->childBegin(); solid_bool->childEnd() != it; ++it) {
-    const SolidChild* solid_child = *it;
-    G4VSolid* g4_solid_child = solid(solid_child->solid());
+  for (auto& solid_child: solid_bool->children()) {
+
+    // const SolidChild* solid_child = *it;
+
+    G4VSolid* g4_solid_child = solid(solid_child.solid());
     if (g4_solid_child == nullptr) {
       error() << "Failed to convert solid for SolidBoolean: " << solid_bool->name() << endmsg;
     }
 
     // CLHEP matrix for G4
-    HepGeom::Transform3D clhep_matrix = LHCb::math2clhep::transform3D(solid_child->matrix());
+    HepGeom::Transform3D clhep_matrix = LHCb::math2clhep::transform3D(solid_child.matrix());
 
     if (solid_subtr != nullptr) {
       double matrix_elems[3][4];
@@ -1430,17 +1432,17 @@ G4VSolid* GaussGeo::solidBoolToG4Solid(const SolidBoolean* solid_bool) {
                                                                          matrix_elems[1][3],
                                                                          matrix_elems[2][3]));
 
-      g4_resulting_solid = new G4SubtractionSolid(solid_bool->first()->name() + "-" + solid_child->name(),
+      g4_resulting_solid = new G4SubtractionSolid(solid_bool->first()->name() + "-" + solid_child.name(),
                                                   g4_resulting_solid,
                                                   g4_solid_child,
                                                   new_transform.inverse());
     } else if (solid_inter != nullptr) {
-      g4_resulting_solid = new G4IntersectionSolid(solid_bool->first()->name() + "*" + solid_child->name(),
+      g4_resulting_solid = new G4IntersectionSolid(solid_bool->first()->name() + "*" + solid_child.name(),
                                                    g4_resulting_solid,
                                                    g4_solid_child,
                                                    clhep_matrix.inverse());
     } else if (solid_union != nullptr) {
-      g4_resulting_solid = new G4UnionSolid(solid_bool->first()->name() + "+" + solid_child->name(),
+      g4_resulting_solid = new G4UnionSolid(solid_bool->first()->name() + "+" + solid_child.name(),
                                             g4_resulting_solid,
                                             g4_solid_child,
                                             clhep_matrix.inverse());

@@ -4,7 +4,7 @@
 #include <iomanip>
 
 #include "G4CharginoPlus.h"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // ######################################################################
 // ###                      CharginoPlus                              ###
@@ -32,11 +32,11 @@ G4CharginoPlus * G4CharginoPlus::Definition()
   //             stable         lifetime    decay table
   //             shortlived      subType    anti_encoding
     anInstance = 
-      new G4ParticleDefinition( name , 110.00*GeV, 2.73e-13*GeV, +1.*eplus, 
+      new G4ParticleDefinition( name , 110.00*CLHEP::GeV, 2.73e-13*CLHEP::GeV, +1.*CLHEP::eplus, 
                                 1,              0,             0,
                                 0,              0,             0,
                                 "supersymmetric", 0,  0,  1000024,
-                                false,     6.68e-1*ns,      NULL,
+                                false,     6.68e-1*CLHEP::ns,      NULL,
                                 false, "CharginoPlus" );
   }
   theInstance = reinterpret_cast<G4CharginoPlus*>(anInstance);

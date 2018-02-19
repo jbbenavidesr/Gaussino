@@ -14,11 +14,11 @@
 // GiGa
 #include "GiGa/GiGaBase.h"
 // Geant4
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4SDManager.hh"
-#include "G4TransportationManager.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4HCofThisEvent.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4TransportationManager.hh"
 
 
 #include "GaussCherenkov/CkvStdSensDet.h"

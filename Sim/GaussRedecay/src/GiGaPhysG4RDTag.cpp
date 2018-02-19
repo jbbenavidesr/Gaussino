@@ -6,9 +6,9 @@
 #include "GaudiKernel/PhysicalConstants.h"
 
 // G4 
-#include "G4UnknownParticle.hh"
-#include "G4ProcessManager.hh"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4UnknownParticle.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // local
 #include "G4RDTag.h"
@@ -62,12 +62,13 @@ void GiGaPhysG4RDTag::ConstructParticle()
 //=============================================================================
 void GiGaPhysG4RDTag::ConstructProcess()
 {
-    G4ParticleTable::GetParticleTable()->SetVerboseLevel(1);
-  theParticleIterator -> reset() ;
+  G4ParticleTable::GetParticleTable()->SetVerboseLevel(1);
+  auto theParticleIterator = GetParticleIterator();
+  theParticleIterator->reset();
   while ( (*theParticleIterator)() ) {
-    G4ParticleDefinition * particle = theParticleIterator -> value() ;
+    G4ParticleDefinition * particle = theParticleIterator->value();
     if ( msgLevel( MSG::DEBUG) ) {
-    debug() << "RDTagList ConstructProcess(): " << particle ->GetPDGEncoding() << ", " << particle->GetParticleName()  
+    debug() << "RDTagList ConstructProcess(): " << particle ->GetPDGEncoding() << ", " << particle->GetParticleName()
             << endmsg;
     }
     G4ProcessManager     * pmanager = particle -> GetProcessManager() ;

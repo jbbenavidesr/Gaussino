@@ -25,7 +25,7 @@
 /// GiGa
 #include "GiGa/GiGaException.h"
 /// G4 
-#include "G4PrimaryVertex.hh"
+#include "Geant4/G4PrimaryVertex.hh"
 // local
 #include "Vertex2Vertex.h"
 

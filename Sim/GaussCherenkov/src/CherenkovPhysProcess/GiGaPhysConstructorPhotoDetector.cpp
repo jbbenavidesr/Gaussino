@@ -6,17 +6,17 @@
 #include "GaudiKernel/PropertyMgr.h"
 
 // G4 
-#include "G4ParticleTypes.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleWithCuts.hh"
-#include "G4ProcessManager.hh"
-#include "G4ProcessVector.hh"
-#include "G4ParticleTable.hh"
-#include "G4Material.hh"
-#include "G4ios.hh"
-#include "G4Transportation.hh"
-// #include "G4MultipleScattering.hh"
-#include "G4LossTableManager.hh"
+#include "Geant4/G4ParticleTypes.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleWithCuts.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4Transportation.hh"
+// #include "Geant4/G4MultipleScattering.hh"
+#include "Geant4/G4LossTableManager.hh"
 
 // local
 #include "GiGaPhysConstructorPhotoDetector.h"
@@ -135,6 +135,7 @@ void GiGaPhysConstructorPhotoDetector::ConstructPeGenericProcess() {
   //  G4ParticleDefinition* photoelectronDef = 
   //  RichPhotoElectron::PhotoElectron();
   G4Transportation* theTransportationProcess= new G4Transportation();
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
@@ -196,20 +197,15 @@ void GiGaPhysConstructorPhotoDetector::ConstructPmtSiEnLoss()
 
 
   TorchTBMcpEnergyLoss* theTorchTBMcpEnergyLossProcess =0;
-  
 
   if( m_ActivateTorchTBMcpEnergyLossProc) {
-    
    theTorchTBMcpEnergyLossProcess =  new TorchTBMcpEnergyLoss("TorchTBMcpEnergyLossProcess", fUserDefined  );
    theTorchTBMcpEnergyLossProcess->setMcpAnodeDetEff(m_TorchTBMcpAnodeEfficiency );
    theTorchTBMcpEnergyLossProcess->setMcpAnodePixelChipEff(m_TorchMcpAnodeReadoutChipEfficiency);
    theTorchTBMcpEnergyLossProcess->InitializeMcpProcParam();
-   
   }
-  
-  
 
-
+  auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();

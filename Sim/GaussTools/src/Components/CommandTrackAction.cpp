@@ -1,6 +1,6 @@
 /// Geant4 
-#include "G4Track.hh"
-#include "G4UImanager.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4UImanager.hh"
 /// GaudiKernel
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/PropertyMgr.h"

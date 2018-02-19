@@ -7,10 +7,10 @@
 
 // Include files 
 // from G4
-#include "G4VVisManager.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
+#include "Geant4/G4VVisManager.hh"
+#include "Geant4/G4Circle.hh"
+#include "Geant4/G4Colour.hh"
+#include "Geant4/G4VisAttributes.hh"
 
 // local
 #include "TrackerHit.h"

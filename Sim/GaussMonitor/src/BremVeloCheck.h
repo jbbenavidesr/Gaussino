@@ -16,32 +16,32 @@
 #include "AIDA/IHistogram1D.h"
 // GiGa
 
-#include "G4Step.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
 // to enable neutrinos
-#include "G4QNeutrinoPhysics.hh"
-#include "G4Gamma.hh"
-#include "G4Timer.hh"
+#include "Geant4/G4QNeutrinoPhysics.hh"
+#include "Geant4/G4Gamma.hh"
+#include "Geant4/G4Timer.hh"
 ///
 */
 
 // Include files
 /// Geant4
-#include "G4Timer.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessManager.hh"
-#include "G4Event.hh"
-#include "G4Step.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4TrackingManager.hh"
+#include "Geant4/G4Timer.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
+#include "Geant4/G4TrackingManager.hh"
 // GiGa
 #include "GiGa/GiGaStepActionBase.h"
 #include "GiGa/GiGaTrackActionBase.h"
-#include "G4SteppingManager.hh"
+#include "Geant4/G4SteppingManager.hh"
 #include "GaudiKernel/IHistogramSvc.h"
 #include "GaudiKernel/NTuple.h"
 #include "GaudiKernel/INTupleSvc.h"

@@ -8,7 +8,7 @@
 
 #include "GaussCherenkov/CkvG4Hit.h"
 #include "TorchTBHitCollName.h"
-#include "G4Step.hh"
+#include "Geant4/G4Step.hh"
 
 // forward declarations
 class G4HCofThisEvent;

@@ -1,17 +1,17 @@
 // $Id: $
 // Include files 
 
-#include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Material.hh"
-#include "G4Electron.hh"
-#include "G4OpticalPhoton.hh"
-#include "G4PionMinus.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Step.hh"
-#include "G4VProcess.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/G4PionMinus.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4VProcess.hh"
 
 /// GaudiKernel
 #include "GaudiKernel/DeclareFactoryEntries.h"

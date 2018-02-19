@@ -51,7 +51,7 @@
 // Modified for LHCb and renamed to RichG4OpRayleigh    SE 1-4-2005.
 ////////////////////////////////////////////////////////////////////////
 
-#include "G4ios.hh"
+#include "Geant4/G4ios.hh"
 #include "GaussRICH/RichG4OpRayleigh.h"
 // Add a flag to tag the photon as rayleigh scattered. SE Oct 2003.
 // this can be done from userstep action, but that will take more
@@ -195,14 +195,14 @@ RichG4OpRayleigh::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
 	rand = G4UniformRand();
 
-	G4double Phi = twopi*rand;
-	G4double SinPhi = std::sin(Phi); 
-	G4double CosPhi = std::cos(Phi); 
-	
-	G4double unit_x = SinTheta * CosPhi; 
-	G4double unit_y = SinTheta * SinPhi;  
-	G4double unit_z = CosTheta; 
-	
+	G4double Phi = CLHEP::twopi * rand;
+	G4double SinPhi = std::sin(Phi);
+	G4double CosPhi = std::cos(Phi);
+
+	G4double unit_x = SinTheta * CosPhi;
+	G4double unit_y = SinTheta * SinPhi;
+	G4double unit_z = CosTheta;
+
         G4ThreeVector NewPolarization (unit_x,unit_y,unit_z);
 
         // Rotate new polarization direction into global reference system 
@@ -267,7 +267,7 @@ void RichG4OpRayleigh::BuildThePhysicsTable()
 
             G4MaterialPropertiesTable *aMaterialPropertiesTable =
                          (*theMaterialTable)[i]->GetMaterialPropertiesTable();
-                                                                                
+
             if(aMaterialPropertiesTable){
 
               G4MaterialPropertyVector* AttenuationLengthVector =
@@ -350,15 +350,15 @@ G4PhysicsOrderedFreeVector* RichG4OpRayleigh::RayleighAttenuationLengthGenerator
         // Physical Constants
 
         // isothermal compressibility of water
-        G4double betat = 7.658e-23*m3/MeV;
+        G4double betat = 7.658e-23 * CLHEP::m3 / CLHEP::MeV;
 
         // K Boltzman
-        G4double kboltz = 8.61739e-11*MeV/kelvin;
+        G4double kboltz = 8.61739e-11 * CLHEP::MeV / CLHEP::kelvin;
 
         // Temperature of water is 10 degrees celsius
         // conversion to kelvin:
         // TCelsius = TKelvin - 273.15 => 273.15 + 10 = 283.15
-        G4double temp = 283.15*kelvin;
+        G4double temp = 283.15 * CLHEP::kelvin;
 
         // Retrieve vectors for refraction index
         // and photon energy from the material properties table
@@ -384,15 +384,15 @@ G4PhysicsOrderedFreeVector* RichG4OpRayleigh::RayleighAttenuationLengthGenerator
                 refraction_index = (*Rindex)[i];
 
                 refsq = refraction_index*refraction_index;
-                xlambda = h_Planck*c_light/e;
+                xlambda = CLHEP::h_Planck * CLHEP::c_light / e;
 
 	        if (verboseLevel>0) {
         	        G4cout << Rindex->Energy(i) << " MeV\t";
                 	G4cout << xlambda << " mm\t";
 		}
 
-                c1 = 1 / (6.0 * pi);
-                c2 = std::pow((2.0 * pi / xlambda), 4);
+                c1 = 1 / (6.0 * CLHEP::pi);
+                c2 = std::pow((2.0 * CLHEP::pi / xlambda), 4);
                 c3 = std::pow( ( (refsq - 1.0) * (refsq + 2.0) / 3.0 ), 2);
                 c4 = betat * temp * kboltz;
 

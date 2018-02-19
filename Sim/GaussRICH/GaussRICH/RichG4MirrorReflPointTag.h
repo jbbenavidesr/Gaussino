@@ -3,8 +3,8 @@
 #define GAUSSRICH_RICHG4MIRRORREFLPOINTTAG_H 1
 
 // Include files
-#include "G4Track.hh"
-#include "G4ThreeVector.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4ThreeVector.hh"
 extern void RichG4MirrorReflPointTag(const G4Track* aPhotonTk,
                                      const G4ThreeVector & aReflPoint,
                                      int aRichDetNum, int aMirrorTypeNum,

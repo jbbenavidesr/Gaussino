@@ -2,29 +2,29 @@
 // Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h" 
+#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/Bootstrap.h"
 #include "GaudiKernel/System.h"
-// GiGa 
+// GiGa
 //#include "GiGa/GiGaMACROs.h"
-// G4 
+// G4
 #ifdef      G4UI_USE_WO
-#include   "G4UIWo.hh"   
-#endif //   G4UI_USE_WO 
-/// G4 
+#include   "Geant4/G4UIWo.hh"
+#endif //   G4UI_USE_WO
+/// G4
 #ifdef      G4UI_USE_XM
-#include   "G4UIXm.hh"  
-#endif //   G4UI_USE_XM 
-/// G4 
+#include   "Geant4/G4UIXm.hh"
+#endif //   G4UI_USE_XM
+/// G4
 #ifdef      G4UI_USE_XAW
-#include   "G4UIXaw.hh"  
+#include   "Geant4/G4UIXaw.hh"
 #endif //   G4UI_USE_XAW
-/// G4 
-#include    "G4UIterminal.hh" 
-#ifndef WIN32            
-#include    "G4UItcsh.hh"             
-#include    "G4UIcsh.hh"             
-#include    "G4UIGAG.hh" 
+/// G4
+#include    "Geant4/G4UIterminal.hh"
+#ifndef WIN32
+#include    "Geant4/G4UItcsh.hh"
+#include    "Geant4/G4UIcsh.hh"
+#include    "Geant4/G4UIGAG.hh"
 #endif // not WIN32
 
 // local

@@ -7,7 +7,7 @@ gaudi_depends_on_subdirs(Sim/GiGa
                          Vis/VisSvc
                          Det/DetDesc)
 
-FindG4libs(Tree RayTracer UIGAG FR VRML OpenGL vis_management UIbasic)
+FindG4libs(Tree RayTracer interfaces FR VRML OpenGL vis_management)
 
 gaudi_add_module(GiGaVisUI
                  src/*.cpp

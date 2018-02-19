@@ -145,7 +145,7 @@ inline double EcalSensDet::localNonUniformity
 
   // Distance between fibers
   // and correction amplitude
-  double d        = 10.1 * mm ;
+  double d        = 10.1 * CLHEP::mm ;
   double A_local  = m_a_local_inner_ecal ; // in inner Ecal
   double A_global = m_a_global_inner_ecal ;
 
@@ -158,7 +158,7 @@ inline double EcalSensDet::localNonUniformity
   if ( cell.area() == 0 ) { // outer Ecal
     A_local  = m_a_local_outer_ecal ;
     A_global = m_a_global_outer_ecal ;
-    d        = 15.25 * mm ;
+    d        = 15.25 * CLHEP::mm ;
   }
   else if ( cell.area() == 1 ) { // middle Ecal
     A_local  = m_a_local_middle_ecal ;
@@ -169,8 +169,8 @@ inline double EcalSensDet::localNonUniformity
   // The Amplitude of the sin-like function is a function of x and
   // y
   if ( A_local > LHCb::Math::lowTolerance )
-    correction += A_local / 2. * ( 1. - cos( 2.*pi * (x-x0)/d ) ) *
-      ( 1. - cos( 2.*pi * (y-y0)/d ) ) ;
+    correction += A_local / 2. * ( 1. - cos( 2. * CLHEP::pi * (x-x0)/d ) ) *
+      ( 1. - cos( 2. * CLHEP::pi * (y-y0)/d ) ) ;
 
   double rX(0.) , rY(0.) , hCell(0.) ;
 

@@ -117,19 +117,19 @@ void GiGaPhysListBase::SetCuts ()
   SetCutValue ( cutForGamma       () , "gamma"        ) ;
   log << MSG::INFO 
       << " The cut for gamma        is set to \t" 
-      << cutForGamma       () / mm << " mm " << endmsg ;
+      << cutForGamma       () / CLHEP::mm << " mm " << endmsg ;
   
   // set cut values for electron
   SetCutValue ( cutForElectron    () , "e-"           ) ;
   log << MSG::INFO 
       << " The cut for electron     is set to \t" 
-      << cutForElectron    () / mm << " mm " << endmsg ;
+      << cutForElectron    () / CLHEP::mm << " mm " << endmsg ;
   
   // set cut values for positron
   SetCutValue ( cutForPositron    () , "e+"           ) ;
   log << MSG::INFO 
       << " The cut for positron     is set to \t" 
-      << cutForPositron    () / mm << " mm " << endmsg ; 
+      << cutForPositron    () / CLHEP::mm << " mm " << endmsg ; 
   
 }
 // ============================================================================

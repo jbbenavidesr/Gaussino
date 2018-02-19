@@ -3,7 +3,7 @@
 // Include files 
 //
 // GEANT4 
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // GaudiKernel
 #include "GaudiKernel/PhysicalConstants.h"

@@ -5,17 +5,17 @@
 //#include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // Geant4
-#include "G4Track.hh"
-#include "G4TrackVector.hh"
-#include "G4TrackingManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
-#include "G4DynamicParticle.hh"
-#include "G4ThreeVector.hh"
-#include "G4OpticalPhoton.hh"
-#include "globals.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4TrackVector.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4ThreeVector.hh"
+#include "Geant4/G4OpticalPhoton.hh"
+#include "Geant4/globals.hh"
 #include <math.h>
-#include "G4VProcess.hh"
+#include "Geant4/G4VProcess.hh"
 
 // Gaudi
 #include "GaudiKernel/MsgStream.h"
@@ -59,9 +59,9 @@ RichG4TrackActionAerogelPhoton::RichG4TrackActionAerogelPhoton
   const IInterface*  parent )
   : GiGaTrackActionBase( type , name , parent ),
     m_ActivateAerogelFilter(true),
-    m_EnergyCutoffInAerogel(4.5*eV),
-    m_EnergyCutoffNoFilterInAerogel(6.5*eV),
-    m_EnergyCutoffWithFilterInAerogel(4.5*eV)
+    m_EnergyCutoffInAerogel(4.5 * CLHEP::eV),
+    m_EnergyCutoffNoFilterInAerogel(6.5 * CLHEP::eV),
+    m_EnergyCutoffWithFilterInAerogel(4.5 * CLHEP::eV)
 {
   declareProperty("ActivateAerogelFilter", m_ActivateAerogelFilter);
   declareProperty("MaxEnergyCutoffNoFilterInAerogel", m_EnergyCutoffNoFilterInAerogel);

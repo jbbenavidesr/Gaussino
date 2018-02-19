@@ -1,7 +1,7 @@
 #ifndef CHERENKOVANALYSIS_CHERENKOVG4HISTOHITTIME_H 
 #define CHERENKOVANALYSIS_CHERENKOVG4HISTOHITTIME_H 1
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 #include <string>
 #include <cmath>
@@ -9,7 +9,7 @@
 
 #include "GaussCherenkov/CkvG4SvcLocator.h"
 #include "GaudiKernel/NTuple.h"
-#include "G4Event.hh"
+#include "Geant4/G4Event.hh"
 
  class TFile;
  class TTree;

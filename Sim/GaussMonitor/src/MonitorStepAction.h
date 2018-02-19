@@ -5,12 +5,12 @@
 // ============================================================================
 // include files 
 /// Geant4
-#include "G4Timer.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessManager.hh"
+#include "Geant4/G4Timer.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessManager.hh"
 // GiGa
 #include "GiGa/GiGaStepActionBase.h"
-#include "G4SteppingManager.hh"
+#include "Geant4/G4SteppingManager.hh"
 // Gaudi Kernel
 #include "GaudiKernel/IHistogramSvc.h"
 #include "GaudiKernel/NTuple.h"

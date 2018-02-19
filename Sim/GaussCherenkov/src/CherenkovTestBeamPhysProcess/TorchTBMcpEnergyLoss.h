@@ -3,16 +3,19 @@
 #define CHERENKOVTESTBEAMPHYSPROCESS_TORCHTBMCPENERGYLOSS_H 1
 
 // Include files
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <vector>
-#include "G4VEnergyLoss.hh"
-#include "Randomize.hh"
-#include "G4VParticleChange.hh"
-#include "G4DynamicParticle.hh"
-#include "G4Track.hh"
-#include "G4Step.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ios.hh"
+
+//#include "Geant4/G4VEnergyLoss.hh" // Removed in G4r10?
+#include "Geant4/G4VContinuousDiscreteProcess.hh"
+
+#include "Geant4/Randomize.hh"
+#include "Geant4/G4VParticleChange.hh"
+#include "Geant4/G4DynamicParticle.hh"
+#include "Geant4/G4Track.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ios.hh"
 #include "GiGa/GiGaBase.h"
 
 
@@ -22,8 +25,10 @@
  *  @author Sajan Easo
  *  @date   2012-05-25
  */
-class TorchTBMcpEnergyLoss :  public G4VEnergyLoss {
-public: 
+//class TorchTBMcpEnergyLoss :  public G4VEnergyLoss {
+class TorchTBMcpEnergyLoss : public G4VContinuousDiscreteProcess {
+
+public:
   /// Standard constructor
   TorchTBMcpEnergyLoss( const G4String& processName ,G4ProcessType   aType = fUserDefined ); 
 

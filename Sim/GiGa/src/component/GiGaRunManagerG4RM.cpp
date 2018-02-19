@@ -13,7 +13,7 @@
 // Local 
 #include "GiGaRunManager.h"
 /// G4 
-#include "G4VUserDetectorConstruction.hh"
+#include "Geant4/G4VUserDetectorConstruction.hh"
 
 // ============================================================================
 /** @file 

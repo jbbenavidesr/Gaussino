@@ -7,11 +7,11 @@
 #include "CLHEP/Units/SystemOfUnits.h"
 
 // Geant4
-#include "G4TrackingManager.hh"
-#include "G4VProcess.hh"
-#include "G4ProcessType.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4VProcess.hh"
+#include "Geant4/G4ProcessType.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 
 // GaussTools 
@@ -50,9 +50,9 @@ GaussTrackActionByEnergyType::GaussTrackActionByEnergyType
   const IInterface*  parent ) 
   : GaussTrackActionZ   ( type , name , parent ) 
   //
-  , m_ownNames   () 
-  , m_ownTypes   () 
-  , m_threshold  ( 1 * GeV )
+  , m_ownNames   ()
+  , m_ownTypes   ()
+  , m_threshold  ( 1 * CLHEP::GeV )
   , m_rejectRICHphe ( true )
 {
   declareProperty ( "OwnTypes"    , m_ownNames  ) ;

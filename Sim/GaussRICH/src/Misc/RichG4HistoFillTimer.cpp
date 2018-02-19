@@ -2,7 +2,7 @@
 // Include files 
 
 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 // local
 #include "GaussRICH/RichG4HistoFillTimer.h"

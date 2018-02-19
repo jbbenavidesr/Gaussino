@@ -24,10 +24,10 @@
 #include "GenEvent/HepMCUtils.h"
 
 // Geant4.
-#include "G4PrimaryVertex.hh"
-#include "G4PrimaryParticle.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticlePropertyTable.hh"
+#include "Geant4/G4PrimaryVertex.hh"
+#include "Geant4/G4PrimaryParticle.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4ParticlePropertyTable.hh"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenerationToSimulation
@@ -57,7 +57,7 @@ GenerationToSimulation::GenerationToSimulation(const std::string& name,
   declareProperty("Vertices",
 		  m_verticesLocation = LHCb::MCVertexLocation::Default,
 		  "Location to place the MCVertices.");  
-  declareProperty("TravelLimit", m_travelLimit = 1e-10*m,
+  declareProperty("TravelLimit", m_travelLimit = 1e-10 * CLHEP::m,
 		  "Pass particles to Geant4 with travel length above this.");
   declareProperty("LookForUnknownParticles", 
 		  m_lookForUnknownParticles = false,

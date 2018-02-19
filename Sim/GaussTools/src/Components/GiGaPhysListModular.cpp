@@ -11,15 +11,15 @@
 #include "GiGa/IGiGaPhysicsConstructor.h"
 
 // G4 
-#include "G4ParticleTypes.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleWithCuts.hh"
-#include "G4ProcessManager.hh"
-#include "G4ProcessVector.hh"
-#include "G4ParticleTypes.hh"
-#include "G4ParticleTable.hh"
-#include "G4Material.hh"
-#include "G4ios.hh"
+#include "Geant4/G4ParticleTypes.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleWithCuts.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ParticleTypes.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4ios.hh"
 
 // local
 #include "GiGaPhysListModular.h"
@@ -102,13 +102,16 @@ StatusCode GiGaPhysListModular::initialize()
 }
 
 // ============================================================================
-StatusCode GiGaPhysListModular::finalize () 
-{
+StatusCode GiGaPhysListModular::finalize () {
   // reset G4 vector of physics lists (they have been destoyed by the Gaudi
-  // tool release methods 
-  physicsVector -> clear() ;
+  // tool release methods
+  // physicsVector->clear();
 
-  return GiGaPhysListBase::finalize  ();
+  // In G4v10+ physicsVector has been moved to a data-encapsulation class
+  // G4VMPLData which should be accessed via a G4VMPLManager
+  GetSubInstanceManager().offset[GetInstanceID()].physicsVector->clear();
+
+  return GiGaPhysListBase::finalize();
 }
 
 
@@ -116,29 +119,29 @@ StatusCode GiGaPhysListModular::finalize ()
 void GiGaPhysListModular::SetCuts()
 {
   MsgStream log( msgSvc() , name() );
-  
+
   // set cut values for gamma
   SetCutValue ( cutForGamma       () , "gamma"        ) ;
-  log << MSG::INFO 
-      << " The production cut for gamma is set to \t" 
-      << cutForGamma       () / mm << " mm " << endmsg ;
-  
+  log << MSG::INFO
+      << " The production cut for gamma is set to \t"
+      << cutForGamma       () / CLHEP::mm << " mm " << endmsg ;
+
   // set cut values for electron
   SetCutValue ( cutForElectron    () , "e-"           ) ;
-  log << MSG::INFO 
-      << " The production cut for electron is set to \t" 
-      << cutForElectron    () / mm << " mm " << endmsg ;
-  
+  log << MSG::INFO
+      << " The production cut for electron is set to \t"
+      << cutForElectron    () / CLHEP::mm << " mm " << endmsg ;
+
   // set cut values for positron
   SetCutValue ( cutForPositron    () , "e+"           ) ;
-  log << MSG::INFO 
-      << " The production cut for positron is set to \t" 
-      << cutForPositron    () / mm << " mm " << endmsg ;
-  
+  log << MSG::INFO
+      << " The production cut for positron is set to \t"
+      << cutForPositron    () / CLHEP::mm << " mm " << endmsg ;
+
   if (m_dumpCutsTable) { DumpCutValuesTable(); }
 }
-  
+
 
 // ============================================================================
-// The END 
+// The END
 // ============================================================================

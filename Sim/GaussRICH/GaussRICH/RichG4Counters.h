@@ -4,7 +4,7 @@
 
 // Include files
 #include <vector>
-#include "G4ThreeVector.hh"
+#include "Geant4/G4ThreeVector.hh"
 
 /** @class RichG4Counters RichG4Counters.h RichAnalysis/RichG4Counters.h
  *

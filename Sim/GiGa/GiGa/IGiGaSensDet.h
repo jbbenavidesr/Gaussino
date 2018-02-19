@@ -7,7 +7,7 @@
 #include "GiGa/IGiGaInterface.h"
 
 // base class from Geant4 
-#include "G4VSensitiveDetector.hh" 
+#include "Geant4/G4VSensitiveDetector.hh" 
 
 /** @class IGiGaSensDet IGiGaSensDet.h GiGa/IGiGaSensDet.h
  *

@@ -9,8 +9,8 @@
 // SimSvc 
 #include "SimSvc/ISimulationSvc.h"
 // Geant4 
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
 #include "GaussG4UserLimits.h"
 // local
 #include "GiGaSetSimAttributes.h"

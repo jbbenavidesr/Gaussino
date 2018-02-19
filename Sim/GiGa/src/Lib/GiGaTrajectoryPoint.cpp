@@ -12,7 +12,7 @@
 #include "GiGa/GiGaTrajectoryPoint.h"
 #include "GiGa/GiGaUtil.h"
 // G4
-#include "G4Allocator.hh"
+#include "Geant4/G4Allocator.hh"
 
 using CLHEP::HepLorentzVector;
 using CLHEP::Hep3Vector;

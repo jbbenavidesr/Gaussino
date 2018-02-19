@@ -10,7 +10,7 @@
 #include "GiGa/GiGaTrackActionBase.h"
 
 /// Geant4 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 /** @class CkvG4TrackActionPhotOpt 
  * CkvG4TrackActionPhotOpt.hh 

@@ -5,9 +5,9 @@
 #include "GaudiKernel/DeclareFactoryEntries.h" 
 
 // G4 
-#include "G4Region.hh"
-#include "G4LogicalVolume.hh"
-#include "G4ProductionCuts.hh"
+#include "Geant4/G4Region.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4ProductionCuts.hh"
 
 /// GiGaCnv 
 #include "GiGaCnv/GiGaVolumeUtils.h"
@@ -40,19 +40,19 @@ DECLARE_TOOL_FACTORY( GiGaRegionTool )
  */
 // ============================================================================
 GiGaRegionTool::GiGaRegionTool
-( const std::string& type   , 
-  const std::string& name   , 
-  const IInterface*  parent ) 
-  : GiGaToolBase( type , name , parent ) 
-  // 
-  , m_region    ( "UNKNOWN" ) 
-  , m_volumes   ()
-  // 
-  , m_gamma     ( 10 * mm   ) 
-  , m_electron  ( 10 * mm   ) 
-  , m_positron  ( 10 * mm   ) 
+( const std::string& type,
+  const std::string& name,
+  const IInterface* parent )
+  : GiGaToolBase( type, name, parent )
   //
-  , m_overwrite ( true      ) 
+  , m_region    ( "UNKNOWN" )
+  , m_volumes   ()
+  //
+  , m_gamma     ( 10 * CLHEP::mm )
+  , m_electron  ( 10 * CLHEP::mm )
+  , m_positron  ( 10 * CLHEP::mm )
+  //
+  , m_overwrite ( true )
 {
   declareProperty ( "Region"         , m_region     ) ;
   declareProperty ( "Volumes"        , m_volumes    ) ;

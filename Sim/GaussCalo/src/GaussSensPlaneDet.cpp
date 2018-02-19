@@ -24,18 +24,18 @@
 #include "GaussTools/GaussTrackInformation.h"
 
 // Geant4
-#include "G4Step.hh"
-#include "G4TouchableHistory.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SDManager.hh"
-#include "G4EnergyLossTables.hh"
-#include "G4Material.hh"
-#include "G4Gamma.hh"
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4MuonPlus.hh"
-#include "G4MuonMinus.hh"
+#include "Geant4/G4Step.hh"
+#include "Geant4/G4TouchableHistory.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4EnergyLossTables.hh"
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4Gamma.hh"
+#include "Geant4/G4Electron.hh"
+#include "Geant4/G4Positron.hh"
+#include "Geant4/G4MuonPlus.hh"
+#include "Geant4/G4MuonMinus.hh"
 
 // GiGaCnv
 #include "GiGaCnv/GiGaVolumeUtils.h"
@@ -86,12 +86,12 @@ GaussSensPlaneDet::GaussSensPlaneDet
   , m_keepLinks ( false )
     , m_oneEntry  ( true  )
   ///
-  , m_cutForPhoton   ( 50 * MeV )
-  , m_cutForElectron ( 10 * MeV )
-  , m_cutForPositron ( 10 * MeV )
-  , m_cutForMuon     ( -1 * MeV )
-  , m_cutForCharged  ( 10 * MeV )
-    , m_cutForNeutral  ( 10 * MeV )
+  , m_cutForPhoton   ( 50 * CLHEP::MeV )
+  , m_cutForElectron ( 10 * CLHEP::MeV )
+  , m_cutForPositron ( 10 * CLHEP::MeV )
+  , m_cutForMuon     ( -1 * CLHEP::MeV )
+  , m_cutForCharged  ( 10 * CLHEP::MeV )
+  , m_cutForNeutral  ( 10 * CLHEP::MeV )
   ///
   , m_stat    (  true   )
   , m_events  (  0      )

@@ -4,7 +4,7 @@
 // GiGa 
 #include "GiGa/GiGaUtil.h"
 // Include files
-#include "G4VHit.hh"
+#include "Geant4/G4VHit.hh"
 
 /** @class GaussHitBase GaussHitBase.h GaussTools/GaussHitBase.h
  *  

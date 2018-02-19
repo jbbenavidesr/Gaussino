@@ -1,7 +1,7 @@
 #ifndef GAUSSRICH_RICHG4GAUSSPATHNAMES_H
 #define GAUSSRICH_RICHG4GAUSSPATHNAMES_H 1
 
-#include "globals.hh"
+#include "Geant4/globals.hh"
 
 #include "RichDet/DeRich.h"
 

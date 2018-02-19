@@ -3,8 +3,8 @@
 #define GAUSSTOOLS_COMPONENTS_ZEROSTEPSCUT_H 1
 
 // Include files
-#include "G4ios.hh"
-#include "globals.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
 #include "SpecialCuts.h"
 
 /** @class ZeroStepsCut ZeroStepsCut.h Components/ZeroStepsCut.h

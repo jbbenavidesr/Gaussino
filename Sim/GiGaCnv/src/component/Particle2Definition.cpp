@@ -29,8 +29,8 @@
 /// GiGa 
 #include "GiGa/GiGaException.h"
 /// G4 
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTable.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
 /// local
 #include "Particle2Definition.h"
 

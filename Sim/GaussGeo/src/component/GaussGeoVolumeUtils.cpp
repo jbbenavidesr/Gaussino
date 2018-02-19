@@ -1,10 +1,10 @@
 // GEANT4
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4Region.hh"
-#include "G4RegionStore.hh"
+#include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4PhysicalVolumeStore.hh"
+#include "Geant4/G4Region.hh"
+#include "Geant4/G4RegionStore.hh"
 
 // Local
 #include "GaussGeoAssembly.h"

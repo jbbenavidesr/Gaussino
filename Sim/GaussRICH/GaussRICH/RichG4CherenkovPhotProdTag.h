@@ -1,6 +1,6 @@
 #ifndef      GaussRICH_RichG4CherenkovPhotProdTag_h
 #define      GaussRICH_RichG4CherenkovPhotProdTag_h 1 
-#include "G4Track.hh"
+#include "Geant4/G4Track.hh"
 extern G4Track* RichG4CherenkovPhotProdTag(const G4Track& aChTrack, 
                                   G4Track* aCkvPhotTrack,
                                   const G4double CkvCosTheta,

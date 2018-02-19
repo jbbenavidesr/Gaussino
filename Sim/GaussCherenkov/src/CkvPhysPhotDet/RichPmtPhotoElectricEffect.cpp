@@ -1,11 +1,11 @@
 #include "RichPmtPhotoElectricEffect.h"
 #include <gsl/gsl_math.h>
 
-#include "G4TransportationManager.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ProcessVector.hh"
-#include "G4ProcessManager.hh"
-#include "G4GeometryTolerance.hh"
+#include "Geant4/G4TransportationManager.hh"
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4GeometryTolerance.hh"
 
 #include "CLHEP/Units/PhysicalConstants.h"
 #include <math.h>
@@ -357,7 +357,7 @@ RichPmtPhotoElectricEffect::PostStepDoIt(const G4Track& aTrack,
 
     // Shift the electron origin by 0.004 mm to avoid multiple scattering in the
     // photocathode.
-    G4double ElecOriginTolerence= 0.004*mm;
+    G4double ElecOriginTolerence= 0.004 * CLHEP::mm;
     G4ThreeVector LocalElectronOrigin (LocalElectronOriginInit.x(),
                                        LocalElectronOriginInit.y(),
                                        LocalElectronOriginInit.z()- ElecOriginTolerence );

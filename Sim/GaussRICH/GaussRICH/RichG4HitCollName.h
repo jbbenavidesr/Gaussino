@@ -1,6 +1,6 @@
 #ifndef GaussRICH_RichG4HitCollName_h
 #define GaussRICH_RichG4HitCollName_h 1
-#include "globals.hh"
+#include "Geant4/globals.hh"
 #include <vector>
 
 class RichG4HitCollName {
