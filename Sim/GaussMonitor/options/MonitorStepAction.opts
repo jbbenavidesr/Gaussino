@@ -1,4 +1,0 @@
-//to execute the code
-GiGa.StepSeq.Members +={"MonitorStepAction"};
-GiGa.StepSeq.MonitorStepAction.OutputLevel = 4;
-
