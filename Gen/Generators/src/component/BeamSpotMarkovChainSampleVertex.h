@@ -16,7 +16,7 @@
 #include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
 
-#include "Generators/IVertexSmearingTool.h"
+#include "GenInterfaces/IVertexSmearingTool.h"
 
 /** @class BeamSpotMarkovChainSampleVertex BeamSpotMarkovChainSampleVertex.h 
  *  

@@ -19,10 +19,10 @@
 #include "MCInterfaces/IDecayTool.h" 
 
 // from Generators
-#include "Generators/ISampleGenerationTool.h"
-#include "Generators/IPileUpTool.h"
-#include "Generators/IVertexSmearingTool.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/ISampleGenerationTool.h"
+#include "GenInterfaces/IPileUpTool.h"
+#include "GenInterfaces/IVertexSmearingTool.h"
+#include "GenInterfaces/ICounterLogFile.h"
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 

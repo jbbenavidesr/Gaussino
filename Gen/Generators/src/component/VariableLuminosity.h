@@ -7,7 +7,7 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/RndmGenerators.h"
 
-#include "Generators/IPileUpTool.h"
+#include "GenInterfaces/IPileUpTool.h"
 
 // Forward declarations
 class IRndmGenSvc ;

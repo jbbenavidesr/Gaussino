@@ -42,12 +42,13 @@ StatusCode BeamSpotMarkovChainSampleVertex::initialize( )
   // However, it is not sensitive to the precise value... changing for example 
   // the sigma in m_gaussDistZ from 5. to 7. will not make a difference.
 
-  sc = ( sc 
+  auto result = ( sc 
          && m_gaussDistX.initialize( randSvc , Rndm::Gauss( 0. , 0.025  ) )
          && m_gaussDistY.initialize( randSvc , Rndm::Gauss( 0. , 0.025  ) ) 
          && m_gaussDistZ.initialize( randSvc , Rndm::Gauss( 0. , 5.     ) ) 
          && m_gaussDistT.initialize( randSvc , Rndm::Gauss( 0. , 1.     ) ) 
          && m_flatDist.initialize  ( randSvc , Rndm::Flat ( 0. , 1.     ) ) );
+  if(!result) sc = StatusCode::FAILURE;
   if ( sc.isFailure() ) 
   { return Error( "Could not initialize random number generators" ); }
 

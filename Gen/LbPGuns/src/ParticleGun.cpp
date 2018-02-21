@@ -19,10 +19,10 @@
 #include "Kernel/ParticleID.h"
 
 // from Generators
-#include "Generators/IPileUpTool.h"
+#include "GenInterfaces/IPileUpTool.h"
 #include "LbPGuns/IParticleGunTool.h"
 #include "MCInterfaces/IDecayTool.h"
-#include "Generators/IVertexSmearingTool.h"
+#include "GenInterfaces/IVertexSmearingTool.h"
 #include "MCInterfaces/IFullGenEventCutTool.h"
 #include "MCInterfaces/IGenCutTool.h"
 #include "Generators/GenCounters.h"

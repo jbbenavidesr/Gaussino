@@ -119,3 +119,8 @@ if(inherit_heptools_module)
     endif()
   endif()
 endif()
+
+if(DEFINED ENV{LBLOCALSOFT})
+  message(STATUS "Manually prepending $ENV{LBLOCALSOFT} to CMAKE_PREFIX_PATH")
+  set(CMAKE_PREFIX_PATH "$ENV{LBLOCALSOFT};${CMAKE_PREFIX_PATH}")
+endif()

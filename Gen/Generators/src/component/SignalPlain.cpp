@@ -18,7 +18,7 @@
 #include "MCInterfaces/IDecayTool.h"
 
 // from Generators
-#include "Generators/IProductionTool.h"
+#include "GenInterfaces/IProductionTool.h"
 #include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------

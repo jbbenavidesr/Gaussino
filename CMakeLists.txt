@@ -1,5 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 
+# Reduce the total number of warnings by A LOT until ROOT has been modified
+option(GAUDI_SUGGEST_OVERRIDE "enable warnings for missing override keyword" OFF)
+# Create the compile commands json for YCM superpowers
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 #---------------------------------------------------------------
 # Load macros and functions for Gaudi-based projects
 find_package(GaudiProject)
@@ -8,30 +13,23 @@ find_package(GaudiProject)
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
-        #message(STATUS "looking for Geant4 ${name} in ${Geant4_LIBRARY_DIRS}")
+        message(STATUS "looking for Geant4 ${name} in ${Geant4_LIBRARY_DIRS} with hints ${Geant4_DIR}/lib")
         find_library(GEANT4_${name}_LIBRARY
                      G4${name}
                      HINTS ${Geant4_DIR}/lib
                      PATHS ${Geant4_LIBRARY_DIRS})
-        #message(STATUS "GEANT4_${name}_LIBRARY -> ${GEANT4_${name}_LIBRARY}")
+        message(STATUS "GEANT4_${name}_LIBRARY -> ${GEANT4_${name}_LIBRARY}")
         list(APPEND GEANT4_LIBS ${GEANT4_${name}_LIBRARY})
     endforeach()
     link_directories(${Geant4_LIBRARY_DIRS})
 endmacro()
 
 # Declare project name and version
-gaudi_project(Gauss v52r0
+gaudi_project(Gaussino v1r0
               FORTRAN
-              USE LHCb v42r6p2
-                  Geant4 v96r4p7
-              DATA AppConfig VERSION v3r*
-                   BcVegPyData VERSION v2r*
-                   Det/GDMLData VERSION v1r*
-                   FieldMap VERSION v5r*
-                   GenXiccData VERSION v3r*
-                   Gen/PGunsData VERSION v1r*
+              USE GaudiExtensions v1r0
+                  Geant4 v96r*
+              DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*
                    LHAPDFSets VERSION v2r*
-                   MIBData VERSION v3r*
-                   ParamFiles VERSION v8r*
                    Vis/XmlVis VERSION v2r*)

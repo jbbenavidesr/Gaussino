@@ -8,7 +8,7 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from Generators
-#include "Generators/ISampleGenerationTool.h"
+#include "GenInterfaces/ISampleGenerationTool.h"
 #include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------

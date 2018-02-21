@@ -15,10 +15,10 @@
 #include "MCInterfaces/IDecayTool.h"
 
 // from Generators
-#include "Generators/IProductionTool.h"
+#include "GenInterfaces/IProductionTool.h"
 #include "Generators/LhaPdf.h"
 #include "Generators/StringParse.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/ICounterLogFile.h"
 #include "GenEvent/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------

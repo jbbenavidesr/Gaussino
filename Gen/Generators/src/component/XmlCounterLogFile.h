@@ -8,7 +8,7 @@
 
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "Generators/ICounterLogFile.h"            // Interface
+#include "GenInterfaces/ICounterLogFile.h"            // Interface
 
 /** @class XmlCounterLogFile XmlCounterLogFile.h component/XmlCounterLogFile.h
  *  

@@ -13,9 +13,9 @@
 #include "MCInterfaces/IGenCutTool.h"
 
 // from Generators
-#include "Generators/IProductionTool.h"
+#include "GenInterfaces/IProductionTool.h"
 #include "Generators/GenCounters.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/ICounterLogFile.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"

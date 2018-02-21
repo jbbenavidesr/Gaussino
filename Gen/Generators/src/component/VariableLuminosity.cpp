@@ -18,7 +18,7 @@
 
 // From Generators
 #include "Generators/GenCounters.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/ICounterLogFile.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : VariableLuminosity

@@ -8,8 +8,8 @@
 
 // Gaudi.
 #include "GaudiAlg/GaudiTool.h"
-#include "Generators/IProductionTool.h"
-#include "Generators/ICounterLogFile.h"
+#include "GenInterfaces/IProductionTool.h"
+#include "GenInterfaces/ICounterLogFile.h"
 
 // Pythia8.
 #include "Pythia8/Pythia.h"

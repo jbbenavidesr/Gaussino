@@ -7,7 +7,7 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/RndmGenerators.h"
 
-#include "Generators/IVertexSmearingTool.h"
+#include "GenInterfaces/IVertexSmearingTool.h"
 
 /** @class BeamSpotSmearVertex BeamSpotSmearVertex.h "BeamSpotSmearVertex.h"
  *  
