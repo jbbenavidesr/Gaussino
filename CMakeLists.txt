@@ -10,6 +10,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(GaudiProject)
 #---------------------------------------------------------------
 
+# hide warnings from some external projects
+find_package(Boost)
+find_package(ROOT)
+find_package(CLHEP)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS}
+                           ${CLHEP_INCLUDE_DIRS})
+
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
