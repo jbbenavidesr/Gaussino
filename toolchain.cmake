@@ -124,3 +124,5 @@ if(DEFINED ENV{LBLOCALSOFT})
   message(STATUS "Manually prepending $ENV{LBLOCALSOFT} to CMAKE_PREFIX_PATH")
   set(CMAKE_PREFIX_PATH "$ENV{LBLOCALSOFT};${CMAKE_PREFIX_PATH}")
 endif()
+
+set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_91/hepmc3/3.0.0/${BINARY_TAG} ${CMAKE_PREFIX_PATH})

@@ -17,7 +17,7 @@
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 
 std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader> GenerationToSimulation::
-operator()(const LHCb::HepMCEvents& generationEvents) const {
+operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
   // Create containers in TES for MCParticles and MCVertices.
   MCPARTICLES m_particleContainer;
   MCVERTICES m_vertexContainer;
@@ -221,6 +221,12 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
                                      MCVERTICES& mcvertices) const {
   unsigned char conversionCode = transferToSimulation(particle);
   switch (conversionCode) {
+    case 1: {  // Convert to MCParticle.
+
+      // Convert the particle.
+      makeMCParticle(particle, originVertex, mcparticles, mcvertices);
+      break;
+    }
     case 2: {  // Convert to MCParticle.
 
       // Convert the particle.
@@ -255,7 +261,17 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
 unsigned char GenerationToSimulation::transferToSimulation(
     const HepMC::GenParticle* p) const {
   if (!keep(p)) return 3;
-  return 2;
+
+  // Determine the travel distance.
+  auto ev = p->end_vertex();
+  auto pv = p->production_vertex();
+  Gaudi::XYZVector E(ev->point3d());
+  Gaudi::XYZVector P(pv->point3d());
+  double dist = (E - P).R();
+
+  // Skip passing to Geant4 if under travel limit.
+  if (dist < m_travelLimit) return 2;
+  return 1;
 }
 
 //=============================================================================
@@ -311,14 +327,14 @@ LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
 // Determine the primary vertex for the event.
 //=============================================================================
 Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
-    const HepMC::GenEvent* genEvent) const {
+    const HepMC::GenEvent& genEvent) const {
   Gaudi::LorentzVector result(0, 0, 0, 0);
 
   // First method, get the beam particle and use the decay vertex if it
   // exists.
-  if (genEvent->valid_beam_particles()) {
-    HepMC::GenParticle* P = genEvent->beam_particles().first;
-    HepMC::GenVertex* V = P->end_vertex();
+  if (genEvent.valid_beam_particles()) {
+    auto P = genEvent.beam_particles().first;
+    auto V = P->end_vertex();
     if (V)
       result = V->position();
     else
@@ -330,8 +346,8 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
     // Third method, take production/end vertex of the particle with
     // barcode 1.
   } else {
-    HepMC::GenParticle* P = genEvent->barcode_to_particle(1);
-    HepMC::GenVertex* V = 0;
+    auto P = *std::begin(genEvent.particles());
+    auto V = 0;
     if (P) {
       V = P->production_vertex();
       if (V)

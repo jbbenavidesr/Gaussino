@@ -5,13 +5,7 @@
 #include "GaudiAlg/Transformer.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
-// HepMC.
-#include "GenEvent/HepMCUtils.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenRanges.h"
-
 // Event.
-#include "Event/HepMCEvent.h"
 #include "Event/MCHeader.h"
 
 // Event.
@@ -19,7 +13,13 @@
 #include "Event/MCVertex.h"
 
 // HepMC.
-#include "HepMC/SimpleVector.h"
+//#include "HepMC/SimpleVector.h"
+//#include "HepMC/GenEvent.h"
+
+#include "HepMC/FourVector.h"
+#include "HepMC/GenEvent.h"
+
+#include "Defaults/Locations.h"
 
 /** @class GenerationToSimulation GenerationToSimulation.h
  *  Algorithm to transmit particles from the generation phase
@@ -37,45 +37,42 @@ typedef std::vector<LHCb::MCParticle> MCPARTICLES;
 typedef std::vector<LHCb::MCVertex> MCVERTICES;
 
 class GenerationToSimulation
-    : public Gaudi::Functional::MultiTransformer<std::tuple<
-          MCPARTICLES, MCVERTICES, LHCb::MCHeader>(const LHCb::HepMCEvents&)> {
-  public:
+    : public Gaudi::Functional::MultiTransformer<std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader>(
+          const std::vector<HepMC::GenEvent>& )>
+{
+public:
   /// Standard constructor.
-  GenerationToSimulation(const std::string& name, ISvcLocator* pSvcLocator)
-      : MultiTransformer(
-            name, pSvcLocator,
-            {KeyValue{"HepMCEventLocation", LHCb::HepMCEventLocation::Default}},
-            {{KeyValue{"Particles", LHCb::MCParticleLocation::Default},
-             KeyValue{"Vertices", LHCb::MCVertexLocation::Default},
-             KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}}}){};
-  virtual ~GenerationToSimulation() = default;  ///< Destructor.
-  std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader> operator()(const LHCb::HepMCEvents & ) const override;
+  GenerationToSimulation( const std::string& name, ISvcLocator* pSvcLocator )
+      : MultiTransformer( name, pSvcLocator, {KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default}},
+                          {{KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
+                            KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
+                            KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}}} ){};
+  virtual ~GenerationToSimulation() = default; ///< Destructor.
+  std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader> operator()( const std::vector<HepMC::GenEvent>& ) const override;
 
-  private:
+private:
   /// Determine the primary vertex of the interaction.
-  Gaudi::LorentzVector primaryVertex(const HepMC::GenEvent* genEvent) const;
+  Gaudi::LorentzVector primaryVertex( const HepMC::GenEvent& genEvent ) const;
 
   /// Decide if a particle has to be kept or not.
-  static bool keep(const HepMC::GenParticle* particle);
+  static bool keep( const HepMC::GenParticlePtr particle );
 
   /// Convert a GenParticle either into a MCParticle or G4PrimaryParticle.
-  void convert(HepMC::GenParticle* & particle, LHCb::MCVertex & originVertex,
-               MCPARTICLES & mcparticles, MCVERTICES & mcvertices ) const;
+  void convert( HepMC::GenParticlePtr& particle, LHCb::MCVertex& originVertex, MCPARTICLES& mcparticles,
+                MCVERTICES& mcvertices ) const;
 
   /// Decide if the particle should be transfered to Geant4 or only MCParticle.
-  unsigned char transferToSimulation(const HepMC::GenParticle* p) const;
+  unsigned char transferToSimulation( const HepMC::GenParticlePtr p ) const;
 
   /// Create an MCParticle from a HepMC GenParticle, add it to the container and return
-  LHCb::MCParticle& makeMCParticle(HepMC::GenParticle* & particle, LHCb::MCVertex & originVertex,
-                                   MCPARTICLES & mcparticles, MCVERTICES & mcvertices) const;
+  LHCb::MCParticle& makeMCParticle( HepMC::GenParticlePtr& particle, LHCb::MCVertex& originVertex,
+                                    MCPARTICLES& mcparticles, MCVERTICES& mcvertices ) const;
 
   /// Compute the lifetime of a particle.
-  double lifetime(const HepMC::FourVector mom, const HepMC::GenVertex* P,
-                  const HepMC::GenVertex* E) const;
+  double lifetime( const HepMC::FourVector mom, const HepMC::GenVertexPtr P, const HepMC::GenVertexPtr E ) const;
 
   /// Check if a particle has oscillated.
-  const HepMC::GenParticle* hasOscillated(const HepMC::GenParticle* P) const;
+  const HepMC::GenParticle* hasOscillated( const HepMC::GenParticlePtr P ) const;
 
-  Gaudi::Property<double> m_travelLimit{this, "TravelLimit",
-                                        1e-10 * Gaudi::Units::m};
+  Gaudi::Property<double> m_travelLimit{this, "TravelLimit", 1e-10 * Gaudi::Units::m};
 };
