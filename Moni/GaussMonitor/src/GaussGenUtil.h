@@ -3,11 +3,7 @@
 #define GAUSSGENUTIL_H 1
 
 // Include files
-
-// forward declaration
-namespace HepMC {
-  class GenParticle;
-}
+#include "HepMC/GenParticle.h"
 
 
 /** @namespace GenUtil GenUtil.h
@@ -20,7 +16,7 @@ namespace HepMC {
 
 namespace GaussGenUtil {
 
-  double lifetime( const HepMC::GenParticle* );
+  double lifetime( const HepMC::GenParticlePtr& );
   
 }
 
