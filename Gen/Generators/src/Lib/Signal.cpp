@@ -12,6 +12,12 @@
 // from Generators
 #include "MCInterfaces/IDecayTool.h"
 #include "Generators/GenCounters.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
+//FIXME:This import pulls in the DataObject Wrapper for status enums. Should move this somewhere else.
 #include "GenEvent/HepMCUtils.h"
 
 // from Event                                                                                                                                                    
@@ -19,23 +25,23 @@
 #include "Event/GenCountersFSR.h"
 
 // Function to test if a HepMC::GenParticle is Particle (or antiParticle) 
-struct isParticle : std::unary_function< const HepMC::GenParticle * , bool > {
-  bool operator() ( const HepMC::GenParticle * part ) const {
+struct isParticle : std::unary_function< const HepMC::GenParticlePtr & , bool > {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
     return ( part -> pdg_id() > 0 ) ; 
   }
 };
 
 // Functions to test if a HepMC::GenParticle goes forward
 struct isForwardParticle : 
-  std::unary_function< const HepMC::GenParticle * , bool > {
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  std::unary_function< const HepMC::GenParticlePtr & , bool > {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
     return ( ( part -> pdg_id() > 0 ) && ( part -> momentum().pz() > 0 ) ) ; 
   }
 };
 
 struct isForwardAntiParticle : 
-  std::unary_function< const HepMC::GenParticle * , bool > {
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  std::unary_function< const HepMC::GenParticlePtr & , bool > {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
     return ( ( part -> pdg_id() < 0 ) && ( part -> momentum().pz() > 0 ) ) ; 
   }
 };
@@ -193,37 +199,37 @@ void Signal::printCounters( ) const {
 //=============================================================================
 // Isolate signal to produce "clean" events
 //=============================================================================
-StatusCode Signal::isolateSignal( const HepMC::GenParticle * theSignal ) 
+StatusCode Signal::isolateSignal( const HepMC::GenParticlePtr & theSignal ) 
   const {
 
   StatusCode sc = StatusCode::SUCCESS ;
+
+  auto mcevt = new HepMC::GenEvent();
   // Create a new event to contain isolated signal decay tree
-  LHCb::HepMCEvent * mcevt = new LHCb::HepMCEvent( ) ;
-  mcevt -> setGeneratorName( m_hepMCName + "_clean" ) ;
+  mcevt ->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
+                              std::make_shared<HepMC::StringAttribute>( m_hepMCName + "_clean") );
   
-  if ( 0 == theSignal -> production_vertex() ) 
+  if ( ! theSignal -> production_vertex() ) 
     return Error( "Signal particle has no production vertex." ) ;
   
   // create a new vertex and a new HepMC Particle for the root particle
   // (a copy of which will be associated to the new HepMC event) 
 
-  HepMC::GenVertex * newVertex =
-    new HepMC::GenVertex( theSignal -> production_vertex() -> position() ) ;
+  HepMC::GenVertexPtr newVertex =std::make_shared<HepMC::GenVertex>( theSignal -> production_vertex() -> position() ) ;
 
-  HepMC::GenEvent * hepMCevt = mcevt -> pGenEvt() ;
-
-  hepMCevt -> add_vertex( newVertex ) ;
+  mcevt -> add_vertex(newVertex);
   
-  HepMC::GenParticle * theNewParticle =
-    new HepMC::GenParticle( theSignal -> momentum() , theSignal -> pdg_id() ,
+  HepMC::GenParticlePtr  theNewParticle =
+    std::make_shared<HepMC::GenParticle>( theSignal -> momentum() , theSignal -> pdg_id() ,
                             theSignal -> status() ) ;
   
   newVertex -> add_particle_out( theNewParticle ) ;
   
   // Associate the new particle to the HepMC event
   // and copy all tree to the new HepMC event
-  sc = fillHepMCEvent( theNewParticle , theSignal ) ;
-  hepMCevt -> set_signal_process_vertex( theNewParticle -> production_vertex() ) ;
+  sc = fillHepMCEvent( theNewParticle , theSignal , mcevt) ;
+  //Also add it to the vertex itself as the signal vertex
+  mcevt->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(newVertex));
   
   if ( ! sc.isSuccess( ) ) 
     return Error( "Could not fill HepMC event for signal tree" , sc ) ;
@@ -232,11 +238,9 @@ StatusCode Signal::isolateSignal( const HepMC::GenParticle * theSignal )
   if ( exist< LHCb::HepMCEvents >( LHCb::HepMCEventLocation::Signal ) ) 
     return Error( "SignalDecayTree container already exists !" ) ;
   
-  LHCb::HepMCEvents * hepVect = new LHCb::HepMCEvents ;
-  hepVect -> insert( mcevt ) ;
-  
-  // Register new location and store HepMC event
-  put( hepVect , LHCb::HepMCEventLocation::Signal ) ;
+  //FIXME: We made an event but should actually somehow return it to be put on the TES
+  delete mcevt; //So at least clean up ...
+  return Error( "Cannot yet write anything Signal::isolateSignal does!!" ) ;
   
   return sc ;
 }
@@ -244,47 +248,47 @@ StatusCode Signal::isolateSignal( const HepMC::GenParticle * theSignal )
 //=============================================================================
 // Fill HepMC event from a HepMC tree
 //=============================================================================
-StatusCode Signal::fillHepMCEvent( HepMC::GenParticle * theNewParticle ,
-                                   const HepMC::GenParticle * theOldParticle ) 
+StatusCode Signal::fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle ,
+                                   const HepMC::GenParticlePtr& theOldParticle,
+                                   HepMC::GenEvent * theEvent) 
   const {
   StatusCode sc = StatusCode::SUCCESS ;
   //
   // Copy theOldParticle to theNewParticle in theEvent
   // theNewParticle already exist and is created outside this function
-  HepMC::GenVertex * oVertex = theOldParticle -> end_vertex() ;
-  if ( 0 != oVertex ) {
+  auto & oVertex = theOldParticle -> end_vertex() ;
+  if ( oVertex ) {
     // Create decay vertex and associate it to theNewParticle
-    HepMC::GenVertex * newVertex =
-      new HepMC::GenVertex( oVertex -> position() ) ;
+    HepMC::GenVertexPtr newVertex =
+      std::make_shared<HepMC::GenVertex>( oVertex -> position() ) ;
     newVertex -> add_particle_in( theNewParticle ) ;
     theNewParticle -> parent_event() -> add_vertex( newVertex ) ;
 
     // loop over child particle of this vertex after sorting them
-    std::list< const HepMC::GenParticle * > outParticles ;
-    for ( HepMC::GenVertex::particles_out_const_iterator itP = 
-            oVertex -> particles_out_const_begin() ; 
-          itP != oVertex -> particles_out_const_end() ; ++itP )
-      outParticles.push_back( (*itP ) ) ;
+    std::list< HepMC::GenParticlePtr > outParticles ;
+    for ( auto & out_particle : oVertex->particles(HepMC::children) )
+      outParticles.push_back( out_particle ) ;
 
+    //FIXME: What is the reason for this sort? We would save 
     outParticles.sort( HepMCUtils::compareHepMCParticles ) ;
 
-    std::list< const HepMC::GenParticle * >::const_iterator child ;
-    for ( child = outParticles.begin( ) ; child != outParticles.end( ) ; 
-          ++child ) {
+    for ( auto & child : outParticles ) {
       
       // Create a new particle for each daughter of theOldParticle
-      HepMC::GenParticle * newPart =
-        new HepMC::GenParticle ( (*child) -> momentum () ,
-                                 (*child) -> pdg_id ()   ,
-                                 (*child) -> status ()   ) ;
+      HepMC::GenParticlePtr newPart =
+          std::make_shared<HepMC::GenParticle>( child->momentum(), child->pdg_id(), child->status() );
       newVertex -> add_particle_out( newPart ) ;
       
-      const HepMC::GenParticle * theChild = (*child) ;
       // Recursive call : fill the event with the daughters
-      sc = fillHepMCEvent( newPart , theChild ) ;
+      sc = fillHepMCEvent( newPart, child, theEvent ) ;
+
       
       if ( ! sc.isSuccess() ) return sc ;
     }
+    //Add the created particle to the event. This might attempt
+    //to add certain particle multiple times but this is handled by
+    //HepMC3
+    theEvent->add_vertex(newVertex);
   }
   return sc ;
 }
@@ -292,12 +296,12 @@ StatusCode Signal::fillHepMCEvent( HepMC::GenParticle * theNewParticle ,
 //=============================================================================
 // Choose one particle in acceptance 
 //=============================================================================
-HepMC::GenParticle * Signal::chooseAndRevert( const ParticleVector & 
+HepMC::GenParticle * Signal::chooseAndRevert( ParticleVector & 
                                               theParticleList , 
                                               bool & isInverted ,
                                               bool & hasFlipped , 
 					      bool & hasFailed ) {
-  HepMC::GenParticle * theSignal ;
+  HepMC::GenParticlePtr theSignal ;
   isInverted = false ;
   hasFlipped = false ;
   hasFailed = false ;
@@ -311,7 +315,7 @@ HepMC::GenParticle * Signal::chooseAndRevert( const ParticleVector &
     // Now erase daughters of the other particles in particle list
     for ( unsigned int i = 0 ; i < nPart ; ++i ) {
       if ( i != iPart ) 
-        HepMCUtils::RemoveDaughters( theParticleList[ i ] ) ;
+        HepMCUtils::RemoveDaughters( theParticleList.at( i ) ) ;
     }
   } else if ( 1 == nPart ) theSignal = theParticleList.front() ;
   else return 0 ;
@@ -383,4 +387,3 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   genFSR->incrementGenCounter(keyAP, nAntiP);
 
 }
-

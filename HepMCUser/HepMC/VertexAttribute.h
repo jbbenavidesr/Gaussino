@@ -34,6 +34,10 @@ namespace HepMC
 
     GenVertexPtr value() const { return m_val; }
 
+    // Pull in the base class init method accepting reference
+    // to GenRunInfo to avoid failures in the template instantiation
+    // of GenEvent::attribute<T>
+    using Attribute::init;
     virtual bool init( const GenEvent& geneve )
     {
       if ( index >= (int) geneve.vertices().size() ) {

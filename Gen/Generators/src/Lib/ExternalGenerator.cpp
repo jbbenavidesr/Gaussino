@@ -20,6 +20,7 @@
 #include "Generators/StringParse.h"
 #include "GenInterfaces/ICounterLogFile.h"
 #include "GenEvent/HepMCUtils.h"
+#include "Defaults/HepMCAttributes.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -283,19 +284,21 @@ unsigned int ExternalGenerator::nPositivePz( const ParticleVector
 //=============================================================================
 // Set up event
 //=============================================================================
-void ExternalGenerator::prepareInteraction( LHCb::HepMCEvents * theEvents ,
+void ExternalGenerator::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
     LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  LHCb::HepMCEvent * theHepMCEvent = new LHCb::HepMCEvent( ) ;
-  theHepMCEvent -> setGeneratorName( m_hepMCName ) ;
-  theGenEvent = theHepMCEvent -> pGenEvt() ;
+  theEvents->emplace_back();
+  theGenEvent = &theEvents->back();
+  theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
+                              std::make_shared<HepMC::StringAttribute>( m_hepMCName ) );
 
-  theGenCollision = new LHCb::GenCollision() ;  
-  theGenCollision -> setEvent( theHepMCEvent ) ;
-  theGenCollision -> setIsSignal( false ) ;
-
-  theEvents -> insert( theHepMCEvent ) ;
-  theCollisions -> insert( theGenCollision ) ;
+  //FIXME: Still need fix this, see header
+  theGenCollision = new LHCb::GenCollision();
+  theCollisions->insert(theGenCollision);
+  //theGenCollision = &theCollisions->back();
+  // FIXME: Need to modify new GenCollisions class for persistency
+  //theGenCollision->setEvent( theHepMCEvent );
+  theGenCollision->setIsSignal( false );
 }
 
 //=============================================================================
@@ -320,10 +323,10 @@ StatusCode ExternalGenerator::parseLhaPdfCommands( const CommandVector &
     // Note that Pythia needs doubles hence the convert here
     debug() << block << " block  " << entry << " item  " << int1 
             << "  value " << fl1 << " str " << str << endmsg ;
-    if ( "lhacontrol" == block )  
-      if      ( "lhaparm" == entry ) 
+    if ( block == std::string("lhacontrol") )  
+      if      ( std::string("lhaparm") == entry ) 
         LhaPdf::lhacontrol().setlhaparm( int1 , str ) ;
-      else if ( "lhavalue" == entry ) 
+      else if ( std::string("lhavalue") == entry ) 
         LhaPdf::lhacontrol().setlhavalue( int1 , fl1 ) ;
       else return Error( std::string( "LHAPDF ERROR, block LHACONTROL has " ) +
                          std::string( "LHAPARM and LHAVALUE: YOU HAVE " ) + 

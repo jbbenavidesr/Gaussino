@@ -12,6 +12,10 @@
 
 // HepMC
 #include "HepMC/GenEvent.h"
+#include "HepMC/VertexAttribute.h"
+
+// Defaults for attribute names
+#include "Defaults/HepMCAttributes.h"
 
 // Event
 #include "Event/HepMCEvent.h"
@@ -211,20 +215,13 @@ void GenCounters::setupExcitedCountersNames( ExcitedCNames & B ,
 void GenCounters::updateExcitedStatesCounters
 ( const HepMC::GenEvent * theEvent , ExcitedCounter & thebExcitedC ,
   ExcitedCounter & thecExcitedC ) {
+
   // Signal Vertex
-  //HepMC::GenVertex * signalV = theEvent -> signal_process_vertex() ;
-  // FIXME: not sure if this is the most elegant way of storing
-  // and retrieving the signal process vertex
-  
-
-
-  auto signal_process_iterator = std::find_if(theEvent->vertices_begin(),
-      theEvent->vertices_end(),
-      [](HepMC::GenVertexPtr & vertex){const auto & names = vertex->attribute_names();
-                                       return std::end(names) != std::find(std::begin(names), std::end(names), "SignalProcessVertex");
-                                       } 
-                                    );
-  bool found_signal_vertex = ( signal_process_iterator != theEvent->vertices_end() );
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
 
   // Count B :
   std::vector< HepMC::GenParticlePtr > rootB ;
@@ -234,8 +231,8 @@ void GenCounters::updateExcitedStatesCounters
   std::vector< HepMC::GenParticlePtr >::const_iterator iter ;
 
   for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter ) {
-    if ( found_signal_vertex ) {
-      if ( ! HepMCUtils::commonTrees( *signal_process_iterator,
+    if ( signal_process_vertex ) {
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex,
                                       (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -255,8 +252,8 @@ void GenCounters::updateExcitedStatesCounters
                   std::back_inserter( rootD ) , isRootD() ) ;
 
   for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter ) {
-    if ( found_signal_vertex ) {
-      if ( ! HepMCUtils::commonTrees( *signal_process_iterator, 
+    if ( signal_process_vertex) {
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex, 
                                       (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -282,13 +279,11 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
                                         unsigned int & thebbCounter ,
                                         unsigned int & theccCounter ) {
   // Signal vertex
-  auto signal_process_iterator = std::find_if(theEvent->vertices_begin(),
-      theEvent->vertices_end(),
-      [](HepMC::GenVertexPtr & vertex){const auto & names = vertex->attribute_names();
-                                       return std::end(names) != std::find(std::begin(names), std::end(names), "SignalProcessVertex");
-                                       } 
-                                    );
-  bool found_signal_vertex = ( signal_process_iterator != theEvent->vertices_end() );
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
 
   // Count B:
   std::vector< HepMC::GenParticlePtr > endB ;
@@ -297,8 +292,8 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
   std::vector< HepMC::GenParticlePtr >::const_iterator iter ;
   
   for ( iter = endB.begin() ; iter != endB.end() ; ++iter ) {
-    if ( found_signal_vertex ) {
-      if ( HepMCUtils::commonTrees( *signal_process_iterator, 
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex, 
                                     (*iter) -> end_vertex() ) )
         continue ;
     }
@@ -330,8 +325,8 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
                   std::back_inserter( endD ) , isEndD() ) ;
   
   for ( iter = endD.begin() ; iter != endD.end() ; ++iter ) {
-    if ( found_signal_vertex ) {
-      if ( HepMCUtils::commonTrees( *signal_process_iterator,
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex,
                                     (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -366,13 +361,11 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
                                    const std::string option)
 {  
   // Signal Vertex                                                                        
-  auto signal_process_iterator = std::find_if(theEvent->vertices_begin(),
-      theEvent->vertices_end(),
-      [](HepMC::GenVertexPtr & vertex){const auto & names = vertex->attribute_names();
-                                       return std::end(names) != std::find(std::begin(names), std::end(names), "SignalProcessVertex");
-                                       } 
-                                    );
-  bool found_signal_vertex = ( signal_process_iterator != theEvent->vertices_end() );
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
   int key = 0;
   
   // Count B :                                                                                    
@@ -384,9 +377,9 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
 
   for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter )
   {
-    if ( found_signal_vertex )
+    if ( signal_process_vertex )
     {  
-      if ( ! HepMCUtils::commonTrees( *signal_process_iterator ,
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
                                       (*iter) -> end_vertex() ) )
         continue ; 
     }    
@@ -422,9 +415,9 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
 
   for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter )
   {
-    if ( found_signal_vertex )
+    if ( signal_process_vertex)
     {
-      if ( ! HepMCUtils::commonTrees( *signal_process_iterator ,
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
                                       (*iter) -> end_vertex() ) )
         continue ; 
     }
@@ -461,9 +454,9 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
 
   for ( iter = endB.begin() ; iter != endB.end() ; ++iter )
   {
-    if ( found_signal_vertex )
+    if ( signal_process_vertex )
     {
-      if ( HepMCUtils::commonTrees( *signal_process_iterator ,
+      if ( HepMCUtils::commonTrees( signal_process_vertex ,
                                     (*iter) -> end_vertex() ) )
         continue ;      
     }
@@ -551,9 +544,9 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
 
   for ( iter = endD.begin() ; iter != endD.end() ; ++iter )
   {
-    if ( found_signal_vertex )
+    if ( signal_process_vertex )
     {
-      if ( HepMCUtils::commonTrees( *signal_process_iterator ,
+      if ( HepMCUtils::commonTrees( signal_process_vertex ,
                                     (*iter) -> end_vertex() ) )
         continue ;      
     }

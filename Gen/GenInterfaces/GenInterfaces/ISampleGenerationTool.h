@@ -7,8 +7,8 @@
 #include "GaudiKernel/IAlgTool.h"
 
 // From Event
-#include "Event/HepMCEvent.h"
 #include "Event/GenCollision.h"
+#include "HepMC/GenEvent.h"
 
 /** @class ISampleGenerationTool ISampleGenerationTool.h "GenInterfaces/ISampleGenerationTool.h"
  *  
@@ -36,7 +36,7 @@ class ISampleGenerationTool : virtual public IAlgTool {
    *                             for each pile-up interaction.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         LHCb::HepMCEvents * theEvents ,
+                         std::vector<HepMC::GenEvent> & theEvents ,
                          LHCb::GenCollisions * theCollisions ) = 0 ;
 
   /// Print counters and efficiencies at the end of the job.

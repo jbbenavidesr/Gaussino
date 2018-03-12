@@ -10,6 +10,8 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          #FIXME: Kernel/MCInterfaces
                          #FIXME: Kernel/LHCbKernel
                          Kernel/PartProp
+                         Defaults
+                         HepMCUser
                          Gen/GenInterfaces)
 
 find_package(Boost COMPONENTS filesystem system)
@@ -24,7 +26,7 @@ string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLA
 gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
-                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMC
+                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser
                   LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib HepMC)
 
 gaudi_add_module(Generators

@@ -139,7 +139,7 @@ protected:
   /** Isolate signal particle decay tree for clean events. The resulting
    *  event is stored in the container /Event/Gen/SignalDecayTree.
    */
-  StatusCode isolateSignal( const HepMC::GenParticle * theSignal ) const ;
+  StatusCode isolateSignal( const HepMC::GenParticlePtr & theSignal ) const ;
 
   /** Choose randomly a particle in a list of particles 
    *  and returns the chosen particle. Invert the event if pz(Signal)<0.
@@ -148,7 +148,7 @@ protected:
    *  hasFlipped is set to true if the particle is flipped by EvtGen
    *  to generate CP violation. 
    */
-  HepMC::GenParticle * chooseAndRevert( const ParticleVector & particleList ,
+  HepMC::GenParticle * chooseAndRevert( ParticleVector & particleList ,
                                         bool & isInverted , 
                                         bool & hasFlipped ,
 					bool & hasFailed ) ;
@@ -185,8 +185,9 @@ protected:
    *  @param[in]  theOldParticle  Particle containing the decay tree to add
    *                              to theNewParticle.
    */
-  StatusCode fillHepMCEvent( HepMC::GenParticle * theNewParticle ,
-                             const HepMC::GenParticle * theOldParticle ) 
+  StatusCode fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle ,
+                             const HepMC::GenParticlePtr & theOldParticle,
+                             HepMC::GenEvent * theEvent) 
     const ;
 
   /// Temporary ector to obtain PIDs from job options.

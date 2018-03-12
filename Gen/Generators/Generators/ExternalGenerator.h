@@ -39,7 +39,7 @@ class ExternalGenerator : public GaudiTool ,
                           public ISampleGenerationTool {
  public:
   /// Vector of HepMC particles
-  typedef std::vector< HepMC::GenParticle * > ParticleVector ;
+  typedef std::vector< HepMC::GenParticlePtr > ParticleVector ;
   
   /// Ordered set of integer to contain PID of particles to generate
   typedef std::set< int >                     PIDs           ;
@@ -129,7 +129,7 @@ class ExternalGenerator : public GaudiTool ,
    *  @param[out]    theHardInfo     Object where to store hard process
    *                                 informations of the next interaction.
    */
-  void prepareInteraction( LHCb::HepMCEvents * theEvents ,
+  void prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
                            LHCb::GenCollisions * theCollisions , 
                            HepMC::GenEvent * & theGenEvent ,
                            LHCb::GenCollision * & theGenCollision ) const ;
