@@ -7,8 +7,8 @@
 #include "GaudiKernel/IAlgTool.h"
 
 // Forward declaration
-namespace LHCb {
-  class HepMCEvent ;
+namespace HepMC {
+  class GenEvent;
 }
 
 /** @class IVertexSmearingTool IVertexSmearingTool.h "GenInterfaces/IVertexSmearingTool.h"
@@ -28,6 +28,6 @@ public:
   static const InterfaceID& interfaceID() { return IID_IVertexSmearingTool ; }
   
   /// Smear the vertex of the interaction (independantly of the others)
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) = 0 ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) = 0 ;
 };
 #endif // GENERATORS_ISMEARINGTOOL_H
