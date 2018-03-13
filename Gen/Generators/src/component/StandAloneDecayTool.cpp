@@ -10,6 +10,12 @@
 // from Generators
 #include "MCInterfaces/IDecayTool.h"
 
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+#include "Defaults/HepMCAttributes.h"
+#include "HepMC/VertexAttribute.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : StandAloneDecayTool
 //
@@ -57,7 +63,7 @@ StatusCode StandAloneDecayTool::initialize() {
 // Main execution
 //=============================================================================
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
-                                    LHCb::HepMCEvents * theEvents ,
+                                    std::vector<HepMC::GenEvent> & theEvents ,
                                     LHCb::GenCollisions * theCollisions ) {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
@@ -65,16 +71,16 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
 
   // generate the requested number of "pile-up" events
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent , 
+    prepareInteraction( &theEvents , theCollisions , theGenEvent , 
                         theGenCollision ) ;
     
     // Particle to decay
-    HepMC::GenParticle * theParticle = new HepMC::GenParticle( ) ;
+    HepMC::GenParticlePtr theParticle = new HepMC::GenParticle( ) ;
     theParticle -> 
       set_momentum( HepMC::FourVector( 0. , 0. , 0., m_signalMass ) ) ;
 
     // Decay the particle at (0,0,0,0)
-    HepMC::GenVertex * theVertex = 
+    HepMC::GenVertexPtr theVertex = 
       new HepMC::GenVertex( HepMC::FourVector( 0., 0., 0., 0. ) ) ;
     theGenEvent -> add_vertex( theVertex ) ;
     theVertex -> add_particle_out( theParticle ) ;
@@ -103,8 +109,7 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     
     theParticle -> set_status( LHCb::HepMCEvent::SignalInLabFrame ) ;
   
-    theGenEvent -> 
-      set_signal_process_vertex( theParticle -> end_vertex() ) ;
+    theGenEvent -> add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theParticle->end_vertex()));
     theGenCollision -> setIsSignal( true ) ;
   }
   

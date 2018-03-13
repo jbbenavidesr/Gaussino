@@ -21,11 +21,11 @@ public:
   
   virtual ~StandAloneDecayTool( ) ; ///< Destructor
   
-  virtual StatusCode initialize( ) ;    ///< Tool initialization
+  virtual StatusCode initialize( ) override;    ///< Tool initialization
   
   virtual bool generate( const unsigned int nPileUp ,
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions * theCollisions ) override;
 
 private:
   double m_signalMass ; ///< Mass of the particle to decay
