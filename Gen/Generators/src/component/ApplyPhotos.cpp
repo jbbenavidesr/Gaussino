@@ -12,7 +12,9 @@
 #include "GaudiKernel/AlgFactory.h"
 
 // from Event
-#include "Event/HepMCEvent.h"
+//#include "Event/HepMCEvent.h"
+#include "HepMC/GenEvent.h"
+#include "Defaults/Locations.h"
 
 // local
 #include "ApplyPhotos.h"

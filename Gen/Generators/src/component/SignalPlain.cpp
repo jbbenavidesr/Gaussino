@@ -86,7 +86,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
           hasFlipped = false ;
           isInverted = false ;
           hasFailed  = false ;
-          HepMC::GenParticle * theSignal =
+          HepMC::GenParticlePtr theSignal =
             chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;

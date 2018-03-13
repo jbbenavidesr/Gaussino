@@ -296,10 +296,10 @@ StatusCode Signal::fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle ,
 //=============================================================================
 // Choose one particle in acceptance 
 //=============================================================================
-HepMC::GenParticle * Signal::chooseAndRevert( ParticleVector & 
-                                              theParticleList , 
-                                              bool & isInverted ,
-                                              bool & hasFlipped , 
+HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector & 
+                                               theParticleList , 
+                                               bool & isInverted ,
+                                               bool & hasFlipped , 
 					      bool & hasFailed ) {
   HepMC::GenParticlePtr theSignal ;
   isInverted = false ;

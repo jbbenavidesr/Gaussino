@@ -29,7 +29,7 @@ namespace HepMC {
 class Signal : public ExternalGenerator {
  public:
   /// Vector of particles
-  typedef std::vector< HepMC::GenParticle * > GenParticles ;
+  typedef std::vector< HepMC::GenParticlePtr > GenParticles ;
 
   /// Standard constructor
   Signal( const std::string& type, const std::string& name, 
@@ -148,9 +148,9 @@ protected:
    *  hasFlipped is set to true if the particle is flipped by EvtGen
    *  to generate CP violation. 
    */
-  HepMC::GenParticle * chooseAndRevert( ParticleVector & particleList ,
-                                        bool & isInverted , 
-                                        bool & hasFlipped ,
+  HepMC::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
+                                         bool & isInverted , 
+                                         bool & hasFlipped ,
 					bool & hasFailed ) ;
 
   /** Ensures correct multiplicity of signal particles with an accept/reject
