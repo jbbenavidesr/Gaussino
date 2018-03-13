@@ -33,7 +33,7 @@ public:
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) ;
   
  private:
   /// Number of sigma above which to cut for x-axis smearing (set by options)
@@ -51,6 +51,7 @@ public:
 
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
+  //FIXME: THREAD SAFETY WARNING!
   Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
   
 };

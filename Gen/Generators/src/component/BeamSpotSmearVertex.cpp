@@ -9,8 +9,12 @@
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 
+// from HepMC
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenParticle.h"
+
 // from Event
-#include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
 
 //-----------------------------------------------------------------------------
@@ -69,7 +73,7 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beamp ) Exception( "No beam parameters registered" ) ;
@@ -86,17 +90,8 @@ StatusCode BeamSpotSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
   double meanT = m_timeSignVsT0 * beamp -> beamSpot().z() / Gaudi::Units::c_light ;
 
   HepMC::FourVector dpos( dx , dy , dz , meanT ) ;
-  
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-     HepMC::FourVector pos = (*vit) -> position() ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() + dpos.x() , 
-                                               pos.y() + dpos.y() , 
-                                               pos.z() + dpos.z() , 
-                                               pos.t() + dpos.t() ) ) ;
-  }
+
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }
