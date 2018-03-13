@@ -30,7 +30,7 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) ;
   
  private:
   /// Minimum value for the x coordinate of the vertex (set by options)
@@ -59,6 +59,7 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   bool m_tilt;
   double m_tiltAngle;
     
+  // FIXME: THREAD SAFETY WARNING!
   Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };
 #endif // PARTICLEGUNS_FLATSMEARVERTEX_H

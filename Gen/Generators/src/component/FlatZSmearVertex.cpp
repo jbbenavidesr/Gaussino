@@ -11,8 +11,10 @@
 #include "GaudiKernel/Vector4DTypes.h"
 
 // from Event
-#include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatZSmearVertex
@@ -90,7 +92,7 @@ StatusCode FlatZSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatZSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
 
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
@@ -111,17 +113,8 @@ StatusCode FlatZSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
   dy = dy/cos( beam -> verticalCrossingAngle() ) + 
     beam -> beamSpot().y() + dz*sin( beam -> verticalCrossingAngle() )*m_zDir;
 
-  Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
-  
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
-    pos += dpos ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , 
-                                               pos.z() , pos.t() ) ) ;
-  }
+  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }

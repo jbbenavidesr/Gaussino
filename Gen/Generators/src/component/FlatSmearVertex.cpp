@@ -11,8 +11,9 @@
 #include "GaudiKernel/Vector4DTypes.h"
 #include "GaudiKernel/Transform3DTypes.h"
 
-// from Event
-#include "Event/HepMCEvent.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatSmearVertex
@@ -94,7 +95,7 @@ StatusCode FlatSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
   double dx , dy , dz , dt ;
   
   dx = m_xmin + m_flatDist( ) * ( m_xmax - m_xmin ) ;
@@ -104,11 +105,8 @@ StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
 
   Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
   
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
+  for ( auto & vtx : theEvent->vertices() ) {
+    Gaudi::LorentzVector pos ( vtx -> position() ) ;
     pos += dpos ;
 
     if (m_tilt) {
@@ -119,10 +117,8 @@ StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
       pos = rotX(pos);
       pos = pos + posT;
     }
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
-                                               pos.t() ) ) ;
+    vtx->set_position( HepMC::FourVector( pos.x(), pos.y(), pos.z(), pos.t() ) );
   }
 
   return StatusCode::SUCCESS ;      
 }
-

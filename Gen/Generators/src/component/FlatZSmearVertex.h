@@ -27,14 +27,14 @@ class FlatZSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   virtual ~FlatZSmearVertex( ); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
   
   /** Implements IVertexSmearingTool::smearVertex.
    *  Does the same than BeamSpotSmearVertex::smearVertex for the x and y
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) override;
   
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)  

@@ -7,10 +7,12 @@
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
-// from Event
-#include "Event/HepMCEvent.h"
 #include "TFile.h"
 #include "TH3.h"
+
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : HistoSmearVertex
@@ -81,23 +83,15 @@ StatusCode HistoSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode HistoSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
   double dx , dy , dz , dt ;
   m_hist->GetRandom3(dx,dy,dz);
 
   dt = m_zDir * dz/Gaudi::Units::c_light ;
 
-  Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
+  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
 
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ;
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
-    pos += dpos ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
-                                               pos.t() ) ) ;
-  }
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS;
 }
