@@ -1,4 +1,3 @@
-
 #ifndef GENERATORS_BeamSpotMarkovChainSampleVertex_H 
 #define GENERATORS_BeamSpotMarkovChainSampleVertex_H 1
 
@@ -13,10 +12,14 @@
 #include "GaudiKernel/PhysicalConstants.h" 
 
 // from Event
-#include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
 
 #include "GenInterfaces/IVertexSmearingTool.h"
+
+namespace HepMC
+{
+  class FourVector;
+}
 
 /** @class BeamSpotMarkovChainSampleVertex BeamSpotMarkovChainSampleVertex.h 
  *  
@@ -27,8 +30,7 @@
  *  @author Chris Jones
  *  @date   2016-10-10
  */
-class BeamSpotMarkovChainSampleVertex final : public GaudiTool, 
-                                              virtual public IVertexSmearingTool
+class BeamSpotMarkovChainSampleVertex : public GaudiTool, virtual public IVertexSmearingTool
 {
 
 public:
@@ -40,13 +42,13 @@ public:
  
 
   /// Initialize function
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
 
   /** Implementation of IVertexSmearingTool::smearVertex.
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) override;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) override;
 
  private:
 
@@ -90,6 +92,7 @@ public:
   double m_zcut;
 
   //  Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
+  //  FIXME: THREAD SAFETY WARNING!
   Rndm::Numbers m_gaussDistX ; ///< Gaussian random number generator for Markov chain pertubation in x
   Rndm::Numbers m_gaussDistY ; ///< Gaussian random number generator for Markov chain pertubation in y
   Rndm::Numbers m_gaussDistZ ; ///< Gaussian random number generator for Markov chain pertubation in z

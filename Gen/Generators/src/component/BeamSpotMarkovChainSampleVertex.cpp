@@ -2,6 +2,10 @@
 // local
 #include "BeamSpotMarkovChainSampleVertex.h"
 
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : LHCbAcceptance
 //
@@ -129,7 +133,7 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
 //=============================================================================
 // Markov chain sampler
 //=============================================================================
-StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( LHCb::HepMCEvent * theEvent )
+StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEvent )
 {
   
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
@@ -197,19 +201,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( LHCb::HepMCEvent * theE
     x.setY( x.y() + beamp -> beamSpot().y() );
     x.setZ( x.z() + beamp -> beamSpot().z() );
     
-    // update the values for all vertices
-    auto * pEvt = theEvent -> pGenEvt() ;
-    if ( pEvt )
-    {
-      for ( auto vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; ++vit )
-      {
-        const auto pos = (*vit) -> position() ;
-        (*vit) -> set_position( HepMC::FourVector( pos.x() + x.x() , 
-                                                   pos.y() + x.y() , 
-                                                   pos.z() + x.z() , 
-                                                   pos.t() + x.t() ) ) ;
-      }
-    }
+    theEvent->shift_position_by(x);
     
   }
   
