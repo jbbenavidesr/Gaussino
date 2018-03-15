@@ -9,6 +9,10 @@
 
 #include "GenInterfaces/IVertexSmearingTool.h"
 
+namespace HepMC{
+  class GenEvent;
+}
+
 /** @class UniformSmearVertex UniformSmearVertex.h "UniformSmearVertex.h"
  *  
  *  Tool to smear vertex with flat distribution along the z-axis and 
@@ -36,7 +40,7 @@ class UniformSmearVertex : public GaudiTool,
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) ;
   
  private:
   /// Maximum value for the r coordinate of the vertex (set by options)
