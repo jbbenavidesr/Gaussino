@@ -1,5 +1,6 @@
 // $Id: Generation.cpp,v 1.33 2009-06-15 17:02:35 gcorti Exp $
 // Include files 
+#include <map>
 
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
@@ -7,22 +8,21 @@
 #include "GaudiKernel/SystemOfUnits.h"
 
 // from Event
-#include "Event/GenHeader.h"
-#include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
 #include "Event/CrossSectionsFSR.h"
 
 // from LHCb
 #include "Kernel/ParticleID.h"
-#include "MCInterfaces/IFullGenEventCutTool.h"
-#include "MCInterfaces/IDecayTool.h" 
 
-// from Generators
+#include "GenInterfaces/IFullGenEventCutTool.h"
+#include "GenInterfaces/IDecayTool.h" 
 #include "GenInterfaces/ISampleGenerationTool.h"
 #include "GenInterfaces/IPileUpTool.h"
 #include "GenInterfaces/IVertexSmearingTool.h"
 #include "GenInterfaces/ICounterLogFile.h"
+
+// from Generators
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 
@@ -37,6 +37,13 @@
 #include "TSystem.h"
 #include "TUnixSystem.h"
 
+// HepMC
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/Attribute.h"
+
+#include "Defaults/HepMCAttributes.h"
+#include "range/v3/all.hpp"
 //-----------------------------------------------------------------------------
 // Implementation file for class : Generation
 //
@@ -47,93 +54,19 @@
 
 DECLARE_ALGORITHM_FACTORY( Generation )
 
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-Generation::Generation( const std::string& name,
-                        ISvcLocator* pSvcLocator)
-  : GaudiAlgorithm ( name , pSvcLocator ) ,
-    m_fileRecordSvc        ( 0 ) ,
-    m_pileUpTool           ( 0 ) ,
-    m_decayTool            ( 0 ) ,
-    m_xmlLogTool           ( 0 ) ,
-    m_sampleGenerationTool ( 0 ) ,
-    m_vertexSmearingTool   ( 0 ) ,
-    m_fullGenEventCutTool  ( 0 ) ,
-    m_nEvents              ( 0 ) , 
-    m_nAcceptedEvents      ( 0 ) ,
-    m_nInteractions        ( 0 ) , 
-    m_nAcceptedInteractions( 0 ) ,
-    m_nBeforeFullEvent     ( 0 ) ,
-    m_nAfterFullEvent      ( 0 ) ,
-    m_genFSR               ( 0 ) {  
-
-    // Generation Method
-    declareProperty ( "SampleGenerationTool" , 
-                      m_sampleGenerationToolName = "MinimumBias" ) ;
-    declareProperty ( "EventType"          , m_eventType = 30000000 ) ;
-
-    // Location of the output of the generation
-    declareProperty ( "HepMCEventLocation" , m_hepMCEventLocation = 
-                      LHCb::HepMCEventLocation::Default ) ;
-    declareProperty ( "GenHeaderLocation"  , m_genHeaderLocation = 
-                      LHCb::GenHeaderLocation::Default ) ;
-    declareProperty ( "GenCollisionLocation" , m_genCollisionLocation = 
-                      LHCb::GenCollisionLocation::Default ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
-
-    // Tool name to generate the event
-    declareProperty( "PileUpTool" , m_pileUpToolName = "FixedLuminosity" ) ;
-    // Tool name to decay particles in the event
-    declareProperty( "DecayTool"  , m_decayToolName = "EvtGenDecay" ) ;
-    // Tool name to smear vertex
-    declareProperty( "VertexSmearingTool" , 
-                     m_vertexSmearingToolName = "BeamSpotSmearVertex" ) ;
-    // Tool name to cut on full event
-    declareProperty( "FullGenEventCutTool" , 
-                     m_fullGenEventCutToolName = "" ) ;
-    // Flag to attach all pile up events to the same PV
-    declareProperty( "CommonVertex" , m_commonVertex = false ) ;
-
-    // Reset counters
-    m_intC.assign( 0 ) ;
-    m_intCAccepted.assign( 0 ) ;
-    // setup counter names
-    m_intCName[ Oneb ] = "generated interactions with >= 1b" ;    
-    m_intCName[ Threeb ] = "generated interactions with >= 3b" ;
-    m_intCName[ PromptB ] = "generated interactions with 1 prompt B" ;
-    m_intCName[ Onec ] = "generated interactions with >= 1c" ;
-    m_intCName[ Threec ] = "generated interactions with >= 3c" ;
-    m_intCName[ PromptC ] = "generated interactions with >= prompt C" ;
-    m_intCName[ bAndc ] = "generated interactions with b and c" ;
-
-    m_intCAcceptedName[ Oneb ] = "accepted interactions with >= 1b" ;    
-    m_intCAcceptedName[ Threeb ] = "accepted interactions with >= 3b" ;
-    m_intCAcceptedName[ PromptB ] = "accepted interactions with 1 prompt B" ;
-    m_intCAcceptedName[ Onec ] = "accepted interactions with >= 1c" ;
-    m_intCAcceptedName[ Threec ] = "accepted interactions with >= 3c" ;
-    m_intCAcceptedName[ PromptC ] = "accepted interactions with >= prompt C" ;
-    m_intCAcceptedName[ bAndc ] = "accepted interactions with b and c" ;
-
-}
-
-//=============================================================================
-// Destructor
-//=============================================================================
-Generation::~Generation() {}
 
 //=============================================================================
 // Initialisation. Check parameters
 //=============================================================================
 StatusCode Generation::initialize() {
-  StatusCode sc = GaudiAlgorithm::initialize( ) ; // Initialize base class
+  StatusCode sc = MultiTransformer::initialize();
   if ( sc.isFailure() ) return sc ;
   debug() << "==> Initialise" << endmsg ;
 
   // Initialization of the Common Flat Random generator if not already done
   // This generator must be used by all external MC Generator
   if ( ! ( RandomForGenerator::getNumbers() ) ) {
+    //FIXME: THREAD SAFETY WARNING
     sc = RandomForGenerator::getNumbers().initialize( randSvc( ) , 
                                                       Rndm::Flat( 0 , 1 ) ) ;
     if ( ! sc.isSuccess( ) )
@@ -200,16 +133,20 @@ StatusCode Generation::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode Generation::execute() {
+std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
+operator()( const LHCb::GenHeader& old_gen_header) const
+{
 
-  debug() << "Processing event type " << m_eventType << endmsg ;
-  StatusCode sc = StatusCode::SUCCESS ;
+  debug() << "Processing event type " << m_eventType << endmsg;
+  StatusCode sc = StatusCode::SUCCESS;
   setFilterPassed( true ) ;
 
+  // Copy the old event header
+  LHCb::GenHeader theGenHeader = old_gen_header;
+
   // Get the header and update the information
-  LHCb::GenHeader* theGenHeader = get<LHCb::GenHeader> ( m_genHeaderLocation );
-  if( !theGenHeader->evType() ){
-    theGenHeader -> setEvType( m_eventType );  
+  if( !theGenHeader.evType() ){
+    theGenHeader.setEvType( m_eventType );  
   }
 
   if(m_genFSR->getSimulationInfo("evtType", 0) == 0)
@@ -245,12 +182,10 @@ StatusCode Generation::execute() {
   }
 
   unsigned int  nPileUp( 0 ) ;
-  
-  LHCb::HepMCEvents::iterator itEvents ;
 
   // Create temporary containers for this event
-  LHCb::HepMCEvents* theEvents = new LHCb::HepMCEvents( );
-  LHCb::GenCollisions* theCollisions = new LHCb::GenCollisions( );
+  std::vector<HepMC::GenEvent> theEvents;
+  LHCb::GenCollisions theCollisions;
 
   interactionCounter theIntCounter ;
 
@@ -261,8 +196,8 @@ StatusCode Generation::execute() {
   // Generate a set of interaction until a good one is found
   bool goodEvent = false ;
   while ( ! goodEvent ) {
-    theEvents->clear() ;
-    theCollisions->clear() ;
+    theEvents.clear() ;
+    theCollisions.clear() ;
     
     // Compute the number of pile-up interactions to generate 
     if ( 0 != m_pileUpTool ) 
@@ -295,9 +230,13 @@ StatusCode Generation::execute() {
 
     // Update interaction counters
     if ( 0 < nPileUp ) { 
-      theIntCounter.assign( 0 ) ;
-      for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ; 
-            ++itEvents ) updateInteractionCounters( theIntCounter , *itEvents ) ;
+      //unsigned int val = 0;
+      for(auto & x: theIntCounter){
+        std::atomic_init<unsigned int>(&x, 0);
+      }
+      for ( auto & evt : theEvents ){
+        updateInteractionCounters( theIntCounter , &evt );
+      }
     
       // Increse the generated interactions counters in FSR                                                                                                      
       updateFSRCounters(theIntCounter, m_genFSR, "Gen");
@@ -307,35 +246,31 @@ StatusCode Generation::execute() {
       // Decay the event if it is a good event
       if ( goodEvent ) {
         unsigned short iPile( 0 ) ;
-        for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
-              ++itEvents ) {
-          if ( 0 != m_decayTool ) {
-            sc = decayEvent( *itEvents ) ;
+        for ( auto & evt : theEvents ) {
+          if ( m_decayTool ) {
+            sc = decayEvent( &evt) ;
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
-          (*itEvents) -> pGenEvt() -> set_event_number( ++iPile ) ;
+          evt.set_event_number( ++iPile ) ;
           if(m_vertexSmearingTool){
             if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
-                sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
-            if ( ! sc.isSuccess() ) return sc ;
+                sc = m_vertexSmearingTool -> smearVertex( &evt ) ;
+            if ( ! sc.isSuccess() ) error() << "Smearing tool failed" << endmsg;
           }
         }
       }
 
       if ( ( m_commonVertex ) && ( 1 < nPileUp ) ) {
-        HepMC::FourVector commonV = 
-          ((*(theEvents->begin())) ->pGenEvt() -> beam_particles().first) -> end_vertex() -> position() ;
-        for ( itEvents = (theEvents->begin()+1) ; itEvents != theEvents -> end() ;
-              ++itEvents ) {
-          HepMC::GenEvent::vertex_iterator vit ;
-          HepMC::GenEvent * pEvt = (*itEvents) -> pGenEvt() ;
-          for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-                ++vit ) {
-            HepMC::FourVector pos = (*vit) -> position() ;
-            (*vit) -> set_position( HepMC::FourVector( pos.x() + commonV.x() , 
-                                                       pos.y() + commonV.y() , 
-                                                       pos.z() + commonV.z() , 
-                                                       pos.t() + commonV.t() ) ) ;
+        auto commonV = 
+          std::begin(theEvents)->beam_particles().first-> end_vertex() -> position() ;
+        for ( auto & evt : theEvents ) {
+          for ( auto & vtx : evt.vertices() ) {
+            auto pos = vtx -> position() ;
+            //FIXME: Shouldn't this shift by -pos + commonV to have the same vertex?
+            vtx -> set_position( HepMC::FourVector( pos.x() + commonV.x() , 
+                                                    pos.y() + commonV.y() , 
+                                                    pos.z() + commonV.z() , 
+                                                    pos.t() + commonV.t() ) ) ;
           }
         } 
       }
@@ -349,7 +284,6 @@ StatusCode Generation::execute() {
           name = "BeforeFullEvt";
           key = LHCb::GenCountersFSR::CounterKeyToType(name);          
           m_genFSR->incrementGenCounter(key,1);
-
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
           if ( goodEvent ) {
@@ -377,72 +311,32 @@ StatusCode Generation::execute() {
   key = LHCb::GenCountersFSR::CounterKeyToType(name);  
   m_genFSR->incrementGenCounter(key,nPileUp);
 
-  LHCb::HepMCEvents* eventsInTES( 0 )  ;
-  LHCb::GenCollisions* collisionsInTES( 0 ) ;
   if ( 0 < nPileUp ) {
     GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
 
     // Increse the accepted interactions counters in FSR                                                                                                         
     updateFSRCounters(theIntCounter, m_genFSR, "Acc");
 
-    // Now either create the info in the TES or add it to the existing one
-    eventsInTES = 
-      getOrCreate<LHCb::HepMCEvents,LHCb::HepMCEvents>( m_hepMCEventLocation );
-
-    collisionsInTES = 
-      getOrCreate<LHCb::GenCollisions,LHCb::GenCollisions>( m_genCollisionLocation );
   }
     
   // Copy the HepMCevents and Collisions from the temporary containers to 
   // those in TES and update the header information
 
   // Check that number of temporary HepMCEvents is the same as GenCollisions
-  if( theEvents->size() != theCollisions->size() ) {
-    return Error("Number of HepMCEvents and GenCollisions do not match" );
+  if( theEvents.size() != theCollisions.size() ) {
+    error() << "Number of HepMCEvents and GenCollisions do not match" << endmsg;
   }
 
-  itEvents = theEvents->begin();
   if ( 0 < nPileUp ) {
-    for( LHCb::GenCollisions::const_iterator it = theCollisions->begin();
-         theCollisions->end() != it; ++it ) {
-
+    for( auto event_gencol : ranges::view::zip(theEvents, theCollisions)) {
+      auto & evt = event_gencol.first;
       // GenFSR
       if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
-        m_genFSR->addSimulationInfo("hardGenerator",(*itEvents)->generatorName());
-
-      // HepMCEvent
-      LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
-      theHepMCEvent->setGeneratorName( (*itEvents)->generatorName() );
-      (*theHepMCEvent->pGenEvt()) = (*(*itEvents)->pGenEvt());
-      eventsInTES->insert( theHepMCEvent );
-      ++itEvents;
-      
-      // GenCollision
-      LHCb::GenCollision* theGenCollision = new LHCb::GenCollision();
-      theGenCollision->setIsSignal( (*it)->isSignal() );
-      theGenCollision->setProcessType( (*it)->processType() );
-      theGenCollision->setSHat( (*it)->sHat() );
-      theGenCollision->setTHat( (*it)->tHat() );
-      theGenCollision->setUHat( (*it)->uHat() );
-      theGenCollision->setPtHat( (*it)->ptHat() );
-      theGenCollision->setX1Bjorken( (*it)->x1Bjorken() );
-      theGenCollision->setX2Bjorken( (*it)->x2Bjorken() );
-      theGenCollision->setEvent( theHepMCEvent );
-      collisionsInTES->insert( theGenCollision );
-      
-      // GenHeader
-      theGenHeader->addToCollisions( theGenCollision );
-      
+        m_genFSR->addSimulationInfo("hardGenerator",evt.attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
     }
   }
 
-  // Clear and delete the temporary containers
-  theEvents->clear();
-  theCollisions->clear();
-  delete(theEvents);
-  delete(theCollisions);
-
-  return sc ;
+  return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
 }
 
 //=============================================================================
@@ -494,23 +388,18 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( LHCb::HepMCEvent * theEvent ) {
+StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent ) const {
   using namespace LHCb;
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-
   // We must use particles_begin to obtain an ordered iterator of GenParticles
   // according to the barcode: this allows to reproduce events !
-  HepMCUtils::ParticleSet pSet( pEvt -> particles_begin() , 
-                                pEvt -> particles_end() ) ;
+  HepMCUtils::ParticleSet pSet( theEvent -> particles_begin() , 
+                                theEvent -> particles_end() ) ;
 
-  HepMCUtils::ParticleSet::iterator itp ;
-
-  for ( itp = pSet.begin() ; itp != pSet.end() ; ++itp ) {
+  for ( auto & thePart : pSet ) {
     
-    HepMC::GenParticle * thePart = (*itp) ;
     unsigned int status = thePart -> status() ;
     
     if ( ( HepMCEvent::StableInProdGen  == status ) || 
@@ -536,59 +425,56 @@ StatusCode Generation::decayEvent( LHCb::HepMCEvent * theEvent ) {
 // Interaction counters
 //=============================================================================
 void Generation::updateInteractionCounters( interactionCounter & theCounter ,
-                                            const LHCb::HepMCEvent * evt ) 
+                                            const HepMC::GenEvent * theEvent ) const
 {
-  const HepMC::GenEvent * theEvent = evt -> pGenEvt() ;
   unsigned int bQuark( 0 ) , bHadron( 0 ) , cQuark( 0 ) , cHadron( 0 ) ;
   int pdgId ;
 
-  HepMC::GenEvent::particle_const_iterator iter ;
-  for ( iter = theEvent -> particles_begin() ; 
-        theEvent -> particles_end() != iter ; ++iter ) {
-    if ( ( (*iter) -> status() == LHCb::HepMCEvent::DocumentationParticle ) ||
-         ( (*iter) -> status() == LHCb::HepMCEvent::DecayedByDecayGen ) ||
-         ( (*iter) -> status() == LHCb::HepMCEvent::StableInDecayGen ) ) 
+  for ( auto & thePart : theEvent->particles() ) {
+    if ( ( thePart -> status() == LHCb::HepMCEvent::DocumentationParticle ) ||
+         ( thePart -> status() == LHCb::HepMCEvent::DecayedByDecayGen ) ||
+         ( thePart -> status() == LHCb::HepMCEvent::StableInDecayGen ) ) 
       continue ;
-    pdgId = abs( (*iter) -> pdg_id() ) ;
+    pdgId = abs( thePart -> pdg_id() ) ;
     LHCb::ParticleID thePid( pdgId ) ;
 
     if ( 5 == pdgId ) { 
-      if ( 0 != (*iter) -> production_vertex() ) {
-        if ( 1 != (*iter) -> production_vertex() -> particles_in_size() ) {
+      if (  thePart -> production_vertex() ) {
+        if ( 1 != thePart -> production_vertex() -> particles_in_size() ) {
            bool containB = false;
-           for (HepMC::GenVertex::particles_in_const_iterator par = (*iter) -> production_vertex() -> particles_in_const_begin();
-                par != (*iter) -> production_vertex() -> particles_in_const_end() ; par++) {
+           for (HepMC::GenVertex::particles_in_const_iterator par = thePart -> production_vertex() -> particles_in_const_begin();
+                par != thePart -> production_vertex() -> particles_in_const_end() ; par++) {
              if (5==abs((*par)->pdg_id()))
                containB = true;
            }
            if (!containB) ++bQuark ;
         } else {
-          const HepMC::GenParticle * par = 
-            *( (*iter) -> production_vertex() -> particles_in_const_begin() ) ;
+          auto & par = 
+            *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
           if ( ( par -> status() == 
                  LHCb::HepMCEvent::DocumentationParticle ) ||
-               ( par -> pdg_id() != (*iter) -> pdg_id() ) ) { 
+               ( par -> pdg_id() != thePart -> pdg_id() ) ) { 
             ++bQuark ;
           }
         }
       }
     }
     else if( 4 == pdgId ) {
-      if ( 0 != (*iter) -> production_vertex() ) {
-        if ( 1 != (*iter) -> production_vertex() -> particles_in_size() ) {
+      if ( thePart -> production_vertex() ) {
+        if ( 1 != thePart -> production_vertex() -> particles_in_size() ) {
           bool containC = false;
-          for (HepMC::GenVertex::particles_in_const_iterator par = (*iter) -> production_vertex() -> particles_in_const_begin();
-               par != (*iter) -> production_vertex() -> particles_in_const_end() ; par++) {
+          for (HepMC::GenVertex::particles_in_const_iterator par = thePart -> production_vertex() -> particles_in_const_begin();
+               par != thePart -> production_vertex() -> particles_in_const_end() ; par++) {
             if (4==abs((*par)->pdg_id()))
               containC = true;
           }
           if (!containC) ++cQuark ;
         } else {
-          const HepMC::GenParticle * par =
-            *( (*iter) -> production_vertex() -> particles_in_const_begin() ) ;
+          auto & par =
+            *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
           if ( ( par -> status() ==
                  LHCb::HepMCEvent::DocumentationParticle ) ||
-               ( par -> pdg_id() != (*iter) -> pdg_id() ) ) {
+               ( par -> pdg_id() != thePart -> pdg_id() ) ) {
             ++cQuark ;
           }
         }
@@ -597,11 +483,11 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
     else {
       if ( thePid.hasBottom() ) {
         // Count B from initial proton as a quark
-        if ( 0 != (*iter) -> production_vertex() ) {
-          if ( 0 != (*iter) -> production_vertex() -> particles_in_size() ) {
-            const HepMC::GenParticle * par = 
-              *( (*iter)-> production_vertex()-> particles_in_const_begin() ) ;
-            if ( 0 != par -> production_vertex() ) {
+        if ( thePart -> production_vertex() ) {
+          if ( 0 != thePart -> production_vertex() -> particles_in_size() ) {
+            auto & par = 
+              *( thePart-> production_vertex()-> particles_in_const_begin() ) ;
+            if ( par -> production_vertex() ) {
               if ( 0 == par -> production_vertex() -> particles_in_size() ) {
                 ++bQuark ;
               }
@@ -614,11 +500,11 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
         ++bHadron ;
       } else if ( thePid.hasCharm() ) {
         // Count D from initial proton as a quark
-        if ( 0 != (*iter) -> production_vertex() ) {
-          if ( 0 != (*iter) -> production_vertex() -> particles_in_size() ) {
-            const HepMC::GenParticle * par = 
-              *( (*iter)-> production_vertex()-> particles_in_const_begin() ) ;
-            if ( 0 != par -> production_vertex() ) {
+        if ( thePart -> production_vertex() ) {
+          if ( 0 != thePart -> production_vertex() -> particles_in_size() ) {
+            auto & par = 
+              *( thePart-> production_vertex()-> particles_in_const_begin() ) ;
+            if ( par -> production_vertex() ) {
               if ( 0 == par -> production_vertex() -> particles_in_size() ) 
                 ++cQuark ;
             } else ++cQuark ;
@@ -650,7 +536,7 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
 
 void Generation::updateFSRCounters( interactionCounter & theCounter,
                                     LHCb::GenFSR* m_genFSR,
-                                    const std::string option)
+                                    const std::string option) const
 {
   int key = 0; 
   longlong count = 0;

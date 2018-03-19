@@ -64,14 +64,14 @@ StatusCode StandAloneDecayTool::initialize() {
 //=============================================================================
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
                                     std::vector<HepMC::GenEvent> & theEvents ,
-                                    LHCb::GenCollisions * theCollisions ) {
+                                    LHCb::GenCollisions & theCollisions ) {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
 
   // generate the requested number of "pile-up" events
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( &theEvents , theCollisions , theGenEvent , 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent , 
                         theGenCollision ) ;
     
     // Particle to decay

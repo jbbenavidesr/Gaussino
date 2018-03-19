@@ -37,7 +37,7 @@ class ISampleGenerationTool : virtual public IAlgTool {
    */
   virtual bool generate( const unsigned int nPileUp ,
                          std::vector<HepMC::GenEvent> & theEvents ,
-                         LHCb::GenCollisions * theCollisions ) = 0 ;
+                         LHCb::GenCollisions & theCollisions ) = 0 ;
 
   /// Print counters and efficiencies at the end of the job.
   virtual void printCounters( ) const = 0 ;

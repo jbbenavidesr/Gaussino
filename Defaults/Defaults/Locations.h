@@ -16,4 +16,9 @@ namespace Gaussino
   namespace MCVertexLocation {
     static const std::string Default = "MC/Vertices";
   }
+
+  namespace GenHeaderLocation {
+    static const std::string Default = "Gen/Header";
+    static const std::string PreGeneration = "Gen/HeaderPreGen";
+  }
 }

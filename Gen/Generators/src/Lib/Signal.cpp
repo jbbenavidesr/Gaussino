@@ -77,11 +77,11 @@ Signal::Signal( const std::string& type,
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
     declareProperty( "RevertWhenBackward" , m_revertWhenBackward = true ) ;
     
-    m_bHadC.assign( 0 ) ;  m_antibHadC.assign( 0 ) ;
-    m_cHadC.assign( 0 ) ;  m_anticHadC.assign( 0 ) ;
+    m_bHadC.fill( 0 ) ;  m_antibHadC.fill( 0 ) ;
+    m_cHadC.fill( 0 ) ;  m_anticHadC.fill( 0 ) ;
     
-    m_bExcitedC.assign( 0 ) ;
-    m_cExcitedC.assign( 0 ) ;
+    m_bExcitedC.fill( 0 ) ;
+    m_cExcitedC.fill( 0 ) ;
     
     GenCounters::setupBHadronCountersNames( m_bHadCNames , m_antibHadCNames ) ;
     GenCounters::setupDHadronCountersNames( m_cHadCNames , m_anticHadCNames ) ;

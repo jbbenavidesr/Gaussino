@@ -8,18 +8,19 @@
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
 // Event 
-#include "Event/HepMCEvent.h"
-#include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
 
 // Kernel
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
 #include "GenEvent/HepMCUtils.h"
+
+#include "HepMC/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalPlain
@@ -48,8 +49,8 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            LHCb::HepMCEvents * theEvents , 
-                            LHCb::GenCollisions * theCollisions ) {
+                            std::vector<HepMC::GenEvent> & theEvents , 
+                            LHCb::GenCollisions & theCollisions ) {
   StatusCode sc ;
   bool result = false ;
   // Memorize if the particle is inverted
@@ -65,7 +66,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   int key = 0;  
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent, 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
     
     sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
@@ -133,8 +134,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
                 sc = isolateSignal( theSignal ) ;
                 if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
               }
-              theGenEvent -> 
-                set_signal_process_vertex( theSignal -> end_vertex() ) ;
+              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
               
               theGenCollision -> setIsSignal( true ) ;
               

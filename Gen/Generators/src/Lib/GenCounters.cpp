@@ -7,9 +7,6 @@
 // Generators
 #include "GenEvent/HepMCUtils.h"
 
-// Boost
-#include <boost/array.hpp>
-
 // HepMC
 #include "HepMC/GenEvent.h"
 #include "HepMC/VertexAttribute.h"
