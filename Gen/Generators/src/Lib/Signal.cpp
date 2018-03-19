@@ -59,16 +59,8 @@ Signal::Signal( const std::string& type,
                 const std::string& name,
                 const IInterface* parent )
   : ExternalGenerator( type, name , parent ) ,
-    m_nEventsBeforeCut   ( 0 ) , m_nEventsAfterCut        ( 0 ) ,
-    m_nParticlesBeforeCut( 0 ) , m_nAntiParticlesBeforeCut( 0 ) ,
-    m_nParticlesAfterCut ( 0 ) , m_nAntiParticlesAfterCut ( 0 ) ,
-    m_nInvertedEvents ( 0 ) ,
     m_signalQuark     ( LHCb::ParticleID::down ) ,
     m_signalPID       ( 0 ) ,
-    m_bbCounter       ( 0 ) ,
-    m_ccCounter       ( 0 ) ,
-    m_nSig            ( 0 ) ,
-    m_nSigBar         ( 0 ) ,
     m_sigName        ( "" ) ,
     m_sigBarName     ( "" ) ,
     m_cpMixture       ( true ) , 
@@ -76,12 +68,6 @@ Signal::Signal( const std::string& type,
     declareProperty( "SignalPIDList" , m_pidVector ) ;
     declareProperty( "Clean" , m_cleanEvents = false ) ;    
     declareProperty( "RevertWhenBackward" , m_revertWhenBackward = true ) ;
-    
-    m_bHadC.fill( 0 ) ;  m_antibHadC.fill( 0 ) ;
-    m_cHadC.fill( 0 ) ;  m_anticHadC.fill( 0 ) ;
-    
-    m_bExcitedC.fill( 0 ) ;
-    m_cExcitedC.fill( 0 ) ;
     
     GenCounters::setupBHadronCountersNames( m_bHadCNames , m_antibHadCNames ) ;
     GenCounters::setupDHadronCountersNames( m_cHadCNames , m_anticHadCNames ) ;
@@ -350,8 +336,8 @@ bool Signal::ensureMultiplicity( const unsigned int nSignal ) {
 // update counters for efficiency calculations
 //=============================================================================
 void Signal::updateCounters( const ParticleVector & particleList , 
-                             unsigned int & particleCounter , 
-                             unsigned int & antiparticleCounter ,
+                             std::atomic_uint & particleCounter , 
+                             std::atomic_uint & antiparticleCounter ,
                              bool onlyForwardParticles , 
                              bool isInverted ) const {
   int nP( 0 ) , nAntiP( 0 ) ;

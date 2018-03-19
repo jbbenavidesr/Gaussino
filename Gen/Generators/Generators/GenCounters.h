@@ -6,6 +6,8 @@
 #include "GaudiKernel/MsgStream.h"
 #include "GenInterfaces/ICounterLogFile.h"
 
+#include <atomic>
+
 #include <cmath>
 #include <numeric>
 #include <algorithm>
@@ -32,8 +34,8 @@ namespace LHCb
 
 namespace GenCounters {
   /// Type for hadron counter
-  typedef std::array< unsigned int , 5 > BHadronCounter ;
-  typedef std::array< unsigned int , 4 > DHadronCounter ;
+  typedef std::array< std::atomic_uint , 5 > BHadronCounter ;
+  typedef std::array< std::atomic_uint , 4 > DHadronCounter ;
   typedef std::array< std::string  , 5 > BHadronCNames  ;
   typedef std::array< std::string  , 4 > DHadronCNames  ;
 
@@ -52,7 +54,7 @@ namespace GenCounters {
 
 
   /// Type for excited states counters
-  typedef std::array< unsigned int , 3 > ExcitedCounter ;
+  typedef std::array< std::atomic_uint , 3 > ExcitedCounter ;
   typedef std::array< std::string  , 3 > ExcitedCNames  ;
 
   enum excitedCounterType { _0star , ///< counter of X (spin 0, ang mom 0)
@@ -184,8 +186,8 @@ namespace GenCounters {
    */
   template< typename T , std::size_t N >
   inline void printArray( MsgStream & theStream ,
-                          std::array< T , N > A ,
-                          std::array< std::string , N > AName ,
+                          const std::array< T , N > & A ,
+                          const std::array< std::string , N > & AName ,
                           const std::string & root ) {
     unsigned int total = std::accumulate( A.begin() , A.end() , 0 ) ;
     for ( unsigned int i = 0 ; i < A.size() ; ++i ) 
@@ -197,8 +199,8 @@ namespace GenCounters {
    */
   template< typename T , std::size_t N >
   inline void printArray( ICounterLogFile * theLogFile ,
-                          std::array< T , N > A ,
-                          std::array< std::string , N > AName ,
+                          const std::array< T , N > & A ,
+                          const std::array< std::string , N > & AName ,
                           const std::string & root ) {
     unsigned int total = std::accumulate( A.begin() , A.end() , 0 ) ;
     for ( unsigned int i = 0 ; i < A.size() ; ++i ) 
