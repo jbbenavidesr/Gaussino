@@ -6,7 +6,7 @@
 // from Gaudi
 #include "GaudiKernel/DeclareFactoryEntries.h"
 // from Kernel
-#include "MCInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -15,7 +15,7 @@
 #include "GenInterfaces/ICounterLogFile.h"
 
 // Event 
-#include "Event/HepMCEvent.h"
+#include "HepMC/GenEvent.h"
 #include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
@@ -29,25 +29,6 @@
 // Declaration of the Tool Factory
 
 DECLARE_TOOL_FACTORY( Special )
-
-
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-Special::Special( const std::string & type , const std::string & name ,
-                  const IInterface * parent )
-  : ExternalGenerator( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_nEventsBeforeCut    (  0 ) ,
-    m_nEventsAfterCut     (  0 ) ,
-    m_maxInteractions     ( 30 ) ,
-    m_pileUpProductionTool(  0 ) { 
-  declareProperty( "PileUpProductionTool" , 
-                   m_pileUpProductionToolName = 
-                   "Pythia8Production/MinimumBiasPythia8Production" ) ;
-  declareProperty( "ReinitializePileUpGenerator" ,
-                   m_reinitialize = true ) ;
-}
 
 //=============================================================================
 // Destructor
@@ -104,8 +85,8 @@ StatusCode Special::finalize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
-                        LHCb::HepMCEvents * theEvents , 
-                        LHCb::GenCollisions * theCollisions ) {
+                        std::vector<HepMC::GenEvent> & theEvents , 
+                        LHCb::GenCollisions & theCollisions ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -119,7 +100,7 @@ bool Special::generate( const unsigned int nPileUp ,
 
   // For the moment no pile-up for this type of event
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent, 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
     
     // First interaction is always "signal"
