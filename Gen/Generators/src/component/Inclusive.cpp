@@ -111,7 +111,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //GenCounters::BHadronCounter thebHadC , theantibHadC ;
   //GenCounters::DHadronCounter thecHadC , theanticHadC ;
   //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
-  unsigned int theccCounter , thebbCounter ;
+  //unsigned int theccCounter , thebbCounter ;
   
   IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
   std::string FSRName = LHCb::GenFSRLocation::Default;
@@ -144,8 +144,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
         GenCounters::BHadronCounter thebHadC{} , theantibHadC{} ;
         GenCounters::DHadronCounter thecHadC{} , theanticHadC{} ;
         GenCounters::ExcitedCounter thebExcitedC{} , thecExcitedC{} ;
-
-        thebbCounter = 0         ;    theccCounter = 0 ;
+        std::atomic_uint thebbCounter{}, theccCounter{};
           
         GenCounters::updateHadronCounters( theGenEvent , thebHadC , 
                                            theantibHadC , thecHadC , 

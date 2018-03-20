@@ -46,20 +46,20 @@ class Generation
           std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& )>
 {
 private:
-  Gaudi::Property<std::string> m_sampleGenerationToolName{"SampleGenerationTool", "MinimumBias",
+  Gaudi::Property<std::string> m_sampleGenerationToolName{this, "SampleGenerationTool", "MinimumBias",
                                                           "Name of the ISampleGenerationTool - MinimumBias, ..."};
-  Gaudi::Property<int> m_eventType{"EventType", 30000000, "Event type"};
-  Gaudi::Property<std::string> m_pileUpToolName{"PileUpTool"
+  Gaudi::Property<int> m_eventType{this, "EventType", 30000000, "Event type"};
+  Gaudi::Property<std::string> m_pileUpToolName{this, "PileUpTool"
                                                 "FixedLuminosity",
                                                 "Name of the IPileUpTool"};
-  Gaudi::Property<std::string> m_decayToolName{"DecayTool", "EvtGenDecay", "Name of the IDecayTool"};
-  Gaudi::Property<std::string> m_vertexSmearingToolName{"VertexSmearingTool", "BeamSpotSmearVertex",
+  Gaudi::Property<std::string> m_decayToolName{this, "DecayTool", "EvtGenDecay", "Name of the IDecayTool"};
+  Gaudi::Property<std::string> m_vertexSmearingToolName{this, "VertexSmearingTool", "BeamSpotSmearVertex",
                                                         "Name of the IVertexSmearingTool"};
-  Gaudi::Property<std::string> m_fullGenEventCutToolName{"FullGenEventCutTool", "", "Name of the IFullGenEventCutTool"};
-  Gaudi::Property<bool> m_commonVertex{"CommonVertex", false, "Flag to generate all pile up events at the same PV"};
+  Gaudi::Property<std::string> m_fullGenEventCutToolName{this, "FullGenEventCutTool", "", "Name of the IFullGenEventCutTool"};
+  Gaudi::Property<bool> m_commonVertex{this, "CommonVertex", false, "Flag to generate all pile up events at the same PV"};
 
   // FIXME: This will need adapting for the new TES access eventually
-  Gaudi::Property<std::string> m_FSRName{"GenFSRLocation", LHCb::GenFSRLocation::Default,
+  Gaudi::Property<std::string> m_FSRName{this, "GenFSRLocation", LHCb::GenFSRLocation::Default,
                                          "Location where to store FSR counters"};
 public:
   /// Standard constructor
