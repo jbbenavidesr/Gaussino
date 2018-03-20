@@ -24,16 +24,16 @@ class MinimumBias : public ExternalGenerator {
   virtual ~MinimumBias( ); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
 
   /** Generate minimum bias interactions without any cut.
    *  Implements ISampleGeneratorTool::generate.
    */
   virtual bool generate( const unsigned int nPileUp , 
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions & theCollisions ) override;
 
-  /// Implements ISampleGeneratorTool::printCounters
-  virtual void printCounters( ) const { ; } 
+  /// Dummy implementation for ISampleGeneratorTool::printCounters
+  virtual void printCounters( ) const override{ ; } 
 };
 #endif // GENERATORS_MINIMUMBIAS_H
