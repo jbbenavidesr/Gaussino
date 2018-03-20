@@ -273,8 +273,8 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
                                         BHadronCounter & theantibHadC ,
                                         DHadronCounter & thecHadC ,
                                         DHadronCounter & theanticHadC ,
-                                        unsigned int & thebbCounter ,
-                                        unsigned int & theccCounter ) {
+                                        std::atomic_uint & thebbCounter ,
+                                        std::atomic_uint & theccCounter ) {
   // Signal vertex
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr

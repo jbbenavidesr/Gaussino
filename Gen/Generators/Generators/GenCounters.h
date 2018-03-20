@@ -251,8 +251,8 @@ namespace GenCounters {
                              BHadronCounter & theantibHadC ,
                              DHadronCounter & thecHadC ,
                              DHadronCounter & theanticHadC , 
-                             unsigned int & thebbCounter , 
-                             unsigned int & theccCounter ) ;
+                             std::atomic_uint & thebbCounter , 
+                             std::atomic_uint & theccCounter ) ;
   
   void updateHadronFSR( const HepMC::GenEvent* theEvent,
                         LHCb::GenFSR * genFSR,
