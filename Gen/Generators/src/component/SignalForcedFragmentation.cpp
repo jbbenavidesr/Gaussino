@@ -10,10 +10,12 @@
 
 // from HepMC
 #include "HepMC/GenEvent.h"
+#include "HepMC/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 // from Kernel
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -38,19 +40,6 @@ DECLARE_TOOL_FACTORY( SignalForcedFragmentation )
 
 
 //=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-SignalForcedFragmentation::SignalForcedFragmentation(
-  const std::string& type, const std::string& name, const IInterface* parent )
-  : Signal( type, name , parent ) , m_signalMass( 0. ) { 
-  }
-
-//=============================================================================
-// Destructor
-//=============================================================================
-SignalForcedFragmentation::~SignalForcedFragmentation( ) { ; }
-
-//=============================================================================
 // Initialize method
 //=============================================================================
 StatusCode SignalForcedFragmentation::initialize( ) {
@@ -71,8 +60,8 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 // Generate set of events with repeated hadronization
 //=============================================================================
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
-                                          LHCb::HepMCEvents * theEvents ,
-                                          LHCb::GenCollisions * theCollisions )
+                                          std::vector<HepMC::GenEvent> & theEvents ,
+                                          LHCb::GenCollisions & theCollisions )
 {
   StatusCode sc ;
 
@@ -139,7 +128,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
 
   // Then generate set of pile-up events    
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent ,
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent ,
                         theGenCollision ) ;
 
     sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
@@ -155,9 +144,9 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         updateCounters( theParticleList , m_nParticlesBeforeCut , 
                         m_nAntiParticlesBeforeCut , false , false ) ;
 
-        HepMC::GenParticle * theSignal = chooseAndRevert( theParticleList , 
-                                                          isInverted ,
-                                                          dummyHasFlipped , 
+        HepMC::GenParticlePtr theSignal = chooseAndRevert( theParticleList , 
+                                                           isInverted ,
+                                                           dummyHasFlipped , 
 							  hasFailed ) ;
 
         // Erase daughters of signal particle
@@ -209,8 +198,8 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
             if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
           }
           
-          theGenEvent -> 
-            set_signal_process_vertex( theSignal -> end_vertex() ) ;
+          theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
+              std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
           theGenCollision -> setIsSignal( true ) ;
           
           // Count signal B and signal Bbar
@@ -257,12 +246,12 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle *
                                                  const ROOT::Math::Boost& 
                                                  theBoost )
   const {
-  if ( 0 == theSignalAtRest -> end_vertex() ) return StatusCode::SUCCESS ;
+  if ( ! theSignalAtRest -> end_vertex() ) return StatusCode::SUCCESS ;
     
-  if ( 0 != theSignal -> end_vertex() ) 
+  if ( theSignal -> end_vertex() ) 
     return Error( "The particle has already a decay vertex !" ) ;
 
-  if ( 0 == theSignalAtRest -> production_vertex() )
+  if ( ! theSignalAtRest -> production_vertex() )
     return Error( "The particle has no production vertex !" ) ;
   
   // Displacement in original frame
@@ -302,7 +291,7 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle *
   theSignal -> parent_event() -> add_vertex( newVertex ) ;
   newVertex -> add_particle_in( theSignal ) ;
 
-  HepMC::GenVertex * sVertex = theSignalAtRest -> end_vertex() ;
+  auto & sVertex = theSignalAtRest -> end_vertex() ;
   
   HepMC::GenVertex::particles_out_const_iterator child ;
   
@@ -315,7 +304,7 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle *
     int id                           = (*child) -> pdg_id() ;
     int status                       = (*child) -> status() ;
     
-    HepMC::GenParticle * newPart =
+    HepMC::GenParticlePtr newPart =
       new HepMC::GenParticle( HepMC::FourVector( newMomentum.Px() , 
                                                  newMomentum.Py() , 
                                                  newMomentum.Pz() , 
@@ -324,8 +313,8 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle *
     
     newVertex -> add_particle_out( newPart ) ;
     
-    HepMC::GenParticle * theNewSignal             = newPart ;
-    const HepMC::GenParticle * theNewSignalAtRest = (*child) ;
+    HepMC::GenParticlePtr theNewSignal             = newPart ;
+    auto theNewSignalAtRest = (*child) ;
     
     // Recursive call to boostTree for each daughter
     boostTree( theNewSignal , theNewSignalAtRest , theBoost ) ;
