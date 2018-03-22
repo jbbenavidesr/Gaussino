@@ -71,7 +71,7 @@ StatusCode BeamSpotSmearVertexWithSvc::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertexWithSvc::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC::GenEvent * theEvent ) {
 
   double dx , dy , dz;
   
@@ -86,17 +86,7 @@ StatusCode BeamSpotSmearVertexWithSvc::smearVertex( LHCb::HepMCEvent * theEvent 
 
   HepMC::FourVector dpos( dx , dy , dz , meanT ) ;
   
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-     HepMC::FourVector pos = (*vit) -> position() ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() + dpos.x() , 
-                                               pos.y() + dpos.y() , 
-                                               pos.z() + dpos.z() , 
-                                               pos.t() + dpos.t() ) ) ;
-  }
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }
-

@@ -27,13 +27,13 @@ public:
   virtual ~BeamSpotSmearVertexWithSvc( ); ///< Destructor
 
   /// Initialize function
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
 
   /** Implementation of IVertexSmearingTool::smearVertex.
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) override;
   
  private:
   /// Number of sigma above which to cut for x-axis smearing (set by options)
@@ -50,6 +50,7 @@ public:
   int  m_timeSignVsT0 ;
 
   IBeamInfoSvc *m_beaminfosvc;
+  //FIXME: THREAD SAFETY
   Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
   
 };

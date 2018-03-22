@@ -27,6 +27,11 @@ namespace HepMC {
  */
 class RepeatDecay : public GaudiTool , 
                     virtual public ISampleGenerationTool  {
+ private:
+  /// Name of the tool used to generate the events (set by option)
+  Gaudi::Property<std::string> m_baseToolName{this, "BaseTool", "Inclusive"};
+  /// Number of times to redecay the events (set by option)
+  Gaudi::Property<unsigned int> m_nRedecayLimit{this,"NRedecay", 50};
  public:
   /// Standard constructor
   RepeatDecay( const std::string& type, const std::string& name,
@@ -36,7 +41,7 @@ class RepeatDecay : public GaudiTool ,
 
   /** Initialize method 
    */
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
 
   /** Generate a set of interactions.
    *  Implements ISampleGenerationTool::generate.
@@ -46,44 +51,39 @@ class RepeatDecay : public GaudiTool ,
    *  -# If there is an event in memory, just erase the particles in it.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions & theCollisions ) override;
 
   /** Print generation counters.
    *  Implements ISampleGenerationTool::printCounters.
    */
-  virtual void printCounters( ) const ;
+  virtual void printCounters( ) const override;
 
  protected:
 
  private:
   
-  /// Name of the tool used to generate the events (set by option)
-  std::string m_baseToolName ; 
-
   /// Tool used to generate the base events which are re-decayed
   ISampleGenerationTool * m_baseTool ;
-
-  /// Number of times to redecay the events (set by option)
-  unsigned int m_nRedecayLimit ;
 
   /// counter of repetitions
   unsigned int m_nRedecay ;
 
+
   /// Memorized events
-  LHCb::HepMCEvents m_theMemorizedEvents ;
+  std::vector<HepMC::GenEvent> m_theMemorizedEvents ;
   
   /// Memorized collisions
   LHCb::GenCollisions m_theMemorizedCollisions ;
   
   /// Copy a set of events into another
-  void copyEvents( LHCb::HepMCEvents * from , 
-                   LHCb::HepMCEvents * to )  ;
+  void copyEvents( std::vector<HepMC::GenEvent> & from , 
+                   std::vector<HepMC::GenEvent> & to )  ;
   
   /* Copy a set of collisions into another, with the list of corresponding 
    * events
    */
-  void copyCollisions( LHCb::GenCollisions * from , LHCb::GenCollisions * to ,
-                       LHCb::HepMCEvents * theEvents ) ;
+  void copyCollisions( LHCb::GenCollisions & from , LHCb::GenCollisions & to ,
+                       std::vector<HepMC::GenEvent> & theEvents ) ;
 };
 #endif // GENERATORS_REPEATDECAY_H
