@@ -8,8 +8,8 @@ from GaudiKernel import SystemOfUnits
 from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 
-from Configurables import GenerationToSimulation
-from Configurables import CheckMCStructure
+# from Configurables import GenerationToSimulation
+# from Configurables import CheckMCStructure
 
 
 class GenPhase(ConfigurableUser):
@@ -76,7 +76,7 @@ class GenPhase(ConfigurableUser):
 
         seq = GaudiSequencer('GenerationPhase')
         seq.Members = [rnd_init, prod_alg, gen_moni]
-        seq.Members += [GenerationToSimulation(), CheckMCStructure()]
+        # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
         ApplicationMgr().TopAlg += [seq]
 
     @staticmethod

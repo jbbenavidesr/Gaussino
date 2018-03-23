@@ -49,7 +49,7 @@ private:
   Gaudi::Property<std::string> m_sampleGenerationToolName{this, "SampleGenerationTool", "MinimumBias",
                                                           "Name of the ISampleGenerationTool - MinimumBias, ..."};
   Gaudi::Property<int> m_eventType{this, "EventType", 30000000, "Event type"};
-  Gaudi::Property<std::string> m_pileUpToolName{this, "PileUpTool"
+  Gaudi::Property<std::string> m_pileUpToolName{this, "PileUpTool",
                                                 "FixedLuminosity",
                                                 "Name of the IPileUpTool"};
   Gaudi::Property<std::string> m_decayToolName{this, "DecayTool", "EvtGenDecay", "Name of the IDecayTool"};
@@ -68,7 +68,7 @@ public:
                           {KeyValue{"GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration}},
                           {{KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
                             KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
-                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration}}} )
+                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}}} )
   {
   }
 
