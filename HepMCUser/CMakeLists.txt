@@ -5,4 +5,4 @@
 
 gaudi_subdir(HepMCUser v1r0)
 
-gaudi_install_headers(Defaults)
+gaudi_install_headers(HepMC)

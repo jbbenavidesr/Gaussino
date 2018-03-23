@@ -21,6 +21,14 @@
 // LbPythia8.
 #include "LbPythia8/Pythia8Production.h"
 
+// HepMC conversion
+#include "Pythia8HepMC/Pythia8ToHepMC3.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/Attribute.h"
+#include "Defaults/HepMCAttributes.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8Production
 //
@@ -318,7 +326,7 @@ StatusCode Pythia8Production::toHepMC(HepMC::GenEvent* theEvent,
 				      LHCb::GenCollision* theCollision) {
 
   // Convert to HepMC.
-  HepMC::Pythia8ToHepMC conversion;
+  HepMC::Pythia8ToHepMC3 conversion;
   conversion.set_print_inconsistency(m_validate_HEPEVT);
   if (!(conversion.fill_next_event(*m_pythia, theEvent))) 
     return Error("Failed to convert Pythia 8 event to HepMC.");
@@ -353,7 +361,7 @@ StatusCode Pythia8Production::toHepMC(HepMC::GenEvent* theEvent,
   // Set the process and collision info.
   int code(m_pythia->info.hasSub() ? m_pythia->info.codeSub() : 
 	   m_pythia->info.code());
-  theEvent->set_signal_process_id(code);
+  theEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID, std::make_shared<HepMC::IntAttribute>(code));
   theCollision->setProcessType(code);
   theCollision->setSHat(m_pythia->info.sHat());
   theCollision->setTHat(m_pythia->info.tHat());
