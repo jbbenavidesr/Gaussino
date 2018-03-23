@@ -8,7 +8,7 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          Defaults
                          Kernel/PartProp)
 
-find_package(HepMC)
+find_package(HepMC CONFIG)
 
 gaudi_add_module(GaussMonitor
                  src/*.cpp

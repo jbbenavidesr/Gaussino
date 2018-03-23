@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 def configure_pgun(**kwargs):
     """Simple utility function to create and configure an instance of particle
     gun
@@ -95,3 +98,34 @@ def configure_gen_monitor(**kwargs):
         HistoProduce=True,
         Input=TESLocation
         )
+
+
+def configure_hepmc_writer(**kwargs):
+    """Simple utility function to create and configure a HepMCinstance
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: GenMonitorAlg instance
+
+    """
+    from Configurables import HepMCWriter
+    from Configurables import Gaussino
+
+    alg = HepMCWriter()
+    alg.Input = "/Event/Gen/HepMCEvents"
+    filename = Gaussino().outputName() + '-HepMC'
+    if hasattr(alg, 'Writer'):
+        writer = alg.Writer
+    else:
+        writer = 'WriterRootTree'
+    print('writer={}'.format(writer))
+    if writer in ['WriterRootTree', 'WriterRoot']:
+        print('Setting root file')
+        alg.OutputFileName = filename + '.root'
+    elif writer in ['WriterAscii']:
+        alg.OutputFileName = filename + '.txt'
+    elif writer in ['WriterHEPEVT']:
+        alg.OutputFileName = filename + '.evt'
+    else:
+        print('Unknown writer name specified, not going to write')
+        alg.OutputFileName = ''
+    return alg

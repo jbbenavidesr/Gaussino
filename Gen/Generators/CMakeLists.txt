@@ -16,7 +16,7 @@ gaudi_depends_on_subdirs(Event/GenEvent
 
 find_package(Boost COMPONENTS filesystem system)
 find_package(Photos++)
-find_package(HepMC)
+find_package(HepMC CONFIG)
 
 string(REPLACE "-pedantic" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
 string(REPLACE "-Wall" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")

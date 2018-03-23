@@ -126,3 +126,4 @@ if(DEFINED ENV{LBLOCALSOFT})
 endif()
 
 set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_91/hepmc3/3.0.0/${BINARY_TAG} ${CMAKE_PREFIX_PATH})
+#set(CMAKE_PREFIX_PATH /mnt/lbsoft/hepmc3-install ${CMAKE_PREFIX_PATH})

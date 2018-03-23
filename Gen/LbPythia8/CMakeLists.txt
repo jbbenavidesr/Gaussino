@@ -11,7 +11,7 @@ gaudi_depends_on_subdirs(Gen/GenInterfaces
                          Defaults)
 
 find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
-find_package(HepMC)
+find_package(HepMC CONFIG)
 find_package(LHAPDF)
 find_package(Boost COMPONENTS filesystem system)
 find_package(ROOT COMPONENTS GenVector)
