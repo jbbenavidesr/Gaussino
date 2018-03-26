@@ -4,9 +4,10 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          Event/MCEvent
                          GaudiAlg
                          GaudiKernel
-                         Defaults)
+                         Defaults
+                         HepMCUser)
 
-find_package(HepMC)
+find_package(HepMC CONFIG)
 
 
 gaudi_add_module(EDMConv

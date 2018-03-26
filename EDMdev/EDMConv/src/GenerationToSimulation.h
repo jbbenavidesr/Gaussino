@@ -55,24 +55,24 @@ private:
   Gaudi::LorentzVector primaryVertex( const HepMC::GenEvent& genEvent ) const;
 
   /// Decide if a particle has to be kept or not.
-  static bool keep( const HepMC::GenParticlePtr particle );
+  static bool keep( const HepMC::GenParticlePtr & particle );
 
   /// Convert a GenParticle either into a MCParticle or G4PrimaryParticle.
-  void convert( HepMC::GenParticlePtr& particle, LHCb::MCVertex& originVertex, MCPARTICLES& mcparticles,
+  void convert( HepMC::GenParticlePtr particle, LHCb::MCVertex& originVertex, MCPARTICLES& mcparticles,
                 MCVERTICES& mcvertices ) const;
 
   /// Decide if the particle should be transfered to Geant4 or only MCParticle.
-  unsigned char transferToSimulation( const HepMC::GenParticlePtr p ) const;
+  unsigned char transferToSimulation( const HepMC::GenParticlePtr & p ) const;
 
   /// Create an MCParticle from a HepMC GenParticle, add it to the container and return
   LHCb::MCParticle& makeMCParticle( HepMC::GenParticlePtr& particle, LHCb::MCVertex& originVertex,
                                     MCPARTICLES& mcparticles, MCVERTICES& mcvertices ) const;
 
   /// Compute the lifetime of a particle.
-  double lifetime( const HepMC::FourVector mom, const HepMC::GenVertexPtr P, const HepMC::GenVertexPtr E ) const;
+  double lifetime( const HepMC::FourVector mom, const HepMC::GenVertexPtr & P, const HepMC::GenVertexPtr & E ) const;
 
   /// Check if a particle has oscillated.
-  const HepMC::GenParticle* hasOscillated( const HepMC::GenParticlePtr P ) const;
+  const HepMC::GenParticlePtr hasOscillated( const HepMC::GenParticlePtr & P ) const;
 
   Gaudi::Property<double> m_travelLimit{this, "TravelLimit", 1e-10 * Gaudi::Units::m};
 };

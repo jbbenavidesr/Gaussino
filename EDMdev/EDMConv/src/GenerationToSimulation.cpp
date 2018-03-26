@@ -12,7 +12,14 @@
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenParticle.h"
+
 #include "range/v3/all.hpp"
+
+#include "HepMC/Status.h"
+#include "HepMC/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
 
@@ -23,12 +30,12 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
   MCVERTICES m_vertexContainer;
   auto n_hepmc_particles = ranges::accumulate(
       generationEvents | ranges::view::transform([](auto& ev) {
-        return ev->pGenEvt()->particles_size();
+        return ev.particles_size();
       }),
       0);
   auto n_hepmc_vertices = ranges::accumulate(
       generationEvents | ranges::view::transform([](auto& ev) {
-        return ev->pGenEvt()->vertices_size();
+        return ev.vertices_size();
       }),
       0);
 
@@ -45,8 +52,7 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
   std::vector<unsigned int> pv_indices;
 
   // Loop over the events (one for each pile-up interaction).
-  for (auto& genEvent : generationEvents) {
-    auto ev = genEvent->pGenEvt();
+  for (auto& ev: generationEvents) {
 
     // Determine the position of the primary vertex.
     auto thePV = primaryVertex(ev);
@@ -60,25 +66,19 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
     primaryVertex.setType(LHCb::MCVertex::ppCollision);
     // FIXME: mcheader should properly store the reference instead
 
+    // Those vertices are now constant (and the id has different meaning)
+    // So make an external list to find ROOT vertices
     // Set ID of all vertices to 0.
-    for (auto hepmc_vtx : ev->vertex_range()) hepmc_vtx->set_id(0);
+    std::vector<bool> not_root_vertex(ev.vertices_size());
 
-    // FIXME: It must be possible to somehow avoid this copy without ranges::v3
-    // complaining
-    std::vector<HepMC::GenParticle*> _all_particles;
-    _all_particles.reserve(ev->particles_size());
-    for (auto part : ev->particle_range()) {
-      _all_particles.push_back(part);
-    }
-
-    auto set_prod_id_zero = [](auto part) {
+    auto set_prod_id_zero = [&not_root_vertex](auto part) {
       auto endVertex = part->end_vertex();
-      if (endVertex) endVertex->set_id(1);
+      if (endVertex) not_root_vertex.at(endVertex->id()) = true;
       return part;
     };
 
-    auto is_prod_vtx_id_zero = [](auto part) {
-      return part->production_vertex()->id() == 0;
+    auto is_prod_vtx_id_zero = [&not_root_vertex](auto part) {
+      return !not_root_vertex.at(part->production_vertex()->id());
     };
 
     auto convert_part = [&](auto hepmc_part) {
@@ -87,8 +87,9 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
       return hepmc_part;
     };
 
-    ranges::for_each(_all_particles | ranges::view::filter(keep) |
-                         ranges::action::transform(set_prod_id_zero) |
+    ranges::for_each(ev.particles(), set_prod_id_zero);
+
+    ranges::for_each(ev.particles() | ranges::view::filter(keep) |
                          ranges::view::filter(is_prod_vtx_id_zero),
                      convert_part);
     pv_indices.push_back(pv_idx);
@@ -105,40 +106,47 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
 // Decides if a particle should be kept in MCParticles.
 //=============================================================================
 /*static*/ bool GenerationToSimulation::keep(
-    const HepMC::GenParticle* particle) {
+    const HepMC::GenParticlePtr & particle) {
   LHCb::ParticleID pid(particle->pdg_id());
+  // Get the signal process ID as we will need this multiple times.
+  // If the IntAttribute for the process ID was not added to the event,
+  // a default constructed shared pointer to IntAttribute is returned which
+  // by default initialises the process ID to 0 which is identical to the
+  // behaviour in HepMC2 where the default value was 0 as well.
+  auto sig_proc_id =
+      particle->parent_event()->attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
   switch (particle->status()) {
-    case LHCb::HepMCEvent::StableInProdGen:
+    case HepMC::Status::StableInProdGen:
       return true;
-    case LHCb::HepMCEvent::DecayedByDecayGen:
+    case HepMC::Status::DecayedByDecayGen:
       return true;
-    case LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen:
+    case HepMC::Status::DecayedByDecayGenAndProducedByProdGen:
       return true;
-    case LHCb::HepMCEvent::SignalInLabFrame:
+    case HepMC::Status::SignalInLabFrame:
       return true;
-    case LHCb::HepMCEvent::StableInDecayGen:
+    case HepMC::Status::StableInDecayGen:
       return true;
 
     // For some processes the resonance has status 3.
-    case LHCb::HepMCEvent::DocumentationParticle:
-      if (24 == particle->parent_event()->signal_process_id()) {
+    case HepMC::Status::DocumentationParticle:
+      if (24 == sig_proc_id) {
         if (23 == pid.abspid())
           return true;
         else if (25 == pid.abspid())
           return true;
-      } else if (26 == particle->parent_event()->signal_process_id()) {
+      } else if (26 == sig_proc_id) {
         if (24 == pid.abspid())
           return true;
         else if (25 == pid.abspid())
           return true;
-      } else if (102 == particle->parent_event()->signal_process_id()) {
+      } else if (102 == sig_proc_id) {
         if (25 == pid.abspid()) return true;
       } else if (6 == pid.abspid())
         return true;
       return false;
-    case LHCb::HepMCEvent::Unknown:
+    case HepMC::Status::Unknown:
       return false;
-    case LHCb::HepMCEvent::DecayedByProdGen:
+    case HepMC::Status::DecayedByProdGen:
       if (pid.isHadron()) return true;
       if (pid.isLepton()) return true;
       if (pid.isNucleus()) return true;
@@ -163,19 +171,19 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
         case 22:
           return true;  // Photon.
         case 23:        // Z0.
-          if (24 == particle->parent_event()->signal_process_id())
+          if (24 == sig_proc_id)
             return false;
           else
             return true;
         case 24:  // W.
-          if (26 == particle->parent_event()->signal_process_id())
+          if (26 == sig_proc_id)
             return false;
           else
             return true;
         case 25:  // SM Higgs.
-          if (24 == particle->parent_event()->signal_process_id() ||
-              26 == particle->parent_event()->signal_process_id() ||
-              102 == particle->parent_event()->signal_process_id())
+          if (24 == sig_proc_id ||
+              26 == sig_proc_id ||
+              102 == sig_proc_id)
             return false;
           else
             return true;
@@ -215,7 +223,7 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
 //=============================================================================
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
-void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
+void GenerationToSimulation::convert(HepMC::GenParticlePtr particle,
                                      LHCb::MCVertex& originVertex,
                                      MCPARTICLES& mcparticles,
                                      MCVERTICES& mcvertices) const {
@@ -259,15 +267,15 @@ void GenerationToSimulation::convert(HepMC::GenParticle*& particle,
 // 3: skip the particle completely.
 //=============================================================================
 unsigned char GenerationToSimulation::transferToSimulation(
-    const HepMC::GenParticle* p) const {
+    const HepMC::GenParticlePtr & p) const {
   if (!keep(p)) return 3;
 
   // Determine the travel distance.
   auto ev = p->end_vertex();
   auto pv = p->production_vertex();
-  Gaudi::XYZVector E(ev->point3d());
-  Gaudi::XYZVector P(pv->point3d());
-  double dist = (E - P).R();
+  auto  E = ev->position();
+  auto  P = pv->position();
+  double dist = (E - P).p3mod();
 
   // Skip passing to Geant4 if under travel limit.
   if (dist < m_travelLimit) return 2;
@@ -278,7 +286,7 @@ unsigned char GenerationToSimulation::transferToSimulation(
 // Create an MCParticle from a HepMC GenParticle.
 //=============================================================================
 LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
-    HepMC::GenParticle*& particle, LHCb::MCVertex& originVertex,
+    HepMC::GenParticlePtr& particle, LHCb::MCVertex& originVertex,
     MCPARTICLES& mcparticles, MCVERTICES& mcvertices) const {
   // Create and insert into TES.
   // LHCb::MCParticle* mcp = new LHCb::MCParticle();
@@ -299,7 +307,10 @@ LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
   if (hepmc_endvertex) {
     mcvertices.emplace_back();
     auto& endVertex = mcvertices.back();
-    endVertex.setPosition(Gaudi::XYZPoint(hepmc_endvertex->point3d()));
+    // position() gives a four vector instead of a three vector but implements
+    // x(), y() and z() which is required for the ROOT 3D vector for which 
+    // Gaudi::XYZPoint is a simple typedef
+    endVertex.setPosition(Gaudi::XYZPoint(hepmc_endvertex->position()));
     endVertex.setTime(hepmc_endvertex->position().t());
     endVertex.setMother(&mcp);
 
@@ -307,7 +318,7 @@ LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
     auto B = hasOscillated(particle);
     if (B) {
       endVertex.setType(LHCb::MCVertex::OscillatedAndDecay);
-      particle = const_cast<HepMC::GenParticle*>(B);
+      particle = B;
     } else if ((4 == pid.abspid()) || (5 == pid.abspid()))
       endVertex.setType(LHCb::MCVertex::StringFragmentation);
     else
@@ -316,7 +327,7 @@ LHCb::MCParticle& GenerationToSimulation::makeMCParticle(
   }
 
   //  Set the fromSignal flag
-  if (LHCb::HepMCEvent::SignalInLabFrame == (particle->status())) {
+  if (HepMC::Status::SignalInLabFrame == (particle->status())) {
     mcp.setFromSignal(true);
   }
 
@@ -332,6 +343,7 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
 
   // First method, get the beam particle and use the decay vertex if it
   // exists.
+  auto sig_proc_vtx = genEvent.attribute<HepMC::VertexAttribute>(Gaussino::HepMC::Attributes::SignalProcessVertex)->value();
   if (genEvent.valid_beam_particles()) {
     auto P = genEvent.beam_particles().first;
     auto V = P->end_vertex();
@@ -340,14 +352,13 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
     else
       error() << "The beam particles have no end vertex!" << endmsg;
     // Second method, use the singal vertex stored in HepMC.
-  } else if (0 != genEvent->signal_process_vertex()) {
-    HepMC::GenVertex* V = genEvent->signal_process_vertex();
-    result = V->position();
+  } else if ( sig_proc_vtx ) {
+    result = sig_proc_vtx->position();
     // Third method, take production/end vertex of the particle with
     // barcode 1.
   } else {
-    auto P = *std::begin(genEvent.particles());
-    auto V = 0;
+    auto & P = *std::begin(genEvent.particles());
+    HepMC::GenVertexPtr V{nullptr};
     if (P) {
       V = P->production_vertex();
       if (V)
@@ -370,8 +381,8 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
 // Compute the lifetime of a particle.
 //=============================================================================
 double GenerationToSimulation::lifetime(const HepMC::FourVector mom,
-                                        const HepMC::GenVertex* P,
-                                        const HepMC::GenVertex* E) const {
+                                        const HepMC::GenVertexPtr & P,
+                                        const HepMC::GenVertexPtr & E) const {
   if (!E) return 0;
   Gaudi::LorentzVector A(P->position()), B(E->position());
   Gaudi::LorentzVector AB = B - A;
@@ -391,12 +402,12 @@ double GenerationToSimulation::lifetime(const HepMC::FourVector mom,
 //=============================================================================
 // Check if a particle has oscillated.
 //=============================================================================
-const HepMC::GenParticle* GenerationToSimulation::hasOscillated(
-    const HepMC::GenParticle* P) const {
-  const HepMC::GenVertex* ev = P->end_vertex();
+const HepMC::GenParticlePtr GenerationToSimulation::hasOscillated(
+    const HepMC::GenParticlePtr & P) const {
+  auto & ev = P->end_vertex();
   if (!ev) return 0;
   if (1 != ev->particles_out_size()) return 0;
-  const HepMC::GenParticle* D = *(ev->particles_out_const_begin());
+  auto D = *(ev->particles_out_const_begin());
   if (!D) return 0;
   if (-P->pdg_id() != D->pdg_id()) return 0;
   return D;
