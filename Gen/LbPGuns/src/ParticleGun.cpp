@@ -23,10 +23,13 @@
 #include "LbPGuns/IParticleGunTool.h"
 #include "MCInterfaces/IDecayTool.h"
 #include "GenInterfaces/IVertexSmearingTool.h"
-#include "MCInterfaces/IFullGenEventCutTool.h"
-#include "MCInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IFullGenEventCutTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
+
+#include "HepMC/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 // Gaudi Common Flat Random Number generator
 #include "Generators/RandomForGenerator.h"
@@ -43,67 +46,6 @@
 
 DECLARE_ALGORITHM_FACTORY( ParticleGun )
 
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-ParticleGun::ParticleGun( const std::string& name,
-                          ISvcLocator* pSvcLocator)
-  : GaudiAlgorithm ( name , pSvcLocator ) ,
-    m_particleGunTool       ( 0 ) ,
-    m_numberOfParticlesTool ( 0 ) ,
-    m_decayTool             ( 0 ) ,
-    m_sampleGenerationTool  ( 0 ) ,
-    m_vertexSmearingTool    ( 0 ) ,
-    m_fullGenEventCutTool   ( 0 ) ,
-    m_genCutTool            ( 0 ) ,
-    m_nEvents               ( 0 ) ,
-    m_nAcceptedEvents       ( 0 ) ,
-    m_nParticles            ( 0 ) ,
-    m_nAcceptedParticles    ( 0 ) ,
-    m_nBeforeFullEvent      ( 0 ) ,
-    m_nAfterFullEvent       ( 0 ) ,
-    m_nBeforeCut            ( 0 ) ,
-    m_nAfterCut             ( 0 ) {
-  // Generation Method
-  declareProperty ( "ParticleGunTool" ,
-                    m_particleGunToolName = "GenericGun" ) ;
-  declareProperty ( "EventType"          , m_eventType = 50000000 ) ;
-
-  // Location of the output of the generation
-  declareProperty ( "HepMCEventLocation" , m_hepMCEventLocation =
-                    LHCb::HepMCEventLocation::Default ) ;
-  declareProperty ( "GenHeaderLocation"  , m_genHeaderLocation =
-                    LHCb::GenHeaderLocation::Default ) ;
-  declareProperty ( "GenCollisionLocation" , m_genCollisionLocation =
-                    LHCb::GenCollisionLocation::Default ) ;
-
-  // Tool name to generate the event
-  declareProperty( "NumberOfParticlesTool" ,
-                   m_numberOfParticlesToolName = "FixedNInteractions/FixedNParticles" ) ;
-  // Tool name to decay particles in the event
-  declareProperty( "DecayTool"  , m_decayToolName = "" ) ;
-  // Tool name to smear vertex
-  declareProperty( "VertexSmearingTool" ,
-                   m_vertexSmearingToolName = "" ) ;
-  // Tool name to cut on full event
-  declareProperty( "FullGenEventCutTool" ,
-                   m_fullGenEventCutToolName = "" ) ;
-  // Tool name to cut on generator-level
-  declareProperty( "GenCutTool" ,
-                   m_genCutToolName = "" ) ;
-  // Flag to generate signal
-  declareProperty( "SignalPdgCode" , m_sigPdgCode = 0) ;
-
-  // Flag to sample mass of generated particle
-  declareProperty( "SampleMass" , m_sampleMass = false ) ;
-  declareProperty( "MassRange_min" , m_MassRange_min = -1. ) ;
-  declareProperty( "MassRange_max" , m_MassRange_max = -1. ) ;
-}
-
-//=============================================================================
-// Destructor
-//=============================================================================
-ParticleGun::~ParticleGun() {}
 
 //=============================================================================
 // Initialisation. Check parameters
@@ -188,39 +130,38 @@ StatusCode ParticleGun::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode ParticleGun::execute() {
+std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
   debug() << "Processing event type " << m_eventType << endmsg ;
   StatusCode sc = StatusCode::SUCCESS ;
 
   // Get the header and update the information
-  LHCb::GenHeader* theGenHeader = get<LHCb::GenHeader> ( m_genHeaderLocation );
-  if( !theGenHeader->evType() ){
-    theGenHeader -> setEvType( m_eventType );
+  LHCb::GenHeader theGenHeader = theOldGenHeader;
+  if( !theGenHeader.evType() ){
+    theGenHeader.setEvType( m_eventType );
   }
 
   unsigned int  nParticles( 0 ) ;
 
-  LHCb::HepMCEvents::iterator itEvents ;
-
   // Create temporary containers for this event
-  LHCb::HepMCEvents* theEvents = new LHCb::HepMCEvents( );
-  LHCb::GenCollisions* theCollisions = new LHCb::GenCollisions( );
+  std::vector<HepMC::GenEvent> theEvents{};
+  LHCb::GenCollisions theCollisions{};
 
   // Working set of pointers
-  LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  LHCb::GenCollision * theGenCollision{nullptr};
+  HepMC::GenEvent * theGenEvent{nullptr};
 
-  Gaudi::LorentzVector theFourMomentum ;
-  Gaudi::LorentzVector origin ;
+  Gaudi::LorentzVector theFourMomentum{};
+  Gaudi::LorentzVector origin{};
   int thePdgId ;
 
   // Generate sets of particles until a good one is found
   bool goodEvent = false ;
 
   while ( ! goodEvent ) {
-    theEvents->clear() ;
-    theCollisions->clear() ;
+    theEvents.clear() ;
+    theCollisions.clear() ;
 
     // Compute the number of pile-up interactions to generate
     if ( 0 != m_numberOfParticlesTool )
@@ -232,7 +173,7 @@ StatusCode ParticleGun::execute() {
     // of particle gun
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
-      prepareInteraction( theEvents , theCollisions , theGenEvent , theGenCollision ) ;
+      prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
@@ -260,9 +201,11 @@ StatusCode ParticleGun::execute() {
                                 LHCb::HepMCEvent::StableInProdGen ) ;
 
       v -> add_particle_out( p ) ;
-      theGenEvent -> add_vertex( v ) ;
-      theGenEvent -> set_signal_process_id( nParticles ) ;
-      theGenEvent -> set_signal_process_vertex( v ) ;
+      theGenEvent->add_vertex( v ) ;
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID,
+          std::make_shared<HepMC::IntAttribute>(nParticles));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
+          std::make_shared<HepMC::VertexAttribute>(v));
     }
 
     goodEvent = true ;
@@ -271,16 +214,15 @@ StatusCode ParticleGun::execute() {
 
     // Decay the event if it is a good event
     if ( 0 != m_decayTool ) {
-      unsigned short iPart( 0 ) ;
-      for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
-            ++itEvents ) {
+      unsigned short iPart{0};
+      for ( auto & event : theEvents ) {
         ParticleVector theParticleList ;
         theParticleList.clear();
 
-        HepMC::GenParticle *theSignal = decayEvent( *itEvents, theParticleList, sc) ;
-        if ( ! sc.isSuccess() ) return sc;
+        auto theSignal = decayEvent( &event, theParticleList, sc) ;
+        if ( ! sc.isSuccess() ) error() << "Failed to decay event" << endmsg;
 
-        (*itEvents) -> pGenEvt() -> set_event_number( ++iPart ) ;
+        event.set_event_number(++iPart);
 
         // Add Cut tool
         bool passCut(true);
@@ -301,10 +243,9 @@ StatusCode ParticleGun::execute() {
 
     // Apply smearing of primary vertex
     if ( 0 != m_vertexSmearingTool ) {
-      for ( itEvents = theEvents->begin() ; itEvents != theEvents->end() ;
-            ++itEvents ) {
-        sc = m_vertexSmearingTool -> smearVertex( *itEvents ) ;
-        if ( ! sc.isSuccess() ) return sc ;
+      for ( auto & event : theEvents ) {
+        sc = m_vertexSmearingTool -> smearVertex( &event ) ;
+        if ( ! sc.isSuccess() ) error() << "Failed to smear event" << endmsg;
       }
     }
 
@@ -319,57 +260,12 @@ StatusCode ParticleGun::execute() {
     }
   }
 
-  ++m_nAcceptedEvents ;
-  m_nAcceptedParticles += nParticles ;
-
-  // Now either create the info in the TES or add it to the existing one
-  LHCb::HepMCEvents* eventsInTES =
-    getOrCreate<LHCb::HepMCEvents,LHCb::HepMCEvents>( m_hepMCEventLocation );
-
-  LHCb::GenCollisions* collisionsInTES =
-    getOrCreate<LHCb::GenCollisions,LHCb::GenCollisions>( m_genCollisionLocation );
-
-  // Check that number of temporary HepMCEvents is the same as GenCollisions
-  if( theEvents->size() != theCollisions->size() ) {
-    return Error("Number of HepMCEvents and GenCollisions do not match" );
+  // Check that number of HepMC events is the same as GenCollisions
+  if( theEvents.size() != theCollisions.size() ) {
+    error() << "Number of HepMCEvents and GenCollisions do not match" << endmsg;
   }
 
-  itEvents = theEvents->begin();
-  for( LHCb::GenCollisions::const_iterator it = theCollisions->begin();
-       theCollisions->end() != it; ++it ) {
-
-    // HepMCEvent
-    LHCb::HepMCEvent* theHepMCEvent = new LHCb::HepMCEvent();
-    theHepMCEvent->setGeneratorName( (*itEvents)->generatorName() );
-    (*theHepMCEvent->pGenEvt()) = (*(*itEvents)->pGenEvt());
-    eventsInTES->insert( theHepMCEvent );
-    ++itEvents;
-
-    // GenCollision
-    LHCb::GenCollision* theGenCollision = new LHCb::GenCollision();
-    theGenCollision->setIsSignal( (*it)->isSignal() );
-    theGenCollision->setProcessType( (*it)->processType() );
-    theGenCollision->setSHat( (*it)->sHat() );
-    theGenCollision->setTHat( (*it)->tHat() );
-    theGenCollision->setUHat( (*it)->uHat() );
-    theGenCollision->setPtHat( (*it)->ptHat() );
-    theGenCollision->setX1Bjorken( (*it)->x1Bjorken() );
-    theGenCollision->setX2Bjorken( (*it)->x2Bjorken() );
-    theGenCollision->setEvent( theHepMCEvent );
-    collisionsInTES->insert( theGenCollision );
-
-    // GenHeader
-    theGenHeader->addToCollisions( theGenCollision );
-
-  }
-
-  // Clear and delete the temporary containers
-  theEvents->clear();
-  theCollisions->clear();
-  delete(theEvents);
-  delete(theCollisions);
-
-  return sc ;
+  return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
 }
 
 //=============================================================================
@@ -412,20 +308,17 @@ StatusCode ParticleGun::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC::GenParticle *ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent,
+HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
                                              ParticleVector & theParticleList,
-                                             StatusCode & sc) {
-  using namespace LHCb;
+                                             StatusCode & sc) const {
   m_decayTool -> disableFlip() ;
   sc = StatusCode::SUCCESS ;
   HepMC::GenParticle *theSignal(0);
 
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-
   // We must use particles_begin to obtain an ordered iterator of GenParticles
   // according to the barcode: this allows to reproduce events !
-  HepMCUtils::ParticleSet pSet( pEvt -> particles_begin() ,
-                                pEvt -> particles_end() ) ;
+  HepMCUtils::ParticleSet pSet( theEvent -> particles_begin() ,
+                                theEvent -> particles_end() ) ;
 
   HepMCUtils::ParticleSet::iterator itp ;
 
@@ -434,16 +327,16 @@ HepMC::GenParticle *ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent,
     HepMC::GenParticle * thePart = (*itp) ;
     unsigned int status = thePart -> status() ;
 
-    if ( ( HepMCEvent::StableInProdGen  == status ) ||
-         ( ( HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status )
+    if ( ( LHCb::HepMCEvent::StableInProdGen  == status ) ||
+         ( ( LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status )
            && ( 0 == thePart -> end_vertex() ) ) ) {
 
       if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
 
-        if ( HepMCEvent::StableInProdGen == status )
+        if ( LHCb::HepMCEvent::StableInProdGen == status )
           thePart ->
-            set_status( HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
-        else thePart -> set_status( HepMCEvent::DecayedByDecayGen ) ;
+            set_status( LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( LHCb::HepMCEvent::DecayedByDecayGen ) ;
 
         if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
           bool hasFlipped(false);
@@ -464,19 +357,18 @@ HepMC::GenParticle *ParticleGun::decayEvent( LHCb::HepMCEvent * theEvent,
 //=============================================================================
 // Set up event
 //=============================================================================
-void ParticleGun::prepareInteraction( LHCb::HepMCEvents * theEvents ,
-                                      LHCb::GenCollisions * theCollisions ,
-                                      HepMC::GenEvent * & theGenEvent ,
-                                      LHCb::GenCollision * & theGenCollision ) const
-{
-  LHCb::HepMCEvent * theHepMCEvent = new LHCb::HepMCEvent( ) ;
-  theHepMCEvent -> setGeneratorName( m_particleGunName ) ;
-  theGenEvent = theHepMCEvent -> pGenEvt() ;
+void ParticleGun::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
+    LHCb::GenCollision * & theGenCollision ) const {
+  theEvents->emplace_back();
+  theGenEvent = &theEvents->back();
+  theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
+                              std::make_shared<HepMC::StringAttribute>( m_particleGunName) );
 
-  theGenCollision = new LHCb::GenCollision() ;
-  theGenCollision -> setEvent( theHepMCEvent ) ;
-  theGenCollision -> setIsSignal( (m_sigPdgCode!=0) ) ;
-
-  theEvents -> insert( theHepMCEvent ) ;
-  theCollisions -> insert( theGenCollision ) ;
+  //FIXME: Still need fix this, see header
+  theGenCollision = new LHCb::GenCollision();
+  theCollisions->insert(theGenCollision);
+  //theGenCollision = &theCollisions->back();
+  // FIXME: Need to modify new GenCollisions class for persistency
+  //theGenCollision->setEvent( theHepMCEvent );
 }
