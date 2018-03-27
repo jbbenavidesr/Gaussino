@@ -2,7 +2,6 @@
 // Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -36,7 +35,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( SignalForcedFragmentation )
+DECLARE_COMPONENT( SignalForcedFragmentation )
 
 
 //=============================================================================

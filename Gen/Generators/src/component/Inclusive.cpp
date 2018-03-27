@@ -5,7 +5,6 @@
 #include "Inclusive.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
@@ -29,7 +28,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( Inclusive )
+DECLARE_COMPONENT( Inclusive )
 
 //=============================================================================
 // Standard constructor, initializes variables

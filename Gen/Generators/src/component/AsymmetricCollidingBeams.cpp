@@ -4,7 +4,6 @@
 #include "AsymmetricCollidingBeams.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 
 // From Kernel
@@ -22,7 +21,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( AsymmetricCollidingBeams )
+DECLARE_COMPONENT( AsymmetricCollidingBeams )
 
 
 //=============================================================================

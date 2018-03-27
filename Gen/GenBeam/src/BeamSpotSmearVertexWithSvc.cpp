@@ -5,7 +5,6 @@
 #include "BeamSpotSmearVertexWithSvc.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 
@@ -21,7 +20,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( BeamSpotSmearVertexWithSvc )
+DECLARE_COMPONENT( BeamSpotSmearVertexWithSvc )
 
 
 //=============================================================================

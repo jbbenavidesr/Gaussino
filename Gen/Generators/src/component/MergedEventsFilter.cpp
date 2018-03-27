@@ -1,9 +1,6 @@
 // $Id: MergedEventsFilter.cpp,v 1.1 2008-05-06 08:27:55 gcorti Exp $
 // Include files 
 
-// from Gaudi
-#include "GaudiKernel/AlgFactory.h" 
-
 // from LHCb
 #include "Event/GenHeader.h"
 #include "Event/GenCollision.h"
@@ -21,7 +18,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( MergedEventsFilter )
+DECLARE_COMPONENT( MergedEventsFilter )
 
 
 //=============================================================================

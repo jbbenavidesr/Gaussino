@@ -1,6 +1,5 @@
 // Gaudi.
 #include "GaudiKernel/System.h"
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/ParticleProperty.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "GaudiKernel/PhysicalConstants.h"

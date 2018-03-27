@@ -1,13 +1,12 @@
 #include "boost/format.hpp"
 
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmEngine.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/RndmGenerators.h"
 
 #include "SeedingTool.h"
 
-DECLARE_TOOL_FACTORY(SeedingTool)
+DECLARE_COMPONENT(SeedingTool)
 
 StatusCode SeedingTool::initialize() {
   StatusCode sc = GaudiTool::initialize();

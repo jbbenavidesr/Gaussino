@@ -7,7 +7,6 @@
 #include "GaudiKernel/RndmGenerators.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 

@@ -2,7 +2,6 @@
 // Include files 
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 
 // from Event 
@@ -19,7 +18,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( FlatNParticles )
+DECLARE_COMPONENT( FlatNParticles )
 
 //=============================================================================
 // Standard constructor, initializes variables

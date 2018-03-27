@@ -8,7 +8,6 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h" 
@@ -21,7 +20,7 @@
 // 2008-05-18: Giulia Manca
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( Cosmics )
+DECLARE_COMPONENT( Cosmics )
 
 //===========================================================================
 // Constructor

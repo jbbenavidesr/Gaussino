@@ -2,7 +2,6 @@
 #include "HistoSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
@@ -21,7 +20,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( HistoSmearVertex )
+DECLARE_COMPONENT( HistoSmearVertex )
 
 //=============================================================================
 // Standard constructor, initializes variables

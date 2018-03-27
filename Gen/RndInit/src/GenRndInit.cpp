@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(GenRndInit)
+DECLARE_COMPONENT(GenRndInit)
 
 StatusCode GenRndInit::initialize() {
   StatusCode sc = GaudiAlgorithm::initialize();

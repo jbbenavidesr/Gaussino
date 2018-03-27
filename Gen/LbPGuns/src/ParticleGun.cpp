@@ -8,7 +8,6 @@
 #include "boost/tokenizer.hpp"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/RndmGenerators.h"
 
 // from Event
@@ -44,7 +43,7 @@
 
 // Declaration of the Algorithm Factory
 
-DECLARE_ALGORITHM_FACTORY( ParticleGun )
+DECLARE_COMPONENT( ParticleGun )
 
 
 //=============================================================================

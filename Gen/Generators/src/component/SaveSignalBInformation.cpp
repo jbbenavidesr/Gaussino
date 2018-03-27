@@ -1,8 +1,5 @@
 // Include files
 
-// from Gaudi
-#include "GaudiKernel/AlgFactory.h"
-
 // from Event
 #include "Event/HepMCEvent.h"
 
@@ -22,7 +19,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( SaveSignalBInformation )
+DECLARE_COMPONENT( SaveSignalBInformation )
 
 //=============================================================================
 // Main execution

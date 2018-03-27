@@ -3,7 +3,6 @@
 #include "StandAloneDecayTool.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
@@ -24,7 +23,7 @@
 
 // Declaration of the tool factory
 
-DECLARE_TOOL_FACTORY( StandAloneDecayTool )
+DECLARE_COMPONENT( StandAloneDecayTool )
 
 //=============================================================================
 // const constructor, initializes variables

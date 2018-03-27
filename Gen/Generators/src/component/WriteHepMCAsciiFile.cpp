@@ -5,7 +5,6 @@
 // ============================================================================
 // GaudiKernel
 // ============================================================================
-#include "GaudiKernel/DeclareFactoryEntries.h" 
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
 // ============================================================================
@@ -47,8 +46,6 @@
  */
 class WriteHepMCAsciiFile : public GaudiAlgorithm 
 {
-  /// friend factory for instantiation
-  friend class AlgFactory<WriteHepMCAsciiFile> ;
 public:
   /// initialize the algorithm
   virtual StatusCode initialize () 
@@ -79,7 +76,6 @@ public:
     // finalize the base class ;
     return GaudiAlgorithm::finalize() ;
   } ;
-protected:
   /** standard constructor
    *  @param name algorithm instance name 
    *  @param pSvc ppinter to Service Locator 
@@ -123,7 +119,7 @@ private:
 } ;
 // ===========================================================================
 /// Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( WriteHepMCAsciiFile )
+DECLARE_COMPONENT( WriteHepMCAsciiFile )
 // ===========================================================================
 /// Execut the algorithm
 StatusCode WriteHepMCAsciiFile::execute    () 

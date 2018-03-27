@@ -1,8 +1,5 @@
 // Include files
 
-// from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-
 // local
 #include "HepMC/WriterRoot.h"
 #include "HepMC/WriterRootTree.h"
@@ -17,7 +14,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( HepMCWriter )
+DECLARE_COMPONENT( HepMCWriter )
 
 StatusCode HepMCWriter::initialize()
 {

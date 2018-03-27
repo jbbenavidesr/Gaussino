@@ -7,7 +7,6 @@
 #include <cmath>
 
 // FromGaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -22,7 +21,7 @@
 // 2016-02-19: Dan Johnson
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( FlatPtRapidity )
+DECLARE_COMPONENT( FlatPtRapidity )
 
 //===========================================================================
 // Constructor

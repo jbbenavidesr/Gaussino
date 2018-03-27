@@ -5,7 +5,6 @@
 #include "FixedTarget.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
@@ -21,7 +20,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( FixedTarget )
+DECLARE_COMPONENT( FixedTarget )
 
 
 //=============================================================================

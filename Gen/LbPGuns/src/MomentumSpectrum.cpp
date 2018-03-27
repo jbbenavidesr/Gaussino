@@ -6,7 +6,6 @@
 #include <cmath>
 
 // FromGaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -22,7 +21,7 @@
 // 2014-01-03: Dan Johnson (adapted from Michel De Cian)
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( MomentumSpectrum )
+DECLARE_COMPONENT( MomentumSpectrum )
 
 //===========================================================================
 // Constructor

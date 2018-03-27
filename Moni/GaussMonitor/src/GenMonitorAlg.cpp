@@ -2,7 +2,6 @@
 // Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From HepMC
@@ -30,7 +29,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( GenMonitorAlg )
+DECLARE_COMPONENT( GenMonitorAlg )
 
 StatusCode GenMonitorAlg::initialize()
 {

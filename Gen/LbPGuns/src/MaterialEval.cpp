@@ -8,7 +8,6 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -24,7 +23,7 @@
 //-----------------------------------------------------------------------------
  
 // Declaration of the tool Factory
-DECLARE_TOOL_FACTORY( MaterialEval )
+DECLARE_COMPONENT( MaterialEval )
 
 //============================================================================
 // Constructor

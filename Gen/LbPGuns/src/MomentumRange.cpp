@@ -7,7 +7,6 @@
 #include <cmath>
 
 // FromGaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -20,7 +19,7 @@
 // 2008-05-18: Patrick Robbe adaptation to tool structure
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( MomentumRange )
+DECLARE_COMPONENT( MomentumRange )
 
 //===========================================================================
 // Constructor

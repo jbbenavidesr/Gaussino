@@ -209,4 +209,4 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
 }
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( BeamSpotMarkovChainSampleVertex )
+DECLARE_COMPONENT( BeamSpotMarkovChainSampleVertex )

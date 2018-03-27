@@ -1,7 +1,6 @@
 // Include files
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/MsgStream.h"
 
 // local
@@ -45,7 +44,7 @@ int CheckMCStructure::printMCParticlesTree(LHCb::MCVertex* vtx,
 }
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY(CheckMCStructure)
+DECLARE_COMPONENT(CheckMCStructure)
 
 //=============================================================================
 // Initialization

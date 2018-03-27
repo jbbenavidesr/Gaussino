@@ -3,7 +3,6 @@
 #include "MCInterfaces/IFlagSignalChain.h"
 
 // Gaudi.
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Transform4DTypes.h"
 #include "GaudiKernel/Vector3DTypes.h"
@@ -21,7 +20,7 @@
 #include "HepMC/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
-DECLARE_ALGORITHM_FACTORY(GenerationToSimulation)
+DECLARE_COMPONENT(GenerationToSimulation)
 
 std::tuple<MCPARTICLES, MCVERTICES, LHCb::MCHeader> GenerationToSimulation::
 operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {

@@ -5,7 +5,6 @@
 #include "FlatZSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h" 
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
@@ -23,7 +22,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( FlatZSmearVertex )
+DECLARE_COMPONENT( FlatZSmearVertex )
 
 
 //=============================================================================

@@ -8,9 +8,6 @@
 // Generators
 #include "Generators/RandomForGenerator.h"
 
-// from Gaudi
-#include "GaudiKernel/AlgFactory.h"
-
 // from Event
 //#include "Event/HepMCEvent.h"
 #include "HepMC/GenEvent.h"
@@ -26,7 +23,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( ApplyPhotos )
+DECLARE_COMPONENT( ApplyPhotos )
 
 
 //=============================================================================

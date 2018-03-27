@@ -5,7 +5,6 @@
 #include "SignalRepeatedHadronization.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from Kernel
 #include "Kernel/ParticleID.h"
@@ -34,7 +33,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( SignalRepeatedHadronization )
+DECLARE_COMPONENT( SignalRepeatedHadronization )
 
 
 //=============================================================================

@@ -4,7 +4,6 @@
 // local
 #include "MinimumBias.h"
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 
 #include "GenInterfaces/IProductionTool.h"
 
@@ -20,7 +19,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( MinimumBias )
+DECLARE_COMPONENT( MinimumBias )
 
 
 //=============================================================================

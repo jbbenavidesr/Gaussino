@@ -5,7 +5,6 @@
 #include "VariableLuminosity.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/IRndmGenSvc.h"
 
 // From CLHEP
@@ -28,7 +27,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( VariableLuminosity )
+DECLARE_COMPONENT( VariableLuminosity )
 
 
 //=============================================================================

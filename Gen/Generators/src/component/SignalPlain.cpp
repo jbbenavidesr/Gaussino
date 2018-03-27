@@ -5,7 +5,6 @@
 #include "SignalPlain.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // Event 
 #include "Event/GenFSR.h"
@@ -30,7 +29,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( SignalPlain )
+DECLARE_COMPONENT( SignalPlain )
 
 
 //=============================================================================

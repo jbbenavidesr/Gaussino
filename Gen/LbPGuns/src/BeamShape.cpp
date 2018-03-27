@@ -7,7 +7,6 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h" 
@@ -20,7 +19,7 @@
 // 2009-10-21: Magnus Lieng
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( BeamShape )
+DECLARE_COMPONENT( BeamShape )
 
 //===========================================================================
 // Constructor

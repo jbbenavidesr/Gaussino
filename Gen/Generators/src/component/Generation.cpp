@@ -3,7 +3,6 @@
 #include <map>
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/RndmGenerators.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
@@ -52,7 +51,7 @@
 
 // Declaration of the Algorithm Factory
 
-DECLARE_ALGORITHM_FACTORY( Generation )
+DECLARE_COMPONENT( Generation )
 
 
 //=============================================================================

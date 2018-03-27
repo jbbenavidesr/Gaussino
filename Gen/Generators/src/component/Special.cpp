@@ -4,7 +4,6 @@
 // local
 #include "Special.h"
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 // from Kernel
 #include "GenInterfaces/IGenCutTool.h"
 
@@ -28,7 +27,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( Special )
+DECLARE_COMPONENT( Special )
 
 //=============================================================================
 // Destructor
