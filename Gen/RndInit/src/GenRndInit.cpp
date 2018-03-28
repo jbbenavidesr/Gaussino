@@ -31,7 +31,8 @@ StatusCode GenRndInit::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode GenRndInit::execute() {
+  LHCb::GenHeader
+  GenRndInit::operator()() const {
   debug() << "==> Execute" << endmsg;
 
   // Initialize the random number
@@ -45,17 +46,16 @@ StatusCode GenRndInit::execute() {
   printEventRun( eventNumber, m_runNumber, seeds.get());
 
   // Create GenHeader and partially fill it - updated during phase execution
-  LHCb::GenHeader* header = new LHCb::GenHeader();
+  LHCb::GenHeader header{};
   // FIXME: Application name
   // header->setApplicationName( this->appName() );
   // FIXME: Application Version
   // header->setApplicationVersion( this->appVersion() );
-  header->setRunNumber(m_runNumber);
-  header->setEvtNumber(eventNumber);
-  header->setEvType(0);
-  put(header, m_mcHeader);
+  header.setRunNumber(m_runNumber);
+  header.setEvtNumber(eventNumber);
+  header.setEvType(0);
 
-  return StatusCode::SUCCESS;
+  return header;
 }
 
 void GenRndInit::printEventRun(long long event, int run,
