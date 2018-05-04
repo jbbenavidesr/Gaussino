@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h" 
 
 #include "GenInterfaces/IVertexSmearingTool.h"
 
@@ -34,7 +33,7 @@ class FlatZSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) override;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) override;
   
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)  
@@ -55,9 +54,5 @@ class FlatZSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   /// only values -1 or 1, or 0 to switch off the TOF and set time of 
   /// interaction to zero (default = 1, as for beam 1)
   int m_zDir;
-
-  Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
-
-  Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };
 #endif // GENERATORS_FLATZSMEARVERTEX_H

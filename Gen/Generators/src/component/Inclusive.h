@@ -60,7 +60,8 @@ class Inclusive : public ExternalGenerator {
    */
   virtual bool generate( const unsigned int nPileUp ,
                          std::vector<HepMC::GenEvent> & theEvents ,
-                         LHCb::GenCollisions & theCollisions ) override;
+                         LHCb::GenCollisions & theCollisions ,
+                         CLHEP::HepRandomEngine & engine ) override;
 
   /** Print generation counters.
    *  Implements ISampleGenerationTool::printCounters.

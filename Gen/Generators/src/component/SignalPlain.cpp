@@ -18,7 +18,7 @@
 #include "GenInterfaces/IProductionTool.h"
 #include "GenEvent/HepMCUtils.h"
 
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
 //-----------------------------------------------------------------------------
@@ -49,7 +49,8 @@ SignalPlain::~SignalPlain( ) { ; }
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
                             std::vector<HepMC::GenEvent> & theEvents , 
-                            LHCb::GenCollisions & theCollisions ) {
+                            LHCb::GenCollisions & theCollisions ,
+                            CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   bool result = false ;
   // Memorize if the particle is inverted
@@ -68,7 +69,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
     prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
     
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
     if ( ! result ) {
@@ -80,14 +81,14 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
       if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
 
         // establish correct multiplicity of signal
-        if ( ensureMultiplicity( theParticleList.size() ) ) {
+        if ( ensureMultiplicity( theParticleList.size() , engine ) ) {
 
           // choose randomly one particle and force the decay
           hasFlipped = false ;
           isInverted = false ;
           hasFailed  = false ;
           HepMC::GenParticlePtr theSignal =
-            chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed ) ;
+            chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
             Error( "Skip event" ) ;

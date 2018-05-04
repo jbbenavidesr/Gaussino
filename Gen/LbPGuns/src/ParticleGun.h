@@ -6,6 +6,7 @@
 #include "Event/GenCollision.h"
 #include "Event/GenHeader.h"
 #include "GaudiAlg/Transformer.h"
+#include "NewRnd/RndAlgSeeder.h"
 
 #include <atomic>
 
@@ -32,7 +33,7 @@ namespace HepMC
  */
 class ParticleGun
     : public Gaudi::Functional::MultiTransformer<
-          std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& )>
+          std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ), Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
 private:
   Gaudi::Property<std::string> m_particleGunToolName{this, "ParticleGunTool", "GenericGun"};

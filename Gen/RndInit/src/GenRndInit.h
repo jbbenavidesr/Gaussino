@@ -5,24 +5,22 @@
 // FIXME: Get rid of the GenHeader dependence at some point
 #include "Event/GenHeader.h"
 #include "Defaults/Locations.h"
-
-class IRndSeedingTool;
+#include "NewRnd/RndAlgSeeder.h"
 
 /** @class GenRndInit GenRndInit.h
  *
  *  First TopAlg for Generator phase of Gaussino.
- *  Initializes random number
+ *  Configures the event context run number
  *  It also creates and fill the GenHeader.
  *
  *  @author Dominik Muller
  *  @date   2018-01-29
  */
-class GenRndInit : public Gaudi::Functional::Producer<LHCb::GenHeader()>{
+class GenRndInit : public Gaudi::Functional::Producer< LHCb::GenHeader()>{
   private:
   Gaudi::Property<int> m_skipFactor{this, "SkipFactor", 0, "skip some random numbers"};
   Gaudi::Property<long long> m_firstEvent{this, "FirstEventNumber", 1, "Number of the first event"};
   Gaudi::Property<unsigned int> m_runNumber{this, "RunNumber", 1, "The run number"};
-  Gaudi::Property<std::string> m_RndInitToolName{this, "RndInitToolName", "SeedingTool/SeedingTool", "Name of the tool for initializing the random generator"};
   Gaudi::Property<std::string> m_mcHeader{this, "MCHeader", LHCb::GenHeaderLocation::Default, "Location of the GenHeader"};
   public:
   /// Standard constructor
@@ -53,8 +51,6 @@ class GenRndInit : public Gaudi::Functional::Producer<LHCb::GenHeader()>{
   void printEventRun(long long evt, int run,
                      std::vector<long int>* seeds = 0) const;
 
-
-  IRndSeedingTool *m_rndtool = nullptr;
   mutable std::atomic_long m_evtCounter{
       0};              ///< Pointer to EventCounter interface
   long m_eventMax{0};  ///< Number of events requested (ApplicationMgr.EvtMax)

@@ -7,7 +7,6 @@
 // from Gaudi
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 
 // from Generators
 #include "MCInterfaces/IDecayTool.h"
@@ -15,7 +14,7 @@
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenVertex.h"
 #include "HepMC/GenParticle.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 //FIXME:This import pulls in the DataObject Wrapper for status enums. Should move this somewhere else.
 #include "GenEvent/HepMCUtils.h"
@@ -23,6 +22,9 @@
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
+
+#include"CLHEP/Random/RandomEngine.h"
+#include"CLHEP/Random/RandFlat.h"
 
 // Function to test if a HepMC::GenParticle is Particle (or antiParticle) 
 struct isParticle : std::unary_function< const HepMC::GenParticlePtr & , bool > {
@@ -90,14 +92,6 @@ StatusCode Signal::initialize( ) {
 
   if ( m_pidVector.empty() ) 
     return Error( "SignalPIDList property is not set" ) ;
-
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0., 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize flat random number generator" ) ;
-  
-  release( randSvc ) ;
 
   // Transform vector into set
   for ( std::vector<int>::iterator it = m_pidVector.begin() ; 
@@ -194,6 +188,8 @@ StatusCode Signal::isolateSignal( const HepMC::GenParticlePtr & theSignal )
   // Create a new event to contain isolated signal decay tree
   mcevt ->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC::StringAttribute>( m_hepMCName + "_clean") );
+  // Little hack to make it thread-safe when reading later
+  mcevt->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
   
   if ( ! theSignal -> production_vertex() ) 
     return Error( "Signal particle has no production vertex." ) ;
@@ -286,16 +282,18 @@ HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
                                                theParticleList , 
                                                bool & isInverted ,
                                                bool & hasFlipped , 
-					      bool & hasFailed ) {
+					      bool & hasFailed , CLHEP::HepRandomEngine & engine ) {
   HepMC::GenParticlePtr theSignal ;
   isInverted = false ;
   hasFlipped = false ;
   hasFailed = false ;
 
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+
   unsigned int nPart = theParticleList.size() ;
   if ( nPart > 1 ) {
     unsigned int iPart = 
-      (unsigned int) floor( nPart * m_flatGenerator() ) ;
+      (unsigned int) floor( nPart * flatGenerator() ) ;
     theSignal = theParticleList[ iPart ] ;
 
     // Now erase daughters of the other particles in particle list
@@ -325,11 +323,13 @@ HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
 //=============================================================================
 // Establish correct multiplicity of signal
 //=============================================================================
-bool Signal::ensureMultiplicity( const unsigned int nSignal ) {
+bool Signal::ensureMultiplicity( const unsigned int nSignal , CLHEP::HepRandomEngine & engine ) {
   if ( ! m_cpMixture ) return true ;
   if ( nSignal > 1 ) return true ;
-  return ( m_flatGenerator() >= ( ( 1. - m_signalBr ) / 
-                                  ( 2. - m_signalBr ) ) ) ;
+
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  return ( flatGenerator() >= ( ( 1. - m_signalBr ) / 
+                                ( 2. - m_signalBr ) ) ) ;
 }
 
 //=============================================================================

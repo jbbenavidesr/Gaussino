@@ -12,7 +12,10 @@
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
-#include "GaudiKernel/IRndmGenSvc.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandGauss.h"
 
 //==========================================================================
 // Implementation file for class: GenericGun
@@ -66,16 +69,6 @@ StatusCode GenericGun::initialize( ) {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc;
 
-  // Create the flat and gaussian generators
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() )
-    return Error( "Cannot initialize flat generator" ) ;
-
-  sc = m_gaussGenerator.initialize( randSvc , Rndm::Gauss( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() )
-    return Error( "Cannot initialize Gaussian generator" ) ;
-
   // Get the mass of the particle to be generated
   LHCb::IParticlePropertySvc * ppSvc =
     svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
@@ -124,15 +117,15 @@ StatusCode GenericGun::initialize( ) {
 //===========================================================================
 void GenericGun::generateParticle( Gaudi::LorentzVector & fourMomentum ,
                                    Gaudi::LorentzVector & origin ,
-                                   int & pdgId ) {
+                                   int & pdgId , CLHEP::HepRandomEngine & engine ) {
   // Generate values for pt, eta and phi
   //
   double pt  = generateValue( m_PtGenMode,m_requestedPt, m_sigmaPt,
-                              m_minPt, m_maxPt);
+                              m_minPt, m_maxPt, engine );
   double eta = generateValue(m_EtaGenMode,m_requestedEta, m_sigmaEta,
-                             m_minEta, m_maxEta);
+                             m_minEta, m_maxEta, engine );
   double phi = generateValue(m_PhiGenMode,m_requestedPhi, m_sigmaPhi,
-                             m_minPhi, m_maxPhi);
+                             m_minPhi, m_maxPhi, engine );
 
   // Transform to x,y,z coordinates
   //
@@ -154,7 +147,9 @@ void GenericGun::generateParticle( Gaudi::LorentzVector & fourMomentum ,
 //============================================================================
 double GenericGun::generateValue( const int mode, const double val,
                                   const double sigma, const double min,
-                                  const double max) {
+                                  const double max, CLHEP::HepRandomEngine & engine ) {
+  CLHEP::RandGauss gaussGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   double tmp ;
   int i = 0 ;
   const int maxtries = 100 ;
@@ -166,7 +161,7 @@ double GenericGun::generateValue( const int mode, const double val,
     tmp = max + 1.0 ;
     i = 0 ;
     do {
-      tmp = m_gaussGenerator() * sigma + val ;
+      tmp = gaussGenerator() * sigma + val ;
       i++;
     } while ( ( (tmp<min) || (tmp > max) ) && (i < maxtries));
     if(i>maxtries) {
@@ -175,7 +170,7 @@ double GenericGun::generateValue( const int mode, const double val,
     }
     return tmp;
   case SPGGenMode::FlatMode :
-    tmp = m_flatGenerator() * ( max - min ) + min ;
+    tmp = flatGenerator() * ( max - min ) + min ;
     return tmp;
   default:
     error() << "Unknown Generation Mode" << endmsg;

@@ -2,12 +2,14 @@
 #include "PoissonPileUp.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From Generators
 #include "GenInterfaces/ICounterLogFile.h"
 #include "Generators/GenCounters.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandPoisson.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : PoissonPileUp
@@ -29,29 +31,24 @@ StatusCode PoissonPileUp::initialize() {
   StatusCode sc = GaudiTool::initialize();
   if (sc.isFailure()) return sc;
 
-  m_randSvc = svc<IRndmGenSvc>("RndmGenSvc", true);
-  if (!m_randSvc) return Error("Could not get RndmGenSvc");
   m_xmlLogTool = tool<ICounterLogFile>("XmlCounterLogFile");
   if (!m_xmlLogTool) Warning("No XML Counter log tool found");
 
   return sc;
 }
 
-unsigned int PoissonPileUp::numberOfPileUp() {
-  Rndm::Numbers poissonGenerator{};
+unsigned int PoissonPileUp::numberOfPileUp(CLHEP::HepRandomEngine & engine) {
+  
   unsigned int result = 0;
 
-  if (poissonGenerator.initialize(m_randSvc, Rndm::Poisson(m_mean))
-          .isSuccess()) {
-    while (0 == result) {
-      m_nEvents++;
-      result = (unsigned int)poissonGenerator();
-      if (0 == result) {
-        m_numberOfZeroInteraction++;
-      }
+  CLHEP::RandPoisson poissonGenerator{engine, m_mean};
+
+  while (0 == result) {
+    m_nEvents++;
+    result = (unsigned int)poissonGenerator();
+    if (0 == result) {
+      m_numberOfZeroInteraction++;
     }
-  } else {
-    Error("Could not initialize Poisson random numbers!");
   }
   return result;
 }

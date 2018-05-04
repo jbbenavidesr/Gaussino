@@ -9,7 +9,7 @@
 
 // HepMC
 #include "HepMC/GenEvent.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 
 // Defaults for attribute names
 #include "Defaults/HepMCAttributes.h"

@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 // from ParticleGuns
 #include "LbPGuns/IParticleGunTool.h"
@@ -35,7 +34,8 @@ public:
  
   /// Specialized method called by base class in execute
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
-                                 Gaudi::LorentzVector & origin , int & pdgId ) ;
+                                 Gaudi::LorentzVector & origin , int & pdgId ,
+                                 CLHEP::HepRandomEngine & engine ) ;
 
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -43,13 +43,13 @@ public:
 protected:
   
   /// Generate 3-momentum for a uniformly flat distribution in x-y plane
-  void generateUniformXY(double& px, double& py, double& pz);
+  void generateUniformXY(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine );
   
   /// Generate 3-momentum for a regular grid in x-y plane
   StatusCode generateGridXY(double& px, double& py, double& pz);
 
   /// Generate 3-momentum for a uniformly flat distribution in eta-phi plane
-  void generateUniformEtaPhi(double& px, double& py, double& pz);
+  void generateUniformEtaPhi(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine );
 
   /// Generate 3-momentum for a regular grid in eta-phi plane
   StatusCode generateGridEtaPhi(double& px, double& py, double& pz);
@@ -94,8 +94,6 @@ private:
   int m_counterY;    ///< Size of step in y
   int m_counterEta;  ///< Size of step in eta
   int m_counterPhi;  ///< Size of step in phi
-
-  Rndm::Numbers m_flatGenerator; ///< Random number generator
 };
 
 #endif // PARTICLEGUNS_MATERIALEVAL_H

@@ -14,7 +14,7 @@
 // From HepMC
 #include "HepMC/GenParticle.h"
 #include "HepMC/GenEvent.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
 // from Generators
@@ -67,7 +67,7 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                                             std::vector<HepMC::GenEvent> & theEvents , 
                                             LHCb::GenCollisions & 
-                                            theCollisions ) {
+                                            theCollisions , CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   bool gotSignalInteraction = false ;
 
@@ -100,7 +100,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 
     if (i==0 && ! gotSignalInteraction) theGenCollision -> setIsSignal( true ) ;
 
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
  
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
@@ -128,7 +128,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
         if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
 
           // establish correct multiplicity of signal
-          if ( ensureMultiplicity( theParticleList.size() ) ) {            
+          if ( ensureMultiplicity( theParticleList.size() , engine ) ) {            
             
             // If there are several particles passing the cuts, choose one  
             // and revert event if it has pz < 0 
@@ -138,7 +138,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
             hasFlipped = false ;
 	    hasFailed  = false ;
             theSignal = chooseAndRevert( theParticleList , isInverted , 
-                                         hasFlipped , hasFailed ) ;
+                                         hasFlipped , hasFailed , engine ) ;
 
 	    if ( hasFailed ) {
 	      Error( "Skip Event" ) ;

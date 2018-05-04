@@ -5,12 +5,13 @@
 #include "CollidingBeamsWithSvc.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GenBeam/IBeamInfoSvc.h"
 
 // From Kernel
 #include "GaudiKernel/SystemOfUnits.h"
 
+#include "NewRnd/RndGlobal.h"
+#include "CLHEP/Random/RandGauss.h"
 //-----------------------------------------------------------------------------
 // Implementation file for class : CollidingBeamsWithSvc
 //
@@ -43,13 +44,6 @@ StatusCode CollidingBeamsWithSvc::initialize() {
   StatusCode sc = GaudiTool::initialize();
   if (sc.isFailure()) return sc;
 
-  // Initialize the number generator
-  IRndmGenSvc* randSvc = svc<IRndmGenSvc>("RndmGenSvc", true);
-
-  sc = m_gaussianDist.initialize(randSvc, Rndm::Gauss(0., 1.));
-  if (!sc.isSuccess())
-    return Error("Could not initialize Gaussian random generator", sc);
-  release(randSvc);
   m_beaminfosvc = svc<IBeamInfoSvc>("BeamInfoSvc", true);
   if (!m_beaminfosvc) {
     return Error("Error retrieving the BeamInfosvc");
@@ -87,21 +81,22 @@ void CollidingBeamsWithSvc::getMeanBeams(Gaudi::XYZVector& pBeam1,
 void CollidingBeamsWithSvc::getBeams(Gaudi::XYZVector& pBeam1,
                                      Gaudi::XYZVector& pBeam2) {
   double p1x, p1y, p1z, p2x, p2y, p2z;
+  CLHEP::RandGauss gaussianDist{ThreadLocalEngine::Get(), 0, 1};
   p1x = m_beaminfosvc->energy() *
         sin(m_beaminfosvc->horizontalCrossingAngle() + m_beaminfosvc->horizontalBeamlineAngle() +
-            m_gaussianDist() * m_beaminfosvc->angleSmear());
+            gaussianDist() * m_beaminfosvc->angleSmear());
   p1y = m_beaminfosvc->energy() *
         sin(m_beaminfosvc->verticalCrossingAngle() + m_beaminfosvc->verticalBeamlineAngle() +
-            m_gaussianDist() * m_beaminfosvc->angleSmear());
+            gaussianDist() * m_beaminfosvc->angleSmear());
   p1z = m_beaminfosvc->energy();
   pBeam1.SetXYZ(p1x, p1y, p1z);
 
   p2x = m_beaminfosvc->energy() *
         sin(m_beaminfosvc->horizontalCrossingAngle() - m_beaminfosvc->horizontalBeamlineAngle() +
-            m_gaussianDist() * m_beaminfosvc->angleSmear());
+            gaussianDist() * m_beaminfosvc->angleSmear());
   p2y = m_beaminfosvc->energy() *
         sin(m_beaminfosvc->verticalCrossingAngle() - m_beaminfosvc->verticalBeamlineAngle() +
-            m_gaussianDist() * m_beaminfosvc->angleSmear());
+            gaussianDist() * m_beaminfosvc->angleSmear());
   p2z = -m_beaminfosvc->energy();
   pBeam2.SetXYZ(p2x, p2y, p2z);
 }

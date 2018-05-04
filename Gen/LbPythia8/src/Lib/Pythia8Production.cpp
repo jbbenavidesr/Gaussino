@@ -28,6 +28,9 @@
 #include "HepMC/Attribute.h"
 #include "Defaults/HepMCAttributes.h"
 
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8Production
 //
@@ -40,7 +43,7 @@
 Pythia8Production::Pythia8Production(const string& type, const string& name,
                                      const IInterface* parent)
   : GaudiTool(type, name, parent), m_pythia(0), m_hooks(0), m_lhaup(0),
-    m_beamTool(0), m_pythiaBeamTool(0), m_randomEngine(0), m_nEvents(0),
+    m_beamTool(0), m_pythiaBeamTool(0), m_nEvents(0),
     m_showBanner(false), m_xmlLogTool(0) {
  
   // Declare the tool properties.
@@ -109,16 +112,6 @@ StatusCode Pythia8Production::initialize() {
   if (sc.isFailure())
     Exception("Failed to initialize the Gaudi tool.");
   
-  // Initialize the random number generator.
-  IRndmGenSvc* randSvc(0);
-  try {randSvc = svc<IRndmGenSvc>("RndmGenSvc", true);}
-  catch (const GaudiException& e) 
-    {Exception("Failed to initialize the RndmGenSvc.");}
-  m_randomEngine = new GaudiRandomForPythia8(randSvc , sc);
-  if (!sc.isSuccess()) 
-    Exception("Failed to initialize GaudiRandomForPythia8.");
-  release(randSvc);
-
   // Initialize the beam tool.
   m_beamTool = tool<IBeamTool>(m_beamToolName, this);
   if (!m_beamTool) Exception("Failed to initialize the IBeamTool.");
@@ -164,7 +157,6 @@ StatusCode Pythia8Production::initialize() {
 StatusCode Pythia8Production::initializeGenerator() {
 
   // Initialize the external pointers.
-  m_pythia->setRndmEnginePtr(m_randomEngine);
   m_pythia->setBeamShapePtr(m_pythiaBeamTool);
   if (m_hooks) m_pythia->setUserHooksPtr(m_hooks);
   if (m_lhaup) m_pythia->setLHAupPtr(m_lhaup);
@@ -252,7 +244,6 @@ StatusCode Pythia8Production::finalize() {
   
   // Clean up.
   if (m_pythiaBeamTool) delete m_pythiaBeamTool;
-  if (m_randomEngine) delete m_randomEngine;
   if (m_lhaup) delete m_lhaup;
   if (m_hooks) delete m_hooks;
   if (m_pythia) delete m_pythia;
@@ -263,8 +254,22 @@ StatusCode Pythia8Production::finalize() {
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8Production::generateEvent(HepMC::GenEvent* theEvent,
-					    LHCb::GenCollision* theCollision) {
+					    LHCb::GenCollision* theCollision, CLHEP::HepRandomEngine & engine ) {
 
+  // Not very elegant but need to stop Pythia8 from being accessed concurrently
+  std::lock_guard<std::mutex> lock(m_pythia_lock);
+
+  class RndForPythia : public Pythia8::RndmEngine {
+    public:
+    RndForPythia(CLHEP::HepRandomEngine & engine ):m_gen(engine, 0, 1){}
+    virtual double flat(){return m_gen();}
+
+    private:
+      CLHEP::RandFlat m_gen;
+  };
+
+  RndForPythia rnd_generator{engine};
+  m_pythia->setRndmEnginePtr(&rnd_generator);
   // Generate the event (make 10 attempts).
   int tries(0);
   while (!m_pythia->next() && tries < 10) ++tries;

@@ -85,7 +85,7 @@ public:
    */
   virtual StatusCode generateEvent 
   ( HepMC::GenEvent    * theEvent , 
-    LHCb::GenCollision * theInfo  ) ;
+    LHCb::GenCollision * theInfo , CLHEP::HepRandomEngine & ) ;
   // ===================================================================
   /// Declare a particle stable to the production generator.
   virtual void setStable
@@ -195,7 +195,8 @@ DECLARE_COMPONENT( ReadHepMCAsciiFile )
 // ===================================================================
 StatusCode ReadHepMCAsciiFile::generateEvent 
 ( HepMC::GenEvent    *    theEvent , 
-  LHCb::GenCollision * /* theInfo */ ) 
+  LHCb::GenCollision * /* theInfo */ ,
+  CLHEP::HepRandomEngine & /* engine */ ) 
 {
   Assert ( 0 != m_file , "Invalid input file!" ) ;
   //

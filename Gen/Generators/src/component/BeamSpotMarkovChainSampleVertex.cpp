@@ -1,10 +1,13 @@
-
 // local
 #include "BeamSpotMarkovChainSampleVertex.h"
 
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenParticle.h"
 #include "HepMC/GenVertex.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : LHCbAcceptance
@@ -30,36 +33,6 @@ BeamSpotMarkovChainSampleVertex( const std::string& type,
   declareProperty( "NMarkovChainSamples", m_nMCSamples = 1000 );
 }
 
-//=============================================================================
-// Initialize 
-//=============================================================================
-StatusCode BeamSpotMarkovChainSampleVertex::initialize( ) 
-{
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
-  
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-
-  // Gaussians used to perturb the four-vector in the Markov chain
-  // The standard deviation of the pertubation should reflect (about 10%) 
-  // the width of the function that is sampled from.
-  // However, it is not sensitive to the precise value... changing for example 
-  // the sigma in m_gaussDistZ from 5. to 7. will not make a difference.
-
-  auto result = ( sc 
-         && m_gaussDistX.initialize( randSvc , Rndm::Gauss( 0. , 0.025  ) )
-         && m_gaussDistY.initialize( randSvc , Rndm::Gauss( 0. , 0.025  ) ) 
-         && m_gaussDistZ.initialize( randSvc , Rndm::Gauss( 0. , 5.     ) ) 
-         && m_gaussDistT.initialize( randSvc , Rndm::Gauss( 0. , 1.     ) ) 
-         && m_flatDist.initialize  ( randSvc , Rndm::Flat ( 0. , 1.     ) ) );
-  if(!result) sc = StatusCode::FAILURE;
-  if ( sc.isFailure() ) 
-  { return Error( "Could not initialize random number generators" ); }
-
-  release( randSvc ) ;
-
-  return sc ; 
-}
 
 //=============================================================================
 // Function representing the product of two 4D Gaussian PDFs (Floris)
@@ -133,9 +106,15 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
 //=============================================================================
 // Markov chain sampler
 //=============================================================================
-StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEvent )
+StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEvent ,
+                                                         CLHEP::HepRandomEngine & engine )
 {
-  
+  CLHEP::RandGauss gaussDistX{engine, 0., 0.025};
+  CLHEP::RandGauss gaussDistY{engine, 0., 0.025};
+  CLHEP::RandGauss gaussDistZ{engine, 0., 5.};
+  CLHEP::RandGauss gaussDistT{engine, 0., 1.};
+  CLHEP::RandFlat flatDist{engine, 0.,1.};
+
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( ! beamp ) Exception( "No beam parameters registered" ) ;
 
@@ -153,10 +132,10 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
       const auto f = gauss4D( beamp , x );
       
       // smear the point. random walk.
-      const HepMC::FourVector y( x.x() + m_gaussDistX(),
-                                 x.y() + m_gaussDistY(),
-                                 x.z() + m_gaussDistZ(),
-                                 x.t() + m_gaussDistT() );    
+      const HepMC::FourVector y( x.x() + gaussDistX(),
+                                 x.y() + gaussDistY(),
+                                 x.z() + gaussDistZ(),
+                                 x.t() + gaussDistT() );    
       
       // compute the prob for the new point
       const auto g = gauss4D( beamp , y );    
@@ -170,7 +149,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
       {
         // randomly keep worse point a fraction depending on the prob values.
         const auto ratio = ( fabs(f)>0 ? g/f : 0.0 );
-        const auto r = m_flatDist( );
+        const auto r = flatDist( );
         if ( r < ratio ) { x = y; }	
       }
     }

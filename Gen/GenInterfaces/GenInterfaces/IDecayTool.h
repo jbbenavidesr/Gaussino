@@ -9,6 +9,10 @@ namespace HepMC {
   class GenParticle ;
 }
 
+namespace CLHEP {
+  class HepRandomEngine;
+}
+
 /** @class IDecayTool IDecayTool.h "Algorithms/IDecayTool.h"
  *  
  *  Abstract interface to decay engines.
@@ -29,8 +33,8 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            particle is updated with the generated decay 
    *                            tree.
    */
-  virtual StatusCode generateDecay( HepMC::GenParticle * theMother ) const 
-    = 0 ;
+  virtual StatusCode generateDecay( HepMC::GenParticle * theMother ,
+                                    CLHEP::HepRandomEngine & engine ) const = 0 ;
 
   /** Generates the forced decay of a signal particle.
    *  @param[in,out] theMother  Particle to decay according to the forced
@@ -40,7 +44,8 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            violation)
    */
   virtual StatusCode generateSignalDecay( HepMC::GenParticle * theMother ,
-                                          bool & flip ) const = 0 ;
+                                          bool & flip ,
+                                          CLHEP::HepRandomEngine & engine ) const = 0 ;
 
   /** Generates the decay of a particle, stopping at a given PDG Id.
    *  This allows to generate decay of excited heavy particles, keeping
@@ -56,7 +61,8 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            signal particle).
    */
   virtual StatusCode generateDecayWithLimit( HepMC::GenParticle * theMother ,
-                                             const int targetId ) const = 0 ;
+                                             const int targetId ,
+                                             CLHEP::HepRandomEngine & engine ) const = 0 ;
 
   /** Enable the possibility to flip the flavour of the particle in the decay
    *  engine, to generate CP violation.

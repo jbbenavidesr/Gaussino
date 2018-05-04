@@ -10,7 +10,7 @@
 #include "SaveSignalBInformation.h"
 
 #include "Defaults/HepMCAttributes.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SaveSignalBInformation
@@ -66,6 +66,8 @@ HepMC::GenEvent* SaveSignalBInformation::extractSignal( const HepMC::GenVertexPt
     auto hepmcevt = new HepMC::GenEvent();
     hepmcevt->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                              std::make_shared<HepMC::StringAttribute>( "String" ) );
+    // Little hack to make it thread-safe when reading later
+    hepmcevt->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 
     if ( 0 == Bstring->production_vertex() ) error() << "Bstring particle has no production vertex." << endmsg;
 

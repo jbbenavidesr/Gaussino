@@ -47,7 +47,7 @@ StatusCode MinimumBias::initialize( ) {
 //=============================================================================
 bool MinimumBias::generate( const unsigned int nPileUp , 
                             std::vector<HepMC::GenEvent> & theEvents , 
-                            LHCb::GenCollisions & theCollisions ) {
+                            LHCb::GenCollisions & theCollisions, CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -56,7 +56,7 @@ bool MinimumBias::generate( const unsigned int nPileUp ,
     prepareInteraction( &theEvents , &theCollisions , theGenEvent , 
                         theGenCollision ) ;
     
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
   } 
   return true ;

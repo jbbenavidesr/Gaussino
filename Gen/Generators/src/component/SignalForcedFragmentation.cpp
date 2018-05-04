@@ -9,7 +9,7 @@
 
 // from HepMC
 #include "HepMC/GenEvent.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
 // from Kernel
@@ -26,6 +26,9 @@
 
 // local
 #include "SignalForcedFragmentation.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalForcedFragmentation
@@ -60,9 +63,11 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 //=============================================================================
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
                                           std::vector<HepMC::GenEvent> & theEvents ,
-                                          LHCb::GenCollisions & theCollisions )
+                                          LHCb::GenCollisions & theCollisions ,
+                                          CLHEP::HepRandomEngine & engine )
 {
   StatusCode sc ;
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
 
   // first decay signal particle
   HepMC::GenEvent * theSignalHepMCEvent = new HepMC::GenEvent( ) ;
@@ -93,7 +98,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     // decide which flavour to generate : 
     // if flavour < 0.5, b flavour
     // if flavour >= 0.5, bbar flavour
-    double flavour = m_flatGenerator() ;
+    double flavour = flatGenerator() ;
 
     m_decayTool -> enableFlip() ;
     
@@ -107,7 +112,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     theSignalAtRest -> set_pdg_id( theSignalPID ) ;
   }
 
-  sc = m_decayTool -> generateSignalDecay( theSignalAtRest , flip ) ;
+  sc = m_decayTool -> generateSignalDecay( theSignalAtRest , flip , engine ) ;
   if ( ! sc.isSuccess() ) return false ;
 
   bool result = false ;  
@@ -130,7 +135,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     prepareInteraction( &theEvents , &theCollisions , theGenEvent ,
                         theGenCollision ) ;
 
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
     if ( ! result ) {
@@ -146,7 +151,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         HepMC::GenParticlePtr theSignal = chooseAndRevert( theParticleList , 
                                                            isInverted ,
                                                            dummyHasFlipped , 
-							  hasFailed ) ;
+							  hasFailed , engine ) ;
 
         // Erase daughters of signal particle
         HepMCUtils::RemoveDaughters( theSignal ) ;

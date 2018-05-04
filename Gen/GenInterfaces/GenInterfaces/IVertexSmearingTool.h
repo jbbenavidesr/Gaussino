@@ -11,6 +11,10 @@ namespace HepMC {
   class GenEvent;
 }
 
+namespace CLHEP {
+  class HepRandomEngine;
+}
+
 /** @class IVertexSmearingTool IVertexSmearingTool.h "GenInterfaces/IVertexSmearingTool.h"
  *  
  *  Abstract interface to vertex smearing tools. Concrete implementations 
@@ -28,6 +32,6 @@ public:
   static const InterfaceID& interfaceID() { return IID_IVertexSmearingTool ; }
   
   /// Smear the vertex of the interaction (independantly of the others)
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) = 0 ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) = 0 ;
 };
 #endif // GENERATORS_ISMEARINGTOOL_H

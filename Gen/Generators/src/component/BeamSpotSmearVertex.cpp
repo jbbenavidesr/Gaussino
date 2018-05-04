@@ -5,7 +5,6 @@
 #include "BeamSpotSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 
 // from HepMC
@@ -15,6 +14,9 @@
 
 // from Event
 #include "Event/BeamParameters.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : LHCbAcceptance
@@ -54,17 +56,9 @@ BeamSpotSmearVertex::~BeamSpotSmearVertex( ) { ; }
 StatusCode BeamSpotSmearVertex::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
-  
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_gaussDist.initialize( randSvc , Rndm::Gauss( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize gaussian random number generator" ) ;
-
     
   info() << "Smearing of interaction point with Gaussian distribution "
          << endmsg;
-
-  release( randSvc ) ;
  
   return sc ;
 }
@@ -72,18 +66,21 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
+StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ,
+                                             CLHEP::HepRandomEngine & engine ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beamp ) Exception( "No beam parameters registered" ) ;
 
   double dx , dy , dz;
+
+  CLHEP::RandGauss gaussDist{engine, 0, 1};
   
-  do { dx = m_gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
+  do { dx = gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * beamp -> sigmaX() + beamp -> beamSpot().x() ;
-  do { dy = m_gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
+  do { dy = gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
   dy = dy * beamp -> sigmaY() + beamp -> beamSpot().y() ;
-  do { dz = m_gaussDist( ) ; } while ( fabs( dz ) > m_zcut ) ;
+  do { dz = gaussDist( ) ; } while ( fabs( dz ) > m_zcut ) ;
   dz = dz * beamp -> sigmaZ() + beamp -> beamSpot().z() ;
 
   double meanT = m_timeSignVsT0 * beamp -> beamSpot().z() / Gaudi::Units::c_light ;

@@ -49,7 +49,8 @@ public:
    */
   virtual bool generate( const unsigned int nPileUp , 
                          std::vector<HepMC::GenEvent> & theEvents ,
-                         LHCb::GenCollisions & theCollisions ) override;
+                         LHCb::GenCollisions & theCollisions ,
+                         CLHEP::HepRandomEngine & engine ) override;
 
 protected:
   /// Delete full content of an event

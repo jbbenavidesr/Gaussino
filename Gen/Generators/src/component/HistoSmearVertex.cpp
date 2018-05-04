@@ -2,12 +2,12 @@
 #include "HistoSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
 #include "TFile.h"
 #include "TH3.h"
+#include "TRandom3.h"
 
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenParticle.h"
@@ -82,7 +82,9 @@ StatusCode HistoSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent ) {
+StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & ) {
+  //FIXME: This is only temporary until we can replace the internally used random engine.
+  return Error("Unsupported. Need to correctly use random engine!");
   double dx , dy , dz , dt ;
   m_hist->GetRandom3(dx,dy,dz);
 

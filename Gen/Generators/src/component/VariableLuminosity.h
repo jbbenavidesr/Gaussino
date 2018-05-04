@@ -5,12 +5,10 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IPileUpTool.h"
 
 // Forward declarations
-class IRndmGenSvc ;
 class ICounterLogFile ;
 
 /** @class VariableLuminosity VariableLuminosity.h "VariableLuminosity.h"
@@ -44,7 +42,7 @@ public:
    *  The mean luminosity is given in options so the maximum luminosity 
    *  (at t=0) is computed using the fill duration.
    */
-  virtual unsigned int numberOfPileUp( ) ;
+  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) ;
@@ -64,11 +62,5 @@ private:
 
   /// Counter of events (including empty interactions)
   int    m_nEvents ;
-
-  /// Random number generator service
-  IRndmGenSvc * m_randSvc ;
-
-  /// Flat random number generator
-  Rndm::Numbers m_flatGenerator ;
 };
 #endif // GENERATORS_VARIABLELUMINOSITY_H

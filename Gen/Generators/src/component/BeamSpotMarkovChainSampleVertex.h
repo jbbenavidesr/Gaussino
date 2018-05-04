@@ -4,10 +4,8 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 
 // from Event
@@ -40,14 +38,11 @@ public:
                                    const IInterface* parent );
  
 
-  /// Initialize function
-  virtual StatusCode initialize( ) override;
-
   /** Implementation of IVertexSmearingTool::smearVertex.
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) override;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) override;
 
  private:
 
@@ -89,14 +84,6 @@ public:
   double m_ycut;
   /// Number of sigma above which to cut for z-axis smearing (set by options)
   double m_zcut;
-
-  //  Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
-  //  FIXME: THREAD SAFETY WARNING!
-  Rndm::Numbers m_gaussDistX ; ///< Gaussian random number generator for Markov chain pertubation in x
-  Rndm::Numbers m_gaussDistY ; ///< Gaussian random number generator for Markov chain pertubation in y
-  Rndm::Numbers m_gaussDistZ ; ///< Gaussian random number generator for Markov chain pertubation in z
-  Rndm::Numbers m_gaussDistT ; ///< Gaussian random number generator for Markov chain pertubation in t
-  Rndm::Numbers m_flatDist ; ///< Random number generator (between 0 and 1)
 
 };
 

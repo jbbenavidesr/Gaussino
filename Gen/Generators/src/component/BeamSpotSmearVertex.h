@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IVertexSmearingTool.h"
 
@@ -33,7 +32,7 @@ public:
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) ;
   
  private:
   /// Number of sigma above which to cut for x-axis smearing (set by options)
@@ -50,9 +49,6 @@ public:
   int  m_timeSignVsT0 ;
 
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
-
-  //FIXME: THREAD SAFETY WARNING!
-  Rndm::Numbers m_gaussDist ; ///< Gaussian random number generator
   
 };
 #endif // GENERATORS_BEAMSPOTSMEARVERTEX_H

@@ -5,7 +5,6 @@
 #include "FixedLuminosityForSpillOver.h"
 
 // from Gaudi
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From Event
@@ -16,6 +15,9 @@
 // From Generators
 #include "Generators/GenCounters.h"
 #include "GenInterfaces/ICounterLogFile.h" 
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandPoisson.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FixedLuminosityForSpillOver
@@ -37,8 +39,7 @@ FixedLuminosityForSpillOver::FixedLuminosityForSpillOver( const std::string& typ
   : GaudiTool ( type, name , parent ) ,
     m_xmlLogTool( 0 ) ,
     m_numberOfZeroInteraction( 0 ) ,
-    m_nEvents( 0 ) ,
-    m_randSvc( 0 ) {
+    m_nEvents( 0 ) {
     declareInterface< IPileUpTool >( this ) ;
     declareProperty( "BeamParameters" , 
                      m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
@@ -56,9 +57,6 @@ StatusCode FixedLuminosityForSpillOver::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
 
-  // Initialize the number generator
-  m_randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-
   // Log file XML
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
   
@@ -70,7 +68,7 @@ StatusCode FixedLuminosityForSpillOver::initialize( ) {
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosityForSpillOver::numberOfPileUp( ) {
+unsigned int FixedLuminosityForSpillOver::numberOfPileUp( CLHEP::HepRandomEngine & engine ) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
   
@@ -84,7 +82,7 @@ unsigned int FixedLuminosityForSpillOver::numberOfPileUp( ) {
   key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");  
   genFSR->incrementGenCounter(key,1);
 
-  Rndm::Numbers poissonGenerator( m_randSvc , Rndm::Poisson( beam -> nu() ) ) ;
+  CLHEP::RandPoisson poissonGenerator{engine, beam->nu()};
   result = (unsigned int) poissonGenerator() ;
   if ( 0 == result ) {
     m_numberOfZeroInteraction++ ;
@@ -109,6 +107,5 @@ void FixedLuminosityForSpillOver::printPileUpCounters( ) {
 // Finalize method
 //=============================================================================
 StatusCode FixedLuminosityForSpillOver::finalize( ) {
-  release( m_randSvc ) ;
   return GaudiTool::finalize( ) ;
 }

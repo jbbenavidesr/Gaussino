@@ -78,7 +78,6 @@ def configure_rnd_init(**kwargs):
 
     from Configurables import SeedingTool
     GenRndInit(_name).addTool(SeedingTool, name='SeedingTool')
-    GenRndInit(_name).RndInitToolName = 'SeedingTool'
     GenRndInit(_name).MCHeader = 'Gen/HeaderPreGen'
     return GenRndInit(_name)
 

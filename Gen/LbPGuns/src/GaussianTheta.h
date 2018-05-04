@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 // from ParticleGuns
 #include "LbPGuns/IParticleGunTool.h"
@@ -33,7 +32,7 @@ class GaussianTheta : public GaudiTool , virtual public IParticleGunTool {
   /// Generate the particle
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId ) ;
+                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
                                  
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -46,10 +45,6 @@ class GaussianTheta : public GaudiTool , virtual public IParticleGunTool {
   double m_sigmaTheta ; ///< Sigma of Theta Gaussian
   double m_x_axis ;
   double m_y_axis ;
-  
-  // Random generators:
-  Rndm::Numbers m_flatGenerator ;
-  Rndm::Numbers m_gaussGenerator ;
 } ;
 
 #endif // PARTICLEGUNS_GENERICGUN_H

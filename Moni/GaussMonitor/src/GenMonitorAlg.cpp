@@ -72,7 +72,7 @@ void GenMonitorAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents 
 
     // Get the signal process ID from the attributes
     if ( produceHistos() ) {
-      auto sig_proc_id =
+      auto sig_proc_id = 
           hepmcevent.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
       std::lock_guard<std::mutex> lock( m_histo_lock );
       m_hProcess->fill( sig_proc_id );

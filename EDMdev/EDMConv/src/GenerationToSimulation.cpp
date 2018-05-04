@@ -16,8 +16,8 @@
 
 #include "range/v3/all.hpp"
 
-#include "HepMC/Status.h"
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/Status.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
 DECLARE_COMPONENT(GenerationToSimulation)

@@ -9,8 +9,8 @@ from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
 
-# from Configurables import GenerationToSimulation
-# from Configurables import CheckMCStructure
+from Configurables import GenerationToSimulation
+from Configurables import CheckMCStructure
 
 
 class GenPhase(ConfigurableUser):
@@ -77,6 +77,7 @@ class GenPhase(ConfigurableUser):
         gen_moni = configure_gen_monitor()
 
         seq = GaudiSequencer('GenerationPhase')
+        # seq.Members = [rnd_init, prod_alg]
         seq.Members = [rnd_init, prod_alg, gen_moni]
         if self.getProp('WriteHepMC'):
             seq.Members += [configure_hepmc_writer()]

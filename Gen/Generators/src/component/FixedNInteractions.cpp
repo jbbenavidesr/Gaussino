@@ -54,7 +54,7 @@ StatusCode FixedNInteractions::initialize( ) {
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedNInteractions::numberOfPileUp( ) {
+unsigned int FixedNInteractions::numberOfPileUp( CLHEP::HepRandomEngine & ) {
   return m_nInteractions ;
 }
 

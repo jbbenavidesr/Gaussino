@@ -11,7 +11,9 @@
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
-#include "GaudiKernel/IRndmGenSvc.h" 
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //===========================================================================
 // Implementation file for class: MomentumRange
@@ -53,11 +55,6 @@ StatusCode MomentumRange::initialize() {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc ;
 
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize flat generator" ) ;
-  
   // Get the mass of the particle to be generated
   //
   LHCb::IParticlePropertySvc* ppSvc = 
@@ -99,15 +96,16 @@ StatusCode MomentumRange::initialize() {
 //===========================================================================
 void MomentumRange::generateParticle( Gaudi::LorentzVector & momentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId ) {  
+                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {  
   
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   origin.SetCoordinates( 0. , 0. , 0. , 0.  );                                      
   double px(0.), py(0.), pz(0.) ;
       
   // Generate values for energy, theta and phi
-  double p = m_minMom + m_flatGenerator() * (m_maxMom-m_minMom) ;
-  double theta = m_minTheta + m_flatGenerator() * (m_maxTheta-m_minTheta) ;
-  double phi = m_minPhi + m_flatGenerator() * (m_maxPhi-m_minPhi);
+  double p = m_minMom + flatGenerator() * (m_maxMom-m_minMom) ;
+  double theta = m_minTheta + flatGenerator() * (m_maxTheta-m_minTheta) ;
+  double phi = m_minPhi + flatGenerator() * (m_maxPhi-m_minPhi);
   
   // Transform to x,y,z coordinates
   double pt = p*sin(theta);
@@ -117,7 +115,7 @@ void MomentumRange::generateParticle( Gaudi::LorentzVector & momentum ,
     
   // randomly choose a particle type
   unsigned int currentType = 
-    (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
+    (unsigned int)( m_pdgCodes.size() * flatGenerator() );
   // protect against funnies
   if ( currentType >= m_pdgCodes.size() ) currentType = 0; 
 

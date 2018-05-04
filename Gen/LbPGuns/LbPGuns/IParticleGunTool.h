@@ -16,6 +16,10 @@
  *  @date   2008-05-18
  */
 
+namespace CLHEP {
+  class HepRandomEngine;
+}
+
 static const InterfaceID IID_IParticleGunTool( "IParticleGunTool" , 1 , 0 ) ;
 
 class IParticleGunTool : virtual public IAlgTool {
@@ -30,7 +34,7 @@ public:
    */
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId ) = 0 ;
+                                 int & pdgId , CLHEP::HepRandomEngine & engine ) = 0 ;
 
   /// Print various counters at the end of the job
   virtual void printCounters( ) = 0 ;

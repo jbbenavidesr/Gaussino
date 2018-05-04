@@ -7,9 +7,6 @@
 // from SEAL
 #include "boost/tokenizer.hpp"
 
-// from Gaudi
-#include "GaudiKernel/RndmGenerators.h"
-
 // from Event
 #include "Event/GenHeader.h"
 #include "Event/GenCollision.h"
@@ -27,12 +24,11 @@
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 
-#include "HepMC/VertexAttribute.h"
+#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
-// Gaudi Common Flat Random Number generator
-#include "Generators/RandomForGenerator.h"
-
+#include "CLHEP/Random/RandFlat.h"
+#include "NewRnd/RndGlobal.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ParticleGun
@@ -54,15 +50,6 @@ StatusCode ParticleGun::initialize() {
   if ( sc.isFailure() ) return sc ;
 
   debug() << "==> Initialise" << endmsg ;
-
-  // Initialization of the Common Flat Random generator if not already done
-  // This generator must be used by all external MC Generator
-  if ( ! ( RandomForGenerator::getNumbers() ) ) {
-    sc = RandomForGenerator::getNumbers().initialize( randSvc( ) ,
-                                                      Rndm::Flat( 0 , 1 ) ) ;
-    if ( ! sc.isSuccess( ) )
-      return Error( "Could not initialize Rndm::Flat" , sc ) ;
-  }
 
   // Retrieve pile up tool
   if ( "" != m_numberOfParticlesToolName )
@@ -133,6 +120,10 @@ std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
 ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
   debug() << "Processing event type " << m_eventType << endmsg ;
+  auto engine = createRndmEngine();
+  ThreadLocalEngine::Guard guard(engine);
+  // Create a flat random generator to replace RandomForGenerator singleton
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   StatusCode sc = StatusCode::SUCCESS ;
 
   // Get the header and update the information
@@ -164,7 +155,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
     // Compute the number of pile-up interactions to generate
     if ( 0 != m_numberOfParticlesTool )
-      nParticles = m_numberOfParticlesTool -> numberOfPileUp( ) ;
+      nParticles = m_numberOfParticlesTool -> numberOfPileUp( engine ) ;
     // default set to 1 pile and 0 luminosity
     else nParticles = 1 ;
 
@@ -173,16 +164,18 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
       prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(theGenHeader.evtNumber()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(theGenHeader.runNumber()));
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
-        double massToGenerate = m_MassRange_min + RandomForGenerator::flat() * (m_MassRange_max-m_MassRange_min) ;
+        double massToGenerate = m_MassRange_min + flatGenerator() * (m_MassRange_max-m_MassRange_min) ;
         double energy = sqrt( massToGenerate * massToGenerate + theFourMomentum.P() * theFourMomentum.P() ) ;
         theFourMomentum.SetE( energy ) ;
       }
 
       // generate one particle
-      m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId );
+      m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId , engine );
 
       // create HepMC Vertex
       HepMC::GenVertex * v =
@@ -205,6 +198,12 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
           std::make_shared<HepMC::IntAttribute>(nParticles));
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
           std::make_shared<HepMC::VertexAttribute>(v));
+      auto attr = theGenEvent->attribute<HepMC::VertexAttribute>(Gaussino::HepMC::Attributes::SignalProcessVertex);
+      always() << "Should be " << v->id() << endmsg;
+      always() << "Index " << attr->value()->id() << endmsg;
+      std::string st = "";
+      attr->to_string(st);
+      always() << "string " << st << endmsg;
     }
 
     goodEvent = true ;
@@ -243,7 +242,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     // Apply smearing of primary vertex
     if ( 0 != m_vertexSmearingTool ) {
       for ( auto & event : theEvents ) {
-        sc = m_vertexSmearingTool -> smearVertex( &event ) ;
+        sc = m_vertexSmearingTool -> smearVertex( &event , engine ) ;
         if ( ! sc.isSuccess() ) error() << "Failed to smear event" << endmsg;
       }
     }
@@ -363,6 +362,8 @@ void ParticleGun::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
   theGenEvent = &theEvents->back();
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC::StringAttribute>( m_particleGunName) );
+  // Little hack to make it thread-safe when reading later
+  theGenEvent->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 
   //FIXME: Still need fix this, see header
   theGenCollision = new LHCb::GenCollision();

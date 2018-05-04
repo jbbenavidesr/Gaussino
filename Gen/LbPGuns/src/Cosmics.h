@@ -5,7 +5,6 @@
 // Include Files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 // from ParticleGuns
 #include "LbPGuns/IParticleGunTool.h"
@@ -33,7 +32,8 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
 
   /// Generation of particles
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
-                                 Gaudi::LorentzVector & origin , int & pdgId ) ;
+                                 Gaudi::LorentzVector & origin , int & pdgId ,
+                                 CLHEP::HepRandomEngine & engine ) ;
 
 
   /// Print counters
@@ -101,9 +101,6 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
 
   /// Names of particles to generate
   std::vector<std::string> m_names;
-
-  /// Flat random number generator
-  Rndm::Numbers m_flatGenerator ;
 };
 
 #endif // PARTICLEGUNS_COSMICS_H

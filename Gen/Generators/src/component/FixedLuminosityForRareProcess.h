@@ -10,7 +10,6 @@
 #include "GenInterfaces/IPileUpTool.h"
 
 // forward declaration
-class IRndmGenSvc ;
 class ICounterLogFile ;
 
 /** @class FixedLuminosityForRareProcess FixedLuminosityForRareProcess.h "FixedLuminosityForRareProcess.h"
@@ -30,21 +29,18 @@ public:
   virtual ~FixedLuminosityForRareProcess( ); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
   
-  /// Finalize method
-  virtual StatusCode finalize( ) ;
-
   /** Implements IPileUpTool::numberOfPileUp
    *  Returns the number of pile-up interactions in one event. It follows
    *  a Poisson distribution with 
    *  mean = Luminosity * cross_section / crossing_rate.
    *  The fixed luminosity is returned as the currentLuminosity.
    */
-  virtual unsigned int numberOfPileUp( ) ;
+  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) override;
 
   /// Implements IPileUpTool::printPileUpCounters
-  virtual void printPileUpCounters( ) ;
+  virtual void printPileUpCounters( ) override;
 
 protected:
 
@@ -54,7 +50,5 @@ private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
   int    m_nEvents ; ///< Counter of events (including empty events)
-
-  IRndmGenSvc * m_randSvc ; ///< Pointer to random number generator service
 };
 #endif // GENERATORS_FIXEDLUMINOSITYFORRAREPROCESS_H

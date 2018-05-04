@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h" 
 
 #include "Generators/ExternalGenerator.h" 
 
@@ -134,9 +133,6 @@ protected:
    */
   double        m_signalBr         ;
 
-  //FIXME: THREAD SAFETY PROBLEM
-  Rndm::Numbers m_flatGenerator    ; ///< Flat random nunmber generator
-
   /** Isolate signal particle decay tree for clean events. The resulting
    *  event is stored in the container /Event/Gen/SignalDecayTree.
    */
@@ -152,7 +148,7 @@ protected:
   HepMC::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
                                          bool & isInverted , 
                                          bool & hasFlipped ,
-					bool & hasFailed ) ;
+					bool & hasFailed , CLHEP::HepRandomEngine & engine) ;
 
   /** Ensures correct multiplicity of signal particles with an accept/reject
    *  algorithm.
@@ -161,7 +157,7 @@ protected:
    *  @return true if the event has to kept.
    *  @return false if the event has to be rejected.
    */
-  bool ensureMultiplicity( const unsigned int nSignal ) ;
+  bool ensureMultiplicity( const unsigned int nSignal , CLHEP::HepRandomEngine & engine) ;
 
   /** Update counters for efficiency calculations.
    *  @param[in]  particleList         List of particles to count.

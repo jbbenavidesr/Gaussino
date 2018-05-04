@@ -8,7 +8,6 @@
 
 // from ParticleGuns
 #include "LbPGuns/IParticleGunTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "Event/GenHeader.h"
 
@@ -46,7 +45,7 @@ class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
   /// Generation of particles
   virtual void generateParticle( Gaudi::LorentzVector & momentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId ) ;
+                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
 
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -60,9 +59,6 @@ class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
 
   /// Names of particles to generate
   std::vector<std::string> m_names;
-
-  /// Flat random number generator
-  Rndm::Numbers m_flatGenerator ;
 
   /// Name of input file
   std::string m_inputFileName;

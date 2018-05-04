@@ -85,7 +85,7 @@ StatusCode Special::finalize( ) {
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
                         std::vector<HepMC::GenEvent> & theEvents , 
-                        LHCb::GenCollisions & theCollisions ) {
+                        LHCb::GenCollisions & theCollisions , CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -105,7 +105,7 @@ bool Special::generate( const unsigned int nPileUp ,
     // First interaction is always "signal"
     
     if ( 0 == i ) {
-      sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+      sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
       if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
       
       ParticleVector theParticleList ;
@@ -128,7 +128,7 @@ bool Special::generate( const unsigned int nPileUp ,
     } else {
       // if event passed generator level cut
       // look if there are still enough pile-up events
-      if ( m_pileUpEventsVector.empty() ) generatePileUp() ;
+      if ( m_pileUpEventsVector.empty() ) generatePileUp( engine ) ;
       
       // retrieve now pile-up events
       HepMC::GenEvent * pileUpEvent = m_pileUpEventsVector.back() ;
@@ -159,7 +159,7 @@ void Special::printCounters( ) const {
 //=============================================================================
 // Generate PileUp Minimum Bias interactions
 //=============================================================================
-void Special::generatePileUp() {
+void Special::generatePileUp(CLHEP::HepRandomEngine & engine ) {
 
   if ( 0 == m_pileUpProductionTool ) {
     if ( "" != m_pileUpProductionToolName ) {
@@ -183,7 +183,7 @@ void Special::generatePileUp() {
     HepMC::GenEvent * theEvent = new HepMC::GenEvent ;
     LHCb::GenCollision * theCollision = new LHCb::GenCollision ;
     m_pileUpProductionTool -> generateEvent( theEvent , 
-                                             theCollision ) ;
+                                             theCollision , engine ) ;
     
     m_pileUpEventsVector.push_back( theEvent ) ;
     m_pileUpCollisionsVector.push_back( theCollision ) ;

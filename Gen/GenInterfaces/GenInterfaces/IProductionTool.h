@@ -12,6 +12,9 @@ namespace LHCb { class GenCollision ;
   class ParticleProperty ;
 }
 
+namespace CLHEP {
+  class HepRandomEngine;
+}
 
 
 /** @class IProductionTool IProductionTool.h "GenInterfaces/IProductionTool.h"
@@ -39,7 +42,8 @@ public:
    *                        generated interaction.
    */
   virtual StatusCode generateEvent( HepMC::GenEvent * theEvent , 
-                                    LHCb::GenCollision * theInfo ) = 0 ;
+                                    LHCb::GenCollision * theInfo,
+                                    CLHEP::HepRandomEngine & engine) = 0 ;
 
   /// Declare a particle stable to the production generator.
   virtual void setStable( const LHCb::ParticleProperty * thePP ) = 0 ;

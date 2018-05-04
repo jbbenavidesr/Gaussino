@@ -50,7 +50,7 @@ public:
    *  the generator level cut.
    */
   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC::GenEvent>& theEvents,
-                         LHCb::GenCollisions& theCollisions ) override;
+                         LHCb::GenCollisions& theCollisions , CLHEP::HepRandomEngine & engine ) override;
 
   /// Implements ISampleGenerationTool::printCounters
   virtual void printCounters() const override;
@@ -75,7 +75,7 @@ private:
   std::vector<LHCb::GenCollision*> m_pileUpCollisionsVector;
 
   /// function to generate a set of pile up events
-  void generatePileUp();
+  void generatePileUp(CLHEP::HepRandomEngine & engine );
 
   /// production tool which generates pile-up interactions
   IProductionTool* m_pileUpProductionTool = nullptr;

@@ -5,6 +5,7 @@
 // from Gaudi
 #include "GaudiKernel/RndmGenerators.h"
 #include "GaudiKernel/SystemOfUnits.h"
+#include "GaudiKernel/ThreadLocalContext.h"
 
 // from Event
 #include "Event/GenFSR.h"
@@ -25,9 +26,6 @@
 #include "Generators/GenCounters.h"
 #include "GenEvent/HepMCUtils.h"
 
-// Gaudi Common Flat Random Number generator
-#include "Generators/RandomForGenerator.h"
-
 // local
 #include "Generation.h"
 
@@ -43,6 +41,8 @@
 
 #include "Defaults/HepMCAttributes.h"
 #include "range/v3/all.hpp"
+
+#include "NewRnd/RndGlobal.h"
 //-----------------------------------------------------------------------------
 // Implementation file for class : Generation
 //
@@ -61,16 +61,6 @@ StatusCode Generation::initialize() {
   StatusCode sc = MultiTransformer::initialize();
   if ( sc.isFailure() ) return sc ;
   debug() << "==> Initialise" << endmsg ;
-
-  // Initialization of the Common Flat Random generator if not already done
-  // This generator must be used by all external MC Generator
-  if ( ! ( RandomForGenerator::getNumbers() ) ) {
-    //FIXME: THREAD SAFETY WARNING
-    sc = RandomForGenerator::getNumbers().initialize( randSvc( ) , 
-                                                      Rndm::Flat( 0 , 1 ) ) ;
-    if ( ! sc.isSuccess( ) )
-      return Error( "Could not initialize Rndm::Flat" , sc ) ;
-  }
 
   // Retrieve pile up tool
   if ( "" == m_pileUpToolName ) {
@@ -137,6 +127,9 @@ operator()( const LHCb::GenHeader& old_gen_header) const
 {
 
   debug() << "Processing event type " << m_eventType << endmsg;
+  auto engine = createRndmEngine();
+  // Set this as the global engine as some other tools will eventually need it.
+  ThreadLocalEngine::Guard rnd_guard(engine);
   StatusCode sc = StatusCode::SUCCESS;
   setFilterPassed( true ) ;
 
@@ -200,7 +193,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     
     // Compute the number of pile-up interactions to generate 
     if ( 0 != m_pileUpTool ) 
-      nPileUp = m_pileUpTool -> numberOfPileUp( ) ;
+      nPileUp = m_pileUpTool -> numberOfPileUp( engine ) ;
     else 
       // default set to 1 pile and 2.10^32 luminosity
       nPileUp = 1 ;
@@ -209,7 +202,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     // of event
     if ( 0 < nPileUp ) 
       goodEvent = m_sampleGenerationTool -> generate( nPileUp, theEvents, 
-                                                      theCollisions );
+                                                      theCollisions, engine );
     else { 
       goodEvent = true ;
       setFilterPassed( false ) ;
@@ -247,13 +240,13 @@ operator()( const LHCb::GenHeader& old_gen_header) const
         unsigned short iPile( 0 ) ;
         for ( auto & evt : theEvents ) {
           if ( m_decayTool ) {
-            sc = decayEvent( &evt) ;
+            sc = decayEvent( &evt , engine ) ;
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
           evt.set_event_number( ++iPile ) ;
           if(m_vertexSmearingTool){
             if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
-                sc = m_vertexSmearingTool -> smearVertex( &evt ) ;
+                sc = m_vertexSmearingTool -> smearVertex( &evt , engine ) ;
             if ( ! sc.isSuccess() ) error() << "Smearing tool failed" << endmsg;
           }
         }
@@ -335,6 +328,15 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     }
   }
 
+
+  
+  //Just before writing, set the event and run number of the HepMC events so they are persisted.
+  
+  for(auto & evt : theEvents){
+    evt.add_attribute("gaudi_event_number", std::make_shared<HepMC::IntAttribute>(theGenHeader.evtNumber()));
+    evt.add_attribute("gaudi_run_number", std::make_shared<HepMC::IntAttribute>(theGenHeader.runNumber()));
+  }
+
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
 }
 
@@ -387,7 +389,7 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent ) const {
+StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) const {
   using namespace LHCb;
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
@@ -412,7 +414,7 @@ StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent ) const {
             set_status( HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
         else thePart -> set_status( HepMCEvent::DecayedByDecayGen ) ;
         
-        sc = m_decayTool -> generateDecay( thePart ) ;
+        sc = m_decayTool -> generateDecay( thePart , engine ) ;
         if ( ! sc.isSuccess() ) return sc ;
       }
     } 

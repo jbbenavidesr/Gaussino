@@ -9,10 +9,12 @@
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "TMath.h"
 #include "TRandom3.h"
 #include "Event/GenHeader.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 
 //===========================================================================
@@ -49,10 +51,6 @@ MomentumSpectrum::~MomentumSpectrum() {;}
 StatusCode MomentumSpectrum::initialize() {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc ;
-
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) return Error( "Cannot initialize flat generator" ) ;
 
   // Get the mass of the particle to be generated
   LHCb::IParticlePropertySvc* ppSvc =
@@ -127,10 +125,11 @@ StatusCode MomentumSpectrum::initialize() {
 // Generate the particles
 //===========================================================================
 void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
-					 Gaudi::LorentzVector & origin , int & pdgId ) {
+					 Gaudi::LorentzVector & origin , int & pdgId , CLHEP::HepRandomEngine & engine ) {
   
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
         // -- Determine which particle is generated
-	unsigned int currentType = (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
+	unsigned int currentType = (unsigned int)( m_pdgCodes.size() * flatGenerator() );
 	// protect against funnies
 	if ( currentType >= m_pdgCodes.size() ) currentType = 0;
 	pdgId = m_pdgCodes[ currentType ] ;
@@ -157,7 +156,7 @@ void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 	else if( m_binningVars == "ptpz" ) {
 		double pt(0.), pz(0.);
 		m_hist2d->GetRandom2(pt , pz);
-		double phi = (-1.*Gaudi::Units::pi + m_flatGenerator() * Gaudi::Units::twopi) * Gaudi::Units::rad;
+		double phi = (-1.*Gaudi::Units::pi + flatGenerator() * Gaudi::Units::twopi) * Gaudi::Units::rad;
 		momentum.SetPx( pt*cos(phi) );
 		momentum.SetPy( pt*sin(phi) );
 		momentum.SetPz( pz );
@@ -165,7 +164,7 @@ void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
 	else if( m_binningVars == "pteta" ) {
 		double pt(0.), eta(0.);
 		m_hist2d->GetRandom2(pt , eta);
-		double phi = (-1.*Gaudi::Units::pi + m_flatGenerator() * Gaudi::Units::twopi) * Gaudi::Units::rad;
+		double phi = (-1.*Gaudi::Units::pi + flatGenerator() * Gaudi::Units::twopi) * Gaudi::Units::rad;
 		momentum.SetPx( pt*cos(phi)  );
 		momentum.SetPy( pt*sin(phi)  );
 		momentum.SetPz( pt*sinh(eta) );

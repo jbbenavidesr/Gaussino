@@ -6,6 +6,7 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
+from Gaudi.Configuration import appendPostConfigAction
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
 from Gaussino.Generation import GenPhase
@@ -30,8 +31,11 @@ class Gaussino(ConfigurableUser):
         ,"BeamPipe"                     : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
         ,"ReplaceWithGDML"              : [ { "volsToReplace": [], "gdmlFile" : "" } ]  # NOQA
         ,"RandomGenerator"              : 'Ranlux'  # NOQA
-        , "UseGaussGeo"                 : False  # NOQA
-        , "evtMax"                      : -1  # NOQA
+        ,"UseGaussGeo"                  : False  # NOQA
+        ,"evtMax"                       : -1  # NOQA
+        ,"EnableHive"                   : False  # NOQA
+        ,"ThreadPoolSize"               : 2  # NOQA
+        ,"EventSlots"                   : 2  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -50,7 +54,26 @@ class Gaussino(ConfigurableUser):
     def setOtherProps(self, other, names):
         self.propagateProperties(names, other)
 
+    def setupHive(self):
+        '''Enable Hive event loop manager'''
+        from Configurables import HiveWhiteBoard
+        whiteboard = HiveWhiteBoard("EventDataSvc")
+        whiteboard.EventSlots = self.getProp('EventSlots')
+        ApplicationMgr().ExtSvc.insert(0, whiteboard)
+
+        from Configurables import HiveSlimEventLoopMgr, AvalancheSchedulerSvc
+        scheduler = AvalancheSchedulerSvc()
+        eventloopmgr = HiveSlimEventLoopMgr(SchedulerName=scheduler)
+
+        # initialize hive settings if not already set
+        self.propagateProperty('ThreadPoolSize', eventloopmgr)
+        scheduler.ThreadPoolSize = self.getProp('ThreadPoolSize')
+        ApplicationMgr().EventLoop = eventloopmgr
+        # appendPostConfigAction(self.co)
+
     def __apply_configuration__(self):
+        if self.getProp("EnableHive"):
+            self.setupHive()
         ppService()
         dataService()
         auditorService()
@@ -89,3 +112,10 @@ class Gaussino(ConfigurableUser):
         idFile += str(time.localtime().tm_mday)
         outputName += '-' + idFile
         return outputName
+
+    # hack from MiniBrunel configuration
+    def co(self):
+        from Gaudi.Configuration import allConfigurables
+        for c in allConfigurables:
+            if hasattr(c, 'ExtraInputs') and '/Event/IOVLock' not in c.ExtraInputs:  # NOQA
+                c.ExtraInputs.append('/Event/IOVLock')
