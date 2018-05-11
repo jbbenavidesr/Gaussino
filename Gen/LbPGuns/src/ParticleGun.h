@@ -9,6 +9,7 @@
 #include "NewRnd/RndAlgSeeder.h"
 
 #include <atomic>
+#include <mutex>
 
 // Forward declarations
 class IParticleGunTool;
@@ -104,11 +105,11 @@ private:
   /// Name to put in the event
   std::string m_particleGunName;
 
-  mutable std::atomic_uint m_nEvents; ///< Number of generated events
+  mutable std::atomic_uint m_nEvents{}; ///< Number of generated events
 
-  mutable std::atomic_uint m_nAcceptedEvents; ///< Number of accepted events
+  mutable std::atomic_uint m_nAcceptedEvents{}; ///< Number of accepted events
 
-  mutable std::atomic_uint m_nParticles; ///< Number of generated particles
+  mutable std::atomic_uint m_nParticles{}; ///< Number of generated particles
 
   /// Number of particles in accepted events
   mutable std::atomic_uint m_nAcceptedParticles{};
@@ -124,5 +125,6 @@ private:
 
   /// Counter of events after the generator level cut
   mutable std::atomic_uint m_nAfterCut{};
+  mutable std::mutex debug_lock;
 };
 #endif // PARTICLEGUNS_PARTICLEGUN_H

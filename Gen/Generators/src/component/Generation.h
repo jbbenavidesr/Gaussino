@@ -204,5 +204,6 @@ private:
    *  @param[in]     option       Separate generated and accepted counters
    */
   void updateFSRCounters( interactionCounter& theCounter, LHCb::GenFSR* m_genFSR, const std::string option ) const;
+
 };
 #endif // GENERATORS_GENERATION_H

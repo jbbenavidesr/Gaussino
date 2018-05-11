@@ -30,6 +30,9 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "NewRnd/RndGlobal.h"
 
+#include "GaudiKernel/ThreadLocalContext.h"
+#include "GaudiKernel/EventContext.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : ParticleGun
 //
@@ -164,8 +167,8 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
       prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(theGenHeader.evtNumber()));
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(theGenHeader.runNumber()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
@@ -198,12 +201,6 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
           std::make_shared<HepMC::IntAttribute>(nParticles));
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
           std::make_shared<HepMC::VertexAttribute>(v));
-      auto attr = theGenEvent->attribute<HepMC::VertexAttribute>(Gaussino::HepMC::Attributes::SignalProcessVertex);
-      always() << "Should be " << v->id() << endmsg;
-      always() << "Index " << attr->value()->id() << endmsg;
-      std::string st = "";
-      attr->to_string(st);
-      always() << "string " << st << endmsg;
     }
 
     goodEvent = true ;
