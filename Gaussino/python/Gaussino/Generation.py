@@ -81,7 +81,7 @@ class GenPhase(ConfigurableUser):
         seq.Members = [rnd_init, prod_alg, gen_moni]
         if self.getProp('WriteHepMC'):
             seq.Members += [configure_hepmc_writer()]
-        # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
+        seq.Members += [GenerationToSimulation(), CheckMCStructure()]
         ApplicationMgr().TopAlg += [seq]
 
     @staticmethod

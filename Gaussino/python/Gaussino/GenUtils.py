@@ -57,9 +57,7 @@ def configure_generation(**kwargs):
     gen.addTool(PoissonPileUp, name='PoissonPileUp')
     gen.PoissonPileUp.PileUpNu = 1.6
     gen.PileUpTool = 'PoissonPileUp'
-    # gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
-    # gen.PileUpTool = ""
-    gen.VertexSmearingTool = ""
+    gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""
