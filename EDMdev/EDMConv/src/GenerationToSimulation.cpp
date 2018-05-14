@@ -27,16 +27,18 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
   // Create containers in TES for MCParticles and MCVertices.
   MCPARTICLES m_particleContainer;
   MCVERTICES m_vertexContainer;
-  auto n_hepmc_particles = ranges::accumulate(
-      generationEvents | ranges::view::transform([](auto& ev) {
-        return ev.particles_size();
-      }),
-      0);
-  auto n_hepmc_vertices = ranges::accumulate(
-      generationEvents | ranges::view::transform([](auto& ev) {
-        return ev.vertices_size();
-      }),
-      0);
+  auto n_hepmc_particles = 10000;
+    //ranges::accumulate(
+      //generationEvents | ranges::view::transform([](auto& ev) {
+        //return ev.particles_size();
+      //}),
+      //0);
+  auto n_hepmc_vertices = 10000;
+  //ranges::accumulate(
+      //generationEvents | ranges::view::transform([](auto& ev) {
+        //return ev.vertices_size();
+      //}),
+      //0);
 
   if (msgLevel(MSG::DEBUG)) {
     debug() << "Reserving space for " << n_hepmc_particles << "("
@@ -44,14 +46,14 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
   }
 
   m_particleContainer.reserve(n_hepmc_particles);
-  m_particleContainer.reserve(n_hepmc_vertices);
+  m_vertexContainer.reserve(n_hepmc_vertices);
 
   // Create some MCHeader.
   LHCb::MCHeader mcHeader;
   std::vector<unsigned int> pv_indices;
 
   // Loop over the events (one for each pile-up interaction).
-  for (auto& ev: generationEvents) {
+  for (const HepMC::GenEvent & ev: generationEvents) {
 
     // Determine the position of the primary vertex.
     auto thePV = primaryVertex(ev);
@@ -70,14 +72,18 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
     // Set ID of all vertices to 0.
     std::vector<bool> not_root_vertex(ev.vertices_size());
 
-    auto set_prod_id_zero = [&not_root_vertex](auto part) {
+    auto set_end_id_zero = [&not_root_vertex](auto part) {
       auto endVertex = part->end_vertex();
-      if (endVertex) not_root_vertex.at(endVertex->id()) = true;
+      // Use the ID to get the position for the vector.
+      // vtx id is negative with first one being -1
+      if (endVertex) not_root_vertex.at(-endVertex->id() - 1) = true;
       return part;
     };
 
     auto is_prod_vtx_id_zero = [&not_root_vertex](auto part) {
-      return !not_root_vertex.at(part->production_vertex()->id());
+      // Use the ID to get the position for the vector.
+      // vtx id is negative with first one being -1
+      return !not_root_vertex.at(-part->production_vertex()->id() - 1);
     };
 
     auto convert_part = [&](auto hepmc_part) {
@@ -85,12 +91,25 @@ operator()(const std::vector<HepMC::GenEvent>& generationEvents) const {
                     m_particleContainer, m_vertexContainer);
       return hepmc_part;
     };
-
-    ranges::for_each(ev.particles(), set_prod_id_zero);
-
-    ranges::for_each(ev.particles() | ranges::view::filter(keep) |
-                         ranges::view::filter(is_prod_vtx_id_zero),
-                     convert_part);
+    for(auto & p: ev.particles()){
+      if(!keep(p)){
+        continue;
+      }
+      set_end_id_zero(p);
+    }
+    //ranges::for_each(ev.particles() | ranges::view::filter(keep), set_end_id_zero);
+    for(auto & p: ev.particles()){
+      if(!keep(p)){
+        continue;
+      }
+      if(!is_prod_vtx_id_zero(p)){
+        continue;
+      }
+      convert_part(p);
+    }
+    //ranges::for_each(ev.particles() | ranges::view::filter(keep) |
+                         //ranges::view::filter(is_prod_vtx_id_zero),
+                     //convert_part);
     pv_indices.push_back(pv_idx);
   }
   for (auto i : pv_indices) {
@@ -271,6 +290,9 @@ unsigned char GenerationToSimulation::transferToSimulation(
 
   // Determine the travel distance.
   auto ev = p->end_vertex();
+  if(!ev){
+    return 1;
+  }
   auto pv = p->production_vertex();
   auto  E = ev->position();
   auto  P = pv->position();
@@ -342,7 +364,11 @@ Gaudi::LorentzVector GenerationToSimulation::primaryVertex(
 
   // First method, get the beam particle and use the decay vertex if it
   // exists.
-  auto sig_proc_vtx = genEvent.attribute<HepMC::VertexAttribute>(Gaussino::HepMC::Attributes::SignalProcessVertex)->value();
+  auto sig_proc_vtx_att = genEvent.attribute<HepMC::VertexAttribute>(Gaussino::HepMC::Attributes::SignalProcessVertex);
+  HepMC::GenVertexPtr sig_proc_vtx{nullptr};
+  if(sig_proc_vtx_att){
+      sig_proc_vtx = sig_proc_vtx_att->value();
+  }
   if (genEvent.valid_beam_particles()) {
     auto P = genEvent.beam_particles().first;
     auto V = P->end_vertex();

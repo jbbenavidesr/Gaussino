@@ -289,6 +289,7 @@ void ExternalGenerator::prepareInteraction( std::vector<HepMC::GenEvent> * theEv
     LHCb::GenCollision * & theGenCollision ) const {
   theEvents->emplace_back();
   theGenEvent = &theEvents->back();
+  theGenEvent->set_run_info(nullptr);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC::StringAttribute>( m_hepMCName ) );
   // Little hack to make it thread-safe when reading later

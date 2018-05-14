@@ -198,6 +198,12 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       // default set to 1 pile and 2.10^32 luminosity
       nPileUp = 1 ;
 
+    // FIXME: Events should not be placed into a vector...
+    // They only have a default copy constructor which messes
+    // up the parent_event() reference of contained particles
+    // when resizing. Maybe ask HepMC authors to delete the copy
+    // constructor and implement a working noexcept move constructor?
+    theEvents.reserve(nPileUp);
     // generate a set of Pile up interactions according to the requested type
     // of event
     if ( 0 < nPileUp ) 
@@ -328,15 +334,11 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     }
   }
 
-
-  
   //Just before writing, set the event and run number of the HepMC events so they are persisted.
   for(auto & evt : theEvents){
     evt.add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
     evt.add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
   }
-  
-  
 
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
 }
