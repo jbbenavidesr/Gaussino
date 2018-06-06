@@ -35,7 +35,7 @@ endmacro()
 gaudi_project(Gaussino v1r0
               FORTRAN
               USE GaudiExtensions v1r0
-                  Geant4 v96r*
+                  Geant4 v104r1
               DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*
                    LHAPDFSets VERSION v2r*

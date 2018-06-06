@@ -1,46 +1,23 @@
 #pragma once
 
-#include "GiGaMTCore/GiGaWorkerRunManager.h"
+#include <future>
+#include <vector>
+#include "blockingconcurrentqueue.h"
 
-#include "GiGaMTCore/IGiGaMessage.h"
+// Collection of wrapper classes to pass information between the
+// Gaudi and G4 threads mediated by a queue, somehow, magically ...
 
-// Main worker thread class that is instantiated in the 
-// initialize of the main simulation service and given
-// to std::thread when creating. Its main functionality
-// is implemented in the operator() which is executed in
-// the separate thread.
-//
-// Once deployed in the thread there is no way of changing the configuration
-// of Geant4 so hopefully noone ever wants to do that...
+class G4Event;
+namespace CLHEP {
+  class HepRandomEngine;
+}
 
-class GiGaWorkerPilotFAC;
-
-class GiGaWorkerPilot : public GiGaMessage {
-  friend class GiGaWorkerPilotFAC;
-public:
-  // Cannot copy it, only moving is allowed so
-  // object cannot be messed with after handing it over
-  // to the thread.
-  GiGaWorkerPilot(const GiGaWorkerPilot &) = delete;
-  GiGaWorkerPilot(GiGaWorkerPilot &&);
-
-  // Main execution executed in a separate thread
-  // Does the following:
-  //
-  // 1. Initializes the thread by creating the GiGaWorkerRunManager instance
-  // and configuring it.
-  // 2. Waits for events to be simulated by blocking on a queue
-  // 3. Destructs the everything as needed when signal for termination is received
-  void operator()();
-
-  // Initializes the GiGaWorkerRunManager and some other stuff
-  void InitializeWorker();
-
-  // Does some cleanup after the event loop has terminated
-  void RunTermination();
-
-private:
-  // Constructor is private as these objects are supposed to
-  // only be created using the corresponding factories
-  GiGaWorkerPilot() = default;
+// Simulation return dummy class to continue with the infrastructure
+// prototyping
+class DummyReturn {
+  std::vector<double> energies;
 };
+
+// Wrapping tuple for the information that needs to be passed 
+typedef std::tuple<G4Event*, CLHEP::HepRandomEngine*, std::promise<DummyReturn>> GiGaWorkerPayload;
+typedef moodycamel::BlockingConcurrentQueue<GiGaWorkerPayload> GiGaPayloadQueue;
