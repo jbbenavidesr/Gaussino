@@ -1,6 +1,8 @@
 #pragma once
 
+#include <sstream>
 #include <string>
+#include <thread>
 
 class GiGaMessage;
 // Basic interface for wrapping some external messaging service
@@ -33,19 +35,31 @@ public:
 protected:
   void debug( std::string message )
   {
-    if ( m_msg ) m_msg->debug( message );
+    if (!m_msg) return;
+    std::stringstream ss;
+    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    m_msg->debug( ss.str() );
   }
   void verbose( std::string message )
   {
-    if ( m_msg ) m_msg->verbose( message );
+    if (!m_msg) return;
+    std::stringstream ss;
+    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    m_msg->verbose( ss.str() );
   }
   void error( std::string message )
   {
-    if ( m_msg ) m_msg->error( message );
+    if (!m_msg) return;
+    std::stringstream ss;
+    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    m_msg->error( ss.str() );
   }
   void warning( std::string message )
   {
-    if ( m_msg ) m_msg->warning( message );
+    if (!m_msg) return;
+    std::stringstream ss;
+    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    m_msg->warning( ss.str() );
   }
 
 private:
