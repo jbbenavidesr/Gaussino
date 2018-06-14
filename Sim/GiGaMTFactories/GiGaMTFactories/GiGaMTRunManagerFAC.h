@@ -7,7 +7,7 @@
 class GiGaMTRunManagerFAC : public GiGaFactoryBase<GiGaMTRunManager>
 {
   public:
-  GiGaMTRunManagerFAC( const std::string& type, const std::string& name, const IInterface* parent );
+  using GiGaFactoryBase<GiGaMTRunManager>::GiGaFactoryBase;
   Gaudi::Property<std::string> m_someprop{this, "SomeProp", "Hello"};
 
   GiGaMTRunManager* construct() const override;

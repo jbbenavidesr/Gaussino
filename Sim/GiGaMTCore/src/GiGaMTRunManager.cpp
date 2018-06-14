@@ -33,7 +33,7 @@ void GiGaMTRunManager::Initialize()
   // Set up geometry and physics in base class.
   // Why doesn't this call G4MTRunManager?
   // Probably because G4MTRunManager seems to call BeamOn(0) which
-  // will trigger a automatic creation of the worker threads. We
+  // will trigger an automatic creation of the worker threads. We
   // don't want that!
   G4RunManager::Initialize();
   // Construct scoring worlds

@@ -12,6 +12,8 @@ find_package(CLHEP COMPONENTS Random Vector)
 FindG4libs(digits_hits event geometry global graphics_reps materials
            particles processes run tracking track)
 
+add_definitions(-DG4MULTITHREADED)
+
 gaudi_add_library(GiGaMTCoreLib
                  src/*.cpp
                  PUBLIC_HEADERS GiGaMTCore

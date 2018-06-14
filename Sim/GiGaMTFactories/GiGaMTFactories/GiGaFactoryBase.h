@@ -21,6 +21,8 @@ class GiGaFactoryBase : public GaudiTool, public IGiGaMessage
 public:
   using GaudiTool::GaudiTool;
 
+  virtual T* construct() const = 0;
+
 protected:
   // GiGaFactoryBase( const std::string & type , const std::string & name ,
   // const IInterface * parent ) ;
@@ -31,9 +33,7 @@ protected:
   using GaudiTool::verbose;
   using GaudiTool::warning;
 
-  virtual T* construct() const = 0;
-
-  virtual ~GiGaFactoryBase(); ///< Destructor
+  virtual ~GiGaFactoryBase();
 
   void debug( std::string message ) const override
   {

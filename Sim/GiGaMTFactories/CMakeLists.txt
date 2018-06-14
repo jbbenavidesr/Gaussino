@@ -13,6 +13,8 @@ gaudi_subdir(GiGaMTFactories v1r0)
 gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTCore) 
 
+add_definitions(-DG4MULTITHREADED)
+
 # GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
 gaudi_add_library(GiGaMTFactoriesLib
         src/*.cpp

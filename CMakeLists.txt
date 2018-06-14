@@ -4,6 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 option(GAUDI_SUGGEST_OVERRIDE "enable warnings for missing override keyword" OFF)
 # Create the compile commands json for YCM superpowers
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(GEANT4_BUILD_MULTITHREADED ON)
 
 #---------------------------------------------------------------
 # Load macros and functions for Gaudi-based projects
