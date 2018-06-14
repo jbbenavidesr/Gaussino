@@ -20,3 +20,8 @@ gaudi_add_library(GiGaMTFactoriesLib
         src/*.cpp
         PUBLIC_HEADERS GiGaMTFactories
         LINK_LIBRARIES GiGaMTCoreLib)
+
+gaudi_add_library(GiGaMTPhysFactoriesLib
+        src/*.cpp
+        PUBLIC_HEADERS GiGaMTFactories
+        LINK_LIBRARIES GiGaMTFactoriesLib)
