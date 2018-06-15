@@ -4,6 +4,7 @@
 
 #include "GiGaMTCore/GiGaWorkerPayload.h"
 #include "GiGaMTCore/IGiGaMessage.h"
+#include "GiGaMTCore/GiGaMTUtils.h"
 
 // Main worker thread class that is instantiated in the
 // initialize of the main simulation service and given
@@ -52,6 +53,15 @@ public:
   {
     debug( "Setting input queue" );
     m_input_queue = que;
+  }
+
+  // Returns singleton instance of initialization barrier.
+  // First call determines the created number of threads that
+  // are have to arrive at the barrier before all are given
+  // the go-ahead.
+  GiGaMTBarrier & GetInitBarrier(std::size_t num_threads=0) const {
+    static GiGaMTBarrier barrier(num_threads);
+    return barrier;
   }
 
 private:
