@@ -1,0 +1,101 @@
+#include "GiGaMTFactories/GiGaMTG4PhysicsFactory.h"
+
+// All includes I could find that definethe physics lists
+// that are directly provided by Geant4
+
+#include "Geant4/FTFP_BERT.hh"
+#include "Geant4/FTFP_BERT_ATL.hh"
+#include "Geant4/FTFP_BERT_HP.hh"
+#include "Geant4/FTFP_BERT_TRV.hh"
+#include "Geant4/FTFP_INCLXX.hh"
+#include "Geant4/FTFP_INCLXX_HP.hh"
+#include "Geant4/FTFQGSP_BERT.hh"
+#include "Geant4/FTF_BIC.hh"
+#include "Geant4/INCLXXPhysicsListHelper.hh"
+#include "Geant4/LBE.hh"
+#include "Geant4/NuBeam.hh"
+#include "Geant4/QGSP_BERT.hh"
+#include "Geant4/QGSP_BERT_HP.hh"
+#include "Geant4/QGSP_BIC.hh"
+#include "Geant4/QGSP_BIC_AllHP.hh"
+#include "Geant4/QGSP_BIC_HP.hh"
+#include "Geant4/QGSP_FTFP_BERT.hh"
+#include "Geant4/QGSP_INCLXX.hh"
+#include "Geant4/QGSP_INCLXX_HP.hh"
+#include "Geant4/QGS_BIC.hh"
+#include "Geant4/Shielding.hh"
+#include "Geant4/ShieldingLEND.hh"
+
+typedef GiGaMTG4PhysicsFactory<FTFP_BERT> GiGaMT_FTFP_BERT;
+DECLARE_COMPONENT( GiGaMT_FTFP_BERT )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_BERT> GiGaMT_QGSP_BERT;
+DECLARE_COMPONENT( GiGaMT_QGSP_BERT )
+
+typedef GiGaMTG4PhysicsFactory<FTF_BIC> GiGaMT_FTF_BIC;
+DECLARE_COMPONENT( GiGaMT_FTF_BIC )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_BERT_ATL> GiGaMT_FTFP_BERT_ATL;
+DECLARE_COMPONENT( GiGaMT_FTFP_BERT_ATL )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_BERT_HP> GiGaMT_FTFP_BERT_HP;
+DECLARE_COMPONENT( GiGaMT_FTFP_BERT_HP )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_INCLXX> GiGaMT_FTFP_INCLXX;
+DECLARE_COMPONENT( GiGaMT_FTFP_INCLXX )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_INCLXX_HP> GiGaMT_FTFP_INCLXX_HP;
+DECLARE_COMPONENT( GiGaMT_FTFP_INCLXX_HP )
+
+typedef GiGaMTG4PhysicsFactory<FTFQGSP_BERT> GiGaMT_FTFQGSP_BERT;
+DECLARE_COMPONENT( GiGaMT_FTFQGSP_BERT )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_INCLXX> GiGaMT_QGSP_INCLXX;
+DECLARE_COMPONENT( GiGaMT_QGSP_INCLXX )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_INCLXX_HP> GiGaMT_QGSP_INCLXX_HP;
+DECLARE_COMPONENT( GiGaMT_QGSP_INCLXX_HP )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_INCLXX> GiGaMT_FTFP_INCLXX;
+DECLARE_COMPONENT( GiGaMT_FTFP_INCLXX )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_INCLXX_HP> GiGaMT_FTFP_INCLXX_HP;
+DECLARE_COMPONENT( GiGaMT_FTFP_INCLXX_HP )
+
+typedef GiGaMTG4PhysicsFactory<FTFP_BERT_TRV> GiGaMT_FTFP_BERT_TRV;
+DECLARE_COMPONENT( GiGaMT_FTFP_BERT_TRV )
+
+typedef GiGaMTG4PhysicsFactory<LBE> GiGaMT_LBE;
+DECLARE_COMPONENT( GiGaMT_LBE )
+
+typedef GiGaMTG4PhysicsFactory<NuBeam> GiGaMT_NuBeam;
+DECLARE_COMPONENT( GiGaMT_NuBeam )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_BERT_HP> GiGaMT_QGSP_BERT_HP;
+DECLARE_COMPONENT( GiGaMT_QGSP_BERT_HP )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_BIC> GiGaMT_QGSP_BIC;
+DECLARE_COMPONENT( GiGaMT_QGSP_BIC )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_BIC_AllHP> GiGaMT_QGSP_BIC_AllHP;
+DECLARE_COMPONENT( GiGaMT_QGSP_BIC_AllHP )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_BIC_HP> GiGaMT_QGSP_BIC_HP;
+DECLARE_COMPONENT( GiGaMT_QGSP_BIC_HP )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_FTFP_BERT> GiGaMT_QGSP_FTFP_BERT;
+DECLARE_COMPONENT( GiGaMT_QGSP_FTFP_BERT )
+
+typedef GiGaMTG4PhysicsFactory<QGS_BIC> GiGaMT_QGS_BIC;
+DECLARE_COMPONENT( GiGaMT_QGS_BIC )
+
+typedef GiGaMTG4PhysicsFactory<QGSP_INCLXX> GiGaMT_QGSP_INCLXX;
+DECLARE_COMPONENT( GiGaMT_QGSP_INCLXX )
+
+typedef GiGaMTG4PhysicsFactory<Shielding> GiGaMT_Shielding;
+DECLARE_COMPONENT( GiGaMT_Shielding )
+
+typedef GiGaMTG4PhysicsFactory<ShieldingLEND> GiGaMT_ShieldingLEND;
+DECLARE_COMPONENT( GiGaMT_ShieldingLEND )
+
+//:66:typedef TShieldingLEND<G4VModularPhysicsList> ShieldingLEND;
