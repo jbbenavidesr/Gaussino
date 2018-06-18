@@ -34,3 +34,19 @@
  *   @author: Dominik Muller
  */
 // ============================================================================
+
+
+// This function initaliases the main thread.
+// It's implementation is based on commong Geant4 examples and the documentation.
+// Note however that not much will happen here as GiGaMTRunManager deactivated a lot
+// of the internal workings.
+StatusCode GiGaMT::InitializeMainThread() const {
+
+  
+  return StatusCode::SUCCESS;
+}
+
+StatusCode GiGaMT::InitializeWorkerThreads() const {
+
+  return StatusCode::SUCCESS;
+}

@@ -26,6 +26,9 @@
  * TODO: Add a stepping verbose thingy, whatever that is ...
  *
  * TODO: Can't easily implement sequences for UserStackingAction as everything is non-void.
+ *
+ * TODO: Fix that ugly hack that wraps the factory functions into a dummy G4VUserActionInitialization
+ * object
  */
 
 typedef GiGaFactoryBase<G4UserRunAction> RunActionFactory;
@@ -65,6 +68,13 @@ public:
    * in GiGaMTCore.
    */
   virtual void Build() const override;
+
+  /*Function to construct a dummy G4VUserActionInitialization object to wrap Build() and
+   * BuildForMaster() to be passed to Geant4 which Geant4 can later delete as it likes
+   * without messing up the GaudiTool here.
+   * Basically, this is now a factory for a factory: Factoriception
+   */
+  G4VUserActionInitialization* ConstructG4Object() const;
 
 private:
   template <typename T>

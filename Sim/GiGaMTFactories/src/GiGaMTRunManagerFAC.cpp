@@ -1,4 +1,4 @@
-#include "GiGaMTFactories/GiGaMTRunManagerFAC.h"
+#include "GiGaMTRunManagerFAC.h"
 
 DECLARE_COMPONENT(GiGaMTRunManagerFAC)
 

@@ -1,4 +1,4 @@
-#include "GiGaMTFactories/GiGaWorkerPilotFAC.h"
+#include "GiGaWorkerPilotFAC.h"
 
 DECLARE_COMPONENT(GiGaWorkerPilotFAC)
 

@@ -4,8 +4,8 @@
 #include <list>
 #include <map>
 #include <string>
-#include <vector>
 #include <thread>
+#include <vector>
 
 // from Gaudi
 #include "GaudiKernel/IToolSvc.h"
@@ -39,15 +39,17 @@ class SvcFactory;
 // class     IGiGaVisManager                 ;
 
 // GiGaMT factories
-class GiGaMTRunManagerFAC;
-template <typename T> class GiGaFactoryBase;
+template <typename T>
+class GiGaFactoryBase;
 // from G4
 class G4UImanager;
 class G4VVisManager;
 class G4VExceptionHandler;
 class G4VUserPhysicsList;
-class G4VUserActionInitialization;
-
+class GiGaActionInitializer;
+class G4VUserPhysicsList;
+class GiGaWorkerPilot;
+class GiGaMTRunManager;
 
 /**  @class GiGaMT GiGaMT.h
  *
@@ -82,7 +84,6 @@ protected:
   virtual ~GiGaMT();
 
 public:
-
   /** service initialization
    *  @see  Service
    *  @see IService
@@ -103,13 +104,12 @@ public:
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
 protected:
-
   // Function to initialize the master G4MTRunManager to run in the main Gaudi
   // thread which executes the initialization of all Gaudi objects and spawns
   // the GaudiHive workers.
-  virtual StatusCode InitializeMainThread();
+  virtual StatusCode InitializeMainThread() const;
 
-  virtual StatusCode InitializeWorkerThreads();
+  virtual StatusCode InitializeWorkerThreads() const;
 
 private:
   /// accessor to GiGa Geometry Source
@@ -225,6 +225,11 @@ private:
     return Tool;
   }
 
+  GiGaFactoryBase<GiGaMTRunManager>* m_mTRunManagerFactory = nullptr;
+  GiGaFactoryBase<G4VUserPhysicsList>* m_physListFactory   = nullptr;
+  GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory   = nullptr;
+  GiGaActionInitializer* userActionInitializer             = nullptr;
+
   /** the useful method for location of tools.
    *  @see IToolSvc
    *  @see IAlgTool
@@ -281,7 +286,7 @@ private:
 
 private:
   IChronoStatSvc* m_chronoSvc = nullptr;
-  IToolSvc* m_toolSvc = nullptr;
+  IToolSvc* m_toolSvc         = nullptr;
 
   // std::string       m_geoSrcName          ; ///< name of geoemtry source
   // IGiGaGeoSrc*      m_geoSrc              ; ///< pointer to geometry source

@@ -1,4 +1,4 @@
-#include "GiGaFactoryBase.h"
+#include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTCore/GiGaMTRunManager.h"
 
 // Factory class implemented as a GaudiTool that creates and configures the

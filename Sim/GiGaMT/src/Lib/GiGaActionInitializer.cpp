@@ -105,3 +105,20 @@ void GiGaActionInitializer::Build() const
     SetUserAction( trackseq );
   }
 }
+
+G4VUserActionInitialization* GiGaActionInitializer::ConstructG4Object() const
+{
+  class dummy : public G4VUserActionInitialization
+  {
+  public:
+    dummy( const G4VUserActionInitialization* concrete ) : m_concrete( concrete ) {}
+
+    void Build() const override { m_concrete->Build(); }
+    void BuildForMaster() const override { m_concrete->BuildForMaster(); }
+
+  private:
+    const G4VUserActionInitialization* m_concrete = nullptr;
+  };
+
+  return new dummy( this );
+}
