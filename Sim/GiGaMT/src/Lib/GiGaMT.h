@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <thread>
 
 // from Gaudi
 #include "GaudiKernel/IToolSvc.h"
@@ -39,10 +40,14 @@ class SvcFactory;
 
 // GiGaMT factories
 class GiGaMTRunManagerFAC;
+template <typename T> class GiGaFactoryBase;
 // from G4
 class G4UImanager;
 class G4VVisManager;
 class G4VExceptionHandler;
+class G4VUserPhysicsList;
+class G4VUserActionInitialization;
+
 
 /**  @class GiGaMT GiGaMT.h
  *
@@ -58,6 +63,10 @@ class G4VExceptionHandler;
 class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMTSetUpSvc
 {
   Gaudi::Property<std::string> m_MTRunMgrFactoryName{this, "MTRunManagerFactory", "GiGaMTRunManagerFAC"};
+  Gaudi::Property<std::string> m_PhysListFactoryName{this, "PhysicsListFactory", "GiGaMT_FTFP_BERT"};
+  // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
+  Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
+  Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
   /// friend factory
   friend class SvcFactory<GiGaMT>;
 
@@ -73,76 +82,6 @@ protected:
   virtual ~GiGaMT();
 
 public:
-  virtual StatusCode addPrimaryKinematics( G4PrimaryVertex* vertex ) override;
-
-  /** get the whole event  object from GiGa/G4
-   *                  implementation of IGiGaSvc abstract interface
-   *
-   *  @param  event pointer to whole event
-   *  @return status code
-   */
-  virtual StatusCode retrieveEvent( const G4Event*& event ) override;
-
-  /** get the all hit collections from GiGa/G4
-   *                  implementation of IGiGaSvc abstract interface
-   *
-   *  @param   collections  pointer to all hit collections
-   *  @return  status code
-   */
-  virtual StatusCode retrieveHitCollections( G4HCofThisEvent*& collections ) override;
-
-  /** get the concrete hit collection from GiGa/G4
-   *                  implementation of IGiGaSvc abstract interface
-   *
-   *  @param   collection  reference to collection pair
-   *  @return  status code
-   */
-  // virtual StatusCode
-  // retrieveHitCollection  ( GiGaHitsByID          & collection   ) override;
-
-  /** get the concrete hit collection from GiGa/G4
-   *                  implementation of IGiGaSvc abstract interface
-   *
-   *  @param   collection  reference to collection pair
-   *  @return  status code
-   */
-  // virtual StatusCode
-  // retrieveHitCollection  ( GiGaHitsByName       & collection   );
-
-  /** get all trajectories(trajectory container) from GiGa/G4
-   *                  implementation of IGiGaSvc abstract interface
-   *
-   *  NB: errors are reported throw exception
-   *
-   *  @param   trajectories  pointer to trajectory conatiner
-   *  @return  self-reference ot IGiGaSvc interface
-   */
-  virtual StatusCode retrieveTrajectories( G4TrajectoryContainer*& trajectories ) override;
-
-  /** set detector constructon module
-   *               implementation of IGiGaSetUpSvc abstract interface
-   *
-   *  @param  detector pointer to detector construction module
-   *  @return self-reference ot IGiGaSetUpSvc interface
-   */
-  virtual StatusCode setConstruction( G4VUserDetectorConstruction* detector ) override;
-
-  /** set new world wolume
-   *               implementation of IGiGaSetUpSvc abstract interface
-   *
-   *  @param  world  pointer to  new world volume
-   *  @return status code
-   */
-  virtual StatusCode setDetector( G4VPhysicalVolume* volume ) override;
-
-  /** set new generator
-   *               implementation of IGiGaSetUpSvc abstract interface
-   *
-   *  @param  generator  pointer to new generator
-   *  @return status code
-   */
-  virtual StatusCode setGenerator( G4VUserPrimaryGeneratorAction* generator ) override;
-
 
   /** service initialization
    *  @see  Service
@@ -164,21 +103,15 @@ public:
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
 protected:
-  /** prepare the event
-   *  @param  vertex pointer to primary vertex
-   *  @return status code
-   */
-  StatusCode prepareTheEvent( G4PrimaryVertex* vertex );
 
-  /** retrieve the event
-   *  @param  event pointer to event
-   *  @return status code
-   */
-  StatusCode retrieveTheEvent( const G4Event*& event );
+  // Function to initialize the master G4MTRunManager to run in the main Gaudi
+  // thread which executes the initialization of all Gaudi objects and spawns
+  // the GaudiHive workers.
+  virtual StatusCode InitializeMainThread();
+
+  virtual StatusCode InitializeWorkerThreads();
 
 private:
-  /// accessor to IGiGaRunManager object
-  // inline IGiGaRunManager* runMgr    () const { return m_runMgr         ; } ;
   /// accessor to GiGa Geometry Source
   // inline IGiGaGeoSrc*     geoSrc    () const { return m_geoSrc         ; } ;
   /// accessor to Chrono & Stat  service
@@ -347,8 +280,8 @@ private:
   }
 
 private:
-  IChronoStatSvc* m_chronoSvc = nullptr; ///< pointer to Chrono&Stat Service
-  IToolSvc* m_toolSvc = nullptr;         ///< pointer to Tool Service
+  IChronoStatSvc* m_chronoSvc = nullptr;
+  IToolSvc* m_toolSvc = nullptr;
 
   // std::string       m_geoSrcName          ; ///< name of geoemtry source
   // IGiGaGeoSrc*      m_geoSrc              ; ///< pointer to geometry source

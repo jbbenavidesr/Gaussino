@@ -34,7 +34,7 @@ typedef GiGaFactoryBase<G4UserStackingAction> StackingActionFactory;
 typedef GiGaFactoryBase<G4UserTrackingAction> TrackingActionFactory;
 typedef GiGaFactoryBase<G4UserSteppingAction> SteppingActionFactory;
 
-class GigaActionInitializer : public G4VUserActionInitialization, public GaudiTool, public IGiGaMessage
+class GiGaActionInitializer : public G4VUserActionInitialization, public GaudiTool, public IGiGaMessage
 {
 public:
   // All actions can be provided as a list of strings which are then used to fetch
@@ -50,7 +50,7 @@ public:
   // Just use the GaudiTool constructors here. Remaining two base classes are hence default
   // constructed which is fine as they are default constructed.
   using GaudiTool::GaudiTool;
-  virtual ~GigaActionInitializer();
+  virtual ~GiGaActionInitializer();
   StatusCode initialize() override;
   StatusCode finalize() override;
 

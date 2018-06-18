@@ -1,37 +1,38 @@
 #include "GiGaMTCore/GiGaWorkerRunManager.h"
 
-#include "Geant4/G4StateManager.hh"
 #include "Geant4/G4Event.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4GeometryManager.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4MTRunManager.hh"
+#include "Geant4/G4StateManager.hh"
 #include "Geant4/G4TransportationManager.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
 #include "Geant4/G4UImanager.hh"
+#include "Geant4/G4VUserDetectorConstruction.hh"
 
 #include <mutex>
 
 static std::mutex workerInitMutex;
 
-GiGaWorkerRunManager::GiGaWorkerRunManager()
-  : G4WorkerRunManager()
-    // TODO: what if we need to make these configurable?
-{}
-
+GiGaWorkerRunManager::GiGaWorkerRunManager() : G4WorkerRunManager()
+// TODO: what if we need to make these configurable?
+{
+}
 
 GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager()
 {
   // Grab thread-local pointer from base class
   auto* wrm = G4RunManager::GetRunManager();
-  if(wrm) { return static_cast<GiGaWorkerRunManager*>(wrm); }
-  else { return new GiGaWorkerRunManager; }
+  if ( wrm ) {
+    return static_cast<GiGaWorkerRunManager*>( wrm );
+  } else {
+    return new GiGaWorkerRunManager;
+  }
 }
-
 
 void GiGaWorkerRunManager::Initialize()
 {
   // Locking this initialization to protect currently thread-unsafe services
-  std::lock_guard<std::mutex> lock(workerInitMutex);
+  std::lock_guard<std::mutex> lock( workerInitMutex );
 
   // Setup geometry and physics via the base class
   G4RunManager::Initialize();
@@ -50,15 +51,15 @@ void GiGaWorkerRunManager::Initialize()
   ** If ATLAS ever decides to run multiple G4 runs in the same job, all the MT initialization
   ** will have to be thoroughly reviewed.
   */
-  G4MTRunManager* masterRM = G4MTRunManager::GetMasterRunManager();
+  G4MTRunManager* masterRM   = G4MTRunManager::GetMasterRunManager();
   std::vector<G4String> cmds = masterRM->GetCommandStack();
-  G4UImanager* uimgr = G4UImanager::GetUIpointer();
-  for(const auto& it : cmds) {
-    int retVal = uimgr->ApplyCommand(it);
-    if(retVal!=fCommandSucceeded) {
-       std::string errMsg{"Failed to apply command <"};
-       errMsg += (it + ">. Return value " + std::to_string(retVal));
-       throw GaudiException(errMsg,methodName,StatusCode::FAILURE);
+  G4UImanager* uimgr         = G4UImanager::GetUIpointer();
+  for ( const auto& it : cmds ) {
+    int retVal = uimgr->ApplyCommand( it );
+    if ( retVal != fCommandSucceeded ) {
+      std::string errMsg{"Failed to apply command <"};
+      errMsg += ( it + ">. Return value " + std::to_string( retVal ) );
+      throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );
     }
   }
 
@@ -74,36 +75,16 @@ void GiGaWorkerRunManager::InitializeGeometry()
   const std::string methodName = "GiGaWorkerRunManager::InitializeGeometry";
 
   // I don't think this does anything
-  if(fGeometryHasBeenDestroyed) {
+  if ( fGeometryHasBeenDestroyed ) {
     G4TransportationManager::GetTransportationManager()->ClearParallelWorlds();
   }
 
   // Get the world volume and give it to the kernel
   G4RunManagerKernel* masterKernel = G4MTRunManager::GetMasterRunManagerKernel();
-  G4VPhysicalVolume* worldVol = masterKernel->GetCurrentWorld();
-  kernel->WorkerDefineWorldVolume(worldVol, false);
+  G4VPhysicalVolume* worldVol      = masterKernel->GetCurrentWorld();
+  kernel->WorkerDefineWorldVolume( worldVol, false );
   // We don't currently use parallel worlds in ATLAS, but someday we might
-  kernel->SetNumberOfParallelWorld(masterKernel->GetNumberOfParallelWorld());
-
-  // Setup the sensitive detectors on each worker.
-  if(m_senDetTool.retrieve().isFailure()) {
-    throw GaudiException("Could not retrieve SD master tool",
-                         methodName, StatusCode::FAILURE);
-  }
-  if(m_senDetTool->initializeSDs().isFailure()) {
-    throw GaudiException("Failed to initialize SDs for worker thread",
-                         methodName, StatusCode::FAILURE);
-  }
-
-  // Set up the detector magnetic field
-  if(m_detGeoSvc.retrieve().isFailure()) {
-    throw GaudiException("Could not retrieve det geo svc",
-                         methodName, StatusCode::FAILURE);
-  }
-  if(m_detGeoSvc->initializeFields().isFailure()) {
-    throw GaudiException("Failed to initialize mag field for worker thread",
-                         methodName, StatusCode::FAILURE);
-  }
+  kernel->SetNumberOfParallelWorld( masterKernel->GetNumberOfParallelWorld() );
 
   // These currently do nothing because we don't override
   userDetector->ConstructSDandField();
@@ -119,52 +100,40 @@ void GiGaWorkerRunManager::InitializePhysics()
 
   // Call the base class
   G4RunManager::InitializePhysics();
-
-  // Setup the fast simulations
-  if(m_fastSimTool.retrieve().isFailure()) {
-    throw GaudiException("Could not retrieve FastSims master tool",
-                         methodName, StatusCode::FAILURE);
-  }
-  if(m_fastSimTool->initializeFastSims().isFailure()) {
-    throw GaudiException("Failed to initialize FastSims for worker thread",
-                         methodName, StatusCode::FAILURE);
-  }
 }
 
-
-bool GiGaWorkerRunManager::ProcessEvent(G4Event* event)
+bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
 {
 
   G4StateManager* stateManager = G4StateManager::GetStateManager();
-  stateManager->SetNewState(G4State_GeomClosed);
+  stateManager->SetNewState( G4State_GeomClosed );
 
   currentEvent = event;
 
-  //eventManager->SetVerboseLevel(3);
-  //eventManager->GetTrackingManager()->SetVerboseLevel(3);
-  eventManager->ProcessOneEvent(currentEvent);
-  if (currentEvent->IsAborted()) {
-    ATH_MSG_WARNING( "GiGaWorkerRunManager::SimulateFADSEvent: " <<
-                     "Event Aborted at Detector Simulation level" );
+  // eventManager->SetVerboseLevel(3);
+  // eventManager->GetTrackingManager()->SetVerboseLevel(3);
+  eventManager->ProcessOneEvent( currentEvent );
+  if ( currentEvent->IsAborted() ) {
+    warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
+             "Event Aborted at Detector Simulation level" );
     currentEvent = nullptr;
     return true;
   }
 
-  this->AnalyzeEvent(currentEvent);
-  if (currentEvent->IsAborted()) {
-    ATH_MSG_WARNING( "GiGaWorkerRunManager::SimulateFADSEvent: " <<
-                     "Event Aborted at Analysis level" );
+  this->AnalyzeEvent( currentEvent );
+  if ( currentEvent->IsAborted() ) {
+    warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
+             "Event Aborted at Analysis level" );
     currentEvent = nullptr;
     return true;
   }
 
-  this->StackPreviousEvent(currentEvent);
-  bool abort = currentEvent->IsAborted();
+  this->StackPreviousEvent( currentEvent );
+  bool abort   = currentEvent->IsAborted();
   currentEvent = nullptr;
 
   return abort;
 }
-
 
 void GiGaWorkerRunManager::RunTermination()
 {

@@ -2,14 +2,14 @@
 
 // Using the Multi-action lists in Geant4 since 10.3
 // Even though they publically inherit from std::vector
-#include "Geant4/G4MultiRunAction.hh"
 #include "Geant4/G4MultiEventAction.hh"
-#include "Geant4/G4MultiTrackingAction.hh"
+#include "Geant4/G4MultiRunAction.hh"
 #include "Geant4/G4MultiSteppingAction.hh"
+#include "Geant4/G4MultiTrackingAction.hh"
 
-DECLARE_COMPONENT( GigaActionInitializer )
+DECLARE_COMPONENT( GiGaActionInitializer )
 
-StatusCode GigaActionInitializer::initialize()
+StatusCode GiGaActionInitializer::initialize()
 {
   auto sc = GaudiTool::initialize();
   // Now get all those factories and stuff them into the vector
@@ -55,7 +55,7 @@ StatusCode GigaActionInitializer::initialize()
   return sc;
 }
 
-StatusCode GigaActionInitializer::finalize()
+StatusCode GiGaActionInitializer::finalize()
 {
   release_tools( m_UserRunActionsFactories );
   release_tools( m_UserEventActionFactories );
@@ -66,42 +66,42 @@ StatusCode GigaActionInitializer::finalize()
   return GaudiTool::finalize();
 }
 
-void GigaActionInitializer::BuildForMaster() const
+void GiGaActionInitializer::BuildForMaster() const
 {
   auto runseq = new G4MultiRunAction{};
   for ( auto& fac : m_UserRunActionsFactories ) {
-    runseq->push_back( std::unique_ptr<G4UserRunAction>(fac->construct() ));
+    runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
   }
   SetUserAction( runseq );
 }
 
-void GigaActionInitializer::Build() const
+void GiGaActionInitializer::Build() const
 {
   { // Sequence of UserRunActions
-  auto runseq = new G4MultiRunAction{};
-  for ( auto& fac : m_UserRunActionsFactories ) {
-    runseq->push_back( std::unique_ptr<G4UserRunAction>(fac->construct() ));
-  }
-  SetUserAction( runseq );
+    auto runseq = new G4MultiRunAction{};
+    for ( auto& fac : m_UserRunActionsFactories ) {
+      runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
+    }
+    SetUserAction( runseq );
   }
 
-  {  // Sequence of UserEventActions
+  { // Sequence of UserEventActions
     auto evtseq = new G4MultiEventAction{};
     for ( auto& fac : m_UserEventActionFactories ) {
-      evtseq->push_back( std::unique_ptr<G4UserEventAction>(fac->construct() ));
+      evtseq->push_back( std::unique_ptr<G4UserEventAction>( fac->construct() ) );
     }
     SetUserAction( evtseq );
   }
 
-  {  // Sequence of UserStackingAction
+  { // Sequence of UserStackingAction
     SetUserAction( m_UserStackingActionFactory->construct() );
   }
 
-  {  // Sequence of UserTrackingAction
+  { // Sequence of UserTrackingAction
     auto trackseq = new G4MultiTrackingAction{};
-    for ( auto& fac : m_UserTrackingActionFactories) {
-      trackseq->push_back( std::unique_ptr<G4UserTrackingAction>(fac->construct() ));
+    for ( auto& fac : m_UserTrackingActionFactories ) {
+      trackseq->push_back( std::unique_ptr<G4UserTrackingAction>( fac->construct() ) );
     }
-    SetUserAction( trackseq);
+    SetUserAction( trackseq );
   }
 }

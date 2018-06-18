@@ -7,7 +7,7 @@
 
 #include "GiGaMTCore/IGiGaMessage.h"
 
-class GiGaWorkerRunManager : public G4WorkerRunManager
+class GiGaWorkerRunManager : public G4WorkerRunManager , public GiGaMessage
 {
 
 public:

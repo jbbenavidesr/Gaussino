@@ -18,10 +18,16 @@
 #include "Geant4/G4ParticlePropertyTable.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4UIsession.hh"
+#include "Geant4/G4VUserPhysicsList.hh"
 #include "Geant4/G4VVisManager.hh"
+#include "Geant4/G4VUserActionInitialization.hh"
 
 // from GiGaMT
+#include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaMTRunManagerFAC.h"
+#include "GiGaMTFactories/GiGaWorkerPilotFAC.h"
+#include "GiGaMT/GiGaActionInitializer.h"
+
 // from GiGa
 //#include    "GiGa/IGiGaPhysicsList.h"
 //#include    "GiGa/IGiGaStackAction.h"
@@ -54,19 +60,18 @@ DECLARE_COMPONENT( GiGaMT )
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-GiGaMT::GiGaMT( const std::string& name, ISvcLocator* svcloc )
-    : Service( name, svcloc )
-    //, m_runMgr( 0 )
-    //, m_geoSrc( 0 )
-    //, m_GiGaPhysList( 0 )
-    //, m_GiGaStackAction( 0 )
-    //, m_GiGaTrackAction( 0 )
-    //, m_GiGaStepAction( 0 )
-    //, m_GiGaEventAction( 0 )
-    //, m_GiGaRunAction( 0 )
-    //, m_uiSession( 0 )
-    //, m_visManager( 0 )
-    //, m_rndmSvc( 0 )
+GiGaMT::GiGaMT( const std::string& name, ISvcLocator* svcloc ) : Service( name, svcloc )
+//, m_runMgr( 0 )
+//, m_geoSrc( 0 )
+//, m_GiGaPhysList( 0 )
+//, m_GiGaStackAction( 0 )
+//, m_GiGaTrackAction( 0 )
+//, m_GiGaStepAction( 0 )
+//, m_GiGaEventAction( 0 )
+//, m_GiGaRunAction( 0 )
+//, m_uiSession( 0 )
+//, m_visManager( 0 )
+//, m_rndmSvc( 0 )
 {
   /// name of geometry source
   // declareProperty( "GeometrySource",      m_geoSrcName = "GiGaGeo" );
@@ -131,8 +136,6 @@ StatusCode GiGaMT::initialize()
     return Error( "Unable to initialize the base class Service ", sc );
   }
 
-  setProperties();
-
   /// print ALL properties
   typedef std::vector<Property*> Properties;
   const Properties& properties = getProperties();
@@ -171,134 +174,14 @@ StatusCode GiGaMT::initialize()
     }
   }
 
-  // get GiGa Run Manager
   auto mTRunManagerFactory = tool<GiGaMTRunManagerFAC>( m_MTRunMgrFactoryName );
   if ( 0 == mTRunManagerFactory ) {
     return Error( "Unable to create/locate GiGaMTRunManagerFAC" );
   }
 
-  // try to locate Physics List Object and make it known for GiGa
-  // if( !m_GiGaPhysListName.empty() )
-  //{
-  // m_GiGaPhysList = tool( m_GiGaPhysListName , m_GiGaPhysList , this );
-  // if( 0 == m_GiGaPhysList )
-  //{ return Error("Unable to create Physics List" ) ; }
-  //*this << m_GiGaPhysList -> physicsList() ;
-  // Print("Used Physics List Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaPhysList )
-  //+ "/" + m_GiGaPhysList -> name() );
-  //}
-  // else { Warning("Physics List is not required to be loaded!") ; }
-
-  // try to locate Stacking Action Object and make it known for GiGa
-  // if( !m_GiGaStackActionName.empty() )
-  //{
-  // m_GiGaStackAction =
-  // tool( m_GiGaStackActionName , m_GiGaStackAction , this );
-  // if( 0 == m_GiGaStackAction )
-  //{ return Error("Unable to create Stacking Action" ) ; }
-  //*this << m_GiGaStackAction ;
-  // Print("Used Stacking Action Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaStackAction )
-  //+ "/" + m_GiGaStackAction -> name() );
-  //}
-  // else { Print("Stacking Action Object is not required to be loaded") ; }
-
-  // try to locate Tracking Action Object and make it known for GiGa
-  // if( !m_GiGaTrackActionName.empty() )
-  //{
-  // m_GiGaTrackAction =
-  // tool( m_GiGaTrackActionName , m_GiGaTrackAction , this );
-  // if( 0 == m_GiGaTrackAction )
-  //{ return Error("Unable to create Tracking Action"  ) ; }
-  //*this << m_GiGaTrackAction  ;
-  // Print("Used Tracking Action Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaTrackAction )
-  //+ "/" + m_GiGaTrackAction -> name() );
-  //}
-  // else { Print("Tracking Action Object is not required to be loaded") ; }
-
-  // try to locate Stepping Action Object and make it known for GiGa
-  // if( !m_GiGaStepActionName.empty() )
-  //{
-  // m_GiGaStepAction =
-  // tool( m_GiGaStepActionName , m_GiGaStepAction , this );
-  // if( 0 == m_GiGaStepAction )
-  //{ return Error("Unable to create Stepping Action"  ) ; }
-  //*this << m_GiGaStepAction ;
-  // Print("Used  Stepping Action Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaStepAction )
-  //+ "/" + m_GiGaStepAction -> name() );
-  //}
-  // else { Print("Stepping Action Object is not required to be loaded") ; }
-
-  // try to locate Event    Action Object and make it known for GiGa
-  // if( !m_GiGaEventActionName.empty() )
-  //{
-  // m_GiGaEventAction =
-  // tool( m_GiGaEventActionName , m_GiGaEventAction , this );
-  // if( 0 == m_GiGaEventAction )
-  //{ return Error("Unable to create Event Action" ) ; }
-  //*this << m_GiGaEventAction ;
-  // Print("Used  Event Action Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaEventAction )
-  //+ "/" + m_GiGaEventAction -> name() );
-  //}
-  // else { Print("Event Action Object is not required to be loaded") ; }
-
-  // try to locate Run Action Object and make it known for GiGa
-  // if( !m_GiGaRunActionName.empty() )
-  //{
-  // m_GiGaRunAction =
-  // tool( m_GiGaRunActionName , m_GiGaRunAction , this );
-  // if( 0 == m_GiGaRunAction )
-  //{ return Error("Unable to create Run Action"  ) ; }
-  //*this << m_GiGaRunAction ;
-  // Print("Used  Run Action Object is "
-  //+ GiGaUtil::ObjTypeName( m_GiGaRunAction )
-  //+ "/" + m_GiGaRunAction -> name() );
-  //}
-  // else { Print("Run Action Object is not required to be loaded") ; }
-
-  // try to locate GiGa Geometry source  and make it known for GiGa
-  // if( !m_geoSrcName.empty() )
-  //{
-  // StatusCode sc = svcLoc()->service( m_geoSrcName , m_geoSrc , true );
-  // if( sc.isFailure()   )
-  //{ return Error("Unable to locate GiGa Geometry Source='" +
-  // m_geoSrcName + "'", sc ); }
-  // if( 0 == geoSrc() )
-  //{ return Error("Unable to locate GiGa Geometry Source='" +
-  // m_geoSrcName + "'"     ); }
-  // if( 0 != runMgr() ){ runMgr()->declare( geoSrc() ); }
-  //}
-  // else { Print("GiGa Geometry Source is not required to be loaded") ; }
-
-  // try to locate User Interface Object and make it known for GiGa
-  // if( !m_uiSessionName.empty() )
-  //{
-  // m_uiSession = tool( m_uiSessionName , m_uiSession , this );
-  // if( 0 == m_uiSession )
-  //{ return Error("Unable to create UI session "  ) ; }
-  //// transfer the UI session to the  Run Manager
-  // runMgr()->declare( m_uiSession -> session() );
-  // Print("Used  UI session object is "
-  //+ GiGaUtil::ObjTypeName( m_uiSession  )
-  //+ "/" + m_uiSession -> name() );
-  //}
-  // else { Print("GiGa User Interface session is not required to be launched");}
-
-  // instantiate Visualisation Manager
-  // if( !m_visManagerName.empty() )
-  //{
-  // m_visManager = tool( m_visManagerName , m_visManager , this );
-  // if( 0 == m_visManager )
-  //{ return Error("Unable to create Visualization Manager " ) ; }
-  // Print("Used  Visualization manager object is "
-  //+ GiGaUtil::ObjTypeName( m_visManager  )
-  //+ "/" + m_visManager -> name() );
-  //}
-  // else { Print("Visualisation Manager is not required to be created.") ; }
+  auto physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName );
+  auto workerPilotFactory = tool<GiGaWorkerPilotFAC>(m_WorkerPilotFactoryName);
+  auto userActionInitializer = tool<G4VUserActionInitialization>(m_UserActionInitializerName);
 
   /// Dump all particles known to Geant4
   if ( m_printParticles ) {
@@ -397,25 +280,6 @@ StatusCode GiGaMT::finalize()
 
   ///  finalize the base class
   return Service::finalize();
-}
-
-StatusCode GiGaMT::prepareTheEvent( G4PrimaryVertex* vertex )
-{
-  // FIXME: We might need this somehow, not sure ...
-  ///
-  return StatusCode::SUCCESS;
-  ///
-}
-
-StatusCode GiGaMT::retrieveTheEvent( const G4Event*& event )
-{
-  // FIXME: Due to multithreading this might not be that easy to do anymore
-  // especially if a second task executed by a different thread for the same
-  // event tries to obtain the simulated output that was submitted by a previous
-  // task executed by another thread.
-  ///
-  return StatusCode::SUCCESS;
-  ///
 }
 
 StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
