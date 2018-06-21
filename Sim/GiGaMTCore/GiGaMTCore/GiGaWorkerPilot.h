@@ -59,7 +59,11 @@ public:
   // First call determines the created number of threads that
   // are have to arrive at the barrier before all are given
   // the go-ahead.
-  GiGaMTBarrier & GetInitBarrier(std::size_t num_threads=0) const {
+  static GiGaMTBarrier & GetInitBarrier(std::size_t num_threads=0) {
+    static GiGaMTBarrier barrier(num_threads);
+    return barrier;
+  }
+  static GiGaMTBarrier & GetFinalBarrier(std::size_t num_threads=0) {
     static GiGaMTBarrier barrier(num_threads);
     return barrier;
   }

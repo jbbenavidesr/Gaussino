@@ -23,7 +23,7 @@ class IGiGaMTSvc : virtual public IService
 {
 public:
   /// Retrieve interface ID
-  static const InterfaceID& interfaceID();
+  DeclareInterfaceID(IGiGaMTSvc, 1, 0);
 
   /**  initialize
    *   @return status code
@@ -39,5 +39,5 @@ public:
 
 protected:
   /// virtual destructor
-  virtual ~IGiGaMTSvc();
+  virtual ~IGiGaMTSvc(){};
 };

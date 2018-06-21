@@ -33,13 +33,13 @@ void GiGaWorkerPilot::operator()()
   debug( "Finished initialization, awaiting something to simulate!" );
   // Get the pointer to the GiGaWorkerRunManager
   auto mgr = GiGaWorkerRunManager::GetGiGaWorkerRunManager();
+  GetInitBarrier().wait();
 
   // Begin the main loop by
   GiGaWorkerPayload payload;
   while ( true ) {
     m_input_queue->wait_dequeue( payload );
     auto & [ evt, engine, ret_promise ] = payload;
-
     // We treat the case of the G4Event* pointer being a nullptr
     // as the sentinel value and break the loop.
     if ( !evt ) {

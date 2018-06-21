@@ -18,87 +18,29 @@
 #include "Geant4/G4ParticlePropertyTable.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4UIsession.hh"
+#include "Geant4/G4VUserActionInitialization.hh"
 #include "Geant4/G4VUserPhysicsList.hh"
 #include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4VUserActionInitialization.hh"
 
 // from GiGaMT
-#include "GiGaMTFactories/GiGaFactoryBase.h"
-#include "GiGaMTFactories/GiGaMTRunManagerFAC.h"
-#include "GiGaMTFactories/GiGaWorkerPilotFAC.h"
 #include "GiGaMT/GiGaActionInitializer.h"
-
-// from GiGa
-//#include    "GiGa/IGiGaPhysicsList.h"
-//#include    "GiGa/IGiGaStackAction.h"
-//#include    "GiGa/IGiGaTrackAction.h"
-//#include    "GiGa/IGiGaStepAction.h"
-//#include    "GiGa/IGiGaEventAction.h"
-//#include    "GiGa/IGiGaRunAction.h"
-//#include    "GiGa/IGiGaRunManager.h"
-//#include    "GiGa/IGiGaGeoSrc.h"
-//#include    "GiGa/IGiGaUIsession.h"
-//#include    "GiGa/IGiGaVisManager.h"
-//#include    "GiGa/GiGaException.h"
-//#include    "GiGa/GiGaUtil.h"
+#include "GiGaMTCore/GiGaWorkerPilot.h"
+#include "GiGaMTFactories/GiGaFactoryBase.h"
 
 // local
 #include "GiGaMT.h"
 
 //-----------------------------------------------------------------------------
-// Implementation of general non-inline methods from class GiGaSvc
+// Implementation of the general components of the GiGaMT service.
+// Set-up related information is given in GiGaMTISetUpSvc.cpp
 //
-// YYYY-MM-DD : I.Belyaev
+// 20.6.2018 Dominik Muller
 //
-// Last modified 2006-07-21 : G.Corti
 //-----------------------------------------------------------------------------
 
 // Instantiation of a static factory class used by clients to create
 // instances of this service
 DECLARE_COMPONENT( GiGaMT )
-
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-GiGaMT::GiGaMT( const std::string& name, ISvcLocator* svcloc ) : Service( name, svcloc )
-//, m_runMgr( 0 )
-//, m_geoSrc( 0 )
-//, m_GiGaPhysList( 0 )
-//, m_GiGaStackAction( 0 )
-//, m_GiGaTrackAction( 0 )
-//, m_GiGaStepAction( 0 )
-//, m_GiGaEventAction( 0 )
-//, m_GiGaRunAction( 0 )
-//, m_uiSession( 0 )
-//, m_visManager( 0 )
-//, m_rndmSvc( 0 )
-{
-  /// name of geometry source
-  // declareProperty( "GeometrySource",      m_geoSrcName = "GiGaGeo" );
-  /// type and name of Physics List object
-  // declareProperty( "PhysicsList",
-  // m_GiGaPhysListName = "GiGaPhysListModular/ModularPL" );
-  /// type and Name of Stacking Action object
-  // declareProperty( "StackingAction", m_GiGaStackActionName = ""  ) ;
-  /// type and Name of Tracking Action object
-  // declareProperty( "TrackingAction",
-  // m_GiGaTrackActionName = "GiGaTrackActionSequence/TrackSeq" );
-  /// type and Name of Stepping Action object
-  // declareProperty( "SteppingAction",
-  // m_GiGaStepActionName = "GiGaStepActionSequence/StepSeq" );
-  /// type and Name of Event Action object
-  // declareProperty( "EventAction",
-  // m_GiGaEventActionName = "GiGaEventActionSequence/EventSeq" );
-  /// type and Name of Run Action object
-  // declareProperty( "RunAction",
-  // m_GiGaRunActionName =  "GiGaRunActionSequence/RunSeq" );
-  /// User Interface Sessions
-  // declareProperty( "UIsession",           m_uiSessionName = "" );
-  /// Visual Manager
-  // declareProperty( "VisManager",          m_visManagerName = "" );
-  /// Control print out of G4 particles list
-  declareProperty( "PrintG4Particles", m_printParticles = false );
-}
 
 //=============================================================================
 // Destructor
@@ -146,9 +88,6 @@ StatusCode GiGaMT::initialize()
     msg << MSG::DEBUG << "Property ['Name': Value] = " << ( **property ) << endmsg;
   }
 
-  // First, locate all the tools and services that we require.
-  // The more interesting stuff happens afterwards ...
-
   // locate  services,
   if ( 0 == svcLoc() ) {
     return Error( "ISvcLocator* points to NULL!" );
@@ -174,14 +113,42 @@ StatusCode GiGaMT::initialize()
     }
   }
 
-  auto mTRunManagerFactory = tool<GiGaMTRunManagerFAC>( m_MTRunMgrFactoryName );
-  if ( 0 == mTRunManagerFactory ) {
-    return Error( "Unable to create/locate GiGaMTRunManagerFAC" );
+  if ( m_nWorkerThreads == 0 ) {
+    m_nWorkerThreads = std::thread::hardware_concurrency();
+    if ( m_nWorkerThreads == 0 ) return Error( "Unable to automatically determine the number of worker threads." );
   }
 
-  auto physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName );
-  auto workerPilotFactory = tool<GiGaWorkerPilotFAC>(m_WorkerPilotFactoryName);
-  auto userActionInitializer = tool<G4VUserActionInitialization>(m_UserActionInitializerName);
+  m_mTRunManagerFactory = tool<GiGaFactoryBase<GiGaMTRunManager>>( m_MTRunMgrFactoryName );
+  if ( 0 == m_mTRunManagerFactory ) {
+    return Error( "Unable to create/locate factory for GiGaMTRunManager" );
+  }
+  m_physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName );
+  if ( 0 == m_physListFactory ) {
+    return Error( "Unable to create/locate factory for G4VUserPhysicsList" );
+  }
+  m_workerPilotFactory = tool<GiGaFactoryBase<GiGaWorkerPilot>>( m_WorkerPilotFactoryName );
+  if ( 0 == m_workerPilotFactory ) {
+    return Error( "Unable to create/locate factory for GiGaWorkerPilot" );
+  }
+  m_ActionInitializerFactory = tool<GiGaFactoryBase<G4VUserActionInitialization>>( m_UserActionInitializerName );
+  if ( 0 == m_ActionInitializerFactory ) {
+    return Error( "Unable to create/locate GiGaActionInitializer" );
+  }
+  m_detConstFactory = tool<GiGaFactoryBase<G4VUserDetectorConstruction>>( m_DetectorConstructionName );
+  if ( 0 == m_detConstFactory ) {
+    return Error( "Unable to create/locate factory for G4VUserDetectorConstruction" );
+  }
+
+  // Main initialization of the run managers using the tools above
+  sc = InitializeMainThread();
+  if ( sc.isFailure() ) {
+    return Error( "Unable to initialize main G4 thread" );
+  }
+
+  sc = InitializeWorkerThreads();
+  if ( sc.isFailure() ) {
+    return Error( "Unable to initialize G4 worker threads" );
+  }
 
   /// Dump all particles known to Geant4
   if ( m_printParticles ) {
@@ -189,8 +156,12 @@ StatusCode GiGaMT::initialize()
     particleTable->DumpTable( "all" );
   }
 
-  // Factories are not needed anymore so release here
-  mTRunManagerFactory->release();
+  // (most) factories are not needed anymore so release here
+  // FIXME: That is actually wrong because they still rely on the messaging
+  // interface of their factories. Need to be smarter here!
+  // m_mTRunManagerFactory->release();
+  // m_physListFactory->release();
+  // m_workerPilotFactory->release();
   return StatusCode::SUCCESS;
 }
 
@@ -200,49 +171,24 @@ StatusCode GiGaMT::initialize()
 StatusCode GiGaMT::finalize()
 {
   Print( "Finalization", MSG::DEBUG, StatusCode::SUCCESS );
+  // Trigger the termination of the worker threads which are blocking
+  // on an empty queue right now by pushing the sentinel the worker threads
+  m_payloadQueue.enqueue( GiGaWorkerPayload{nullptr, nullptr, nullptr} );
 
-  // if (0 != toolSvc() &&
-  // SmartIF<IService>(toolSvc())->FSMState() >= Gaudi::StateMachine::INITIALIZED) {
-  // if(0 != m_visManager) {
-  // toolSvc()->releaseTool(m_visManager);
-  //}
-  // m_visManager = 0;
+  // Wait for the worker threads that will finalize now automatically
+  for ( auto& t : m_workerThreads ) {
+    t.join();
+  }
+  Print( "Finalized all G4 worker threads", MSG::ALWAYS, StatusCode::SUCCESS );
 
-  // if(0 != m_uiSession) {
-  // toolSvc()->releaseTool(m_uiSession);
-  //}
-  // m_uiSession = 0;
+  // Now finalise the remaining Gaudi Tools and release them as their messaging
+  // interface was potentially still in use.
 
-  // if(0 != m_GiGaRunAction) {
-  // toolSvc()->releaseTool(m_GiGaRunAction);
-  //}
-  // m_GiGaRunAction = 0;
-
-  // if(0 != m_GiGaEventAction) {
-  // toolSvc()->releaseTool(m_GiGaEventAction);
-  //}
-  // m_GiGaEventAction = 0;
-
-  // if(0 != m_GiGaStepAction) {
-  // toolSvc()->releaseTool(m_GiGaStepAction);
-  //}
-  // m_GiGaStepAction = 0;
-
-  // if (0 != m_GiGaTrackAction) {
-  // toolSvc()->releaseTool(m_GiGaTrackAction);
-  //}
-  // m_GiGaTrackAction = 0;
-
-  // if (0 != m_GiGaStackAction) {
-  // toolSvc()->releaseTool(m_GiGaStackAction);
-  //}
-  // m_GiGaStackAction = 0;
-
-  // if (0 != m_GiGaPhysList) {
-  // toolSvc()->releaseTool(m_GiGaPhysList);
-  //}
-  // m_GiGaPhysList = 0;
-  //}
+  m_mTRunManagerFactory->release();
+  m_physListFactory->release();
+  m_workerPilotFactory->release();
+  m_detConstFactory->release();
+  m_ActionInitializerFactory->release();
 
   // error printout
   if ( 0 != m_errors.size() || 0 != m_warnings.size() || 0 != m_exceptions.size() ) {

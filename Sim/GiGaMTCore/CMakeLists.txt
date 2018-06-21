@@ -10,9 +10,10 @@ gaudi_subdir(GiGaMTCore v1r0)
 find_package(CLHEP COMPONENTS Random Vector)
 
 FindG4libs(digits_hits event geometry global graphics_reps materials
-           particles processes run tracking track)
+           particles processes run tracking track intercoms physicslists)
 
 add_definitions(-DG4MULTITHREADED)
+add_definitions(-DG4USE_STD11)
 
 gaudi_add_library(GiGaMTCoreLib
                  src/*.cpp

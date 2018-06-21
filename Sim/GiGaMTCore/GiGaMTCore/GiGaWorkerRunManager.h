@@ -1,8 +1,5 @@
 #pragma once
 
-#include "GaudiKernel/ServiceHandle.h"
-#include "GaudiKernel/ToolHandle.h"
-
 #include "Geant4/G4WorkerRunManager.hh"
 
 #include "GiGaMTCore/IGiGaMessage.h"

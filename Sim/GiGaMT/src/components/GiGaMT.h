@@ -19,6 +19,8 @@
 #include "GiGaMT/GiGaException.h"
 #include "GiGaMT/IGiGaMTSetUpSvc.h"
 #include "GiGaMT/IGiGaMTSvc.h"
+#include "GiGaMTCore/GiGaMTUtils.h"
+#include "GiGaMTCore/GiGaWorkerPayload.h"
 
 // Forwad declarations
 // from Gaudi
@@ -26,17 +28,6 @@ class IChronoStatSvc;
 class ISvcLocator;
 template <class TYPE>
 class SvcFactory;
-
-// from GiGa
-// class     IGiGaGeoSrc                     ;
-// class     IGiGaPhysicsList                ;
-// class     IGiGaStackAction                ;
-// class     IGiGaTrackAction                ;
-// class     IGiGaStepAction                 ;
-// class     IGiGaEventAction                ;
-// class     IGiGaRunAction                  ;
-// class     IGiGaUIsession                  ;
-// class     IGiGaVisManager                 ;
 
 // GiGaMT factories
 template <typename T>
@@ -46,10 +37,11 @@ class G4UImanager;
 class G4VVisManager;
 class G4VExceptionHandler;
 class G4VUserPhysicsList;
-class GiGaActionInitializer;
+class G4VUserActionInitialization;
 class G4VUserPhysicsList;
 class GiGaWorkerPilot;
 class GiGaMTRunManager;
+class G4VUserDetectorConstruction;
 
 /**  @class GiGaMT GiGaMT.h
  *
@@ -69,16 +61,15 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
   Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
+  Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", ""};
+  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
+  Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
+
   /// friend factory
   friend class SvcFactory<GiGaMT>;
 
 protected:
-  /** standard constructor
-   *  @see Service
-   *  @param name instrance name
-   *  @param svc  pointer to service locator
-   */
-  GiGaMT( const std::string& name, ISvcLocator* svc );
+  using Service::Service;
 
   /// (virtual destructor)
   virtual ~GiGaMT();
@@ -225,10 +216,13 @@ private:
     return Tool;
   }
 
-  GiGaFactoryBase<GiGaMTRunManager>* m_mTRunManagerFactory = nullptr;
-  GiGaFactoryBase<G4VUserPhysicsList>* m_physListFactory   = nullptr;
-  GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory   = nullptr;
-  GiGaActionInitializer* userActionInitializer             = nullptr;
+  GiGaFactoryBase<GiGaMTRunManager>* m_mTRunManagerFactory           = nullptr;
+  GiGaFactoryBase<G4VUserPhysicsList>* m_physListFactory             = nullptr;
+  GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory             = nullptr;
+  GiGaFactoryBase<G4VUserDetectorConstruction>* m_detConstFactory    = nullptr;
+  GiGaFactoryBase<G4VUserActionInitialization>* m_ActionInitializerFactory = nullptr;
+  mutable std::vector<std::thread> m_workerThreads{};
+  mutable GiGaPayloadQueue m_payloadQueue{};
 
   /** the useful method for location of tools.
    *  @see IToolSvc
@@ -308,8 +302,6 @@ private:
   // IGiGaUIsession*   m_uiSession           ; ///< GiGa UI session
   // std::string       m_visManagerName      ; ///< GiGa Vis manager type/name
   // IGiGaVisManager*  m_visManager          ; ///< GiGa Vis manager
-
-  bool m_printParticles; ///< control print of G4Particles
 
   typedef std::map<std::string, unsigned int> Counter;
   /// counter of errors

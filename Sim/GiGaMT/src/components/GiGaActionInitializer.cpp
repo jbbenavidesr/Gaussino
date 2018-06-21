@@ -106,7 +106,7 @@ void GiGaActionInitializer::Build() const
   }
 }
 
-G4VUserActionInitialization* GiGaActionInitializer::ConstructG4Object() const
+G4VUserActionInitialization* GiGaActionInitializer::construct() const
 {
   class dummy : public G4VUserActionInitialization
   {

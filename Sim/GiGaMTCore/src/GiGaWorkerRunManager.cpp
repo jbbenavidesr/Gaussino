@@ -59,7 +59,8 @@ void GiGaWorkerRunManager::Initialize()
     if ( retVal != fCommandSucceeded ) {
       std::string errMsg{"Failed to apply command <"};
       errMsg += ( it + ">. Return value " + std::to_string( retVal ) );
-      throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );
+      error(errMsg);
+      //throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );
     }
   }
 

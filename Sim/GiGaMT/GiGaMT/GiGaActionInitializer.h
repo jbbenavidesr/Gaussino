@@ -4,6 +4,7 @@
 #include "Geant4/G4VUserActionInitialization.hh"
 #include "GiGaMTCore/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTFactories/GiGaTool.h"
 #include <vector>
 
 /* GiGa initialization class for user actions. After creating the
@@ -37,9 +38,10 @@ typedef GiGaFactoryBase<G4UserStackingAction> StackingActionFactory;
 typedef GiGaFactoryBase<G4UserTrackingAction> TrackingActionFactory;
 typedef GiGaFactoryBase<G4UserSteppingAction> SteppingActionFactory;
 
-class GiGaActionInitializer : public G4VUserActionInitialization, public GaudiTool, public IGiGaMessage
+class GiGaActionInitializer : public extends<GiGaTool, GiGaFactoryBase<G4VUserActionInitialization>>, public G4VUserActionInitialization
 {
 public:
+  using extends::extends;
   // All actions can be provided as a list of strings which are then used to fetch
   // the corresponding tools used as the factories in the build. Properties are
   // default constructed, i.e. the lists are empty
@@ -52,8 +54,7 @@ public:
 public:
   // Just use the GaudiTool constructors here. Remaining two base classes are hence default
   // constructed which is fine as they are default constructed.
-  using GaudiTool::GaudiTool;
-  virtual ~GiGaActionInitializer();
+  virtual ~GiGaActionInitializer(){};
   StatusCode initialize() override;
   StatusCode finalize() override;
 
@@ -74,14 +75,14 @@ public:
    * without messing up the GaudiTool here.
    * Basically, this is now a factory for a factory: Factoriception
    */
-  G4VUserActionInitialization* ConstructG4Object() const;
+  virtual G4VUserActionInitialization* construct() const override;
 
 private:
   template <typename T>
   void release_tools( T& cont )
   {
     for ( auto& t : cont ) {
-      cont->release();
+      t->release();
     }
   }
   // Storage for the factories
@@ -90,4 +91,25 @@ private:
   StackingActionFactory* m_UserStackingActionFactory = nullptr;
   std::vector<TrackingActionFactory*> m_UserTrackingActionFactories{};
   std::vector<SteppingActionFactory*> m_UserSteppingActionFactories{};
+
+  // Get in the normal messaging things
+  using GaudiTool::debug;
+  using GaudiTool::error;
+  using GaudiTool::verbose;
+  using GaudiTool::warning;
+
+  void debug( std::string message ) const override
+  {
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << message << endmsg;
+    }
+  }
+  void verbose( std::string message ) const override
+  {
+    if ( msgLevel( MSG::VERBOSE ) ) {
+      verbose() << message << endmsg;
+    }
+  }
+  void error( std::string message ) const override { error() << message << endmsg; }
+  void warning( std::string message ) const override { warning() << message << endmsg; }
 };

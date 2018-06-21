@@ -1,7 +1,7 @@
 #pragma once
 
 // from Gaudi
-#include "GaudiAlg/GaudiTool.h"
+#include "GaudiKernel/IAlgTool.h"
 #include "GiGaMTCore/IGiGaMessage.h"
 
 /** GiGaFactoryBase
@@ -16,37 +16,16 @@
  */
 
 template <typename T>
-class GiGaFactoryBase : public GaudiTool, public IGiGaMessage
+class GiGaFactoryBase : public extend_interfaces<IAlgTool>
 {
 public:
-  using GaudiTool::GaudiTool;
+  // Retrieve interface ID
+  static const InterfaceID& interfaceID() { return iid::interfaceID(); }
+  using iid      = Gaudi::InterfaceId<GiGaFactoryBase<T>, 1, 0>;
+  using ext_iids = typename iid::iids;
+
+  using extend_interfaces::extend_interfaces;
+  virtual ~GiGaFactoryBase(){};
 
   virtual T* construct() const = 0;
-
-protected:
-  // GiGaFactoryBase( const std::string & type , const std::string & name ,
-  // const IInterface * parent ) ;
-
-  // Get in the normal messaging things
-  using GaudiTool::debug;
-  using GaudiTool::error;
-  using GaudiTool::verbose;
-  using GaudiTool::warning;
-
-  virtual ~GiGaFactoryBase();
-
-  void debug( std::string message ) const override
-  {
-    if ( msgLevel( MSG::DEBUG ) ) {
-      debug() << message << endmsg;
-    }
-  }
-  void verbose( std::string message ) const override
-  {
-    if ( msgLevel( MSG::VERBOSE ) ) {
-      verbose() << message << endmsg;
-    }
-  }
-  void error( std::string message ) const override { error() << message << endmsg; }
-  void warning( std::string message ) const override { warning() << message << endmsg; }
 };
