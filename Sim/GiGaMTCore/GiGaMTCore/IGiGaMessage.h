@@ -31,6 +31,9 @@ public:
   GiGaMessage() = default;
   virtual ~GiGaMessage() = default;
   void SetMessageInterface( const IGiGaMessage* msg ) { m_msg = msg; }
+  GiGaMessage(GiGaMessage && right){
+      m_msg=right.m_msg;
+  }
 
 protected:
   void debug( std::string message )

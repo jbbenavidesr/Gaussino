@@ -10,5 +10,6 @@ GiGaWorkerPilot* GiGaWorkerPilotFAC::construct() const {
 
   auto pilot = new GiGaWorkerPilot{};
   pilot->SetMessageInterface(this);
+  pilot->iWorker = n_created - 1;
   return pilot;
 }

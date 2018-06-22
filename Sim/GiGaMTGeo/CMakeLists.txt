@@ -1,5 +1,5 @@
 ################################################################################
-# Package: GiGaMTFactories 
+# Package: GiGaMTGeo 
 #
 # This package will contain the factories to construct the various G4 objects.
 # This is done to clearly separate the G4 world from any Gaudi configurables parts.
@@ -8,18 +8,17 @@
 # FIXME: This requirement should probably be enforced somehow...
 # 
 #################################################################################
-gaudi_subdir(GiGaMTFactories v1r0)
+gaudi_subdir(GiGaMTGeo v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTCore
-                         Sim/GiGaMTGeo) 
+                         Sim/GiGaMTCore) 
 
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
 # GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
-gaudi_add_module(GiGaMTFactories
-        src/*.cpp
-        LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
+#gaudi_add_module(GiGaMTGeo
+        #src/*.cpp
+        #LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
 
-gaudi_install_headers(GiGaMTFactories)
+gaudi_install_headers(GiGaMTGeo)

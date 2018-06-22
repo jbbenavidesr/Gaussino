@@ -22,9 +22,13 @@ GiGaMTRunManager::GiGaMTRunManager()
 
 GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager()
 {
-  // Using a Meyer's singleton pattern using a static function local
-  static GiGaMTRunManager thisManager{};
-  return &thisManager;
+  // Grab thread-local pointer from base class
+  auto* wrm = G4MTRunManager::GetMasterRunManager();
+  if ( wrm ) {
+    return static_cast<GiGaMTRunManager*>( wrm );
+  } else {
+    return new GiGaMTRunManager;
+  }
 }
 
 
@@ -49,21 +53,21 @@ void GiGaMTRunManager::Initialize()
 }
 
 
-void GiGaMTRunManager::InitializeGeometry()
-{
-  //FIXME: This needs to do something ...
+//void GiGaMTRunManager::InitializeGeometry()
+//{
+  ////FIXME: This needs to do something ...
 
 
-}
+//}
 
-void GiGaMTRunManager::InitializePhysics()
-{
-  kernel->InitializePhysics();
+//void GiGaMTRunManager::InitializePhysics()
+//{
+  //kernel->InitializePhysics();
 
-  G4CascadeInterface::Initialize();
-  physicsInitialized = true;
+  //G4CascadeInterface::Initialize();
+  //physicsInitialized = true;
 
-}
+//}
 
 
 // I suspect a lot of this could just be delegated to the base class.

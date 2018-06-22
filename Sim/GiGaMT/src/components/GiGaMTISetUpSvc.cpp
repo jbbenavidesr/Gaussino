@@ -59,6 +59,8 @@ StatusCode GiGaMT::InitializeMainThread() const
 StatusCode GiGaMT::InitializeWorkerThreads() const
 {
 
+
+  Print( "Beginning worker thread creation", MSG::DEBUG, StatusCode::SUCCESS );
   // Barrier to synchronise the initialization of the threads to only
   // continue and exit the current function successfully when all threads
   // are ready.

@@ -12,20 +12,22 @@
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/PropertyMgr.h"
 #include "GaudiKernel/Stat.h"
-#include "GaudiKernel/SvcFactory.h"
 
 // from G4
 #include "Geant4/G4ParticlePropertyTable.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4UIsession.hh"
+#include "Geant4/G4MaterialTable.hh"
 #include "Geant4/G4VUserActionInitialization.hh"
 #include "Geant4/G4VUserPhysicsList.hh"
 #include "Geant4/G4VVisManager.hh"
+#include "Geant4/G4NistManager.hh"
 
 // from GiGaMT
 #include "GiGaMT/GiGaActionInitializer.h"
 #include "GiGaMTCore/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTCore/GiGaMTRunManager.h"
 
 // local
 #include "GiGaMT.h"
@@ -118,25 +120,32 @@ StatusCode GiGaMT::initialize()
     if ( m_nWorkerThreads == 0 ) return Error( "Unable to automatically determine the number of worker threads." );
   }
 
-  m_mTRunManagerFactory = tool<GiGaFactoryBase<GiGaMTRunManager>>( m_MTRunMgrFactoryName );
+  m_mTRunManagerFactory = tool<GiGaFactoryBase<GiGaMTRunManager>>( m_MTRunMgrFactoryName, this );
   if ( 0 == m_mTRunManagerFactory ) {
     return Error( "Unable to create/locate factory for GiGaMTRunManager" );
   }
-  m_physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName );
+  m_physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName, this );
   if ( 0 == m_physListFactory ) {
     return Error( "Unable to create/locate factory for G4VUserPhysicsList" );
   }
-  m_workerPilotFactory = tool<GiGaFactoryBase<GiGaWorkerPilot>>( m_WorkerPilotFactoryName );
+  m_workerPilotFactory = tool<GiGaFactoryBase<GiGaWorkerPilot>>( m_WorkerPilotFactoryName, this );
   if ( 0 == m_workerPilotFactory ) {
     return Error( "Unable to create/locate factory for GiGaWorkerPilot" );
   }
-  m_ActionInitializerFactory = tool<GiGaFactoryBase<G4VUserActionInitialization>>( m_UserActionInitializerName );
+  m_ActionInitializerFactory = tool<GiGaFactoryBase<G4VUserActionInitialization>>( m_UserActionInitializerName, this );
   if ( 0 == m_ActionInitializerFactory ) {
     return Error( "Unable to create/locate GiGaActionInitializer" );
   }
-  m_detConstFactory = tool<GiGaFactoryBase<G4VUserDetectorConstruction>>( m_DetectorConstructionName );
+  m_detConstFactory = tool<GiGaFactoryBase<G4VUserDetectorConstruction>>( m_DetectorConstructionName, this );
   if ( 0 == m_detConstFactory ) {
     return Error( "Unable to create/locate factory for G4VUserDetectorConstruction" );
+  }
+
+  /// Dump all particles known to Geant4
+  if ( m_printMaterials) {
+    G4cout << *G4Material::GetMaterialTable();
+    G4cout << "Nist Materials\n";
+    G4NistManager::Instance()->ListMaterials("all");
   }
 
   // Main initialization of the run managers using the tools above
@@ -180,15 +189,7 @@ StatusCode GiGaMT::finalize()
     t.join();
   }
   Print( "Finalized all G4 worker threads", MSG::ALWAYS, StatusCode::SUCCESS );
-
-  // Now finalise the remaining Gaudi Tools and release them as their messaging
-  // interface was potentially still in use.
-
-  m_mTRunManagerFactory->release();
-  m_physListFactory->release();
-  m_workerPilotFactory->release();
-  m_detConstFactory->release();
-  m_ActionInitializerFactory->release();
+  delete GiGaMTRunManager::GetGiGaMTRunManager();
 
   // error printout
   if ( 0 != m_errors.size() || 0 != m_warnings.size() || 0 != m_exceptions.size() ) {

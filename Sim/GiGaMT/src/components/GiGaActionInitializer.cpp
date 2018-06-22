@@ -61,7 +61,9 @@ StatusCode GiGaActionInitializer::finalize()
   release_tools( m_UserEventActionFactories );
   release_tools( m_UserSteppingActionFactories );
   release_tools( m_UserTrackingActionFactories );
-  m_UserStackingActionFactory->release();
+  if ( m_UserStackingActionFactory ) {
+    m_UserStackingActionFactory->release();
+  }
 
   return GaudiTool::finalize();
 }
@@ -93,7 +95,7 @@ void GiGaActionInitializer::Build() const
     SetUserAction( evtseq );
   }
 
-  { // Sequence of UserStackingAction
+  if ( m_UserStackingActionFactory ) {
     SetUserAction( m_UserStackingActionFactory->construct() );
   }
 

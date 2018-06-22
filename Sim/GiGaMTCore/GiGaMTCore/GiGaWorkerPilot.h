@@ -16,6 +16,7 @@
 // of Geant4 so hopefully noone ever wants to do that...
 
 class GiGaWorkerPilotFAC;
+class G4WorkerThread;
 
 class GiGaWorkerPilot : public GiGaMessage
 {
@@ -43,6 +44,8 @@ public:
   // in G4MTRunManager::StartThread. As we do this ourselfs we take
   // a lot of inspiration from there.
   void InitializeWorker();
+
+  void FinalizeWorker();
 
   // Does some cleanup after the event loop has terminated
   void RunTermination();
@@ -75,4 +78,9 @@ private:
 
   // Pointer to the input queue
   GiGaPayloadQueue* m_input_queue = nullptr;
+  G4WorkerThread* m_context = nullptr;
+
+  // Number of worker
+  size_t iWorker = 0;
+  size_t nWorkers = 0;
 };

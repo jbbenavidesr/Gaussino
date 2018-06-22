@@ -61,9 +61,10 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
   Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
-  Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", ""};
+  Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", "GiGaMTDetectorConstructionFAC"};
   Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
+  Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};
 
   /// friend factory
   friend class SvcFactory<GiGaMT>;
