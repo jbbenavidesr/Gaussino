@@ -15,34 +15,35 @@
  *  @date   2018-06-04
  */
 
-class GiGaTool : public GaudiTool, public IGiGaMessage{
+class GiGaMessageImpl : public IGiGaMessage
+{
+  friend class GiGaTool;
+
+  GiGaMessageImpl() = delete;
+  GiGaMessageImpl( MsgStream _stream ) : msg( _stream ) {}
+
+public:
+  void debug( std::string message ) const override { msg << MSG::DEBUG << message << endmsg; }
+  void verbose( std::string message ) const override { msg << MSG::VERBOSE << message << endmsg; }
+  void error( std::string message ) const override { msg << MSG::ERROR << message << endmsg; }
+  void warning( std::string message ) const override { msg << message << endmsg; }
+
+private:
+  mutable MsgStream msg;
+};
+
+class GiGaTool : public GaudiTool
+{
 
 public:
   using GaudiTool::GaudiTool;
-  // Retrieve interface ID
   virtual ~GiGaTool(){};
 
-protected:
-
-  // Get in the normal messaging things
-  using GaudiTool::debug;
-  using GaudiTool::error;
-  using GaudiTool::verbose;
-  using GaudiTool::warning;
-
-
-  void debug( std::string message ) const override
+  GiGaMessageImpl* message_interface() const
   {
-    if ( msgLevel( MSG::DEBUG ) ) {
-      debug() << message << endmsg;
-    }
+    MsgStream msg( msgSvc(), name() );
+    msg.setLevel( msgLevel() );
+    auto msgwrapper = new GiGaMessageImpl( MsgStream( msgSvc(), name() ) );
+    return msgwrapper;
   }
-  void verbose( std::string message ) const override
-  {
-    if ( msgLevel( MSG::VERBOSE ) ) {
-      verbose() << message << endmsg;
-    }
-  }
-  void error( std::string message ) const override { error() << message << endmsg; }
-  void warning( std::string message ) const override { warning() << message << endmsg; }
 };

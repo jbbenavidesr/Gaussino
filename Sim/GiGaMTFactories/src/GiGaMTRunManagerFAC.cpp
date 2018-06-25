@@ -12,7 +12,7 @@ GiGaMTRunManager* GiGaMTRunManagerFAC::construct() const {
   debug() << "Constructing the main GiGaMTRunManager instance" << endmsg;
 
   auto mgr = GiGaMTRunManager::GetGiGaMTRunManager();
-  mgr->SetMessageInterface(this);
+  mgr->SetMessageInterface(message_interface());
   created = true;
   return mgr;
 }

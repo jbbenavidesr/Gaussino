@@ -91,25 +91,4 @@ private:
   StackingActionFactory* m_UserStackingActionFactory = nullptr;
   std::vector<TrackingActionFactory*> m_UserTrackingActionFactories{};
   std::vector<SteppingActionFactory*> m_UserSteppingActionFactories{};
-
-  // Get in the normal messaging things
-  using GaudiTool::debug;
-  using GaudiTool::error;
-  using GaudiTool::verbose;
-  using GaudiTool::warning;
-
-  void debug( std::string message ) const override
-  {
-    if ( msgLevel( MSG::DEBUG ) ) {
-      debug() << message << endmsg;
-    }
-  }
-  void verbose( std::string message ) const override
-  {
-    if ( msgLevel( MSG::VERBOSE ) ) {
-      verbose() << message << endmsg;
-    }
-  }
-  void error( std::string message ) const override { error() << message << endmsg; }
-  void warning( std::string message ) const override { warning() << message << endmsg; }
 };
