@@ -7,17 +7,21 @@
 gaudi_subdir(GiGaMT v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
+                         HepMCUser
+                         NewRnd
+                         Sim/SimInterfaces
                          Sim/GiGaMTFactories
                          Sim/GiGaMTCore)
 
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
+find_package(HepMC CONFIG)
 
 gaudi_add_library(GiGaMTLib
                   src/Lib/*.cpp
                   PUBLIC_HEADERS GiGaMT 
-                  INCLUDE_DIRS GiGaMTFactories
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreLib)
+                  INCLUDE_DIRS HepMC GiGaMTFactories SimInterfaces HepMCUser
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreLib HepMC NewRnd)
 
 gaudi_add_module(GiGaMT
         src/components/*.cpp

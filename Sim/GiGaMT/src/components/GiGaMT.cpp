@@ -1,5 +1,6 @@
 // from STD & STL
 #include <algorithm>
+#include <future>
 #include <list>
 #include <string>
 #include <vector>
@@ -14,20 +15,25 @@
 #include "GaudiKernel/Stat.h"
 
 // from G4
+#include "Geant4/G4MaterialTable.hh"
+#include "Geant4/G4NistManager.hh"
 #include "Geant4/G4ParticlePropertyTable.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4UIsession.hh"
-#include "Geant4/G4MaterialTable.hh"
 #include "Geant4/G4VUserActionInitialization.hh"
 #include "Geant4/G4VUserPhysicsList.hh"
 #include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4NistManager.hh"
 
 // from GiGaMT
+#include "CLHEP/Random/RandomEngine.h"
 #include "GiGaMT/GiGaActionInitializer.h"
+#include "GiGaMTCore/GiGaMTRunManager.h"
+#include "GiGaMTCore/GiGaWorkerPayload.h"
 #include "GiGaMTCore/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
-#include "GiGaMTCore/GiGaMTRunManager.h"
+#include "SimInterfaces/IHepMC3ToGeant4Tool.h"
+
+#include "HepMC/GenEvent.h"
 
 // local
 #include "GiGaMT.h"
@@ -140,12 +146,16 @@ StatusCode GiGaMT::initialize()
   if ( 0 == m_detConstFactory ) {
     return Error( "Unable to create/locate factory for G4VUserDetectorConstruction" );
   }
+  m_conversionTool = tool<IHepMC3ToGeant4Tool>( m_conversionToolName, this );
+  if ( 0 == m_conversionTool ) {
+    return Error( "Unable to create/locate tool for EDM conversion" );
+  }
 
   /// Dump all particles known to Geant4
-  if ( m_printMaterials) {
+  if ( m_printMaterials ) {
     G4cout << *G4Material::GetMaterialTable();
     G4cout << "Nist Materials\n";
-    G4NistManager::Instance()->ListMaterials("all");
+    G4NistManager::Instance()->ListMaterials( "all" );
   }
 
   // Main initialization of the run managers using the tools above
@@ -165,12 +175,6 @@ StatusCode GiGaMT::initialize()
     particleTable->DumpTable( "all" );
   }
 
-  // (most) factories are not needed anymore so release here
-  // FIXME: That is actually wrong because they still rely on the messaging
-  // interface of their factories. Need to be smarter here!
-  // m_mTRunManagerFactory->release();
-  // m_physListFactory->release();
-  // m_workerPilotFactory->release();
   return StatusCode::SUCCESS;
 }
 
@@ -228,6 +232,39 @@ StatusCode GiGaMT::finalize()
   ///  finalize the base class
   return Service::finalize();
 }
+
+StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
+{
+
+  auto g4event = m_conversionTool->g4Event( _in );
+  std::vector<std::promise<DummyReturn>*> promises;
+  std::promise<DummyReturn> promised_return;
+  auto fut = promised_return.get_future();
+  m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, &promised_return} );
+  fut.get();
+
+  return StatusCode::SUCCESS;
+}
+
+//StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
+//{
+
+  //std::vector<std::future<DummyReturn>> futures;
+  //for(auto & evt: _in){
+    //auto g4event = m_conversionTool->g4Event( std::vector<HepMC::GenEvent>{{evt}});
+    //auto ret_promise = new std::promise<DummyReturn>{};
+    //m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, ret_promise} );
+    //futures.push_back(ret_promise->get_future());
+  //}
+  ////auto g4event = m_conversionTool->g4Event( _in );
+  ////auto fut = promised_return.get_future();
+  ////fut.get();
+  //for(auto & fut:futures){
+    //fut.get();
+  //}
+
+  //return StatusCode::SUCCESS;
+//}
 
 StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
 {

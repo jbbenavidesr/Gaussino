@@ -55,7 +55,7 @@ def configure_generation(**kwargs):
 
     from Configurables import PoissonPileUp
     gen.addTool(PoissonPileUp, name='PoissonPileUp')
-    gen.PoissonPileUp.PileUpNu = 1.6
+    gen.PoissonPileUp.PileUpNu = 20
     gen.PileUpTool = 'PoissonPileUp'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 

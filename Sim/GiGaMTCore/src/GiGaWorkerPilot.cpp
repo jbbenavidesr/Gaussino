@@ -2,6 +2,8 @@
 #include "GiGaMTCore/GiGaMTRunManager.h"
 #include "GiGaMTCore/GiGaWorkerRunManager.h"
 
+#include <string>
+
 #include "Geant4/G4AutoDelete.hh"
 #include "Geant4/G4UImanager.hh"
 #include "Geant4/G4UserWorkerThreadInitialization.hh"
@@ -99,6 +101,7 @@ void GiGaWorkerPilot::operator()()
   GiGaWorkerPayload payload;
   while ( true ) {
     m_input_queue->wait_dequeue( payload );
+    debug("Queue length "+std::to_string(m_input_queue->size_approx()));
     auto & [ evt, engine, ret_promise ] = payload;
     // We treat the case of the G4Event* pointer being a nullptr
     // as the sentinel value and break the loop.
@@ -110,11 +113,15 @@ void GiGaWorkerPilot::operator()()
       m_input_queue->enqueue( payload );
       break;
     }
+    debug("Dequeued event with "+std::to_string(evt->GetNumberOfPrimaryVertex())+" vertices.");
 
     // Reset the random number engine of this worker thread
     G4Random::setTheEngine( engine );
 
     mgr->ProcessEvent( evt );
+    debug("Geant4 finished processing the event.");
+    ret_promise->set_value(DummyReturn());
+    
   }
 
   FinalizeWorker();

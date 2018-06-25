@@ -111,8 +111,8 @@ bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
 
   currentEvent = event;
 
-  // eventManager->SetVerboseLevel(3);
-  // eventManager->GetTrackingManager()->SetVerboseLevel(3);
+  eventManager->SetVerboseLevel(3);
+  //eventManager->GetTrackingManager()->SetVerboseLevel(3);
   eventManager->ProcessOneEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
@@ -129,7 +129,7 @@ bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
     return true;
   }
 
-  this->StackPreviousEvent( currentEvent );
+  //this->StackPreviousEvent( currentEvent );
   bool abort   = currentEvent->IsAborted();
   currentEvent = nullptr;
 

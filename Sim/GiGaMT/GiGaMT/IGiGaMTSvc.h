@@ -1,15 +1,23 @@
 #pragma once
 
+#include <vector>
 #include "GaudiKernel/IService.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
-// GiGa
 
 // Forward declaration from G4
 class G4Event;
 class G4PrimaryVertex;
 class G4HCofThisEvent;
 class G4TrajectoryContainer;
+
+namespace HepMC {
+  class GenEvent;
+}
+
+namespace CLHEP {
+  class HepRandomEngine;
+}
 
 /** @class IGiGaMTSvc IGiGaMTSvc.h GiGaMT/IGiGaMTSvc.h
  *
@@ -34,6 +42,13 @@ public:
    *   @return status code
    */
   virtual StatusCode finalize() = 0;
+
+  /**  initialize
+   *   TODO: Simulate HepMC events. Currently does not return anything,
+   *   should return the simulation result ...
+   *   @return status code
+   */
+  virtual StatusCode simulate(const std::vector<HepMC::GenEvent> &, CLHEP::HepRandomEngine &) const = 0;
 
 public:
 

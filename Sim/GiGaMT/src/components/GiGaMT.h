@@ -42,6 +42,7 @@ class G4VUserPhysicsList;
 class GiGaWorkerPilot;
 class GiGaMTRunManager;
 class G4VUserDetectorConstruction;
+class IHepMC3ToGeant4Tool;
 
 /**  @class GiGaMT GiGaMT.h
  *
@@ -62,6 +63,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
   Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", "GiGaMTDetectorConstructionFAC"};
+  Gaudi::Property<std::string> m_conversionToolName{this, "HepMCtoGeant4Tool", "HepMC3ToGeant4Tool"};
   Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
   Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};
@@ -95,6 +97,7 @@ public:
    */
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
+  virtual StatusCode simulate(const std::vector<HepMC::GenEvent> &, CLHEP::HepRandomEngine &) const override;
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi
   // thread which executes the initialization of all Gaudi objects and spawns
@@ -222,6 +225,7 @@ private:
   GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory             = nullptr;
   GiGaFactoryBase<G4VUserDetectorConstruction>* m_detConstFactory    = nullptr;
   GiGaFactoryBase<G4VUserActionInitialization>* m_ActionInitializerFactory = nullptr;
+  IHepMC3ToGeant4Tool* m_conversionTool = nullptr;
   mutable std::vector<std::thread> m_workerThreads{};
   mutable GiGaPayloadQueue m_payloadQueue{};
 

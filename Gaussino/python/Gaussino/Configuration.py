@@ -10,6 +10,7 @@ from Gaudi.Configuration import appendPostConfigAction
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
 from Gaussino.Generation import GenPhase
+from Gaussino.Simulation import SimPhase
 
 
 class Gaussino(ConfigurableUser):
@@ -21,7 +22,7 @@ class Gaussino(ConfigurableUser):
         ,"DatasetName"                  : "Gaussino"  # NOQA
         ,"DataType"                     : ""  # NOQA
         ,"SpilloverPaths"               : []  # NOQA
-        ,"Phases"                       : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
+        ,"Phases"                       : ["Generation","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
         ,"OutputType"                   : 'SIM'  # NOQA
         ,"EnablePack"                   : True  # NOQA
         ,"DataPackingChecks"            : True  # NOQA
@@ -78,8 +79,13 @@ class Gaussino(ConfigurableUser):
         dataService()
         auditorService()
 
+        phases = self.getProp("Phases")
+        if "Generation" not in phases:
+            raise Exception("Must have Generation phase")
         self.setOtherProps(GenPhase(), ['evtMax'])
         GenPhase().configure_phase()
+        if "Simulation" in phases:
+            SimPhase().configure_phase()
 
         histogramService()
 
