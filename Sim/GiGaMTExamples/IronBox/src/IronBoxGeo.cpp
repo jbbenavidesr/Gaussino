@@ -32,7 +32,7 @@ G4VPhysicalVolume* IronBoxGeo::constructWorld()
 
   G4NistManager* nist = G4NistManager::Instance();
 
-  G4double cube_size    = 1 * m;
+  G4double cube_size    = 2 * m;
   G4Material* cube_mat  = nist->FindOrBuildMaterial( "G4_Fe" );
   G4Material* world_mat = nist->FindOrBuildMaterial( "G4_AIR" );
 

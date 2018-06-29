@@ -68,9 +68,10 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
 
   for ( size_t iThread = 0; iThread < m_nWorkerThreads; iThread++ ) {
     // FIXME: Why does this need a move, shouldn't this already by an r-value?
-    auto pilot = std::move( *m_workerPilotFactory->construct() );
-    pilot.SetInputQueue( &m_payloadQueue );
-    m_workerThreads.emplace_back( std::move( pilot ) );
+    auto pilot = m_workerPilotFactory->construct();
+    pilot->SetInputQueue( &m_payloadQueue );
+    m_workerThreads.emplace_back( std::move(*pilot) );
+    delete pilot;
   }
 
   // This barrier is just for safety so that nothing continues beyond this point

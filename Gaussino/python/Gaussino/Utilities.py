@@ -81,10 +81,10 @@ def histogramService(name=Configurable.DefaultName):
         histosName = Gaussino().outputName() + '-histos.root'
         HistogramPersistencySvc().OutputFile = histosName
 
+
 @run_once
 def gigaService(name=Configurable.DefaultName):
     from Configurables import ApplicationMgr, GiGaMT
     giga = GiGaMT()
-    giga.OutputLevel = -10
     ApplicationMgr().ExtSvc += [giga]
     return giga

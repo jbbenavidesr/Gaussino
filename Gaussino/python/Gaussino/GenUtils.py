@@ -22,6 +22,8 @@ def configure_pgun(**kwargs):
     from Configurables import FlatNParticles
     pgun.addTool(FlatNParticles, name="FlatNParticles")
     pgun.NumberOfParticlesTool = "FlatNParticles"
+    # pgun.FlatNParticles.MinNParticles = 500
+    # pgun.FlatNParticles.MaxNParticles = 500
     pgun.MomentumRange.PdgCodes = [-13, 13]
 
     pgun.MomentumRange.MomentumMin = 200.0*GeV
@@ -53,10 +55,10 @@ def configure_generation(**kwargs):
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
 
-    from Configurables import PoissonPileUp
-    gen.addTool(PoissonPileUp, name='PoissonPileUp')
-    gen.PoissonPileUp.PileUpNu = 20
-    gen.PileUpTool = 'PoissonPileUp'
+    from Configurables import PoissonPileUp, FixedNInteractions
+    gen.addTool(FixedNInteractions, name='FixedNInteractions')
+    gen.FixedNInteractions.NInteractions = 10
+    gen.PileUpTool = 'FixedNInteractions'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""
