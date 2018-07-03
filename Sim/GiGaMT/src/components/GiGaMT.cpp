@@ -233,40 +233,40 @@ StatusCode GiGaMT::finalize()
   return Service::finalize();
 }
 
-// StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
-//{
-
-// auto g4event = m_conversionTool->g4Event( _in );
-// std::vector<std::promise<DummyReturn>*> promises;
-// std::promise<DummyReturn> promised_return;
-// auto fut = promised_return.get_future();
-// m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, &promised_return} );
-// fut.get();
-
-// return StatusCode::SUCCESS;
-//}
-
 StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
 {
 
-  std::vector<std::future<DummyReturn>> futures;
-  for ( auto& evt : _in ) {
-    for ( size_t i = 0; i < 10; i++ ) {
-      auto g4event     = m_conversionTool->g4Event( std::vector<HepMC::GenEvent>{{evt}} );
-      auto ret_promise = new std::promise<DummyReturn>{};
-      m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, ret_promise} );
-      futures.push_back( ret_promise->get_future() );
-    }
-  }
-  // auto g4event = m_conversionTool->g4Event( _in );
-  // auto fut = promised_return.get_future();
-  // fut.get();
-  for ( auto& fut : futures ) {
-    fut.get();
-  }
+  auto g4event = m_conversionTool->g4Event( _in );
+  std::vector<std::promise<DummyReturn>*> promises;
+  std::promise<DummyReturn> promised_return;
+  auto fut = promised_return.get_future();
+  m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, &promised_return} );
+  fut.get();
 
   return StatusCode::SUCCESS;
 }
+
+// StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
+//{
+
+// std::vector<std::future<DummyReturn>> futures;
+// for ( auto& evt : _in ) {
+// for ( size_t i = 0; i < 10; i++ ) {
+// auto g4event     = m_conversionTool->g4Event( std::vector<HepMC::GenEvent>{{evt}} );
+// auto ret_promise = new std::promise<DummyReturn>{};
+// m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, ret_promise} );
+// futures.push_back( ret_promise->get_future() );
+//}
+//}
+//// auto g4event = m_conversionTool->g4Event( _in );
+//// auto fut = promised_return.get_future();
+//// fut.get();
+// for ( auto& fut : futures ) {
+// fut.get();
+//}
+
+// return StatusCode::SUCCESS;
+//}
 
 StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
 {
