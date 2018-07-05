@@ -51,7 +51,7 @@ def configure_generation(**kwargs):
     mbias = gen.addTool(MinimumBias, name="MinimumBias")
     mbias.CutTool = ""
     pprod = gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
-    gen.MinimumBias.ProductionTool = "Pythia8Production"
+    gen.MinimumBias.ProductionTool = "Pythia8ProductionMT"
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
 
@@ -64,8 +64,13 @@ def configure_generation(**kwargs):
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""
 
-    return gen
+    from Configurables import P8ThreadInitTool
 
+    # ThreadPoolSvc().addTool(P8ThreadInitTool, name="P8ThreadInitTool")
+    # from GaudiHive.GaudiHiveConf import ThreadPoolSvc
+    # ThreadPoolSvc().ThreadInitTools = []
+
+    return gen
 
 def configure_rnd_init(**kwargs):
     """Simple utility function to create and configure an instance GenRndInit
