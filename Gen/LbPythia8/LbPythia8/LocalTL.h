@@ -187,3 +187,27 @@ void LocalTL<V>::put( const V& val ) const
 {
   get() = val;
 }
+
+template <typename T>
+class GarbageBin
+{
+  static_assert( std::is_pointer<T>::value, "blub" );
+
+public:
+  static void Add( T obj ) { Instance().push_back( obj ); }
+  ~GarbageBin()
+  {
+    for ( auto& obj : _store ) {
+      delete _store;
+    }
+  }
+
+private:
+  static GarbageBin& Instance()
+  {
+    static GarbageBin _instance{};
+    return _instance;
+  }
+  GarbageBin() = default;
+  std::vector<T> _store;
+};

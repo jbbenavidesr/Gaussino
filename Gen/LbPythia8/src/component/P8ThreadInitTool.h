@@ -4,14 +4,15 @@
 
 #include <atomic>
 
-class P8ThreadInitTool : public GaudiTool, virtual public IThreadInitTool
+class P8ThreadInitTool : public extends<GaudiTool, IThreadInitTool>
 {
-  using GaudiTool::GaudiTool;
+  using base_class::base_class;
 
   /// Perform worker thread initialization. Called concurrently on each thread.
   virtual void initThread() override
   {
     for ( auto& tool : Pythia8ProductionMT::Instances() ) {
+      debug() << "Initializing threads for " << tool->name() << endmsg;
       tool->InitializeThread();
     }
     m_n_init++;

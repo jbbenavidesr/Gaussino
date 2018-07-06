@@ -51,11 +51,12 @@ def configure_generation(**kwargs):
     mbias = gen.addTool(MinimumBias, name="MinimumBias")
     mbias.CutTool = ""
     pprod = gen.MinimumBias.addTool(Pythia8Production, name="Pythia8Production")
-    gen.MinimumBias.ProductionTool = "Pythia8ProductionMT"
+    gen.MinimumBias.ProductionTool = "Pythia8Production"
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
+    # pprod.OutputLevel = -10
 
-    from Configurables import PoissonPileUp, FixedNInteractions
+    from Configurables import FixedNInteractions
     gen.addTool(FixedNInteractions, name='FixedNInteractions')
     gen.FixedNInteractions.NInteractions = 10
     gen.PileUpTool = 'FixedNInteractions'
@@ -64,13 +65,44 @@ def configure_generation(**kwargs):
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""
 
-    from Configurables import P8ThreadInitTool
+    return gen
 
-    # ThreadPoolSvc().addTool(P8ThreadInitTool, name="P8ThreadInitTool")
-    # from GaudiHive.GaudiHiveConf import ThreadPoolSvc
-    # ThreadPoolSvc().ThreadInitTools = []
+
+def configure_generationMT(**kwargs):
+    """Simple utility function to create and configure a Generation instance
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: Generation instance
+
+    """
+
+    from Configurables import Generation, MinimumBias, Pythia8ProductionMT
+    from Configurables import CollidingBeamsWithSvc
+    from .Utilities import beaminfoService
+    gen = Generation()
+    # Only configure BeamInfoSvc here as pgun won't need it
+    beaminfoService()
+
+    mbias = gen.addTool(MinimumBias, name="MinimumBias")
+    mbias.CutTool = ""
+    pprod = gen.MinimumBias.addTool(Pythia8ProductionMT,
+                                    name="Pythia8ProductionMT")
+    gen.MinimumBias.ProductionTool = "Pythia8ProductionMT"
+    pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
+    pprod.BeamToolName = 'CollidingBeamsWithSvc'
+    # pprod.OutputLevel = -10
+
+    from Configurables import FixedNInteractions
+    gen.addTool(FixedNInteractions, name='FixedNInteractions')
+    gen.FixedNInteractions.NInteractions = 10
+    gen.PileUpTool = 'FixedNInteractions'
+    gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+
+    gen.DecayTool = ""
+    gen.MinimumBias.DecayTool = ""
 
     return gen
+
 
 def configure_rnd_init(**kwargs):
     """Simple utility function to create and configure an instance GenRndInit

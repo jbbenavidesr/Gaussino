@@ -6,6 +6,7 @@ from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
 from Gaussino.GenUtils import configure_pgun, configure_generation
+from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
 
@@ -22,6 +23,7 @@ class GenPhase(ConfigurableUser):
     _production_type_map = {
         'PGUN': configure_pgun,
         'PHYS': configure_generation,
+        'PHYSMT': configure_generationMT,
     }
 
     __slots__ = {

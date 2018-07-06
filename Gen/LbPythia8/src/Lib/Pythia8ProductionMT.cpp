@@ -37,7 +37,9 @@
 // 2007-07-31 : Arthur de Gromard, Philip Ilten
 //-----------------------------------------------------------------------------
 
+thread_local Pythia8ProductionMT::Pythia8ThreadManager Pythia8ProductionMT::m_manager{};
 std::mutex Pythia8ProductionMT::m_pythia_lock{};
+std::mutex Pythia8ProductionMT::m_genfsr_lock{};
 //=============================================================================
 // Default constructor.
 //=============================================================================
@@ -154,9 +156,6 @@ StatusCode Pythia8ProductionMT::initialize()
   // Initialze the XML log file.
   m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
 
-  // Initialize the Pythia beam tool.
-  m_pythiaBeamTool = new BeamToolForPythia8( m_beamTool, m_pythia->settings, sc );
-  if ( !sc.isSuccess() ) return Error( "Failed to initialize the BeamToolForPythia8." );
   return sc;
 }
 
@@ -165,9 +164,13 @@ StatusCode Pythia8ProductionMT::initialize()
 //=============================================================================
 StatusCode Pythia8ProductionMT::initializeGenerator()
 {
+  if ( !m_pythia() ) {
+    debug() << "Skipping generator initialization for this thread" << endmsg;
+    return StatusCode::SUCCESS;
+  }
 
   // Initialize the external pointers.
-  m_pythia->setBeamShapePtr( m_pythiaBeamTool );
+  m_pythia->setBeamShapePtr( m_pythiaBeamTool() );
   if ( m_hooks() ) m_pythia->setUserHooksPtr( m_hooks() );
   if ( m_lhaup() ) m_pythia->setLHAupPtr( m_lhaup() );
 
@@ -240,21 +243,6 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 //=============================================================================
 StatusCode Pythia8ProductionMT::finalize()
 {
-
-  // Print the statistics.
-  m_pythia->stat();
-
-  // Write the cross-sections to the XML log.
-  vector<int> codes = m_pythia->info.codesHard();
-  for ( unsigned int code = 0; code < codes.size(); ++code )
-    m_xmlLogTool->addCrossSection( m_pythia->info.nameProc( codes[code] ), codes[code],
-                                   m_pythia->info.nAccepted( codes[code] ), m_pythia->info.sigmaGen( codes[code] ) );
-
-  // Clean up.
-  if ( m_pythiaBeamTool ) delete m_pythiaBeamTool;
-  // if ( m_lhaup ) delete m_lhaup;
-  // if ( m_hooks ) delete m_hooks;
-  // if ( m_pythia ) delete m_pythia;
   return GaudiTool::finalize();
 }
 
@@ -264,6 +252,10 @@ StatusCode Pythia8ProductionMT::finalize()
 StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision,
                                                CLHEP::HepRandomEngine& engine )
 {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    InitializeThread();
+  }
 
   class RndForPythia : public Pythia8::RndmEngine
   {
@@ -293,7 +285,7 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
   vector<int> codes = pythia->info.codesHard();
 
   // Lock the rest for updating the genFSR
-  std::lock_guard<std::mutex> lock( m_pythia_lock );
+  std::lock_guard<std::mutex> lock( m_genfsr_lock );
   // Store the minimum bias cross-section in the GenFSR
   key = LHCb::CrossSectionsFSR::CrossSectionKeyToType( "MBCrossSection" );
 
@@ -461,6 +453,7 @@ void Pythia8ProductionMT::retrievePartonEvent( HepMC::GenEvent* /*theEvent*/ ) {
 //=============================================================================
 void Pythia8ProductionMT::printRunningConditions()
 {
+  if ( !m_pythia() ) return;
   if ( m_nEvents == 0 && m_listAllParticles == true && msgLevel( MSG::DEBUG ) ) m_pythia->particleData.listAll();
   if ( msgLevel( MSG::VERBOSE ) )
     m_pythia->settings.listAll();
@@ -499,7 +492,7 @@ int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP )
 
 StatusCode Pythia8ProductionMT::InitializeThread()
 {
-  std::lock_guard guard( m_pythia_lock );
+  debug() << "Initializing Pythia8 in thread" << endmsg;
   // Initialize the user hooks.
   if ( !m_hooks.get() ) m_hooks = new Pythia8::LhcbHooks();
 
@@ -507,6 +500,26 @@ StatusCode Pythia8ProductionMT::InitializeThread()
   string xmlpath( "UNKNOWN" != System::getEnv( "PYTHIA8XML" ) ? System::getEnv( "PYTHIA8XML" ) : "" );
   m_pythia = new Pythia8::Pythia( xmlpath, m_showBanner );
   if ( !m_pythia.get() ) return StatusCode::FAILURE;
+
+  // Add LhcbHooks parameters.
+  Pythia8::Settings& set = m_pythia->settings;
+  string sm( "StandardModel:" ), mpi( "MultiPartonInteractions:" ), pre( "LhcbHooks:" ), parm( "pT0Ref" );
+  set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
+  parm = "ecmRef";
+  set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
+  parm = "ecmPow";
+  set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
+  parm = "alphaSvalue";
+  set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
+  parm = "alphaSorder";
+  set.addMode( pre + parm, set.mode( mpi + parm ), false, false, 0, 0 );
+  parm = "alphaSnfmax";
+  set.addMode( pre + parm, set.mode( sm + parm ), false, false, 0, 0 );
+
+  StatusCode sc;
+  // Initialize the Pythia beam tool.
+  m_pythiaBeamTool = new BeamToolForPythia8( m_beamTool, m_pythia->settings, sc );
+  if ( !sc.isSuccess() ) return Error( "Failed to initialize the BeamToolForPythia8." );
 
   // Now the normal tools update settings via the provided interface
   // As we need to do this per pythia instance once created within
@@ -521,12 +534,29 @@ StatusCode Pythia8ProductionMT::InitializeThread()
 
   // Now initialize the generator and hope for the best!
   initializeGenerator();
+  if ( m_first_init ) {
+    printRunningConditions();
+    m_first_init = false;
+  }
+
+  // This is just a dumb hack to clean up after the threads
+  // terminate...
+  // The Garbage bins hold a static store which should be
+  // destroyed at the end of the execution.
+  // GarbageBin<Pythia8::Pythia*>::Add( m_pythia() );
+  // GarbageBin<Pythia8::UserHooks*>::Add( m_hooks() );
+  // GarbageBin<Pythia8::LHAup*>::Add( m_lhaup() );
+  // GarbageBin<BeamToolForPythia8*>::Add( m_pythiaBeamTool() );
 
   return StatusCode::SUCCESS;
 }
 
 StatusCode Pythia8ProductionMT::FinalizeThread()
 {
+  if ( !m_pythia() ) {
+    debug() << "Skipping finalization because no pythia instance set in thread." << endmsg;
+    return StatusCode::SUCCESS;
+  }
   // Print the statistics.
   std::lock_guard guard( m_pythia_lock );
   m_pythia->stat();
@@ -546,6 +576,10 @@ StatusCode Pythia8ProductionMT::FinalizeThread()
   }
   if ( m_pythia() ) {
     delete m_pythia();
+  }
+
+  if ( m_pythiaBeamTool() ) {
+    delete m_pythiaBeamTool();
   }
   return StatusCode::SUCCESS;
 }
