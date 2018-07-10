@@ -90,6 +90,8 @@ def configure_generationMT(**kwargs):
     gen.MinimumBias.ProductionTool = "Pythia8ProductionMT"
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
+    from Configurables import Gaussino
+    pprod.NThreads = Gaussino().ThreadPoolSize
     # pprod.OutputLevel = -10
 
     from Configurables import FixedNInteractions

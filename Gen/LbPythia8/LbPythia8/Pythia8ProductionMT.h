@@ -15,6 +15,7 @@
 #include "Pythia8Plugins/LHAFortran.h"
 
 //#include "Pythia8Plugins/HepMC2.h"
+#include <condition_variable>
 #include <mutex>
 
 using namespace std;
@@ -192,4 +193,36 @@ protected:
     }
   };
   static thread_local Pythia8ThreadManager m_manager;
+
+private:
+  unsigned int m_nThreads{0};
+  std::once_flag m_init_flag;
+  class P8MTBarrier
+  {
+  private:
+    std::mutex _mutex;
+    std::condition_variable _cv;
+    std::size_t m_n_waiting;
+
+  public:
+    explicit P8MTBarrier( std::size_t count ) : m_n_waiting( count ) {}
+    void wait()
+    {
+      std::unique_lock<std::mutex> lock{_mutex};
+      if ( --m_n_waiting == 0 ) {
+        _cv.notify_all();
+      } else {
+        _cv.wait( lock, [this] { return m_n_waiting == 0; } );
+      }
+    }
+    P8MTBarrier()                     = delete;
+    P8MTBarrier( const P8MTBarrier& ) = delete;
+    P8MTBarrier( P8MTBarrier&& )      = delete;
+  };
+  static P8MTBarrier& GetInitBarrier( std::size_t num_threads = 0 )
+  {
+    static P8MTBarrier barrier( num_threads );
+    return barrier;
+  }
+  std::atomic_uint m_p8_init{0};
 };

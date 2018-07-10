@@ -1,6 +1,7 @@
 // Gaudi.
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/System.h"
+#include "GaudiKernel/ThreadLocalContext.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
@@ -68,6 +69,7 @@ Pythia8ProductionMT::Pythia8ProductionMT( const string& type, const string& name
                    "Name of the user tuning file to use. Using the tune subrun "
                    "will overwrite the default LHCb tune." );
   declareProperty( "ShowBanner", m_showBanner = false, "Flag to print the Pythia 8 banner at initialization." );
+  declareProperty( "NThreads", m_nThreads = 1, "Delay the initialisation" );
 
   // Set the special particles.
   for ( int i = 1; i <= 8; ++i ) m_special.insert( i );
@@ -241,10 +243,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 //=============================================================================
 // Finalize the tool.
 //=============================================================================
-StatusCode Pythia8ProductionMT::finalize()
-{
-  return GaudiTool::finalize();
-}
+StatusCode Pythia8ProductionMT::finalize() { return GaudiTool::finalize(); }
 
 //=============================================================================
 // Generate an event.
@@ -537,6 +536,9 @@ StatusCode Pythia8ProductionMT::InitializeThread()
   if ( m_first_init ) {
     printRunningConditions();
     m_first_init = false;
+  } else {
+    GetInitBarrier( m_nThreads - 1 ).wait();
+    std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
   }
 
   // This is just a dumb hack to clean up after the threads
