@@ -8,6 +8,7 @@
 
 // Event 
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 // Kernel
@@ -60,9 +61,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
   
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;  
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {

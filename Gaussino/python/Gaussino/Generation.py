@@ -43,6 +43,7 @@ class GenPhase(ConfigurableUser):
         "evtMax"              : -1,  # NOQA
         "Production"          : 'PHYS',  # NOQA
         "WriteHepMC"          : False,  # NOQA
+        "GenMonitor"          : False,  # NOQA
         "Production_kwargs"   : {}  # NOQA
     }
 
@@ -80,7 +81,10 @@ class GenPhase(ConfigurableUser):
 
         seq = GaudiSequencer('GenerationPhase')
         # seq.Members = [rnd_init, prod_alg]
-        seq.Members = [rnd_init, prod_alg, gen_moni]
+        seq.Members = [rnd_init, prod_alg]
+        if self.getProp('GenMonitor'):
+            gen_moni = configure_gen_monitor()
+            seq.Members = [rnd_init, gen_moni]
         if self.getProp('WriteHepMC'):
             seq.Members += [configure_hepmc_writer()]
         # seq.Members += [GenerationToSimulation(), CheckMCStructure()]

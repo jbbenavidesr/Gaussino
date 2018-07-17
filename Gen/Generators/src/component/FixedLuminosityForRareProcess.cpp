@@ -10,6 +10,7 @@
 // From Event
 #include "Event/BeamParameters.h"
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 // From Generators
@@ -71,9 +72,7 @@ unsigned int FixedLuminosityForRareProcess::numberOfPileUp( CLHEP::HepRandomEngi
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;  
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   unsigned int result = 0 ;

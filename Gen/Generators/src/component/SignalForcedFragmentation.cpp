@@ -22,6 +22,7 @@
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 // local
@@ -89,9 +90,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   bool flip ;
   int theSignalPID = *m_pids.begin() ;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   if ( m_cpMixture ) {

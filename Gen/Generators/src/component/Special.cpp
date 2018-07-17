@@ -17,6 +17,7 @@
 #include "HepMC/GenEvent.h"
 #include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 //-----------------------------------------------------------------------------
@@ -92,9 +93,7 @@ bool Special::generate( const unsigned int nPileUp ,
 
   bool result = false ;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   // For the moment no pile-up for this type of event

@@ -8,6 +8,7 @@ gaudi_depends_on_subdirs(Gen/GenInterfaces
                          Kernel/PartProp
                          GaudiAlg
                          HepMCUser
+                         Utils
                          Defaults)
 
 find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
@@ -30,7 +31,7 @@ gaudi_add_library(Pythia8ToHepMC3Lib
 gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
-                  INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces Defaults HepMCUser
+                  INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces Defaults HepMCUser Utils
                   LINK_LIBRARIES Boost GaudiAlgLib Pythia8 HepMC ROOT PartPropLib LHAPDF Pythia8ToHepMC3Lib)
 
 gaudi_add_module(LbPythia8

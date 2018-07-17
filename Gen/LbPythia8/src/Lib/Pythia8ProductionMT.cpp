@@ -10,6 +10,7 @@
 #include "Event/GenCollision.h"
 #include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 
 // Generators.
 #include "GenInterfaces/IBeamTool.h"
@@ -40,7 +41,6 @@
 
 thread_local Pythia8ProductionMT::Pythia8ThreadManager Pythia8ProductionMT::m_manager{};
 std::mutex Pythia8ProductionMT::m_pythia_lock{};
-std::mutex Pythia8ProductionMT::m_genfsr_lock{};
 //=============================================================================
 // Default constructor.
 //=============================================================================
@@ -276,15 +276,11 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
   if ( !m_pythia->flag( "HadronLevel:all" ) ) m_event = pythia->event;
   ++m_nEvents;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>( "FileRecordDataSvc", true );
-  std::string FSRName             = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR            = getIfExists<LHCb::GenFSR>( fileRecordSvc, FSRName );
-  int key                         = 0;
+  auto genFSR = GenFSRMTManager::GetGenFSR();
+  int key     = 0;
 
   vector<int> codes = pythia->info.codesHard();
 
-  // Lock the rest for updating the genFSR
-  std::lock_guard<std::mutex> lock( m_genfsr_lock );
   // Store the minimum bias cross-section in the GenFSR
   key = LHCb::CrossSectionsFSR::CrossSectionKeyToType( "MBCrossSection" );
 

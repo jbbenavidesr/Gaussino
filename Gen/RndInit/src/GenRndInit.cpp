@@ -41,34 +41,36 @@ LHCb::GenHeader GenRndInit::operator()() const
 
   // Initialize the random number
   longlong eventNumber = m_firstEvent - 1 + this->increaseEventCounter();
-  if ( eventNumber == m_firstTimingEvent ) {
-    // Initialising the start time for more precise monitoring
-    // when the event loop is in full swing.
-    // m_start_time.
-    debug() << "Hit it. Waiting at first barrier" << endmsg;
-    m_barrier->wait();
-    m_wait_at_barrier = false;
-    m_start_time = Clock::now();
-    info() << "Started loop timing!" << endmsg;
-  } else if ( eventNumber > m_firstTimingEvent && m_wait_at_barrier ) {
-    debug() << "Larger. Waiting at first barrier" << endmsg;
-    m_barrier->wait();
-    m_wait_at_barrier = false;
+  if ( m_firstTimingEvent != -1 ) {
+    if ( eventNumber == m_firstTimingEvent ) {
+      debug() << "Organising timing" << endmsg;
+      // Initialising the start time for more precise monitoring
+      // when the event loop is in full swing.
+      m_barrier->wait();
+      m_wait_at_barrier = false;
+      m_start_time      = Clock::now();
+      info() << "Started loop timing!" << endmsg;
+    } else if ( eventNumber > m_firstTimingEvent && m_wait_at_barrier ) {
+      m_barrier->wait();
+      m_wait_at_barrier = false;
+    }
   }
-  if ( m_lastTimingEvent > 0 && eventNumber == m_lastTimingEvent ) {
-    // Initialising the start time for more precise monitoring
-    // when the event loop is in full swing.
-    // m_start_time.
-    debug() << "Hit it. Waiting at end barrier" << endmsg;
-    m_endbarrier->wait();
-    m_wait_at_endbarrier = false;
-    auto end_time = Clock::now();
-    info() << "Measured event loop time [ns]: "
-           << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
-  } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
-    debug() << "Larger. Waiting at end barrier" << endmsg;
-    m_endbarrier->wait();
-    m_wait_at_endbarrier = false;
+
+  if ( m_lastTimingEvent != -1 ) {
+    if ( eventNumber == m_lastTimingEvent ) {
+      // Initialising the start time for more precise monitoring
+      // when the event loop is in full swing.
+      debug() << "Hit it. Waiting at end barrier" << endmsg;
+      m_endbarrier->wait();
+      m_wait_at_endbarrier = false;
+      auto end_time        = Clock::now();
+      info() << "Measured event loop time [ns]: "
+             << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+    } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
+      debug() << "Larger. Waiting at end barrier" << endmsg;
+      m_endbarrier->wait();
+      m_wait_at_endbarrier = false;
+    }
   }
 
   // Configure the event information in the event context
@@ -97,9 +99,11 @@ StatusCode GenRndInit::finalize()
 {
   delete m_barrier;
   delete m_endbarrier;
-  auto end_time = Clock::now();
-  info() << "Total event loop time [ns]: "
-         << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+  if ( m_firstTimingEvent >= 0 ) {
+    auto end_time = Clock::now();
+    info() << "Total event loop time [ns]: "
+           << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+  }
   return base_class::finalize();
 }
 

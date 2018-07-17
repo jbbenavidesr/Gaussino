@@ -21,6 +21,7 @@
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 #include"CLHEP/Random/RandomEngine.h"
@@ -344,9 +345,7 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   ParticleVector::const_iterator from = particleList.begin() ;
   ParticleVector::const_iterator to = particleList.end() ;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int keyP = 0, keyAP = 0;
 
   if ( onlyForwardParticles ) {

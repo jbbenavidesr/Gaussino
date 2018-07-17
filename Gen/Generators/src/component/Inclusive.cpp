@@ -18,6 +18,7 @@
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 //-----------------------------------------------------------------------------
@@ -113,9 +114,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
   //unsigned int theccCounter , thebbCounter ;
   
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {

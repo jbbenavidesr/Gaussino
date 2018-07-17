@@ -7,6 +7,7 @@
 // Event.
 #include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 #include "Event/CrossSectionsFSR.h"
 
@@ -277,9 +278,7 @@ StatusCode Pythia8Production::generateEvent(HepMC::GenEvent* theEvent,
   if (!m_pythia->flag("HadronLevel:all")) m_event = m_pythia->event;  
   ++m_nEvents;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   vector<int> codes = m_pythia->info.codesHard();

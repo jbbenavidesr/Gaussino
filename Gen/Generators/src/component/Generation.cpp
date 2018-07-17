@@ -9,6 +9,7 @@
 
 // from Event
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 #include "Event/CrossSectionsFSR.h"
 
@@ -108,13 +109,6 @@ StatusCode Generation::initialize() {
   // get the File Records service                                                                                                                                
   m_fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
 
-  // create a new FSR and append to TDS                                                                                                                          
-  m_genFSR = new LHCb::GenFSR();
-
-  // Now either create the info in the TES or add it to the existing one                                                                                         
-  put(m_fileRecordSvc, m_genFSR, m_FSRName);
-
-  m_genFSR->initializeInfos();
 
   return StatusCode::SUCCESS;
 }
@@ -125,6 +119,7 @@ StatusCode Generation::initialize() {
 std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
 operator()( const LHCb::GenHeader& old_gen_header) const
 {
+  auto m_genFSR = GenFSRMTManager::GetGenFSR();
 
   debug() << "Processing event type " << m_eventType << endmsg;
   auto engine = createRndmEngine();
@@ -215,7 +210,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     }
     
     // increase event and interactions counters
-    ++m_nEvents ;    m_nInteractions += nPileUp ;
+    //++m_nEvents ;    m_nInteractions += nPileUp ;
 
     // increase the generated events counter in the FSR                                                                                                          
     name = "EvtGenerated";
@@ -229,9 +224,9 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     // Update interaction counters
     if ( 0 < nPileUp ) { 
       //unsigned int val = 0;
-      for(auto & x: theIntCounter){
-        std::atomic_init<unsigned int>(&x, 0);
-      }
+      //for(auto & x: theIntCounter){
+        //std::atomic_init<unsigned int>(&x, 0);
+      //}
       for ( auto & evt : theEvents ){
         updateInteractionCounters( theIntCounter , &evt );
       }
@@ -239,7 +234,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       // Increse the generated interactions counters in FSR                                                                                                      
       updateFSRCounters(theIntCounter, m_genFSR, "Gen");
 
-      GenCounters::AddTo( m_intC , theIntCounter ) ;
+      //GenCounters::AddTo( m_intC , theIntCounter ) ;
 
       // Decay the event if it is a good event
       if ( goodEvent ) {
@@ -277,7 +272,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       // Apply generator level cut on full event
       if ( m_fullGenEventCutTool ) {
         if ( goodEvent ) {
-          ++m_nBeforeFullEvent ;
+          //++m_nBeforeFullEvent ;
           // increase the counter of events before the full event generator level cut in the FSR                                                                 
           name = "BeforeFullEvt";
           key = LHCb::GenCountersFSR::CounterKeyToType(name);          
@@ -285,7 +280,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
           if ( goodEvent ) {
-            ++m_nAfterFullEvent ;
+            //++m_nAfterFullEvent ;
             // increase the counter of events after the full event generator level cut in the FSR                                                                
             name = "AfterFullEvt";
             key = LHCb::GenCountersFSR::CounterKeyToType(name);
@@ -296,8 +291,8 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     }
   }  
 
-  ++m_nAcceptedEvents ;
-  m_nAcceptedInteractions += nPileUp ;
+  //++m_nAcceptedEvents ;
+  //m_nAcceptedInteractions += nPileUp ;
   
   // increase the generated events counter in the FSR                                                                                                            
   name = "EvtAccepted";
@@ -310,7 +305,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
   m_genFSR->incrementGenCounter(key,nPileUp);
 
   if ( 0 < nPileUp ) {
-    GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
+    //GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
 
     // Increse the accepted interactions counters in FSR                                                                                                         
     updateFSRCounters(theIntCounter, m_genFSR, "Acc");
@@ -355,24 +350,30 @@ StatusCode Generation::finalize() {
   // Print the various counters
   if ( 0 != m_pileUpTool ) { m_pileUpTool -> printPileUpCounters( ) ; }
 
-  printCounter( m_xmlLogTool , "generated events" , m_nEvents ) ;
-  printCounter( m_xmlLogTool , "generated interactions" , m_nInteractions ) ;
+  //printCounter( m_xmlLogTool , "generated events" , m_nEvents ) ;
+  //printCounter( m_xmlLogTool , "generated interactions" , m_nInteractions ) ;
   
-  for ( unsigned int i = 0 ; i < m_intC.size() ; ++i )
-    printCounter( m_xmlLogTool , m_intCName[ i ] , m_intC[ i ] ) ;
+  //for ( unsigned int i = 0 ; i < m_intC.size() ; ++i )
+    //printCounter( m_xmlLogTool , m_intCName[ i ] , m_intC[ i ] ) ;
   
-  printCounter( m_xmlLogTool , "accepted events" , m_nAcceptedEvents ) ;
-  printCounter( m_xmlLogTool , "interactions in accepted events" , 
-                m_nAcceptedInteractions ) ;
+  //printCounter( m_xmlLogTool , "accepted events" , m_nAcceptedEvents ) ;
+  //printCounter( m_xmlLogTool , "interactions in accepted events" , 
+                //m_nAcceptedInteractions ) ;
   
-  for ( unsigned int j = 0 ; j < m_intCAccepted.size() ; ++j ) 
-    printCounter( m_xmlLogTool , m_intCAcceptedName[ j ] , 
-                  m_intCAccepted[ j ] ) ;
+  //for ( unsigned int j = 0 ; j < m_intCAccepted.size() ; ++j ) 
+    //printCounter( m_xmlLogTool , m_intCAcceptedName[ j ] , 
+                  //m_intCAccepted[ j ] ) ;
 
-  printEfficiency( m_xmlLogTool , "full event cut" , m_nAfterFullEvent , 
-                   m_nBeforeFullEvent ) ;
+  //printEfficiency( m_xmlLogTool , "full event cut" , m_nAfterFullEvent , 
+                   //m_nBeforeFullEvent ) ;
 
   m_sampleGenerationTool -> printCounters() ;
+
+  // create a new FSR and append to TDS                                                                                                                          
+  auto m_genFSR = GenFSRMTManager::GetCombined();
+
+  // Now either create the info in the TES or add it to the existing one                                                                                         
+  put(m_fileRecordSvc, m_genFSR, m_FSRName);
 
   // check if the FSR can be retrieved from the TS                                                                                                               
   LHCb::GenFSR* readFSR = getIfExists<LHCb::GenFSR>(m_fileRecordSvc, m_FSRName);

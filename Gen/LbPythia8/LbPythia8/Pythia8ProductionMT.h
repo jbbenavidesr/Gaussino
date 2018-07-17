@@ -3,7 +3,7 @@
 // LbPythia8.
 #include "LbPythia8/BeamToolForPythia8.h"
 #include "LbPythia8/LhcbHooks.h"
-#include "LbPythia8/LocalTL.h"
+#include "Utils/LocalTL.h"
 
 // Gaudi.
 #include "GaudiAlg/GaudiTool.h"
@@ -176,7 +176,6 @@ protected:
   ICounterLogFile* m_xmlLogTool;                 ///< The XML log file.
   set<unsigned int> m_special;                   ///< The set of special particles.
   static std::mutex m_pythia_lock;
-  static std::mutex m_genfsr_lock;
   std::atomic_bool m_first_init{true};
 
   class Pythia8ThreadManager
