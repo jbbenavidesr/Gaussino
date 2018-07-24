@@ -11,7 +11,6 @@
 #include "GaudiKernel/ISvcLocator.h"
 #include "GaudiKernel/IToolSvc.h"
 #include "GaudiKernel/MsgStream.h"
-#include "GaudiKernel/PropertyMgr.h"
 #include "GaudiKernel/Stat.h"
 
 // from G4
@@ -121,9 +120,10 @@ StatusCode GiGaMT::initialize()
     }
   }
 
-  if ( m_nWorkerThreads == 0 ) {
+  if ( m_nWorkerThreads == (size_t)0 ) {
     m_nWorkerThreads = std::thread::hardware_concurrency();
-    if ( m_nWorkerThreads == 0 ) return Error( "Unable to automatically determine the number of worker threads." );
+    if ( m_nWorkerThreads == (size_t)0 )
+      return Error( "Unable to automatically determine the number of worker threads." );
   }
 
   m_mTRunManagerFactory = tool<GiGaFactoryBase<GiGaMTRunManager>>( m_MTRunMgrFactoryName, this );

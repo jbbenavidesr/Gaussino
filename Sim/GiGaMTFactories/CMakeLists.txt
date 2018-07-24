@@ -27,7 +27,7 @@ gaudi_add_module(GiGaMTPhysFactories
         LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
 
 gaudi_add_module(GiGaMTDetFactories
-        src/phys/*.cpp
+        src/det/*.cpp
         LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
 
 gaudi_install_headers(GiGaMTFactories)
