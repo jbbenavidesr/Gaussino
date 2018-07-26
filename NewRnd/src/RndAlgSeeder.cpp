@@ -44,13 +44,13 @@ T RndAlgSeeder::createRndmEngine() const
   seeds.push_back( hashed_named );
   seeds.push_back( 0 );
 
-  if ( MSG::DEBUG ) {
+  if ( msgLevel( MSG::DEBUG ) ) {
     debug() << "Unique string " << s << endmsg;
     debug() << "using seeds " << seeds << endmsg;
   }
 
   T engine;
-  if ( m_forcedSeed == 0 ) {
+  if ( m_forcedSeed == (size_t)0 ) {
     engine.setSeeds( seeds.data() );
   } else {
     engine.setSeed( m_forcedSeed );
