@@ -19,6 +19,8 @@
 
 namespace HepMC {
 
+
+void printChildren(HepMC::GenParticlePtr part, int level=0);
 bool compareGenEvent( const GenEvent &, const GenEvent & );
 bool compareSignalProcessVertex( const GenEvent &, const GenEvent & );
 bool compareBeamParticles( const GenEvent &, const GenEvent & );
@@ -57,7 +59,7 @@ inline bool operator!=(const HepMC::GenParticle & left, const HepMC::GenParticle
 }
 
 inline std::ostream & operator<<(std::ostream & strm, const HepMC::GenParticle & particle){
-  strm << "Particle with PDG ID " << particle.pdg_id() << "\n";
+  strm << "PDG ID " << particle.pdg_id() << " #" << particle.id() << "\n";
   strm << "   Momentum [ " << particle.momentum().px() << ", " << particle.momentum().py() << ", "<< particle.momentum().pz() << ", "<< particle.momentum().e() << "]\n";
   return strm;
 }

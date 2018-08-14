@@ -22,11 +22,11 @@ def configure_pgun(**kwargs):
     from Configurables import FlatNParticles
     pgun.addTool(FlatNParticles, name="FlatNParticles")
     pgun.NumberOfParticlesTool = "FlatNParticles"
-    # pgun.FlatNParticles.MinNParticles = 500
-    # pgun.FlatNParticles.MaxNParticles = 500
+    pgun.FlatNParticles.MinNParticles = 300
+    pgun.FlatNParticles.MaxNParticles = 600
     pgun.MomentumRange.PdgCodes = [-13, 13]
 
-    pgun.MomentumRange.MomentumMin = 200.0*GeV
+    pgun.MomentumRange.MomentumMin = 20.0*GeV
     pgun.MomentumRange.MomentumMax = 300.0*GeV
     pgun.MomentumRange.ThetaMin = 0.015*rad
     pgun.MomentumRange.ThetaMax = 0.300*rad
@@ -58,7 +58,7 @@ def configure_generation(**kwargs):
 
     from Configurables import FixedNInteractions
     gen.addTool(FixedNInteractions, name='FixedNInteractions')
-    gen.FixedNInteractions.NInteractions = 10
+    gen.FixedNInteractions.NInteractions = 1
     gen.PileUpTool = 'FixedNInteractions'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
@@ -92,11 +92,11 @@ def configure_generationMT(**kwargs):
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
     from Configurables import Gaussino
     pprod.NThreads = Gaussino().ThreadPoolSize
-    # pprod.OutputLevel = -10
+    # pprod.OutputLevel = 1
 
     from Configurables import FixedNInteractions
     gen.addTool(FixedNInteractions, name='FixedNInteractions')
-    gen.FixedNInteractions.NInteractions = 10
+    gen.FixedNInteractions.NInteractions = 1
     gen.PileUpTool = 'FixedNInteractions'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 

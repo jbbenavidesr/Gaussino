@@ -1,11 +1,12 @@
 // Include files
 
 // local
-#include "HepMC/WriterRoot.h"
-#include "HepMC/WriterRootTree.h"
+#include "HepMCWriter.h"
+#include "Defaults/HepMCAttributes.h"
 #include "HepMC/WriterAscii.h"
 #include "HepMC/WriterHEPEVT.h"
-#include "HepMCWriter.h"
+#include "HepMC/WriterRoot.h"
+#include "HepMC/WriterRootTree.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : HepMCWriter
@@ -25,13 +26,13 @@ StatusCode HepMCWriter::initialize()
   debug() << "==> Initialize" << endmsg;
 
   if ( m_outputFileName != "" ) {
-    if ( m_writer_name == "WriterRoot") {
+    if ( m_writer_name == "WriterRoot" ) {
       m_writer = new HepMC::WriterRoot( m_outputFileName );
-    } else if(m_writer_name == "WriterRootTree"){
+    } else if ( m_writer_name == "WriterRootTree" ) {
       m_writer = new HepMC::WriterRootTree( m_outputFileName );
-    } else if(m_writer_name == "WriterAscii"){
+    } else if ( m_writer_name == "WriterAscii" ) {
       m_writer = new HepMC::WriterAscii( m_outputFileName );
-    } else if(m_writer_name == "WriterHEPEVT"){
+    } else if ( m_writer_name == "WriterHEPEVT" ) {
       m_writer = new HepMC::WriterHEPEVT( m_outputFileName );
     } else {
       error() << "No valid writer for HepMC specified. Will not write anything." << endmsg;
@@ -51,7 +52,11 @@ void HepMCWriter::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) 
   // I have no idea if this is thread safe so just lock it for now
   std::lock_guard<std::mutex> writerguard( m_writer_lock );
   for ( auto& evt : hepmcevents ) {
+    debug() << " Writing HepMC event with eventnumber "
+            << evt.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
+            << evt.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
     m_writer->write_event( evt );
+    m_counter++;
   }
 }
 
@@ -66,6 +71,7 @@ StatusCode HepMCWriter::finalize()
   }
 
   debug() << "==> Finalize" << endmsg;
+  debug() << "Wrote " << m_counter << "HepMC events." << endmsg;
 
   return Consumer::finalize();
 }

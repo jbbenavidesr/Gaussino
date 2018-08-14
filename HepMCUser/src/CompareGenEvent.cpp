@@ -17,7 +17,22 @@
 namespace HepMC
 {
 
-  bool essentiallyEqual(float a, float b, float epsilon=0.01)
+void printChildren(HepMC::GenParticlePtr part, int level) {
+  std::string space = "";
+  for (int i = 0; i < level; i++) {
+    space += "|---> ";
+  }
+  std::cout << space << part->pdg_id() << " #" << part->id();
+  std::cout << " Momentum [ " << part->momentum().px() << ", " << part->momentum().py() << ", "<< part->momentum().pz() << ", "<< part->momentum().e() << "]:\n";
+  if (part->end_vertex()) {
+  std::cout << space;
+  std::cout << "   Vertex [ " << part->end_vertex()->position().x() << ", " << part->end_vertex()->position().y() << ", "<< part->end_vertex()->position().z() << ", "<< part->end_vertex()->position().t() << "]:\n";
+    for (auto p : part->end_vertex()->particles(HepMC::children)) {
+      printChildren(p, level + 1);
+    }
+  }
+}
+  bool essentiallyEqual(float a, float b, float epsilon=0.1)
   {
       return fabs(a - b) <= ( (fabs(a) > fabs(b) ? fabs(b) : fabs(a)) * epsilon);
   }

@@ -6,7 +6,6 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaudi.Configuration import appendPostConfigAction
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
 from Gaussino.Generation import GenPhase
@@ -18,25 +17,25 @@ class Gaussino(ConfigurableUser):
     __used_configurables__ = [GenPhase]
 
     __slots__ = {
-        "Histograms"                    : "DEFAULT"  # NOQA
-        ,"DatasetName"                  : "Gaussino"  # NOQA
-        ,"DataType"                     : ""  # NOQA
-        ,"SpilloverPaths"               : []  # NOQA
-        ,"Phases"                       : ["Generation","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
-        ,"OutputType"                   : 'SIM'  # NOQA
-        ,"EnablePack"                   : True  # NOQA
-        ,"DataPackingChecks"            : True  # NOQA
-        ,"WriteFSR"                     : True  # NOQA
-        ,"MergeGenFSR"                  : False  # NOQA
-        ,"Debug"                        : False  # NOQA
-        ,"BeamPipe"                     : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
-        ,"ReplaceWithGDML"              : [ { "volsToReplace": [], "gdmlFile" : "" } ]  # NOQA
-        ,"RandomGenerator"              : 'Ranlux'  # NOQA
-        ,"UseGaussGeo"                  : False  # NOQA
-        ,"evtMax"                       : -1  # NOQA
-        ,"EnableHive"                   : False  # NOQA
-        ,"ThreadPoolSize"               : 2  # NOQA
-        ,"EventSlots"                   : 2  # NOQA
+        "Histograms"         : "DEFAULT"  # NOQA
+        ,"DatasetName"       : "Gaussino"  # NOQA
+        ,"DataType"          : ""  # NOQA
+        ,"SpilloverPaths"    : []  # NOQA
+        ,"Phases"            : ["Generation","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
+        ,"OutputType"        : 'SIM'  # NOQA
+        ,"EnablePack"        : True  # NOQA
+        ,"DataPackingChecks" : True  # NOQA
+        ,"WriteFSR"          : True  # NOQA
+        ,"MergeGenFSR"       : False  # NOQA
+        ,"Debug"             : False  # NOQA
+        ,"BeamPipe"          : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
+        ,"ReplaceWithGDML"   : [ { "volsToReplace": [], "gdmlFile": "" } ]  # NOQA
+        ,"RandomGenerator"   : 'Ranlux'  # NOQA
+        ,"UseGaussGeo"       : False  # NOQA
+        ,"evtMax"            : -1  # NOQA
+        ,"EnableHive"        : False  # NOQA
+        ,"ThreadPoolSize"    : 2  # NOQA
+        ,"EventSlots"        : 2  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):

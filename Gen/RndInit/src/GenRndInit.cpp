@@ -74,11 +74,12 @@ LHCb::GenHeader GenRndInit::operator()() const
   }
 
   // Configure the event information in the event context
-  auto context = Gaudi::Hive::currentContext();
+  auto & context = Gaudi::Hive::currentContext();
   EventIDBase eventid{};
   eventid.set_event_number( eventNumber );
   eventid.set_run_number( m_runNumber );
-  context.setEventID( eventid );
+  const_cast<EventContext&>(context).setEventID( eventid );
+  const_cast<EventContext&>(context).setEvt(eventNumber);
 
   printEventRun( eventNumber, m_runNumber );
 

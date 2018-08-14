@@ -46,4 +46,5 @@ public:
 private:
   HepMC::Writer* m_writer = nullptr;
   mutable std::mutex m_writer_lock;
+  mutable std::atomic_uint m_counter{0};
 };
