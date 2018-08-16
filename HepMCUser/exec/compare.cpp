@@ -9,14 +9,23 @@
 
 int main( int, char* argv[] )
 {
-  HepMC::ReaderRootTree reader1( argv[1] );
-  HepMC::ReaderRootTree reader2( argv[2] );
+  HepMC::Reader* reader1, *reader2;
+  if(std::string(argv[1]).find(".txt") != std::string::npos){
+      reader1 = new HepMC::ReaderAscii(argv[1]);
+  } else {
+      reader1 = new HepMC::ReaderRootTree(argv[1]);
+  }
+  if(std::string(argv[2]).find(".txt") != std::string::npos){
+      reader2 = new HepMC::ReaderAscii(argv[2]);
+  } else {
+      reader2 = new HepMC::ReaderRootTree(argv[2]);
+  }
   std::map<std::pair<int, int>, HepMC::GenEvent*> events1;
 
   while ( true ) {
     auto evt = new HepMC::GenEvent{};
-    reader1.read_event( *evt );
-    if ( reader1.failed() ) {
+    reader1->read_event( *evt );
+    if ( reader1->failed() ) {
       break;
     }
     int eventNumber = evt->attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value();
@@ -30,8 +39,8 @@ int main( int, char* argv[] )
   unsigned int passed{};
   while ( true ) {
     HepMC::GenEvent evt2;
-    reader2.read_event( evt2 );
-    if ( reader2.failed() ) {
+    reader2->read_event( evt2 );
+    if ( reader2->failed() ) {
       break;
     }
     auto eventNumber = evt2.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value();
@@ -57,8 +66,10 @@ int main( int, char* argv[] )
     }
   }
   std::cout << "Fraction of equal events: " << passed << "/" << all <<": " << ( (float)passed * 100. ) / all << "%.\n";
-  reader1.close();
-  reader2.close();
+  reader1->close();
+  reader2->close();
+  delete reader1;
+  delete reader2;
 
   return 0;
 }
