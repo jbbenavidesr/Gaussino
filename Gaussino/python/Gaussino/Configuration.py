@@ -19,6 +19,7 @@ class Gaussino(ConfigurableUser):
     __slots__ = {
         "Histograms"         : "DEFAULT"  # NOQA
         ,"DatasetName"       : "Gaussino"  # NOQA
+        ,"DatasetNameForced" : False  # NOQA
         ,"DataType"          : ""  # NOQA
         ,"SpilloverPaths"    : []  # NOQA
         ,"Phases"            : ["Generation","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
@@ -100,6 +101,8 @@ class Gaussino(ConfigurableUser):
         """
         import time
         outputName = self.getProp("DatasetName")
+        if self.getProp("DatasetNameForced"):
+            return outputName
         if outputName == "":
             outputName = 'Gaussino'
         if self.eventType() != "":

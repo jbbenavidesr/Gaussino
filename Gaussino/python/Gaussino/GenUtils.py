@@ -22,8 +22,8 @@ def configure_pgun(**kwargs):
     from Configurables import FlatNParticles
     pgun.addTool(FlatNParticles, name="FlatNParticles")
     pgun.NumberOfParticlesTool = "FlatNParticles"
-    pgun.FlatNParticles.MinNParticles = 300
-    pgun.FlatNParticles.MaxNParticles = 600
+    pgun.FlatNParticles.MinNParticles = 1
+    pgun.FlatNParticles.MaxNParticles = 1
     pgun.MomentumRange.PdgCodes = [-13, 13]
 
     pgun.MomentumRange.MomentumMin = 20.0*GeV

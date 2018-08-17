@@ -28,6 +28,7 @@ int main( int, char* argv[] )
 
   unsigned int all{};
   unsigned int passed{};
+  int code{0};
   while ( true ) {
     HepMC::GenEvent evt2;
     reader2.read_event( evt2 );
@@ -50,6 +51,7 @@ int main( int, char* argv[] )
         //HepMC::printChildren( evt2.particles()[0] );
         // return 1;
         std::cout << std::endl;
+        code = 3;
       } else {
         passed++;
       }
@@ -60,5 +62,5 @@ int main( int, char* argv[] )
   reader1.close();
   reader2.close();
 
-  return 0;
+  return code;
 }

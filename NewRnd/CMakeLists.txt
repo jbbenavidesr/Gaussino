@@ -26,3 +26,5 @@ gaudi_add_library(NewRnd
 gaudi_add_executable(GaussinoTestgRandom
                      exec/GaussinoTestgRandom.cxx
                      LINK_LIBRARIES NewRnd)
+
+gaudi_add_test(QMTest QMTEST)
