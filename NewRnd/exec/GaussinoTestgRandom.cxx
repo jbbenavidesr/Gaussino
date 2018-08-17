@@ -145,9 +145,10 @@ int main()
     }
     for ( auto& t : threads ) t.join();
     if ( !ret ) {
-      std::cout << "FAILURE: Sequences not equal in normal thread-local gRandom test" << std::endl;
+      std::cout << "FAILURE: Sequences not equal in thread-local gRandom test" << std::endl;
+      return 1;
     } else {
-      std::cout << "SUCCESS: Sequences are equal in normal thread-local gRandom test" << std::endl;
+      std::cout << "SUCCESS: Sequences are equal in thread-local gRandom test" << std::endl;
     }
     delete refvalues;
     futures.clear();
@@ -173,14 +174,12 @@ int main()
     }
     for ( auto& t : threads ) t.join();
     if ( !ret ) {
-      std::cout << "FAILURE: Sequences not equal in normal thread-local gRandom histogram test" << std::endl;
+      std::cout << "FAILURE: Sequences not equal in thread-local gRandom histogram test" << std::endl;
+      return 1;
     } else {
-      std::cout << "SUCCESS: Sequences are equal in normal thread-local gRandom histogram test" << std::endl;
+      std::cout << "SUCCESS: Sequences are equal in thread-local gRandom histogram test" << std::endl;
+      return 0;
     }
-    delete refhistvalues;
-    futures.clear();
-    threads.clear();
   }
 
-  return 0;
 }
