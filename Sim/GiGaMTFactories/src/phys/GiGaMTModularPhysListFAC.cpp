@@ -17,15 +17,12 @@ StatusCode GiGaMTModularPhysListFAC::initialize()
   if ( m_physconstr.empty() ) {
     return Error( "Invalid/Empty list of Physics constructors" );
   }
-
-  for ( std::vector<std::string>::iterator constructor = m_physconstr.begin(); m_physconstr.end() != constructor;
-        ++constructor ) {
-    ConstructorFactory* theconstr = tool<ConstructorFactory>( *constructor, this );
-    if ( 0 == theconstr ) {
+  for ( auto & constructor: m_physconstr ) {
+    auto theconstr = tool<ConstructorFactory>( constructor, this );
+    if ( !theconstr ) {
       return StatusCode::FAILURE;
     }
-
-    m_constructors.push_back( theconstr );
+    m_constructors.push_back(theconstr);
   }
 
   return StatusCode::SUCCESS;

@@ -43,7 +43,7 @@ public:
   {
     MsgStream msg( msgSvc(), name() );
     msg.setLevel( msgLevel() );
-    auto msgwrapper = new GiGaMessageImpl( MsgStream( msgSvc(), name() ) );
+    auto msgwrapper = new GiGaMessageImpl( msg );
     return msgwrapper;
   }
 };

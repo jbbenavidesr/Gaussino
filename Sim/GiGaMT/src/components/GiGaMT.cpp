@@ -30,6 +30,7 @@
 #include "GiGaMTCore/GiGaWorkerPayload.h"
 #include "GiGaMTCore/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "SimInterfaces/IG4MonitoringTool.h"
 #include "SimInterfaces/IHepMC3ToGeant4Tool.h"
 
 #include "HepMC/GenEvent.h"
@@ -48,11 +49,6 @@
 // Instantiation of a static factory class used by clients to create
 // instances of this service
 DECLARE_COMPONENT( GiGaMT )
-
-//=============================================================================
-// Destructor
-//=============================================================================
-GiGaMT::~GiGaMT() {}
 
 //=============================================================================
 // query interface
@@ -150,6 +146,14 @@ StatusCode GiGaMT::initialize()
   if ( 0 == m_conversionTool ) {
     return Error( "Unable to create/locate tool for EDM conversion" );
   }
+  for ( auto& toolname : m_MoniToolNames ) {
+    auto tmp_tool = tool<IG4MonitoringTool>( toolname, this );
+    if ( 0 == tmp_tool ) {
+      return Error( "Unable to create/locate monitoring tool " + toolname );
+    } else {
+      m_MoniTools.push_back( tmp_tool );
+    }
+  }
 
   /// Dump all particles known to Geant4
   if ( m_printMaterials ) {
@@ -240,9 +244,16 @@ StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::Hep
   std::vector<std::promise<DummyReturn>*> promises;
   std::promise<DummyReturn> promised_return;
   auto fut = promised_return.get_future();
+
+  auto start_time      = Clock::now();
   m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, &promised_return} );
   fut.get();
-
+  auto end_time      = Clock::now();
+  debug() << "Simulation complete after " <<std::setprecision(2) << std::chrono::duration_cast<std::chrono::nanoseconds>(end_time-start_time).count()/1e9 << " seconds." << endmsg;
+  for ( auto monitool : m_MoniTools ) {
+    monitool->monitor( *g4event );
+  }
+  delete g4event;
   return StatusCode::SUCCESS;
 }
 

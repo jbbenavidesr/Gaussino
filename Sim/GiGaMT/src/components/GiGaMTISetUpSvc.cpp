@@ -59,7 +59,6 @@ StatusCode GiGaMT::InitializeMainThread() const
 StatusCode GiGaMT::InitializeWorkerThreads() const
 {
 
-
   Print( "Beginning worker thread creation", MSG::DEBUG, StatusCode::SUCCESS );
   // Barrier to synchronise the initialization of the threads to only
   // continue and exit the current function successfully when all threads
@@ -70,12 +69,14 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
     // FIXME: Why does this need a move, shouldn't this already by an r-value?
     auto pilot = m_workerPilotFactory->construct();
     pilot->SetInputQueue( &m_payloadQueue );
-    m_workerThreads.emplace_back( std::move(*pilot) );
+    m_workerThreads.emplace_back( std::move( *pilot ) );
     delete pilot;
   }
 
   // This barrier is just for safety so that nothing continues beyond this point
-  // until the worker threads are initialized in their threads.
+  // until the worker threads are initialized in their threads. Might not really be
+  // necessary, I don't know. But at least while using no more threads than physical
+  // cores all threads should roughly finish initializing at the same time anyway.
   initBarrier.wait();
   Print( "Initialized all G4 worker threads", MSG::ALWAYS, StatusCode::SUCCESS );
   return StatusCode::SUCCESS;

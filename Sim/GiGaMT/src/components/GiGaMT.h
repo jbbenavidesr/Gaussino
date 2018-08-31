@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <chrono>
 
 // from Gaudi
 #include "GaudiKernel/IToolSvc.h"
@@ -43,6 +44,7 @@ class GiGaWorkerPilot;
 class GiGaMTRunManager;
 class G4VUserDetectorConstruction;
 class IHepMC3ToGeant4Tool;
+class IG4MonitoringTool;
 
 /**  @class GiGaMT GiGaMT.h
  *
@@ -64,6 +66,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
   Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", "GiGaMTDetectorConstructionFAC"};
   Gaudi::Property<std::string> m_conversionToolName{this, "HepMCtoGeant4Tool", "HepMC3ToGeant4Tool"};
+  Gaudi::Property<std::vector<std::string>> m_MoniToolNames{this, "MonitorTools", {}};
   Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
   Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};
@@ -73,9 +76,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
 
 protected:
   using Service::Service;
-
-  /// (virtual destructor)
-  virtual ~GiGaMT();
+  using Clock = std::chrono::high_resolution_clock;
 
 public:
   /** service initialization
@@ -226,6 +227,7 @@ private:
   GiGaFactoryBase<G4VUserDetectorConstruction>* m_detConstFactory    = nullptr;
   GiGaFactoryBase<G4VUserActionInitialization>* m_ActionInitializerFactory = nullptr;
   IHepMC3ToGeant4Tool* m_conversionTool = nullptr;
+  std::vector<IG4MonitoringTool*> m_MoniTools{};
   mutable std::vector<std::thread> m_workerThreads{};
   mutable GiGaPayloadQueue m_payloadQueue{};
 

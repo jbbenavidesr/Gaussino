@@ -39,5 +39,6 @@ public:
 
 
   virtual G4VPhysicalVolume* constructWorld() override;
+  virtual void constructSDandField() override {};
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 };

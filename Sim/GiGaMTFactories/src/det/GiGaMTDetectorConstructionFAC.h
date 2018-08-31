@@ -17,5 +17,14 @@ public:
 
   virtual StatusCode initialize() override;
 
+protected:
   IGiGaMTGeoSvc* m_geoSvc = nullptr;
+};
+
+class GiGaMTProxyDetectorConstructionFAC : public GiGaMTDetectorConstructionFAC
+{
+public:
+  using GiGaMTDetectorConstructionFAC::GiGaMTDetectorConstructionFAC;
+
+  G4VUserDetectorConstruction* construct() const override;
 };
