@@ -162,16 +162,13 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     // default set to 1 pile and 0 luminosity
     else nParticles = 1 ;
 
-    // Prepare event container
-    prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
-    theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-    theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
     // generate a set of particles according to the requested type
     // of particle gun
-    bool first_particle = true;
-    auto prod_vtx = std::make_shared<HepMC::GenVertex>();
-    theGenEvent->add_vertex(prod_vtx);
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
+      // Prepare event container
+      prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
@@ -184,20 +181,26 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
       m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId , engine );
 
       // create HepMC Vertex
-      if(first_particle){
-          theGenEvent->shift_position_to(HepMC::FourVector(origin.x(), origin.y(), origin.z(), origin.t()));
-          first_particle = false;
-      }
+      HepMC::GenVertex * v =
+        new HepMC::GenVertex( HepMC::FourVector( origin.X() ,
+                                                 origin.Y() ,
+                                                 origin.Z() ,
+                                                 origin.T() ) ) ;
       // create HepMC particle
-      auto p =
-        std::make_shared<HepMC::GenParticle>( HepMC::FourVector( theFourMomentum.Px() ,
+      HepMC::GenParticle * p =
+        new HepMC::GenParticle( HepMC::FourVector( theFourMomentum.Px() ,
                                                    theFourMomentum.Py() ,
                                                    theFourMomentum.Pz() ,
                                                    theFourMomentum.E()  ) ,
                                 thePdgId ,
                                 LHCb::HepMCEvent::StableInProdGen ) ;
 
-      prod_vtx->add_particle_out(p);
+      v -> add_particle_out( p ) ;
+      theGenEvent->add_vertex( v ) ;
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID,
+          std::make_shared<HepMC::IntAttribute>(nParticles));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
+          std::make_shared<HepMC::VertexAttribute>(v));
     }
 
     goodEvent = true ;

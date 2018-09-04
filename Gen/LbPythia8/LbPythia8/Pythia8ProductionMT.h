@@ -17,8 +17,6 @@
 //#include "Pythia8Plugins/HepMC2.h"
 #include <condition_variable>
 #include <mutex>
-#include "CLHEP/Random/RandFlat.h"
-#include "CLHEP/Random/RandomEngine.h"
 
 using namespace std;
 
@@ -34,30 +32,6 @@ using namespace std;
  * @author Dominik Muller
  * @date   5.7.2018
  */
-
-// This function produces a stack backtrace with demangled function & method names.
-std::string Backtrace(int skip = 1);
-
-class RndForPythia : public Pythia8::RndmEngine
-{
-public:
-  RndForPythia( CLHEP::HepRandomEngine& engine, std::stringstream* file=nullptr ) : m_file( file ), m_gen( engine, 0, 1 ) {}
-  virtual double flat()
-  {
-    auto val = m_gen();
-    if(m_file){
-      *m_file << "Random number: " << val << "\n";
-      *m_file << Backtrace( 2 ) << std::endl;
-    }
-
-    return val;
-  }
-
-private:
-  std::stringstream* m_file;
-  CLHEP::RandFlat m_gen;
-};
-
 class Pythia8ProductionMT : public GaudiTool, virtual public IProductionTool
 {
 public:

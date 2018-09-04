@@ -30,8 +30,8 @@
 #include "HepMC/GenVertex.h"
 #include "Pythia8HepMC/Pythia8ToHepMC3.h"
 
-#include "CLHEP/Random/MixMaxRng.h"
-#include <fstream>
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8ProductionMT
@@ -252,27 +252,22 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
                                                CLHEP::HepRandomEngine& engine )
 {
   if ( !m_pythia() ) {
-    std::ofstream myfile;
-    std::stringstream bla;
-    std::stringstream buffer;
-    bla << "randoms/" << Gaudi::Hive::currentContextEvt() << "._init.txt";
-    myfile.open(bla.str());
     debug() << "Initializing Pythia8 in thread!" << endmsg;
-    CLHEP::MixMaxRng init_engine;
-    init_engine.setSeed(42);
     InitializeThread();
-    myfile << buffer.str();
-    myfile.close();
   }
 
-  std::ofstream myfile;
-  std::stringstream bla;
-  std::stringstream buffer;
-  bla << "randoms/" << Gaudi::Hive::currentContextEvt() << ".txt";
-  myfile.open(bla.str());
+  class RndForPythia : public Pythia8::RndmEngine
+  {
+  public:
+    RndForPythia( CLHEP::HepRandomEngine& engine ) : m_gen( engine, 0, 1 ) {}
+    virtual double flat() { return m_gen(); }
+
+  private:
+    CLHEP::RandFlat m_gen;
+  };
 
   auto pythia = m_pythia();
-  RndForPythia rnd_generator{engine, &buffer};
+  RndForPythia rnd_generator{engine};
   pythia->setRndmEnginePtr( &rnd_generator );
   // Generate the event (make 10 attempts).
   int tries( 0 );
@@ -314,8 +309,6 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
     genFSR->addCrossSection( key,
                              LHCb::GenFSR::CrossValues( pythia->info.nameProc( key ), pythia->info.sigmaGen( key ) ) );
   }
-  myfile << buffer.str();
-  myfile.close();
 
   // Convert the event to HepMC and return.
   if ( theCollision->isSignal() || pythia->flag( "HadronLevel:all" ) )
@@ -495,22 +488,12 @@ int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP )
 StatusCode Pythia8ProductionMT::InitializeThread()
 {
   debug() << "Initializing Pythia8 in thread" << endmsg;
-
-  std::ofstream myfile;
-  std::stringstream bla;
-  std::stringstream buffer;
-  bla << "randoms/" << Gaudi::Hive::currentContextEvt() << "._init.txt";
-  myfile.open(bla.str());
-  CLHEP::MixMaxRng init_engine;
-  init_engine.setSeed(42);
-  RndForPythia init_rnd{init_engine};
   // Initialize the user hooks.
   if ( !m_hooks.get() ) m_hooks = new Pythia8::LhcbHooks();
 
   // Create the Pythia 8 generator.
   string xmlpath( "UNKNOWN" != System::getEnv( "PYTHIA8XML" ) ? System::getEnv( "PYTHIA8XML" ) : "" );
   m_pythia = new Pythia8::Pythia( xmlpath, m_showBanner );
-  m_pythia->setRndmEnginePtr(&init_rnd);
   if ( !m_pythia.get() ) return StatusCode::FAILURE;
 
   // Add LhcbHooks parameters.
@@ -563,8 +546,6 @@ StatusCode Pythia8ProductionMT::InitializeThread()
   // GarbageBin<Pythia8::LHAup*>::Add( m_lhaup() );
   // GarbageBin<BeamToolForPythia8*>::Add( m_pythiaBeamTool() );
 
-  myfile << buffer.str();
-  myfile.close();
   return StatusCode::SUCCESS;
 }
 
@@ -601,45 +582,6 @@ StatusCode Pythia8ProductionMT::FinalizeThread()
   return StatusCode::SUCCESS;
 }
 
-std::string Backtrace(int skip)
-{
-    void *callstack[128];
-    const int nMaxFrames = sizeof(callstack) / sizeof(callstack[0]);
-    char buf[1024];
-    int nFrames = backtrace(callstack, nMaxFrames);
-    char **symbols = backtrace_symbols(callstack, nFrames);
-
-    bool found = false;
-    std::ostringstream trace_buf;
-    for (int i = skip; i < nFrames; i++) {
-        //printf("%s\n", symbols[i]);
-
-        Dl_info info;
-        if (dladdr(callstack[i], &info) && info.dli_sname) {
-            char *demangled = NULL;
-            int status = -1;
-            if (info.dli_sname[0] == '_')
-                demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
-            snprintf(buf, sizeof(buf), "%s\n",
-                     //int(2 + sizeof(void*) * 2), callstack[i],
-                     status == 0 ? demangled :
-                     info.dli_sname == 0 ? symbols[i] : info.dli_sname);
-            free(demangled);
-        } else {
-            snprintf(buf, sizeof(buf), "%-3d %*p %s\n",
-                     i, int(2 + sizeof(void*) * 2), callstack[i], symbols[i]);
-        }
-        if(!found)
-            trace_buf << buf;
-        if(std::string(buf).find("Pythia::next") != std::string::npos){
-            found=true;
-        }
-    }
-    free(symbols);
-    if (nFrames == nMaxFrames)
-        trace_buf << "[truncated]\n";
-    return trace_buf.str();
-}
 //=============================================================================
 // The END.
 //=============================================================================
