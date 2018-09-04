@@ -39,7 +39,6 @@
 // 2007-07-31 : Arthur de Gromard, Philip Ilten
 //-----------------------------------------------------------------------------
 
-thread_local Pythia8ProductionMT::Pythia8ThreadManager Pythia8ProductionMT::m_manager{};
 std::mutex Pythia8ProductionMT::m_pythia_lock{};
 //=============================================================================
 // Default constructor.
@@ -147,16 +146,13 @@ StatusCode Pythia8ProductionMT::initialize()
   StatusCode sc = GaudiTool::initialize();
   if ( sc.isFailure() ) Exception( "Failed to initialize the Gaudi tool." );
 
-  // Add this to the global list for later per thread initialization
-  // by a ThreadInitTool. We <3 hacks
-  AddInstance();
-
   // Initialize the beam tool.
   m_beamTool = tool<IBeamTool>( m_beamToolName, this );
   if ( !m_beamTool ) Exception( "Failed to initialize the IBeamTool." );
 
   // Initialze the XML log file.
   m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
+  m_manager    = new Pythia8ThreadManager{};
 
   return sc;
 }
@@ -239,11 +235,6 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
   else
     return Error( "Failed to initialize Pythia 8." );
 }
-
-//=============================================================================
-// Finalize the tool.
-//=============================================================================
-StatusCode Pythia8ProductionMT::finalize() { return GaudiTool::finalize(); }
 
 //=============================================================================
 // Generate an event.
@@ -546,40 +537,28 @@ StatusCode Pythia8ProductionMT::InitializeThread()
   // GarbageBin<Pythia8::LHAup*>::Add( m_lhaup() );
   // GarbageBin<BeamToolForPythia8*>::Add( m_pythiaBeamTool() );
 
+  // Push this into the manager for later merging and cleanup of the used pythia instances
+  std::lock_guard<std::mutex> l{m_pythia_lock};
+  m_manager->store.emplace_back( m_pythia(), m_hooks(), m_lhaup(), m_pythiaBeamTool() );
   return StatusCode::SUCCESS;
 }
 
-StatusCode Pythia8ProductionMT::FinalizeThread()
+StatusCode Pythia8ProductionMT::finalize()
 {
-  if ( !m_pythia() ) {
-    debug() << "Skipping finalization because no pythia instance set in thread." << endmsg;
-    return StatusCode::SUCCESS;
-  }
   // Print the statistics.
-  std::lock_guard guard( m_pythia_lock );
-  m_pythia->stat();
+  for ( auto[pythia, hooks, lhaup, beam] : m_manager->store ) {
+    pythia->stat();
 
-  // Write the cross-sections to the XML log.
-  vector<int> codes = m_pythia->info.codesHard();
-  for ( unsigned int code = 0; code < codes.size(); ++code )
-    m_xmlLogTool->addCrossSection( m_pythia->info.nameProc( codes[code] ), codes[code],
-                                   m_pythia->info.nAccepted( codes[code] ), m_pythia->info.sigmaGen( codes[code] ) );
+    // Write the cross-sections to the XML log.
+    vector<int> codes = pythia->info.codesHard();
+    for ( unsigned int code = 0; code < codes.size(); ++code )
+      m_xmlLogTool->addCrossSection( pythia->info.nameProc( codes[code] ), codes[code],
+                                     pythia->info.nAccepted( codes[code] ), pythia->info.sigmaGen( codes[code] ) );
+  }
 
   // Clean up.
-  if ( m_lhaup() ) {
-    delete m_lhaup();
-  }
-  if ( m_hooks() ) {
-    delete m_hooks();
-  }
-  if ( m_pythia() ) {
-    delete m_pythia();
-  }
-
-  if ( m_pythiaBeamTool() ) {
-    delete m_pythiaBeamTool();
-  }
-  return StatusCode::SUCCESS;
+  delete m_manager;
+  return GaudiTool::finalize();
 }
 
 //=============================================================================
