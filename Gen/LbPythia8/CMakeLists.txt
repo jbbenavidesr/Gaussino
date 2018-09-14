@@ -15,7 +15,8 @@ find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
 find_package(HepMC CONFIG)
 find_package(LHAPDF)
 find_package(Boost COMPONENTS filesystem system)
-find_package(ROOT COMPONENTS GenVector)
+find_package(ROOT)
+find_package(CLHEP)
 
 if(EXISTS "${PYTHIA8_INCLUDE_DIR}/Pythia8/Pythia.h")
   # include directory changed from Pythia8 175 to 183
@@ -40,3 +41,7 @@ gaudi_add_module(LbPythia8
 
 gaudi_env(SET PYTHIA8XML ${PYTHIA8_XML})
 
+gaudi_add_executable(Pythia8Reproducibility
+                     exec/minimal.cxx
+                     INCLUDE_DIRS Pythia8 HepMC Pythia8ToHepMC3Lib CLHEP HepMCUtils
+                     LINK_LIBRARIES Pythia8 HepMC Pythia8ToHepMC3Lib CLHEP HepMCUtils)

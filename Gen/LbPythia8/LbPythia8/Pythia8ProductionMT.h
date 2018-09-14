@@ -139,14 +139,7 @@ public:
   // Members needed externally.
   string m_beamToolName; ///< The name of the beam tool.
 
-  void AddInstance() { Instances().push_back( this ); }
   virtual StatusCode InitializeThread();
-  virtual StatusCode FinalizeThread();
-  static std::vector<Pythia8ProductionMT*>& Instances()
-  {
-    static std::vector<Pythia8ProductionMT*> store;
-    return store;
-  }
 
 protected:
   /**
@@ -182,16 +175,18 @@ protected:
   {
 
   public:
-    Pythia8ThreadManager() = default;
     ~Pythia8ThreadManager()
     {
-      for ( auto& tool : Pythia8ProductionMT::Instances() ) {
-        tool->debug() << "Finalizing in thread via manager" << endmsg;
-        tool->FinalizeThread();
+      for ( auto[pythia, hooks, lhaup, beam] : store ) {
+        if ( pythia ) delete pythia;
+        if ( hooks ) delete hooks;
+        if ( lhaup ) delete lhaup;
+        if ( beam ) delete beam;
       }
     }
+    std::vector<std::tuple<Pythia8::Pythia*, Pythia8::UserHooks*, Pythia8::LHAup*, BeamToolForPythia8*>> store;
   };
-  static thread_local Pythia8ThreadManager m_manager;
+  Pythia8ThreadManager* m_manager{nullptr};
 
 private:
   unsigned int m_nThreads{0};
