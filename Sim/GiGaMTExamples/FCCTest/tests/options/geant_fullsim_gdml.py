@@ -8,10 +8,10 @@ giga.DetectorConstruction = "G4GdmlTestDetector"
 dettool = giga.addTool(G4GdmlTestDetector,
                        "G4GdmlTestDetector")
 dettool.GDML = '$FCCTESTROOT/data/gflashDetector.xml'
-monitool = giga.addTool(G4SaveTestCalHits,
-                        "G4SaveTestCalHits")
-monitool.caloType = "ECal"
-giga.MonitorTools = ["G4SaveTestCalHits"]
+# monitool = giga.addTool(G4SaveTestCalHits,
+                        # "G4SaveTestCalHits")
+# monitool.caloType = "ECal"
+# giga.MonitorTools = ["G4SaveTestCalHits"]
 
 
 def giga_debugs(name):

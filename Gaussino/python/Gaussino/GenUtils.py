@@ -94,10 +94,10 @@ def configure_generationMT(**kwargs):
     pprod.NThreads = Gaussino().ThreadPoolSize
     # pprod.OutputLevel = 1
 
-    from Configurables import FixedNInteractions
-    gen.addTool(FixedNInteractions, name='FixedNInteractions')
-    gen.FixedNInteractions.NInteractions = 1
-    gen.PileUpTool = 'FixedNInteractions'
+    from Configurables import PoissonPileUp
+    gen.addTool(PoissonPileUp, name='PoissonPileUp')
+    gen.PoissonPileUp.PileUpNu = 5
+    gen.PileUpTool = 'PoissonPileUp'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""

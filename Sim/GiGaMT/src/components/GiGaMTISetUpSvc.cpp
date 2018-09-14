@@ -66,7 +66,6 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
   auto& initBarrier = GiGaWorkerPilot::GetInitBarrier( m_nWorkerThreads + 1 );
 
   for ( size_t iThread = 0; iThread < m_nWorkerThreads; iThread++ ) {
-    // FIXME: Why does this need a move, shouldn't this already by an r-value?
     auto pilot = m_workerPilotFactory->construct();
     pilot->SetInputQueue( &m_payloadQueue );
     m_workerThreads.emplace_back( std::move( *pilot ) );
