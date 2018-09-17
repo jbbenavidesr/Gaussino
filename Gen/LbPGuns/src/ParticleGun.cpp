@@ -164,6 +164,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
     // generate a set of particles according to the requested type
     // of particle gun
+    theEvents.reserve(nParticles);
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
       prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
