@@ -55,6 +55,9 @@ LHCb::GenHeader GenRndInit::operator()() const
       m_wait_at_barrier = false;
     }
   }
+  if ( eventNumber >= m_firstTimingEvent && eventNumber < m_lastTimingEvent){
+    m_evtTimingCounter++;
+  }
 
   if ( m_lastTimingEvent != -1 ) {
     if ( eventNumber == m_lastTimingEvent ) {
@@ -64,7 +67,7 @@ LHCb::GenHeader GenRndInit::operator()() const
       m_endbarrier->wait();
       m_wait_at_endbarrier = false;
       auto end_time        = Clock::now();
-      info() << "Measured event loop time [ns]: "
+      info() << "Measured event loop time ("<< m_evtTimingCounter <<") [ns]: "
              << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
     } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
       debug() << "Larger. Waiting at end barrier" << endmsg;

@@ -60,6 +60,7 @@ protected:
   void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
 
   mutable std::atomic_long m_evtCounter{0}; ///< Pointer to EventCounter interface
+  mutable std::atomic_long m_evtTimingCounter{0}; ///< Pointer to EventCounter interface
   long m_eventMax{0};                       ///< Number of events requested (ApplicationMgr.EvtMax)
   std::string m_appName{""};                ///< Application Name
   std::string m_appVersion{""};             ///< Application Version
