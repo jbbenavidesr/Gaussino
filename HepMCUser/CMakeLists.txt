@@ -11,12 +11,13 @@ gaudi_depends_on_subdirs(Defaults
 gaudi_install_headers(HepMCUser)
 
 find_package(HepMC CONFIG)
+find_package(ROOT)
 
 gaudi_add_library(HepMCUtils
                   src/*.cpp
                   PUBLIC_HEADERS HepMCUtils
-                  INCLUDE_DIRS HepMC HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS}
-                  LINK_LIBRARIES HepMC GaudiAlgLib)
+                  INCLUDE_DIRS HepMC HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS} ROOT
+                  LINK_LIBRARIES HepMC GaudiAlgLib ROOT)
 
 gaudi_add_executable(compareHepMCEvents
                      exec/*.cpp
