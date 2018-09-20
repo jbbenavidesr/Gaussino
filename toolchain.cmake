@@ -71,10 +71,17 @@ endmacro()
 if(inherit_heptools_module)
   include(${inherit_heptools_module})
   inherit_heptools()
+  set(BINARY_TAGCOMP ${BINARY_TAG})
+  if(BINARY_TAG STREQUAL "x86_64-centos7-gcc62-do0")
+    set(BINARY_TAGCOMP "x86_64-centos7-gcc62-dbg")
+  endif()
+
+  message(STATUS "BINARY_TAGCOMP=${BINARY_TAGCOMP}")
+  message(STATUS "BINARY_TAG=${BINARY_TAG}")
 
   if(LCG_TOOLCHAIN_INFO)
     # prepare list of toolchain info files for generators
-    set(_info_name "LCG_generators_${BINARY_TAG}.txt")
+    set(_info_name "LCG_generators_${BINARY_TAGCOMP}.txt")
     # look for alternative info files
     file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" _a)
     file(TO_CMAKE_PATH "$ENV{CMTPROJECTPATH}" _b)
@@ -124,3 +131,5 @@ if(DEFINED ENV{LBLOCALSOFT})
   message(STATUS "Manually prepending $ENV{LBLOCALSOFT} to CMAKE_PREFIX_PATH")
   set(CMAKE_PREFIX_PATH "$ENV{LBLOCALSOFT};${CMAKE_PREFIX_PATH}")
 endif()
+
+set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_91/hepmc3/3.0.0/${BINARY_TAGCOMP} ${CMAKE_PREFIX_PATH})

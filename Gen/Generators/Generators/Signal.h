@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h" 
 
 #include "Generators/ExternalGenerator.h" 
 
@@ -29,7 +28,7 @@ namespace HepMC {
 class Signal : public ExternalGenerator {
  public:
   /// Vector of particles
-  typedef std::vector< HepMC::GenParticle * > GenParticles ;
+  typedef std::vector< HepMC::GenParticlePtr > GenParticles ;
 
   /// Standard constructor
   Signal( const std::string& type, const std::string& name, 
@@ -54,77 +53,77 @@ protected:
   bool          m_cleanEvents      ;
 
   /// Number of events before the generator level cut.
-  unsigned int  m_nEventsBeforeCut ; 
+  std::atomic_uint  m_nEventsBeforeCut{} ; 
 
   /** Number of events accepted by the generator level cut. This counter is
    *  used to compute the generator cut efficiency on inclusive events.
    */
-  unsigned int  m_nEventsAfterCut  ;
+  std::atomic_uint  m_nEventsAfterCut{}  ;
 
   /** Number of signal particles (w/r to anti-particles) before the generator 
    *  level cut.
    */
-  unsigned int  m_nParticlesBeforeCut ;
+  std::atomic_uint  m_nParticlesBeforeCut{} ;
 
   /// Number of signal anti-particles before the generator level cut.
-  unsigned int  m_nAntiParticlesBeforeCut ;
+  std::atomic_uint  m_nAntiParticlesBeforeCut{} ;
 
   /** Number of signal particles accepted by the generator level cut. This 
    *  counter is used to compute the generator level cut efficiency to compute
    *  signal yields.
    */
-  unsigned int  m_nParticlesAfterCut ;
+  std::atomic_uint  m_nParticlesAfterCut{} ;
 
   /// Number of signal anti-particles accepted by the generator level cut.
-  unsigned int  m_nAntiParticlesAfterCut ;
+  std::atomic_uint  m_nAntiParticlesAfterCut{} ;
 
   /// Number of events parity-flipped. (z -> -z, pz -> -pz)
-  unsigned int  m_nInvertedEvents  ;
+  std::atomic_uint  m_nInvertedEvents{}  ;
 
   /// Heavier quark of the signal particle
   LHCb::ParticleID::Quark m_signalQuark ; 
 
   unsigned int  m_signalPID        ; ///< PDG Id of the signal particles
 
-  unsigned int  m_bbCounter        ; ///< Counter of (bb) states in tag side
+  std::atomic_uint  m_bbCounter{}        ; ///< Counter of (bb) states in tag side
 
-  unsigned int  m_ccCounter        ; ///< Counter of (cc) states in tag side
+  std::atomic_uint  m_ccCounter{}        ; ///< Counter of (cc) states in tag side
 
-  unsigned int  m_nSig             ; ///< Counter of generated signal
+  std::atomic_uint  m_nSig{}             ; ///< Counter of generated signal
 
-  unsigned int  m_nSigBar          ; ///< Counter of generated anti-signal
+  std::atomic_uint  m_nSigBar{}          ; ///< Counter of generated anti-signal
 
   std::string   m_sigName          ; ///< Name of signal
 
   std::string   m_sigBarName       ; ///< Name of anti-signal
 
-  GenCounters::BHadronCounter m_bHadC ; ///< Counter of B hadron (tag side)
+  GenCounters::BHadronCounter m_bHadC{} ; ///< Counter of B hadron (tag side)
 
   /// Counter of Bbar hadron (tag side)
-  GenCounters::BHadronCounter m_antibHadC ; 
+  GenCounters::BHadronCounter m_antibHadC{} ; 
 
-  GenCounters::DHadronCounter m_cHadC ; ///< Counter of D hadron (tag side)
+  GenCounters::DHadronCounter m_cHadC{} ; ///< Counter of D hadron (tag side)
 
   /// Counter of Dbar hadron (tag side)
-  GenCounters::DHadronCounter m_anticHadC ;
+  GenCounters::DHadronCounter m_anticHadC{} ;
 
-  GenCounters::BHadronCNames m_bHadCNames ; ///< Array of B counter names
+  GenCounters::BHadronCNames m_bHadCNames{} ; ///< Array of B counter names
 
   /// Array of Bbar hadron names
-  GenCounters::BHadronCNames m_antibHadCNames ;
+  GenCounters::BHadronCNames m_antibHadCNames{} ;
   
-  GenCounters::DHadronCNames m_cHadCNames ; ///< Array of D counter names
+  GenCounters::DHadronCNames m_cHadCNames{} ; ///< Array of D counter names
 
   /// Array of Dbar hadron counter names
-  GenCounters::DHadronCNames m_anticHadCNames ;
+  GenCounters::DHadronCNames m_anticHadCNames{} ;
 
-  GenCounters::ExcitedCounter m_bExcitedC ; ///< Counter of B(**) (signal side)
+  GenCounters::ExcitedCounter m_bExcitedC{} ; ///< Counter of B(**) (signal side)
 
-  GenCounters::ExcitedCounter m_cExcitedC ; ///< Counter of D(**) (signal side)
+  GenCounters::ExcitedCounter m_cExcitedC{} ; ///< Counter of D(**) (signal side)
 
-  GenCounters::ExcitedCNames m_bExcitedCNames ; ///< Names excited B couters
+  GenCounters::ExcitedCNames m_bExcitedCNames{} ; ///< Names excited B couters
   
-  GenCounters::ExcitedCNames m_cExcitedCNames ; ///< Names excited D counters
+  GenCounters::ExcitedCNames m_cExcitedCNames{} ; ///< Names excited D counters
   
   /// Flag to indicate that a mixture of signal particles and anti-particles.
   bool          m_cpMixture        ;
@@ -134,12 +133,10 @@ protected:
    */
   double        m_signalBr         ;
 
-  Rndm::Numbers m_flatGenerator    ; ///< Flat random nunmber generator
-
   /** Isolate signal particle decay tree for clean events. The resulting
    *  event is stored in the container /Event/Gen/SignalDecayTree.
    */
-  StatusCode isolateSignal( const HepMC::GenParticle * theSignal ) const ;
+  StatusCode isolateSignal( const HepMC::GenParticlePtr & theSignal ) const ;
 
   /** Choose randomly a particle in a list of particles 
    *  and returns the chosen particle. Invert the event if pz(Signal)<0.
@@ -148,10 +145,10 @@ protected:
    *  hasFlipped is set to true if the particle is flipped by EvtGen
    *  to generate CP violation. 
    */
-  HepMC::GenParticle * chooseAndRevert( const ParticleVector & particleList ,
-                                        bool & isInverted , 
-                                        bool & hasFlipped ,
-					bool & hasFailed ) ;
+  HepMC::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
+                                         bool & isInverted , 
+                                         bool & hasFlipped ,
+					bool & hasFailed , CLHEP::HepRandomEngine & engine) ;
 
   /** Ensures correct multiplicity of signal particles with an accept/reject
    *  algorithm.
@@ -160,7 +157,7 @@ protected:
    *  @return true if the event has to kept.
    *  @return false if the event has to be rejected.
    */
-  bool ensureMultiplicity( const unsigned int nSignal ) ;
+  bool ensureMultiplicity( const unsigned int nSignal , CLHEP::HepRandomEngine & engine) ;
 
   /** Update counters for efficiency calculations.
    *  @param[in]  particleList         List of particles to count.
@@ -173,8 +170,8 @@ protected:
    *                                   particleList has been inverted z -> -z
    */
   void updateCounters( const ParticleVector & particleList , 
-                       unsigned int & particleCounter , 
-                       unsigned int & antiparticleCounter ,
+                       std::atomic_uint & particleCounter , 
+                       std::atomic_uint & antiparticleCounter ,
                        bool onlyForwardParticles , 
                        bool isInverted ) const ;
   
@@ -185,8 +182,9 @@ protected:
    *  @param[in]  theOldParticle  Particle containing the decay tree to add
    *                              to theNewParticle.
    */
-  StatusCode fillHepMCEvent( HepMC::GenParticle * theNewParticle ,
-                             const HepMC::GenParticle * theOldParticle ) 
+  StatusCode fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle ,
+                             const HepMC::GenParticlePtr & theOldParticle,
+                             HepMC::GenEvent * theEvent) 
     const ;
 
   /// Temporary ector to obtain PIDs from job options.

@@ -1,15 +1,14 @@
 // $Id: FlatNParticles.cpp,v 1.1.1.1 2009-09-18 16:18:24 gcorti Exp $
 // Include files 
 
-// from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h"
-
 // from Event 
 #include "Event/GenHeader.h"
 
 // local
 #include "FlatNParticles.h"
+
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatNParticles
@@ -19,7 +18,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( FlatNParticles )
+DECLARE_COMPONENT( FlatNParticles )
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -45,12 +44,6 @@ StatusCode FlatNParticles::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
 
-  // Initialize the number generator
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;  
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize flat generator" ) ;    
-
   if ( m_minNumberOfParticles > m_maxNumberOfParticles ) 
     return Error( "Max number of particles < min number of particles !" ) ;
   else if ( 0 == m_maxNumberOfParticles ) 
@@ -66,8 +59,9 @@ StatusCode FlatNParticles::initialize( ) {
 //=============================================================================
 // Compute the number of particles
 //=============================================================================
-unsigned int FlatNParticles::numberOfPileUp( ) {
+unsigned int FlatNParticles::numberOfPileUp( CLHEP::HepRandomEngine & engine ) {
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   return ( m_minNumberOfParticles + 
-    (unsigned int) ( m_flatGenerator() * 
+    (unsigned int) ( flatGenerator() * 
                      ( 1 + m_maxNumberOfParticles - m_minNumberOfParticles ) ) ) ;
 }

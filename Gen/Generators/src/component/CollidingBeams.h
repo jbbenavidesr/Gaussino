@@ -5,12 +5,8 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IBeamTool.h"
-
-// Forward declarations
-class IRndmGenSvc ;
 
 /** @class CollidingBeams CollidingBeams.h "CollidingBeams.h"
  *  
@@ -28,9 +24,6 @@ class CollidingBeams : public GaudiTool, virtual public IBeamTool {
   
   virtual ~CollidingBeams( ); ///< Destructor
   
-  /// Initialize method
-  virtual StatusCode initialize( ) ;  
-  
   /** Implements IBeamTool::getMeanBeams
    */
   virtual void getMeanBeams( Gaudi::XYZVector & pBeam1 , 
@@ -46,7 +39,5 @@ class CollidingBeams : public GaudiTool, virtual public IBeamTool {
 
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
- 
-  Rndm::Numbers m_gaussianDist ; ///< Gaussian random number generator
 };
 #endif // GENERATORS_COLLIDINGBEAMS_H

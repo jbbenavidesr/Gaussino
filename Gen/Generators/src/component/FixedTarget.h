@@ -5,12 +5,8 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IBeamTool.h"
-
-// Forward declarations
-class IRndmGenSvc ;
 
 /** @class FixedTarget FixedTarget.h "FixedTarget.h"
  *  
@@ -41,7 +37,5 @@ class FixedTarget : public GaudiTool, virtual public IBeamTool {
   
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
-
-  Rndm::Numbers m_gaussianDist ; ///< Gaussian random number generator
 };
 #endif // GENERATORS_FIXEDTARGET_H

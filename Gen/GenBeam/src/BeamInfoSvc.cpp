@@ -1,6 +1,6 @@
 #include "BeamInfoSvc.h"
 
-DECLARE_SERVICE_FACTORY(BeamInfoSvc)
+DECLARE_COMPONENT(BeamInfoSvc)
 
 StatusCode BeamInfoSvc::initialize() { return Service::initialize(); }
 

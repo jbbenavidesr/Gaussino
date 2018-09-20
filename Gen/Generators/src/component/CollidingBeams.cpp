@@ -4,16 +4,15 @@
 // local
 #include "CollidingBeams.h"
 
-// from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h"
-
 // From Kernel
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From Event
 #include "Event/BeamParameters.h"
 #include "GenEvent/BeamForInitialization.h"
+
+#include "NewRnd/RndGlobal.h"
+#include "CLHEP/Random/RandGauss.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : CollidingBeams
@@ -23,7 +22,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( CollidingBeams )
+DECLARE_COMPONENT( CollidingBeams )
 
 
 //=============================================================================
@@ -43,23 +42,6 @@ CollidingBeams::CollidingBeams( const std::string& type,
 //=============================================================================
 CollidingBeams::~CollidingBeams( ) { ; }
 
-//=============================================================================
-// Initialize method
-//=============================================================================
-StatusCode CollidingBeams::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
-
-  // Initialize the number generator
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  
-  sc = m_gaussianDist.initialize( randSvc , Rndm::Gauss( 0. , 1. ) )  ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize Gaussian random generator" , sc ) ;
-  release( randSvc ) ;
-
-  return sc ;
-}
 
 //=============================================================================
 // Mean value of the beam momentum
@@ -103,26 +85,28 @@ void CollidingBeams::getBeams( Gaudi::XYZVector & pBeam1 ,
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters in TES" ) ;
 
+  CLHEP::RandGauss gaussianDist{ThreadLocalEngine::Get(), 0, 1};
+
   double p1x, p1y, p1z, p2x, p2y, p2z ;
   p1x = beam -> energy() * 
     sin( beam -> horizontalCrossingAngle() + 
          beam -> horizontalBeamlineAngle() + 
-         m_gaussianDist() * beam -> angleSmear() ) ;
+         gaussianDist() * beam -> angleSmear() ) ;
   p1y = beam -> energy() * 
     sin( beam -> verticalCrossingAngle() + 
          beam -> verticalBeamlineAngle() +
-         m_gaussianDist() * beam -> angleSmear() ) ;
+         gaussianDist() * beam -> angleSmear() ) ;
   p1z = beam -> energy() ;
   pBeam1.SetXYZ( p1x, p1y, p1z ) ;
 
   p2x = beam -> energy() * 
     sin( beam -> horizontalCrossingAngle() - 
          beam -> horizontalBeamlineAngle() + 
-         m_gaussianDist() * beam -> angleSmear() ) ;
+         gaussianDist() * beam -> angleSmear() ) ;
   p2y = beam -> energy() * 
     sin( beam -> verticalCrossingAngle() - 
          beam -> verticalBeamlineAngle() +
-         m_gaussianDist() * beam -> angleSmear() ) ;
+         gaussianDist() * beam -> angleSmear() ) ;
   p2z = -beam -> energy() ;
   pBeam2.SetXYZ( p2x, p2y, p2z ) ;
 }

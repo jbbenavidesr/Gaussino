@@ -3,12 +3,10 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IBeamTool.h"
 
 // Forward declarations
-class IRndmGenSvc ;
 class IBeamInfoSvc;
 
 /** @class CollidingBeamsWithSvc CollidingBeamsWithSvc.h "CollidingBeamsWithSvc.h"
@@ -44,6 +42,5 @@ class CollidingBeamsWithSvc : public GaudiTool, virtual public IBeamTool {
                          Gaudi::XYZVector & pBeam2 ) ;
 
  private:
-  Rndm::Numbers m_gaussianDist ; ///< Gaussian random number generator
   IBeamInfoSvc *m_beaminfosvc;
 };

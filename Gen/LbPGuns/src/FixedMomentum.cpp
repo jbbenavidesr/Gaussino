@@ -7,11 +7,12 @@
 #include <cmath>
 
 // FromGaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
-#include "GaudiKernel/IRndmGenSvc.h" 
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //===========================================================================
 // Implementation file for class: FixedMomentum
@@ -19,7 +20,7 @@
 // 2008-05-18: Patrick Robbe adaptation to tool structure
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( FixedMomentum )
+DECLARE_COMPONENT( FixedMomentum )
 
 //===========================================================================
 // Constructor
@@ -50,11 +51,6 @@ StatusCode FixedMomentum::initialize() {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc ;
 
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize flat generator" ) ;
-  
   // Get the mass of the particle to be generated
   //
   LHCb::IParticlePropertySvc* ppSvc = 
@@ -89,9 +85,10 @@ StatusCode FixedMomentum::initialize() {
 //===========================================================================
 void FixedMomentum::generateParticle( Gaudi::LorentzVector & momentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId ) {  
+                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {  
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   unsigned int currentType = 
-    (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
+    (unsigned int)( m_pdgCodes.size() * flatGenerator() );
   // protect against funnies
   if ( currentType >= m_pdgCodes.size() ) currentType = 0; 
 

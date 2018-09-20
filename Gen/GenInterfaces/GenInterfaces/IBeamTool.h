@@ -28,7 +28,7 @@ class IBeamTool : virtual public IAlgTool {
    *  @param[out] pBeam2  Mean 3-momentum of beam 2 (pz < 0)
    */
   virtual void getMeanBeams( Gaudi::XYZVector & pBeam1, 
-                             Gaudi::XYZVector & pBeam2 ) const = 0 ;
+                             Gaudi::XYZVector & pBeam2) const = 0 ;
   
   /** Generate beam parameters.
    *  @param[out] pBeam1  3-momentum of beam 1 (pz > 0)

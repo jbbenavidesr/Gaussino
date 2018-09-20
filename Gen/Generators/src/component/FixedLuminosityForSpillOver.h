@@ -5,12 +5,10 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IPileUpTool.h"
 
 // forward declaration
-class IRndmGenSvc ;
 class ICounterLogFile ;
 
 /** @class FixedLuminosityForSpillOver FixedLuminosityForSpillOver.h "FixedLuminosityForSpillOver.h"
@@ -43,7 +41,7 @@ public:
    *  mean = Luminosity * cross_section / crossing_rate.
    *  The fixed luminosity is returned as the currentLuminosity.
    */
-  virtual unsigned int numberOfPileUp( ) ;
+  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) ;
@@ -58,7 +56,5 @@ private:
   int    m_numberOfZeroInteraction ; ///< Counter of empty events
 
   int    m_nEvents ; ///< Counter of events (including empty events)
-
-  IRndmGenSvc * m_randSvc ; ///< Pointer to random number generator service
 };
 #endif // GENERATORS_FIXEDLUMINOSITYFORSPILLOVER_H

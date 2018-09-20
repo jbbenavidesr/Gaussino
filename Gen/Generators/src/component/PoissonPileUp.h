@@ -3,12 +3,10 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IPileUpTool.h"
 
 // forward declaration
-class IRndmGenSvc;
 class ICounterLogFile;
 
 /** @class PoissonPileUp PoissonPileUp.h "PoissonPileUp.h"
@@ -28,20 +26,19 @@ class PoissonPileUp : public GaudiTool, virtual public IPileUpTool {
   virtual ~PoissonPileUp() = default;
 
   /// Initialize method
-  virtual StatusCode initialize();
+  virtual StatusCode initialize() override;
 
-  virtual unsigned int numberOfPileUp();
+  virtual unsigned int numberOfPileUp(CLHEP::HepRandomEngine & engine) override;
 
   /// Implements IPileUpTool::printPileUpCounters
-  virtual void printPileUpCounters();
+  virtual void printPileUpCounters() override;
 
   protected:
   private:
   ICounterLogFile* m_xmlLogTool = nullptr;
-  IRndmGenSvc* m_randSvc = nullptr;
 
   std::atomic_long m_numberOfZeroInteraction{0};
   std::atomic_long m_nEvents{0};
 
-  Gaudi::Property<unsigned int> m_mean{this, "PileUpNu", 1, "Pile-up nu"};
+  Gaudi::Property<double> m_mean{this, "PileUpNu", 1, "Pile-up nu"};
 };

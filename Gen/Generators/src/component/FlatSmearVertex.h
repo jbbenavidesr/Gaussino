@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h" 
 
 #include "GenInterfaces/IVertexSmearingTool.h"
 
@@ -30,7 +29,7 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) ;
   
  private:
   /// Minimum value for the x coordinate of the vertex (set by options)
@@ -58,7 +57,5 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
 
   bool m_tilt;
   double m_tiltAngle;
-    
-  Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };
 #endif // PARTICLEGUNS_FLATSMEARVERTEX_H

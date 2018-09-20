@@ -5,15 +5,18 @@
 #include "FlatZSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h" 
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
 // from Event
-#include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandGauss.h"
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatZSmearVertex
 //
@@ -21,7 +24,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( FlatZSmearVertex )
+DECLARE_COMPONENT( FlatZSmearVertex )
 
 
 //=============================================================================
@@ -57,14 +60,7 @@ StatusCode FlatZSmearVertex::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
   
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_gaussDist.initialize( randSvc , Rndm::Gauss( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize gaussian random number generator" ) ;
   if ( m_zmin > m_zmax ) return Error( "zMin > zMax !" ) ;
-  sc = m_flatDist.initialize( randSvc , Rndm::Flat( m_zmin , m_zmax ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize flat random number generator" ) ;
 
   std::string infoMsg = " applying TOF of interaction with ";
   if ( m_zDir == -1 ) {
@@ -82,27 +78,27 @@ StatusCode FlatZSmearVertex::initialize( ) {
   info() << infoMsg << endmsg;
   info() << "and flat longitudinal z distribution" << endmsg;
 
-  release( randSvc ) ;
- 
   return sc ;
 }
  
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatZSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
 
+  CLHEP::RandGauss gaussDist{engine, 0., 1.};
+  CLHEP::RandFlat flatDist{engine, m_zmin ,m_zmax};
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
   double dx , dy , dz , dt;
   
-  dz = m_flatDist( ) ;
+  dz = flatDist( ) ;
   dt = m_zDir * dz/Gaudi::Units::c_light;
 
-  do { dx = m_gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
+  do { dx = gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * beam -> sigmaX() * sqrt( 2. ) ;
-  do { dy = m_gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
+  do { dy = gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
   dy = dy * beam -> sigmaY() * sqrt( 2. ) ;
 
   // take into account mean at z=0 and crossing angle
@@ -111,17 +107,8 @@ StatusCode FlatZSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
   dy = dy/cos( beam -> verticalCrossingAngle() ) + 
     beam -> beamSpot().y() + dz*sin( beam -> verticalCrossingAngle() )*m_zDir;
 
-  Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
-  
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
-    pos += dpos ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , 
-                                               pos.z() , pos.t() ) ) ;
-  }
+  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }

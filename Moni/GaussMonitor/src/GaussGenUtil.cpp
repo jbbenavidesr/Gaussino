@@ -8,7 +8,7 @@
 #include "GaudiKernel/Transform4DTypes.h"
 
 // From HepMC
-#include "Event/HepMCEvent.h"
+#include "HepMC/GenVertex.h"
 
 // local
 #include "GaussGenUtil.h"
@@ -24,13 +24,12 @@
 //=============================================================================
 namespace GaussGenUtil {
   
-  double lifetime( const HepMC::GenParticle* thePart ) {
+  double lifetime( const HepMC::GenParticlePtr & thePart ) {
 
     // Exit for off-shell particles
     if ( thePart -> momentum().m2() < 0 ) return -1.0 ;
     
     if ( thePart->end_vertex() && thePart->production_vertex() ) {   
-
       Gaudi::LorentzVector thePosition( thePart->end_vertex()->position().x() -
                                         thePart->production_vertex()->position().x(),
                                         thePart->end_vertex()->position().y() -

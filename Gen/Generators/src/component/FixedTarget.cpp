@@ -5,13 +5,15 @@
 #include "FixedTarget.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
 // from Event
 #include "Event/BeamParameters.h"
 #include "GenEvent/BeamForInitialization.h"
+
+#include "NewRnd/RndGlobal.h"
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FixedTarget
@@ -21,7 +23,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( FixedTarget )
+DECLARE_COMPONENT( FixedTarget )
 
 
 //=============================================================================
@@ -46,14 +48,6 @@ FixedTarget::~FixedTarget( ) { ; }
 StatusCode FixedTarget::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
-
-  // Initialize the number generator
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  
-  sc = m_gaussianDist.initialize( randSvc , Rndm::Gauss( 0. , 1. ) )  ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize Gaussian random generator" , sc ) ;
-  release( randSvc ) ;
 
   info() << "Collision with fixed target" << endmsg ;
 
@@ -90,11 +84,14 @@ void FixedTarget::getBeams( Gaudi::XYZVector & pBeam1 ,
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters in TES" ) ;
 
+  auto & engine = ThreadLocalEngine::Get();
+  CLHEP::RandGauss gaussianDist{engine, 0, 1};
+
   double p1x, p1y, p1z ;
   p1x = beam -> energy() * sin( beam -> horizontalCrossingAngle() + 
-                                m_gaussianDist() * beam -> angleSmear() ) ;
+                                gaussianDist() * beam -> angleSmear() ) ;
   p1y = beam -> energy() * sin( beam -> verticalCrossingAngle() + 
-                                m_gaussianDist() * beam -> angleSmear() ) ;
+                                gaussianDist() * beam -> angleSmear() ) ;
   p1z = beam -> energy() ;
   pBeam1.SetXYZ( p1x, p1y, p1z ) ;
   

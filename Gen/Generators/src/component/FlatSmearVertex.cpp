@@ -5,15 +5,16 @@
 #include "FlatSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h" 
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
 #include "GaudiKernel/Transform3DTypes.h"
 
-// from Event
-#include "Event/HepMCEvent.h"
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
 //-----------------------------------------------------------------------------
 // Implementation file for class : FlatSmearVertex
 //
@@ -21,7 +22,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( FlatSmearVertex )
+DECLARE_COMPONENT( FlatSmearVertex )
 
 
 //=============================================================================
@@ -56,12 +57,9 @@ StatusCode FlatSmearVertex::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
   
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
   if ( m_xmin > m_xmax ) return Error( "xMin > xMax !" ) ;
   if ( m_ymin > m_ymax ) return Error( "yMin > yMax !" ) ;  
   if ( m_zmin > m_zmax ) return Error( "zMin > zMax !" ) ;
-  
-  sc = m_flatDist.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
   
   std::string infoMsg = " applying TOF of interaction with ";
   if ( m_zDir == -1 ) {
@@ -87,28 +85,25 @@ StatusCode FlatSmearVertex::initialize( ) {
   if ( ! sc.isSuccess() ) 
     return Error( "Could not initialize flat random number generator" ) ;
 
-  release( randSvc ) ;
   return sc ;
 }
  
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine& engine ) {
   double dx , dy , dz , dt ;
   
-  dx = m_xmin + m_flatDist( ) * ( m_xmax - m_xmin ) ;
-  dy = m_ymin + m_flatDist( ) * ( m_ymax - m_ymin ) ;
-  dz = m_zmin + m_flatDist( ) * ( m_zmax - m_zmin ) ;
+  CLHEP::RandFlat flatDist{engine, 0, 1};
+  dx = m_xmin + flatDist( ) * ( m_xmax - m_xmin ) ;
+  dy = m_ymin + flatDist( ) * ( m_ymax - m_ymin ) ;
+  dz = m_zmin + flatDist( ) * ( m_zmax - m_zmin ) ;
   dt = m_zDir * dz/Gaudi::Units::c_light ;
 
   Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
   
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
+  for ( auto & vtx : theEvent->vertices() ) {
+    Gaudi::LorentzVector pos ( vtx -> position() ) ;
     pos += dpos ;
 
     if (m_tilt) {
@@ -119,10 +114,8 @@ StatusCode FlatSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
       pos = rotX(pos);
       pos = pos + posT;
     }
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
-                                               pos.t() ) ) ;
+    vtx->set_position( HepMC::FourVector( pos.x(), pos.y(), pos.z(), pos.t() ) );
   }
 
   return StatusCode::SUCCESS ;      
 }
-

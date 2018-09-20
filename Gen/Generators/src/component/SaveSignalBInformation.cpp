@@ -1,8 +1,5 @@
 // Include files
 
-// from Gaudi
-#include "GaudiKernel/AlgFactory.h" 
-
 // from Event
 #include "Event/HepMCEvent.h"
 
@@ -12,6 +9,9 @@
 // local
 #include "SaveSignalBInformation.h"
 
+#include "Defaults/HepMCAttributes.h"
+#include "HepMCUser/VertexAttribute.h"
+
 //-----------------------------------------------------------------------------
 // Implementation file for class : SaveSignalBInformation
 //
@@ -19,162 +19,118 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_ALGORITHM_FACTORY( SaveSignalBInformation )
-
-
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-SaveSignalBInformation::SaveSignalBInformation( const std::string& name,
-                                                ISvcLocator* pSvcLocator)
-  : GaudiAlgorithm ( name , pSvcLocator )
-{
-  declareProperty( "InputHepMCEvent" , m_inputHepMCEvent =
-                   LHCb::HepMCEventLocation::Default ) ;
-  declareProperty( "OutputHepMCEvent" , m_outputHepMCEvent = 
-                   "Gen/BInfo" ) ;
-}
+DECLARE_COMPONENT( SaveSignalBInformation )
 
 //=============================================================================
 // Main execution
 //=============================================================================
-StatusCode SaveSignalBInformation::execute() {
-  if ( msgLevel(MSG::DEBUG) ) debug() << "==> Execute" << endmsg;
+std::vector<HepMC::GenEvent> SaveSignalBInformation::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
+{
+  if ( msgLevel( MSG::DEBUG ) ) debug() << "==> Execute" << endmsg;
 
-  // loop over input HepMC
-  SmartDataPtr< LHCb::HepMCEvents > hepMCptr( eventSvc() , 
-                                              m_inputHepMCEvent ) ;
-  
-  StatusCode sc = StatusCode::SUCCESS ;
-  
-  if ( 0 == hepMCptr ) {
-    info() << "No HepMCEvents at location " << m_inputHepMCEvent 
-           << endmsg ;
-  } else {
-    LHCb::HepMCEvents::iterator it ;
-    for ( it = hepMCptr -> begin() ; it != hepMCptr -> end() ; ++it ) {
-      // check if signal exists
-      if ( 0 != (*it) -> pGenEvt() -> signal_process_vertex() ) {
-        sc = extractSignal( (*it) -> pGenEvt() -> signal_process_vertex() ) ;
-        break ;
+  std::vector<HepMC::GenEvent> outputevents;
+  for ( auto& evt : hepmcevents ) {
+    // check if signal exists
+    auto sig_proc_vtx =
+        evt.attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
+    if ( sig_proc_vtx ) {
+      auto ret = extractSignal( sig_proc_vtx );
+      if ( ret ) {
+        outputevents.push_back( std::move( *ret ) );
       }
     }
   }
 
-  return sc ;
+  return outputevents;
 }
 
 //=============================================================================
 // Extract B string and copy to a new location
 //=============================================================================
-StatusCode SaveSignalBInformation::extractSignal( const HepMC::GenVertex *
-                                                  theVertex ) const {
-  HepMC::GenParticle * HEPB0 = *( theVertex -> particles_in_const_begin() ) ;
-  HepMC::GenParticle * Bstring = 0 ;
+HepMC::GenEvent* SaveSignalBInformation::extractSignal( const HepMC::GenVertexPtr& theVertex ) const
+{
+  auto& HEPB0                   = *( theVertex->particles_in_const_begin() );
+  HepMC::GenParticlePtr Bstring = nullptr;
 
   // look for the string associated to the signal
-  for ( HepMC::GenVertex::particle_iterator iances = 
-          HEPB0->production_vertex()-> particles_begin(HepMC::ancestors);
-        iances != HEPB0->production_vertex()-> particles_end(HepMC::ancestors) ;
-        ++iances ) {
-    int genid = abs( (*iances) -> pdg_id() ) ;
-    if ( ( 91 == genid ) || ( 92 == genid ) ) { 
-      Bstring = (*iances) ; break ; 
+  for ( auto& part : HEPB0->production_vertex()->particles( HepMC::ancestors ) ) {
+    int genid = abs( part->pdg_id() );
+    if ( ( 91 == genid ) || ( 92 == genid ) ) {
+      Bstring = part;
+      break;
     }
   }
 
-  if ( 0 != Bstring ) {
+  if ( Bstring ) {
     // copy the string in a new event
-    LHCb::HepMCEvent * mcevt = new LHCb::HepMCEvent( ) ;
-    mcevt -> setGeneratorName( "String" ) ;
-    
-    if ( 0 == Bstring -> production_vertex() ) 
-      return Error( "Bstring particle has no production vertex." ) ;
-  
-    // create a new vertex and a new HepMC Particle for the root particle
-    // (a copy of which will be associated to the new HepMC event) 
-    
-    HepMC::GenVertex * newVertex =
-      new HepMC::GenVertex( Bstring -> production_vertex() -> position() ) ;
+    auto hepmcevt = new HepMC::GenEvent();
+    hepmcevt->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
+                             std::make_shared<HepMC::StringAttribute>( "String" ) );
+    // Little hack to make it thread-safe when reading later
+    hepmcevt->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 
-    HepMC::GenEvent * hepMCevt = mcevt -> pGenEvt() ;
-    
-    hepMCevt -> add_vertex( newVertex ) ;
-    
-    HepMC::GenParticle * theNewParticle =
-      new HepMC::GenParticle( Bstring -> momentum() , Bstring -> pdg_id() ,
-                              Bstring -> status() ) ;
-    
-    newVertex -> add_particle_out( theNewParticle ) ;
-    
+    if ( 0 == Bstring->production_vertex() ) error() << "Bstring particle has no production vertex." << endmsg;
+
+    // create a new vertex and a new HepMC Particle for the root particle
+    // (a copy of which will be associated to the new HepMC event)
+
+    HepMC::GenVertexPtr newVertex = new HepMC::GenVertex( Bstring->production_vertex()->position() );
+
+    hepmcevt->add_vertex( newVertex );
+
+    HepMC::GenParticlePtr theNewParticle =
+        new HepMC::GenParticle( Bstring->momentum(), Bstring->pdg_id(), Bstring->status() );
+
+    newVertex->add_particle_out( theNewParticle );
+
     // Associate the new particle to the HepMC event
-    StatusCode sc = fillHepMCEvent( theNewParticle , Bstring ) ;
-    hepMCevt -> set_signal_process_vertex( theNewParticle -> production_vertex() ) ;
-  
-    if ( ! sc.isSuccess( ) ) 
-      return Error( "Could not fill HepMC event for signal tree" , sc ) ;
-                            
-    // Check if container already exists
-    if ( exist< LHCb::HepMCEvents >( m_outputHepMCEvent ) ) 
-      return Error( "B string container already exists !" ) ;
-  
-    LHCb::HepMCEvents * hepVect = new LHCb::HepMCEvents ;
-    hepVect -> insert( mcevt ) ;
-    
-    // Register new location and store HepMC event
-    put( hepVect , m_outputHepMCEvent ) ;
-    
-    return sc ;
+    StatusCode sc = fillHepMCEvent( theNewParticle, Bstring );
+    hepmcevt->add_attribute( Gaussino::HepMC::Attributes::SignalProcessVertex,
+                             std::make_shared<HepMC::VertexAttribute>( theNewParticle->production_vertex() ) );
+
+    if ( !sc.isSuccess() ) error() << "Could not fill HepMC event for signal tree" << endmsg;
+
+    return hepmcevt;
   }
-  return StatusCode::SUCCESS ;
+  return nullptr;
 }
 
 //=============================================================================
 // Fill HepMC event from a HepMC tree
 //=============================================================================
-StatusCode SaveSignalBInformation::fillHepMCEvent( HepMC::GenParticle * 
-                                                   theNewParticle ,
-                                                   const HepMC::GenParticle * 
-                                                   theOldParticle ) 
-  const {
-  StatusCode sc = StatusCode::SUCCESS ;
+StatusCode SaveSignalBInformation::fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle,
+                                                   const HepMC::GenParticlePtr & theOldParticle ) const
+{
+  StatusCode sc = StatusCode::SUCCESS;
   //
   // Copy theOldParticle to theNewParticle in theEvent
   // theNewParticle already exist and is created outside this function
-  HepMC::GenVertex * oVertex = theOldParticle -> end_vertex() ;
-  if ( 0 != oVertex ) {
+  auto & oVertex = theOldParticle->end_vertex();
+  if ( oVertex ) {
     // Create decay vertex and associate it to theNewParticle
-    HepMC::GenVertex * newVertex =
-      new HepMC::GenVertex( oVertex -> position() ) ;
-    newVertex -> add_particle_in( theNewParticle ) ;
-    theNewParticle -> parent_event() -> add_vertex( newVertex ) ;
+    HepMC::GenVertexPtr newVertex = new HepMC::GenVertex( oVertex->position() );
+    newVertex->add_particle_in( theNewParticle );
+    theNewParticle->parent_event()->add_vertex( newVertex );
 
     // loop over child particle of this vertex after sorting them
-    std::list< const HepMC::GenParticle * > outParticles ;
-    for ( HepMC::GenVertex::particles_out_const_iterator itP = 
-            oVertex -> particles_out_const_begin() ; 
-          itP != oVertex -> particles_out_const_end() ; ++itP )
-      outParticles.push_back( (*itP ) ) ;
+    std::list<HepMC::GenParticlePtr> outParticles;
+    for ( auto & part : oVertex->particles_out() )
+      outParticles.push_back( part );
 
-    outParticles.sort( HepMCUtils::compareHepMCParticles ) ;
+    outParticles.sort( HepMCUtils::compareHepMCParticles );
 
-    std::list< const HepMC::GenParticle * >::const_iterator child ;
-    for ( child = outParticles.begin( ) ; child != outParticles.end( ) ; 
-          ++child ) {
-      
+    for ( auto & child : outParticles ) {
+
       // Create a new particle for each daughter of theOldParticle
-      HepMC::GenParticle * newPart =
-        new HepMC::GenParticle ( (*child) -> momentum () ,
-                                 (*child) -> pdg_id ()   ,
-                                 (*child) -> status ()   ) ;
-      newVertex -> add_particle_out( newPart ) ;
-      
-      const HepMC::GenParticle * theChild = (*child) ;
+      HepMC::GenParticlePtr newPart =
+          new HepMC::GenParticle( child->momentum(), child->pdg_id(), child->status() );
+      newVertex->add_particle_out( newPart );
+
       // Recursive call : fill the event with the daughters
-      sc = fillHepMCEvent( newPart , theChild ) ;
-      
-      if ( ! sc.isSuccess() ) return sc ;
+      sc = fillHepMCEvent( newPart, child);
+
+      if ( !sc.isSuccess() ) return sc;
     }
   }
-  return sc ;
+  return sc;
 }

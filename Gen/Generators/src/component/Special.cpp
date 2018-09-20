@@ -4,9 +4,8 @@
 // local
 #include "Special.h"
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 // from Kernel
-#include "MCInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -15,7 +14,7 @@
 #include "GenInterfaces/ICounterLogFile.h"
 
 // Event 
-#include "Event/HepMCEvent.h"
+#include "HepMC/GenEvent.h"
 #include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
@@ -28,26 +27,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( Special )
-
-
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-Special::Special( const std::string & type , const std::string & name ,
-                  const IInterface * parent )
-  : ExternalGenerator( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_nEventsBeforeCut    (  0 ) ,
-    m_nEventsAfterCut     (  0 ) ,
-    m_maxInteractions     ( 30 ) ,
-    m_pileUpProductionTool(  0 ) { 
-  declareProperty( "PileUpProductionTool" , 
-                   m_pileUpProductionToolName = 
-                   "Pythia8Production/MinimumBiasPythia8Production" ) ;
-  declareProperty( "ReinitializePileUpGenerator" ,
-                   m_reinitialize = true ) ;
-}
+DECLARE_COMPONENT( Special )
 
 //=============================================================================
 // Destructor
@@ -104,8 +84,8 @@ StatusCode Special::finalize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
-                        LHCb::HepMCEvents * theEvents , 
-                        LHCb::GenCollisions * theCollisions ) {
+                        std::vector<HepMC::GenEvent> & theEvents , 
+                        LHCb::GenCollisions & theCollisions , CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -119,13 +99,13 @@ bool Special::generate( const unsigned int nPileUp ,
 
   // For the moment no pile-up for this type of event
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent, 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
     
     // First interaction is always "signal"
     
     if ( 0 == i ) {
-      sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+      sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
       if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
       
       ParticleVector theParticleList ;
@@ -148,7 +128,7 @@ bool Special::generate( const unsigned int nPileUp ,
     } else {
       // if event passed generator level cut
       // look if there are still enough pile-up events
-      if ( m_pileUpEventsVector.empty() ) generatePileUp() ;
+      if ( m_pileUpEventsVector.empty() ) generatePileUp( engine ) ;
       
       // retrieve now pile-up events
       HepMC::GenEvent * pileUpEvent = m_pileUpEventsVector.back() ;
@@ -179,7 +159,7 @@ void Special::printCounters( ) const {
 //=============================================================================
 // Generate PileUp Minimum Bias interactions
 //=============================================================================
-void Special::generatePileUp() {
+void Special::generatePileUp(CLHEP::HepRandomEngine & engine ) {
 
   if ( 0 == m_pileUpProductionTool ) {
     if ( "" != m_pileUpProductionToolName ) {
@@ -203,7 +183,7 @@ void Special::generatePileUp() {
     HepMC::GenEvent * theEvent = new HepMC::GenEvent ;
     LHCb::GenCollision * theCollision = new LHCb::GenCollision ;
     m_pileUpProductionTool -> generateEvent( theEvent , 
-                                             theCollision ) ;
+                                             theCollision , engine ) ;
     
     m_pileUpEventsVector.push_back( theEvent ) ;
     m_pileUpCollisionsVector.push_back( theCollision ) ;

@@ -5,12 +5,11 @@
 #include "Inclusive.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
 // from Kernel
-#include "MCInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -29,29 +28,15 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( Inclusive )
+DECLARE_COMPONENT( Inclusive )
 
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
 Inclusive::Inclusive( const std::string& type, const std::string& name,
                       const IInterface* parent )
-  : ExternalGenerator  ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_lightestQuark( LHCb::ParticleID::down ) ,
-    m_nEventsBeforeCut ( 0 ) , m_nEventsAfterCut ( 0 ) ,
-    m_nInvertedEvents  ( 0 ) ,
-    m_ccCounter        ( 0 ) , m_bbCounter( 0 ) ,
-    m_ccCounterAccepted( 0 ) , m_bbCounterAccepted( 0 ) { 
+  : ExternalGenerator  ( type, name , parent ) {
     declareProperty( "InclusivePIDList" , m_pidVector ) ;
-    m_bHadC.assign( 0 )     ;    m_bHadCAccepted.assign( 0 ) ;
-    m_antibHadC.assign( 0 ) ;    m_antibHadCAccepted.assign( 0 ) ;
-    m_cHadC.assign( 0 )     ;    m_cHadCAccepted.assign( 0 ) ;
-    m_anticHadC.assign( 0 ) ;    m_anticHadCAccepted.assign( 0 ) ;
-
-    m_bExcitedC.assign( 0 ) ;    m_bExcitedCAccepted.assign( 0 ) ;
-    m_cExcitedC.assign( 0 ) ;    m_cExcitedCAccepted.assign( 0 ) ;
-
 
     GenCounters::setupBHadronCountersNames( m_bHadCNames , m_antibHadCNames ) ;
     GenCounters::setupDHadronCountersNames( m_cHadCNames , m_anticHadCNames ) ;
@@ -113,18 +98,20 @@ StatusCode Inclusive::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Inclusive::generate( const unsigned int nPileUp , 
-                          LHCb::HepMCEvents * theEvents , 
-                          LHCb::GenCollisions * theCollisions ) {
+                          std::vector<HepMC::GenEvent> & theEvents , 
+                          LHCb::GenCollisions & theCollisions ,
+                          CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   bool result = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
 
-  GenCounters::BHadronCounter thebHadC , theantibHadC ;
-  GenCounters::DHadronCounter thecHadC , theanticHadC ;
-  GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
-  unsigned int theccCounter , thebbCounter ;
+  // Moved into conditional statement for now
+  //GenCounters::BHadronCounter thebHadC , theantibHadC ;
+  //GenCounters::DHadronCounter thecHadC , theanticHadC ;
+  //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
+  //unsigned int theccCounter , thebbCounter ;
   
   IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
   std::string FSRName = LHCb::GenFSRLocation::Default;
@@ -132,10 +119,10 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent, 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
 
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
     if ( ! result ) {
@@ -148,11 +135,16 @@ bool Inclusive::generate( const unsigned int nPileUp ,
       ParticleVector theParticleList ;
       if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
         // Update counters
-        thebHadC.assign( 0 )     ;    theantibHadC.assign( 0 ) ;
-        thecHadC.assign( 0 )     ;    theanticHadC.assign( 0 ) ;
-        thebExcitedC.assign( 0 ) ;    thecExcitedC.assign( 0 ) ;
-
-        thebbCounter = 0         ;    theccCounter = 0 ;
+        //thebHadC.assign( 0 )     ;    theantibHadC.assign( 0 ) ;
+        //thecHadC.assign( 0 )     ;    theanticHadC.assign( 0 ) ;
+        //thebExcitedC.assign( 0 ) ;    thecExcitedC.assign( 0 ) ;
+        // FIXME: Counters recreated in the conditional as no simple way to reset atomic counters.
+        // Should declare the counters non-atomic as they are thread local anyway and provide
+        // templated update... functions in GenCounters that accept both the atomic and non-atomic arrays of counters
+        GenCounters::BHadronCounter thebHadC{} , theantibHadC{} ;
+        GenCounters::DHadronCounter thecHadC{} , theanticHadC{} ;
+        GenCounters::ExcitedCounter thebExcitedC{} , thecExcitedC{} ;
+        std::atomic_uint thebbCounter{}, theccCounter{};
           
         GenCounters::updateHadronCounters( theGenEvent , thebHadC , 
                                            theantibHadC , thecHadC , 

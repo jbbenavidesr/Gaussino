@@ -7,11 +7,12 @@
 // Generators
 #include "GenEvent/HepMCUtils.h"
 
-// Boost
-#include <boost/array.hpp>
-
 // HepMC
 #include "HepMC/GenEvent.h"
+#include "HepMCUser/VertexAttribute.h"
+
+// Defaults for attribute names
+#include "Defaults/HepMCAttributes.h"
 
 // Event
 #include "Event/HepMCEvent.h"
@@ -24,10 +25,10 @@
 //=============================================================================
 // Function to test if a HepMC::GenParticle is a B hadron at root of decay
 //=============================================================================
-struct isRootB : std::unary_function< const HepMC::GenParticle * , bool > {
+struct isRootB : std::unary_function< const HepMC::GenParticlePtr &, bool > {
 
   /// test operator, returns true if it is a root B
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
     if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
@@ -38,14 +39,12 @@ struct isRootB : std::unary_function< const HepMC::GenParticle * , bool > {
     if ( ! thePid.hasBottom() ) return false ;
 
     // Check if particle has a mother
-    if ( 0 == part -> production_vertex() ) return true ;
+    if ( ! part -> production_vertex() ) return true ;
 
     // Check all parents of the B 
-    HepMC::GenVertex::particles_in_const_iterator parent ;
-    const HepMC::GenVertex * thePV = part -> production_vertex() ;
-    for ( parent = thePV -> particles_in_const_begin() ;
-          parent != thePV -> particles_in_const_end() ; ++parent ) {
-      LHCb::ParticleID parentID( (*parent) -> pdg_id() ) ;
+    auto & thePV = part -> production_vertex() ;
+    for ( auto & parent : thePV->particles(HepMC::parents) ) {
+      LHCb::ParticleID parentID( parent -> pdg_id() ) ;
       if ( parentID.hasBottom() && (thePid.abspid()==5 || parentID.abspid()!=5)) return false ;
     }
 
@@ -57,10 +56,10 @@ struct isRootB : std::unary_function< const HepMC::GenParticle * , bool > {
 //=============================================================================
 // Function to test if a HepMC::GenParticle is a D hadron at root of decay
 //=============================================================================
-struct isRootD : std::unary_function< const HepMC::GenParticle * , bool > {
+struct isRootD : std::unary_function< const HepMC::GenParticlePtr &, bool > {
 
   /// test operator, returns true if it is a root D
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
     if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
@@ -72,14 +71,13 @@ struct isRootD : std::unary_function< const HepMC::GenParticle * , bool > {
     if ( thePid.hasBottom() ) return false ;
 
     // Check if particle has a mother
-    if ( 0 == part -> production_vertex() ) return true ;
+    if ( ! part -> production_vertex() ) return true ;
 
     // Check all parents of the D
     HepMC::GenVertex::particles_in_const_iterator parent ;
-    const HepMC::GenVertex * thePV = part -> production_vertex() ;
-    for ( parent = thePV -> particles_in_const_begin() ;
-          parent != thePV -> particles_in_const_end() ; ++parent ) {
-      LHCb::ParticleID parentID( (*parent) -> pdg_id() ) ;
+    auto & thePV = part -> production_vertex() ;
+    for ( auto & parent : thePV->particles(HepMC::parents) ) {
+      LHCb::ParticleID parentID( parent -> pdg_id() ) ;
       if ( parentID.hasCharm()  && (parentID.abspid()!=4 || thePid.abspid()==4)) return false ;
     }
 
@@ -91,10 +89,10 @@ struct isRootD : std::unary_function< const HepMC::GenParticle * , bool > {
 //=============================================================================
 // Function to test if a HepMC::GenParticle is a B hadron at end of decay tree
 //=============================================================================
-struct isEndB : std::unary_function< const HepMC::GenParticle * , bool > {
+struct isEndB : std::unary_function< const HepMC::GenParticlePtr &, bool > {
 
   /// Test operator. Returns true if particle is the last B
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not look at special particles
     if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
@@ -108,16 +106,15 @@ struct isEndB : std::unary_function< const HepMC::GenParticle * , bool > {
     if ( ! HepMCUtils::IsBAtProduction( part ) ) return false ;
 
     // Test if the B has daughters (here we are sure it has not oscillated)
-    if ( 0 == part -> end_vertex() ) return true ;
+    if ( ! part -> end_vertex() ) return true ;
     
     // Loop over daughters to check if they are B hadrons
     HepMC::GenVertex::particles_out_const_iterator children ;
-    const HepMC::GenVertex * theEV = part -> end_vertex() ;
-    for ( children = theEV -> particles_out_const_begin() ;
-          children != theEV -> particles_out_const_end() ; ++children ) {
-      LHCb::ParticleID childID( (*children) -> pdg_id() ) ;
+    auto & theEV = part -> end_vertex() ;
+    for ( auto & child : theEV->particles(HepMC::children) ){
+      LHCb::ParticleID childID( child -> pdg_id() ) ;
       if ( childID.hasBottom() ) {
-        if ( (*children) -> pdg_id() == - part -> pdg_id() ) return true ;
+        if ( child -> pdg_id() == - part -> pdg_id() ) return true ;
         return false ;
       }
     }
@@ -130,10 +127,10 @@ struct isEndB : std::unary_function< const HepMC::GenParticle * , bool > {
 //=============================================================================
 // Function to test if a HepMC::GenParticle is a D hadron at end of decay tree
 //=============================================================================
-struct isEndD : std::unary_function< const HepMC::GenParticle * , bool > {
+struct isEndD : std::unary_function< const HepMC::GenParticlePtr &, bool > {
 
   /// Test operator. Returns true if it is the last D
-  bool operator() ( const HepMC::GenParticle * part ) const {
+  bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not look at special particles
     if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
@@ -144,14 +141,13 @@ struct isEndD : std::unary_function< const HepMC::GenParticle * , bool > {
     if ( ! thePid.hasCharm() ) return false ;
 
     // Check if it has daughters
-    if ( 0 == part -> end_vertex() ) return true ;
+    if ( ! part -> end_vertex() ) return true ;
 
     // Loop over the daughters to find a D hadron
     HepMC::GenVertex::particles_out_const_iterator children ;
-    const HepMC::GenVertex * theEV = part -> end_vertex() ;
-    for ( children = theEV -> particles_out_const_begin() ;
-          children != theEV -> particles_out_const_end() ; ++children ) {
-      LHCb::ParticleID childID( (*children) -> pdg_id() ) ;
+    auto & theEV = part -> end_vertex() ;
+    for ( auto & child : theEV->particles(HepMC::children) ) {
+      LHCb::ParticleID childID( child -> pdg_id() ) ;
       if ( childID.hasCharm() ) return false ;
     }
 
@@ -216,19 +212,24 @@ void GenCounters::setupExcitedCountersNames( ExcitedCNames & B ,
 void GenCounters::updateExcitedStatesCounters
 ( const HepMC::GenEvent * theEvent , ExcitedCounter & thebExcitedC ,
   ExcitedCounter & thecExcitedC ) {
+
   // Signal Vertex
-  HepMC::GenVertex * signalV = theEvent -> signal_process_vertex() ;
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
 
   // Count B :
-  std::vector< HepMC::GenParticle * > rootB ;
+  std::vector< HepMC::GenParticlePtr > rootB ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( rootB ) , isRootB() ) ;
 
-  std::vector< HepMC::GenParticle * >::const_iterator iter ;
+  std::vector< HepMC::GenParticlePtr >::const_iterator iter ;
 
   for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter ) {
-    if ( 0 != signalV ) {
-      if ( ! HepMCUtils::commonTrees( signalV ,
+    if ( signal_process_vertex ) {
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex,
                                       (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -243,13 +244,13 @@ void GenCounters::updateExcitedStatesCounters
   }
 
   // Count D :
-  std::vector< HepMC::GenParticle * > rootD ;
+  std::vector< HepMC::GenParticlePtr > rootD ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( rootD ) , isRootD() ) ;
 
   for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter ) {
-    if ( 0 != signalV ) {
-      if ( ! HepMCUtils::commonTrees( signalV , 
+    if ( signal_process_vertex) {
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex, 
                                       (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -272,20 +273,24 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
                                         BHadronCounter & theantibHadC ,
                                         DHadronCounter & thecHadC ,
                                         DHadronCounter & theanticHadC ,
-                                        unsigned int & thebbCounter ,
-                                        unsigned int & theccCounter ) {
+                                        std::atomic_uint & thebbCounter ,
+                                        std::atomic_uint & theccCounter ) {
   // Signal vertex
-  HepMC::GenVertex * signalV = theEvent -> signal_process_vertex() ;
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
 
   // Count B:
-  std::vector< HepMC::GenParticle * > endB ;
+  std::vector< HepMC::GenParticlePtr > endB ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( endB ) , isEndB() ) ;
-  std::vector< HepMC::GenParticle * >::const_iterator iter ;
+  std::vector< HepMC::GenParticlePtr >::const_iterator iter ;
   
   for ( iter = endB.begin() ; iter != endB.end() ; ++iter ) {
-    if ( 0 != signalV ) {
-      if ( HepMCUtils::commonTrees( signalV , 
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex, 
                                     (*iter) -> end_vertex() ) )
         continue ;
     }
@@ -312,13 +317,13 @@ void GenCounters::updateHadronCounters( const HepMC::GenEvent * theEvent ,
     }
   }
   
-  std::vector< HepMC::GenParticle * > endD ;
+  std::vector< HepMC::GenParticlePtr > endD ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( endD ) , isEndD() ) ;
   
   for ( iter = endD.begin() ; iter != endD.end() ; ++iter ) {
-    if ( 0 != signalV ) {
-      if ( HepMCUtils::commonTrees( signalV ,
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex,
                                     (*iter) -> end_vertex() ) ) 
         continue ;
     }
@@ -353,21 +358,25 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
                                    const std::string option)
 {  
   // Signal Vertex                                                                        
-  HepMC::GenVertex * signalV = theEvent -> signal_process_vertex() ;
+  // In HepMC3 now stored as an event attribute. If it does not exist, the default
+  // constructor is used to construct the attribute. This will yield a GenVertexPtr
+  // pointing to nullptr.
+  auto signal_process_vertex =
+      theEvent->attribute<HepMC::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
   int key = 0;
   
   // Count B :                                                                                    
-  std::vector< HepMC::GenParticle * > rootB ;
+  std::vector< HepMC::GenParticlePtr > rootB ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( rootB ) , isRootB() ) ;
 
-  std::vector< HepMC::GenParticle * >::const_iterator iter ;
+  std::vector< HepMC::GenParticlePtr >::const_iterator iter ;
 
   for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter )
   {
-    if ( 0 != signalV )
+    if ( signal_process_vertex )
     {  
-      if ( ! HepMCUtils::commonTrees( signalV ,
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
                                       (*iter) -> end_vertex() ) )
         continue ; 
     }    
@@ -397,15 +406,15 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
   }
 
   // Count D :                                                                                     
-  std::vector< HepMC::GenParticle * > rootD ;  
+  std::vector< HepMC::GenParticlePtr > rootD ;  
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( rootD ) , isRootD() ) ;
 
   for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter )
   {
-    if ( 0 != signalV )
+    if ( signal_process_vertex)
     {
-      if ( ! HepMCUtils::commonTrees( signalV ,
+      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
                                       (*iter) -> end_vertex() ) )
         continue ; 
     }
@@ -436,15 +445,15 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
   }
 
   // Count B:                                                                                     
-  std::vector< HepMC::GenParticle * > endB ;
+  std::vector< HepMC::GenParticlePtr > endB ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( endB ) , isEndB() ) ;
 
   for ( iter = endB.begin() ; iter != endB.end() ; ++iter )
   {
-    if ( 0 != signalV )
+    if ( signal_process_vertex )
     {
-      if ( HepMCUtils::commonTrees( signalV ,
+      if ( HepMCUtils::commonTrees( signal_process_vertex ,
                                     (*iter) -> end_vertex() ) )
         continue ;      
     }
@@ -526,15 +535,15 @@ void GenCounters::updateHadronFSR( const HepMC::GenEvent * theEvent ,
   }
 
   // Count D:                                                                                   
-  std::vector< HepMC::GenParticle * > endD ;
+  std::vector< HepMC::GenParticlePtr > endD ;
   HepMC::copy_if( theEvent -> particles_begin() , theEvent -> particles_end() ,
                   std::back_inserter( endD ) , isEndD() ) ;
 
   for ( iter = endD.begin() ; iter != endD.end() ; ++iter )
   {
-    if ( 0 != signalV )
+    if ( signal_process_vertex )
     {
-      if ( HepMCUtils::commonTrees( signalV ,
+      if ( HepMCUtils::commonTrees( signal_process_vertex ,
                                     (*iter) -> end_vertex() ) )
         continue ;      
     }

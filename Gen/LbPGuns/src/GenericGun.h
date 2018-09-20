@@ -5,7 +5,6 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 // from ParticleGuns
 #include "LbPGuns/IParticleGunTool.h"
@@ -45,7 +44,7 @@ class GenericGun : public GaudiTool , virtual public IParticleGunTool {
   /// Generate the particle
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId ) ;
+                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
                                  
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -73,11 +72,7 @@ class GenericGun : public GaudiTool , virtual public IParticleGunTool {
 	// Private Methods:
   double generateValue( const int mode , const double val , 
                         const double sigma , const double min , 
-                        const double max ) ;
-
-  // Random generators:
-  Rndm::Numbers m_flatGenerator ;
-  Rndm::Numbers m_gaussGenerator ;
+                        const double max , CLHEP::HepRandomEngine & engine ) ;
 } ;
 
 #endif // PARTICLEGUNS_GENERICGUN_H

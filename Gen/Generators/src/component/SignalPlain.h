@@ -7,6 +7,8 @@
 #include "GaudiAlg/GaudiTool.h"
 
 #include "Generators/Signal.h" 
+#include "HepMC/GenEvent.h"
+#include "Event/GenCollision.h"
 
 /** @class SignalPlain SignalPlain.h 
  *  
@@ -31,8 +33,9 @@ class SignalPlain : public Signal {
    *  without using any trick (just like Inclusive).
    */
   virtual bool generate( const unsigned int nPileUp , 
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;  
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions & theCollisions ,
+                         CLHEP::HepRandomEngine & engine ) override ;  
 
  private:
 };

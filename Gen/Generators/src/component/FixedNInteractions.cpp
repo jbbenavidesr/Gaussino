@@ -5,7 +5,6 @@
 #include "FixedNInteractions.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
 // from Event 
@@ -19,7 +18,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( FixedNInteractions )
+DECLARE_COMPONENT( FixedNInteractions )
 
 
 //=============================================================================
@@ -55,7 +54,7 @@ StatusCode FixedNInteractions::initialize( ) {
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedNInteractions::numberOfPileUp( ) {
+unsigned int FixedNInteractions::numberOfPileUp( CLHEP::HepRandomEngine & ) {
   return m_nInteractions ;
 }
 

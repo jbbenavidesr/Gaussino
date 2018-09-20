@@ -6,7 +6,6 @@
 
 
 class BeamInfoSvc : public Service, virtual public IBeamInfoSvc {
-  friend class SvcFactory<BeamInfoSvc>;
 
   public:
   BeamInfoSvc(const std::string& name, ISvcLocator* svcloc)

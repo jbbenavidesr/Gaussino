@@ -8,9 +8,6 @@
 
 #include "GenInterfaces/IBeamTool.h"
 
-// Forward declarations
-class IRndmGenSvc ;
-
 /** @class AsymmetricCollidingBeams AsymmetricCollidingBeams.h "AsymmetricCollidingBeams.h"
  *  
  *  Tool to compute colliding beams values, with asymmetric beams. 
@@ -28,13 +25,10 @@ class AsymmetricCollidingBeams : public GaudiTool, virtual public IBeamTool {
   
   virtual ~AsymmetricCollidingBeams( ); ///< Destructor
   
-  /// Initialize method
-  virtual StatusCode initialize( ) ;  
-  
   /** Implements IBeamTool::getMeanBeams
    */
   virtual void getMeanBeams( Gaudi::XYZVector & pBeam1 , 
-                             Gaudi::XYZVector & pBeam2 ) const ;
+                             Gaudi::XYZVector & pBeam2 ) const override;
   
   /** Implements IBeamTool::getBeams
    *  Compute beam 3-momentum taking into account the horizontal and vertical
@@ -42,12 +36,10 @@ class AsymmetricCollidingBeams : public GaudiTool, virtual public IBeamTool {
    *  with an angular smearing equal to (emittance/beta*)^1/2.
    */
   virtual void getBeams( Gaudi::XYZVector & pBeam1 , 
-                         Gaudi::XYZVector & pBeam2 ) ;
+                         Gaudi::XYZVector & pBeam2 ) override;
 
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
   double m_beam2_zMomentum ; ///< Energy of the second beam (beam 2)
- 
-  Rndm::Numbers m_gaussianDist ; ///< Gaussian random number generator
 };
 #endif // GENERATORS_ASYMMETRICCOLLIDINGBEAMS_H

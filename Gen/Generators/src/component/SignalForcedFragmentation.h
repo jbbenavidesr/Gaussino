@@ -19,38 +19,38 @@
 class SignalForcedFragmentation : public Signal {
  public:
   /// Standard constructor
-  SignalForcedFragmentation( const std::string & type , 
-                             const std::string & name ,
-                             const IInterface * parent ) ;
-  
-  virtual ~SignalForcedFragmentation( ); ///< Destructor
+   SignalForcedFragmentation( const std::string& type, const std::string& name, const IInterface* parent )
+       : Signal( type, name, parent ), m_signalMass( 0. )
+   {
+   }
 
-  virtual StatusCode initialize( ) ; ///< Initialize
-  
-  /** Generate set of interactions.
-   *  Implements ISampleGenerationTool::generate
-   *  -# Choose randomly a flavour to generate for each event
-   *  -# Generate with the IDecayTool the signal event (at rest)
-   *     of this flavour.
-   *  -# Force the fragmentation into this flavour when an 
-   *     interaction contains a b quark, calling 
-   *     IProductionTool::setupForcedFragmentation.
-   */
-  virtual bool generate( const unsigned int nPileUp , 
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+   virtual ~SignalForcedFragmentation() = default; ///< Destructor
+
+   virtual StatusCode initialize() override; ///< Initialize
+
+   /** Generate set of interactions.
+    *  Implements ISampleGenerationTool::generate
+    *  -# Choose randomly a flavour to generate for each event
+    *  -# Generate with the IDecayTool the signal event (at rest)
+    *     of this flavour.
+    *  -# Force the fragmentation into this flavour when an
+    *     interaction contains a b quark, calling
+    *     IProductionTool::setupForcedFragmentation.
+    */
+   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC::GenEvent>& theEvents,
+                          LHCb::GenCollisions& theCollisions , CLHEP::HepRandomEngine & engine ) override;
+
  private:
-  /** Boost a particle at rest in the lab frame.
-   *  @param[in,out] theSignal       Particle in the lab. frame 
-   *                                 to boost to
-   *  @param[in]     theSignalAtRest Decay tree at rest to boost
-   *  @param[in]     theVector       3-momentum boost vector
-   */
-  StatusCode boostTree( HepMC::GenParticle * theSignal , 
-                        const HepMC::GenParticle * theSignalAtRest ,
-                        const ROOT::Math::Boost & theBoost ) const ;
+   /** Boost a particle at rest in the lab frame.
+    *  @param[in,out] theSignal       Particle in the lab. frame
+    *                                 to boost to
+    *  @param[in]     theSignalAtRest Decay tree at rest to boost
+    *  @param[in]     theVector       3-momentum boost vector
+    */
+   StatusCode boostTree( HepMC::GenParticle* theSignal, const HepMC::GenParticle* theSignalAtRest,
+                         const ROOT::Math::Boost& theBoost ) const;
 
-  double m_signalMass ; ///< Mass of the signal particle
+   double m_signalMass = 0; ///< Mass of the signal particle
 };
 
 

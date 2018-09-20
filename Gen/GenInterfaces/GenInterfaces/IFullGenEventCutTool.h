@@ -1,10 +1,38 @@
-// $Id: HepMCUtils.h,v 1.8 2008-07-23 17:21:55 cattanem Exp $
-#ifndef GENERATORS_IFULLGENEVENTCUTTOOL_H 
-#define GENERATORS_IFULLGENEVENTCUTTOOL_H 1
+#ifndef MCINTERFACES_IFULLGENEVENTCUTTOOL_H 
+#define MCINTERFACES_IFULLGENEVENTCUTTOOL_H 1
 
-// This include has been moved to Event/GenEvent package.
-// This file is provided for backward compatibility.
-#warning "You should now include MCInterfaces/IFullGenEventCutTool.h instead"
-#include "MCInterfaces/IFullGenEventCutTool.h"
+// Include files
+// from Gaudi
+#include "GaudiKernel/IAlgTool.h"
 
-#endif // GENERATORS_IFULLGENEVENTCUTTOOL_H
+// from Event
+#include "HepMC/GenEvent.h"
+#include "Event/GenCollision.h"
+
+#include <vector>
+
+/** @class IFullGenEventCutTool IFullGenEventCutTool.h "MCInterfaces/IFullGenEventCutTool.h"
+ *  
+ *  Abstract interface to generator level cut on full event. This type of
+ *  cut is applied on a fully generated event: it includes pile-up interactions
+ *  and all particles have already been decayed.
+ * 
+ *  @author Patrick Robbe
+ *  @date   2005-11-17
+ */
+
+struct IFullGenEventCutTool : extend_interfaces<IAlgTool> {
+
+  DeclareInterfaceID( IFullGenEventCutTool , 3 , 0 ) ;
+
+  /** Apply the cut on a event.
+   *  @param[in] theEvents      Container of all interactions in the event.
+   *  @param[in] theCollisions  Container of hard process informations of each 
+   *                            pile-up interactions of the event.
+   *  @return    true  if the full event passes the cut.
+   */  
+  virtual bool studyFullEvent( std::vector<HepMC::GenEvent> & theEvents ,
+                               LHCb::GenCollisions & theCollisions ) 
+    const = 0 ;
+};
+#endif // MCINTERFACES_ICUTTOOL_H

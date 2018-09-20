@@ -2,7 +2,6 @@
 #define LBPYTHIA8_PYTHIA8PRODUCTION_H 1
 
 // LbPythia8.
-#include "LbPythia8/GaudiRandomForPythia8.h" 
 #include "LbPythia8/BeamToolForPythia8.h"
 #include "LbPythia8/LhcbHooks.h"
 
@@ -14,7 +13,9 @@
 // Pythia8.
 #include "Pythia8/Pythia.h"
 #include "Pythia8Plugins/LHAFortran.h"
-#include "Pythia8Plugins/HepMC2.h"
+
+//#include "Pythia8Plugins/HepMC2.h"
+#include <mutex>
 
 using namespace std;
 
@@ -64,7 +65,7 @@ public:
   
   /// Generate an event.
   virtual StatusCode generateEvent(HepMC::GenEvent* theEvent, 
-				   LHCb::GenCollision* theCollision);
+				   LHCb::GenCollision* theCollision , CLHEP::HepRandomEngine & engine );
 
   
   /**
@@ -156,7 +157,6 @@ protected:
   // Additional members.
   IBeamTool* m_beamTool;                 ///< The Gaudi beam tool.
   BeamToolForPythia8* m_pythiaBeamTool;  ///< The Pythia 8 beam tool.
-  GaudiRandomForPythia8* m_randomEngine; ///< Random number generator.
   int m_nEvents;                         ///< Number of generated events.
   CommandVector m_userSettings;          ///< The user settings vector.
   string m_tuningFile;                   ///< The global tuning file.
@@ -167,6 +167,7 @@ protected:
   bool m_showBanner;                     ///< Flag to print the Pythia 8 banner.
   ICounterLogFile* m_xmlLogTool;         ///< The XML log file. 
   set<unsigned int> m_special;           ///< The set of special particles.
+  mutable std::mutex m_pythia_lock;
 };
 
 #endif // LBPYTHIA8_PYTHIA8PRODUCTION_H

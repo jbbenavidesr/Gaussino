@@ -7,20 +7,20 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h" 
 #include "GaudiKernel/PhysicalConstants.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
 //===========================================================================
 // Implementation file for class: BeamShape
 //
 // 2009-10-21: Magnus Lieng
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( BeamShape )
+DECLARE_COMPONENT( BeamShape )
 
 //===========================================================================
 // Constructor
@@ -90,16 +90,6 @@ StatusCode BeamShape::initialize() {
   m_pySigma = sqrt(m_yEmm/m_yBeta);
 
 
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() )
-    return Error( "Cannot initialize flat generator" ) ;
-
-  sc = m_gaussGenerator.initialize( randSvc , Rndm::Gauss( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() )
-    return Error( "Cannot initialize gaussian generator" ) ;
-
   // Get the mass of the particle to be generated
   LHCb::IParticlePropertySvc* ppSvc =
     svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
@@ -135,14 +125,16 @@ StatusCode BeamShape::initialize() {
 //===========================================================================
 void BeamShape::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                 Gaudi::LorentzVector & origin , 
-                                int & pdgId ) {
+                                int & pdgId , CLHEP::HepRandomEngine & engine ) {
   double xn(0.),yn(0.),zn(0.) ;
   double x(0.),y(0.),z(0.) ;
   double px(0.), py(0.), pz(0.) ;
 
   // Get particle position in distance from center
-  xn = m_gaussGenerator()*m_xSigma;
-  yn = m_gaussGenerator()*m_ySigma;
+  CLHEP::RandGauss gaussGenerator{engine, 0, 1};
+
+  xn = gaussGenerator()*m_xSigma;
+  yn = gaussGenerator()*m_ySigma;
   zn = 0.0; // If one ever would want to implement z-smearing.
 
   // In real lhcb coord sys
@@ -151,8 +143,8 @@ void BeamShape::generateParticle( Gaudi::LorentzVector & fourMomentum ,
   z = zn + m_zCenter;
 
   // Get momenta
-  double dx = -(m_xAlpha/m_xBeta)*xn + m_pxSigma*m_gaussGenerator();
-  double dy = -(m_yAlpha/m_yBeta)*yn + m_pySigma*m_gaussGenerator();
+  double dx = -(m_xAlpha/m_xBeta)*xn + m_pxSigma*gaussGenerator();
+  double dy = -(m_yAlpha/m_yBeta)*yn + m_pySigma*gaussGenerator();
   px = m_momentum*dx + m_pxCenter;
   py = m_momentum*dy + m_pyCenter;
   pz = m_zDir*sqrt(m_momentum*m_momentum - px*px - py*py);

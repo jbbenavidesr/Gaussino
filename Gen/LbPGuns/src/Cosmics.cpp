@@ -8,12 +8,13 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h" 
 #include "GaudiKernel/PhysicalConstants.h"
-#include "GaudiKernel/IRndmGenSvc.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //===========================================================================
 // Implementation file for class: Cosmics
@@ -21,7 +22,7 @@
 // 2008-05-18: Giulia Manca
 //===========================================================================
 
-DECLARE_TOOL_FACTORY( Cosmics )
+DECLARE_COMPONENT( Cosmics )
 
 //===========================================================================
 // Constructor
@@ -77,11 +78,6 @@ StatusCode Cosmics::initialize() {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc ;
 
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() )
-    return Error( "Cannot initialize flat generator" ) ;
-
   // Get the mass of the particle to be generated
   LHCb::IParticlePropertySvc* ppSvc =
     svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
@@ -130,10 +126,11 @@ StatusCode Cosmics::initialize() {
 //===========================================================================
 void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                 Gaudi::LorentzVector & origin , 
-                                int & pdgId ) {
+                                int & pdgId , CLHEP::HepRandomEngine & engine ) {
   double px(0.), py(0.), pz(0.) ;
   double verx(0.), very(0.), verz(0.) ;
 
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   //GM
   //get the momentum according to the cosmic spectrum from
   //two different models
@@ -152,9 +149,9 @@ void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum ,
   //fluxMax*=Gaudi::Units::twopi;
   for(int i=0; i<1000000; i++) {
     //theta uniform in radians
-    t = ( m_minTheta + m_flatGenerator()*(m_maxTheta-m_minTheta) )  ;
+    t = ( m_minTheta + flatGenerator()*(m_maxTheta-m_minTheta) )  ;
     //translate momentum in GeV
-    p = ( m_minMom/Gaudi::Units::GeV + m_flatGenerator()*(m_maxMom-m_minMom)/Gaudi::Units::GeV )  ;
+    p = ( m_minMom/Gaudi::Units::GeV + flatGenerator()*(m_maxMom-m_minMom)/Gaudi::Units::GeV )  ;
     //
     //This is the function I need to use for the generation of the events;
     //* m_model==1 => flux from nucl-ex/0601019, eq (1). take out the
@@ -173,7 +170,7 @@ void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum ,
     }
 
     if(flux>fluxMax ) warning() <<"Cosmic flux =" <<flux<<" > Max = "<<fluxMax<<endmsg;
-    double temp = m_flatGenerator()*fluxMax ;
+    double temp = flatGenerator()*fluxMax ;
     //std::cout << " temp ="<<temp<<std::endl;
     if(temp < flux)    break;
   }
@@ -183,7 +180,7 @@ void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum ,
   //Momentum does not need to be changed.
   const double momentum = p;
   //Phi random between +pi and -pi;
-  double phiprime      = m_minPhi   + m_flatGenerator() *
+  double phiprime      = m_minPhi   + flatGenerator() *
     (m_maxPhi-m_minPhi);
   //
   //the angle (t) is the zenith, angle of the particle with the vertical (theta');
@@ -219,7 +216,7 @@ void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum ,
   pz              = momentum*cos(theta);
   // randomly choose a particle type
   unsigned int currentType =
-    (unsigned int)( m_pdgCodes.size() * m_flatGenerator() );
+    (unsigned int)( m_pdgCodes.size() * flatGenerator() );
   // protect against funnies
   if ( currentType >= m_pdgCodes.size() ) currentType = 0;
           
@@ -235,8 +232,8 @@ void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum ,
   //(as specified by job options )
   //z=z, -5<x<5m, -5<y<5m
   //
-  double xprime = m_minxvtx + m_flatGenerator()*(m_maxxvtx - m_minxvtx);
-  double yprime = m_minyvtx + m_flatGenerator()*(m_maxyvtx - m_minyvtx);
+  double xprime = m_minxvtx + flatGenerator()*(m_maxxvtx - m_minxvtx);
+  double yprime = m_minyvtx + flatGenerator()*(m_maxyvtx - m_minyvtx);
   double zprime = m_zvtx ;
 
   //GM: Add the time component; this is the time I want the cosmics

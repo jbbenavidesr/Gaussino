@@ -5,13 +5,18 @@
 #include "BeamSpotSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/PhysicalConstants.h" 
 
+// from HepMC
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenParticle.h"
+
 // from Event
-#include "Event/HepMCEvent.h"
 #include "Event/BeamParameters.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : LHCbAcceptance
@@ -21,7 +26,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( BeamSpotSmearVertex )
+DECLARE_COMPONENT( BeamSpotSmearVertex )
 
 
 //=============================================================================
@@ -51,17 +56,9 @@ BeamSpotSmearVertex::~BeamSpotSmearVertex( ) { ; }
 StatusCode BeamSpotSmearVertex::initialize( ) {
   StatusCode sc = GaudiTool::initialize( ) ;
   if ( sc.isFailure() ) return sc ;
-  
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_gaussDist.initialize( randSvc , Rndm::Gauss( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize gaussian random number generator" ) ;
-
     
   info() << "Smearing of interaction point with Gaussian distribution "
          << endmsg;
-
-  release( randSvc ) ;
  
   return sc ;
 }
@@ -69,34 +66,28 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ,
+                                             CLHEP::HepRandomEngine & engine ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beamp ) Exception( "No beam parameters registered" ) ;
 
   double dx , dy , dz;
+
+  CLHEP::RandGauss gaussDist{engine, 0, 1};
   
-  do { dx = m_gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
+  do { dx = gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * beamp -> sigmaX() + beamp -> beamSpot().x() ;
-  do { dy = m_gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
+  do { dy = gaussDist( ) ; } while ( fabs( dy ) > m_ycut ) ;
   dy = dy * beamp -> sigmaY() + beamp -> beamSpot().y() ;
-  do { dz = m_gaussDist( ) ; } while ( fabs( dz ) > m_zcut ) ;
+  do { dz = gaussDist( ) ; } while ( fabs( dz ) > m_zcut ) ;
   dz = dz * beamp -> sigmaZ() + beamp -> beamSpot().z() ;
 
   double meanT = m_timeSignVsT0 * beamp -> beamSpot().z() / Gaudi::Units::c_light ;
 
   HepMC::FourVector dpos( dx , dy , dz , meanT ) ;
-  
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-     HepMC::FourVector pos = (*vit) -> position() ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() + dpos.x() , 
-                                               pos.y() + dpos.y() , 
-                                               pos.z() + dpos.z() , 
-                                               pos.t() + dpos.t() ) ) ;
-  }
+
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }

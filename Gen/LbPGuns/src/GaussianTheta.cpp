@@ -8,14 +8,17 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
-#include "GaudiKernel/IRndmGenSvc.h"
 #include "GaudiKernel/Transform3DTypes.h"
 #include "GaudiKernel/Vector3DTypes.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandGauss.h"
+
 
 //==========================================================================
 // Implementation file for class: GaussianTheta
@@ -23,7 +26,7 @@
 // 2008-05-18: Patrick Robbe, rewrite in tool format particle gun algorithm
 //==========================================================================
 
-DECLARE_TOOL_FACTORY( GaussianTheta )
+DECLARE_COMPONENT( GaussianTheta )
 
 //==========================================================================
 // Constructor
@@ -57,17 +60,6 @@ StatusCode GaussianTheta::initialize( ) {
   StatusCode sc = GaudiTool::initialize() ;
   if ( ! sc.isSuccess() ) return sc;
   
-  // Create the flat and gaussian generators
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize flat generator" ) ;
-  
-  sc = m_gaussGenerator.initialize( randSvc , Rndm::Gauss( m_meanTheta ,
-       m_sigmaTheta ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Cannot initialize Gaussian generator" ) ;
-  
   // Get the mass of the particle to be generated
   LHCb::IParticlePropertySvc * ppSvc = 
     svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
@@ -89,14 +81,17 @@ StatusCode GaussianTheta::initialize( ) {
 //===========================================================================
 void GaussianTheta::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId ) {
+                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {
   
-  const double theta = m_gaussGenerator();
-  const double phi = m_flatGenerator() * Gaudi::Units::twopi ;
+
+  CLHEP::RandFlat flatGenerator{engine, 0., 1.};
+  CLHEP::RandGauss gaussGenerator{engine, m_meanTheta, m_sigmaTheta};
+  const double theta = gaussGenerator();
+  const double phi = flatGenerator() * Gaudi::Units::twopi ;
 
   double px , py , pz ;
   
-  const double momentum = m_minMom   + m_flatGenerator() * (m_maxMom-m_minMom);
+  const double momentum = m_minMom   + flatGenerator() * (m_maxMom-m_minMom);
 
   ///       Transform to x,y,z coordinates
   const double pt = momentum*sin(theta);

@@ -6,9 +6,6 @@
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem.hpp"
 
-// from Gaudi
-#include "GaudiKernel/ToolFactory.h" 
-
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : XmlCounterLogFile
@@ -17,7 +14,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( XmlCounterLogFile )
+DECLARE_COMPONENT( XmlCounterLogFile )
 
 
 //=============================================================================

@@ -6,13 +6,12 @@
 #include "GaudiKernel/MsgStream.h"
 #include "GenInterfaces/ICounterLogFile.h"
 
+#include <atomic>
+
 #include <cmath>
 #include <numeric>
 #include <algorithm>
-
-namespace boost {
-  template< typename T , std::size_t N > class array ;
-}
+#include <array>
 
 namespace HepMC {
   class GenEvent ;
@@ -35,10 +34,10 @@ namespace LHCb
 
 namespace GenCounters {
   /// Type for hadron counter
-  typedef boost::array< unsigned int , 5 > BHadronCounter ;
-  typedef boost::array< unsigned int , 4 > DHadronCounter ;
-  typedef boost::array< std::string  , 5 > BHadronCNames  ;
-  typedef boost::array< std::string  , 4 > DHadronCNames  ;
+  typedef std::array< std::atomic_uint , 5 > BHadronCounter ;
+  typedef std::array< std::atomic_uint , 4 > DHadronCounter ;
+  typedef std::array< std::string  , 5 > BHadronCNames  ;
+  typedef std::array< std::string  , 4 > DHadronCNames  ;
 
   enum bHadronCounterType{ Bd = 0 , ///< counter of B0
                            Bu , ///< counter of B+
@@ -55,8 +54,8 @@ namespace GenCounters {
 
 
   /// Type for excited states counters
-  typedef boost::array< unsigned int , 3 > ExcitedCounter ;
-  typedef boost::array< std::string  , 3 > ExcitedCNames  ;
+  typedef std::array< std::atomic_uint , 3 > ExcitedCounter ;
+  typedef std::array< std::string  , 3 > ExcitedCNames  ;
 
   enum excitedCounterType { _0star , ///< counter of X (spin 0, ang mom 0)
                             _1star , ///< counter of X* (spin 1, ang mom 0)
@@ -176,8 +175,8 @@ namespace GenCounters {
    *  @param[in]     B   Array to add to content of A 
    */
   template< typename T , std::size_t N > 
-  inline void AddTo( boost::array< T , N > & A ,
-                     const boost::array< T , N > & B ) {
+  inline void AddTo( std::array< T , N > & A ,
+                     const std::array< T , N > & B ) {
     std::transform( A.begin() , A.end() , B.begin() , A.begin() , 
                     std::plus< unsigned int >( ) ) ;
   }
@@ -187,8 +186,8 @@ namespace GenCounters {
    */
   template< typename T , std::size_t N >
   inline void printArray( MsgStream & theStream ,
-                          boost::array< T , N > A ,
-                          boost::array< std::string , N > AName ,
+                          const std::array< T , N > & A ,
+                          const std::array< std::string , N > & AName ,
                           const std::string & root ) {
     unsigned int total = std::accumulate( A.begin() , A.end() , 0 ) ;
     for ( unsigned int i = 0 ; i < A.size() ; ++i ) 
@@ -200,8 +199,8 @@ namespace GenCounters {
    */
   template< typename T , std::size_t N >
   inline void printArray( ICounterLogFile * theLogFile ,
-                          boost::array< T , N > A ,
-                          boost::array< std::string , N > AName ,
+                          const std::array< T , N > & A ,
+                          const std::array< std::string , N > & AName ,
                           const std::string & root ) {
     unsigned int total = std::accumulate( A.begin() , A.end() , 0 ) ;
     for ( unsigned int i = 0 ; i < A.size() ; ++i ) 
@@ -252,8 +251,8 @@ namespace GenCounters {
                              BHadronCounter & theantibHadC ,
                              DHadronCounter & thecHadC ,
                              DHadronCounter & theanticHadC , 
-                             unsigned int & thebbCounter , 
-                             unsigned int & theccCounter ) ;
+                             std::atomic_uint & thebbCounter , 
+                             std::atomic_uint & theccCounter ) ;
   
   void updateHadronFSR( const HepMC::GenEvent* theEvent,
                         LHCb::GenFSR * genFSR,

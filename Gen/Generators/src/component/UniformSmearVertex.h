@@ -5,9 +5,12 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h" 
 
 #include "GenInterfaces/IVertexSmearingTool.h"
+
+namespace HepMC{
+  class GenEvent;
+}
 
 /** @class UniformSmearVertex UniformSmearVertex.h "UniformSmearVertex.h"
  *  
@@ -36,7 +39,7 @@ class UniformSmearVertex : public GaudiTool,
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( LHCb::HepMCEvent * theEvent ) ;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) ;
   
  private:
   /// Maximum value for the r coordinate of the vertex (set by options)
@@ -58,7 +61,5 @@ class UniformSmearVertex : public GaudiTool,
   /// only values -1 or 1, or 0 to switch off the TOF and set time of 
   /// interaction to zero (default = 1, as for beam 1)
   int m_zDir;
-
-  Rndm::Numbers m_flatDist ; ///< Flat random number generator
 };
 #endif // GENERATORS_UNIFORMSMEARVERTEX_H

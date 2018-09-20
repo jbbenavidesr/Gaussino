@@ -4,7 +4,6 @@
 // ===========================================================================
 // GaudiKernel
 // ===========================================================================
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
 // ===========================================================================
@@ -46,8 +45,6 @@ class ReadHepMCAsciiFile
   :         public       GaudiTool
   , virtual public IProductionTool 
 {
-  /// friend factory for instantiation 
-  friend class ToolFactory<ReadHepMCAsciiFile> ;
 public:
   /// initialization of the tool 
   virtual StatusCode initialize () 
@@ -88,7 +85,7 @@ public:
    */
   virtual StatusCode generateEvent 
   ( HepMC::GenEvent    * theEvent , 
-    LHCb::GenCollision * theInfo  ) ;
+    LHCb::GenCollision * theInfo , CLHEP::HepRandomEngine & ) ;
   // ===================================================================
   /// Declare a particle stable to the production generator.
   virtual void setStable
@@ -137,7 +134,6 @@ public:
   virtual StatusCode setupForcedFragmentation
   ( const int /* thePdgId */ ) { return StatusCode::SUCCESS ; };
   // ===================================================================
-protected:
   /** standard constructor
    *  @param type tool type(?)
    *  @param name tool name
@@ -184,7 +180,7 @@ private:
 // =====================================================================
 /// Declaration of the Tool Factory
 // =====================================================================
-DECLARE_TOOL_FACTORY( ReadHepMCAsciiFile )
+DECLARE_COMPONENT( ReadHepMCAsciiFile )
 // =====================================================================
 /** Generate a primary interaction. 
  *  The generated event contains all what happens up to the decay of
@@ -199,7 +195,8 @@ DECLARE_TOOL_FACTORY( ReadHepMCAsciiFile )
 // ===================================================================
 StatusCode ReadHepMCAsciiFile::generateEvent 
 ( HepMC::GenEvent    *    theEvent , 
-  LHCb::GenCollision * /* theInfo */ ) 
+  LHCb::GenCollision * /* theInfo */ ,
+  CLHEP::HepRandomEngine & /* engine */ ) 
 {
   Assert ( 0 != m_file , "Invalid input file!" ) ;
   //

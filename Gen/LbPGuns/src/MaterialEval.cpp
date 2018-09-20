@@ -8,11 +8,12 @@
 #include <cmath>
 
 // From Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 #include "GaudiKernel/SystemOfUnits.h"
-#include "GaudiKernel/IRndmGenSvc.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : MaterialEval
@@ -24,7 +25,7 @@
 //-----------------------------------------------------------------------------
  
 // Declaration of the tool Factory
-DECLARE_TOOL_FACTORY( MaterialEval )
+DECLARE_COMPONENT( MaterialEval )
 
 //============================================================================
 // Constructor
@@ -90,11 +91,6 @@ StatusCode MaterialEval::initialize() {
 
   StatusCode sc = GaudiTool::initialize( );
   if ( sc.isFailure() ) return sc;  
-  
-  IRndmGenSvc * randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatGenerator.initialize( randSvc , Rndm::Flat( 0. , 1. ) );
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize random number generator" );
   
   LHCb::IParticlePropertySvc* ppSvc =  
     svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true );
@@ -166,7 +162,7 @@ StatusCode MaterialEval::initialize() {
 //=============================================================================
 void MaterialEval::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                      Gaudi::LorentzVector & origin ,
-                                     int & pdgId ) {
+                                     int & pdgId , CLHEP::HepRandomEngine & engine ) {
   double px( 0. ), py( 0. ), pz( 0. );
   StatusCode sc ;
   
@@ -179,8 +175,8 @@ void MaterialEval::generateParticle( Gaudi::LorentzVector & fourMomentum ,
       if( sc.isFailure() ) Exception("Error in generting x-y grid");
     }
   } else {     
-    if( m_etaPhi ) generateUniformEtaPhi(px,py,pz);
-    else generateUniformXY(px,py,pz);
+    if( m_etaPhi ) generateUniformEtaPhi(px,py,pz,engine);
+    else generateUniformXY(px,py,pz,engine);
   }
 
   fourMomentum.SetPx( px ) ; fourMomentum.SetPy( py ) ; fourMomentum.SetPz( pz ) ;
@@ -192,10 +188,12 @@ void MaterialEval::generateParticle( Gaudi::LorentzVector & fourMomentum ,
 //=============================================================================
 // Generation of a uniformly flat distribution in x-y plane
 //=============================================================================
-void MaterialEval::generateUniformXY( double& px, double& py, double& pz){
+void MaterialEval::generateUniformXY( double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine ){
+
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
  
-  double x = m_flatGenerator() * ( m_xmax - m_xmin ) + m_xmin - m_xVtx;
-  double y = m_flatGenerator() * ( m_ymax - m_ymin ) + m_ymin - m_yVtx;
+  double x = flatGenerator() * ( m_xmax - m_xmin ) + m_xmin - m_xVtx;
+  double y = flatGenerator() * ( m_ymax - m_ymin ) + m_ymin - m_yVtx;
 
   double z = m_zplane - m_zVtx;   
   double r = sqrt(x*x+y*y+z*z);
@@ -255,12 +253,13 @@ StatusCode MaterialEval::generateGridXY( double& px, double& py, double& pz) {
 //=============================================================================
 // Generate 3-momentum for a uniformly flat distribution in eta-phi plane
 //=============================================================================
-void MaterialEval::generateUniformEtaPhi(double& px, double& py, double& pz) {
+void MaterialEval::generateUniformEtaPhi(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine ) {
   
+  CLHEP::RandFlat flatGenerator{engine, 0, 1};
   double eta, phi, theta;
   
-  eta = m_flatGenerator() * ( m_maxEta - m_minEta ) + m_minEta;
-  phi = m_flatGenerator() * ( m_maxPhi - m_minPhi ) + m_minPhi;
+  eta = flatGenerator() * ( m_maxEta - m_minEta ) + m_minEta;
+  phi = flatGenerator() * ( m_maxPhi - m_minPhi ) + m_minPhi;
   theta = 2.*atan(exp(-eta));
 
   px = m_ptotal*sin(theta)*cos(phi);

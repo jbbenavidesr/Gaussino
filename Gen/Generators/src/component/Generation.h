@@ -1,58 +1,98 @@
 // $Id: Generation.h,v 1.9 2007-07-03 16:31:36 gcorti Exp $
-#ifndef GENERATORS_GENERATION_H 
+#ifndef GENERATORS_GENERATION_H
 #define GENERATORS_GENERATION_H 1
 
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/Transformer.h"
 
-#include <boost/array.hpp>
+#include <array>
+#include <atomic>
+#include <string>
+#include <tuple>
 
 #include "Event/GenFSR.h"
 
 // Forward declarations
-class ISampleGenerationTool ;
-class IPileUpTool ;
-class IDecayTool ;
-class IVertexSmearingTool ;
-class IFullGenEventCutTool ;
-class ICounterLogFile ;
+class ISampleGenerationTool;
+class IPileUpTool;
+class IDecayTool;
+class IVertexSmearingTool;
+class IFullGenEventCutTool;
+class ICounterLogFile;
 
-namespace HepMC {
-  class GenParticle ;
-}
+#include "Defaults/Locations.h"
 
-namespace LHCb {
-  class HepMCEvent;
+#include "Event/GenCollision.h"
+#include "Event/GenHeader.h"
+#include "HepMC/GenEvent.h"
+#include "NewRnd/RndAlgSeeder.h"
+
+namespace HepMC
+{
+  class GenParticle;
 }
 
 /** @class Generation Generation.h "Generation.h"
- *  
+ *
  *  Main algorithm to generate Monte Carlo events.
  *
  *  @author Patrick Robbe
  *  @date   2005-08-11
+ *
+ *  HepMC3 + Gaudi functional modifications
+ *
+ *  @author Dominik Muller
+ *  @date 2018-03-16
  */
-class Generation : public GaudiAlgorithm {
- public:
-  /// Standard constructor
-  Generation( const std::string& name, ISvcLocator* pSvcLocator );
+class Generation
+    : public Gaudi::Functional::MultiTransformer<
+          std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
+          Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
+{
+private:
+  Gaudi::Property<std::string> m_sampleGenerationToolName{this, "SampleGenerationTool", "MinimumBias",
+                                                          "Name of the ISampleGenerationTool - MinimumBias, ..."};
+  Gaudi::Property<int> m_eventType{this, "EventType", 30000000, "Event type"};
+  Gaudi::Property<std::string> m_pileUpToolName{this, "PileUpTool", "FixedLuminosity", "Name of the IPileUpTool"};
+  Gaudi::Property<std::string> m_decayToolName{this, "DecayTool", "EvtGenDecay", "Name of the IDecayTool"};
+  Gaudi::Property<std::string> m_vertexSmearingToolName{this, "VertexSmearingTool", "BeamSpotSmearVertex",
+                                                        "Name of the IVertexSmearingTool"};
+  Gaudi::Property<std::string> m_fullGenEventCutToolName{this, "FullGenEventCutTool", "",
+                                                         "Name of the IFullGenEventCutTool"};
+  Gaudi::Property<bool> m_commonVertex{this, "CommonVertex", false,
+                                       "Flag to generate all pile up events at the same PV"};
 
-  virtual ~Generation( ); ///< Destructor
+  // FIXME: This will need adapting for the new TES access eventually
+  Gaudi::Property<std::string> m_FSRName{this, "GenFSRLocation", LHCb::GenFSRLocation::Default,
+                                         "Location where to store FSR counters"};
+
+public:
+  /// Standard constructor
+  Generation( const std::string& name, ISvcLocator* pSvcLocator )
+      : MultiTransformer( name, pSvcLocator,
+                          {KeyValue{"GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration}},
+                          {{KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
+                            KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
+                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}}} )
+  {
+  }
+
+  virtual ~Generation() = default;
 
   /** Algorithm initialization.
-   *  -# Initializes the common Gaudi random number generator used in all 
+   *  -# Initializes the common Gaudi random number generator used in all
    *     generators,
    *  -# Retrieve Pile-up tool, sample generation tool, decay tool,
-   *     vertex smearing tool and full event cut tool used in the generation 
+   *     vertex smearing tool and full event cut tool used in the generation
    *     of events.
    */
-  virtual StatusCode initialize();
+  virtual StatusCode initialize() override;
 
   /** Algorithm execution.
-   *  Repeat the following sequence until a good set of interactions is 
+   *  Repeat the following sequence until a good set of interactions is
    *  generated.
    *  -# Compute the number of interactions to generate in the event, using
    *     the IPileUpTool.
-   *  -# Generate this number of interactions using the IProductionTool. 
+   *  -# Generate this number of interactions using the IProductionTool.
    *     The IProductionTool indicates if a good event has been generated
    *     (containing for example a B hadron).
    *  -# Decay with the IDecayTool all particles in the event, if this is
@@ -61,127 +101,109 @@ class Generation : public GaudiAlgorithm {
    *     and accept or reject the event.
    *  -# Store in event store the accepted event.
    */
-  virtual StatusCode execute   ();
+  virtual std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+  operator()( const LHCb::GenHeader& ) const override;
 
   /** Algorithm finalization.
    *  Print generation counters.
    */
-  virtual StatusCode finalize  ();
+  virtual StatusCode finalize() override;
 
 protected:
   /// Decay the event with the IDecayTool.
-  StatusCode decayEvent( LHCb::HepMCEvent * theEvent ) ;
+  StatusCode decayEvent( HepMC::GenEvent* theEvent , CLHEP::HepRandomEngine & engine ) const;
 
 private:
-  int          m_eventType ; ///< Event type (set by options)
+  /// Reference to file records data service
+  IDataProviderSvc* m_fileRecordSvc = nullptr;
 
-  /// Location where to store generator events (set by options)
-  std::string  m_hepMCEventLocation ; 
+  /// Pile-up tool
+  IPileUpTool* m_pileUpTool = nullptr;
 
-  /// Location where to store the Header of the events (set by options)
-  std::string  m_genHeaderLocation ;
+  /// Decay tool
+  IDecayTool* m_decayTool = nullptr;
 
-  /// Location where to store HardInfo (set by options)
-  std::string  m_genCollisionLocation ;
+  /// Xml Log file tool
+  ICounterLogFile* m_xmlLogTool = nullptr;
 
-  /// Location where to store FSR counters (set by options)                                                                                                      
-  std::string  m_FSRName;
+  /// Sample tool
+  ISampleGenerationTool* m_sampleGenerationTool = nullptr;
 
-  /// Reference to file records data service                                                                                                                     
-  IDataProviderSvc* m_fileRecordSvc;
+  /// Smearing tool
+  IVertexSmearingTool* m_vertexSmearingTool = nullptr;
 
-  IPileUpTool              * m_pileUpTool             ; ///< Pile-up tool
+  /// Cut tool
+  IFullGenEventCutTool* m_fullGenEventCutTool = nullptr;
 
-  IDecayTool               * m_decayTool              ; ///< Decay tool
+  /// Number of generated events
+  mutable std::atomic_uint m_nEvents{0};
 
-  ICounterLogFile          * m_xmlLogTool             ; ///< Xml Log file tool
+  /// Number of accepted events
+  mutable std::atomic_uint m_nAcceptedEvents{0};
 
-  ISampleGenerationTool    * m_sampleGenerationTool   ; ///< Sample tool
-
-  IVertexSmearingTool      * m_vertexSmearingTool     ; ///< Smearing tool
-
-  IFullGenEventCutTool     * m_fullGenEventCutTool    ; ///< Cut tool
-
-  /// Name of the IPileUpTool (set by options).
-  std::string m_pileUpToolName           ;
-
-  /// Name of the ISampleGenerationTool - MinimumBias, ... (set by options)
-  std::string m_sampleGenerationToolName ;
-
-  /// Name of the IDecayTool (set by options)
-  std::string m_decayToolName            ;
-
-  /// Name of the IVertexSmearingTool (set by options)
-  std::string m_vertexSmearingToolName   ;
-
-  /// Name of the IFullGenEventCutTool (set by options)
-  std::string m_fullGenEventCutToolName  ;
-
-  /// Flag to generate all pile up events at the same PV (set by options)
-  bool m_commonVertex ;
-
-  unsigned int m_nEvents ; ///< Number of generated events
-
-  unsigned int m_nAcceptedEvents ; ///< Number of accepted events
-
-  unsigned int m_nInteractions ; ///< Number of generated interactions
+  /// Number of generated interactions
+  mutable std::atomic_uint m_nInteractions{0};
 
   /// Number of interactions in accepted events
-  unsigned int m_nAcceptedInteractions ;
+  mutable std::atomic_uint m_nAcceptedInteractions{0};
 
   /// Description of the counter index
-  enum interationCounterType{ Oneb = 0 , ///< interaction with >= 1 b quark
-                              Threeb , ///< interaction with >= 3 b quarks
-                              PromptB , ///< interaction with prompt B
-                              Onec , ///< interaction with >= 1 c quark
-                              Threec , ///< interaction with >= 3 c quarks
-                              PromptC , ///< interaction with prompt C
-                              bAndc ///< interaction with b and c
-  } ;  
+  enum interationCounterType {
+    Oneb = 0, ///< interaction with >= 1 b quark
+    Threeb,   ///< interaction with >= 3 b quarks
+    PromptB,  ///< interaction with prompt B
+    Onec,     ///< interaction with >= 1 c quark
+    Threec,   ///< interaction with >= 3 c quarks
+    PromptC,  ///< interaction with prompt C
+    bAndc     ///< interaction with b and c
+  };
 
   /// Type for interaction counter
-  typedef boost::array< unsigned int , 7 > interactionCounter ;
-  typedef boost::array< std::string  , 7 > interactionCNames  ;
+  typedef std::array<std::atomic_uint, 7> interactionCounter;
+  typedef std::array<std::string, 7> interactionCNames;
 
   /// Counter of content of generated interactions
-  interactionCounter m_intC ; 
+  // FIXME: More braces never hurt but does this actually what we want?
+  // As far as I know, just {} should trigger zero-initialization and yield
+  // the same result as {{{0},{0},{0},{0},{0},{0},{0}}}
+  mutable interactionCounter m_intC{};
+  mutable interactionCounter m_intCAccepted{};
 
   /// Array of counter names
-  interactionCNames  m_intCName ;
-
-  /// Counter of content of accepted interactions
-  interactionCounter m_intCAccepted ;
+  const interactionCNames m_intCName{{"generated interactions with >= 1b", "generated interactions with >= 3b",
+                                      "generated interactions with 1 prompt B", "generated interactions with >= 1c",
+                                      "generated interactions with >= 3c", "generated interactions with >= prompt C",
+                                      "generated interactions with b and c"}};
 
   /// Array of accepted counter names
-  interactionCNames  m_intCAcceptedName ;
+  const interactionCNames m_intCAcceptedName{
+      {"accepted interactions with >= 1b", "accepted interactions with >= 3b", "accepted interactions with 1 prompt B",
+       "accepted interactions with >= 1c", "accepted interactions with >= 3c", "accepted interactions with >= prompt C",
+       "accepted interactions with b and c"}};
 
-  /// Counter of events before the full event generator level cut  
-  unsigned int m_nBeforeFullEvent ;
+  /// Counter of events before the full event generator level cut
+  mutable std::atomic_uint m_nBeforeFullEvent{0};
 
   /// Counter of events after the full event generator level cut
-  unsigned int m_nAfterFullEvent ;
+  mutable std::atomic_uint m_nAfterFullEvent{0};
 
-  /// TDS container                                                                                                                                              
-  /// LHCb::GenFSRs* m_genFSRs;                                                                                                                                  
-  /// FSR for current file                                                                                                                                       
-  LHCb::GenFSR* m_genFSR;
+  /// TDS container
+  /// LHCb::GenFSRs* m_genFSRs;
+  /// FSR for current file
+  LHCb::GenFSR* m_genFSR = nullptr;
 
   /** Update the counters counting on interactions.
    *  @param[in,out] theCounter Counter of events
    *  @param[in]     theEvent  The interaction to study
    */
-  void updateInteractionCounters( interactionCounter & theCounter ,
-                                  const LHCb::HepMCEvent * theEvent ) ;
+  void updateInteractionCounters( interactionCounter& theCounter, const HepMC::GenEvent* theEvent ) const;
 
-  
-  /** Update the counters counting on interactions.                                                                                                              
-   *  @param[in,out] m_genFSR     The counters in FSR                                                                                                            
-   *  @param[in]     theCounter   The interaction counters                                                                                                       
-   *  @param[in]     option       Separate generated and accepted counters                                                                                       
+  /** Update the counters counting on interactions.
+   *  @param[in,out] m_genFSR     The counters in FSR
+   *  @param[in]     theCounter   The interaction counters
+   *  @param[in]     option       Separate generated and accepted counters
    */
-  void updateFSRCounters( interactionCounter & theCounter ,
-                          LHCb::GenFSR * m_genFSR,
-                          const std::string option ) ;
+  void updateFSRCounters( interactionCounter& theCounter, LHCb::GenFSR* m_genFSR, const std::string option ) const;
 
 };
 #endif // GENERATORS_GENERATION_H

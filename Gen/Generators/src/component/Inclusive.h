@@ -12,6 +12,8 @@
 
 #include <boost/array.hpp>
 
+#include "HepMC/GenEvent.h"
+
 // forward declarations
 
 namespace HepMC {
@@ -44,7 +46,7 @@ class Inclusive : public ExternalGenerator {
    *  will be decayed with the IDecayTool before the event is analyzed
    *  to see if it contains particles of the inclusive list.
    */
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
 
   /** Generate a set of interactions.
    *  Implements ISampleGenerationTool::generate.
@@ -57,8 +59,9 @@ class Inclusive : public ExternalGenerator {
    *     of the inclusive list in the event have pz < 0.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions & theCollisions ,
+                         CLHEP::HepRandomEngine & engine ) override;
 
   /** Print generation counters.
    *  Implements ISampleGenerationTool::printCounters.
@@ -67,82 +70,82 @@ class Inclusive : public ExternalGenerator {
    *     selected events.
    *  -# Fractions of B/Bstar/Bdoublestar in selected events.
    */
-  virtual void printCounters( ) const ;
+  virtual void printCounters( ) const override;
 
  protected:
 
  private:
-  ICounterLogFile * m_xmlLogTool ; ///< XML log file for counters
+   ICounterLogFile* m_xmlLogTool = nullptr; ///< XML log file for counters
 
-  /// Type of lightest quark in list of particles to produce
-  LHCb::ParticleID::Quark      m_lightestQuark     ; 
+   /// Type of lightest quark in list of particles to produce
+   LHCb::ParticleID::Quark m_lightestQuark = LHCb::ParticleID::down;
 
-  /// Counter of events before applying generator level cut
-  unsigned int  m_nEventsBeforeCut ;
+   /// Counter of events before applying generator level cut
+   std::atomic_uint m_nEventsBeforeCut{};
 
-  /// Counter of events after applying generator level cut
-  unsigned int  m_nEventsAfterCut  ;
+   /// Counter of events after applying generator level cut
+   std::atomic_uint m_nEventsAfterCut{};
 
-  /// Counter of parity-flipped events (z -> -z, pz -> -pz)
-  unsigned int  m_nInvertedEvents  ;
+   /// Counter of parity-flipped events (z -> -z, pz -> -pz)
+   std::atomic_uint m_nInvertedEvents{};
 
-  /// Ordered set of PDG Id of particles to produce (set by options)
-  PIDs          m_pids             ;
+   /// Ordered set of PDG Id of particles to produce (set by options)
+   PIDs m_pids;
 
-  /// Vector to obtain list of PDG Ids from job options
-  std::vector< int > m_pidVector   ;
-  
-  GenCounters::BHadronCounter m_bHadC ;  ///< Counter of B hadron (generated)
-  
-  GenCounters::BHadronCounter m_antibHadC ; ///< Counter of Bbar hadron (gen)
+   /// Vector to obtain list of PDG Ids from job options
+   std::vector<int> m_pidVector;
 
-  /// Counter of B hadron (accepted)
-  GenCounters::BHadronCounter m_bHadCAccepted ;
+   GenCounters::BHadronCounter m_bHadC{}; ///< Counter of B hadron (generated)
 
-  /// Counter of anti-B hadron (accepted)
-  GenCounters::BHadronCounter m_antibHadCAccepted ;
-  
-  GenCounters::BHadronCNames m_bHadCNames ; ///< Array of B counter names
+   GenCounters::BHadronCounter m_antibHadC{}; ///< Counter of Bbar hadron (gen)
 
-  /// Array of anti-B hadrons names
-  GenCounters::BHadronCNames m_antibHadCNames ; 
+   /// Counter of B hadron (accepted)
+   GenCounters::BHadronCounter m_bHadCAccepted{};
 
-  GenCounters::DHadronCounter m_cHadC ; ///< Counter of D hadron (generated)
+   /// Counter of anti-B hadron (accepted)
+   GenCounters::BHadronCounter m_antibHadCAccepted{};
 
-  GenCounters::DHadronCounter m_anticHadC ; ///< Counter of Dbar hadron (gen)
+   GenCounters::BHadronCNames m_bHadCNames{}; ///< Array of B counter names
 
-  /// Counter of D hadron (accepted)
-  GenCounters::DHadronCounter m_cHadCAccepted ;
-  
-  /// Counter of D hadron (accepted) 
-  GenCounters::DHadronCounter m_anticHadCAccepted ;
-  
-  /// Array of D counter names
-  GenCounters::DHadronCNames m_cHadCNames ;
+   /// Array of anti-B hadrons names
+   GenCounters::BHadronCNames m_antibHadCNames{};
 
-  /// Array of anti-D counter names
-  GenCounters::DHadronCNames m_anticHadCNames ;
+   GenCounters::DHadronCounter m_cHadC{}; ///< Counter of D hadron (generated)
 
-  unsigned int m_ccCounter ; ///< Counter for cc quarkonium (generated)
+   GenCounters::DHadronCounter m_anticHadC{}; ///< Counter of Dbar hadron (gen)
 
-  unsigned int m_bbCounter ; ///< Counter for bb quarkonium (generated)
+   /// Counter of D hadron (accepted)
+   GenCounters::DHadronCounter m_cHadCAccepted{};
 
-  unsigned int m_ccCounterAccepted ; ///< Counter for cc (accepted)
+   /// Counter of D hadron (accepted)
+   GenCounters::DHadronCounter m_anticHadCAccepted{};
 
-  unsigned int m_bbCounterAccepted ; ///<< Counter for bb (accepted)
-  
-  GenCounters::ExcitedCounter m_bExcitedC ; ///< Counter of B(**) (generated)
+   /// Array of D counter names
+   GenCounters::DHadronCNames m_cHadCNames{};
 
-  GenCounters::ExcitedCounter m_cExcitedC ; ///< Counter of D(**) (generated)
+   /// Array of anti-D counter names
+   GenCounters::DHadronCNames m_anticHadCNames{};
 
-  /// Counter of B(**) (accepted)
-  GenCounters::ExcitedCounter m_bExcitedCAccepted ;
-  
-  /// Counter of D(**) (accepted)
-  GenCounters::ExcitedCounter m_cExcitedCAccepted ;
-  
-  GenCounters::ExcitedCNames m_bExcitedCNames ; ///< Names excited B counters
+   std::atomic_uint m_ccCounter{}; ///< Counter for cc quarkonium (generated)
 
-  GenCounters::ExcitedCNames m_cExcitedCNames ; ///< Names excited D counters
+   std::atomic_uint m_bbCounter{}; ///< Counter for bb quarkonium (generated)
+
+   std::atomic_uint m_ccCounterAccepted{}; ///< Counter for cc (accepted)
+
+   std::atomic_uint m_bbCounterAccepted{}; ///<< Counter for bb (accepted)
+
+   GenCounters::ExcitedCounter m_bExcitedC{}; ///< Counter of B(**) (generated)
+
+   GenCounters::ExcitedCounter m_cExcitedC{}; ///< Counter of D(**) (generated)
+
+   /// Counter of B(**) (accepted)
+   GenCounters::ExcitedCounter m_bExcitedCAccepted{};
+
+   /// Counter of D(**) (accepted)
+   GenCounters::ExcitedCounter m_cExcitedCAccepted{};
+
+   GenCounters::ExcitedCNames m_bExcitedCNames{}; ///< Names excited B counters
+
+   GenCounters::ExcitedCNames m_cExcitedCNames{}; ///< Names excited D counters
 };
 #endif // GENERATORS_INCLUSIVE_H

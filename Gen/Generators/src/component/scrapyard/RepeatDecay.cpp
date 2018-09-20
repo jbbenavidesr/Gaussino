@@ -4,9 +4,6 @@
 // local
 #include "RepeatDecay.h"
 
-// from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-
 // from Generators
 #include "GenInterfaces/ISampleGenerationTool.h"
 #include "GenEvent/HepMCUtils.h"
@@ -19,7 +16,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( RepeatDecay )
+DECLARE_COMPONENT( RepeatDecay )
 
 //=======================================================
 // Standard constructor, initializes variables
@@ -65,8 +62,8 @@ StatusCode RepeatDecay::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //===================================================
 bool RepeatDecay::generate( const unsigned int nPileUp , 
-                            LHCb::HepMCEvents * theEvents , 
-                            LHCb::GenCollisions * theCollisions ) {
+                            std::vector<HepMC::GenEvent> & theEvents , 
+                            LHCb::GenCollisions & theCollisions ) {
   bool result = false ;
 
   if ( ( m_theMemorizedEvents.empty() ) || 
@@ -78,33 +75,31 @@ bool RepeatDecay::generate( const unsigned int nPileUp ,
     result = m_baseTool -> generate( nPileUp , theEvents , theCollisions ) ;  
     if ( result ) {
       // Erase decays before storing the event
-      LHCb::HepMCEvents::iterator it ;
-      std::vector< HepMC::GenParticle * > eraseList ;
+      std::vector< HepMC::GenParticlePtr > eraseList ;
       
-      for ( it = theEvents -> begin() ; it != theEvents -> end() ; ++it ) {
-        HepMC::GenEvent * ev = (*it) -> pGenEvt() ;
-        for ( HepMC::GenEvent::particle_iterator itP = ev -> particles_begin()
-                ; itP != ev -> particles_end() ; ++itP ) {
+      //Loop over events
+      for ( auto & event :  theEvents ) {
+        //Loop over particles
+        for ( auto & particle : event.particles() ) {
+          // identify particles where switch to EvtGen occured
           if ( LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen ==
-               (*itP) -> status() )
-            eraseList.push_back( (*itP) ) ;
+               particle -> status() )
+            eraseList.push_back( particle ) ;
         }
       }
       
-      for ( std::vector< HepMC::GenParticle * >::iterator part = 
-              eraseList.begin() ;
-            part != eraseList.end() ; ++part ) 
-        HepMCUtils::RemoveDaughters( (*part) ) ;
+      for ( auto & particle : eraseList ) 
+        HepMCUtils::RemoveDaughters( particle ) ;
 
-      copyEvents( theEvents , &m_theMemorizedEvents ) ;
-      copyCollisions( theCollisions , &m_theMemorizedCollisions , theEvents ) ;
+      copyEvents( theEvents , m_theMemorizedEvents ) ;
+      copyCollisions( theCollisions , m_theMemorizedCollisions , theEvents ) ;
     }
   } else {
     ++m_nRedecay ;
     
-    copyEvents( &m_theMemorizedEvents , theEvents ) ;
-    copyCollisions( &m_theMemorizedCollisions , theCollisions , 
-                    &m_theMemorizedEvents ) ;
+    copyEvents( m_theMemorizedEvents , theEvents ) ;
+    copyCollisions( m_theMemorizedCollisions , theCollisions , 
+                    m_theMemorizedEvents ) ;
     result = true ;
   }
   
@@ -121,13 +116,12 @@ void RepeatDecay::printCounters( ) const {
 //===================================================
 // Copy a HepMCEvent to another
 //===================================================
-void RepeatDecay::copyEvents( LHCb::HepMCEvents * from , 
-                              LHCb::HepMCEvents * to ) {
+void RepeatDecay::copyEvents( std::vector<HepMC::GenEvent> & from , 
+                              std::vector<HepMC::GenEvent> & to ) {
   // Erase the event where to copy
-  to -> clear() ;
+  to.clear() ;
 
-  LHCb::HepMCEvents::iterator it ;
-  for ( it = from -> begin() ; it != from -> end() ; ++it ) {
+  for ( auto & event : from ) {
     LHCb::HepMCEvent * theHepMCEvent = new LHCb::HepMCEvent( ) ;
     theHepMCEvent -> setGeneratorName( (*it) -> generatorName() ) ;
     (*theHepMCEvent -> pGenEvt()) = (*(*it) -> pGenEvt()) ;

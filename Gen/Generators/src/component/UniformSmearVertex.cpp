@@ -5,13 +5,16 @@
 #include "UniformSmearVertex.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
-#include "GaudiKernel/IRndmGenSvc.h" 
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
-// from Event
-#include "Event/HepMCEvent.h"
+// from HepMC
+#include "HepMC/GenEvent.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : UniformSmearVertex
@@ -22,7 +25,7 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Tool Factory
-DECLARE_TOOL_FACTORY( UniformSmearVertex )
+DECLARE_COMPONENT( UniformSmearVertex )
 
 
 //=============================================================================
@@ -59,11 +62,6 @@ StatusCode UniformSmearVertex::initialize( ) {
   m_deltaz =  m_zmax - m_zmin       ;
   m_rmaxsq = m_rmax*m_rmax          ;
 
-  IRndmGenSvc* randSvc = svc< IRndmGenSvc >( "RndmGenSvc" , true ) ;
-  sc = m_flatDist.initialize( randSvc , Rndm::Flat( 0.0 , 1.0 ) ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Could not initialize flat random number generator" ) ;
-
   std::string infoMsg = " applying TOF of interaction with ";
   if ( m_zDir == -1 ) {
     infoMsg = infoMsg + "negative beam direction";
@@ -88,8 +86,6 @@ StatusCode UniformSmearVertex::initialize( ) {
            << m_zmin / Gaudi::Units::mm << " mm <= z <= " 
            << m_zmax / Gaudi::Units::mm << " mm." << endmsg;
   }
-
-  release( randSvc ) ;
  
   return sc ;
 }
@@ -97,28 +93,21 @@ StatusCode UniformSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode UniformSmearVertex::smearVertex( LHCb::HepMCEvent * theEvent ) {
+StatusCode UniformSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
   double dx , dy , dz, dt, rsq, r, th ;
   
+  CLHEP::RandFlat flatDist{engine, 0, 1};
   // generate flat in z, r^2 and theta:
-  dz  = m_deltaz   * m_flatDist( ) + m_zmin ;
-  rsq = m_rmaxsq   * m_flatDist( )          ;
-  th  = Gaudi::Units::twopi * m_flatDist( ) ;
+  dz  = m_deltaz   * flatDist( ) + m_zmin ;
+  rsq = m_rmaxsq   * flatDist( )          ;
+  th  = Gaudi::Units::twopi * flatDist( ) ;
   r   = sqrt(rsq) ;
   dx  = r*cos(th) ;  
   dy  = r*sin(th) ;
   dt  = m_zDir * dz/Gaudi::Units::c_light ;
-  Gaudi::LorentzVector dpos( dx , dy , dz , dt ) ;
+  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
   
-  HepMC::GenEvent::vertex_iterator vit ;
-  HepMC::GenEvent * pEvt = theEvent -> pGenEvt() ;
-  for ( vit = pEvt -> vertices_begin() ; vit != pEvt -> vertices_end() ; 
-        ++vit ) {
-    Gaudi::LorentzVector pos ( (*vit) -> position() ) ;
-    pos += dpos ;
-    (*vit) -> set_position( HepMC::FourVector( pos.x() , pos.y() , pos.z() ,
-                                               pos.t() ) ) ;
-  }
+  theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      
 }

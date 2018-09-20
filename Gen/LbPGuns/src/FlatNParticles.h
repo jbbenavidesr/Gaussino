@@ -5,12 +5,12 @@
 // Include files
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/RndmGenerators.h"
 
 #include "GenInterfaces/IPileUpTool.h"
 
-// forward declaration
-class IRndmGenSvc ;
+namespace CLHEP{
+  class HepRandomEngine;
+}
 
 /** @class FlatNParticles FlatNParticles.h "FlatNParticles.h"
  *  
@@ -35,7 +35,7 @@ public:
    *  Returns the number of particles in one event. It follows
    *  a flat distribution 
    */
-  virtual unsigned int numberOfPileUp( ) ;
+  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) { ; } ; 
@@ -45,7 +45,5 @@ protected:
 private:
   unsigned int m_minNumberOfParticles ; ///< Minimum number of particles (set by options)
   unsigned int m_maxNumberOfParticles ; ///< Maximum number of particles (set by options)
-  
-  Rndm::Numbers m_flatGenerator ; ///< Flat random number generator
 };
 #endif // PARTICLEGUNS_FLATNPARTICLES_H

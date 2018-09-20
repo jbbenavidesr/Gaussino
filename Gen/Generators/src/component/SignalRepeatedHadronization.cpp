@@ -5,16 +5,17 @@
 #include "SignalRepeatedHadronization.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // from Kernel
 #include "Kernel/ParticleID.h"
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // From HepMC
 #include "HepMC/GenParticle.h"
 #include "HepMC/GenEvent.h"
+#include "HepMCUser/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -32,18 +33,8 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( SignalRepeatedHadronization )
+DECLARE_COMPONENT( SignalRepeatedHadronization )
 
-
-//=============================================================================
-// Standard constructor, initializes variables
-//=============================================================================
-SignalRepeatedHadronization::SignalRepeatedHadronization( 
-  const std::string& type, const std::string& name, const IInterface* parent )
-  : Signal( type, name , parent ) { 
-    declareProperty( "MaxNumberOfRepetitions" , 
-                     m_maxNumberOfRepetitions = 500 ) ; 
-  }
 
 //=============================================================================
 // Destructor
@@ -74,9 +65,9 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
-                                            LHCb::HepMCEvents * theEvents , 
-                                            LHCb::GenCollisions * 
-                                            theCollisions ) {
+                                            std::vector<HepMC::GenEvent> & theEvents , 
+                                            LHCb::GenCollisions & 
+                                            theCollisions , CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   bool gotSignalInteraction = false ;
 
@@ -91,7 +82,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
-  HepMC::GenParticle * theSignal ;
+  HepMC::GenParticlePtr theSignal ;
 
   IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
   std::string FSRName = LHCb::GenFSRLocation::Default;
@@ -102,14 +93,14 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
     bool partonEventWithSignalQuarks = false ;
     ParticleVector theQuarkList ;
 
-    prepareInteraction( theEvents , theCollisions , theGenEvent , 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent , 
                         theGenCollision ) ;
 
     if ( ! gotSignalInteraction ) m_productionTool -> turnOffFragmentation( ) ;
 
     if (i==0 && ! gotSignalInteraction) theGenCollision -> setIsSignal( true ) ;
 
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
  
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
@@ -137,7 +128,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
         if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
 
           // establish correct multiplicity of signal
-          if ( ensureMultiplicity( theParticleList.size() ) ) {            
+          if ( ensureMultiplicity( theParticleList.size() , engine ) ) {            
             
             // If there are several particles passing the cuts, choose one  
             // and revert event if it has pz < 0 
@@ -147,7 +138,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
             hasFlipped = false ;
 	    hasFailed  = false ;
             theSignal = chooseAndRevert( theParticleList , isInverted , 
-                                         hasFlipped , hasFailed ) ;
+                                         hasFlipped , hasFailed , engine ) ;
 
 	    if ( hasFailed ) {
 	      Error( "Skip Event" ) ;
@@ -203,8 +194,9 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                     Exception( "Cannot isolate signal" ) ;
                 }
                 
-                theGenEvent -> 
-                  set_signal_process_vertex( theSignal -> end_vertex() ) ;
+
+                theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
+                    std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
                 
                 // theGenCollision -> setIsSignal( true ) ;
                 
@@ -284,13 +276,6 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 //=============================================================================
 void SignalRepeatedHadronization::Clear( HepMC::GenEvent * theEvent ) const {
   if ( ! theEvent -> vertices_empty() ) {
-    std::vector< HepMC::GenVertex * > tempList( theEvent -> vertices_begin() ,
-                                                theEvent -> vertices_end() ) ;
-    std::vector< HepMC::GenVertex * >::iterator iter ;
-    for ( iter = tempList.begin() ; iter != tempList.end() ; ++iter ) {
-      if ( ! theEvent -> remove_vertex( *iter ) ) 
-        Exception( "Could not remove vertex !" ) ;
-      delete (*iter) ;
-    }
+    theEvent->clear();
   }
 }

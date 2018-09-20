@@ -1,49 +1,62 @@
-// $Id: GenMonitorAlg.h,v 1.7 2009-12-17 19:29:19 gcorti Exp $
-#ifndef GAUSSMONITOR_GENMONITORALG_H 
-#define GAUSSMONITOR_GENMONITORALG_H 1
+#pragma once
 
 // Include files
 // from STL
+#include <atomic>
+#include <mutex>
 #include <string>
 
 // from Gaudi
+#include "Defaults/Locations.h"
+#include "GaudiAlg/Consumer.h"
+#include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/GaudiHistoAlg.h"
+#include "HepMC/GenEvent.h"
 
 // from AIDA
 #include "AIDA/IHistogram1D.h"
 #include "AIDA/IHistogram2D.h"
 
 /** @class GenMonitorAlg GenMonitorAlg.h Algorithms/GenMonitorAlg.h
- *  
+ *
  *  Monitoring algorithms for the generator sequences
- *  
+ *
  *  @author Patrick Robbe (modified G.Corti)
  *  @date   2005-04-11
+ *
+ *  Modifications for function framework and HepMC3
+ *
+ *  @author Dominik Muller
+ *  @date   2018-03-08
  */
-class GenMonitorAlg : public GaudiHistoAlg {
+class GenMonitorAlg : public Gaudi::Functional::Consumer<void( const std::vector<HepMC::GenEvent>& ),
+                                                         Gaudi::Functional::Traits::BaseClass_t<GaudiHistoAlg>>
+{
 public:
   /// Standard constructor
-  GenMonitorAlg( const std::string& name, ISvcLocator* pSvcLocator );
+  GenMonitorAlg( const std::string& name, ISvcLocator* pSvcLocator )
+      : Consumer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}} )
+  {
+    setProduceHistos( false );
+  };
 
-  virtual ~GenMonitorAlg( ); ///< Destructor
+  virtual ~GenMonitorAlg() = default; ///< Destructor
 
-  virtual StatusCode initialize();    ///< Algorithm initialization
-  virtual StatusCode execute   ();    ///< Algorithm execution
-  virtual StatusCode finalize  ();    ///< Algorithm finalization
+  void operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  virtual StatusCode finalize() override; ///< Algorithm finalization
+  virtual StatusCode initialize() override; ///< Algorithm finalization
 
 protected:
-  void bookHistos();                  ///< Book histograms
-  
-private:
-  std::string    m_dataPath;            ///< location of input data
-  double         m_minEta;              ///< Min pseudo rapidity acceptance
-  double         m_maxEta;              ///< Max pseudo rapidity acceptance
+  void bookHistos(); ///< Book histograms
 
-  int            m_counter       , m_counterstable;
-  int            m_counterCharged, m_counterChInEta;
-  int            m_nEvents;
-  
-  std::string    m_generatorName;
+private:
+  mutable std::atomic<int> m_counter{0};
+  mutable std::atomic<int> m_counterstable{0};
+  mutable std::atomic<int> m_counterCharged{0};
+  mutable std::atomic<int> m_counterChInEta{0};
+  mutable std::atomic<int> m_nEvents{0};
+
+  mutable std::mutex m_histo_lock;
 
   AIDA::IHistogram1D* m_hNPart;
   AIDA::IHistogram1D* m_hNStable;
@@ -67,5 +80,7 @@ private:
   AIDA::IHistogram2D* m_hPrimXvsZ;
   AIDA::IHistogram2D* m_hPrimYvsZ;
 
+  Gaudi::Property<double> m_minEta{this, "MinEta", 2.0};
+  Gaudi::Property<double> m_maxEta{this, "MaxEta", 4.9};
+  Gaudi::Property<std::string> m_generatorName{this, "ApplyTo", ""};
 };
-#endif // GAUSSMONITOR_GENMONITORALG_H

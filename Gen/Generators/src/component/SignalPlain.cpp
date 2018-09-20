@@ -5,21 +5,21 @@
 #include "SignalPlain.h"
 
 // from Gaudi
-#include "GaudiKernel/DeclareFactoryEntries.h"
 
 // Event 
-#include "Event/HepMCEvent.h"
-#include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
 
 // Kernel
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
 #include "GenEvent/HepMCUtils.h"
+
+#include "HepMCUser/VertexAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalPlain
@@ -29,7 +29,7 @@
 
 // Declaration of the Tool Factory
 
-DECLARE_TOOL_FACTORY( SignalPlain )
+DECLARE_COMPONENT( SignalPlain )
 
 
 //=============================================================================
@@ -48,8 +48,9 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            LHCb::HepMCEvents * theEvents , 
-                            LHCb::GenCollisions * theCollisions ) {
+                            std::vector<HepMC::GenEvent> & theEvents , 
+                            LHCb::GenCollisions & theCollisions ,
+                            CLHEP::HepRandomEngine & engine ) {
   StatusCode sc ;
   bool result = false ;
   // Memorize if the particle is inverted
@@ -65,10 +66,10 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   int key = 0;  
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( theEvents , theCollisions , theGenEvent, 
+    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
                         theGenCollision ) ;
     
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision ) ;
+    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
     if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
 
     if ( ! result ) {
@@ -80,14 +81,14 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
       if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
 
         // establish correct multiplicity of signal
-        if ( ensureMultiplicity( theParticleList.size() ) ) {
+        if ( ensureMultiplicity( theParticleList.size() , engine ) ) {
 
           // choose randomly one particle and force the decay
           hasFlipped = false ;
           isInverted = false ;
           hasFailed  = false ;
-          HepMC::GenParticle * theSignal =
-            chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed ) ;
+          HepMC::GenParticlePtr theSignal =
+            chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
             Error( "Skip event" ) ;
@@ -133,8 +134,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
                 sc = isolateSignal( theSignal ) ;
                 if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
               }
-              theGenEvent -> 
-                set_signal_process_vertex( theSignal -> end_vertex() ) ;
+              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
               
               theGenCollision -> setIsSignal( true ) ;
               

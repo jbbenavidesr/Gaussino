@@ -15,15 +15,20 @@
  *  @date   2005-08-18
  */
 class SignalRepeatedHadronization : public Signal {
+private:
+  /// Maximum number of allowed repetitions of hadronization (set by options)
+  Gaudi::Property<unsigned int> m_maxNumberOfRepetitions{this, "MaxNumberOfRepetitions" , 500}; 
+
 public:
   /// Standard constructor
-  SignalRepeatedHadronization( const std::string& type, 
-                               const std::string& name,
-                               const IInterface* parent);
-  
+  SignalRepeatedHadronization( const std::string& type, const std::string& name, const IInterface* parent )
+      : Signal( type, name, parent )
+  {
+  }
+
   virtual ~SignalRepeatedHadronization( ); ///< Destructor
 
-  virtual StatusCode initialize( ) ; ///< Initialize
+  virtual StatusCode initialize( ) override; ///< Initialize
   
   /** Generate events with at least one interaction containing the signal
    *  Implements ISampleGenerationTool::generate.
@@ -43,17 +48,15 @@ public:
    *     again and is not kept).
    */
   virtual bool generate( const unsigned int nPileUp , 
-                         LHCb::HepMCEvents * theEvents ,
-                         LHCb::GenCollisions * theCollisions ) ;
+                         std::vector<HepMC::GenEvent> & theEvents ,
+                         LHCb::GenCollisions & theCollisions ,
+                         CLHEP::HepRandomEngine & engine ) override;
 
 protected:
   /// Delete full content of an event
   void Clear( HepMC::GenEvent * theEvent ) const ;
   
 private:
-  /// Maximum number of allowed repetitions of hadronization (set by options)
-  unsigned int  m_maxNumberOfRepetitions ;
-
   /// List of quarks of signal particles to generate
   PIDs          m_pidQuarks        ;
 };
