@@ -31,8 +31,6 @@ class IronBoxGeo : public Service, virtual public IGiGaMTGeoSvc
 protected:
   using Service::Service;
 
-  virtual ~IronBoxGeo(){};
-
 public:
   StatusCode initialize() override {return Service::initialize();}
   StatusCode finalize() override {return Service::finalize();}
