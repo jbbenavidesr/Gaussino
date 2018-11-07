@@ -43,6 +43,34 @@ def beaminfoService(name=Configurable.DefaultName):
     from Configurables import BeamInfoSvc, ApplicationMgr
     log.info("Configuring BeamInfoSvc")
     svc = BeamInfoSvc()
+
+    from GaudiKernel import SystemOfUnits
+    beamMom = 6.5*SystemOfUnits.TeV
+    xAngle = -0.395*SystemOfUnits.mrad
+    yAngle = 0.000*SystemOfUnits.mrad
+    xAngleBeamLine, yAngleBeamLine = [0.0, 0.0]
+    emittance = 0.0050*SystemOfUnits.mm
+    betaStar = 3.0*SystemOfUnits.m
+    lumiPerBunch = 0.177*(10**30)/(SystemOfUnits.cm2*SystemOfUnits.s)
+    totCrossSection = 101.5*SystemOfUnits.millibarn
+    meanX, meanY, meanZ = [0.788*SystemOfUnits.mm,
+                           0.091*SystemOfUnits.mm,
+                           8.64*SystemOfUnits.mm]
+    sigmaS = 55.58*SystemOfUnits.mm
+
+    # svc.BeamEnergy = beamMom
+    # svc.HorizontalCrossingAngle = xAngle
+    # svc.VerticalCrossingAngle = yAngle
+    # svc.NormalizedEmittance = emittance
+    # svc.BetaStar = betaStar
+    # svc.HorizontalBeamlineAngle = xAngleBeamLine
+    # svc.VerticalBeamlineAngle = yAngleBeamLine
+    # svc.Luminosity = lumiPerBunch
+    # svc.TotalCrossSection = totCrossSection
+    # svc.XLuminousRegion = meanX
+    # svc.YLuminousRegion = meanY
+    # svc.ZLuminousRegion = meanZ
+    # svc.BunchLengthRMS = sigmaS
     ApplicationMgr().ExtSvc += [svc]
     return svc
 

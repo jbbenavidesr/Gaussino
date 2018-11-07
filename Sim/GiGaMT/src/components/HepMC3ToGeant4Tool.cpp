@@ -42,7 +42,7 @@ G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<HepMC::GenEvent>& hepmc_
         tmp = particle->momentum();
         //HepMC::Units::convert( tmp, genEvt.momentum_unit(), HepMC::Units::MEV );
         G4PrimaryParticle* g4Particle =
-            new G4PrimaryParticle( particle->pdg_id(), tmp.px() * MeV, tmp.py() * MeV, tmp.pz() * MeV );
+            new G4PrimaryParticle( particle->pdg_id(), tmp.px() * GeV, tmp.py() * GeV, tmp.pz() * GeV );
         g4Vertex->SetPrimary( g4Particle );
         g4Event->AddPrimaryVertex( g4Vertex );
       }

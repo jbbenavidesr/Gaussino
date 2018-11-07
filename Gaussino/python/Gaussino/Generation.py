@@ -76,15 +76,12 @@ class GenPhase(ConfigurableUser):
         # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()
 
-        # Algorithm to make some monitoring histograms
-        gen_moni = configure_gen_monitor()
-
         seq = GaudiSequencer('GenerationPhase')
         # seq.Members = [rnd_init, prod_alg]
         seq.Members = [rnd_init, prod_alg]
         if self.getProp('GenMonitor'):
             gen_moni = configure_gen_monitor()
-            seq.Members = [rnd_init, gen_moni]
+            seq.Members += [gen_moni]
         if self.getProp('WriteHepMC'):
             seq.Members += [configure_hepmc_writer()]
         # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
