@@ -9,6 +9,7 @@
 #include "Defaults/Locations.h"
 #include "Event/GenHeader.h"
 #include "NewRnd/RndAlgSeeder.h"
+#include "Utils/LocalTL.h"
 
 /** @class GenRndInit GenRndInit.h
  *
@@ -19,7 +20,7 @@
  *  @author Dominik Muller
  *  @date   2018-01-29
  */
-class GenRndInit : public Gaudi::Functional::Producer<LHCb::GenHeader()>
+class GenRndInit : public Gaudi::Functional::Producer<LHCb::GenHeader(), Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>>
 {
 private:
   Gaudi::Property<int> m_skipFactor{this, "SkipFactor", 0, "skip some random numbers"};
@@ -46,10 +47,15 @@ public:
   virtual LHCb::GenHeader operator()() const override;
 
 protected:
-  /// Return number of events processed
-  long increaseEventCounter() const { return m_evtCounter++; }
-  /// Return number of events processed
-  long eventCounter() const { return m_evtCounter; }
+  /// Increment atomic number of events processed and store result
+  /// in a thread and instance local variable
+  long increaseEventCounter() const
+  {
+    m_localCounter = ++m_evtCounter;
+    return m_localCounter.get();
+  }
+  /// Return number of events processed using the thread_local variable
+  long eventCounter() const { return m_localCounter.get(); }
 
   /** Print the run number, event number and optional vector of seeds
    *  @param[in] evt event number
@@ -61,6 +67,7 @@ protected:
 
   mutable std::atomic_long m_evtCounter{0}; ///< Pointer to EventCounter interface
   mutable std::atomic_long m_evtTimingCounter{0}; ///< Pointer to EventCounter interface
+  mutable LocalTL<long> m_localCounter;
   long m_eventMax{0};                       ///< Number of events requested (ApplicationMgr.EvtMax)
   std::string m_appName{""};                ///< Application Name
   std::string m_appVersion{""};             ///< Application Version

@@ -77,12 +77,9 @@ LHCb::GenHeader GenRndInit::operator()() const
   }
 
   // Configure the event information in the event context
-  auto & context = Gaudi::Hive::currentContext();
-  EventIDBase eventid{};
-  eventid.set_event_number( eventNumber );
-  eventid.set_run_number( m_runNumber );
-  const_cast<EventContext&>(context).setEventID( eventid );
-  const_cast<EventContext&>(context).setEvt(eventNumber);
+  // Places the event and run number onto the TES for other algorithms
+  // to access when configuring their random engines.
+  SetSeedPair( eventNumber, m_runNumber );
 
   printEventRun( eventNumber, m_runNumber );
 
