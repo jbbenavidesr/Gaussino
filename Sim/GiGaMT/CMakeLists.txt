@@ -16,6 +16,7 @@ gaudi_depends_on_subdirs(GaudiAlg
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 find_package(HepMC CONFIG)
+find_package(ROOT COMPONENTS MathCore GenVector)
 
 gaudi_add_library(GiGaMTLib
                   src/Lib/*.cpp
@@ -25,4 +26,4 @@ gaudi_add_library(GiGaMTLib
 
 gaudi_add_module(GiGaMT
         src/components/*.cpp
-        LINK_LIBRARIES GiGaMTLib)
+        LINK_LIBRARIES GiGaMTLib ROOT)
