@@ -10,7 +10,7 @@
 
 DECLARE_COMPONENT( MinimalStableInLHCb )
 
-bool MinimalStableInLHCb::studyFullEvent( std::vector<HepMC::GenEvent>& theEvents, LHCb::GenCollisions& ) const
+bool MinimalStableInLHCb::studyFullEvent( const std::vector<HepMC::GenEvent>& theEvents, const LHCb::GenCollisions& ) const
 {
   unsigned int counter = 0;
 
