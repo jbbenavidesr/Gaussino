@@ -10,9 +10,6 @@ from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
 
-from Configurables import GenerationToSimulation
-from Configurables import CheckMCStructure
-
 
 class GenPhase(ConfigurableUser):
 
