@@ -1,6 +1,6 @@
 // Include files
 
-#include "GiGaMTG4PhysicsConstrFAC.h"
+#include "GiGaMTFactories/GiGaMTG4PhysicsConstrFAC.h"
 
 // Geant4 physics lists
 #include "Geant4/G4DecayPhysics.hh"

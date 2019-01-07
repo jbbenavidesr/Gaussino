@@ -9,7 +9,7 @@
 /** GiGaMTPhysConstr
  *
  *  Template classes to integrate physics constructors found in Geant4
- *  into the configurable Gaudi framework by providing jjjjjjjjjjjjjjjjjjjjjj
+ *  into the configurable Gaudi framework by providing
  *
  *  @author Dominik Muller
  *  @date   2018-07-22

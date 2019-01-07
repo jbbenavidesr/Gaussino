@@ -4,30 +4,6 @@
 
 DECLARE_COMPONENT( GiGaMTModularPhysListFAC )
 
-// ============================================================================
-StatusCode GiGaMTModularPhysListFAC::initialize()
-{
-  StatusCode sc = extends::initialize();
-  if ( sc.isFailure() ) {
-    return Error( "Could not initialize base class!", sc );
-  }
-
-  info() << "GiGaMTModularPhysListFAC initializing" << endmsg;
-
-  if ( m_physconstr.empty() ) {
-    return Error( "Invalid/Empty list of Physics constructors" );
-  }
-  for ( auto & constructor: m_physconstr ) {
-    auto theconstr = tool<ConstructorFactory>( constructor, this );
-    if ( !theconstr ) {
-      return StatusCode::FAILURE;
-    }
-    m_constructors.push_back(theconstr);
-  }
-
-  return StatusCode::SUCCESS;
-}
-
 G4VUserPhysicsList* GiGaMTModularPhysListFAC::construct() const
 {
   auto plist = new G4VModularPhysicsList{};

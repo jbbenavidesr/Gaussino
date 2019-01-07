@@ -1,4 +1,4 @@
-#include "GiGaMTG4PhysicsFactory.h"
+#include "GiGaMTFactories/GiGaMTG4PhysicsFactory.h"
 
 // All includes I could find that definethe physics lists
 // that are directly provided by Geant4

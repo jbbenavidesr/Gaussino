@@ -1,6 +1,7 @@
 #pragma once
 // G4
 #include "GaudiAlg/GaudiTool.h"
+#include "GaudiKernel/ToolHandle.h"
 #include "Geant4/G4VPhysicsConstructor.hh"
 #include "Geant4/G4VUserPhysicsList.hh"
 
@@ -18,8 +19,6 @@
 class GiGaMTModularPhysListFAC : public extends<GaudiTool, GiGaFactoryBase<G4VUserPhysicsList>>
 {
 public:
-  Gaudi::Property<std::vector<std::string>> m_physconstr{this, "PhysicsConstructors"};
-  Gaudi::Property<bool> m_dumpCutsTable{this, "DumpCutsTable", false};
   typedef GiGaFactoryBase<G4VPhysicsConstructor> ConstructorFactory;
   typedef std::vector<ConstructorFactory*> ConstructorFactories;
 
@@ -27,11 +26,12 @@ public:
   virtual ~GiGaMTModularPhysListFAC(){};
 
 public:
-  virtual StatusCode initialize() override;
   virtual G4VUserPhysicsList* construct() const override;
 
   //virtual void SetCuts();
 
 private:
-  ConstructorFactories m_constructors;
+
+  ToolHandleArray<ConstructorFactory> m_constructors{this, "PhysicsConstructors", {}};
+  Gaudi::Property<bool> m_dumpCutsTable{this, "DumpCutsTable", false};
 };
