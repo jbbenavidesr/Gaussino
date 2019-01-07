@@ -2,14 +2,11 @@
 
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
-#include "GiGaMTCore/IGiGaMessage.h"
 
 /** GiGaFactoryBase
  *
- *  Base class for all factories of G4 objects which implements
- *  the IGiGaMessage interface to allow the use of the Gaudi
- *  messaging facilities from the factory within the G4 objects.
- *  TODO: That might actually be stupid but whatever ...
+ *  Base class for all factories of G4 objects which defines
+ *  construct interface
  *
  *  @author Dominik Muller
  *  @date   2018-06-04
