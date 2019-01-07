@@ -16,8 +16,8 @@ FindG4libs(digits_hits event geometry global graphics_reps materials persistency
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
-gaudi_add_library(GiGaMTCoreLib
-                 src/*.cpp
+gaudi_add_library(GiGaMTCoreRunLib
+                 src/run/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS CLHEP Geant4 XercesC
                  LINK_LIBRARIES CLHEP ${GEANT4_LIBS} XercesC)
