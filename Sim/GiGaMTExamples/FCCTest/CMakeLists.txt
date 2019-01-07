@@ -26,7 +26,7 @@ find_package(XercesC)
 gaudi_add_library(FCCTest
           src/lib/*.cpp
           INCLUDE_DIRS Geant4 ROOT XercesC SimInterfaces AIDA
-          LINK_LIBRARIES GaudiKernel GaudiAlgLib Geant4 ROOT XercesC GiGaMTCoreLib
+          LINK_LIBRARIES GaudiKernel GaudiAlgLib Geant4 ROOT XercesC GiGaMTCoreRunLib
           PUBLIC_HEADERS FCCTest)
 
 gaudi_add_module(FCCTestPlugins

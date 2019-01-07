@@ -20,14 +20,18 @@ add_definitions(-DG4USE_STD11)
 # GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
 gaudi_add_module(GiGaMTRunFactories
         src/run/*.cpp
-        LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
+        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
 gaudi_add_module(GiGaMTPhysFactories
         src/phys/*.cpp
-        LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
+        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
 gaudi_add_module(GiGaMTDetFactories
         src/det/*.cpp
-        LINK_LIBRARIES GiGaMTCoreLib GaudiAlgLib)
+        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
+
+#gaudi_add_module(GiGaMTSensDetFactories
+        #src/sensdet/*.cpp
+        #LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
 gaudi_install_headers(GiGaMTFactories)

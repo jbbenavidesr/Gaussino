@@ -17,4 +17,4 @@ add_definitions(-DG4USE_STD11)
 gaudi_add_module(IronBoxExample
                   src/*.cpp
                   INCLUDE_DIRS GiGaMTFactories GenInterfaces HepMC
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreLib HepMC)
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib HepMC)

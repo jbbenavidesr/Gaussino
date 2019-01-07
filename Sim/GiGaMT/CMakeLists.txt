@@ -22,7 +22,7 @@ gaudi_add_library(GiGaMTLib
                   src/Lib/*.cpp
                   PUBLIC_HEADERS GiGaMT 
                   INCLUDE_DIRS HepMC GiGaMTFactories SimInterfaces HepMCUser
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreLib HepMC NewRnd)
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib HepMC NewRnd)
 
 gaudi_add_module(GiGaMT
         src/components/*.cpp
