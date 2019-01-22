@@ -65,7 +65,7 @@ public:
   
   /// Generate an event.
   virtual StatusCode generateEvent(HepMC::GenEvent* theEvent, 
-				   LHCb::GenCollision* theCollision , CLHEP::HepRandomEngine & engine );
+				   LHCb::GenCollision* theCollision , HepRandomEnginePtr & engine );
 
   
   /**

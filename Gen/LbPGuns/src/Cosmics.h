@@ -33,7 +33,7 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
   /// Generation of particles
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , int & pdgId ,
-                                 CLHEP::HepRandomEngine & engine ) ;
+                                 HepRandomEnginePtr & engine ) ;
 
 
   /// Print counters

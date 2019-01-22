@@ -35,7 +35,7 @@ class SignalPlain : public Signal {
   virtual bool generate( const unsigned int nPileUp , 
                          std::vector<HepMC::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
-                         CLHEP::HepRandomEngine & engine ) override ;  
+                         HepRandomEnginePtr & engine ) override ;  
 
  private:
 };

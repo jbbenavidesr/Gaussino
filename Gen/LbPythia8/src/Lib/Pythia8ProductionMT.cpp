@@ -240,7 +240,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision,
-                                               CLHEP::HepRandomEngine& engine )
+                                               HepRandomEnginePtr& engine )
 {
   if ( !m_pythia() ) {
     debug() << "Initializing Pythia8 in thread!" << endmsg;
@@ -258,7 +258,7 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
   };
 
   auto pythia = m_pythia();
-  RndForPythia rnd_generator{engine};
+  RndForPythia rnd_generator{engine.getref()};
   pythia->setRndmEnginePtr( &rnd_generator );
   // Generate the event (make 10 attempts).
   int tries( 0 );

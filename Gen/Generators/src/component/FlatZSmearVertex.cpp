@@ -84,10 +84,10 @@ StatusCode FlatZSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
+StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
 
-  CLHEP::RandGauss gaussDist{engine, 0., 1.};
-  CLHEP::RandFlat flatDist{engine, m_zmin ,m_zmax};
+  CLHEP::RandGauss gaussDist{engine.getref(), 0., 1.};
+  CLHEP::RandFlat flatDist{engine.getref(), m_zmin ,m_zmax};
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 

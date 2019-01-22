@@ -42,7 +42,7 @@ public:
    *  The mean luminosity is given in options so the maximum luminosity 
    *  (at t=0) is computed using the fill duration.
    */
-  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) ;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & engine ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) ;

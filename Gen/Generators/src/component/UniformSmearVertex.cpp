@@ -93,10 +93,10 @@ StatusCode UniformSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode UniformSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
+StatusCode UniformSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
   double dx , dy , dz, dt, rsq, r, th ;
   
-  CLHEP::RandFlat flatDist{engine, 0, 1};
+  CLHEP::RandFlat flatDist{engine.getref(), 0, 1};
   // generate flat in z, r^2 and theta:
   dz  = m_deltaz   * flatDist( ) + m_zmin ;
   rsq = m_rmaxsq   * flatDist( )          ;

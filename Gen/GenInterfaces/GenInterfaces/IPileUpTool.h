@@ -8,6 +8,7 @@ namespace CLHEP {
 // Include files
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
+#include "NewRnd/RndCommon.h"
 
 /** @class IPileUpTool IPileUpTool.h "GenInterfaces/IPileUpTool.h"
  *  
@@ -28,7 +29,7 @@ public:
    *  @param[out] currentLuminosity  Luminosity of the current event.
    *  @return Number of pile-up interactions to generate.
    */
-  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) = 0 ;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & engine ) = 0 ;
 
   /// Print various counters at the end of the job
   virtual void printPileUpCounters( ) = 0 ;

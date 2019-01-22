@@ -35,7 +35,7 @@ public:
   /// Specialized method called by base class in execute
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , int & pdgId ,
-                                 CLHEP::HepRandomEngine & engine ) ;
+                                 HepRandomEnginePtr & engine ) ;
 
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -43,13 +43,13 @@ public:
 protected:
   
   /// Generate 3-momentum for a uniformly flat distribution in x-y plane
-  void generateUniformXY(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine );
+  void generateUniformXY(double& px, double& py, double& pz, HepRandomEnginePtr & engine );
   
   /// Generate 3-momentum for a regular grid in x-y plane
   StatusCode generateGridXY(double& px, double& py, double& pz);
 
   /// Generate 3-momentum for a uniformly flat distribution in eta-phi plane
-  void generateUniformEtaPhi(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine );
+  void generateUniformEtaPhi(double& px, double& py, double& pz, HepRandomEnginePtr & engine );
 
   /// Generate 3-momentum for a regular grid in eta-phi plane
   StatusCode generateGridEtaPhi(double& px, double& py, double& pz);

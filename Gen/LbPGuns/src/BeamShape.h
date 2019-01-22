@@ -28,7 +28,7 @@ class BeamShape : public GaudiTool , virtual public IParticleGunTool {
   /// Generate the particle
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
+                                 int & pdgId , HepRandomEnginePtr& engine ) ;
                                  
   /// Print counters
   virtual void printCounters( ) { ; } ;

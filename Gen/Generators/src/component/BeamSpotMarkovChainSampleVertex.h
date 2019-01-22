@@ -42,7 +42,7 @@ public:
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) override;
+  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
 
  private:
 

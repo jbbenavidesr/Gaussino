@@ -283,13 +283,13 @@ HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
                                                theParticleList , 
                                                bool & isInverted ,
                                                bool & hasFlipped , 
-					      bool & hasFailed , CLHEP::HepRandomEngine & engine ) {
+					      bool & hasFailed , HepRandomEnginePtr & engine ) {
   HepMC::GenParticlePtr theSignal ;
   isInverted = false ;
   hasFlipped = false ;
   hasFailed = false ;
 
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
 
   unsigned int nPart = theParticleList.size() ;
   if ( nPart > 1 ) {
@@ -324,11 +324,11 @@ HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
 //=============================================================================
 // Establish correct multiplicity of signal
 //=============================================================================
-bool Signal::ensureMultiplicity( const unsigned int nSignal , CLHEP::HepRandomEngine & engine ) {
+bool Signal::ensureMultiplicity( const unsigned int nSignal , HepRandomEnginePtr & engine ) {
   if ( ! m_cpMixture ) return true ;
   if ( nSignal > 1 ) return true ;
 
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   return ( flatGenerator() >= ( ( 1. - m_signalBr ) / 
                                 ( 2. - m_signalBr ) ) ) ;
 }

@@ -3,6 +3,7 @@
 
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
+#include "NewRnd/RndCommon.h"
 
 namespace HepMC {
   class GenEvent ;
@@ -34,7 +35,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            tree.
    */
   virtual StatusCode generateDecay( HepMC::GenParticle * theMother ,
-                                    CLHEP::HepRandomEngine & engine ) const = 0 ;
+                                    HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Generates the forced decay of a signal particle.
    *  @param[in,out] theMother  Particle to decay according to the forced
@@ -45,7 +46,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    */
   virtual StatusCode generateSignalDecay( HepMC::GenParticle * theMother ,
                                           bool & flip ,
-                                          CLHEP::HepRandomEngine & engine ) const = 0 ;
+                                          HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Generates the decay of a particle, stopping at a given PDG Id.
    *  This allows to generate decay of excited heavy particles, keeping
@@ -62,7 +63,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    */
   virtual StatusCode generateDecayWithLimit( HepMC::GenParticle * theMother ,
                                              const int targetId ,
-                                             CLHEP::HepRandomEngine & engine ) const = 0 ;
+                                             HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Enable the possibility to flip the flavour of the particle in the decay
    *  engine, to generate CP violation.

@@ -117,7 +117,7 @@ StatusCode GenericGun::initialize( ) {
 //===========================================================================
 void GenericGun::generateParticle( Gaudi::LorentzVector & fourMomentum ,
                                    Gaudi::LorentzVector & origin ,
-                                   int & pdgId , CLHEP::HepRandomEngine & engine ) {
+                                   int & pdgId , HepRandomEnginePtr& engine ) {
   // Generate values for pt, eta and phi
   //
   double pt  = generateValue( m_PtGenMode,m_requestedPt, m_sigmaPt,
@@ -147,9 +147,9 @@ void GenericGun::generateParticle( Gaudi::LorentzVector & fourMomentum ,
 //============================================================================
 double GenericGun::generateValue( const int mode, const double val,
                                   const double sigma, const double min,
-                                  const double max, CLHEP::HepRandomEngine & engine ) {
-  CLHEP::RandGauss gaussGenerator{engine, 0, 1};
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+                                  const double max, HepRandomEnginePtr & engine ) {
+  CLHEP::RandGauss gaussGenerator{engine.getref(), 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   double tmp ;
   int i = 0 ;
   const int maxtries = 100 ;

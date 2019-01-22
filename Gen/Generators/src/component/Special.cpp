@@ -86,7 +86,7 @@ StatusCode Special::finalize( ) {
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
                         std::vector<HepMC::GenEvent> & theEvents , 
-                        LHCb::GenCollisions & theCollisions , CLHEP::HepRandomEngine & engine ) {
+                        LHCb::GenCollisions & theCollisions , HepRandomEnginePtr & engine ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -158,7 +158,7 @@ void Special::printCounters( ) const {
 //=============================================================================
 // Generate PileUp Minimum Bias interactions
 //=============================================================================
-void Special::generatePileUp(CLHEP::HepRandomEngine & engine ) {
+void Special::generatePileUp(HepRandomEnginePtr & engine ) {
 
   if ( 0 == m_pileUpProductionTool ) {
     if ( "" != m_pileUpProductionToolName ) {

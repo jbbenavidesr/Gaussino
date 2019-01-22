@@ -67,14 +67,14 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 // Smearing function
 //=============================================================================
 StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ,
-                                             CLHEP::HepRandomEngine & engine ) {
+                                             HepRandomEnginePtr & engine ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beamp ) Exception( "No beam parameters registered" ) ;
 
   double dx , dy , dz;
 
-  CLHEP::RandGauss gaussDist{engine, 0, 1};
+  CLHEP::RandGauss gaussDist{engine.getref(), 0, 1};
   
   do { dx = gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * beamp -> sigmaX() + beamp -> beamSpot().x() ;

@@ -7,6 +7,7 @@ gaudi_depends_on_subdirs(Gen/GenInterfaces
                          Event/GenEvent
                          Kernel/PartProp
                          GaudiAlg
+                         NewRnd
                          HepMCUser
                          Utils
                          Defaults)
@@ -32,7 +33,7 @@ gaudi_add_library(Pythia8ToHepMC3Lib
 gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
-                  INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces Defaults HepMCUser Utils
+                  INCLUDE_DIRS Boost Pythia8 ROOT HepMC Gen/GenInterfaces Defaults HepMCUser Utils NewRnd
                   LINK_LIBRARIES Boost GaudiAlgLib Pythia8 HepMC ROOT PartPropLib LHAPDF Pythia8ToHepMC3Lib)
 
 gaudi_add_module(LbPythia8

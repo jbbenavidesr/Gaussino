@@ -65,11 +65,11 @@ StatusCode BeamSpotSmearVertexWithSvc::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
+StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
 
   double dx , dy , dz;
 
-  CLHEP::RandGauss gaussDist{engine, 0, 1};
+  CLHEP::RandGauss gaussDist{engine.getref(), 0, 1};
   
   do { dx = gaussDist( ) ; } while ( fabs( dx ) > m_xcut ) ;
   dx = dx * m_beaminfosvc -> sigmaX() + m_beaminfosvc -> beamSpot().x() ;

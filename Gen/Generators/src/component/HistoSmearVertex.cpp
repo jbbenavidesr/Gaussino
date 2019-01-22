@@ -82,9 +82,7 @@ StatusCode HistoSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & ) {
-  //FIXME: This is only temporary until we can replace the internally used random engine.
-  return Error("Unsupported. Need to correctly use random engine!");
+StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & ) {
   double dx , dy , dz , dt ;
   m_hist->GetRandom3(dx,dy,dz);
 

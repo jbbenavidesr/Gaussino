@@ -148,7 +148,7 @@ protected:
   HepMC::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
                                          bool & isInverted , 
                                          bool & hasFlipped ,
-					bool & hasFailed , CLHEP::HepRandomEngine & engine) ;
+					bool & hasFailed , HepRandomEnginePtr & engine) ;
 
   /** Ensures correct multiplicity of signal particles with an accept/reject
    *  algorithm.
@@ -157,7 +157,7 @@ protected:
    *  @return true if the event has to kept.
    *  @return false if the event has to be rejected.
    */
-  bool ensureMultiplicity( const unsigned int nSignal , CLHEP::HepRandomEngine & engine) ;
+  bool ensureMultiplicity( const unsigned int nSignal , HepRandomEnginePtr & engine) ;
 
   /** Update counters for efficiency calculations.
    *  @param[in]  particleList         List of particles to count.

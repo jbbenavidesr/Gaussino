@@ -126,7 +126,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
   auto engine = createRndmEngine();
   ThreadLocalEngine::Guard guard(engine);
   // Create a flat random generator to replace RandomForGenerator singleton
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{*engine.get(), 0, 1};
   StatusCode sc = StatusCode::SUCCESS ;
 
   // Get the header and update the information

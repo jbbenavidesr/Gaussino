@@ -37,11 +37,11 @@ StatusCode PoissonPileUp::initialize() {
   return sc;
 }
 
-unsigned int PoissonPileUp::numberOfPileUp(CLHEP::HepRandomEngine & engine) {
+unsigned int PoissonPileUp::numberOfPileUp(HepRandomEnginePtr & engine) {
   
   unsigned int result = 0;
 
-  CLHEP::RandPoisson poissonGenerator{engine, m_mean};
+  CLHEP::RandPoisson poissonGenerator{engine.getref(), m_mean};
 
   while (0 == result) {
     m_nEvents++;

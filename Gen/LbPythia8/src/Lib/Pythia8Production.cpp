@@ -255,7 +255,7 @@ StatusCode Pythia8Production::finalize() {
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8Production::generateEvent(HepMC::GenEvent* theEvent,
-					    LHCb::GenCollision* theCollision, CLHEP::HepRandomEngine & engine ) {
+					    LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine ) {
 
   // Not very elegant but need to stop Pythia8 from being accessed concurrently
   std::lock_guard<std::mutex> lock(m_pythia_lock);
@@ -269,7 +269,7 @@ StatusCode Pythia8Production::generateEvent(HepMC::GenEvent* theEvent,
       CLHEP::RandFlat m_gen;
   };
 
-  RndForPythia rnd_generator{engine};
+  RndForPythia rnd_generator{engine.getref()};
   m_pythia->setRndmEnginePtr(&rnd_generator);
   // Generate the event (make 10 attempts).
   int tries(0);

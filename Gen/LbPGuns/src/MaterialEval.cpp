@@ -162,7 +162,7 @@ StatusCode MaterialEval::initialize() {
 //=============================================================================
 void MaterialEval::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                      Gaudi::LorentzVector & origin ,
-                                     int & pdgId , CLHEP::HepRandomEngine & engine ) {
+                                     int & pdgId , HepRandomEnginePtr & engine ) {
   double px( 0. ), py( 0. ), pz( 0. );
   StatusCode sc ;
   
@@ -188,9 +188,9 @@ void MaterialEval::generateParticle( Gaudi::LorentzVector & fourMomentum ,
 //=============================================================================
 // Generation of a uniformly flat distribution in x-y plane
 //=============================================================================
-void MaterialEval::generateUniformXY( double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine ){
+void MaterialEval::generateUniformXY( double& px, double& py, double& pz, HepRandomEnginePtr & engine ){
 
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
  
   double x = flatGenerator() * ( m_xmax - m_xmin ) + m_xmin - m_xVtx;
   double y = flatGenerator() * ( m_ymax - m_ymin ) + m_ymin - m_yVtx;
@@ -253,9 +253,9 @@ StatusCode MaterialEval::generateGridXY( double& px, double& py, double& pz) {
 //=============================================================================
 // Generate 3-momentum for a uniformly flat distribution in eta-phi plane
 //=============================================================================
-void MaterialEval::generateUniformEtaPhi(double& px, double& py, double& pz, CLHEP::HepRandomEngine & engine ) {
+void MaterialEval::generateUniformEtaPhi(double& px, double& py, double& pz, HepRandomEnginePtr & engine ) {
   
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   double eta, phi, theta;
   
   eta = flatGenerator() * ( m_maxEta - m_minEta ) + m_minEta;

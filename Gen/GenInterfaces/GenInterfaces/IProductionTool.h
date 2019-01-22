@@ -5,15 +5,12 @@
 // Include files
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
+#include "NewRnd/RndCommon.h"
 
 // Forward declarations
 namespace HepMC { class GenEvent ; }
 namespace LHCb { class GenCollision ; 
   class ParticleProperty ;
-}
-
-namespace CLHEP {
-  class HepRandomEngine;
 }
 
 
@@ -43,7 +40,7 @@ public:
    */
   virtual StatusCode generateEvent( HepMC::GenEvent * theEvent , 
                                     LHCb::GenCollision * theInfo,
-                                    CLHEP::HepRandomEngine & engine) = 0 ;
+                                    HepRandomEnginePtr & engine) = 0 ;
 
   /// Declare a particle stable to the production generator.
   virtual void setStable( const LHCb::ParticleProperty * thePP ) = 0 ;

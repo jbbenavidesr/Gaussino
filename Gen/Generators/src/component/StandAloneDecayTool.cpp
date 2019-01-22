@@ -67,7 +67,7 @@ StatusCode StandAloneDecayTool::initialize() {
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
                                     std::vector<HepMC::GenEvent> & theEvents ,
                                     LHCb::GenCollisions & theCollisions ,
-                                    CLHEP::HepRandomEngine & engine ) {
+                                    HepRandomEnginePtr & engine ) {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC::GenEvent * theGenEvent( 0 ) ;
@@ -90,7 +90,7 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     
     bool flip( false ) ;
 
-    CLHEP::RandFlat flatGenerator{engine, 0, 1};
+    CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
     
     int thePID = *m_pids.begin() ;
     if ( m_cpMixture ) {

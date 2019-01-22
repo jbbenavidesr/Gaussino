@@ -65,10 +65,10 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
                                           std::vector<HepMC::GenEvent> & theEvents ,
                                           LHCb::GenCollisions & theCollisions ,
-                                          CLHEP::HepRandomEngine & engine )
+                                          HepRandomEnginePtr & engine )
 {
   StatusCode sc ;
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
 
   // first decay signal particle
   HepMC::GenEvent * theSignalHepMCEvent = new HepMC::GenEvent( ) ;

@@ -32,7 +32,7 @@ class FixedMomentum : public GaudiTool , virtual public IParticleGunTool {
   /// Generation of particles
   virtual void generateParticle( Gaudi::LorentzVector & momentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
+                                 int & pdgId , HepRandomEnginePtr& engine ) ;
 
   /// Print counters
   virtual void printCounters( ) { ; } ;

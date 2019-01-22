@@ -111,7 +111,7 @@ public:
 
 protected:
   /// Decay the event with the IDecayTool.
-  StatusCode decayEvent( HepMC::GenEvent* theEvent , CLHEP::HepRandomEngine & engine ) const;
+  StatusCode decayEvent( HepMC::GenEvent* theEvent , HepRandomEnginePtr & engine ) const;
 
 private:
   /// Reference to file records data service

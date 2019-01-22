@@ -34,7 +34,7 @@ void run_thread_local( std::promise<bool>* prom )
 {
   CLHEP::MixMaxRng engine;
   engine.setSeed( 42 );
-  ThreadLocalgRandom::Guard guard( engine );
+  ThreadLocalEngine::Guard guard( engine );
   for ( int i = 0; i < NNumbers; i++ ) {
     if ( refvalues->at( i ) != gRandom->Poisson( 10 ) ) {
       prom->set_value( false );
@@ -60,7 +60,7 @@ void hist_thread_local( std::promise<bool>* prom )
 {
   CLHEP::MixMaxRng engine;
   engine.setSeed( 42 );
-  ThreadLocalgRandom::Guard guard( engine );
+  ThreadLocalEngine::Guard guard( engine );
   for ( int i = 0; i < NNumbers; i++ ) {
     if ( !essentiallyEqual( refhistvalues->at( i ), hist->GetRandom() ) ) {
       prom->set_value( false );
@@ -127,7 +127,7 @@ int main()
   {
     CLHEP::MixMaxRng engine;
     engine.setSeed( 42 );
-    ThreadLocalgRandom::Guard guard( engine );
+    ThreadLocalEngine::Guard guard( engine );
 
     // Reference test using standard gRandom setup
     refvalues = new std::vector<int>{};
@@ -158,7 +158,7 @@ int main()
   {
     CLHEP::MixMaxRng engine;
     engine.setSeed( 42 );
-    ThreadLocalgRandom::Guard guard( engine );
+    ThreadLocalEngine::Guard guard( engine );
     refhistvalues = new std::vector<double>{};
     for ( int i = 0; i < NNumbers; i++ ) {
       refhistvalues->push_back( hist->GetRandom() );

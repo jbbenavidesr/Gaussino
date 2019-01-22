@@ -26,7 +26,7 @@ public:
   virtual bool generate( const unsigned int nPileUp ,
                          std::vector<HepMC::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
-                         CLHEP::HepRandomEngine & engine ) override;
+                         HepRandomEnginePtr & engine ) override;
 
 private:
   double m_signalMass ; ///< Mass of the particle to decay

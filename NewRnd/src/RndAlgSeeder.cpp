@@ -1,47 +1,33 @@
 #include "NewRnd/RndAlgSeeder.h"
 #include "CLHEP/Random/RandomEngine.h"
+#include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/ThreadLocalContext.h"
-#include "boost/format.hpp"
 #include <type_traits>
 
-const unsigned long MASK32 = 0xffffffff;
 
-template <typename T>
-T RndAlgSeeder::createRndmEngine() const
+HepRandomEnginePtr RndAlgSeeder::createRndmEngine() const
 {
-  static_assert( std::is_base_of<CLHEP::HepRandomEngine, T>::value,
-                 "Random engine must inherit from CLHEP::HepRandomEngine" );
-
+  HepRandomEnginePtr ret_ptr{m_engine_tool->construct(), m_engine_tool.get(), name()};
   auto[event_number, run_number] = *m_forseed.get();
+  RndCommon::seedEngine(ret_ptr, event_number, run_number, name());
 
-  std::vector<long> seeds;
-  const std::string s =
-      name() + ( boost::io::str( boost::format( "_%1%_%2%" ) %
-                                 boost::io::group( std::setfill( '0' ), std::hex, std::setw( 8 ), event_number ) %
-                                 boost::io::group( std::setfill( '0' ), std::hex, std::setw( 16 ), run_number ) ) );
-  auto hashed_named = std::hash<std::string>()( this->name() );
-
-  auto hashed_number = std::hash<std::string>()( s );
-  seeds.push_back( hashed_number );
-  seeds.push_back( hashed_named );
-
-  if ( msgLevel( MSG::DEBUG ) ) {
-    debug() << "Unique string " << s << endmsg;
-    debug() << "using seeds " << seeds << endmsg;
-  }
-
-  T engine( hashed_number );
-  if ( m_forcedSeed != (size_t)0 ) {
-    warning() << "Using fixed seed: " << m_forcedSeed << endmsg;
-    engine.setSeed( m_forcedSeed );
-  } else if ( m_simpleSeed ) {
-    warning() << "Using simple seed: " << event_number + 1 << endmsg;
-    engine.setSeed( event_number + 1 );
-  } else {
-    engine.setSeeds( seeds.data(), seeds.size() );
-  }
-  return engine;
+  return ret_ptr;
 }
 
-template CLHEP::MixMaxRng RndAlgSeeder::createRndmEngine() const;
-template CLHEP::RanluxEngine RndAlgSeeder::createRndmEngine() const;
+#include "CLHEP/Random/MixMaxRng.h"
+#include "CLHEP/Random/RanluxEngine.h"
+
+template <typename ENGINE>
+class CLHEP_ENGINE : public extends<GaudiTool, IExtEngine>
+{
+  public:
+  static_assert( std::is_base_of<CLHEP::HepRandomEngine, ENGINE>::value,
+                 "Random engine must inherit from CLHEP::HepRandomEngine" );
+  using extends::extends;
+  virtual CLHEP::HepRandomEngine* construct() const override { return new ENGINE{}; }
+};
+
+typedef CLHEP_ENGINE<CLHEP::MixMaxRng> MixMaxRng;
+DECLARE_COMPONENT_WITH_ID( MixMaxRng, "MixMaxRng" )
+typedef CLHEP_ENGINE<CLHEP::RanluxEngine> RanluxEngine;
+DECLARE_COMPONENT_WITH_ID( RanluxEngine, "RanluxEngine" )

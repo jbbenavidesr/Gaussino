@@ -61,7 +61,7 @@ public:
 
   /// Generate an event.
   virtual StatusCode generateEvent( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision,
-                                    CLHEP::HepRandomEngine& engine );
+                                    HepRandomEnginePtr& engine );
 
   /**
    * Convert Pythia 8 event to HepMC format.

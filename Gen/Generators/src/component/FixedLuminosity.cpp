@@ -67,7 +67,7 @@ StatusCode FixedLuminosity::initialize( ) {
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosity::numberOfPileUp( CLHEP::HepRandomEngine & engine ) {
+unsigned int FixedLuminosity::numberOfPileUp( HepRandomEnginePtr & engine ) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
@@ -79,7 +79,7 @@ unsigned int FixedLuminosity::numberOfPileUp( CLHEP::HepRandomEngine & engine ) 
     m_nEvents++ ;
     key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
     genFSR->incrementGenCounter(key,1);
-    CLHEP::RandPoisson poissonGenerator(engine, beam->nu());
+    CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
     result = (unsigned int) poissonGenerator() ;
     if ( 0 == result ) {
       m_numberOfZeroInteraction++ ;

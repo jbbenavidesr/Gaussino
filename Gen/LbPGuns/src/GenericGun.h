@@ -44,7 +44,7 @@ class GenericGun : public GaudiTool , virtual public IParticleGunTool {
   /// Generate the particle
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId , CLHEP::HepRandomEngine & engine ) ;
+                                 int & pdgId , HepRandomEnginePtr & engine ) ;
                                  
   /// Print counters
   virtual void printCounters( ) { ; } ;
@@ -72,7 +72,7 @@ class GenericGun : public GaudiTool , virtual public IParticleGunTool {
 	// Private Methods:
   double generateValue( const int mode , const double val , 
                         const double sigma , const double min , 
-                        const double max , CLHEP::HepRandomEngine & engine ) ;
+                        const double max , HepRandomEnginePtr & engine ) ;
 } ;
 
 #endif // PARTICLEGUNS_GENERICGUN_H

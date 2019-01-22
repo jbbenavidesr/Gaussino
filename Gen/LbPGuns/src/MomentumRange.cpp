@@ -96,9 +96,9 @@ StatusCode MomentumRange::initialize() {
 //===========================================================================
 void MomentumRange::generateParticle( Gaudi::LorentzVector & momentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {  
+                                      int & pdgId , HepRandomEnginePtr & engine ) {  
   
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   origin.SetCoordinates( 0. , 0. , 0. , 0.  );                                      
   double px(0.), py(0.), pz(0.) ;
       

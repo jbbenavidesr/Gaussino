@@ -91,10 +91,10 @@ StatusCode FlatSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine& engine ) {
+StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
   double dx , dy , dz , dt ;
   
-  CLHEP::RandFlat flatDist{engine, 0, 1};
+  CLHEP::RandFlat flatDist{engine.getref(), 0, 1};
   dx = m_xmin + flatDist( ) * ( m_xmax - m_xmin ) ;
   dy = m_ymin + flatDist( ) * ( m_ymax - m_ymin ) ;
   dz = m_zmin + flatDist( ) * ( m_zmax - m_zmin ) ;

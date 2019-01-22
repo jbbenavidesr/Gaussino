@@ -1,7 +1,8 @@
 ################################################################################
-# Package: GaussAlgs
+# Package: NewRnd
 ################################################################################
 gaudi_subdir(NewRnd v1r0)
+gaudi_depends_on_subdirs(GaudiAlg)
 
 find_package(CLHEP)
 find_package(ROOT)
@@ -16,11 +17,11 @@ if( CLHEP_FOUND )
    include_directories( SYSTEM ${CLHEP_INCLUDE_DIRS} )
 endif()
 
-gaudi_depends_on_subdirs(GaudiAlg)
 
 gaudi_add_library(NewRnd
   src/*.cpp
-  PUBLIC_HEADERS Generators ${clhep_lib} ROOT
+  PUBLIC_HEADERS NewRnd
+  INCLUDE_DIRS ${clhep_lib} ROOT
   LINK_LIBRARIES GaudiAlgLib ${clhep_lib} ROOT)
 
 gaudi_add_executable(GaussinoTestgRandom

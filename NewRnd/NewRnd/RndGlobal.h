@@ -1,9 +1,13 @@
+#pragma once
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "TRandom.h"
 #include "Utils/LocalTL.h"
 #include <iostream>
 #include <thread>
+#include "NewRnd/RndCommon.h"
+
+#include <functional>
 
 class ThreadLocalgRandom : public TRandom
 {
@@ -22,29 +26,12 @@ public:
   // Throw an array of floats.
   virtual void RndmArray( Int_t n, Float_t* array ) override;
 
-  class Guard
-  {
-  public:
-    Guard()               = delete;
-    Guard( const Guard& ) = delete;
-    Guard( Guard&& )      = delete;
-
-    Guard( CLHEP::HepRandomEngine& engine )
-    {
-      ThreadLocalgRandom::SetEngine( engine );
-    }
-    ~Guard()
-    {
-      ThreadLocalgRandom::ClearEngine();
-    }
-  };
  private:
   // Uses the engine to create a threadlocal CLHEP::RandFlat instance
   // that can be used by this thread;
   static void SetEngine( CLHEP::HepRandomEngine& engine )
   {
     Instance().ClearEngine();
-    //Instance().m_generator = std::make_unique<CLHEP::RandFlat>(engine, 0, 1);
     Instance().m_generator = new CLHEP::RandFlat{engine, 0, 1};
     gRandom->Rndm();
   }
@@ -91,17 +78,23 @@ public:
       ThreadLocalEngine::Set( engine );
       ThreadLocalgRandom::SetEngine( engine );
     }
+    Guard( HepRandomEnginePtr& engine )
+    {
+      ThreadLocalEngine::Set( *engine.get() );
+      ThreadLocalgRandom::SetEngine( *engine.get() );
+    }
     ~Guard()
     {
       ThreadLocalgRandom::ClearEngine();
       ThreadLocalEngine::Unset();
     }
   };
-  static CLHEP::HepRandomEngine& Get() { return *m_engine; }
 
 private:
   static void Set( CLHEP::HepRandomEngine& engine ) { m_engine = &engine; }
   static void Unset() { m_engine = nullptr; }
 
   thread_local static CLHEP::HepRandomEngine* m_engine;
+public:
+  static CLHEP::HepRandomEngine& Get() { return *m_engine; }
 };

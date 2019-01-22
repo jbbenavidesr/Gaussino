@@ -107,13 +107,13 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
 // Markov chain sampler
 //=============================================================================
 StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEvent ,
-                                                         CLHEP::HepRandomEngine & engine )
+                                                         HepRandomEnginePtr & engine )
 {
-  CLHEP::RandGauss gaussDistX{engine, 0., 0.025};
-  CLHEP::RandGauss gaussDistY{engine, 0., 0.025};
-  CLHEP::RandGauss gaussDistZ{engine, 0., 5.};
-  CLHEP::RandGauss gaussDistT{engine, 0., 1.};
-  CLHEP::RandFlat flatDist{engine, 0.,1.};
+  CLHEP::RandGauss gaussDistX{engine.getref(), 0., 0.025};
+  CLHEP::RandGauss gaussDistY{engine.getref(), 0., 0.025};
+  CLHEP::RandGauss gaussDistZ{engine.getref(), 0., 5.};
+  CLHEP::RandGauss gaussDistT{engine.getref(), 0., 1.};
+  CLHEP::RandFlat flatDist{engine.getref(), 0.,1.};
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( ! beamp ) Exception( "No beam parameters registered" ) ;

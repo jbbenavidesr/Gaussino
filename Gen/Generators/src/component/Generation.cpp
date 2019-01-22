@@ -393,7 +393,7 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) const {
+StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
   using namespace LHCb;
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
