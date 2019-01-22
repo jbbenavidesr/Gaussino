@@ -68,6 +68,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::string> m_conversionToolName{this, "HepMCtoGeant4Tool", "HepMC3ToGeant4Tool"};
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{this, "MonitorTools", {}};
   Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
+  Gaudi::Property<bool> m_splitPileUp{this, "SplitPileUp", false};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
   Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};
 
@@ -98,7 +99,7 @@ public:
    */
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
-  virtual StatusCode simulate(const std::vector<HepMC::GenEvent> &, CLHEP::HepRandomEngine &) const override;
+  virtual G4EventProxies simulate( const std::vector<HepMC::GenEvent>&, HepRandomEnginePtr& ) const override;
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi
   // thread which executes the initialization of all Gaudi objects and spawns

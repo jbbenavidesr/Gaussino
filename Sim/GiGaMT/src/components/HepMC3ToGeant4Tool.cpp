@@ -71,7 +71,7 @@ StatusCode HepMC3ToGeant4Tool::initialize()
   return StatusCode::SUCCESS;
 }
 
-G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<HepMC::GenEvent>& hepmc_events )
+G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<const HepMC::GenEvent*>& hepmc_events )
 {
 
   // TODO: Make sure the event is deleted somewhere
@@ -81,9 +81,11 @@ G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<HepMC::GenEvent>& hepmc_
   G4Event* g4Event = new G4Event();
   for ( const auto& genEvt : hepmc_events ) {
     // Adding the primary vertex and then iteratively add children to it
-    auto pv  = genEvt.beam_particles().first->end_vertex();
+    auto beam_particles = genEvt->beam_particles();
+    auto fbeam_particles = beam_particles.first;
+    auto pv  = fbeam_particles->end_vertex();
     auto tmp = pv->position();
-    HepMC::Units::convert( tmp, genEvt.length_unit(), HepMC::Units::MM );
+    HepMC::Units::convert( tmp, genEvt->length_unit(), HepMC::Units::MM );
     G4PrimaryVertex* g4PV = new G4PrimaryVertex( tmp.x() * mm, tmp.y() * mm, tmp.z() * mm, tmp.t() );
 
     for ( auto& particle : pv->particles( HepMC::children ) ) {

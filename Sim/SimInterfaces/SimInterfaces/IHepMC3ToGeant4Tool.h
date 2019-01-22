@@ -25,5 +25,5 @@ public:
    * Converts an HepMC3 event to Geant4
    *  
    */
-  virtual G4Event* g4Event(const std::vector<HepMC::GenEvent> &) = 0;
+  virtual G4Event* g4Event(const std::vector<const HepMC::GenEvent*> &) = 0;
 };

@@ -4,6 +4,9 @@
 #include "GaudiKernel/IService.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
+#include "GiGaMTCore/G4EventProxy.h"
+#include "NewRnd/RndCommon.h"
+
 
 // Forward declaration from G4
 class G4Event;
@@ -48,7 +51,7 @@ public:
    *   should return the simulation result ...
    *   @return status code
    */
-  virtual StatusCode simulate(const std::vector<HepMC::GenEvent> &, CLHEP::HepRandomEngine &) const = 0;
+  virtual G4EventProxies simulate(const std::vector<HepMC::GenEvent> &, HepRandomEnginePtr &) const = 0;
 
 public:
 

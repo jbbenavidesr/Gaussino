@@ -34,7 +34,7 @@ public:
   virtual ~HepMC3ToGeant4Tool();
   StatusCode initialize() override;
 
-  virtual G4Event* g4Event( const std::vector<HepMC::GenEvent>& ) override final;
+  virtual G4Event* g4Event( const std::vector<const HepMC::GenEvent*>& ) override final;
 
 private:
   void convert( const HepMC::GenParticlePtr& hepmc, G4PrimaryParticle* g4parent = nullptr,

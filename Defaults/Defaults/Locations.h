@@ -22,4 +22,8 @@ namespace Gaussino
     const std::string Default = "Gen/Header";
     const std::string PreGeneration = "Gen/HeaderPreGen";
   }
+  namespace G4EventsLocation
+  {
+    const std::string Default = "Sim/G4Events";
+  }
 }

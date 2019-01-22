@@ -190,7 +190,7 @@ StatusCode GiGaMT::finalize()
   Print( "Finalization", MSG::DEBUG, StatusCode::SUCCESS );
   // Trigger the termination of the worker threads which are blocking
   // on an empty queue right now by pushing the sentinel the worker threads
-  m_payloadQueue.enqueue( GiGaWorkerPayload{nullptr, nullptr, nullptr} );
+  m_payloadQueue.enqueue( std::nullopt );
 
   // Wait for the worker threads that will finalize now automatically
   for ( auto& t : m_workerThreads ) {
@@ -237,47 +237,47 @@ StatusCode GiGaMT::finalize()
   return Service::finalize();
 }
 
-StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
+
+G4EventProxies GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, HepRandomEnginePtr& engine ) const
 {
-
-  auto g4event = m_conversionTool->g4Event( _in );
-  std::vector<std::promise<DummyReturn>*> promises;
-  std::promise<DummyReturn> promised_return;
-  auto fut = promised_return.get_future();
-
-  auto start_time      = Clock::now();
-  m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, &promised_return} );
-  fut.get();
-  auto end_time      = Clock::now();
-  debug() << "Simulation complete after " <<std::setprecision(2) << std::chrono::duration_cast<std::chrono::nanoseconds>(end_time-start_time).count()/1e9 << " seconds." << endmsg;
-  for ( auto monitool : m_MoniTools ) {
-    monitool->monitor( *g4event );
+  auto start_time = Clock::now();
+  std::list<std::promise<G4EventProxy>> promises;
+  std::list<std::future<G4EventProxy>> futures;
+  if ( m_splitPileUp ) {
+    // Submit every HepMC event separarely to the queue
+    for ( auto& evt : _in ) {
+      auto& prom = promises.emplace_back();
+      futures.emplace_back( prom.get_future() );
+      std::vector<const HepMC::GenEvent*> evt_vec = {&evt};
+      m_payloadQueue.enqueue( GiGaWorkerPayload{evt_vec, engine.createSubRndmEngine(), &prom} );
+    }
+  } else {
+    std::vector<const HepMC::GenEvent*> evt_vec;
+    auto& prom = promises.emplace_back();
+    futures.emplace_back( prom.get_future() );
+    for ( auto& evt : _in ) {
+      evt_vec.emplace_back( &evt );
+    }
+    m_payloadQueue.enqueue( GiGaWorkerPayload{evt_vec, engine, &prom} );
   }
-  delete g4event;
-  return StatusCode::SUCCESS;
+  G4EventProxies return_events;
+  for ( auto& fut : futures ) {
+    return_events.emplace_back( fut.get() );
+  }
+
+  auto end_time = Clock::now();
+  debug() << "Simulation complete after " << std::setprecision( 2 )
+          << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - start_time ).count() / 1e9 << " seconds."
+          << endmsg;
+  for ( auto monitool : m_MoniTools ) {
+    for ( auto& g4eventproxy : return_events ) {
+      monitool->monitor( *g4eventproxy.event() );
+    }
+  }
+
+  return return_events;
 }
 
-// StatusCode GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, CLHEP::HepRandomEngine& engine ) const
-//{
-
-// std::vector<std::future<DummyReturn>> futures;
-// for ( auto& evt : _in ) {
-// for ( size_t i = 0; i < 10; i++ ) {
-// auto g4event     = m_conversionTool->g4Event( std::vector<HepMC::GenEvent>{{evt}} );
-// auto ret_promise = new std::promise<DummyReturn>{};
-// m_payloadQueue.enqueue( GiGaWorkerPayload{g4event, &engine, ret_promise} );
-// futures.push_back( ret_promise->get_future() );
-//}
-//}
-//// auto g4event = m_conversionTool->g4Event( _in );
-//// auto fut = promised_return.get_future();
-//// fut.get();
-// for ( auto& fut : futures ) {
-// fut.get();
-//}
-
-// return StatusCode::SUCCESS;
-//}
 
 StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
 {

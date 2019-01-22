@@ -2,9 +2,12 @@
 
 #include "GiGaMTCore/GiGaWorkerRunManager.h"
 
+#include "GiGaMTCore/GiGaMTUtils.h"
 #include "GiGaMTCore/GiGaWorkerPayload.h"
 #include "GiGaMTCore/IGiGaMessage.h"
-#include "GiGaMTCore/GiGaMTUtils.h"
+
+#include "Geant4/G4Event.hh"
+#include "HepMC/GenEvent.h"
 
 // Main worker thread class that is instantiated in the
 // initialize of the main simulation service and given
@@ -16,11 +19,15 @@
 // of Geant4 so hopefully noone ever wants to do that...
 
 class GiGaWorkerPilotFAC;
+class G4EventProxy;
 class G4WorkerThread;
+
+typedef std::function<G4Event*( const std::vector<const HepMC::GenEvent*>& )> HepMC_to_Geant4_func;
 
 class GiGaWorkerPilot : public GiGaMessage
 {
   friend class GiGaWorkerPilotFAC;
+  friend class G4EventProxy;
 
 public:
   // Cannot copy it, only moving is allowed so
@@ -58,29 +65,50 @@ public:
     m_input_queue = que;
   }
 
+  // Set the HepMC to Geant4 converter function
+  void SetConverter(HepMC_to_Geant4_func func){
+    evt_converter = func;
+  }
+
   // Returns singleton instance of initialization barrier.
   // First call determines the created number of threads that
   // are have to arrive at the barrier before all are given
   // the go-ahead.
-  static GiGaMTBarrier & GetInitBarrier(std::size_t num_threads=0) {
-    static GiGaMTBarrier barrier(num_threads);
+  static GiGaMTBarrier& GetInitBarrier( std::size_t num_threads = 0 )
+  {
+    static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
-  static GiGaMTBarrier & GetFinalBarrier(std::size_t num_threads=0) {
-    static GiGaMTBarrier barrier(num_threads);
+  static GiGaMTBarrier& GetFinalBarrier( std::size_t num_threads = 0 )
+  {
+    static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
 
 private:
+  // Adds the event to the internal cleanup list of this pilot.
+  // Necessary to ensure that the correct G4 worker thread deletes the
+  // G4 event data objects
+  //
+  // Marked private so only the Proxy objects have access to this function.
+  // FIXME: ugly sadface
+  void RegisterForCleanUp( G4Event* evt );
+  void CleanUp();
+
   // Constructor is private as these objects are supposed to
   // only be created using the corresponding factories
   GiGaWorkerPilot() = default;
 
   // Pointer to the input queue
   GiGaPayloadQueue* m_input_queue = nullptr;
-  G4WorkerThread* m_context = nullptr;
+  G4WorkerThread* m_context       = nullptr;
 
   // Number of worker
-  size_t iWorker = 0;
+  size_t iWorker  = 0;
   size_t nWorkers = 0;
+  size_t nDeleted = 0;
+  size_t nCreated = 0;
+  std::vector<G4Event*> m_for_cleanup{};
+  std::mutex m_cleanup_lock{};
+  HepMC_to_Geant4_func evt_converter{[]( const std::vector<const HepMC::GenEvent*>& ) { return new G4Event{}; }};
 };

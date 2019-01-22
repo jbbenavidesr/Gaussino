@@ -10,6 +10,10 @@ class SimPhase(ConfigurableUser):
     """Configurable for the Simulation phase in Gaussino. Does not implement
     a self.__apply_configuration__ itself. Instead, all member functions are
     explicitly called during the configuration of Gaussino()"""
+
+    __slots__ = {
+        "DebugCommunication"        : False
+    }
     def __init__(self, name=Configurable.DefaultName, **kwargs):
         kwargs["name"] = name
         super(SimPhase, self).__init__(*(), **kwargs)
@@ -28,7 +32,8 @@ class SimPhase(ConfigurableUser):
 
     def configure_phase(self):
 
-        giga = gigaService()
+        giga = gigaService(
+            debugcommunication = self.getProp('DebugCommunication'))
 
         giga_alg = configure_giga_alg()
 
