@@ -1,39 +1,39 @@
 // $Id: MergedEventsFilter.h,v 1.1 2008-05-06 08:27:55 gcorti Exp $
-#ifndef GENERATORS_MERGEDEVENTSFILTER_H 
+#ifndef GENERATORS_MERGEDEVENTSFILTER_H
 #define GENERATORS_MERGEDEVENTSFILTER_H 1
 
 // Include files
 // from Gaudi
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "Defaults/Locations.h"
+#include "Event/GenCollision.h"
+#include "GaudiAlg/Consumer.h"
+#include "HepMC/GenEvent.h"
 
 class IFullGenEventCutTool;
 
-/** @class MergedEventsFilter MergedEventsFilter.h component/MergedEventsFilter.h
- *  
+/** @class MergedEventsFilter MergedEventsFilter.h
+ * component/MergedEventsFilter.h
+ *
  *
  *  @author Gloria CORTI
  *  @date   2008-04-30
  */
-class MergedEventsFilter : public GaudiAlgorithm {
-public: 
+class MergedEventsFilter
+    : public Gaudi::Functional::Consumer<void(
+          const std::vector<HepMC::GenEvent>&, const LHCb::GenCollisions&)> {
+  PublicToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
+      this, "FullGenEventCutTool", ""};
+
+  public:
   /// Standard constructor
-  MergedEventsFilter( const std::string& name, ISvcLocator* pSvcLocator );
+  MergedEventsFilter(const std::string& name, ISvcLocator* pSvcLocator)
+      : Consumer(name, pSvcLocator,
+                 {{KeyValue{"HepMCEventLocation",
+                            Gaussino::HepMCEventLocation::Default},
+                   KeyValue{"GenCollisions",
+                            LHCb::GenCollisionLocation::Default}}}) {}
 
-  virtual ~MergedEventsFilter( ); ///< Destructor
-
-  virtual StatusCode initialize();    ///< Algorithm initialization
-  virtual StatusCode execute   ();    ///< Algorithm execution
-  virtual StatusCode finalize  ();    ///< Algorithm finalization
-
-protected:
-
-private:
- 
-  std::string  m_hepMCEventLocation ;    ///< Input TES for HepMC events
-  std::string  m_genCollisionLocation ;  ///< Input TES for GenCollisions
-
-  std::string           m_fullGenEventCutToolName; ///< Name of event cut tool
-  IFullGenEventCutTool* m_fullGenEventCutTool;     ///< Pointer to event cut tool
-
+  virtual void operator()(const std::vector<HepMC::GenEvent>&,
+                          const LHCb::GenCollisions&) const override;
 };
-#endif // GENERATORS_MERGEDEVENTSFILTER_H
+#endif  // GENERATORS_MERGEDEVENTSFILTER_H

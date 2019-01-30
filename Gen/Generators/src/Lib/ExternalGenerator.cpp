@@ -11,8 +11,8 @@
 #include "Kernel/IParticlePropertySvc.h" 
 #include "Kernel/ParticleProperty.h"
 // Kernal
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
@@ -21,6 +21,7 @@
 #include "GenInterfaces/ICounterLogFile.h"
 #include "GenEvent/HepMCUtils.h"
 #include "Defaults/HepMCAttributes.h"
+#include "CLHEP/Random/RandEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -143,7 +144,7 @@ StatusCode ExternalGenerator::initialize( ) {
 // Decay heavy excited particles
 //=============================================================================
 StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
-     const LHCb::ParticleID::Quark theQuark , const int signalPid ) const {
+     const LHCb::ParticleID::Quark theQuark , const int signalPid , HepRandomEnginePtr & engine) const {
   StatusCode sc ;
   
   if ( 0 == m_decayTool ) return StatusCode::SUCCESS ;
@@ -209,7 +210,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
          ( signalPid != abs( (*itHeavy) -> pdg_id() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
-        sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid ) ;
+        sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid , engine) ;
         if ( ! sc.isSuccess() ) return sc ;
       } 
     }

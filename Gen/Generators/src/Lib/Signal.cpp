@@ -9,7 +9,7 @@
 #include "Kernel/ParticleProperty.h"
 
 // from Generators
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IDecayTool.h"
 #include "Generators/GenCounters.h"
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenVertex.h"
@@ -314,7 +314,7 @@ HepMC::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
   if ( m_cpMixture ) 
 	if ( m_decayTool ) m_decayTool -> enableFlip() ;
   if ( m_decayTool ) {
-    StatusCode sc = m_decayTool -> generateSignalDecay( theSignal , hasFlipped ) ;
+    StatusCode sc = m_decayTool -> generateSignalDecay( theSignal , hasFlipped , engine) ;
     if ( ! sc.isSuccess() ) hasFailed = true ;
   }
   

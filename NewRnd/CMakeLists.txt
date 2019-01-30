@@ -4,6 +4,8 @@
 gaudi_subdir(NewRnd v1r0)
 gaudi_depends_on_subdirs(GaudiAlg)
 
+gaudi_depends_on_subdirs(Utils)
+
 find_package(CLHEP)
 find_package(ROOT)
 
@@ -21,7 +23,7 @@ endif()
 gaudi_add_library(NewRnd
   src/*.cpp
   PUBLIC_HEADERS NewRnd
-  INCLUDE_DIRS ${clhep_lib} ROOT
+  INCLUDE_DIRS ${clhep_lib} ROOT Utils
   LINK_LIBRARIES GaudiAlgLib ${clhep_lib} ROOT)
 
 gaudi_add_executable(GaussinoTestgRandom

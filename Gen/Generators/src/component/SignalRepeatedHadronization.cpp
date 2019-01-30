@@ -119,7 +119,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
       
       while ( nRepetitions < m_maxNumberOfRepetitions ) {
         // Decay heavy particles
-        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID ) ;
+        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
         
         // Check if one particle of the requested list is present in event
         ParticleVector theParticleList ;

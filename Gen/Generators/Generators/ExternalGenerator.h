@@ -23,6 +23,9 @@ namespace HepMC {
   class GenEvent ; 
   class GenParticle ;
 }
+namespace CLHEP { 
+  class HepRandomEngine;
+}
 
 /** @class ExternalGenerator ExternalGenerator.h "Generators/ExternalGenerator.h"
  *  
@@ -93,7 +96,7 @@ class ExternalGenerator : public GaudiTool ,
    */
   StatusCode decayHeavyParticles( HepMC::GenEvent * theEvent , 
                                   const LHCb::ParticleID::Quark theQuark , 
-                                  const int signalPid ) const ;
+                                  const int signalPid , HepRandomEnginePtr & engine) const;
   
   
   /** Find particles of given PIDs in an event

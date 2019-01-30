@@ -128,7 +128,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
       // Decay particles heavier than the particles to look at
       // If N hadrons <= 2, we assume it is (h,hbar)
       // Passing m_pids[0] needed for incl. charmless bottomless hadron production
-      decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()) ) ;
+      decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()), engine ) ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;

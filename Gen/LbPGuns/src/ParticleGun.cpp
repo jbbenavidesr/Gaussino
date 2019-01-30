@@ -17,7 +17,7 @@
 // from Generators
 #include "GenInterfaces/IPileUpTool.h"
 #include "LbPGuns/IParticleGunTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IDecayTool.h"
 #include "GenInterfaces/IVertexSmearingTool.h"
 #include "GenInterfaces/IFullGenEventCutTool.h"
 #include "GenInterfaces/IGenCutTool.h"
@@ -215,7 +215,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
         ParticleVector theParticleList ;
         theParticleList.clear();
 
-        auto theSignal = decayEvent( &event, theParticleList, sc) ;
+        auto theSignal = decayEvent( &event, theParticleList, engine, sc) ;
         if ( ! sc.isSuccess() ) error() << "Failed to decay event" << endmsg;
 
         event.set_event_number(++iPart);
@@ -306,6 +306,7 @@ StatusCode ParticleGun::finalize() {
 //=============================================================================
 HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
                                              ParticleVector & theParticleList,
+                                             HepRandomEnginePtr & engine,
                                              StatusCode & sc) const {
   m_decayTool -> disableFlip() ;
   sc = StatusCode::SUCCESS ;
@@ -336,10 +337,10 @@ HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
 
         if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
           bool hasFlipped(false);
-          sc = m_decayTool -> generateSignalDecay( thePart, hasFlipped ) ;
+          sc = m_decayTool -> generateSignalDecay( thePart, hasFlipped , engine) ;
           theSignal = thePart;
         } else
-          sc = m_decayTool -> generateDecay( thePart ) ;
+          sc = m_decayTool -> generateDecay( thePart , engine ) ;
 
         theParticleList.push_back( thePart );
 

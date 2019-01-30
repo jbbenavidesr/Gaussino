@@ -7,6 +7,7 @@ gaudi_subdir(IronBox v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
                          Gen/GenInterfaces 
+                         Event/GenEvent
                          Sim/GiGaMTFactories
                          Sim/GiGaMTCore
                          Sim/GiGaMTGeo)

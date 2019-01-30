@@ -87,7 +87,7 @@ public:
 
 protected:
   /// Decay the event with the IDecayTool.
-  HepMC::GenParticlePtr decayEvent( HepMC::GenEvent* theEvent, ParticleVector& particleList, StatusCode& sc ) const;
+  HepMC::GenParticlePtr decayEvent( HepMC::GenEvent* theEvent, ParticleVector& particleList, HepRandomEnginePtr & engine, StatusCode& sc ) const;
 
   /// Perpare the particle containers
   void prepareInteraction( std::vector<HepMC::GenEvent> * theEvents, LHCb::GenCollisions* theCollisions,
