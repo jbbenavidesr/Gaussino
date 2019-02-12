@@ -1,4 +1,5 @@
 #include "NewRnd/RndCommon.h"
+#include <sstream>
 
 namespace RndCommon
 {
@@ -29,6 +30,8 @@ HepRandomEnginePtr HepRandomEnginePtr::createSubRndmEngine()
   }
   auto subeng  = m_children.emplace_back( m_constructor->construct() );
   auto& engine = *get();
-  RndCommon::seedEngine( engine, (unsigned int)engine, (unsigned int)engine, m_label );
+  std::stringstream lbl;
+  lbl << m_label << "_" << m_children.size();
+  RndCommon::seedEngine( engine, (unsigned int)engine, (unsigned int)engine, lbl.str());
   return subeng;
 }

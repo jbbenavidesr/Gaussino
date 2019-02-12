@@ -24,7 +24,11 @@ gaudi_add_library(NewRnd
   src/*.cpp
   PUBLIC_HEADERS NewRnd
   INCLUDE_DIRS ${clhep_lib} ROOT Utils
-  LINK_LIBRARIES GaudiAlgLib ${clhep_lib} ROOT)
+  LINK_LIBRARIES GaudiAlgLib ${clhep_lib} ROOT GaudiKernel)
+
+gaudi_add_module(NewRndComponents
+        src/components/*.cpp
+        LINK_LIBRARIES NewRnd)
 
 gaudi_add_executable(GaussinoTestgRandom
                      exec/GaussinoTestgRandom.cxx

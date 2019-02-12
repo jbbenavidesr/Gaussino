@@ -20,6 +20,7 @@ namespace RndCommon
   class RndConstructor
   {
   public:
+    virtual ~RndConstructor() = default;
     virtual CLHEP::HepRandomEngine* construct() const = 0;
   };
 
