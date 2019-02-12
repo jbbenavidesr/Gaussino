@@ -357,7 +357,7 @@ HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
 void ParticleGun::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
     LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back();
+  theEvents->emplace_back(HepMC::Units::MEV, HepMC::Units::MM);
   theGenEvent = &theEvents->back();
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC::StringAttribute>( m_particleGunName) );

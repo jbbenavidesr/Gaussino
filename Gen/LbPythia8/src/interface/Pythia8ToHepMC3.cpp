@@ -36,6 +36,8 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
         ++m_internal_event_number;
     }
 
+    auto old_momentum_unit = evt->momentum_unit();
+    auto old_length_unit = evt->length_unit();
     evt->set_units(HepMC::Units::GEV,HepMC::Units::MM);
 
     // 2. Fill particle information
@@ -177,6 +179,7 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
             evt->weights().push_back(pyinfo->weight(iweight));
         }
     }
+    evt->set_units(old_momentum_unit, old_length_unit);
 
     // Done.
     return true;

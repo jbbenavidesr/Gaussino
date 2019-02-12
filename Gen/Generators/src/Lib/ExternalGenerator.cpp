@@ -288,7 +288,7 @@ unsigned int ExternalGenerator::nPositivePz( const ParticleVector
 void ExternalGenerator::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
     LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back();
+  theEvents->emplace_back(HepMC::Units::MEV, HepMC::Units::MM);
   theGenEvent = &theEvents->back();
   theGenEvent->set_run_info(nullptr);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,

@@ -37,7 +37,7 @@ std::string PrintPrimaries( G4PrimaryParticle* part, int level = 0, LHCb::IParti
   }
   outstream << "\n";
   auto p = part->GetDaughter();
-  while(p){
+  while ( p ) {
     outstream << PrintPrimaries( p, level + 1, ppsvc );
     p = p->GetNext();
   }
@@ -81,16 +81,30 @@ G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<const HepMC::GenEvent*>&
   G4Event* g4Event = new G4Event();
   for ( const auto& genEvt : hepmc_events ) {
     // Adding the primary vertex and then iteratively add children to it
-    auto beam_particles = genEvt->beam_particles();
+    if ( genEvt->length_unit() != HepMC::Units::MM || genEvt->momentum_unit() != HepMC::Units::MEV ) {
+      error() << "Units of HepMC event do not match. Skipping event" << endmsg;
+      continue;
+    }
+    HepMC::GenVertexPtr PV{nullptr};
+    auto beam_particles  = genEvt->beam_particles();
     auto fbeam_particles = beam_particles.first;
-    auto pv  = fbeam_particles->end_vertex();
-    auto tmp = pv->position();
-    HepMC::Units::convert( tmp, genEvt->length_unit(), HepMC::Units::MM );
-    G4PrimaryVertex* g4PV = new G4PrimaryVertex( tmp.x() * mm, tmp.y() * mm, tmp.z() * mm, tmp.t() );
+    if ( fbeam_particles ) {
+      auto PV = fbeam_particles->end_vertex();
+    }
+    if ( !PV ) {
+      if ( genEvt->particles_size() == 0 ) {
+        continue;
+      }
+      PV = ( *std::begin( genEvt->particles() ) )->production_vertex();
+      if ( !PV ) {
+        PV = ( *std::begin( genEvt->particles() ) )->end_vertex();
+      }
+    }
+    HepMC::FourVector PVposition = PV->position();
+    G4PrimaryVertex* g4PV =
+        new G4PrimaryVertex( PVposition.x() * mm, PVposition.y() * mm, PVposition.z() * mm, PVposition.t() );
 
-    for ( auto& particle : pv->particles( HepMC::children ) ) {
-      tmp = particle->momentum();
-      // HepMC::Units::convert( tmp, genEvt.momentum_unit(), HepMC::Units::MEV );
+    for ( auto& particle : PV->particles( HepMC::children ) ) {
       convert( particle, nullptr, g4PV );
     }
     g4Event->AddPrimaryVertex( g4PV );
@@ -98,7 +112,7 @@ G4Event* HepMC3ToGeant4Tool::g4Event( const std::vector<const HepMC::GenEvent*>&
     if ( msgLevel( MSG::DEBUG ) ) {
       debug() << "Geant4 tree for this event: \n";
       auto p = g4PV->GetPrimary();
-      while(p){
+      while ( p ) {
         debug() << PrintPrimaries( p, 0, m_ppsvc );
         p = p->GetNext();
       }
@@ -114,14 +128,15 @@ void HepMC3ToGeant4Tool::convert( const HepMC::GenParticlePtr& hepmc, G4PrimaryP
   G4PrimaryParticle* g4Particle = nullptr;
   auto PV                       = hepmc->production_vertex();
   auto EV                       = hepmc->end_vertex();
-  auto momentum                 = hepmc->momentum();
-  bool togeant4                 = IsTraveling( hepmc );
+  auto momentum                 = hepmc->momentum(); // In MeV from HepMC, hopefully
+
+  bool togeant4 = IsTraveling( hepmc );
   if ( togeant4 ) {
     if ( !g4parent && msgLevel( MSG::DEBUG ) ) {
       debug() << "Starting a Geant4 decay tree: \n " << PrintDecay( hepmc, 0, m_ppsvc ) << endmsg;
     }
     g4Particle =
-        new G4PrimaryParticle( hepmc->pdg_id(), momentum.px() * GeV, momentum.py() * GeV, momentum.pz() * GeV );
+        new G4PrimaryParticle( hepmc->pdg_id(), momentum.px() * MeV, momentum.py() * MeV, momentum.pz() * MeV );
     if ( g4parent ) {
       g4parent->SetDaughter( g4Particle );
     }

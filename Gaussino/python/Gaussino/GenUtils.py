@@ -19,17 +19,17 @@ def configure_pgun(**kwargs):
     pgun.addTool(MomentumRange, name="MomentumRange")
     pgun.ParticleGunTool = "MomentumRange"
 
-    from Configurables import FlatNParticles
-    pgun.addTool(FlatNParticles, name="FlatNParticles")
-    pgun.NumberOfParticlesTool = "FlatNParticles"
-    pgun.FlatNParticles.MinNParticles = 10
-    pgun.FlatNParticles.MaxNParticles = 10
-    pgun.MomentumRange.PdgCodes = [-13, 13]
+    # from Configurables import FlatNParticles
+    # pgun.addTool(FlatNParticles, name="FlatNParticles")
+    # pgun.NumberOfParticlesTool = "FlatNParticles"
+    # pgun.FlatNParticles.MinNParticles = 10
+    # pgun.FlatNParticles.MaxNParticles = 10
+    # pgun.MomentumRange.PdgCodes = [-13, 13]
 
-    pgun.MomentumRange.MomentumMin = 20.0*GeV
-    pgun.MomentumRange.MomentumMax = 300.0*GeV
-    pgun.MomentumRange.ThetaMin = 0.015*rad
-    pgun.MomentumRange.ThetaMax = 0.300*rad
+    # pgun.MomentumRange.MomentumMin = 20.0*GeV
+    # pgun.MomentumRange.MomentumMax = 300.0*GeV
+    # pgun.MomentumRange.ThetaMin = 0.015*rad
+    # pgun.MomentumRange.ThetaMax = 0.300*rad
     return pgun
 
 
