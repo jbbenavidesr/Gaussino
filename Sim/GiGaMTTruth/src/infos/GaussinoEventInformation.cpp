@@ -1,0 +1,1 @@
+#include "GiGaMTTruth/GaussinoEventInformation.h"
