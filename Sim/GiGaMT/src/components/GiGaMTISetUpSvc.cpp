@@ -69,8 +69,9 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
   for ( size_t iThread = 0; iThread < m_nWorkerThreads; iThread++ ) {
     auto pilot = m_workerPilotFactory->construct();
     pilot->SetInputQueue( &m_payloadQueue );
-    pilot->SetConverter(
-        [&]( const std::vector<const HepMC::GenEvent*>& evts ) { return m_conversionTool->g4Event( evts ); } );
+    // FIXME: Add call-back for converter to workerpilot
+    //pilot->SetConverter(
+        //[&]( const std::vector<const HepMC::GenEvent*>& evts ) { return m_conversionTool->g4Event( evts ); } );
     m_workerThreads.emplace_back( std::move( *pilot ) );
     delete pilot;
   }

@@ -1,13 +1,13 @@
-#include "GiGaMTTruth/MCTruthConverter.h"
+#include "GiGaMTCore/Truth/MCTruthConverter.h"
 #include "ConverterInfo.h"
 #include <functional>
 #include <stdexcept>
 
+
 namespace Gaussino
 {
-  MCTruthBase::MCTruthBase( MCTruthBase&& right )
-      : m_convInfos{std::move( right.m_convInfos )}
-      , m_linkedParticles{std::move( right.m_linkedParticles )}
+  MCTruthBase::MCTruthBase( MCTruthBase&& right ) noexcept
+      : m_linkedParticles{std::move( right.m_linkedParticles )}
       , m_hepmc_to_linked{std::move( right.m_hepmc_to_linked )}
       , m_geant4_to_linked{std::move( right.m_geant4_to_linked )}
       , m_tracking_to_linked{std::move( right.m_tracking_to_linked )}
@@ -21,16 +21,18 @@ namespace Gaussino
   // MCTruthConverter
   //////////////////////////////////////////////////////////
 
-  void MCTruthConverter::Declare( HepMC::GenParticlePtr& particle, ConversionType type )
+  void MCTruthConverter::Declare( const HepMC::GenParticlePtr& particle, ConversionType type )
   {
-    if ( m_hepmc_event != particle->parent_event() ) {
+    if ( m_hepmc_event && m_hepmc_event != particle->parent_event() ) {
       throw std::runtime_error( "Particles of different HepMC events registered in same converter." );
     }
     auto ptr = std::make_unique<LinkedParticle>( particle );
     ptr->SetType( type );
     m_hepmc_to_linked[particle->id()] = ptr.get();
     m_linkedParticles.push_back( std::move( ptr ) );
-    m_hepmc_event = particle->parent_event();
+    if(!m_hepmc_event){
+      m_hepmc_event = particle->parent_event();
+    }
   }
 
   ///////////////////////////////////////////////////////////
@@ -44,6 +46,10 @@ namespace Gaussino
     DoInitialLinking();
     if ( m_geant4_event ) {
       AddToG4Event( event );
+    } else {
+      for ( auto& lp : m_linkedParticles ) {
+        lp->SetType( Gaussino::ConversionType::MC );
+      }
     }
   }
   void MCTruthTracker::DoInitialLinking()
@@ -62,25 +68,25 @@ namespace Gaussino
       // While taking care of a particle we also remove its ID from the
       // set before moving on to its children, doing the same etc ...
       // After a full decay tree is processed, the first element will then
-      // again be the start of a new decay chain so the procedure is 
+      // again be the start of a new decay chain so the procedure is
       // repeated until the set is empty
       int root_id  = *std::begin( IDs );
       auto root_lp = m_hepmc_to_linked[root_id];
       m_root_particles.insert( root_lp );
-      std::function<void( HepMC::GenParticlePtr, HepMC::GenParticlePtr )> child_converter =
-          [&]( HepMC::GenParticlePtr part, HepMC::GenParticlePtr parent = nullptr ) {
+      std::function<void( const HepMC::GenParticlePtr&, const HepMC::GenParticlePtr& )> child_converter =
+          [&]( const HepMC::GenParticlePtr& part, const HepMC::GenParticlePtr& parent ) {
             LinkedParticle* plinked{nullptr};
             LinkedParticle* clinked{nullptr};
             if ( parent ) {
               // The parent should always have a linked particle if provided
               plinked = m_hepmc_to_linked[parent->id()];
             }
-            if ( part && m_hepmc_to_linked.find( part->id() ) != std::end(m_hepmc_to_linked) ) {
+            if ( part && m_hepmc_to_linked.find( part->id() ) != std::end( m_hepmc_to_linked ) ) {
               // HepMC child might not have a matching linked particle if it is not supposed to be converted
               clinked = m_hepmc_to_linked[part->id()];
               // As we are now taking care of this particle, remove it from the set.
               // NOTE: HepMC3 does not allow loops so this is safe
-              IDs.erase(part->id());
+              IDs.erase( part->id() );
             }
             if ( clinked && plinked ) {
               clinked->AddParent( plinked );
@@ -89,11 +95,14 @@ namespace Gaussino
             // If a clinked particle was found, the current particle becomes the parent for its children,
             // otherwise this HepMC particle was not supposed to be converted and is skipped.
             auto new_parent = clinked ? part : parent;
-            for ( auto& child : part->children()){
-              child_converter(child, new_parent);
+            for ( auto& child : part->children() ) {
+              child_converter( child, new_parent );
             }
           };
+      child_converter(root_lp->HepMC(), nullptr);
     }
   }
-  void MCTruthTracker::AddToG4Event( G4Event* g4event ) { DoInitialLinking(); }
+  void MCTruthTracker::AddToG4Event( [[maybe_unused]] G4Event* g4event ) { 
+  }
 }
+

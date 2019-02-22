@@ -1,4 +1,4 @@
-#include "GiGaMTTruth/GaussinoTrackInformation.h"
+#include "GiGaMTCore/Truth/GaussinoTrackInformation.h"
 
 // ============================================================================
 /** @file
@@ -9,7 +9,7 @@
  */
 // ============================================================================
 
-GaussTrackInformation::GaussTrackInformation(const GaussTrackInformation& right)
+GaussinoTrackInformation::GaussinoTrackInformation(const GaussinoTrackInformation& right)
     : G4VUserTrackInformation(right),
       m_appendStep(right.m_appendStep),
       m_toBeStored(right.m_toBeStored),
@@ -18,11 +18,8 @@ GaussTrackInformation::GaussTrackInformation(const GaussTrackInformation& right)
       m_storeHepMC(right.m_storeHepMC),
       m_hits(right.m_hits),
       m_detInfo(right.m_detInfo) {
-#ifdef GIGA_DEBUG
-  GaussTrackInformationLocal::s_Counter.increment();
-#endif
 }
 
-GaussTrackInformation* GaussTrackInformation::clone() const {
-  return new GaussTrackInformation(*this);
+GaussinoTrackInformation* GaussinoTrackInformation::clone() const {
+  return new GaussinoTrackInformation(*this);
 }

@@ -2,7 +2,7 @@
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenParticle.h"
 
-#include "GiGaMTTruth/Common.h"
+#include "GiGaMTCore/Truth/Common.h"
 
 namespace Gaussino
 {

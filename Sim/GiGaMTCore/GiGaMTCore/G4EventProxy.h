@@ -12,12 +12,14 @@ public:
   G4EventProxy( const G4EventProxy& ) = delete;
   ~G4EventProxy();
   G4EventProxy( G4EventProxy&& ) noexcept;
+  // Construct the proxy. If a GiGaWorkerPilot is provided, the G4Event will
+  // enqueued with the respective worker for deletion. If not, constructor
+  // of the proxy will delete the event.
+  G4EventProxy( G4Event* event, GiGaWorkerPilot* vec = nullptr ) : m_event( event ), m_vec( vec ){};
   inline G4Event* event() { return m_event; }
   inline G4Event* operator->() { return m_event; }
 
 private:
-  friend class GiGaWorkerPilot;
-  G4EventProxy( G4Event* event, GiGaWorkerPilot* vec ) : m_event( event ), m_vec( vec ){};
   G4Event* m_event;
   GiGaWorkerPilot* m_vec;
 };

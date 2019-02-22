@@ -59,14 +59,15 @@ class IG4MonitoringTool;
 
 class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMTSetUpSvc
 {
+  // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
   Gaudi::Property<std::string> m_MTRunMgrFactoryName{this, "MTRunManagerFactory", "GiGaMTRunManagerFAC"};
   Gaudi::Property<std::string> m_PhysListFactoryName{this, "PhysicsListFactory", "GiGaMT_FTFP_BERT"};
   // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
   Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
   Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", "GiGaMTDetectorConstructionFAC"};
-  Gaudi::Property<std::string> m_conversionToolName{this, "HepMCtoGeant4Tool", "HepMC3ToGeant4Tool"};
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{this, "MonitorTools", {}};
+
   Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
   Gaudi::Property<bool> m_splitPileUp{this, "SplitPileUp", false};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
@@ -99,7 +100,7 @@ public:
    */
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
-  virtual G4EventProxies simulate( const std::vector<HepMC::GenEvent>&, HepRandomEnginePtr& ) const override;
+  virtual G4EventProxies simulate( Gaussino::MCTruthConverterPtrs&&, HepRandomEnginePtr& ) const override;
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi
   // thread which executes the initialization of all Gaudi objects and spawns
@@ -222,13 +223,6 @@ private:
     return Tool;
   }
 
-  GiGaFactoryBase<GiGaMTRunManager>* m_mTRunManagerFactory           = nullptr;
-  GiGaFactoryBase<G4VUserPhysicsList>* m_physListFactory             = nullptr;
-  GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory             = nullptr;
-  GiGaFactoryBase<G4VUserDetectorConstruction>* m_detConstFactory    = nullptr;
-  GiGaFactoryBase<G4VUserActionInitialization>* m_ActionInitializerFactory = nullptr;
-  IHepMC3ToGeant4Tool* m_conversionTool = nullptr;
-  std::vector<IG4MonitoringTool*> m_MoniTools{};
   mutable std::vector<std::thread> m_workerThreads{};
   mutable GiGaPayloadQueue m_payloadQueue{};
 
@@ -289,6 +283,13 @@ private:
 private:
   IChronoStatSvc* m_chronoSvc = nullptr;
   IToolSvc* m_toolSvc         = nullptr;
+
+  GiGaFactoryBase<GiGaMTRunManager>* m_mTRunManagerFactory           = nullptr;
+  GiGaFactoryBase<G4VUserPhysicsList>* m_physListFactory             = nullptr;
+  GiGaFactoryBase<GiGaWorkerPilot>* m_workerPilotFactory             = nullptr;
+  GiGaFactoryBase<G4VUserDetectorConstruction>* m_detConstFactory    = nullptr;
+  GiGaFactoryBase<G4VUserActionInitialization>* m_ActionInitializerFactory = nullptr;
+  std::vector<IG4MonitoringTool*> m_MoniTools{};
 
   // std::string       m_geoSrcName          ; ///< name of geoemtry source
   // IGiGaGeoSrc*      m_geoSrc              ; ///< pointer to geometry source

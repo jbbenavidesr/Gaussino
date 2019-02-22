@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GiGaMTCore/G4EventProxy.h"
+#include "GiGaMTCore/Truth/MCTruthConverter.h"
 #include "blockingconcurrentqueue.h"
 #include <future>
 #include <vector>
@@ -22,7 +23,7 @@ namespace CLHEP
 // TODO: Just wrapping it into a tuple does not seem to work because it does not find a suitable copy/move constructor
 // for the queue. This is, I think, caused by the default copy constructor of a tuple failing to be valid due to promise
 // which cannot be copied and the default move constructor is not noexcept. So we are trying a pointer instead...
-typedef std::tuple<std::vector<const HepMC::GenEvent*>, HepRandomEnginePtr, std::promise<G4EventProxy>*> GiGaWorkerPayload;
+typedef std::tuple<Gaussino::MCTruthConverterPtrs, HepRandomEnginePtr, std::promise<G4EventProxy>*> GiGaWorkerPayload;
 
 typedef std::optional<GiGaWorkerPayload> GiGaWorkerPayloadOpt;
 

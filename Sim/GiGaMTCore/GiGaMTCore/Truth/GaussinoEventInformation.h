@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 /// Geant4
+#include "Geant4/G4EventManager.hh"
 #include "Geant4/G4VUserEventInformation.hh"
-#include "GiGaMTTruth/MCTruthConverter.h"
+#include "GiGaMTCore/Truth/MCTruthConverter.h"
 
 /** @class GaussinoTrackInformation GaussinoTrackInformation.h
  *
@@ -22,20 +23,40 @@
 class GaussinoEventInformation : public G4VUserEventInformation
 {
 public:
-  GaussinoEventInformation() { m_truthConverter = new Gaussino::MCTruthConverter{}; }
+  GaussinoEventInformation( Gaussino::MCTruthTrackerPtrs& converter ) : m_truthTrackerPtrs{converter} {}
   /** No copy constructor allowed to avoid two objects referring to the
    * same conversion info by ptr because the G4 event is responsible for deleting this object.
    */
   GaussinoEventInformation( const GaussinoEventInformation& right ) = delete;
-  GaussinoEventInformation( GaussinoEventInformation&& right )
-  {
-    m_truthConverter       = std::move( right.m_truthConverter );
-    right.m_truthConverter = nullptr; // FIXME: probably redundant
-  };
+  GaussinoEventInformation( GaussinoEventInformation&& right ) : m_truthTrackerPtrs{right.m_truthTrackerPtrs} {};
 
   // Returns non-owning pointer to truth converter
-  Gaussino::MCTruthConverter* GetTruthConverter() { return m_truthConverter.get(); }
+  Gaussino::MCTruthTrackerPtrs &TruthTracker() { return m_truthTrackerPtrs; }
+
+  inline static GaussinoEventInformation* Get( G4Event* event = nullptr )
+  {
+    if ( !event ) {
+      event = G4EventManager::GetEventManager()->GetNonconstCurrentEvent();
+    }
+    auto info = event->GetUserInformation();
+    if ( !info ) {
+      G4cerr << "No G4UserEventInformation set. Returning a nullptr. Good luck.";
+      return nullptr;
+    }
+    GaussinoEventInformation* finfo{nullptr};
+    finfo = dynamic_cast<GaussinoEventInformation*>( info );
+    if ( !finfo ) {
+      // If cast failed we delete the existing info and create the correct one.
+      // Though this indicates some problem.
+      G4cerr << "Failed to cast G4UserEventInformation to GaussinoEventInformation. Returning a nullptr. Good luck.";
+      return nullptr;
+    } else {
+      return finfo;
+    }
+  }
+
+  virtual void Print() const override {};
 
 private:
-  std::unique_ptr<Gaussino::MCTruthConverter> m_truthConverter{nullptr};
+  Gaussino::MCTruthTrackerPtrs m_truthTrackerPtrs;
 };

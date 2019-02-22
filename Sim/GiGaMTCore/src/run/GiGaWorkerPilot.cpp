@@ -2,14 +2,16 @@
 #include "GiGaMTCore/GiGaMTRunManager.h"
 #include "GiGaMTCore/GiGaWorkerRunManager.h"
 
+#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
+
 #include <string>
 
 #include "Geant4/G4AutoDelete.hh"
+#include "Geant4/G4Event.hh"
 #include "Geant4/G4UImanager.hh"
 #include "Geant4/G4UserWorkerThreadInitialization.hh"
 #include "Geant4/G4VUserActionInitialization.hh"
 #include "Geant4/G4WorkerThread.hh"
-#include "Geant4/G4Event.hh"
 
 GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) )
 {
@@ -19,12 +21,12 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   m_context       = right.m_context;
   right.m_context = nullptr;
 
-  iWorker  = right.iWorker;
-  nWorkers = right.nWorkers;
-  nDeleted = right.nDeleted;
-  nCreated = right.nCreated;
-  m_for_cleanup = std::move(right.m_for_cleanup);
-  evt_converter = std::move(right.evt_converter);
+  iWorker       = right.iWorker;
+  nWorkers      = right.nWorkers;
+  nDeleted      = right.nDeleted;
+  nCreated      = right.nCreated;
+  m_for_cleanup = std::move( right.m_for_cleanup );
+  evt_converter = std::move( right.evt_converter );
 }
 
 void GiGaWorkerPilot::InitializeWorker()
@@ -76,7 +78,7 @@ void GiGaWorkerPilot::InitializeWorker()
 void GiGaWorkerPilot::FinalizeWorker()
 {
   debug( "Finalizing the worker for thread " + std::to_string( iWorker ) );
-  CleanUp(); // Delete any remaining events handled by this worker thread.
+  CleanUp();                             // Delete any remaining events handled by this worker thread.
   G4Threading::WorkerThreadLeavesPool(); // FIXME: necessary?
   delete GiGaWorkerRunManager::GetGiGaWorkerRunManager();
 
@@ -87,12 +89,12 @@ void GiGaWorkerPilot::FinalizeWorker()
 
   G4Threading::WorkerThreadLeavesPool();
   delete m_context;
-  if(nCreated > nDeleted){
-    error("Didn't delete all G4 events.");
-  } else if (nCreated < nDeleted){
-    error("Deleted more (!!!!) G4 events than created.");
+  if ( nCreated > nDeleted ) {
+    error( "Didn't delete all G4 events." );
+  } else if ( nCreated < nDeleted ) {
+    error( "Deleted more (!!!!) G4 events than created." );
   } else {
-    debug("Number of created and deleted events matches.");
+    debug( "Number of created and deleted events matches." );
   }
 }
 
@@ -114,7 +116,7 @@ void GiGaWorkerPilot::operator()()
   GiGaWorkerPayloadOpt payload;
   while ( true ) {
     m_input_queue->wait_dequeue( payload );
-    debug("Queue length "+std::to_string(m_input_queue->size_approx()));
+    debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
       debug( "Sentinel detected, ending loop" );
 
@@ -123,44 +125,53 @@ void GiGaWorkerPilot::operator()()
       m_input_queue->enqueue( payload );
       break;
     }
-    auto & [ hepmc_evts, engine, ret_promise ] = *payload;
-    // We treat the case of the G4Event* pointer being a nullptr
-    // as the sentinel value and break the loop.
+    auto & [ truth_converters, engine, ret_promise ] = *payload;
     CleanUp();
-    if(hepmc_evts.size() == 0){
+    if ( truth_converters.size() == 0 ) {
       continue;
     }
-    auto evt = evt_converter(hepmc_evts);
-    debug("Dequeued event with "+std::to_string(evt->GetNumberOfPrimaryVertex())+" vertices.");
+    // We now have a list of MCTruthConverter. Each needs to be triggered to link their contents and fill the
+    // Geant4 event to be simulated.
+    auto evt = new G4Event{};
+    Gaussino::MCTruthTrackerPtrs trackers;
+    for ( auto& converter : truth_converters ) {
+      Gaussino::MCTruthTrackerPtr tracker =
+          std::make_shared<Gaussino::MCTruthTracker>( std::move( *converter.get() ), evt );
+      trackers.push_back( tracker );
+    }
+    evt->SetUserInformation(new GaussinoEventInformation(trackers));
+    debug( "Dequeued event with " + std::to_string( evt->GetNumberOfPrimaryVertex() ) + " vertices." );
 
     // Reset the random number engine of this worker thread
     G4Random::setTheEngine( engine.get() );
 
     mgr->ProcessEvent( evt );
-    debug("Geant4 finished processing the event.");
-    ret_promise->set_value(G4EventProxy{evt, this});
+    debug( "Geant4 finished processing the event." );
+    ret_promise->set_value( G4EventProxy{evt, this} );
     nCreated++;
   }
 
   FinalizeWorker();
 }
 
-void GiGaWorkerPilot::RegisterForCleanUp(G4Event* evt){
+void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt )
+{
   // Need to lock access as multiple Gaudi TES destruction
   // could potentially add here in parallel
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
-  m_for_cleanup.push_back(evt);
+  m_for_cleanup.push_back( evt );
 }
 
-void GiGaWorkerPilot::CleanUp(){
+void GiGaWorkerPilot::CleanUp()
+{
   // Might be incorrect but avoids taking the lock. As this function
   // is also called during finalisation, no events can get lost.
-  if(m_for_cleanup.size() == 0) return;
+  if ( m_for_cleanup.size() == 0 ) return;
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
-  for(auto evt: m_for_cleanup){
-    debug("Deleting G4Event");
+  for ( auto evt : m_for_cleanup ) {
+    debug( "Deleting G4Event" );
     nDeleted++;
     delete evt;
   }

@@ -11,6 +11,7 @@ gaudi_depends_on_subdirs(GaudiAlg
                          NewRnd
                          Sim/SimInterfaces
                          Sim/GiGaMTFactories
+                         Sim/GiGaMTTruth
                          Sim/GiGaMTCore)
 
 add_definitions(-DG4MULTITHREADED)
@@ -21,8 +22,8 @@ find_package(ROOT COMPONENTS MathCore GenVector)
 gaudi_add_library(GiGaMTLib
                   src/Lib/*.cpp
                   PUBLIC_HEADERS GiGaMT 
-                  INCLUDE_DIRS HepMC GiGaMTFactories SimInterfaces HepMCUser
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib HepMC NewRnd)
+                  INCLUDE_DIRS HepMC GiGaMTFactories SimInterfaces HepMCUser GiGaMTTruth
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib HepMC NewRnd )
 
 gaudi_add_module(GiGaMT
         src/components/*.cpp

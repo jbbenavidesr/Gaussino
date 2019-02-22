@@ -84,6 +84,12 @@ class GenPhase(ConfigurableUser):
         # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
         ApplicationMgr().TopAlg += [seq]
 
+    def configure_genonly(self):
+        from Configurables import SkipSimAlg
+        seq = GaudiSequencer('GenOnlySequence')
+        seq.Members += [SkipSimAlg()]
+        ApplicationMgr().TopAlg += [seq]
+
     @staticmethod
     def eventType():
         from Configurables import Generation

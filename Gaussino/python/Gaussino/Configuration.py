@@ -86,6 +86,8 @@ class Gaussino(ConfigurableUser):
         GenPhase().configure_phase()
         if "Simulation" in phases:
             SimPhase().configure_phase()
+        else:
+            GenPhase().configure_genonly()
 
         histogramService()
 

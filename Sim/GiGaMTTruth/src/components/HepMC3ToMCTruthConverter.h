@@ -6,7 +6,7 @@
 #include "GaudiKernel/SystemOfUnits.h"
 #include "Geant4/G4SystemOfUnits.hh"
 
-#include "GiGaMTTruth/IHepMC3ToMCTruthTracker.h"
+#include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 #include "HepMC/GenParticle.h"
 
 class G4PrimaryParticle;
@@ -16,7 +16,7 @@ namespace LHCb
   class IParticlePropertySvc;
 }
 
-/** @class HepMC3ToMCTruthTracker HepMC3ToMCTruthTracker.h "HepMC3ToMCTruthTracker.h"
+/** @class HepMC3ToMCTruthConverter HepMC3ToMCTruthConverter.h "HepMC3ToMCTruthConverter.h"
  *
  *  Tool to loop over the HepMC3 structure and fill an MCTruthConverter object that hols
  *  the information on which particles to keep and which ones are supposed to be treated
@@ -26,21 +26,19 @@ namespace LHCb
  *  @date   15.2.2019
  *
  */
-class HepMC3ToMCTruthTracker : public extends<GaudiTool, IHepMC3ToMCTruthTracker>
+class HepMC3ToMCTruthConverter : public extends<GaudiTool, IHepMC3ToMCTruthConverter>
 {
 public:
   Gaudi::Property<double> m_travelLimit{this, "TravelLimit", 1e-10 * m};
   using extends::extends;
 
-  virtual ~HepMC3ToMCTruthTracker() = default;
+  virtual ~HepMC3ToMCTruthConverter() = default;
 
-  virtual Gaussino::MCTruthTracker BuildConverter( const std::vector<const HepMC::GenEvent*>& ) const override;
+  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const std::vector<HepMC::GenEvent>& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
-  void convert( const HepMC::GenParticlePtr& hepmc, G4PrimaryParticle* g4parent = nullptr,
-                G4PrimaryVertex* g4vertex = nullptr );
-  bool IsTraveling( const HepMC::GenParticlePtr& part );
+  bool IsTraveling( const HepMC::GenParticlePtr& part ) const;
   /// Decide if a particle has to be kept or not.
-  static bool keep( const HepMC::GenParticlePtr & particle );
+  bool keep( const HepMC::GenParticlePtr & particle ) const;
 };

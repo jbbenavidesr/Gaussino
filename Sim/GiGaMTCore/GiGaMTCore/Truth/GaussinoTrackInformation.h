@@ -9,7 +9,7 @@
 #include "Geant4/G4TrackingManager.hh"
 #include "Geant4/G4EventManager.hh"
 /// GaussTools
-#include "GiGaMTTruth/DetTrackInfo.h"
+#include "GiGaMTCore/Truth/DetTrackInfo.h"
 #include "GiGaMTCore/GaussHitBase.h"
 
 /** @class GaussinoTrackInformation GaussinoTrackInformation.h

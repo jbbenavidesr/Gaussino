@@ -11,31 +11,33 @@
 #include "NewRnd/RndAlgSeeder.h"
 
 class IHepMC3ToMCTruthConverter;
+namespace LHCb {
+class IParticlePropertySvc;
+}
 
-/** @class GiGaAlg GiGaAlg.h Algorithms/GiGaAlg.h
+/** @class SkipSimAlg SkipSimAlg.h Algorithms/SkipSimAlg.h
  *
- *  Simple algorithm to pass events to the simulation
- *  service to be simulated. Blocks in the call to the
- *  algorithm until the simulation is finished.
+ *  Simple algorithm that will create an empty Geant4 event
+ *  and attach a convert to it that contains the full truth record
+ *  for later conversion to the event model for generator only.
  *
  *  @author Dominik Muller
- *  @date   25.6.2018
+ *  @date   21.2.2019
  *
  */
-class GiGaAlg : public Gaudi::Functional::Transformer<G4EventProxies( const std::vector<HepMC::GenEvent>& ),
-                                                      Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
+class SkipSimAlg : public Gaudi::Functional::Transformer<G4EventProxies( const std::vector<HepMC::GenEvent>& ) >
 {
 public:
   /// Standard constructor
-  GiGaAlg( const std::string& name, ISvcLocator* pSvcLocator )
+  SkipSimAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : Transformer( name, pSvcLocator, KeyValue{"Input", Gaussino::HepMCEventLocation::Default},
                      KeyValue{"Output", Gaussino::G4EventsLocation::Default} ){};
 
-  virtual ~GiGaAlg() = default;
+  virtual ~SkipSimAlg() = default;
 
   G4EventProxies operator()( const std::vector<HepMC::GenEvent>& ) const override;
 
 private:
-  ServiceHandle<IGiGaMTSvc> m_gigaSvc{this, "GiGaMTSvc", "GiGaMT"};
+  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
   PublicToolHandle<IHepMC3ToMCTruthConverter> m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
 };

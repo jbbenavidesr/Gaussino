@@ -6,11 +6,13 @@
 # none of the modified classes should depend on anything Gaudi related.
 #################################################################################
 gaudi_subdir(GiGaMTCore v1r0)
-gaudi_depends_on_subdirs(NewRnd)
+gaudi_depends_on_subdirs(NewRnd
+                         HepMCUser)
 
 find_package(CLHEP COMPONENTS Random Vector)
 find_package(XercesC)
 find_package(HepMC CONFIG)
+find_package(ROOT COMPONENTS MathCore GenVector)
 
 FindG4libs(digits_hits event geometry global graphics_reps materials persistency
            particles processes run tracking track intercoms physicslists)
@@ -18,8 +20,14 @@ FindG4libs(digits_hits event geometry global graphics_reps materials persistency
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
+gaudi_add_library(GiGaMTCoreTruthLib
+                 src/truth/*.cpp
+                 PUBLIC_HEADERS GiGaMTCore
+                 INCLUDE_DIRS HepMC CLHEP Geant4 XercesC NewRnd HepMCUtils
+                 LINK_LIBRARIES HepMC CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils)
+
 gaudi_add_library(GiGaMTCoreRunLib
                  src/run/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS HepMC CLHEP Geant4 XercesC NewRnd
-                 LINK_LIBRARIES HepMC CLHEP ${GEANT4_LIBS} XercesC)
+                 LINK_LIBRARIES HepMC CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib )

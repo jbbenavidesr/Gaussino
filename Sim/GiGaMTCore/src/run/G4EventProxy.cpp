@@ -5,6 +5,8 @@ G4EventProxy::~G4EventProxy()
 {
   if ( m_vec && m_event ) {
     m_vec->RegisterForCleanUp( m_event );
+  } else if (m_event) {
+    delete m_event;
   }
 }
 

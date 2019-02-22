@@ -5,6 +5,7 @@
 #include "GiGaMTCore/GiGaMTUtils.h"
 #include "GiGaMTCore/GiGaWorkerPayload.h"
 #include "GiGaMTCore/IGiGaMessage.h"
+#include "GiGaMTCore/Truth/MCTruthConverter.h"
 
 #include "Geant4/G4Event.hh"
 #include "HepMC/GenEvent.h"
@@ -22,7 +23,7 @@ class GiGaWorkerPilotFAC;
 class G4EventProxy;
 class G4WorkerThread;
 
-typedef std::function<G4Event*( const std::vector<const HepMC::GenEvent*>& )> HepMC_to_Geant4_func;
+typedef std::function<void( Gaussino::MCTruthTracker& )> MCTruthTrackerCall;
 
 class GiGaWorkerPilot : public GiGaMessage
 {
@@ -66,7 +67,7 @@ public:
   }
 
   // Set the HepMC to Geant4 converter function
-  void SetConverter(HepMC_to_Geant4_func func){
+  void SetConverter(MCTruthTrackerCall func){
     evt_converter = func;
   }
 
@@ -110,5 +111,5 @@ private:
   size_t nCreated = 0;
   std::vector<G4Event*> m_for_cleanup{};
   std::mutex m_cleanup_lock{};
-  HepMC_to_Geant4_func evt_converter{[]( const std::vector<const HepMC::GenEvent*>& ) { return new G4Event{}; }};
+  MCTruthTrackerCall evt_converter{[]( Gaussino::MCTruthTracker& ) { }};
 };

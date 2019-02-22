@@ -1,11 +1,13 @@
 // local
 #include "GiGaAlg.h"
+#include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 
 DECLARE_COMPONENT( GiGaAlg )
 
 G4EventProxies GiGaAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
 {
   auto engine = createRndmEngine();
+
   debug() << "==> Execute" << endmsg;
-  return m_gigaSvc->simulate( hepmcevents, engine );
+  return m_gigaSvc->simulate(m_converterTool->BuildConverter(hepmcevents), engine );
 }

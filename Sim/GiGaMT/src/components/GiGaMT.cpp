@@ -142,10 +142,6 @@ StatusCode GiGaMT::initialize()
   if ( 0 == m_detConstFactory ) {
     return Error( "Unable to create/locate factory for G4VUserDetectorConstruction" );
   }
-  m_conversionTool = tool<IHepMC3ToGeant4Tool>( m_conversionToolName, this );
-  if ( 0 == m_conversionTool ) {
-    return Error( "Unable to create/locate tool for EDM conversion" );
-  }
   for ( auto& toolname : m_MoniToolNames ) {
     auto tmp_tool = tool<IG4MonitoringTool>( toolname, this );
     if ( 0 == tmp_tool ) {
@@ -238,27 +234,22 @@ StatusCode GiGaMT::finalize()
 }
 
 
-G4EventProxies GiGaMT::simulate( const std::vector<HepMC::GenEvent>& _in, HepRandomEnginePtr& engine ) const
+G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in, HepRandomEnginePtr& engine ) const
 {
   auto start_time = Clock::now();
   std::list<std::promise<G4EventProxy>> promises;
   std::list<std::future<G4EventProxy>> futures;
   if ( m_splitPileUp ) {
     // Submit every HepMC event separarely to the queue
-    for ( auto& evt : _in ) {
+    for ( auto& conv : _in ) {
       auto& prom = promises.emplace_back();
       futures.emplace_back( prom.get_future() );
-      std::vector<const HepMC::GenEvent*> evt_vec = {&evt};
-      m_payloadQueue.enqueue( GiGaWorkerPayload{evt_vec, engine.createSubRndmEngine(), &prom} );
+      m_payloadQueue.enqueue( GiGaWorkerPayload{{conv}, engine.createSubRndmEngine(), &prom} );
     }
   } else {
-    std::vector<const HepMC::GenEvent*> evt_vec;
     auto& prom = promises.emplace_back();
     futures.emplace_back( prom.get_future() );
-    for ( auto& evt : _in ) {
-      evt_vec.emplace_back( &evt );
-    }
-    m_payloadQueue.enqueue( GiGaWorkerPayload{evt_vec, engine, &prom} );
+    m_payloadQueue.enqueue( GiGaWorkerPayload{std::move( _in), engine, &prom} );
   }
   G4EventProxies return_events;
   for ( auto& fut : futures ) {
