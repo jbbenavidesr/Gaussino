@@ -13,6 +13,8 @@
 #include "GiGaMTCore/Truth/LinkedParticle.h"
 
 #include "Geant4/G4Event.hh"
+#include "Geant4/G4PrimaryParticle.hh"
+#include "Geant4/G4PrimaryVertex.hh"
 
 // MCTruthConverter objects build on top of each other. To prevent incorrect use, this object evolves in stages, that
 // each trigger internal transformations of the event structure.
@@ -20,62 +22,66 @@
 namespace Gaussino
 {
 
-  class MCTruthBase
+  class MCTruthData
   {
   public:
-    MCTruthBase( const MCTruthBase& ) = delete;
-    // Declare the particle and its intended conversion type. This will register the necessary
-    // information in the internal storage elements.
-    // void Declare(HepMC::GenParticlePtr & particle, ConversionType type);
-    //// Intended to be called after all particles from the HepMC event have been
-    //// declared.
+    MCTruthData( const MCTruthData& ) = delete;
+    virtual ~MCTruthData();
+    template <typename STREAM>
+    STREAM& DumpToStream( STREAM&,
+                          std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
 
   protected:
-    MCTruthBase() = default;
-    MCTruthBase( MCTruthBase&& right ) noexcept;
+    MCTruthData() = default;
+    MCTruthData( MCTruthData&& right ) noexcept;
     // Owning container of the linked particle objects
-    std::vector<std::unique_ptr<LinkedParticle>> m_linkedParticles;
+    std::set<LinkedParticle*> m_linkedParticles;
     // Some helpful maps to organise the data
-    // Map GenParticle ID to LinkedParticle
-    std::unordered_map<int, LinkedParticle*> m_hepmc_to_linked;
+    // Map GenParticle ID to LinkedParticle, hidden in a
+    // map for to separate for every GenEvent
+    std::unordered_map<HepMC::GenEvent*, std::unordered_map<int, LinkedParticle*>> m_hepmc_to_linked;
     // Map G4 barcode to LinkedParticle
-    std::unordered_map<int, LinkedParticle*> m_geant4_to_linked;
+    std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
     std::unordered_map<int, LinkedParticle*> m_tracking_to_linked;
     std::set<LinkedParticle*> m_root_particles;
 
     // Some consistence checking internal variables
-    HepMC::GenEvent* m_hepmc_event{nullptr};
     G4Event* m_geant4_event{nullptr};
+    std::set<G4PrimaryVertex*> m_geant4_vertex;
   };
 
-  class MCTruthConverter : protected MCTruthBase
+  // Class to register HepMC particles with their conversion type.
+  class MCTruthConverter : public MCTruthData
   {
   public:
-    MCTruthConverter() : MCTruthBase(){};
+    MCTruthConverter() : MCTruthData(){};
     MCTruthConverter( const MCTruthConverter& ) = delete;
-    MCTruthConverter( MCTruthConverter&& right ) noexcept : MCTruthBase( std::move( right ) ){};
+    MCTruthConverter( MCTruthConverter&& right ) noexcept : MCTruthData( std::move( right ) ){};
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
     void Declare( const HepMC::GenParticlePtr& particle, ConversionType type );
+    void AddConverter( MCTruthConverter&& conv );
   };
 
-  class MCTruthTracker : protected MCTruthConverter
+  // Main class used during the Geant4 tracking.
+  // Takes an r-value MCTruthConverter and links the particles in its internal storage.
+  // No more HepMC particles can be added at this point to ensure the internal structure remains
+  // consistent. Optionally can fill a provided G4Event (and becomes linked to this event via GaussinoEventInformation)
+  class MCTruthTracker : public MCTruthData
   {
   public:
+    MCTruthTracker()                        = delete;
     MCTruthTracker( const MCTruthTracker& ) = delete;
-    MCTruthTracker( MCTruthTracker&& right ) noexcept : MCTruthConverter( std::move( right ) ){};
+    MCTruthTracker( MCTruthTracker&& right ) noexcept : MCTruthData( std::move( right ) ){};
     // Constructs the linkage between the MCTruthConverter contents fills the vertices and primary particles
     // into the G4Event (optional in case of generator only MC). If no Geant4 event is passed, any previously
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruthTracker( MCTruthConverter&& right, G4Event* event = nullptr );
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
-    void Declare( [[maybe_unused]] Gaussino::G4TruthParticle particle ){};
-    std::set<LinkedParticle*> GetRootParticles() const { return m_root_particles; }
-    template <typename STREAM>
-    STREAM & DumpToStream( STREAM&,
-                       std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
+    void Declare( Gaussino::G4TruthParticle* particle, int parentID );
+    void RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID );
 
   private:
     // Intended to be called after all particles from the HepMC event have been
@@ -85,25 +91,64 @@ namespace Gaussino
     void AddToG4Event( G4Event* );
   };
 
+  // Final class, takes an MCTruthTracker and cleans up the internally stored particles (e.g. particle reacted with
+  // something in the detector before it could perform it's assigned decay, and thus we need to remove these decay
+  // products). Only object that allows access to the internally sorted LinkedParticles so users can convert them to
+  // their event model.
+  class MCTruth : public MCTruthData
+  {
+  public:
+    MCTruth()                 = delete;
+    MCTruth( const MCTruth& ) = delete;
+    MCTruth( MCTruth&& right ) noexcept : MCTruthData( std::move( right ) ){};
+    // Constructs the linkage between the MCTruthConverter contents fills the vertices and primary particles
+    // into the G4Event (optional in case of generator only MC). If no Geant4 event is passed, any previously
+    // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
+    MCTruth( MCTruthTracker&& right );
+    std::set<LinkedParticle*> GetRootParticles() { return m_root_particles; }
+
+  private:
+    void DoCleanup();
+    void EraseLinkedParticle( LinkedParticle* lp );
+    void EraseDecayTree( LinkedParticle* lp );
+  };
+
   typedef std::shared_ptr<MCTruthConverter> MCTruthConverterPtr;
   typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
   typedef std::shared_ptr<MCTruthTracker> MCTruthTrackerPtr;
   typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
+  typedef std::shared_ptr<MCTruth> MCTruthPtr;
+  typedef std::vector<MCTruthPtr> MCTruthPtrs;
+  // Helper function to merge containers of MCTruthConverterPtr into a single converter
+  // Useful when splitting/assigning the work to to Geant4 workers
+  // Will return a new converter with all input converters become invalid
+  template <typename Iter>
+  MCTruthConverterPtr MergeConverters( Iter it, Iter end )
+  {
+    MCTruthConverterPtr ret = std::make_shared<MCTruthConverter>();
+    while ( it != end ) {
+      ret->AddConverter( std::move( **it ) );
+      it++;
+    }
+    return ret;
+  }
 }
 
 template <typename STREAM>
-STREAM& Gaussino::MCTruthTracker::DumpToStream( STREAM& out, std::function<std::string( int )> pdg_to_name )
+STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::string( int )> pdg_to_name )
 {
   const std::string spacer = "|---";
   out << "#############################################\n";
   out << "# Beginning dump of converter\n";
   out << "#############################################\n";
 
+  std::set<LinkedParticle*> visited;
   unsigned int i_root = 1;
   for ( auto& rp : m_root_particles ) {
     out << "-------- Beginning root particle " << i_root << " --------\n";
     std::function<void( LinkedParticle*, std::string )> rec_print = [&]( LinkedParticle* lp, std::string spacing ) {
       out << spacing << " " << pdg_to_name( lp->GetPDG() ) << *lp << "\n";
+      visited.insert(lp);
       for ( auto& dp : lp->GetChildren() ) {
         rec_print( dp, spacing + spacer );
       }
@@ -112,6 +157,7 @@ STREAM& Gaussino::MCTruthTracker::DumpToStream( STREAM& out, std::function<std::
     i_root++;
   }
 
+  out << "Visited " << visited.size() << " out of " << m_linkedParticles.size() << " LinkedParticle\n";
   out << "#############################################\n";
   out << "# Finished dump of converter\n";
   out << "#############################################\n";

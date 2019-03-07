@@ -4,16 +4,20 @@ Utilities to configure the Simulation step of Gaussino
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import GaudiSequencer
 from Gaussino.Utilities import gigaService
-from Gaussino.SimUtils import configure_giga_alg
+from Gaussino.SimUtils import configure_giga_alg, append_truth_actions
+
 
 class SimPhase(ConfigurableUser):
+
     """Configurable for the Simulation phase in Gaussino. Does not implement
     a self.__apply_configuration__ itself. Instead, all member functions are
     explicitly called during the configuration of Gaussino()"""
 
     __slots__ = {
-        "DebugCommunication"        : False
+        "DebugCommunication": False,
+        "TrackTruth": True
     }
+
     def __init__(self, name=Configurable.DefaultName, **kwargs):
         kwargs["name"] = name
         super(SimPhase, self).__init__(*(), **kwargs)
@@ -32,11 +36,12 @@ class SimPhase(ConfigurableUser):
 
     def configure_phase(self):
 
-        giga = gigaService(
-            debugcommunication = self.getProp('DebugCommunication'))
+        gigaService(debugcommunication=self.getProp('DebugCommunication'))
 
         giga_alg = configure_giga_alg()
 
         seq = GaudiSequencer('SimulationPhase')
         seq.Members = [giga_alg]
         ApplicationMgr().TopAlg += [seq]
+        if self.getProp('TrackTruth'):
+            append_truth_actions()

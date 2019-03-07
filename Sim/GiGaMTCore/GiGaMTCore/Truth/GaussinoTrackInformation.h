@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 /// Geant4
-#include "Geant4/G4VUserTrackInformation.hh"
 #include "Geant4/G4Allocator.hh"
-#include "Geant4/G4TrackingManager.hh"
 #include "Geant4/G4EventManager.hh"
+#include "Geant4/G4TrackingManager.hh"
+#include "Geant4/G4VUserTrackInformation.hh"
 /// GaussTools
-#include "GiGaMTCore/Truth/DetTrackInfo.h"
 #include "GiGaMTCore/GaussHitBase.h"
+#include "GiGaMTCore/Truth/DetTrackInfo.h"
 
 /** @class GaussinoTrackInformation GaussinoTrackInformation.h
  *
@@ -23,29 +23,27 @@
  */
 
 ///
-class GaussinoTrackInformation : public G4VUserTrackInformation {
-  public:
+class GaussinoTrackInformation : public G4VUserTrackInformation
+{
+public:
   // the actual tyep of hit conatiner
   typedef std::vector<Gaussino::HitBase*> Hits;
 
-  public:
+public:
   GaussinoTrackInformation() = default;
   /** copy constructor
    *  @param right object to be copied
    */
-  GaussinoTrackInformation(const GaussinoTrackInformation& right);
+  GaussinoTrackInformation( const GaussinoTrackInformation& right );
 
   /// destructor
-  virtual ~GaussinoTrackInformation(){ delete m_detInfo; };
-
-  /// clone (virtual constructor)
-  virtual GaussinoTrackInformation* clone() const;
+  virtual ~GaussinoTrackInformation() { delete m_detInfo; };
 
   /// overloaded operator new
-  inline void* operator new(size_t);
+  inline void* operator new( size_t );
 
   /// overloaded operator delete
-  inline void operator delete(void*);
+  inline void operator delete( void* );
 
   /// needed by base class
   void Print() const override{};
@@ -56,19 +54,21 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
   /** set new value for flag to append step
    *  @param value new value of the flag
    */
-  inline GaussinoTrackInformation& setAppendStep(const bool value) {
+  inline GaussinoTrackInformation& setAppendStep( const bool value )
+  {
     m_appendStep = value;
     return *this;
   }
 
   /// flag to force the saving of track into traectory
-  inline bool toBeStored() const { return m_toBeStored; }
+  inline bool storeTruth() const { return m_storeTruth; }
 
   /** set new value for flag to force the saving track into trajectory
    *  @param value new value of the flag
    */
-  inline GaussinoTrackInformation& setToBeStored(const bool value) {
-    m_toBeStored = value;
+  inline GaussinoTrackInformation& setToStoreTruth( const bool value )
+  {
+    m_storeTruth = value;
     return *this;
   }
 
@@ -78,7 +78,8 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
   /** set new value for flag
    *  @param value new value of the flag
    */
-  inline GaussinoTrackInformation& setCreatedHit(const bool value) {
+  inline GaussinoTrackInformation& setCreatedHit( const bool value )
+  {
     m_createdHit = value;
     return *this;
   }
@@ -87,26 +88,19 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
   inline bool directParent() const { return m_directParent; }
 
   // Set if direct parent particle has been stored or not
-  inline GaussinoTrackInformation& setDirectParent(const bool value) {
+  inline GaussinoTrackInformation& setDirectParent( const bool value )
+  {
     m_directParent = value;
-    return *this;
-  }
-
-  /// Get flag to store or not in internal HepMC structure
-  inline bool storeHepMC() const { return m_storeHepMC; }
-
-  /// Set value of flag to store or not in internal HepMC structure
-  inline GaussinoTrackInformation& setStoreHepMC(const bool value) {
-    m_storeHepMC = value;
     return *this;
   }
 
   /** add hit pointer
    *  @param hit hit to be added into list of connected hits
    */
-  GaussinoTrackInformation& addHit(Gaussino::HitBase* hit) {
-    if (0 != hit) {
-      m_hits.push_back(hit);
+  GaussinoTrackInformation& addHit( Gaussino::HitBase* hit )
+  {
+    if ( 0 != hit ) {
+      m_hits.push_back( hit );
     };
     return *this;
   }
@@ -114,7 +108,7 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
   /** add hit pointer
    *  @param hit hit to be added into list of connected hits
    */
-  GaussinoTrackInformation& addToHits(Gaussino::HitBase* hit) { return addHit(hit); }
+  GaussinoTrackInformation& addToHits( Gaussino::HitBase* hit ) { return addHit( hit ); }
 
   // get the container of hits
   const Hits& hits() const { return m_hits; }
@@ -123,11 +117,12 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
    *  (set the new track ID for all connected hits)
    *  @param trackID new value of trackID
    */
-  GaussinoTrackInformation& updateHitsTrackID(G4int trackID) {
-    for (Hits::iterator ihit = m_hits.begin(); m_hits.end() != ihit; ++ihit) {
+  GaussinoTrackInformation& updateHitsTrackID( G4int trackID )
+  {
+    for ( Hits::iterator ihit = m_hits.begin(); m_hits.end() != ihit; ++ihit ) {
       Gaussino::HitBase* hit = *ihit;
-      if (0 != hit) {
-        hit->setTrackID(trackID);
+      if ( 0 != hit ) {
+        hit->setTrackID( trackID );
       }
     }
     return *this;
@@ -140,10 +135,9 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
   /** set the pointer to the detInfo
    *  @param aDetInfo pointer to DetTrackInfo
    */
-  void setDetInfo(DetTrackInfo* aDetInfo) { m_detInfo = aDetInfo; }
+  void setDetInfo( DetTrackInfo* aDetInfo ) { m_detInfo = aDetInfo; }
 
-  inline static G4Allocator<GaussinoTrackInformation>*
-  GaussinoTrackInformationAllocator();
+  inline static G4Allocator<GaussinoTrackInformation>* GaussinoTrackInformationAllocator();
 
   /** Get the GaussinoTrackInformation object for a track. If no track
    * object has been assigned yet one will be created and assigned
@@ -155,10 +149,6 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
       track = G4EventManager::GetEventManager()->GetTrackingManager()->GetTrack();
     }
     auto info = track->GetUserInformation();
-    if ( !info ) {
-      info = new GaussinoTrackInformation{};
-      track->SetUserInformation( info );
-    }
     GaussinoTrackInformation* finfo{nullptr};
     if ( info ) {
       finfo = dynamic_cast<GaussinoTrackInformation*>( info );
@@ -176,18 +166,25 @@ class GaussinoTrackInformation : public G4VUserTrackInformation {
     return dynamic_cast<GaussinoTrackInformation*>( info );
   }
 
+  #ifdef TRUTHDEBUG
+  void SetStoreReason(std::string storeReason){m_storeReason=std::move(storeReason);}
+  std::string& GetStoreReason(){return m_storeReason;}
+  #endif
+
 private:
   /// flag indicating that TrajectoryPoint should be appended
   bool m_appendStep{false};
   /// flag indicating that track is forced to be stored into trajectory
-  bool m_toBeStored{false};
+  bool m_storeTruth{false};
   /// flag indicating that track created a hit
   bool m_createdHit{false};
   /// flag indicating that the direct parent particle was not stored
   /// in HepMC event this will be represented by a special 'dummy' link
   bool m_directParent{true};
-  // flag indicating that the track should be stored in HepMC record
-  bool m_storeHepMC{false};
+
+  #ifdef TRUTHDEBUG
+  std::string m_storeReason;
+  #endif
 
   /// vector of pointers to hits created by that track
   Hits m_hits{};
@@ -197,16 +194,18 @@ private:
   DetTrackInfo* m_detInfo{nullptr};
 };
 
-inline G4Allocator<GaussinoTrackInformation>*
-GaussinoTrackInformation::GaussinoTrackInformationAllocator() {
-  thread_local auto hitAllocator = G4Allocator<GaussinoTrackInformation>{};
-  return &hitAllocator;
+extern G4ThreadLocal G4Allocator<GaussinoTrackInformation> *aGaussinoTrackInformationAllocator;
+
+inline void* GaussinoTrackInformation::operator new( size_t )
+{
+  if (!aGaussinoTrackInformationAllocator)
+  {
+    aGaussinoTrackInformationAllocator = new G4Allocator<GaussinoTrackInformation>;
+  }
+  return (void*)aGaussinoTrackInformationAllocator->MallocSingle();
 }
 
-inline void* GaussinoTrackInformation::operator new(size_t) {
-  return (void*)GaussinoTrackInformationAllocator()->MallocSingle();
-}
-
-inline void GaussinoTrackInformation::operator delete(void* info) {
-  GaussinoTrackInformationAllocator()->FreeSingle((GaussinoTrackInformation*)info);
+inline void GaussinoTrackInformation::operator delete( void* info )
+{
+  aGaussinoTrackInformationAllocator->FreeSingle( (GaussinoTrackInformation*)info );
 }

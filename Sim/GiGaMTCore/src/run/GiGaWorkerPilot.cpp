@@ -125,27 +125,41 @@ void GiGaWorkerPilot::operator()()
       m_input_queue->enqueue( payload );
       break;
     }
-    auto & [ truth_converters, engine, ret_promise ] = *payload;
+    auto & [ truth_converter, engine, ret_promise ] = *payload;
     CleanUp();
-    if ( truth_converters.size() == 0 ) {
-      continue;
-    }
     // We now have a list of MCTruthConverter. Each needs to be triggered to link their contents and fill the
     // Geant4 event to be simulated.
     auto evt = new G4Event{};
-    Gaussino::MCTruthTrackerPtrs trackers;
-    for ( auto& converter : truth_converters ) {
-      Gaussino::MCTruthTrackerPtr tracker =
-          std::make_shared<Gaussino::MCTruthTracker>( std::move( *converter.get() ), evt );
-      trackers.push_back( tracker );
+    Gaussino::MCTruthTrackerPtr tracker =
+        std::make_shared<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
+    if ( printDebug() ) {
+      std::stringstream sstr;
+      sstr << "\nBefore simulation\n";
+      tracker->DumpToStream( sstr );
+      debug( sstr.str() );
     }
-    evt->SetUserInformation(new GaussinoEventInformation(trackers));
+    evt->SetUserInformation( new GaussinoEventInformation( tracker ) );
     debug( "Dequeued event with " + std::to_string( evt->GetNumberOfPrimaryVertex() ) + " vertices." );
 
     // Reset the random number engine of this worker thread
     G4Random::setTheEngine( engine.get() );
 
     mgr->ProcessEvent( evt );
+    if ( printDebug() ) {
+      std::stringstream sstr;
+      sstr << "\nAfter simulation\n";
+      tracker->DumpToStream( sstr );
+      debug( sstr.str() );
+    }
+    Gaussino::MCTruthPtr mctruth =
+        std::make_shared<Gaussino::MCTruth>( std::move( *tracker.get() ) );
+
+    if ( printDebug() ) {
+      std::stringstream sstr;
+      sstr << "\nAfter cleanup\n";
+      mctruth->DumpToStream( sstr );
+      debug( sstr.str() );
+    }
     debug( "Geant4 finished processing the event." );
     ret_promise->set_value( G4EventProxy{evt, this} );
     nCreated++;

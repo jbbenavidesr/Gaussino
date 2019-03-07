@@ -16,6 +16,20 @@ def run_once(func):
     return decorated
 
 
+def get_set_configurable(parent, propertyname):
+    propertyvalue = parent.getProp(propertyname)
+    propertyvalue_short = propertyvalue.split('/')[-1]
+    objectname = propertyvalue.split('/')[0]
+    if not hasattr(parent, propertyvalue_short):
+        import Configurables
+        conf = getattr(Configurables, objectname)
+        child = parent.addTool(conf, propertyvalue_short)
+    try:
+        return child
+    except:
+        raise AttributeError('Could not get {} from {}'.format(propertyname, parent))  # NOQA
+
+
 @run_once
 def ppService(name=Configurable.DefaultName):
     from Configurables import ApplicationMgr, LHCb__ParticlePropertySvc

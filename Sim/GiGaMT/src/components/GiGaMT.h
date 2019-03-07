@@ -63,7 +63,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::string> m_MTRunMgrFactoryName{this, "MTRunManagerFactory", "GiGaMTRunManagerFAC"};
   Gaudi::Property<std::string> m_PhysListFactoryName{this, "PhysicsListFactory", "GiGaMT_FTFP_BERT"};
   // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
-  Gaudi::Property<std::string> m_UserActionInitializerName{this, "GigaActionInitializer", "GiGaActionInitializer"};
+  Gaudi::Property<std::string> m_UserActionInitializerName{this, "ActionInitializer", "GiGaActionInitializer"};
   Gaudi::Property<std::string> m_WorkerPilotFactoryName{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
   Gaudi::Property<std::string> m_DetectorConstructionName{this, "DetectorConstruction", "GiGaMTDetectorConstructionFAC"};
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{this, "MonitorTools", {}};

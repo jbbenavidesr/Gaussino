@@ -73,8 +73,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& he
   Gaussino::MCTruthConverterPtrs converters;
 
   for ( const HepMC::GenEvent& genEvt : hepmc_events ) {
-    auto & converter = converters.emplace_back(std::make_shared<Gaussino::MCTruthConverter>());
-    // Adding the primary vertex and then iteratively add children to it
+    auto converter = std::make_shared<Gaussino::MCTruthConverter>();
     if ( genEvt.length_unit() != HepMC::Units::MM || genEvt.momentum_unit() != HepMC::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;
       continue;
@@ -85,6 +84,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& he
       }
       converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
     }
+    converters.push_back(converter);
   }
   return converters;
 }

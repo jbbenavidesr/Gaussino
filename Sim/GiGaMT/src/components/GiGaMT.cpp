@@ -234,7 +234,7 @@ StatusCode GiGaMT::finalize()
 }
 
 
-G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in, HepRandomEnginePtr& engine ) const
+G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs && _in, HepRandomEnginePtr& engine ) const
 {
   auto start_time = Clock::now();
   std::list<std::promise<G4EventProxy>> promises;
@@ -244,12 +244,14 @@ G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in, HepRandom
     for ( auto& conv : _in ) {
       auto& prom = promises.emplace_back();
       futures.emplace_back( prom.get_future() );
-      m_payloadQueue.enqueue( GiGaWorkerPayload{{conv}, engine.createSubRndmEngine(), &prom} );
+      m_payloadQueue.enqueue( GiGaWorkerPayload{conv, engine.createSubRndmEngine(), &prom} );
     }
   } else {
     auto& prom = promises.emplace_back();
     futures.emplace_back( prom.get_future() );
-    m_payloadQueue.enqueue( GiGaWorkerPayload{std::move( _in), engine, &prom} );
+    Gaussino::MCTruthConverterPtr conv = Gaussino::MergeConverters(std::begin(_in), std::end(_in));
+    // Merge the individual pileup converters into one
+    m_payloadQueue.enqueue( GiGaWorkerPayload{ conv, engine, &prom} );
   }
   G4EventProxies return_events;
   for ( auto& fut : futures ) {

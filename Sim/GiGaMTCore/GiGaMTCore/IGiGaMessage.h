@@ -21,6 +21,7 @@ protected:
   virtual void verbose( std::string message ) const = 0;
   virtual void error( std::string message ) const   = 0;
   virtual void warning( std::string message ) const = 0;
+  virtual int level( ) const {return -1;}
 };
 
 // Baseclass enabling the use of the messaging interface within implementation classes
@@ -46,14 +47,14 @@ public:
 protected:
   void debug( std::string message )
   {
-    if ( !m_msg ) return;
+    if ( !m_msg || !printDebug()) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->debug( ss.str() );
   }
   void verbose( std::string message )
   {
-    if ( !m_msg ) return;
+    if ( !m_msg || !printVerbose()) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->verbose( ss.str() );
@@ -72,6 +73,10 @@ protected:
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->warning( ss.str() );
   }
+  int MessageInterfacelevel() const {return m_msg->level();}
+  bool printVerbose() const {return m_msg->level() <= 1;}
+  bool printDebug() const {return m_msg->level() <= 2;}
+  bool printInfo() const {return m_msg->level() <= 3;}
 
 private:
   const IGiGaMessage* m_msg = nullptr;

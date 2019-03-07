@@ -30,6 +30,10 @@ gaudi_add_module(GiGaMTDetFactories
         src/det/*.cpp
         LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
+gaudi_add_module(GiGaMTTruthFactories
+        src/truth/*.cpp
+        LINK_LIBRARIES GiGaMTCoreTruthLib GaudiAlgLib)
+
 #gaudi_add_module(GiGaMTSensDetFactories
         #src/sensdet/*.cpp
         #LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)

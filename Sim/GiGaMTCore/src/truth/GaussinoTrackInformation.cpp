@@ -9,17 +9,14 @@
  */
 // ============================================================================
 
+G4ThreadLocal G4Allocator<GaussinoTrackInformation> *aGaussinoTrackInformationAllocator = nullptr;
+
 GaussinoTrackInformation::GaussinoTrackInformation(const GaussinoTrackInformation& right)
     : G4VUserTrackInformation(right),
       m_appendStep(right.m_appendStep),
-      m_toBeStored(right.m_toBeStored),
+      m_storeTruth(right.m_storeTruth),
       m_createdHit(right.m_createdHit),
       m_directParent(right.m_directParent),
-      m_storeHepMC(right.m_storeHepMC),
       m_hits(right.m_hits),
       m_detInfo(right.m_detInfo) {
-}
-
-GaussinoTrackInformation* GaussinoTrackInformation::clone() const {
-  return new GaussinoTrackInformation(*this);
 }
