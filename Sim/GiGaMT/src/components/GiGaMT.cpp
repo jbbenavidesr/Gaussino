@@ -233,12 +233,12 @@ StatusCode GiGaMT::finalize()
   return Service::finalize();
 }
 
-
-G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs && _in, HepRandomEnginePtr& engine ) const
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in,
+                                                                    HepRandomEnginePtr& engine ) const
 {
   auto start_time = Clock::now();
-  std::list<std::promise<G4EventProxy>> promises;
-  std::list<std::future<G4EventProxy>> futures;
+  std::list<std::promise<GiGaSimReturn>> promises;
+  std::list<std::future<GiGaSimReturn>> futures;
   if ( m_splitPileUp ) {
     // Submit every HepMC event separarely to the queue
     for ( auto& conv : _in ) {
@@ -249,13 +249,18 @@ G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs && _in, HepRando
   } else {
     auto& prom = promises.emplace_back();
     futures.emplace_back( prom.get_future() );
-    Gaussino::MCTruthConverterPtr conv = Gaussino::MergeConverters(std::begin(_in), std::end(_in));
+    Gaussino::MCTruthConverterPtr conv = Gaussino::MergeConverters( std::begin( _in ), std::end( _in ) );
     // Merge the individual pileup converters into one
-    m_payloadQueue.enqueue( GiGaWorkerPayload{ conv, engine, &prom} );
+    m_payloadQueue.enqueue( GiGaWorkerPayload{conv, engine, &prom} );
   }
   G4EventProxies return_events;
+  Gaussino::MCTruthPtrs return_truths;
+  return_events.reserve( promises.size() );
+  return_truths.reserve( promises.size() );
   for ( auto& fut : futures ) {
-    return_events.emplace_back( fut.get() );
+    auto[evt, tru] = fut.get(); // Copy illision
+    return_events.emplace_back( std::move( evt ) );
+    return_truths.emplace_back( std::move( tru ) );
   }
 
   auto end_time = Clock::now();
@@ -268,9 +273,9 @@ G4EventProxies GiGaMT::simulate( Gaussino::MCTruthConverterPtrs && _in, HepRando
     }
   }
 
-  return return_events;
+  return std::make_tuple<G4EventProxies, Gaussino::MCTruthPtrs>( std::move( return_events ),
+                                                                 std::move( return_truths ) );
 }
-
 
 StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
 {

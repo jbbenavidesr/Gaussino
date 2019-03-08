@@ -22,18 +22,20 @@ class IHepMC3ToMCTruthConverter;
  *  @date   25.6.2018
  *
  */
-class GiGaAlg : public Gaudi::Functional::Transformer<G4EventProxies( const std::vector<HepMC::GenEvent>& ),
-                                                      Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
+class GiGaAlg : public Gaudi::Functional::MultiTransformer<std::tuple<G4EventProxies, Gaussino::MCTruthPtrs>(
+                    const std::vector<HepMC::GenEvent>& ),
+                Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
 public:
   /// Standard constructor
   GiGaAlg( const std::string& name, ISvcLocator* pSvcLocator )
-      : Transformer( name, pSvcLocator, KeyValue{"Input", Gaussino::HepMCEventLocation::Default},
-                     KeyValue{"Output", Gaussino::G4EventsLocation::Default} ){};
+      : MultiTransformer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}},
+                          {{KeyValue{"OutputG4Events", Gaussino::G4EventsLocation::Default},
+                            KeyValue{"OutputMCTruths", Gaussino::MCTruthsLocation::Default}}} ){};
 
   virtual ~GiGaAlg() = default;
 
-  G4EventProxies operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> operator()( const std::vector<HepMC::GenEvent>& ) const override;
 
 private:
   ServiceHandle<IGiGaMTSvc> m_gigaSvc{this, "GiGaMTSvc", "GiGaMT"};

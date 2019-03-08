@@ -100,7 +100,7 @@ public:
    */
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
-  virtual G4EventProxies simulate( Gaussino::MCTruthConverterPtrs&&, HepRandomEnginePtr& ) const override;
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( Gaussino::MCTruthConverterPtrs&&, HepRandomEnginePtr& ) const override;
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi
   // thread which executes the initialization of all Gaudi objects and spawns

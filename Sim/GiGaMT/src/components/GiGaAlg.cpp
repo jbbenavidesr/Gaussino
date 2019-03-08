@@ -4,7 +4,7 @@
 
 DECLARE_COMPONENT( GiGaAlg )
 
-G4EventProxies GiGaAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
 {
   auto engine = createRndmEngine();
 

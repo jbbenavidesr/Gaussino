@@ -26,4 +26,8 @@ namespace Gaussino
   {
     const std::string Default = "Sim/G4Events";
   }
+  namespace MCTruthsLocation
+  {
+    const std::string Default = "MC/Truths";
+  }
 }

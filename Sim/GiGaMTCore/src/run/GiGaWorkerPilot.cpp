@@ -151,8 +151,7 @@ void GiGaWorkerPilot::operator()()
       tracker->DumpToStream( sstr );
       debug( sstr.str() );
     }
-    Gaussino::MCTruthPtr mctruth =
-        std::make_shared<Gaussino::MCTruth>( std::move( *tracker.get() ) );
+    Gaussino::MCTruthPtr mctruth = std::make_shared<Gaussino::MCTruth>( std::move( *tracker.get() ) );
 
     if ( printDebug() ) {
       std::stringstream sstr;
@@ -161,7 +160,7 @@ void GiGaWorkerPilot::operator()()
       debug( sstr.str() );
     }
     debug( "Geant4 finished processing the event." );
-    ret_promise->set_value( G4EventProxy{evt, this} );
+    ret_promise->set_value( std::make_tuple( G4EventProxy{evt, this}, std::move( mctruth ) ) );
     nCreated++;
   }
 

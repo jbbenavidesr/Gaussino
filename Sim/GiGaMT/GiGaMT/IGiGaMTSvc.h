@@ -52,7 +52,7 @@ public:
    *   should return the simulation result ...
    *   @return status code
    */
-  virtual G4EventProxies simulate(Gaussino::MCTruthConverterPtrs &&, HepRandomEnginePtr &) const = 0;
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate(Gaussino::MCTruthConverterPtrs &&, HepRandomEnginePtr &) const = 0;
 
 public:
 

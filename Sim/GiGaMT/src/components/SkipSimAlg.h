@@ -11,8 +11,9 @@
 #include "NewRnd/RndAlgSeeder.h"
 
 class IHepMC3ToMCTruthConverter;
-namespace LHCb {
-class IParticlePropertySvc;
+namespace LHCb
+{
+  class IParticlePropertySvc;
 }
 
 /** @class SkipSimAlg SkipSimAlg.h Algorithms/SkipSimAlg.h
@@ -25,17 +26,17 @@ class IParticlePropertySvc;
  *  @date   21.2.2019
  *
  */
-class SkipSimAlg : public Gaudi::Functional::Transformer<G4EventProxies( const std::vector<HepMC::GenEvent>& ) >
+class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const std::vector<HepMC::GenEvent>& )>
 {
 public:
   /// Standard constructor
   SkipSimAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : Transformer( name, pSvcLocator, KeyValue{"Input", Gaussino::HepMCEventLocation::Default},
-                     KeyValue{"Output", Gaussino::G4EventsLocation::Default} ){};
+                     KeyValue{"Output", Gaussino::MCTruthsLocation::Default} ){};
 
   virtual ~SkipSimAlg() = default;
 
-  G4EventProxies operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  Gaussino::MCTruthPtrs operator()( const std::vector<HepMC::GenEvent>& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
