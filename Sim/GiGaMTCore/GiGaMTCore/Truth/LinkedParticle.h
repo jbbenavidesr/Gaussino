@@ -29,7 +29,7 @@ public:
   LinkedParticle( Gaussino::G4TruthParticle* g4truth) { m_tracking = g4truth; }
   LinkedParticle() = delete;
   virtual ~LinkedParticle(){if(m_tracking) delete m_tracking;};
-  const HepMC::GenParticlePtr& HepMC() { return m_hepmc; }
+  const HepMC::GenParticle* HepMC() { return m_hepmc; }
   G4PrimaryParticle*& G4Primary() { return m_primary; }
   Gaussino::G4TruthParticle*& G4Truth() { return m_tracking; }
   Gaussino::ConversionType GetType() const { return m_conversion_type;}
@@ -60,7 +60,7 @@ private:
   // I haven't decided on yet
   std::set<LinkedParticle*> m_parents;
   std::set<LinkedParticle*> m_children;
-  const HepMC::GenParticlePtr m_hepmc{nullptr};
+  const HepMC::GenParticle* m_hepmc{nullptr};
   G4PrimaryParticle* m_primary{nullptr};
   Gaussino::G4TruthParticle* m_tracking{nullptr};
   Gaussino::ConversionType m_conversion_type;

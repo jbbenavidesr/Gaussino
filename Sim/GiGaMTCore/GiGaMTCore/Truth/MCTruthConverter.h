@@ -113,11 +113,11 @@ namespace Gaussino
     void EraseDecayTree( LinkedParticle* lp );
   };
 
-  typedef std::shared_ptr<MCTruthConverter> MCTruthConverterPtr;
+  typedef std::unique_ptr<MCTruthConverter> MCTruthConverterPtr;
   typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
-  typedef std::shared_ptr<MCTruthTracker> MCTruthTrackerPtr;
+  typedef std::unique_ptr<MCTruthTracker> MCTruthTrackerPtr;
   typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
-  typedef std::shared_ptr<MCTruth> MCTruthPtr;
+  typedef std::unique_ptr<MCTruth> MCTruthPtr;
   typedef std::vector<MCTruthPtr> MCTruthPtrs;
   // Helper function to merge containers of MCTruthConverterPtr into a single converter
   // Useful when splitting/assigning the work to to Geant4 workers
@@ -125,7 +125,7 @@ namespace Gaussino
   template <typename Iter>
   MCTruthConverterPtr MergeConverters( Iter it, Iter end )
   {
-    MCTruthConverterPtr ret = std::make_shared<MCTruthConverter>();
+    MCTruthConverterPtr ret = std::make_unique<MCTruthConverter>();
     while ( it != end ) {
       ret->AddConverter( std::move( **it ) );
       it++;

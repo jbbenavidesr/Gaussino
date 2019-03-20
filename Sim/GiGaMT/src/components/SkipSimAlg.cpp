@@ -13,7 +13,7 @@ Gaussino::MCTruthPtrs SkipSimAlg::operator()( const std::vector<HepMC::GenEvent>
   auto converters = m_converterTool->BuildConverter( hepmcevents );
   Gaussino::MCTruthConverterPtr combined =
       Gaussino::MergeConverters( std::begin( converters ), std::end( converters ) );
-  Gaussino::MCTruthTrackerPtr tracker = std::make_shared<Gaussino::MCTruthTracker>( std::move( *combined.get() ) );
+  Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *combined.get() ) );
   tracker->DumpToStream( debug(), [&]( int i ) { return m_ppSvc->find( LHCb::ParticleID( i ) )->name(); } ) << endmsg;
   ret.emplace_back( new Gaussino::MCTruth( std::move( *tracker.get() ) ) );
 

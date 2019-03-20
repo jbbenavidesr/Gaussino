@@ -90,11 +90,10 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
 
     // Get the pdgID+LHCb extension
     int pdgID = track->GetDefinition()->GetPDGEncoding();
+#ifdef TRUTHDEBUG
     if ( printDebug() ) {
       G4cout << "Storing new track" << G4endl;
-#ifdef TRUTHDEBUG
       G4cout << "Reason " << track_info->GetStoreReason() << G4endl;
-#endif
       G4cout << "TrackID " << track->GetTrackID() << G4endl;
       G4cout << "ParentID " << track->GetParentID() << G4endl;
       G4cout << "PdgID " << pdgID << G4endl;
@@ -105,6 +104,7 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
       G4cout << "Particle definitions: " << G4endl;
       track->GetDefinition()->DumpTable();
     }
+#endif
     if ( 0 == pdgID ) {
       // Use dynamic particle PDG Id in this case (unknown particle)
       if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {

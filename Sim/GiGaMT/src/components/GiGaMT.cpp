@@ -244,14 +244,14 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     for ( auto& conv : _in ) {
       auto& prom = promises.emplace_back();
       futures.emplace_back( prom.get_future() );
-      m_payloadQueue.enqueue( GiGaWorkerPayload{conv, engine.createSubRndmEngine(), &prom} );
+      m_payloadQueue.enqueue( GiGaWorkerPayload{std::move( conv ), engine.createSubRndmEngine(), &prom} );
     }
   } else {
     auto& prom = promises.emplace_back();
     futures.emplace_back( prom.get_future() );
     Gaussino::MCTruthConverterPtr conv = Gaussino::MergeConverters( std::begin( _in ), std::end( _in ) );
     // Merge the individual pileup converters into one
-    m_payloadQueue.enqueue( GiGaWorkerPayload{conv, engine, &prom} );
+    m_payloadQueue.enqueue( GiGaWorkerPayload{std::move( conv ), engine, &prom} );
   }
   G4EventProxies return_events;
   Gaussino::MCTruthPtrs return_truths;

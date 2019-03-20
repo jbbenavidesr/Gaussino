@@ -19,10 +19,9 @@
 #include "HepMCUtils/PrintDecayTree.h"
 #include "Math/GenVector/Boost.h"
 
-
+#include "Defaults/HepMCAttributes.h"
 #include "HepMCUser/Status.h"
 #include "HepMCUser/VertexAttribute.h"
-#include "Defaults/HepMCAttributes.h"
 
 // Declaration of the Tool
 DECLARE_COMPONENT( HepMC3ToMCTruthConverter )
@@ -73,7 +72,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& he
   Gaussino::MCTruthConverterPtrs converters;
 
   for ( const HepMC::GenEvent& genEvt : hepmc_events ) {
-    auto converter = std::make_shared<Gaussino::MCTruthConverter>();
+    auto converter = std::make_unique<Gaussino::MCTruthConverter>();
     if ( genEvt.length_unit() != HepMC::Units::MM || genEvt.momentum_unit() != HepMC::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;
       continue;
@@ -84,7 +83,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& he
       }
       converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
     }
-    converters.push_back(converter);
+    converters.push_back( std::move( converter ) );
   }
   return converters;
 }

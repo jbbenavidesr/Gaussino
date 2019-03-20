@@ -106,7 +106,7 @@ namespace Gaussino
       auto& table = hepmcs.second;
       std::set<int> IDs;
       for ( auto& l : table ) {
-        if ( auto& part = l.second->HepMC(); part ) {
+        if ( auto part = l.second->HepMC(); part ) {
           IDs.insert( part->id() );
         }
       }
@@ -120,8 +120,8 @@ namespace Gaussino
         int root_id  = *std::begin( IDs );
         auto root_lp = table[root_id];
         m_root_particles.insert( root_lp );
-        std::function<void( const HepMC::GenParticlePtr&, const HepMC::GenParticlePtr& )> child_converter =
-            [&]( const HepMC::GenParticlePtr& part, const HepMC::GenParticlePtr& parent ) {
+        std::function<void( const HepMC::GenParticle*, const HepMC::GenParticle* )> child_converter =
+            [&]( const HepMC::GenParticle* part, const HepMC::GenParticle* parent ) {
               LinkedParticle* plinked{nullptr};
               LinkedParticle* clinked{nullptr};
               if ( parent ) {

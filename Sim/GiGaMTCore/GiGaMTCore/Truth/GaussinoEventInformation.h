@@ -23,7 +23,7 @@
 class GaussinoEventInformation : public G4VUserEventInformation
 {
 public:
-  GaussinoEventInformation( Gaussino::MCTruthTrackerPtr& converter ) : m_truthTrackerPtr{converter} {}
+  GaussinoEventInformation( Gaussino::MCTruthTracker* converter ) : m_truthTrackerPtr{converter} {}
   /** No copy constructor allowed to avoid two objects referring to the
    * same conversion info by ptr because the G4 event is responsible for deleting this object.
    */
@@ -31,7 +31,7 @@ public:
   GaussinoEventInformation( GaussinoEventInformation&& right ) : m_truthTrackerPtr{right.m_truthTrackerPtr} {};
 
   // Returns non-owning pointer to truth converter
-  Gaussino::MCTruthTrackerPtr &TruthTracker() { return m_truthTrackerPtr; }
+  Gaussino::MCTruthTracker* TruthTracker() { return m_truthTrackerPtr; }
 
   inline static GaussinoEventInformation* Get( G4Event* event = nullptr )
   {
@@ -58,5 +58,5 @@ public:
   virtual void Print() const override {};
 
 private:
-  Gaussino::MCTruthTrackerPtr m_truthTrackerPtr;
+  Gaussino::MCTruthTracker* m_truthTrackerPtr;
 };

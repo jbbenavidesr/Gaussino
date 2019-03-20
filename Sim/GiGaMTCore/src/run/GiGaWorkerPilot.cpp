@@ -90,7 +90,9 @@ void GiGaWorkerPilot::FinalizeWorker()
   G4Threading::WorkerThreadLeavesPool();
   delete m_context;
   if ( nCreated > nDeleted ) {
-    error( "Didn't delete all G4 events." );
+    std::stringstream strea;
+    strea << "Didn't delete all G4 events " << nDeleted << "/" << nCreated;
+    warning( strea.str() );
   } else if ( nCreated < nDeleted ) {
     error( "Deleted more (!!!!) G4 events than created." );
   } else {
@@ -122,7 +124,7 @@ void GiGaWorkerPilot::operator()()
 
       // We put the payload back into the queue to trigger a cascading
       // shut down of all threads if one sentinel was pushed into the queue
-      m_input_queue->enqueue( payload );
+      m_input_queue->enqueue( std::move( payload ) );
       break;
     }
     auto & [ truth_converter, engine, ret_promise ] = *payload;
@@ -131,14 +133,14 @@ void GiGaWorkerPilot::operator()()
     // Geant4 event to be simulated.
     auto evt = new G4Event{};
     Gaussino::MCTruthTrackerPtr tracker =
-        std::make_shared<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
+        std::make_unique<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
     if ( printDebug() ) {
       std::stringstream sstr;
       sstr << "\nBefore simulation\n";
       tracker->DumpToStream( sstr );
       debug( sstr.str() );
     }
-    evt->SetUserInformation( new GaussinoEventInformation( tracker ) );
+    evt->SetUserInformation( new GaussinoEventInformation( tracker.get() ) );
     debug( "Dequeued event with " + std::to_string( evt->GetNumberOfPrimaryVertex() ) + " vertices." );
 
     // Reset the random number engine of this worker thread
@@ -151,7 +153,7 @@ void GiGaWorkerPilot::operator()()
       tracker->DumpToStream( sstr );
       debug( sstr.str() );
     }
-    Gaussino::MCTruthPtr mctruth = std::make_shared<Gaussino::MCTruth>( std::move( *tracker.get() ) );
+    Gaussino::MCTruthPtr mctruth = std::make_unique<Gaussino::MCTruth>( std::move( *tracker.get() ) );
 
     if ( printDebug() ) {
       std::stringstream sstr;
