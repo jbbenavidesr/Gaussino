@@ -27,8 +27,8 @@ string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLA
 gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
-                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser
-                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib HepMC NewRnd)
+                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser ${HEPMC_INCLUDE_DIR}
+                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib ${HEPMC_LIBRARIES} NewRnd)
 
 gaudi_add_module(Generators
                  src/component/*.cpp

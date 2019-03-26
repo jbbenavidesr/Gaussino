@@ -15,5 +15,5 @@ find_package(HepMC CONFIG)
 
 gaudi_add_module(LHCbFromGDML
                   src/*.cpp
-                  INCLUDE_DIRS GenInterfaces HepMC
-                  LINK_LIBRARIES GaudiAlgLib HepMC)
+                  INCLUDE_DIRS GenInterfaces ${HEPMC_INCLUDE_DIR}
+                  LINK_LIBRARIES GaudiAlgLib ${HEPMC_LIBRARIES})

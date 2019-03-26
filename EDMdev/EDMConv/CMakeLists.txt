@@ -13,5 +13,5 @@ find_package(HepMC CONFIG)
 
 gaudi_add_module(EDMConv
                  src/*.cpp
-                 INCLUDE_DIRS HepMC Defaults
+                 INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} Defaults
                  LINK_LIBRARIES GenEvent MCEvent GaudiAlgLib GaudiKernel HepMC PartPropLib)

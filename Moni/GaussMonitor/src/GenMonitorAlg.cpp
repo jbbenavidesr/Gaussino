@@ -5,7 +5,6 @@
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From HepMC
-#include "Event/HepMCEvent.h"
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenParticle.h"
 #include "HepMC/GenVertex.h"

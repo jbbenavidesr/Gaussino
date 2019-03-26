@@ -17,7 +17,7 @@
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"

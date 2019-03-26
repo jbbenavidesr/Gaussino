@@ -19,9 +19,11 @@
 #include "Generators/LhaPdf.h"
 #include "Generators/StringParse.h"
 #include "GenInterfaces/ICounterLogFile.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 #include "Defaults/HepMCAttributes.h"
 #include "CLHEP/Random/RandEngine.h"
+
+#include "Defaults/Enums.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -206,7 +208,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
   for ( HepMCUtils::ParticleSet::iterator itHeavy = particleSet.begin() ; 
         itHeavy != particleSet.end() ; ++itHeavy ) 
     
-    if ( ( LHCb::HepMCEvent::StableInProdGen == (*itHeavy) -> status() ) && 
+    if ( ( Gaussino::GenStatus::StableInProdGen == (*itHeavy) -> status() ) && 
          ( signalPid != abs( (*itHeavy) -> pdg_id() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
@@ -231,7 +233,7 @@ bool ExternalGenerator::checkPresence( const PIDs & pidList ,
         it != theEvent -> particles_end() ; ++it ) 
     if ( std::binary_search( pidList.begin() , pidList.end() ,
                              (*it) -> pdg_id() ) ) 
-      if ( ( LHCb::HepMCEvent::DocumentationParticle != (*it) -> status() ) 
+      if ( ( Gaussino::GenStatus::DocumentationParticle != (*it) -> status() ) 
            && ( HepMCUtils::IsBAtProduction( *it ) ) )
         particleList.push_back( *it ) ;
 

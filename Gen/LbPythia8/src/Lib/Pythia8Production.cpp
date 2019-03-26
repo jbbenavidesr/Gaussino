@@ -28,6 +28,7 @@
 #include "HepMC/GenEvent.h"
 #include "HepMC/Attribute.h"
 #include "Defaults/HepMCAttributes.h"
+#include "Defaults/Enums.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandFlat.h"
@@ -342,12 +343,12 @@ StatusCode Pythia8Production::toHepMC(HepMC::GenEvent* theEvent,
     if (status > 3) {
       if ((status == 71) || (status == 72) || 
 	  ((status == 62) && (abs(pid) >= 22) && (abs(pid) <= 37)))
-        (*p)->set_status(LHCb::HepMCEvent::DecayedByProdGen);
+        (*p)->set_status(Gaussino::GenStatus::DecayedByProdGen);
       else
-        (*p)->set_status(LHCb::HepMCEvent::DocumentationParticle);
-    } else if (status != LHCb::HepMCEvent::DecayedByProdGen
-               && status != LHCb::HepMCEvent::StableInProdGen
-               && status != LHCb::HepMCEvent::DocumentationParticle)
+        (*p)->set_status(Gaussino::GenStatus::DocumentationParticle);
+    } else if (status != Gaussino::GenStatus::DecayedByProdGen
+               && status != Gaussino::GenStatus::StableInProdGen
+               && status != Gaussino::GenStatus::DocumentationParticle)
       warning() << "Unknown status rule " << status << " for particle" 
                 << pid << endmsg;
   }

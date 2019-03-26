@@ -17,7 +17,8 @@
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 //FIXME:This import pulls in the DataObject Wrapper for status enums. Should move this somewhere else.
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
+#include "Defaults/Enums.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
@@ -217,10 +218,6 @@ StatusCode Signal::isolateSignal( const HepMC::GenParticlePtr & theSignal )
   if ( ! sc.isSuccess( ) ) 
     return Error( "Could not fill HepMC event for signal tree" , sc ) ;
                             
-  // Check if container already exists
-  if ( exist< LHCb::HepMCEvents >( LHCb::HepMCEventLocation::Signal ) ) 
-    return Error( "SignalDecayTree container already exists !" ) ;
-  
   //FIXME: We made an event but should actually somehow return it to be put on the TES
   delete mcevt; //So at least clean up ...
   return Error( "Cannot yet write anything Signal::isolateSignal does!!" ) ;

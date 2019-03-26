@@ -1,4 +1,6 @@
 #include "MinimalStableInLHCb.h"
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : MinimalStableInLHCb

@@ -19,7 +19,7 @@
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"

@@ -8,8 +8,9 @@
 #include "GaudiKernel/PhysicalConstants.h" 
 
 // from Event
-#include "Event/HepMCEvent.h"
 #include "GenBeam/IBeamInfoSvc.h"
+#include "HepMC/FourVector.h"
+#include "HepMC/GenEvent.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandGauss.h"

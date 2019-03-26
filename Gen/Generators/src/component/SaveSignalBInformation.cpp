@@ -1,16 +1,8 @@
-// Include files
-
-// from Event
-#include "Event/HepMCEvent.h"
-
-// from Generators
-#include "GenEvent/HepMCUtils.h"
-
-// local
 #include "SaveSignalBInformation.h"
 
 #include "Defaults/HepMCAttributes.h"
 #include "HepMCUser/VertexAttribute.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SaveSignalBInformation

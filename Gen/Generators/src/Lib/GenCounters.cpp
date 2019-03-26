@@ -5,7 +5,8 @@
 #include "Generators/GenCounters.h"
 
 // Generators
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
+#include "Defaults/Enums.h"
 
 // HepMC
 #include "HepMC/GenEvent.h"
@@ -15,7 +16,6 @@
 #include "Defaults/HepMCAttributes.h"
 
 // Event
-#include "Event/HepMCEvent.h"
 #include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
 
@@ -31,7 +31,7 @@ struct isRootB : std::unary_function< const HepMC::GenParticlePtr &, bool > {
   bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
+    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
       return false ;
     
     // Check if particle has a b quark
@@ -62,7 +62,7 @@ struct isRootD : std::unary_function< const HepMC::GenParticlePtr &, bool > {
   bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
+    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
       return false ;
 
     // Check if particle has a c quark
@@ -95,7 +95,7 @@ struct isEndB : std::unary_function< const HepMC::GenParticlePtr &, bool > {
   bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
+    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
       return false ;
 
     // Test if particle has a b quark
@@ -133,7 +133,7 @@ struct isEndD : std::unary_function< const HepMC::GenParticlePtr &, bool > {
   bool operator() ( const HepMC::GenParticlePtr & part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == LHCb::HepMCEvent::DocumentationParticle ) 
+    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
       return false ;
 
     // Check if it has a c quark

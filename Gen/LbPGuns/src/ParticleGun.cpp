@@ -22,10 +22,11 @@
 #include "GenInterfaces/IFullGenEventCutTool.h"
 #include "GenInterfaces/IGenCutTool.h"
 #include "Generators/GenCounters.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
+#include "Defaults/Enums.h"
 
 #include "CLHEP/Random/RandFlat.h"
 #include "NewRnd/RndGlobal.h"
@@ -194,7 +195,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
                                                    theFourMomentum.Pz() ,
                                                    theFourMomentum.E()  ) ,
                                 thePdgId ,
-                                LHCb::HepMCEvent::StableInProdGen ) ;
+                                Gaussino::GenStatus::StableInProdGen ) ;
 
       v -> add_particle_out( p ) ;
       theGenEvent->add_vertex( v ) ;
@@ -324,16 +325,16 @@ HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
     HepMC::GenParticle * thePart = (*itp) ;
     unsigned int status = thePart -> status() ;
 
-    if ( ( LHCb::HepMCEvent::StableInProdGen  == status ) ||
-         ( ( LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status )
+    if ( ( Gaussino::GenStatus::StableInProdGen  == status ) ||
+         ( ( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen == status )
            && ( 0 == thePart -> end_vertex() ) ) ) {
 
       if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
 
-        if ( LHCb::HepMCEvent::StableInProdGen == status )
+        if ( Gaussino::GenStatus::StableInProdGen == status )
           thePart ->
-            set_status( LHCb::HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
-        else thePart -> set_status( LHCb::HepMCEvent::DecayedByDecayGen ) ;
+            set_status( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( Gaussino::GenStatus::DecayedByDecayGen ) ;
 
         if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
           bool hasFlipped(false);

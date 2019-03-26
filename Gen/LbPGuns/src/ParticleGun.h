@@ -7,8 +7,10 @@
 #include "Event/GenHeader.h"
 #include "GaudiAlg/Transformer.h"
 #include "NewRnd/RndAlgSeeder.h"
+#include "HepMC/GenParticle.h"
 
 #include <atomic>
+#include <vector>
 #include <mutex>
 
 // Forward declarations

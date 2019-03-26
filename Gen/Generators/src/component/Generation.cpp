@@ -25,7 +25,7 @@
 
 // from Generators
 #include "Generators/GenCounters.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 // local
 #include "Generation.h"
@@ -394,7 +394,6 @@ StatusCode Generation::finalize() {
 // production generator
 //=============================================================================
 StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
-  using namespace LHCb;
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
@@ -407,16 +406,16 @@ StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEngineP
     
     unsigned int status = thePart -> status() ;
     
-    if ( ( HepMCEvent::StableInProdGen  == status ) || 
-         ( ( HepMCEvent::DecayedByDecayGenAndProducedByProdGen == status )
+    if ( ( Gaussino::GenStatus::StableInProdGen  == status ) || 
+         ( ( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen == status )
            && ( 0 == thePart -> end_vertex() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
         
-        if ( HepMCEvent::StableInProdGen == status ) 
+        if ( Gaussino::GenStatus::StableInProdGen == status ) 
           thePart -> 
-            set_status( HepMCEvent::DecayedByDecayGenAndProducedByProdGen ) ;
-        else thePart -> set_status( HepMCEvent::DecayedByDecayGen ) ;
+            set_status( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( Gaussino::GenStatus::DecayedByDecayGen ) ;
         
         sc = m_decayTool -> generateDecay( thePart , engine ) ;
         if ( ! sc.isSuccess() ) return sc ;
@@ -436,9 +435,9 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
   int pdgId ;
 
   for ( auto & thePart : theEvent->particles() ) {
-    if ( ( thePart -> status() == LHCb::HepMCEvent::DocumentationParticle ) ||
-         ( thePart -> status() == LHCb::HepMCEvent::DecayedByDecayGen ) ||
-         ( thePart -> status() == LHCb::HepMCEvent::StableInDecayGen ) ) 
+    if ( ( thePart -> status() == Gaussino::GenStatus::DocumentationParticle ) ||
+         ( thePart -> status() == Gaussino::GenStatus::DecayedByDecayGen ) ||
+         ( thePart -> status() == Gaussino::GenStatus::StableInDecayGen ) ) 
       continue ;
     pdgId = abs( thePart -> pdg_id() ) ;
     LHCb::ParticleID thePid( pdgId ) ;
@@ -457,7 +456,7 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
           auto & par = 
             *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
           if ( ( par -> status() == 
-                 LHCb::HepMCEvent::DocumentationParticle ) ||
+                 Gaussino::GenStatus::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) { 
             ++bQuark ;
           }
@@ -478,7 +477,7 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
           auto & par =
             *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
           if ( ( par -> status() ==
-                 LHCb::HepMCEvent::DocumentationParticle ) ||
+                 Gaussino::GenStatus::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) {
             ++cQuark ;
           }

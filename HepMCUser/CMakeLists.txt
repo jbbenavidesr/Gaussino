@@ -16,8 +16,8 @@ find_package(ROOT)
 gaudi_add_library(HepMCUtils
                   src/*.cpp
                   PUBLIC_HEADERS HepMCUtils
-                  INCLUDE_DIRS HepMC HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS} ROOT
-                  LINK_LIBRARIES HepMC GaudiAlgLib ROOT)
+                  INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS} ROOT
+                  LINK_LIBRARIES ${HEPMC_LIBRARIES} GaudiAlgLib ROOT)
 
 gaudi_add_executable(compareHepMCEvents
                      exec/*.cpp

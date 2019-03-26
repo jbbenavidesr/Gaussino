@@ -18,12 +18,14 @@
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
+
+#include "Defaults/Enums.h"
 
 // local
 #include "SignalForcedFragmentation.h"
@@ -169,7 +171,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         ROOT::Math::Boost theBoost( -mom.BoostToCM() ) ;
         
         // Give signal status
-        theSignal -> set_status( LHCb::HepMCEvent::SignalInLabFrame ) ;
+        theSignal -> set_status( Gaussino::GenStatus::SignalInLabFrame ) ;
         
         sc = boostTree( theSignal , theSignalAtRest , theBoost ) ;
         if ( ! sc.isSuccess() ) Exception( "Cannot boost signal tree" ) ;
