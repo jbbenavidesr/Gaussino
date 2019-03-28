@@ -137,6 +137,4 @@ if(CMAKE_PREFIX_PATH AND CMAKE_VERSION VERSION_GREATER "3.6.0")
   list(FILTER CMAKE_PREFIX_PATH EXCLUDE REGEX "(LCG_|lcg/nightlies).*Geant4")
 endif()
 
-#set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_94/hepmc3/3.0.0/${BINARY_TAGCOMP} ${CMAKE_PREFIX_PATH})
-#set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_93/hepmc3/3.0.0/${BINARY_TAGCOMP} ${CMAKE_PREFIX_PATH})
-set(CMAKE_PREFIX_PATH /mnt/lbsoft/LCG_93/hepmc3-install ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH /cvmfs/sft.cern.ch/lcg/releases/LCG_${heptools_version}/hepmc3/3.0.0/${BINARY_TAGCOMP} ${CMAKE_PREFIX_PATH})                                                                                                                            

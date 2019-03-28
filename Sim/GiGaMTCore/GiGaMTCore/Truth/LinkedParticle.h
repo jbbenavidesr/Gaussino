@@ -20,8 +20,10 @@ public:
   friend Gaussino::MCTruthConverter;
   friend Gaussino::MCTruthTracker;
   friend std::ostream& operator<<( std::ostream&, const LinkedParticle& );
-  LinkedParticle( const HepMC::GenParticlePtr& part ):m_hepmc(part) {  }
-  LinkedParticle( const HepMC::GenParticlePtr& part, G4PrimaryParticle* g4part ):m_hepmc(part)
+  // Stupid const_cast to get access to the non-constant only cast method of the HepMC::SmartPointer.
+  // Doesn't matter here as the raw pointer is then internally stored as a ptr to const again.
+  LinkedParticle( const HepMC::GenParticlePtr& part ):m_hepmc(const_cast<HepMC::GenParticlePtr&>(part)) {  }
+  LinkedParticle( const HepMC::GenParticlePtr& part, G4PrimaryParticle* g4part ):m_hepmc(const_cast<HepMC::GenParticlePtr&>(part))
   {
     m_primary = g4part;
   }

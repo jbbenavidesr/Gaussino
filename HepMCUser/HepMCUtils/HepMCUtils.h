@@ -30,10 +30,10 @@
 
 namespace HepMCUtils {
   /// Returns true if trees of vertices V1 and V2 belong to the same tree
-  bool commonTrees( HepMC::GenVertex* V1, const HepMC::GenVertex* V2 );
+  bool commonTrees( const HepMC::GenVertexPtr& V1, const HepMC::GenVertexPtr & V2 );
 
   /// Compare 2 HepMC GenParticle according to their barcode
-  bool compareHepMCParticles( const HepMC::GenParticle* part1, const HepMC::GenParticle* part2 );
+  bool compareHepMCParticles( const HepMC::GenParticlePtr& part1, const HepMC::GenParticlePtr& part2 );
 
   /** Check if a particle is before or after oscillation.
    *  In HepMC description, the mixing is seen as a decay B0 -> B0bar. In this
@@ -41,14 +41,14 @@ namespace HepMCUtils {
    *  @param[in] thePart  Particle to check.
    *  @return true if the particle is the particle before osillation.
    */
-  bool IsBAtProduction( const HepMC::GenParticle* thePart );
+  bool IsBAtProduction( const HepMC::GenParticlePtr & thePart );
 
   /// Remove all daughters of a particle
-  void RemoveDaughters( HepMC::GenParticle* thePart );
+  void RemoveDaughters( HepMC::GenParticlePtr& thePart );
 
   /// Comparison function as structure
   struct particleOrder {
-    bool operator()( const HepMC::GenParticle* part1, const HepMC::GenParticle* part2 ) const {
+    bool operator()( const HepMC::GenParticlePtr& part1, const HepMC::GenParticlePtr& part2 ) const {
       return ( part1->id() < part2->id() );
     }
   };
@@ -64,9 +64,9 @@ namespace HepMCUtils {
 //=============================================================================
 // Function to test if vertices are in the same decay family
 //=============================================================================
-inline bool HepMCUtils::commonTrees( HepMC::GenVertex* V1, const HepMC::GenVertex* V2 ) {
-  if ( 0 == V2 ) return false;
-  if ( 0 == V1 ) return false;
+inline bool HepMCUtils::commonTrees( const HepMC::GenVertexPtr & V1, const HepMC::GenVertexPtr& V2 ) {
+  if ( !V2 ) return false;
+  if ( !V1 ) return false;
   if ( V1 == V2 ) return true;
   for ( auto & iter : V1->particles( HepMC::ancestors) ) {
     if(auto & ev = iter->production_vertex(); ev){
@@ -84,7 +84,7 @@ inline bool HepMCUtils::commonTrees( HepMC::GenVertex* V1, const HepMC::GenVerte
 //=============================================================================
 // Function to sort HepMC::GenParticles according to their barcode
 //=============================================================================
-inline bool HepMCUtils::compareHepMCParticles( const HepMC::GenParticle* part1, const HepMC::GenParticle* part2 ) {
+inline bool HepMCUtils::compareHepMCParticles( const HepMC::GenParticlePtr& part1, const HepMC::GenParticlePtr& part2 ) {
   return ( part1->id() < part2->id() );
 }
 
@@ -92,9 +92,9 @@ inline bool HepMCUtils::compareHepMCParticles( const HepMC::GenParticle* part1, 
 // Returns true if B is first B (removing oscillation B) and false
 // if the B is the B after oscillation
 //=============================================================================
-inline bool HepMCUtils::IsBAtProduction( const HepMC::GenParticle* thePart ) {
+inline bool HepMCUtils::IsBAtProduction( const HepMC::GenParticlePtr& thePart ) {
   if ( ( abs( thePart->pdg_id() ) != 511 ) && ( abs( thePart->pdg_id() ) != 531 ) ) return true;
-  if ( 0 == thePart->production_vertex() ) return true;
+  if ( !thePart->production_vertex() ) return true;
   HepMC::GenVertexPtr theVertex = thePart->production_vertex();
   if ( 1 != theVertex->particles_in_size() ) return true;
   HepMC::GenParticlePtr theMother = ( *theVertex->particles_in_const_begin() );
@@ -105,10 +105,10 @@ inline bool HepMCUtils::IsBAtProduction( const HepMC::GenParticle* thePart ) {
 //=============================================================================
 // Erase the daughters of one particle
 //=============================================================================
-inline void HepMCUtils::RemoveDaughters( HepMC::GenParticle* theParticle ) {
+inline void HepMCUtils::RemoveDaughters( HepMC::GenParticlePtr& theParticle ) {
   if ( 0 == theParticle ) return;
 
-  HepMC::GenVertex* EV = theParticle->end_vertex();
+  auto && EV = theParticle->end_vertex();
 
   if ( 0 == EV ) return;
 
