@@ -10,3 +10,6 @@ find_package(HepMC CONFIG)
 gaudi_install_headers(
   INCLUDE_DIRS NewRnd ${HEPMC_INCLUDE_DIR}
   GenInterfaces)
+
+gaudi_install_headers(
+  Event)
