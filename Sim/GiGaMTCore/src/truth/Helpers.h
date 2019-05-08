@@ -1,6 +1,6 @@
-#include "HepMC/FourVector.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/FourVector.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 class LinkedParticle;
 
 namespace Gaussino::LinkedParticleHelpers
@@ -14,10 +14,10 @@ namespace Gaussino::LinkedParticleHelpers
   // Determine if the particle has oscillated by checking if it has a
   // single child with opposite PDG ID. If so, return ptr to child,
   // nullptr otherwise
-  HepMC::GenParticlePtr hasOscillated( const HepMC::GenParticle* P );
+  HepMC3::ConstGenParticlePtr hasOscillated( const HepMC3::GenParticle* P );
 
   // Helper function to verify that ones particles endvertex is at the same position as the others
   // origin in the original HepMC record, i.e. that particles that have been skipped in between didn't fly
   bool VerifyLink( LinkedParticle* a, LinkedParticle* b );
-  bool CompareFourVector( const HepMC::FourVector& a, const HepMC::FourVector& b );
+  bool CompareFourVector( const HepMC3::FourVector& a, const HepMC3::FourVector& b );
 }

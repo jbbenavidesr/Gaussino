@@ -8,7 +8,7 @@
 #include "GiGaMTCore/Truth/MCTruthConverter.h"
 
 #include "Geant4/G4Event.hh"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
 // Main worker thread class that is instantiated in the
 // initialize of the main simulation service and given

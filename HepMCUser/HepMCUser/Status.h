@@ -1,6 +1,6 @@
 #include <ostream>
 
-namespace HepMC{
+namespace HepMC3{
   /// Status code in HepMC::GenParticle
   namespace Status {
     enum statusType{ Unknown = 0,

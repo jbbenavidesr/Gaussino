@@ -4,6 +4,7 @@
 #include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
 #include <functional>
 #include <stdexcept>
+#include "Helpers.h"
 
 bool essentiallyEqual( float a, float b, float epsilon = 0.00001 )
 {
@@ -49,7 +50,7 @@ namespace Gaussino
   // MCTruthConverter
   //////////////////////////////////////////////////////////
 
-  void MCTruthConverter::Declare( const HepMC::GenParticlePtr& particle, ConversionType type )
+  void MCTruthConverter::Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type )
   {
     auto ptr = new LinkedParticle{particle};
     ptr->SetType( type );
@@ -120,8 +121,8 @@ namespace Gaussino
         int root_id  = *std::begin( IDs );
         auto root_lp = table[root_id];
         m_root_particles.insert( root_lp );
-        std::function<void( const HepMC::GenParticle*, const HepMC::GenParticle* )> child_converter =
-            [&]( const HepMC::GenParticle* part, const HepMC::GenParticle* parent ) {
+        std::function<void( const HepMC3::GenParticle*, const HepMC3::GenParticle* )> child_converter =
+            [&]( const HepMC3::GenParticle* part, const HepMC3::GenParticle* parent ) {
               LinkedParticle* plinked{nullptr};
               LinkedParticle* clinked{nullptr};
               if ( parent ) {
@@ -145,9 +146,31 @@ namespace Gaussino
               }
               // If a clinked particle was found, the current particle becomes the parent for its children,
               // otherwise this HepMC particle was not supposed to be converted and is skipped.
-              auto new_parent = clinked ? part : parent;
+              const HepMC3::GenParticle* new_parent = clinked ? part : parent;
+              // Check if the particle has oscillated
+              auto oscillated = Gaussino::LinkedParticleHelpers::hasOscillated( part );
+              if ( oscillated ) {
+                // Now setting part to oscillated which will skip the oscillated version
+                // of the particle and assign them to the linked particle of the
+                // non-oscillated version
+                if ( clinked ) {
+                  clinked->m_hasOscillated = true;
+                }
+                if ( table.find( oscillated->id() ) != std::end( table ) ) {
+                  // This check is performed using the HepMC particle structure.
+                  // If the particles has oscillated, we should mark the corresponding
+                  // LinkedParticle accordingly and skip the direct daughter (the oscillated particle)
+                  // If the oscillated particle is declared as a LinkedParticle we need to remove it.
+                  auto oscillated_lp = table[oscillated->id()];
+                  table.erase( oscillated->id() );
+                  IDs.erase( oscillated->id() );
+                  m_linkedParticles.erase( oscillated_lp );
+                  delete oscillated_lp;
+                }
+                part = oscillated.get();
+              }
               for ( auto& child : part->children() ) {
-                child_converter( child, new_parent );
+                child_converter( child.get(), new_parent );
               }
             };
         child_converter( root_lp->HepMC(), nullptr );
@@ -181,11 +204,17 @@ namespace Gaussino
       }
       std::function<void( LinkedParticle * part, LinkedParticle * parent )> convert = [&]( LinkedParticle* part,
                                                                                            LinkedParticle* parent ) {
+        // If part already has a G4Primary associated we stop here as we have already treated
+        // this decay tree.
+        if ( part->G4Primary() ) {
+          return;
+        }
         // Part is the current particle, parent points to the parent linkedparticle that was last
         // converted to geant4
         if ( part->m_conversion_type == Gaussino::ConversionType::G4 ) {
           part->G4Primary() = new G4PrimaryParticle( part->GetPDG(), part->GetMomentum().px() * MeV,
                                                      part->GetMomentum().py() * MeV, part->GetMomentum().pz() * MeV );
+          part->G4Primary()->SetMass( part->HepMC()->generated_mass() * MeV);
 
           // Register the particle in the map and save this ID with the primary particle to
           // later register the result of the simulation. This ID is used instead of directly
@@ -259,71 +288,91 @@ namespace Gaussino
     // material interaction before this decay, in which case the children need
     // to be removed. We assume no loops for now and remove the entire decay tree of such particles
     //
-    std::function<bool(LinkedParticle*)> hasSimulatedG4Parent = [&] (LinkedParticle* lp){
-        for(auto parent:lp->GetParents()){
-            if(parent->G4Primary() && parent->G4Truth()){
-                return true;
-            }
+    std::function<bool( LinkedParticle* )> shouldHaveButWasNotSimulated = [&]( LinkedParticle* lp ) {
+      return lp->G4Primary() && !lp->G4Truth();
+    };
+    std::function<bool( LinkedParticle* )> hasSimulatedG4Parent = [&]( LinkedParticle* lp ) {
+      for ( auto parent : lp->GetParents() ) {
+        if ( parent->G4Primary() && parent->G4Truth() ) {
+          return true;
         }
-        return false;
+      }
+      return false;
     };
 
-    std::function<bool(LinkedParticle*)> hasG4Ancestor = [&] (LinkedParticle* lp){
-        bool found = false;
-        for(auto parent:lp->GetParents()){
-            if(parent->GetType() == ConversionType::G4){
-                found=true;
-            }
-            found |= hasG4Ancestor(parent);
+    std::function<bool( LinkedParticle* )> hasG4ChildWithoutG4Truth = [&]( LinkedParticle* lp ) {
+      bool found = false;
+      for ( auto child : lp->GetChildren() ) {
+        if ( shouldHaveButWasNotSimulated(child) ) {
+          found = true;
+        } else if ( child->GetType() == ConversionType::MC ) {
+          // Recursively call on child if child itself was not given
+          // to G4
+          found = found || hasG4ChildWithoutG4Truth( child );
         }
-        return found;
-    };
-
-    std::function<bool(LinkedParticle*)> hasG4ChildWithoutG4Truth = [&] (LinkedParticle* lp){
-        bool found = false;
-        for(auto child:lp->GetChildren()){
-            if(child->G4Primary() && !child->G4Truth()){
-                found=true;
-            } else if (child->GetType() == ConversionType::MC){
-                // Recursively call on child if child itself was not given
-                // to G4
-                found |= hasG4ChildWithoutG4Truth(child);
-            }
-        }
-        return found;
+      }
+      return found;
     };
     // Identify the heads of decays that need to be deleted. Two options:
     // 1. MC particle produced that did not get produced in decay of simulated G4 particle
-    // 2. G4 particle that is was not simulated but whose parent was
+    // 2. G4 particle that was not simulated but whose parent was
     std::set<LinkedParticle*> to_delete;
     for ( auto& lp : m_linkedParticles ) {
-      if ( lp->GetType() == ConversionType::MC && hasSimulatedG4Parent(lp) && hasG4ChildWithoutG4Truth(lp) ) {
-          to_delete.insert(lp);
+      if ( lp->GetType() == ConversionType::MC && hasSimulatedG4Parent( lp ) && hasG4ChildWithoutG4Truth( lp ) ) {
+        to_delete.insert( lp );
       }
-      if (lp->GetType() == ConversionType::G4 && hasSimulatedG4Parent(lp)){
-          to_delete.insert(lp);
+      if ( lp->GetType() == ConversionType::G4 && hasSimulatedG4Parent( lp ) && shouldHaveButWasNotSimulated( lp ) ) {
+        to_delete.insert( lp );
       }
     }
-    for(auto lp: to_delete){
-        EraseDecayTree(lp);
+    for ( auto lp : to_delete ) {
+      EraseDecayTree( lp );
     }
     to_delete.clear();
   }
+
   void MCTruth::EraseLinkedParticle( LinkedParticle* lp )
   {
-    // First reconnect its parents to its children
-    for ( auto& child : lp->GetChildren() ) {
-      child->GetParents().erase( lp );
+    m_linkedParticles.erase( lp );
+    // Get copies of the container holding smartpointers to the
+    // vertices. This is done to allow a cleanup of the vertices
+    // after the particle itself has been deleted.
+    // If one of the vertices is obsolete after the cleanup, the
+    // destruction of this container will trigger the deletion
+    // of the vertex itself.
+    auto prodvtx = lp->GetProdVtx();
+    auto endvtxs = lp->GetEndVtxs();
+    // Get the sets of parents and children for convenience. These
+    // are raw pointers and only used to fix the connections if
+    // an intermediate particle is removed.
+    auto parents  = lp->GetParents();
+    auto children = lp->GetChildren();
+    delete lp; // Destructor will remove this particle from the vertices
+    // The production vertex of this particle was particle was an endvertex
+    // of its parents. If the particle was the only one produced in this vertex,
+    // the vertex now has no more outgoing particles and is deleted from the partents.
+    if ( prodvtx || prodvtx->outgoing_particles.size() == 0 ) {
+      for ( auto& in : prodvtx->incoming_particle ) {
+        in->GetEndVtxs().erase( prodvtx );
+      }
     }
-    for ( auto& parent : lp->GetParents() ) {
-      parent->GetChildren().erase( lp );
-      for ( auto& child : lp->GetChildren() ) {
+    for ( auto& endvtx : endvtxs ) {
+      if ( endvtx->incoming_particle.size() == 0 ) {
+        // Unset the production vertex for particles leaving this
+        // vertex. Reconnecting the particles in the following
+        // will give the particles a new production vertex
+        for ( auto& out : endvtx->outgoing_particles ) {
+          out->GetProdVtx() = nullptr;
+        }
+      }
+    }
+    // Lastly, reconnect the particles correctly
+    for ( auto& parent : parents ) {
+      for ( auto& child : children ) {
         parent->AddChild( child );
         child->AddParent( parent );
       }
     }
-    m_linkedParticles.erase( lp );
-    delete lp;
   }
   void MCTruth::EraseDecayTree( LinkedParticle* lp )
   {

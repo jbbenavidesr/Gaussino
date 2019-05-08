@@ -49,7 +49,7 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC::GenEvent> & theEvents , 
+                            std::vector<HepMC3::GenEvent> & theEvents , 
                             LHCb::GenCollisions & theCollisions ,
                             HepRandomEnginePtr & engine ) {
   StatusCode sc ;
@@ -59,7 +59,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   bool hasFlipped = false ;
   bool hasFailed = false ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
   
   auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;  
@@ -86,7 +86,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
           hasFlipped = false ;
           isInverted = false ;
           hasFailed  = false ;
-          HepMC::GenParticlePtr theSignal =
+          HepMC3::GenParticlePtr theSignal =
             chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
@@ -133,7 +133,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
                 sc = isolateSignal( theSignal ) ;
                 if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
               }
-              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
+              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
               
               theGenCollision -> setIsSignal( true ) ;
               

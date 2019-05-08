@@ -6,7 +6,7 @@
 #include "GaudiKernel/IAlgTool.h"
 
 // from Event
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "Event/GenCollision.h"
 
 #include <vector>
@@ -31,7 +31,7 @@ struct IFullGenEventCutTool : extend_interfaces<IAlgTool> {
    *                            pile-up interactions of the event.
    *  @return    true  if the full event passes the cut.
    */  
-  virtual bool studyFullEvent( const std::vector<HepMC::GenEvent> & theEvents ,
+  virtual bool studyFullEvent( const std::vector<HepMC3::GenEvent> & theEvents ,
                                const LHCb::GenCollisions & theCollisions ) 
     const = 0 ;
 };

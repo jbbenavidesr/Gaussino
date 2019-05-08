@@ -23,10 +23,10 @@ class ICounterLogFile;
 
 #include "Event/GenCollision.h"
 #include "Event/GenHeader.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "NewRnd/RndAlgSeeder.h"
 
-namespace HepMC
+namespace HepMC3
 {
   class GenParticle;
 }
@@ -45,7 +45,7 @@ namespace HepMC
  */
 class Generation
     : public Gaudi::Functional::MultiTransformer<
-          std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
+          std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
           Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
 private:
@@ -101,7 +101,7 @@ public:
    *     and accept or reject the event.
    *  -# Store in event store the accepted event.
    */
-  virtual std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+  virtual std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
   operator()( const LHCb::GenHeader& ) const override;
 
   /** Algorithm finalization.
@@ -111,7 +111,7 @@ public:
 
 protected:
   /// Decay the event with the IDecayTool.
-  StatusCode decayEvent( HepMC::GenEvent* theEvent , HepRandomEnginePtr & engine ) const;
+  StatusCode decayEvent( HepMC3::GenEvent* theEvent , HepRandomEnginePtr & engine ) const;
 
 private:
   /// Reference to file records data service
@@ -191,7 +191,7 @@ private:
    *  @param[in,out] theCounter Counter of events
    *  @param[in]     theEvent  The interaction to study
    */
-  void updateInteractionCounters( interactionCounter& theCounter, const HepMC::GenEvent* theEvent ) const;
+  void updateInteractionCounters( interactionCounter& theCounter, const HepMC3::GenEvent* theEvent ) const;
 
   /** Update the counters counting on interactions.
    *  @param[in,out] m_genFSR     The counters in FSR

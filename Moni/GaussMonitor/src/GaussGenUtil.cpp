@@ -8,7 +8,7 @@
 #include "GaudiKernel/Transform4DTypes.h"
 
 // From HepMC
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenVertex.h"
 
 // local
 #include "GaussGenUtil.h"
@@ -24,7 +24,7 @@
 //=============================================================================
 namespace GaussGenUtil {
   
-  double lifetime( const HepMC::GenParticlePtr & thePart ) {
+  double lifetime( const HepMC3::ConstGenParticlePtr & thePart ) {
 
     // Exit for off-shell particles
     if ( thePart -> momentum().m2() < 0 ) return -1.0 ;

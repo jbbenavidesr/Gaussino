@@ -1,8 +1,8 @@
-#include "HepMC/Attribute.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/Attribute.h"
+#include "HepMC3/GenParticle.h"
 #include <string>
 
-namespace HepMC
+namespace HepMC3
 {
   class ParticleAttribute : public Attribute
   {
@@ -22,17 +22,11 @@ namespace HepMC
 
     bool to_string( string& att ) const
     {
-      #ifdef HEPMC_HAS_CXX11
       att = std::to_string( m_val->id() );
-      #else
-      char buf[24];
-      sprintf( buf, "%23li", m_val );
-      att = buf;
-      #endif
       return true;
     }
 
-    GenParticlePtr value() const { return m_val; }
+    ConstGenParticlePtr value() const { return m_val; }
 
     // Pull in the base class init method accepting reference
     // to GenRunInfo to avoid failures in the template instantiation
@@ -51,7 +45,7 @@ namespace HepMC
     void set_value( const GenParticlePtr& ptr ) { m_val = ptr; }
 
   private:
-    GenParticlePtr m_val;
+    ConstGenParticlePtr m_val;
     int index = -1; // Only used when creating object from string
   };
-} // End HepMC namespace
+} // End HepMC3 namespace

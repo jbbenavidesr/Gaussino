@@ -48,13 +48,13 @@ public:
    *     again and is not kept).
    */
   virtual bool generate( const unsigned int nPileUp , 
-                         std::vector<HepMC::GenEvent> & theEvents ,
+                         std::vector<HepMC3::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
                          HepRandomEnginePtr & engine ) override;
 
 protected:
   /// Delete full content of an event
-  void Clear( HepMC::GenEvent * theEvent ) const ;
+  void Clear( HepMC3::GenEvent * theEvent ) const ;
   
 private:
   /// List of quarks of signal particles to generate

@@ -7,7 +7,7 @@
 #include "Defaults/Locations.h"
 #include "Event/GenCollision.h"
 #include "GaudiAlg/Consumer.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
 class IFullGenEventCutTool;
 
@@ -20,7 +20,7 @@ class IFullGenEventCutTool;
  */
 class MergedEventsFilter
     : public Gaudi::Functional::Consumer<void(
-          const std::vector<HepMC::GenEvent>&, const LHCb::GenCollisions&)> {
+          const std::vector<HepMC3::GenEvent>&, const LHCb::GenCollisions&)> {
   PublicToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
       this, "FullGenEventCutTool", ""};
 
@@ -33,7 +33,7 @@ class MergedEventsFilter
                    KeyValue{"GenCollisions",
                             LHCb::GenCollisionLocation::Default}}}) {}
 
-  virtual void operator()(const std::vector<HepMC::GenEvent>&,
+  virtual void operator()(const std::vector<HepMC3::GenEvent>&,
                           const LHCb::GenCollisions&) const override;
 };
 #endif  // GENERATORS_MERGEDEVENTSFILTER_H

@@ -284,7 +284,7 @@ particle properties are set before initialization of the pythia instance
      Adapt for new BeamParameters event model class
 
 ! 2011-05-23 - Alex T. Grecu
- - Replace HepMC::IO_Ascii with HepMC::IO_GenEvent in WriteHepMCAsciiFile
+ - Replace HepMC3::IO_Ascii with HepMC3::IO_GenEvent in WriteHepMCAsciiFile
    algorithm. This way Gauss may be used as MC generator for rivet analyses.
 
 !====================== Generators v10r10 2011-03-17 =========================
@@ -942,7 +942,7 @@ particle properties are set before initialization of the pythia instance
  - ExternalGenerator, EvtGenDecay: use names with __
  - GenCounters: fix counter when there is a B oscillating
  - Signal: use end vertex as signal process
- - Generation: number HepMC::GenEvent with pile up number
+ - Generation: number HepMC3::GenEvent with pile up number
 
 ! 2006-02-17 - Patrick Robbe
  - HepMCUtils: add utility functions to help with HepMC structures.
@@ -980,7 +980,7 @@ particle properties are set before initialization of the pythia instance
  - Generation: do not create new GenHeader but unpdate info already in TES
 
 ! 2006-01-18 - Patrick Robbe
- - ExternalGenerator: create HepMC::GenEvent by hand to store in
+ - ExternalGenerator: create HepMC3::GenEvent by hand to store in
    HepMCEvent
 
 ! 2005-12-31 - Patrick Robbe
@@ -1027,13 +1027,13 @@ particle properties are set before initialization of the pythia instance
  - Signal.h/.cpp: add functions and counters to be able to compute
    the generator level cut efficiencies. Each tool deriving from
    "Signal" has to increment at the correct place these counters.
- - ExternalGenerator.cpp: use HepMC::GenEvent iterators (which are
+ - ExternalGenerator.cpp: use HepMC3::GenEvent iterators (which are
    sorted according to barcodes) in order to remove need to call
    sort function (to reproduce events with HepMC)
  - IFullGenEventCutTool: add new tool to be able to cut on full event
    properties.
  - Generation.cpp:
-       . sort GenParticles when using HepMC::GenParticle
+       . sort GenParticles when using HepMC3::GenParticle
          iterators (which are not sorted) according to the barcode.
        . use new Full event cut tool
  - SignalPlain, SignalForcedFragmentation, SignalRepeatedHadronization:

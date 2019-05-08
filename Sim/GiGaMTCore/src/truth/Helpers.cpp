@@ -4,12 +4,12 @@
 namespace Gaussino::LinkedParticleHelpers
 {
 
-  HepMC::GenParticlePtr hasOscillated( const HepMC::GenParticle* P )
+  HepMC3::ConstGenParticlePtr hasOscillated( const HepMC3::GenParticle* P )
   {
-    auto& ev = P->end_vertex();
+    auto ev = P->end_vertex();
     if ( !ev ) return nullptr;
-    if ( 1 != ev->particles_out_size() ) return nullptr;
-    auto D = *( ev->particles_out_const_begin() );
+    if ( 1 != ev->particles_out().size() ) return nullptr;
+    auto D = *std::begin( ev->particles_out() );
     if ( !D ) return nullptr;
     if ( -P->pdg_id() != D->pdg_id() ) return nullptr;
     return D;
@@ -20,7 +20,7 @@ namespace Gaussino::LinkedParticleHelpers
     return CompareFourVector(a->GetEndPosition(), b->GetOriginPosition());
   }
 
-  bool CompareFourVector( const HepMC::FourVector& a, const HepMC::FourVector& b ){
+  bool CompareFourVector( const HepMC3::FourVector& a, const HepMC3::FourVector& b ){
     if ( !essentiallyEqual( a.x(), b.x() ) ) return false;
     if ( !essentiallyEqual( a.y(), b.y() ) ) return false;
     if ( !essentiallyEqual( a.z(), b.z() ) ) return false;

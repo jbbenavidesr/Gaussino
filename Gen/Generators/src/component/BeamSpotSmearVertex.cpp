@@ -8,9 +8,9 @@
 #include "GaudiKernel/PhysicalConstants.h" 
 
 // from HepMC
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenVertex.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/GenParticle.h"
 
 // from Event
 #include "Event/BeamParameters.h"
@@ -66,7 +66,7 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ,
+StatusCode BeamSpotSmearVertex::smearVertex( HepMC3::GenEvent * theEvent ,
                                              HepRandomEnginePtr & engine ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;
@@ -85,7 +85,7 @@ StatusCode BeamSpotSmearVertex::smearVertex( HepMC::GenEvent * theEvent ,
 
   double meanT = m_timeSignVsT0 * beamp -> beamSpot().z() / Gaudi::Units::c_light ;
 
-  HepMC::FourVector dpos( dx , dy , dz , meanT ) ;
+  HepMC3::FourVector dpos( dx , dy , dz , meanT ) ;
 
   theEvent->shift_position_by(dpos);
 

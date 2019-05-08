@@ -16,8 +16,8 @@
 #include "GenInterfaces/IBeamTool.h"
 
 // HepMC.
-#include "HepMC/GenEvent.h"
-#include "HepMC/HEPEVT_Wrapper.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/HEPEVT_Wrapper.h"
 
 // LbPythia8.
 #include "LbPythia8/Pythia8ProductionMT.h"
@@ -25,11 +25,11 @@
 // HepMC conversion
 #include "Defaults/HepMCAttributes.h"
 #include "Defaults/Enums.h"
-#include "HepMC/Attribute.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
-#include "Pythia8HepMC/Pythia8ToHepMC3.h"
+#include "HepMC3/Attribute.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
+#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
 
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
@@ -240,7 +240,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 //=============================================================================
 // Generate an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision,
+StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
                                                HepRandomEnginePtr& engine )
 {
   if ( !m_pythia() ) {
@@ -312,39 +312,39 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC::GenEvent* theEvent, LHCb::
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision )
 {
 
   // Convert to HepMC.
-  HepMC::Pythia8ToHepMC3 conversion;
+  HepMC3::Pythia8ToHepMC3 conversion;
   conversion.set_print_inconsistency( m_validate_HEPEVT );
   if ( !( conversion.fill_next_event( *m_pythia(), theEvent ) ) )
     return Error( "Failed to convert Pythia 8 event to HepMC." );
 
   // Convert status codes and IDs.
-  for ( HepMC::GenEvent::particle_iterator p = theEvent->particles_begin(); p != theEvent->particles_end(); ++p ) {
-    int status = ( *p )->status();
-    int pid    = ( *p )->pdg_id();
+  for ( auto & p : theEvent->particles() ) {
+    int status = p->status();
+    int pid    = p->pdg_id();
     if ( status > 3 ) {
       if ( ( status == 71 ) || ( status == 72 ) ||
            ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
-        ( *p )->set_status( Gaussino::GenStatus::DecayedByProdGen );
+        p->set_status( Gaussino::GenStatus::DecayedByProdGen );
       else
-        ( *p )->set_status( Gaussino::GenStatus::DocumentationParticle );
+        p->set_status( Gaussino::GenStatus::DocumentationParticle );
     } else if ( status != Gaussino::GenStatus::DecayedByProdGen && status != Gaussino::GenStatus::StableInProdGen &&
                 status != Gaussino::GenStatus::DocumentationParticle )
       warning() << "Unknown status rule " << status << " for particle" << pid << endmsg;
   }
 
   // Convert to LHCb units.
-  for ( HepMC::GenEvent::vertex_iterator v = theEvent->vertices_begin(); v != theEvent->vertices_end(); ++v )
-    ( *v )->set_position( HepMC::FourVector( ( *v )->position().x(), ( *v )->position().y(), ( *v )->position().z(),
-                                             ( ( *v )->position().t() * Gaudi::Units::mm ) / Gaudi::Units::c_light ) );
+  for ( auto & v: theEvent->vertices() )
+    v->set_position( HepMC3::FourVector( v->position().x(), v->position().y(), v->position().z(),
+                                             ( v->position().t() * Gaudi::Units::mm ) / Gaudi::Units::c_light ) );
 
   // Set the process and collision info.
   int code( m_pythia->info.hasSub() ? m_pythia->info.codeSub() : m_pythia->info.code() );
   theEvent->add_attribute( Gaussino::HepMC::Attributes::SignalProcessID,
-                           std::make_shared<HepMC::IntAttribute>( code ) );
+                           std::make_shared<HepMC3::IntAttribute>( code ) );
   theCollision->setProcessType( code );
   theCollision->setSHat( m_pythia->info.sHat() );
   theCollision->setTHat( m_pythia->info.tHat() );
@@ -419,7 +419,7 @@ void Pythia8ProductionMT::turnOffFragmentation() { m_pythia->settings.flag( "Had
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::hadronize( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision )
 {
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
@@ -428,12 +428,12 @@ StatusCode Pythia8ProductionMT::hadronize( HepMC::GenEvent* theEvent, LHCb::GenC
 //=============================================================================
 // Save the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::savePartonEvent( HepMC::GenEvent* /*theEvent*/ ) { m_event = m_pythia->event; }
+void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_event = m_pythia->event; }
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::retrievePartonEvent( HepMC::GenEvent* /*theEvent*/ ) { m_pythia->event = m_event(); }
+void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_pythia->event = m_event(); }
 
 //=============================================================================
 // Print the running conditions.

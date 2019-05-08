@@ -29,7 +29,7 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
   
  private:
   /// Minimum value for the x coordinate of the vertex (set by options)

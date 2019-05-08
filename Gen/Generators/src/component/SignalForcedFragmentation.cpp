@@ -8,7 +8,7 @@
 #include "GaudiKernel/PhysicalConstants.h"
 
 // from HepMC
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
@@ -32,6 +32,8 @@
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandFlat.h"
+
+#include "HepMC3/Relatives.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalForcedFragmentation
@@ -65,7 +67,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 // Generate set of events with repeated hadronization
 //=============================================================================
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
-                                          std::vector<HepMC::GenEvent> & theEvents ,
+                                          std::vector<HepMC3::GenEvent> & theEvents ,
                                           LHCb::GenCollisions & theCollisions ,
                                           HepRandomEnginePtr & engine )
 {
@@ -73,10 +75,10 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
 
   // first decay signal particle
-  HepMC::GenEvent * theSignalHepMCEvent = new HepMC::GenEvent( ) ;
-  HepMC::GenParticle * theSignalAtRest = new HepMC::GenParticle( ) ;
+  HepMC3::GenEvent * theSignalHepMCEvent = new HepMC3::GenEvent( ) ;
+  HepMC3::GenParticlePtr theSignalAtRest{new HepMC3::GenParticle( )};
   theSignalAtRest -> 
-    set_momentum( HepMC::FourVector( 0., 0., 0., m_signalMass ) ) ;
+    set_momentum( HepMC3::FourVector( 0., 0., 0., m_signalMass ) ) ;
 
   // Memorize if signal has been inverted (not used here)
   bool isInverted = false ;
@@ -84,8 +86,8 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   bool hasFailed = false ;
 
   // Create an origin vertex at (0,0,0,0) for the signal particle at rest
-  HepMC::GenVertex * theVertex =  
-    new HepMC::GenVertex( HepMC::FourVector( 0., 0., 0., 0. ) ) ;
+  HepMC3::GenVertex * theVertex =  
+    new HepMC3::GenVertex( HepMC3::FourVector( 0., 0., 0., 0. ) ) ;
   theSignalHepMCEvent -> add_vertex( theVertex ) ;
   theVertex -> add_particle_out( theSignalAtRest ) ;
   
@@ -113,7 +115,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     theSignalAtRest -> set_pdg_id( theSignalPID ) ;
   }
 
-  sc = m_decayTool -> generateSignalDecay( theSignalAtRest , flip , engine ) ;
+  sc = m_decayTool -> generateSignalDecay( theSignalAtRest.get() , flip , engine ) ;
   if ( ! sc.isSuccess() ) return false ;
 
   bool result = false ;  
@@ -126,7 +128,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   if ( sc.isFailure() ) error() << "Could not force fragmentation" << endmsg ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
 
   // TODO: fix problem when 2 consecutive B events. The 2 B events both have
   // signal in them !
@@ -149,7 +151,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         updateCounters( theParticleList , m_nParticlesBeforeCut , 
                         m_nAntiParticlesBeforeCut , false , false ) ;
 
-        HepMC::GenParticlePtr theSignal = chooseAndRevert( theParticleList , 
+        HepMC3::GenParticlePtr theSignal = chooseAndRevert( theParticleList , 
                                                            isInverted ,
                                                            dummyHasFlipped , 
 							  hasFailed , engine ) ;
@@ -204,7 +206,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           }
           
           theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
-              std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
+              std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
           theGenCollision -> setIsSignal( true ) ;
           
           // Count signal B and signal Bbar
@@ -244,9 +246,9 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
 //=============================================================================
 // Boost the Tree theSignal to theVector frame and attach it to theMother
 //=============================================================================
-StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle * 
+StatusCode SignalForcedFragmentation::boostTree( HepMC3::GenParticlePtr
                                                  theSignal ,
-                                                 const HepMC::GenParticle * 
+                                                 HepMC3::ConstGenParticlePtr
                                                  theSignalAtRest ,
                                                  const ROOT::Math::Boost& 
                                                  theBoost )
@@ -289,40 +291,35 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC::GenParticle *
   newP += originalPosition ;
 
   // Create new HepMC vertex after boost and add it to the current event    
-  HepMC::GenVertex * newVertex = 
-    new HepMC::GenVertex( HepMC::FourVector(newP.X(), newP.Y() , newP.Z() , 
+  HepMC3::GenVertex * newVertex = 
+    new HepMC3::GenVertex( HepMC3::FourVector(newP.X(), newP.Y() , newP.Z() , 
                                             newP.T()));
   
   theSignal -> parent_event() -> add_vertex( newVertex ) ;
   newVertex -> add_particle_in( theSignal ) ;
 
-  auto & sVertex = theSignalAtRest -> end_vertex() ;
   
-  HepMC::GenVertex::particles_out_const_iterator child ;
-  
-  for ( child  = sVertex -> particles_out_const_begin( ) ; 
-        child != sVertex -> particles_out_const_end( ) ; ++child ) {
+  for ( auto child : HepMC3::Relatives::CHILDREN(theSignalAtRest) ) {
     // Boost all daughter particles and create a new HepMC particle
     // for each daughter
-    Gaudi::LorentzVector momentum( (*child) -> momentum() ) ;
+    Gaudi::LorentzVector momentum( child -> momentum() ) ;
     Gaudi::LorentzVector newMomentum = theBoost( momentum ) ;
-    int id                           = (*child) -> pdg_id() ;
-    int status                       = (*child) -> status() ;
+    int id                           = child -> pdg_id() ;
+    int status                       = child -> status() ;
     
-    HepMC::GenParticlePtr newPart =
-      new HepMC::GenParticle( HepMC::FourVector( newMomentum.Px() , 
+    HepMC3::GenParticlePtr newPart{
+      new HepMC3::GenParticle( HepMC3::FourVector( newMomentum.Px() , 
                                                  newMomentum.Py() , 
                                                  newMomentum.Pz() , 
                                                  newMomentum.E()   ) , 
-                              id , status ) ;
+                              id , status )} ;
     
     newVertex -> add_particle_out( newPart ) ;
     
-    HepMC::GenParticlePtr theNewSignal             = newPart ;
-    auto theNewSignalAtRest = (*child) ;
+    HepMC3::GenParticlePtr theNewSignal             = newPart ;
     
     // Recursive call to boostTree for each daughter
-    boostTree( theNewSignal , theNewSignalAtRest , theBoost ) ;
+    boostTree( theNewSignal , child, theBoost ) ;
   }
 
   return StatusCode::SUCCESS ;

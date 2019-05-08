@@ -13,7 +13,7 @@
 
 #include "GenInterfaces/IVertexSmearingTool.h"
 
-namespace HepMC
+namespace HepMC3
 {
   class FourVector;
 }
@@ -42,14 +42,14 @@ public:
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
 
  private:
 
   //=============================================================================
   // Test function to try Markov chain
   //=============================================================================
-  // inline double tophat( const HepMC::FourVector& x ) const noexcept
+  // inline double tophat( const HepMC3::FourVector& x ) const noexcept
   // {
   //   return ( (fabs(x.x())<2.0) && 
   //            (fabs(x.y())<2.0) && 
@@ -60,7 +60,7 @@ public:
   //=============================================================================
   // Test function to try Markov chain 
   //=============================================================================
-  // double triangle( const HepMC::FourVector& x ) const noexcept
+  // double triangle( const HepMC3::FourVector& x ) const noexcept
   // {
   //   return ( x.t() < 0.0 ? 0.0 : 
   //            x.t() < 2.0 ? 2.0 - x.t() :
@@ -69,7 +69,7 @@ public:
 
   /// Probability distribution in 4D
   double gauss4D( LHCb::BeamParameters * beamp ,
-                  const HepMC::FourVector & vec ) const;
+                  const HepMC3::FourVector & vec ) const;
   
  private:
 

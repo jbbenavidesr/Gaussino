@@ -17,7 +17,7 @@
 // ===========================================================================
 // HepMC 
 // ===========================================================================
-#include "HepMC/IO_GenEvent.h"
+#include "HepMC3/ReaderAscii.h"
 // ===========================================================================
 // Local 
 // ===========================================================================
@@ -55,11 +55,7 @@ public:
     if ( m_input.empty() ) 
     { return Error ( "Input file name is not specified!" ) ; }
     // open the file 
-    m_file = new HepMC::IO_GenEvent ( m_input.c_str() , std::ios::in ) ;
-    //  
-    if ( ( 0 == m_file ) || ( m_file->rdstate() == std::ios::failbit ) ) 
-    { return Error ( "Failure to input the file '"+m_input+"'" ) ; }
-    //
+    m_file = new HepMC3::ReaderAscii ( m_input.c_str() ) ;
     return StatusCode::SUCCESS ;
   }
   /// finalization of the tool 
@@ -84,7 +80,7 @@ public:
    *                        generated interaction.
    */
   virtual StatusCode generateEvent 
-  ( HepMC::GenEvent    * theEvent , 
+  ( HepMC3::GenEvent    * theEvent , 
     LHCb::GenCollision * theInfo , HepRandomEnginePtr & ) ;
   // ===================================================================
   /// Declare a particle stable to the production generator.
@@ -110,16 +106,16 @@ public:
    *                           generated interaction.
    */
   virtual StatusCode hadronize
-  ( HepMC::GenEvent*     /* theEvent */ , 
+  ( HepMC3::GenEvent*     /* theEvent */ , 
     LHCb::GenCollision * /* theInfo  */ ) { return StatusCode::SUCCESS ; }
   // ===================================================================
   /// Save the parton level event (when the fragmentation is turned off)
   virtual void savePartonEvent
-  ( HepMC::GenEvent * /* theEvent */ ) {} ;
+  ( HepMC3::GenEvent * /* theEvent */ ) {} ;
   // ===================================================================
   /// Retrieve the previously saved parton event to re-hadronize it.
   virtual void retrievePartonEvent
-  ( HepMC::GenEvent* /* theEvent */ ) {} ;
+  ( HepMC3::GenEvent* /* theEvent */ ) {} ;
   // ===================================================================
   /// Print configuration of production generator 
   virtual void printRunningConditions( ) {} ;
@@ -175,7 +171,7 @@ private:
   // rescale event from Pythia to LHCb units ?
   bool             m_rescale ; ///< rescale event to LHCb units ?  
   // the output file ;
-  HepMC::IO_GenEvent* m_file   ; ///< the input file ;
+  HepMC3::ReaderAscii* m_file   ; ///< the input file ;
 } ;
 // =====================================================================
 /// Declaration of the Tool Factory
@@ -194,14 +190,14 @@ DECLARE_COMPONENT( ReadHepMCAsciiFile )
 
 // ===================================================================
 StatusCode ReadHepMCAsciiFile::generateEvent 
-( HepMC::GenEvent    *    theEvent , 
+( HepMC3::GenEvent    *    theEvent , 
   LHCb::GenCollision * /* theInfo */ ,
   HepRandomEnginePtr & /* engine */ ) 
 {
   Assert ( 0 != m_file , "Invalid input file!" ) ;
   //
-  if ( !m_file->fill_next_event( theEvent ) ) 
-  { if ( m_file -> rdstate() != std::ios::eofbit ) 
+  if ( !m_file->read_event( *theEvent ) ) 
+  { if ( m_file->failed() ) 
 	return Error ( "Error in event reading!" ) ; 
     else return Error( "No more events in input file, set correct number of events in options" ) ;
     ;

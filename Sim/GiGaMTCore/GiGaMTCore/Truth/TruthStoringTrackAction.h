@@ -4,7 +4,7 @@
 #include "Geant4/G4VProcess.hh"
 
 #include "GiGaMTCore/IGiGaMessage.h"
-#include "HepMC/FourVector.h"
+#include "HepMC3/FourVector.h"
 #include <string>
 #include <unordered_set>
 
@@ -47,7 +47,7 @@ protected:
   // virtual so users can inherit and implement their own version.
   virtual int processID( const G4VProcess* creator );
 
-  HepMC::FourVector fourmomentum;
+  HepMC3::FourVector fourmomentum;
 
   static std::unordered_set<std::string> m_hadronicProcesses;
 };

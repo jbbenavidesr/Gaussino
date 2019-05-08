@@ -5,9 +5,9 @@
 // ============================================================================
 // HepMC 
 // ============================================================================
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 // ============================================================================
 // Local 
 // ============================================================================
@@ -21,7 +21,7 @@
  */
 // ============================================================================
 void GeneratorUtils::scale
-( HepMC::GenEvent* event , 
+( HepMC3::GenEvent* event , 
   const double     mom   , 
   const double     time  ) 
 {
@@ -30,7 +30,7 @@ void GeneratorUtils::scale
   for ( auto & p : event->particles() ) 
   {
     if ( p ) { 
-      p->set_momentum( HepMC::FourVector( p->momentum().px() * mom ,
+      p->set_momentum( HepMC3::FourVector( p->momentum().px() * mom ,
                                           p->momentum().py() * mom , 
                                           p->momentum().pz() * mom , 
                                           p->momentum().e() * mom ) ) ; 
@@ -40,7 +40,7 @@ void GeneratorUtils::scale
   for ( auto & v : event->vertices() ) 
   {
     if ( ! v ) { continue ; }
-    HepMC::FourVector newPos = v->position() ;
+    HepMC3::FourVector newPos = v->position() ;
     newPos.setT ( newPos.t() * time ) ;
     v->set_position ( newPos ) ;
   }   

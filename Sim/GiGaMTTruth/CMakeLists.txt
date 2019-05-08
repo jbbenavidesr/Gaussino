@@ -13,7 +13,7 @@ gaudi_depends_on_subdirs(NewRnd
 
 find_package(CLHEP COMPONENTS Random Vector)
 find_package(XercesC)
-find_package(HepMC CONFIG)
+AddHepMC3()
 
 FindG4libs(digits_hits event geometry global graphics_reps materials persistency
            particles processes run tracking track intercoms physicslists)

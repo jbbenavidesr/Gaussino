@@ -9,9 +9,9 @@
 #include "GaudiKernel/Vector4DTypes.h"
 #include "GaudiKernel/Transform3DTypes.h"
 
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
@@ -91,7 +91,7 @@ StatusCode FlatSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
+StatusCode FlatSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
   double dx , dy , dz , dt ;
   
   CLHEP::RandFlat flatDist{engine.getref(), 0, 1};
@@ -114,7 +114,7 @@ StatusCode FlatSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomE
       pos = rotX(pos);
       pos = pos + posT;
     }
-    vtx->set_position( HepMC::FourVector( pos.x(), pos.y(), pos.z(), pos.t() ) );
+    vtx->set_position( HepMC3::FourVector( pos.x(), pos.y(), pos.z(), pos.t() ) );
   }
 
   return StatusCode::SUCCESS ;      

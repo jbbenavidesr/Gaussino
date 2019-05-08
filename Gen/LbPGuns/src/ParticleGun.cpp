@@ -120,7 +120,7 @@ StatusCode ParticleGun::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
 ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
   debug() << "Processing event type " << m_eventType << endmsg ;
@@ -139,12 +139,12 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
   unsigned int  nParticles( 0 ) ;
 
   // Create temporary containers for this event
-  std::vector<HepMC::GenEvent> theEvents{};
+  std::vector<HepMC3::GenEvent> theEvents{};
   LHCb::GenCollisions theCollisions{};
 
   // Working set of pointers
   LHCb::GenCollision * theGenCollision{nullptr};
-  HepMC::GenEvent * theGenEvent{nullptr};
+  HepMC3::GenEvent * theGenEvent{nullptr};
 
   Gaudi::LorentzVector theFourMomentum{};
   Gaudi::LorentzVector origin{};
@@ -169,8 +169,8 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
       prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass) {
@@ -183,26 +183,26 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
       m_particleGunTool -> generateParticle( theFourMomentum , origin , thePdgId , engine );
 
       // create HepMC Vertex
-      HepMC::GenVertex * v =
-        new HepMC::GenVertex( HepMC::FourVector( origin.X() ,
+      HepMC3::GenVertexPtr v {
+        new HepMC3::GenVertex( HepMC3::FourVector( origin.X() ,
                                                  origin.Y() ,
                                                  origin.Z() ,
-                                                 origin.T() ) ) ;
+                                                 origin.T() ) )};
       // create HepMC particle
-      HepMC::GenParticle * p =
-        new HepMC::GenParticle( HepMC::FourVector( theFourMomentum.Px() ,
+      HepMC3::GenParticlePtr p{
+        new HepMC3::GenParticle( HepMC3::FourVector( theFourMomentum.Px() ,
                                                    theFourMomentum.Py() ,
                                                    theFourMomentum.Pz() ,
                                                    theFourMomentum.E()  ) ,
                                 thePdgId ,
-                                Gaussino::GenStatus::StableInProdGen ) ;
+                                Gaussino::GenStatus::StableInProdGen )};
 
       v -> add_particle_out( p ) ;
       theGenEvent->add_vertex( v ) ;
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID,
-          std::make_shared<HepMC::IntAttribute>(nParticles));
+          std::make_shared<HepMC3::IntAttribute>(nParticles));
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
-          std::make_shared<HepMC::VertexAttribute>(v));
+          std::make_shared<HepMC3::VertexAttribute>(v));
     }
 
     goodEvent = true ;
@@ -305,24 +305,16 @@ StatusCode ParticleGun::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
+HepMC3::GenParticlePtr ParticleGun::decayEvent( HepMC3::GenEvent * theEvent,
                                              ParticleVector & theParticleList,
                                              HepRandomEnginePtr & engine,
                                              StatusCode & sc) const {
   m_decayTool -> disableFlip() ;
   sc = StatusCode::SUCCESS ;
-  HepMC::GenParticle *theSignal(0);
+  HepMC3::GenParticlePtr theSignal{nullptr};
 
-  // We must use particles_begin to obtain an ordered iterator of GenParticles
-  // according to the barcode: this allows to reproduce events !
-  HepMCUtils::ParticleSet pSet( theEvent -> particles_begin() ,
-                                theEvent -> particles_end() ) ;
+  for ( auto & thePart : theEvent->particles() ) {
 
-  HepMCUtils::ParticleSet::iterator itp ;
-
-  for ( itp = pSet.begin() ; itp != pSet.end() ; ++itp ) {
-
-    HepMC::GenParticle * thePart = (*itp) ;
     unsigned int status = thePart -> status() ;
 
     if ( ( Gaussino::GenStatus::StableInProdGen  == status ) ||
@@ -338,10 +330,10 @@ HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
 
         if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
           bool hasFlipped(false);
-          sc = m_decayTool -> generateSignalDecay( thePart, hasFlipped , engine) ;
+          sc = m_decayTool -> generateSignalDecay( thePart.get(), hasFlipped , engine) ;
           theSignal = thePart;
         } else
-          sc = m_decayTool -> generateDecay( thePart , engine ) ;
+          sc = m_decayTool -> generateDecay( thePart.get() , engine ) ;
 
         theParticleList.push_back( thePart );
 
@@ -355,15 +347,15 @@ HepMC::GenParticlePtr ParticleGun::decayEvent( HepMC::GenEvent * theEvent,
 //=============================================================================
 // Set up event
 //=============================================================================
-void ParticleGun::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
+void ParticleGun::prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC3::GenEvent * & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back(HepMC::Units::MEV, HepMC::Units::MM);
+  theEvents->emplace_back(HepMC3::Units::MEV, HepMC3::Units::MM);
   theGenEvent = &theEvents->back();
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
-                              std::make_shared<HepMC::StringAttribute>( m_particleGunName) );
+                              std::make_shared<HepMC3::StringAttribute>( m_particleGunName) );
   // Little hack to make it thread-safe when reading later
-  theGenEvent->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
+  theGenEvent->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 
   //FIXME: Still need fix this, see header
   theGenCollision = new LHCb::GenCollision();

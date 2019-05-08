@@ -99,14 +99,14 @@ StatusCode Inclusive::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Inclusive::generate( const unsigned int nPileUp , 
-                          std::vector<HepMC::GenEvent> & theEvents , 
+                          std::vector<HepMC3::GenEvent> & theEvents , 
                           LHCb::GenCollisions & theCollisions ,
                           HepRandomEnginePtr & engine ) {
   StatusCode sc ;
   bool result = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
 
   // Moved into conditional statement for now
   //GenCounters::BHadronCounter thebHadC , theantibHadC ;

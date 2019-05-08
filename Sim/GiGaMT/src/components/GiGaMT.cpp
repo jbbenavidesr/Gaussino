@@ -31,9 +31,8 @@
 #include "GiGaMTCore/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "SimInterfaces/IG4MonitoringTool.h"
-#include "SimInterfaces/IHepMC3ToGeant4Tool.h"
 
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
 // local
 #include "GiGaMT.h"

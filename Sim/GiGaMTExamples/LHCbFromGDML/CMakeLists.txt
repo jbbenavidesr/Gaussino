@@ -9,11 +9,13 @@ gaudi_subdir(LHCbFromGDML v1r0)
 
 gaudi_depends_on_subdirs(GaudiKernel
                          GaudiAlg
+                         HepMC3
                          Gen/GenInterfaces)
 
-find_package(HepMC CONFIG)
+AddHepMC3()
 
 gaudi_add_module(LHCbFromGDML
                   src/*.cpp
-                  INCLUDE_DIRS GenInterfaces ${HEPMC_INCLUDE_DIR}
-                  LINK_LIBRARIES GaudiAlgLib ${HEPMC_LIBRARIES})
+                  INCLUDE_DIRS GenInterfaces ${HEPMC3_INCLUDE_DIR}
+                  LINK_LIBRARIES GaudiAlgLib ${HEPMC3_LIBRARIES})
+add_dependencies(LHCbFromGDML HepMC3Ext)

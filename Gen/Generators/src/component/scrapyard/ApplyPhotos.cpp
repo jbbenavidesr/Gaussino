@@ -10,7 +10,7 @@
 
 // from Event
 //#include "Event/HepMCEvent.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "Defaults/Locations.h"
 
 // local
@@ -87,23 +87,23 @@ StatusCode ApplyPhotos::execute() {
   LHCb::HepMCEvents::iterator it ;
 
   for ( it = theEvents -> begin() ; it != theEvents -> end() ; ++it ) {
-    HepMC::GenEvent * ev = (*it) -> pGenEvt() ;
-    for ( HepMC::GenEvent::particle_iterator itP = ev -> particles_begin() ;
+    HepMC3::GenEvent * ev = (*it) -> pGenEvt() ;
+    for ( HepMC3::GenEvent::particle_iterator itP = ev -> particles_begin() ;
           itP != ev -> particles_end() ; ++itP ) {
       if ( LHCb::HepMCEvent::DocumentationParticle != (*itP) -> status() ) {
         if ( std::binary_search( m_pdgIds.begin() , m_pdgIds.end() , 
                                  abs( (*itP) -> pdg_id() ) ) ) {
-          HepMC::GenVertex * EV = (*itP) -> end_vertex() ;
+          HepMC3::GenVertex * EV = (*itP) -> end_vertex() ;
           if ( 0 == EV ) continue ;
 
           // Make one event with only the "signal" and its decay products
-          HepMC::GenEvent * newEvent = new HepMC::GenEvent( ) ;
+          HepMC3::GenEvent * newEvent = new HepMC3::GenEvent( ) ;
 
           // Fill the event
           newEvent -> add_vertex( EV ) ;
-          HepMC::GenVertex::particle_iterator iterDes ;
-          for ( iterDes = EV -> particles_begin( HepMC::descendants ) ;
-                iterDes != EV -> particles_end( HepMC::descendants ) ; ++iterDes ) {
+          HepMC3::GenVertex::particle_iterator iterDes ;
+          for ( iterDes = EV -> particles_begin( HepMC3::descendants ) ;
+                iterDes != EV -> particles_end( HepMC3::descendants ) ; ++iterDes ) {
             if ( 0 != (*iterDes) -> end_vertex() ) 
               newEvent -> add_vertex( (*iterDes) -> end_vertex() ) ;
           }
@@ -113,8 +113,8 @@ StatusCode ApplyPhotos::execute() {
           photosEvent.process();
 
           ev -> add_vertex( EV ) ;
-          for ( iterDes = EV -> particles_begin( HepMC::descendants ) ;
-                iterDes != EV -> particles_end( HepMC::descendants ) ; ++iterDes ) {
+          for ( iterDes = EV -> particles_begin( HepMC3::descendants ) ;
+                iterDes != EV -> particles_end( HepMC3::descendants ) ; ++iterDes ) {
             if ( 0 != (*iterDes) -> end_vertex() ) 
               ev -> add_vertex( (*iterDes) -> end_vertex() ) ;
           }

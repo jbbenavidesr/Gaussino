@@ -9,8 +9,8 @@
 
 // from Event
 #include "GenBeam/IBeamInfoSvc.h"
-#include "HepMC/FourVector.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/FourVector.h"
+#include "HepMC3/GenEvent.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandGauss.h"
@@ -66,7 +66,7 @@ StatusCode BeamSpotSmearVertexWithSvc::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
+StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
 
   double dx , dy , dz;
 
@@ -81,7 +81,7 @@ StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC::GenEvent * theEvent ,
 
   double meanT = m_timeSignVsT0 * m_beaminfosvc -> beamSpot().z() / Gaudi::Units::c_light ;
 
-  HepMC::FourVector dpos( dx , dy , dz , meanT ) ;
+  HepMC3::FourVector dpos( dx , dy , dz , meanT ) ;
   
   theEvent->shift_position_by(dpos);
 

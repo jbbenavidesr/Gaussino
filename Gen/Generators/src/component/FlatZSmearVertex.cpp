@@ -10,9 +10,9 @@
 
 // from Event
 #include "Event/BeamParameters.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandFlat.h"
@@ -84,7 +84,7 @@ StatusCode FlatZSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
+StatusCode FlatZSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
 
   CLHEP::RandGauss gaussDist{engine.getref(), 0., 1.};
   CLHEP::RandFlat flatDist{engine.getref(), m_zmin ,m_zmax};
@@ -107,7 +107,7 @@ StatusCode FlatZSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandom
   dy = dy/cos( beam -> verticalCrossingAngle() ) + 
     beam -> beamSpot().y() + dz*sin( beam -> verticalCrossingAngle() )*m_zDir;
 
-  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
+  HepMC3::FourVector dpos( dx , dy , dz , dt ) ;
   theEvent->shift_position_by(dpos);
 
   return StatusCode::SUCCESS ;      

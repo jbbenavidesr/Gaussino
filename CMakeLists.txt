@@ -21,15 +21,27 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS}
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
-        message(STATUS "looking for Geant4 ${name} in ${Geant4_LIBRARY_DIRS} with hints ${Geant4_DIR}/lib")
         find_library(GEANT4_${name}_LIBRARY
                      G4${name}
                      HINTS ${Geant4_DIR}/lib
                      PATHS ${Geant4_LIBRARY_DIRS})
-        message(STATUS "GEANT4_${name}_LIBRARY -> ${GEANT4_${name}_LIBRARY}")
         list(APPEND GEANT4_LIBS ${GEANT4_${name}_LIBRARY})
     endforeach()
     link_directories(${Geant4_LIBRARY_DIRS})
+endmacro()
+
+macro(AddHepMC3)
+  # FIXME: This is just an work-around to include the locally compiled HepMC3 as the HepMC3Config.cmake
+  # is not yet available during configuration. 
+  include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/include)
+  link_directories(${CMAKE_INSTALL_PREFIX}/lib64)
+  link_directories(${CMAKE_INSTALL_PREFIX}/lib)
+  #add_dependencies(HepMC3Ext)
+
+  set(HEPMC3_LIBRARIES
+    -lHepMC3
+    -lHepMC3search
+    -lHepMC3rootIO)
 endmacro()
 
 # Declare project name and version

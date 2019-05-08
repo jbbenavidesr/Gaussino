@@ -1,6 +1,6 @@
 #include "MinimalStableInLHCb.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : MinimalStableInLHCb
@@ -12,7 +12,7 @@
 
 DECLARE_COMPONENT( MinimalStableInLHCb )
 
-bool MinimalStableInLHCb::studyFullEvent( const std::vector<HepMC::GenEvent>& theEvents, const LHCb::GenCollisions& ) const
+bool MinimalStableInLHCb::studyFullEvent( const std::vector<HepMC3::GenEvent>& theEvents, const LHCb::GenCollisions& ) const
 {
   unsigned int counter = 0;
 

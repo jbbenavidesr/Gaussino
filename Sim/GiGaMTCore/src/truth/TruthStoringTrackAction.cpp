@@ -56,12 +56,12 @@ void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
 {
   // new track is being started
   // we record its initial momentum
-  fourmomentum = HepMC::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
+  fourmomentum = HepMC3::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
                                     track->GetTotalEnergy() );
 }
 
 template <typename T>
-T& operator<<( T& ostr, const HepMC::FourVector& fv )
+T& operator<<( T& ostr, const HepMC3::FourVector& fv )
 {
   ostr << "[" << fv.x() << ", " << fv.z() << ", " << fv.y() << ", " << fv.t() << "]";
   return ostr;
@@ -83,9 +83,9 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
   auto track_info = GaussinoTrackInformation::Get();
 
   if ( track_info->storeTruth() ) {
-    HepMC::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
+    HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
                                track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
-    HepMC::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
+    HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
                               track->GetGlobalTime() );
 
     // Get the pdgID+LHCb extension

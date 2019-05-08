@@ -7,7 +7,7 @@
 #include "Geant4/G4SystemOfUnits.hh"
 
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenParticle.h"
 
 class G4PrimaryParticle;
 class G4PrimaryVertex;
@@ -34,11 +34,11 @@ public:
 
   virtual ~HepMC3ToMCTruthConverter() = default;
 
-  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const std::vector<HepMC::GenEvent>& ) const override;
+  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const std::vector<HepMC3::GenEvent>& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
-  bool IsTraveling( const HepMC::GenParticlePtr& part ) const;
+  bool IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const;
   /// Decide if a particle has to be kept or not.
-  bool keep( const HepMC::GenParticlePtr & particle ) const;
+  bool keep( const HepMC3::ConstGenParticlePtr & particle ) const;
 };

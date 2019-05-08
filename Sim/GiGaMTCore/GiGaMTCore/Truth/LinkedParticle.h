@@ -4,8 +4,8 @@
 #include "Geant4/G4PrimaryParticle.hh"
 #include "GiGaMTCore/Truth/Common.h"
 #include "GiGaMTCore/Truth/G4TruthParticle.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 #include <ostream>
 
 namespace Gaussino
@@ -23,22 +23,19 @@ public:
   friend Gaussino::MCTruthConverter;
   friend Gaussino::MCTruthTracker;
   friend std::ostream& operator<<( std::ostream&, const LinkedParticle& );
-  // Stupid const_cast to get access to the non-constant only cast method of the HepMC::SmartPointer.
+  // Stupid const_cast to get access to the non-constant only cast method of the HepMC3::SmartPointer.
   // Doesn't matter here as the raw pointer is then internally stored as a ptr to const again.
-  LinkedParticle( const HepMC::GenParticlePtr& part ) : m_hepmc( const_cast<HepMC::GenParticlePtr&>( part ) ) {}
-  LinkedParticle( const HepMC::GenParticlePtr& part, G4PrimaryParticle* g4part )
-      : m_hepmc( const_cast<HepMC::GenParticlePtr&>( part ) )
+  LinkedParticle( const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part.get() ) {}
+  LinkedParticle( const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part )
+      : m_hepmc( part.get() )
   {
     m_primary = g4part;
   }
   LinkedParticle( G4PrimaryParticle* g4part ) { m_primary = g4part; }
   LinkedParticle( Gaussino::G4TruthParticle* g4truth ) { m_tracking = g4truth; }
   LinkedParticle() = delete;
-  virtual ~LinkedParticle()
-  {
-    if ( m_tracking ) delete m_tracking;
-  };
-  const HepMC::GenParticle* HepMC() { return m_hepmc; }
+  virtual ~LinkedParticle();
+  const HepMC3::GenParticle* HepMC() { return m_hepmc; }
   G4PrimaryParticle*& G4Primary() { return m_primary; }
   Gaussino::G4TruthParticle*& G4Truth() { return m_tracking; }
   Gaussino::ConversionType GetType() const { return m_conversion_type; }
@@ -58,9 +55,9 @@ public:
   // 2. G4Primary
   // 3. G4Truth from tracking
   int GetPDG() const;
-  HepMC::FourVector GetMomentum() const;
-  HepMC::FourVector GetOriginPosition() const;
-  HepMC::FourVector GetEndPosition() const;
+  HepMC3::FourVector GetMomentum() const;
+  HepMC3::FourVector GetOriginPosition() const;
+  HepMC3::FourVector GetEndPosition() const;
   // Calculates the decay time of the particle based on the internal HepMC
   // particle. Returns -1 if particle is stable and is not decayed in the HepMC
   // record
@@ -71,7 +68,7 @@ private:
   // Two vectors to store the relationships, extracted from whatever source we can find.
   // Vertex positions are taken from any of the contained particle in some smart order
   // I haven't decided on yet
-  const HepMC::GenParticle* m_hepmc{nullptr};
+  const HepMC3::GenParticle* m_hepmc{nullptr};
   G4PrimaryParticle* m_primary{nullptr};
   Gaussino::G4TruthParticle* m_tracking{nullptr};
   Gaussino::ConversionType m_conversion_type;
@@ -91,10 +88,11 @@ public:
   LinkedVertex() = default;
   std::set<LinkedParticle*> incoming_particle;
   std::set<LinkedParticle*> outgoing_particles;
-  HepMC::FourVector GetPosition() const
+  HepMC3::FourVector GetPosition() const
   {
+    // FIXME: Prioritize the location G4 simulated particles
     if ( outgoing_particles.size() > 0 ) {
-      return ( *std::begin( outgoing_particles ) )->GetEndPosition();
+      return ( *std::begin( outgoing_particles ) )->GetOriginPosition();
     }
     if ( incoming_particle.size() > 0 ) {
       return ( *std::begin( incoming_particle ) )->GetEndPosition();
@@ -103,7 +101,7 @@ public:
     throw std::runtime_error(
         "Trying to access position of vertex without associated particles" );
   }
-  const HepMC::GenVertex* hepmc_vtx{nullptr};
+  const HepMC3::GenVertex* hepmc_vtx{nullptr};
 };
 
 std::ostream& operator<<( std::ostream&, const LinkedParticle& );

@@ -16,7 +16,7 @@ namespace HepMC
   class GenEvent;
 }
 
-/** @class IHepMC3ToGeant4Tool SimG4Interface/IHepMC3ToGeant4Tool.h IHepMC3ToGeant4Tool.h
+/** @class IExtEngine
  *
  *  Abstract interface to tool converting HepMC3 to Geant4
  *

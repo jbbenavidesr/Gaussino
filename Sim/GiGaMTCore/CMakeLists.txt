@@ -8,11 +8,12 @@
 gaudi_subdir(GiGaMTCore v1r0)
 gaudi_depends_on_subdirs(NewRnd
                          Event/MCEvent  # FIXME: Don't like this
+                         HepMC3
                          HepMCUser)
 
 find_package(CLHEP COMPONENTS Random Vector)
 find_package(XercesC)
-find_package(HepMC CONFIG)
+AddHepMC3()
 find_package(ROOT COMPONENTS MathCore GenVector)
 
 FindG4libs(digits_hits event geometry global graphics_reps materials persistency
@@ -28,11 +29,12 @@ endif()
 gaudi_add_library(GiGaMTCoreTruthLib
                  src/truth/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
-                 INCLUDE_DIRS HepMC CLHEP Geant4 XercesC NewRnd HepMCUtils
-                 LINK_LIBRARIES HepMC CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils MCEvent)
+                 INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd HepMCUtils
+                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils MCEvent)
+add_dependencies(GiGaMTCoreTruthLib HepMC3Ext)
 
 gaudi_add_library(GiGaMTCoreRunLib
                  src/run/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
-                 INCLUDE_DIRS HepMC CLHEP Geant4 XercesC NewRnd
-                 LINK_LIBRARIES HepMC CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib )
+                 INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd
+                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib )

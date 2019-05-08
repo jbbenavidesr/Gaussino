@@ -43,7 +43,6 @@ class G4VUserPhysicsList;
 class GiGaWorkerPilot;
 class GiGaMTRunManager;
 class G4VUserDetectorConstruction;
-class IHepMC3ToGeant4Tool;
 class IG4MonitoringTool;
 
 /**  @class GiGaMT GiGaMT.h

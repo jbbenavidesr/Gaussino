@@ -12,10 +12,10 @@
 
 // HepMC3
 #include "GaudiKernel/Vector4DTypes.h"
-#include "HepMC/FourVector.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenVertex.h"
-#include "HepMC/Units.h"
+#include "HepMC3/FourVector.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/Units.h"
 #include "HepMCUtils/PrintDecayTree.h"
 #include "Math/GenVector/Boost.h"
 
@@ -48,7 +48,7 @@ std::string PrintPrimaries( G4PrimaryParticle* part, int level = 0, LHCb::IParti
   return outstream.str();
 }
 
-double lifetime( const HepMC::FourVector mom, const HepMC::GenVertexPtr& P, const HepMC::GenVertexPtr& E )
+double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, const HepMC3::GenVertexPtr& E )
 {
   if ( !E ) return 0;
   Gaudi::LorentzVector A( P->position() ), B( E->position() );
@@ -67,13 +67,13 @@ double lifetime( const HepMC::FourVector mom, const HepMC::GenVertexPtr& P, cons
 }
 
 Gaussino::MCTruthConverterPtrs
-HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& hepmc_events ) const
+HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC3::GenEvent>& hepmc_events ) const
 {
   Gaussino::MCTruthConverterPtrs converters;
 
-  for ( const HepMC::GenEvent& genEvt : hepmc_events ) {
+  for ( const HepMC3::GenEvent& genEvt : hepmc_events ) {
     auto converter = std::make_unique<Gaussino::MCTruthConverter>();
-    if ( genEvt.length_unit() != HepMC::Units::MM || genEvt.momentum_unit() != HepMC::Units::MEV ) {
+    if ( genEvt.length_unit() != HepMC3::Units::MM || genEvt.momentum_unit() != HepMC3::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;
       continue;
     }
@@ -88,7 +88,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC::GenEvent>& he
   return converters;
 }
 
-bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC::GenParticlePtr& part ) const
+bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const
 {
   // Return for Geant4 tracking if stable.
   auto ev = part->end_vertex();
@@ -108,7 +108,7 @@ bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC::GenParticlePtr& part ) 
 //=============================================================================
 // Decides if a particle should be kept in MCParticles.
 //=============================================================================
-/*static*/ bool HepMC3ToMCTruthConverter::keep( const HepMC::GenParticlePtr& particle ) const
+bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle ) const
 {
   LHCb::ParticleID pid( particle->pdg_id() );
   // Get the signal process ID as we will need this multiple times.
@@ -117,21 +117,21 @@ bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC::GenParticlePtr& part ) 
   // by default initialises the process ID to 0 which is identical to the
   // behaviour in HepMC2 where the default value was 0 as well.
   auto sig_proc_id =
-      particle->parent_event()->attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
+      particle->parent_event()->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
   switch ( particle->status() ) {
-  case HepMC::Status::StableInProdGen:
+  case HepMC3::Status::StableInProdGen:
     return true;
-  case HepMC::Status::DecayedByDecayGen:
+  case HepMC3::Status::DecayedByDecayGen:
     return true;
-  case HepMC::Status::DecayedByDecayGenAndProducedByProdGen:
+  case HepMC3::Status::DecayedByDecayGenAndProducedByProdGen:
     return true;
-  case HepMC::Status::SignalInLabFrame:
+  case HepMC3::Status::SignalInLabFrame:
     return true;
-  case HepMC::Status::StableInDecayGen:
+  case HepMC3::Status::StableInDecayGen:
     return true;
 
   // For some processes the resonance has status 3.
-  case HepMC::Status::DocumentationParticle:
+  case HepMC3::Status::DocumentationParticle:
     if ( 24 == sig_proc_id ) {
       if ( 23 == pid.abspid() )
         return true;
@@ -147,9 +147,9 @@ bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC::GenParticlePtr& part ) 
     } else if ( 6 == pid.abspid() )
       return true;
     return false;
-  case HepMC::Status::Unknown:
+  case HepMC3::Status::Unknown:
     return false;
-  case HepMC::Status::DecayedByProdGen:
+  case HepMC3::Status::DecayedByProdGen:
     if ( pid.isHadron() ) return true;
     if ( pid.isLepton() ) return true;
     if ( pid.isNucleus() ) return true;

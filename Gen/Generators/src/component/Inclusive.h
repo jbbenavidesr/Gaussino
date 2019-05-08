@@ -12,7 +12,7 @@
 
 #include <boost/array.hpp>
 
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
 // forward declarations
 
@@ -59,7 +59,7 @@ class Inclusive : public ExternalGenerator {
    *     of the inclusive list in the event have pz < 0.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC::GenEvent> & theEvents ,
+                         std::vector<HepMC3::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
                          HepRandomEnginePtr & engine ) override;
 

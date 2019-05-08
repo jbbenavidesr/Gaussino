@@ -60,7 +60,7 @@ public:
   virtual StatusCode finalize();
 
   /// Generate an event.
-  virtual StatusCode generateEvent( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision,
+  virtual StatusCode generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
                                     HepRandomEnginePtr& engine );
 
   /**
@@ -71,7 +71,7 @@ public:
    * and vertex positions must be modified to match the LHCb standard. The
    * hard process information is also set.
    */
-  StatusCode toHepMC( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision );
+  StatusCode toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision );
 
   /// Set particle stable.
   virtual void setStable( const LHCb::ParticleProperty* thePP );
@@ -88,13 +88,13 @@ public:
   virtual void turnOffFragmentation();
 
   /// Hadronize an event.
-  virtual StatusCode hadronize( HepMC::GenEvent* theEvent, LHCb::GenCollision* theCollision );
+  virtual StatusCode hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision );
 
   /// Save the Pythia 8 event record.
-  virtual void savePartonEvent( HepMC::GenEvent* theEvent );
+  virtual void savePartonEvent( HepMC3::GenEvent* theEvent );
 
   /// Retrieve the Pythia 8 event record.
-  virtual void retrievePartonEvent( HepMC::GenEvent* theEvent );
+  virtual void retrievePartonEvent( HepMC3::GenEvent* theEvent );
 
   /**
    * Print the running conditions.

@@ -36,9 +36,9 @@
 #include "TUnixSystem.h"
 
 // HepMC
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
-#include "HepMC/Attribute.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/Attribute.h"
 
 #include "Defaults/HepMCAttributes.h"
 #include "range/v3/all.hpp"
@@ -116,7 +116,7 @@ StatusCode Generation::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
+std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
 operator()( const LHCb::GenHeader& old_gen_header) const
 {
   auto m_genFSR = GenFSRMTManager::GetGenFSR();
@@ -171,7 +171,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
   unsigned int  nPileUp( 0 ) ;
 
   // Create temporary containers for this event
-  std::vector<HepMC::GenEvent> theEvents;
+  std::vector<HepMC3::GenEvent> theEvents;
   LHCb::GenCollisions theCollisions;
 
   interactionCounter theIntCounter ;
@@ -255,12 +255,12 @@ operator()( const LHCb::GenHeader& old_gen_header) const
 
       if ( ( m_commonVertex ) && ( 1 < nPileUp ) ) {
         auto commonV = 
-          std::begin(theEvents)->beam_particles().first-> end_vertex() -> position() ;
+          (*std::begin(std::begin(theEvents)->beams()))->end_vertex()->position();
         for ( auto & evt : theEvents ) {
           for ( auto & vtx : evt.vertices() ) {
             auto pos = vtx -> position() ;
             //FIXME: Shouldn't this shift by -pos + commonV to have the same vertex?
-            vtx -> set_position( HepMC::FourVector( pos.x() + commonV.x() , 
+            vtx -> set_position( HepMC3::FourVector( pos.x() + commonV.x() , 
                                                     pos.y() + commonV.y() , 
                                                     pos.z() + commonV.z() , 
                                                     pos.t() + commonV.t() ) ) ;
@@ -325,14 +325,14 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       auto & evt = event_gencol.first;
       // GenFSR
       if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
-        m_genFSR->addSimulationInfo("hardGenerator",evt.attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
+        m_genFSR->addSimulationInfo("hardGenerator",evt.attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
     }
   }
 
   //Just before writing, set the event and run number of the HepMC events so they are persisted.
   for(auto & evt : theEvents){
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
   }
 
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
@@ -393,16 +393,14 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
+StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
   // We must use particles_begin to obtain an ordered iterator of GenParticles
   // according to the barcode: this allows to reproduce events !
-  HepMCUtils::ParticleSet pSet( theEvent -> particles_begin() , 
-                                theEvent -> particles_end() ) ;
 
-  for ( auto & thePart : pSet ) {
+  for ( auto & thePart : theEvent->particles()) {
     
     unsigned int status = thePart -> status() ;
     
@@ -417,7 +415,7 @@ StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEngineP
             set_status( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen ) ;
         else thePart -> set_status( Gaussino::GenStatus::DecayedByDecayGen ) ;
         
-        sc = m_decayTool -> generateDecay( thePart , engine ) ;
+        sc = m_decayTool -> generateDecay( thePart.get() , engine ) ;
         if ( ! sc.isSuccess() ) return sc ;
       }
     } 
@@ -429,7 +427,7 @@ StatusCode Generation::decayEvent( HepMC::GenEvent * theEvent , HepRandomEngineP
 // Interaction counters
 //=============================================================================
 void Generation::updateInteractionCounters( interactionCounter & theCounter ,
-                                            const HepMC::GenEvent * theEvent ) const
+                                            const HepMC3::GenEvent * theEvent ) const
 {
   unsigned int bQuark( 0 ) , bHadron( 0 ) , cQuark( 0 ) , cHadron( 0 ) ;
   int pdgId ;
@@ -444,17 +442,16 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
 
     if ( 5 == pdgId ) { 
       if (  thePart -> production_vertex() ) {
-        if ( 1 != thePart -> production_vertex() -> particles_in_size() ) {
+        if ( 1 != thePart -> production_vertex() -> particles_in().size() ) {
            bool containB = false;
-           for (HepMC::GenVertex::particles_in_const_iterator par = thePart -> production_vertex() -> particles_in_const_begin();
-                par != thePart -> production_vertex() -> particles_in_const_end() ; par++) {
-             if (5==abs((*par)->pdg_id()))
+           for(auto & part: thePart->production_vertex()->particles_in()){
+             if (5==abs(part->pdg_id()))
                containB = true;
            }
            if (!containB) ++bQuark ;
         } else {
           auto & par = 
-            *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
+            *std::begin(thePart -> production_vertex() -> particles_in() ) ;
           if ( ( par -> status() == 
                  Gaussino::GenStatus::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) { 
@@ -465,17 +462,16 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
     }
     else if( 4 == pdgId ) {
       if ( thePart -> production_vertex() ) {
-        if ( 1 != thePart -> production_vertex() -> particles_in_size() ) {
+        if ( 1 != thePart->production_vertex() -> particles_in().size() ) {
           bool containC = false;
-          for (HepMC::GenVertex::particles_in_const_iterator par = thePart -> production_vertex() -> particles_in_const_begin();
-               par != thePart -> production_vertex() -> particles_in_const_end() ; par++) {
-            if (4==abs((*par)->pdg_id()))
+           for(auto & part: thePart->production_vertex()->particles_in()){
+            if (4==abs(part->pdg_id()))
               containC = true;
           }
           if (!containC) ++cQuark ;
         } else {
           auto & par =
-            *( thePart -> production_vertex() -> particles_in_const_begin() ) ;
+            *std::begin(thePart -> production_vertex() -> particles_in() ) ;
           if ( ( par -> status() ==
                  Gaussino::GenStatus::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) {
@@ -488,11 +484,11 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
       if ( thePid.hasBottom() ) {
         // Count B from initial proton as a quark
         if ( thePart -> production_vertex() ) {
-          if ( 0 != thePart -> production_vertex() -> particles_in_size() ) {
+          if ( 0 != thePart -> production_vertex() -> particles_in().size() ) {
             auto & par = 
-              *( thePart-> production_vertex()-> particles_in_const_begin() ) ;
+            *std::begin(thePart -> production_vertex() -> particles_in() ) ;
             if ( par -> production_vertex() ) {
-              if ( 0 == par -> production_vertex() -> particles_in_size() ) {
+              if ( 0 == par -> production_vertex() -> particles_in().size() ) {
                 ++bQuark ;
               }
             } 
@@ -505,11 +501,11 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
       } else if ( thePid.hasCharm() ) {
         // Count D from initial proton as a quark
         if ( thePart -> production_vertex() ) {
-          if ( 0 != thePart -> production_vertex() -> particles_in_size() ) {
+          if ( 0 != thePart -> production_vertex() -> particles_in().size() ) {
             auto & par = 
-              *( thePart-> production_vertex()-> particles_in_const_begin() ) ;
+            *std::begin(thePart -> production_vertex() -> particles_in() ) ;
             if ( par -> production_vertex() ) {
-              if ( 0 == par -> production_vertex() -> particles_in_size() ) 
+              if ( 0 == par -> production_vertex() -> particles_in().size() ) 
                 ++cQuark ;
             } else ++cQuark ;
           }

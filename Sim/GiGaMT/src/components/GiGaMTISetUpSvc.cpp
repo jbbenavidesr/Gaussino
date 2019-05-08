@@ -26,7 +26,6 @@
 #include "GiGaMT.h"
 #include "GiGaMT/GiGaActionInitializer.h"
 #include "GiGaMTCore/GiGaWorkerPilot.h"
-#include "SimInterfaces/IHepMC3ToGeant4Tool.h"
 
 // ============================================================================
 /**  @file
@@ -71,7 +70,7 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
     pilot->SetInputQueue( &m_payloadQueue );
     // FIXME: Add call-back for converter to workerpilot
     //pilot->SetConverter(
-        //[&]( const std::vector<const HepMC::GenEvent*>& evts ) { return m_conversionTool->g4Event( evts ); } );
+        //[&]( const std::vector<const HepMC3::GenEvent*>& evts ) { return m_conversionTool->g4Event( evts ); } );
     m_workerThreads.emplace_back( std::move( *pilot ) );
     delete pilot;
   }

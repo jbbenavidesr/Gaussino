@@ -9,15 +9,17 @@
 #include <iostream>
 
 #include "Defaults/HepMCAttributes.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/Relatives.h"
 #include "HepMCUser/VertexAttribute.h"
 #include "HepMCUtils/CompareGenEvent.h"
+#include "range/v3/all.hpp"
 
-namespace HepMC
+namespace HepMC3
 {
 
-void printChildren(HepMC::GenParticlePtr part, int level) {
+void printChildren(HepMC3::GenParticlePtr part, int level) {
   std::string space = "";
   for (int i = 0; i < level; i++) {
     space += "|---> ";
@@ -27,7 +29,7 @@ void printChildren(HepMC::GenParticlePtr part, int level) {
   if (part->end_vertex()) {
   std::cout << space;
   std::cout << "   Vertex [ " << part->end_vertex()->position().x() << ", " << part->end_vertex()->position().y() << ", "<< part->end_vertex()->position().z() << ", "<< part->end_vertex()->position().t() << "]:\n";
-    for (auto p : part->end_vertex()->particles(HepMC::children)) {
+    for (auto p : Relatives::CHILDREN(part)) {
       printChildren(p, level + 1);
     }
   }
@@ -111,17 +113,19 @@ void printChildren(HepMC::GenParticlePtr part, int level) {
 
   bool compareBeamParticles( const GenEvent& e1, const GenEvent& e2 )
   {
-    auto e1b1 = e1.beam_particles().first;
-    auto e1b2 = e1.beam_particles().second;
-    auto e2b1 = e2.beam_particles().first;
-    auto e2b2 = e2.beam_particles().second;
-    if ( e1b1 && e1b2 && e2b1 && e2b2 ) {
-      if ( ( *e1b1 ) == ( *e2b1 ) && ( *e1b2 ) == ( *e2b2 ) ) {
-      } else {
+    if (e1.beams().size() != e2.beams().size()){
+        std::cerr << "compareBeamParticles: Number of beam particles differs" << std::endl;
+        return false;
+    }
+    auto b1s = e1.beams();
+    auto b2s = e2.beams();
+    for(auto [e1b, e2b] : ranges::view::zip(b1s, b2s)){
+      if(*e1b != *e2b){
         std::cerr << "compareBeamParticles: beam particles differ " << std::endl;
         return false;
       }
     }
+
     return true;
   }
 
@@ -134,17 +138,16 @@ void printChildren(HepMC::GenParticlePtr part, int level) {
 
   bool compareParticles( const GenEvent& e1, const GenEvent& e2 )
   {
-    if ( e1.particles_size() != e2.particles_size() ) {
+    if ( e1.particles().size() != e2.particles().size() ) {
       std::cerr << "compareParticles: number of particles differs " << std::endl;
       return false;
     }
-    if ( e1.particles_size() == 0 ) {
+    if ( e1.particles().size() == 0 ) {
       return true;
     }
-    HepMC::GenParticlePtr p1, p2;
-    for ( auto pp_pair : ranges::view::zip( e1.particles(), e2.particles() ) ) {
+    HepMC3::GenParticlePtr p1, p2;
+    for (const auto[ p1, p2] : ranges::view::zip( e1.particles(), e2.particles() ) ) {
       // for ( auto [a, b] : ranges::view::zip( e1.particles(), e2.particles() ) ) {
-      std::tie( p1, p2 ) = pp_pair;
       if ( *p1 != *p2 ) {
         std::cerr << "compareParticles: particle " << p1->id() << " differs from " << p2->id() << std::endl;
         return false;
@@ -155,13 +158,12 @@ void printChildren(HepMC::GenParticlePtr part, int level) {
 
   bool compareVertices( const GenEvent& e1, const GenEvent& e2 )
   {
-    if ( e1.vertices_size() != e2.vertices_size() ) {
+    if ( e1.vertices().size() != e2.vertices().size() ) {
       std::cerr << "compareVertices: number of vertices differs " << std::endl;
       return false;
     }
-    HepMC::GenVertexPtr v1, v2;
-    for ( auto vv_pair : ranges::view::zip( e1.vertices(), e2.vertices() ) ) {
-      std::tie( v1, v2 ) = vv_pair;
+    HepMC3::GenVertexPtr v1, v2;
+    for ( const auto [v1, v2] : ranges::view::zip( e1.vertices(), e2.vertices() ) ) {
       if ( ( *v1 ) != ( *v2 ) ) {
         std::cerr << "compareVertices: vertex " << v1->id() << " differs" << std::endl;
         return false;
@@ -179,38 +181,32 @@ void printChildren(HepMC::GenParticlePtr part, int level) {
       return false;
     }
     // if the size of the inlist differs, return false.
-    if ( v1.particles_in_size() != v2.particles_in_size() ) {
+    if ( v1.particles_in().size() != v2.particles_in().size() ) {
       std::cerr << "compareVertex: particles_in_size " << v1.id() << " differs" << std::endl;
       return false;
     }
     // loop over the inlist and ensure particles are identical
-    if ( v1.particles_in_const_begin() != v1.particles_in_const_end() ) {
-      for ( GenVertex::particles_in_const_iterator ia = v1.particles_in_const_begin(),
-                                                   ib = v2.particles_in_const_begin();
-            ia != v1.particles_in_const_end(); ia++, ib++ ) {
-        if ( **ia != **ib ) {
-          std::cerr << "compareVertex: incoming particle " << v1.id() << " differs: " << ( *ia )->id() << " "
-                    << ( *ib )->id() << std::endl;
+      for ( auto [ia, ib] : ranges::view::zip(v1.particles_in(), v2.particles_in())){
+        if ( *ia != *ib ) {
+          std::cerr << "compareVertex: incoming particle " << v1.id() << " differs: " << ia->id() << " "
+                    << ib->id() << std::endl;
+          return false;
         }
       }
-    }
+
     // if the size of the outlist differs, return false.
-    if ( v1.particles_out_size() != v2.particles_out_size() ) {
+    if ( v1.particles_out().size() != v2.particles_out().size() ) {
       std::cerr << "compareVertex: particles_out_size " << v1.id() << " differs" << std::endl;
       return false;
     }
     // loop over the outlist and ensure particles are identical
-    if ( v1.particles_out_const_begin() != v1.particles_out_const_end() ) {
-      for ( GenVertex::particles_out_const_iterator ia = v1.particles_out_const_begin(),
-                                                    ib = v2.particles_out_const_begin();
-            ia != v1.particles_out_const_end(); ia++, ib++ ) {
-        if ( **ia != **ib ) {
-          std::cerr << "compareVertex: outgoing particle differs for vertices: " << v1 << v2 << *( *ia )
-                    << " compared to \n " << *( *ib ) << std::endl;
+      for ( auto [ia, ib] : ranges::view::zip(v1.particles_out(), v2.particles_out())){
+        if ( *ia != *ib ) {
+          std::cerr << "compareVertex: outgoing particle differs for vertices: " << v1 << v2 << *ia
+                    << " compared to \n " << *ib << std::endl;
           return false;
         }
       }
-    }
     return true;
   }
 

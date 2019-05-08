@@ -3,10 +3,10 @@
 // local
 #include "HepMCWriter.h"
 #include "Defaults/HepMCAttributes.h"
-#include "HepMC/WriterAscii.h"
-#include "HepMC/WriterHEPEVT.h"
-#include "HepMC/WriterRoot.h"
-#include "HepMC/WriterRootTree.h"
+#include "HepMC3/WriterAscii.h"
+#include "HepMC3/WriterHEPEVT.h"
+#include "HepMC3/WriterRoot.h"
+#include "HepMC3/WriterRootTree.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : HepMCWriter
@@ -27,13 +27,13 @@ StatusCode HepMCWriter::initialize()
 
   if ( m_outputFileName != "" ) {
     if ( m_writer_name == "WriterRoot" ) {
-      m_writer = new HepMC::WriterRoot( m_outputFileName );
+      m_writer = new HepMC3::WriterRoot( m_outputFileName );
     } else if ( m_writer_name == "WriterRootTree" ) {
-      m_writer = new HepMC::WriterRootTree( m_outputFileName );
+      m_writer = new HepMC3::WriterRootTree( m_outputFileName );
     } else if ( m_writer_name == "WriterAscii" ) {
-      m_writer = new HepMC::WriterAscii( m_outputFileName );
+      m_writer = new HepMC3::WriterAscii( m_outputFileName );
     } else if ( m_writer_name == "WriterHEPEVT" ) {
-      m_writer = new HepMC::WriterHEPEVT( m_outputFileName );
+      m_writer = new HepMC3::WriterHEPEVT( m_outputFileName );
     } else {
       error() << "No valid writer for HepMC specified. Will not write anything." << endmsg;
     }
@@ -42,7 +42,7 @@ StatusCode HepMCWriter::initialize()
   return StatusCode::SUCCESS;
 }
 
-void HepMCWriter::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
+void HepMCWriter::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
 {
   debug() << "==> Execute" << endmsg;
   if ( !m_writer ) {
@@ -53,8 +53,8 @@ void HepMCWriter::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) 
   std::lock_guard<std::mutex> writerguard( m_writer_lock );
   for ( auto& evt : hepmcevents ) {
     debug() << " Writing HepMC event with eventnumber "
-            << evt.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
-            << evt.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
+            << evt.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
+            << evt.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
     m_writer->write_event( evt );
     m_counter++;
   }

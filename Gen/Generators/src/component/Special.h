@@ -49,7 +49,7 @@ public:
    *  (usually configured with special options) and passing
    *  the generator level cut.
    */
-  virtual bool generate( const unsigned int nPileUp, std::vector<HepMC::GenEvent>& theEvents,
+  virtual bool generate( const unsigned int nPileUp, std::vector<HepMC3::GenEvent>& theEvents,
                          LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) override;
 
   /// Implements ISampleGenerationTool::printCounters
@@ -69,7 +69,7 @@ private:
   unsigned int m_maxInteractions = 30;
 
   /// Vector to contain pile-up events
-  std::vector<HepMC::GenEvent*> m_pileUpEventsVector;
+  std::vector<HepMC3::GenEvent*> m_pileUpEventsVector;
 
   /// Vector to contain collision infos
   std::vector<LHCb::GenCollision*> m_pileUpCollisionsVector;

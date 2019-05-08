@@ -17,7 +17,9 @@ public:
   // of the proxy will delete the event.
   G4EventProxy( G4Event* event, GiGaWorkerPilot* vec = nullptr ) : m_event( event ), m_vec( vec ){};
   inline G4Event* event() { return m_event; }
+  inline const G4Event* event() const { return m_event; }
   inline G4Event* operator->() { return m_event; }
+  inline const G4Event* operator->() const { return m_event; }
 
 private:
   G4Event* m_event;

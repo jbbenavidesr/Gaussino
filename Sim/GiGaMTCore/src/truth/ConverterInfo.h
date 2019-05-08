@@ -1,6 +1,6 @@
 #pragma once
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
 
 #include "GiGaMTCore/Truth/Common.h"
 

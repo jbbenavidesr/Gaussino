@@ -1,9 +1,9 @@
 // local
 #include "BeamSpotMarkovChainSampleVertex.h"
 
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandGauss.h"
@@ -38,7 +38,7 @@ BeamSpotMarkovChainSampleVertex( const std::string& type,
 // Function representing the product of two 4D Gaussian PDFs (Floris)
 //=============================================================================
 double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
-                                                 const HepMC::FourVector & vec ) const
+                                                 const HepMC3::FourVector & vec ) const
 {
   const auto emittance = beamp -> emittance();
   const auto betastar  = beamp -> betaStar();
@@ -106,7 +106,7 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
 //=============================================================================
 // Markov chain sampler
 //=============================================================================
-StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEvent ,
+StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC3::GenEvent * theEvent ,
                                                          HepRandomEnginePtr & engine )
 {
   CLHEP::RandGauss gaussDistX{engine.getref(), 0., 0.025};
@@ -119,7 +119,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
   if ( ! beamp ) Exception( "No beam parameters registered" ) ;
 
   // The sampled point. Always start at origin for reproducibility.
-  HepMC::FourVector x( 0 , 0 , 0 , 0 );
+  HepMC3::FourVector x( 0 , 0 , 0 , 0 );
 
   // Repeat until we get a sampled point within the defined (x,,y,z) limits
   unsigned int iLoop = 0; // sanity check to prevent infinite loops...
@@ -132,7 +132,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
       const auto f = gauss4D( beamp , x );
       
       // smear the point. random walk.
-      const HepMC::FourVector y( x.x() + gaussDistX(),
+      const HepMC3::FourVector y( x.x() + gaussDistX(),
                                  x.y() + gaussDistY(),
                                  x.z() + gaussDistZ(),
                                  x.t() + gaussDistT() );    
@@ -160,7 +160,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC::GenEvent * theEv
            ( fabs(x.z()) < ( m_zcut * beamp->sigmaZ() ) ) );
 
     // reset and repeat
-    if ( !OK ) { x = HepMC::FourVector(0,0,0,0); }
+    if ( !OK ) { x = HepMC3::FourVector(0,0,0,0); }
 
   }
   if ( UNLIKELY(!OK) )

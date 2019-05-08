@@ -28,5 +28,5 @@ public:
   static const InterfaceID& interfaceID() { return IID_ISimSvc ; }
   
   /// Simulate the HepMC events
-  virtual StatusCode simulate( const std::vector<HepMC::GenEvent> & theEvents , CLHEP::HepRandomEngine & engine ) = 0 ;
+  virtual StatusCode simulate( const std::vector<HepMC3::GenEvent> & theEvents , CLHEP::HepRandomEngine & engine ) = 0 ;
 };

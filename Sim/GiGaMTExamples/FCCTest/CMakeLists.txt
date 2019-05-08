@@ -15,6 +15,7 @@ gaudi_depends_on_subdirs(GaudiKernel
 
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
+AddHepMC3()
 
 find_package(XercesC)
 #find_package(ROOT)
@@ -28,6 +29,7 @@ gaudi_add_library(FCCTest
           INCLUDE_DIRS Geant4 ROOT XercesC SimInterfaces AIDA
           LINK_LIBRARIES GaudiKernel GaudiAlgLib Geant4 ROOT XercesC GiGaMTCoreRunLib
           PUBLIC_HEADERS FCCTest)
+add_dependencies(FCCTest HepMC3Ext)
 
 gaudi_add_module(FCCTestPlugins
           src/components/*.cpp

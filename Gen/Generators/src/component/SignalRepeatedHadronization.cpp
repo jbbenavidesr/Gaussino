@@ -12,8 +12,8 @@
 #include "GenInterfaces/IDecayTool.h"
 
 // From HepMC
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenEvent.h"
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
@@ -66,7 +66,7 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
-                                            std::vector<HepMC::GenEvent> & theEvents , 
+                                            std::vector<HepMC3::GenEvent> & theEvents , 
                                             LHCb::GenCollisions & 
                                             theCollisions , HepRandomEnginePtr & engine ) {
   StatusCode sc ;
@@ -82,8 +82,8 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   bool hasFailed = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
-  HepMC::GenParticlePtr theSignal ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenParticlePtr theSignal ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
@@ -195,7 +195,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 
 
                 theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
-                    std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
+                    std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
                 
                 // theGenCollision -> setIsSignal( true ) ;
                 
@@ -273,8 +273,8 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 //=============================================================================
 // Clear a complete HepMC event
 //=============================================================================
-void SignalRepeatedHadronization::Clear( HepMC::GenEvent * theEvent ) const {
-  if ( ! theEvent -> vertices_empty() ) {
+void SignalRepeatedHadronization::Clear( HepMC3::GenEvent * theEvent ) const {
+  if ( theEvent -> vertices().size()>0 ) {
     theEvent->clear();
   }
 }

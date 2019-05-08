@@ -8,7 +8,7 @@
 #include "NewRnd/RndCommon.h"
 
 // Forward declaration
-namespace HepMC {
+namespace HepMC3 {
   class GenEvent;
 }
 
@@ -33,6 +33,6 @@ public:
   static const InterfaceID& interfaceID() { return IID_IVertexSmearingTool ; }
   
   /// Smear the vertex of the interaction (independantly of the others)
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & engine ) = 0 ;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) = 0 ;
 };
 #endif // GENERATORS_ISMEARINGTOOL_H

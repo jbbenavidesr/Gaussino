@@ -9,9 +9,9 @@
 #include "TH3.h"
 #include "TRandom3.h"
 
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : HistoSmearVertex
@@ -82,13 +82,13 @@ StatusCode HistoSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode HistoSmearVertex::smearVertex( HepMC::GenEvent * theEvent , HepRandomEnginePtr & ) {
+StatusCode HistoSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & ) {
   double dx , dy , dz , dt ;
   m_hist->GetRandom3(dx,dy,dz);
 
   dt = m_zDir * dz/Gaudi::Units::c_light ;
 
-  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
+  HepMC3::FourVector dpos( dx , dy , dz , dt ) ;
 
   theEvent->shift_position_by(dpos);
 

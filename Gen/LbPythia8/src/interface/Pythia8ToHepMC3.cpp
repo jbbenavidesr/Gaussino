@@ -1,13 +1,13 @@
-#include "Pythia8HepMC/Pythia8ToHepMC3.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
-#include "HepMC/FourVector.h"
+#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/FourVector.h"
 
 #include <deque>
 #include <cassert>
 
-namespace HepMC {
+namespace HepMC3 {
 
 /** What is not in current HepMC implementation:
  *  - units
@@ -21,7 +21,7 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
 
     // 1. Error if no event passed.
     if (!evt) {
-        std::cerr << "Pythia8ToHepMC::fill_next_event error - passed null event."
+        std::cerr << "Pythia8ToHepMC3::fill_next_event error - passed null event."
                   << std::endl;
         return 0;
     }
@@ -38,7 +38,7 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
 
     auto old_momentum_unit = evt->momentum_unit();
     auto old_length_unit = evt->length_unit();
-    evt->set_units(HepMC::Units::GEV,HepMC::Units::MM);
+    evt->set_units(HepMC3::Units::GEV,HepMC3::Units::MM);
 
     // 2. Fill particle information
     std::vector<GenParticlePtr> hepevt_particles;
@@ -151,7 +151,7 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
             if (id2pdf == 21) id2pdf = 0;
         }
 
-        HepMC::GenPdfInfoPtr pdfinfo = make_shared<HepMC::GenPdfInfo>();
+        HepMC3::GenPdfInfoPtr pdfinfo = make_shared<HepMC3::GenPdfInfo>();
         pdfinfo->set(id1pdf, id2pdf, pyinfo->x1pdf(),
                      pyinfo->x2pdf(), pyinfo->QFac(), pyinfo->pdf1(), pyinfo->pdf2() );
         // Store PDF information.
@@ -168,7 +168,7 @@ bool Pythia8ToHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int 
 */
     // Store cross-section information in pb.
     if (m_store_xsec && pyinfo != 0) {
-        HepMC::GenCrossSectionPtr xsec = make_shared<HepMC::GenCrossSection>();
+        HepMC3::GenCrossSectionPtr xsec = make_shared<HepMC3::GenCrossSection>();
         xsec->set_cross_section( pyinfo->sigmaGen() * 1e9, pyinfo->sigmaErr() * 1e9);
         evt->set_cross_section(xsec);
     }

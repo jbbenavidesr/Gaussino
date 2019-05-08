@@ -1,17 +1,17 @@
 #include "CLHEP/Random/MixMaxRng.h"
 #include "CLHEP/Random/RandFlat.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
-#include "HepMC/WriterAscii.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/WriterAscii.h"
 #include "HepMCUtils/CompareGenEvent.h"
 #include "Pythia8/Basics.h"
 #include "Pythia8/Pythia.h"
-#include "Pythia8HepMC/Pythia8ToHepMC3.h"
+#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
 #include <map>
 #include <thread>
 
-typedef std::map<int, HepMC::GenEvent*> STORE;
+typedef std::map<int, HepMC3::GenEvent*> STORE;
 
 class RndForPythia : public Pythia8::RndmEngine
 {
@@ -27,17 +27,17 @@ private:
   CLHEP::RandFlat m_gen;
 };
 
-HepMC::GenEvent* convert( Pythia8::Pythia* pythia )
+HepMC3::GenEvent* convert( Pythia8::Pythia* pythia )
 {
-  auto theEvent = new HepMC::GenEvent{};
-  HepMC::Pythia8ToHepMC3 conversion;
+  auto theEvent = new HepMC3::GenEvent{};
+  HepMC3::Pythia8ToHepMC3 conversion;
   conversion.set_print_inconsistency( false );
   conversion.fill_next_event( *pythia, theEvent );
 
   return theEvent;
 }
 
-HepMC::GenEvent* run_pythia( int seed, std::string dir, Pythia8::Pythia* pythia )
+HepMC3::GenEvent* run_pythia( int seed, std::string dir, Pythia8::Pythia* pythia )
 {
   std::ofstream file;
   std::stringstream outfilename, buffer;
@@ -49,7 +49,7 @@ HepMC::GenEvent* run_pythia( int seed, std::string dir, Pythia8::Pythia* pythia 
   pythia->setRndmEnginePtr( &rnd_pythia );
   pythia->next();
   auto evt = convert( pythia );
-  // HepMC::WriterAscii writer( outfilename.str() );
+  // HepMC3::WriterAscii writer( outfilename.str() );
   // writer.write_event( *evt );
   return evt;
 }
@@ -107,7 +107,7 @@ int main( int, char** )
   for ( auto& val : store1 ) {
     auto evt1 = val.second;
     auto evt2 = store2[val.first];
-    if ( !HepMC::compareGenEvent( *evt1, *evt2 ) ) {
+    if ( !HepMC3::compareGenEvent( *evt1, *evt2 ) ) {
       std::cerr << "Event with seed " << val.first << " not equal" << std::endl;
       return 1;
     }

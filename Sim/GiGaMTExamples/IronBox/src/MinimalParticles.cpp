@@ -10,7 +10,7 @@
 
 DECLARE_COMPONENT( MinimalNGenParticles )
 
-bool MinimalNGenParticles::studyFullEvent( const std::vector<HepMC::GenEvent>& theEvents,
+bool MinimalNGenParticles::studyFullEvent( const std::vector<HepMC3::GenEvent>& theEvents,
                                            const LHCb::GenCollisions& ) const
 {
   unsigned int counter = 0;

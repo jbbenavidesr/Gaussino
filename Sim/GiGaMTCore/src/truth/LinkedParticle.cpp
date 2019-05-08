@@ -5,6 +5,18 @@
 #include "Math/GenVector/Boost.h"
 #include "Math/Vector4D.h"
 
+LinkedParticle::~LinkedParticle()
+{
+  if ( m_tracking ) delete m_tracking;
+  // Remove itself from the vertices
+  if ( m_prodvtx ) {
+    m_prodvtx->outgoing_particles.erase( this );
+  }
+  for ( auto& vtx : m_endvtxs ) {
+    vtx->incoming_particle.erase( this );
+  }
+}
+
 int LinkedParticle::GetPDG() const
 {
   if ( m_hepmc ) {
@@ -19,7 +31,14 @@ int LinkedParticle::GetPDG() const
   return 0;
 }
 
-std::set<LinkedParticle*> LinkedParticle::GetParents() { return m_prodvtx->incoming_particle; }
+std::set<LinkedParticle*> LinkedParticle::GetParents()
+{
+  if ( m_prodvtx ) {
+    return m_prodvtx->incoming_particle;
+  } else {
+    return std::set<LinkedParticle*>{};
+  }
+}
 
 std::set<LinkedParticle*> LinkedParticle::GetChildren()
 {
@@ -30,42 +49,36 @@ std::set<LinkedParticle*> LinkedParticle::GetChildren()
   return children;
 }
 
-HepMC::FourVector LinkedParticle::GetMomentum() const
+HepMC3::FourVector LinkedParticle::GetMomentum() const
 {
-  if ( m_hepmc ) {
-    return m_hepmc->momentum();
-  }
-  if ( m_primary ) {
-    auto mom = m_primary->GetMomentum();
-    HepMC::FourVector fourmomentum;
-    fourmomentum.setPx( mom.getX() );
-    fourmomentum.setPy( mom.getY() );
-    fourmomentum.setPz( mom.getZ() );
-    fourmomentum.setE( m_primary->GetTotalEnergy() );
-    return fourmomentum;
-  }
   if ( m_tracking ) {
     return m_tracking->GetMomentum();
   }
-  return HepMC::FourVector{};
+  if ( m_hepmc ) {
+    return m_hepmc->momentum();
+  }
+  return HepMC3::FourVector{};
 }
 
-HepMC::FourVector LinkedParticle::GetOriginPosition() const
+HepMC3::FourVector LinkedParticle::GetOriginPosition() const
 {
   // FIXME: Need proper definition when more are present
+  if ( m_tracking ) {
+    return m_tracking->GetOriginVertex();
+  }
   if ( m_hepmc && m_hepmc->production_vertex() ) {
     return m_hepmc->production_vertex()->position();
   }
-  return HepMC::FourVector{};
+  return HepMC3::FourVector{};
 }
 
-HepMC::FourVector LinkedParticle::GetEndPosition() const
+HepMC3::FourVector LinkedParticle::GetEndPosition() const
 {
   // FIXME: Need proper definition when more are present
   if ( m_hepmc && m_hepmc->end_vertex() ) {
     return m_hepmc->end_vertex()->position();
   }
-  return HepMC::FourVector{};
+  return HepMC3::FourVector{};
 }
 
 double LinkedParticle::GetDecayTimeHepMC() const
@@ -102,13 +115,14 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     if ( m_hepmc && part->m_hepmc ) {
       // Treatment different for particles with HepMC record where the
       // vertex information is used to identify the correct parent vertex
-      if ( vtx->hepmc_vtx && vtx->hepmc_vtx->id() == part->m_hepmc->end_vertex()->id() ) {
+      if ( vtx->hepmc_vtx && vtx->hepmc_vtx->id() == m_hepmc->production_vertex()->id() ) {
         vertex = vtx;
         break;
       }
     } else {
       // Now just find by location. As the vertices are stored locally with the particle, multiple
-      // vertices can still exist. The only scenario where multiple end-vertices for the same particle could
+      // vertices can still exist in the same location.
+      // The only scenario where multiple end-vertices for the same particle could
       // exist is from tracking in Geant4. In which case assigning all particles to the same logical vertex
       // that originated in the same point in space is perfectly fine.
       if ( Gaussino::LinkedParticleHelpers::CompareFourVector( vtx->GetPosition(), this->GetOriginPosition() ) ) {
@@ -130,10 +144,15 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     // Either add this vertex to parent or create a new one if no
     // production vertex has yet been set
     if ( !m_prodvtx ) {
-      m_prodvtx = std::make_shared<LinkedVertex>();
+      vertex = m_prodvtx = std::make_shared<LinkedVertex>();
       if ( part->HepMC() && HepMC() ) {
         m_prodvtx->hepmc_vtx = &( *part->HepMC()->end_vertex() ); // FIXME: ugly
       }
+    } else {
+      // If a production vertex exists before but we haven't identified the vertex
+      // before in the parent endvertices implies some form of n -> 1 where we currently trying to add
+      // the second+ parent. Hence just assign the vertex
+      vertex = m_prodvtx;
     }
     part->m_endvtxs.insert( m_prodvtx );
   }

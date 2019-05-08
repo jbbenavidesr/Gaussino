@@ -28,7 +28,7 @@ namespace HepMC {
 class Signal : public ExternalGenerator {
  public:
   /// Vector of particles
-  typedef std::vector< HepMC::GenParticlePtr > GenParticles ;
+  typedef std::vector< HepMC3::GenParticlePtr > GenParticles ;
 
   /// Standard constructor
   Signal( const std::string& type, const std::string& name, 
@@ -136,7 +136,7 @@ protected:
   /** Isolate signal particle decay tree for clean events. The resulting
    *  event is stored in the container /Event/Gen/SignalDecayTree.
    */
-  StatusCode isolateSignal( const HepMC::GenParticlePtr & theSignal ) const ;
+  StatusCode isolateSignal( const HepMC3::GenParticlePtr & theSignal ) const ;
 
   /** Choose randomly a particle in a list of particles 
    *  and returns the chosen particle. Invert the event if pz(Signal)<0.
@@ -145,7 +145,7 @@ protected:
    *  hasFlipped is set to true if the particle is flipped by EvtGen
    *  to generate CP violation. 
    */
-  HepMC::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
+  HepMC3::GenParticlePtr chooseAndRevert( ParticleVector & particleList ,
                                          bool & isInverted , 
                                          bool & hasFlipped ,
 					bool & hasFailed , HepRandomEnginePtr & engine) ;
@@ -182,9 +182,9 @@ protected:
    *  @param[in]  theOldParticle  Particle containing the decay tree to add
    *                              to theNewParticle.
    */
-  StatusCode fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle ,
-                             const HepMC::GenParticlePtr & theOldParticle,
-                             HepMC::GenEvent * theEvent) 
+  StatusCode fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle ,
+                             const HepMC3::GenParticlePtr & theOldParticle,
+                             HepMC3::GenEvent * theEvent) 
     const ;
 
   /// Temporary ector to obtain PIDs from job options.

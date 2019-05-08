@@ -1,5 +1,5 @@
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
 #include <sstream>
 #include "HepMCUtils/PrintDecayTree.h"
 
@@ -7,7 +7,7 @@
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
-std::string PrintDecay( const HepMC::GenParticlePtr& part, int level, LHCb::IParticlePropertySvc* ppsvc)
+std::string PrintDecay( const HepMC3::GenParticlePtr& part, int level, LHCb::IParticlePropertySvc* ppsvc)
 {
   std::string space = "";
   for ( int i = 0; i < level; i++ ) {

@@ -9,7 +9,7 @@
 #include "Pythia8/Pythia.h"
 
 #include <vector>
-namespace HepMC {
+namespace HepMC3 {
 
 class GenEvent;
 class GenVertex;

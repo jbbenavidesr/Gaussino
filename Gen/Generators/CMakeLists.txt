@@ -12,12 +12,13 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          #FIXME: Kernel/LHCbKernel
                          Kernel/PartProp
                          Defaults
+                         HepMC3
                          HepMCUser
                          Gen/GenInterfaces)
 
 find_package(Boost COMPONENTS filesystem system)
 find_package(Photos++)
-find_package(HepMC CONFIG)
+AddHepMC3()
 
 string(REPLACE "-pedantic" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
 string(REPLACE "-Wall" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
@@ -27,8 +28,10 @@ string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLA
 gaudi_add_library(GeneratorsLib
                   src/Lib/*.cpp src/Lib/*.F
                   PUBLIC_HEADERS Generators
-                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser ${HEPMC_INCLUDE_DIR}
-                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib ${HEPMC_LIBRARIES} NewRnd)
+                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser ${HEPMC3_INCLUDE_DIR}
+                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib ${HEPMC3_LIBRARIES} NewRnd)
+
+add_dependencies(GeneratorsLib HepMC3Ext)
 
 gaudi_add_module(Generators
                  src/component/*.cpp

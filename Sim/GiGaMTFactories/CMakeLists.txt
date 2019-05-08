@@ -12,10 +12,13 @@ gaudi_subdir(GiGaMTFactories v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTCore
+                         HepMC3
                          Sim/GiGaMTGeo) 
 
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
+
+AddHepMC3()
 
 # GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
 gaudi_add_module(GiGaMTRunFactories

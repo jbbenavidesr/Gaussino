@@ -10,7 +10,7 @@ namespace HepMC{
 class GenEvent;
 }
 
-/** @class IHepMC3ToMCTruthConverterSimG4Interface/IHepMC3ToGeant4Tool.h IHepMC3ToGeant4Tool.h
+/** @class IHepMC3ToMCTruthConverter
  *
  *  Abstract interface to tool converting HepMC3 to internal MCTruthConverters
  *
@@ -26,5 +26,5 @@ public:
    * Converts an HepMC3 event to Geant4
    *  
    */
-  virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const std::vector<HepMC::GenEvent> &) const = 0;
+  virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const std::vector<HepMC3::GenEvent> &) const = 0;
 };

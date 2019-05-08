@@ -9,7 +9,7 @@
 // ============================================================================
 // HepMC 
 // ============================================================================
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 // ============================================================================
 
 namespace GeneratorUtils 
@@ -24,7 +24,7 @@ namespace GeneratorUtils
    *  @date   2006-10-05
    */
   void scale
-  ( HepMC::GenEvent* event , 
+  ( HepMC3::GenEvent* event , 
     const double     mom   , 
     const double     time  ) ;
   

@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
 #include "HepMCUtils/PrintDecayTree.h"
 
 #include "GiGaMTCore/Truth/Common.h"
@@ -39,7 +39,7 @@ namespace Gaussino
     // Some helpful maps to organise the data
     // Map GenParticle ID to LinkedParticle, hidden in a
     // map for to separate for every GenEvent
-    std::unordered_map<HepMC::GenEvent*, std::unordered_map<int, LinkedParticle*>> m_hepmc_to_linked;
+    std::unordered_map<const HepMC3::GenEvent*, std::unordered_map<int, LinkedParticle*>> m_hepmc_to_linked;
     // Map G4 barcode to LinkedParticle
     std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
@@ -60,7 +60,7 @@ namespace Gaussino
     MCTruthConverter( MCTruthConverter&& right ) noexcept : MCTruthData( std::move( right ) ){};
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
-    void Declare( const HepMC::GenParticlePtr& particle, ConversionType type );
+    void Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type );
     void AddConverter( MCTruthConverter&& conv );
   };
 
@@ -105,7 +105,7 @@ namespace Gaussino
     // into the G4Event (optional in case of generator only MC). If no Geant4 event is passed, any previously
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
-    std::set<LinkedParticle*> GetRootParticles() { return m_root_particles; }
+    std::set<LinkedParticle*>& GetRootParticles() { return m_root_particles; }
 
   private:
     void DoCleanup();
@@ -148,9 +148,13 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
     out << "-------- Beginning root particle " << i_root << " --------\n";
     std::function<void( LinkedParticle*, std::string )> rec_print = [&]( LinkedParticle* lp, std::string spacing ) {
       out << spacing << " " << pdg_to_name( lp->GetPDG() ) << *lp << "\n";
-      visited.insert(lp);
-      for ( auto& dp : lp->GetChildren() ) {
-        rec_print( dp, spacing + spacer );
+      if ( visited.count( lp ) > 0 ) {
+        out << spacing << " *** Already printed this tree\n";
+      } else {
+        visited.insert( lp );
+        for ( auto& dp : lp->GetChildren() ) {
+          rec_print( dp, spacing + spacer );
+        }
       }
     };
     rec_print( rp, "" );

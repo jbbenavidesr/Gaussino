@@ -9,9 +9,9 @@
 // from Generators
 #include "GenInterfaces/IDecayTool.h"
 
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 #include "Defaults/HepMCAttributes.h"
 #include "Defaults/Enums.h"
 #include "HepMCUser/VertexAttribute.h"
@@ -66,12 +66,12 @@ StatusCode StandAloneDecayTool::initialize() {
 // Main execution
 //=============================================================================
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
-                                    std::vector<HepMC::GenEvent> & theEvents ,
+                                    std::vector<HepMC3::GenEvent> & theEvents ,
                                     LHCb::GenCollisions & theCollisions ,
                                     HepRandomEnginePtr & engine ) {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
 
   // generate the requested number of "pile-up" events
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -79,13 +79,13 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
                         theGenCollision ) ;
     
     // Particle to decay
-    HepMC::GenParticlePtr theParticle = new HepMC::GenParticle( ) ;
+    HepMC3::GenParticlePtr theParticle{new HepMC3::GenParticle( )};
     theParticle -> 
-      set_momentum( HepMC::FourVector( 0. , 0. , 0., m_signalMass ) ) ;
+      set_momentum( HepMC3::FourVector( 0. , 0. , 0., m_signalMass ) ) ;
 
     // Decay the particle at (0,0,0,0)
-    HepMC::GenVertexPtr theVertex = 
-      new HepMC::GenVertex( HepMC::FourVector( 0., 0., 0., 0. ) ) ;
+    HepMC3::GenVertexPtr theVertex{
+      new HepMC3::GenVertex( HepMC3::FourVector( 0., 0., 0., 0. ) )};
     theGenEvent -> add_vertex( theVertex ) ;
     theVertex -> add_particle_out( theParticle ) ;
     
@@ -109,13 +109,13 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     }
 
     if ( ! m_inclusive ) 
-      m_decayTool -> generateSignalDecay( theParticle , flip , engine ) ;
+      m_decayTool -> generateSignalDecay( theParticle.get() , flip , engine ) ;
     else 
-      m_decayTool -> generateDecay( theParticle , engine ) ;
+      m_decayTool -> generateDecay( theParticle.get() , engine ) ;
     
     theParticle -> set_status( Gaussino::GenStatus::SignalInLabFrame ) ;
   
-    theGenEvent -> add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theParticle->end_vertex()));
+    theGenEvent -> add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC3::VertexAttribute>(theParticle->end_vertex()));
     theGenCollision -> setIsSignal( true ) ;
   }
   

@@ -7,7 +7,7 @@
 #include "GaudiAlg/Transformer.h"
 #include "GaudiKernel/ServiceHandle.h"
 #include "GiGaMT/IGiGaMTSvc.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "NewRnd/RndAlgSeeder.h"
 
 class IHepMC3ToMCTruthConverter;
@@ -23,7 +23,7 @@ class IHepMC3ToMCTruthConverter;
  *
  */
 class GiGaAlg : public Gaudi::Functional::MultiTransformer<std::tuple<G4EventProxies, Gaussino::MCTruthPtrs>(
-                    const std::vector<HepMC::GenEvent>& ),
+                    const std::vector<HepMC3::GenEvent>& ),
                 Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
 public:
@@ -35,7 +35,7 @@ public:
 
   virtual ~GiGaAlg() = default;
 
-  std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> operator()( const std::vector<HepMC3::GenEvent>& ) const override;
 
 private:
   ServiceHandle<IGiGaMTSvc> m_gigaSvc{this, "GiGaMTSvc", "GiGaMT"};

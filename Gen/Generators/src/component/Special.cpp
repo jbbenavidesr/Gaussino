@@ -14,7 +14,7 @@
 #include "GenInterfaces/ICounterLogFile.h"
 
 // Event 
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "Event/GenCollision.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
@@ -63,7 +63,7 @@ StatusCode Special::initialize( ) {
 // Finalize method
 //=============================================================================
 StatusCode Special::finalize( ) {
-  std::vector< HepMC::GenEvent * >::iterator iter ;
+  std::vector< HepMC3::GenEvent * >::iterator iter ;
   for ( iter = m_pileUpEventsVector.begin() ; 
         iter != m_pileUpEventsVector.end() ; ++iter ) 
     delete (*iter) ;
@@ -85,11 +85,11 @@ StatusCode Special::finalize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
-                        std::vector<HepMC::GenEvent> & theEvents , 
+                        std::vector<HepMC3::GenEvent> & theEvents , 
                         LHCb::GenCollisions & theCollisions , HepRandomEnginePtr & engine ) {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
 
   bool result = false ;
 
@@ -130,7 +130,7 @@ bool Special::generate( const unsigned int nPileUp ,
       if ( m_pileUpEventsVector.empty() ) generatePileUp( engine ) ;
       
       // retrieve now pile-up events
-      HepMC::GenEvent * pileUpEvent = m_pileUpEventsVector.back() ;
+      HepMC3::GenEvent * pileUpEvent = m_pileUpEventsVector.back() ;
       (*theGenEvent) =  ( * pileUpEvent ) ;
 
       m_pileUpEventsVector.pop_back() ;
@@ -179,7 +179,7 @@ void Special::generatePileUp(HepRandomEnginePtr & engine ) {
   
   // generate given number of events
   for ( unsigned int i = 0 ; i < m_maxInteractions ; ++i ) {
-    HepMC::GenEvent * theEvent = new HepMC::GenEvent ;
+    HepMC3::GenEvent * theEvent = new HepMC3::GenEvent ;
     LHCb::GenCollision * theCollision = new LHCb::GenCollision ;
     m_pileUpProductionTool -> generateEvent( theEvent , 
                                              theCollision , engine ) ;
