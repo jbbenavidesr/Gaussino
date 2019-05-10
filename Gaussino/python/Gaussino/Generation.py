@@ -9,6 +9,7 @@ from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
+from Gaussino.GenUtils import configure_edm_conversion
 
 
 class GenPhase(ConfigurableUser):
@@ -41,7 +42,8 @@ class GenPhase(ConfigurableUser):
         "Production"          : 'PHYS',  # NOQA
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
-        "Production_kwargs"   : {}  # NOQA
+        "Production_kwargs"   : {},  # NOQA
+        "ConvertEDM"        : False
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -81,6 +83,8 @@ class GenPhase(ConfigurableUser):
             seq.Members += [gen_moni]
         if self.getProp('WriteHepMC'):
             seq.Members += [configure_hepmc_writer()]
+        if self.getProp('ConvertEDM'):
+            seq.Members += [configure_edm_conversion()]
         # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
         ApplicationMgr().TopAlg += [seq]
 

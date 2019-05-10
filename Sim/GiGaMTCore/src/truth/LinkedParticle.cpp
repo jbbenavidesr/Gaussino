@@ -19,6 +19,7 @@ LinkedParticle::~LinkedParticle()
 
 int LinkedParticle::GetPDG() const
 {
+  // FIXME: This information should be checked for consistency instead
   if ( m_hepmc ) {
     return m_hepmc->pdg_id();
   }
@@ -146,7 +147,7 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     if ( !m_prodvtx ) {
       vertex = m_prodvtx = std::make_shared<LinkedVertex>();
       if ( part->HepMC() && HepMC() ) {
-        m_prodvtx->hepmc_vtx = &( *part->HepMC()->end_vertex() ); // FIXME: ugly
+        m_prodvtx->hepmc_vtx = part->HepMC()->end_vertex().get();
       }
     } else {
       // If a production vertex exists before but we haven't identified the vertex

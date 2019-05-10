@@ -1,0 +1,97 @@
+// Include files
+
+// from Gaudi
+#include "GaudiKernel/MsgStream.h"
+
+// local
+#include "CheckMCStructure.h"
+
+#include "Kernel/IParticlePropertySvc.h"
+#include "Kernel/ParticleProperty.h"
+//-----------------------------------------------------------------------------
+// Implementation file for class : CheckMCStructure
+//
+//
+// 2016-03-30 : Dominik Muller
+//-----------------------------------------------------------------------------
+
+int CheckMCStructure::printMCParticlesTree( LHCb::MCVertex* vtx, unsigned int& n_particles, unsigned int& n_vertices,
+                                            int level, int counter ) const
+{
+  n_vertices++;
+  ;
+  std::string spacer = "|---";
+  std::string space  = "";
+  for ( int i = 0; i < level; i++ ) {
+    space += spacer;
+  }
+  if ( msgLevel( MSG::DEBUG ) ) {
+    debug() <<counter << " "<< space << " [VertexType = " << vtx->type() << "] Pos: " << vtx->position() << " Time: " << vtx->time() << endmsg;
+  }
+  auto prds = vtx->products();
+  for ( auto& part : prds ) {
+    n_particles++;
+    if ( msgLevel( MSG::DEBUG ) ) {
+      auto partprop = m_ppSvc->find( part->particleID() );
+      std::string name;
+      if(partprop) {
+        name = partprop->name();
+      } else {
+        std::stringstream st;
+        st << "Unknown(" << part->particleID().pid()<<")";
+        name = st.str();
+      }
+
+      debug() << counter << " " << space << " " << name << " (PT, Eta) = (" << part->pt() << ", "
+              << part->pseudoRapidity() << ")" << endmsg;
+    }
+    counter++;
+    auto evs = part->endVertices();
+    for ( auto& ev : evs ) {
+      counter = printMCParticlesTree( ev, n_particles, n_vertices, level + 1, counter );
+    }
+  }
+  return counter;
+}
+
+// Declaration of the Algorithm Factory
+DECLARE_COMPONENT( CheckMCStructure )
+
+//=============================================================================
+// Main execution
+//=============================================================================
+void CheckMCStructure::operator()( const LHCb::MCParticles& mcparticles, const LHCb::MCVertices& mcvertices,
+                                   const LHCb::MCHeader& mcheader ) const
+{
+  unsigned int n_particles = 0;
+  unsigned int n_vertices  = 0;
+  auto pvs                 = mcheader.primaryVertices();
+  if ( msgLevel( MSG::DEBUG ) ) {
+    debug() << "Event has " << pvs.size() << " primary vertices" << endmsg;
+    debug() << "Event has " << mcparticles.size() << " MCParticles. Will print tarting from the PVs." << endmsg;
+  }
+  int iPV = 0;
+  for ( auto& pv : pvs ) {
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << "Starting from PV #" << iPV++ << endmsg;
+    }
+    printMCParticlesTree( pv, n_particles, n_vertices );
+  }
+
+  if ( n_vertices != mcvertices.size() ) {
+    error() << "Could not reach all MCVertices from the PV " << n_vertices << "/" << mcvertices.size() << endmsg;
+  } else {
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << "All MCVertices are reachable!" << endmsg;
+    }
+  }
+  if ( n_particles != mcparticles.size() ) {
+    error() << "Could not reach all MCParticles from the PV " << n_particles << "/" << mcparticles.size() << endmsg;
+  } else {
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << "All MCParticles are reachable!" << endmsg;
+    }
+  }
+}
+
+//=============================================================================

@@ -2,9 +2,9 @@
 #include "ConverterInfo.h"
 #include "Geant4/G4SystemOfUnits.hh"
 #include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
+#include "Helpers.h"
 #include <functional>
 #include <stdexcept>
-#include "Helpers.h"
 
 bool essentiallyEqual( float a, float b, float epsilon = 0.00001 )
 {
@@ -44,6 +44,20 @@ namespace Gaussino
     for ( auto lp : m_linkedParticles ) {
       delete lp;
     }
+  }
+
+  size_t MCTruthData::GetNParticles() const { return m_linkedParticles.size(); }
+
+  size_t MCTruthData::GetNVertices() const
+  {
+    std::set<LinkedVertex*> tmp_store;
+    for ( auto& lp : m_linkedParticles ) {
+      tmp_store.insert( lp->GetProdVtx().get() );
+      for ( auto& ev : lp->GetEndVtxs() ) {
+        tmp_store.insert( ev.get() );
+      }
+    }
+    return tmp_store.size();
   }
 
   ///////////////////////////////////////////////////////////
@@ -176,6 +190,17 @@ namespace Gaussino
         child_converter( root_lp->HepMC(), nullptr );
       }
     }
+
+    // We check that none of the root particle had a LinkedVertex assigned as production vertex.
+    // Otherwise throw because this should not happen.
+    for ( auto& rp : m_root_particles ) {
+      if ( rp->m_prodvtx ) {
+        std::stringstream msg;
+        msg << __PRETTY_FUNCTION__ << "LinkedParticle " << *rp
+            << " in root particle set but has production vertex assigned";
+        throw std::runtime_error( msg.str() );
+      }
+    }
   }
   void MCTruthTracker::AddToG4Event( G4Event* g4event )
   {
@@ -214,7 +239,7 @@ namespace Gaussino
         if ( part->m_conversion_type == Gaussino::ConversionType::G4 ) {
           part->G4Primary() = new G4PrimaryParticle( part->GetPDG(), part->GetMomentum().px() * MeV,
                                                      part->GetMomentum().py() * MeV, part->GetMomentum().pz() * MeV );
-          part->G4Primary()->SetMass( part->HepMC()->generated_mass() * MeV);
+          part->G4Primary()->SetMass( part->HepMC()->generated_mass() * MeV );
 
           // Register the particle in the map and save this ID with the primary particle to
           // later register the result of the simulation. This ID is used instead of directly
@@ -303,7 +328,7 @@ namespace Gaussino
     std::function<bool( LinkedParticle* )> hasG4ChildWithoutG4Truth = [&]( LinkedParticle* lp ) {
       bool found = false;
       for ( auto child : lp->GetChildren() ) {
-        if ( shouldHaveButWasNotSimulated(child) ) {
+        if ( shouldHaveButWasNotSimulated( child ) ) {
           found = true;
         } else if ( child->GetType() == ConversionType::MC ) {
           // Recursively call on child if child itself was not given

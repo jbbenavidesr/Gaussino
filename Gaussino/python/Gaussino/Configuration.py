@@ -37,6 +37,7 @@ class Gaussino(ConfigurableUser):
         ,"EnableHive"        : False  # NOQA
         ,"ThreadPoolSize"    : 2  # NOQA
         ,"EventSlots"        : 2  # NOQA
+        ,"ConvertEDM"        : False
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -83,6 +84,7 @@ class Gaussino(ConfigurableUser):
         if "Generation" not in phases:
             raise Exception("Must have Generation phase")
         self.setOtherProps(GenPhase(), ['evtMax'])
+        self.setOtherProps(GenPhase(), ['ConvertEDM'])
         GenPhase().configure_phase()
         if "Simulation" in phases:
             SimPhase().configure_phase()

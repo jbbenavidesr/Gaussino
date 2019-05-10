@@ -55,6 +55,7 @@ public:
   // 2. G4Primary
   // 3. G4Truth from tracking
   int GetPDG() const;
+  bool HasOscillated() const {return m_hasOscillated;}
   HepMC3::FourVector GetMomentum() const;
   HepMC3::FourVector GetOriginPosition() const;
   HepMC3::FourVector GetEndPosition() const;
@@ -75,7 +76,7 @@ private:
   Gaussino::MCTruthTracker* m_tracker{nullptr};
   bool m_isSignal{false};
   bool m_hasOscillated{false};
-  std::shared_ptr<LinkedVertex> m_prodvtx;
+  std::shared_ptr<LinkedVertex> m_prodvtx{nullptr};
   std::set<std::shared_ptr<LinkedVertex>> m_endvtxs;
 };
 

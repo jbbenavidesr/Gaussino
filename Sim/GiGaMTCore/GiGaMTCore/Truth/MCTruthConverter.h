@@ -30,6 +30,8 @@ namespace Gaussino
     template <typename STREAM>
     STREAM& DumpToStream( STREAM&,
                           std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
+    size_t GetNParticles() const;
+    size_t GetNVertices() const;
 
   protected:
     MCTruthData() = default;

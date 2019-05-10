@@ -169,3 +169,18 @@ def configure_hepmc_writer(**kwargs):
         print('Unknown writer name specified, not going to write')
         alg.OutputFileName = ''
     return alg
+
+
+def configure_edm_conversion(**kwargs):
+    """Simple utility function to create and configure the
+    EDM conversion algorithms
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: GenMonitorAlg instance
+
+    """
+    from Configurables import CheckMCStructure, MCTruthToEDM
+    from Configurables import GaudiSequencer
+    seq = GaudiSequencer('EDMConversion')
+    seq.Members += [MCTruthToEDM(), CheckMCStructure()]
+    return seq
