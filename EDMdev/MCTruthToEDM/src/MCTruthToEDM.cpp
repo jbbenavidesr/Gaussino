@@ -81,12 +81,13 @@ LHCb::MCVertex::MCVertexType vertexType( int id )
   return vType;
 }
 
-std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader> MCTruthToEDM::
+std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks> MCTruthToEDM::
 operator()( const Gaussino::MCTruthPtrs& mctruths ) const
 {
   // Create containers in TES for MCParticles and MCVertices.
   LHCb::MCParticles m_particleContainer;
   LHCb::MCVertices m_vertexContainer;
+  LinkedParticleMCParticleLinks particle_links;
   size_t n_LinkedParticles{0};
   size_t n_LinkedVertices{0};
   for ( auto& mctruth : mctruths ) {
@@ -101,7 +102,7 @@ operator()( const Gaussino::MCTruthPtrs& mctruths ) const
 
   m_particleContainer.reserve( n_LinkedParticles );
   m_vertexContainer.reserve( n_LinkedVertices );
-  Converter converter{m_particleContainer, m_vertexContainer, msgStream()};
+  Converter converter{m_particleContainer, m_vertexContainer, particle_links, msgStream()};
 
   // Create some MCHeader.
   LHCb::MCHeader mcHeader;
@@ -127,12 +128,12 @@ operator()( const Gaussino::MCTruthPtrs& mctruths ) const
         pvs.insert( std::make_pair( primary, rp->HepMC() ? rp->HepMC()->production_vertex().get() : nullptr ) );
       }
       // Now recursively convert everything
-      converter.convert(rp, primary);
+      converter.convert( rp, primary );
     }
-
   }
 
-  return std::make_tuple( std::move( m_particleContainer ), std::move( m_vertexContainer ), mcHeader );
+  return std::make_tuple( std::move( m_particleContainer ), std::move( m_vertexContainer ), mcHeader,
+                          std::move( particle_links ) );
 }
 
 //=============================================================================
@@ -244,7 +245,7 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
     }
     auto endVertex = createVertex( ev.get() );
     endVertex->setMother( mcp );
-    mcp->addToEndVertices(endVertex);
+    mcp->addToEndVertices( endVertex );
     for ( auto& child : ev->outgoing_particles ) {
       convert( child, endVertex );
     }
@@ -257,6 +258,7 @@ LHCb::MCParticle* MCTruthToEDM::Converter::makeMCParticle( LinkedParticle* parti
   // LHCb::MCParticle* mcp = new LHCb::MCParticle();
   auto mcp = new LHCb::MCParticle{};
   m_particles.insert( mcp );
+  m_links[particle] = mcp;
 
   // Set properties.
   Gaudi::LorentzVector mom( particle->GetMomentum() );

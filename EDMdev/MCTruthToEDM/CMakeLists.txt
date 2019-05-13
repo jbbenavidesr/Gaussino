@@ -15,4 +15,7 @@ gaudi_add_module(MCTruthToEDM
                  INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} Defaults
                  LINK_LIBRARIES GiGaMTCoreTruthLib MCEvent)
 
+gaudi_install_headers(
+  MCTruthToEDM)
+
 add_dependencies(MCTruthToEDM HepMC3Ext)

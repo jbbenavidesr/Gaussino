@@ -30,4 +30,8 @@ namespace Gaussino
   {
     const std::string Default = "MC/Truths";
   }
+  namespace LinkedParticleMCParticleLinksLocation
+  {
+    const std::string Default = "MC/LinkedParticleMCParticleLinksLocation";
+  }
 }
