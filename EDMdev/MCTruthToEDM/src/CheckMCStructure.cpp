@@ -26,19 +26,24 @@ int CheckMCStructure::printMCParticlesTree( LHCb::MCVertex* vtx, unsigned int& n
     space += spacer;
   }
   if ( msgLevel( MSG::DEBUG ) ) {
-    debug() <<counter << " "<< space << " [VertexType = " << vtx->type() << "] Pos: " << vtx->position() << " Time: " << vtx->time() << endmsg;
+    debug() << counter << " " << space << " [VertexType = " << vtx->type() << "] Pos: " << vtx->position()
+            << " Time: " << vtx->time() << endmsg;
   }
   auto prds = vtx->products();
   for ( auto& part : prds ) {
+    // Verify that particle's origin vertex is set consistent
+    if ( part->originVertex() != vtx ) {
+      error() << "Inconsistent origin vertex link of particle!" << endmsg;
+    }
     n_particles++;
     if ( msgLevel( MSG::DEBUG ) ) {
       auto partprop = m_ppSvc->find( part->particleID() );
       std::string name;
-      if(partprop) {
+      if ( partprop ) {
         name = partprop->name();
       } else {
         std::stringstream st;
-        st << "Unknown(" << part->particleID().pid()<<")";
+        st << "Unknown(" << part->particleID().pid() << ")";
         name = st.str();
       }
 
@@ -48,6 +53,11 @@ int CheckMCStructure::printMCParticlesTree( LHCb::MCVertex* vtx, unsigned int& n
     counter++;
     auto evs = part->endVertices();
     for ( auto& ev : evs ) {
+      // Verify the link back to mother was correctly set as well
+      if ( ev->mother() != part ) {
+        error() << "Inconsistent mother link of endVertex!" << endmsg;
+      }
+      part->mother();
       counter = printMCParticlesTree( ev, n_particles, n_vertices, level + 1, counter );
     }
   }
