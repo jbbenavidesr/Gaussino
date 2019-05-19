@@ -106,6 +106,14 @@ void GiGaActionInitializer::Build() const
     }
     SetUserAction( trackseq );
   }
+
+  { // Sequence of UserTrackingAction
+    auto stepseq = new G4MultiSteppingAction{};
+    for ( auto& fac : m_UserSteppingActionFactories) {
+      stepseq->push_back( std::unique_ptr<G4UserSteppingAction>( fac->construct() ) );
+    }
+    SetUserAction( stepseq );
+  }
 }
 
 G4VUserActionInitialization* GiGaActionInitializer::construct() const

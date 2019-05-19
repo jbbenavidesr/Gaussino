@@ -1,7 +1,7 @@
 #pragma once
 
 // Include files
-#include "GaudiAlg/GaudiTool.h"
+#include "GiGaMTFactories/GiGaTool.h"
 #include "Geant4/G4EmStandardPhysics_option1.hh"
 #include "Geant4/G4VPhysicsConstructor.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
@@ -18,10 +18,10 @@
 // Base object to encapsulate the call to the actual constructor. Implement to reduce the
 // amount of redudant code that needs to be written during template specialization if the
 // specific implementation of G4VPhysicsConstructor needs additional options
-class GiGaMTPhysConstr : public GaudiTool
+class GiGaMTPhysConstr : public GiGaTool
 {
 protected:
-  using GaudiTool::GaudiTool;
+  using GiGaTool::GiGaTool;
   virtual ~GiGaMTPhysConstr(){};
   inline int verbosity() const
   {

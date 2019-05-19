@@ -37,7 +37,7 @@ gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
                   INCLUDE_DIRS Boost Pythia8 ROOT ${HEPMC3_INCLUDE_DIR} Gen/GenInterfaces Defaults HepMCUser Utils NewRnd
-                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 ${HEPMC3_LIBRARIES} ROOT PartPropLib LHAPDF Pythia8ToHepMC3Lib)
+                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 ${HEPMC3_LIBRARIES} ROOT PartPropLib LHAPDF Pythia8ToHepMC3Lib GenEvent)
 
 add_dependencies(LbPythia8Lib HepMC3Ext)
 

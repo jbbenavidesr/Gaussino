@@ -16,9 +16,9 @@ namespace Gaussino
   {
   public:
     /// Standard constructor
-    inline HitBase();
+    inline HitBase() = default;
 
-    virtual inline ~HitBase(); ///< Destructor
+    virtual inline ~HitBase() = default; ///< Destructor
 
     inline void SetTrackID( G4int tid ) { m_trackID = tid; };
     inline G4int GetTrackID() { return m_trackID; };

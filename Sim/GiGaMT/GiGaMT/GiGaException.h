@@ -51,7 +51,7 @@ public:
   virtual ~GiGaException() throw();
   
   /// clone method (virtual constructor)  
-  virtual GaudiException* clone() const;
+  virtual GaudiException* clone() const override;
   
 };
 

@@ -26,6 +26,7 @@ public:
   void debug( std::string message ) const override { msg << MSG::DEBUG << message << endmsg; }
   void verbose( std::string message ) const override { msg << MSG::VERBOSE << message << endmsg; }
   void error( std::string message ) const override { msg << MSG::ERROR << message << endmsg; }
+  void info( std::string message ) const override { msg << MSG::INFO << message << endmsg; }
   void warning( std::string message ) const override { msg << message << endmsg; }
   int level() const override { return msg.level(); }
 

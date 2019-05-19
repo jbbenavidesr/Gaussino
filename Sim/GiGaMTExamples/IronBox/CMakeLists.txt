@@ -18,5 +18,5 @@ add_definitions(-DG4USE_STD11)
 gaudi_add_module(IronBoxExample
                   src/*.cpp
                   INCLUDE_DIRS GiGaMTFactories GenInterfaces ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib ${HEPMC3_LIBRARIES})
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib ${HEPMC3_LIBRARIES} GenEvent)
 add_dependencies(IronBoxExample HepMC3Ext)

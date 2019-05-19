@@ -19,17 +19,17 @@ def configure_pgun(**kwargs):
     pgun.addTool(MomentumRange, name="MomentumRange")
     pgun.ParticleGunTool = "MomentumRange"
 
-    # from Configurables import FlatNParticles
-    # pgun.addTool(FlatNParticles, name="FlatNParticles")
-    # pgun.NumberOfParticlesTool = "FlatNParticles"
-    # pgun.FlatNParticles.MinNParticles = 10
-    # pgun.FlatNParticles.MaxNParticles = 10
-    # pgun.MomentumRange.PdgCodes = [-13, 13]
+    from Configurables import FlatNParticles
+    pgun.addTool(FlatNParticles, name="FlatNParticles")
+    pgun.NumberOfParticlesTool = "FlatNParticles"
+    pgun.FlatNParticles.MinNParticles = 1
+    pgun.FlatNParticles.MaxNParticles = 1
+    pgun.MomentumRange.PdgCodes = [-2112]
 
-    # pgun.MomentumRange.MomentumMin = 20.0*GeV
-    # pgun.MomentumRange.MomentumMax = 300.0*GeV
-    # pgun.MomentumRange.ThetaMin = 0.015*rad
-    # pgun.MomentumRange.ThetaMax = 0.300*rad
+    pgun.MomentumRange.MomentumMin = 2.0*GeV
+    pgun.MomentumRange.MomentumMax = 3.0*GeV
+    pgun.MomentumRange.ThetaMin = 0.015*rad
+    pgun.MomentumRange.ThetaMax = 0.300*rad
     return pgun
 
 
@@ -61,6 +61,8 @@ def configure_generation(**kwargs):
     gen.FixedNInteractions.NInteractions = 1
     gen.PileUpTool = 'FixedNInteractions'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+    gen.OutputLevel = -10
+    pprod.OutputLevel = -10
 
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""
@@ -170,17 +172,3 @@ def configure_hepmc_writer(**kwargs):
         alg.OutputFileName = ''
     return alg
 
-
-def configure_edm_conversion(**kwargs):
-    """Simple utility function to create and configure the
-    EDM conversion algorithms
-
-    :**kwargs: Optional keyword arguments (not curently used)
-    :returns: GenMonitorAlg instance
-
-    """
-    from Configurables import CheckMCStructure, MCTruthToEDM
-    from Configurables import GaudiSequencer
-    seq = GaudiSequencer('EDMConversion')
-    seq.Members += [MCTruthToEDM(), CheckMCStructure()]
-    return seq

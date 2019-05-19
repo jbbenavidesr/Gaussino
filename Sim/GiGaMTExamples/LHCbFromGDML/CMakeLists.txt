@@ -17,5 +17,5 @@ AddHepMC3()
 gaudi_add_module(LHCbFromGDML
                   src/*.cpp
                   INCLUDE_DIRS GenInterfaces ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES GaudiAlgLib ${HEPMC3_LIBRARIES})
+                  LINK_LIBRARIES GaudiAlgLib ${HEPMC3_LIBRARIES} GenEvent)
 add_dependencies(LHCbFromGDML HepMC3Ext)

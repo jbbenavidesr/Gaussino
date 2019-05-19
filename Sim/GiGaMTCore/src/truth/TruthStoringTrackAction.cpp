@@ -52,19 +52,40 @@
     "AntiOmegaMinusInelastic",
     "AlphaInelastic"};
 
+template <typename T>
+T& operator<<( T& ostr, const HepMC3::FourVector& fv )
+{
+  ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
+  return ostr;
+}
+
 void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
 {
   // new track is being started
   // we record its initial momentum
   fourmomentum = HepMC3::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
-                                    track->GetTotalEnergy() );
-}
-
-template <typename T>
-T& operator<<( T& ostr, const HepMC3::FourVector& fv )
-{
-  ostr << "[" << fv.x() << ", " << fv.z() << ", " << fv.y() << ", " << fv.t() << "]";
-  return ostr;
+                                     track->GetTotalEnergy() );
+#ifdef TRUTHDEBUG
+  if ( printDebug() ) {
+    HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
+                                track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
+    auto track_info = GaussinoTrackInformation::Get();
+    int pdgID       = track->GetDefinition()->GetPDGEncoding();
+    HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
+                               track->GetGlobalTime() );
+    G4cout << "##### STARTING NEW TRACK #####" << G4endl;
+    G4cout << "Storing new track" << G4endl;
+    G4cout << "TrackID " << track->GetTrackID() << G4endl;
+    G4cout << "ParentID " << track->GetParentID() << G4endl;
+    G4cout << "PdgID " << pdgID << G4endl;
+    G4cout << "Direct parent converted " << track_info->directParent() << G4endl;
+    G4cout << "ProdPos " << prodpos << G4endl;
+    G4cout << "Current pos" << endpos << G4endl;
+    G4cout << "Momentum " << fourmomentum << G4endl;
+    G4cout << "Particle definitions: " << G4endl;
+    track->GetDefinition()->DumpTable();
+  }
+#endif
 }
 
 void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
@@ -84,9 +105,9 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
 
   if ( track_info->storeTruth() ) {
     HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
-                               track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
+                                track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
     HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
-                              track->GetGlobalTime() );
+                               track->GetGlobalTime() );
 
     // Get the pdgID+LHCb extension
     int pdgID = track->GetDefinition()->GetPDGEncoding();

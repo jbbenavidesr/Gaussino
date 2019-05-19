@@ -2,7 +2,6 @@
 Utilities to configure the Simulation step of Gaussino
 """
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaudi.Configuration import GaudiSequencer
 from Gaussino.Utilities import gigaService
 from Gaussino.SimUtils import configure_giga_alg, append_truth_actions
 
@@ -40,8 +39,11 @@ class SimPhase(ConfigurableUser):
 
         giga_alg = configure_giga_alg()
 
-        seq = GaudiSequencer('SimulationPhase')
-        seq.Members = [giga_alg]
-        ApplicationMgr().TopAlg += [seq]
+        seq = []
+        seq += [giga_alg]
+        ApplicationMgr().TopAlg += seq
         if self.getProp('TrackTruth'):
-            append_truth_actions()
+            if self.getProp('DebugCommunication'):
+                append_truth_actions(OutputLevel=-10)
+            else:
+                append_truth_actions()

@@ -24,10 +24,9 @@ def get_set_configurable(parent, propertyname):
         import Configurables
         conf = getattr(Configurables, objectname)
         child = parent.addTool(conf, propertyvalue_short)
-    try:
-        return child
-    except:
-        raise AttributeError('Could not get {} from {}'.format(propertyname, parent))  # NOQA
+    else:
+        child = getattr(parent, propertyvalue_short)
+    return child
 
 
 @run_once
@@ -138,3 +137,15 @@ def gigaService(name=Configurable.DefaultName, debugcommunication=False):
         getattr(giga, pilotfacname_short).OutputLevel = -10
     ApplicationMgr().ExtSvc += [giga]
     return giga
+
+
+def configure_edm_conversion(**kwargs):
+    """Simple utility function to create and configure the
+    EDM conversion algorithms
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: GenMonitorAlg instance
+
+    """
+    from Configurables import CheckMCStructure, MCTruthToEDM
+    return [MCTruthToEDM(), CheckMCStructure()]

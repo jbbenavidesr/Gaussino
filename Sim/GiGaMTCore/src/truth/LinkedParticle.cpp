@@ -163,11 +163,18 @@ void LinkedParticle::AddParent( LinkedParticle* part )
 
 void LinkedParticle::AddChild( LinkedParticle* part ) { part->AddParent( this ); }
 
+template <typename T>
+T& operator<<( T& ostr, const HepMC3::FourVector& fv )
+{
+  ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
+  return ostr;
+}
+
 std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
 {
   out << " PDG: " << lp.GetPDG() << ", ID = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
       << ( lp.m_primary ? lp.m_primary->GetTrackID() : -1 ) << ", "
-      << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "], " << lp.GetMomentum().p3mod()
+      << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "], " << lp.GetMomentum()
       << " HepMC|G4Primary|G4Truth = " << (bool)lp.m_hepmc << "|" << (bool)lp.m_primary << "|" << (bool)lp.m_tracking
       << " CONV  = " << lp.m_conversion_type;
   return out;

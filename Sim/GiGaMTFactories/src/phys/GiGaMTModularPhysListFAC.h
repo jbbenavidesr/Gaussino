@@ -6,6 +6,7 @@
 #include "Geant4/G4VUserPhysicsList.hh"
 
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTFactories/GiGaTool.h"
 
 //@class GiGaMTModularPhysListFAC
 //
@@ -16,11 +17,13 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTModularPhysListFAC : public extends<GaudiTool, GiGaFactoryBase<G4VUserPhysicsList>>
+class GiGaMTModularPhysListFAC : public extends<GiGaTool, GiGaFactoryBase<G4VUserPhysicsList>>
 {
 public:
   typedef GiGaFactoryBase<G4VPhysicsConstructor> ConstructorFactory;
   typedef std::vector<ConstructorFactory*> ConstructorFactories;
+  StatusCode initialize() override;
+  StatusCode finalize() override;
 
   using extends::extends;
   virtual ~GiGaMTModularPhysListFAC(){};
@@ -32,6 +35,10 @@ public:
 
 private:
 
-  ToolHandleArray<ConstructorFactory> m_constructors{this, "PhysicsConstructors", {}};
+  ConstructorFactories m_constructors{};
+  Gaudi::Property<std::vector<std::string>> m_constructorNames{this, "PhysicsConstructors", {}};
   Gaudi::Property<bool> m_dumpCutsTable{this, "DumpCutsTable", false};
+  Gaudi::Property<double> m_cutForGamma{this, "CutForGamma", -1 * CLHEP::km};
+  Gaudi::Property<double> m_cutForElectron{this, "CutForElectron", -1 * CLHEP::km};
+  Gaudi::Property<double> m_cutForPositron{this, "CutForPositron", -1 * CLHEP::km};
 };

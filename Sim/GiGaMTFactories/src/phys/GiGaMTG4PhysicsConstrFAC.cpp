@@ -43,6 +43,24 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmExtraPhysics, "GiGaMT_G4EmExtraPhysics" )
 
 typedef GiGaMTG4PhysicsConstrFAC<G4IonPhysics> GiGaMT_G4IonPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
+
+template <typename PhysConstr>
+class GiGaMTG4PhysicsConstrFAC<PhysConstr,
+                               typename std::enable_if<std::is_same<PhysConstr, G4StoppingPhysics>::value,
+                                                       PhysConstr>::type>
+    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
+{
+  Gaudi::Property<bool> m_useMuonMinusCapturetool{this, "UseMuonMinusCapture", true,
+                          "Parameter 'UseMuonMinusCapture' for the constructor of G4StoppingPhysics"};
+
+public:
+  using extends::extends;
+  PhysConstr* construct() const override
+  {
+    auto tmp = new PhysConstr{name(), verbosity(), m_useMuonMinusCapturetool};
+    return tmp;
+  }
+};
 typedef GiGaMTG4PhysicsConstrFAC<G4StoppingPhysics> GiGaMT_G4StoppingPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4StoppingPhysics, "GiGaMT_G4StoppingPhysics" )
 typedef GiGaMTG4PhysicsConstrFAC<G4HadronElasticPhysics> GiGaMT_G4HadronElasticPhysics;

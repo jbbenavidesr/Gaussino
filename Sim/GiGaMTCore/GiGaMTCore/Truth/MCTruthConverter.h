@@ -107,7 +107,8 @@ namespace Gaussino
     // into the G4Event (optional in case of generator only MC). If no Geant4 event is passed, any previously
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
-    std::set<LinkedParticle*>& GetRootParticles() { return m_root_particles; }
+    std::set<LinkedParticle*> GetRootParticles() const { return m_root_particles; }
+    const LinkedParticle* GetParticleFromTrackID(int trackid) const;
 
   private:
     void DoCleanup();

@@ -162,7 +162,7 @@ void GiGaWorkerPilot::operator()()
       debug( sstr.str() );
     }
     debug( "Geant4 finished processing the event." );
-    ret_promise->set_value( std::make_tuple( G4EventProxy{evt, this}, std::move( mctruth ) ) );
+    ret_promise->set_value( std::make_tuple( G4EventProxy{evt, mctruth.get(), this}, std::move( mctruth ) ) );
     nCreated++;
   }
 

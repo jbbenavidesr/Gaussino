@@ -356,6 +356,14 @@ namespace Gaussino
     to_delete.clear();
   }
 
+  const LinkedParticle* MCTruth::GetParticleFromTrackID( int trackid ) const
+  {
+    if ( auto it = m_tracking_to_linked.find( trackid ); it != std::end( m_tracking_to_linked ) ) {
+      return it->second;
+    }
+    return nullptr;
+  }
+
   void MCTruth::EraseLinkedParticle( LinkedParticle* lp )
   {
     m_linkedParticles.erase( lp );

@@ -8,6 +8,7 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
+from Gaussino.Utilities import configure_edm_conversion
 from Gaussino.Generation import GenPhase
 from Gaussino.Simulation import SimPhase
 
@@ -84,12 +85,15 @@ class Gaussino(ConfigurableUser):
         if "Generation" not in phases:
             raise Exception("Must have Generation phase")
         self.setOtherProps(GenPhase(), ['evtMax'])
-        self.setOtherProps(GenPhase(), ['ConvertEDM'])
         GenPhase().configure_phase()
         if "Simulation" in phases:
             SimPhase().configure_phase()
         else:
             GenPhase().configure_genonly()
+
+        if self.getProp('ConvertEDM'):
+            ApplicationMgr().TopAlg += configure_edm_conversion()
+
 
         histogramService()
 

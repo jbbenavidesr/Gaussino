@@ -9,7 +9,6 @@ from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
-from Gaussino.GenUtils import configure_edm_conversion
 
 
 class GenPhase(ConfigurableUser):
@@ -75,24 +74,22 @@ class GenPhase(ConfigurableUser):
         # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()
 
-        seq = GaudiSequencer('GenerationPhase')
+        seq = []
         # seq.Members = [rnd_init, prod_alg]
-        seq.Members = [rnd_init, prod_alg]
+        seq += [rnd_init, prod_alg]
         if self.getProp('GenMonitor'):
             gen_moni = configure_gen_monitor()
-            seq.Members += [gen_moni]
+            seq += [gen_moni]
         if self.getProp('WriteHepMC'):
-            seq.Members += [configure_hepmc_writer()]
-        if self.getProp('ConvertEDM'):
-            seq.Members += [configure_edm_conversion()]
+            seq += [configure_hepmc_writer()]
         # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
-        ApplicationMgr().TopAlg += [seq]
+        ApplicationMgr().TopAlg += seq
 
     def configure_genonly(self):
         from Configurables import SkipSimAlg
-        seq = GaudiSequencer('GenOnlySequence')
-        seq.Members += [SkipSimAlg()]
-        ApplicationMgr().TopAlg += [seq]
+        seq = []
+        seq += [SkipSimAlg()]
+        ApplicationMgr().TopAlg += seq
 
     @staticmethod
     def eventType():
