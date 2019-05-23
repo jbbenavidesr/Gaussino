@@ -65,9 +65,18 @@ public:
   using extends::extends;
   virtual SENSDET* construct() const override
   {
-    auto tmp = new SENSDET{m_name};
+
+    std::string detname( name() );
+    std::string::size_type posdot = detname.find( "." );
+    while ( posdot != std::string::npos ) {
+      detname.erase( 0, posdot + 1 );
+      posdot = detname.find( "." );
+    }
+
+    debug() << "Sens det shortened name " << name() << " -> " << detname << endmsg;
+    auto tmp = new SENSDET{detname};
     tmp->SetVerboseLevel( verbosity() );
-    tmp->SetMessageInterface(message_interface());
+    tmp->SetMessageInterface( message_interface() );
     return tmp;
   }
 };

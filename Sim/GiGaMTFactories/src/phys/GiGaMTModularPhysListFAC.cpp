@@ -52,21 +52,21 @@ void GiGaMTModularPhysList::SetCuts()
   // set cut values for gamma
   SetCutValue( cutForGamma, "gamma" );
   std::stringstream message;
-  message << "The production cut for gamma is set to \t" << cutForGamma / CLHEP::mm << " mm ";
+  message << "The production cut for gamma is set to    \t" << cutForGamma / CLHEP::mm << " mm ";
   info( message.str() );
 
   // set cut values for electron
   SetCutValue( cutForElectron, "e-" );
   message.str("");
   message.clear();
-  message << " The production cut for electron is set to \t" << cutForElectron / CLHEP::mm << " mm ";
+  message << "The production cut for electron is set to \t" << cutForElectron / CLHEP::mm << " mm ";
   info( message.str() );
 
   // set cut values for positron
   SetCutValue( cutForPositron, "e+" );
   message.str("");
   message.clear();
-  message << " The production cut for positron is set to \t" << cutForPositron / CLHEP::mm << " mm ";
+  message << "The production cut for positron is set to \t" << cutForPositron / CLHEP::mm << " mm ";
   info( message.str() );
 
   if ( dumpCutsTable ) {

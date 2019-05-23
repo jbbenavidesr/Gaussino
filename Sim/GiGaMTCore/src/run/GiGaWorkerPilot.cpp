@@ -79,8 +79,10 @@ void GiGaWorkerPilot::FinalizeWorker()
 {
   debug( "Finalizing the worker for thread " + std::to_string( iWorker ) );
   CleanUp();                             // Delete any remaining events handled by this worker thread.
+  debug( "Finished clean-up for thread " + std::to_string( iWorker ) );
   G4Threading::WorkerThreadLeavesPool(); // FIXME: necessary?
   delete GiGaWorkerRunManager::GetGiGaWorkerRunManager();
+  debug( "Deleted run manager " + std::to_string( iWorker ) );
 
   //===============================
   // Step-7: Cleanup split classes
@@ -162,7 +164,8 @@ void GiGaWorkerPilot::operator()()
       debug( sstr.str() );
     }
     debug( "Geant4 finished processing the event." );
-    ret_promise->set_value( std::make_tuple( G4EventProxy{evt, mctruth.get(), this}, std::move( mctruth ) ) );
+    G4EventProxy proxy{evt, mctruth.get(), this};
+    ret_promise->set_value( std::make_tuple( std::move( proxy ), std::move( mctruth ) ) );
     nCreated++;
   }
 

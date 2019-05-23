@@ -54,15 +54,12 @@ def configure_generation(**kwargs):
     gen.MinimumBias.ProductionTool = "Pythia8Production"
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
-    # pprod.OutputLevel = -10
 
     from Configurables import FixedNInteractions
     gen.addTool(FixedNInteractions, name='FixedNInteractions')
     gen.FixedNInteractions.NInteractions = 1
     gen.PileUpTool = 'FixedNInteractions'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
-    gen.OutputLevel = -10
-    pprod.OutputLevel = -10
 
     gen.DecayTool = ""
     gen.MinimumBias.DecayTool = ""
