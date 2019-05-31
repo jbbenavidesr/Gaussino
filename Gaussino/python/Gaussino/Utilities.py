@@ -147,5 +147,6 @@ def configure_edm_conversion(**kwargs):
     :returns: GenMonitorAlg instance
 
     """
-    from Configurables import CheckMCStructure, MCTruthToEDM
-    return [MCTruthToEDM(), CheckMCStructure()]
+    from Configurables import CheckMCStructure, MCTruthToEDM, MCTruthMonitor
+    return [MCTruthToEDM(), CheckMCStructure(),
+            MCTruthMonitor(HistoProduce=True)]
