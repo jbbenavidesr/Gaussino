@@ -6,14 +6,6 @@
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 DECLARE_COMPONENT( GiGaMTProxyDetectorConstructionFAC )
 
-StatusCode GiGaMTDetectorConstructionFAC::initialize()
-{
-  GiGaTool::initialize();
-  m_geoSvc = svc<IGiGaMTGeoSvc>( m_geoSvcName, true );
-
-  return StatusCode::SUCCESS;
-}
-
 G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const
 {
   auto detconst = new GiGaMTDetectorConstruction();

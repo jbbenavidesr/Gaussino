@@ -11,14 +11,11 @@ class GiGaMTDetectorConstructionFAC : public extends<GiGaTool, GiGaFactoryBase<G
 {
 public:
   using extends::extends;
-  Gaudi::Property<std::string> m_geoSvcName{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
 
   G4VUserDetectorConstruction* construct() const override;
 
-  virtual StatusCode initialize() override;
-
 protected:
-  IGiGaMTGeoSvc* m_geoSvc = nullptr;
+  ServiceHandle<IGiGaMTGeoSvc> m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
 };
 
 class GiGaMTProxyDetectorConstructionFAC : public GiGaMTDetectorConstructionFAC
