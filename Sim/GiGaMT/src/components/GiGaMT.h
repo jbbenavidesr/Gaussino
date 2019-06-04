@@ -31,7 +31,7 @@ template <class TYPE>
 class SvcFactory;
 
 // GiGaMT factories
-template <typename T>
+template <typename T, typename... Args>
 class GiGaFactoryBase;
 // from G4
 class G4UImanager;

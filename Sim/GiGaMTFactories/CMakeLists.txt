@@ -37,6 +37,15 @@ gaudi_add_module(GiGaMTTruthFactories
         src/truth/*.cpp
         LINK_LIBRARIES GiGaMTCoreTruthLib GaudiAlgLib)
 
+gaudi_add_library(GiGaMTMagnetFactoriesLib
+                  src/magnet/lib/*.cpp
+                  PUBLIC_HEADERS GiGaMTFactories
+                  LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib GaudiKernel)
+
+gaudi_add_module(GiGaMTMagnetFactories
+        src/magnet/components/*.cpp
+        LINK_LIBRARIES GiGaMTMagnetFactoriesLib)
+
 #gaudi_add_module(GiGaMTSensDetFactories
         #src/sensdet/*.cpp
         #LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
