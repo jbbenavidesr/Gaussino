@@ -9,7 +9,6 @@ class GiGaMTRunManagerFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaMTRunMa
 {
   public:
   using extends::extends;
-  Gaudi::Property<std::string> m_someprop{this, "SomeProp", "Hello"};
 
   GiGaMTRunManager* construct() const override;
   private:
