@@ -61,6 +61,14 @@ HepMC3::FourVector LinkedParticle::GetMomentum() const
   return HepMC3::FourVector{};
 }
 
+int LinkedParticle::GetCreatorID() const
+{
+  if ( m_tracking ) {
+    return m_tracking->GetCreatorID();
+  }
+  return -1;
+}
+
 HepMC3::FourVector LinkedParticle::GetOriginPosition() const
 {
   // FIXME: Need proper definition when more are present
@@ -127,8 +135,12 @@ void LinkedParticle::AddParent( LinkedParticle* part )
       // exist is from tracking in Geant4. In which case assigning all particles to the same logical vertex
       // that originated in the same point in space is perfectly fine.
       if ( Gaussino::LinkedParticleHelpers::CompareFourVector( vtx->GetPosition(), this->GetOriginPosition() ) ) {
-        vertex = vtx;
-        break;
+        // However, the vertex type must match, otherwise it is difficult to associate a specific process with a
+        // given vertex later on
+        if(GetCreatorID() == vtx->GetProcessID()){
+          vertex = vtx;
+          break;
+        }
       }
     }
   }

@@ -59,6 +59,7 @@ public:
   HepMC3::FourVector GetMomentum() const;
   HepMC3::FourVector GetOriginPosition() const;
   HepMC3::FourVector GetEndPosition() const;
+  int GetCreatorID() const;
   // Calculates the decay time of the particle based on the internal HepMC
   // particle. Returns -1 if particle is stable and is not decayed in the HepMC
   // record
@@ -89,6 +90,12 @@ public:
   LinkedVertex() = default;
   std::set<LinkedParticle*> incoming_particle;
   std::set<LinkedParticle*> outgoing_particles;
+  int GetProcessID() const {
+    if(outgoing_particles.size() > 0){
+      return (*std::begin(outgoing_particles))->GetCreatorID();
+    }
+    return -1;
+  }
   HepMC3::FourVector GetPosition() const
   {
     // FIXME: Prioritize the location G4 simulated particles
