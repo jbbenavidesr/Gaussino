@@ -9,43 +9,14 @@
 namespace Gaussino
 {
 
-  StatusCode FieldMgrBase::initialize()
-  {
-    auto sc = GaudiTool::initialize();
-    if ( m_StepperName != "" ) {
-      m_stepper = tool<GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>>( m_StepperName, this );
-      if ( !m_stepper ) {
-        return Error( "Could not get " + m_StepperName );
-      }
-    }
-    return sc;
-  }
-
-  G4MagIntegratorStepper* FieldMgrBase::createStepper() const
+  G4FieldManager* FieldMgrBase::construct(const bool & global) const
   {
     MsgStream log( msgSvc(), name() );
 
-    // get magnetic field
-    G4MagneticField* mag = field();
-
-    if ( !mag ) {
-      throw GaudiException( "createStepper(): invalid magnetic field!", name(), StatusCode::FAILURE );
-    }
-
-    G4Mag_UsualEqRhs* equation = new G4Mag_UsualEqRhs( mag );
-
-    G4MagIntegratorStepper* stepper = m_stepper->construct( equation );
-
-    return stepper;
-  }
-
-  G4FieldManager* FieldMgrBase::construct() const
-  {
-    MsgStream log( msgSvc(), name() );
 
     G4FieldManager* manager{nullptr};
 
-    if ( m_global ) {
+    if ( global ) {
       G4TransportationManager* mgr = G4TransportationManager::GetTransportationManager();
       if ( !mgr ) {
         throw GaudiException( "Invalid Transportation manager", name(), StatusCode::FAILURE );
@@ -59,16 +30,19 @@ namespace Gaussino
       throw GaudiException( "createFieldMgr(): invalid manager!", name(), StatusCode::FAILURE );
     }
 
-    G4MagneticField* mag = field();
 
+    G4MagneticField* mag = field();
     manager->SetDetectorField( mag );
+
+    // get magnetic field
+    G4Mag_UsualEqRhs* equation = new G4Mag_UsualEqRhs( mag );
 
     if ( !mag ) {
       log << MSG::INFO << "createFieldMgr(): null magnetic field" << endmsg;
       return manager;
     }
 
-    G4MagIntegratorStepper* step = createStepper();
+    G4MagIntegratorStepper* step = m_stepper->construct( equation );
     if ( !step ) {
       throw GaudiException( "createFieldMgr(): invalid stepper", name(), StatusCode::FAILURE );
     }

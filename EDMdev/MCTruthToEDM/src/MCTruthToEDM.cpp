@@ -20,6 +20,8 @@
 #include "HepMCUser/Status.h"
 #include "HepMCUser/VertexAttribute.h"
 
+#include<set>
+
 DECLARE_COMPONENT( MCTruthToEDM )
 
 LHCb::MCVertex::MCVertexType vertexType( int id )
@@ -218,8 +220,26 @@ LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
                         [&]( LinkedParticle* p ) -> bool { return p->G4Truth()->GetCreatorID() == first_proc; } ) ) {
         ret->setType( vertexType( first_proc ) );
       } else {
-        msgStream << MSG::ERROR << "Failed to set LHCb::MCVertex type. Not all G4 outgoing have same creator ID."
+        msgStream << MSG::WARNING << "Failed to set LHCb::MCVertex type. Not all G4 outgoing have same creator ID."
                   << endmsg;
+        std::set<LHCb::MCVertex::MCVertexType> unique_types{};
+        std::multiset<LHCb::MCVertex::MCVertexType> types{};
+        for(auto & part:lv->outgoing_particles){
+          unique_types.insert(vertexType(part->G4Truth()->GetCreatorID()));
+          types.insert(vertexType(part->G4Truth()->GetCreatorID()));
+        }
+        msgStream << MSG::WARNING << "Choices:" << endmsg;
+        unsigned int top_count{0};
+        LHCb::MCVertex::MCVertexType most_common_type;
+        for(auto & t:unique_types){
+          msgStream << MSG::WARNING << " --- " << t << " #" << types.count(t) << endmsg;
+          if(top_count < types.count(t)){
+            top_count = types.count(t);
+            most_common_type = t;
+          }
+        }
+        msgStream << MSG::WARNING << "Taking most common type: " << most_common_type << endmsg;
+        ret->setType( most_common_type );
       }
     } else {
       msgStream << MSG::ERROR << "Failed to set LHCb::MCVertex type. No generation and not all children from G4."

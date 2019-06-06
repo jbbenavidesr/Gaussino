@@ -20,7 +20,7 @@
  */
 namespace Gaussino
 {
-  class FieldMgrBase : public extends<GiGaTool, GiGaFactoryBase<G4FieldManager>>
+  class FieldMgrBase : public extends<GiGaTool, GiGaFactoryBase<G4FieldManager, bool>>
   {
   public:
     using extends::extends;
@@ -28,24 +28,14 @@ namespace Gaussino
     virtual ~FieldMgrBase()                = default;
     virtual G4MagneticField* field() const = 0;
 
-    G4FieldManager* construct() const override;
-    StatusCode initialize() override;
-
-  protected:
-    G4MagIntegratorStepper* createStepper() const;
-
-    StatusCode createFieldMgr() const;
-
+    virtual G4FieldManager* construct(const bool &) const override;
   private:
-    Gaudi::Property<bool> m_global{
-        this, "Global", false, "If global, will modify the transport manager field manager, create new one otherwise"};
+    ToolHandle<GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>> m_stepper{this, "Stepper", "G4ClassicalRK4"};
     Gaudi::Property<double> m_minStep{this, "MinStep", 0.01 * CLHEP::mm};
     Gaudi::Property<double> m_deltaChord{this, "DeltaChord", 0.25 * CLHEP::mm};
     Gaudi::Property<double> m_deltaintersection{this, "DeltaIntersection", 1e-05 * CLHEP::mm};
     Gaudi::Property<double> m_deltaonestep{this, "DeltaOneStep", 0.001 * CLHEP::mm};
     Gaudi::Property<double> m_minimumEpsilonStep{this, "MinEpsilonStep", 5e-05 * CLHEP::mm};
     Gaudi::Property<double> m_maximumEpsilonStep{this, "MaxEpsilonStep", 0.001 * CLHEP::mm};
-    Gaudi::Property<std::string> m_StepperName{this, "Stepper", "GiGaMT_G4ClassicalRK4"};
-    GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>* m_stepper{nullptr};
   };
 }

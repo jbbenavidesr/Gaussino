@@ -31,34 +31,31 @@ public:
 };
 
 typedef GiGaMTMagnetStepperFAC<G4ExplicitEuler> GiGaMT_G4ExplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ExplicitEuler, "GiGaMT_G4ExplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ExplicitEuler, "G4ExplicitEuler" )
 
 typedef GiGaMTMagnetStepperFAC<G4ImplicitEuler> GiGaMT_G4ImplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ImplicitEuler, "GiGaMT_G4ImplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ImplicitEuler, "G4ImplicitEuler" )
 
 typedef GiGaMTMagnetStepperFAC<G4SimpleRunge> GiGaMT_G4SimpleRunge;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4SimpleRunge, "GiGaMT_G4SimpleRunge" )
-
-typedef GiGaMTMagnetStepperFAC<G4SimpleRunge> GiGaMT_G4SimpleRunge;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4SimpleRunge, "GiGaMT_G4SimpleRunge" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4SimpleRunge, "G4SimpleRunge" )
 
 typedef GiGaMTMagnetStepperFAC<G4ClassicalRK4> GiGaMT_G4ClassicalRK4;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ClassicalRK4, "GiGaMT_G4ClassicalRK4" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ClassicalRK4, "G4ClassicalRK4" )
 
 typedef GiGaMTMagnetStepperFAC<G4CashKarpRKF45> GiGaMT_G4CashKarpRKF45;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4CashKarpRKF45, "GiGaMT_G4CashKarpRKF45" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4CashKarpRKF45, "G4CashKarpRKF45" )
 
 typedef GiGaMTMagnetStepperFAC<G4RKG3_Stepper> GiGaMT_G4RKG3_Stepper;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4RKG3_Stepper, "GiGaMT_G4RKG3_Stepper" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4RKG3_Stepper, "G4RKG3_Stepper" )
 
 typedef GiGaMTMagnetStepperFAC<G4HelixExplicitEuler> GiGaMT_G4HelixExplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixExplicitEuler, "GiGaMT_G4HelixExplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixExplicitEuler, "G4HelixExplicitEuler" )
 
 typedef GiGaMTMagnetStepperFAC<G4HelixImplicitEuler> GiGaMT_G4HelixImplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixImplicitEuler, "GiGaMT_G4HelixImplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixImplicitEuler, "G4HelixImplicitEuler" )
 
 typedef GiGaMTMagnetStepperFAC<G4HelixSimpleRunge> GiGaMT_G4HelixSimpleRunge;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixSimpleRunge, "GiGaMT_G4HelixSimpleRunge" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixSimpleRunge, "G4HelixSimpleRunge" )
 
 typedef GiGaMTMagnetStepperFAC<G4HelixHeum> GiGaMT_G4HelixHeum;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixHeum, "GiGaMT_G4HelixHeum" )
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixHeum, "G4HelixHeum" )

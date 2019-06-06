@@ -46,35 +46,35 @@ public:
   }
 
 protected:
-  void debug( std::string message )
+  void debug( std::string message ) const
   {
     if ( !m_msg || !printDebug()) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->debug( ss.str() );
   }
-  void verbose( std::string message )
+  void verbose( std::string message ) const
   {
     if ( !m_msg || !printVerbose()) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->verbose( ss.str() );
   }
-  void error( std::string message )
+  void error( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->error( ss.str() );
   }
-  void warning( std::string message )
+  void warning( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->warning( ss.str() );
   }
-  void info( std::string message )
+  void info( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
