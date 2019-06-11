@@ -6,6 +6,7 @@
 #include "GiGaMTCore/Truth/G4TruthParticle.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
+#include "HepMC3/FourVector.h"
 #include <ostream>
 
 namespace Gaussino
@@ -47,13 +48,16 @@ public:
   const HepMC3::GenParticle* HepMC() { return m_hepmc; }
   G4PrimaryParticle*& G4Primary() { return m_primary; }
   Gaussino::G4TruthParticle*& G4Truth() { return m_tracking; }
+  const HepMC3::GenParticle* HepMC() const { return m_hepmc; }
+  const G4PrimaryParticle* G4Primary() const { return m_primary; }
+  const Gaussino::G4TruthParticle* G4Truth() const { return m_tracking; }
   Gaussino::ConversionType GetType() const { return m_conversion_type; }
   void SetType( Gaussino::ConversionType type ) { m_conversion_type = type; };
   // Two convenient functions, both link bidirectional
   void AddParent( LinkedParticle* part );
   void AddChild( LinkedParticle* part );
-  PtrSet GetParents();
-  PtrSet GetChildren();
+  PtrSet GetParents() const;
+  PtrSet GetChildren() const;
 
   std::shared_ptr<LinkedVertex>& GetProdVtx() { return m_prodvtx; }
   VertexSharedPtrSet& GetEndVtxs() { return m_endvtxs; }
@@ -87,6 +91,7 @@ private:
   Gaussino::ConversionType m_conversion_type;
   Gaussino::MCTruthTracker* m_tracker{nullptr};
   bool m_isSignal{false};
+  bool m_corrected_momentum{false};
   bool m_hasOscillated{false};
   std::shared_ptr<LinkedVertex> m_prodvtx{nullptr};
   VertexSharedPtrSet m_endvtxs;

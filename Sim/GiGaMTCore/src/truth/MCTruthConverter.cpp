@@ -5,6 +5,7 @@
 #include "Helpers.h"
 #include <functional>
 #include <stdexcept>
+#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 
 bool essentiallyEqual( float a, float b, float epsilon = 0.00001 )
 {
@@ -313,22 +314,11 @@ namespace Gaussino
     // material interaction before this decay, in which case the children need
     // to be removed. We assume no loops for now and remove the entire decay tree of such particles
     //
-    std::function<bool( LinkedParticle* )> shouldHaveButWasNotSimulated = [&]( LinkedParticle* lp ) {
-      return lp->G4Primary() && !lp->G4Truth();
-    };
-    std::function<bool( LinkedParticle* )> hasSimulatedG4Parent = [&]( LinkedParticle* lp ) {
-      for ( auto parent : lp->GetParents() ) {
-        if ( parent->G4Primary() && parent->G4Truth() ) {
-          return true;
-        }
-      }
-      return false;
-    };
 
     std::function<bool( LinkedParticle* )> hasG4ChildWithoutG4Truth = [&]( LinkedParticle* lp ) {
       bool found = false;
       for ( auto child : lp->GetChildren() ) {
-        if ( shouldHaveButWasNotSimulated( child ) ) {
+        if ( Gaussino::LPUtils::ShouldHaveButWasNotSimulated( child ) ) {
           found = true;
         } else if ( child->GetType() == ConversionType::MC ) {
           // Recursively call on child if child itself was not given
@@ -343,10 +333,12 @@ namespace Gaussino
     // 2. G4 particle that was not simulated but whose parent was
     std::set<LinkedParticle*> to_delete;
     for ( auto& lp : m_linkedParticles ) {
-      if ( lp->GetType() == ConversionType::MC && hasSimulatedG4Parent( lp ) && hasG4ChildWithoutG4Truth( lp ) ) {
+      if ( lp->GetType() == ConversionType::MC && Gaussino::LPUtils::HasSimulatedG4Parent( lp ) &&
+           hasG4ChildWithoutG4Truth( lp ) ) {
         to_delete.insert( lp );
       }
-      if ( lp->GetType() == ConversionType::G4 && hasSimulatedG4Parent( lp ) && shouldHaveButWasNotSimulated( lp ) ) {
+      if ( lp->GetType() == ConversionType::G4 && Gaussino::LPUtils::HasSimulatedG4Parent( lp ) &&
+           Gaussino::LPUtils::ShouldHaveButWasNotSimulated( lp ) ) {
         to_delete.insert( lp );
       }
     }

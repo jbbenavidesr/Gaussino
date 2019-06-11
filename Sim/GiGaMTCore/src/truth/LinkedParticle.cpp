@@ -1,6 +1,7 @@
 #include "GiGaMTCore/Truth/LinkedParticle.h"
 
 #include "CLHEP/Units/PhysicalConstants.h"
+#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 #include "Helpers.h"
 #include "Math/GenVector/Boost.h"
 #include "Math/Vector4D.h"
@@ -46,7 +47,7 @@ int LinkedParticle::GetID() const
   return 0;
 }
 
-LinkedParticle::PtrSet LinkedParticle::GetParents()
+LinkedParticle::PtrSet LinkedParticle::GetParents() const
 {
   if ( m_prodvtx ) {
     return m_prodvtx->incoming_particle;
@@ -55,7 +56,7 @@ LinkedParticle::PtrSet LinkedParticle::GetParents()
   }
 }
 
-LinkedParticle::PtrSet LinkedParticle::GetChildren()
+LinkedParticle::PtrSet LinkedParticle::GetChildren() const
 {
   LinkedParticle::PtrSet children;
   for ( auto& vtx : m_endvtxs ) {
@@ -66,13 +67,29 @@ LinkedParticle::PtrSet LinkedParticle::GetChildren()
 
 HepMC3::FourVector LinkedParticle::GetMomentum() const
 {
+  // One special case:
+  // If the particle has a Geant4 simulated parent but is itself MC only,
+  // it's momentum as taken from HepMC might be wrong as it doesn't
+  // account for any changes of the parent kinematics due to magnetic fields
+  // or scattering. Hence compute it from the sum of child momenta.
+  HepMC3::FourVector ret{};
   if ( m_tracking ) {
-    return m_tracking->GetMomentum();
+    ret = m_tracking->GetMomentum();
+  } else if ( m_hepmc ) {
+    ret = m_hepmc->momentum();
+  } else {
+    return ret;
   }
-  if ( m_hepmc ) {
-    return m_hepmc->momentum();
+  if ( auto g4parent = Gaussino::LPUtils::GetSimulatedG4Ancestor( this );
+       g4parent && GetType() == Gaussino::ConversionType::MC ) {
+    ROOT::Math::PxPyPzEVector rparent_start{g4parent->G4Truth()->GetFinalMomentum()};
+    ROOT::Math::PxPyPzEVector rparent_final{g4parent->G4Truth()->GetMomentum()};
+    HepMC3::FourVector after =
+        ROOT::Math::Boost{-rparent_final.BoostToCM()}( ROOT::Math::Boost{rparent_start.BoostToCM()}( ret ) );
+    return after;
+  } else {
+    return ret;
   }
-  return HepMC3::FourVector{};
 }
 
 int LinkedParticle::GetCreatorID() const
@@ -151,7 +168,7 @@ void LinkedParticle::AddParent( LinkedParticle* part )
       if ( Gaussino::LinkedParticleHelpers::CompareFourVector( vtx->GetPosition(), this->GetOriginPosition() ) ) {
         // However, the vertex type must match, otherwise it is difficult to associate a specific process with a
         // given vertex later on
-        if(GetCreatorID() == vtx->GetProcessID()){
+        if ( GetCreatorID() == vtx->GetProcessID() ) {
           vertex = vtx;
           break;
         }
@@ -171,7 +188,7 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     // Either add this vertex to parent or create a new one if no
     // production vertex has yet been set
     if ( !m_prodvtx ) {
-      vertex = m_prodvtx = std::make_shared<LinkedVertex>(GetID());
+      vertex = m_prodvtx = std::make_shared<LinkedVertex>( GetID() );
       if ( part->HepMC() && HepMC() ) {
         m_prodvtx->hepmc_vtx = part->HepMC()->end_vertex().get();
       }
@@ -200,7 +217,7 @@ std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
 {
   out << " PDG: " << lp.GetPDG() << ", ID = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
       << ( lp.m_primary ? lp.m_primary->GetTrackID() : -1 ) << ", "
-      << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "], " << lp.GetMomentum()
+      << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "],"
       << " HepMC|G4Primary|G4Truth = " << (bool)lp.m_hepmc << "|" << (bool)lp.m_primary << "|" << (bool)lp.m_tracking
       << " CONV  = " << lp.m_conversion_type;
   return out;

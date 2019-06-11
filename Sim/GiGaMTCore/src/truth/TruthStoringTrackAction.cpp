@@ -172,7 +172,10 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
       G4cerr << __PRETTY_FUNCTION__ << " no event information. " << G4endl;
       return;
     }
-    auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID, creatorID, fourmomentum, prodpos, endpos};
+
+    HepMC3::FourVector final_fourmomentum{track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
+                                          track->GetTotalEnergy()};
+    auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID, creatorID, fourmomentum, final_fourmomentum, prodpos, endpos};
     // Now check if the particle is a primary particle, i.e. we have already created
     // a linked particle for it.
     if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
