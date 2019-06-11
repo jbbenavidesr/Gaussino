@@ -12,7 +12,8 @@ HepRandomEnginePtr RndAlgSeeder::createRndmEngine() const
     ret_ptr->setSeed(m_forcedSeed,0);
   } else {
     auto[event_number, run_number] = *m_forseed.get();
-    RndCommon::seedEngine(ret_ptr, event_number, run_number, name());
+    auto seeds = RndCommon::seedEngine(ret_ptr, event_number, run_number, name());
+    info() << "Seeds: " << seeds << endmsg;
   }
   return ret_ptr;
 }

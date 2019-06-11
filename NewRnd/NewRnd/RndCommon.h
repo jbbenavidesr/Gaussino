@@ -24,9 +24,9 @@ namespace RndCommon
     virtual CLHEP::HepRandomEngine* construct() const = 0;
   };
 
-  void seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2,
+  std::vector<long> seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2,
                    std::string label = "Random" );
-  void seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label = "Random" );
+  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label = "Random" );
 }
 
 // SmartPointer wrapper for HepRandomEngines that allows to optionally set a constructor for subengines.

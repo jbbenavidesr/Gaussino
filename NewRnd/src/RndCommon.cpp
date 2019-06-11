@@ -3,7 +3,7 @@
 
 namespace RndCommon
 {
-  void seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2, std::string label )
+  std::vector<long> seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2, std::string label )
   {
     std::vector<long> seeds;
     const std::string s =
@@ -16,10 +16,11 @@ namespace RndCommon
     seeds.push_back( hashed_number );
     seeds.push_back( hashed_named );
     engine.setSeeds( seeds.data(), seeds.size() );
+    return seeds;
   }
-  void seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label )
+  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label )
   {
-    seedEngine( *engine.get(), seed1, seed2, label );
+    return seedEngine( *engine.get(), seed1, seed2, label );
   }
 }
 
