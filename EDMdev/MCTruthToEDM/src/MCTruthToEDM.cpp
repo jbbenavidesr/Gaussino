@@ -230,7 +230,7 @@ LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
         }
         msgStream << MSG::WARNING << "Choices:" << endmsg;
         unsigned int top_count{0};
-        LHCb::MCVertex::MCVertexType most_common_type;
+        LHCb::MCVertex::MCVertexType most_common_type{LHCb::MCVertex::Unknown};
         for(auto & t:unique_types){
           msgStream << MSG::WARNING << " --- " << t << " #" << types.count(t) << endmsg;
           if(top_count < types.count(t)){
