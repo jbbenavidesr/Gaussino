@@ -46,7 +46,7 @@ namespace Gaussino
     std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
     std::unordered_map<int, LinkedParticle*> m_tracking_to_linked;
-    std::set<LinkedParticle*> m_root_particles;
+    LinkedParticle::PtrSet m_root_particles;
 
     // Some consistence checking internal variables
     G4Event* m_geant4_event{nullptr};
@@ -107,7 +107,7 @@ namespace Gaussino
     // into the G4Event (optional in case of generator only MC). If no Geant4 event is passed, any previously
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
-    std::set<LinkedParticle*> GetRootParticles() const { return m_root_particles; }
+    LinkedParticle::PtrSet GetRootParticles() const { return m_root_particles; }
     const LinkedParticle* GetParticleFromTrackID(int trackid) const;
 
   private:

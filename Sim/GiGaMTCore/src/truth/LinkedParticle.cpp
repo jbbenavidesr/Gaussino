@@ -32,18 +32,32 @@ int LinkedParticle::GetPDG() const
   return 0;
 }
 
-std::set<LinkedParticle*> LinkedParticle::GetParents()
+int LinkedParticle::GetID() const
+{
+  if ( m_hepmc ) {
+    return m_hepmc->id();
+  }
+  if ( m_tracking ) {
+    return m_tracking->GetTrackID();
+  }
+  if ( m_primary ) {
+    return m_primary->GetTrackID();
+  }
+  return 0;
+}
+
+LinkedParticle::PtrSet LinkedParticle::GetParents()
 {
   if ( m_prodvtx ) {
     return m_prodvtx->incoming_particle;
   } else {
-    return std::set<LinkedParticle*>{};
+    return LinkedParticle::PtrSet{};
   }
 }
 
-std::set<LinkedParticle*> LinkedParticle::GetChildren()
+LinkedParticle::PtrSet LinkedParticle::GetChildren()
 {
-  std::set<LinkedParticle*> children;
+  LinkedParticle::PtrSet children;
   for ( auto& vtx : m_endvtxs ) {
     children.insert( std::begin( vtx->outgoing_particles ), std::end( vtx->outgoing_particles ) );
   }
@@ -157,7 +171,7 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     // Either add this vertex to parent or create a new one if no
     // production vertex has yet been set
     if ( !m_prodvtx ) {
-      vertex = m_prodvtx = std::make_shared<LinkedVertex>();
+      vertex = m_prodvtx = std::make_shared<LinkedVertex>(GetID());
       if ( part->HepMC() && HepMC() ) {
         m_prodvtx->hepmc_vtx = part->HepMC()->end_vertex().get();
       }

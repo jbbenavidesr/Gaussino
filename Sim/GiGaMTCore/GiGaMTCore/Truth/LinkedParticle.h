@@ -16,8 +16,18 @@ namespace Gaussino
 
 class LinkedVertex;
 
+template <typename PartPtr>
+struct id_comparer {
+  bool operator()( const PartPtr& left, const PartPtr& right ) const { return left->GetID() < right->GetID(); }
+};
+
 class LinkedParticle
 {
+
+public:
+  typedef std::set<LinkedParticle*, id_comparer<LinkedParticle*>> PtrSet;
+  typedef std::set<std::shared_ptr<LinkedParticle>, id_comparer<std::shared_ptr<LinkedParticle>>> SharedPtrSet;
+  typedef std::set<std::shared_ptr<LinkedVertex>, id_comparer<std::shared_ptr<LinkedVertex>>> VertexSharedPtrSet;
 
 public:
   friend Gaussino::MCTruthConverter;
@@ -26,8 +36,7 @@ public:
   // Stupid const_cast to get access to the non-constant only cast method of the HepMC3::SmartPointer.
   // Doesn't matter here as the raw pointer is then internally stored as a ptr to const again.
   LinkedParticle( const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part.get() ) {}
-  LinkedParticle( const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part )
-      : m_hepmc( part.get() )
+  LinkedParticle( const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part ) : m_hepmc( part.get() )
   {
     m_primary = g4part;
   }
@@ -43,11 +52,11 @@ public:
   // Two convenient functions, both link bidirectional
   void AddParent( LinkedParticle* part );
   void AddChild( LinkedParticle* part );
-  std::set<LinkedParticle*> GetParents();
-  std::set<LinkedParticle*> GetChildren();
+  PtrSet GetParents();
+  PtrSet GetChildren();
 
   std::shared_ptr<LinkedVertex>& GetProdVtx() { return m_prodvtx; }
-  std::set<std::shared_ptr<LinkedVertex>>& GetEndVtxs() { return m_endvtxs; }
+  VertexSharedPtrSet& GetEndVtxs() { return m_endvtxs; }
 
   // A couple of accessor functions to simplify access to common properties.
   // Will extract the result from the stored particles in the following order:
@@ -55,7 +64,7 @@ public:
   // 2. G4Primary
   // 3. G4Truth from tracking
   int GetPDG() const;
-  bool HasOscillated() const {return m_hasOscillated;}
+  bool HasOscillated() const { return m_hasOscillated; }
   HepMC3::FourVector GetMomentum() const;
   HepMC3::FourVector GetOriginPosition() const;
   HepMC3::FourVector GetEndPosition() const;
@@ -65,6 +74,8 @@ public:
   // record
   double GetDecayTimeHepMC() const;
   Gaussino::MCTruthTracker* GetTracker() { return m_tracker; }
+  // Helper function to return an ID (for sorting the ptr sets)
+  int GetID() const;
 
 private:
   // Two vectors to store the relationships, extracted from whatever source we can find.
@@ -78,7 +89,7 @@ private:
   bool m_isSignal{false};
   bool m_hasOscillated{false};
   std::shared_ptr<LinkedVertex> m_prodvtx{nullptr};
-  std::set<std::shared_ptr<LinkedVertex>> m_endvtxs;
+  VertexSharedPtrSet m_endvtxs;
 };
 
 // Small helper class to facilitate a cleaner linking between the LinkedParticles.
@@ -87,12 +98,16 @@ private:
 class LinkedVertex
 {
 public:
-  LinkedVertex() = default;
-  std::set<LinkedParticle*> incoming_particle;
-  std::set<LinkedParticle*> outgoing_particles;
-  int GetProcessID() const {
-    if(outgoing_particles.size() > 0){
-      return (*std::begin(outgoing_particles))->GetCreatorID();
+  LinkedVertex() = delete;
+  LinkedVertex( int id ) : m_id( id ) {}
+  LinkedParticle::PtrSet incoming_particle;
+  LinkedParticle::PtrSet outgoing_particles;
+  int m_id;
+  int GetID() const { return m_id; }
+  int GetProcessID() const
+  {
+    if ( outgoing_particles.size() > 0 ) {
+      return ( *std::begin( outgoing_particles ) )->GetCreatorID();
     }
     return -1;
   }
@@ -106,8 +121,7 @@ public:
       return ( *std::begin( incoming_particle ) )->GetEndPosition();
     }
 
-    throw std::runtime_error(
-        "Trying to access position of vertex without associated particles" );
+    throw std::runtime_error( "Trying to access position of vertex without associated particles" );
   }
   const HepMC3::GenVertex* hepmc_vtx{nullptr};
 };
