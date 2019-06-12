@@ -80,6 +80,8 @@ HepMC3::FourVector LinkedParticle::GetMomentum() const
   } else {
     return ret;
   }
+  // FIXME: This should not happen this way ... Should really reconsider and give
+  // the entire decay tree to Geant4
   if ( auto g4parent = Gaussino::LPUtils::GetSimulatedG4Ancestor( this );
        g4parent && GetType() == Gaussino::ConversionType::MC ) {
     ROOT::Math::PxPyPzEVector rparent_start{g4parent->G4Truth()->GetFinalMomentum()};
@@ -102,19 +104,27 @@ int LinkedParticle::GetCreatorID() const
 
 HepMC3::FourVector LinkedParticle::GetOriginPosition() const
 {
-  // FIXME: Need proper definition when more are present
+  // FIXME: This should not happen this way ... Should really reconsider and give
+  // the entire decay tree to Geant4
+  if ( auto g4parent = Gaussino::LPUtils::GetSimulatedG4Ancestor( this );
+       g4parent && GetType() == Gaussino::ConversionType::MC ) {
+    return g4parent->GetEndPosition();
+  }
   if ( m_tracking ) {
     return m_tracking->GetOriginVertex();
-  }
-  if ( m_hepmc && m_hepmc->production_vertex() ) {
+  } else if ( m_hepmc && m_hepmc->production_vertex() ) {
     return m_hepmc->production_vertex()->position();
-  }
+  } else {
   return HepMC3::FourVector{};
+  }
 }
 
 HepMC3::FourVector LinkedParticle::GetEndPosition() const
 {
   // FIXME: Need proper definition when more are present
+  if ( m_tracking ) {
+    return m_tracking->GetEndVertex();
+  }
   if ( m_hepmc && m_hepmc->end_vertex() ) {
     return m_hepmc->end_vertex()->position();
   }
