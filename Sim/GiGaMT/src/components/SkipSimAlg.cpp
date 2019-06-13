@@ -14,7 +14,15 @@ Gaussino::MCTruthPtrs SkipSimAlg::operator()( const std::vector<HepMC3::GenEvent
   Gaussino::MCTruthConverterPtr combined =
       Gaussino::MergeConverters( std::begin( converters ), std::end( converters ) );
   Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *combined.get() ) );
-  tracker->DumpToStream( debug(), [&]( int i ) { return m_ppSvc->find( LHCb::ParticleID( i ) )->name(); } ) << endmsg;
+  if ( msgLevel( MSG::DEBUG ) ) {
+    tracker->DumpToStream( debug(), [&]( int i ) -> std::string {
+      if ( auto pid = m_ppSvc->find( LHCb::ParticleID( i ) ); pid ) {
+        return pid->name();
+      } else {
+        return "UnknownToLHCb";
+      }
+    } ) << endmsg;
+  }
   ret.emplace_back( new Gaussino::MCTruth( std::move( *tracker.get() ) ) );
 
   return ret;

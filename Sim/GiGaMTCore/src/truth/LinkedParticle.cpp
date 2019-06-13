@@ -33,20 +33,6 @@ int LinkedParticle::GetPDG() const
   return 0;
 }
 
-int LinkedParticle::GetID() const
-{
-  if ( m_hepmc ) {
-    return m_hepmc->id();
-  }
-  if ( m_tracking ) {
-    return m_tracking->GetTrackID();
-  }
-  if ( m_primary ) {
-    return m_primary->GetTrackID();
-  }
-  return 0;
-}
-
 LinkedParticle::PtrSet LinkedParticle::GetParents() const
 {
   if ( m_prodvtx ) {

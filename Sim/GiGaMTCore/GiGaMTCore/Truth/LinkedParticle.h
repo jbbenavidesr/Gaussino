@@ -4,9 +4,9 @@
 #include "Geant4/G4PrimaryParticle.hh"
 #include "GiGaMTCore/Truth/Common.h"
 #include "GiGaMTCore/Truth/G4TruthParticle.h"
+#include "HepMC3/FourVector.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
-#include "HepMC3/FourVector.h"
 #include <ostream>
 
 namespace Gaussino
@@ -34,16 +34,19 @@ public:
   friend Gaussino::MCTruthConverter;
   friend Gaussino::MCTruthTracker;
   friend std::ostream& operator<<( std::ostream&, const LinkedParticle& );
-  // Stupid const_cast to get access to the non-constant only cast method of the HepMC3::SmartPointer.
-  // Doesn't matter here as the raw pointer is then internally stored as a ptr to const again.
-  LinkedParticle( const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part.get() ) {}
-  LinkedParticle( const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part ) : m_hepmc( part.get() )
+
+private:
+  LinkedParticle( unsigned int id, const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part.get() ), m_id( id ) {}
+  LinkedParticle( unsigned int id, const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part )
+      : m_hepmc( part.get() ), m_id( id )
   {
     m_primary = g4part;
   }
-  LinkedParticle( G4PrimaryParticle* g4part ) { m_primary = g4part; }
-  LinkedParticle( Gaussino::G4TruthParticle* g4truth ) { m_tracking = g4truth; }
+  LinkedParticle( unsigned int id, G4PrimaryParticle* g4part ) : m_id( id ) { m_primary = g4part; }
+  LinkedParticle( unsigned int id, Gaussino::G4TruthParticle* g4truth ) : m_id( id ) { m_tracking = g4truth; }
   LinkedParticle() = delete;
+
+public:
   virtual ~LinkedParticle();
   const HepMC3::GenParticle* HepMC() { return m_hepmc; }
   G4PrimaryParticle*& G4Primary() { return m_primary; }
@@ -79,7 +82,7 @@ public:
   double GetDecayTimeHepMC() const;
   Gaussino::MCTruthTracker* GetTracker() { return m_tracker; }
   // Helper function to return an ID (for sorting the ptr sets)
-  int GetID() const;
+  unsigned int GetID() const { return m_id; };
 
 private:
   // Two vectors to store the relationships, extracted from whatever source we can find.
@@ -95,6 +98,7 @@ private:
   bool m_hasOscillated{false};
   std::shared_ptr<LinkedVertex> m_prodvtx{nullptr};
   VertexSharedPtrSet m_endvtxs;
+  unsigned int m_id;
 };
 
 // Small helper class to facilitate a cleaner linking between the LinkedParticles.
@@ -107,8 +111,8 @@ public:
   LinkedVertex( int id ) : m_id( id ) {}
   LinkedParticle::PtrSet incoming_particle;
   LinkedParticle::PtrSet outgoing_particles;
-  int m_id;
-  int GetID() const { return m_id; }
+  unsigned int m_id;
+  unsigned int GetID() const { return m_id; }
   int GetProcessID() const
   {
     if ( outgoing_particles.size() > 0 ) {

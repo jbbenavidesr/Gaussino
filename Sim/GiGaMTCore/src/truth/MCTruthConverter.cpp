@@ -33,6 +33,7 @@ namespace Gaussino
       , m_root_particles{std::move( right.m_root_particles )}
       , m_geant4_event{right.m_geant4_event}
       , m_geant4_vertex{right.m_geant4_vertex}
+      , m_pcounter{right.m_pcounter}
   {
     right.m_linkedParticles.clear();
     right.m_hepmc_to_linked.clear();
@@ -67,7 +68,7 @@ namespace Gaussino
 
   void MCTruthConverter::Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type )
   {
-    auto ptr = new LinkedParticle{particle};
+    auto ptr = new LinkedParticle{m_pcounter++, particle};
     ptr->SetType( type );
     if ( m_hepmc_to_linked.find( particle->parent_event() ) == std::end( m_hepmc_to_linked ) ) {
       m_hepmc_to_linked[particle->parent_event()] = {};
@@ -288,7 +289,7 @@ namespace Gaussino
       return;
     }
     auto parentLP = m_tracking_to_linked[parentID];
-    auto ptr      = new LinkedParticle{particle};
+    auto ptr      = new LinkedParticle{m_pcounter++, particle};
     ptr->SetType( ConversionType::FROMG4 );
     m_tracking_to_linked[particle->GetTrackID()] = ptr;
 

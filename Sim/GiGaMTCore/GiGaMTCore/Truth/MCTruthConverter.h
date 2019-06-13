@@ -51,6 +51,9 @@ namespace Gaussino
     // Some consistence checking internal variables
     G4Event* m_geant4_event{nullptr};
     std::set<G4PrimaryVertex*> m_geant4_vertex;
+    // Internal counter to be used for the ID of LinkedParticles
+    // to keep container ordered
+    unsigned int m_pcounter{0};
   };
 
   // Class to register HepMC particles with their conversion type.
