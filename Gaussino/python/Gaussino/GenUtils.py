@@ -22,12 +22,12 @@ def configure_pgun(**kwargs):
     from Configurables import FlatNParticles
     pgun.addTool(FlatNParticles, name="FlatNParticles")
     pgun.NumberOfParticlesTool = "FlatNParticles"
-    pgun.FlatNParticles.MinNParticles = 1
-    pgun.FlatNParticles.MaxNParticles = 1
-    pgun.MomentumRange.PdgCodes = [-2112]
+    pgun.FlatNParticles.MinNParticles = 2
+    pgun.FlatNParticles.MaxNParticles = 2
+    pgun.MomentumRange.PdgCodes = [-13, 13]
 
     pgun.MomentumRange.MomentumMin = 2.0*GeV
-    pgun.MomentumRange.MomentumMax = 3.0*GeV
+    pgun.MomentumRange.MomentumMax = 100.0*GeV
     pgun.MomentumRange.ThetaMin = 0.015*rad
     pgun.MomentumRange.ThetaMax = 0.300*rad
     return pgun
@@ -55,10 +55,7 @@ def configure_generation(**kwargs):
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
 
-    from Configurables import FixedNInteractions
-    gen.addTool(FixedNInteractions, name='FixedNInteractions')
-    gen.FixedNInteractions.NInteractions = 1
-    gen.PileUpTool = 'FixedNInteractions'
+    gen.PileUpTool = 'FixedLuminosityWithSvc'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""
@@ -91,12 +88,8 @@ def configure_generationMT(**kwargs):
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
     from Configurables import Gaussino
     pprod.NThreads = Gaussino().ThreadPoolSize
-    # pprod.OutputLevel = 1
 
-    from Configurables import PoissonPileUp
-    gen.addTool(PoissonPileUp, name='PoissonPileUp')
-    gen.PoissonPileUp.PileUpNu = 5
-    gen.PileUpTool = 'PoissonPileUp'
+    gen.PileUpTool = 'FixedLuminosityWithSvc'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""
@@ -168,4 +161,3 @@ def configure_hepmc_writer(**kwargs):
         print('Unknown writer name specified, not going to write')
         alg.OutputFileName = ''
     return alg
-

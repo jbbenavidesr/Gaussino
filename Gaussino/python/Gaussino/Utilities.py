@@ -57,33 +57,35 @@ def beaminfoService(name=Configurable.DefaultName):
     log.info("Configuring BeamInfoSvc")
     svc = BeamInfoSvc()
 
-    from GaudiKernel import SystemOfUnits
-    beamMom = 6.5*SystemOfUnits.TeV
-    xAngle = -0.395*SystemOfUnits.mrad
-    yAngle = 0.000*SystemOfUnits.mrad
-    xAngleBeamLine, yAngleBeamLine = [0.0, 0.0]
-    emittance = 0.0050*SystemOfUnits.mm
-    betaStar = 3.0*SystemOfUnits.m
-    lumiPerBunch = 0.177*(10**30)/(SystemOfUnits.cm2*SystemOfUnits.s)
-    totCrossSection = 101.5*SystemOfUnits.millibarn
-    meanX, meanY, meanZ = [0.788*SystemOfUnits.mm,
-                           0.091*SystemOfUnits.mm,
-                           8.64*SystemOfUnits.mm]
-    sigmaS = 55.58*SystemOfUnits.mm
+    from Gaussino.Generation import GenPhase
 
-    # svc.BeamEnergy = beamMom
-    # svc.HorizontalCrossingAngle = xAngle
-    # svc.VerticalCrossingAngle = yAngle
-    # svc.NormalizedEmittance = emittance
-    # svc.BetaStar = betaStar
-    # svc.HorizontalBeamlineAngle = xAngleBeamLine
-    # svc.VerticalBeamlineAngle = yAngleBeamLine
-    # svc.Luminosity = lumiPerBunch
-    # svc.TotalCrossSection = totCrossSection
-    # svc.XLuminousRegion = meanX
-    # svc.YLuminousRegion = meanY
-    # svc.ZLuminousRegion = meanZ
-    # svc.BunchLengthRMS = sigmaS
+    beamMom = GenPhase().getProp("BeamMomentum")
+    xAngle = GenPhase().getProp("BeamHCrossingAngle")
+    yAngle = GenPhase().getProp("BeamVCrossingAngle")
+    xAngleBeamLine, yAngleBeamLine = GenPhase().getProp("BeamLineAngles")
+    emittance = GenPhase().getProp("BeamEmittance")
+    betaStar = GenPhase().getProp("BeamBetaStar")
+    lumiPerBunch = GenPhase().getProp("Luminosity")
+    totCrossSection = GenPhase().getProp("TotalCrossSection")
+    meanX, meanY, meanZ = GenPhase().getProp("InteractionPosition")
+    sigmaS = GenPhase().getProp("BunchRMS")
+    # b2Mom = GenPhase().getProp("B2Momentum")
+    # B1Particle = GenPhase().getProp("B1Particle")
+    # B2Particle = GenPhase().getProp("B2Particle")
+
+    svc.BeamEnergy = beamMom
+    svc.HorizontalCrossingAngle = xAngle
+    svc.VerticalCrossingAngle = yAngle
+    svc.NormalizedEmittance = emittance
+    svc.BetaStar = betaStar
+    svc.HorizontalBeamlineAngle = xAngleBeamLine
+    svc.VerticalBeamlineAngle = yAngleBeamLine
+    svc.Luminosity = lumiPerBunch
+    svc.TotalCrossSection = totCrossSection
+    svc.XLuminousRegion = meanX
+    svc.YLuminousRegion = meanY
+    svc.ZLuminousRegion = meanZ
+    svc.BunchLengthRMS = sigmaS
     ApplicationMgr().ExtSvc += [svc]
     return svc
 
@@ -100,11 +102,10 @@ def auditorService(name=Configurable.DefaultName):
 def histogramService(name=Configurable.DefaultName):
     from Configurables import RootHistCnv__PersSvc
     from Gaudi.Configuration import HistogramPersistencySvc
-    from GaudiKernel.ProcessJobOptions import importOptions
     from Configurables import Gaussino
     from Configurables import ApplicationMgr
 
-    ApplicationMgr().HistogramPersistency = "ROOT";
+    ApplicationMgr().HistogramPersistency = "ROOT"
 
     RootHistCnv__PersSvc(name).ForceAlphaIds = True
 

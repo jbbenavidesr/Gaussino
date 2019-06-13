@@ -42,10 +42,13 @@ class GenFSRMTManager {
    */
 
   static LHCb::GenFSR* GetCombined() {
-    auto& inst = _inst();
-    auto _ret = new LHCb::GenFSR{};
-    for (auto& fsr : inst._store) {
-      (*_ret) += *fsr;
+    static LHCb::GenFSR* _ret{nullptr};
+    if(!_ret){
+      _ret = new LHCb::GenFSR{};
+      auto& inst = _inst();
+      for (auto& fsr : inst._store) {
+        (*_ret) += *fsr;
+      }
     }
     return _ret;
   }
