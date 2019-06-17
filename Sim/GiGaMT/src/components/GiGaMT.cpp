@@ -151,7 +151,7 @@ StatusCode GiGaMT::initialize()
   }
 
   /// Dump all particles known to Geant4
-  if ( m_printMaterials ) {
+  if ( m_printMaterials.value() ) {
     G4cout << *G4Material::GetMaterialTable();
     G4cout << "Nist Materials\n";
     G4NistManager::Instance()->ListMaterials( "all" );
@@ -169,7 +169,7 @@ StatusCode GiGaMT::initialize()
   }
 
   /// Dump all particles known to Geant4
-  if ( m_printParticles ) {
+  if ( m_printParticles.value() ) {
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     particleTable->DumpTable( "all" );
   }
@@ -238,7 +238,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
   auto start_time = Clock::now();
   std::list<std::promise<GiGaSimReturn>> promises;
   std::list<std::future<GiGaSimReturn>> futures;
-  if ( m_splitPileUp ) {
+  if ( m_splitPileUp.value() ) {
     // Submit every HepMC event separarely to the queue
     for ( auto& conv : _in ) {
       auto& prom = promises.emplace_back();

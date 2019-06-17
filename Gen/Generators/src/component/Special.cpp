@@ -174,7 +174,7 @@ void Special::generatePileUp(HepRandomEnginePtr & engine ) {
   }
 
   // initialize the production tool for pile up generation
-  if ( m_reinitialize ) 
+  if ( m_reinitialize.value() ) 
     m_pileUpProductionTool -> initializeGenerator() ;
   
   // generate given number of events
@@ -189,7 +189,7 @@ void Special::generatePileUp(HepRandomEnginePtr & engine ) {
   }
 
   // now initialize the production tool for the "signal"
-  if ( m_reinitialize )
+  if ( m_reinitialize.value() )
     m_productionTool -> initializeGenerator() ;
   //TODO : add finalize function to delete remaining events
 }

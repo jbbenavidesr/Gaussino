@@ -34,24 +34,24 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
   {
     auto action = new TruthFlaggingTrackAction{};
     action->SetMessageInterface( this->message_interface() );
-    action->storeAll                  = m_storeAll;
-    action->storePrimaries            = m_storePrimaries;
-    action->storeDecayProducts        = m_storeDecayProducts;
-    action->storeByOwnEnergy          = m_storeByOwnEnergy;
+    action->storeAll                  = m_storeAll.value();
+    action->storePrimaries            = m_storePrimaries.value();
+    action->storeDecayProducts        = m_storeDecayProducts.value();
+    action->storeByOwnEnergy          = m_storeByOwnEnergy.value();
     action->ownEnergyThreshold        = m_ownEnergyThreshold;
-    action->storeByOwnType            = m_storeByOwnType;
-    action->storeByChildEnergy        = m_storeByChildEnergy;
-    action->storeByChildType          = m_storeByChildType;
+    action->storeByOwnType            = m_storeByOwnType.value();
+    action->storeByChildEnergy        = m_storeByChildEnergy.value();
+    action->storeByChildType          = m_storeByChildType.value();
     action->childEnergyThreshold      = m_childEnergyThreshold;
     action->childStoredTypesNames     = m_childStoredTypesNames;
-    action->storeBySecondariesProcess = m_storeBySecondariesProcess;
+    action->storeBySecondariesProcess = m_storeBySecondariesProcess.value();
     action->childStoredProcess.insert(std::begin(m_childStoredProcess), std::end(m_childStoredProcess));
-    action->storeByOwnProcess         = m_storeByOwnProcess;
+    action->storeByOwnProcess         = m_storeByOwnProcess.value();
     action->ownStoredProcess.insert(std::begin(m_ownStoredProcess), std::end(m_ownStoredProcess));
-    action->storeUpToZmax             = m_storeUpToZmax;
+    action->storeUpToZmax             = m_storeUpToZmax.value();
     action->zMaxToStore               = m_zMaxToStore;
-    action->rejectRICHphe             = m_rejectRICHphe;
-    action->rejectOptPhot             = m_rejectOptPhot;
+    action->rejectRICHphe             = m_rejectRICHphe.value();
+    action->rejectOptPhot             = m_rejectOptPhot.value();
     return action;
   }
 };

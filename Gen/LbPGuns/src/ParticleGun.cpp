@@ -66,7 +66,7 @@ StatusCode ParticleGun::initialize() {
   }
 
   // If trying to sample mass but meaningless mass range, throw an error
-  if (m_sampleMass) {
+  if (m_sampleMass.value()) {
     if (m_MassRange_min<0. || m_MassRange_max<0. || m_MassRange_min > m_MassRange_max )  {
       debug() << "==> Min: " << m_MassRange_min << endmsg ;
       debug() << "==> Max: " << m_MassRange_max << endmsg ;
@@ -173,7 +173,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
 
       // If sampling the mass, change the energy of the particle appropriately
-      if (m_sampleMass) {
+      if (m_sampleMass.value()) {
         double massToGenerate = m_MassRange_min + flatGenerator() * (m_MassRange_max-m_MassRange_min) ;
         double energy = sqrt( massToGenerate * massToGenerate + theFourMomentum.P() * theFourMomentum.P() ) ;
         theFourMomentum.SetE( energy ) ;

@@ -246,14 +246,14 @@ operator()( const LHCb::GenHeader& old_gen_header) const
           }
           evt.set_event_number( ++iPile ) ;
           if(m_vertexSmearingTool){
-            if ( ( ! ( m_commonVertex ) ) || ( 1 == iPile ) )
+            if ( ( ! ( m_commonVertex.value() ) ) || ( 1 == iPile ) )
                 sc = m_vertexSmearingTool -> smearVertex( &evt , engine ) ;
             if ( ! sc.isSuccess() ) error() << "Smearing tool failed" << endmsg;
           }
         }
       }
 
-      if ( ( m_commonVertex ) && ( 1 < nPileUp ) ) {
+      if ( ( m_commonVertex.value() ) && ( 1 < nPileUp ) ) {
         auto commonV = 
           (*std::begin(std::begin(theEvents)->beams()))->end_vertex()->position();
         for ( auto & evt : theEvents ) {

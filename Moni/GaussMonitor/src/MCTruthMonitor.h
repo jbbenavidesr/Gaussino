@@ -40,7 +40,7 @@ public:
   StatusCode finalize() override; ///< Algorithm finalization
 
 protected:
-  bool detailedHistos() const { return m_detailedHistos; }
+  bool detailedHistos() const { return m_detailedHistos.value(); }
 
 private:
   Gaudi::Property<bool> m_detailedHistos{this, "DetailedHistos", false};

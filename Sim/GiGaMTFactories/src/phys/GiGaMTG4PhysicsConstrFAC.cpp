@@ -57,7 +57,7 @@ public:
   using extends::extends;
   PhysConstr* construct() const override
   {
-    auto tmp = new PhysConstr{name(), verbosity(), m_useMuonMinusCapturetool};
+    auto tmp = new PhysConstr{name(), verbosity(), m_useMuonMinusCapturetool.value()};
     return tmp;
   }
 };
@@ -88,7 +88,7 @@ public:
   using extends::extends;
   PhysConstr* construct() const override
   {
-    auto tmp = new PhysConstr{name(), m_quasiElastic};
+    auto tmp = new PhysConstr{name(), m_quasiElastic.value()};
     tmp->SetVerboseLevel( verbosity() );
     return tmp;
   }

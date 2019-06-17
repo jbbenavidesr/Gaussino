@@ -40,7 +40,7 @@ G4VUserPhysicsList* GiGaMTModularPhysListFAC::construct() const
   plist->cutForGamma    = m_cutForGamma;
   plist->cutForElectron = m_cutForElectron;
   plist->cutForPositron = m_cutForPositron;
-  plist->dumpCutsTable  = m_dumpCutsTable;
+  plist->dumpCutsTable  = m_dumpCutsTable.value();
   for ( auto& ctool : m_constructors ) {
     plist->RegisterPhysics( ctool->construct() );
   }
