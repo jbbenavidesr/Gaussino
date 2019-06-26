@@ -41,7 +41,7 @@ namespace Random
 class RndAlgSeeder : public GaudiAlgorithm
 {
   Gaudi::Property<int> m_forcedSeed{this, "ForcedSeed", 0, "Force seed to value if not 0"};
-  PublicToolHandle<IExtEngine> m_engine_tool{this, "RandomEngine", "MixMaxRng"};
+  ToolHandle<IExtEngine> m_engine_tool{this, "RandomEngine", "MixMaxRng"};
 
 public:
   using GaudiAlgorithm::GaudiAlgorithm;

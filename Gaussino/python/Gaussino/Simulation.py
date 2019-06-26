@@ -14,7 +14,12 @@ class SimPhase(ConfigurableUser):
 
     __slots__ = {
         "DebugCommunication": False,
-        "TrackTruth": True
+        "TrackTruth": True,
+        "G4BeginRunCommand": [
+            "/tracking/verbose 0",
+            "/process/eLoss/verbose 0"
+        ],
+        "G4EndRunCommand": []
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):

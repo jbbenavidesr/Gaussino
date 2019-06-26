@@ -6,6 +6,7 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
+from Gaudi.Configuration import log
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
 from Gaussino.Utilities import configure_edm_conversion
@@ -23,7 +24,7 @@ class Gaussino(ConfigurableUser):
         ,"DatasetNameForced" : False  # NOQA
         ,"DataType"          : ""  # NOQA
         ,"SpilloverPaths"    : []  # NOQA
-        ,"Phases"            : ["Generation","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
+        ,"Phases"            : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
         ,"OutputType"        : 'SIM'  # NOQA
         ,"EnablePack"        : True  # NOQA
         ,"DataPackingChecks" : True  # NOQA
@@ -38,7 +39,8 @@ class Gaussino(ConfigurableUser):
         ,"EnableHive"        : False  # NOQA
         ,"ThreadPoolSize"    : 2  # NOQA
         ,"EventSlots"        : 2  # NOQA
-        ,"ConvertEDM"        : False
+        ,"ConvertEDM"        : False  # NOQA
+        ,"ForceRandomEngine"   : 'NONE'  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -82,8 +84,8 @@ class Gaussino(ConfigurableUser):
         auditorService()
 
         phases = self.getProp("Phases")
-        if "Generation" not in phases:
-            raise Exception("Must have Generation phase")
+        if "Generator" not in phases:
+            raise Exception("Must have Generator phase")
         self.setOtherProps(GenPhase(), ['evtMax'])
         GenPhase().configure_phase()
         if "Simulation" in phases:
@@ -94,11 +96,27 @@ class Gaussino(ConfigurableUser):
         if self.getProp('ConvertEDM'):
             ApplicationMgr().TopAlg += configure_edm_conversion()
 
-
         histogramService()
 
         ApplicationMgr().EvtMax = self.getProp('evtMax')
         ApplicationMgr().EvtSel = 'NONE'
+
+        from Gaudi.Configuration import appendPostConfigAction
+
+        def force_engine():
+            from Gaudi import Configuration
+            neweng = self.getProp('ForceRandomEngine')
+            for name, conf in Configuration.allConfigurables.items():
+                try:
+                    conf.setProp('RandomEngine', neweng)
+                except:
+                    pass
+                else:
+                    log.info('Forced random engine of {} to {}'.format(
+                        name, neweng,))
+
+        if self.getProp('ForceRandomEngine') != 'NONE':
+            appendPostConfigAction(force_engine)
 
     eventType = staticmethod(GenPhase.eventType)
 

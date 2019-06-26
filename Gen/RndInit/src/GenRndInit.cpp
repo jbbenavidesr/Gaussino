@@ -35,7 +35,7 @@ StatusCode GenRndInit::initialize()
   return StatusCode::SUCCESS;
 }
 
-LHCb::GenHeader GenRndInit::operator()() const
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
 {
   debug() << "==> Execute" << endmsg;
 
@@ -55,7 +55,7 @@ LHCb::GenHeader GenRndInit::operator()() const
       m_wait_at_barrier = false;
     }
   }
-  if ( eventNumber >= m_firstTimingEvent && eventNumber < m_lastTimingEvent){
+  if ( eventNumber >= m_firstTimingEvent && eventNumber < m_lastTimingEvent ) {
     m_evtTimingCounter++;
   }
 
@@ -67,8 +67,9 @@ LHCb::GenHeader GenRndInit::operator()() const
       m_endbarrier->wait();
       m_wait_at_endbarrier = false;
       auto end_time        = Clock::now();
-      info() << "Measured event loop time ("<< m_evtTimingCounter <<") [ns]: "
-             << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+      info() << "Measured event loop time (" << m_evtTimingCounter
+             << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
+             << endmsg;
     } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
       debug() << "Larger. Waiting at end barrier" << endmsg;
       m_endbarrier->wait();
@@ -92,8 +93,8 @@ LHCb::GenHeader GenRndInit::operator()() const
   header.setRunNumber( m_runNumber );
   header.setEvtNumber( eventNumber );
   header.setEvType( 0 );
-
-  return header;
+  auto beam = createBeamParameters();
+  return std::make_tuple( header, beam );
 }
 
 StatusCode GenRndInit::finalize()
@@ -114,4 +115,24 @@ void GenRndInit::printEventRun( long long event, int run, std::vector<long int>*
   info() << ",  Nr. in job = " << eventCounter();
   if ( 0 != seeds ) info() << " with seeds " << *seeds;
   info() << endmsg;
+}
+
+LHCb::BeamParameters GenRndInit::createBeamParameters() const
+{
+  LHCb::BeamParameters ret{};
+  // create beam parameter object
+  ret.setEnergy( m_beamInfoSvc->energy() );
+  ret.setSigmaS( m_beamInfoSvc->sigmaS() );
+  ret.setEpsilonN( m_beamInfoSvc->epsilonN() );
+  ret.setTotalXSec( m_beamInfoSvc->totalXSec() );
+  ret.setHorizontalCrossingAngle( m_beamInfoSvc->horizontalCrossingAngle() );
+  ret.setVerticalCrossingAngle( m_beamInfoSvc->verticalCrossingAngle() );
+  ret.setHorizontalBeamlineAngle( m_beamInfoSvc->horizontalBeamlineAngle() );
+  ret.setVerticalBeamlineAngle( m_beamInfoSvc->verticalBeamlineAngle() );
+  ret.setBetaStar( m_beamInfoSvc->betaStar() );
+  ret.setBunchSpacing( m_beamInfoSvc->bunchSpacing() );
+  ret.setBeamSpot( m_beamInfoSvc->beamSpot() );
+  ret.setLuminosity( m_beamInfoSvc->luminosity() );
+
+  return ret;
 }
