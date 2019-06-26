@@ -25,7 +25,7 @@ protected:
   virtual ~GiGaMTPhysConstr(){};
   inline int verbosity() const
   {
-    int verb = msgLevel();
+    auto verb = msgLevel();
     if ( verb == MSG::DEBUG ) {
       return 1;
     } else if ( verb == MSG::VERBOSE ) {

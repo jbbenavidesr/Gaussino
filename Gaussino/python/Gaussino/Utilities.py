@@ -127,15 +127,20 @@ def histogramService(name=Configurable.DefaultName):
 @run_once
 def gigaService(name=Configurable.DefaultName, debugcommunication=False):
     from Configurables import ApplicationMgr, GiGaMT
+    from Gaussino.Simulation import SimPhase
     giga = GiGaMT()
     if debugcommunication:
-        pilotfacname = giga.getProp('WorkerPilotFactory')
-        pilotfacname_short = pilotfacname.split('/')[-1]
-        if not hasattr(giga, pilotfacname_short):
-            import Configurables
-            conf = getattr(Configurables, pilotfacname.split('/')[0])
-            giga.addTool(conf, pilotfacname_short)
-        getattr(giga, pilotfacname_short).OutputLevel = -10
+        conf = get_set_configurable(giga, 'WorkerPilotFactory')
+        conf.OutputLevel = -10
+
+    actioninit = get_set_configurable(giga, 'ActionInitializer')
+    from Configurables import GiGaRunActionCommand
+    actioninit.RunActions += ['GiGaRunActionCommand']
+    commands = actioninit.addTool(
+        GiGaRunActionCommand,
+        "GiGaRunActionCommand")
+    commands.BeginOfRunCommands = SimPhase().getProp('G4BeginRunCommand')
+    commands.EndOfRunCommands = SimPhase().getProp('G4EndRunCommand')
     ApplicationMgr().ExtSvc += [giga]
     return giga
 
