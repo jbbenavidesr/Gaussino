@@ -28,7 +28,7 @@ namespace Gaussino
     /// Accessor in "Gaudi-style"
     inline void setTrackID( const G4int id ) { m_trackID = id; }
 
-  private:
+  protected:
     G4int m_trackID;
   };
 }
