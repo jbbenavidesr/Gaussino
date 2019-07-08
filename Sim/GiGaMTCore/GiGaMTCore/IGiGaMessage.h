@@ -22,6 +22,7 @@ protected:
   virtual void error( std::string message ) const   = 0;
   virtual void warning( std::string message ) const = 0;
   virtual void info( std::string message ) const = 0;
+  virtual void always( std::string message ) const = 0;
   virtual int level( ) const {return -1;}
 };
 
@@ -80,6 +81,13 @@ protected:
     std::stringstream ss;
     ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
     m_msg->info( ss.str() );
+  }
+  void always( std::string message ) const
+  {
+    if ( !m_msg ) return;
+    std::stringstream ss;
+    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    m_msg->always( ss.str() );
   }
   int MessageInterfacelevel() const {return m_msg->level();}
   bool printVerbose() const {return m_msg->level() <= 1;}
