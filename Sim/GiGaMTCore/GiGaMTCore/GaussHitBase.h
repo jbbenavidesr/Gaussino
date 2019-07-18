@@ -21,7 +21,7 @@ namespace Gaussino
     virtual inline ~HitBase() = default; ///< Destructor
 
     inline void SetTrackID( G4int tid ) { m_trackID = tid; };
-    inline G4int GetTrackID() { return m_trackID; };
+    inline G4int GetTrackID() const { return m_trackID; };
 
     /// Accessor in "Gaudi-style"
     inline G4int trackID() const { return m_trackID; }
