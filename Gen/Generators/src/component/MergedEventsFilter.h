@@ -21,7 +21,7 @@ class IFullGenEventCutTool;
 class MergedEventsFilter
     : public Gaudi::Functional::Consumer<void(
           const std::vector<HepMC3::GenEvent>&, const LHCb::GenCollisions&)> {
-  PublicToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
+  ToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
       this, "FullGenEventCutTool", ""};
 
   public:
