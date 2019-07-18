@@ -45,10 +45,10 @@ class GiGaMTG4SensDetFactory : public extends<GiGaMTG4SensDet, GiGaFactoryBase<G
   Gaudi::Property<std::string> m_name{this, "DetName", name()};
 
 public:
+  virtual ~GiGaMTG4SensDetFactory() = default;
   using extends::extends;
   virtual SENSDET* construct() const override
   {
-    auto tmp = new SENSDET{m_name};
     std::string detname( name() );
     std::string::size_type posdot = detname.find( "." );
     while ( posdot != std::string::npos ) {
@@ -72,6 +72,7 @@ class GiGaMTG4SensDetFactory<SENSDET, hasGiGaMessage<SENSDET>>
 
 public:
   using extends::extends;
+  virtual ~GiGaMTG4SensDetFactory() = default;
   virtual SENSDET* construct() const override
   {
 
