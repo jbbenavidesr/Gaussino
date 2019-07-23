@@ -3,6 +3,7 @@
 #include "GiGaMTFactories/GiGaTool.h"
 
 class IGiGaMTGeoSvc;
+class IGaussinoTool;
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
@@ -16,6 +17,7 @@ public:
 
 protected:
   ServiceHandle<IGiGaMTGeoSvc> m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
+  ToolHandleArray<IGaussinoTool> m_afterGeo{this, "AfterGeoConstructionTools", {}};
 };
 
 class GiGaMTProxyDetectorConstructionFAC : public GiGaMTDetectorConstructionFAC

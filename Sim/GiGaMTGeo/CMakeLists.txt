@@ -11,14 +11,17 @@
 gaudi_subdir(GiGaMTGeo v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
+                         Sim/SimInterfaces
                          Sim/GiGaMTCore) 
 
+AddHepMC3()
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
-# GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
-#gaudi_add_module(GiGaMTGeo
-        #src/*.cpp
-        #LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
+gaudi_add_module(GiGaMTGeoUtils
+        src/*.cpp
+        INCLUDE_DIRS SimInterfaces
+        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib GiGaMTCoreCutLib)
 
 gaudi_install_headers(GiGaMTGeo)
+gaudi_install_headers(GiGaMTRegions)

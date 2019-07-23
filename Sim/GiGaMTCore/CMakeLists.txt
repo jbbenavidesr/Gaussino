@@ -38,3 +38,9 @@ gaudi_add_library(GiGaMTCoreRunLib
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd
                  LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib )
+
+gaudi_add_library(GiGaMTCoreCutLib
+                 src/cut/*.cpp
+                 PUBLIC_HEADERS GiGaMTCore
+                 INCLUDE_DIRS CLHEP Geant4
+                 LINK_LIBRARIES CLHEP ${GEANT4_LIBS} )

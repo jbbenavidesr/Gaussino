@@ -12,6 +12,7 @@ gaudi_subdir(GiGaMTFactories v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTCore
+                         Sim/SimInterfaces
                          HepMC3
                          Sim/GiGaMTGeo) 
 
@@ -31,6 +32,7 @@ gaudi_add_module(GiGaMTPhysFactories
 
 gaudi_add_module(GiGaMTDetFactories
         src/det/*.cpp
+        INCLUDE_DIRS SimInterfaces
         LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
 gaudi_add_module(GiGaMTTruthFactories
@@ -45,9 +47,5 @@ gaudi_add_library(GiGaMTMagnetFactoriesLib
 gaudi_add_module(GiGaMTMagnetFactories
         src/magnet/components/*.cpp
         LINK_LIBRARIES GiGaMTMagnetFactoriesLib)
-
-#gaudi_add_module(GiGaMTSensDetFactories
-        #src/sensdet/*.cpp
-        #LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
 
 gaudi_install_headers(GiGaMTFactories)
