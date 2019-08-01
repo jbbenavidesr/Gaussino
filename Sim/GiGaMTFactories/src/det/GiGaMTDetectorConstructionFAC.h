@@ -2,6 +2,10 @@
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
+#include "GaudiAlg/FunctionalDetails.h"
+#include "GaudiAlg/FunctionalUtilities.h"
+#include "Utils/ToolProperty.h"
+
 class IGiGaMTGeoSvc;
 class IGaussinoTool;
 
@@ -17,7 +21,11 @@ public:
 
 protected:
   ServiceHandle<IGiGaMTGeoSvc> m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
-  ToolHandleArray<IGaussinoTool> m_afterGeo{this, "AfterGeoConstructionTools", {}};
+  ToolHandleArray<IGaussinoTool> m_afterGeo{this};
+  Gaudi::Property<std::vector<std::string>> m_afterGeoNames{
+      this, "AfterGeoConstructionTools", {},
+      tool_array_setter(m_afterGeo, m_afterGeoNames),
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 };
 
 class GiGaMTProxyDetectorConstructionFAC : public GiGaMTDetectorConstructionFAC

@@ -20,10 +20,11 @@ G4VUserDetectorConstruction* GiGaMTProxyDetectorConstructionFAC::construct() con
   auto detconst = new GiGaMTProxyDetectorConstruction();
   detconst->SetWorldConstructor( [&]() {
     debug() << "Calling world constructor" << endmsg;
-    return m_geoSvc->constructWorld();
+    auto world = m_geoSvc->constructWorld();
     for ( auto& tool : m_afterGeo ) {
       tool->process();
     }
+    return world;
   } );
   detconst->SetSDConstructor( [&]() {
     debug() << "Calling SD and Field constructor" << endmsg;

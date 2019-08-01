@@ -59,7 +59,7 @@ StatusCode GiGaMT::InitializeMainThread() const
 StatusCode GiGaMT::InitializeWorkerThreads() const
 {
 
-  Print( "Beginning worker thread creation", MSG::DEBUG, StatusCode::SUCCESS );
+  debug() << "Beginning worker thread creation" << endmsg;
   // Barrier to synchronise the initialization of the threads to only
   // continue and exit the current function successfully when all threads
   // are ready.
@@ -80,6 +80,6 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
   // necessary, I don't know. But at least while using no more threads than physical
   // cores all threads should roughly finish initializing at the same time anyway.
   initBarrier.wait();
-  Print( "Initialized all G4 worker threads", MSG::ALWAYS, StatusCode::SUCCESS );
+  info() << "Initialized all G4 worker threads" << endmsg;
   return StatusCode::SUCCESS;
 }

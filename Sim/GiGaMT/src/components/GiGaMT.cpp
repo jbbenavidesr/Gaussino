@@ -77,7 +77,8 @@ StatusCode GiGaMT::initialize()
   // initialize the base class
   StatusCode sc = Service::initialize();
   if ( sc.isFailure() ) {
-    return Error( "Unable to initialize the base class Service ", sc );
+    error() << "Unable to initialize the base class Service " << endmsg;
+    return StatusCode::FAILURE;
   }
 
   /// print ALL properties
@@ -90,66 +91,6 @@ StatusCode GiGaMT::initialize()
     msg << MSG::DEBUG << "Property ['Name': Value] = " << ( **property ) << endmsg;
   }
 
-  // locate  services,
-  if ( 0 == svcLoc() ) {
-    return Error( "ISvcLocator* points to NULL!" );
-  }
-  // ChronoStatSvc
-  {
-    StatusCode sc = svcLoc()->service( "ChronoStatSvc", m_chronoSvc, true );
-    if ( sc.isFailure() ) {
-      return Error( "Unable to locate Chrono & Stat Service", sc );
-    }
-    if ( 0 == chronoSvc() ) {
-      return Error( "Unable to locate Chrono & Stat Service" );
-    }
-  }
-  // ToolSvc
-  {
-    StatusCode sc = svcLoc()->service( "ToolSvc", m_toolSvc, true );
-    if ( sc.isFailure() ) {
-      return Error( "Unable to locate Tool Service", sc );
-    }
-    if ( 0 == toolSvc() ) {
-      return Error( "Unable to locate Tool Service" );
-    }
-  }
-
-  if ( m_nWorkerThreads == (size_t)0 ) {
-    m_nWorkerThreads = std::thread::hardware_concurrency();
-    if ( m_nWorkerThreads == (size_t)0 )
-      return Error( "Unable to automatically determine the number of worker threads." );
-  }
-
-  m_mTRunManagerFactory = tool<GiGaFactoryBase<GiGaMTRunManager>>( m_MTRunMgrFactoryName, this );
-  if ( 0 == m_mTRunManagerFactory ) {
-    return Error( "Unable to create/locate factory for GiGaMTRunManager" );
-  }
-  m_physListFactory = tool<GiGaFactoryBase<G4VUserPhysicsList>>( m_PhysListFactoryName, this );
-  if ( 0 == m_physListFactory ) {
-    return Error( "Unable to create/locate factory for G4VUserPhysicsList" );
-  }
-  m_workerPilotFactory = tool<GiGaFactoryBase<GiGaWorkerPilot>>( m_WorkerPilotFactoryName, this );
-  if ( 0 == m_workerPilotFactory ) {
-    return Error( "Unable to create/locate factory for GiGaWorkerPilot" );
-  }
-  m_ActionInitializerFactory = tool<GiGaFactoryBase<G4VUserActionInitialization>>( m_UserActionInitializerName, this );
-  if ( 0 == m_ActionInitializerFactory ) {
-    return Error( "Unable to create/locate GiGaActionInitializer" );
-  }
-  m_detConstFactory = tool<GiGaFactoryBase<G4VUserDetectorConstruction>>( m_DetectorConstructionName, this );
-  if ( 0 == m_detConstFactory ) {
-    return Error( "Unable to create/locate factory for G4VUserDetectorConstruction" );
-  }
-  for ( auto& toolname : m_MoniToolNames ) {
-    auto tmp_tool = tool<IG4MonitoringTool>( toolname, this );
-    if ( 0 == tmp_tool ) {
-      return Error( "Unable to create/locate monitoring tool " + toolname );
-    } else {
-      m_MoniTools.push_back( tmp_tool );
-    }
-  }
-
   /// Dump all particles known to Geant4
   if ( m_printMaterials.value() ) {
     G4cout << *G4Material::GetMaterialTable();
@@ -160,12 +101,14 @@ StatusCode GiGaMT::initialize()
   // Main initialization of the run managers using the tools above
   sc = InitializeMainThread();
   if ( sc.isFailure() ) {
-    return Error( "Unable to initialize main G4 thread" );
+    error() << "Unable to initialize main G4 thread" << endmsg;
+    return StatusCode::FAILURE;
   }
 
   sc = InitializeWorkerThreads();
   if ( sc.isFailure() ) {
-    return Error( "Unable to initialize G4 worker threads" );
+    error() << "Unable to initialize G4 worker threads" << endmsg;
+    return StatusCode::FAILURE;
   }
 
   /// Dump all particles known to Geant4
@@ -182,7 +125,6 @@ StatusCode GiGaMT::initialize()
 //=============================================================================
 StatusCode GiGaMT::finalize()
 {
-  Print( "Finalization", MSG::DEBUG, StatusCode::SUCCESS );
   // Trigger the termination of the worker threads which are blocking
   // on an empty queue right now by pushing the sentinel the worker threads
   m_payloadQueue.enqueue( std::nullopt );
@@ -191,7 +133,7 @@ StatusCode GiGaMT::finalize()
   for ( auto& t : m_workerThreads ) {
     t.join();
   }
-  Print( "Finalized all G4 worker threads", MSG::ALWAYS, StatusCode::SUCCESS );
+  always() << "Finalized all G4 worker threads" << endmsg;
   delete GiGaMTRunManager::GetGiGaMTRunManager();
 
   // error printout
@@ -216,17 +158,6 @@ StatusCode GiGaMT::finalize()
   m_errors.clear();
   m_warnings.clear();
   m_exceptions.clear();
-
-  // release all used services
-  if ( 0 != toolSvc() ) {
-    toolSvc()->release();
-    m_toolSvc = 0;
-  }
-  if ( 0 != chronoSvc() ) {
-    chronoSvc()->release();
-    m_chronoSvc = 0;
-  }
-  // if( 0 != geoSrc   ()  ) { geoSrc    () -> release () ; m_geoSrc     = 0 ; }
 
   ///  finalize the base class
   return Service::finalize();
@@ -257,7 +188,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
   return_events.reserve( promises.size() );
   return_truths.reserve( promises.size() );
   for ( auto& fut : futures ) {
-    auto[evt, tru] = fut.get(); // Copy illision
+    auto [evt, tru] = fut.get(); // Copy illision
     return_events.emplace_back( std::move( evt ) );
     return_truths.emplace_back( std::move( tru ) );
   }
@@ -274,59 +205,4 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
 
   return std::make_tuple<G4EventProxies, Gaussino::MCTruthPtrs>( std::move( return_events ),
                                                                  std::move( return_truths ) );
-}
-
-StatusCode GiGaMT::Print( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
-{
-  MsgStream log( msgSvc(), name() );
-  log << level << Message << endmsg;
-  return Status;
-}
-
-StatusCode GiGaMT::Error( const std::string& Message, const StatusCode& Status ) const
-{
-  Stat stat( chronoSvc(), name() + ":Error" );
-  // increase error counter
-  m_errors[Message] += 1;
-  return Print( Message, MSG::ERROR, Status );
-}
-
-StatusCode GiGaMT::Warning( const std::string& Message, const StatusCode& Status ) const
-{
-  Stat stat( chronoSvc(), name() + ":Warning" );
-  // increase counter of warnings
-  m_warnings[Message] += 1;
-  return Print( Message, MSG::WARNING, Status );
-}
-
-StatusCode GiGaMT::Exception( const std::string& Message, const GaudiException& Excp, const MSG::Level& level,
-                              const StatusCode& Status ) const
-{
-  Stat stat( chronoSvc(), Excp.tag() );
-  Print( "GaudiException: catch and re-throw " + Message, level, Status );
-  // increase counter of exceptions
-  m_exceptions[Message] += 1;
-  throw GiGaException( name() + "::" + Message, Excp, Status );
-  return Status;
-}
-
-StatusCode GiGaMT::Exception( const std::string& Message, const std::exception& Excp, const MSG::Level& level,
-                              const StatusCode& Status ) const
-{
-  Stat stat( chronoSvc(), Excp.what() );
-  Print( "std::exception: catch and re-throw " + Message, level, Status );
-  // increase counter of exceptions
-  m_exceptions[Message] += 1;
-  throw GiGaException( name() + "::" + Message + " (" + Excp.what() + ")", Status );
-  return Status;
-}
-
-StatusCode GiGaMT::Exception( const std::string& Message, const MSG::Level& level, const StatusCode& Status ) const
-{
-  Stat stat( chronoSvc(), "*UNKNOWN Exception*" );
-  Print( "GiGaException throw " + Message, level, Status );
-  // increase counter of exceptions
-  m_exceptions[Message] += 1;
-  throw GiGaException( name() + "::" + Message, Status );
-  return Status;
 }

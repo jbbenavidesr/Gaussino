@@ -18,8 +18,16 @@ def run_once(func):
 
 def get_set_configurable(parent, propertyname):
     propertyvalue = parent.getProp(propertyname)
-    propertyvalue_short = propertyvalue.split('/')[-1]
-    objectname = propertyvalue.split('/')[0]
+    try:
+        objectname = propertyvalue.getType()
+        propertyvalue_short = propertyvalue.getName()
+    except:
+        try:
+            propertyvalue_short = propertyvalue.split('/')[-1]
+            objectname = propertyvalue.split('/')[0]
+        except:
+            pass
+    propertyvalue_short = propertyvalue_short.split('.')[-1]
     if not hasattr(parent, propertyvalue_short):
         import Configurables
         conf = getattr(Configurables, objectname)

@@ -9,69 +9,10 @@
 
 DECLARE_COMPONENT( GiGaActionInitializer )
 
-StatusCode GiGaActionInitializer::initialize()
-{
-  auto sc = GaudiTool::initialize();
-  // Now get all those factories and stuff them into the vector
-  for ( auto& name : m_UserRunAction ) {
-    auto t = tool<RunActionFactory>( name, this );
-    if ( !t ) {
-      return Error( "Could not get " + name );
-    }
-    m_UserRunActionsFactories.push_back( t );
-  }
-
-  for ( auto& name : m_UserEventAction ) {
-    auto t = tool<EventActionFactory>( name, this );
-    if ( !t ) {
-      return Error( "Could not get " + name );
-    }
-    m_UserEventActionFactories.push_back( t );
-  }
-
-  if ( m_UserStackingAction != "" ) {
-    m_UserStackingActionFactory = tool<StackingActionFactory>( m_UserStackingAction, this );
-    if ( !m_UserStackingActionFactory ) {
-      return Error( "Could not get " + m_UserStackingAction );
-    }
-  }
-
-  for ( auto& name : m_UserTrackingAction ) {
-    auto t = tool<TrackingActionFactory>( name, this );
-    if ( !t ) {
-      return Error( "Could not get " + name );
-    }
-    m_UserTrackingActionFactories.push_back( t );
-  }
-
-  for ( auto& name : m_UserSteppingAction ) {
-    auto t = tool<SteppingActionFactory>( name, this );
-    if ( !t ) {
-      return Error( "Could not get " + name );
-    }
-    m_UserSteppingActionFactories.push_back( t );
-  }
-
-  return sc;
-}
-
-StatusCode GiGaActionInitializer::finalize()
-{
-  release_tools( m_UserRunActionsFactories );
-  release_tools( m_UserEventActionFactories );
-  release_tools( m_UserSteppingActionFactories );
-  release_tools( m_UserTrackingActionFactories );
-  if ( m_UserStackingActionFactory ) {
-    m_UserStackingActionFactory->release();
-  }
-
-  return GaudiTool::finalize();
-}
-
 void GiGaActionInitializer::BuildForMaster() const
 {
   auto runseq = new G4MultiRunAction{};
-  for ( auto& fac : m_UserRunActionsFactories ) {
+  for ( auto& fac : m_UserRunActionFactories ) {
     runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
   }
   SetUserAction( runseq );
@@ -81,7 +22,7 @@ void GiGaActionInitializer::Build() const
 {
   { // Sequence of UserRunActions
     auto runseq = new G4MultiRunAction{};
-    for ( auto& fac : m_UserRunActionsFactories ) {
+    for ( auto& fac : m_UserRunActionFactories ) {
       runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
     }
     SetUserAction( runseq );
@@ -95,7 +36,7 @@ void GiGaActionInitializer::Build() const
     SetUserAction( evtseq );
   }
 
-  if ( m_UserStackingActionFactory ) {
+  if ( !m_UserStackingActionFactory.empty() ) {
     SetUserAction( m_UserStackingActionFactory->construct() );
   }
 
@@ -109,7 +50,7 @@ void GiGaActionInitializer::Build() const
 
   { // Sequence of UserTrackingAction
     auto stepseq = new G4MultiSteppingAction{};
-    for ( auto& fac : m_UserSteppingActionFactories) {
+    for ( auto& fac : m_UserSteppingActionFactories ) {
       stepseq->push_back( std::unique_ptr<G4UserSteppingAction>( fac->construct() ) );
     }
     SetUserAction( stepseq );
