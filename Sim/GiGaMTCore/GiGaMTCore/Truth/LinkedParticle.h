@@ -13,6 +13,7 @@ namespace Gaussino
 {
   class MCTruthConverter;
   class MCTruthTracker;
+  class MCTruthData;
 }
 
 class LinkedVertex;
@@ -46,6 +47,9 @@ private:
   LinkedParticle( unsigned int id, Gaussino::G4TruthParticle* g4truth ) : m_id( id ) { m_tracking = g4truth; }
   LinkedParticle() = delete;
 
+  // Allows to update the ID.
+  // Used to move the IDs when merging converters to avoid conflicts
+  void SetID(unsigned int id) { m_id=id;};
 public:
   virtual ~LinkedParticle();
   const HepMC3::GenParticle* HepMC() { return m_hepmc; }

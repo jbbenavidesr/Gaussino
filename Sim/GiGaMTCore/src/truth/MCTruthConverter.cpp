@@ -1,11 +1,12 @@
 #include "GiGaMTCore/Truth/MCTruthConverter.h"
 #include "ConverterInfo.h"
+#include "GaudiKernel/GaudiException.h"
 #include "Geant4/G4SystemOfUnits.hh"
 #include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 #include "Helpers.h"
 #include <functional>
 #include <stdexcept>
-#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 
 bool essentiallyEqual( float a, float b, float epsilon = 0.00001 )
 {
@@ -62,6 +63,40 @@ namespace Gaussino
     return tmp_store.size();
   }
 
+  void MCTruthData::VerifyStructure() const
+  {
+
+    std::set<LinkedParticle*> visited;
+    std::function<void( LinkedParticle* )> rec_down = [&]( LinkedParticle* lp ) {
+      visited.insert( lp );
+      for ( auto& dp : lp->GetChildren() ) {
+        rec_down( dp );
+      }
+    };
+    for ( auto& rp : m_root_particles ) {
+      rec_down( rp );
+    }
+    if ( visited.size() < m_linkedParticles.size() ) {
+      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+    }
+
+    visited.clear();
+    std::function<void( LinkedParticle* )> rec_up = [&]( LinkedParticle* lp ) {
+      visited.insert( lp );
+      for ( auto& dp : lp->GetParents() ) {
+        rec_up( dp );
+      }
+    };
+    for ( auto& rp : m_linkedParticles ) {
+      if ( rp->GetEndVtxs().empty() ) {
+        rec_up( rp );
+      }
+    }
+    if ( visited.size() < m_linkedParticles.size() ) {
+      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+    }
+  }
+
   ///////////////////////////////////////////////////////////
   // MCTruthConverter
   //////////////////////////////////////////////////////////
@@ -84,9 +119,13 @@ namespace Gaussino
     // As this can only be called on a MCTruthConverter, only Declare could have been used.
     // Hence only need to merge the contents of m_linkedParticles and m_hepmc_to_linked
     for ( auto& lp : conv.m_linkedParticles ) {
-      m_linkedParticles.insert( std::move( lp ) );
+      // Merge linked particles. This implies that conv transfers ownership to this
+      m_linkedParticles.insert( lp );
     }
     for ( auto& hep_lp : conv.m_hepmc_to_linked ) {
+      // Need ensure that the HepMC event / all its linked particles are correctly sorted.
+      // This is necessary to avoid collisions in HepMC particle ID which is used to identify
+      // root vertices during the particle linking
       if ( m_hepmc_to_linked.find( hep_lp.first ) != std::end( m_hepmc_to_linked ) ) {
         for ( auto& int_lp : hep_lp.second ) {
           m_hepmc_to_linked[hep_lp.first].insert( int_lp );
@@ -94,7 +133,15 @@ namespace Gaussino
       } else {
         m_hepmc_to_linked.insert( hep_lp );
       }
+      // Shift the IDs of the just merged particles to avoid collisions
+      for(auto lp:conv.m_linkedParticles){
+        lp->SetID(m_pcounter + lp->GetID());
+      }
+      m_pcounter += conv.m_linkedParticles.size();
     }
+    // Explicitly clear the container of linked particles of conv. As this is a set of plain
+    // ptr, the particles themselves are not deleted. However, this prevents the destructor
+    // of conv deleting them
     conv.m_linkedParticles.clear();
   }
 
@@ -119,6 +166,8 @@ namespace Gaussino
     // We find a root particle and then process and link all its children by linking the LinkedParticle
     // instances together.
     // Root particles are identified as those with the smallest ID
+    // If this converter contains multiple HepMC events (i.e. pileup collisions), their IDs would collide so
+    // we do this separately for each HepMC event
     for ( auto& hepmcs : m_hepmc_to_linked ) {
       auto& table = hepmcs.second;
       std::set<int> IDs;
@@ -203,6 +252,7 @@ namespace Gaussino
         throw std::runtime_error( msg.str() );
       }
     }
+    VerifyStructure();
   }
   void MCTruthTracker::AddToG4Event( G4Event* g4event )
   {
@@ -347,6 +397,8 @@ namespace Gaussino
       EraseDecayTree( lp );
     }
     to_delete.clear();
+
+    VerifyStructure();
   }
 
   const LinkedParticle* MCTruth::GetParticleFromTrackID( int trackid ) const
@@ -407,4 +459,4 @@ namespace Gaussino
     }
     EraseLinkedParticle( lp );
   }
-}
+} // namespace Gaussino

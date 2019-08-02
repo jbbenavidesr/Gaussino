@@ -28,14 +28,16 @@ namespace Gaussino
     MCTruthData( const MCTruthData& ) = delete;
     virtual ~MCTruthData();
     template <typename STREAM>
-    STREAM& DumpToStream( STREAM&,
-                          std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
+    STREAM& DumpToStream(
+        STREAM&, std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
     size_t GetNParticles() const;
     size_t GetNVertices() const;
 
   protected:
     MCTruthData() = default;
     MCTruthData( MCTruthData&& right ) noexcept;
+    // Checks the consistency of the structure. Throws an exception
+    void VerifyStructure() const;
     // Owning container of the linked particle objects
     std::set<LinkedParticle*> m_linkedParticles;
     // Some helpful maps to organise the data
@@ -62,7 +64,7 @@ namespace Gaussino
   public:
     MCTruthConverter() : MCTruthData(){};
     MCTruthConverter( const MCTruthConverter& ) = delete;
-    MCTruthConverter( MCTruthConverter&& right ) noexcept : MCTruthData( std::move( right ) ){};
+    MCTruthConverter( MCTruthConverter&& right ) noexcept: MCTruthData( std::move( right ) ){};
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
     void Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type );
@@ -111,7 +113,7 @@ namespace Gaussino
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
     LinkedParticle::PtrSet GetRootParticles() const { return m_root_particles; }
-    const LinkedParticle* GetParticleFromTrackID(int trackid) const;
+    const LinkedParticle* GetParticleFromTrackID( int trackid ) const;
 
   private:
     void DoCleanup();
@@ -138,7 +140,7 @@ namespace Gaussino
     }
     return ret;
   }
-}
+} // namespace Gaussino
 
 template <typename STREAM>
 STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::string( int )> pdg_to_name )
@@ -149,20 +151,20 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
   out << "#############################################\n";
 
   std::set<LinkedParticle*> visited;
-  unsigned int i_root = 1;
+  unsigned int i_root                                           = 1;
+  std::function<void( LinkedParticle*, std::string )> rec_print = [&]( LinkedParticle* lp, std::string spacing ) {
+    out << spacing << " " << pdg_to_name( lp->GetPDG() ) << *lp << "\n";
+    if ( visited.count( lp ) > 0 ) {
+      out << spacing << " *** Already printed this tree\n";
+    } else {
+      visited.insert( lp );
+      for ( auto& dp : lp->GetChildren() ) {
+        rec_print( dp, spacing + spacer );
+      }
+    }
+  };
   for ( auto& rp : m_root_particles ) {
     out << "-------- Beginning root particle " << i_root << " --------\n";
-    std::function<void( LinkedParticle*, std::string )> rec_print = [&]( LinkedParticle* lp, std::string spacing ) {
-      out << spacing << " " << pdg_to_name( lp->GetPDG() ) << *lp << "\n";
-      if ( visited.count( lp ) > 0 ) {
-        out << spacing << " *** Already printed this tree\n";
-      } else {
-        visited.insert( lp );
-        for ( auto& dp : lp->GetChildren() ) {
-          rec_print( dp, spacing + spacer );
-        }
-      }
-    };
     rec_print( rp, "" );
     i_root++;
   }
