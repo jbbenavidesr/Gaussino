@@ -28,7 +28,7 @@ DECLARE_COMPONENT( GiGaRegionsTool )
 // ============================================================================
 StatusCode GiGaRegionsTool::process( const std::string& region ) const
 {
-  if ( m_simSvc.isValid() ) {
+  if ( !m_simSvc.isValid() ) {
     return Error( " process('" + region + "'): IRegionsDefinitionSvc* is invalid!" );
   }
 

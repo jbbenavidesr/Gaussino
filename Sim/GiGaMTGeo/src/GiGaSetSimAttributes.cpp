@@ -54,7 +54,7 @@ G4LogicalVolume* GiGaSetSimAttributes::g4volume( const std::string& address ) co
 StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
 {
 
-  if ( 0 == m_simSvc ) {
+  if ( !m_simSvc.isValid() ) {
     return Error( " process('" + vol + "'): simSvc () is NULL! " );
   }
 
@@ -95,7 +95,7 @@ StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
 
   typedef std::map<int, const SimAttribute*> SimAttributes;
 
-  Print( "Setting SimAttributes for " + vol ).ignore();
+  debug() << "Setting SimAttributes for " + vol << endmsg;
   const SimAttributes* partattr = m_simSvc->simAttribute( vol );
 
   // instanciate GaussG4UserLimits
