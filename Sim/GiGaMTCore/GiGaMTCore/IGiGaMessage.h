@@ -45,48 +45,49 @@ public:
     m_msg       = right.m_msg;
     right.m_msg = nullptr;
   }
+  static thread_local std::string NameTag;
 
 protected:
   void debug( std::string message ) const
   {
     if ( !m_msg || !printDebug()) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->debug( ss.str() );
   }
   void verbose( std::string message ) const
   {
     if ( !m_msg || !printVerbose()) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->verbose( ss.str() );
   }
   void error( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->error( ss.str() );
   }
   void warning( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->warning( ss.str() );
   }
   void info( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->info( ss.str() );
   }
   void always( std::string message ) const
   {
     if ( !m_msg ) return;
     std::stringstream ss;
-    ss << "[ Thread " << std::this_thread::get_id() << " ] " << message;
+    ss << "[ " << NameTag << " ] " << message;
     m_msg->always( ss.str() );
   }
   int MessageInterfacelevel() const {return m_msg->level();}
