@@ -32,6 +32,7 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
 void GiGaWorkerPilot::InitializeWorker()
 {
   debug( "Initializing the worker for thread " + std::to_string( iWorker ) );
+  GiGaMessage::NameTag = "Worker #" + std::to_string(iWorker);
   // Following code is modelled based on the code in
   // G4UserWorkerThreadInitialization::CreateAndStartWorker and
   // G4MTRunManagerKernel::StartThread with slight modifications.

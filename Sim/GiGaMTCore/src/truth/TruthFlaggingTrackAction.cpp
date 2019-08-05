@@ -122,11 +122,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
 
   auto this_track_info = GaussinoTrackInformation::Get();
-  // As this function only does positive flagging, skip the following if track
-  // is already marked to be kept. Likely causes for this are either the requirements
-  // made in PreUserTrackAction here or the track having made a hit in a sensitive
-  // detector
-  if ( this_track_info->storeTruth() ) return;
 
   // if only to a certain z, check z and set flag
   bool zstore = true;

@@ -170,6 +170,13 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
   }
 
   out << "Visited " << visited.size() << " out of " << m_linkedParticles.size() << " LinkedParticle\n";
+  if(visited.size() < m_linkedParticles.size()){
+    for(auto lp : m_linkedParticles){
+      if(visited.count(lp) == 0){
+        rec_print(lp, "");
+      }
+    }
+  }
   out << "#############################################\n";
   out << "# Finished dump of converter\n";
   out << "#############################################\n";

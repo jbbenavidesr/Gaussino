@@ -14,6 +14,7 @@ class GaussinoPrimaryParticleInformation : public G4VUserPrimaryParticleInformat
 public:
   GaussinoPrimaryParticleInformation()          = default;
   virtual ~GaussinoPrimaryParticleInformation() = default;
+  friend std::ostream& operator<<( std::ostream&, const GaussinoPrimaryParticleInformation& );
 
   /// Get the linked particle
   unsigned int getLinkedID() { return m_linkedID; }
@@ -44,3 +45,5 @@ private:
   /// Flag to indicate if particle has oscillated
   unsigned int m_linkedID{0};
 };
+
+

@@ -134,8 +134,8 @@ namespace Gaussino
         m_hepmc_to_linked.insert( hep_lp );
       }
       // Shift the IDs of the just merged particles to avoid collisions
-      for(auto lp:conv.m_linkedParticles){
-        lp->SetID(m_pcounter + lp->GetID());
+      for ( auto lp : conv.m_linkedParticles ) {
+        lp->SetID( m_pcounter + lp->GetID() );
       }
       m_pcounter += conv.m_linkedParticles.size();
     }
@@ -327,7 +327,13 @@ namespace Gaussino
 
   void MCTruthTracker::RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID )
   {
-    auto primaryLP                               = m_primary_to_linked[primaryID];
+    auto primaryLP = m_primary_to_linked[primaryID];
+    if ( primaryLP->HepMC()->pdg_id() != particle->GetPdgID() ) {
+      throw GaudiException{"G4Truth PDGid does not match", "MCTruth", StatusCode::FAILURE};
+    }
+    if ( primaryLP->G4Truth() ) {
+      throw GaudiException{"LinkedParticle already has G4Truth", "MCTruth", StatusCode::FAILURE};
+    }
     primaryLP->G4Truth()                         = particle;
     m_tracking_to_linked[particle->GetTrackID()] = primaryLP;
   }

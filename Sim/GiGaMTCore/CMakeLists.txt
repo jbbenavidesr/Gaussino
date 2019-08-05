@@ -26,21 +26,26 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DTRUTHDEBUG)
 endif()
 
+gaudi_add_library(GiGaMTCoreMessageLib
+                 src/message/*.cpp
+                 PUBLIC_HEADERS GiGaMTCore)
+
 gaudi_add_library(GiGaMTCoreTruthLib
                  src/truth/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd HepMCUtils
-                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils MCEvent)
+                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils MCEvent  GiGaMTCoreMessageLib)
+
 add_dependencies(GiGaMTCoreTruthLib HepMC3Ext)
 
 gaudi_add_library(GiGaMTCoreRunLib
                  src/run/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd
-                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib )
+                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib GiGaMTCoreMessageLib)
 
 gaudi_add_library(GiGaMTCoreCutLib
                  src/cut/*.cpp
                  PUBLIC_HEADERS GiGaMTCore
                  INCLUDE_DIRS CLHEP Geant4
-                 LINK_LIBRARIES CLHEP ${GEANT4_LIBS} )
+                 LINK_LIBRARIES CLHEP ${GEANT4_LIBS}  GiGaMTCoreMessageLib)

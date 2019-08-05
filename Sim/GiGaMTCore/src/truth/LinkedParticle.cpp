@@ -1,6 +1,7 @@
 #include "GiGaMTCore/Truth/LinkedParticle.h"
 
 #include "CLHEP/Units/PhysicalConstants.h"
+#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
 #include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 #include "Helpers.h"
 #include "Math/GenVector/Boost.h"
@@ -101,7 +102,7 @@ HepMC3::FourVector LinkedParticle::GetOriginPosition() const
   } else if ( m_hepmc && m_hepmc->production_vertex() ) {
     return m_hepmc->production_vertex()->position();
   } else {
-  return HepMC3::FourVector{};
+    return HepMC3::FourVector{};
   }
 }
 
@@ -212,8 +213,11 @@ T& operator<<( T& ostr, const HepMC3::FourVector& fv )
 std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
 {
   out << " PDG: " << lp.GetPDG() << ", ID = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
-      << ( lp.m_primary ? lp.m_primary->GetTrackID() : -1 ) << ", "
-      << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "],"
+      << ( lp.m_primary
+               ? std::to_string( lp.m_primary->GetTrackID() ) + "(" +
+                     std::to_string( GaussinoPrimaryParticleInformation::Get( lp.m_primary )->getLinkedID() ) + ")"
+               : "-1" )
+      << ", " << ( lp.m_tracking ? lp.m_tracking->GetTrackID() : -1 ) << "],"
       << " HepMC|G4Primary|G4Truth = " << (bool)lp.m_hepmc << "|" << (bool)lp.m_primary << "|" << (bool)lp.m_tracking
       << " CONV  = " << lp.m_conversion_type;
   return out;

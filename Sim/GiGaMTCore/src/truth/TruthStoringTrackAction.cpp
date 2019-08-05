@@ -74,16 +74,12 @@ void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
     HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
                                track->GetGlobalTime() );
     G4cout << "##### STARTING NEW TRACK #####" << G4endl;
-    G4cout << "Storing new track" << G4endl;
     G4cout << "TrackID " << track->GetTrackID() << G4endl;
     G4cout << "ParentID " << track->GetParentID() << G4endl;
     G4cout << "PdgID " << pdgID << G4endl;
     G4cout << "Direct parent converted " << track_info->directParent() << G4endl;
-    G4cout << "ProdPos " << prodpos << G4endl;
     G4cout << "Current pos" << endpos << G4endl;
     G4cout << "Momentum " << fourmomentum << G4endl;
-    G4cout << "Particle definitions: " << G4endl;
-    track->GetDefinition()->DumpTable();
   }
 #endif
 }
@@ -113,17 +109,11 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
     int pdgID = track->GetDefinition()->GetPDGEncoding();
 #ifdef TRUTHDEBUG
     if ( printDebug() ) {
+      G4cout << "##### STORING IT #####" << G4endl;
       G4cout << "Storing new track" << G4endl;
       G4cout << "Reason " << track_info->GetStoreReason() << G4endl;
-      G4cout << "TrackID " << track->GetTrackID() << G4endl;
-      G4cout << "ParentID " << track->GetParentID() << G4endl;
-      G4cout << "PdgID " << pdgID << G4endl;
-      G4cout << "Direct parent converted " << track_info->directParent() << G4endl;
-      G4cout << "ProdPos " << prodpos << G4endl;
       G4cout << "EndPos " << endpos << G4endl;
       G4cout << "Momentum " << fourmomentum << G4endl;
-      G4cout << "Particle definitions: " << G4endl;
-      track->GetDefinition()->DumpTable();
     }
 #endif
     if ( 0 == pdgID ) {
