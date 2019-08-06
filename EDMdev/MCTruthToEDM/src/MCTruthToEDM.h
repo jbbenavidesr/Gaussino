@@ -80,7 +80,4 @@ private:
     LinkedParticleMCParticleLinks& m_links;
     std::set<LinkedVertex*> already_converted{};
   };
-
-  /// Decide if the particle should be transfered to Geant4 or only MCParticle.
-  unsigned char transferToSimulation( const HepMC3::GenParticlePtr& p ) const;
 };

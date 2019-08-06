@@ -7,4 +7,4 @@
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
-std::string PrintDecay( const HepMC3::GenParticlePtr& part, int level = 0, LHCb::IParticlePropertySvc* ppsvc = nullptr );
+std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level = 0, const LHCb::IParticlePropertySvc* ppsvc = nullptr );

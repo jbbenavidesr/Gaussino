@@ -261,6 +261,7 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
       // The endvertex has already been converted. This happens if a LinkedVertex
       // has two ingoing particles, usually from the hard collision. In this case
       // we leave the second particle unconnected
+      // FIXME: Needs to be revisited
       continue;
     }
     auto endVertex = createVertex( ev.get() );

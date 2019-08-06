@@ -26,28 +26,6 @@
 // Declaration of the Tool
 DECLARE_COMPONENT( HepMC3ToMCTruthConverter )
 
-std::string PrintPrimaries( G4PrimaryParticle* part, int level = 0, LHCb::IParticlePropertySvc* ppsvc = nullptr )
-{
-  std::string space = "";
-  for ( int i = 0; i < level; i++ ) {
-    space += "|---> ";
-  }
-  std::stringstream outstream;
-  outstream << space;
-  if ( ppsvc ) {
-    outstream << ppsvc->find( LHCb::ParticleID( part->GetPDGcode() ) )->name();
-  } else {
-    outstream << part->GetPDGcode();
-  }
-  outstream << "\n";
-  auto p = part->GetDaughter();
-  while ( p ) {
-    outstream << PrintPrimaries( p, level + 1, ppsvc );
-    p = p->GetNext();
-  }
-  return outstream.str();
-}
-
 double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, const HepMC3::GenVertexPtr& E )
 {
   if ( !E ) return 0;
@@ -72,6 +50,10 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC3::GenEvent>& h
   Gaussino::MCTruthConverterPtrs converters;
 
   for ( const HepMC3::GenEvent& genEvt : hepmc_events ) {
+    if (msgLevel(MSG::DEBUG)){
+        m_ppSvc.retrieve();
+        debug() << "HepMC event dump: \n" << PrintDecay(genEvt.particles().at(0), 0, m_ppSvc.get()) << endmsg;
+    }
     auto converter = std::make_unique<Gaussino::MCTruthConverter>();
     if ( genEvt.length_unit() != HepMC3::Units::MM || genEvt.momentum_unit() != HepMC3::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;

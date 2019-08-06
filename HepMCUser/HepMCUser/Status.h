@@ -1,3 +1,4 @@
+#pragma once
 #include <ostream>
 
 namespace HepMC3{
@@ -28,5 +29,19 @@ namespace HepMC3{
       case Status::StableInDecayGen                      : return s << "StableInDecayGen";
       default : return s << "ERROR wrong value " << int(e) << " for enum Status::statusType";
     }
+  }
+  Status::statusType to_status_type(int i) {
+    switch (i) {
+      case Status::Unknown                               : return Status::Unknown                              ;
+      case Status::StableInProdGen                       : return Status::StableInProdGen                      ;
+      case Status::DecayedByProdGen                      : return Status::DecayedByProdGen                     ;
+      case Status::DocumentationParticle                 : return Status::DocumentationParticle                ;
+      case Status::DecayedByDecayGen                     : return Status::DecayedByDecayGen                    ;
+      case Status::DecayedByDecayGenAndProducedByProdGen : return Status::DecayedByDecayGenAndProducedByProdGen;
+      case Status::SignalInLabFrame                      : return Status::SignalInLabFrame                     ;
+      case Status::SignalAtRest                          : return Status::SignalAtRest                         ;
+      case Status::StableInDecayGen                      : return Status::StableInDecayGen                     ;
+    }
+    return Status::Unknown;
   }
 }
