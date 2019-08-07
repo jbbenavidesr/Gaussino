@@ -163,4 +163,4 @@ def configure_edm_conversion(**kwargs):
     """
     from Configurables import CheckMCStructure, MCTruthToEDM, MCTruthMonitor
     return [MCTruthToEDM(), CheckMCStructure(),
-            MCTruthMonitor(HistoProduce=True)]
+            MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True)]
