@@ -19,7 +19,7 @@
 #include "Defaults/HepMCAttributes.h"
 //FIXME:This import pulls in the DataObject Wrapper for status enums. Should move this somewhere else.
 #include "HepMCUtils/HepMCUtils.h"
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
@@ -312,7 +312,7 @@ HepMC3::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
   if ( m_cpMixture ) 
 	if ( m_decayTool ) m_decayTool -> enableFlip() ;
   if ( m_decayTool ) {
-    StatusCode sc = m_decayTool -> generateSignalDecay( theSignal.get() , hasFlipped , engine) ;
+    StatusCode sc = m_decayTool -> generateSignalDecay( theSignal , hasFlipped , engine) ;
     if ( ! sc.isSuccess() ) hasFailed = true ;
   }
   

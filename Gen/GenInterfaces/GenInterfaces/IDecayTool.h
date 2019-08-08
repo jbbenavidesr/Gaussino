@@ -4,11 +4,7 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 #include "NewRnd/RndCommon.h"
-
-namespace HepMC3 {
-  class GenEvent ;
-  class GenParticle ;
-}
+#include "HepMC3/GenParticle.h"
 
 namespace CLHEP {
   class HepRandomEngine;
@@ -34,7 +30,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            particle is updated with the generated decay 
    *                            tree.
    */
-  virtual StatusCode generateDecay( HepMC3::GenParticle * theMother ,
+  virtual StatusCode generateDecay( const HepMC3::GenParticlePtr & theMother ,
                                     HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Generates the forced decay of a signal particle.
@@ -44,7 +40,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            flavour of theMother (to generate CP 
    *                            violation)
    */
-  virtual StatusCode generateSignalDecay( HepMC3::GenParticle * theMother ,
+  virtual StatusCode generateSignalDecay( const HepMC3::GenParticlePtr & theMother ,
                                           bool & flip ,
                                           HepRandomEnginePtr & engine ) const = 0 ;
 
@@ -61,7 +57,7 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            decay channle because in general, it is the
    *                            signal particle).
    */
-  virtual StatusCode generateDecayWithLimit( HepMC3::GenParticle * theMother ,
+  virtual StatusCode generateDecayWithLimit( const HepMC3::GenParticlePtr& theMother ,
                                              const int targetId ,
                                              HepRandomEnginePtr & engine ) const = 0 ;
 

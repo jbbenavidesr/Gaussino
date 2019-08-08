@@ -6,7 +6,7 @@
 
 // Generators
 #include "HepMCUtils/HepMCUtils.h"
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 // HepMC
 #include "HepMC3/GenEvent.h"
@@ -32,7 +32,7 @@ struct isRootB : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool 
   bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
+    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
       return false ;
     
     // Check if particle has a b quark
@@ -62,7 +62,7 @@ struct isRootD : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool 
   bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
+    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
       return false ;
 
     // Check if particle has a c quark
@@ -93,7 +93,7 @@ struct isEndB : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool >
   bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
+    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
       return false ;
 
     // Test if particle has a b quark
@@ -129,7 +129,7 @@ struct isEndD : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool >
   bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == Gaussino::GenStatus::DocumentationParticle ) 
+    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
       return false ;
 
     // Check if it has a c quark

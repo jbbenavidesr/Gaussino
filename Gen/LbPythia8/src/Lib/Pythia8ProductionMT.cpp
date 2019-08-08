@@ -24,7 +24,7 @@
 
 // HepMC conversion
 #include "Defaults/HepMCAttributes.h"
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 #include "HepMC3/Attribute.h"
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
@@ -328,11 +328,11 @@ StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCo
     if ( status > 3 ) {
       if ( ( status == 71 ) || ( status == 72 ) ||
            ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
-        p->set_status( Gaussino::GenStatus::DecayedByProdGen );
+        p->set_status( HepMC3::Status::DecayedByProdGen );
       else
-        p->set_status( Gaussino::GenStatus::DocumentationParticle );
-    } else if ( status != Gaussino::GenStatus::DecayedByProdGen && status != Gaussino::GenStatus::StableInProdGen &&
-                status != Gaussino::GenStatus::DocumentationParticle )
+        p->set_status( HepMC3::Status::DocumentationParticle );
+    } else if ( status != HepMC3::Status::DecayedByProdGen && status != HepMC3::Status::StableInProdGen &&
+                status != HepMC3::Status::DocumentationParticle )
       warning() << "Unknown status rule " << status << " for particle" << pid << endmsg;
   }
 

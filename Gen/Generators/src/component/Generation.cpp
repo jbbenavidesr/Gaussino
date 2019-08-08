@@ -404,18 +404,18 @@ StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEngine
     
     unsigned int status = thePart -> status() ;
     
-    if ( ( Gaussino::GenStatus::StableInProdGen  == status ) || 
-         ( ( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen == status )
+    if ( ( HepMC3::Status::StableInProdGen  == status ) || 
+         ( ( HepMC3::Status::DecayedByDecayGenAndProducedByProdGen == status )
            && ( 0 == thePart -> end_vertex() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
         
-        if ( Gaussino::GenStatus::StableInProdGen == status ) 
+        if ( HepMC3::Status::StableInProdGen == status ) 
           thePart -> 
-            set_status( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen ) ;
-        else thePart -> set_status( Gaussino::GenStatus::DecayedByDecayGen ) ;
+            set_status( HepMC3::Status::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( HepMC3::Status::DecayedByDecayGen ) ;
         
-        sc = m_decayTool -> generateDecay( thePart.get() , engine ) ;
+        sc = m_decayTool -> generateDecay( thePart , engine ) ;
         if ( ! sc.isSuccess() ) return sc ;
       }
     } 
@@ -433,9 +433,9 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
   int pdgId ;
 
   for ( auto & thePart : theEvent->particles() ) {
-    if ( ( thePart -> status() == Gaussino::GenStatus::DocumentationParticle ) ||
-         ( thePart -> status() == Gaussino::GenStatus::DecayedByDecayGen ) ||
-         ( thePart -> status() == Gaussino::GenStatus::StableInDecayGen ) ) 
+    if ( ( thePart -> status() == HepMC3::Status::DocumentationParticle ) ||
+         ( thePart -> status() == HepMC3::Status::DecayedByDecayGen ) ||
+         ( thePart -> status() == HepMC3::Status::StableInDecayGen ) ) 
       continue ;
     pdgId = abs( thePart -> pdg_id() ) ;
     LHCb::ParticleID thePid( pdgId ) ;
@@ -453,7 +453,7 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
           auto & par = 
             *std::begin(thePart -> production_vertex() -> particles_in() ) ;
           if ( ( par -> status() == 
-                 Gaussino::GenStatus::DocumentationParticle ) ||
+                 HepMC3::Status::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) { 
             ++bQuark ;
           }
@@ -473,7 +473,7 @@ void Generation::updateInteractionCounters( interactionCounter & theCounter ,
           auto & par =
             *std::begin(thePart -> production_vertex() -> particles_in() ) ;
           if ( ( par -> status() ==
-                 Gaussino::GenStatus::DocumentationParticle ) ||
+                 HepMC3::Status::DocumentationParticle ) ||
                ( par -> pdg_id() != thePart -> pdg_id() ) ) {
             ++cQuark ;
           }

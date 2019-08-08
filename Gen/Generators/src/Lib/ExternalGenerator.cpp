@@ -23,7 +23,7 @@
 #include "Defaults/HepMCAttributes.h"
 #include "CLHEP/Random/RandEngine.h"
 
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -160,7 +160,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
   case LHCb::ParticleID::bottom: // decay only B
     for (auto & part: theEvent->particles())
       if ( LHCb::ParticleID( part -> pdg_id() ).hasQuark( theQuark ) ) 
-        particleSet.insert( part.get() ) ;
+        particleSet.insert( part ) ;
     break ;
     
   case LHCb::ParticleID::charm: // decay B + D
@@ -168,7 +168,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
       LHCb::ParticleID pid( part -> pdg_id() ) ;
       if ( ( pid.hasQuark( theQuark ) ) || 
            ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-        particleSet.insert( part.get() ) ;
+        particleSet.insert( part ) ;
     }
     break ;
     
@@ -180,7 +180,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
         LHCb::ParticleID pid( part -> pdg_id() ) ;
         if ( ( pid.hasQuark( LHCb::ParticleID::charm  ) ) || 
              ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-          particleSet.insert( part.get() ) ;
+          particleSet.insert( part ) ;
       }
       break ; 
     }
@@ -191,10 +191,10 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
         LHCb::ParticleID pid( part -> pdg_id() ) ;
         if ( part -> generated_mass() > 
              m_ppSvc -> find( LHCb::ParticleID( signalPid ) ) -> mass() )
-          particleSet.insert( part.get() ) ;
+          particleSet.insert( part ) ;
         // if signal is KS then decay also K0
         else if ( ( signalPid == 310 ) && ( pid.abspid() == 311 ) )
-          particleSet.insert( part.get() ) ;
+          particleSet.insert( part ) ;
       }      
     }
     break ; 
@@ -203,7 +203,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
   for ( HepMCUtils::ParticleSet::iterator itHeavy = particleSet.begin() ; 
         itHeavy != particleSet.end() ; ++itHeavy ) 
     
-    if ( ( Gaussino::GenStatus::StableInProdGen == (*itHeavy) -> status() ) && 
+    if ( ( HepMC3::Status::StableInProdGen == (*itHeavy) -> status() ) && 
          ( signalPid != abs( (*itHeavy) -> pdg_id() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
@@ -226,7 +226,7 @@ bool ExternalGenerator::checkPresence( const PIDs & pidList ,
       for (auto & part: theEvent->particles()){
     if ( std::binary_search( pidList.begin() , pidList.end() ,
                              part -> pdg_id() ) ) 
-      if ( ( Gaussino::GenStatus::DocumentationParticle != part -> status() ) 
+      if ( ( HepMC3::Status::DocumentationParticle != part -> status() ) 
            && ( HepMCUtils::IsBAtProduction( part ) ) )
         particleList.push_back( part ) ;
       }

@@ -16,7 +16,7 @@
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/Relatives.h"
 
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 #include <set>
 
@@ -50,14 +50,14 @@ namespace HepMCUtils
 
   /// Comparison function as structure
   struct particleOrder {
-    bool operator()( const HepMC3::GenParticle* part1, const HepMC3::GenParticle* part2 ) const
+    bool operator()( const HepMC3::GenParticlePtr & part1, const HepMC3::GenParticlePtr& part2 ) const
     {
       return ( part1->id() < part2->id() );
     }
   };
 
   /// Type of HepMC particles container ordered with barcodes
-  typedef std::set<HepMC3::GenParticle*, particleOrder> ParticleSet;
+  typedef std::set<HepMC3::GenParticlePtr, particleOrder> ParticleSet;
 } // namespace HepMCUtils
 
 //=============================================================================
@@ -125,7 +125,7 @@ inline void HepMCUtils::RemoveDaughters( HepMC3::GenParticlePtr& theParticle )
 
   if ( 0 == EV ) return;
 
-  theParticle->set_status( Gaussino::GenStatus::StableInProdGen );
+  theParticle->set_status( HepMC3::Status::StableInProdGen );
   HepMC3::GenEvent* theEvent = theParticle->parent_event();
 
   std::vector<HepMC3::GenVertexPtr> tempList;

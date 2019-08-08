@@ -25,7 +25,7 @@
 #include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 // local
 #include "SignalForcedFragmentation.h"
@@ -115,7 +115,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     theSignalAtRest -> set_pdg_id( theSignalPID ) ;
   }
 
-  sc = m_decayTool -> generateSignalDecay( theSignalAtRest.get() , flip , engine ) ;
+  sc = m_decayTool -> generateSignalDecay( theSignalAtRest , flip , engine ) ;
   if ( ! sc.isSuccess() ) return false ;
 
   bool result = false ;  
@@ -173,7 +173,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         ROOT::Math::Boost theBoost( -mom.BoostToCM() ) ;
         
         // Give signal status
-        theSignal -> set_status( Gaussino::GenStatus::SignalInLabFrame ) ;
+        theSignal -> set_status( HepMC3::Status::SignalInLabFrame ) ;
         
         sc = boostTree( theSignal , theSignalAtRest , theBoost ) ;
         if ( ! sc.isSuccess() ) Exception( "Cannot boost signal tree" ) ;

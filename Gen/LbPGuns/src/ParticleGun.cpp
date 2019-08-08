@@ -26,7 +26,7 @@
 
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 
 #include "CLHEP/Random/RandFlat.h"
 #include "NewRnd/RndGlobal.h"
@@ -195,7 +195,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
                                                    theFourMomentum.Pz() ,
                                                    theFourMomentum.E()  ) ,
                                 thePdgId ,
-                                Gaussino::GenStatus::StableInProdGen )};
+                                HepMC3::Status::StableInProdGen )};
 
       v -> add_particle_out( p ) ;
       theGenEvent->add_vertex( v ) ;
@@ -312,28 +312,29 @@ HepMC3::GenParticlePtr ParticleGun::decayEvent( HepMC3::GenEvent * theEvent,
   m_decayTool -> disableFlip() ;
   sc = StatusCode::SUCCESS ;
   HepMC3::GenParticlePtr theSignal{nullptr};
+  const std::vector<HepMC3::GenParticlePtr>& particles = theEvent->particles();
 
-  for ( auto & thePart : theEvent->particles() ) {
+  for ( auto & thePart : particles ) {
 
     unsigned int status = thePart -> status() ;
 
-    if ( ( Gaussino::GenStatus::StableInProdGen  == status ) ||
-         ( ( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen == status )
+    if ( ( HepMC3::Status::StableInProdGen  == status ) ||
+         ( ( HepMC3::Status::DecayedByDecayGenAndProducedByProdGen == status )
            && ( 0 == thePart -> end_vertex() ) ) ) {
 
       if ( m_decayTool -> isKnownToDecayTool( thePart -> pdg_id() ) ) {
 
-        if ( Gaussino::GenStatus::StableInProdGen == status )
+        if ( HepMC3::Status::StableInProdGen == status )
           thePart ->
-            set_status( Gaussino::GenStatus::DecayedByDecayGenAndProducedByProdGen ) ;
-        else thePart -> set_status( Gaussino::GenStatus::DecayedByDecayGen ) ;
+            set_status( HepMC3::Status::DecayedByDecayGenAndProducedByProdGen ) ;
+        else thePart -> set_status( HepMC3::Status::DecayedByDecayGen ) ;
 
         if ( abs(m_sigPdgCode) == abs(thePart->pdg_id()) ) {
           bool hasFlipped(false);
-          sc = m_decayTool -> generateSignalDecay( thePart.get(), hasFlipped , engine) ;
+          sc = m_decayTool -> generateSignalDecay( thePart, hasFlipped , engine) ;
           theSignal = thePart;
         } else
-          sc = m_decayTool -> generateDecay( thePart.get() , engine ) ;
+          sc = m_decayTool -> generateDecay( thePart , engine ) ;
 
         theParticleList.push_back( thePart );
 

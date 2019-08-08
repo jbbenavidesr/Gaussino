@@ -13,7 +13,7 @@
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
 #include "Defaults/HepMCAttributes.h"
-#include "Defaults/Enums.h"
+#include "HepMCUser/Status.h"
 #include "HepMCUser/VertexAttribute.h"
 
 #include "CLHEP/Random/RandomEngine.h"
@@ -109,11 +109,11 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     }
 
     if ( ! m_inclusive ) 
-      m_decayTool -> generateSignalDecay( theParticle.get() , flip , engine ) ;
+      m_decayTool -> generateSignalDecay( theParticle , flip , engine ) ;
     else 
-      m_decayTool -> generateDecay( theParticle.get() , engine ) ;
+      m_decayTool -> generateDecay( theParticle , engine ) ;
     
-    theParticle -> set_status( Gaussino::GenStatus::SignalInLabFrame ) ;
+    theParticle -> set_status( HepMC3::Status::SignalInLabFrame ) ;
   
     theGenEvent -> add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC3::VertexAttribute>(theParticle->end_vertex()));
     theGenCollision -> setIsSignal( true ) ;

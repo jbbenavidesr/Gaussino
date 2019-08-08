@@ -30,7 +30,7 @@ namespace HepMC3{
       default : return s << "ERROR wrong value " << int(e) << " for enum Status::statusType";
     }
   }
-  Status::statusType to_status_type(int i) {
+  inline Status::statusType to_status_type(int i) {
     switch (i) {
       case Status::Unknown                               : return Status::Unknown                              ;
       case Status::StableInProdGen                       : return Status::StableInProdGen                      ;
