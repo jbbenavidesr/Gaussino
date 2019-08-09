@@ -397,10 +397,12 @@ StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEngine
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
-  // We must use particles_begin to obtain an ordered iterator of GenParticles
-  // according to the barcode: this allows to reproduce events !
+  // Stuff the particles into a set. While this is not necessary to order, we have
+  // cannot iterate over the list of particles themselves as this gets modified while
+  // decaying the event as decay products are added
+  HepMCUtils::ParticleSet tmp_set{std::begin( theEvent->particles() ), std::end( theEvent->particles() )};
 
-  for ( auto & thePart : theEvent->particles()) {
+  for ( auto & thePart : tmp_set) {
     
     unsigned int status = thePart -> status() ;
     

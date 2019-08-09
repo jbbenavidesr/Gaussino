@@ -24,9 +24,9 @@ class ICounterLogFile;
  */
 class Special : public ExternalGenerator
 {
-private:
+public:
   Gaudi::Property<bool> m_reinitialize{this, "ReinitializePileUpGenerator", true};
-  Gaudi::Property<std::string> m_pileUpProductionToolName{"PileUpProductionTool",
+  Gaudi::Property<std::string> m_pileUpProductionToolName{this, "PileUpProductionTool",
                                                           "Pythia8Production/MinimumBiasPythia8Production"};
 
 public:

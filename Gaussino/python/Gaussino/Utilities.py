@@ -16,17 +16,23 @@ def run_once(func):
     return decorated
 
 
-def get_set_configurable(parent, propertyname):
-    propertyvalue = parent.getProp(propertyname)
-    try:
-        objectname = propertyvalue.getType()
-        propertyvalue_short = propertyvalue.getName()
-    except:
+def get_set_configurable(parent, propertyname, value=""):
+    if value == "":
+        propertyvalue = parent.getProp(propertyname)
         try:
-            propertyvalue_short = propertyvalue.split('/')[-1]
-            objectname = propertyvalue.split('/')[0]
+            objectname = propertyvalue.getType()
+            propertyvalue_short = propertyvalue.getName()
         except:
-            pass
+            try:
+                propertyvalue_short = propertyvalue.split('/')[-1]
+                objectname = propertyvalue.split('/')[0]
+            except:
+                pass
+    else:
+        parent.setProp(propertyname, value)
+        propertyvalue_short = value.split('/')[-1]
+        objectname = value.split('/')[0]
+
     propertyvalue_short = propertyvalue_short.split('.')[-1]
     if not hasattr(parent, propertyvalue_short):
         import Configurables

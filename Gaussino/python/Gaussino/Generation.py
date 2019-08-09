@@ -19,8 +19,8 @@ class GenPhase(ConfigurableUser):
 
     _production_type_map = {
         'PGUN': configure_pgun,
-        'PHYS': configure_generation,
-        'PHYSMT': configure_generationMT,
+        'P8MB': configure_generation,
+        'P8MBMT': configure_generationMT,
     }
 
     __slots__ = {
@@ -38,11 +38,15 @@ class GenPhase(ConfigurableUser):
         "B1Particle"          : 'p',  # NOQA
         "B2Particle"          : 'p',  # NOQA
         "evtMax"              : -1,  # NOQA
-        "Production"          : 'PHYS',  # NOQA
+        "Production"          : '',  # NOQA
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
         "Production_kwargs"   : {},  # NOQA
-        "ConvertEDM"        : False
+        "ConvertEDM"          : False,  # NOQA
+        "SampleGenerationTool": 'SignalPlain',   # NOQA
+        "ProductionTool"      : 'Pythia8Production',   # NOQA
+        "DecayTool"           : '',   # NOQA
+        "CutTool"             : ''  # NOQA
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -69,14 +73,44 @@ class GenPhase(ConfigurableUser):
         # Algorithm that produces the actual HepMC by talking to stuff
         prod_name = self.getProp('Production')
         prod_kwargs = self.getProp('Production_kwargs')
-        prod_alg = self._production_type_map[prod_name](**prod_kwargs)
+        if prod_name in self._production_type_map:
+            gen_alg = self._production_type_map[prod_name](**prod_kwargs)
+        else:
+
+            SampleGenerationTool = self.getProp('SampleGenerationTool')
+            ProductionTool = self.getProp('ProductionTool')
+            DecayTool = self.getProp('DecayTool')
+            CutTool = self.getProp('CutTool')
+
+            from Configurables import Generation
+            from Gaussino.Utilities import beaminfoService
+            from Gaussino.Utilities import get_set_configurable
+            beaminfoService()
+            gen_alg = Generation()
+            sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
+                                       SampleGenerationTool)
+            try:
+                sgt.DecayTool = DecayTool
+            except:
+                pass
+            try:
+                sgt.CutTool = CutTool
+            except:
+                pass
+            prod = get_set_configurable(sgt, 'ProductionTool',
+                                        ProductionTool)
+            if ProductionTool == "Pythia8Production":
+                prod.BeamToolName = 'CollidingBeamsWithSvc'
+
+            gen_alg.PileUpTool = 'FixedLuminosityWithSvc'
+            gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+            gen_alg.DecayTool = DecayTool
 
         # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()
 
         seq = []
-        # seq.Members = [rnd_init, prod_alg]
-        seq += [rnd_init, prod_alg]
+        seq += [rnd_init, gen_alg]
         if self.getProp('GenMonitor'):
             gen_moni = configure_gen_monitor()
             seq += [gen_moni]

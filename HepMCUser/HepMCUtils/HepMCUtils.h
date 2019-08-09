@@ -46,7 +46,7 @@ namespace HepMCUtils
   bool IsBAtProduction( const HepMC3::ConstGenParticlePtr& thePart );
 
   /// Remove all daughters of a particle
-  void RemoveDaughters( HepMC3::GenParticlePtr& thePart );
+  void RemoveDaughters( const HepMC3::GenParticlePtr& thePart );
 
   /// Comparison function as structure
   struct particleOrder {
@@ -117,7 +117,7 @@ inline bool HepMCUtils::IsBAtProduction( const HepMC3::ConstGenParticlePtr& theP
 //=============================================================================
 // Erase the daughters of one particle
 //=============================================================================
-inline void HepMCUtils::RemoveDaughters( HepMC3::GenParticlePtr& theParticle )
+inline void HepMCUtils::RemoveDaughters( const HepMC3::GenParticlePtr& theParticle )
 {
   if ( 0 == theParticle ) return;
 
