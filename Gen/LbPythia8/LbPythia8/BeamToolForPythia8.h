@@ -1,5 +1,5 @@
 // $Id: BeamToolForPythia8.h,v 1.1.1.1 2012-11-26 17:02:19 amartens Exp $
-#ifndef LBPYTHIA8_BEAMTOOLFORPYTHIA8_H 
+#ifndef LBPYTHIA8_BEAMTOOLFORPYTHIA8_H
 #define LBPYTHIA8_BEAMTOOLFORPYTHIA8_H 1
 
 // Include files
@@ -21,25 +21,22 @@
  *  @date   2012-11-26
  */
 
-class BeamToolForPythia8 : virtual public Pythia8::BeamShape {
+class BeamToolForPythia8 : public Pythia8::BeamShape {
 
 public:
   // Initialize beam parameters.
-  // FIXME: Does this intentionally hide Pythia8::BeamShape::init?
-  // FIXME: Added it for now to make the warning go away ...
-  using Pythia8::BeamShape::init;
-  virtual void init(Pythia8::Settings& settings);
+  void init(Pythia8::Settings& settings, Pythia8::Rndm* rndmPtrIn) override;
 
   /// Constructor
   BeamToolForPythia8( IBeamTool *i , Pythia8::Settings& settings, StatusCode &sc ) ;
 
   /// pick parameterisation for the beam spread and direction
-  virtual void pick();
+  void pick() override;
 
   /// Destructor
-  virtual ~BeamToolForPythia8( ) ;
-  
-private: 
+  ~BeamToolForPythia8();
+
+private:
   IBeamTool* m_iBeamTool;
   Gaudi::XYZVector m_meanBeam1;
   Gaudi::XYZVector m_meanBeam2;

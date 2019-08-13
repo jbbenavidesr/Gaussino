@@ -18,8 +18,6 @@
 #include <condition_variable>
 #include <mutex>
 
-using namespace std;
-
 /**
  * Production tool to generate events with Pythia 8.
  *
@@ -35,10 +33,10 @@ using namespace std;
 class Pythia8ProductionMT : public GaudiTool, virtual public IProductionTool
 {
 public:
-  typedef vector<string> CommandVector;
+  typedef std::vector<std::string> CommandVector;
 
   /// Default constructor.
-  Pythia8ProductionMT( const string& type, const string& name, const IInterface* parent );
+  Pythia8ProductionMT( const std::string& type, const std::string& name, const IInterface* parent );
 
   /// Default destructor.
   virtual ~Pythia8ProductionMT();
@@ -51,17 +49,17 @@ public:
    * beam tool, user hooks (if not already supplied), and XML log file are
    * initialized.
    */
-  virtual StatusCode initialize();
+  virtual StatusCode initialize() override;
 
   /// Initialize the Pythia 8 generator.
-  virtual StatusCode initializeGenerator();
+  virtual StatusCode initializeGenerator() override;
 
   /// Finalize the tool.
-  virtual StatusCode finalize();
+  virtual StatusCode finalize() override;
 
   /// Generate an event.
   virtual StatusCode generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
-                                    HepRandomEnginePtr& engine ) const;
+                                    HepRandomEnginePtr& engine ) const override;
 
   /**
    * Convert Pythia 8 event to HepMC format.
@@ -74,27 +72,27 @@ public:
   StatusCode toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision ) const; 
 
   /// Set particle stable.
-  virtual void setStable( const LHCb::ParticleProperty* thePP );
+  virtual void setStable( const LHCb::ParticleProperty* thePP ) override;
   virtual void setStableImpl( const LHCb::ParticleProperty* thePP ) const;
 
   /// Update a particle.
-  virtual void updateParticleProperties( const LHCb::ParticleProperty* thePP );
+  virtual void updateParticleProperties( const LHCb::ParticleProperty* thePP ) override;
   virtual void updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP ) const;
 
   /// Sets Pythia 8's "HadronLevel:Hadronize" flag to true.
-  virtual void turnOnFragmentation();
+  virtual void turnOnFragmentation() override;
 
   /// Sets Pythia 8's "HadronLevel:Hadronize" flag to false.
-  virtual void turnOffFragmentation();
+  virtual void turnOffFragmentation() override;
 
   /// Hadronize an event.
-  virtual StatusCode hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision );
+  virtual StatusCode hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision ) override;
 
   /// Save the Pythia 8 event record.
-  virtual void savePartonEvent( HepMC3::GenEvent* theEvent );
+  virtual void savePartonEvent( HepMC3::GenEvent* theEvent ) override;
 
   /// Retrieve the Pythia 8 event record.
-  virtual void retrievePartonEvent( HepMC3::GenEvent* theEvent );
+  virtual void retrievePartonEvent( HepMC3::GenEvent* theEvent ) override;
 
   /**
    * Print the running conditions.
@@ -105,7 +103,7 @@ public:
    * only the changed settings are printed. Note that this method duplicates
    * the built in functionality of Pythia 8 and should be removed.
    */
-  virtual void printRunningConditions() const;
+  virtual void printRunningConditions() const override;
 
   /**
    * Returns whether a particle has special status.
@@ -114,7 +112,7 @@ public:
    * This method checks if the particle is within the special particle set
    * built during construction of the class.
    */
-  virtual bool isSpecialParticle( const LHCb::ParticleProperty* thePP ) const;
+  virtual bool isSpecialParticle( const LHCb::ParticleProperty* thePP ) const override;
 
   /**
    * Setup forced fragmentation.
@@ -123,7 +121,7 @@ public:
    * of "PartonLevel:all" is set to off which stops both showers and
    * hadronization from being performed.
    */
-  virtual StatusCode setupForcedFragmentation( const int thePdgId );
+  virtual StatusCode setupForcedFragmentation( const int thePdgId ) override;
 
   // The Pythia 8 members. Just to be sure will have all of them
   // thread local. All these pointers are initialised to zero in
@@ -132,12 +130,13 @@ public:
   mutable LocalTL<Pythia8::UserHooks*> m_hooks; ///< User hooks to veto events.
   mutable LocalTL<Pythia8::LHAup*> m_lhaup;     ///< User specified hard process.
   mutable LocalTL<Pythia8::Event> m_event;      ///< The Pythia 8 event record.
+  mutable LocalTL<std::set<int>> m_bws;                   ///< Set of particles with a valid BW.
 
   std::vector<const LHCb::ParticleProperty*> m_update_pp;
   std::vector<const LHCb::ParticleProperty*> m_stable_pp;
 
   // Members needed externally.
-  string m_beamToolName; ///< The name of the beam tool.
+  std::string m_beamToolName; ///< The name of the beam tool.
 
   virtual StatusCode InitializeThread() const;
 
@@ -160,16 +159,18 @@ protected:
   mutable LocalTL<BeamToolForPythia8*> m_pythiaBeamTool; ///< The Pythia 8 beam tool.
   mutable std::atomic_int m_nEvents;             ///< Number of generated events.
   CommandVector m_userSettings;                  ///< The user settings vector.
-  string m_tuningFile;                           ///< The global tuning file.
-  string m_tuningUserFile;                       ///< The user tuning file.
+  std::string m_tuningFile;                           ///< The global tuning file.
+  std::string m_tuningUserFile;                       ///< The user tuning file.
   bool m_validate_HEPEVT;                        ///< Flag to validate the event.
   bool m_listAllParticles;                       ///< Flag to list all the particles.
   bool m_checkParticleProperties;                ///< Flag to check particle properties.
   bool m_showBanner;                             ///< Flag to print the Pythia 8 banner.
   ICounterLogFile* m_xmlLogTool;                 ///< The XML log file.
-  set<unsigned int> m_special;                   ///< The set of special particles.
+  std::set<unsigned int> m_special;                   ///< The set of special particles.
   static std::mutex m_pythia_lock;
   mutable std::atomic_bool m_first_init{true};
+  /// Location where to store FSR counters (set by options)
+  std::string  m_FSRName;
 
   class Pythia8ThreadManager
   {

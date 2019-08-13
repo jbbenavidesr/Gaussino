@@ -44,7 +44,9 @@ std::mutex Pythia8ProductionMT::m_pythia_lock{};
 //=============================================================================
 // Default constructor.
 //=============================================================================
-Pythia8ProductionMT::Pythia8ProductionMT( const string& type, const string& name, const IInterface* parent )
+Pythia8ProductionMT::Pythia8ProductionMT(const std::string& type,
+				     const std::string& name,
+                                     const IInterface* parent)
     : GaudiTool( type, name, parent )
     , m_pythia( 0 )
     , m_hooks( 0 )
@@ -70,6 +72,8 @@ Pythia8ProductionMT::Pythia8ProductionMT( const string& type, const string& name
                    "will overwrite the default LHCb tune." );
   declareProperty( "ShowBanner", m_showBanner = false, "Flag to print the Pythia 8 banner at initialization." );
   declareProperty( "NThreads", m_nThreads = 1, "Delay the initialisation" );
+  declareProperty ( "GenFSRLocation", m_FSRName =
+                    LHCb::GenFSRLocation::Default);
 
   // Set the special particles.
   for ( int i = 1; i <= 8; ++i ) m_special.insert( i );
@@ -196,18 +200,18 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 
   // Turn off minimum bias if using LHAup.
   if ( m_lhaup() ) {
-    vector<string> procs;
+    std::vector<string> procs;
     procs.push_back( "SoftQCD:" );
     procs.push_back( "HardQCD:" );
     procs.push_back( "Onia:" );
     procs.push_back( "Charmonium:" );
     procs.push_back( "Bottomonium:" );
     for ( unsigned int proc = 0; proc < procs.size(); ++proc ) {
-      map<string, Pythia8::FVec> fvecs = m_pythia->settings.getFVecMap( procs[proc] );
-      map<string, Pythia8::Flag> flags = m_pythia->settings.getFlagMap( procs[proc] );
-      for ( map<string, Pythia8::FVec>::iterator itr = fvecs.begin(); itr != fvecs.end(); ++itr )
-        m_pythia->settings.fvec( itr->first, vector<bool>( itr->second.valNow.size(), false ) );
-      for ( map<string, Pythia8::Flag>::iterator itr = flags.begin(); itr != flags.end(); ++itr )
+      std::map<string, Pythia8::FVec> fvecs = m_pythia->settings.getFVecMap( procs[proc] );
+      std::map<string, Pythia8::Flag> flags = m_pythia->settings.getFlagMap( procs[proc] );
+      for ( std::map<string, Pythia8::FVec>::iterator itr = fvecs.begin(); itr != fvecs.end(); ++itr )
+        m_pythia->settings.fvec( itr->first, std::vector<bool>( itr->second.valNow.size(), false ) );
+      for ( std::map<string, Pythia8::Flag>::iterator itr = flags.begin(); itr != flags.end(); ++itr )
         m_pythia->settings.flag( itr->first, false );
     }
   }
@@ -229,8 +233,34 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
       id = m_pythia->particleData.nextId( id );
     }
   }
+  
+  // Check the Breit-Wigner mass thresholds.
+  for (std::set<int>::iterator id = m_bws().begin(); id != m_bws().end(); ++id) {
+    Pythia8::ParticleDataEntry *pde = 
+      m_pythia->particleData.particleDataEntryPtr(*id);
+    if (pde->isResonance()) continue;
+    pde->initBWmass();
+    if (pde->useBreitWigner()) continue;
+    double mThr(0), bRatSum(0), mThrSum(0);
+    for (int i = 0; i < int(pde->sizeChannels()); ++i)
+      if (pde->channel(i).onMode() > 0) {
+	bRatSum += pde->channel(i).bRatio();
+	double mChannelSum = 0.;
+	for (int j = 0; j < pde->channel(i).multiplicity(); ++j)
+	  mChannelSum += m_pythia->particleData.m0(pde->channel(i).product(j));
+	mThrSum += pde->channel(i).bRatio() * mChannelSum;
+      }
+    mThr = (bRatSum == 0.) ? 0. : mThrSum / bRatSum;
+    if (mThr > pde->m0()) {
+      warning() << "The threshold mass for particle with ID " << *id << " is "
+		<< mThr << " GeV but its nominal mass is " << pde->m0() 
+		<< " GeV; clearing its decay channels." << endmsg;
+      pde->clearChannels();
+    }
+  }
 
   // Initialize.
+  if (m_lhaup.get()) m_pythia->settings.mode("Beams:frameType", 5);
   if ( m_pythia->init() )
     return StatusCode::SUCCESS;
   else
@@ -273,38 +303,38 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
   if ( !m_pythia->flag( "HadronLevel:all" ) ) m_event = pythia->event;
   ++m_nEvents;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
-  int key     = 0;
+  LHCb::GenFSR* genFSR{nullptr};
+  if(m_FSRName != ""){
+    genFSR = GenFSRMTManager::GetGenFSR();
+  }
 
-  vector<int> codes = pythia->info.codesHard();
+  // Store the minimum bias cross-section in the GenFSR.
+  std::vector<int> codes = m_pythia->info.codesHard();
+  int key = LHCb::CrossSectionsFSR::MBCrossSection;
+  if (genFSR && genFSR->hasGenCounter(key+100)) {
+    longlong count = genFSR->getGenCounterInfo(100 + key).second;
+    count = m_pythia->info.nAccepted(key) - count;
+    if (count > 0) genFSR->incrementGenCounter(key + 100, count); 
+  } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
+    genFSR->addGenCounter(100 + key, m_pythia->info.nAccepted(key));
+  if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
+  if(genFSR) genFSR->addCrossSection
+    (key, LHCb::GenFSR::CrossValues("Total cross-section", 
+				    m_pythia->info.sigmaGen(key)));
 
-  // Store the minimum bias cross-section in the GenFSR
-  key = LHCb::CrossSectionsFSR::CrossSectionKeyToType( "MBCrossSection" );
-
-  if ( genFSR->hasGenCounter( key + 100 ) ) {
-    longlong count = genFSR->getGenCounterInfo( 100 + key ).second;
-    count          = pythia->info.nAccepted( key ) - count;
-    if ( count > 0 ) genFSR->incrementGenCounter( key + 100, count );
-  } else if ( pythia->info.nAccepted( key ) != 0 )
-    genFSR->addGenCounter( 100 + key, pythia->info.nAccepted( key ) );
-
-  if ( genFSR->hasCrossSection( key ) ) genFSR->eraseCrossSection( key );
-  genFSR->addCrossSection( key, LHCb::GenFSR::CrossValues( "Total cross-section", pythia->info.sigmaGen( key ) ) );
-
-  // Store the others cross-sections in the GenFSR
-  for ( unsigned int code = 0; code < codes.size(); ++code ) {
+  // Store the others cross-sections in the GenFSR.
+  for (unsigned int code = 0; code < codes.size(); ++code) {
     key = codes[code];
-
-    if ( genFSR->hasGenCounter( key + 100 ) ) {
-      longlong count = genFSR->getGenCounterInfo( 100 + key ).second;
-      count          = pythia->info.nAccepted( key ) - count;
-      if ( count > 0 ) genFSR->incrementGenCounter( key + 100, count );
-    } else if ( pythia->info.nAccepted( key ) != 0 )
-      genFSR->addGenCounter( 100 + key, pythia->info.nAccepted( key ) );
-
-    if ( genFSR->hasCrossSection( key ) ) genFSR->eraseCrossSection( key );
-    genFSR->addCrossSection( key,
-                             LHCb::GenFSR::CrossValues( pythia->info.nameProc( key ), pythia->info.sigmaGen( key ) ) );
+    if (genFSR && genFSR->hasGenCounter(key + 100)) {
+      longlong count = genFSR->getGenCounterInfo(100 + key).second;
+      count = m_pythia->info.nAccepted(key) - count;
+      if (count > 0) genFSR->incrementGenCounter(key + 100, count);
+    } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
+      genFSR->addGenCounter(100 + key, m_pythia->info.nAccepted(key));
+    if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
+    if(genFSR) genFSR->addCrossSection
+      (key, LHCb::GenFSR::CrossValues(m_pythia->info.nameProc(key), 
+				      m_pythia->info.sigmaGen(key)));    
   }
 
   // Convert the event to HepMC and return.
@@ -317,22 +347,30 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision ) const
-{
+StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEvent* theEvent, 
+				      LHCb::GenCollision* theCollision) const {
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
-  conversion.set_print_inconsistency( m_validate_HEPEVT );
-  if ( !( conversion.fill_next_event( *m_pythia(), theEvent ) ) )
-    return Error( "Failed to convert Pythia 8 event to HepMC." );
-
+  conversion.set_print_inconsistency(m_validate_HEPEVT);
+  if (!(conversion.fill_next_event(*m_pythia(), theEvent))) 
+    return Error("Failed to convert Pythia 8 event to HepMC.");
   // Convert status codes and IDs.
-  for ( auto & p : theEvent->particles() ) {
+  for ( auto& p : theEvent->particles() ) {
     int status = p->status();
     int pid    = p->pdg_id();
     if ( status > 3 ) {
-      if ( ( status == 71 ) || ( status == 72 ) ||
-           ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
+      if ( status == 21 ) {
+        //(*p)->set_status(LHCb::HepMCEvent::PythiaIncomingParton);
+        p->set_status( 21 );
+      } else if ( ( status > 21 && status < 30 )    // part of hard process
+                  || ( status > 40 && status < 50 ) // ISR
+                  || ( status > 50 && status < 60 ) // FSR
+      ) {
+        // p->set_status(LHCb::HepMCEvent::PythiaHardProcess);
+        p->set_status( 22 );
+      } else if ( ( status == 71 ) || ( status == 72 ) ||
+                  ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
         p->set_status( HepMC3::Status::DecayedByProdGen );
       else
         p->set_status( HepMC3::Status::DocumentationParticle );
@@ -342,21 +380,24 @@ StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCo
   }
 
   // Convert to LHCb units.
-  for ( auto & v: theEvent->vertices() )
-    v->set_position( HepMC3::FourVector( v->position().x(), v->position().y(), v->position().z(),
-                                             ( v->position().t() * Gaudi::Units::mm ) / Gaudi::Units::c_light ) );
+  for (auto & v:theEvent->vertices())
+    v->set_position(HepMC3::FourVector
+		       (v->position().x(), v->position().y(),
+			v->position().z(), 
+			(v->position().t() * Gaudi::Units::mm) 
+			/ Gaudi::Units::c_light));
 
   // Set the process and collision info.
-  int code( m_pythia->info.hasSub() ? m_pythia->info.codeSub() : m_pythia->info.code() );
-  theEvent->add_attribute( Gaussino::HepMC::Attributes::SignalProcessID,
-                           std::make_shared<HepMC3::IntAttribute>( code ) );
-  theCollision->setProcessType( code );
-  theCollision->setSHat( m_pythia->info.sHat() );
-  theCollision->setTHat( m_pythia->info.tHat() );
-  theCollision->setUHat( m_pythia->info.uHat() );
-  theCollision->setPtHat( m_pythia->info.pTHat() );
-  theCollision->setX1Bjorken( m_pythia->info.x1() );
-  theCollision->setX2Bjorken( m_pythia->info.x2() );
+  int code(m_pythia->info.hasSub() ? m_pythia->info.codeSub() : 
+	   m_pythia->info.code());
+  theEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID, std::make_shared<HepMC3::IntAttribute>(code));
+  theCollision->setProcessType(code);
+  theCollision->setSHat(m_pythia->info.sHat());
+  theCollision->setTHat(m_pythia->info.tHat());
+  theCollision->setUHat(m_pythia->info.uHat());
+  theCollision->setPtHat(m_pythia->info.pTHat());
+  theCollision->setX1Bjorken(m_pythia->info.x1());
+  theCollision->setX2Bjorken(m_pythia->info.x2());
   return StatusCode::SUCCESS;
 }
 
@@ -494,6 +535,17 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   m_pythia = new Pythia8::Pythia( xmlpath, m_showBanner );
   if ( !m_pythia.get() ) return StatusCode::FAILURE;
 
+  // Create the Breit-Wigner map for checking particle widths later.
+  m_bws().clear();
+  int id = m_pythia->particleData.nextId(1);
+  while (id != 0) {
+    if (!m_pythia->particleData.isResonance(id)) {
+      m_pythia->particleData.particleDataEntryPtr(id)->initBWmass();
+      if (m_pythia->particleData.useBreitWigner(id)) m_bws().insert(id);
+    }
+    id = m_pythia->particleData.nextId(id);
+  }
+
   // Add LhcbHooks parameters.
   Pythia8::Settings& set = m_pythia->settings;
   string sm( "StandardModel:" ), mpi( "MultiPartonInteractions:" ), pre( "LhcbHooks:" ), parm( "pT0Ref" );
@@ -557,7 +609,7 @@ StatusCode Pythia8ProductionMT::finalize()
     pythia->stat();
 
     // Write the cross-sections to the XML log.
-    vector<int> codes = pythia->info.codesHard();
+    std::vector<int> codes = pythia->info.codesHard();
     for ( unsigned int code = 0; code < codes.size(); ++code )
       m_xmlLogTool->addCrossSection( pythia->info.nameProc( codes[code] ), codes[code],
                                      pythia->info.nAccepted( codes[code] ), pythia->info.sigmaGen( codes[code] ) );
