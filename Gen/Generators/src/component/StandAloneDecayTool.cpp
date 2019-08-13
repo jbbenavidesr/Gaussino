@@ -68,7 +68,7 @@ StatusCode StandAloneDecayTool::initialize() {
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
                                     std::vector<HepMC3::GenEvent> & theEvents ,
                                     LHCb::GenCollisions & theCollisions ,
-                                    HepRandomEnginePtr & engine ) {
+                                    HepRandomEnginePtr & engine ) const {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC3::GenEvent * theGenEvent( 0 ) ;

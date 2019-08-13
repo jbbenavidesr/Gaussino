@@ -81,7 +81,7 @@ public:
    */
   virtual StatusCode generateEvent 
   ( HepMC3::GenEvent    * theEvent , 
-    LHCb::GenCollision * theInfo , HepRandomEnginePtr & ) ;
+    LHCb::GenCollision * theInfo , HepRandomEnginePtr & ) const;
   // ===================================================================
   /// Declare a particle stable to the production generator.
   virtual void setStable
@@ -118,7 +118,7 @@ public:
   ( HepMC3::GenEvent* /* theEvent */ ) {} ;
   // ===================================================================
   /// Print configuration of production generator 
-  virtual void printRunningConditions( ) {} ;
+  virtual void printRunningConditions( ) const {} ;
   // ===================================================================
   /** Define special particles whose properties must not be updated from 
    *  the particle property service (like mass of top quark, ...)
@@ -192,7 +192,7 @@ DECLARE_COMPONENT( ReadHepMCAsciiFile )
 StatusCode ReadHepMCAsciiFile::generateEvent 
 ( HepMC3::GenEvent    *    theEvent , 
   LHCb::GenCollision * /* theInfo */ ,
-  HepRandomEnginePtr & /* engine */ ) 
+  HepRandomEnginePtr & /* engine */ ) const
 {
   Assert ( 0 != m_file , "Invalid input file!" ) ;
   //

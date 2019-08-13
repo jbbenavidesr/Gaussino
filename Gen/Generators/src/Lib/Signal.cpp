@@ -281,7 +281,7 @@ HepMC3::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
                                                theParticleList , 
                                                bool & isInverted ,
                                                bool & hasFlipped , 
-					      bool & hasFailed , HepRandomEnginePtr & engine ) {
+					      bool & hasFailed , HepRandomEnginePtr & engine ) const {
   HepMC3::GenParticlePtr theSignal ;
   isInverted = false ;
   hasFlipped = false ;
@@ -322,7 +322,7 @@ HepMC3::GenParticlePtr Signal::chooseAndRevert( ParticleVector &
 //=============================================================================
 // Establish correct multiplicity of signal
 //=============================================================================
-bool Signal::ensureMultiplicity( const unsigned int nSignal , HepRandomEnginePtr & engine ) {
+bool Signal::ensureMultiplicity( const unsigned int nSignal , HepRandomEnginePtr & engine ) const {
   if ( ! m_cpMixture ) return true ;
   if ( nSignal > 1 ) return true ;
 

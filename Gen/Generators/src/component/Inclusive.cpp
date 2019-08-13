@@ -101,7 +101,7 @@ StatusCode Inclusive::initialize( ) {
 bool Inclusive::generate( const unsigned int nPileUp , 
                           std::vector<HepMC3::GenEvent> & theEvents , 
                           LHCb::GenCollisions & theCollisions ,
-                          HepRandomEnginePtr & engine ) {
+                          HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool result = false ;
 

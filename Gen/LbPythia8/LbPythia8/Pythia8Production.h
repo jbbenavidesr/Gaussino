@@ -16,6 +16,7 @@
 
 //#include "Pythia8Plugins/HepMC2.h"
 #include <mutex>
+#include "Utils/LocalTL.h"
 
 using namespace std;
 
@@ -65,7 +66,7 @@ public:
   
   /// Generate an event.
   virtual StatusCode generateEvent(HepMC3::GenEvent* theEvent, 
-				   LHCb::GenCollision* theCollision , HepRandomEnginePtr & engine );
+				   LHCb::GenCollision* theCollision , HepRandomEnginePtr & engine ) const;
 
   
   /**
@@ -77,7 +78,7 @@ public:
    * hard process information is also set.
    */
   StatusCode toHepMC(HepMC3::GenEvent* theEvent, 
-		     LHCb::GenCollision* theCollision);
+		     LHCb::GenCollision* theCollision) const;
 
   /// Set particle stable.
   virtual void setStable(const LHCb::ParticleProperty* thePP);
@@ -110,7 +111,7 @@ public:
    * only the changed settings are printed. Note that this method duplicates
    * the built in functionality of Pythia 8 and should be removed.
    */
-  virtual void printRunningConditions();
+  virtual void printRunningConditions() const;
 
   /**
    * Returns whether a particle has special status.
@@ -134,7 +135,7 @@ public:
   Pythia8::Pythia*    m_pythia; ///< The Pythia 8 generator.
   Pythia8::UserHooks* m_hooks;  ///< User hooks to veto events.
   Pythia8::LHAup*     m_lhaup;  ///< User specified hard process.
-  Pythia8::Event      m_event;  ///< The Pythia 8 event record.
+  mutable LocalTL<Pythia8::Event> m_event;  ///< The Pythia 8 event record.
 
   // Members needed externally.
   string m_beamToolName;        ///< The name of the beam tool.
@@ -152,12 +153,12 @@ protected:
    * Any particle that is not found within the Pythia 8 particle database is
    * assigned an ID of 0.
    */
-  int pythia8Id(const LHCb::ParticleProperty* thePP);
+  int pythia8Id(const LHCb::ParticleProperty* thePP) const;
   
   // Additional members.
   IBeamTool* m_beamTool;                 ///< The Gaudi beam tool.
   BeamToolForPythia8* m_pythiaBeamTool;  ///< The Pythia 8 beam tool.
-  int m_nEvents;                         ///< Number of generated events.
+  mutable std::atomic_int m_nEvents;     ///< Number of generated events.
   CommandVector m_userSettings;          ///< The user settings vector.
   string m_tuningFile;                   ///< The global tuning file.
   string m_tuningUserFile;               ///< The user tuning file.

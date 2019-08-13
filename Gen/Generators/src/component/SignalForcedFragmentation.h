@@ -38,7 +38,7 @@ class SignalForcedFragmentation : public Signal {
     *     IProductionTool::setupForcedFragmentation.
     */
    virtual bool generate( const unsigned int nPileUp, std::vector<HepMC3::GenEvent>& theEvents,
-                          LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) override;
+                          LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) const override;
 
  private:
    /** Boost a particle at rest in the lab frame.

@@ -69,7 +69,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
                                           std::vector<HepMC3::GenEvent> & theEvents ,
                                           LHCb::GenCollisions & theCollisions ,
-                                          HepRandomEnginePtr & engine )
+                                          HepRandomEnginePtr & engine ) const
 {
   StatusCode sc ;
   CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};

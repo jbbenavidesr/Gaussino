@@ -61,7 +61,7 @@ public:
 
   /// Generate an event.
   virtual StatusCode generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
-                                    HepRandomEnginePtr& engine );
+                                    HepRandomEnginePtr& engine ) const;
 
   /**
    * Convert Pythia 8 event to HepMC format.
@@ -71,15 +71,15 @@ public:
    * and vertex positions must be modified to match the LHCb standard. The
    * hard process information is also set.
    */
-  StatusCode toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision );
+  StatusCode toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision ) const; 
 
   /// Set particle stable.
   virtual void setStable( const LHCb::ParticleProperty* thePP );
-  virtual void setStableImpl( const LHCb::ParticleProperty* thePP );
+  virtual void setStableImpl( const LHCb::ParticleProperty* thePP ) const;
 
   /// Update a particle.
   virtual void updateParticleProperties( const LHCb::ParticleProperty* thePP );
-  virtual void updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP );
+  virtual void updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP ) const;
 
   /// Sets Pythia 8's "HadronLevel:Hadronize" flag to true.
   virtual void turnOnFragmentation();
@@ -105,7 +105,7 @@ public:
    * only the changed settings are printed. Note that this method duplicates
    * the built in functionality of Pythia 8 and should be removed.
    */
-  virtual void printRunningConditions();
+  virtual void printRunningConditions() const;
 
   /**
    * Returns whether a particle has special status.
@@ -128,10 +128,10 @@ public:
   // The Pythia 8 members. Just to be sure will have all of them
   // thread local. All these pointers are initialised to zero in
   // the threadlocal storage.
-  LocalTL<Pythia8::Pythia*> m_pythia;   ///< The Pythia 8 generator.
-  LocalTL<Pythia8::UserHooks*> m_hooks; ///< User hooks to veto events.
-  LocalTL<Pythia8::LHAup*> m_lhaup;     ///< User specified hard process.
-  LocalTL<Pythia8::Event> m_event;      ///< The Pythia 8 event record.
+  mutable LocalTL<Pythia8::Pythia*> m_pythia;   ///< The Pythia 8 generator.
+  mutable LocalTL<Pythia8::UserHooks*> m_hooks; ///< User hooks to veto events.
+  mutable LocalTL<Pythia8::LHAup*> m_lhaup;     ///< User specified hard process.
+  mutable LocalTL<Pythia8::Event> m_event;      ///< The Pythia 8 event record.
 
   std::vector<const LHCb::ParticleProperty*> m_update_pp;
   std::vector<const LHCb::ParticleProperty*> m_stable_pp;
@@ -139,7 +139,7 @@ public:
   // Members needed externally.
   string m_beamToolName; ///< The name of the beam tool.
 
-  virtual StatusCode InitializeThread();
+  virtual StatusCode InitializeThread() const;
 
 protected:
   /**
@@ -153,12 +153,12 @@ protected:
    * Any particle that is not found within the Pythia 8 particle database is
    * assigned an ID of 0.
    */
-  int pythia8Id( const LHCb::ParticleProperty* thePP );
+  int pythia8Id( const LHCb::ParticleProperty* thePP ) const;
 
   // Additional members.
   IBeamTool* m_beamTool;                         ///< The Gaudi beam tool.
-  LocalTL<BeamToolForPythia8*> m_pythiaBeamTool; ///< The Pythia 8 beam tool.
-  int m_nEvents;                                 ///< Number of generated events.
+  mutable LocalTL<BeamToolForPythia8*> m_pythiaBeamTool; ///< The Pythia 8 beam tool.
+  mutable std::atomic_int m_nEvents;             ///< Number of generated events.
   CommandVector m_userSettings;                  ///< The user settings vector.
   string m_tuningFile;                           ///< The global tuning file.
   string m_tuningUserFile;                       ///< The user tuning file.
@@ -169,7 +169,7 @@ protected:
   ICounterLogFile* m_xmlLogTool;                 ///< The XML log file.
   set<unsigned int> m_special;                   ///< The set of special particles.
   static std::mutex m_pythia_lock;
-  std::atomic_bool m_first_init{true};
+  mutable std::atomic_bool m_first_init{true};
 
   class Pythia8ThreadManager
   {
@@ -190,7 +190,7 @@ protected:
 
 private:
   unsigned int m_nThreads{0};
-  std::once_flag m_init_flag;
+  mutable std::once_flag m_init_flag;
   class P8MTBarrier
   {
   private:

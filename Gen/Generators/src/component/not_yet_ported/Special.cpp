@@ -41,6 +41,8 @@ Special::~Special( ) { ; }
 StatusCode Special::initialize( ) {
   info() << "Generating Special events." << endmsg ;
   StatusCode sc = ExternalGenerator::initialize( ) ;
+  // FIXME: Special not yet supported due to pileup caching
+  return StatusCode::FAILURE;
 
   // Initialize XML Log file
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
@@ -86,7 +88,7 @@ StatusCode Special::finalize( ) {
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
                         std::vector<HepMC3::GenEvent> & theEvents , 
-                        LHCb::GenCollisions & theCollisions , HepRandomEnginePtr & engine ) {
+                        LHCb::GenCollisions & theCollisions , HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC3::GenEvent * theGenEvent( 0 ) ;
@@ -158,7 +160,7 @@ void Special::printCounters( ) const {
 //=============================================================================
 // Generate PileUp Minimum Bias interactions
 //=============================================================================
-void Special::generatePileUp(HepRandomEnginePtr & engine ) {
+void Special::generatePileUp(HepRandomEnginePtr & engine ) const {
 
   if ( 0 == m_pileUpProductionTool ) {
     if ( "" != m_pileUpProductionToolName ) {

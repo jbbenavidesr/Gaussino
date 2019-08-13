@@ -40,7 +40,7 @@ public:
    */
   virtual StatusCode generateEvent( HepMC3::GenEvent * theEvent , 
                                     LHCb::GenCollision * theInfo,
-                                    HepRandomEnginePtr & engine) = 0 ;
+                                    HepRandomEnginePtr & engine) const = 0 ;
 
   /// Declare a particle stable to the production generator.
   virtual void setStable( const LHCb::ParticleProperty * thePP ) = 0 ;
@@ -71,7 +71,7 @@ public:
   virtual void retrievePartonEvent( HepMC3::GenEvent * theEvent ) = 0 ;
 
   /// Print configuration of production generator 
-  virtual void printRunningConditions( ) = 0 ;
+  virtual void printRunningConditions( ) const = 0 ;
 
   /** Define special particles whose properties must not be updated from 
    *  the particle property service (like mass of top quark, ...)

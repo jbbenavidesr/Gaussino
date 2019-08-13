@@ -50,7 +50,7 @@ public:
    *  the generator level cut.
    */
   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC3::GenEvent>& theEvents,
-                         LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) override;
+                         LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) const override;
 
   /// Implements ISampleGenerationTool::printCounters
   virtual void printCounters() const override;
@@ -60,22 +60,22 @@ private:
   ICounterLogFile* m_xmlLogTool = nullptr;
 
   /// Counter of events before the generator level cut
-  std::atomic_uint m_nEventsBeforeCut{};
+  mutable std::atomic_uint m_nEventsBeforeCut{};
 
   /// Counter of events after the generator level cut
-  std::atomic_uint m_nEventsAfterCut{};
+  mutable std::atomic_uint m_nEventsAfterCut{};
 
   /// Number of pile-up events to generate at once
   unsigned int m_maxInteractions = 30;
 
   /// Vector to contain pile-up events
-  std::vector<HepMC3::GenEvent*> m_pileUpEventsVector;
+  mutable std::vector<HepMC3::GenEvent*> m_pileUpEventsVector;
 
   /// Vector to contain collision infos
-  std::vector<LHCb::GenCollision*> m_pileUpCollisionsVector;
+  mutable std::vector<LHCb::GenCollision*> m_pileUpCollisionsVector;
 
   /// function to generate a set of pile up events
-  void generatePileUp(HepRandomEnginePtr & engine );
+  void generatePileUp(HepRandomEnginePtr & engine ) const;
 
   /// production tool which generates pile-up interactions
   IProductionTool* m_pileUpProductionTool = nullptr;

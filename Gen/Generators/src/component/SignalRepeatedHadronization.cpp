@@ -68,7 +68,7 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                                             std::vector<HepMC3::GenEvent> & theEvents , 
                                             LHCb::GenCollisions & 
-                                            theCollisions , HepRandomEnginePtr & engine ) {
+                                            theCollisions , HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool gotSignalInteraction = false ;
 

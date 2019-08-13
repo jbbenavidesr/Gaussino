@@ -241,11 +241,16 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
-                                               HepRandomEnginePtr& engine )
+                                               HepRandomEnginePtr& engine ) const
 {
   if ( !m_pythia() ) {
     debug() << "Initializing Pythia8 in thread!" << endmsg;
-    InitializeThread();
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      return sc;
+    }
   }
 
   class RndForPythia : public Pythia8::RndmEngine
@@ -312,7 +317,7 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision ) const
 {
 
   // Convert to HepMC.
@@ -359,7 +364,8 @@ StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEvent* theEvent, LHCb::GenCo
 // Set a particle stable.
 //=============================================================================
 void Pythia8ProductionMT::setStable( const LHCb::ParticleProperty* thePP ) { m_stable_pp.push_back( thePP ); }
-void Pythia8ProductionMT::setStableImpl( const LHCb::ParticleProperty* thePP )
+
+void Pythia8ProductionMT::setStableImpl( const LHCb::ParticleProperty* thePP ) const
 {
   m_pythia->particleData.mayDecay( pythia8Id( thePP ), false );
 }
@@ -371,7 +377,7 @@ void Pythia8ProductionMT::updateParticleProperties( const LHCb::ParticleProperty
 {
   m_update_pp.push_back( thePP );
 }
-void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP )
+void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP ) const
 {
 
   // Create the particle if needed.
@@ -438,7 +444,7 @@ void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) 
 //=============================================================================
 // Print the running conditions.
 //=============================================================================
-void Pythia8ProductionMT::printRunningConditions()
+void Pythia8ProductionMT::printRunningConditions() const
 {
   if ( !m_pythia() ) return;
   if ( m_nEvents == 0 && m_listAllParticles == true && msgLevel( MSG::DEBUG ) ) m_pythia->particleData.listAll();
@@ -468,7 +474,7 @@ StatusCode Pythia8ProductionMT::setupForcedFragmentation( const int /*thePdgId*/
 //=============================================================================
 // Return the Pythia 8 ID.
 //=============================================================================
-int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP )
+int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP ) const
 {
   int id( thePP->pid().pid() );
   if ( abs( id ) == 30221 ) return id > 0 ? 10221 : -10221;
@@ -477,7 +483,7 @@ int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP )
   return 0;
 }
 
-StatusCode Pythia8ProductionMT::InitializeThread()
+StatusCode Pythia8ProductionMT::InitializeThread() const
 {
   debug() << "Initializing Pythia8 in thread" << endmsg;
   // Initialize the user hooks.
@@ -520,7 +526,7 @@ StatusCode Pythia8ProductionMT::InitializeThread()
   }
 
   // Now initialize the generator and hope for the best!
-  initializeGenerator();
+  const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
   if ( m_first_init ) {
     printRunningConditions();
     m_first_init = false;

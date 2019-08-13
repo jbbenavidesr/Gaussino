@@ -47,7 +47,7 @@ StatusCode MinimumBias::initialize( ) {
 //=============================================================================
 bool MinimumBias::generate( const unsigned int nPileUp , 
                             std::vector<HepMC3::GenEvent> & theEvents , 
-                            LHCb::GenCollisions & theCollisions, HepRandomEnginePtr & engine ) {
+                            LHCb::GenCollisions & theCollisions, HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
   HepMC3::GenEvent * theGenEvent( 0 ) ;

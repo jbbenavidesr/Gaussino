@@ -256,7 +256,7 @@ StatusCode Pythia8Production::finalize() {
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8Production::generateEvent(HepMC3::GenEvent* theEvent,
-					    LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine ) {
+					    LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine ) const {
 
   // Not very elegant but need to stop Pythia8 from being accessed concurrently
   std::lock_guard<std::mutex> lock(m_pythia_lock);
@@ -327,7 +327,7 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEvent* theEvent,
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
 StatusCode Pythia8Production::toHepMC(HepMC3::GenEvent* theEvent, 
-				      LHCb::GenCollision* theCollision) {
+				      LHCb::GenCollision* theCollision) const {
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
@@ -447,12 +447,12 @@ void Pythia8Production::savePartonEvent( HepMC3::GenEvent* /*theEvent*/)
 // Retrieve the Pythia 8 event record.
 //=============================================================================
 void Pythia8Production::retrievePartonEvent(HepMC3::GenEvent* /*theEvent*/)
-{m_pythia->event = m_event;}
+{m_pythia->event = m_event.get();}
 
 //=============================================================================
 // Print the running conditions.
 //=============================================================================
-void Pythia8Production::printRunningConditions() { 
+void Pythia8Production::printRunningConditions() const { 
   if (m_nEvents == 0 && m_listAllParticles == true && msgLevel(MSG::DEBUG)) 
     m_pythia->particleData.listAll();
   if (msgLevel(MSG::VERBOSE)) m_pythia->settings.listAll();
@@ -476,7 +476,7 @@ StatusCode Pythia8Production::setupForcedFragmentation(const int /*thePdgId*/) {
 //=============================================================================
 // Return the Pythia 8 ID.
 //=============================================================================
-int Pythia8Production::pythia8Id(const LHCb::ParticleProperty* thePP) {
+int Pythia8Production::pythia8Id(const LHCb::ParticleProperty* thePP) const {
   int id(thePP->pid().pid());
   if (abs(id) == 30221) return id > 0 ? 10221 : -10221;
   if (abs(id) == 104124) return id > 0 ? 4124 : -4124;

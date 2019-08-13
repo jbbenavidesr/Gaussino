@@ -99,8 +99,12 @@ class GenPhase(ConfigurableUser):
                 pass
             prod = get_set_configurable(sgt, 'ProductionTool',
                                         ProductionTool)
-            if ProductionTool == "Pythia8Production":
+            if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
                 prod.BeamToolName = 'CollidingBeamsWithSvc'
+
+            if ProductionTool == "Pythia8ProductionMT":
+                from Configurables import Gaussino
+                prod.NThreads = Gaussino().ThreadPoolSize
 
             gen_alg.PileUpTool = 'FixedLuminosityWithSvc'
             gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'

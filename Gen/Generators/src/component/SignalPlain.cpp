@@ -51,7 +51,7 @@ SignalPlain::~SignalPlain( ) { ; }
 bool SignalPlain::generate( const unsigned int nPileUp , 
                             std::vector<HepMC3::GenEvent> & theEvents , 
                             LHCb::GenCollisions & theCollisions ,
-                            HepRandomEnginePtr & engine ) {
+                            HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool result = false ;
   // Memorize if the particle is inverted
