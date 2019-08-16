@@ -9,9 +9,9 @@
 #include "GaudiKernel/Vector4DTypes.h"
 
 // from HepMC
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandFlat.h"
@@ -93,10 +93,10 @@ StatusCode UniformSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode UniformSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) {
+StatusCode UniformSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
   double dx , dy , dz, dt, rsq, r, th ;
   
-  CLHEP::RandFlat flatDist{engine, 0, 1};
+  CLHEP::RandFlat flatDist{engine.getref(), 0, 1};
   // generate flat in z, r^2 and theta:
   dz  = m_deltaz   * flatDist( ) + m_zmin ;
   rsq = m_rmaxsq   * flatDist( )          ;
@@ -105,7 +105,7 @@ StatusCode UniformSmearVertex::smearVertex( HepMC::GenEvent * theEvent , CLHEP::
   dx  = r*cos(th) ;  
   dy  = r*sin(th) ;
   dt  = m_zDir * dz/Gaudi::Units::c_light ;
-  HepMC::FourVector dpos( dx , dy , dz , dt ) ;
+  HepMC3::FourVector dpos( dx , dy , dz , dt ) ;
   
   theEvent->shift_position_by(dpos);
 

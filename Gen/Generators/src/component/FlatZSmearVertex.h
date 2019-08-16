@@ -33,7 +33,7 @@ class FlatZSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) override;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
   
  private:
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)  

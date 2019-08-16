@@ -10,6 +10,7 @@
 // From Event
 #include "Event/BeamParameters.h"
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 // From Generators
@@ -67,13 +68,11 @@ StatusCode FixedLuminosityForRareProcess::initialize( ) {
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosityForRareProcess::numberOfPileUp( CLHEP::HepRandomEngine & engine ) {
+unsigned int FixedLuminosityForRareProcess::numberOfPileUp( HepRandomEnginePtr & engine ) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;  
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   unsigned int result = 0 ;
@@ -81,7 +80,7 @@ unsigned int FixedLuminosityForRareProcess::numberOfPileUp( CLHEP::HepRandomEngi
   key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");  
   genFSR->incrementGenCounter(key,1);
 
-  CLHEP::RandPoisson poissonGenerator{engine, beam->nu()};
+  CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
 
   result = (unsigned int) ( poissonGenerator() + 1.0 ) ;
   return result ;

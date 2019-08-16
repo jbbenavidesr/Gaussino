@@ -28,7 +28,7 @@ class PoissonPileUp : public GaudiTool, virtual public IPileUpTool {
   /// Initialize method
   virtual StatusCode initialize() override;
 
-  virtual unsigned int numberOfPileUp(CLHEP::HepRandomEngine & engine) override;
+  virtual unsigned int numberOfPileUp(HepRandomEnginePtr & engine) override;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters() override;

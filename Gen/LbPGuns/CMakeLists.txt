@@ -9,12 +9,18 @@ gaudi_depends_on_subdirs(
                          GaudiAlg
                          Kernel/LHCbKernel
                          Gen/GenInterfaces
-                         Gen/Generators)
+                         Gen/Generators
+                         HepMC3
+                         )
+
+AddHepMC3()
 
 gaudi_add_module(LbPGuns
                  src/*.cpp
-                 INCLUDE_DIRS Gen/GenInterfaces
-                 LINK_LIBRARIES GenEvent GaudiAlgLib LHCbKernel GeneratorsLib)
+                 INCLUDE_DIRS Gen/GenInterfaces ${HEPMC3_INCLUDE_DIR}
+                 LINK_LIBRARIES GenEvent GaudiAlgLib LHCbKernel GeneratorsLib ${HEPMC3_LIBRARIES})
+
+add_dependencies(LbPGuns HepMC3Ext)
 
 gaudi_install_headers(LbPGuns)
 

@@ -6,6 +6,7 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 #include "GaudiKernel/Vector4DTypes.h"
+#include "NewRnd/RndCommon.h"
 
 
 /** @class IParticleGunTool IParticleGunTool.h "ParticleGuns/IParticleGunTool.h"
@@ -34,7 +35,7 @@ public:
    */
   virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                  Gaudi::LorentzVector & origin , 
-                                 int & pdgId , CLHEP::HepRandomEngine & engine ) = 0 ;
+                                 int & pdgId , HepRandomEnginePtr & engine ) = 0 ;
 
   /// Print various counters at the end of the job
   virtual void printCounters( ) = 0 ;

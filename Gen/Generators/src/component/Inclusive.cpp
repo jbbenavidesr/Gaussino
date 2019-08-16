@@ -18,6 +18,7 @@
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 //-----------------------------------------------------------------------------
@@ -98,14 +99,14 @@ StatusCode Inclusive::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Inclusive::generate( const unsigned int nPileUp , 
-                          std::vector<HepMC::GenEvent> & theEvents , 
+                          std::vector<HepMC3::GenEvent> & theEvents , 
                           LHCb::GenCollisions & theCollisions ,
-                          CLHEP::HepRandomEngine & engine ) {
+                          HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool result = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
 
   // Moved into conditional statement for now
   //GenCounters::BHadronCounter thebHadC , theantibHadC ;
@@ -113,9 +114,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
   //unsigned int theccCounter , thebbCounter ;
   
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -129,7 +128,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
       // Decay particles heavier than the particles to look at
       // If N hadrons <= 2, we assume it is (h,hbar)
       // Passing m_pids[0] needed for incl. charmless bottomless hadron production
-      decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()) ) ;
+      decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()), engine ) ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;

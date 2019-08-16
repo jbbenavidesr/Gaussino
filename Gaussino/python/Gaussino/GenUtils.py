@@ -22,10 +22,12 @@ def configure_pgun(**kwargs):
     from Configurables import FlatNParticles
     pgun.addTool(FlatNParticles, name="FlatNParticles")
     pgun.NumberOfParticlesTool = "FlatNParticles"
+    pgun.FlatNParticles.MinNParticles = 2
+    pgun.FlatNParticles.MaxNParticles = 2
     pgun.MomentumRange.PdgCodes = [-13, 13]
 
-    pgun.MomentumRange.MomentumMin = 200.0*GeV
-    pgun.MomentumRange.MomentumMax = 300.0*GeV
+    pgun.MomentumRange.MomentumMin = 2.0*GeV
+    pgun.MomentumRange.MomentumMax = 100.0*GeV
     pgun.MomentumRange.ThetaMin = 0.015*rad
     pgun.MomentumRange.ThetaMax = 0.300*rad
     return pgun
@@ -53,10 +55,41 @@ def configure_generation(**kwargs):
     pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
     pprod.BeamToolName = 'CollidingBeamsWithSvc'
 
-    from Configurables import PoissonPileUp
-    gen.addTool(PoissonPileUp, name='PoissonPileUp')
-    gen.PoissonPileUp.PileUpNu = 1.6
-    gen.PileUpTool = 'PoissonPileUp'
+    gen.PileUpTool = 'FixedLuminosityWithSvc'
+    gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+
+    gen.DecayTool = ""
+    gen.MinimumBias.DecayTool = ""
+
+    return gen
+
+
+def configure_generationMT(**kwargs):
+    """Simple utility function to create and configure a Generation instance
+
+    :**kwargs: Optional keyword arguments (not curently used)
+    :returns: Generation instance
+
+    """
+
+    from Configurables import Generation, MinimumBias, Pythia8ProductionMT
+    from Configurables import CollidingBeamsWithSvc
+    from .Utilities import beaminfoService
+    gen = Generation()
+    # Only configure BeamInfoSvc here as pgun won't need it
+    beaminfoService()
+
+    mbias = gen.addTool(MinimumBias, name="MinimumBias")
+    mbias.CutTool = ""
+    pprod = gen.MinimumBias.addTool(Pythia8ProductionMT,
+                                    name="Pythia8ProductionMT")
+    gen.MinimumBias.ProductionTool = "Pythia8ProductionMT"
+    pprod.addTool(CollidingBeamsWithSvc, name="CollidingBeamsWithSvc")
+    pprod.BeamToolName = 'CollidingBeamsWithSvc'
+    from Configurables import Gaussino
+    pprod.NThreads = Gaussino().ThreadPoolSize
+
+    gen.PileUpTool = 'FixedLuminosityWithSvc'
     gen.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
 
     gen.DecayTool = ""

@@ -8,7 +8,8 @@
 
 // From Event
 #include "Event/GenCollision.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
+#include "NewRnd/RndCommon.h"
 
 namespace CLHEP {
   class HepRandomEngine;
@@ -40,9 +41,9 @@ class ISampleGenerationTool : virtual public IAlgTool {
    *                             for each pile-up interaction.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC::GenEvent> & theEvents ,
+                         std::vector<HepMC3::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions,
-                         CLHEP::HepRandomEngine & engine ) = 0 ;
+                         HepRandomEnginePtr & engine ) const = 0 ;
 
   /// Print counters and efficiencies at the end of the job.
   virtual void printCounters( ) const = 0 ;

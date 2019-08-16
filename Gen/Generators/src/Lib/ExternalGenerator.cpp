@@ -11,16 +11,19 @@
 #include "Kernel/IParticlePropertySvc.h" 
 #include "Kernel/ParticleProperty.h"
 // Kernal
-#include "MCInterfaces/IGenCutTool.h"
-#include "MCInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
+#include "GenInterfaces/IDecayTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
 #include "Generators/LhaPdf.h"
 #include "Generators/StringParse.h"
 #include "GenInterfaces/ICounterLogFile.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 #include "Defaults/HepMCAttributes.h"
+#include "CLHEP/Random/RandEngine.h"
+
+#include "HepMCUser/Status.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -142,8 +145,8 @@ StatusCode ExternalGenerator::initialize( ) {
 //=============================================================================
 // Decay heavy excited particles
 //=============================================================================
-StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
-     const LHCb::ParticleID::Quark theQuark , const int signalPid ) const {
+StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
+     const LHCb::ParticleID::Quark theQuark , const int signalPid , HepRandomEnginePtr & engine) const {
   StatusCode sc ;
   
   if ( 0 == m_decayTool ) return StatusCode::SUCCESS ;
@@ -152,23 +155,20 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
 
   HepMCUtils::ParticleSet particleSet ;  
 
-  HepMC::GenEvent::particle_iterator it ;
   switch ( theQuark ) {
     
   case LHCb::ParticleID::bottom: // decay only B
-    for ( it = theEvent -> particles_begin() ; 
-          it != theEvent -> particles_end() ; ++it )
-      if ( LHCb::ParticleID( (*it) -> pdg_id() ).hasQuark( theQuark ) ) 
-        particleSet.insert( *it ) ;
+    for (auto & part: theEvent->particles())
+      if ( LHCb::ParticleID( part -> pdg_id() ).hasQuark( theQuark ) ) 
+        particleSet.insert( part ) ;
     break ;
     
   case LHCb::ParticleID::charm: // decay B + D
-    for ( it = theEvent -> particles_begin() ;
-          it != theEvent -> particles_end() ; ++it ) {
-      LHCb::ParticleID pid( (*it) -> pdg_id() ) ;
+    for (auto & part: theEvent->particles()){
+      LHCb::ParticleID pid( part -> pdg_id() ) ;
       if ( ( pid.hasQuark( theQuark ) ) || 
            ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-        particleSet.insert( *it ) ;
+        particleSet.insert( part ) ;
     }
     break ;
     
@@ -176,27 +176,25 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
     
     if ( 15 == LHCb::ParticleID(signalPid).abspid() ) // tau ?
     {
-      for ( it = theEvent -> particles_begin() ;
-            it != theEvent -> particles_end() ; ++it ) {
-        LHCb::ParticleID pid( (*it) -> pdg_id() ) ;
+      for (auto & part: theEvent->particles()){
+        LHCb::ParticleID pid( part -> pdg_id() ) ;
         if ( ( pid.hasQuark( LHCb::ParticleID::charm  ) ) || 
              ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-          particleSet.insert( *it ) ;
+          particleSet.insert( part ) ;
       }
       break ; 
     }
     else 
     {
       // decay all what is heavier than the signal
-      for ( it = theEvent -> particles_begin() ;
-            it != theEvent -> particles_end() ; ++it ) {
-        LHCb::ParticleID pid( (*it) -> pdg_id() ) ;
-        if ( (*it) -> generated_mass() > 
+      for (auto & part: theEvent->particles()){
+        LHCb::ParticleID pid( part -> pdg_id() ) ;
+        if ( part -> generated_mass() > 
              m_ppSvc -> find( LHCb::ParticleID( signalPid ) ) -> mass() )
-          particleSet.insert( *it ) ;
+          particleSet.insert( part ) ;
         // if signal is KS then decay also K0
         else if ( ( signalPid == 310 ) && ( pid.abspid() == 311 ) )
-          particleSet.insert( *it ) ;
+          particleSet.insert( part ) ;
       }      
     }
     break ; 
@@ -205,11 +203,11 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
   for ( HepMCUtils::ParticleSet::iterator itHeavy = particleSet.begin() ; 
         itHeavy != particleSet.end() ; ++itHeavy ) 
     
-    if ( ( LHCb::HepMCEvent::StableInProdGen == (*itHeavy) -> status() ) && 
+    if ( ( HepMC3::Status::StableInProdGen == (*itHeavy) -> status() ) && 
          ( signalPid != abs( (*itHeavy) -> pdg_id() ) ) ) {
       
       if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
-        sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid ) ;
+        sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid , engine) ;
         if ( ! sc.isSuccess() ) return sc ;
       } 
     }
@@ -222,17 +220,16 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC::GenEvent * theEvent,
 // Attention : pidList must be sorted before begin used in this function
 //=============================================================================
 bool ExternalGenerator::checkPresence( const PIDs & pidList ,
-                                       const HepMC::GenEvent * theEvent ,
+                                       HepMC3::GenEvent * theEvent ,
                                        ParticleVector & particleList ) const {
   particleList.clear( ) ;
-  HepMC::GenEvent::particle_const_iterator it ;
-  for ( it = theEvent -> particles_begin() ; 
-        it != theEvent -> particles_end() ; ++it ) 
+      for (auto & part: theEvent->particles()){
     if ( std::binary_search( pidList.begin() , pidList.end() ,
-                             (*it) -> pdg_id() ) ) 
-      if ( ( LHCb::HepMCEvent::DocumentationParticle != (*it) -> status() ) 
-           && ( HepMCUtils::IsBAtProduction( *it ) ) )
-        particleList.push_back( *it ) ;
+                             part -> pdg_id() ) ) 
+      if ( ( HepMC3::Status::DocumentationParticle != part -> status() ) 
+           && ( HepMCUtils::IsBAtProduction( part ) ) )
+        particleList.push_back( part ) ;
+      }
 
   std::sort( particleList.begin() , particleList.end() , 
              HepMCUtils::compareHepMCParticles ) ;
@@ -243,27 +240,23 @@ bool ExternalGenerator::checkPresence( const PIDs & pidList ,
 //=============================================================================
 // invert the event
 //=============================================================================
-void ExternalGenerator::revertEvent( HepMC::GenEvent * theEvent ) const {
-  HepMC::GenEvent::vertex_iterator itv ;
+void ExternalGenerator::revertEvent( HepMC3::GenEvent * theEvent ) const {
   double x, y, z, t ;
-  for ( itv = theEvent -> vertices_begin() ;
-        itv != theEvent -> vertices_end() ; ++itv ) {
-    x = (*itv) -> position().x() ;
-    y = (*itv) -> position().y() ;
-    z = (*itv) -> position().z() ;
-    t = (*itv) -> position().t() ;
-    (*itv) -> set_position( HepMC::FourVector( x, y, -z, t ) ) ;
+  for (auto & vtx:theEvent->vertices()){
+    x = vtx -> position().x() ;
+    y = vtx -> position().y() ;
+    z = vtx -> position().z() ;
+    t = vtx -> position().t() ;
+    vtx -> set_position( HepMC3::FourVector( x, y, -z, t ) ) ;
   }
 
-  HepMC::GenEvent::particle_iterator itp ;
   double px, py, pz, E ;
-  for ( itp = theEvent -> particles_begin() ;
-        itp != theEvent -> particles_end() ; ++itp ) {
-    px = (*itp) -> momentum().px() ;
-    py = (*itp) -> momentum().py() ;
-    pz = (*itp) -> momentum().pz() ;
-    E  = (*itp) -> momentum().e() ;
-    (*itp) -> set_momentum( HepMC::FourVector( px, py, -pz, E ) ) ;
+  for(auto & part: theEvent->particles()){
+    px = part -> momentum().px() ;
+    py = part -> momentum().py() ;
+    pz = part -> momentum().pz() ;
+    E  = part -> momentum().e() ;
+    part -> set_momentum( HepMC3::FourVector( px, py, -pz, E ) ) ;
   }      
 }
 
@@ -284,16 +277,16 @@ unsigned int ExternalGenerator::nPositivePz( const ParticleVector
 //=============================================================================
 // Set up event
 //=============================================================================
-void ExternalGenerator::prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC::GenEvent * & theGenEvent ,  
+void ExternalGenerator::prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC3::GenEvent * & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back();
+  theEvents->emplace_back(HepMC3::Units::MEV, HepMC3::Units::MM);
   theGenEvent = &theEvents->back();
   theGenEvent->set_run_info(nullptr);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
-                              std::make_shared<HepMC::StringAttribute>( m_hepMCName ) );
+                              std::make_shared<HepMC3::StringAttribute>( m_hepMCName ) );
   // Little hack to make it thread-safe when reading later
-  theGenEvent->attribute<HepMC::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
+  theGenEvent->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 
   //FIXME: Still need fix this, see header
   theGenCollision = new LHCb::GenCollision();

@@ -2,9 +2,10 @@
 #include <cmath>
 
 // local
-#include "GenRndInit.h"
+#include "GaudiKernel/ConcurrencyFlags.h"
 #include "GaudiKernel/EventContext.h"
 #include "GaudiKernel/ThreadLocalContext.h"
+#include "GenRndInit.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenRndInit
@@ -28,24 +29,60 @@ StatusCode GenRndInit::initialize()
 
   m_eventMax = std::atoi( value.c_str() );
   debug() << "Retrieved EvtMax = " << m_eventMax << endmsg;
+  info() << "Setting barrier sync for " << Gaudi::Concurrency::ConcurrencyFlags::numThreads() << endmsg;
+  m_barrier    = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
+  m_endbarrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
   return StatusCode::SUCCESS;
 }
 
-LHCb::GenHeader GenRndInit::operator()() const
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
 {
   debug() << "==> Execute" << endmsg;
 
   // Initialize the random number
   longlong eventNumber = m_firstEvent - 1 + this->increaseEventCounter();
+  if ( m_firstTimingEvent != -1 ) {
+    if ( eventNumber == m_firstTimingEvent ) {
+      debug() << "Organising timing" << endmsg;
+      // Initialising the start time for more precise monitoring
+      // when the event loop is in full swing.
+      m_barrier->wait();
+      m_wait_at_barrier = false;
+      m_start_time      = Clock::now();
+      info() << "Started loop timing!" << endmsg;
+    } else if ( eventNumber > m_firstTimingEvent && m_wait_at_barrier ) {
+      m_barrier->wait();
+      m_wait_at_barrier = false;
+    }
+  }
+  if ( eventNumber >= m_firstTimingEvent && eventNumber < m_lastTimingEvent ) {
+    m_evtTimingCounter++;
+  }
+
+  if ( m_lastTimingEvent != -1 ) {
+    if ( eventNumber == m_lastTimingEvent ) {
+      // Initialising the start time for more precise monitoring
+      // when the event loop is in full swing.
+      debug() << "Hit it. Waiting at end barrier" << endmsg;
+      m_endbarrier->wait();
+      m_wait_at_endbarrier = false;
+      auto end_time        = Clock::now();
+      info() << "Measured event loop time (" << m_evtTimingCounter
+             << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
+             << endmsg;
+    } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
+      debug() << "Larger. Waiting at end barrier" << endmsg;
+      m_endbarrier->wait();
+      m_wait_at_endbarrier = false;
+    }
+  }
 
   // Configure the event information in the event context
-  auto context = Gaudi::Hive::currentContext();
-  EventIDBase eventid{};
-  eventid.set_event_number(eventNumber);
-  eventid.set_run_number(m_runNumber);
-  context.setEventID(eventid);
+  // Places the event and run number onto the TES for other algorithms
+  // to access when configuring their random engines.
+  SetSeedPair( eventNumber, m_runNumber );
 
-  printEventRun( eventNumber, m_runNumber);
+  printEventRun( eventNumber, m_runNumber );
 
   // Create GenHeader and partially fill it - updated during phase execution
   LHCb::GenHeader header{};
@@ -56,8 +93,20 @@ LHCb::GenHeader GenRndInit::operator()() const
   header.setRunNumber( m_runNumber );
   header.setEvtNumber( eventNumber );
   header.setEvType( 0 );
+  auto beam = createBeamParameters();
+  return std::make_tuple( header, beam );
+}
 
-  return header;
+StatusCode GenRndInit::finalize()
+{
+  delete m_barrier;
+  delete m_endbarrier;
+  if ( m_firstTimingEvent >= 0 ) {
+    auto end_time = Clock::now();
+    info() << "Total event loop time [ns]: "
+           << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+  }
+  return base_class::finalize();
 }
 
 void GenRndInit::printEventRun( long long event, int run, std::vector<long int>* seeds ) const
@@ -66,4 +115,24 @@ void GenRndInit::printEventRun( long long event, int run, std::vector<long int>*
   info() << ",  Nr. in job = " << eventCounter();
   if ( 0 != seeds ) info() << " with seeds " << *seeds;
   info() << endmsg;
+}
+
+LHCb::BeamParameters GenRndInit::createBeamParameters() const
+{
+  LHCb::BeamParameters ret{};
+  // create beam parameter object
+  ret.setEnergy( m_beamInfoSvc->energy() );
+  ret.setSigmaS( m_beamInfoSvc->sigmaS() );
+  ret.setEpsilonN( m_beamInfoSvc->epsilonN() );
+  ret.setTotalXSec( m_beamInfoSvc->totalXSec() );
+  ret.setHorizontalCrossingAngle( m_beamInfoSvc->horizontalCrossingAngle() );
+  ret.setVerticalCrossingAngle( m_beamInfoSvc->verticalCrossingAngle() );
+  ret.setHorizontalBeamlineAngle( m_beamInfoSvc->horizontalBeamlineAngle() );
+  ret.setVerticalBeamlineAngle( m_beamInfoSvc->verticalBeamlineAngle() );
+  ret.setBetaStar( m_beamInfoSvc->betaStar() );
+  ret.setBunchSpacing( m_beamInfoSvc->bunchSpacing() );
+  ret.setBeamSpot( m_beamInfoSvc->beamSpot() );
+  ret.setLuminosity( m_beamInfoSvc->luminosity() );
+
+  return ret;
 }

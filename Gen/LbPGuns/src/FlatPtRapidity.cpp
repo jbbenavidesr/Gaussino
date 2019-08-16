@@ -88,9 +88,9 @@ StatusCode FlatPtRapidity::initialize() {
 //===========================================================================
 void FlatPtRapidity::generateParticle( Gaudi::LorentzVector & momentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {  
+                                      int & pdgId , HepRandomEnginePtr& engine ) {  
   
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   origin.SetCoordinates( 0. , 0. , 0. , 0.  );                                      
   
   // randomly choose a particle type

@@ -59,8 +59,8 @@ StatusCode FlatNParticles::initialize( ) {
 //=============================================================================
 // Compute the number of particles
 //=============================================================================
-unsigned int FlatNParticles::numberOfPileUp( CLHEP::HepRandomEngine & engine ) {
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+unsigned int FlatNParticles::numberOfPileUp( HepRandomEnginePtr & engine ) {
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   return ( m_minNumberOfParticles + 
     (unsigned int) ( flatGenerator() * 
                      ( 1 + m_maxNumberOfParticles - m_minNumberOfParticles ) ) ) ;

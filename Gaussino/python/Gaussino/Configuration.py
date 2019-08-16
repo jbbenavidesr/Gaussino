@@ -6,10 +6,12 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaudi.Configuration import appendPostConfigAction
+from Gaudi.Configuration import log
 from Gaussino.Utilities import (ppService, dataService,
                                 auditorService, histogramService)
+from Gaussino.Utilities import configure_edm_conversion
 from Gaussino.Generation import GenPhase
+from Gaussino.Simulation import SimPhase
 
 
 class Gaussino(ConfigurableUser):
@@ -17,25 +19,28 @@ class Gaussino(ConfigurableUser):
     __used_configurables__ = [GenPhase]
 
     __slots__ = {
-        "Histograms"                    : "DEFAULT"  # NOQA
-        ,"DatasetName"                  : "Gaussino"  # NOQA
-        ,"DataType"                     : ""  # NOQA
-        ,"SpilloverPaths"               : []  # NOQA
-        ,"Phases"                       : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
-        ,"OutputType"                   : 'SIM'  # NOQA
-        ,"EnablePack"                   : True  # NOQA
-        ,"DataPackingChecks"            : True  # NOQA
-        ,"WriteFSR"                     : True  # NOQA
-        ,"MergeGenFSR"                  : False  # NOQA
-        ,"Debug"                        : False  # NOQA
-        ,"BeamPipe"                     : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
-        ,"ReplaceWithGDML"              : [ { "volsToReplace": [], "gdmlFile" : "" } ]  # NOQA
-        ,"RandomGenerator"              : 'Ranlux'  # NOQA
-        ,"UseGaussGeo"                  : False  # NOQA
-        ,"evtMax"                       : -1  # NOQA
-        ,"EnableHive"                   : False  # NOQA
-        ,"ThreadPoolSize"               : 2  # NOQA
-        ,"EventSlots"                   : 2  # NOQA
+        "Histograms"         : "DEFAULT"  # NOQA
+        ,"DatasetName"       : "Gaussino"  # NOQA
+        ,"DatasetNameForced" : False  # NOQA
+        ,"DataType"          : ""  # NOQA
+        ,"SpilloverPaths"    : []  # NOQA
+        ,"Phases"            : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
+        ,"OutputType"        : 'SIM'  # NOQA
+        ,"EnablePack"        : True  # NOQA
+        ,"DataPackingChecks" : True  # NOQA
+        ,"WriteFSR"          : True  # NOQA
+        ,"MergeGenFSR"       : False  # NOQA
+        ,"Debug"             : False  # NOQA
+        ,"BeamPipe"          : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
+        ,"ReplaceWithGDML"   : [ { "volsToReplace": [], "gdmlFile": "" } ]  # NOQA
+        ,"RandomGenerator"   : 'Ranlux'  # NOQA
+        ,"UseGaussGeo"       : False  # NOQA
+        ,"evtMax"            : -1  # NOQA
+        ,"EnableHive"        : False  # NOQA
+        ,"ThreadPoolSize"    : 2  # NOQA
+        ,"EventSlots"        : 2  # NOQA
+        ,"ConvertEDM"        : False  # NOQA
+        ,"ForceRandomEngine"   : 'NONE'  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -78,13 +83,40 @@ class Gaussino(ConfigurableUser):
         dataService()
         auditorService()
 
+        phases = self.getProp("Phases")
+        if "Generator" not in phases:
+            raise Exception("Must have Generator phase")
         self.setOtherProps(GenPhase(), ['evtMax'])
         GenPhase().configure_phase()
+        if "Simulation" in phases:
+            SimPhase().configure_phase()
+        else:
+            GenPhase().configure_genonly()
+
+        if self.getProp('ConvertEDM'):
+            ApplicationMgr().TopAlg += configure_edm_conversion()
 
         histogramService()
 
         ApplicationMgr().EvtMax = self.getProp('evtMax')
         ApplicationMgr().EvtSel = 'NONE'
+
+        from Gaudi.Configuration import appendPostConfigAction
+
+        def force_engine():
+            from Gaudi import Configuration
+            neweng = self.getProp('ForceRandomEngine')
+            for name, conf in Configuration.allConfigurables.items():
+                try:
+                    conf.setProp('RandomEngine', neweng)
+                except:
+                    pass
+                else:
+                    log.info('Forced random engine of {} to {}'.format(
+                        name, neweng,))
+
+        if self.getProp('ForceRandomEngine') != 'NONE':
+            appendPostConfigAction(force_engine)
 
     eventType = staticmethod(GenPhase.eventType)
 
@@ -95,6 +127,8 @@ class Gaussino(ConfigurableUser):
         """
         import time
         outputName = self.getProp("DatasetName")
+        if self.getProp("DatasetNameForced"):
+            return outputName
         if outputName == "":
             outputName = 'Gaussino'
         if self.eventType() != "":

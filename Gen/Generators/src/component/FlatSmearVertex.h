@@ -25,11 +25,11 @@ class FlatSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
   virtual ~FlatSmearVertex( ); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) ;
+  virtual StatusCode initialize( ) override;
   
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) ;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
   
  private:
   /// Minimum value for the x coordinate of the vertex (set by options)

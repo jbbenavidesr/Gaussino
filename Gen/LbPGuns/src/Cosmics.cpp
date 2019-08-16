@@ -126,11 +126,11 @@ StatusCode Cosmics::initialize() {
 //===========================================================================
 void Cosmics::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                 Gaudi::LorentzVector & origin , 
-                                int & pdgId , CLHEP::HepRandomEngine & engine ) {
+                                int & pdgId , HepRandomEnginePtr & engine ) {
   double px(0.), py(0.), pz(0.) ;
   double verx(0.), very(0.), verz(0.) ;
 
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   //GM
   //get the momentum according to the cosmic spectrum from
   //two different models

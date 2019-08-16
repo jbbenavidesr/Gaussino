@@ -37,8 +37,8 @@ class SignalForcedFragmentation : public Signal {
     *     interaction contains a b quark, calling
     *     IProductionTool::setupForcedFragmentation.
     */
-   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC::GenEvent>& theEvents,
-                          LHCb::GenCollisions& theCollisions , CLHEP::HepRandomEngine & engine ) override;
+   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC3::GenEvent>& theEvents,
+                          LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) const override;
 
  private:
    /** Boost a particle at rest in the lab frame.
@@ -47,7 +47,7 @@ class SignalForcedFragmentation : public Signal {
     *  @param[in]     theSignalAtRest Decay tree at rest to boost
     *  @param[in]     theVector       3-momentum boost vector
     */
-   StatusCode boostTree( HepMC::GenParticle* theSignal, const HepMC::GenParticle* theSignalAtRest,
+   StatusCode boostTree( HepMC3::GenParticlePtr theSignal, HepMC3::ConstGenParticlePtr theSignalAtRest,
                          const ROOT::Math::Boost& theBoost ) const;
 
    double m_signalMass = 0; ///< Mass of the signal particle

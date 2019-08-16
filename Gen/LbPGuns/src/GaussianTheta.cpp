@@ -81,11 +81,11 @@ StatusCode GaussianTheta::initialize( ) {
 //===========================================================================
 void GaussianTheta::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {
+                                      int & pdgId , HepRandomEnginePtr & engine ) {
   
 
-  CLHEP::RandFlat flatGenerator{engine, 0., 1.};
-  CLHEP::RandGauss gaussGenerator{engine, m_meanTheta, m_sigmaTheta};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0., 1.};
+  CLHEP::RandGauss gaussGenerator{engine.getref(), m_meanTheta, m_sigmaTheta};
   const double theta = gaussGenerator();
   const double phi = flatGenerator() * Gaudi::Units::twopi ;
 

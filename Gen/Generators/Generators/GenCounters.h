@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <array>
 
-namespace HepMC {
+namespace HepMC3 {
   class GenEvent ;
 }
 
@@ -233,7 +233,7 @@ namespace GenCounters {
    *  @param[out] thebExcitedC Counters for B(**) 
    *  @param[out] thecExcitedC Counters for D(**)
    */
-  void updateExcitedStatesCounters( const HepMC::GenEvent * theEvent ,
+  void updateExcitedStatesCounters( const HepMC3::GenEvent * theEvent ,
                                     ExcitedCounter & thebExcitedC ,
                                     ExcitedCounter & thecExcitedC ) ;
 
@@ -246,7 +246,7 @@ namespace GenCounters {
    *  @param[out] thebbCounter Counters for (bb) states
    *  @param[out] theccCounter Counters for (cc) states
    */
-  void updateHadronCounters( const HepMC::GenEvent * theEvent , 
+  void updateHadronCounters( const HepMC3::GenEvent * theEvent , 
                              BHadronCounter & thebHadC , 
                              BHadronCounter & theantibHadC ,
                              DHadronCounter & thecHadC ,
@@ -254,7 +254,7 @@ namespace GenCounters {
                              std::atomic_uint & thebbCounter , 
                              std::atomic_uint & theccCounter ) ;
   
-  void updateHadronFSR( const HepMC::GenEvent* theEvent,
+  void updateHadronFSR( const HepMC3::GenEvent* theEvent,
                         LHCb::GenFSR * genFSR,
                         const std::string option);
   

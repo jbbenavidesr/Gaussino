@@ -39,7 +39,7 @@ class UniformSmearVertex : public GaudiTool,
    *  direction but generates flat distribution for the z-coordinate of
    *  the primary vertex.
    */
-  virtual StatusCode smearVertex( HepMC::GenEvent * theEvent , CLHEP::HepRandomEngine & engine ) ;
+  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) ;
   
  private:
   /// Maximum value for the r coordinate of the vertex (set by options)

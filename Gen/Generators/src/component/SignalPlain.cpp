@@ -8,6 +8,7 @@
 
 // Event 
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 // Kernel
@@ -16,7 +17,7 @@
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
@@ -48,9 +49,9 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC::GenEvent> & theEvents , 
+                            std::vector<HepMC3::GenEvent> & theEvents , 
                             LHCb::GenCollisions & theCollisions ,
-                            CLHEP::HepRandomEngine & engine ) {
+                            HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool result = false ;
   // Memorize if the particle is inverted
@@ -58,11 +59,9 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   bool hasFlipped = false ;
   bool hasFailed = false ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
   
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;  
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -74,7 +73,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
 
     if ( ! result ) {
       // Decay particles heavier than the particles to look at
-      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID ) ;
+      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;
@@ -87,7 +86,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
           hasFlipped = false ;
           isInverted = false ;
           hasFailed  = false ;
-          HepMC::GenParticlePtr theSignal =
+          HepMC3::GenParticlePtr theSignal =
             chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
@@ -134,7 +133,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
                 sc = isolateSignal( theSignal ) ;
                 if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
               }
-              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
+              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
               
               theGenCollision -> setIsSignal( true ) ;
               

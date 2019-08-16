@@ -1,4 +1,4 @@
-#ifndef LBPYTHIA8_PYTHIA8PRODUCTION_H 
+#ifndef LBPYTHIA8_PYTHIA8PRODUCTION_H
 #define LBPYTHIA8_PYTHIA8PRODUCTION_H 1
 
 // LbPythia8.
@@ -16,37 +16,36 @@
 
 //#include "Pythia8Plugins/HepMC2.h"
 #include <mutex>
-
-using namespace std;
+#include "Utils/LocalTL.h"
 
 /** 
  * Production tool to generate events with Pythia 8.
- *  
+ *
  * Production of events using the Pythia 8 multi-purpose Monte Carlo generator
  * is provided by this class. THe Pythia 8 generator is a complete rewrite in
  * C++ of the previous FORTRAN Pythia 6 event generator. Currently the physics
  * manual for Pythia 8 is the same as for Pythia 6, arXiv:hep-ph/0603175. A
- * brief introduction to the specifics of Pythia 8 can be found in 
+ * brief introduction to the specifics of Pythia 8 can be found in
  * arXiv:0710.3820 while a continually updated online manual can be found at
  * http://home.thep.lu.se/~torbjorn/pythia81html/Welcome.html.
- * 
+ *
  * @class  Pythia8Production
- * @file   Pythia8Production.h 
+ * @file   Pythia8Production.h
  * @author Arthur de Gromard
  * @author Philip Ilten
  * @date   2007-06-28
  */
 class Pythia8Production : public GaudiTool, virtual public IProductionTool {
 public:
-  typedef vector<string> CommandVector ;
+  typedef std::vector<std::string> CommandVector ;
   
   /// Default constructor.
-  Pythia8Production(const string& type, const string& name,
+  Pythia8Production(const std::string& type, const std::string& name,
 		    const IInterface* parent);
-  
+
   /// Default destructor.
   virtual ~Pythia8Production();
-  
+
   /**
    * Initialize the tool.
    *
@@ -55,51 +54,50 @@ public:
    * beam tool, user hooks (if not already supplied), and XML log file are
    * initialized.
    */
-  virtual StatusCode initialize();
-  
+  StatusCode initialize() override;
+
   /// Initialize the Pythia 8 generator.
-  virtual StatusCode initializeGenerator();
+  StatusCode initializeGenerator() override;
 
   /// Finalize the tool.
-  virtual StatusCode finalize();
-  
-  /// Generate an event.
-  virtual StatusCode generateEvent(HepMC::GenEvent* theEvent, 
-				   LHCb::GenCollision* theCollision , CLHEP::HepRandomEngine & engine );
+  StatusCode finalize() override;
 
-  
+  /// Generate an event.
+  virtual StatusCode generateEvent(HepMC3::GenEvent* theEvent, 
+				   LHCb::GenCollision* theCollision , HepRandomEnginePtr & engine ) const override;
+
   /**
    * Convert Pythia 8 event to HepMC format.
-   * 
+   *
    * This method converts the native output of Pythia 8 to the HepMC format
    * using the conversion method provided by Pythia 8. However the status codes
    * and vertex positions must be modified to match the LHCb standard. The
    * hard process information is also set.
    */
-  StatusCode toHepMC(HepMC::GenEvent* theEvent, 
-		     LHCb::GenCollision* theCollision);
+  StatusCode toHepMC(HepMC3::GenEvent* theEvent, 
+		     LHCb::GenCollision* theCollision) const;
 
   /// Set particle stable.
-  virtual void setStable(const LHCb::ParticleProperty* thePP);
+  void setStable(const LHCb::ParticleProperty* thePP) override;
 
   /// Update a particle.
-  virtual void updateParticleProperties(const LHCb::ParticleProperty* thePP);
+  void updateParticleProperties(const LHCb::ParticleProperty* thePP) override;
 
   /// Sets Pythia 8's "HadronLevel:Hadronize" flag to true.
-  virtual void turnOnFragmentation();
+  void turnOnFragmentation() override;
 
   /// Sets Pythia 8's "HadronLevel:Hadronize" flag to false.
-  virtual void turnOffFragmentation();
+  void turnOffFragmentation() override;
 
   /// Hadronize an event.
-  virtual StatusCode hadronize(HepMC::GenEvent* theEvent, 
-			       LHCb::GenCollision* theCollision);
+  virtual StatusCode hadronize(HepMC3::GenEvent* theEvent, 
+			       LHCb::GenCollision* theCollision) override;
   
   /// Save the Pythia 8 event record.
-  virtual void savePartonEvent(HepMC::GenEvent* theEvent);
+  virtual void savePartonEvent(HepMC3::GenEvent* theEvent) override;
 
   /// Retrieve the Pythia 8 event record.
-  virtual void retrievePartonEvent(HepMC::GenEvent* theEvent);
+  virtual void retrievePartonEvent(HepMC3::GenEvent* theEvent) override;
 
   /**
    * Print the running conditions.
@@ -110,7 +108,7 @@ public:
    * only the changed settings are printed. Note that this method duplicates
    * the built in functionality of Pythia 8 and should be removed.
    */
-  virtual void printRunningConditions();
+  void printRunningConditions() const override;
 
   /**
    * Returns whether a particle has special status.
@@ -119,25 +117,26 @@ public:
    * This method checks if the particle is within the special particle set
    * built during construction of the class.
    */
-  virtual bool isSpecialParticle( const LHCb::ParticleProperty* thePP) const;
+  bool isSpecialParticle( const LHCb::ParticleProperty* thePP) const override;
 
   /**
    * Setup forced fragmentation.
    *
    * Used in conjuntion with the hadronize method. Here the Pythia 8 setting
-   * of "PartonLevel:all" is set to off which stops both showers and 
+   * of "PartonLevel:all" is set to off which stops both showers and
    * hadronization from being performed.
    */
-  virtual StatusCode setupForcedFragmentation(const int thePdgId);
-  
+  StatusCode setupForcedFragmentation(const int thePdgId) override;
+
   // The Pythia 8 members (needed externally).
   Pythia8::Pythia*    m_pythia; ///< The Pythia 8 generator.
   Pythia8::UserHooks* m_hooks;  ///< User hooks to veto events.
   Pythia8::LHAup*     m_lhaup;  ///< User specified hard process.
-  Pythia8::Event      m_event;  ///< The Pythia 8 event record.
+  mutable LocalTL<Pythia8::Event> m_event;  ///< The Pythia 8 event record.
 
   // Members needed externally.
-  string m_beamToolName;        ///< The name of the beam tool.
+
+  std::string m_beamToolName;        ///< The name of the beam tool.
   
 protected:
 
@@ -152,22 +151,25 @@ protected:
    * Any particle that is not found within the Pythia 8 particle database is
    * assigned an ID of 0.
    */
-  int pythia8Id(const LHCb::ParticleProperty* thePP);
+  int pythia8Id(const LHCb::ParticleProperty* thePP) const;
   
   // Additional members.
   IBeamTool* m_beamTool;                 ///< The Gaudi beam tool.
   BeamToolForPythia8* m_pythiaBeamTool;  ///< The Pythia 8 beam tool.
-  int m_nEvents;                         ///< Number of generated events.
+  mutable std::atomic_int m_nEvents;     ///< Number of generated events.
   CommandVector m_userSettings;          ///< The user settings vector.
-  string m_tuningFile;                   ///< The global tuning file.
-  string m_tuningUserFile;               ///< The user tuning file.
+  std::string m_tuningFile;              ///< The global tuning file.
+  std::string m_tuningUserFile;          ///< The user tuning file.
   bool m_validate_HEPEVT;                ///< Flag to validate the event.
   bool m_listAllParticles;               ///< Flag to list all the particles.
   bool m_checkParticleProperties ;       ///< Flag to check particle properties.
   bool m_showBanner;                     ///< Flag to print the Pythia 8 banner.
   ICounterLogFile* m_xmlLogTool;         ///< The XML log file. 
-  set<unsigned int> m_special;           ///< The set of special particles.
+  std::set<unsigned int> m_special;           ///< The set of special particles.
   mutable std::mutex m_pythia_lock;
+  std::set<int> m_bws;                   ///< Set of particles with a valid BW.
+  /// Location where to store FSR counters (set by options)
+  std::string  m_FSRName;
 };
 
 #endif // LBPYTHIA8_PYTHIA8PRODUCTION_H

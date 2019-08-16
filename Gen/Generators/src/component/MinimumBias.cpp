@@ -8,7 +8,7 @@
 #include "GenInterfaces/IProductionTool.h"
 
 // Event 
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 #include "Event/GenCollision.h"
 
 //-----------------------------------------------------------------------------
@@ -46,11 +46,11 @@ StatusCode MinimumBias::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool MinimumBias::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC::GenEvent> & theEvents , 
-                            LHCb::GenCollisions & theCollisions, CLHEP::HepRandomEngine & engine ) {
+                            std::vector<HepMC3::GenEvent> & theEvents , 
+                            LHCb::GenCollisions & theCollisions, HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     prepareInteraction( &theEvents , &theCollisions , theGenEvent , 

@@ -125,9 +125,9 @@ StatusCode MomentumSpectrum::initialize() {
 // Generate the particles
 //===========================================================================
 void MomentumSpectrum::generateParticle( Gaudi::LorentzVector & momentum ,
-					 Gaudi::LorentzVector & origin , int & pdgId , CLHEP::HepRandomEngine & engine ) {
+					 Gaudi::LorentzVector & origin , int & pdgId , HepRandomEnginePtr & engine ) {
   
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
         // -- Determine which particle is generated
 	unsigned int currentType = (unsigned int)( m_pdgCodes.size() * flatGenerator() );
 	// protect against funnies

@@ -12,17 +12,18 @@
 #include "GenInterfaces/IDecayTool.h"
 
 // From HepMC
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenEvent.h"
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
-#include "GenEvent/HepMCUtils.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 // from Event                                                                                                                                                    
 #include "Event/GenFSR.h"
+#include "Event/GenFSRMTManager.h"
 #include "Event/GenCountersFSR.h"
 
 //-----------------------------------------------------------------------------
@@ -65,9 +66,9 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
-                                            std::vector<HepMC::GenEvent> & theEvents , 
+                                            std::vector<HepMC3::GenEvent> & theEvents , 
                                             LHCb::GenCollisions & 
-                                            theCollisions , CLHEP::HepRandomEngine & engine ) {
+                                            theCollisions , HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool gotSignalInteraction = false ;
 
@@ -81,12 +82,10 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   bool hasFailed = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC::GenEvent * theGenEvent( 0 ) ;
-  HepMC::GenParticlePtr theSignal ;
+  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenParticlePtr theSignal ;
 
-  IDataProviderSvc* fileRecordSvc = svc<IDataProviderSvc>("FileRecordDataSvc", true);
-  std::string FSRName = LHCb::GenFSRLocation::Default;
-  LHCb::GenFSR* genFSR = getIfExists<LHCb::GenFSR>(fileRecordSvc, FSRName);  
+  auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -120,7 +119,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
       
       while ( nRepetitions < m_maxNumberOfRepetitions ) {
         // Decay heavy particles
-        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID ) ;
+        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
         
         // Check if one particle of the requested list is present in event
         ParticleVector theParticleList ;
@@ -196,7 +195,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 
 
                 theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
-                    std::make_shared<HepMC::VertexAttribute>(theSignal->end_vertex()));
+                    std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
                 
                 // theGenCollision -> setIsSignal( true ) ;
                 
@@ -274,8 +273,8 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 //=============================================================================
 // Clear a complete HepMC event
 //=============================================================================
-void SignalRepeatedHadronization::Clear( HepMC::GenEvent * theEvent ) const {
-  if ( ! theEvent -> vertices_empty() ) {
+void SignalRepeatedHadronization::Clear( HepMC3::GenEvent * theEvent ) const {
+  if ( theEvent -> vertices().size()>0 ) {
     theEvent->clear();
   }
 }

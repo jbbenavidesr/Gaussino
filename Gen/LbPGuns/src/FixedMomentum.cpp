@@ -85,8 +85,8 @@ StatusCode FixedMomentum::initialize() {
 //===========================================================================
 void FixedMomentum::generateParticle( Gaudi::LorentzVector & momentum , 
                                       Gaudi::LorentzVector & origin , 
-                                      int & pdgId , CLHEP::HepRandomEngine & engine ) {  
-  CLHEP::RandFlat flatGenerator{engine, 0, 1};
+                                      int & pdgId , HepRandomEnginePtr & engine ) {  
+  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
   unsigned int currentType = 
     (unsigned int)( m_pdgCodes.size() * flatGenerator() );
   // protect against funnies

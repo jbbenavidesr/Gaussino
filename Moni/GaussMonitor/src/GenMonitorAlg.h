@@ -11,7 +11,7 @@
 #include "GaudiAlg/Consumer.h"
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/GaudiHistoAlg.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
 // from AIDA
 #include "AIDA/IHistogram1D.h"
@@ -29,7 +29,7 @@
  *  @author Dominik Muller
  *  @date   2018-03-08
  */
-class GenMonitorAlg : public Gaudi::Functional::Consumer<void( const std::vector<HepMC::GenEvent>& ),
+class GenMonitorAlg : public Gaudi::Functional::Consumer<void( const std::vector<HepMC3::GenEvent>& ),
                                                          Gaudi::Functional::Traits::BaseClass_t<GaudiHistoAlg>>
 {
 public:
@@ -42,7 +42,7 @@ public:
 
   virtual ~GenMonitorAlg() = default; ///< Destructor
 
-  void operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  void operator()( const std::vector<HepMC3::GenEvent>& ) const override;
   virtual StatusCode finalize() override; ///< Algorithm finalization
   virtual StatusCode initialize() override; ///< Algorithm finalization
 

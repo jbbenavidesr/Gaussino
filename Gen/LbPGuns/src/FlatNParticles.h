@@ -35,7 +35,7 @@ public:
    *  Returns the number of particles in one event. It follows
    *  a flat distribution 
    */
-  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) ;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr& engine ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) { ; } ; 

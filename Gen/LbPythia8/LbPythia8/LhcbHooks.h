@@ -1,4 +1,4 @@
-#ifndef LBPYTHIA8_LHCBHOOKS_H 
+#ifndef LBPYTHIA8_LHCBHOOKS_H
 #define LBPYTHIA8_LHCBHOOKS_H 1
 
 #include "Pythia8/Pythia.h"
@@ -15,21 +15,21 @@
 
 namespace Pythia8 {
   class LhcbHooks : public UserHooks {
-    
+
   public:
-    
+
     /// Constructor.
     LhcbHooks() {isInit = false;}
-    
+
     /// Modifiy cross-section.
-    virtual bool canModifySigma() {return true;}
-    
+    bool canModifySigma() override {return true;}
+
     /// Cross-section weight.
-    virtual double multiplySigmaBy(const SigmaProcess* sigmaProcessPtr,
-				   const PhaseSpace* phaseSpacePtr, bool);
-    
+    double multiplySigmaBy(const SigmaProcess* sigmaProcessPtr,
+				   const PhaseSpace* phaseSpacePtr, bool) override;
+
   private:
-    
+
     // Members.
     bool   isInit;      ///< Flag whether the object has been initialized.
     double pT20;        ///< Stored value of the pT damping parameter.

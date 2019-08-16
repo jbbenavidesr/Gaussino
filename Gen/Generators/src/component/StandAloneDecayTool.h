@@ -24,9 +24,9 @@ public:
   virtual StatusCode initialize( ) override;    ///< Tool initialization
   
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC::GenEvent> & theEvents ,
+                         std::vector<HepMC3::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
-                         CLHEP::HepRandomEngine & engine ) override;
+                         HepRandomEnginePtr & engine ) const override;
 
 private:
   double m_signalMass ; ///< Mass of the particle to decay

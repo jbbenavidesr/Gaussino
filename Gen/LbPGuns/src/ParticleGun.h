@@ -7,8 +7,10 @@
 #include "Event/GenHeader.h"
 #include "GaudiAlg/Transformer.h"
 #include "NewRnd/RndAlgSeeder.h"
+#include "HepMC3/GenParticle.h"
 
 #include <atomic>
+#include <vector>
 #include <mutex>
 
 // Forward declarations
@@ -34,7 +36,7 @@ namespace HepMC
  */
 class ParticleGun
     : public Gaudi::Functional::MultiTransformer<
-          std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ), Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
+          std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ), Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
 private:
   Gaudi::Property<std::string> m_particleGunToolName{this, "ParticleGunTool", "GenericGun"};
@@ -51,7 +53,7 @@ private:
   Gaudi::Property<double> m_MassRange_max{this, "MassRange_max", -1.};
 
 public:
-  typedef std::vector<HepMC::GenParticlePtr> ParticleVector;
+  typedef std::vector<HepMC3::GenParticlePtr> ParticleVector;
   /// Standard constructor
   ParticleGun( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
@@ -77,7 +79,7 @@ public:
    *  generated.
    *  -#
    */
-  virtual std::tuple<std::vector<HepMC::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+  virtual std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
   operator()( const LHCb::GenHeader& ) const override;
 
   /** Algorithm finalization.
@@ -87,11 +89,11 @@ public:
 
 protected:
   /// Decay the event with the IDecayTool.
-  HepMC::GenParticlePtr decayEvent( HepMC::GenEvent* theEvent, ParticleVector& particleList, StatusCode& sc ) const;
+  HepMC3::GenParticlePtr decayEvent( HepMC3::GenEvent* theEvent, ParticleVector& particleList, HepRandomEnginePtr & engine, StatusCode& sc ) const;
 
   /// Perpare the particle containers
-  void prepareInteraction( std::vector<HepMC::GenEvent> * theEvents, LHCb::GenCollisions* theCollisions,
-                           HepMC::GenEvent*& theGenEvent, LHCb::GenCollision*& theGenCollision ) const;
+  void prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents, LHCb::GenCollisions* theCollisions,
+                           HepMC3::GenEvent*& theGenEvent, LHCb::GenCollision*& theGenCollision ) const;
 
 private:
   IParticleGunTool* m_particleGunTool{nullptr};

@@ -33,7 +33,7 @@ class IDecayTool ;
 
 struct IGenCutTool : extend_interfaces<IAlgTool> {
   /// Vector of particles
-  typedef std::vector< HepMC::GenParticlePtr > ParticleVector ;
+  typedef std::vector< HepMC3::GenParticlePtr > ParticleVector ;
 
   DeclareInterfaceID ( IGenCutTool , 6 , 0 ) ;
 
@@ -52,7 +52,7 @@ struct IGenCutTool : extend_interfaces<IAlgTool> {
    *  @return        true  if the event passes the generator level cut.
    */
   virtual bool applyCut( ParticleVector & theParticleVector , 
-                         const HepMC::GenEvent * theGenEvent ,
+                         const HepMC3::GenEvent * theGenEvent ,
                          const LHCb::GenCollision * theCollision ) 
     const = 0 ;
 };

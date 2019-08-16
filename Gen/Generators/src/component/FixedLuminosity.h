@@ -39,7 +39,7 @@ public:
    *  mean = Luminosity * cross_section / crossing_rate.
    *  The fixed luminosity is returned in the GenHeader.
    */
-  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & engine ) ;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & engine ) ;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) ;

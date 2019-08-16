@@ -51,7 +51,7 @@ class RepeatDecay : public GaudiTool ,
    *  -# If there is an event in memory, just erase the particles in it.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC::GenEvent> & theEvents ,
+                         std::vector<HepMC3::GenEvent> & theEvents ,
                          LHCb::GenCollisions & theCollisions ) override;
 
   /** Print generation counters.
@@ -71,19 +71,19 @@ class RepeatDecay : public GaudiTool ,
 
 
   /// Memorized events
-  std::vector<HepMC::GenEvent> m_theMemorizedEvents ;
+  std::vector<HepMC3::GenEvent> m_theMemorizedEvents ;
   
   /// Memorized collisions
   LHCb::GenCollisions m_theMemorizedCollisions ;
   
   /// Copy a set of events into another
-  void copyEvents( std::vector<HepMC::GenEvent> & from , 
-                   std::vector<HepMC::GenEvent> & to )  ;
+  void copyEvents( std::vector<HepMC3::GenEvent> & from , 
+                   std::vector<HepMC3::GenEvent> & to )  ;
   
   /* Copy a set of collisions into another, with the list of corresponding 
    * events
    */
   void copyCollisions( LHCb::GenCollisions & from , LHCb::GenCollisions & to ,
-                       std::vector<HepMC::GenEvent> & theEvents ) ;
+                       std::vector<HepMC3::GenEvent> & theEvents ) ;
 };
 #endif // GENERATORS_REPEATDECAY_H

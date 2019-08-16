@@ -6,9 +6,9 @@
 #include "Defaults/Locations.h"
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/Transformer.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 /** @class SaveSignalBInformation SaveSignalBInformation.h
  *
@@ -19,7 +19,7 @@
  *  @date   2013-06-26
  */
 class SaveSignalBInformation
-    : public Gaudi::Functional::Transformer<std::vector<HepMC::GenEvent>( const std::vector<HepMC::GenEvent>& )>
+    : public Gaudi::Functional::Transformer<std::vector<HepMC3::GenEvent>( const std::vector<HepMC3::GenEvent>& )>
 {
 
 public:
@@ -30,14 +30,14 @@ public:
 
   virtual ~SaveSignalBInformation(){}; ///< Destructor
 
-  std::vector<HepMC::GenEvent> operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  std::vector<HepMC3::GenEvent> operator()( const std::vector<HepMC3::GenEvent>& ) const override;
 
 protected:
 private:
   /// Extract B string from signal
-  HepMC::GenEvent* extractSignal( const HepMC::GenVertexPtr& theVertex ) const;
+  HepMC3::GenEvent* extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const;
 
   /// make a new HepMC event
-  StatusCode fillHepMCEvent( HepMC::GenParticlePtr & theNewParticle, const HepMC::GenParticlePtr & theOldParticle ) const;
+  StatusCode fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle, const HepMC3::ConstGenParticlePtr & theOldParticle ) const;
 };
 #endif // COMPONENT_SAVESIGNALBINFORMATION_H

@@ -125,13 +125,13 @@ StatusCode BeamShape::initialize() {
 //===========================================================================
 void BeamShape::generateParticle( Gaudi::LorentzVector & fourMomentum , 
                                 Gaudi::LorentzVector & origin , 
-                                int & pdgId , CLHEP::HepRandomEngine & engine ) {
+                                int & pdgId , HepRandomEnginePtr & engine ) {
   double xn(0.),yn(0.),zn(0.) ;
   double x(0.),y(0.),z(0.) ;
   double px(0.), py(0.), pz(0.) ;
 
   // Get particle position in distance from center
-  CLHEP::RandGauss gaussGenerator{engine, 0, 1};
+  CLHEP::RandGauss gaussGenerator{engine.getref(), 0, 1};
 
   xn = gaussGenerator()*m_xSigma;
   yn = gaussGenerator()*m_ySigma;

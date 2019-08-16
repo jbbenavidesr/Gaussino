@@ -19,9 +19,12 @@ class IGenCutTool ;
 class ICounterLogFile ;
 namespace LHCb { class IParticlePropertySvc ; }
 
-namespace HepMC { 
+namespace HepMC3 { 
   class GenEvent ; 
   class GenParticle ;
+}
+namespace CLHEP { 
+  class HepRandomEngine;
 }
 
 /** @class ExternalGenerator ExternalGenerator.h "Generators/ExternalGenerator.h"
@@ -39,7 +42,7 @@ class ExternalGenerator : public GaudiTool ,
                           public ISampleGenerationTool {
  public:
   /// Vector of HepMC particles
-  typedef std::vector< HepMC::GenParticlePtr > ParticleVector ;
+  typedef std::vector< HepMC3::GenParticlePtr > ParticleVector ;
   
   /// Ordered set of integer to contain PID of particles to generate
   typedef std::set< int >                     PIDs           ;
@@ -91,9 +94,9 @@ class ExternalGenerator : public GaudiTool ,
    *                                the ParticlePropertySvc or/and the EvtGen 
    *                                decay table).
    */
-  StatusCode decayHeavyParticles( HepMC::GenEvent * theEvent , 
+  StatusCode decayHeavyParticles( HepMC3::GenEvent * theEvent , 
                                   const LHCb::ParticleID::Quark theQuark , 
-                                  const int signalPid ) const ;
+                                  const int signalPid , HepRandomEnginePtr & engine) const;
   
   
   /** Find particles of given PIDs in an event
@@ -104,13 +107,13 @@ class ExternalGenerator : public GaudiTool ,
    *                            PID is in the pidList.
    *  @return     true if the event contains a particle with correct PID.
    */
-  bool checkPresence( const PIDs & pidList , const HepMC::GenEvent * theEvent ,
+  bool checkPresence( const PIDs & pidList , HepMC3::GenEvent * theEvent ,
                       ParticleVector & particleList ) const ;
 
   /** Parity flip (z -> -z and pz -> -pz) the event
    *  @param[in,out] theEvent   Event to flip
    */
-  void revertEvent( HepMC::GenEvent * theEvent ) const ;
+  void revertEvent( HepMC3::GenEvent * theEvent ) const ;
 
   /** Count the number of particle with pz > 0 
    *  @param[in] particleList  List of particles
@@ -129,9 +132,9 @@ class ExternalGenerator : public GaudiTool ,
    *  @param[out]    theHardInfo     Object where to store hard process
    *                                 informations of the next interaction.
    */
-  void prepareInteraction( std::vector<HepMC::GenEvent> * theEvents ,
+  void prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
                            LHCb::GenCollisions * theCollisions , 
-                           HepMC::GenEvent * & theGenEvent ,
+                           HepMC3::GenEvent * & theGenEvent ,
                            LHCb::GenCollision * & theGenCollision ) const ;
 
   /** Production tool (interface to external generator) to use to 

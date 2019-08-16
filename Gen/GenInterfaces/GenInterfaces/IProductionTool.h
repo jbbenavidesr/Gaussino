@@ -5,15 +5,12 @@
 // Include files
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
+#include "NewRnd/RndCommon.h"
 
 // Forward declarations
-namespace HepMC { class GenEvent ; }
+namespace HepMC3 { class GenEvent ; }
 namespace LHCb { class GenCollision ; 
   class ParticleProperty ;
-}
-
-namespace CLHEP {
-  class HepRandomEngine;
 }
 
 
@@ -41,9 +38,9 @@ public:
    *  @param[out] theInfo   Informations about the hard process of the
    *                        generated interaction.
    */
-  virtual StatusCode generateEvent( HepMC::GenEvent * theEvent , 
+  virtual StatusCode generateEvent( HepMC3::GenEvent * theEvent , 
                                     LHCb::GenCollision * theInfo,
-                                    CLHEP::HepRandomEngine & engine) = 0 ;
+                                    HepRandomEnginePtr & engine) const = 0 ;
 
   /// Declare a particle stable to the production generator.
   virtual void setStable( const LHCb::ParticleProperty * thePP ) = 0 ;
@@ -64,17 +61,17 @@ public:
    *  @param[out]    theInfo   Informations about the hard process of the 
    *                           generated interaction.
    */
-  virtual StatusCode hadronize( HepMC::GenEvent * theEvent , 
+  virtual StatusCode hadronize( HepMC3::GenEvent * theEvent , 
                                 LHCb::GenCollision * theInfo ) = 0 ;
 
   /// Save the parton level event (when the fragmentation is turned off)
-  virtual void savePartonEvent( HepMC::GenEvent * theEvent ) = 0 ;
+  virtual void savePartonEvent( HepMC3::GenEvent * theEvent ) = 0 ;
 
   /// Retrieve the previously saved parton event to re-hadronize it.
-  virtual void retrievePartonEvent( HepMC::GenEvent * theEvent ) = 0 ;
+  virtual void retrievePartonEvent( HepMC3::GenEvent * theEvent ) = 0 ;
 
   /// Print configuration of production generator 
-  virtual void printRunningConditions( ) = 0 ;
+  virtual void printRunningConditions( ) const = 0 ;
 
   /** Define special particles whose properties must not be updated from 
    *  the particle property service (like mass of top quark, ...)

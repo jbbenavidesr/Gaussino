@@ -8,9 +8,9 @@
 // from Gaudi
 #include "Defaults/Locations.h"
 #include "GaudiAlg/Consumer.h"
-#include "HepMC/GenEvent.h"
+#include "HepMC3/GenEvent.h"
 
-namespace HepMC
+namespace HepMC3
 {
   class Writer;
 }
@@ -22,7 +22,7 @@ namespace HepMC
  *  @author Dominik Muller
  *  @date   2018-03-23
  */
-class HepMCWriter : public Gaudi::Functional::Consumer<void( const std::vector<HepMC::GenEvent>& )>
+class HepMCWriter : public Gaudi::Functional::Consumer<void( const std::vector<HepMC3::GenEvent>& )>
 {
 
 private:
@@ -39,11 +39,12 @@ public:
 
   virtual ~HepMCWriter() = default;
 
-  void operator()( const std::vector<HepMC::GenEvent>& ) const override;
+  void operator()( const std::vector<HepMC3::GenEvent>& ) const override;
   virtual StatusCode finalize() override;
   virtual StatusCode initialize() override;
 
 private:
-  HepMC::Writer* m_writer = nullptr;
+  HepMC3::Writer* m_writer = nullptr;
   mutable std::mutex m_writer_lock;
+  mutable std::atomic_uint m_counter{0};
 };

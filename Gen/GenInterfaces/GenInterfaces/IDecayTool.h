@@ -3,11 +3,8 @@
 
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
-
-namespace HepMC {
-  class GenEvent ;
-  class GenParticle ;
-}
+#include "NewRnd/RndCommon.h"
+#include "HepMC3/GenParticle.h"
 
 namespace CLHEP {
   class HepRandomEngine;
@@ -33,8 +30,8 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            particle is updated with the generated decay 
    *                            tree.
    */
-  virtual StatusCode generateDecay( HepMC::GenParticle * theMother ,
-                                    CLHEP::HepRandomEngine & engine ) const = 0 ;
+  virtual StatusCode generateDecay( const HepMC3::GenParticlePtr & theMother ,
+                                    HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Generates the forced decay of a signal particle.
    *  @param[in,out] theMother  Particle to decay according to the forced
@@ -43,9 +40,9 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            flavour of theMother (to generate CP 
    *                            violation)
    */
-  virtual StatusCode generateSignalDecay( HepMC::GenParticle * theMother ,
+  virtual StatusCode generateSignalDecay( const HepMC3::GenParticlePtr & theMother ,
                                           bool & flip ,
-                                          CLHEP::HepRandomEngine & engine ) const = 0 ;
+                                          HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Generates the decay of a particle, stopping at a given PDG Id.
    *  This allows to generate decay of excited heavy particles, keeping
@@ -60,9 +57,9 @@ struct IDecayTool : extend_interfaces<IAlgTool> {
    *                            decay channle because in general, it is the
    *                            signal particle).
    */
-  virtual StatusCode generateDecayWithLimit( HepMC::GenParticle * theMother ,
+  virtual StatusCode generateDecayWithLimit( const HepMC3::GenParticlePtr& theMother ,
                                              const int targetId ,
-                                             CLHEP::HepRandomEngine & engine ) const = 0 ;
+                                             HepRandomEnginePtr & engine ) const = 0 ;
 
   /** Enable the possibility to flip the flavour of the particle in the decay
    *  engine, to generate CP violation.

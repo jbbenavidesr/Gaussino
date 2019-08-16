@@ -32,7 +32,7 @@ class FixedNInteractions : public GaudiTool, virtual public IPileUpTool {
    *  Implementation of IPileUpTool::numberOfPileUp. 
    *  Returns a luminosity equal to 0.
    */
-  virtual unsigned int numberOfPileUp( CLHEP::HepRandomEngine & ) ;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & ) ;
   
   /// Implementation of IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters( ) ;

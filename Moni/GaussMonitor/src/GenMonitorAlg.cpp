@@ -5,10 +5,9 @@
 #include "GaudiKernel/SystemOfUnits.h"
 
 // From HepMC
-#include "Event/HepMCEvent.h"
-#include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 
 // From LHCb
 #include "Kernel/ParticleID.h"
@@ -50,7 +49,7 @@ StatusCode GenMonitorAlg::initialize()
   return StatusCode::SUCCESS;
 }
 
-void GenMonitorAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents ) const
+void GenMonitorAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
 {
   debug() << "==> Execute" << endmsg;
 
@@ -60,7 +59,7 @@ void GenMonitorAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents 
   int nPileUp( 0 );
 
   for ( auto& hepmcevent : hepmcevents ) {
-    auto gen_name = hepmcevent.attribute<HepMC::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
+    auto gen_name = hepmcevent.attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
 
     // Check if monitor has to be applied to this event
     if ( !m_generatorName.empty() ) {
@@ -73,7 +72,7 @@ void GenMonitorAlg::operator()( const std::vector<HepMC::GenEvent>& hepmcevents 
     // Get the signal process ID from the attributes
     if ( produceHistos() ) {
       auto sig_proc_id = 
-          hepmcevent.attribute<HepMC::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
+          hepmcevent.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
       std::lock_guard<std::mutex> lock( m_histo_lock );
       m_hProcess->fill( sig_proc_id );
     }
