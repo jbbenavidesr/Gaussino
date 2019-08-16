@@ -18,6 +18,10 @@ find_package(CLHEP)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS}
                            ${CLHEP_INCLUDE_DIRS})
 
+# Add -O0 to remove optimizations when using gcc
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0" CACHE STRING "bla" FORCE)
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0" CACHE STRING "bla" FORCE)
+
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
@@ -47,7 +51,7 @@ endmacro()
 # Declare project name and version
 gaudi_project(Gaussino v1r0
               FORTRAN
-              USE GaudiExtensions v1r0
+              USE LHCb v1r0
                   Geant4 v104r1
               DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*
