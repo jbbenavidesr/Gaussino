@@ -50,9 +50,11 @@ HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC3::GenEvent>& h
   Gaussino::MCTruthConverterPtrs converters;
 
   for ( const HepMC3::GenEvent& genEvt : hepmc_events ) {
-    if (msgLevel(MSG::DEBUG)){
+    if (msgLevel(MSG::VERBOSE)){
         m_ppSvc.retrieve();
-        debug() << "HepMC event dump: \n" << PrintDecay(genEvt.particles().at(0), 0, m_ppSvc.get()) << endmsg;
+        for(size_t ib=0; ib<genEvt.beams().size();ib++){
+          verbose() << "HepMC event dump: beam=" << ib << " \n" << PrintDecay(genEvt.beams().at(ib), 0, m_ppSvc.get()) << endmsg;
+        }
     }
     auto converter = std::make_unique<Gaussino::MCTruthConverter>();
     if ( genEvt.length_unit() != HepMC3::Units::MM || genEvt.momentum_unit() != HepMC3::Units::MEV ) {
@@ -111,6 +113,12 @@ bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle
     return true;
   case HepMC3::Status::StableInDecayGen:
     return true;
+
+  //these act as placeholders before status codes can be put in MCEvent
+	case 21:
+	  return true; //case LHCb::HepMCEvent::PythiaIncomingParton: return true;
+	case 22:
+	  return true; //case LHCb::HepMCEvent::PythiaHardProcess: return true;
 
   // For some processes the resonance has status 3.
   case HepMC3::Status::DocumentationParticle:

@@ -8,6 +8,8 @@ namespace HepMC3{
       StableInProdGen = 1,
       DecayedByProdGen = 2,
       DocumentationParticle = 3,
+      PythiaIncomingParton = 21,
+      PythiaHardProcess = 22,
       DecayedByDecayGen = 777,
       DecayedByDecayGenAndProducedByProdGen = 888,
       SignalInLabFrame = 889,
@@ -27,6 +29,8 @@ namespace HepMC3{
       case Status::SignalInLabFrame                      : return s << "SignalInLabFrame";
       case Status::SignalAtRest                          : return s << "SignalAtRest";
       case Status::StableInDecayGen                      : return s << "StableInDecayGen";
+      case Status::PythiaIncomingParton                  : return s << "PythiaIncomingParton";
+      case Status::PythiaHardProcess                     : return s << "PythiaHardProcess";
       default : return s << "ERROR wrong value " << int(e) << " for enum Status::statusType";
     }
   }
@@ -41,6 +45,8 @@ namespace HepMC3{
       case Status::SignalInLabFrame                      : return Status::SignalInLabFrame                     ;
       case Status::SignalAtRest                          : return Status::SignalAtRest                         ;
       case Status::StableInDecayGen                      : return Status::StableInDecayGen                     ;
+      case Status::PythiaIncomingParton                  : return Status::PythiaIncomingParton;
+      case Status::PythiaHardProcess                     : return Status::PythiaHardProcess;
     }
     return Status::Unknown;
   }
