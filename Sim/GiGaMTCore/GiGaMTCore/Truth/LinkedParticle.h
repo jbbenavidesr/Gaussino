@@ -11,6 +11,7 @@
 
 namespace Gaussino
 {
+  class MCTruth;
   class MCTruthConverter;
   class MCTruthTracker;
   class MCTruthData;
@@ -34,12 +35,13 @@ public:
 public:
   friend Gaussino::MCTruthConverter;
   friend Gaussino::MCTruthTracker;
+  friend Gaussino::MCTruth;
   friend std::ostream& operator<<( std::ostream&, const LinkedParticle& );
 
 private:
-  LinkedParticle( unsigned int id, const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part.get() ), m_id( id ) {}
+  LinkedParticle( unsigned int id, const HepMC3::ConstGenParticlePtr& part ) : m_hepmc( part ), m_id( id ) {}
   LinkedParticle( unsigned int id, const HepMC3::ConstGenParticlePtr& part, G4PrimaryParticle* g4part )
-      : m_hepmc( part.get() ), m_id( id )
+      : m_hepmc( part ), m_id( id )
   {
     m_primary = g4part;
   }
@@ -52,10 +54,9 @@ private:
   void SetID(unsigned int id) { m_id=id;};
 public:
   virtual ~LinkedParticle();
-  const HepMC3::GenParticle* HepMC() { return m_hepmc; }
   G4PrimaryParticle*& G4Primary() { return m_primary; }
   Gaussino::G4TruthParticle*& G4Truth() { return m_tracking; }
-  const HepMC3::GenParticle* HepMC() const { return m_hepmc; }
+  HepMC3::ConstGenParticlePtr HepMC() const { return m_hepmc; }
   const G4PrimaryParticle* G4Primary() const { return m_primary; }
   const Gaussino::G4TruthParticle* G4Truth() const { return m_tracking; }
   Gaussino::ConversionType GetType() const { return m_conversion_type; }
@@ -92,7 +93,7 @@ private:
   // Two vectors to store the relationships, extracted from whatever source we can find.
   // Vertex positions are taken from any of the contained particle in some smart order
   // I haven't decided on yet
-  const HepMC3::GenParticle* m_hepmc{nullptr};
+  HepMC3::ConstGenParticlePtr m_hepmc{nullptr};
   G4PrimaryParticle* m_primary{nullptr};
   Gaussino::G4TruthParticle* m_tracking{nullptr};
   Gaussino::ConversionType m_conversion_type;

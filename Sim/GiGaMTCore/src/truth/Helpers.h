@@ -11,10 +11,6 @@ namespace Gaussino::LinkedParticleHelpers
   {
     return fabs( a - b ) <= ( ( fabs( a ) > fabs( b ) ? fabs( b ) : fabs( a ) ) * epsilon );
   }
-  // Determine if the particle has oscillated by checking if it has a
-  // single child with opposite PDG ID. If so, return ptr to child,
-  // nullptr otherwise
-  HepMC3::ConstGenParticlePtr hasOscillated( const HepMC3::GenParticle* P );
 
   // Helper function to verify that ones particles endvertex is at the same position as the others
   // origin in the original HepMC record, i.e. that particles that have been skipped in between didn't fly

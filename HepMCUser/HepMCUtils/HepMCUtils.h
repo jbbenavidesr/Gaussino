@@ -31,7 +31,7 @@
 namespace HepMCUtils
 {
   /// Returns true if trees of vertices V1 and V2 belong to the same tree
-  bool commonTrees( const HepMC3::ConstGenVertexPtr& V1, const HepMC3::ConstGenVertexPtr& V2 );
+  bool commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::ConstGenVertexPtr V2 );
 
   /// Compare 2 HepMC GenParticle according to their barcode
   bool compareHepMCParticles( const HepMC3::GenParticlePtr& part1, const HepMC3::GenParticlePtr& part2 );
@@ -50,11 +50,16 @@ namespace HepMCUtils
 
   /// Comparison function as structure
   struct particleOrder {
-    bool operator()( const HepMC3::GenParticlePtr & part1, const HepMC3::GenParticlePtr& part2 ) const
+    bool operator()( const HepMC3::GenParticlePtr& part1, const HepMC3::GenParticlePtr& part2 ) const
     {
       return ( part1->id() < part2->id() );
     }
   };
+
+  // Determine if the particle has oscillated by checking if it has a
+  // single child with opposite PDG ID. If so, return ptr to child,
+  // nullptr otherwise
+  HepMC3::ConstGenParticlePtr hasOscillated( HepMC3::ConstGenParticlePtr P );
 
   /// Type of HepMC particles container ordered with barcodes
   typedef std::set<HepMC3::GenParticlePtr, particleOrder> ParticleSet;
@@ -67,17 +72,17 @@ namespace HepMCUtils
 //=============================================================================
 // Function to test if vertices are in the same decay family
 //=============================================================================
-inline bool HepMCUtils::commonTrees( const HepMC3::ConstGenVertexPtr& V1, const HepMC3::ConstGenVertexPtr& V2 )
+inline bool HepMCUtils::commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::ConstGenVertexPtr V2 )
 {
   if ( !V2 ) return false;
   if ( !V1 ) return false;
   if ( V1 == V2 ) return true;
-  for ( auto& anc : HepMC3::Relatives::ANCESTORS( V1 ) ) {
+  for ( auto anc : HepMC3::Relatives::ANCESTORS( V1 ) ) {
     if ( auto pv = anc->production_vertex(); pv ) {
       if ( V2 == pv ) return true;
     }
   }
-  for ( auto& desc : HepMC3::Relatives::DESCENDANTS( V1 ) ) {
+  for ( auto desc : HepMC3::Relatives::DESCENDANTS( V1 ) ) {
     if ( auto ev = desc->end_vertex(); ev ) {
       if ( V2 == ev ) return true;
     }
@@ -94,7 +99,7 @@ inline bool HepMCUtils::compareHepMCParticles( const HepMC3::GenParticlePtr& par
   return ( part1->id() < part2->id() );
 }
 inline bool HepMCUtils::compareConstHepMCParticles( const HepMC3::ConstGenParticlePtr& part1,
-                                               const HepMC3::ConstGenParticlePtr& part2 )
+                                                    const HepMC3::ConstGenParticlePtr& part2 )
 {
   return ( part1->id() < part2->id() );
 }
@@ -112,6 +117,17 @@ inline bool HepMCUtils::IsBAtProduction( const HepMC3::ConstGenParticlePtr& theP
   HepMC3::ConstGenParticlePtr theMother = ( *std::begin( theVertex->particles_in() ) );
   if ( theMother->pdg_id() == -thePart->pdg_id() ) return false;
   return true;
+}
+
+inline HepMC3::ConstGenParticlePtr HepMCUtils::hasOscillated( HepMC3::ConstGenParticlePtr P )
+{
+  auto ev = P->end_vertex();
+  if ( !ev ) return nullptr;
+  if ( 1 != ev->particles_out().size() ) return nullptr;
+  auto D = *std::begin( ev->particles_out() );
+  if ( !D ) return nullptr;
+  if ( -P->pdg_id() != D->pdg_id() ) return nullptr;
+  return D;
 }
 
 //=============================================================================

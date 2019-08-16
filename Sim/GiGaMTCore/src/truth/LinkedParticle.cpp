@@ -212,7 +212,7 @@ T& operator<<( T& ostr, const HepMC3::FourVector& fv )
 
 std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
 {
-  out << " PDG: " << lp.GetPDG() << ", ID = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
+  out << " PDG: " << lp.GetPDG() << ", ID = " <<lp.GetID() << ", IDs = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
       << ( lp.m_primary
                ? std::to_string( lp.m_primary->GetTrackID() ) + "(" +
                      std::to_string( GaussinoPrimaryParticleInformation::Get( lp.m_primary )->getLinkedID() ) + ")"

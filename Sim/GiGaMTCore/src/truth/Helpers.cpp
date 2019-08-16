@@ -4,17 +4,6 @@
 namespace Gaussino::LinkedParticleHelpers
 {
 
-  HepMC3::ConstGenParticlePtr hasOscillated( const HepMC3::GenParticle* P )
-  {
-    auto ev = P->end_vertex();
-    if ( !ev ) return nullptr;
-    if ( 1 != ev->particles_out().size() ) return nullptr;
-    auto D = *std::begin( ev->particles_out() );
-    if ( !D ) return nullptr;
-    if ( -P->pdg_id() != D->pdg_id() ) return nullptr;
-    return D;
-  }
-
   bool VerifyLink( LinkedParticle* a, LinkedParticle* b )
   {
     return CompareFourVector(a->GetEndPosition(), b->GetOriginPosition());

@@ -5,24 +5,12 @@
 #include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
 #include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
 #include "Helpers.h"
+#include "HepMC3/Relatives.h"
+#include "HepMCUser/Status.h"
+#include "HepMCUtils/HepMCUtils.h"
+#include "range/v3/all.hpp"
 #include <functional>
 #include <stdexcept>
-
-bool essentiallyEqual( float a, float b, float epsilon = 0.00001 )
-{
-  return fabs( a - b ) <= ( ( fabs( a ) > fabs( b ) ? fabs( b ) : fabs( a ) ) * epsilon );
-}
-
-// Helper function to verify that ones particles endvertex is at the same position as the others
-// origin in the original HepMC record, i.e. that particles that have been skipped in between didn't fly
-bool VerifyLink( LinkedParticle* a, LinkedParticle* b )
-{
-  if ( !essentiallyEqual( a->GetEndPosition().x(), b->GetOriginPosition().x() ) ) return false;
-  if ( !essentiallyEqual( a->GetEndPosition().y(), b->GetOriginPosition().y() ) ) return false;
-  if ( !essentiallyEqual( a->GetEndPosition().z(), b->GetOriginPosition().z() ) ) return false;
-  if ( !essentiallyEqual( a->GetEndPosition().t(), b->GetOriginPosition().t() ) ) return false;
-  return true;
-}
 
 namespace Gaussino
 {
@@ -112,6 +100,10 @@ namespace Gaussino
     auto& table           = m_hepmc_to_linked[particle->parent_event()];
     table[particle->id()] = ptr;
     m_linkedParticles.insert( ptr );
+
+    if ( particle->status() == HepMC3::Status::SignalInLabFrame ) {
+      ptr->m_isSignal = true;
+    }
   }
 
   void MCTruthConverter::AddConverter( MCTruthConverter&& conv )
@@ -161,6 +153,27 @@ namespace Gaussino
       }
     }
   }
+
+  LinkedParticle::PtrSet MCTruthTracker::IdentifyRootParticles( const HepMC3::GenEvent* evt )
+  {
+    LinkedParticle::PtrSet root_particles;
+    auto& table = m_hepmc_to_linked[evt];
+    std::vector<LinkedParticle*> tmp_linked;
+    auto tmp_link = table | ranges::v3::view::transform( []( auto& pr ) { return pr.second; } );
+
+    // Find all root particles, i.e. those
+    std::copy_if( std::begin( tmp_link ), std::end( tmp_link ),
+                  std::inserter( root_particles, std::begin( root_particles ) ), [&]( auto v ) {
+                    for ( auto hepmcptr : HepMC3::Relatives::ANCESTORS( v->HepMC() ) ) {
+                      if ( table.find( hepmcptr->id() ) != std::end( table ) ) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  } );
+    return root_particles;
+  }
+
   void MCTruthTracker::DoInitialLinking()
   {
     // We find a root particle and then process and link all its children by linking the LinkedParticle
@@ -169,25 +182,12 @@ namespace Gaussino
     // If this converter contains multiple HepMC events (i.e. pileup collisions), their IDs would collide so
     // we do this separately for each HepMC event
     for ( auto& hepmcs : m_hepmc_to_linked ) {
-      auto& table = hepmcs.second;
-      std::set<int> IDs;
-      for ( auto& l : table ) {
-        if ( auto part = l.second->HepMC(); part ) {
-          IDs.insert( part->id() );
-        }
-      }
-      while ( IDs.size() > 0 ) {
-        // Make use of the set being sorted, with smallest ID at the front
-        // While taking care of a particle we also remove its ID from the
-        // set before moving on to its children, doing the same etc ...
-        // After a full decay tree is processed, the first element will then
-        // again be the start of a new decay chain so the procedure is
-        // repeated until the set is empty
-        int root_id  = *std::begin( IDs );
-        auto root_lp = table[root_id];
+      auto& table             = hepmcs.second;
+      auto tmp_root_particles = IdentifyRootParticles( hepmcs.first );
+      for ( auto root_lp : tmp_root_particles ) {
         m_root_particles.insert( root_lp );
-        std::function<void( const HepMC3::GenParticle*, const HepMC3::GenParticle* )> child_converter =
-            [&]( const HepMC3::GenParticle* part, const HepMC3::GenParticle* parent ) {
+        std::function<void( HepMC3::ConstGenParticlePtr, HepMC3::ConstGenParticlePtr )> child_converter =
+            [&]( HepMC3::ConstGenParticlePtr part, HepMC3::ConstGenParticlePtr parent ) {
               LinkedParticle* plinked{nullptr};
               LinkedParticle* clinked{nullptr};
               if ( parent ) {
@@ -197,13 +197,11 @@ namespace Gaussino
               if ( part && table.find( part->id() ) != std::end( table ) ) {
                 // HepMC child might not have a matching linked particle if it is not supposed to be converted
                 clinked = table[part->id()];
-                // As we are now taking care of this particle, remove it from the set.
-                // NOTE: HepMC3 does not allow loops so this is safe
-                IDs.erase( part->id() );
+
                 clinked->m_tracker = this;
               }
               if ( clinked && plinked ) {
-                if ( !VerifyLink( plinked, clinked ) ) {
+                if ( !Gaussino::LinkedParticleHelpers::VerifyLink( plinked, clinked ) ) {
                   throw std::runtime_error( "LinkedParticles to be linked have mismatching vertex positions" );
                 }
                 clinked->AddParent( plinked );
@@ -211,9 +209,9 @@ namespace Gaussino
               }
               // If a clinked particle was found, the current particle becomes the parent for its children,
               // otherwise this HepMC particle was not supposed to be converted and is skipped.
-              const HepMC3::GenParticle* new_parent = clinked ? part : parent;
+              HepMC3::ConstGenParticlePtr new_parent = clinked ? part : parent;
               // Check if the particle has oscillated
-              auto oscillated = Gaussino::LinkedParticleHelpers::hasOscillated( part );
+              auto oscillated = HepMCUtils::hasOscillated( part );
               if ( oscillated ) {
                 // Now setting part to oscillated which will skip the oscillated version
                 // of the particle and assign them to the linked particle of the
@@ -228,14 +226,13 @@ namespace Gaussino
                   // If the oscillated particle is declared as a LinkedParticle we need to remove it.
                   auto oscillated_lp = table[oscillated->id()];
                   table.erase( oscillated->id() );
-                  IDs.erase( oscillated->id() );
                   m_linkedParticles.erase( oscillated_lp );
                   delete oscillated_lp;
                 }
-                part = oscillated.get();
+                part = oscillated;
               }
               for ( auto& child : part->children() ) {
-                child_converter( child.get(), new_parent );
+                child_converter( child, new_parent );
               }
             };
         child_converter( root_lp->HepMC(), nullptr );
@@ -253,7 +250,7 @@ namespace Gaussino
       }
     }
     VerifyStructure();
-  }
+  } // namespace Gaussino
   void MCTruthTracker::AddToG4Event( G4Event* g4event )
   {
     // Start conversion at the ROOT particles as always, first identify their origin vertex
@@ -265,10 +262,14 @@ namespace Gaussino
       // should originate from the same position (the PV). However, some other non LHCb users might
       // come up with something weird so we will account for this possibility.
       for ( auto vtx : m_geant4_vertex ) {
-        if ( essentiallyEqual( vtx->GetPosition().x(), rp->HepMC()->production_vertex()->position().x() ) &&
-             essentiallyEqual( vtx->GetPosition().y(), rp->HepMC()->production_vertex()->position().y() ) &&
-             essentiallyEqual( vtx->GetPosition().z(), rp->HepMC()->production_vertex()->position().z() ) &&
-             essentiallyEqual( vtx->GetT0(), rp->HepMC()->production_vertex()->position().t() ) ) {
+        if ( Gaussino::LinkedParticleHelpers::essentiallyEqual( vtx->GetPosition().x(),
+                                                                rp->HepMC()->production_vertex()->position().x() ) &&
+             Gaussino::LinkedParticleHelpers::essentiallyEqual( vtx->GetPosition().y(),
+                                                                rp->HepMC()->production_vertex()->position().y() ) &&
+             Gaussino::LinkedParticleHelpers::essentiallyEqual( vtx->GetPosition().z(),
+                                                                rp->HepMC()->production_vertex()->position().z() ) &&
+             Gaussino::LinkedParticleHelpers::essentiallyEqual( vtx->GetT0(),
+                                                                rp->HepMC()->production_vertex()->position().t() ) ) {
           g4vertex = vtx;
           break;
         }
@@ -360,7 +361,21 @@ namespace Gaussino
   // MCTruth
   //////////////////////////////////////////////////////////
 
-  MCTruth::MCTruth( MCTruthTracker&& tracker ) : MCTruthData{std::move( tracker )} { DoCleanup(); }
+  MCTruth::MCTruth( MCTruthTracker&& tracker ) : MCTruthData{std::move( tracker )}
+  {
+    DoCleanup();
+    std::function<void( LinkedParticle* )> signal_flagging = [&]( LinkedParticle* lp ) {
+      lp->m_isSignal = true;
+      for ( auto child : lp->GetChildren() ) {
+        signal_flagging( child );
+      }
+    };
+    for ( auto lp : m_linkedParticles ) {
+      if ( lp->m_isSignal ) {
+        signal_flagging( lp );
+      }
+    }
+  }
 
   void MCTruth::DoCleanup()
   {

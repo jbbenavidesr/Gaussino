@@ -94,6 +94,7 @@ namespace Gaussino
     // Intended to be called after all particles from the HepMC event have been
     // declared.
     void DoInitialLinking();
+    LinkedParticle::PtrSet IdentifyRootParticles(const HepMC3::GenEvent* evt);
 
     void AddToG4Event( G4Event* );
   };
