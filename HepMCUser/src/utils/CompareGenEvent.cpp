@@ -51,6 +51,8 @@ void printChildren(HepMC3::GenParticlePtr part, int level) {
     for ( auto& vt1 : e1.attributes() ) {
       if(vt1.first == "GenCrossSection"){
       continue;}
+      if(vt1.first == "GeneratorName"){
+      continue;}
       for ( auto& vt2 : vt1.second ) {
         auto val1 = vt2.second->unparsed_string();
         auto val2 = e2.attributes().at( vt1.first ).at( vt2.first )->unparsed_string();

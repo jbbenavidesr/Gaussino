@@ -57,7 +57,7 @@ HepMC3::GenEvent* run_pythia( int seed, std::string dir, Pythia8::Pythia* pythia
 void run_seq( std::string name, const std::vector<int> seeds, STORE* store )
 {
   Pythia8::Pythia pythia{
-      "/cvmfs/sft.cern.ch/lcg/releases/LCG_93/MCGenerators/pythia8/235/x86_64-centos7-gcc7-opt/share/Pythia8/xmldoc",
+      "/cvmfs/sft.cern.ch/lcg/releases/LCG_95/MCGenerators/pythia8/240/x86_64-centos7-gcc8-opt/share/Pythia8/xmldoc",
       false};
 
   pythia.readString( "Beams:frameType = 3" );
