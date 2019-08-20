@@ -1,16 +1,13 @@
-#ifndef MCINTERFACES_IGENCUTTOOL_H 
-#define MCINTERFACES_IGENCUTTOOL_H 1
+#pragma once
 
 // Include files
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 
-// from Event
-#include "Event/GenCollision.h"
+#include "HepMC3/GenParticle.h"
 
 // Forward declarations
-namespace HepMC {
-  class GenParticle ; 
+namespace HepMC3 {
   class GenEvent ;
 }  
 
@@ -31,7 +28,7 @@ class IDecayTool ;
  */
 
 
-struct IGenCutTool : extend_interfaces<IAlgTool> {
+struct IGenCutTool : public extend_interfaces<IAlgTool> {
   /// Vector of particles
   typedef std::vector< HepMC3::GenParticlePtr > ParticleVector ;
 
@@ -56,4 +53,3 @@ struct IGenCutTool : extend_interfaces<IAlgTool> {
                          const LHCb::GenCollision * theCollision ) 
     const = 0 ;
 };
-#endif // MCINTERFACES_ICUTTOOL_H
