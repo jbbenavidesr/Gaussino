@@ -441,19 +441,21 @@ void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProp
   if ( pd.name( id ) == "void" ) pd.name( id, name );
 
   // Set the mass, width and lifetime (only non-resonant).
-  pd.m0( id, thePP->mass() / Gaudi::Units::GeV );
-  if ( id == 6 || ( id >= 23 && id <= 37 ) ) return;
-  double lifetime = thePP->lifetime() * Gaudi::Units::c_light;
-  if ( lifetime <= 1.e-4 * Gaudi::Units::mm || lifetime >= 1.e16 * Gaudi::Units::mm ) lifetime = 0;
+  pd.m0(id, thePP->mass() / Gaudi::Units::GeV);
+  if (id == 6 || (id >= 23 && id <= 37)) return;
+  double lifetime = thePP->lifetime()*Gaudi::Units::c_light;
+  if (lifetime >= 1.e16 * Gaudi::Units::mm) lifetime = 0;
   double width = lifetime == 0 ? 0 : Gaudi::Units::hbarc / lifetime;
-  if ( width < 1.5e-6 * Gaudi::Units::GeV ) {
-    width = 0;
-    pd.mMin( id, 0 );
-  } else
-    pd.mMin( id, ( thePP->mass() - thePP->maxWidth() ) / Gaudi::Units::GeV );
-  pd.mWidth( id, width / Gaudi::Units::GeV );
-  pd.mMax( id, 0 );
-  pd.tau0( id, lifetime / Gaudi::Units::mm );
+  double min_mass = (thePP->mass() - (thePP->maxWidth() ? thePP->maxWidth() : 
+                15*width)) / Gaudi::Units::GeV;
+  // Ensure that minimal mass is not negative
+  if(min_mass < 0){
+    min_mass = 0;
+  }
+  pd.mMin(id, min_mass); 
+  pd.mMax(id, (thePP->mass() + 15*width) / Gaudi::Units::GeV);
+  pd.mWidth(id, width / Gaudi::Units::GeV);
+  pd.tau0(id, lifetime / Gaudi::Units::mm);
 }
 
 //=============================================================================
