@@ -49,34 +49,27 @@ SigmaProcess:alphaSorder = 2
 # -------------------------------
 PDF:pSet = LHAPDF6:CT09MCS/0
 # -------------------------------
-# Tuning for pythia8 and ct09mcs: Sim10 Lambda0 tune
+# First tuning for pythia8 and ct09mcs: Tune 1
 # -------------------------------
 SpaceShower:rapidityOrder = off      # General
 MultipartonInteractions:bProfile = 1 # reset the default bProfile
 SpaceShower:alphaSvalue             = 0.130
 MultipartonInteractions:alphaSvalue = 0.130
 MultipartonInteractions:ecmRef      = 7000
-MultipartonInteractions:pT0Ref      = 2.4188 # Multiparton interactions
+MultipartonInteractions:pT0Ref      = 2.742289e+00' # Multiparton interactions
 MultipartonInteractions:ecmPow      = 0.238
 # -------------------------------
-# flavour selection and excited states with color reconnection
-# with setting for light flavour as determined in LHCb Sim10 Lambda0 Tune
+# flavour selection and excited states
+# with seeting for light flavour as determined in LHCb Tune1:
 # mesonSvector, probQQtoQ, probStoUD
 # -------------------------------
-BeamRemnants:remnantMode = 1
-ColourReconnection:mode  = 1
-ColourReconnection:lambdaForm = 0
-ColourReconnection:allowDoubleJunRem = off
-ColourReconnection:timeDilationPar = 1.9667
-ColourReconnection:m0              = 0.9021
-ColourReconnection:junctionCorrection = 0.8399
 StringFlav:mesonUDvector = 0.6
-StringFlav:mesonSvector = 0.3819
+StringFlav:mesonSvector = 7.474387e-01
 StringFlav:mesonCvector = 3.0
 StringFlav:mesonBvector = 3.0
-StringFlav:probQQtoQ    = 0.1086
-StringFlav:probStoUD    = 0.3590
-StringFlav:probSQtoQQ   = 0.6451
+StringFlav:probQQtoQ    = 1.615701e-01
+StringFlav:probStoUD    = 3.501613e-01
+StringFlav:probSQtoQQ = 0.4
 StringFlav:probQQ1toQQ0 = 0.05
 StringFlav:mesonUDL1S0J1 = 0.0989
 StringFlav:mesonUDL1S1J0 = 0.0132
