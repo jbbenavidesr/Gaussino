@@ -84,7 +84,7 @@ LHCb::MCVertex::MCVertexType vertexType( int id )
 }
 
 std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks> MCTruthToEDM::
-operator()( const Gaussino::MCTruthPtrs& mctruths ) const
+operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHeader ) const
 {
   // Create containers in TES for MCParticles and MCVertices.
   LHCb::MCParticles m_particleContainer;
@@ -108,6 +108,8 @@ operator()( const Gaussino::MCTruthPtrs& mctruths ) const
 
   // Create some MCHeader.
   LHCb::MCHeader mcHeader;
+  mcHeader.setEvtNumber(genHeader.evtNumber());
+  mcHeader.setRunNumber(genHeader.runNumber());
   // Create a set to store a pointer to createed primary vertices.
   // This will be searched for every root particle to assign them to the
   // same vertex if necessary

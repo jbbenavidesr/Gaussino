@@ -7,6 +7,7 @@
 
 // Event.
 #include "Event/MCHeader.h"
+#include "Event/GenHeader.h"
 
 // Event.
 #include "Event/MCParticle.h"
@@ -32,13 +33,14 @@
 
 class MCTruthToEDM : public Gaudi::Functional::MultiTransformer<
                          std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>(
-                             const Gaussino::MCTruthPtrs& )>
+                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader &  )>
 {
 public:
   /// Standard constructor.
   MCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer(
-            name, pSvcLocator, {KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default}},
+            name, pSvcLocator, {{KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
+                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}}},
             {{
                 KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
                 KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
@@ -47,7 +49,7 @@ public:
             }} ){};
   virtual ~MCTruthToEDM() = default; ///< Destructor.
   virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
-  operator()( const Gaussino::MCTruthPtrs& ) const override;
+  operator()( const Gaussino::MCTruthPtrs&, const LHCb::GenHeader& ) const override;
 
 private:
   typedef std::set<std::pair<LHCb::MCVertex*, const HepMC3::GenVertex*>> VertexSet;
