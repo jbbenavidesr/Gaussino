@@ -2,7 +2,7 @@
 
 #include "GiGaMTCore/G4EventProxy.h"
 #include "GiGaMTCore/Truth/MCTruthConverter.h"
-#include "blockingconcurrentqueue.h"
+#include "Utils/blockingconcurrentqueue.h"
 #include <future>
 #include <vector>
 #include <optional>
