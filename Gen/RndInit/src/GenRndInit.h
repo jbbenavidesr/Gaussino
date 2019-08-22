@@ -26,15 +26,10 @@ class GenRndInit : public Gaudi::Functional::Producer<std::tuple<LHCb::GenHeader
                                                       Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>>
 {
 private:
-  Gaudi::Property<int> m_skipFactor{this, "SkipFactor", 0, "skip some random numbers"};
   Gaudi::Property<long long> m_firstEvent{this, "FirstEventNumber", 1, "Number of the first event"};
-  Gaudi::Property<long long> m_firstTimingEvent{this, "FirstTimingEventNumber", -1,
+  Gaudi::Property<long long> m_firstTimingEvent{this, "TimingSkipAtStart", 1,
                                                 "Number of the event to start the clock"};
-  Gaudi::Property<long long> m_lastTimingEvent{this, "LastTimingEventNumber", -1,
-                                               "Number of the event to stop the clock"};
   Gaudi::Property<unsigned int> m_runNumber{this, "RunNumber", 1, "The run number"};
-  Gaudi::Property<std::string> m_mcHeader{this, "MCHeader", LHCb::GenHeaderLocation::Default,
-                                          "Location of the GenHeader"};
 
 public:
   /// Standard constructor
@@ -109,8 +104,6 @@ protected:
   }
   MTBarrier* m_barrier;
   mutable bool m_wait_at_barrier{true};
-  MTBarrier* m_endbarrier;
-  mutable bool m_wait_at_endbarrier{true};
 
 private:
   ServiceHandle<IBeamInfoSvc> m_beamInfoSvc{this, "BeamInfoSvc", "BeamInfoSvc"};

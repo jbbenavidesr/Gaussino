@@ -30,8 +30,7 @@ StatusCode GenRndInit::initialize()
   m_eventMax = std::atoi( value.c_str() );
   debug() << "Retrieved EvtMax = " << m_eventMax << endmsg;
   info() << "Setting barrier sync for " << Gaudi::Concurrency::ConcurrencyFlags::numThreads() << endmsg;
-  m_barrier    = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
-  m_endbarrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
+  m_barrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
   return StatusCode::SUCCESS;
 }
 
@@ -41,8 +40,8 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
 
   // Initialize the random number
   longlong eventNumber = m_firstEvent - 1 + this->increaseEventCounter();
-  if ( m_firstTimingEvent != -1 ) {
-    if ( eventNumber == m_firstTimingEvent ) {
+  if ( m_firstTimingEvent > 0 ) {
+    if ( eventNumber == ( m_firstEvent.value() + m_firstTimingEvent.value() ) ) {
       debug() << "Organising timing" << endmsg;
       // Initialising the start time for more precise monitoring
       // when the event loop is in full swing.
@@ -50,31 +49,13 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
       m_wait_at_barrier = false;
       m_start_time      = Clock::now();
       info() << "Started loop timing!" << endmsg;
-    } else if ( eventNumber > m_firstTimingEvent && m_wait_at_barrier ) {
+    } else if ( eventNumber > ( m_firstEvent.value() + m_firstTimingEvent.value() ) && m_wait_at_barrier ) {
       m_barrier->wait();
       m_wait_at_barrier = false;
     }
   }
-  if ( eventNumber >= m_firstTimingEvent && eventNumber < m_lastTimingEvent ) {
+  if ( eventNumber >= ( m_firstEvent.value() + m_firstTimingEvent.value() ) ) {
     m_evtTimingCounter++;
-  }
-
-  if ( m_lastTimingEvent != -1 ) {
-    if ( eventNumber == m_lastTimingEvent ) {
-      // Initialising the start time for more precise monitoring
-      // when the event loop is in full swing.
-      debug() << "Hit it. Waiting at end barrier" << endmsg;
-      m_endbarrier->wait();
-      m_wait_at_endbarrier = false;
-      auto end_time        = Clock::now();
-      info() << "Measured event loop time (" << m_evtTimingCounter
-             << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
-             << endmsg;
-    } else if ( m_lastTimingEvent > 0 && eventNumber > m_lastTimingEvent && m_wait_at_endbarrier ) {
-      debug() << "Larger. Waiting at end barrier" << endmsg;
-      m_endbarrier->wait();
-      m_wait_at_endbarrier = false;
-    }
   }
 
   // Configure the event information in the event context
@@ -100,11 +81,16 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
 StatusCode GenRndInit::finalize()
 {
   delete m_barrier;
-  delete m_endbarrier;
   if ( m_firstTimingEvent >= 0 ) {
     auto end_time = Clock::now();
-    info() << "Total event loop time [ns]: "
-           << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count() << endmsg;
+
+    info() << "Measured event loop time (" << m_evtTimingCounter
+           << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
+           << endmsg;
+    info() << "Time per event: "
+           << std::chrono::duration_cast<std::chrono::seconds>( end_time - m_start_time ).count() /
+                  (double)m_evtTimingCounter
+           << endmsg;
   }
   return base_class::finalize();
 }
