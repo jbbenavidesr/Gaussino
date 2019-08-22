@@ -8,6 +8,7 @@ gaudi_depends_on_subdirs(Event/GenEvent
                          HepMCUser)
 
 AddHepMC3()
+find_package(HepMC)
 
 
 gaudi_add_module(MCTruthToEDM
