@@ -2,24 +2,26 @@
 #include "HepMC3/Attribute.h"
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
-#include "HepMC3/ReaderRoot.h"
 #include "HepMC3/ReaderAscii.h"
-#include "HepMC3/ReaderRootTree.h"
+//#include "HepMC3/ReaderRoot.h"
+//#include "HepMC3/ReaderRootTree.h"
 #include "HepMCUtils/CompareGenEvent.h"
 
 int main( int, char* argv[] )
 {
   HepMC3::Reader* reader1, *reader2;
-  if(std::string(argv[1]).find(".txt") != std::string::npos){
-      reader1 = new HepMC3::ReaderAscii(argv[1]);
-  } else {
-      reader1 = new HepMC3::ReaderRootTree(argv[1]);
-  }
-  if(std::string(argv[2]).find(".txt") != std::string::npos){
-      reader2 = new HepMC3::ReaderAscii(argv[2]);
-  } else {
-      reader2 = new HepMC3::ReaderRootTree(argv[2]);
-  }
+  //if(std::string(argv[1]).find(".txt") != std::string::npos){
+      //reader1 = new HepMC3::ReaderAscii(argv[1]);
+  //} else {
+      ////reader1 = new HepMC3::ReaderRootTree(argv[1]);
+  //}
+  //if(std::string(argv[2]).find(".txt") != std::string::npos){
+      //reader2 = new HepMC3::ReaderAscii(argv[2]);
+  //} else {
+      ////reader2 = new HepMC3::ReaderRootTree(argv[2]);
+  //}
+  reader1 = new HepMC3::ReaderAscii(argv[1]);
+  reader2 = new HepMC3::ReaderAscii(argv[2]);
   std::map<std::pair<int, int>, HepMC3::GenEvent*> events1;
 
   while ( true ) {

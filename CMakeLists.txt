@@ -40,8 +40,8 @@ macro(AddHepMC3)
 
   set(HEPMC3_LIBRARIES
     -lHepMC3
-    -lHepMC3search
-    -lHepMC3rootIO)
+    -lHepMC3search)
+    #-lHepMC3rootIO)
 endmacro()
 
 # Declare project name and version
