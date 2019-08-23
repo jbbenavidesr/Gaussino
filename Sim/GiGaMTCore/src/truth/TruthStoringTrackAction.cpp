@@ -21,11 +21,11 @@
 #include "Event/MCVertex.h"
 
 // local
-#include "GiGaMTCore/Truth/G4TruthParticle.h"
-#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
-#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
-#include "GiGaMTCore/Truth/GaussinoTrackInformation.h"
-#include "GiGaMTCore/Truth/TruthStoringTrackAction.h"
+#include "GiGaMTCoreTruth/G4TruthParticle.h"
+#include "GiGaMTCoreTruth/GaussinoEventInformation.h"
+#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
+#include "GiGaMTCoreTruth/TruthStoringTrackAction.h"
 
 /*static*/ std::unordered_set<std::string> TruthStoringTrackAction::m_hadronicProcesses = {
     "KaonPlusInelastic",

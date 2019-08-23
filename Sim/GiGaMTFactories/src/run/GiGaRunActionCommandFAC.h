@@ -1,4 +1,4 @@
-#include "GiGaMTCore/GiGaRunActionCommand.h"
+#include "GiGaMTCoreRun/GiGaRunActionCommand.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 

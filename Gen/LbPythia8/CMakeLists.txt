@@ -27,7 +27,7 @@ endif()
 
 gaudi_add_library(Pythia8ToHepMC3Lib
                   src/interface/*.cpp
-                  PUBLIC_HEADERS Pythia8HepMC
+                  PUBLIC_HEADERS Pythia8HepMC3
                   INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR}
                   LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES})
 

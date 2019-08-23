@@ -1,8 +1,8 @@
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
-#include "GiGaMTCore/Truth/TruthFlaggingTrackAction.h"
-#include "GiGaMTCore/Truth/TruthStoringTrackAction.h"
+#include "GiGaMTCoreTruth/TruthFlaggingTrackAction.h"
+#include "GiGaMTCoreTruth/TruthStoringTrackAction.h"
 
 #include "Geant4/G4UserTrackingAction.hh"
 

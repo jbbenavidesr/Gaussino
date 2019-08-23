@@ -3,7 +3,7 @@
 
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
-#include "GiGaMTCore/Truth/MCTruthConverter.h"
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
 
 class G4Event;
 namespace HepMC{

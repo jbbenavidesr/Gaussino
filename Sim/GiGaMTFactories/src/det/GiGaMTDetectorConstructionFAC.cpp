@@ -1,6 +1,6 @@
 #include "GiGaMTDetectorConstructionFAC.h"
-#include "GiGaMTCore/GiGaMTDetectorConstruction.h"
-#include "GiGaMTCore/GiGaMTProxyDetectorConstruction.h"
+#include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
+#include "GiGaMTCoreDet/GiGaMTProxyDetectorConstruction.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 

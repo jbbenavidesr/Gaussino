@@ -2,7 +2,7 @@
 
 #include "FCCTest/CalorimeterSD.h"
 #include "Geant4/G4SDManager.hh"
-#include "GiGaMTCore/GdmlDetectorConstruction.h"
+#include "GiGaMTCoreDet/GdmlDetectorConstruction.h"
 
 DECLARE_COMPONENT( G4GdmlTestDetector )
 

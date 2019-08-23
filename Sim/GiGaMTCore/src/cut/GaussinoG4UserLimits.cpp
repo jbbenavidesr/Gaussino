@@ -1,7 +1,7 @@
 // class UserLimits  implementation
 // (based on CMS code by P.Arce)
 // 
-#include "GiGaMTCore/GaussinoG4UserLimits.h"
+#include "GiGaMTCoreCut/GaussinoG4UserLimits.h"
 #include <map>
 
 namespace Gaussino {

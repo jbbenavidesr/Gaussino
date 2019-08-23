@@ -20,8 +20,8 @@
 #include "GiGaMT/GiGaException.h"
 #include "GiGaMT/IGiGaMTSetUpSvc.h"
 #include "GiGaMT/IGiGaMTSvc.h"
-#include "GiGaMTCore/GiGaMTUtils.h"
-#include "GiGaMTCore/GiGaWorkerPayload.h"
+#include "GiGaMTCoreUtils/GiGaMTUtils.h"
+#include "GiGaMTCoreRun/GiGaWorkerPayload.h"
 #include "Utils/ToolProperty.h"
 #include "SimInterfaces/IG4MonitoringTool.h"
 

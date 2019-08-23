@@ -12,7 +12,7 @@
 
 // local
 #include "Geant4/G4MagneticField.hh"
-#include "GiGaMTCore/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 

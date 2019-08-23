@@ -1,6 +1,6 @@
 #include "GDMLConstructionFactory.h"
 
-#include "GiGaMTCore/GdmlDetectorConstruction.h"
+#include "GiGaMTCoreDet/GdmlDetectorConstruction.h"
 
 DECLARE_COMPONENT( GDMLConstructionFactory )
 

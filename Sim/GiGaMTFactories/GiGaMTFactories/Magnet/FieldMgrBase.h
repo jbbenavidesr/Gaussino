@@ -24,6 +24,11 @@ namespace Gaussino
   {
   public:
     using extends::extends;
+    StatusCode initialize() override {
+      auto sc = extends::finalize();
+      m_stepper.retrieve();
+      return sc;
+    }
 
     virtual ~FieldMgrBase()                = default;
     virtual G4MagneticField* field() const = 0;

@@ -26,9 +26,9 @@
 // from GiGaMT
 #include "CLHEP/Random/RandomEngine.h"
 #include "GiGaMT/GiGaActionInitializer.h"
-#include "GiGaMTCore/GiGaMTRunManager.h"
-#include "GiGaMTCore/GiGaWorkerPayload.h"
-#include "GiGaMTCore/GiGaWorkerPilot.h"
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
+#include "GiGaMTCoreRun/GiGaWorkerPayload.h"
+#include "GiGaMTCoreRun/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "SimInterfaces/IG4MonitoringTool.h"
 

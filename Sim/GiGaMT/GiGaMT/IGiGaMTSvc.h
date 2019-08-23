@@ -4,9 +4,9 @@
 #include "GaudiKernel/IService.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
-#include "GiGaMTCore/G4EventProxy.h"
+#include "GiGaMTCoreRun/G4EventProxy.h"
 #include "NewRnd/RndCommon.h"
-#include "GiGaMTCore/Truth/MCTruthConverter.h"
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
 
 
 // Forward declaration from G4

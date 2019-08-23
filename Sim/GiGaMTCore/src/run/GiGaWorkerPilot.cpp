@@ -1,8 +1,8 @@
-#include "GiGaMTCore/GiGaWorkerPilot.h"
-#include "GiGaMTCore/GiGaMTRunManager.h"
-#include "GiGaMTCore/GiGaWorkerRunManager.h"
+#include "GiGaMTCoreRun/GiGaWorkerPilot.h"
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
+#include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
 
-#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
+#include "GiGaMTCoreTruth/GaussinoEventInformation.h"
 
 #include <string>
 

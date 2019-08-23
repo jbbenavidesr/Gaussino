@@ -1,7 +1,7 @@
 #include "Geant4/G4UserTrackingAction.hh"
 #include "Geant4/G4VProcess.hh"
 
-#include "GiGaMTCore/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "HepMC3/FourVector.h"
 #include <string>
 #include <unordered_set>
@@ -21,10 +21,10 @@
 #include "Event/MCVertex.h"
 
 // local
-#include "GiGaMTCore/Truth/G4TruthParticle.h"
-#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
-#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
-#include "GiGaMTCore/Truth/GaussinoTrackInformation.h"
+#include "GiGaMTCoreTruth/G4TruthParticle.h"
+#include "GiGaMTCoreTruth/GaussinoEventInformation.h"
+#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 
 // namespace LHCb {
 // class IParticlePropertySvc;

@@ -1,4 +1,4 @@
-#include "GiGaMTCore/GiGaRunActionCommand.h"
+#include "GiGaMTCoreRun/GiGaRunActionCommand.h"
 #include "Geant4/G4UImanager.hh"
 
 // ============================================================================

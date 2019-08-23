@@ -1,8 +1,8 @@
-#include "GiGaMTCore/Truth/LinkedParticle.h"
+#include "GiGaMTCoreTruth/LinkedParticle.h"
 
 #include "CLHEP/Units/PhysicalConstants.h"
-#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
-#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
+#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/LinkedParticleHelpers.h"
 #include "Helpers.h"
 #include "Math/GenVector/Boost.h"
 #include "Math/Vector4D.h"

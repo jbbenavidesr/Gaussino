@@ -1,6 +1,6 @@
 #include "GiGaMTModularPhysListFAC.h"
 #include "Geant4/G4VModularPhysicsList.hh"
-#include "GiGaMTCore/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IGiGaMessage.h"
 
 DECLARE_COMPONENT( GiGaMTModularPhysListFAC )
 

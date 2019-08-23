@@ -47,5 +47,3 @@ gaudi_add_library(GiGaMTMagnetFactoriesLib
 gaudi_add_module(GiGaMTMagnetFactories
         src/magnet/components/*.cpp
         LINK_LIBRARIES GiGaMTMagnetFactoriesLib)
-
-gaudi_install_headers(GiGaMTFactories)

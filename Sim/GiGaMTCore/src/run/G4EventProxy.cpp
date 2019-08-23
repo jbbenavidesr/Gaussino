@@ -1,5 +1,5 @@
-#include "GiGaMTCore/G4EventProxy.h"
-#include "GiGaMTCore/GiGaWorkerPilot.h"
+#include "GiGaMTCoreRun/G4EventProxy.h"
+#include "GiGaMTCoreRun/GiGaWorkerPilot.h"
 
 G4EventProxy::~G4EventProxy()
 {

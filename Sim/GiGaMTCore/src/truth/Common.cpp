@@ -1,4 +1,4 @@
-#include "GiGaMTCore/Truth/Common.h"
+#include "GiGaMTCoreTruth/Common.h"
 
 std::ostream& operator<<( std::ostream& out, const Gaussino::ConversionType& type )
 {

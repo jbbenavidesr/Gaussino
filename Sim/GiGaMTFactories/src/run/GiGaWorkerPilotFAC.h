@@ -1,4 +1,4 @@
-#include "GiGaMTCore/GiGaWorkerPilot.h"
+#include "GiGaMTCoreRun/GiGaWorkerPilot.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 

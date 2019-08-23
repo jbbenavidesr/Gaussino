@@ -1,4 +1,4 @@
-#include "GiGaMTCore/GiGaMTRunManager.h"
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
 #include "Geant4/G4StateManager.hh"
 #include "Geant4/G4GeometryManager.hh"

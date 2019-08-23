@@ -1,6 +1,6 @@
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
-#include "GiGaMTCore/GiGaMTRunManager.h"
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.

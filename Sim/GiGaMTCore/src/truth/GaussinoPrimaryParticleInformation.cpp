@@ -1,4 +1,4 @@
-#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
 
 std::ostream& operator<<( std::ostream& out, const GaussinoPrimaryParticleInformation& lp )
 {

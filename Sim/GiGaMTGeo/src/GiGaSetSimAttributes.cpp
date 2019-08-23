@@ -6,7 +6,7 @@
 // Geant4
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4LogicalVolumeStore.hh"
-#include "GiGaMTCore/GaussinoG4UserLimits.h"
+#include "GiGaMTCoreCut/GaussinoG4UserLimits.h"
 // local
 #include "GiGaSetSimAttributes.h"
 

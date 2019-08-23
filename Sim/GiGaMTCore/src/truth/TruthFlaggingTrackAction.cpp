@@ -13,10 +13,10 @@
 //#include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 // GaussTools
 //#include "GaussTools/GaussTrajectory.h"
-#include "GiGaMTCore/Truth/GaussinoTrackInformation.h"
-//#include "GiGaMTCore/Truth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
+//#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
 /// local
-#include "GiGaMTCore/Truth/TruthFlaggingTrackAction.h"
+#include "GiGaMTCoreTruth/TruthFlaggingTrackAction.h"
 
 // ============================================================================
 /** initialize the track action

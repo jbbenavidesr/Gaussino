@@ -2,12 +2,6 @@
 # used projects.
 find_file(inherit_heptools_module InheritHEPTools.cmake)
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/generators_versions.txt)
-  file(READ ${CMAKE_SOURCE_DIR}/generators_versions.txt generators_versions)
-  string(REGEX REPLACE "[ \t\n]+" ";" generators_versions "${generators_versions}")
-  set(generators_versions ${generators_versions})
-endif()
-
 # Process the lines of LCG_generators_*.txt file to extract the
 # needed generators (variable generators_versions)
 macro(lcg_set_generator root name hash version dir)
@@ -78,6 +72,12 @@ if(inherit_heptools_module)
 
   message(STATUS "BINARY_TAGCOMP=${BINARY_TAGCOMP}")
   message(STATUS "BINARY_TAG=${BINARY_TAG}")
+
+  if(EXISTS ${CMAKE_SOURCE_DIR}/generators_versions_LCG${heptools_version}.txt)
+    file(READ ${CMAKE_SOURCE_DIR}/generators_versions_LCG${heptools_version}.txt generators_versions)
+    string(REGEX REPLACE "[ \t\n]+" ";" generators_versions "${generators_versions}")
+    set(generators_versions ${generators_versions})
+  endif()
 
   if(LCG_TOOLCHAIN_INFO)
     # prepare list of toolchain info files for generators

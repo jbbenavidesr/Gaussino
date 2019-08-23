@@ -1,6 +1,6 @@
 // local
 #include "SkipSimAlg.h"
-#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
+#include "GiGaMTCoreTruth/GaussinoEventInformation.h"
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"

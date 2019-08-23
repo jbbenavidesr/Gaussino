@@ -1,1 +1,1 @@
-#include "GiGaMTCore/Truth/GaussinoEventInformation.h"
+#include "GiGaMTCoreTruth/GaussinoEventInformation.h"

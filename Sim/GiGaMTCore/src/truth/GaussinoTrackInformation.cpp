@@ -1,4 +1,4 @@
-#include "GiGaMTCore/Truth/GaussinoTrackInformation.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 
 // ============================================================================
 /** @file

@@ -1,5 +1,5 @@
 #include "Helpers.h"
-#include "GiGaMTCore/Truth/LinkedParticle.h"
+#include "GiGaMTCoreTruth/LinkedParticle.h"
 
 namespace Gaussino::LinkedParticleHelpers
 {

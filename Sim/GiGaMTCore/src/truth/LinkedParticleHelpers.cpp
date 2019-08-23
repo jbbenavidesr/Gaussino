@@ -1,4 +1,4 @@
-#include "GiGaMTCore/Truth/LinkedParticleHelpers.h"
+#include "GiGaMTCoreTruth/LinkedParticleHelpers.h"
 
 namespace Gaussino::LPUtils {
     bool ShouldHaveButWasNotSimulated( const LinkedParticle* lp ) {

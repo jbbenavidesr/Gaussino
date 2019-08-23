@@ -19,13 +19,13 @@
 
 /// GiGa
 #include "GiGaMT/GiGaException.h"
-#include "GiGaMTCore/GiGaMTRunManager.h"
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 //#include "GiGa/GiGaUtil.h"
 /// local
 #include "GiGaMT.h"
 #include "GiGaMT/GiGaActionInitializer.h"
-#include "GiGaMTCore/GiGaWorkerPilot.h"
+#include "GiGaMTCoreRun/GiGaWorkerPilot.h"
 
 // ============================================================================
 /**  @file

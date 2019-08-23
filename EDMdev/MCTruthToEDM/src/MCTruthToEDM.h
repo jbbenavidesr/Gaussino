@@ -14,7 +14,7 @@
 #include "Event/MCVertex.h"
 #include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
 
-#include "GiGaMTCore/Truth/MCTruthConverter.h"
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
 
 #include "Defaults/Locations.h"
 
