@@ -2,7 +2,11 @@
 
 DECLARE_COMPONENT(BeamInfoSvc)
 
-StatusCode BeamInfoSvc::initialize() { return Service::initialize(); }
+StatusCode BeamInfoSvc::initialize() {
+  auto sc = Service::initialize();
+  m_beamspot.SetXYZ(m_xLuminousRegion, m_yLuminousRegion, m_zLuminousRegion);
+  return sc; 
+}
 
 StatusCode BeamInfoSvc::finalize() { return Service::finalize(); }
 

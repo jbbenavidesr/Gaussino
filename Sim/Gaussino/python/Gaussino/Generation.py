@@ -44,6 +44,7 @@ class GenPhase(ConfigurableUser):
         "Production_kwargs"   : {},  # NOQA
         "ConvertEDM"          : False,  # NOQA
         "SampleGenerationTool": 'SignalPlain',   # NOQA
+        "PileUpTool": 'FixedLuminosityWithSvc',   # NOQA
         "ProductionTool"      : 'Pythia8Production',   # NOQA
         "DecayTool"           : '',   # NOQA
         "CutTool"             : ''  # NOQA
@@ -81,6 +82,7 @@ class GenPhase(ConfigurableUser):
             ProductionTool = self.getProp('ProductionTool')
             DecayTool = self.getProp('DecayTool')
             CutTool = self.getProp('CutTool')
+            PileUpTool = self.getProp('PileUpTool')
 
             from Configurables import Generation
             from Gaussino.Utilities import beaminfoService
@@ -106,7 +108,7 @@ class GenPhase(ConfigurableUser):
                 from Configurables import Gaussino
                 prod.NThreads = Gaussino().ThreadPoolSize
 
-            gen_alg.PileUpTool = 'FixedLuminosityWithSvc'
+            gen_alg.PileUpTool = PileUpTool
             gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
             gen_alg.DecayTool = DecayTool
 
