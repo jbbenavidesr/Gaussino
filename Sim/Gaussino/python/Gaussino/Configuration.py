@@ -34,8 +34,7 @@ class Gaussino(ConfigurableUser):
         ,"BeamPipe"          : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
         ,"ReplaceWithGDML"   : [ { "volsToReplace": [], "gdmlFile": "" } ]  # NOQA
         ,"RandomGenerator"   : 'Ranlux'  # NOQA
-        ,"UseGaussGeo"       : False  # NOQA
-        ,"evtMax"            : -1  # NOQA
+        ,"EvtMax"            : -1  # NOQA
         ,"EnableHive"        : False  # NOQA
         ,"ThreadPoolSize"    : 2  # NOQA
         ,"EventSlots"        : 2  # NOQA
@@ -86,7 +85,7 @@ class Gaussino(ConfigurableUser):
         phases = self.getProp("Phases")
         if "Generator" not in phases:
             raise Exception("Must have Generator phase")
-        self.setOtherProps(GenPhase(), ['evtMax'])
+        self.setOtherProps(GenPhase(), ['EvtMax'])
         GenPhase().configure_phase()
         if "Simulation" in phases:
             SimPhase().configure_phase()
@@ -98,7 +97,7 @@ class Gaussino(ConfigurableUser):
 
         histogramService()
 
-        ApplicationMgr().EvtMax = self.getProp('evtMax')
+        ApplicationMgr().EvtMax = self.getProp('EvtMax')
         ApplicationMgr().EvtSel = 'NONE'
 
         from Gaudi.Configuration import appendPostConfigAction
@@ -135,8 +134,8 @@ class Gaussino(ConfigurableUser):
             if outputName != "":
                 outputName += '-'
             outputName += self.eventType()
-        if self.evtMax > 0:
-            outputName += '-' + str(self.evtMax) + 'ev'
+        if self.EvtMax > 0:
+            outputName += '-' + str(self.EvtMax) + 'ev'
         idFile = str(time.localtime().tm_year)
         if time.localtime().tm_mon < 10:
             idFile += '0'

@@ -37,7 +37,7 @@ class GenPhase(ConfigurableUser):
         "B2Momentum"          : 3.5 * SystemOfUnits.TeV,  # NOQA
         "B1Particle"          : 'p',  # NOQA
         "B2Particle"          : 'p',  # NOQA
-        "evtMax"              : -1,  # NOQA
+        "EvtMax"              : -1,  # NOQA
         "Production"          : '',  # NOQA
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
@@ -67,9 +67,9 @@ class GenPhase(ConfigurableUser):
         self.propagateProperties(names, other)
 
     def configure_phase(self):
-        evtMax = self.getProp('evtMax')
-        if evtMax <= 0:
-            raise RuntimeError("Generating events but selected '%s' events." % evtMax)  # NOQA
+        EvtMax = self.getProp('EvtMax')
+        if EvtMax <= 0:
+            raise RuntimeError("Generating events but selected '%s' events." % EvtMax)  # NOQA
 
         # Algorithm that produces the actual HepMC by talking to stuff
         prod_name = self.getProp('Production')
