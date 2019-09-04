@@ -53,14 +53,12 @@
     "AlphaInelastic"};
 
 template <typename T>
-T& operator<<( T& ostr, const HepMC3::FourVector& fv )
-{
+T& operator<<( T& ostr, const HepMC3::FourVector& fv ) {
   ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
   return ostr;
 }
 
-void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
-{
+void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track ) {
   // new track is being started
   // we record its initial momentum
   fourmomentum = HepMC3::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
@@ -69,8 +67,8 @@ void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
   if ( printDebug() ) {
     HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
                                 track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
-    auto track_info = GaussinoTrackInformation::Get();
-    int pdgID       = track->GetDefinition()->GetPDGEncoding();
+    auto               track_info = GaussinoTrackInformation::Get();
+    int                pdgID      = track->GetDefinition()->GetPDGEncoding();
     HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
                                track->GetGlobalTime() );
     G4cout << "##### STARTING NEW TRACK #####" << G4endl;
@@ -84,8 +82,7 @@ void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track )
 #endif
 }
 
-void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
-{
+void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
   if ( !track->GetUserInformation() ) {
     G4cerr << __PRETTY_FUNCTION__
            << " Could not find user track information. Likely wrong order of actions in sequence!" << G4endl;
@@ -130,25 +127,17 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
           fourmomentum.setE( ener );
         }
       }
-      // FIXME: Simplified the original code and removed usage of property service. Might need to revisit.
-      // if ( 0 == pdgID ) {
-      //// Last chance, use name of particle
-      // const LHCb::ParticleProperty* pProp =
-      // m_ppSvc->find( track->GetDefinition()->GetParticleName() );
-      // if( NULL != pProp ) {
-      // pdgID = pProp->pdgID().pid();
-      //} else {
-      // std::string message = "PDGEncoding does not exist, G4 name is ";
-      // message += track->GetDefinition()->GetParticleName();
-      // Warning( message, StatusCode::SUCCESS, 10 );
-      //}
-      //}
       if ( 0 == pdgID ) {
         // Last chance, use name of particle
-        std::string message = "PDGEncoding does not exist, G4 name is ";
-        message += track->GetDefinition()->GetParticleName();
-        G4cerr << __PRETTY_FUNCTION__ << message << G4endl;
-        warning( message );
+        auto id = m_fNameToID( track->GetDefinition()->GetParticleName() );
+        if ( id.has_value() ) {
+          pdgID = id.value();
+        } else {
+          std::string message = "PDGEncoding does not exist, G4 name is ";
+          message += track->GetDefinition()->GetParticleName();
+          G4cerr << __PRETTY_FUNCTION__ << message << G4endl;
+          warning( message );
+        }
       }
     }
     // get the process type of the origin vertex
@@ -165,16 +154,27 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
 
     HepMC3::FourVector final_fourmomentum{track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
                                           track->GetTotalEnergy()};
-    auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID, creatorID, fourmomentum, final_fourmomentum, prodpos, endpos};
+    // Skip if the track has already been saved because it was previously suspended
+    if ( track_info->isSuspendedAndSaved() ) { return; }
+    if ( track->GetTrackStatus() == G4TrackStatus::fSuspend ) { track_info->suspendedAndSaved(); }
+
+    auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID,   creatorID, fourmomentum,
+                                                  final_fourmomentum,  prodpos, endpos};
     // Now check if the particle is a primary particle, i.e. we have already created
     // a linked particle for it.
     if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
+      debug( "Primary track status: " + std::to_string( track->GetTrackStatus() ) );
       auto primary_info = GaussinoPrimaryParticleInformation::Get( track->GetDynamicParticle()->GetPrimaryParticle() );
       auto linkedparticleID = primary_info->getLinkedID();
       if ( linkedparticleID == 0 ) {
         G4cerr << __PRETTY_FUNCTION__ << " track is primary but user info does not point to a LinkedParticle."
                << G4endl;
       }
+
+      // First check if the G4TruthInformation has already been provided
+      // This can happen if the track is suspended during processing, usually to keep
+      // the number of optical photons down as much as possible. In this case we ignore
+      // the additional truth information provided.
       event_info->TruthTracker()->RegisterPrimary( particle, linkedparticleID );
     } else {
       event_info->TruthTracker()->Declare( particle, track->GetParentID() );
@@ -182,8 +182,7 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track )
   }
 }
 
-int TruthStoringTrackAction::processID( const G4VProcess* creator )
-{
+int TruthStoringTrackAction::processID( const G4VProcess* creator ) {
   // FIXME: Need to define those codes somewhere centrally
 
   int processID = LHCb::MCVertex::Unknown;

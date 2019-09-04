@@ -103,7 +103,8 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
     #ifdef TRUTHDEBUG
     ti->SetStoreReason("storeByOwnEnergy");
     #endif
-    ti->setToStoreTruth( true );
+    // Only set the preliminary flag to allow for rejection in posttrackaction
+    ti->setToPrelStoreTruth( true );
   }
 }
 
@@ -175,7 +176,8 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         }
         if ( !( dtr->GetDynamicParticle()->GetPreAssignedDecayProducts() ) ) {
           auto child_track_info = GaussinoTrackInformation::Get( dtr );
-          child_track_info->setToStoreTruth( true );
+          // Only store preliminary to allow for rejection later on
+          child_track_info->setToPrelStoreTruth( true );
           #ifdef TRUTHDEBUG
           child_track_info->SetStoreReason("isForcedDecayProduct");
           #endif
@@ -302,6 +304,15 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
       return;
     }
   }
+  // (8) Now make the preliminary flag permanent if the tracks survived until here
+  // and weren't rejected
+  if( this_track_info->prelStoreTruth() ) { 
+    //setProcess( track ) ;
+    //fillGaussTrackInformation( track ) ;          
+    //trackMgr()->SetStoreTrajectory( true );   
+    this_track_info->setToStoreTruth(true);
+    return; 
+  }  /// RETURN 
 
   // check if track is to be stored ???????????????????????????????????????
   // FIXME: This isn't doing anything right now as we right now do not support

@@ -17,6 +17,7 @@ GaussinoTrackInformation::GaussinoTrackInformation(const GaussinoTrackInformatio
       m_storeTruth(right.m_storeTruth),
       m_createdHit(right.m_createdHit),
       m_directParent(right.m_directParent),
+      m_wasSuspended(right.m_wasSuspended),
       m_hits(right.m_hits),
-      m_detInfo(right.m_detInfo) {
+      m_detInfo(right.m_detInfo){
 }

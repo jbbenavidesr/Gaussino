@@ -89,6 +89,7 @@ namespace Gaussino
     // information in the internal storage elements.
     void Declare( Gaussino::G4TruthParticle* particle, int parentID );
     void RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID );
+    bool AlreadyRegisteredPrimary( unsigned int primaryID) const;
 
   private:
     // Intended to be called after all particles from the HepMC event have been

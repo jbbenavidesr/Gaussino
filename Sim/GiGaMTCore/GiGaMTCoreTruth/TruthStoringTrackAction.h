@@ -7,6 +7,7 @@
 #include "HepMC3/FourVector.h"
 #include <string>
 #include <unordered_set>
+#include <functional>
 
 // namespace LHCb {
 // class IParticlePropertySvc;
@@ -41,6 +42,7 @@ public:
 
   void PostUserTrackingAction( const G4Track* track ) override;
 
+  std::function<std::optional<int>(const std::string &)> m_fNameToID = [](const std::string &){return std::nullopt;};
 protected:
   // Function to return an integer ID for the process. Currently
   // implements the default LHCb behavior and codes but is declared

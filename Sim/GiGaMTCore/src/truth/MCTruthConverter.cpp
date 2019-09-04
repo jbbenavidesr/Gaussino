@@ -326,6 +326,15 @@ namespace Gaussino
     }
   }
 
+  bool MCTruthTracker::AlreadyRegisteredPrimary( unsigned int primaryID ) const
+  {
+    auto primary = m_primary_to_linked.find(primaryID);
+    if(primary == std::end(m_primary_to_linked)){
+      throw GaudiException{"PrimaryID does not exist", "MCTruth", StatusCode::FAILURE};
+    }
+    return primary->second->G4Truth();
+  }
+
   void MCTruthTracker::RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID )
   {
     auto primaryLP = m_primary_to_linked[primaryID];
@@ -333,7 +342,9 @@ namespace Gaussino
       throw GaudiException{"G4Truth PDGid does not match", "MCTruth", StatusCode::FAILURE};
     }
     if ( primaryLP->G4Truth() ) {
-      throw GaudiException{"LinkedParticle already has G4Truth", "MCTruth", StatusCode::FAILURE};
+      std::stringstream sstr;
+      sstr << "Linked particle already has G4Truth: \n" << *primaryLP;
+      throw GaudiException{sstr.str(), "MCTruth", StatusCode::FAILURE};
     }
     primaryLP->G4Truth()                         = particle;
     m_tracking_to_linked[particle->GetTrackID()] = primaryLP;
