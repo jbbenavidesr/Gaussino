@@ -68,6 +68,11 @@ public:
    */
   virtual G4VUserActionInitialization* construct() const override;
 
+  /**Simple initialize to explicitly trigger the retrieve of the ToolHandles to avoid
+   * thread-safety issues
+   */
+  virtual StatusCode initialize() override;
+
 private:
   // Storage for the factories
   ToolHandleArray<RunActionFactory> m_UserRunActionFactories{this};

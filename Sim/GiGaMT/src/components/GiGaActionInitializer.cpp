@@ -9,8 +9,15 @@
 
 DECLARE_COMPONENT( GiGaActionInitializer )
 
-void GiGaActionInitializer::BuildForMaster() const
-{
+StatusCode GiGaActionInitializer::initialize() {
+  for ( auto& fac : m_UserRunActionFactories ) { fac.retrieve(); }
+  for ( auto& fac : m_UserEventActionFactories ) { fac.retrieve(); }
+  for ( auto& fac : m_UserTrackingActionFactories ) { fac.retrieve(); }
+  for ( auto& fac : m_UserSteppingActionFactories ) { fac.retrieve(); }
+  if ( !m_UserStackingActionFactory.empty() ) { m_UserStackingActionFactory.retrieve(); }
+  return StatusCode::SUCCESS;
+}
+void GiGaActionInitializer::BuildForMaster() const {
   auto runseq = new G4MultiRunAction{};
   for ( auto& fac : m_UserRunActionFactories ) {
     runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
@@ -18,8 +25,7 @@ void GiGaActionInitializer::BuildForMaster() const
   SetUserAction( runseq );
 }
 
-void GiGaActionInitializer::Build() const
-{
+void GiGaActionInitializer::Build() const {
   { // Sequence of UserRunActions
     auto runseq = new G4MultiRunAction{};
     for ( auto& fac : m_UserRunActionFactories ) {
@@ -36,9 +42,7 @@ void GiGaActionInitializer::Build() const
     SetUserAction( evtseq );
   }
 
-  if ( !m_UserStackingActionFactory.empty() ) {
-    SetUserAction( m_UserStackingActionFactory->construct() );
-  }
+  if ( !m_UserStackingActionFactory.empty() ) { SetUserAction( m_UserStackingActionFactory->construct() ); }
 
   { // Sequence of UserTrackingAction
     auto trackseq = new G4MultiTrackingAction{};
@@ -57,10 +61,8 @@ void GiGaActionInitializer::Build() const
   }
 }
 
-G4VUserActionInitialization* GiGaActionInitializer::construct() const
-{
-  class dummy : public G4VUserActionInitialization
-  {
+G4VUserActionInitialization* GiGaActionInitializer::construct() const {
+  class dummy : public G4VUserActionInitialization {
   public:
     dummy( const G4VUserActionInitialization* concrete ) : m_concrete( concrete ) {}
 
