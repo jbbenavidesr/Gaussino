@@ -361,27 +361,39 @@ StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEvent* theEvent,
   theEvent->set_units(old_momentum_unit, old_length_unit);
 
   // Convert status codes and IDs.
+  int procID = m_pythia->info.code(); // process ID
+
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();
     int pid    = p->pdg_id();
-    if ( status > 3 ) {
-      if ( status == 21 ) {
-        //(*p)->set_status(LHCb::HepMCEvent::PythiaIncomingParton);
-        p->set_status( 21 );
-      } else if ( ( status > 21 && status < 30 )    // part of hard process
-                  || ( status > 40 && status < 50 ) // ISR
-                  || ( status > 50 && status < 60 ) // FSR
-      ) {
-        // p->set_status(LHCb::HepMCEvent::PythiaHardProcess);
-        p->set_status( 22 );
-      } else if ( ( status == 71 ) || ( status == 72 ) ||
-                  ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
-        p->set_status( HepMC3::Status::DecayedByProdGen );
+    if (status > 3){
+      if ( status == 21 && 
+	   ( ( procID > 200 && procID < 300 ) // electroweak event
+	     || ( procID > 600 && procID < 700)  )){ // top event
+	//p->set_status(LHCb::HepMCEvent::PythiaIncomingParton);
+	p->set_status(21);
+      }
+      else if ( ((status > 21 && status < 30)  // part of hard process
+		||(status > 40 && status < 50) // ISR
+		 || (status > 50 && status < 60)) // FSR
+		&& ( ( procID > 200 && procID < 300 ) // electroweak event
+		     || ( procID > 600 && procID < 700) )// top event
+		){
+	//p->set_status(LHCb::HepMCEvent::PythiaHardProcess);
+	p->set_status(22);
+	}
+      else if ((status == 71) || (status == 72) || 
+	  ((status == 62) && (abs(pid) >= 22) && (abs(pid) <= 37)))
+        p->set_status(LHCb::HepMCEvent::DecayedByProdGen);
       else
-        p->set_status( HepMC3::Status::DocumentationParticle );
-    } else if ( status != HepMC3::Status::DecayedByProdGen && status != HepMC3::Status::StableInProdGen &&
-                status != HepMC3::Status::DocumentationParticle )
-      warning() << "Unknown status rule " << status << " for particle" << pid << endmsg;
+        p->set_status(LHCb::HepMCEvent::DocumentationParticle);
+    } else if (status != LHCb::HepMCEvent::DecayedByProdGen
+               && status != LHCb::HepMCEvent::StableInProdGen
+               && status != LHCb::HepMCEvent::DocumentationParticle)
+      {
+	warning() << "Unknown status rule " << status << " for particle" 
+		  << pid << endmsg;
+      }
   }
 
   // Convert to LHCb units.
