@@ -22,7 +22,7 @@
 #include "LbPythia8/Pythia8Production.h"
 
 // HepMC conversion
-#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
+#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenEvent.h"
