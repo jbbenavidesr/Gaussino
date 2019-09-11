@@ -43,3 +43,10 @@ gaudi_add_executable(Pythia8Reproducibility
                      exec/minimal.cxx
                      INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils
                      LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils)
+
+find_package(HepMC)
+
+gaudi_add_executable(HepMCConverterTest
+                     exec/convtest.cxx
+                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils HepMC
+                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils HepMC)
