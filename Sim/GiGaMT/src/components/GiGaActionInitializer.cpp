@@ -10,12 +10,13 @@
 DECLARE_COMPONENT( GiGaActionInitializer )
 
 StatusCode GiGaActionInitializer::initialize() {
-  for ( auto& fac : m_UserRunActionFactories ) { fac.retrieve(); }
-  for ( auto& fac : m_UserEventActionFactories ) { fac.retrieve(); }
-  for ( auto& fac : m_UserTrackingActionFactories ) { fac.retrieve(); }
-  for ( auto& fac : m_UserSteppingActionFactories ) { fac.retrieve(); }
-  if ( !m_UserStackingActionFactory.empty() ) { m_UserStackingActionFactory.retrieve(); }
-  return StatusCode::SUCCESS;
+  auto sc = extends::initialize();
+  for ( auto& fac : m_UserRunActionFactories ) { sc &= fac.retrieve(); }
+  for ( auto& fac : m_UserEventActionFactories ) { sc &= fac.retrieve(); }
+  for ( auto& fac : m_UserTrackingActionFactories ) { sc &= fac.retrieve(); }
+  for ( auto& fac : m_UserSteppingActionFactories ) { sc &= fac.retrieve(); }
+  if ( !m_UserStackingActionFactory.empty() ) { sc &= m_UserStackingActionFactory.retrieve(); }
+  return sc;
 }
 void GiGaActionInitializer::BuildForMaster() const {
   auto runseq = new G4MultiRunAction{};

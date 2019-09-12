@@ -25,8 +25,8 @@ namespace Gaussino
   public:
     using extends::extends;
     StatusCode initialize() override {
-      auto sc = extends::finalize();
-      m_stepper.retrieve();
+      auto sc = extends::initialize();
+      sc &= m_stepper.retrieve();
       return sc;
     }
 
