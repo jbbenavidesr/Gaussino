@@ -64,6 +64,6 @@ void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
   }
   G4GDMLParser g4writer;
   try {
-    g4writer.Write( m_outfile.value(), world, false, m_schema.value() );
+    g4writer.Write( m_outfile.value(), world, true, m_schema.value() );
   } catch ( std::logic_error& lerr ) { error() << "Caught an exception " << lerr.what() << endmsg; }
 }
