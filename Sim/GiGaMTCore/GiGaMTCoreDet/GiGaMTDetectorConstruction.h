@@ -3,32 +3,35 @@
 // from Gaudi
 #include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4VUserDetectorConstruction.hh"
+#include <functional>
 
 //@class GiGaMTDetectorConstruction
 //@brief Simple wrapper around G4VUserDetectorConstruction
 //
-// This wraps around G4VUserDetectorConstruction and provides a function
-// to set the world volume from an external (i.e. Gaudi service etc) source
-// which is then simply returned by the Construct() method.
-//
-// This is the base class that will be constructed by the factories and
-// used throughout GiGaMT.
-//
-// TODO: This needs be fancied out with SD and field construction.
+// This wraps around G4VUserDetectorConstruction and acts as a proxy that
+// calls externally provided functions to construct the world as well as the
+// senstive detectors and fields
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
 class GiGaMTDetectorConstruction final : public G4VUserDetectorConstruction
 {
+  typedef std::function<G4VPhysicalVolume*()> worldConstructor;
+  typedef std::function<void()> sdConstructor;
 
 public:
   using G4VUserDetectorConstruction::G4VUserDetectorConstruction;
 
   ~GiGaMTDetectorConstruction(){};
 
-  virtual void SetWorld( G4VPhysicalVolume* _world ) final { m_world = _world; }
-  virtual G4VPhysicalVolume* Construct() override final { return m_world; }
+  virtual G4VPhysicalVolume* Construct() override final { return m_world_constructor(); }
+  virtual void ConstructSDandField() override final { m_sd_constructor(); }
 
-protected:
-  G4VPhysicalVolume* m_world = nullptr;
+  void SetWorldConstructor(worldConstructor constr){m_world_constructor=constr;}
+  void SetSDConstructor(sdConstructor constr){m_sd_constructor=constr;}
+
+private:
+  worldConstructor m_world_constructor;
+  sdConstructor m_sd_constructor;
+
 };

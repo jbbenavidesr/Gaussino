@@ -1,11 +1,9 @@
 #include "GiGaMTDetectorConstructionFAC.h"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
-#include "GiGaMTCoreDet/GiGaMTProxyDetectorConstruction.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
-DECLARE_COMPONENT( GiGaMTProxyDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
   auto sc = extends::initialize();
@@ -14,19 +12,14 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
   for ( auto& keypairs : m_sens_dets ) { keypairs.second.retrieve(); }
   return sc;
 }
+
 G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   auto detconst = new GiGaMTDetectorConstruction();
-  detconst->SetWorld( m_geoSvc->constructWorld() );
-
-  return detconst;
-}
-
-G4VUserDetectorConstruction* GiGaMTProxyDetectorConstructionFAC::construct() const {
-  auto detconst = new GiGaMTProxyDetectorConstruction();
   detconst->SetWorldConstructor( [&]() {
     debug() << "Calling world constructor" << endmsg;
     auto world = m_geoSvc->constructWorld();
     for ( auto& tool : m_afterGeo ) { tool->process(); }
+    SaveGDML( world->GetLogicalVolume() );
     return world;
   } );
   detconst->SetSDConstructor( [&]() {
@@ -57,4 +50,20 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
       }
     }
   }
+}
+
+#include "Geant4/G4GDMLParser.hh"
+
+void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
+  if(m_schema.value() == ""){
+    return;
+  }
+  if ( !world ) {
+    error() << "Null pointer to world volume" << endmsg;
+    return;
+  }
+  G4GDMLParser g4writer;
+  try {
+    g4writer.Write( m_outfile.value(), world, false, m_schema.value() );
+  } catch ( std::logic_error& lerr ) { error() << "Caught an exception " << lerr.what() << endmsg; }
 }
