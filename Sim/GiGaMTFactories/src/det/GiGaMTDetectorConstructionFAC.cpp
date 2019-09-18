@@ -55,7 +55,7 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
 #include "Geant4/G4GDMLParser.hh"
 
 void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
-  if(m_schema.value() == ""){
+  if(m_outfile.value() == ""){
     return;
   }
   if ( !world ) {

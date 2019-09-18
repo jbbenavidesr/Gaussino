@@ -37,7 +37,7 @@ protected:
       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
   Gaudi::Property<std::string> m_schema{this, "Schema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
-  Gaudi::Property<std::string> m_outfile{this, "Output", "LHCb.gdml"};
+  Gaudi::Property<std::string> m_outfile{this, "Output", ""};
 private:
   SensDetVolumeMap m_sens_dets;
   Gaudi::Property<SensDetNameVolumesMap> m_namemap{this, "SensDetVolumeMap", {},[this]( Gaudi::Details::PropertyBase& ){
