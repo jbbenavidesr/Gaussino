@@ -33,7 +33,6 @@ public:
   {
     Instance().ClearEngine();
     Instance().m_generator = new CLHEP::RandFlat{engine, 0, 1};
-    gRandom->Rndm();
   }
   // Removes the thread-local instance of CLHEP::RandFlat;
   static void ClearEngine()
@@ -73,14 +72,9 @@ public:
     Guard( const Guard& ) = delete;
     Guard( Guard&& )      = delete;
 
-    Guard( CLHEP::HepRandomEngine& engine )
-    {
-      ThreadLocalEngine::Set( engine );
-      ThreadLocalgRandom::SetEngine( engine );
-    }
     Guard( HepRandomEnginePtr& engine )
     {
-      ThreadLocalEngine::Set( *engine.get() );
+      ThreadLocalEngine::Set( engine );
       ThreadLocalgRandom::SetEngine( *engine.get() );
     }
     ~Guard()
@@ -91,10 +85,11 @@ public:
   };
 
 private:
-  static void Set( CLHEP::HepRandomEngine& engine ) { m_engine = &engine; }
+  static void Set( HepRandomEnginePtr& engine ) { m_engine = &engine; }
   static void Unset() { m_engine = nullptr; }
 
-  thread_local static CLHEP::HepRandomEngine* m_engine;
+  thread_local static HepRandomEnginePtr* m_engine;
 public:
-  static CLHEP::HepRandomEngine& Get() { return *m_engine; }
+  static CLHEP::HepRandomEngine& Get() { return *m_engine->get(); }
+  static HepRandomEnginePtr& GetPtr() { return *m_engine; }
 };

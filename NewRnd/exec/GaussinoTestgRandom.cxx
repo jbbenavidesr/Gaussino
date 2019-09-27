@@ -1,5 +1,6 @@
 #include "CLHEP/Random/MixMaxRng.h"
 #include "NewRnd/RndGlobal.h"
+#include "NewRnd/RndCommon.h"
 #include "TH1D.h"
 #include <future>
 #include <iostream>
@@ -32,8 +33,8 @@ void run_thread( std::promise<bool>* prom )
 
 void run_thread_local( std::promise<bool>* prom )
 {
-  CLHEP::MixMaxRng engine;
-  engine.setSeed( 42 );
+  HepRandomEnginePtr engine{new CLHEP::MixMaxRng{}, nullptr, "Hello"};
+  engine->setSeed(42, 0);
   ThreadLocalEngine::Guard guard( engine );
   for ( int i = 0; i < NNumbers; i++ ) {
     if ( refvalues->at( i ) != gRandom->Poisson( 10 ) ) {
@@ -58,8 +59,8 @@ void hist_thread( std::promise<bool>* prom )
 
 void hist_thread_local( std::promise<bool>* prom )
 {
-  CLHEP::MixMaxRng engine;
-  engine.setSeed( 42 );
+  HepRandomEnginePtr engine{new CLHEP::MixMaxRng{}, nullptr, "Hello"};
+  engine->setSeed(42, 0);
   ThreadLocalEngine::Guard guard( engine );
   for ( int i = 0; i < NNumbers; i++ ) {
     if ( !essentiallyEqual( refhistvalues->at( i ), hist->GetRandom() ) ) {
@@ -125,8 +126,8 @@ int main()
 
   // threadlocal gRandom test
   {
-    CLHEP::MixMaxRng engine;
-    engine.setSeed( 42 );
+    HepRandomEnginePtr engine{new CLHEP::MixMaxRng{}, nullptr, "Hello"};
+    engine->setSeed(42, 0);
     ThreadLocalEngine::Guard guard( engine );
 
     // Reference test using standard gRandom setup
@@ -156,8 +157,8 @@ int main()
   }
 
   {
-    CLHEP::MixMaxRng engine;
-    engine.setSeed( 42 );
+    HepRandomEnginePtr engine{new CLHEP::MixMaxRng{}, nullptr, "Hello"};
+    engine->setSeed(42, 0);
     ThreadLocalEngine::Guard guard( engine );
     refhistvalues = new std::vector<double>{};
     for ( int i = 0; i < NNumbers; i++ ) {

@@ -1,7 +1,7 @@
 #include "NewRnd/RndGlobal.h"
 
 thread_local CLHEP::RandFlat* ThreadLocalgRandom::m_generator = nullptr;
-thread_local CLHEP::HepRandomEngine* ThreadLocalEngine::m_engine = nullptr;
+thread_local HepRandomEnginePtr* ThreadLocalEngine::m_engine = nullptr;
 
 //=============================================================================
 // Throw a flat random numbers.
