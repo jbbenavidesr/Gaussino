@@ -23,8 +23,6 @@ class GiGaWorkerPilotFAC;
 class G4EventProxy;
 class G4WorkerThread;
 
-typedef std::function<void( Gaussino::MCTruthTracker& )> MCTruthTrackerCall;
-
 class GiGaWorkerPilot : public GiGaMessage
 {
   friend class GiGaWorkerPilotFAC;
@@ -64,11 +62,6 @@ public:
   {
     debug( "Setting input queue" );
     m_input_queue = que;
-  }
-
-  // Set the HepMC to Geant4 converter function
-  void SetConverter(MCTruthTrackerCall func){
-    evt_converter = func;
   }
 
   // Returns singleton instance of initialization barrier.
@@ -111,5 +104,4 @@ private:
   size_t nCreated = 0;
   std::vector<G4Event*> m_for_cleanup{};
   std::mutex m_cleanup_lock{};
-  MCTruthTrackerCall evt_converter{[]( Gaussino::MCTruthTracker& ) { }};
 };

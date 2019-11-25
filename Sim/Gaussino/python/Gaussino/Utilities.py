@@ -34,6 +34,7 @@ def get_set_configurable(parent, propertyname, value=""):
         objectname = value.split('/')[0]
 
     propertyvalue_short = propertyvalue_short.split('.')[-1]
+    objectname = objectname.replace('::', '__')
     if not hasattr(parent, propertyvalue_short):
         import Configurables
         conf = getattr(Configurables, objectname)

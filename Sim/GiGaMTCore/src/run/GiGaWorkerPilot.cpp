@@ -26,7 +26,6 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   nDeleted      = right.nDeleted;
   nCreated      = right.nCreated;
   m_for_cleanup = std::move( right.m_for_cleanup );
-  evt_converter = std::move( right.evt_converter );
 }
 
 void GiGaWorkerPilot::InitializeWorker()

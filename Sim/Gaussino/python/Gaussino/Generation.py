@@ -5,6 +5,7 @@ High level and utility functions to set up the Generation step in Gaussino
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
+from Gaudi.Configuration import log
 from Gaussino.GenUtils import configure_pgun, configure_generation
 from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
@@ -47,7 +48,8 @@ class GenPhase(ConfigurableUser):
         "PileUpTool": 'FixedLuminosityWithSvc',   # NOQA
         "ProductionTool"      : 'Pythia8Production',   # NOQA
         "DecayTool"           : '',   # NOQA
-        "CutTool"             : ''  # NOQA
+        "CutTool"             : '', # NOQA
+        "CutToolOpts"         : {}  # NOQA
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -77,7 +79,6 @@ class GenPhase(ConfigurableUser):
         if prod_name in self._production_type_map:
             gen_alg = self._production_type_map[prod_name](**prod_kwargs)
         else:
-
             SampleGenerationTool = self.getProp('SampleGenerationTool')
             ProductionTool = self.getProp('ProductionTool')
             DecayTool = self.getProp('DecayTool')
@@ -96,9 +97,15 @@ class GenPhase(ConfigurableUser):
             except:
                 pass
             try:
-                sgt.CutTool = CutTool
-            except:
-                pass
+                if CutTool != '':
+                    ct = get_set_configurable(sgt, 'CutTool', CutTool)
+                    ct_opts = self.getProp('CutToolOpts')
+                    for n, v in ct_opts.items():
+                        ct.setProp(n, v)
+                else:
+                    sgt.CutTool = ''
+            except Exception as e:
+                log.error('Could not configure CutTool', e)
             prod = get_set_configurable(sgt, 'ProductionTool',
                                         ProductionTool)
             if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:

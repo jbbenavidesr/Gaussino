@@ -90,6 +90,7 @@ StatusCode GenRndInit::finalize()
     info() << "Time per event: "
            << std::chrono::duration_cast<std::chrono::seconds>( end_time - m_start_time ).count() /
                   (double)m_evtTimingCounter
+           << " seconds."
            << endmsg;
   }
   return base_class::finalize();

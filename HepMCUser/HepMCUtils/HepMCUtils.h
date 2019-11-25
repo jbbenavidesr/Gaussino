@@ -48,9 +48,12 @@ namespace HepMCUtils
   /// Remove all daughters of a particle
   void RemoveDaughters( const HepMC3::GenParticlePtr& thePart );
 
+  /// Remove all daughters of a particle
+  std::string RelationToString( const HepMC3::Relatives & range );
+
   /// Comparison function as structure
   struct particleOrder {
-    bool operator()( const HepMC3::GenParticlePtr& part1, const HepMC3::GenParticlePtr& part2 ) const
+    bool operator()( const HepMC3::ConstGenParticlePtr& part1, const HepMC3::ConstGenParticlePtr& part2 ) const
     {
       return ( part1->id() < part2->id() );
     }
@@ -63,6 +66,7 @@ namespace HepMCUtils
 
   /// Type of HepMC particles container ordered with barcodes
   typedef std::set<HepMC3::GenParticlePtr, particleOrder> ParticleSet;
+  typedef std::set<HepMC3::ConstGenParticlePtr, particleOrder> ConstParticleSet;
 } // namespace HepMCUtils
 
 //=============================================================================
@@ -155,4 +159,16 @@ inline void HepMCUtils::RemoveDaughters( const HepMC3::GenParticlePtr& thePartic
   for ( auto& iter : tempList ) {
     theEvent->remove_vertex( iter );
   }
+}
+
+inline std::string HepMCUtils::RelationToString( const HepMC3::Relatives & range ){
+  if( dynamic_cast<const HepMC3::Parents*>(&range) )
+    return "HepMC3::Parents";
+  if( dynamic_cast<const HepMC3::Ancestors*>(&range) )
+    return "HepMC3::Ancestors";
+  if( dynamic_cast<const HepMC3::Children*>(&range) )
+    return "HepMC3::Children";
+  if( dynamic_cast<const HepMC3::Descendants*>(&range) )
+    return "HepMC3::Descendants";
+  return "InvalidRange";
 }

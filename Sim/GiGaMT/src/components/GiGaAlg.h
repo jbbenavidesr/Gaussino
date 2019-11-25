@@ -11,6 +11,10 @@
 #include "NewRnd/RndAlgSeeder.h"
 
 class IHepMC3ToMCTruthConverter;
+namespace LHCb
+{
+  class IParticlePropertySvc;
+}
 
 /** @class GiGaAlg GiGaAlg.h Algorithms/GiGaAlg.h
  *
@@ -39,5 +43,6 @@ public:
 
 private:
   ServiceHandle<IGiGaMTSvc> m_gigaSvc{this, "GiGaMTSvc", "GiGaMT"};
+  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
   ToolHandle<IHepMC3ToMCTruthConverter> m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
 };

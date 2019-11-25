@@ -4,6 +4,8 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 
+#include <algorithm>
+#include <functional>
 #include "HepMC3/GenParticle.h"
 
 // Forward declarations
@@ -31,6 +33,7 @@ class IDecayTool ;
 struct IGenCutTool : public extend_interfaces<IAlgTool> {
   /// Vector of particles
   typedef std::vector< HepMC3::GenParticlePtr > ParticleVector ;
+  typedef std::vector< HepMC3::ConstGenParticlePtr > ConstParticleVector ;
 
   DeclareInterfaceID ( IGenCutTool , 6 , 0 ) ;
 
