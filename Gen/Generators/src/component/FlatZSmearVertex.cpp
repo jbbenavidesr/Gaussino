@@ -84,7 +84,7 @@ StatusCode FlatZSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode FlatZSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr& engine ) {
+StatusCode FlatZSmearVertex::smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr& engine ) {
 
   CLHEP::RandGauss gaussDist{engine.getref(), 0., 1.};
   CLHEP::RandFlat flatDist{engine.getref(), m_zmin ,m_zmax};

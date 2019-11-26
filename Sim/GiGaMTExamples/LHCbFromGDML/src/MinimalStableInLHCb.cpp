@@ -12,7 +12,7 @@
 
 DECLARE_COMPONENT( MinimalStableInLHCb )
 
-bool MinimalStableInLHCb::studyFullEvent( const std::vector<HepMC3::GenEvent>& theEvents, const LHCb::GenCollisions& ) const
+bool MinimalStableInLHCb::studyFullEvent( const HepMC3::GenEventPtrs& theEvents, const LHCb::GenCollisions& ) const
 {
   unsigned int counter = 0;
 
@@ -20,7 +20,7 @@ bool MinimalStableInLHCb::studyFullEvent( const std::vector<HepMC3::GenEvent>& t
 
     // Get the signal process ID from the attributes
 
-    for ( auto& hepMCpart : hepmcevent.particles() ) {
+    for ( auto& hepMCpart : hepmcevent->particles() ) {
 
       // Note that the following is really multiplicity of particle defined
       // as stable by Pythia just after hadronization: all particles known by

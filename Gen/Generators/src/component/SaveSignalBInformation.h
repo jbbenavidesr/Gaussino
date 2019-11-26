@@ -10,6 +10,8 @@
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
 
+#include "HepMCUser/typedefs.h"
+
 /** @class SaveSignalBInformation SaveSignalBInformation.h
  *
  *  Algorithm that takes the b string information from HepMC
@@ -19,7 +21,7 @@
  *  @date   2013-06-26
  */
 class SaveSignalBInformation
-    : public Gaudi::Functional::Transformer<std::vector<HepMC3::GenEvent>( const std::vector<HepMC3::GenEvent>& )>
+    : public Gaudi::Functional::Transformer<HepMC3::GenEventPtrs( const HepMC3::GenEventPtrs& )>
 {
 
 public:
@@ -30,12 +32,12 @@ public:
 
   virtual ~SaveSignalBInformation(){}; ///< Destructor
 
-  std::vector<HepMC3::GenEvent> operator()( const std::vector<HepMC3::GenEvent>& ) const override;
+  HepMC3::GenEventPtrs operator()( const HepMC3::GenEventPtrs& ) const override;
 
 protected:
 private:
   /// Extract B string from signal
-  HepMC3::GenEvent* extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const;
+  HepMC3::GenEventPtr extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const;
 
   /// make a new HepMC event
   StatusCode fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle, const HepMC3::ConstGenParticlePtr & theOldParticle ) const;

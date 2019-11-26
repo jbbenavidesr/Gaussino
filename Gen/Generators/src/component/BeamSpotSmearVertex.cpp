@@ -66,7 +66,7 @@ StatusCode BeamSpotSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertex::smearVertex( HepMC3::GenEvent * theEvent ,
+StatusCode BeamSpotSmearVertex::smearVertex( HepMC3::GenEventPtr theEvent ,
                                              HepRandomEnginePtr & engine ) {
 
   LHCb::BeamParameters * beamp = get< LHCb::BeamParameters >( m_beamParameters ) ;

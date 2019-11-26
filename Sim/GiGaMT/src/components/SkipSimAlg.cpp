@@ -7,7 +7,7 @@
 
 DECLARE_COMPONENT( SkipSimAlg )
 
-Gaussino::MCTruthPtrs SkipSimAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
+Gaussino::MCTruthPtrs SkipSimAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
   Gaussino::MCTruthPtrs ret;
   auto converters = m_converterTool->BuildConverter( hepmcevents );

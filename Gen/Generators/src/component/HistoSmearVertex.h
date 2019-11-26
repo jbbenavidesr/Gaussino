@@ -26,7 +26,7 @@ class HistoSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
 
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) override;
+  virtual StatusCode smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) override;
 
  private:
   /// Direction of the beam to take into account TOF vs nominal IP8, can have

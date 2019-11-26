@@ -116,7 +116,7 @@ StatusCode Generation::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
+std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
 operator()( const LHCb::GenHeader& old_gen_header) const
 {
   auto m_genFSR = GenFSRMTManager::GetGenFSR();
@@ -171,7 +171,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
   unsigned int  nPileUp( 0 ) ;
 
   // Create temporary containers for this event
-  std::vector<HepMC3::GenEvent> theEvents;
+  std::vector<HepMC3::GenEventPtr> theEvents;
   LHCb::GenCollisions theCollisions;
 
   interactionCounter theIntCounter ;
@@ -193,11 +193,6 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       // default set to 1 pile and 2.10^32 luminosity
       nPileUp = 1 ;
 
-    // FIXME: Events should not be placed into a vector...
-    // They only have a default copy constructor which messes
-    // up the parent_event() reference of contained particles
-    // when resizing. Maybe ask HepMC authors to delete the copy
-    // constructor and implement a working noexcept move constructor?
     theEvents.reserve(nPileUp);
     // generate a set of Pile up interactions according to the requested type
     // of event
@@ -228,7 +223,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
         //std::atomic_init<unsigned int>(&x, 0);
       //}
       for ( auto & evt : theEvents ){
-        updateInteractionCounters( theIntCounter , &evt );
+        updateInteractionCounters( theIntCounter , evt.get() );
       }
     
       // Increse the generated interactions counters in FSR                                                                                                      
@@ -241,23 +236,23 @@ operator()( const LHCb::GenHeader& old_gen_header) const
         unsigned short iPile( 0 ) ;
         for ( auto & evt : theEvents ) {
           if ( m_decayTool ) {
-            sc = decayEvent( &evt , engine ) ;
+            sc = decayEvent( evt , engine ) ;
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
-          evt.set_event_number( ++iPile ) ;
+          evt->set_event_number( ++iPile ) ;
           if(m_vertexSmearingTool){
             if ( ( ! ( m_commonVertex.value() ) ) || ( 1 == iPile ) )
-                sc = m_vertexSmearingTool -> smearVertex( &evt , engine ) ;
+                sc = m_vertexSmearingTool -> smearVertex( evt , engine ) ;
             if ( ! sc.isSuccess() ) error() << "Smearing tool failed" << endmsg;
           }
         }
       }
-
+      auto bla = *std::begin(theEvents);
       if ( ( m_commonVertex.value() ) && ( 1 < nPileUp ) ) {
         auto commonV = 
-          (*std::begin(std::begin(theEvents)->beams()))->end_vertex()->position();
+          (*std::begin((*std::begin(theEvents))->beams()))->end_vertex()->position();
         for ( auto & evt : theEvents ) {
-          for ( auto & vtx : evt.vertices() ) {
+          for ( auto & vtx : evt->vertices() ) {
             auto pos = vtx -> position() ;
             //FIXME: Shouldn't this shift by -pos + commonV to have the same vertex?
             vtx -> set_position( HepMC3::FourVector( pos.x() + commonV.x() , 
@@ -325,14 +320,14 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       auto & evt = event_gencol.first;
       // GenFSR
       if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
-        m_genFSR->addSimulationInfo("hardGenerator",evt.attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
+        m_genFSR->addSimulationInfo("hardGenerator",evt->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
     }
   }
 
   //Just before writing, set the event and run number of the HepMC events so they are persisted.
   for(auto & evt : theEvents){
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
   }
 
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
@@ -393,7 +388,7 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
+StatusCode Generation::decayEvent( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) const {
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
@@ -429,7 +424,7 @@ StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEngine
 // Interaction counters
 //=============================================================================
 void Generation::updateInteractionCounters( interactionCounter & theCounter ,
-                                            const HepMC3::GenEvent * theEvent ) const
+                                            const HepMC3::GenEvent* theEvent ) const
 {
   unsigned int bQuark( 0 ) , bHadron( 0 ) , cQuark( 0 ) , cHadron( 0 ) ;
   int pdgId ;

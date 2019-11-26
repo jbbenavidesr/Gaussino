@@ -66,7 +66,7 @@ StatusCode BeamSpotSmearVertexWithSvc::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) {
+StatusCode BeamSpotSmearVertexWithSvc::smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) {
 
   double dx , dy , dz;
 

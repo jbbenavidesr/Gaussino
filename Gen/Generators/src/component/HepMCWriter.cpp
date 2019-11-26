@@ -42,7 +42,7 @@ StatusCode HepMCWriter::initialize()
   return StatusCode::SUCCESS;
 }
 
-void HepMCWriter::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
+void HepMCWriter::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
   debug() << "==> Execute" << endmsg;
   if ( !m_writer ) {
@@ -53,9 +53,9 @@ void HepMCWriter::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents )
   std::lock_guard<std::mutex> writerguard( m_writer_lock );
   for ( auto& evt : hepmcevents ) {
     debug() << " Writing HepMC event with eventnumber "
-            << evt.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
-            << evt.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
-    m_writer->write_event( evt );
+            << evt->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
+            << evt->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
+    m_writer->write_event( *evt.get() );
     m_counter++;
   }
 }

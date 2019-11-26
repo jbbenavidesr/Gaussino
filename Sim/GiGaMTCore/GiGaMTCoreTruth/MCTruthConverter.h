@@ -8,6 +8,7 @@
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMCUtils/PrintDecayTree.h"
+#include "HepMC3/GenEvent.h"
 
 #include "GiGaMTCoreTruth/Common.h"
 #include "GiGaMTCoreTruth/LinkedParticle.h"

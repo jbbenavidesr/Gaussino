@@ -45,23 +45,23 @@ double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, co
 }
 
 Gaussino::MCTruthConverterPtrs
-HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC3::GenEvent>& hepmc_events ) const
+HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_events ) const
 {
   Gaussino::MCTruthConverterPtrs converters;
 
-  for ( const HepMC3::GenEvent& genEvt : hepmc_events ) {
+  for ( auto & genEvt : hepmc_events ) {
     if (msgLevel(MSG::VERBOSE)){
         m_ppSvc.retrieve();
-        for(size_t ib=0; ib<genEvt.beams().size();ib++){
-          verbose() << "HepMC event dump: beam=" << ib << " \n" << PrintDecay(genEvt.beams().at(ib), 0, m_ppSvc.get()) << endmsg;
+        for(size_t ib=0; ib<genEvt->beams().size();ib++){
+          verbose() << "HepMC event dump: beam=" << ib << " \n" << PrintDecay(genEvt->beams().at(ib), 0, m_ppSvc.get()) << endmsg;
         }
     }
     auto converter = std::make_unique<Gaussino::MCTruthConverter>();
-    if ( genEvt.length_unit() != HepMC3::Units::MM || genEvt.momentum_unit() != HepMC3::Units::MEV ) {
+    if ( genEvt->length_unit() != HepMC3::Units::MM || genEvt->momentum_unit() != HepMC3::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;
       continue;
     }
-    for ( auto& part : genEvt.particles() ) {
+    for ( auto& part : genEvt->particles() ) {
       if ( !keep( part ) ) {
         continue;
       }

@@ -120,7 +120,7 @@ StatusCode ParticleGun::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+std::tuple<HepMC3::GenEventPtrs, LHCb::GenCollisions, LHCb::GenHeader>
 ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
 
   debug() << "Processing event type " << m_eventType << endmsg ;
@@ -139,12 +139,12 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
   unsigned int  nParticles( 0 ) ;
 
   // Create temporary containers for this event
-  std::vector<HepMC3::GenEvent> theEvents{};
+  HepMC3::GenEventPtrs theEvents{};
   LHCb::GenCollisions theCollisions{};
 
   // Working set of pointers
   LHCb::GenCollision * theGenCollision{nullptr};
-  HepMC3::GenEvent * theGenEvent{nullptr};
+  HepMC3::GenEventPtr theGenEvent{nullptr};
 
   Gaudi::LorentzVector theFourMomentum{};
   Gaudi::LorentzVector origin{};
@@ -216,16 +216,16 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
         ParticleVector theParticleList ;
         theParticleList.clear();
 
-        auto theSignal = decayEvent( &event, theParticleList, engine, sc) ;
+        auto theSignal = decayEvent( event, theParticleList, engine, sc) ;
         if ( ! sc.isSuccess() ) error() << "Failed to decay event" << endmsg;
 
-        event.set_event_number(++iPart);
+        event->set_event_number(++iPart);
 
         // Add Cut tool
         bool passCut(true);
         if ( m_genCutTool && theSignal ) {
           ++m_nBeforeCut;
-          passCut = m_genCutTool -> applyCut( theParticleList , theGenEvent ,
+          passCut = m_genCutTool -> applyCut( theParticleList , theGenEvent.get() ,
                                               theGenCollision ) ;
           // event does not pass cuts
           if ( !passCut || theParticleList.empty() ){
@@ -241,7 +241,7 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     // Apply smearing of primary vertex
     if ( 0 != m_vertexSmearingTool ) {
       for ( auto & event : theEvents ) {
-        sc = m_vertexSmearingTool -> smearVertex( &event , engine ) ;
+        sc = m_vertexSmearingTool -> smearVertex( event , engine ) ;
         if ( ! sc.isSuccess() ) error() << "Failed to smear event" << endmsg;
       }
     }
@@ -305,7 +305,7 @@ StatusCode ParticleGun::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-HepMC3::GenParticlePtr ParticleGun::decayEvent( HepMC3::GenEvent * theEvent,
+HepMC3::GenParticlePtr ParticleGun::decayEvent( HepMC3::GenEventPtr theEvent,
                                              ParticleVector & theParticleList,
                                              HepRandomEnginePtr & engine,
                                              StatusCode & sc) const {
@@ -348,11 +348,11 @@ HepMC3::GenParticlePtr ParticleGun::decayEvent( HepMC3::GenEvent * theEvent,
 //=============================================================================
 // Set up event
 //=============================================================================
-void ParticleGun::prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC3::GenEvent * & theGenEvent ,  
+void ParticleGun::prepareInteraction( HepMC3::GenEventPtrs * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC3::GenEventPtr & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back(HepMC3::Units::MEV, HepMC3::Units::MM);
-  theGenEvent = &theEvents->back();
+  theGenEvent = std::make_shared<HepMC3::GenEvent>(HepMC3::Units::MEV, HepMC3::Units::MM);
+  theEvents->push_back(theGenEvent);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC3::StringAttribute>( m_particleGunName) );
   // Little hack to make it thread-safe when reading later

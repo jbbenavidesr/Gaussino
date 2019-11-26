@@ -62,7 +62,7 @@ StatusCode RepeatDecay::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //===================================================
 bool RepeatDecay::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC3::GenEvent> & theEvents , 
+                            HepMC3::GenEventPtrs & theEvents , 
                             LHCb::GenCollisions & theCollisions ) {
   bool result = false ;
 
@@ -116,8 +116,8 @@ void RepeatDecay::printCounters( ) const {
 //===================================================
 // Copy a HepMCEvent to another
 //===================================================
-void RepeatDecay::copyEvents( std::vector<HepMC3::GenEvent> & from , 
-                              std::vector<HepMC3::GenEvent> & to ) {
+void RepeatDecay::copyEvents( HepMC3::GenEventPtrs & from , 
+                              HepMC3::GenEventPtrs & to ) {
   // Erase the event where to copy
   to.clear() ;
 

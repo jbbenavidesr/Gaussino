@@ -82,7 +82,7 @@ StatusCode HistoSmearVertex::initialize( ) {
 //=============================================================================
 // Smearing function
 //=============================================================================
-StatusCode HistoSmearVertex::smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & ) {
+StatusCode HistoSmearVertex::smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & ) {
   double dx , dy , dz , dt ;
   m_hist->GetRandom3(dx,dy,dz);
 

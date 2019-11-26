@@ -24,7 +24,7 @@ DECLARE_COMPONENT(MergedEventsFilter)
 // Main execution
 //=============================================================================
 void MergedEventsFilter::operator()(
-    const std::vector<HepMC3::GenEvent>& theEvents,
+    const HepMC3::GenEventPtrs& theEvents,
     const LHCb::GenCollisions& theCollisions) const {
   if (msgLevel(MSG::DEBUG)) debug() << "==> Execute" << endmsg;
 

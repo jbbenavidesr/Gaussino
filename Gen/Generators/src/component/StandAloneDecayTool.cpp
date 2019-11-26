@@ -66,12 +66,12 @@ StatusCode StandAloneDecayTool::initialize() {
 // Main execution
 //=============================================================================
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
-                                    std::vector<HepMC3::GenEvent> & theEvents ,
+                                    HepMC3::GenEventPtrs & theEvents ,
                                     LHCb::GenCollisions & theCollisions ,
                                     HepRandomEnginePtr & engine ) const {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
 
   // generate the requested number of "pile-up" events
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {

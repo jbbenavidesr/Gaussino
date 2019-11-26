@@ -17,19 +17,19 @@ DECLARE_COMPONENT( SaveSignalBInformation )
 //=============================================================================
 // Main execution
 //=============================================================================
-std::vector<HepMC3::GenEvent> SaveSignalBInformation::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
+HepMC3::GenEventPtrs SaveSignalBInformation::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
   if ( msgLevel( MSG::DEBUG ) ) debug() << "==> Execute" << endmsg;
 
-  std::vector<HepMC3::GenEvent> outputevents;
+  HepMC3::GenEventPtrs outputevents;
   for ( auto& evt : hepmcevents ) {
     // check if signal exists
     auto sig_proc_vtx =
-        evt.attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
+        evt->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
     if ( sig_proc_vtx ) {
       auto ret = extractSignal( sig_proc_vtx );
       if ( ret ) {
-        outputevents.push_back( std::move( *ret ) );
+        outputevents.push_back( ret );
       }
     }
   }
@@ -40,7 +40,7 @@ std::vector<HepMC3::GenEvent> SaveSignalBInformation::operator()( const std::vec
 //=============================================================================
 // Extract B string and copy to a new location
 //=============================================================================
-HepMC3::GenEvent* SaveSignalBInformation::extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const
+HepMC3::GenEventPtr SaveSignalBInformation::extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const
 {
   auto& HEPB0                   = *std::begin( theVertex->particles_in() );
   HepMC3::ConstGenParticlePtr Bstring = nullptr;
@@ -56,7 +56,7 @@ HepMC3::GenEvent* SaveSignalBInformation::extractSignal( const HepMC3::ConstGenV
 
   if ( Bstring ) {
     // copy the string in a new event
-    auto hepmcevt = new HepMC3::GenEvent();
+    auto hepmcevt = std::make_shared<HepMC3::GenEvent>();
     hepmcevt->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                              std::make_shared<HepMC3::StringAttribute>( "String" ) );
     // Little hack to make it thread-safe when reading later

@@ -34,7 +34,7 @@ public:
 
   virtual ~HepMC3ToMCTruthConverter() = default;
 
-  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const std::vector<HepMC3::GenEvent>& ) const override;
+  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const HepMC3::GenEventPtrs& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};

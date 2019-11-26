@@ -66,7 +66,7 @@ StatusCode SignalRepeatedHadronization::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
-                                            std::vector<HepMC3::GenEvent> & theEvents , 
+                                            HepMC3::GenEventPtrs & theEvents , 
                                             LHCb::GenCollisions & 
                                             theCollisions , HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
@@ -82,7 +82,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   bool hasFailed = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
   HepMC3::GenParticlePtr theSignal ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR();
@@ -163,7 +163,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
               bool passCut = true ;
               
               if ( 0 != m_cutTool ) 
-                passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
+                passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() ,
                                                  theGenCollision ) ;
               
               if ( passCut && ( ! theParticleList.empty() ) ) {
@@ -211,14 +211,14 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 }
 
                 // Update counters
-                GenCounters::updateHadronCounters( theGenEvent , m_bHadC ,
+                GenCounters::updateHadronCounters( theGenEvent.get() , m_bHadC ,
                                                    m_antibHadC , m_cHadC , 
                                                    m_anticHadC , m_bbCounter,
                                                    m_ccCounter ) ;
-                GenCounters::updateExcitedStatesCounters( theGenEvent , 
+                GenCounters::updateExcitedStatesCounters( theGenEvent.get() , 
                                                           m_bExcitedC , 
                                                           m_cExcitedC ) ;
-                GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+                GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
               } 
               else {
                 // Signal does not pass cut: remove daughters
@@ -273,7 +273,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 //=============================================================================
 // Clear a complete HepMC event
 //=============================================================================
-void SignalRepeatedHadronization::Clear( HepMC3::GenEvent * theEvent ) const {
+void SignalRepeatedHadronization::Clear( HepMC3::GenEventPtr theEvent ) const {
   if ( theEvent -> vertices().size()>0 ) {
     theEvent->clear();
   }

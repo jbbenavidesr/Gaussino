@@ -270,7 +270,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 //=============================================================================
 // Generate an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
+StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
                                                HepRandomEnginePtr& engine ) const
 {
   if ( !m_pythia() ) {
@@ -347,16 +347,15 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEvent* theEvent, 
+StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEventPtr theEvent, 
 				      LHCb::GenCollision* theCollision) const {
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
-
   auto old_momentum_unit = theEvent->momentum_unit();
   auto old_length_unit = theEvent->length_unit();
   conversion.set_print_inconsistency(m_validate_HEPEVT);
-  if (!(conversion.fill_next_event(*m_pythia(), theEvent))) 
+  if (!(conversion.fill_next_event(*m_pythia(), theEvent.get()))) 
     return Error("Failed to convert Pythia 8 event to HepMC3.");
   theEvent->set_units(old_momentum_unit, old_length_unit);
 
@@ -485,7 +484,7 @@ void Pythia8ProductionMT::turnOffFragmentation() { m_pythia->settings.flag( "Had
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision )
 {
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
@@ -494,12 +493,12 @@ StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEvent* theEvent, LHCb::Gen
 //=============================================================================
 // Save the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_event = m_pythia->event; }
+void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) { m_event = m_pythia->event; }
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_pythia->event = m_event(); }
+void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) { m_pythia->event = m_event(); }
 
 //=============================================================================
 // Print the running conditions.

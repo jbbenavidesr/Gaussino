@@ -145,7 +145,7 @@ StatusCode ExternalGenerator::initialize( ) {
 //=============================================================================
 // Decay heavy excited particles
 //=============================================================================
-StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
+StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEventPtr theEvent,
      const LHCb::ParticleID::Quark theQuark , const int signalPid , HepRandomEnginePtr & engine) const {
   StatusCode sc ;
   
@@ -220,7 +220,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
 // Attention : pidList must be sorted before begin used in this function
 //=============================================================================
 bool ExternalGenerator::checkPresence( const PIDs & pidList ,
-                                       HepMC3::GenEvent * theEvent ,
+                                       HepMC3::GenEventPtr theEvent ,
                                        ParticleVector & particleList ) const {
   particleList.clear( ) ;
       for (auto & part: theEvent->particles()){
@@ -240,7 +240,7 @@ bool ExternalGenerator::checkPresence( const PIDs & pidList ,
 //=============================================================================
 // invert the event
 //=============================================================================
-void ExternalGenerator::revertEvent( HepMC3::GenEvent * theEvent ) const {
+void ExternalGenerator::revertEvent( HepMC3::GenEvent* theEvent ) const {
   double x, y, z, t ;
   for (auto & vtx:theEvent->vertices()){
     x = vtx -> position().x() ;
@@ -277,11 +277,11 @@ unsigned int ExternalGenerator::nPositivePz( const ParticleVector
 //=============================================================================
 // Set up event
 //=============================================================================
-void ExternalGenerator::prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC3::GenEvent * & theGenEvent ,  
+void ExternalGenerator::prepareInteraction( HepMC3::GenEventPtrs * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC3::GenEventPtr & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back(HepMC3::Units::MEV, HepMC3::Units::MM);
-  theGenEvent = &theEvents->back();
+  theGenEvent = std::make_shared<HepMC3::GenEvent>(HepMC3::Units::MEV, HepMC3::Units::MM);
+  theEvents->push_back(theGenEvent);
   theGenEvent->set_run_info(nullptr);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC3::StringAttribute>( m_hepMCName ) );

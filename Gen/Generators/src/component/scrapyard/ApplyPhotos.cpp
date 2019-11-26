@@ -87,7 +87,7 @@ StatusCode ApplyPhotos::execute() {
   LHCb::HepMCEvents::iterator it ;
 
   for ( it = theEvents -> begin() ; it != theEvents -> end() ; ++it ) {
-    HepMC3::GenEvent * ev = (*it) -> pGenEvt() ;
+    HepMC3::GenEventPtr ev = (*it) -> pGenEvt() ;
     for ( HepMC3::GenEvent::particle_iterator itP = ev -> particles_begin() ;
           itP != ev -> particles_end() ; ++itP ) {
       if ( LHCb::HepMCEvent::DocumentationParticle != (*itP) -> status() ) {
@@ -97,7 +97,7 @@ StatusCode ApplyPhotos::execute() {
           if ( 0 == EV ) continue ;
 
           // Make one event with only the "signal" and its decay products
-          HepMC3::GenEvent * newEvent = new HepMC3::GenEvent( ) ;
+          HepMC3::GenEventPtr newEvent = new HepMC3::GenEvent( ) ;
 
           // Fill the event
           newEvent -> add_vertex( EV ) ;

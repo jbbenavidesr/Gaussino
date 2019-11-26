@@ -49,7 +49,7 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC3::GenEvent> & theEvents , 
+                            HepMC3::GenEventPtrs & theEvents , 
                             LHCb::GenCollisions & theCollisions ,
                             HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
@@ -59,7 +59,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   bool hasFlipped = false ;
   bool hasFailed = false ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
   
   auto genFSR = GenFSRMTManager::GetGenFSR();
   int key = 0;  
@@ -109,7 +109,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
             
             bool passCut = true ;
             if ( 0 != m_cutTool ) 
-              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
+              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() ,
                                                theGenCollision ) ;
             
             if ( passCut && ( ! theParticleList.empty() ) ) {
@@ -151,15 +151,15 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
               
 
               // Update counters
-              GenCounters::updateHadronCounters( theGenEvent , m_bHadC , 
+              GenCounters::updateHadronCounters( theGenEvent.get() , m_bHadC , 
                                                  m_antibHadC , m_cHadC , 
                                                  m_anticHadC , m_bbCounter ,
                                                  m_ccCounter ) ;
-              GenCounters::updateExcitedStatesCounters( theGenEvent , 
+              GenCounters::updateExcitedStatesCounters( theGenEvent.get() , 
                                                         m_bExcitedC , 
                                                         m_cExcitedC ) ;
               
-              GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+              GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
               
 
               result = true ;

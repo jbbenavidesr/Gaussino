@@ -80,7 +80,7 @@ public:
    *                        generated interaction.
    */
   virtual StatusCode generateEvent 
-  ( HepMC3::GenEvent    * theEvent , 
+  ( HepMC3::GenEventPtr theEvent , 
     LHCb::GenCollision * theInfo , HepRandomEnginePtr & ) const;
   // ===================================================================
   /// Declare a particle stable to the production generator.
@@ -106,16 +106,16 @@ public:
    *                           generated interaction.
    */
   virtual StatusCode hadronize
-  ( HepMC3::GenEvent*     /* theEvent */ , 
+  ( HepMC3::GenEventPtr     /* theEvent */ , 
     LHCb::GenCollision * /* theInfo  */ ) { return StatusCode::SUCCESS ; }
   // ===================================================================
   /// Save the parton level event (when the fragmentation is turned off)
   virtual void savePartonEvent
-  ( HepMC3::GenEvent * /* theEvent */ ) {} ;
+  ( HepMC3::GenEventPtr /* theEvent */ ) {} ;
   // ===================================================================
   /// Retrieve the previously saved parton event to re-hadronize it.
   virtual void retrievePartonEvent
-  ( HepMC3::GenEvent* /* theEvent */ ) {} ;
+  ( HepMC3::GenEventPtr /* theEvent */ ) {} ;
   // ===================================================================
   /// Print configuration of production generator 
   virtual void printRunningConditions( ) const {} ;
@@ -190,7 +190,7 @@ DECLARE_COMPONENT( ReadHepMCAsciiFile )
 
 // ===================================================================
 StatusCode ReadHepMCAsciiFile::generateEvent 
-( HepMC3::GenEvent    *    theEvent , 
+( HepMC3::GenEventPtr    theEvent , 
   LHCb::GenCollision * /* theInfo */ ,
   HepRandomEnginePtr & /* engine */ ) const
 {
@@ -204,7 +204,7 @@ StatusCode ReadHepMCAsciiFile::generateEvent
   }
   // rescale if needed (convert to LHCb units) 
   if ( m_rescale ) 
-    { GeneratorUtils::scale ( theEvent , Gaudi::Units::GeV ,
+    { GeneratorUtils::scale ( theEvent.get() , Gaudi::Units::GeV ,
                               Gaudi::Units::mm / Gaudi::Units::c_light ) ; }
   //
   return StatusCode::SUCCESS ;

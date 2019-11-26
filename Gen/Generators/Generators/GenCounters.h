@@ -233,7 +233,7 @@ namespace GenCounters {
    *  @param[out] thebExcitedC Counters for B(**) 
    *  @param[out] thecExcitedC Counters for D(**)
    */
-  void updateExcitedStatesCounters( const HepMC3::GenEvent * theEvent ,
+  void updateExcitedStatesCounters( const HepMC3::GenEvent* theEvent ,
                                     ExcitedCounter & thebExcitedC ,
                                     ExcitedCounter & thecExcitedC ) ;
 
@@ -246,7 +246,7 @@ namespace GenCounters {
    *  @param[out] thebbCounter Counters for (bb) states
    *  @param[out] theccCounter Counters for (cc) states
    */
-  void updateHadronCounters( const HepMC3::GenEvent * theEvent , 
+  void updateHadronCounters( const HepMC3::GenEvent* theEvent , 
                              BHadronCounter & thebHadC , 
                              BHadronCounter & theantibHadC ,
                              DHadronCounter & thecHadC ,

@@ -231,7 +231,7 @@ StatusCode Signal::isolateSignal( const HepMC3::GenParticlePtr & theSignal )
 //=============================================================================
 StatusCode Signal::fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle ,
                                    const HepMC3::GenParticlePtr& theOldParticle,
-                                   HepMC3::GenEvent * theEvent) 
+                                   HepMC3::GenEvent* theEvent) 
   const {
   StatusCode sc = StatusCode::SUCCESS ;
   //
