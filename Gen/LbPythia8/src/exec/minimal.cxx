@@ -7,7 +7,7 @@
 #include "HepMCUtils/CompareGenEvent.h"
 #include "Pythia8/Basics.h"
 #include "Pythia8/Pythia.h"
-#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
+#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 #include <map>
 #include <thread>
 

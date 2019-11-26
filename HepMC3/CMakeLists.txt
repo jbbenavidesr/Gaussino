@@ -5,7 +5,7 @@ find_package(ROOT)
 # Define EvtGen external project
 include(ExternalProject)
 set(HEPMC3_GIT_SOURCE "ssh://git@gitlab.cern.ch:7999/Gaussino/HepMC3.git" CACHE STRING "URL of the HepMC3 git repository")
-set(HEPMC3_GIT_TAG "master" CACHE STRING "Tag of HepMC3 to be used")
+set(HEPMC3_GIT_TAG "pythia_official_fox" CACHE STRING "Tag of HepMC3 to be used")
 message(STATUS "HepMC3 will use tag \"${HEPMC3_GIT_TAG}\" from repository ${HEPMC3_GIT_SOURCE}")
 message(STATUS "Binary dir = ${PROJECT_BINARY_DIR}")
 message(STATUS "Build command = ${BUILD_COMMAND}")
@@ -18,6 +18,7 @@ ExternalProject_Add(HepMC3Ext
   CMAKE_ARGS 
        -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
        -DHEPMC3_ENABLE_ROOTIO=OFF
+       -DHEPMC3_INSTALL_INTERFACES=ON
        -DCMAKE_BUILD_TYPE=Debug
        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
        #-DROOT_DIR=${ROOTSYS}

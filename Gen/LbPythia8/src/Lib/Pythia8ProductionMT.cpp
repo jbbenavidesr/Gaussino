@@ -29,7 +29,7 @@
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
-#include "Pythia8HepMC3/Pythia8ToHepMC3.h"
+#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
@@ -352,9 +352,14 @@ StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEvent* theEvent,
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
+
+  auto old_momentum_unit = theEvent->momentum_unit();
+  auto old_length_unit = theEvent->length_unit();
   conversion.set_print_inconsistency(m_validate_HEPEVT);
   if (!(conversion.fill_next_event(*m_pythia(), theEvent))) 
-    return Error("Failed to convert Pythia 8 event to HepMC.");
+    return Error("Failed to convert Pythia 8 event to HepMC3.");
+  theEvent->set_units(old_momentum_unit, old_length_unit);
+
   // Convert status codes and IDs.
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();

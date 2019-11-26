@@ -33,7 +33,7 @@ endmacro()
 macro(AddHepMC3)
   # FIXME: This is just an work-around to include the locally compiled HepMC3 as the HepMC3Config.cmake
   # is not yet available during configuration. 
-  include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/include)
+  include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/include ${CMAKE_INSTALL_PREFIX}/share/HepMC3/interfaces)
   link_directories(${CMAKE_INSTALL_PREFIX}/lib64)
   link_directories(${CMAKE_INSTALL_PREFIX}/lib)
   #add_dependencies(HepMC3Ext)

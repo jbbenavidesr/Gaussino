@@ -25,19 +25,11 @@ if(EXISTS "${PYTHIA8_INCLUDE_DIR}/Pythia8/Pythia.h")
   include_directories(${PYTHIA8_INCLUDE_DIR}/Pythia8)
 endif()
 
-gaudi_add_library(Pythia8ToHepMC3Lib
-                  src/interface/*.cpp
-                  PUBLIC_HEADERS Pythia8HepMC3
-                  INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES})
-
-add_dependencies(Pythia8ToHepMC3Lib HepMC3Ext)
-
 gaudi_add_library(LbPythia8Lib
                   src/Lib/*.cpp
                   NO_PUBLIC_HEADERS
                   INCLUDE_DIRS Boost Pythia8 ROOT ${HEPMC3_INCLUDE_DIR} Gen/GenInterfaces Defaults HepMCUser Utils NewRnd
-                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 ${HEPMC3_LIBRARIES} ROOT PartPropLib LHAPDF Pythia8ToHepMC3Lib GenEvent)
+                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 ${HEPMC3_LIBRARIES} ROOT PartPropLib LHAPDF GenEvent)
 
 add_dependencies(LbPythia8Lib HepMC3Ext)
 
@@ -49,5 +41,12 @@ gaudi_env(SET PYTHIA8XML ${PYTHIA8_XML})
 
 gaudi_add_executable(Pythia8Reproducibility
                      exec/minimal.cxx
-                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} Pythia8ToHepMC3Lib CLHEP HepMCUtils
-                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} Pythia8ToHepMC3Lib CLHEP HepMCUtils)
+                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils
+                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils)
+
+find_package(HepMC)
+
+gaudi_add_executable(HepMCConverterTest
+                     exec/convtest.cxx
+                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils HepMC
+                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils HepMC)
