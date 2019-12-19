@@ -36,6 +36,7 @@
 
 // local
 #include "GiGaMT.h"
+#include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 
 //-----------------------------------------------------------------------------
 // Implementation of the general components of the GiGaMT service.
@@ -167,8 +168,8 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
                                                                     HepRandomEnginePtr& engine ) const
 {
   auto start_time = Clock::now();
-  std::list<std::promise<GiGaSimReturn>> promises;
-  std::list<std::future<GiGaSimReturn>> futures;
+  std::list<std::promise<Gaussino::GiGaSimReturn>> promises;
+  std::list<std::future<Gaussino::GiGaSimReturn>> futures;
   if ( m_splitPileUp.value() ) {
     // Submit every HepMC event separarely to the queue
     for ( auto& conv : _in ) {
@@ -199,10 +200,21 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
           << endmsg;
   for ( auto monitool : m_MoniTools ) {
     for ( auto& g4eventproxy : return_events ) {
-      monitool->monitor( *g4eventproxy.event() );
+      monitool->monitor( *g4eventproxy->event() );
     }
   }
 
   return std::make_tuple<G4EventProxies, Gaussino::MCTruthPtrs>( std::move( return_events ),
                                                                  std::move( return_truths ) );
+}
+
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3::GenEventPtrs & _in,
+                                                                    HepRandomEnginePtr& engine ) const {
+  return simulate(m_converterTool->BuildConverter(_in), engine);
+}
+
+StatusCode GiGaMT::simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& engine ) const {
+
+  auto result = simulate({m_converterTool->BuildConverter(_in)}, engine);
+  return StatusCode::SUCCESS;
 }

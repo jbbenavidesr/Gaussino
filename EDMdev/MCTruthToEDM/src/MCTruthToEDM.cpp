@@ -118,7 +118,10 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
   // Loop over the MCTruth objects
   for ( auto& mt : mctruths ) {
 
-    for ( auto rp : mt->GetRootParticles() ) {
+    // Getting root particles including those from any slave MCTruth objects contained within
+    // FIXME: Introduce global setting server to only activate the special event processing
+    // when needed? Might be slight performance improvement
+    for ( auto rp : mt->GetRootParticlesIncludingSlaves() ) {
       LHCb::MCVertex* primary{nullptr};
       auto foundpv = FindPV( rp, pvs );
       // Attach to the found vertex, if not create a new one
@@ -215,6 +218,10 @@ LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
   } else if ( lv->outgoing_particles.size() > 0 ) {
     // If the vertex was not produced during the generation phase, get something from G4
     // Therefore, all children should have been handled by G4 and have the same creatorID assigned
+    if(lv->HasOutgoingMCTruth()){
+      msgStream << MSG::ERROR << "Failed to set LHCb::MCVertex type. Not generation and has outgoing MCTruth. Don't know how you managed this but it is not supported."
+                << endmsg;
+    }
     if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
                       []( LinkedParticle* p ) -> bool { return p->G4Truth(); } ) ) {
       auto first_proc = ( *std::begin( lv->outgoing_particles ) )->G4Truth()->GetCreatorID();
@@ -271,6 +278,17 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
     mcp->addToEndVertices( endVertex );
     for ( auto& child : ev->outgoing_particles ) {
       convert( child, endVertex );
+    }
+    // Now convert all outgoing mctruth objects from this vertex.
+    // Additional MCTruth objects that exist on root level are handled in the
+    // main loop over all root particles
+    for(auto & slavetruth: ev->outgoing_mctruths){
+      if(msgStream.currentLevel() <= MSG::DEBUG){
+        msgStream << MSG::DEBUG << "Adding outgoing MCTruth to record." << endmsg;
+      };
+      for ( auto& child : slavetruth->GetRootParticlesIncludingSlaves() ) {
+        convert( child, endVertex );
+      }
     }
   }
 }

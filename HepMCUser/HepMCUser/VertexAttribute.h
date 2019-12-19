@@ -22,7 +22,7 @@ namespace HepMC3
       return true;
     }
 
-    ConstGenVertexPtr value() const { return m_val; }
+    GenVertexPtr value() const { return m_val; }
 
     // Pull in the base class init method accepting reference
     // to GenRunInfo to avoid failures in the template instantiation
@@ -41,7 +41,7 @@ namespace HepMC3
     void set_value( const GenVertexPtr& ptr ) { m_val = ptr; }
 
   private:
-    ConstGenVertexPtr m_val;
+    GenVertexPtr m_val;
     int index = -1; // Only used when creating object from string
   };
 } // End HepMC namespace

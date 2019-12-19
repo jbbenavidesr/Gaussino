@@ -11,8 +11,7 @@
 
 class G4PrimaryParticle;
 class G4PrimaryVertex;
-namespace LHCb
-{
+namespace LHCb {
   class IParticlePropertySvc;
 }
 
@@ -26,8 +25,7 @@ namespace LHCb
  *  @date   15.2.2019
  *
  */
-class HepMC3ToMCTruthConverter : public extends<GaudiTool, IHepMC3ToMCTruthConverter>
-{
+class HepMC3ToMCTruthConverter : public extends<GaudiTool, IHepMC3ToMCTruthConverter> {
 public:
   Gaudi::Property<double> m_travelLimit{this, "TravelLimit", 1e-10 * m};
   using extends::extends;
@@ -35,10 +33,11 @@ public:
   virtual ~HepMC3ToMCTruthConverter() = default;
 
   virtual Gaussino::MCTruthConverterPtrs BuildConverter( const HepMC3::GenEventPtrs& ) const override;
+  virtual Gaussino::MCTruthConverterPtr BuildConverter( const HepMC3::ConstGenParticlePtr& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
-  bool IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const;
+  bool                                      IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const;
   /// Decide if a particle has to be kept or not.
-  bool keep( const HepMC3::ConstGenParticlePtr & particle ) const;
+  bool keep( const HepMC3::ConstGenParticlePtr& particle ) const;
 };

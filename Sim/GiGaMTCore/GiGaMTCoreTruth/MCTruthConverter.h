@@ -22,6 +22,12 @@
 
 namespace Gaussino
 {
+  typedef std::shared_ptr<MCTruthConverter> MCTruthConverterPtr;
+  typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
+  typedef std::shared_ptr<MCTruthTracker> MCTruthTrackerPtr;
+  typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
+  typedef std::shared_ptr<MCTruth> MCTruthPtr;
+  typedef std::vector<MCTruthPtr> MCTruthPtrs;
 
   class MCTruthData
   {
@@ -49,7 +55,10 @@ namespace Gaussino
     std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
     std::unordered_map<int, LinkedParticle*> m_tracking_to_linked;
+    // Set to store identified identified root particles of this mctruth structure
     LinkedParticle::PtrSet m_root_particles;
+    // List of slave mctruth objects that should be treated as root in this mctruth structure
+    MCTruthPtrs m_slave_mctruths;
 
     // Some consistence checking internal variables
     G4Event* m_geant4_event{nullptr};
@@ -116,6 +125,7 @@ namespace Gaussino
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
     LinkedParticle::PtrSet GetRootParticles() const { return m_root_particles; }
+    LinkedParticle::PtrSet GetRootParticlesIncludingSlaves() const;
     const LinkedParticle* GetParticleFromTrackID( int trackid ) const;
 
   private:
@@ -124,12 +134,6 @@ namespace Gaussino
     void EraseDecayTree( LinkedParticle* lp );
   };
 
-  typedef std::unique_ptr<MCTruthConverter> MCTruthConverterPtr;
-  typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
-  typedef std::unique_ptr<MCTruthTracker> MCTruthTrackerPtr;
-  typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
-  typedef std::unique_ptr<MCTruth> MCTruthPtr;
-  typedef std::vector<MCTruthPtr> MCTruthPtrs;
   // Helper function to merge containers of MCTruthConverterPtr into a single converter
   // Useful when splitting/assigning the work to to Geant4 workers
   // Will return a new converter with all input converters become invalid

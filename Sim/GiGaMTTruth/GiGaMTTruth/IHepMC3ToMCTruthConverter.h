@@ -28,4 +28,5 @@ public:
    *  
    */
   virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const HepMC3::GenEventPtrs &) const = 0;
+  virtual  Gaussino::MCTruthConverterPtr BuildConverter(const HepMC3::ConstGenParticlePtr &) const = 0;
 };

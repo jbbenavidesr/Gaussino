@@ -31,6 +31,7 @@ class IChronoStatSvc;
 class ISvcLocator;
 template <class TYPE>
 class SvcFactory;
+class IHepMC3ToMCTruthConverter;
 
 // GiGaMT factories
 template <typename T, typename... Args>
@@ -69,6 +70,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
                                                                              "GiGaMTDetectorConstructionFAC"};
   ToolHandle<GiGaFactoryBase<G4VUserActionInitialization>> m_ActionInitializerFactory{this, "ActionInitializer",
                                                                                       "GiGaActionInitializer"};
+  ToolHandle<IHepMC3ToMCTruthConverter> m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
   ToolHandleArray<IG4MonitoringTool> m_MoniTools{this};
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{
       this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames )};
@@ -108,6 +110,18 @@ public:
 
   virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( Gaussino::MCTruthConverterPtrs&&,
                                                                       HepRandomEnginePtr& ) const override;
+
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( const HepMC3::GenEventPtrs & _in,
+                                                                      HepRandomEnginePtr& ) const override;
+
+  
+  /** Simulate the particle and its decay products. Results of the simulation are attached to the particle
+   * as SimResults
+   *  @param   ptr   GenParticlePtr
+   *  @param   eng   Random engine reference
+   *  @return status code
+   */
+  virtual StatusCode simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& ) const override;
 
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi

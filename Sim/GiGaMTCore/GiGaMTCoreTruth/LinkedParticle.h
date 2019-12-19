@@ -108,7 +108,13 @@ private:
 
 // Small helper class to facilitate a cleaner linking between the LinkedParticles.
 // This is a purely logical vertex, its real position etc is obtained from the respective linked particles
-// and their various representations
+// and their various representations. 
+// It is however possible to attach a MCTruth instance to a LinkedVertex. This instance is then treated as
+// outgoing from the vertex. It is stored as a shared pointer and the LinkedVertex is ultimatly responsible
+// for deleting the structure. This structure is independent of the MCTruth object this vertex itself is stored
+// in.
+// This is not used during normal processing but can be employed in special cases,
+// e.g. where parts of the event are simulated separately to optimise the processing (first simulate the signal decay and search for specific simulation outcome before continuing) or when parts of the event are going to be reused. This has to be treated explicitly during the EDM conversion (see the respective algorithms).
 class LinkedVertex
 {
 public:
@@ -116,6 +122,7 @@ public:
   LinkedVertex( int id ) : m_id( id ) {}
   LinkedParticle::PtrSet incoming_particle;
   LinkedParticle::PtrSet outgoing_particles;
+  std::vector<std::shared_ptr<Gaussino::MCTruth>> outgoing_mctruths;
   unsigned int m_id;
   unsigned int GetID() const { return m_id; }
   int GetProcessID() const
@@ -137,6 +144,7 @@ public:
 
     throw std::runtime_error( "Trying to access position of vertex without associated particles" );
   }
+  bool HasOutgoingMCTruth(){return outgoing_mctruths.size()>0;}
   const HepMC3::GenVertex* hepmc_vtx{nullptr};
 };
 

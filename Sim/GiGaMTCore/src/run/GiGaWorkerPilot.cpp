@@ -164,7 +164,7 @@ void GiGaWorkerPilot::operator()()
       debug( sstr.str() );
     }
     debug( "Geant4 finished processing the event." );
-    G4EventProxy proxy{evt, mctruth.get(), this};
+    G4EventProxyPtr proxy = std::make_shared<G4EventProxy>(evt, mctruth.get(), this);
     ret_promise->set_value( std::make_tuple( std::move( proxy ), std::move( mctruth ) ) );
     nCreated++;
   }

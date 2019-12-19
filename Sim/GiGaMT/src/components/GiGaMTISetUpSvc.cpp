@@ -21,6 +21,7 @@
 #include "GiGaMT/GiGaException.h"
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 //#include "GiGa/GiGaUtil.h"
 /// local
 #include "GiGaMT.h"

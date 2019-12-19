@@ -11,7 +11,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const Hep
   auto engine = createRndmEngine();
 
   debug() << "==> Execute" << endmsg;
-  auto ret_tuple = m_gigaSvc->simulate(m_converterTool->BuildConverter(hepmcevents), engine );
+  auto ret_tuple = m_gigaSvc->simulate(hepmcevents, engine );
 
   if ( msgLevel( MSG::DEBUG ) ) {
     auto & trackers = std::get<Gaussino::MCTruthPtrs>(ret_tuple);

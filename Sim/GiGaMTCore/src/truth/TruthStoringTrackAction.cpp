@@ -163,7 +163,6 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
     // Now check if the particle is a primary particle, i.e. we have already created
     // a linked particle for it.
     if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
-      debug( "Primary track status: " + std::to_string( track->GetTrackStatus() ) );
       auto primary_info = GaussinoPrimaryParticleInformation::Get( track->GetDynamicParticle()->GetPrimaryParticle() );
       auto linkedparticleID = primary_info->getLinkedID();
       if ( linkedparticleID == 0 ) {

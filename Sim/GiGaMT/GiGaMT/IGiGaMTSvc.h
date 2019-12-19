@@ -7,6 +7,7 @@
 #include "GiGaMTCoreRun/G4EventProxy.h"
 #include "NewRnd/RndCommon.h"
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
+#include "HepMCUser/typedefs.h"
 
 
 // Forward declaration from G4
@@ -52,7 +53,9 @@ public:
    *   should return the simulation result ...
    *   @return status code
    */
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate(const HepMC3::GenEventPtrs &, HepRandomEnginePtr &) const = 0;
   virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate(Gaussino::MCTruthConverterPtrs &&, HepRandomEnginePtr &) const = 0;
+  virtual StatusCode simulateDecay(const HepMC3::GenParticlePtr &, HepRandomEnginePtr &) const = 0;
 
 public:
 

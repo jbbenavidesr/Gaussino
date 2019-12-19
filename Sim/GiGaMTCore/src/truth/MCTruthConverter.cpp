@@ -484,6 +484,15 @@ namespace Gaussino
       }
     }
   }
+
+  LinkedParticle::PtrSet MCTruth::GetRootParticlesIncludingSlaves() const {
+    LinkedParticle::PtrSet tmp_ret = m_root_particles;
+    for(auto & slave : m_slave_mctruths){
+      for(auto & srp : slave->GetRootParticles()){
+        tmp_ret.insert(srp);
+      }
+    }
+    return tmp_ret; }
   void MCTruth::EraseDecayTree( LinkedParticle* lp )
   {
     for ( auto child : lp->GetChildren() ) {
