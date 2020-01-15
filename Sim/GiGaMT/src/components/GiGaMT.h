@@ -121,7 +121,7 @@ public:
    *  @param   eng   Random engine reference
    *  @return status code
    */
-  virtual StatusCode simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& ) const override;
+  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& ) const override;
 
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi

@@ -7,6 +7,7 @@
 #include "HepMC3/FourVector.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
+#include "HepMCUser/TemplateAttribute.h"
 #include <ostream>
 
 namespace Gaussino
@@ -18,6 +19,8 @@ namespace Gaussino
 }
 
 class LinkedVertex;
+class LinkedParticle;
+typedef HepMC3::TAttribute<LinkedParticle*> LinkedParticleAttribute;
 
 template <typename PartPtr>
 struct id_comparer {
@@ -125,25 +128,8 @@ public:
   std::vector<std::shared_ptr<Gaussino::MCTruth>> outgoing_mctruths;
   unsigned int m_id;
   unsigned int GetID() const { return m_id; }
-  int GetProcessID() const
-  {
-    if ( outgoing_particles.size() > 0 ) {
-      return ( *std::begin( outgoing_particles ) )->GetCreatorID();
-    }
-    return -1;
-  }
-  HepMC3::FourVector GetPosition() const
-  {
-    // FIXME: Prioritize the location G4 simulated particles
-    if ( outgoing_particles.size() > 0 ) {
-      return ( *std::begin( outgoing_particles ) )->GetOriginPosition();
-    }
-    if ( incoming_particle.size() > 0 ) {
-      return ( *std::begin( incoming_particle ) )->GetEndPosition();
-    }
-
-    throw std::runtime_error( "Trying to access position of vertex without associated particles" );
-  }
+  int GetProcessID() const;
+  HepMC3::FourVector GetPosition() const;
   bool HasOutgoingMCTruth(){return outgoing_mctruths.size()>0;}
   const HepMC3::GenVertex* hepmc_vtx{nullptr};
 };

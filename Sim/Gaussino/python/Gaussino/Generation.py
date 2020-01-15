@@ -48,8 +48,10 @@ class GenPhase(ConfigurableUser):
         "PileUpTool": 'FixedLuminosityWithSvc',   # NOQA
         "ProductionTool"      : 'Pythia8Production',   # NOQA
         "DecayTool"           : '',   # NOQA
-        "CutTool"             : '', # NOQA
-        "CutToolOpts"         : {}  # NOQA
+        "CutTool"    : '', # NOQA
+        "CutToolOpts": {},  # NOQA
+        "FullGenEventCutTool"    : '', # NOQA
+        "FullGenEventCutToolOpts": {}  # NOQA
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -83,6 +85,7 @@ class GenPhase(ConfigurableUser):
             ProductionTool = self.getProp('ProductionTool')
             DecayTool = self.getProp('DecayTool')
             CutTool = self.getProp('CutTool')
+            FullGenEventCutTool = self.getProp('FullGenEventCutTool')
             PileUpTool = self.getProp('PileUpTool')
 
             from Configurables import Generation
@@ -106,6 +109,14 @@ class GenPhase(ConfigurableUser):
                     sgt.CutTool = ''
             except Exception as e:
                 log.error('Could not configure CutTool', e)
+            if FullGenEventCutTool != '':
+                ct = get_set_configurable(gen_alg, 'FullGenEventCutTool',
+                                            FullGenEventCutTool)
+                ct_opts = self.getProp('FullGenEventCutToolOpts')
+                for n, v in ct_opts.items():
+                    ct.setProp(n, v)
+            else:
+                gen_alg.FullGenEventCutTool = ''
             prod = get_set_configurable(sgt, 'ProductionTool',
                                         ProductionTool)
             if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:

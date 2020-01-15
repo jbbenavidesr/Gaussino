@@ -63,6 +63,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_even
     }
     for ( auto& part : genEvt->particles() ) {
       if ( !keep( part ) ) { continue; }
+      // We add all the particles here to the container without caring about whether those particles have previously been simulated in another MCTruth object. This will be done during the linking when the container is prepared for Geant4.
       converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
     }
     converters.push_back( std::move( converter ) );
@@ -79,6 +80,9 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::ConstGenParticlePtr& par
     return nullptr;
   }
   auto converter = std::make_unique<Gaussino::MCTruthConverter>();
+  if ( keep( part ) ) { 
+    converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
+  }
   for ( auto& desc : HepMC3::Relatives::DESCENDANTS( part ) ) {
     if ( !keep( desc ) ) { continue; }
     converter->Declare( desc, IsTraveling( desc ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );

@@ -100,9 +100,6 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
     if ( storeUpToZmax && ( track->GetVertexPosition().z() > zMaxToStore ) ) {
       return;
     }
-    #ifdef TRUTHDEBUG
-    ti->SetStoreReason("storeByOwnEnergy");
-    #endif
     // Only set the preliminary flag to allow for rejection in posttrackaction
     ti->setToPrelStoreTruth( true );
   }
@@ -156,9 +153,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   if ( storeAll && zstore ) {
     // FIXME: trackMgr->SetStoreTrajectory( true );
     this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-    #ifdef TRUTHDEBUG
-    this_track_info->SetStoreReason("storeAll");
-    #endif
     // FIXME: setProcess( track );
     // FIXME: fillGaussTrackInformation( track );
     return;
@@ -178,16 +172,10 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
           auto child_track_info = GaussinoTrackInformation::Get( dtr );
           // Only store preliminary to allow for rejection later on
           child_track_info->setToPrelStoreTruth( true );
-          #ifdef TRUTHDEBUG
-          child_track_info->SetStoreReason("isForcedDecayProduct");
-          #endif
         }
       }
       // FIXME: trackMgr->SetStoreTrajectory( true );
       this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-      #ifdef TRUTHDEBUG
-      this_track_info->SetStoreReason("hasForcedDecayProducts");
-      #endif
 
       // FIXME: setProcess( track );
       // FIXME: fillGaussTrackInformation( track );
@@ -200,9 +188,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
     // FIXME: setProcess( track );
     // FIXME: trackMgr->SetStoreTrajectory( true );
     this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-    #ifdef TRUTHDEBUG
-    this_track_info->SetStoreReason("isPrimary");
-    #endif
 
     // FIXME: fillGaussTrackInformation( track );
     return;
@@ -215,9 +200,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
     // FIXME: fillGaussTrackInformation( track );
     // FIXME: trackMgr()->SetStoreTrajectory( true );
     this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-    #ifdef TRUTHDEBUG
-    this_track_info->SetStoreReason("storeByOwnEnergy");
-    #endif
 
     return;
   } /// RETURN !!!
@@ -228,9 +210,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
     // FIXME: fillGaussTrackInformation( track );
     // FIXME: trackMgr()->SetStoreTrajectory( true );
     this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-    #ifdef TRUTHDEBUG
-    this_track_info->SetStoreReason("storeByOwnType");
-    #endif
     return;
   } /// RETURN !!!
 
@@ -250,9 +229,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
         this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-        #ifdef TRUTHDEBUG
-        this_track_info->SetStoreReason("storeByChildEnergy");
-        #endif
         return;
       } /// RETURN
         //
@@ -261,9 +237,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
         this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-        #ifdef TRUTHDEBUG
-        this_track_info->SetStoreReason("storeByChildType");
-        #endif
         return;
       }
     }
@@ -283,9 +256,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
         this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-        #ifdef TRUTHDEBUG
-        this_track_info->SetStoreReason("storeBySecondariesProcess");
-        #endif
         return;
       }
     }
@@ -298,9 +268,6 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
       // FIXME: fillGaussTrackInformation( track );
       // FIXME: trackMgr()->SetStoreTrajectory( true );
       this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-      #ifdef TRUTHDEBUG
-      this_track_info->SetStoreReason("storeByOwnProcess");
-      #endif
       return;
     }
   }

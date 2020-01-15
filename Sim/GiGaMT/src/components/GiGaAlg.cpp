@@ -16,7 +16,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const Hep
   if ( msgLevel( MSG::DEBUG ) ) {
     auto & trackers = std::get<Gaussino::MCTruthPtrs>(ret_tuple);
     for(auto & tracker: trackers){
-    tracker->DumpToStream( debug(), [&]( int i ) -> std::string {
+    tracker->DumpToStream( debug(), "", [&]( int i ) -> std::string {
       if ( auto pid = m_ppSvc->find( LHCb::ParticleID( i ) ); pid ) {
         return pid->name();
       } else {

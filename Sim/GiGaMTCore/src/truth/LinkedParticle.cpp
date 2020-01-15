@@ -222,3 +222,24 @@ std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
       << " CONV  = " << lp.m_conversion_type;
   return out;
 }
+
+int LinkedVertex::GetProcessID() const
+  {
+    if ( outgoing_particles.size() > 0 ) {
+      return ( *std::begin( outgoing_particles ) )->GetCreatorID();
+    }
+    return -1;
+  }
+
+HepMC3::FourVector LinkedVertex::GetPosition() const
+  {
+    // FIXME: Prioritize the location G4 simulated particles
+    if ( outgoing_particles.size() > 0 ) {
+      return ( *std::begin( outgoing_particles ) )->GetOriginPosition();
+    }
+    if ( incoming_particle.size() > 0 ) {
+      return ( *std::begin( incoming_particle ) )->GetEndPosition();
+    }
+
+    throw std::runtime_error( "Trying to access position of vertex without associated particles" );
+  }

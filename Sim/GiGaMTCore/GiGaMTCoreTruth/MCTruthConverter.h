@@ -17,6 +17,8 @@
 #include "Geant4/G4PrimaryParticle.hh"
 #include "Geant4/G4PrimaryVertex.hh"
 
+class G4EventProxy;
+
 // MCTruthConverter objects build on top of each other. To prevent incorrect use, this object evolves in stages, that
 // each trigger internal transformations of the event structure.
 
@@ -36,15 +38,29 @@ namespace Gaussino
     virtual ~MCTruthData();
     template <typename STREAM>
     STREAM& DumpToStream(
-        STREAM&, std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
+        STREAM&, std::string base_sace="", std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
     size_t GetNParticles() const;
     size_t GetNVertices() const;
+    // Return none-owning list of all contained particles
+    std::set<LinkedParticle*> GetParticles() const {
+      return m_linkedParticles;
+    }
+    std::set<std::shared_ptr<G4EventProxy>> GetContainedProxies(){return m_contained_proxies;};
+
 
   protected:
     MCTruthData() = default;
     MCTruthData( MCTruthData&& right ) noexcept;
+    void EraseLinkedParticle( LinkedParticle* lp );
+    void EraseDecayTree( LinkedParticle* lp );
     // Checks the consistency of the structure. Throws an exception
     void VerifyStructure() const;
+    // Recursively loop from the root particles and remove all decay trees which
+    // have a SimResult assigned to the respective HepMC record.
+    // Attaches the MCTruth to the respective vertex or the root level.
+    // Collects all contained G4EventProxy objects from the sim results included.
+    // This is done recursively if multiple levels of contained MCTruths are part of this.
+    void RemoveDecayTreesWithSimResults();
     // Owning container of the linked particle objects
     std::set<LinkedParticle*> m_linkedParticles;
     // Some helpful maps to organise the data
@@ -66,6 +82,8 @@ namespace Gaussino
     // Internal counter to be used for the ID of LinkedParticles
     // to keep container ordered
     unsigned int m_pcounter{0};
+    std::set<std::shared_ptr<G4EventProxy>> m_contained_proxies;
+
   };
 
   // Class to register HepMC particles with their conversion type.
@@ -130,8 +148,6 @@ namespace Gaussino
 
   private:
     void DoCleanup();
-    void EraseLinkedParticle( LinkedParticle* lp );
-    void EraseDecayTree( LinkedParticle* lp );
   };
 
   // Helper function to merge containers of MCTruthConverterPtr into a single converter
@@ -150,12 +166,12 @@ namespace Gaussino
 } // namespace Gaussino
 
 template <typename STREAM>
-STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::string( int )> pdg_to_name )
+STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::string base_space, std::function<std::string( int )> pdg_to_name)
 {
   const std::string spacer = "|---";
-  out << "#############################################\n";
-  out << "# Beginning dump of converter\n";
-  out << "#############################################\n";
+  out << base_space <<"#############################################\n";
+  out << base_space <<"# Beginning dump of converter\n";
+  out << base_space <<"#############################################\n";
 
   std::set<LinkedParticle*> visited;
   unsigned int i_root                                           = 1;
@@ -168,11 +184,17 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
       for ( auto& dp : lp->GetChildren() ) {
         rec_print( dp, spacing + spacer );
       }
-    }
+      for (auto & endvtx: lp->GetEndVtxs()){
+        for(auto & mctruth: endvtx->outgoing_mctruths){
+          mctruth->DumpToStream(out, spacing+spacer, pdg_to_name);
+        }
+      }
+    } 
+
   };
   for ( auto& rp : m_root_particles ) {
     out << "-------- Beginning root particle " << i_root << " --------\n";
-    rec_print( rp, "" );
+    rec_print( rp, base_space );
     i_root++;
   }
 
@@ -184,8 +206,8 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
       }
     }
   }
-  out << "#############################################\n";
-  out << "# Finished dump of converter\n";
-  out << "#############################################\n";
+  out << base_space <<"#############################################\n";
+  out << base_space <<"# Finished dump of converter\n";
+  out << base_space <<"#############################################\n";
   return out;
 }

@@ -193,6 +193,14 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     return_events.emplace_back( std::move( evt ) );
     return_truths.emplace_back( std::move( tru ) );
   }
+  for(auto & truth: return_truths){
+    for(auto & cevt:truth->GetContainedProxies()){
+      return_events.push_back(cevt);
+    }
+  }
+  if(auto it = std::unique(std::begin(return_events), std::end(return_events)); it != std::end(return_events)){
+    warning() << "Had to remove non-unique G4EventProxy. Something is wrong!" << endmsg;
+  }
 
   auto end_time = Clock::now();
   debug() << "Simulation complete after " << std::setprecision( 2 )
@@ -213,8 +221,8 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3
   return simulate(m_converterTool->BuildConverter(_in), engine);
 }
 
-StatusCode GiGaMT::simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& engine ) const {
+std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaMT::simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& engine ) const {
 
-  auto result = simulate({m_converterTool->BuildConverter(_in)}, engine);
-  return StatusCode::SUCCESS;
+  auto [proxies, truths] = simulate({m_converterTool->BuildConverter(_in)}, engine);
+  return {*std::begin(proxies), *std::begin(truths)};
 }

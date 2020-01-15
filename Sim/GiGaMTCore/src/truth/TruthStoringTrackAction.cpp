@@ -63,23 +63,6 @@ void TruthStoringTrackAction::PreUserTrackingAction( const G4Track* track ) {
   // we record its initial momentum
   fourmomentum = HepMC3::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
                                      track->GetTotalEnergy() );
-#ifdef TRUTHDEBUG
-  if ( printDebug() ) {
-    HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
-                                track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
-    auto               track_info = GaussinoTrackInformation::Get();
-    int                pdgID      = track->GetDefinition()->GetPDGEncoding();
-    HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
-                               track->GetGlobalTime() );
-    G4cout << "##### STARTING NEW TRACK #####" << G4endl;
-    G4cout << "TrackID " << track->GetTrackID() << G4endl;
-    G4cout << "ParentID " << track->GetParentID() << G4endl;
-    G4cout << "PdgID " << pdgID << G4endl;
-    G4cout << "Direct parent converted " << track_info->directParent() << G4endl;
-    G4cout << "Current pos" << endpos << G4endl;
-    G4cout << "Momentum " << fourmomentum << G4endl;
-  }
-#endif
 }
 
 void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
@@ -104,15 +87,6 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
 
     // Get the pdgID+LHCb extension
     int pdgID = track->GetDefinition()->GetPDGEncoding();
-#ifdef TRUTHDEBUG
-    if ( printDebug() ) {
-      G4cout << "##### STORING IT #####" << G4endl;
-      G4cout << "Storing new track" << G4endl;
-      G4cout << "Reason " << track_info->GetStoreReason() << G4endl;
-      G4cout << "EndPos " << endpos << G4endl;
-      G4cout << "Momentum " << fourmomentum << G4endl;
-    }
-#endif
     if ( 0 == pdgID ) {
       // Use dynamic particle PDG Id in this case (unknown particle)
       if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {

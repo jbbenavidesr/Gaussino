@@ -29,6 +29,6 @@ namespace Gaussino
     inline void setTrackID( const G4int id ) { m_trackID = id; }
 
   protected:
-    G4int m_trackID;
+    G4int m_trackID{};
   };
 }

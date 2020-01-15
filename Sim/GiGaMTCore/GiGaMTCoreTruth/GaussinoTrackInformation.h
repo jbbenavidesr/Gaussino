@@ -159,11 +159,6 @@ public:
     return dynamic_cast<GaussinoTrackInformation*>( info );
   }
 
-#ifdef TRUTHDEBUG
-  void         SetStoreReason( std::string storeReason ) { m_storeReason = std::move( storeReason ); }
-  std::string& GetStoreReason() { return m_storeReason; }
-#endif
-
 private:
   /// flag indicating that TrajectoryPoint should be appended
   bool m_appendStep{false};
@@ -179,10 +174,6 @@ private:
   /// flag indicating that the this track was at some point suspended
   /// and already saved.
   bool m_wasSuspended{false};
-
-#ifdef TRUTHDEBUG
-  std::string m_storeReason;
-#endif
 
   /// vector of pointers to hits created by that track
   Hits m_hits{};
