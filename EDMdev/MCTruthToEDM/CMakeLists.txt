@@ -11,12 +11,14 @@ AddHepMC3()
 find_package(HepMC)
 
 
-gaudi_add_module(MCTruthToEDM
-                 src/*.cpp
-                 INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} Defaults
+gaudi_add_library(MCTruthToEDMLib
+                 src/lib/*.cpp
+                 PUBLIC_HEADERS MCTruthToEDM
                  LINK_LIBRARIES GiGaMTCoreTruthLib MCEvent)
 
-gaudi_install_headers(
-  MCTruthToEDM)
+gaudi_add_module(MCTruthToEDM
+                 src/components/*.cpp
+                 INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} Defaults
+                 LINK_LIBRARIES MCTruthToEDMLib)
 
 add_dependencies(MCTruthToEDM HepMC3Ext)
