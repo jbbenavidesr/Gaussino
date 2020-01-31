@@ -45,6 +45,7 @@ class GenPhase(ConfigurableUser):
         "Production_kwargs"   : {},  # NOQA
         "ConvertEDM"          : False,  # NOQA
         "SampleGenerationTool": 'SignalPlain',   # NOQA
+        "SampleGenerationToolOpts": {},   # NOQA
         "PileUpTool": 'FixedLuminosityWithSvc',   # NOQA
         "ProductionTool"      : 'Pythia8Production',   # NOQA
         "DecayTool"           : '',   # NOQA
@@ -95,6 +96,9 @@ class GenPhase(ConfigurableUser):
             gen_alg = Generation()
             sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
                                        SampleGenerationTool)
+            sgt_opts = self.getProp('SampleGenerationToolOpts')
+            for n, v in sgt_opts.items():
+                sgt.setProp(n, v)
             try:
                 sgt.DecayTool = DecayTool
             except:

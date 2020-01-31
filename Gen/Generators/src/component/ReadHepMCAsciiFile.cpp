@@ -107,7 +107,8 @@ public:
    */
   virtual StatusCode hadronize
   ( HepMC3::GenEventPtr     /* theEvent */ , 
-    LHCb::GenCollision * /* theInfo  */ ) { return StatusCode::SUCCESS ; }
+    LHCb::GenCollision * /* theInfo  */,
+    HepRandomEnginePtr & ) { return StatusCode::SUCCESS ; }
   // ===================================================================
   /// Save the parton level event (when the fragmentation is turned off)
   virtual void savePartonEvent

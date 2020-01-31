@@ -30,9 +30,6 @@
 #include "Defaults/HepMCAttributes.h"
 #include "HepMCUser/Status.h"
 
-#include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/RandFlat.h"
-
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8Production
 //
@@ -302,15 +299,6 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEventPtr theEvent,
   // Not very elegant but need to stop Pythia8 from being accessed concurrently
   std::lock_guard<std::mutex> lock(m_pythia_lock);
 
-  class RndForPythia : public Pythia8::RndmEngine {
-    public:
-    RndForPythia(CLHEP::HepRandomEngine & engine ):m_gen(engine, 0, 1){}
-    virtual double flat(){return m_gen();}
-
-    private:
-      CLHEP::RandFlat m_gen;
-  };
-
   RndForPythia rnd_generator{engine.getref()};
   m_pythia->setRndmEnginePtr(&rnd_generator);
   // Generate the event (make 10 attempts).
@@ -497,7 +485,12 @@ void Pythia8Production::turnOffFragmentation() {
 // Hadronize an event.
 //=============================================================================
 StatusCode Pythia8Production::hadronize(HepMC3::GenEventPtr theEvent, 
-					LHCb::GenCollision* theCollision) {
+					LHCb::GenCollision* theCollision,
+					HepRandomEnginePtr & engine ) {
+  std::lock_guard<std::mutex> lock(m_pythia_lock);
+
+  RndForPythia rnd_generator{engine.getref()};
+  m_pythia->setRndmEnginePtr(&rnd_generator);
   if (!m_pythia->forceHadronLevel()) return StatusCode::FAILURE;
   return toHepMC(theEvent, theCollision);
 }

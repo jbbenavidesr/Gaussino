@@ -18,6 +18,9 @@
 #include <mutex>
 #include "Utils/LocalTL.h"
 
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+
 /** 
  * Production tool to generate events with Pythia 8.
  *
@@ -91,7 +94,8 @@ public:
 
   /// Hadronize an event.
   virtual StatusCode hadronize(HepMC3::GenEventPtr theEvent, 
-			       LHCb::GenCollision* theCollision) override;
+			       LHCb::GenCollision* theCollision,
+			       HepRandomEnginePtr & engine ) override;
   
   /// Save the Pythia 8 event record.
   virtual void savePartonEvent(HepMC3::GenEventPtr theEvent) override;
@@ -170,6 +174,15 @@ protected:
   std::set<int> m_bws;                   ///< Set of particles with a valid BW.
   /// Location where to store FSR counters (set by options)
   std::string  m_FSRName;
+  class RndForPythia : public Pythia8::RndmEngine {
+    public:
+    RndForPythia(CLHEP::HepRandomEngine & engine ):m_gen(engine, 0, 1){}
+    virtual double flat(){return m_gen();}
+
+    private:
+      CLHEP::RandFlat m_gen;
+  };
+
 };
 
 #endif // LBPYTHIA8_PYTHIA8PRODUCTION_H

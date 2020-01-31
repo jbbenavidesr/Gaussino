@@ -62,7 +62,8 @@ public:
    *                           generated interaction.
    */
   virtual StatusCode hadronize( HepMC3::GenEventPtr theEvent , 
-                                LHCb::GenCollision * theInfo ) = 0 ;
+                                LHCb::GenCollision * theInfo ,
+                                HepRandomEnginePtr & engine ) = 0 ;
 
   /// Save the parton level event (when the fragmentation is turned off)
   virtual void savePartonEvent( HepMC3::GenEventPtr theEvent ) = 0 ;

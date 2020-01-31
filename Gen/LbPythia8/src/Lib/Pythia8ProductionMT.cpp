@@ -31,9 +31,6 @@
 #include "HepMC3/GenVertex.h"
 #include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 
-#include "CLHEP/Random/RandFlat.h"
-#include "CLHEP/Random/RandomEngine.h"
-
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8ProductionMT
 //
@@ -283,16 +280,6 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHC
     }
   }
 
-  class RndForPythia : public Pythia8::RndmEngine
-  {
-  public:
-    RndForPythia( CLHEP::HepRandomEngine& engine ) : m_gen( engine, 0, 1 ) {}
-    virtual double flat() { return m_gen(); }
-
-  private:
-    CLHEP::RandFlat m_gen;
-  };
-
   auto pythia = m_pythia();
   RndForPythia rnd_generator{engine.getref()};
   pythia->setRndmEnginePtr( &rnd_generator );
@@ -477,15 +464,37 @@ void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProp
 //=============================================================================
 // Turn on and off fragmentation.
 //=============================================================================
-void Pythia8ProductionMT::turnOnFragmentation() { m_pythia->settings.flag( "HadronLevel:Hadronize", true ); }
+void Pythia8ProductionMT::turnOnFragmentation() { 
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", true ); }
 
-void Pythia8ProductionMT::turnOffFragmentation() { m_pythia->settings.flag( "HadronLevel:Hadronize", false ); }
+void Pythia8ProductionMT::turnOffFragmentation() {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", false ); }
 
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine )
 {
+  RndForPythia rnd_generator{engine.getref()};
+  m_pythia->setRndmEnginePtr(&rnd_generator);
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
 }
@@ -493,12 +502,32 @@ StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::G
 //=============================================================================
 // Save the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) { m_event = m_pythia->event; }
+void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_event = m_pythia->event; }
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) { m_pythia->event = m_event(); }
+void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->event = m_event(); }
 
 //=============================================================================
 // Print the running conditions.

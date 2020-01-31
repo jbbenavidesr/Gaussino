@@ -112,7 +112,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
       m_productionTool -> turnOnFragmentation( ) ;
       // Clear theGenEvent
       Clear( theGenEvent ) ;
-      m_productionTool -> hadronize( theGenEvent , theGenCollision ) ;
+      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ) ;
       
       // Check if one particle of the requested list is present in event
       unsigned int nRepetitions = 0 ;
@@ -239,7 +239,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
             m_productionTool -> turnOnFragmentation( ) ;
             m_productionTool -> savePartonEvent( theGenEvent ) ;
             Clear( theGenEvent ) ;
-            m_productionTool -> hadronize( theGenEvent , theGenCollision ) ;
+            m_productionTool -> hadronize( theGenEvent , theGenCollision , engine) ;
           }
           // Then we exit and do not re-hadronize this event
           // not to bias things
@@ -254,7 +254,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
         m_productionTool -> savePartonEvent( theGenEvent ) ;
         // Clear HepMC event
         Clear( theGenEvent ) ;
-        m_productionTool -> hadronize( theGenEvent , theGenCollision ) ;
+        m_productionTool -> hadronize( theGenEvent , theGenCollision , engine) ;
       }
       
       if ( nRepetitions == m_maxNumberOfRepetitions ) 
@@ -263,7 +263,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
     }
     else if (m_hepMCName=="Pythia8") {
       //hadronize the pile-up events for Pythia8 (already done above for pythia6)
-      m_productionTool -> hadronize( theGenEvent , theGenCollision ) ;
+      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ) ;
     }
   }
   
@@ -277,4 +277,11 @@ void SignalRepeatedHadronization::Clear( HepMC3::GenEventPtr theEvent ) const {
   if ( theEvent -> vertices().size()>0 ) {
     theEvent->clear();
   }
+
+  // Need to set the GeneratorName attribute again as it was just cleared.
+  // Normally done in ExternalGenerator::prepareInteraction
+  theEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
+                           std::make_shared<HepMC3::StringAttribute>( m_hepMCName ) );
+  // Little hack to make it thread-safe when reading later
+  theEvent->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
 }
