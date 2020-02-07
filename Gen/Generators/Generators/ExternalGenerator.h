@@ -158,6 +158,13 @@ class ExternalGenerator : public GaudiTool ,
   /// Not used in this class directly but by almost all 
   /// derived classes
   std::string  m_FSRName;
+
+  /// Keep original particle properties of the production generator
+  bool m_keepOriginalProperties ;
+
+  /// Particle property service
+  LHCb::IParticlePropertySvc * m_ppSvc ;
+ private:
   /** Decode commands (given by job options) to configure LHAPDF library.
    *  @param[in] theCommandVector  Vector of string to configure LHAPDF. The
    *                               syntax of the command is "lhacontrol block
@@ -183,11 +190,5 @@ class ExternalGenerator : public GaudiTool ,
 
   /// Optional additional user commands to configure LHAPDF (by job options)
   CommandVector m_userLhaPdfSettings ;
-
-  /// Keep original particle properties of the production generator
-  bool m_keepOriginalProperties ;
-
-  /// Particle property service
-  LHCb::IParticlePropertySvc * m_ppSvc ;
 };
 #endif // GENERATORS_EXTERNALGENERATOR_H

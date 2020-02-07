@@ -44,6 +44,23 @@ StatusCode Special::initialize( ) {
   // FIXME: Special not yet supported due to pileup caching
   return StatusCode::FAILURE;
 
+  // Update the particle properties of the pileup tool.
+  if ( "" != m_pileUpProductionToolName ) {
+    IProductionTool *pileup =
+      tool< IProductionTool >( m_pileUpProductionToolName , this ) ;
+    if ( 0 != pileup ) {
+      LHCb::IParticlePropertySvc::iterator iter ;
+      for ( iter = m_ppSvc -> begin() ; iter != m_ppSvc -> end() ; ++iter ) {
+	if ( ( ! pileup -> isSpecialParticle( *iter ) ) && 
+	     ( ! m_keepOriginalProperties ) ) 
+	  pileup -> updateParticleProperties( *iter ) ;
+	if ( 0 != m_decayTool )
+	  if ( m_decayTool -> isKnownToDecayTool( (*iter)->pdgID().pid() ) ) 
+	    pileup -> setStable( *iter ) ;    
+      }
+    }
+  }
+
   // Initialize XML Log file
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
 
