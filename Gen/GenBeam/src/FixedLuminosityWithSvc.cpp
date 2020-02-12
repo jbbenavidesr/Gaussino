@@ -42,6 +42,8 @@ FixedLuminosityWithSvc::FixedLuminosityWithSvc( const std::string& type,
     m_numberOfZeroInteraction( 0 ) ,
     m_nEvents( 0 ) {
     declareInterface< IPileUpTool >( this ) ;
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
 }
 
 //=============================================================================
@@ -67,7 +69,7 @@ StatusCode FixedLuminosityWithSvc::initialize( ) {
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
 unsigned int FixedLuminosityWithSvc::numberOfPileUp( HepRandomEnginePtr & engine ) {
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   unsigned int result = 0 ;
