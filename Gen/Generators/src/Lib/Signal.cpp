@@ -343,7 +343,7 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   ParticleVector::const_iterator from = particleList.begin() ;
   ParticleVector::const_iterator to = particleList.end() ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int keyP = 0, keyAP = 0;
 
   if ( onlyForwardParticles ) {
@@ -366,7 +366,7 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   particleCounter += nP ;
   antiparticleCounter += nAntiP ;
 
-  genFSR->incrementGenCounter(keyP, nP);
-  genFSR->incrementGenCounter(keyAP, nAntiP);
+  if(genFSR) genFSR->incrementGenCounter(keyP, nP);
+  if(genFSR) genFSR->incrementGenCounter(keyAP, nAntiP);
 
 }

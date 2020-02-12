@@ -49,6 +49,9 @@ private:
   
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
+  /// Location where to store FSR counters (set by options)
+  std::string  m_FSRName;
+
   int    m_nEvents ; ///< Counter of events (including empty events)
 };
 #endif // GENERATORS_FIXEDLUMINOSITYFORRAREPROCESS_H

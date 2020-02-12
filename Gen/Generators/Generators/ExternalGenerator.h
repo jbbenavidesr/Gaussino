@@ -153,7 +153,11 @@ class ExternalGenerator : public GaudiTool ,
   /// Name assigned to the HepMC event and stored with it
   std::string m_hepMCName ;
 
- private:  
+ protected:
+  /// Location where to store FSR counters (set by options)
+  /// Not used in this class directly but by almost all 
+  /// derived classes
+  std::string  m_FSRName;
   /** Decode commands (given by job options) to configure LHAPDF library.
    *  @param[in] theCommandVector  Vector of string to configure LHAPDF. The
    *                               syntax of the command is "lhacontrol block

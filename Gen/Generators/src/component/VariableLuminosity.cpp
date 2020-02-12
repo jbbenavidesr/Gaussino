@@ -44,6 +44,8 @@ VariableLuminosity::VariableLuminosity( const std::string& type,
 
     using CLHEP::s;
     declareInterface< IPileUpTool >( this ) ;
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
     declareProperty( "BeamParameters" ,
                      m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
     declareProperty ( "FillDuration"  , m_fillDuration  = 7.0 * 3600 * s    ) ;
@@ -81,7 +83,7 @@ unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   unsigned int result = 0 ;
@@ -89,7 +91,7 @@ unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
   while ( 0 == result ) {
     m_nEvents++ ;
     key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
-    genFSR->incrementGenCounter(key,1);
+    if(genFSR) genFSR->incrementGenCounter(key,1);
     currentLuminosity = beam -> luminosity() * m_fillDuration / m_beamDecayTime /
       ( 1.0 - exp( -m_fillDuration / m_beamDecayTime ) ) ;
 
@@ -99,7 +101,7 @@ unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
     if ( 0 == result ) {
       m_numberOfZeroInteraction++ ;
       key =LHCb::GenCountersFSR::CounterKeyToType("ZeroInt");
-      genFSR->incrementGenCounter(key, 1);
+      if(genFSR) genFSR->incrementGenCounter(key, 1);
     }
   }
   

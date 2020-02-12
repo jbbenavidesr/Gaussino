@@ -20,7 +20,8 @@ namespace CLHEP {
 
 
 
-struct IDecayTool : extend_interfaces<IAlgTool> {
+class IDecayTool : public extend_interfaces<IAlgTool> {
+  public:
 
   // Retrieve interface ID
   DeclareInterfaceID( IDecayTool,3,0) ;

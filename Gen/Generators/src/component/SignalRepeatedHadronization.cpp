@@ -85,7 +85,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   HepMC3::GenEventPtr theGenEvent( 0 ) ;
   HepMC3::GenParticlePtr theSignal ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -155,7 +155,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
               // the cut in all directions
               m_nEventsBeforeCut++ ;
               key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");              
-              genFSR->incrementGenCounter(key, 1);
+              if(genFSR) genFSR->incrementGenCounter(key, 1);
 
               updateCounters( theParticleList , m_nParticlesBeforeCut , 
                               m_nAntiParticlesBeforeCut , false , false ) ;            
@@ -171,13 +171,13 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 if ( ! isInverted ) {
                   m_nEventsAfterCut++ ;
                   key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-                  genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
                 }
 
                 if ( isInverted ) {
                   ++m_nInvertedEvents ;
                   key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-                  genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
                 }
 
                 // Count particles and anti-particles of Signal type with
@@ -202,12 +202,12 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 if ( theSignal -> pdg_id() > 0 ) {
                   ++m_nSig ;
                   key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-                  genFSR->incrementGenCounter(key, 1);
+                  if(genFSR) genFSR->incrementGenCounter(key, 1);
                 }
                 else {
                   ++m_nSigBar ;
                   key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
-                  genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
                 }
 
                 // Update counters
@@ -218,7 +218,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 GenCounters::updateExcitedStatesCounters( theGenEvent.get() , 
                                                           m_bExcitedC , 
                                                           m_cExcitedC ) ;
-                GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
+                if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
               } 
               else {
                 // Signal does not pass cut: remove daughters

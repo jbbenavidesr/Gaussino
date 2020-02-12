@@ -24,6 +24,7 @@
 #include "CLHEP/Random/RandEngine.h"
 
 #include "HepMCUser/Status.h"
+#include "Event/GenFSR.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -52,6 +53,8 @@ ExternalGenerator::ExternalGenerator( const std::string& type,
     declareProperty( "LhaPdfCommands" , m_userLhaPdfSettings ) ;
     declareProperty( "KeepOriginalProperties" , m_keepOriginalProperties = 
                      false ) ;
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
     m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 17 LHAPDF" ) ;
     m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 16 NOSTAT" ) ;
   }

@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Utils/LocalTL.h"
 #include "Event/GenFSR.h"
+#include <map>
 
 class GenFSRMTManager {
   public:
@@ -18,20 +19,26 @@ class GenFSRMTManager {
    *
    * \return GenFSR pointer not owned by user
    */
-  static LHCb::GenFSR* GetGenFSR() {
+  static LHCb::GenFSR* GetGenFSR(const std::string & name) {
+    if(name == ""){
+      return nullptr;
+    }
     static std::mutex init_lock;
     auto& inst = _inst();
-    if (!inst._fsr) {
+    if (inst._fsr.find(name) == std::end(inst._fsr)) {
       // Lock this initialization part.
       // Don't know if the constructor of GenFSR does something
       // nasty but the vector pushback should not happen concurrently
       // as that might end up very badly.
       std::lock_guard<std::mutex> lockguard{init_lock};
-      inst._fsr = new LHCb::GenFSR{};
-      inst._fsr->initializeInfos();
-      inst._store.push_back(inst._fsr);
+      inst._fsr[name] = new LHCb::GenFSR{};
+      inst._fsr[name]->initializeInfos();
+      if(inst._store.find(name) == std::end(inst._store)) {
+        inst._store[name] = {};
+      }
+      inst._store[name].push_back(inst._fsr[name]);
     }
-    return inst._fsr;
+    return inst._fsr[name];
   }
   /*! \brief Get the combination of all currently stored FSR
    *
@@ -43,24 +50,24 @@ class GenFSRMTManager {
    * \return GenFSR pointer owned by user
    */
 
-  static LHCb::GenFSR* GetCombined() {
+  static LHCb::GenFSR* GetCombined(const std::string & name) {
     static LHCb::GenFSR* _ret{nullptr};
     if(!_ret){
       _ret = new LHCb::GenFSR{};
       auto& inst = _inst();
-      for (auto& fsr : inst._store) {
+      for (auto& fsr : inst._store[name]) {
         (*_ret) += *fsr;
       }
     }
     return _ret;
   }
 
-  private:
-  ~GenFSRMTManager(){
-    for (auto& fsr : _store) {
-      delete fsr;
+private:
+  ~GenFSRMTManager() {
+    for ( auto& namedstore : _store ) {
+      for ( auto& fsr : namedstore.second ) { delete fsr; }
     }
-  };
+  }
   GenFSRMTManager() = default;
   GenFSRMTManager(const GenFSRMTManager&) = delete;
   GenFSRMTManager(GenFSRMTManager&&) = delete;
@@ -68,8 +75,8 @@ class GenFSRMTManager {
     static GenFSRMTManager _instance{};
     return _instance;
   }
-  static thread_local LHCb::GenFSR* _fsr;
-  std::vector<LHCb::GenFSR*> _store{};
+  static thread_local std::map<std::string, LHCb::GenFSR*> _fsr;
+  std::map<std::string, std::vector<LHCb::GenFSR*>> _store{};
 };
 
-inline thread_local LHCb::GenFSR* GenFSRMTManager::_fsr{nullptr};
+inline thread_local std::map<std::string, LHCb::GenFSR*> GenFSRMTManager::_fsr{};

@@ -114,7 +114,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
   //unsigned int theccCounter , thebbCounter ;
   
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -163,11 +163,11 @@ bool Inclusive::generate( const unsigned int nPileUp ,
         GenCounters::AddTo( m_bExcitedC , thebExcitedC ) ;
         GenCounters::AddTo( m_cExcitedC , thecExcitedC ) ;
 
-        GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Gen");
+        if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Gen");
 
         ++m_nEventsBeforeCut ;
         key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        genFSR->incrementGenCounter(key, 1);
+        if(genFSR) genFSR->incrementGenCounter(key, 1);
         bool passCut = true ;
         if ( 0 != m_cutTool ) 
           passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() , 
@@ -183,12 +183,12 @@ bool Inclusive::generate( const unsigned int nPileUp ,
             revertEvent( theGenEvent.get() ) ;
             ++m_nInvertedEvents ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            genFSR->incrementGenCounter(key, 1);
+            if(genFSR) genFSR->incrementGenCounter(key, 1);
           }
           else
           {
             key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) genFSR->incrementGenCounter(key, 1); 
           }
 
           GenCounters::AddTo( m_bHadCAccepted , thebHadC ) ;
@@ -199,7 +199,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
           GenCounters::AddTo( m_bExcitedCAccepted , thebExcitedC ) ;
           GenCounters::AddTo( m_cExcitedCAccepted , thecExcitedC ) ;          
 
-          GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
+          if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
         }
       }
     }

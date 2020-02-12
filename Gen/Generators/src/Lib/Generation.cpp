@@ -125,7 +125,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const {
 std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
 Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, HepRandomEnginePtr & engine ) const
 {
-  auto m_genFSR = GenFSRMTManager::GetGenFSR();
+  auto m_genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
 
   debug() << "Processing event type " << m_eventType << endmsg;
   StatusCode sc = StatusCode::SUCCESS;
@@ -368,7 +368,7 @@ StatusCode Generation::finalize() {
   m_sampleGenerationTool -> printCounters() ;
 
   // create a new FSR and append to TDS                                                                                                                          
-  auto m_genFSR = GenFSRMTManager::GetCombined();
+  auto m_genFSR = GenFSRMTManager::GetCombined(m_FSRName);
 
   // Now either create the info in the TES or add it to the existing one                                                                                         
   put(m_fileRecordSvc, m_genFSR, m_FSRName);

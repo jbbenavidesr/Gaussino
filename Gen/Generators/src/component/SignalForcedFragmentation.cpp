@@ -94,7 +94,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   bool flip ;
   int theSignalPID = *m_pids.begin() ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   if ( m_cpMixture ) {
@@ -146,7 +146,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
       if ( checkPresence( signalPid , theGenEvent , theParticleList ) ) {
         m_nEventsBeforeCut++ ;
         key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        genFSR->incrementGenCounter(key, 1);
+        if(genFSR) genFSR->incrementGenCounter(key, 1);
         
         updateCounters( theParticleList , m_nParticlesBeforeCut , 
                         m_nAntiParticlesBeforeCut , false , false ) ;
@@ -192,12 +192,12 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           if ( isInverted ) {
             ++m_nInvertedEvents ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) genFSR->incrementGenCounter(key, 1); 
           }
           else
           {
             key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) genFSR->incrementGenCounter(key, 1);            
           }
 
           if ( m_cleanEvents ) { 
@@ -213,13 +213,13 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           if ( theSignal -> pdg_id() > 0 ) {
             ++m_nSig ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-            genFSR->incrementGenCounter(key, 1);
+            if(genFSR) genFSR->incrementGenCounter(key, 1);
           }
           else
           {
             ++m_nSigBar ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
-            genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) genFSR->incrementGenCounter(key, 1);            
           }
 
           // Update counters
@@ -231,7 +231,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
                                                     m_bExcitedC ,
                                                     m_cExcitedC ) ;
 
-          GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
+          if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
 
           result = true ;
         } 

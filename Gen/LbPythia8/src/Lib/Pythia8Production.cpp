@@ -308,12 +308,7 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEventPtr theEvent,
   if (!m_pythia->flag("HadronLevel:all")) m_event = m_pythia->event;  
   ++m_nEvents;
 
-  LHCb::GenFSR* genFSR{nullptr};
-  if(m_FSRName != ""){
-    genFSR = GenFSRMTManager::GetGenFSR();
-  }
-
-
+  LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
 
   // Store the minimum bias cross-section in the GenFSR.
   std::vector<int> codes = m_pythia->info.codesHard();
