@@ -1,0 +1,61 @@
+#include "Generators/Generation.h"
+#include "GiGaMTReDecay/Token.h"
+#include "GiGaMTReDecay/IRedecaySvc.h"
+#include "GiGaMTReDecay/IReDecaySorter.h"
+
+#include "NewRnd/RndGlobal.h"
+
+
+class ReDecayGeneration: public Generation{
+  public:
+  using Generation::Generation;
+  using Generation::initialize;
+  using Generation::finalize;
+
+  virtual std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
+  operator()( const LHCb::GenHeader& ) const override;
+
+  private:
+  AnyDataHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, Gaudi::DataHandle::Reader, this};
+  ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
+  ToolHandle<IReDecaySorter> m_redecaysorter{this, "Sorter", "SignalOnly"};
+};
+
+DECLARE_COMPONENT( ReDecayGeneration )
+
+
+
+
+std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> ReDecayGeneration::
+operator()( const LHCb::GenHeader& old_gen_header) const {
+  auto engine = createRndmEngine();
+  ThreadLocalEngine::Guard rnd_guard(engine);
+  auto & token = *m_tokenhandle.get();
+  // Now we store a thread-local reference to this token in the service.
+  // This enables us to get the current processing phase in any of the
+  // subsequent tools without having to change all the interfaces again to explicitly pass
+  // it around (this might be changed in the future)
+  auto tokenguard = m_redecaysvc->setCurrentToken(token);
+  if(m_redecaysvc->isCurrentOriginal()){
+  // This calls the original generation algorithm in its default configuration.
+    auto generation_return = callOperatorImplementation(old_gen_header, engine);
+    auto & events = std::get<0>(generation_return);
+    // Now loop over the exisiting events and identify all particles that need to be redecayed.
+    // Their decay trees are deleted in the tool
+    m_redecaysorter->FlagAndRemoveReDecays(events);
+    // Now save the events in the service. As they are stored as shared_ptr, we do not have to
+    // do any copies as they will not be deleted at the end of the Gaudi event. GenCollisions
+    // and GenHeader are recreated when needed in the ReDecay events
+    m_redecaysvc->storeOriginalHepMC(token, events);
+    return generation_return;
+  } else {
+    auto hepmc_data = m_redecaysvc->getOriginalHepMCData(token);
+    std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> rettuple;
+    auto & [retevents, collisions, header] = rettuple;
+    for(auto & [evt, n_redecays, ids]: hepmc_data){
+      retevents.push_back(evt);
+    }
+
+    return rettuple;
+  }
+}

@@ -105,13 +105,20 @@ def configure_rnd_init(**kwargs):
     :returns: GenRndInit
 
     """
-
-    from Configurables import GenRndInit
-    _name = kwargs['name'] if 'name' in kwargs else 'GenRndInit'
+    from Configurables import Gaussino
+    conf = None
+    if Gaussino().getProp("ReDecay"):
+        from Configurables import GenReDecayInit
+        conf = GenReDecayInit
+        _name = kwargs['name'] if 'name' in kwargs else 'GenReDecayInit'
+    else:
+        from Configurables import GenRndInit
+        conf = GenRndInit
+        _name = kwargs['name'] if 'name' in kwargs else 'GenRndInit'
 
     from Configurables import SeedingTool
-    GenRndInit(_name).addTool(SeedingTool, name='SeedingTool')
-    return GenRndInit(_name)
+    conf(_name).addTool(SeedingTool, name='SeedingTool')
+    return conf(_name)
 
 
 def configure_gen_monitor(**kwargs):

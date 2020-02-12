@@ -111,6 +111,8 @@ public:
   virtual StatusCode finalize() override;
 
 protected:
+  virtual std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
+  callOperatorImplementation( const LHCb::GenHeader&, HepRandomEnginePtr& engine ) const;
   /// Decay the event with the IDecayTool.
   StatusCode decayEvent( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) const;
 

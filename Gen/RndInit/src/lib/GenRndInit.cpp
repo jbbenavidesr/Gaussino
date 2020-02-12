@@ -5,7 +5,7 @@
 #include "GaudiKernel/ConcurrencyFlags.h"
 #include "GaudiKernel/EventContext.h"
 #include "GaudiKernel/ThreadLocalContext.h"
-#include "GenRndInit.h"
+#include "RndInit/GenRndInit.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenRndInit

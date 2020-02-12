@@ -65,6 +65,7 @@ public:
 
 protected:
   void SetSeedPair( unsigned int val1, unsigned int val2 ) const { m_forseed.put( std::make_pair( val1, val2 ) ); }
+  std::pair<unsigned int, unsigned int> GetSeedPair( ) const { return *m_forseed.get(); }
 
 private:
   mutable AnyDataHandle<Random::SeedPair> m_forseed{Random::Location, Gaudi::DataHandle::Writer, this};

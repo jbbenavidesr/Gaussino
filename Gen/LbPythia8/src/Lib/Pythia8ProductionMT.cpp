@@ -630,8 +630,8 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
     printRunningConditions();
     m_first_init = false;
   } else {
-    GetInitBarrier( m_nThreads - 1 ).wait();
-    std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
+    //GetInitBarrier( m_nThreads - 1 ).wait();
+    //std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
   }
 
   // This is just a dumb hack to clean up after the threads

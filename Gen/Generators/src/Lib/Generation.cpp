@@ -28,7 +28,7 @@
 #include "HepMCUtils/HepMCUtils.h"
 
 // local
-#include "Generation.h"
+#include "Generators/Generation.h"
 
 #include <iostream>
 #include <stdlib.h>     /* getenv */
@@ -51,8 +51,6 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-
-DECLARE_COMPONENT( Generation )
 
 
 //=============================================================================
@@ -117,14 +115,19 @@ StatusCode Generation::initialize() {
 // Main execution
 //=============================================================================
 std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
-operator()( const LHCb::GenHeader& old_gen_header) const
+operator()( const LHCb::GenHeader& old_gen_header) const {
+  auto engine = createRndmEngine();
+  // Set this as the global engine as some other tools will eventually need it.
+  ThreadLocalEngine::Guard rnd_guard(engine);
+  return callOperatorImplementation(old_gen_header, engine);
+}
+
+std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
+Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, HepRandomEnginePtr & engine ) const
 {
   auto m_genFSR = GenFSRMTManager::GetGenFSR();
 
   debug() << "Processing event type " << m_eventType << endmsg;
-  auto engine = createRndmEngine();
-  // Set this as the global engine as some other tools will eventually need it.
-  ThreadLocalEngine::Guard rnd_guard(engine);
   StatusCode sc = StatusCode::SUCCESS;
   setFilterPassed( true ) ;
 

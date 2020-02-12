@@ -11,7 +11,12 @@ gaudi_depends_on_subdirs(GaudiAlg
                          Kernel/LHCbKernel
                          Defaults)
 
-gaudi_add_module(RndInit
-                 src/*.cpp
+gaudi_add_library(RndInitLib
+                 src/lib/*.cpp
+                 PUBLIC_HEADERS RndInit
                  INCLUDE_DIRS GenBeam
                  LINK_LIBRARIES GaudiAlgLib GenEvent LHCbKernel NewRnd)
+
+gaudi_add_module(RndInit
+                 src/components/*.cpp
+                 LINK_LIBRARIES RndInitLib)

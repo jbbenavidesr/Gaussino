@@ -25,7 +25,7 @@
 class GenRndInit : public Gaudi::Functional::Producer<std::tuple<LHCb::GenHeader, LHCb::BeamParameters>(),
                                                       Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>>
 {
-private:
+protected:
   Gaudi::Property<long long> m_firstEvent{this, "FirstEventNumber", 1, "Number of the first event"};
   Gaudi::Property<long long> m_firstTimingEvent{this, "TimingSkipAtStart", 1,
                                                 "Number of the event to start the clock"};

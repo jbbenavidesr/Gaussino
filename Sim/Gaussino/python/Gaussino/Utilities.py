@@ -171,3 +171,13 @@ def configure_edm_conversion(**kwargs):
     from Configurables import CheckMCStructure, MCTruthToEDM, MCTruthMonitor
     return [MCTruthToEDM(), CheckMCStructure(),
             MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True)]
+
+
+@run_once
+def redecayService(name=Configurable.DefaultName, debugcommunication=False):
+    from Configurables import ApplicationMgr, ReDecaySvc
+    from Configurables import Gaussino
+    redecaysvc = ReDecaySvc()
+    redecaysvc.EvtMax = Gaussino().getProp('EvtMax')
+    ApplicationMgr().ExtSvc += [redecaysvc]
+    return redecayService

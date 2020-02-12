@@ -34,4 +34,8 @@ namespace Gaussino
   {
     const std::string Default = "MC/LinkedParticleMCParticleLinksLocation";
   }
+  namespace ReDecayToken
+  {
+    const std::string Default = "ReDecay/Token";
+  }
 }
