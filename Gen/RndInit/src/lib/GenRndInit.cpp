@@ -14,7 +14,6 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_COMPONENT( GenRndInit )
 
 StatusCode GenRndInit::initialize()
 {

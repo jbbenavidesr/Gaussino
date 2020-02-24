@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GaudiKernel/System.h"
+
 #include "GaudiKernel/IInterface.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
@@ -9,12 +11,13 @@
 #include "HepMCUser/typedefs.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenEvent.h"
+#include "Event/GenCollision.h"
 // GiGa
 
 namespace Gaussino::ReDecay {
   class TokenGuard;
 }
-typedef std::tuple<HepMC3::GenEventPtr, int, std::vector<int>> HepMCData;
+typedef std::tuple<HepMC3::GenEventPtr, int, std::vector<int>, std::shared_ptr<LHCb::GenCollision>> HepMCData;
 
 /** @class IReDecaySvc IReDecaySvc.h GiGaMTReDecay/IReDecaySvc.h
  *
@@ -42,8 +45,28 @@ public:
     return m_currentToken->m_original;
   }
 
-  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &) = 0;
-  virtual std::vector<HepMCData> getOriginalHepMCData(const Gaussino::ReDecay::Token &) = 0;
+  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) = 0;
+
+  virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) = 0;
+  virtual std::vector<HepMCData> & getOriginalHepMCData(){
+    return getOriginalHepMCData(*m_currentToken.get());
+  };
+
+  virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) = 0;
+  virtual unsigned int getNPileUp(){
+    return getNPileUp(*m_currentToken.get());
+  };
+  // Functions to return a specific pileup HepMC data.
+  virtual HepMCData getHepMCDataIterated(const Gaussino::ReDecay::Token &) = 0;
+  virtual HepMCData getHepMCDataIterated(){
+    return getHepMCDataIterated(*m_currentToken.get());
+  };
+
+  virtual unsigned long long getEncodedOriginalEvtInfo(const Gaussino::ReDecay::Token &) = 0;
+  virtual unsigned long long getEncodedOriginalEvtInfo(){
+    return getEncodedOriginalEvtInfo(*m_currentToken.get());
+  }
+
 
 public:
 protected:

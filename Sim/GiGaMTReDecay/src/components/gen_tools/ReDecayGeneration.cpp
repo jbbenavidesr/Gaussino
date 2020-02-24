@@ -40,20 +40,37 @@ operator()( const LHCb::GenHeader& old_gen_header) const {
   // This calls the original generation algorithm in its default configuration.
     auto generation_return = callOperatorImplementation(old_gen_header, engine);
     auto & events = std::get<0>(generation_return);
+    auto & collisions = std::get<1>(generation_return);
     // Now loop over the exisiting events and identify all particles that need to be redecayed.
     // Their decay trees are deleted in the tool
     m_redecaysorter->FlagAndRemoveReDecays(events);
     // Now save the events in the service. As they are stored as shared_ptr, we do not have to
     // do any copies as they will not be deleted at the end of the Gaudi event. GenCollisions
     // and GenHeader are recreated when needed in the ReDecay events
-    m_redecaysvc->storeOriginalHepMC(token, events);
+    m_redecaysvc->storeOriginalHepMC(token, events, collisions);
+
     return generation_return;
   } else {
-    auto hepmc_data = m_redecaysvc->getOriginalHepMCData(token);
+    auto & hepmc_data = m_redecaysvc->getOriginalHepMCData(token);
     std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> rettuple;
     auto & [retevents, collisions, header] = rettuple;
-    for(auto & [evt, n_redecays, ids]: hepmc_data){
+    for(auto & [evt, n_redecays, ids, col]: hepmc_data){
       retevents.push_back(evt);
+      auto _col = new LHCb::GenCollision();
+      _col->setIsSignal(col->isSignal());
+      _col->setProcessType(col->processType());
+      _col->setSHat(col->sHat());
+      _col->setTHat(col->tHat());
+      _col->setUHat(col->uHat());
+      _col->setPtHat(col->ptHat());
+      _col->setX1Bjorken(col->x1Bjorken());
+      _col->setX2Bjorken(col->x2Bjorken());
+      collisions.insert(_col);
+    }
+    header = old_gen_header;
+    // Get the header and update the information
+    if( !header.evType() ){
+      header.setEvType( m_eventType );  
     }
 
     return rettuple;

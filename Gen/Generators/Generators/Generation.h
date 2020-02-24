@@ -49,7 +49,7 @@ class Generation
           std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
           Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
-private:
+protected:
   Gaudi::Property<std::string> m_sampleGenerationToolName{this, "SampleGenerationTool", "MinimumBias",
                                                           "Name of the ISampleGenerationTool - MinimumBias, ..."};
   Gaudi::Property<int> m_eventType{this, "EventType", 30000000, "Event type"};

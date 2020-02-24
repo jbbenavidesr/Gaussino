@@ -5,6 +5,7 @@
 
 #include "GiGaMTReDecay/IRedecaySvc.h"
 #include "HepMCUser/typedefs.h"
+#include "range/v3/all.hpp"
 #include <deque>
 #include <sstream>
 #include <future>
@@ -44,11 +45,22 @@ public:
 
   virtual Gaussino::ReDecay::Token obtainToken( const Random::SeedPair& seedpair ) override;
   virtual void                     removeToken( Gaussino::ReDecay::Token& token ) override;
-  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &) override;
-  virtual std::vector<HepMCData> getOriginalHepMCData(const Gaussino::ReDecay::Token &) override;
+  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) override;
+
+  using IReDecaySvc::getOriginalHepMCData;
+  virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) override;
+
+  using IReDecaySvc::getNPileUp;
+  virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) override;
+
+  using IReDecaySvc::getHepMCDataIterated;
+  virtual HepMCData getHepMCDataIterated(const Gaussino::ReDecay::Token &) override;
+
+  using IReDecaySvc::getEncodedOriginalEvtInfo;
+  virtual unsigned long long getEncodedOriginalEvtInfo(const Gaussino::ReDecay::Token &) override;
 
 private:
-  std::mutex                                                       m_svclock;
+  std::recursive_mutex                                             m_svclock;
   std::atomic_uint                                                 m_processed{0};
   SeedPairCounters                                                 m_original_events_available{};
   std::map<Random::SeedPair, std::promise<Random::SeedPair>>       m_promise_store{};
@@ -56,6 +68,7 @@ private:
   std::map<Random::SeedPair, std::vector<HepMCData>> m_original_hepmc_store{};
   size_t                                                           QueuedEvents();
   void                                                             DumpQueue();
+  LocalTL<size_t> m_ipileup_counter;
 };
 
 DECLARE_COMPONENT( ReDecaySvc )
@@ -93,7 +106,7 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
   std::shared_future<Random::SeedPair> fut;
   // Entering critical code section that needs to be locked
   {
-    std::lock_guard<std::mutex> lck{m_svclock};
+    std::lock_guard<std::recursive_mutex> lck{m_svclock};
     DumpQueue();
     auto nqueued     = QueuedEvents();
     token.m_original = false;
@@ -149,7 +162,7 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
 }
 
 void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
-  std::lock_guard<std::mutex> lck{m_svclock};
+  std::lock_guard<std::recursive_mutex> lck{m_svclock};
   if ( msgLevel( MSG::DEBUG ) ) { debug() << "Removing Token " << token << endmsg; }
   auto  orgseedpair = token.m_original_event_seedpair;
   auto& orginfo     = m_original_events_available[orgseedpair];
@@ -174,7 +187,8 @@ void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
   }
 }
 
-void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std::vector<HepMC3::GenEventPtr> & events){
+void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std::vector<HepMC3::GenEventPtr> & events, LHCb::GenCollisions& collisions){
+  std::lock_guard<std::recursive_mutex> lck{m_svclock};
     if ( m_original_hepmc_store.find(token.m_original_event_seedpair) != std::end(m_original_hepmc_store) ) {
       std::stringstream sstr; 
       auto [s1,s2] = token.m_original_event_seedpair;
@@ -183,10 +197,19 @@ void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std:
     }
     m_original_hepmc_store[token.m_original_event_seedpair] = std::vector<HepMCData>{};
     auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
-    for(auto & evt: events){
-      auto & [_evt, counter, particles] = data.emplace_back(  );
+    for(auto  [evt, col]: ranges::view::zip(events, collisions)){
+      auto & [_evt, counter, particles, collisions] = data.emplace_back(  );
       counter = 0;
       _evt = evt;
+      collisions = std::make_shared<LHCb::GenCollision>();
+      collisions->setIsSignal(col->isSignal());
+      collisions->setProcessType(col->processType());
+      collisions->setSHat(col->sHat());
+      collisions->setTHat(col->tHat());
+      collisions->setUHat(col->uHat());
+      collisions->setPtHat(col->ptHat());
+      collisions->setX1Bjorken(col->x1Bjorken());
+      collisions->setX2Bjorken(col->x2Bjorken());
       for(auto & part: evt->particles()){
         if(part->status() == 1043){
           counter++;
@@ -196,7 +219,19 @@ void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std:
     }
 }
 
-std::vector<HepMCData> ReDecaySvc::getOriginalHepMCData(const Gaussino::ReDecay::Token & token){
+unsigned int ReDecaySvc::getNPileUp(const Gaussino::ReDecay::Token & token) {
+  std::lock_guard<std::recursive_mutex> lck{m_svclock};
+  auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
+  unsigned int ret_counter = 0;
+  for(auto & [_evt, counter, particles, collisions]: data){
+    if(counter>0){
+      ret_counter++;
+    }
+  }
+  return ret_counter;
+}
+
+std::vector<HepMCData> & ReDecaySvc::getOriginalHepMCData(const Gaussino::ReDecay::Token & token){
     if ( m_original_hepmc_store.find(token.m_original_event_seedpair) == std::end(m_original_hepmc_store) ) {
       std::stringstream sstr; 
       auto [s1,s2] = token.m_original_event_seedpair;
@@ -206,3 +241,27 @@ std::vector<HepMCData> ReDecaySvc::getOriginalHepMCData(const Gaussino::ReDecay:
     return m_original_hepmc_store[token.m_original_event_seedpair];
 }
 
+unsigned long long ReDecaySvc::getEncodedOriginalEvtInfo( const Gaussino::ReDecay::Token& token ) {
+  auto [org_evtNumber, org_runNumber] = token.m_original_event_seedpair;
+  unsigned long long paired =
+      ( org_evtNumber + org_runNumber ) * ( org_evtNumber + org_runNumber + 1 ) / 2 + org_runNumber;
+  return paired;
+}
+
+HepMCData ReDecaySvc::getHepMCDataIterated(const Gaussino::ReDecay::Token & token){
+  std::lock_guard<std::recursive_mutex> lck{m_svclock};
+  auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
+  std::vector<HepMCData> non_zero_data{};
+  for(auto & d: data){
+    if(std::get<1>(d)>0){
+      non_zero_data.push_back(d);
+    }
+  }
+
+  auto & ret_hepmcdata = non_zero_data.at(m_ipileup_counter.get());
+  m_ipileup_counter.get()++;
+  if(m_ipileup_counter.get() == non_zero_data.size()){
+    m_ipileup_counter = 0;
+  }
+  return ret_hepmcdata;
+}

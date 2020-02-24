@@ -11,6 +11,7 @@ gaudi_depends_on_subdirs(NewRnd
                          Gen/GenBeam
                          Gen/Generators
                          Gen/RndInit
+                         Sim/GiGaMTTruth
                          Sim/GiGaMT)
 
 add_definitions(-DG4MULTITHREADED)
@@ -21,7 +22,7 @@ find_package(ROOT COMPONENTS MathCore GenVector)
 gaudi_add_library(GiGaMTReDecayLib
                   src/lib/token/*.cpp
                   PUBLIC_HEADERS GiGaMTReDecay
-                  INCLUDE_DIRS GenBeam RndInit
+                  INCLUDE_DIRS GenBeam RndInit GiGaMTTruth
                   LINK_LIBRARIES GiGaMTLib NewRnd GeneratorsLib)
 
 gaudi_add_module(GiGaMTReDecay
@@ -29,6 +30,7 @@ gaudi_add_module(GiGaMTReDecay
         src/components/gen_tools/*.cpp
         src/components/*.cpp
         src/components/sorters/*.cpp
+        src/components/sim/*.cpp
         LINK_LIBRARIES GiGaMTReDecayLib ROOT RndInitLib)
 
 add_dependencies(GiGaMTReDecayLib HepMC3Ext)
