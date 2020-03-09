@@ -125,7 +125,7 @@ public:
   LinkedVertex( int id ) : m_id( id ) {}
   LinkedParticle::PtrSet incoming_particle;
   LinkedParticle::PtrSet outgoing_particles;
-  std::vector<std::shared_ptr<Gaussino::MCTruth>> outgoing_mctruths;
+  std::set<std::shared_ptr<Gaussino::MCTruth>> outgoing_mctruths;
   unsigned int m_id;
   unsigned int GetID() const { return m_id; }
   int GetProcessID() const;

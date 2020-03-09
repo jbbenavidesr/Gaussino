@@ -33,7 +33,10 @@ bool SignalOnly::FlagAndRemoveReDecays(std::vector<HepMC3::GenEventPtr> & events
       }
     }
   }
-  RemoveDecayTrees(events);
+  // FIXME: Not removing decays of redecay particles here so the monitoring tools
+  // work as before. Future plan should extend monitoring tool to include redecay
+  // and nominal event as before, for now just skips monitoring in case it isn't an original event
+  // RemoveDecayTrees(events);
 
   return found;
 }

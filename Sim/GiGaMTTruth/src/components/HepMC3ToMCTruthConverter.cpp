@@ -44,6 +44,15 @@ double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, co
   return ABStar.T() / Gaudi::Units::c_light;
 }
 
+Gaussino::ConversionType HepMC3ToMCTruthConverter::GetConversionType( const HepMC3::ConstGenParticlePtr& particle ) const {
+  if(particle->status() == HepMC3::Status::ReDecay){
+    return Gaussino::ConversionType::REDECAY;
+  } else if (IsTraveling( particle )){
+    return Gaussino::ConversionType::G4;
+  }
+  return  Gaussino::ConversionType::MC;
+};
+
 Gaussino::MCTruthConverterPtrs
 HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_events ) const {
   Gaussino::MCTruthConverterPtrs converters;
@@ -64,7 +73,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_even
     for ( auto& part : genEvt->particles() ) {
       if ( !keep( part ) ) { continue; }
       // We add all the particles here to the container without caring about whether those particles have previously been simulated in another MCTruth object. This will be done during the linking when the container is prepared for Geant4.
-      converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
+      converter->Declare( part, GetConversionType(part) );
     }
     converters.push_back( std::move( converter ) );
   }
@@ -81,11 +90,11 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::ConstGenParticlePtr& par
   }
   auto converter = std::make_unique<Gaussino::MCTruthConverter>();
   if ( keep( part ) ) { 
-    converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
+    converter->Declare( part, GetConversionType(part) );
   }
   for ( auto& desc : HepMC3::Relatives::DESCENDANTS( part ) ) {
     if ( !keep( desc ) ) { continue; }
-    converter->Declare( desc, IsTraveling( desc ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
+    converter->Declare( desc, GetConversionType(part) );
   }
   return converter;
 }
@@ -128,6 +137,12 @@ bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle
     return true;
   case HepMC3::Status::StableInDecayGen:
     return true;
+  // Always keep the particle marked for ReDecay
+  case HepMC3::Status::ReDecay:
+    return true;
+  // Reject children of ReDecay particles
+  case HepMC3::Status::ChildOfReDecay:
+    return false;
 
     // these act as placeholders before status codes can be put in MCEvent
   case 21:

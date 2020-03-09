@@ -15,6 +15,7 @@ namespace Gaussino {
       const std::string LinkedParticle = "LinkedParticle";
       const std::string ContainedInMCTruth = "ContainedInMCTruth";
       const std::string G4EventProxy = "G4EventProxy";
+      const std::string ReDecayOriginalParticle = "ReDecayOriginalParticle";
     }
   }
 }

@@ -11,7 +11,11 @@
 #include "HepMCUser/typedefs.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenEvent.h"
+
 #include "Event/GenCollision.h"
+
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
+#include "GiGaMTCoreRun/SimResults.h"
 // GiGa
 
 namespace Gaussino::ReDecay {
@@ -46,10 +50,16 @@ public:
   }
 
   virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) = 0;
+  virtual void storeOriginalSimResult(const Gaussino::ReDecay::Token &, const Gaussino::GiGaSimReturns &) = 0;
 
   virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) = 0;
   virtual std::vector<HepMCData> & getOriginalHepMCData(){
     return getOriginalHepMCData(*m_currentToken.get());
+  };
+
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult(const Gaussino::ReDecay::Token &) = 0;
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult(){
+    return getOriginalSimResult(*m_currentToken.get());
   };
 
   virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) = 0;
@@ -66,6 +76,7 @@ public:
   virtual unsigned long long getEncodedOriginalEvtInfo(){
     return getEncodedOriginalEvtInfo(*m_currentToken.get());
   }
+
 
 
 public:

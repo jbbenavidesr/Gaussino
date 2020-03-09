@@ -95,7 +95,7 @@ namespace Gaussino
                  hepmc->attribute<HepMC3::SimResultsAttribute>( Gaussino::HepMC::Attributes::SimResults )->value();
              g4proxyptr && mctruthptr ) {
           if ( auto prodvtx = lp->GetProdVtx(); prodvtx ) {
-            prodvtx->outgoing_mctruths.push_back( mctruthptr );
+            prodvtx->outgoing_mctruths.insert( mctruthptr );
           } else {
             this->m_slave_mctruths.push_back( mctruthptr );
           }
@@ -119,6 +119,8 @@ namespace Gaussino
   void MCTruthConverter::Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type )
   {
     auto ptr = new LinkedParticle{m_pcounter++, particle};
+    // If the particle has the ReDecay status code, mark the corresponding linked particle accordingly.
+    // This information will later be used to associate the correct signal event components here.
     ptr->SetType( type );
     if ( m_hepmc_to_linked.find( particle->parent_event() ) == std::end( m_hepmc_to_linked ) ) {
       m_hepmc_to_linked[particle->parent_event()] = {};
@@ -176,7 +178,7 @@ namespace Gaussino
       AddToG4Event( event );
     } else {
       for ( auto& lp : m_linkedParticles ) {
-        lp->SetType( Gaussino::ConversionType::MC );
+        if(lp->GetType() == Gaussino::ConversionType::G4 )lp->SetType( Gaussino::ConversionType::MC );
       }
     }
   }

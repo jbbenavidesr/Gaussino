@@ -175,7 +175,7 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
       if(msgStream.currentLevel() <= MSG::DEBUG){
         msgStream << MSG::DEBUG << "Adding outgoing MCTruth to record." << endmsg;
       };
-      for ( auto& child : slavetruth->GetRootParticlesIncludingSlaves() ) {
+      for ( auto& child : slavetruth()->GetRootParticlesIncludingSlaves() ) {
         convert( child, endVertex );
       }
     }

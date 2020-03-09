@@ -3,4 +3,5 @@
 
 namespace Gaussino {
   typedef std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaSimReturn;
+  typedef std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaSimReturns;
 }

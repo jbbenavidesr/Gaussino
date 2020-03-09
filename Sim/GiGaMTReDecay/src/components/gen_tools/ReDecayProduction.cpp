@@ -9,6 +9,9 @@
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenEvent.h"
 
+#include "HepMCUser/ParticleAttribute.h"
+#include "Defaults/HepMCAttributes.h"
+
 
 /**
  * Implementation of a production tool to be used in SignalPlain as the
@@ -107,6 +110,7 @@ StatusCode ReDecayProduction::generateEvent(
     auto p = std::make_shared<HepMC3::GenParticle>(
         HepMC3::FourVector(mom.px(), mom.py(), mom.pz(), mom.e()), thePdgId,
         LHCb::HepMCEvent::StableInProdGen);
+    p->add_attribute(Gaussino::HepMC::Attributes::ReDecayOriginalParticle, std::make_shared<HepMC3::ParticleAttribute>(orgpart));
     // Create tagging HepMC particle and attach to the same vertex
     // This particle is needed to link the actual production vertex of the particle
     // to the dummy PV vertex. 

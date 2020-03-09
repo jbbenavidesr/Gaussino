@@ -40,4 +40,5 @@ private:
   bool                                      IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const;
   /// Decide if a particle has to be kept or not.
   bool keep( const HepMC3::ConstGenParticlePtr& particle ) const;
+  Gaussino::ConversionType GetConversionType( const HepMC3::ConstGenParticlePtr& particle ) const;
 };

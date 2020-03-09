@@ -17,6 +17,8 @@
 #include "Geant4/G4PrimaryParticle.hh"
 #include "Geant4/G4PrimaryVertex.hh"
 
+#include <functional>
+
 class G4EventProxy;
 
 // MCTruthConverter objects build on top of each other. To prevent incorrect use, this object evolves in stages, that
@@ -30,6 +32,9 @@ namespace Gaussino
   typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
   typedef std::shared_ptr<MCTruth> MCTruthPtr;
   typedef std::vector<MCTruthPtr> MCTruthPtrs;
+
+  typedef std::function<std::shared_ptr<MCTruth>()> MCTruthPtrGetter;
+  typedef std::vector<MCTruthPtrGetter> MCTruthPtrGetters;
 
   class MCTruthData
   {
@@ -45,14 +50,14 @@ namespace Gaussino
     std::set<LinkedParticle*> GetParticles() const {
       return m_linkedParticles;
     }
-    std::set<std::shared_ptr<G4EventProxy>> GetContainedProxies(){return m_contained_proxies;};
+    std::set<std::shared_ptr<G4EventProxy>>& GetContainedProxies(){return m_contained_proxies;};
 
 
+    void EraseLinkedParticle( LinkedParticle* lp );
+    void EraseDecayTree( LinkedParticle* lp );
   protected:
     MCTruthData() = default;
     MCTruthData( MCTruthData&& right ) noexcept;
-    void EraseLinkedParticle( LinkedParticle* lp );
-    void EraseDecayTree( LinkedParticle* lp );
     // Checks the consistency of the structure. Throws an exception
     void VerifyStructure() const;
     // Recursively loop from the root particles and remove all decay trees which

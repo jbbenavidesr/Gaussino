@@ -46,7 +46,9 @@ operator()( const LHCb::GenHeader& old_gen_header) const {
     m_redecaysorter->FlagAndRemoveReDecays(events);
     // Now save the events in the service. As they are stored as shared_ptr, we do not have to
     // do any copies as they will not be deleted at the end of the Gaudi event. GenCollisions
-    // and GenHeader are recreated when needed in the ReDecay events
+    // and GenHeader are recreated when needed in the ReDecay events.
+    // This step also adds the callbacks to the event that will later be used to extract the signal
+    // parts of the event.
     m_redecaysvc->storeOriginalHepMC(token, events, collisions);
 
     return generation_return;

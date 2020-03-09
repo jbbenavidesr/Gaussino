@@ -11,6 +11,11 @@
 #include <future>
 #include <mutex>
 
+#include "GiGaMTCoreRun/SimResults.h"
+#include "GiGaMTCoreRun/SimResultsProxyAttribute.h"
+#include "Defaults/HepMCAttributes.h"
+#include "HepMCUser/Status.h"
+
 // ============================================================================
 // Interface file for class : GaussGeo
 //
@@ -46,9 +51,12 @@ public:
   virtual Gaussino::ReDecay::Token obtainToken( const Random::SeedPair& seedpair ) override;
   virtual void                     removeToken( Gaussino::ReDecay::Token& token ) override;
   virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) override;
+  virtual void storeOriginalSimResult(const Gaussino::ReDecay::Token &, const Gaussino::GiGaSimReturns &) override;
 
   using IReDecaySvc::getOriginalHepMCData;
   virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) override;
+  using IReDecaySvc::getOriginalSimResult;
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult(const Gaussino::ReDecay::Token &) override;
 
   using IReDecaySvc::getNPileUp;
   virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) override;
@@ -66,6 +74,7 @@ private:
   std::map<Random::SeedPair, std::promise<Random::SeedPair>>       m_promise_store{};
   std::map<Random::SeedPair, std::shared_future<Random::SeedPair>> m_future_store{};
   std::map<Random::SeedPair, std::vector<HepMCData>> m_original_hepmc_store{};
+  std::map<Random::SeedPair, Gaussino::GiGaSimReturns> m_original_simresult_store{};
   size_t                                                           QueuedEvents();
   void                                                             DumpQueue();
   LocalTL<size_t> m_ipileup_counter;
@@ -184,6 +193,7 @@ void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
     m_future_store.erase(orgseedpair);
     // FIXME: Clean up actual event data
     m_original_hepmc_store.erase(orgseedpair);
+    m_original_simresult_store.erase(orgseedpair);
   }
 }
 
@@ -211,12 +221,23 @@ void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std:
       collisions->setX1Bjorken(col->x1Bjorken());
       collisions->setX2Bjorken(col->x2Bjorken());
       for(auto & part: evt->particles()){
-        if(part->status() == 1043){
+        if(part->status() == HepMC3::Status::ReDecay){
           counter++;
           particles.push_back(part->id());
         }
       }
     }
+}
+
+void ReDecaySvc::storeOriginalSimResult(const Gaussino::ReDecay::Token & token, const Gaussino::GiGaSimReturns & results){
+  std::lock_guard<std::recursive_mutex> lck{m_svclock};
+    if ( m_original_simresult_store.find(token.m_original_event_seedpair) != std::end(m_original_simresult_store) ) {
+      std::stringstream sstr; 
+      auto [s1,s2] = token.m_original_event_seedpair;
+      sstr << "Already have SimResults for original event <"  << s1 << ", " << s2 << ">";
+      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+    }
+    m_original_simresult_store[token.m_original_event_seedpair] = results;
 }
 
 unsigned int ReDecaySvc::getNPileUp(const Gaussino::ReDecay::Token & token) {
@@ -239,6 +260,16 @@ std::vector<HepMCData> & ReDecaySvc::getOriginalHepMCData(const Gaussino::ReDeca
       throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
     }
     return m_original_hepmc_store[token.m_original_event_seedpair];
+}
+
+Gaussino::GiGaSimReturns ReDecaySvc::getOriginalSimResult(const Gaussino::ReDecay::Token & token){
+    if ( m_original_simresult_store.find(token.m_original_event_seedpair) == std::end(m_original_simresult_store) ) {
+      std::stringstream sstr; 
+      auto [s1,s2] = token.m_original_event_seedpair;
+      sstr << "Could not find SimResults for original event <"  << s1 << ", " << s2 << ">";
+      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+    }
+    return m_original_simresult_store[token.m_original_event_seedpair];
 }
 
 unsigned long long ReDecaySvc::getEncodedOriginalEvtInfo( const Gaussino::ReDecay::Token& token ) {
