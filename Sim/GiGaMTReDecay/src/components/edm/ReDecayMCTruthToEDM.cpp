@@ -1,5 +1,4 @@
 // Local.
-#include "MCTruthToEDM.h"
 #include "MCInterfaces/IFlagSignalChain.h"
 
 // Gaudi.
@@ -24,10 +23,97 @@
 
 #include<set>
 
-DECLARE_COMPONENT( MCTruthToEDM )
+// Gaudi.
+#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/Transformer.h"
+#include "GaudiKernel/Vector4DTypes.h"
 
-std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks> MCTruthToEDM::
-operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHeader ) const
+// Event.
+#include "Event/MCHeader.h"
+#include "Event/GenHeader.h"
+
+// Event.
+#include "Event/MCParticle.h"
+#include "Event/MCVertex.h"
+#include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
+
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
+
+#include "Defaults/Locations.h"
+#include "GiGaMTReDecay/typedefs.h"
+
+/** @class MCTruthToEDM MCTruthToEDM.h
+ *  Algorithm to move create the MCParticle and MCVertex structure
+ *  from the filled MCTruth objects. Based loosely on the
+ *  MCTruthToEDM algorithm in Gauss
+ *
+ *  Also returns an additional structure which maps LinkedParticle to the
+ *  converted MCParticle. This will be useful for later assigning the MCParticle
+ *  to the MCHit via the LinkedParticle stored in the G4VHit
+ *
+ *  @author Dominik Muller
+ *  @date 2018-04-09
+ */
+
+class ReDecayMCTruthToEDM : public Gaudi::Functional::MultiTransformer<
+                         std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>(
+                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader &, const Gaussino::ReDecay::SignalTruths & )>
+{
+public:
+  /// Standard constructor.
+  ReDecayMCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
+      : MultiTransformer(
+            name, pSvcLocator, {{KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
+                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default},
+                KeyValue{"OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap}}},
+            {{
+                KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
+                KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
+                KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
+                KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default},
+            }} ){};
+  virtual ~ReDecayMCTruthToEDM() = default; ///< Destructor.
+  virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
+  operator()( const Gaussino::MCTruthPtrs&, const LHCb::GenHeader&, const Gaussino::ReDecay::SignalTruths &  ) const override;
+
+private:
+  typedef std::set<std::pair<LHCb::MCVertex*, const HepMC3::GenVertex*>> VertexSet;
+  /// Determine the primary vertex of the interaction.
+  LHCb::MCVertex* FindPV( LinkedParticle* lp, VertexSet& pvs ) const;
+
+  /// Convert a GenParticle either into a MCParticle or G4PrimaryParticle.
+  class Converter
+  {
+  public:
+    Converter( LHCb::MCParticles& mcparticles, LHCb::MCVertices& mcvertices, LinkedParticleMCParticleLinks& lpmcp_links,
+               MsgStream& stm, const Gaussino::ReDecay::SignalTruths & struths)
+        : msgStream( stm ), m_particles( mcparticles ), m_vertices( mcvertices ), m_links( lpmcp_links ), m_signal_truths(struths)
+    {
+    }
+    void convert( LinkedParticle* particle, LHCb::MCVertex* originVertex );
+
+    LHCb::MCParticle* makeMCParticle( LinkedParticle* particle );
+    // Simple helper to create a vertex at the location and add
+    // it to the containers
+    LHCb::MCVertex* createVertex( const HepMC3::FourVector& fm );
+    // Converts a LinkedVertex to MCVertex. Figures out a sensible
+    // vertex type and sets it based on the MCTruth structure.
+    LHCb::MCVertex* createVertex( LinkedVertex* lv );
+
+  private:
+    MsgStream& msgStream;
+    LHCb::MCParticles& m_particles;
+    LHCb::MCVertices& m_vertices;
+    LinkedParticleMCParticleLinks& m_links;
+    std::set<LinkedVertex*> already_converted{};
+    const Gaussino::ReDecay::SignalTruths & m_signal_truths;
+  };
+};
+
+DECLARE_COMPONENT( ReDecayMCTruthToEDM)
+
+std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks> ReDecayMCTruthToEDM::
+operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHeader, const Gaussino::ReDecay::SignalTruths &  signaltruths ) const
 {
   // Create containers in TES for MCParticles and MCVertices.
   LHCb::MCParticles m_particleContainer;
@@ -47,7 +133,7 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
 
   m_particleContainer.reserve( n_LinkedParticles );
   m_vertexContainer.reserve( n_LinkedVertices );
-  Converter converter{m_particleContainer, m_vertexContainer, particle_links, msgStream()};
+  Converter converter{m_particleContainer, m_vertexContainer, particle_links, msgStream(), signaltruths};
 
   // Create some MCHeader.
   LHCb::MCHeader mcHeader;
@@ -65,6 +151,17 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
     // FIXME: Introduce global setting server to only activate the special event processing
     // when needed? Might be slight performance improvement
     for ( auto rp : mt->GetRootParticlesIncludingSlaves() ) {
+      if(rp->GetType() == Gaussino::ConversionType::REDECAY ){
+        if(signaltruths.find(rp) == std::end(signaltruths)){
+          throw GaudiException( "Particle not in truth map.", "Gaussino::ReDecay", StatusCode::FAILURE );
+        }
+        auto truth = signaltruths.at(rp);
+        auto roots = truth->GetRootParticlesIncludingSlaves();
+        if(roots.size() != 1){
+          throw GaudiException( "SignalTruth does not have exactly one child.", "Gaussino::ReDecay", StatusCode::FAILURE );
+        }
+        rp = *std::begin(roots);
+      }
       LHCb::MCVertex* primary{nullptr};
       auto foundpv = FindPV( rp, pvs );
       // Attach to the found vertex, if not create a new one
@@ -90,7 +187,7 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
 
-LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
+LHCb::MCVertex* ReDecayMCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
 {
 
   auto essentiallyEqual = []( float a, float b, float epsilon = 0.00001 ) {
@@ -130,7 +227,7 @@ LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
   return nullptr;
 }
 
-LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( const HepMC3::FourVector& fm )
+LHCb::MCVertex* ReDecayMCTruthToEDM::Converter::createVertex( const HepMC3::FourVector& fm )
 {
   auto ret = new LHCb::MCVertex{};
   ret->setPosition( Gaudi::XYZPoint{fm.x(), fm.y(), fm.z()} );
@@ -140,7 +237,7 @@ LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( const HepMC3::FourVector&
   return ret;
 }
 
-LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
+LHCb::MCVertex* ReDecayMCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
 {
   auto fm  = lv->GetPosition();
   auto ret = createVertex( fm );
@@ -149,7 +246,7 @@ LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
   return ret;
 }
 
-void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex* originVertex )
+void ReDecayMCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex* originVertex )
 {
   auto mcp = makeMCParticle( particle );
   mcp->setOriginVertex( originVertex );
@@ -165,7 +262,18 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
     auto endVertex = createVertex( ev.get() );
     endVertex->setMother( mcp );
     mcp->addToEndVertices( endVertex );
-    for ( auto& child : ev->outgoing_particles ) {
+    for ( auto child : ev->outgoing_particles ) {
+      if(child->GetType() == Gaussino::ConversionType::REDECAY ){
+        if(m_signal_truths.find(child) == std::end(m_signal_truths)){
+          throw GaudiException( "Particle not in truth map.", "Gaussino::ReDecay", StatusCode::FAILURE );
+        }
+        auto truth = m_signal_truths.at(child);
+        auto roots = truth->GetRootParticlesIncludingSlaves();
+        if(roots.size() != 1){
+          throw GaudiException( "SignalTruth does not have exactly one child.", "Gaussino::ReDecay", StatusCode::FAILURE );
+        }
+        child = *std::begin(roots);
+      }
       convert( child, endVertex );
     }
     // Now convert all outgoing mctruth objects from this vertex.
@@ -175,14 +283,14 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
       if(msgStream.currentLevel() <= MSG::DEBUG){
         msgStream << MSG::DEBUG << "Adding outgoing MCTruth to record." << endmsg;
       };
-      for ( auto& child : slavetruth()->GetRootParticlesIncludingSlaves() ) {
+      for ( auto& child : slavetruth->GetRootParticlesIncludingSlaves() ) {
         convert( child, endVertex );
       }
     }
   }
 }
 
-LHCb::MCParticle* MCTruthToEDM::Converter::makeMCParticle( LinkedParticle* particle )
+LHCb::MCParticle* ReDecayMCTruthToEDM::Converter::makeMCParticle( LinkedParticle* particle )
 {
   // Create and insert into TES.
   // LHCb::MCParticle* mcp = new LHCb::MCParticle();

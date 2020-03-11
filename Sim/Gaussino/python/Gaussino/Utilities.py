@@ -160,7 +160,7 @@ def gigaService(name=Configurable.DefaultName, debugcommunication=False):
     return giga
 
 
-def configure_edm_conversion(**kwargs):
+def configure_edm_conversion(redecay=False, **kwargs):
     """Simple utility function to create and configure the
     EDM conversion algorithms
 
@@ -168,8 +168,14 @@ def configure_edm_conversion(**kwargs):
     :returns: GenMonitorAlg instance
 
     """
-    from Configurables import CheckMCStructure, MCTruthToEDM, MCTruthMonitor
-    return [MCTruthToEDM(), CheckMCStructure(),
+    from Configurables import CheckMCStructure, MCTruthMonitor, Gaussino
+    if redecay:
+        from Configurables import ReDecayMCTruthToEDM
+        conv = ReDecayMCTruthToEDM()
+    else:
+        from Configurables import MCTruthToEDM
+        conv = MCTruthToEDM()
+    return [conv, CheckMCStructure(),
             MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True)]
 
 

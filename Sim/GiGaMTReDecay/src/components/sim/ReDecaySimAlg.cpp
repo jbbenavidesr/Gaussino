@@ -25,9 +25,17 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
   Gaussino::GiGaSimReturns ret_tuple{};
 
   if ( m_redecaysvc->isCurrentOriginal() ) {
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << "Simulating original event " << endmsg;
+    }
     ret_tuple = m_gigaSvc->simulate( originalhepmcevents, engine );
     m_redecaysvc->storeOriginalSimResult( token, ret_tuple );
   } else {
+    // In this stip the containers are copied so we can safely append
+    // the signal proxies for easier processing
+    if ( msgLevel( MSG::DEBUG ) ) {
+      debug() << "Retrieving original event " << endmsg;
+    }
     ret_tuple = m_redecaysvc->getOriginalSimResult( token );
   }
   auto& [g4proxies, mctruths] = ret_tuple;
@@ -71,6 +79,16 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
     auto& trackers = std::get<Gaussino::MCTruthPtrs>( ret_tuple );
     for ( auto& tracker : trackers ) {
       tracker->DumpToStream( debug(), "", [&]( int i ) -> std::string {
+        if ( auto pid = m_ppSvc->find( LHCb::ParticleID( i ) ); pid ) {
+          return pid->name();
+        } else {
+          return "UnknownToLHCb";
+        }
+      } ) << endmsg;
+    }
+    for ( auto& [lp, sigtracker] : signal_truths) {
+      debug() << "Attaching to " << *lp << endmsg;
+      sigtracker->DumpToStream( debug(), "", [&]( int i ) -> std::string {
         if ( auto pid = m_ppSvc->find( LHCb::ParticleID( i ) ); pid ) {
           return pid->name();
         } else {

@@ -10,6 +10,7 @@ gaudi_subdir(GiGaMTReDecay v1r0)
 gaudi_depends_on_subdirs(NewRnd
                          Gen/GenBeam
                          Gen/Generators
+                         EDMdev/MCTruthToEDM
                          Gen/RndInit
                          Sim/GiGaMTTruth
                          Sim/GiGaMT)
@@ -31,7 +32,8 @@ gaudi_add_module(GiGaMTReDecay
         src/components/*.cpp
         src/components/sorters/*.cpp
         src/components/sim/*.cpp
-        LINK_LIBRARIES GiGaMTReDecayLib ROOT RndInitLib)
+        src/components/edm/*.cpp
+        LINK_LIBRARIES GiGaMTReDecayLib ROOT RndInitLib MCTruthToEDMLib)
 
 add_dependencies(GiGaMTReDecayLib HepMC3Ext)
 
