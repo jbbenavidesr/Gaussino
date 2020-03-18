@@ -36,7 +36,10 @@ protected:
   }
 };
 
-template <typename PHYS, typename dummy=PHYS>
+template <typename T>
+using hasGiGaMessage = typename std::enable_if<std::is_base_of<GiGaMessage, T>::value>::type;
+
+template <typename PHYS, typename dummy=void>
 class GiGaMTG4PhysicsConstrFAC : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
 {
   static_assert( std::is_base_of<G4VPhysicsConstructor, PHYS>::value );
@@ -49,6 +52,24 @@ public:
     auto tmp = new PHYS{};
     tmp->SetPhysicsName( name() );
     tmp->SetVerboseLevel( verbosity() );
+    return tmp;
+  }
+};
+
+template <typename PHYS>
+class GiGaMTG4PhysicsConstrFAC<PHYS, hasGiGaMessage<PHYS>> : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
+{
+  static_assert( std::is_base_of<G4VPhysicsConstructor, PHYS>::value );
+  static_assert( std::is_default_constructible<PHYS>::value );
+
+public:
+  using extends::extends;
+  PHYS* construct() const override
+  {
+    auto tmp = new PHYS{};
+    tmp->SetPhysicsName( name() );
+    tmp->SetVerboseLevel( verbosity() );
+    tmp->SetMessageInterface( message_interface() );
     return tmp;
   }
 };
