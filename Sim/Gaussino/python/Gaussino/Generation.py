@@ -133,6 +133,10 @@ class GenPhase(ConfigurableUser):
             from Configurables import ReDecaySignalGeneration
             siggen_alg = ReDecaySignalGeneration()
 
+            siggen_alg.HepMCEventLocation = 'Gen/SignalDecayTree'
+            siggen_alg.GenCollisionLocation = 'Gen/SignalCollisions'
+            siggen_alg.GenHeaderOutputLocation = 'Gen/SignalGenHeader'
+
             seq += [siggen_alg]
             sgt = get_set_configurable(siggen_alg, 'SampleGenerationTool',
                                        'SignalPlain')
@@ -187,9 +191,22 @@ class GenPhase(ConfigurableUser):
         ApplicationMgr().TopAlg += seq
 
     def configure_genonly(self):
-        from Configurables import SkipSimAlg
         seq = []
-        seq += [SkipSimAlg()]
+        from Configurables import Gaussino
+        if Gaussino().getProp('ReDecay'):
+            from Configurables import ReDecaySkipSimAlg
+            alg = ReDecaySkipSimAlg()
+        else:
+            from Configurables import SkipSimAlg
+            alg = SkipSimAlg()
+        from Gaussino.Utilities import get_set_configurable
+        tool = get_set_configurable(alg, 'HepMCConverter')
+        try:
+            tool.CheckParticle = False
+        except:
+            pass
+        seq += [alg]
+        
         ApplicationMgr().TopAlg += seq
 
     @staticmethod

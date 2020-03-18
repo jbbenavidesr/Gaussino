@@ -1,5 +1,5 @@
 // local
-#include "ReDecaySimAlg.h"
+#include "ReDecaySkipSimAlg.h"
 #include "Defaults/HepMCAttributes.h"
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 #include "HepMC3/Attribute.h"
@@ -8,9 +8,9 @@
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 
-DECLARE_COMPONENT( ReDecaySimAlg )
+DECLARE_COMPONENT( ReDecaySkipSimAlg )
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySimAlg::
+std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSimAlg::
                                                                                    operator()( const HepMC3::GenEventPtrs& originalhepmcevents, const HepMC3::GenEventPtrs& signalhepmcevents ) const {
   debug() << "==> Execute" << endmsg;
   auto& token = *m_tokenhandle.get();
@@ -22,12 +22,19 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
   auto engine = createRndmEngine();
   // Get the individual components, make copies instead of reference because
   // we will modify the g4proxies in a moment.
-  Gaussino::GiGaSimReturns ret_tuple{};
+  Gaussino::GiGaSimReturns ret_tuple;
 
   if ( m_redecaysvc->isCurrentOriginal() ) {
-    if ( msgLevel( MSG::DEBUG ) ) { debug() << "Simulating original event " << endmsg; }
-    ret_tuple = m_gigaSvc->simulate( originalhepmcevents, engine );
-    m_redecaysvc->storeOriginalSimResult( token, ret_tuple );
+    if ( msgLevel( MSG::DEBUG ) ) { debug() << "Handling original event " << endmsg; }
+
+    auto converters = m_converterTool->BuildConverter( originalhepmcevents );
+    Gaussino::MCTruthConverterPtr combined =
+        Gaussino::MergeConverters( std::begin( converters ), std::end( converters ) );
+
+    Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *combined.get() ) );
+
+    std::get<1>(ret_tuple).emplace_back( new Gaussino::MCTruth( std::move( *tracker.get() ) ) );
+    m_redecaysvc->storeOriginalSimResult( token, ret_tuple);
   } else {
     // In this stip the containers are copied so we can safely append
     // the signal proxies for easier processing
@@ -64,8 +71,9 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
         if ( msgLevel( MSG::DEBUG ) ) {
           debug() << "Going to simulate a redecayed decay for " << pid_to_name( p->pid() ) << endmsg;
         }
-        auto [g4proxy, sigmctruth] = m_gigaSvc->simulateDecay( p, engine );
-        g4proxies.push_back( g4proxy );
+        auto converter = m_converterTool->BuildConverter( p );
+        Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *converter ));
+        Gaussino::MCTruthPtr sigmctruth = std::make_shared<Gaussino::MCTruth>(std::move( *tracker));
         signal_truths[org_lp] = sigmctruth;
       }
     }
@@ -95,5 +103,5 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
       } ) << endmsg;
     }
   }
-  return {std::move( g4proxies ), std::move( mctruths ), std::move( signal_truths )};
+  return {std::move( mctruths ), std::move( signal_truths )};
 }

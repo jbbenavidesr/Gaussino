@@ -9,6 +9,8 @@ std::ostream& operator<<( std::ostream& out, const Gaussino::ConversionType& typ
     return out << "MC";
   case Gaussino::ConversionType::FROMG4:
     return out << "FROMG4";
+  case Gaussino::ConversionType::REDECAY:
+    return out << "REDECAY";
   default:
     return out;
   }

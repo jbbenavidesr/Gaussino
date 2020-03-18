@@ -93,7 +93,11 @@ void ReDecaySvc::DumpQueue() {
   debug() << "State of ReDecay processing queue:" << endmsg;
   for ( auto& s : m_original_events_available ) {
     debug() << " -- < " << s.first.first << " , " << s.first.second << " > Remaining: " << s.second.toprocess << " / "
-            << s.second.tofinish << endmsg;
+            << s.second.tofinish;
+    if( s.second.tofinish == m_max_rd_counter ){
+      debug() << " Original in progress!" << endmsg;
+    }
+    debug() << endmsg;
   }
 }
 
@@ -142,8 +146,10 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
       }
     }
     if ( !token.m_original ) {
+      // To loops, first try to find an original event which is completely processed to avoid the wait
+      // Indicate by tofinish being smaller the number of redecays
       for ( auto& orgpair : m_original_events_available ) {
-        if ( orgpair.second.toprocess > 0 ) {
+        if ( orgpair.second.toprocess > 0 && orgpair.second.tofinish < m_max_rd_counter ) {
           token.m_original_event_seedpair = orgpair.first;
           got_original                    = true;
           orgpair.second.toprocess--;
@@ -151,6 +157,20 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
           // Access via copy is thread safe.
           fut = m_future_store[orgpair.first];
           break;
+        }
+      }
+      // Second attempt only get those which have something to process, might need to wait!
+      if ( !got_original ) {
+        for ( auto& orgpair : m_original_events_available ) {
+          if ( orgpair.second.toprocess > 0 ) {
+            token.m_original_event_seedpair = orgpair.first;
+            got_original                    = true;
+            orgpair.second.toprocess--;
+            // Make a copy of the shared future.
+            // Access via copy is thread safe.
+            fut = m_future_store[orgpair.first];
+            break;
+          }
         }
       }
     }

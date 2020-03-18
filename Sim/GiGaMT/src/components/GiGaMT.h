@@ -75,11 +75,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{
       this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames )};
 
-  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0, [=]( Gaudi::Details::PropertyBase& ) {
-                                             if ( this->m_nWorkerThreads == (size_t)0 ) {
-                                               this->m_nWorkerThreads = std::thread::hardware_concurrency();
-                                             }
-                                           }};
+  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
   Gaudi::Property<bool> m_splitPileUp{this, "SplitPileUp", false};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
   Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};
@@ -114,7 +110,6 @@ public:
   virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( const HepMC3::GenEventPtrs & _in,
                                                                       HepRandomEnginePtr& ) const override;
 
-  
   /** Simulate the particle and its decay products. Results of the simulation are attached to the particle
    * as SimResults
    *  @param   ptr   GenParticlePtr
@@ -122,6 +117,8 @@ public:
    *  @return status code
    */
   virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& ) const override;
+
+  virtual bool particleKnownToGeant4(int pdg_id) const override;
 
 protected:
   // Function to initialize the master G4MTRunManager to run in the main Gaudi

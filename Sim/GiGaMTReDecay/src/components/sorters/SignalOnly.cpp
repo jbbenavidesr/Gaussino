@@ -1,6 +1,7 @@
 #include "BaseSorter.h"
 #include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
+#include "HepMCUtils/PrintDecayTree.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalOnly
@@ -30,6 +31,11 @@ bool SignalOnly::FlagAndRemoveReDecays(std::vector<HepMC3::GenEventPtr> & events
       if(sig_vtx->particles_in().size() == 1){
         found = true;
         RecursiveTagger( *std::begin(sig_vtx->particles_in()));
+        if ( msgLevel( MSG::DEBUG ) ) {
+          debug() << "After flagging" << endmsg;
+          debug() << PrintDecay(*std::begin(sig_vtx->particles_in())) << endmsg;
+        }
+        
       }
     }
   }

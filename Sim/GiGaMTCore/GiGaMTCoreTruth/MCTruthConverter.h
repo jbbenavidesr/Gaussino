@@ -55,11 +55,13 @@ namespace Gaussino
 
     void EraseLinkedParticle( LinkedParticle* lp );
     void EraseDecayTree( LinkedParticle* lp );
+    // Checks the consistency of the structure. Return 0 if all is good,
+    // return 1 if not all particles can be reached from root
+    // and 2 if not all particles can be reached from final state
+    int VerifyStructure() const;
   protected:
     MCTruthData() = default;
     MCTruthData( MCTruthData&& right ) noexcept;
-    // Checks the consistency of the structure. Throws an exception
-    void VerifyStructure() const;
     // Recursively loop from the root particles and remove all decay trees which
     // have a SimResult assigned to the respective HepMC record.
     // Attaches the MCTruth to the respective vertex or the root level.

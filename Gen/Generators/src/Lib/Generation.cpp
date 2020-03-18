@@ -139,7 +139,7 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
     theGenHeader.setEvType( m_eventType );  
   }
 
-  if(m_genFSR->getSimulationInfo("evtType", 0) == 0)
+  if(m_genFSR && m_genFSR->getSimulationInfo("evtType", 0) == 0)
   {
     std::string decFiles = "";
     int evtType = 0;
@@ -213,11 +213,11 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
     // increase the generated events counter in the FSR                                                                                                          
     name = "EvtGenerated";
     key = LHCb::GenCountersFSR::CounterKeyToType(name);
-    m_genFSR->incrementGenCounter(key,1);
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
     // increase the generated interactions counter in the FSR                                                                                                    
     name = "IntGenerated";
     key = LHCb::GenCountersFSR::CounterKeyToType(name);    
-    m_genFSR->incrementGenCounter(key,nPileUp);
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
 
     // Update interaction counters
     if ( 0 < nPileUp ) { 
@@ -274,7 +274,7 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
           // increase the counter of events before the full event generator level cut in the FSR                                                                 
           name = "BeforeFullEvt";
           key = LHCb::GenCountersFSR::CounterKeyToType(name);          
-          m_genFSR->incrementGenCounter(key,1);
+          if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
           if ( goodEvent ) {
@@ -282,7 +282,7 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
             // increase the counter of events after the full event generator level cut in the FSR                                                                
             name = "AfterFullEvt";
             key = LHCb::GenCountersFSR::CounterKeyToType(name);
-            m_genFSR->incrementGenCounter(key,1);            
+            if(m_genFSR) m_genFSR->incrementGenCounter(key,1);            
           }
         }
       }
@@ -295,12 +295,12 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
   // increase the generated events counter in the FSR                                                                                                            
   name = "EvtAccepted";
   key = LHCb::GenCountersFSR::CounterKeyToType(name);
-  m_genFSR->incrementGenCounter(key,1);
+  if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
 
   // increase the generated interactions counter in the FSR                                                                                                      
   name = "IntAccepted";
   key = LHCb::GenCountersFSR::CounterKeyToType(name);  
-  m_genFSR->incrementGenCounter(key,nPileUp);
+  if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
 
   if ( 0 < nPileUp ) {
     //GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
@@ -322,7 +322,7 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
     for( auto event_gencol : ranges::view::zip(theEvents, theCollisions)) {
       auto & evt = event_gencol.first;
       // GenFSR
-      if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
+      if(m_genFSR && m_genFSR->getSimulationInfo("hardGenerator", "") == "")
         m_genFSR->addSimulationInfo("hardGenerator",evt->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
     }
   }
@@ -371,7 +371,7 @@ StatusCode Generation::finalize() {
   auto m_genFSR = GenFSRMTManager::GetCombined(m_FSRName);
 
   // Now either create the info in the TES or add it to the existing one                                                                                         
-  put(m_fileRecordSvc, m_genFSR, m_FSRName);
+  if(m_genFSR) put(m_fileRecordSvc, m_genFSR, m_FSRName);
 
   // check if the FSR can be retrieved from the TS                                                                                                               
   LHCb::GenFSR* readFSR = getIfExists<LHCb::GenFSR>(m_fileRecordSvc, m_FSRName);
@@ -548,6 +548,6 @@ void Generation::updateFSRCounters( interactionCounter & theCounter,
     cname = name[i]+option;
     key = LHCb::GenCountersFSR::CounterKeyToType(cname);
     count = theCounter[i];
-    m_genFSR->incrementGenCounter(key,count); 
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,count); 
   } 
 }

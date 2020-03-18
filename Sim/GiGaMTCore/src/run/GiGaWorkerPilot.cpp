@@ -1,6 +1,7 @@
 #include "GiGaMTCoreRun/GiGaWorkerPilot.h"
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
+#include "GaudiKernel/GaudiException.h"
 
 #include "GiGaMTCoreTruth/GaussinoEventInformation.h"
 
@@ -120,6 +121,10 @@ void GiGaWorkerPilot::operator()()
   GiGaWorkerPayloadOpt payload;
   while ( true ) {
     m_input_queue->wait_dequeue( payload );
+
+    m_before_sim = "";
+    m_after_sim = "";
+    m_after_cleanup = "";
     debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
       debug( "Sentinel detected, ending loop" );
@@ -136,11 +141,22 @@ void GiGaWorkerPilot::operator()()
     auto evt = new G4Event{};
     Gaussino::MCTruthTrackerPtr tracker =
         std::make_unique<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
-    if ( printDebug() ) {
+    if(m_track_eventstructure){
       std::stringstream sstr;
       sstr << "\nBefore simulation\n";
       tracker->DumpToStream( sstr );
-      debug( sstr.str() );
+      m_before_sim = sstr.str();
+      if ( printDebug() ) {
+        debug( sstr.str() );
+      }
+    }
+    auto code = tracker->VerifyStructure();
+    if(code == 1){
+      error(m_before_sim);
+      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+    } else if (code == 2){
+      error(m_before_sim);
+      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     evt->SetUserInformation( new GaussinoEventInformation( tracker.get() ) );
     debug( "Dequeued event with " + std::to_string( evt->GetNumberOfPrimaryVertex() ) + " vertices." );
@@ -149,19 +165,49 @@ void GiGaWorkerPilot::operator()()
     G4Random::setTheEngine( engine.get() );
 
     mgr->ProcessEvent( evt );
-    if ( printDebug() ) {
+    if(m_track_eventstructure){
       std::stringstream sstr;
       sstr << "\nAfter simulation\n";
       tracker->DumpToStream( sstr );
-      debug( sstr.str() );
+      m_after_sim = sstr.str();
+      if ( printDebug() ) {
+        debug( sstr.str() );
+      }
+    }
+
+    code = tracker->VerifyStructure();
+    if(code == 1){
+      error(m_before_sim);
+      error(m_after_sim);
+      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+    } else if (code == 2){
+      error(m_before_sim);
+      error(m_after_sim);
+      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     Gaussino::MCTruthPtr mctruth = std::make_unique<Gaussino::MCTruth>( std::move( *tracker.get() ) );
 
-    if ( printDebug() ) {
+    if(m_track_eventstructure){
       std::stringstream sstr;
       sstr << "\nAfter cleanup\n";
-      mctruth->DumpToStream( sstr );
-      debug( sstr.str() );
+      tracker->DumpToStream( sstr );
+      m_after_sim = sstr.str();
+      if ( printDebug() ) {
+        debug( sstr.str() );
+      }
+    }
+
+    code = mctruth->VerifyStructure();
+    if(code == 1){
+      error(m_before_sim);
+      error(m_after_sim);
+      error(m_after_cleanup);
+      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+    } else if (code == 2){
+      error(m_before_sim);
+      error(m_after_sim);
+      error(m_after_cleanup);
+      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     debug( "Geant4 finished processing the event." );
     G4EventProxyPtr proxy = std::make_shared<G4EventProxy>(evt, mctruth.get(), this);

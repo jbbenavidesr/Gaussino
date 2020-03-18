@@ -29,6 +29,9 @@ namespace Gaussino::ReDecay {
       m_original_event_seedpair = right.m_original_event_seedpair;
     };
     ~Token();
+    bool IsOriginal(){
+      return m_original_event_seedpair == m_this_event_seedpair;
+    }
 
   private:
     Random::SeedPair m_this_event_seedpair{};

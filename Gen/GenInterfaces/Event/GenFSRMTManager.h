@@ -51,6 +51,9 @@ class GenFSRMTManager {
    */
 
   static LHCb::GenFSR* GetCombined(const std::string & name) {
+    if(name == ""){
+      return nullptr;
+    }
     static LHCb::GenFSR* _ret{nullptr};
     if(!_ret){
       _ret = new LHCb::GenFSR{};

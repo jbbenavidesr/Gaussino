@@ -18,6 +18,7 @@ public:
 
   virtual StatusCode initialize() override;
   virtual StatusCode finalize() override;
+  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
 
   virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters> operator()() const override;
 
@@ -42,7 +43,16 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenReDecayInit::operator()() c
   debug() << "==> Execute" << endmsg;
   auto ret = GenRndInit::operator()();
   auto seedpair = GetSeedPair();
+  auto [event, run] = seedpair;
   auto token = m_redecaysvc->obtainToken(seedpair);
+  info() << "Evt " << event << ",  Run " << run;
+  info() << ",  Nr. in job = " << eventCounter();
+  if(token.IsOriginal()){
+    info() << " Original";
+  } else {
+    info() << " ReDecayed";
+  }
+  info() << endmsg;
   m_tokenhandle.put( std::move( token ) );
 
   return ret;
@@ -51,4 +61,8 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenReDecayInit::operator()() c
 StatusCode GenReDecayInit::finalize()
 {
   return GenRndInit::finalize();
+}
+
+void GenReDecayInit::printEventRun( long long , int , std::vector<long int>* ) const
+{
 }

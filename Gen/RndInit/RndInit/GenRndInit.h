@@ -66,7 +66,7 @@ protected:
    *  @param[in] seeds (optional) vector of seeds
    *  @param[in] time (optional) time of the event
    */
-  void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
+  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
 
   mutable std::atomic_long m_evtCounter{0};       ///< Pointer to EventCounter interface
   mutable std::atomic_long m_evtTimingCounter{0}; ///< Pointer to EventCounter interface

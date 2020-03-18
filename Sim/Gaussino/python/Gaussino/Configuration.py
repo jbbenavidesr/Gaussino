@@ -96,7 +96,7 @@ class Gaussino(ConfigurableUser):
             GenPhase().configure_genonly()
 
         if self.getProp('ConvertEDM'):
-            ApplicationMgr().TopAlg += configure_edm_conversion()
+            ApplicationMgr().TopAlg += configure_edm_conversion(self.getProp("ReDecay"))
 
         histogramService()
 

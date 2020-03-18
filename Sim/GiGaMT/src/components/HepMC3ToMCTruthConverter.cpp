@@ -9,6 +9,7 @@
 // Geant4
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4SystemOfUnits.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // HepMC3
 #include "GaudiKernel/Vector4DTypes.h"
@@ -51,7 +52,7 @@ Gaussino::ConversionType HepMC3ToMCTruthConverter::GetConversionType( const HepM
     return Gaussino::ConversionType::G4;
   }
   return  Gaussino::ConversionType::MC;
-};
+}
 
 Gaussino::MCTruthConverterPtrs
 HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_events ) const {
@@ -94,7 +95,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::ConstGenParticlePtr& par
   }
   for ( auto& desc : HepMC3::Relatives::DESCENDANTS( part ) ) {
     if ( !keep( desc ) ) { continue; }
-    converter->Declare( desc, GetConversionType(part) );
+    converter->Declare( desc, GetConversionType(desc) );
   }
   return converter;
 }
@@ -102,13 +103,28 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::ConstGenParticlePtr& par
 bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const {
   // Return for Geant4 tracking if stable.
   auto ev = part->end_vertex();
-  if ( !ev ) { return true; }
+  if ( !ev ) {
+    if(m_check_particle.value() && !G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id())){
+      PrintDecay(*std::begin(part->parent_event()->beams()));
+      std::stringstream msg;
+      msg << "Particle " << part->pdg_id() << " has no endvertex but is unknown to Geant4";
+      throw GaudiException(msg.str(), "HepMC3ToMCTruthConverter::IsTraveling", StatusCode::FAILURE);
+    }
+    return true;
+  }
 
   // Determine the travel distance.
   auto   pv   = part->production_vertex();
   double dist = ( ev->position() - pv->position() ).p3mod();
 
   if ( dist < m_travelLimit ) return false;
+
+  if(m_check_particle.value() && !G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id())){
+    PrintDecay(*std::begin(part->parent_event()->beams()));
+    std::stringstream msg;
+    msg << "Particle " << part->pdg_id() << " has travels " << dist << "mm but is unknown to Geant4";
+    throw GaudiException(msg.str(), "HepMC3ToMCTruthConverter::IsTraveling", StatusCode::FAILURE);
+  }
 
   return true;
 }
@@ -123,9 +139,12 @@ bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle
   // a default constructed shared pointer to IntAttribute is returned which
   // by default initialises the process ID to 0 which is identical to the
   // behaviour in HepMC2 where the default value was 0 as well.
-  auto sig_proc_id = particle->parent_event()
-                         ->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )
-                         ->value();
+  int sig_proc_id{0};
+  if ( auto attr =
+           particle->parent_event()->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID );
+       attr ) {
+    sig_proc_id = attr->value();
+  }
   switch ( particle->status() ) {
   case HepMC3::Status::StableInProdGen:
     return true;

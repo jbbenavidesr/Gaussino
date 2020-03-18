@@ -5,8 +5,8 @@
 #include "GenInterfaces/IPileUpTool.h"
 #include "GiGaMTReDecay/IRedecaySvc.h"
 
-/** @class GaussRedecayFakePileUp GaussRedecayFakePileUp.h
- * "GaussRedecayFakePileUp.h"
+/** @class ReDecayPileUp ReDecayPileUp.h
+ * "ReDecayPileUp.h"
  *
  *  Tool to get the number of pileup events to redecay.
  *  Basically just a getter to have Generation get the pileup from the
@@ -15,10 +15,12 @@
  *  @author Dominik Muller
  *  @date   2020-03-11
  */
-class GaussRedecayFakePileUp : public extends<GaudiTool, IPileUpTool> {
+class ReDecayPileUp : public GaudiTool, virtual public IPileUpTool {
+public:
   public:
   /// Standard constructor
-  using extends::extends;
+  ReDecayPileUp( const std::string& type, const std::string& name,
+                   const IInterface* parent) ;
 
   unsigned int numberOfPileUp( HepRandomEnginePtr & ) override;
 
@@ -28,8 +30,19 @@ class GaussRedecayFakePileUp : public extends<GaudiTool, IPileUpTool> {
     ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
 };
 
-DECLARE_COMPONENT( GaussRedecayFakePileUp )
+DECLARE_COMPONENT( ReDecayPileUp )
 
-unsigned int GaussRedecayFakePileUp::numberOfPileUp( HepRandomEnginePtr & ) {
+//=============================================================================
+// Standard constructor, initializes variables
+//=============================================================================
+ReDecayPileUp::ReDecayPileUp( const std::string& type,
+                                  const std::string& name,
+                                  const IInterface* parent )
+  : GaudiTool ( type, name , parent )
+    {
+    declareInterface< IPileUpTool >( this ) ;
+}
+
+unsigned int ReDecayPileUp::numberOfPileUp( HepRandomEnginePtr & ) {
   return m_redecaysvc->getNPileUp();
 }

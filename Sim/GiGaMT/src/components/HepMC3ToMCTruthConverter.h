@@ -8,6 +8,8 @@
 
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 #include "HepMC3/GenParticle.h"
+#include "GiGaMT/IGiGaMTSvc.h"
+
 
 class G4PrimaryParticle;
 class G4PrimaryVertex;
@@ -28,6 +30,7 @@ namespace LHCb {
 class HepMC3ToMCTruthConverter : public extends<GaudiTool, IHepMC3ToMCTruthConverter> {
 public:
   Gaudi::Property<double> m_travelLimit{this, "TravelLimit", 1e-10 * m};
+  Gaudi::Property<bool> m_check_particle{this, "CheckParticle", true};
   using extends::extends;
 
   virtual ~HepMC3ToMCTruthConverter() = default;

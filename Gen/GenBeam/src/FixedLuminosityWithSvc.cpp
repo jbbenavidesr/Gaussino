@@ -76,13 +76,13 @@ unsigned int FixedLuminosityWithSvc::numberOfPileUp( HepRandomEnginePtr & engine
   while ( 0 == result ) {
     m_nEvents++ ;
     key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
-    genFSR->incrementGenCounter(key,1);
+    if(genFSR) genFSR->incrementGenCounter(key,1);
     CLHEP::RandPoisson poissonGenerator{engine.getref(), m_beaminfosvc->nu()};
     result = (unsigned int) poissonGenerator() ;
     if ( 0 == result ) {
       m_numberOfZeroInteraction++ ;
       key =LHCb::GenCountersFSR::CounterKeyToType("ZeroInt");
-      genFSR->incrementGenCounter(key, 1); 
+      if(genFSR) genFSR->incrementGenCounter(key, 1); 
     }
   }
   return result ;

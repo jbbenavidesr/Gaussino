@@ -351,6 +351,7 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
                                    LHCb::GenFSR* genFSR,
                                    const std::string option)
 {  
+  if(!genFSR) return;
   // Signal Vertex                                                                        
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr

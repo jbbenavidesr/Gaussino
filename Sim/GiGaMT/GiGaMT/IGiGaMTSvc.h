@@ -58,6 +58,7 @@ public:
   virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay(const HepMC3::GenParticlePtr &, HepRandomEnginePtr &) const = 0;
 
 public:
+  virtual bool particleKnownToGeant4(int pdg_id) const = 0;
 
 protected:
   /// virtual destructor

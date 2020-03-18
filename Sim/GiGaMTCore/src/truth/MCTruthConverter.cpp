@@ -54,7 +54,7 @@ namespace Gaussino
     return tmp_store.size();
   }
 
-  void MCTruthData::VerifyStructure() const
+  int MCTruthData::VerifyStructure() const
   {
 
     std::set<LinkedParticle*> visited;
@@ -68,6 +68,7 @@ namespace Gaussino
       rec_down( rp );
     }
     if ( visited.size() < m_linkedParticles.size() ) {
+      return 1;
       throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
     }
 
@@ -84,8 +85,9 @@ namespace Gaussino
       }
     }
     if ( visited.size() < m_linkedParticles.size() ) {
-      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+      return 2;
     }
+    return 0;
   }
 
   void MCTruthData::RemoveDecayTreesWithSimResults() {
@@ -278,7 +280,6 @@ namespace Gaussino
         throw std::runtime_error( msg.str() );
       }
     }
-    VerifyStructure();
   } // namespace Gaussino
   void MCTruthTracker::AddToG4Event( G4Event* g4event )
   {
@@ -458,8 +459,6 @@ namespace Gaussino
       EraseDecayTree( lp );
     }
     to_delete.clear();
-
-    VerifyStructure();
 
   }
 

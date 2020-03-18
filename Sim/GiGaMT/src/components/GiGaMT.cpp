@@ -118,7 +118,15 @@ StatusCode GiGaMT::initialize()
     particleTable->DumpTable( "all" );
   }
 
+  if(m_nWorkerThreads.value() == 0){
+    m_nWorkerThreads.set(std::thread::hardware_concurrency());
+  }
+
   return StatusCode::SUCCESS;
+}
+
+bool GiGaMT::particleKnownToGeant4(int pdg_id) const {
+    return (bool) G4ParticleTable::GetParticleTable()->FindParticle(pdg_id);
 }
 
 //=============================================================================
