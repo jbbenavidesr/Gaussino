@@ -9,7 +9,7 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
   auto sc = extends::initialize();
   // Retrieve the factory tools here to avoid the retrieval happening in multiple
   // threads
-  for ( auto& keypairs : m_sens_dets ) { keypairs.second.retrieve(); }
+  for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
   return sc;
 }
 
@@ -18,7 +18,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   detconst->SetWorldConstructor( [&]() {
     debug() << "Calling world constructor" << endmsg;
     auto world = m_geoSvc->constructWorld();
-    for ( auto& tool : m_afterGeo ) { tool->process(); }
+    for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
     SaveGDML( world->GetLogicalVolume() );
     return world;
   } );

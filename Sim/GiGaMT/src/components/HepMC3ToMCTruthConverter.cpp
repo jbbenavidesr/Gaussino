@@ -60,7 +60,7 @@ HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_even
 
   for ( auto& genEvt : hepmc_events ) {
     if ( msgLevel( MSG::VERBOSE ) ) {
-      m_ppSvc.retrieve();
+      m_ppSvc.retrieve().ignore();
       for ( size_t ib = 0; ib < genEvt->beams().size(); ib++ ) {
         verbose() << "HepMC event dump: beam=" << ib << " \n"
                   << PrintDecay( genEvt->beams().at( ib ), 0, m_ppSvc.get() ) << endmsg;

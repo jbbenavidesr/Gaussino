@@ -12,12 +12,12 @@ namespace HepMC3
     TAttribute() : Attribute(), m_val{} {}
     TAttribute( const TYPE & val ) : Attribute(), m_val( val ) {}
 
-    bool from_string( const string& att ) override
+    bool from_string( const string& ) override
     {
       return true;
     }
 
-    bool to_string( string& att ) const override
+    bool to_string( string& ) const override
     {
       return true;
     }

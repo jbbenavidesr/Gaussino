@@ -133,7 +133,7 @@ StatusCode Signal::initialize( ) {
   else m_signalBr = 0. ;
 
   info() << endmsg ;  
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   if ( 0. == m_signalBr ) 
     warning() 

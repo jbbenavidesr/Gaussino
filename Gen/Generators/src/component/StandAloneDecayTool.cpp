@@ -57,7 +57,7 @@ StatusCode StandAloneDecayTool::initialize() {
   const LHCb::ParticleProperty * prop = ppSvc -> find( LHCb::ParticleID( *m_pids.begin() ) ) ;
   m_signalMass = prop -> mass() ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return StatusCode::SUCCESS;
 }
@@ -109,9 +109,9 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     }
 
     if ( ! m_inclusive ) 
-      m_decayTool -> generateSignalDecay( theParticle , flip , engine ) ;
+      m_decayTool -> generateSignalDecay( theParticle , flip , engine ).ignore() ;
     else 
-      m_decayTool -> generateDecay( theParticle , engine ) ;
+      m_decayTool -> generateDecay( theParticle , engine ).ignore() ;
     
     theParticle -> set_status( HepMC3::Status::SignalInLabFrame ) ;
   

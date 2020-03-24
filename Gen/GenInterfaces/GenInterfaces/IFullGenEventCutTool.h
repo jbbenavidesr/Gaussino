@@ -22,7 +22,8 @@
  *  @date   2005-11-17
  */
 
-struct IFullGenEventCutTool : extend_interfaces<IAlgTool> {
+class IFullGenEventCutTool : public extend_interfaces<IAlgTool> {
+  public:
 
   DeclareInterfaceID( IFullGenEventCutTool , 3 , 0 ) ;
 

@@ -115,7 +115,7 @@ StatusCode BeamShape::initialize() {
 
   info() << "Direction: " << (m_zDir<0?"Beam 2":"Beam 1") << endmsg;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return sc ;
 }

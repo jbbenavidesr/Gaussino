@@ -378,11 +378,11 @@ StatusCode Generation::finalize() {
   if(readFSR!=NULL)    // print the FSR just retrieved from TS                                                                                                   
     always() << "READ FSR: " << *readFSR << endmsg;
 
-  if ( 0 != m_pileUpTool ) release( m_pileUpTool ) ;
-  if ( 0 != m_decayTool ) release( m_decayTool ) ;
-  if ( 0 != m_sampleGenerationTool ) release( m_sampleGenerationTool ) ;
-  if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ) ;
-  if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ) ;
+  if ( 0 != m_pileUpTool ) release( m_pileUpTool ).ignore() ;
+  if ( 0 != m_decayTool ) release( m_decayTool ).ignore() ;
+  if ( 0 != m_sampleGenerationTool ) release( m_sampleGenerationTool ).ignore() ;
+  if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ).ignore() ;
+  if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ).ignore() ;
   
   return GaudiAlgorithm::finalize( ) ; // Finalize base class
 }

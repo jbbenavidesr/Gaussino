@@ -216,7 +216,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
           << endmsg;
   for ( auto monitool : m_MoniTools ) {
     for ( auto& g4eventproxy : return_events ) {
-      monitool->monitor( *g4eventproxy->event() );
+      monitool->monitor( *g4eventproxy->event() ).ignore();
     }
   }
 

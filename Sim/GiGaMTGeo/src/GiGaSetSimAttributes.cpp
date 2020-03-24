@@ -33,14 +33,14 @@ G4LogicalVolume* GiGaSetSimAttributes::g4volume( const std::string& address ) co
 {
   const G4LogicalVolumeStore* store = G4LogicalVolumeStore::GetInstance();
   if ( 0 == store ) {
-    Error( "g4volume('" + address + "'): G4LogicalVolumeStore* is NULL!" );
+    Error( "g4volume('" + address + "'): G4LogicalVolumeStore* is NULL!" ).ignore();
     return 0;
   }
   auto vol = store->GetVolume( address );
   if ( vol ) {
     return vol;
   }
-  Error( "g4volume('" + address + "'): volume is not found!" );
+  Error( "g4volume('" + address + "'): volume is not found!" ).ignore();
   return 0;
 }
 
@@ -73,9 +73,10 @@ StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
     if ( 0 == store ) {
       return Error( " process('" + vol + "'): G4LogicalVolumeStore* is invalid" );
     }
+    StatusCode sc = StatusCode::SUCCESS;
     for ( auto vol : *store ) {
       if ( 0 != vol ) {
-        process( vol->GetName() );
+        sc &= process( vol->GetName() );
       }
     }
     return StatusCode::SUCCESS; // RETURN
@@ -163,12 +164,12 @@ StatusCode GiGaSetSimAttributes::setUserLimits( G4LogicalVolume* lv, const Gauss
     auto aux = dynamic_cast<Gaussino::UserLimits*>( lv->GetUserLimits() );
     // keep the identical limits
     if ( 0 == aux || ( ul != *aux ) ) {
-      Warning( " setUserLimits ('" + volume + "') : G4LogicalVolume has user limits " );
+      Warning( " setUserLimits ('" + volume + "') : G4LogicalVolume has user limits " ).ignore();
       // keep the existing limits
       if ( !overwrite() ) {
         return StatusCode::SUCCESS;
       } // ATTENTNION
-      Warning( " setUserLimits ('" + volume + "') : Existing limits are to be replaced " );
+      Warning( " setUserLimits ('" + volume + "') : Existing limits are to be replaced " ).ignore();
       // overwrite existing limits!
       G4UserLimits* tmp = lv->GetUserLimits();
       if ( 0 != tmp ) {

@@ -103,7 +103,7 @@ StatusCode MaterialEval::initialize() {
   }
   m_mass = particle -> mass();
 
-  release( ppSvc );
+  release( ppSvc ).ignore();
 
   if( m_useGrid ) {
     info() << "Generating in a grid of regular steps in ";

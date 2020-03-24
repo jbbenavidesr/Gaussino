@@ -170,6 +170,7 @@ StatusCode Pythia8Production::initialize() {
 StatusCode Pythia8Production::initializeGenerator() {
 
 
+  StatusCode sc = StatusCode::SUCCESS;
   // Initialize the external pointers.
   m_pythia->setBeamShapePtr(m_pythiaBeamTool);
   if (m_hooks) m_pythia->setUserHooksPtr(m_hooks);
@@ -191,10 +192,10 @@ StatusCode Pythia8Production::initializeGenerator() {
   if ("UNKNOWN" != System::getEnv("LBPYTHIA8ROOT") && m_pythia->readFile
       (System::getEnv("LBPYTHIA8ROOT") + "/options/" + m_tuningFile));
   else
-    Warning("Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile +
+    sc &= Warning("Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile +
 	    ", using default options.");
   if (m_tuningUserFile != "" && !m_pythia->readFile(m_tuningUserFile))
-    Warning ("Failed to find " + m_tuningUserFile + ".");
+    sc &= Warning ("Failed to find " + m_tuningUserFile + ".");
 
   // Turn off minimum bias if using LHAup.
   if (m_lhaup) {
@@ -220,7 +221,7 @@ StatusCode Pythia8Production::initializeGenerator() {
   for (unsigned int setting = 0; setting < m_userSettings.size(); ++setting) {
     debug() << m_userSettings[setting] << endmsg;
     if (!m_pythia->readString(m_userSettings[setting]))
-      Warning ("Failed to read the command " + m_userSettings[setting] + ".");
+      sc &= Warning ("Failed to read the command " + m_userSettings[setting] + ".");
   }
 
   // Check particle properties if requested.
@@ -262,7 +263,7 @@ StatusCode Pythia8Production::initializeGenerator() {
 
   // Initialize.
   if (m_lhaup) m_pythia->settings.mode("Beams:frameType", 5);
-  if (m_pythia->init()) return StatusCode::SUCCESS;
+  if (m_pythia->init()) return sc;
   else return Error("Failed to initialize Pythia 8.");
 }
 
@@ -362,6 +363,11 @@ StatusCode Pythia8Production::toHepMC(HepMC3::GenEventPtr theEvent,
   theEvent->set_units(old_momentum_unit, old_length_unit);
   // Convert status codes and IDs.
   int procID = m_pythia->info.code(); // process ID
+
+  // Check that we have two beam particles
+  if(theEvent->beams().size() != 2){
+    warning() << "Event does not have exactly two beam particles" << endmsg;
+  }
 
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();

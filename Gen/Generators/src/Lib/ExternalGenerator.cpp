@@ -116,8 +116,9 @@ StatusCode ExternalGenerator::initialize( ) {
   if ( "" != m_cutToolName ) 
     m_cutTool = tool< IGenCutTool >( m_cutToolName , this ) ;
 
-  if ( 0 != m_productionTool ) 
-    m_productionTool -> initializeGenerator();
+  if ( 0 != m_productionTool ) {
+    sc &= m_productionTool -> initializeGenerator();
+  }
 
   // obtain the log tool
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
@@ -341,10 +342,10 @@ StatusCode ExternalGenerator::parseLhaPdfCommands( const CommandVector &
 // Finalize method
 //=============================================================================
 StatusCode ExternalGenerator::finalize( ) {
-  if ( 0 != m_decayTool ) release( m_decayTool ) ;
-  if ( 0 != m_productionTool ) release( m_productionTool ) ;
-  if ( 0 != m_cutTool ) release( m_cutTool ) ;
-  if ( 0 != m_ppSvc ) release( m_ppSvc ) ;
+  if ( 0 != m_decayTool ) release( m_decayTool ).ignore() ;
+  if ( 0 != m_productionTool ) release( m_productionTool ).ignore() ;
+  if ( 0 != m_cutTool ) release( m_cutTool ).ignore() ;
+  if ( 0 != m_ppSvc ) release( m_ppSvc ).ignore() ;
 
   // set the name of the method
   m_xmlLogTool -> addMethod( this -> name() ) ;

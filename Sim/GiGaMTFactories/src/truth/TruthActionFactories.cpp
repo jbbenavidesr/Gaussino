@@ -62,7 +62,7 @@ class TruthStoringTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4Us
   StatusCode initialize() override {
     auto sc = extends::initialize();
     // Manually retrieve here to avoid race condition as construct() can be called concurrently
-    m_ppSvc.retrieve();
+    sc &= m_ppSvc.retrieve();
     return sc;
   }
 

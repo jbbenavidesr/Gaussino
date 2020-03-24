@@ -78,7 +78,7 @@ StatusCode FlatPtRapidity::initialize() {
   info() << "Rapidity range: " << m_minRapidity << " <-> " 
           << m_maxRapidity << endmsg ;
   
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return sc ;
 }

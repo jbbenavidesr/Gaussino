@@ -112,14 +112,14 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
       m_productionTool -> turnOnFragmentation( ) ;
       // Clear theGenEvent
       Clear( theGenEvent ) ;
-      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ) ;
+      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ).ignore() ;
       
       // Check if one particle of the requested list is present in event
       unsigned int nRepetitions = 0 ;
       
       while ( nRepetitions < m_maxNumberOfRepetitions ) {
         // Decay heavy particles
-        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
+        decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine).ignore() ;
         
         // Check if one particle of the requested list is present in event
         ParticleVector theParticleList ;
@@ -140,7 +140,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                                          hasFlipped , hasFailed , engine ) ;
 
 	    if ( hasFailed ) {
-	      Error( "Skip Event" ) ;
+	      Error( "Skip Event" ).ignore() ;
 	      HepMCUtils::RemoveDaughters( theSignal ) ;
 	      return false ;
 	    }
@@ -239,7 +239,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
             m_productionTool -> turnOnFragmentation( ) ;
             m_productionTool -> savePartonEvent( theGenEvent ) ;
             Clear( theGenEvent ) ;
-            m_productionTool -> hadronize( theGenEvent , theGenCollision , engine) ;
+            m_productionTool -> hadronize( theGenEvent , theGenCollision , engine).ignore() ;
           }
           // Then we exit and do not re-hadronize this event
           // not to bias things
@@ -254,7 +254,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
         m_productionTool -> savePartonEvent( theGenEvent ) ;
         // Clear HepMC event
         Clear( theGenEvent ) ;
-        m_productionTool -> hadronize( theGenEvent , theGenCollision , engine) ;
+        m_productionTool -> hadronize( theGenEvent , theGenCollision , engine).ignore() ;
       }
       
       if ( nRepetitions == m_maxNumberOfRepetitions ) 
@@ -263,7 +263,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
     }
     else if (m_hepMCName=="Pythia8") {
       //hadronize the pile-up events for Pythia8 (already done above for pythia6)
-      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ) ;
+      m_productionTool -> hadronize( theGenEvent , theGenCollision , engine ).ignore() ;
     }
   }
   

@@ -107,7 +107,7 @@ StatusCode GenericGun::initialize( ) {
     }
   }
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return sc ;
 }

@@ -164,9 +164,10 @@ StatusCode Pythia8ProductionMT::initialize()
 //=============================================================================
 StatusCode Pythia8ProductionMT::initializeGenerator()
 {
+  StatusCode sc = StatusCode::SUCCESS;
   if ( !m_pythia() ) {
     debug() << "Skipping generator initialization for this thread" << endmsg;
-    return StatusCode::SUCCESS;
+    return sc;
   }
 
   // Initialize the external pointers.
@@ -191,9 +192,9 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
        m_pythia->readFile( System::getEnv( "LBPYTHIA8ROOT" ) + "/options/" + m_tuningFile ) )
     ;
   else
-    Warning( "Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile + ", using default options." );
+    sc &= Warning( "Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile + ", using default options." );
   if ( m_tuningUserFile != "" && !m_pythia->readFile( m_tuningUserFile ) )
-    Warning( "Failed to find " + m_tuningUserFile + "." );
+    sc &= Warning( "Failed to find " + m_tuningUserFile + "." );
 
   // Turn off minimum bias if using LHAup.
   if ( m_lhaup() ) {
@@ -217,7 +218,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
   for ( unsigned int setting = 0; setting < m_userSettings.size(); ++setting ) {
     debug() << m_userSettings[setting] << endmsg;
     if ( !m_pythia->readString( m_userSettings[setting] ) )
-      Warning( "Failed to read the command " + m_userSettings[setting] + "." );
+      sc &= Warning( "Failed to read the command " + m_userSettings[setting] + "." );
   }
 
   // Check particle properties if requested.
@@ -259,7 +260,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
   // Initialize.
   if (m_lhaup.get()) m_pythia->settings.mode("Beams:frameType", 5);
   if ( m_pythia->init() )
-    return StatusCode::SUCCESS;
+    return sc;
   else
     return Error( "Failed to initialize Pythia 8." );
 }
@@ -345,6 +346,11 @@ StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEventPtr theEvent,
 
   // Convert status codes and IDs.
   int procID = m_pythia->info.code(); // process ID
+
+  // Check that we have two beam particles
+  if(theEvent->beams().size() != 2){
+    warning() << "Event does not have exactly two beam particles" << endmsg;
+  }
 
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();
@@ -622,7 +628,7 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   }
 
   // Now initialize the generator and hope for the best!
-  const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
+  sc &= const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
   if ( m_first_init ) {
     printRunningConditions();
     m_first_init = false;
@@ -643,7 +649,7 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   // Push this into the manager for later merging and cleanup of the used pythia instances
   std::lock_guard<std::mutex> l{m_pythia_lock};
   m_manager->store.emplace_back( m_pythia(), m_hooks(), m_lhaup(), m_pythiaBeamTool() );
-  return StatusCode::SUCCESS;
+  return sc;
 }
 
 StatusCode Pythia8ProductionMT::finalize()

@@ -72,7 +72,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
 
     if ( ! result ) {
       // Decay particles heavier than the particles to look at
-      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
+      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine).ignore() ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;
@@ -89,7 +89,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
             chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
-            Error( "Skip event" ) ;
+            Error( "Skip event" ).ignore() ;
             return false ;
           }
 

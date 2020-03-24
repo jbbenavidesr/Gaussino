@@ -58,7 +58,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
   const LHCb::ParticleProperty * prop = ppSvc -> find( LHCb::ParticleID( *m_pids.begin() ) ) ;
   m_signalMass = prop -> mass() ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
   
   return sc ;
 }
@@ -160,7 +160,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         HepMCUtils::RemoveDaughters( theSignal ) ;
 	
 	if ( hasFailed ) {
-	  Error( "Skip event" ) ;
+	  Error( "Skip event" ).ignore() ;
 	  return false  ;
 	}
         
@@ -320,7 +320,7 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC3::GenParticlePtr
     HepMC3::GenParticlePtr theNewSignal             = newPart ;
     
     // Recursive call to boostTree for each daughter
-    boostTree( theNewSignal , child, theBoost ) ;
+    boostTree( theNewSignal , child, theBoost ).ignore() ;
   }
 
   return StatusCode::SUCCESS ;
