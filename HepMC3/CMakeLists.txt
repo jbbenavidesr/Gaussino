@@ -5,7 +5,7 @@ find_package(ROOT)
 # Define EvtGen external project
 include(ExternalProject)
 set(HEPMC3_GIT_SOURCE "ssh://git@gitlab.cern.ch:7999/Gaussino/HepMC3.git" CACHE STRING "URL of the HepMC3 git repository")
-set(HEPMC3_GIT_TAG "pythia_beam_fix" CACHE STRING "Tag of HepMC3 to be used")
+set(HEPMC3_GIT_TAG "official_patched" CACHE STRING "Tag of HepMC3 to be used")
 message(STATUS "HepMC3 will use tag \"${HEPMC3_GIT_TAG}\" from repository ${HEPMC3_GIT_SOURCE}")
 message(STATUS "Binary dir = ${PROJECT_BINARY_DIR}")
 message(STATUS "Build command = ${BUILD_COMMAND}")
