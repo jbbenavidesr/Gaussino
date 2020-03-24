@@ -25,10 +25,9 @@ public:
   operator()( const LHCb::GenHeader& ) const override;
 
 private:
-  AnyDataHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, Gaudi::DataHandle::Reader,
-                                                        this};
-  AnyDataHandle<std::vector<HepMC3::GenEventPtr>> m_originaleventhandle{
-      this, Gaudi::DataHandle::Reader, "OriginalEventLocation", Gaussino::HepMCEventLocation::Default};
+  DataObjectReadHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, this};
+  DataObjectReadHandle<std::vector<HepMC3::GenEventPtr>> m_originaleventhandle{
+      this, "OriginalEventLocation", Gaussino::HepMCEventLocation::Default};
   ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
 };
 

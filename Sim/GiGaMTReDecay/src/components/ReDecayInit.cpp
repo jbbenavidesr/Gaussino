@@ -18,7 +18,7 @@ public:
 
   virtual StatusCode initialize() override;
   virtual StatusCode finalize() override;
-  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
+  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const override;
 
   virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters> operator()() const override;
 
@@ -27,7 +27,7 @@ protected:
 
 private:
   ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
-  mutable AnyDataHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, Gaudi::DataHandle::Writer, this};
+  mutable DataObjectWriteHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, this};
 };
 
 DECLARE_COMPONENT( GenReDecayInit )

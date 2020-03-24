@@ -31,4 +31,4 @@ void BaseSorter::RemoveDecayTrees(std::vector<HepMC3::GenEventPtr> & events) con
     HepMCUtils::RemoveDaughters(part);
     part->set_status(HepMC3::Status::ReDecay);
   }
-};
+}

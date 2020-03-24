@@ -16,7 +16,7 @@ class ReDecayGeneration: public Generation{
   operator()( const LHCb::GenHeader& ) const override;
 
   private:
-  AnyDataHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, Gaudi::DataHandle::Reader, this};
+  DataObjectReadHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, this};
   ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
   ToolHandle<IReDecaySorter> m_redecaysorter{this, "Sorter", "SignalOnly"};
 };
@@ -69,7 +69,9 @@ operator()( const LHCb::GenHeader& old_gen_header) const {
       _col->setX2Bjorken(col->x2Bjorken());
       collisions.insert(_col);
     }
-    header = old_gen_header;
+    header.setEvType(old_gen_header.evType());
+    header.setEvtNumber(old_gen_header.evtNumber());
+    header.setRunNumber(old_gen_header.runNumber());
     // Get the header and update the information
     if( !header.evType() ){
       header.setEvType( m_eventType );  
