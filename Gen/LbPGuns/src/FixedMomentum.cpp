@@ -75,7 +75,7 @@ StatusCode FixedMomentum::initialize() {
           << m_py / Gaudi::Units::GeV << " GeV, " << m_pz / Gaudi::Units::GeV << " GeV)" 
           << endmsg ;
  
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return sc ;
 }

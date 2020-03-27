@@ -2,7 +2,7 @@
 
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4VHitsCollection.hh"
-#include <vector>
+#include <memory>
 
 class GiGaWorkerPilot;
 namespace Gaussino
@@ -71,4 +71,5 @@ private:
   Gaussino::MCTruth* m_truth{nullptr};
 };
 
-typedef std::vector<G4EventProxy> G4EventProxies;
+typedef std::shared_ptr<G4EventProxy> G4EventProxyPtr;
+typedef std::vector<G4EventProxyPtr> G4EventProxies;

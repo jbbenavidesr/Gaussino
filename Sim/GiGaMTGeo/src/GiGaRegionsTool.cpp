@@ -28,6 +28,7 @@ DECLARE_COMPONENT( GiGaRegionsTool )
 // ============================================================================
 StatusCode GiGaRegionsTool::process( const std::string& region ) const
 {
+  StatusCode sc{StatusCode::SUCCESS};
   if ( !m_simSvc.isValid() ) {
     return Error( " process('" + region + "'): IRegionsDefinitionSvc* is invalid!" );
   }
@@ -57,12 +58,12 @@ StatusCode GiGaRegionsTool::process( const std::string& region ) const
 
       G4LogicalVolume* volume = G4LogicalVolumeStore::GetInstance()->GetVolume( ivolume );
       if ( 0 == volume ) {
-        Error( " process('" + ireg.region() + "'): G4LogicalVolume* '" + ivolume + "' points to NULL, skip it  " );
+        sc &= Error( " process('" + ireg.region() + "'): G4LogicalVolume* '" + ivolume + "' points to NULL, skip it  " );
         continue;
       }
 
       if ( 0 != volume->GetRegion() && !m_overwrite ) {
-        Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
+        sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
                  "' , skip " );
         continue;
       } else if ( 0 != volume->GetRegion() && m_overwrite ) {
@@ -70,7 +71,7 @@ StatusCode GiGaRegionsTool::process( const std::string& region ) const
           debug() << "G4Region Change for  "
                   << " G4LogicalVolume '" << ivolume << " ' to " << reg->GetName() << endmsg;
         } else {
-          Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
+          sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
                    "', overwrite " );
         }
       }
@@ -96,5 +97,5 @@ StatusCode GiGaRegionsTool::process( const std::string& region ) const
     reg->SetProductionCuts( cuts );
   }
 
-  return StatusCode::SUCCESS;
+  return sc;
 }

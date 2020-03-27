@@ -57,7 +57,7 @@ StatusCode StandAloneDecayTool::initialize() {
   const LHCb::ParticleProperty * prop = ppSvc -> find( LHCb::ParticleID( *m_pids.begin() ) ) ;
   m_signalMass = prop -> mass() ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return StatusCode::SUCCESS;
 }
@@ -66,12 +66,12 @@ StatusCode StandAloneDecayTool::initialize() {
 // Main execution
 //=============================================================================
 bool StandAloneDecayTool::generate( const unsigned int nPileUp , 
-                                    std::vector<HepMC3::GenEvent> & theEvents ,
+                                    HepMC3::GenEventPtrs & theEvents ,
                                     LHCb::GenCollisions & theCollisions ,
                                     HepRandomEnginePtr & engine ) const {
   // prepare event
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
 
   // generate the requested number of "pile-up" events
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -109,9 +109,9 @@ bool StandAloneDecayTool::generate( const unsigned int nPileUp ,
     }
 
     if ( ! m_inclusive ) 
-      m_decayTool -> generateSignalDecay( theParticle , flip , engine ) ;
+      m_decayTool -> generateSignalDecay( theParticle , flip , engine ).ignore() ;
     else 
-      m_decayTool -> generateDecay( theParticle , engine ) ;
+      m_decayTool -> generateDecay( theParticle , engine ).ignore() ;
     
     theParticle -> set_status( HepMC3::Status::SignalInLabFrame ) ;
   

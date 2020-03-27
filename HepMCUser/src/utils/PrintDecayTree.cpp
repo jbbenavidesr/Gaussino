@@ -26,7 +26,12 @@ std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level, cons
   } else {
     outstream << part->pdg_id();
   }
-  outstream << " -> #" << part->id() << ", " << HepMC3::to_status_type(part->status()) << "\n";
+  outstream << " -> #" << part->id() << ", " << HepMC3::to_status_type(part->status());
+  outstream << " Attributes {";
+  for(auto & atts: part->attribute_names()){
+    outstream << atts << ",";
+  }
+  outstream << "} \n";
   if ( part->end_vertex() ) {
     for ( auto p : part->children() ) {
       outstream << PrintDecay( p, level + 1, ppsvc );

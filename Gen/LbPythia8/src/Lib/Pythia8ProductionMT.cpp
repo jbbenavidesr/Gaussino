@@ -31,9 +31,6 @@
 #include "HepMC3/GenVertex.h"
 #include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 
-#include "CLHEP/Random/RandFlat.h"
-#include "CLHEP/Random/RandomEngine.h"
-
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8ProductionMT
 //
@@ -167,9 +164,10 @@ StatusCode Pythia8ProductionMT::initialize()
 //=============================================================================
 StatusCode Pythia8ProductionMT::initializeGenerator()
 {
+  StatusCode sc = StatusCode::SUCCESS;
   if ( !m_pythia() ) {
     debug() << "Skipping generator initialization for this thread" << endmsg;
-    return StatusCode::SUCCESS;
+    return sc;
   }
 
   // Initialize the external pointers.
@@ -194,9 +192,9 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
        m_pythia->readFile( System::getEnv( "LBPYTHIA8ROOT" ) + "/options/" + m_tuningFile ) )
     ;
   else
-    Warning( "Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile + ", using default options." );
+    sc &= Warning( "Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile + ", using default options." );
   if ( m_tuningUserFile != "" && !m_pythia->readFile( m_tuningUserFile ) )
-    Warning( "Failed to find " + m_tuningUserFile + "." );
+    sc &= Warning( "Failed to find " + m_tuningUserFile + "." );
 
   // Turn off minimum bias if using LHAup.
   if ( m_lhaup() ) {
@@ -220,7 +218,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
   for ( unsigned int setting = 0; setting < m_userSettings.size(); ++setting ) {
     debug() << m_userSettings[setting] << endmsg;
     if ( !m_pythia->readString( m_userSettings[setting] ) )
-      Warning( "Failed to read the command " + m_userSettings[setting] + "." );
+      sc &= Warning( "Failed to read the command " + m_userSettings[setting] + "." );
   }
 
   // Check particle properties if requested.
@@ -262,7 +260,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
   // Initialize.
   if (m_lhaup.get()) m_pythia->settings.mode("Beams:frameType", 5);
   if ( m_pythia->init() )
-    return StatusCode::SUCCESS;
+    return sc;
   else
     return Error( "Failed to initialize Pythia 8." );
 }
@@ -270,7 +268,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 //=============================================================================
 // Generate an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision,
+StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
                                                HepRandomEnginePtr& engine ) const
 {
   if ( !m_pythia() ) {
@@ -283,16 +281,6 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
     }
   }
 
-  class RndForPythia : public Pythia8::RndmEngine
-  {
-  public:
-    RndForPythia( CLHEP::HepRandomEngine& engine ) : m_gen( engine, 0, 1 ) {}
-    virtual double flat() { return m_gen(); }
-
-  private:
-    CLHEP::RandFlat m_gen;
-  };
-
   auto pythia = m_pythia();
   RndForPythia rnd_generator{engine.getref()};
   pythia->setRndmEnginePtr( &rnd_generator );
@@ -303,10 +291,7 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
   if ( !m_pythia->flag( "HadronLevel:all" ) ) m_event = pythia->event;
   ++m_nEvents;
 
-  LHCb::GenFSR* genFSR{nullptr};
-  if(m_FSRName != ""){
-    genFSR = GenFSRMTManager::GetGenFSR();
-  }
+  LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
 
   // Store the minimum bias cross-section in the GenFSR.
   std::vector<int> codes = m_pythia->info.codesHard();
@@ -347,21 +332,25 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEvent* theEvent, LHCb:
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEvent* theEvent, 
+StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEventPtr theEvent, 
 				      LHCb::GenCollision* theCollision) const {
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
-
   auto old_momentum_unit = theEvent->momentum_unit();
   auto old_length_unit = theEvent->length_unit();
   conversion.set_print_inconsistency(m_validate_HEPEVT);
-  if (!(conversion.fill_next_event(*m_pythia(), theEvent))) 
+  if (!(conversion.fill_next_event(*m_pythia(), theEvent.get()))) 
     return Error("Failed to convert Pythia 8 event to HepMC3.");
   theEvent->set_units(old_momentum_unit, old_length_unit);
 
   // Convert status codes and IDs.
   int procID = m_pythia->info.code(); // process ID
+
+  // Check that we have two beam particles
+  if(theEvent->beams().size() != 2){
+    warning() << "Event does not have exactly two beam particles" << endmsg;
+  }
 
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();
@@ -478,15 +467,37 @@ void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProp
 //=============================================================================
 // Turn on and off fragmentation.
 //=============================================================================
-void Pythia8ProductionMT::turnOnFragmentation() { m_pythia->settings.flag( "HadronLevel:Hadronize", true ); }
+void Pythia8ProductionMT::turnOnFragmentation() { 
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", true ); }
 
-void Pythia8ProductionMT::turnOffFragmentation() { m_pythia->settings.flag( "HadronLevel:Hadronize", false ); }
+void Pythia8ProductionMT::turnOffFragmentation() {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", false ); }
 
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEvent* theEvent, LHCb::GenCollision* theCollision )
+StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine )
 {
+  RndForPythia rnd_generator{engine.getref()};
+  m_pythia->setRndmEnginePtr(&rnd_generator);
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
 }
@@ -494,12 +505,32 @@ StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEvent* theEvent, LHCb::Gen
 //=============================================================================
 // Save the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_event = m_pythia->event; }
+void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_event = m_pythia->event; }
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
 //=============================================================================
-void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEvent* /*theEvent*/ ) { m_pythia->event = m_event(); }
+void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) {
+  if ( !m_pythia() ) {
+    debug() << "Initializing Pythia8 in thread!" << endmsg;
+    // This is supposed to only affect thread-local variables so while
+    // not technically constant it is marked as such to be called here
+    auto sc = InitializeThread();
+    if(sc.isFailure()){
+      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
+    }
+  }
+  m_pythia->event = m_event(); }
 
 //=============================================================================
 // Print the running conditions.
@@ -597,13 +628,13 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   }
 
   // Now initialize the generator and hope for the best!
-  const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
+  sc &= const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
   if ( m_first_init ) {
     printRunningConditions();
     m_first_init = false;
   } else {
-    GetInitBarrier( m_nThreads - 1 ).wait();
-    std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
+    //GetInitBarrier( m_nThreads - 1 ).wait();
+    //std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
   }
 
   // This is just a dumb hack to clean up after the threads
@@ -618,7 +649,7 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   // Push this into the manager for later merging and cleanup of the used pythia instances
   std::lock_guard<std::mutex> l{m_pythia_lock};
   m_manager->store.emplace_back( m_pythia(), m_hooks(), m_lhaup(), m_pythiaBeamTool() );
-  return StatusCode::SUCCESS;
+  return sc;
 }
 
 StatusCode Pythia8ProductionMT::finalize()

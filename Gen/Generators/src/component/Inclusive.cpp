@@ -99,14 +99,14 @@ StatusCode Inclusive::initialize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Inclusive::generate( const unsigned int nPileUp , 
-                          std::vector<HepMC3::GenEvent> & theEvents , 
+                          HepMC3::GenEventPtrs & theEvents , 
                           LHCb::GenCollisions & theCollisions ,
                           HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   bool result = false ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
 
   // Moved into conditional statement for now
   //GenCounters::BHadronCounter thebHadC , theantibHadC ;
@@ -114,7 +114,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //GenCounters::ExcitedCounter thebExcitedC , thecExcitedC ;
   //unsigned int theccCounter , thebbCounter ;
   
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -128,7 +128,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
       // Decay particles heavier than the particles to look at
       // If N hadrons <= 2, we assume it is (h,hbar)
       // Passing m_pids[0] needed for incl. charmless bottomless hadron production
-      decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()), engine ) ;
+      sc &= decayHeavyParticles( theGenEvent , m_lightestQuark , m_pids.size() > 2 ? 0 : *(m_pids.begin()), engine ) ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;
@@ -145,11 +145,11 @@ bool Inclusive::generate( const unsigned int nPileUp ,
         GenCounters::ExcitedCounter thebExcitedC{} , thecExcitedC{} ;
         std::atomic_uint thebbCounter{}, theccCounter{};
           
-        GenCounters::updateHadronCounters( theGenEvent , thebHadC , 
+        GenCounters::updateHadronCounters( theGenEvent.get() , thebHadC , 
                                            theantibHadC , thecHadC , 
                                            theanticHadC , thebbCounter , 
                                            theccCounter ) ;
-        GenCounters::updateExcitedStatesCounters( theGenEvent , thebExcitedC , 
+        GenCounters::updateExcitedStatesCounters( theGenEvent.get() , thebExcitedC , 
                                                   thecExcitedC ) ;
 
         // Accumulate counters
@@ -163,14 +163,14 @@ bool Inclusive::generate( const unsigned int nPileUp ,
         GenCounters::AddTo( m_bExcitedC , thebExcitedC ) ;
         GenCounters::AddTo( m_cExcitedC , thecExcitedC ) ;
 
-        GenCounters::updateHadronFSR( theGenEvent, genFSR, "Gen");
+        if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Gen");
 
         ++m_nEventsBeforeCut ;
         key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        genFSR->incrementGenCounter(key, 1);
+        if(genFSR) genFSR->incrementGenCounter(key, 1);
         bool passCut = true ;
         if ( 0 != m_cutTool ) 
-          passCut = m_cutTool -> applyCut( theParticleList , theGenEvent , 
+          passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() , 
                                            theGenCollision ) ;
         
         if ( passCut && ( ! theParticleList.empty() ) ) {
@@ -180,15 +180,15 @@ bool Inclusive::generate( const unsigned int nPileUp ,
           theGenCollision -> setIsSignal( true ) ;
 
           if ( 0 == nPositivePz( theParticleList ) ) {
-            revertEvent( theGenEvent ) ;
+            revertEvent( theGenEvent.get() ) ;
             ++m_nInvertedEvents ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            genFSR->incrementGenCounter(key, 1);
+            if(genFSR) genFSR->incrementGenCounter(key, 1);
           }
           else
           {
             key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) genFSR->incrementGenCounter(key, 1); 
           }
 
           GenCounters::AddTo( m_bHadCAccepted , thebHadC ) ;
@@ -199,7 +199,7 @@ bool Inclusive::generate( const unsigned int nPileUp ,
           GenCounters::AddTo( m_bExcitedCAccepted , thebExcitedC ) ;
           GenCounters::AddTo( m_cExcitedCAccepted , thecExcitedC ) ;          
 
-          GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+          if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
         }
       }
     }

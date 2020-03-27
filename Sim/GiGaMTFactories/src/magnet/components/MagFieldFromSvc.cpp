@@ -79,7 +79,7 @@ public:
   using extends::extends;
   StatusCode initialize() override {
     auto sc = extends::initialize();
-    m_magFieldSvc.retrieve();
+    sc &= m_magFieldSvc.retrieve();
     return sc;
   }
   MagFieldFromSvc* construct() const override { return new MagFieldFromSvc{m_magFieldSvc.get()}; }

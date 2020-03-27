@@ -28,7 +28,7 @@
 #include "HepMCUtils/HepMCUtils.h"
 
 // local
-#include "Generation.h"
+#include "Generators/Generation.h"
 
 #include <iostream>
 #include <stdlib.h>     /* getenv */
@@ -51,8 +51,6 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-
-DECLARE_COMPONENT( Generation )
 
 
 //=============================================================================
@@ -116,15 +114,20 @@ StatusCode Generation::initialize() {
 //=============================================================================
 // Main execution
 //=============================================================================
-std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
-operator()( const LHCb::GenHeader& old_gen_header) const
-{
-  auto m_genFSR = GenFSRMTManager::GetGenFSR();
-
-  debug() << "Processing event type " << m_eventType << endmsg;
+std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader> Generation::
+operator()( const LHCb::GenHeader& old_gen_header) const {
   auto engine = createRndmEngine();
   // Set this as the global engine as some other tools will eventually need it.
   ThreadLocalEngine::Guard rnd_guard(engine);
+  return callOperatorImplementation(old_gen_header, engine);
+}
+
+std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
+Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, HepRandomEnginePtr & engine ) const
+{
+  auto m_genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+
+  debug() << "Processing event type " << m_eventType << endmsg;
   StatusCode sc = StatusCode::SUCCESS;
   setFilterPassed( true ) ;
 
@@ -136,7 +139,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     theGenHeader.setEvType( m_eventType );  
   }
 
-  if(m_genFSR->getSimulationInfo("evtType", 0) == 0)
+  if(m_genFSR && m_genFSR->getSimulationInfo("evtType", 0) == 0)
   {
     std::string decFiles = "";
     int evtType = 0;
@@ -171,7 +174,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
   unsigned int  nPileUp( 0 ) ;
 
   // Create temporary containers for this event
-  std::vector<HepMC3::GenEvent> theEvents;
+  std::vector<HepMC3::GenEventPtr> theEvents;
   LHCb::GenCollisions theCollisions;
 
   interactionCounter theIntCounter ;
@@ -193,11 +196,6 @@ operator()( const LHCb::GenHeader& old_gen_header) const
       // default set to 1 pile and 2.10^32 luminosity
       nPileUp = 1 ;
 
-    // FIXME: Events should not be placed into a vector...
-    // They only have a default copy constructor which messes
-    // up the parent_event() reference of contained particles
-    // when resizing. Maybe ask HepMC authors to delete the copy
-    // constructor and implement a working noexcept move constructor?
     theEvents.reserve(nPileUp);
     // generate a set of Pile up interactions according to the requested type
     // of event
@@ -215,11 +213,11 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     // increase the generated events counter in the FSR                                                                                                          
     name = "EvtGenerated";
     key = LHCb::GenCountersFSR::CounterKeyToType(name);
-    m_genFSR->incrementGenCounter(key,1);
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
     // increase the generated interactions counter in the FSR                                                                                                    
     name = "IntGenerated";
     key = LHCb::GenCountersFSR::CounterKeyToType(name);    
-    m_genFSR->incrementGenCounter(key,nPileUp);
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
 
     // Update interaction counters
     if ( 0 < nPileUp ) { 
@@ -228,7 +226,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
         //std::atomic_init<unsigned int>(&x, 0);
       //}
       for ( auto & evt : theEvents ){
-        updateInteractionCounters( theIntCounter , &evt );
+        updateInteractionCounters( theIntCounter , evt.get() );
       }
     
       // Increse the generated interactions counters in FSR                                                                                                      
@@ -241,23 +239,23 @@ operator()( const LHCb::GenHeader& old_gen_header) const
         unsigned short iPile( 0 ) ;
         for ( auto & evt : theEvents ) {
           if ( m_decayTool ) {
-            sc = decayEvent( &evt , engine ) ;
+            sc = decayEvent( evt , engine ) ;
             if ( ! sc.isSuccess() ) goodEvent = false ;
           }
-          evt.set_event_number( ++iPile ) ;
+          evt->set_event_number( ++iPile ) ;
           if(m_vertexSmearingTool){
             if ( ( ! ( m_commonVertex.value() ) ) || ( 1 == iPile ) )
-                sc = m_vertexSmearingTool -> smearVertex( &evt , engine ) ;
+                sc = m_vertexSmearingTool -> smearVertex( evt , engine ) ;
             if ( ! sc.isSuccess() ) error() << "Smearing tool failed" << endmsg;
           }
         }
       }
-
+      auto bla = *std::begin(theEvents);
       if ( ( m_commonVertex.value() ) && ( 1 < nPileUp ) ) {
         auto commonV = 
-          (*std::begin(std::begin(theEvents)->beams()))->end_vertex()->position();
+          (*std::begin((*std::begin(theEvents))->beams()))->end_vertex()->position();
         for ( auto & evt : theEvents ) {
-          for ( auto & vtx : evt.vertices() ) {
+          for ( auto & vtx : evt->vertices() ) {
             auto pos = vtx -> position() ;
             //FIXME: Shouldn't this shift by -pos + commonV to have the same vertex?
             vtx -> set_position( HepMC3::FourVector( pos.x() + commonV.x() , 
@@ -276,7 +274,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
           // increase the counter of events before the full event generator level cut in the FSR                                                                 
           name = "BeforeFullEvt";
           key = LHCb::GenCountersFSR::CounterKeyToType(name);          
-          m_genFSR->incrementGenCounter(key,1);
+          if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
           if ( goodEvent ) {
@@ -284,7 +282,7 @@ operator()( const LHCb::GenHeader& old_gen_header) const
             // increase the counter of events after the full event generator level cut in the FSR                                                                
             name = "AfterFullEvt";
             key = LHCb::GenCountersFSR::CounterKeyToType(name);
-            m_genFSR->incrementGenCounter(key,1);            
+            if(m_genFSR) m_genFSR->incrementGenCounter(key,1);            
           }
         }
       }
@@ -297,12 +295,12 @@ operator()( const LHCb::GenHeader& old_gen_header) const
   // increase the generated events counter in the FSR                                                                                                            
   name = "EvtAccepted";
   key = LHCb::GenCountersFSR::CounterKeyToType(name);
-  m_genFSR->incrementGenCounter(key,1);
+  if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
 
   // increase the generated interactions counter in the FSR                                                                                                      
   name = "IntAccepted";
   key = LHCb::GenCountersFSR::CounterKeyToType(name);  
-  m_genFSR->incrementGenCounter(key,nPileUp);
+  if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
 
   if ( 0 < nPileUp ) {
     //GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
@@ -324,15 +322,15 @@ operator()( const LHCb::GenHeader& old_gen_header) const
     for( auto event_gencol : ranges::view::zip(theEvents, theCollisions)) {
       auto & evt = event_gencol.first;
       // GenFSR
-      if(m_genFSR->getSimulationInfo("hardGenerator", "") == "")
-        m_genFSR->addSimulationInfo("hardGenerator",evt.attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
+      if(m_genFSR && m_genFSR->getSimulationInfo("hardGenerator", "") == "")
+        m_genFSR->addSimulationInfo("hardGenerator",evt->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName)->value());
     }
   }
 
   //Just before writing, set the event and run number of the HepMC events so they are persisted.
   for(auto & evt : theEvents){
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-    evt.add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
   }
 
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));
@@ -370,21 +368,21 @@ StatusCode Generation::finalize() {
   m_sampleGenerationTool -> printCounters() ;
 
   // create a new FSR and append to TDS                                                                                                                          
-  auto m_genFSR = GenFSRMTManager::GetCombined();
+  auto m_genFSR = GenFSRMTManager::GetCombined(m_FSRName);
 
   // Now either create the info in the TES or add it to the existing one                                                                                         
-  put(m_fileRecordSvc, m_genFSR, m_FSRName);
+  if(m_genFSR) put(m_fileRecordSvc, m_genFSR, m_FSRName);
 
   // check if the FSR can be retrieved from the TS                                                                                                               
   LHCb::GenFSR* readFSR = getIfExists<LHCb::GenFSR>(m_fileRecordSvc, m_FSRName);
   if(readFSR!=NULL)    // print the FSR just retrieved from TS                                                                                                   
     always() << "READ FSR: " << *readFSR << endmsg;
 
-  if ( 0 != m_pileUpTool ) release( m_pileUpTool ) ;
-  if ( 0 != m_decayTool ) release( m_decayTool ) ;
-  if ( 0 != m_sampleGenerationTool ) release( m_sampleGenerationTool ) ;
-  if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ) ;
-  if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ) ;
+  if ( 0 != m_pileUpTool ) release( m_pileUpTool ).ignore() ;
+  if ( 0 != m_decayTool ) release( m_decayTool ).ignore() ;
+  if ( 0 != m_sampleGenerationTool ) release( m_sampleGenerationTool ).ignore() ;
+  if ( 0 != m_vertexSmearingTool ) release( m_vertexSmearingTool ).ignore() ;
+  if ( 0 != m_fullGenEventCutTool ) release( m_fullGenEventCutTool ).ignore() ;
   
   return GaudiAlgorithm::finalize( ) ; // Finalize base class
 }
@@ -393,7 +391,7 @@ StatusCode Generation::finalize() {
 // Decay in the event all particles which have been left stable by the
 // production generator
 //=============================================================================
-StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) const {
+StatusCode Generation::decayEvent( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) const {
   m_decayTool -> disableFlip() ;
   StatusCode sc ;
   
@@ -429,7 +427,7 @@ StatusCode Generation::decayEvent( HepMC3::GenEvent * theEvent , HepRandomEngine
 // Interaction counters
 //=============================================================================
 void Generation::updateInteractionCounters( interactionCounter & theCounter ,
-                                            const HepMC3::GenEvent * theEvent ) const
+                                            const HepMC3::GenEvent* theEvent ) const
 {
   unsigned int bQuark( 0 ) , bHadron( 0 ) , cQuark( 0 ) , cHadron( 0 ) ;
   int pdgId ;
@@ -550,6 +548,6 @@ void Generation::updateFSRCounters( interactionCounter & theCounter,
     cname = name[i]+option;
     key = LHCb::GenCountersFSR::CounterKeyToType(cname);
     count = theCounter[i];
-    m_genFSR->incrementGenCounter(key,count); 
+    if(m_genFSR) m_genFSR->incrementGenCounter(key,count); 
   } 
 }

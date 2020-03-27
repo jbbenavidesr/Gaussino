@@ -24,9 +24,9 @@ StatusCode GiGaRegionTool::process( const std::string& /* region */ ) const
   // check the existence of the region
   G4Region* region = G4RegionStore::GetInstance()->GetRegion( m_region.value() );
   // FIXME: Should this really skip the rest or instead just updates the cuts and volumes?
+  StatusCode sc = StatusCode::SUCCESS;
   if ( 0 != region ) {
-    Warning( " The Region '" + m_region + "'  already exist, skip " );
-    return StatusCode::SUCCESS;
+    return Warning( " The Region '" + m_region + "'  already exist, skip " );
   }
 
   // create new region
@@ -38,11 +38,11 @@ StatusCode GiGaRegionTool::process( const std::string& /* region */ ) const
       return Error( " G4LogicalVolume '" + ivolume + "' is invalid " );
     }
     if ( 0 != volume->GetRegion() && !m_overwrite ) {
-      Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
+      sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
                "' , skip " );
       continue;
     } else if ( 0 != volume->GetRegion() && m_overwrite ) {
-      Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
+      sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
                "', overwrite " );
     }
     // set region

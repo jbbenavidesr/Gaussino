@@ -48,6 +48,9 @@ public:
   virtual void printPileUpCounters( ) ;
 
 private:
+  /// Location where to store FSR counters (set by options)
+  std::string  m_FSRName;
+
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)
 
   double m_fillDuration ; ///< Fill duration (set by options)

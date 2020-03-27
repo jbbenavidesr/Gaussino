@@ -43,6 +43,8 @@ FixedLuminosityForRareProcess::FixedLuminosityForRareProcess( const std::string&
     declareInterface< IPileUpTool >( this ) ;
     declareProperty( "BeamParameters" , 
                      m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
 }
 
 //=============================================================================
@@ -72,13 +74,13 @@ unsigned int FixedLuminosityForRareProcess::numberOfPileUp( HepRandomEnginePtr &
   LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;  
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   unsigned int result = 0 ;
   m_nEvents++ ;
   key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");  
-  genFSR->incrementGenCounter(key,1);
+  if(genFSR) genFSR->incrementGenCounter(key,1);
 
   CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
 

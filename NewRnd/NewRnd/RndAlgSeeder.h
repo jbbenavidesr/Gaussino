@@ -52,7 +52,7 @@ protected:
   // Checks if a new engine needs to be created, does so and returns a reference to it.
   HepRandomEnginePtr createRndmEngine() const;
 private:
-  AnyDataHandle<Random::SeedPair> m_forseed{Random::Location, Gaudi::DataHandle::Reader, this};
+  DataObjectReadHandle<Random::SeedPair> m_forseed{Random::Location, this};
 };
 
 class RndInitAlg : public GaudiAlgorithm
@@ -64,8 +64,9 @@ public:
   using GaudiAlgorithm::initialize;
 
 protected:
-  void SetSeedPair( unsigned int val1, unsigned int val2 ) const { m_forseed.put( std::make_pair( val1, val2 ) ); }
+  void SetSeedPair( unsigned int val1, unsigned int val2 ) const { m_forseed.put( Random::SeedPair{ val1, val2 } ); }
+  std::pair<unsigned int, unsigned int> GetSeedPair( ) const { return *m_forseed.get(); }
 
 private:
-  mutable AnyDataHandle<Random::SeedPair> m_forseed{Random::Location, Gaudi::DataHandle::Writer, this};
+  mutable DataObjectWriteHandle<Random::SeedPair> m_forseed{Random::Location, this};
 };

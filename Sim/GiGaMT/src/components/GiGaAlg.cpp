@@ -6,17 +6,17 @@
 
 DECLARE_COMPONENT( GiGaAlg )
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
   auto engine = createRndmEngine();
 
   debug() << "==> Execute" << endmsg;
-  auto ret_tuple = m_gigaSvc->simulate(m_converterTool->BuildConverter(hepmcevents), engine );
+  auto ret_tuple = m_gigaSvc->simulate(hepmcevents, engine );
 
   if ( msgLevel( MSG::DEBUG ) ) {
     auto & trackers = std::get<Gaussino::MCTruthPtrs>(ret_tuple);
     for(auto & tracker: trackers){
-    tracker->DumpToStream( debug(), [&]( int i ) -> std::string {
+    tracker->DumpToStream( debug(), "", [&]( int i ) -> std::string {
       if ( auto pid = m_ppSvc->find( LHCb::ParticleID( i ) ); pid ) {
         return pid->name();
       } else {

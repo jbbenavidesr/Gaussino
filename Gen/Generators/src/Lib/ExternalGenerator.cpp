@@ -24,6 +24,7 @@
 #include "CLHEP/Random/RandEngine.h"
 
 #include "HepMCUser/Status.h"
+#include "Event/GenFSR.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -52,6 +53,8 @@ ExternalGenerator::ExternalGenerator( const std::string& type,
     declareProperty( "LhaPdfCommands" , m_userLhaPdfSettings ) ;
     declareProperty( "KeepOriginalProperties" , m_keepOriginalProperties = 
                      false ) ;
+    declareProperty ( "GenFSRLocation", m_FSRName =
+                      LHCb::GenFSRLocation::Default);
     m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 17 LHAPDF" ) ;
     m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 16 NOSTAT" ) ;
   }
@@ -113,8 +116,9 @@ StatusCode ExternalGenerator::initialize( ) {
   if ( "" != m_cutToolName ) 
     m_cutTool = tool< IGenCutTool >( m_cutToolName , this ) ;
 
-  if ( 0 != m_productionTool ) 
-    m_productionTool -> initializeGenerator();
+  if ( 0 != m_productionTool ) {
+    sc &= m_productionTool -> initializeGenerator();
+  }
 
   // obtain the log tool
   m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
@@ -145,7 +149,7 @@ StatusCode ExternalGenerator::initialize( ) {
 //=============================================================================
 // Decay heavy excited particles
 //=============================================================================
-StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
+StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEventPtr theEvent,
      const LHCb::ParticleID::Quark theQuark , const int signalPid , HepRandomEnginePtr & engine) const {
   StatusCode sc ;
   
@@ -220,7 +224,7 @@ StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEvent * theEvent,
 // Attention : pidList must be sorted before begin used in this function
 //=============================================================================
 bool ExternalGenerator::checkPresence( const PIDs & pidList ,
-                                       HepMC3::GenEvent * theEvent ,
+                                       HepMC3::GenEventPtr theEvent ,
                                        ParticleVector & particleList ) const {
   particleList.clear( ) ;
       for (auto & part: theEvent->particles()){
@@ -240,7 +244,7 @@ bool ExternalGenerator::checkPresence( const PIDs & pidList ,
 //=============================================================================
 // invert the event
 //=============================================================================
-void ExternalGenerator::revertEvent( HepMC3::GenEvent * theEvent ) const {
+void ExternalGenerator::revertEvent( HepMC3::GenEvent* theEvent ) const {
   double x, y, z, t ;
   for (auto & vtx:theEvent->vertices()){
     x = vtx -> position().x() ;
@@ -277,11 +281,11 @@ unsigned int ExternalGenerator::nPositivePz( const ParticleVector
 //=============================================================================
 // Set up event
 //=============================================================================
-void ExternalGenerator::prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC3::GenEvent * & theGenEvent ,  
+void ExternalGenerator::prepareInteraction( HepMC3::GenEventPtrs * theEvents ,
+    LHCb::GenCollisions * theCollisions , HepMC3::GenEventPtr & theGenEvent ,  
     LHCb::GenCollision * & theGenCollision ) const {
-  theEvents->emplace_back(HepMC3::Units::MEV, HepMC3::Units::MM);
-  theGenEvent = &theEvents->back();
+  theGenEvent = std::make_shared<HepMC3::GenEvent>(HepMC3::Units::MEV, HepMC3::Units::MM);
+  theEvents->push_back(theGenEvent);
   theGenEvent->set_run_info(nullptr);
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC3::StringAttribute>( m_hepMCName ) );
@@ -338,10 +342,10 @@ StatusCode ExternalGenerator::parseLhaPdfCommands( const CommandVector &
 // Finalize method
 //=============================================================================
 StatusCode ExternalGenerator::finalize( ) {
-  if ( 0 != m_decayTool ) release( m_decayTool ) ;
-  if ( 0 != m_productionTool ) release( m_productionTool ) ;
-  if ( 0 != m_cutTool ) release( m_cutTool ) ;
-  if ( 0 != m_ppSvc ) release( m_ppSvc ) ;
+  if ( 0 != m_decayTool ) release( m_decayTool ).ignore() ;
+  if ( 0 != m_productionTool ) release( m_productionTool ).ignore() ;
+  if ( 0 != m_cutTool ) release( m_cutTool ).ignore() ;
+  if ( 0 != m_ppSvc ) release( m_ppSvc ).ignore() ;
 
   // set the name of the method
   m_xmlLogTool -> addMethod( this -> name() ) ;

@@ -37,7 +37,7 @@ class SignalForcedFragmentation : public Signal {
     *     interaction contains a b quark, calling
     *     IProductionTool::setupForcedFragmentation.
     */
-   virtual bool generate( const unsigned int nPileUp, std::vector<HepMC3::GenEvent>& theEvents,
+   virtual bool generate( const unsigned int nPileUp, HepMC3::GenEventPtrs& theEvents,
                           LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) const override;
 
  private:

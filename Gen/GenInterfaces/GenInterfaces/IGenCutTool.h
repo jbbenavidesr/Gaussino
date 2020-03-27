@@ -30,7 +30,8 @@ class IDecayTool ;
  */
 
 
-struct IGenCutTool : public extend_interfaces<IAlgTool> {
+class IGenCutTool : public extend_interfaces<IAlgTool> {
+  public:
   /// Vector of particles
   typedef std::vector< HepMC3::GenParticlePtr > ParticleVector ;
   typedef std::vector< HepMC3::ConstGenParticlePtr > ConstParticleVector ;

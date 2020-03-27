@@ -30,9 +30,6 @@
 #include "Defaults/HepMCAttributes.h"
 #include "HepMCUser/Status.h"
 
-#include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/RandFlat.h"
-
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8Production
 //
@@ -173,6 +170,7 @@ StatusCode Pythia8Production::initialize() {
 StatusCode Pythia8Production::initializeGenerator() {
 
 
+  StatusCode sc = StatusCode::SUCCESS;
   // Initialize the external pointers.
   m_pythia->setBeamShapePtr(m_pythiaBeamTool);
   if (m_hooks) m_pythia->setUserHooksPtr(m_hooks);
@@ -194,10 +192,10 @@ StatusCode Pythia8Production::initializeGenerator() {
   if ("UNKNOWN" != System::getEnv("LBPYTHIA8ROOT") && m_pythia->readFile
       (System::getEnv("LBPYTHIA8ROOT") + "/options/" + m_tuningFile));
   else
-    Warning("Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile +
+    sc &= Warning("Failed to find $LBPYTHIA8ROOT/options/" + m_tuningFile +
 	    ", using default options.");
   if (m_tuningUserFile != "" && !m_pythia->readFile(m_tuningUserFile))
-    Warning ("Failed to find " + m_tuningUserFile + ".");
+    sc &= Warning ("Failed to find " + m_tuningUserFile + ".");
 
   // Turn off minimum bias if using LHAup.
   if (m_lhaup) {
@@ -223,7 +221,7 @@ StatusCode Pythia8Production::initializeGenerator() {
   for (unsigned int setting = 0; setting < m_userSettings.size(); ++setting) {
     debug() << m_userSettings[setting] << endmsg;
     if (!m_pythia->readString(m_userSettings[setting]))
-      Warning ("Failed to read the command " + m_userSettings[setting] + ".");
+      sc &= Warning ("Failed to read the command " + m_userSettings[setting] + ".");
   }
 
   // Check particle properties if requested.
@@ -265,7 +263,7 @@ StatusCode Pythia8Production::initializeGenerator() {
 
   // Initialize.
   if (m_lhaup) m_pythia->settings.mode("Beams:frameType", 5);
-  if (m_pythia->init()) return StatusCode::SUCCESS;
+  if (m_pythia->init()) return sc;
   else return Error("Failed to initialize Pythia 8.");
 }
 
@@ -296,20 +294,11 @@ StatusCode Pythia8Production::finalize() {
 //=============================================================================
 // Generate an event.
 //=============================================================================
-StatusCode Pythia8Production::generateEvent(HepMC3::GenEvent* theEvent,
+StatusCode Pythia8Production::generateEvent(HepMC3::GenEventPtr theEvent,
 					    LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine ) const {
 
   // Not very elegant but need to stop Pythia8 from being accessed concurrently
   std::lock_guard<std::mutex> lock(m_pythia_lock);
-
-  class RndForPythia : public Pythia8::RndmEngine {
-    public:
-    RndForPythia(CLHEP::HepRandomEngine & engine ):m_gen(engine, 0, 1){}
-    virtual double flat(){return m_gen();}
-
-    private:
-      CLHEP::RandFlat m_gen;
-  };
 
   RndForPythia rnd_generator{engine.getref()};
   m_pythia->setRndmEnginePtr(&rnd_generator);
@@ -320,12 +309,7 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEvent* theEvent,
   if (!m_pythia->flag("HadronLevel:all")) m_event = m_pythia->event;  
   ++m_nEvents;
 
-  LHCb::GenFSR* genFSR{nullptr};
-  if(m_FSRName != ""){
-    genFSR = GenFSRMTManager::GetGenFSR();
-  }
-
-
+  LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
 
   // Store the minimum bias cross-section in the GenFSR.
   std::vector<int> codes = m_pythia->info.codesHard();
@@ -365,7 +349,7 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEvent* theEvent,
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8Production::toHepMC(HepMC3::GenEvent* theEvent, 
+StatusCode Pythia8Production::toHepMC(HepMC3::GenEventPtr theEvent, 
 				      LHCb::GenCollision* theCollision) const {
 
   // Convert to HepMC.
@@ -374,11 +358,16 @@ StatusCode Pythia8Production::toHepMC(HepMC3::GenEvent* theEvent,
   auto old_momentum_unit = theEvent->momentum_unit();
   auto old_length_unit = theEvent->length_unit();
   conversion.set_print_inconsistency(m_validate_HEPEVT);
-  if (!(conversion.fill_next_event(*m_pythia, theEvent))) 
+  if (!(conversion.fill_next_event(*m_pythia, theEvent.get()))) 
     return Error("Failed to convert Pythia 8 event to HepMC3.");
   theEvent->set_units(old_momentum_unit, old_length_unit);
   // Convert status codes and IDs.
   int procID = m_pythia->info.code(); // process ID
+
+  // Check that we have two beam particles
+  if(theEvent->beams().size() != 2){
+    warning() << "Event does not have exactly two beam particles" << endmsg;
+  }
 
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();
@@ -496,8 +485,13 @@ void Pythia8Production::turnOffFragmentation() {
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8Production::hadronize(HepMC3::GenEvent* theEvent, 
-					LHCb::GenCollision* theCollision) {
+StatusCode Pythia8Production::hadronize(HepMC3::GenEventPtr theEvent, 
+					LHCb::GenCollision* theCollision,
+					HepRandomEnginePtr & engine ) {
+  std::lock_guard<std::mutex> lock(m_pythia_lock);
+
+  RndForPythia rnd_generator{engine.getref()};
+  m_pythia->setRndmEnginePtr(&rnd_generator);
   if (!m_pythia->forceHadronLevel()) return StatusCode::FAILURE;
   return toHepMC(theEvent, theCollision);
 }
@@ -505,13 +499,13 @@ StatusCode Pythia8Production::hadronize(HepMC3::GenEvent* theEvent,
 //=============================================================================
 // Save the Pythia 8 event record.
 //=============================================================================
-void Pythia8Production::savePartonEvent( HepMC3::GenEvent* /*theEvent*/) 
+void Pythia8Production::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/) 
 {m_event = m_pythia->event;}
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
 //=============================================================================
-void Pythia8Production::retrievePartonEvent(HepMC3::GenEvent* /*theEvent*/)
+void Pythia8Production::retrievePartonEvent(HepMC3::GenEventPtr /*theEvent*/)
 {m_pythia->event = m_event.get();}
 
 //=============================================================================

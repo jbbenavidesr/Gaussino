@@ -3,11 +3,8 @@ High level and utility functions to set up the Generation step in Gaussino
 """
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaudi.Configuration import GaudiSequencer
 from GaudiKernel import SystemOfUnits
 from Gaudi.Configuration import log
-from Gaussino.GenUtils import configure_pgun, configure_generation
-from Gaussino.GenUtils import configure_generationMT
 from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
 from Gaussino.GenUtils import configure_hepmc_writer
 
@@ -17,12 +14,6 @@ class GenPhase(ConfigurableUser):
     """Configurable for the Generation phase in Gaussino. Does not implement
     a self.__apply_configuration__ itself. Instead, all member functions are
     explicitly called during the configuration of Gaussino()"""
-
-    _production_type_map = {
-        'PGUN': configure_pgun,
-        'P8MB': configure_generation,
-        'P8MBMT': configure_generationMT,
-    }
 
     __slots__ = {
         "BeamMomentum"        : 3.5 * SystemOfUnits.TeV,  # NOQA
@@ -45,11 +36,14 @@ class GenPhase(ConfigurableUser):
         "Production_kwargs"   : {},  # NOQA
         "ConvertEDM"          : False,  # NOQA
         "SampleGenerationTool": 'SignalPlain',   # NOQA
+        "SampleGenerationToolOpts": {},   # NOQA
         "PileUpTool": 'FixedLuminosityWithSvc',   # NOQA
         "ProductionTool"      : 'Pythia8Production',   # NOQA
         "DecayTool"           : '',   # NOQA
-        "CutTool"             : '', # NOQA
-        "CutToolOpts"         : {}  # NOQA
+        "CutTool"    : '', # NOQA
+        "CutToolOpts": {},  # NOQA
+        "FullGenEventCutTool"    : '', # NOQA
+        "FullGenEventCutToolOpts": {}  # NOQA
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -68,30 +62,93 @@ class GenPhase(ConfigurableUser):
     def setOtherProps(self, other, names):
         self.propagateProperties(names, other)
 
-    def configure_phase(self):
+    def configure_phase(self):  # NOQA
         EvtMax = self.getProp('EvtMax')
         if EvtMax <= 0:
             raise RuntimeError("Generating events but selected '%s' events." % EvtMax)  # NOQA
 
+        seq = []
         # Algorithm that produces the actual HepMC by talking to stuff
-        prod_name = self.getProp('Production')
-        prod_kwargs = self.getProp('Production_kwargs')
-        if prod_name in self._production_type_map:
-            gen_alg = self._production_type_map[prod_name](**prod_kwargs)
-        else:
-            SampleGenerationTool = self.getProp('SampleGenerationTool')
-            ProductionTool = self.getProp('ProductionTool')
-            DecayTool = self.getProp('DecayTool')
-            CutTool = self.getProp('CutTool')
-            PileUpTool = self.getProp('PileUpTool')
+        SampleGenerationTool = self.getProp('SampleGenerationTool')
+        ProductionTool = self.getProp('ProductionTool')
+        DecayTool = self.getProp('DecayTool')
+        CutTool = self.getProp('CutTool')
+        FullGenEventCutTool = self.getProp('FullGenEventCutTool')
+        PileUpTool = self.getProp('PileUpTool')
 
+        from Gaussino.Utilities import beaminfoService
+        from Gaussino.Utilities import get_set_configurable
+        beaminfoService()
+        from Configurables import Gaussino
+        if Gaussino().getProp("ReDecay"):
+            from Configurables import ReDecayGeneration
+            gen_alg = ReDecayGeneration()
+        else:
             from Configurables import Generation
-            from Gaussino.Utilities import beaminfoService
-            from Gaussino.Utilities import get_set_configurable
-            beaminfoService()
             gen_alg = Generation()
-            sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
-                                       SampleGenerationTool)
+        sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
+                                   SampleGenerationTool)
+        sgt_opts = self.getProp('SampleGenerationToolOpts')
+        for n, v in sgt_opts.items():
+            sgt.setProp(n, v)
+        try:
+            sgt.DecayTool = DecayTool
+        except:
+            pass
+        try:
+            if CutTool != '':
+                ct = get_set_configurable(sgt, 'CutTool', CutTool)
+                ct_opts = self.getProp('CutToolOpts')
+                for n, v in ct_opts.items():
+                    ct.setProp(n, v)
+            else:
+                sgt.CutTool = ''
+        except Exception as e:
+            log.error('Could not configure CutTool', e)
+        if FullGenEventCutTool != '':
+            ct = get_set_configurable(gen_alg, 'FullGenEventCutTool',
+                                      FullGenEventCutTool)
+            ct_opts = self.getProp('FullGenEventCutToolOpts')
+            for n, v in ct_opts.items():
+                ct.setProp(n, v)
+        else:
+            gen_alg.FullGenEventCutTool = ''
+        prod = get_set_configurable(sgt, 'ProductionTool',
+                                    ProductionTool)
+        if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
+            prod.BeamToolName = 'CollidingBeamsWithSvc'
+
+        if ProductionTool == "Pythia8ProductionMT":
+            from Configurables import Gaussino
+            prod.NThreads = Gaussino().ThreadPoolSize
+
+        gen_alg.PileUpTool = PileUpTool
+        gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+        gen_alg.DecayTool = DecayTool
+
+        seq += [gen_alg]
+
+        # Now do it all again for the signal part
+        if Gaussino().getProp("ReDecay"):
+            from Configurables import ReDecaySignalGeneration
+            siggen_alg = ReDecaySignalGeneration()
+
+            siggen_alg.HepMCEventLocation = 'Gen/SignalDecayTree'
+            siggen_alg.GenCollisionLocation = 'Gen/SignalCollisions'
+            siggen_alg.GenHeaderOutputLocation = 'Gen/SignalGenHeader'
+
+            seq += [siggen_alg]
+            sgt = get_set_configurable(siggen_alg, 'SampleGenerationTool',
+                                       'SignalPlain')
+            sgt.RevertWhenBackward = False  # Don't invert in the redecay part
+            siggen_alg.GenFSRLocation = ""
+            sgt.GenFSRLocation = ""
+            sgt_opts = self.getProp('SampleGenerationToolOpts')
+            if 'SignalPIDList' in sgt_opts:
+                sgt.setProp('SignalPIDList', sgt_opts['SignalPIDList'])
+            else:
+                # FIXME: First only support signal like org tool
+                log.error("Original sample generation tool not of signal type")
             try:
                 sgt.DecayTool = DecayTool
             except:
@@ -106,24 +163,25 @@ class GenPhase(ConfigurableUser):
                     sgt.CutTool = ''
             except Exception as e:
                 log.error('Could not configure CutTool', e)
+            if FullGenEventCutTool != '':
+                ct = get_set_configurable(siggen_alg, 'FullGenEventCutTool',
+                                          FullGenEventCutTool)
+                ct_opts = self.getProp('FullGenEventCutToolOpts')
+                for n, v in ct_opts.items():
+                    ct.setProp(n, v)
+            else:
+                siggen_alg.FullGenEventCutTool = ''
             prod = get_set_configurable(sgt, 'ProductionTool',
-                                        ProductionTool)
-            if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
-                prod.BeamToolName = 'CollidingBeamsWithSvc'
+                                        'ReDecayProduction')
 
-            if ProductionTool == "Pythia8ProductionMT":
-                from Configurables import Gaussino
-                prod.NThreads = Gaussino().ThreadPoolSize
-
-            gen_alg.PileUpTool = PileUpTool
-            gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
-            gen_alg.DecayTool = DecayTool
+            siggen_alg.PileUpTool = 'ReDecayPileUp'
+            siggen_alg.VertexSmearingTool = ''
+            siggen_alg.DecayTool = DecayTool
 
         # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()
 
-        seq = []
-        seq += [rnd_init, gen_alg]
+        seq += [rnd_init]
         if self.getProp('GenMonitor'):
             gen_moni = configure_gen_monitor()
             seq += [gen_moni]
@@ -133,9 +191,22 @@ class GenPhase(ConfigurableUser):
         ApplicationMgr().TopAlg += seq
 
     def configure_genonly(self):
-        from Configurables import SkipSimAlg
         seq = []
-        seq += [SkipSimAlg()]
+        from Configurables import Gaussino
+        if Gaussino().getProp('ReDecay'):
+            from Configurables import ReDecaySkipSimAlg
+            alg = ReDecaySkipSimAlg()
+        else:
+            from Configurables import SkipSimAlg
+            alg = SkipSimAlg()
+        from Gaussino.Utilities import get_set_configurable
+        tool = get_set_configurable(alg, 'HepMCConverter')
+        try:
+            tool.CheckParticle = False
+        except:
+            pass
+        seq += [alg]
+        
         ApplicationMgr().TopAlg += seq
 
     @staticmethod

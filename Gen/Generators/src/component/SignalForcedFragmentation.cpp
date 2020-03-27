@@ -58,7 +58,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
   const LHCb::ParticleProperty * prop = ppSvc -> find( LHCb::ParticleID( *m_pids.begin() ) ) ;
   m_signalMass = prop -> mass() ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
   
   return sc ;
 }
@@ -67,7 +67,7 @@ StatusCode SignalForcedFragmentation::initialize( ) {
 // Generate set of events with repeated hadronization
 //=============================================================================
 bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
-                                          std::vector<HepMC3::GenEvent> & theEvents ,
+                                          HepMC3::GenEventPtrs & theEvents ,
                                           LHCb::GenCollisions & theCollisions ,
                                           HepRandomEnginePtr & engine ) const
 {
@@ -75,7 +75,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
 
   // first decay signal particle
-  HepMC3::GenEvent * theSignalHepMCEvent = new HepMC3::GenEvent( ) ;
+  HepMC3::GenEventPtr theSignalHepMCEvent = std::make_shared<HepMC3::GenEvent>( ) ;
   HepMC3::GenParticlePtr theSignalAtRest{new HepMC3::GenParticle( )};
   theSignalAtRest -> 
     set_momentum( HepMC3::FourVector( 0., 0., 0., m_signalMass ) ) ;
@@ -94,7 +94,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   bool flip ;
   int theSignalPID = *m_pids.begin() ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;
 
   if ( m_cpMixture ) {
@@ -128,7 +128,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   if ( sc.isFailure() ) error() << "Could not force fragmentation" << endmsg ;
 
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
 
   // TODO: fix problem when 2 consecutive B events. The 2 B events both have
   // signal in them !
@@ -146,7 +146,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
       if ( checkPresence( signalPid , theGenEvent , theParticleList ) ) {
         m_nEventsBeforeCut++ ;
         key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        genFSR->incrementGenCounter(key, 1);
+        if(genFSR) genFSR->incrementGenCounter(key, 1);
         
         updateCounters( theParticleList , m_nParticlesBeforeCut , 
                         m_nAntiParticlesBeforeCut , false , false ) ;
@@ -160,7 +160,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
         HepMCUtils::RemoveDaughters( theSignal ) ;
 	
 	if ( hasFailed ) {
-	  Error( "Skip event" ) ;
+	  Error( "Skip event" ).ignore() ;
 	  return false  ;
 	}
         
@@ -180,7 +180,7 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
 
         bool passCut = true ;
         if ( 0 != m_cutTool ) 
-          passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
+          passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() ,
                                            theGenCollision ) ;
         
         if ( passCut && ( ! theParticleList.empty() ) ) {          
@@ -192,12 +192,12 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           if ( isInverted ) {
             ++m_nInvertedEvents ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) genFSR->incrementGenCounter(key, 1); 
           }
           else
           {
             key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) genFSR->incrementGenCounter(key, 1);            
           }
 
           if ( m_cleanEvents ) { 
@@ -213,25 +213,25 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           if ( theSignal -> pdg_id() > 0 ) {
             ++m_nSig ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-            genFSR->incrementGenCounter(key, 1);
+            if(genFSR) genFSR->incrementGenCounter(key, 1);
           }
           else
           {
             ++m_nSigBar ;
             key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
-            genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) genFSR->incrementGenCounter(key, 1);            
           }
 
           // Update counters
-          GenCounters::updateHadronCounters( theGenEvent , m_bHadC ,
+          GenCounters::updateHadronCounters( theGenEvent.get() , m_bHadC ,
                                              m_antibHadC , m_cHadC ,
                                              m_anticHadC , m_bbCounter ,
                                              m_ccCounter ) ;
-          GenCounters::updateExcitedStatesCounters( theGenEvent ,
+          GenCounters::updateExcitedStatesCounters( theGenEvent.get() ,
                                                     m_bExcitedC ,
                                                     m_cExcitedC ) ;
 
-          GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+          if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
 
           result = true ;
         } 
@@ -239,7 +239,8 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
     }
   }
 
-  delete theSignalHepMCEvent ;
+  // Now a smart pointer so no explicit deletion necessary
+  //delete theSignalHepMCEvent ;
   return result ;
 }
 
@@ -319,7 +320,7 @@ StatusCode SignalForcedFragmentation::boostTree( HepMC3::GenParticlePtr
     HepMC3::GenParticlePtr theNewSignal             = newPart ;
     
     // Recursive call to boostTree for each daughter
-    boostTree( theNewSignal , child, theBoost ) ;
+    boostTree( theNewSignal , child, theBoost ).ignore() ;
   }
 
   return StatusCode::SUCCESS ;

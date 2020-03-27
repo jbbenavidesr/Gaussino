@@ -6,9 +6,9 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 #include "NewRnd/RndCommon.h"
+#include "HepMCUser/typedefs.h"
 
 // Forward declarations
-namespace HepMC3 { class GenEvent ; }
 namespace LHCb { class GenCollision ; 
   class ParticleProperty ;
 }
@@ -38,7 +38,7 @@ public:
    *  @param[out] theInfo   Informations about the hard process of the
    *                        generated interaction.
    */
-  virtual StatusCode generateEvent( HepMC3::GenEvent * theEvent , 
+  virtual StatusCode generateEvent( HepMC3::GenEventPtr theEvent , 
                                     LHCb::GenCollision * theInfo,
                                     HepRandomEnginePtr & engine) const = 0 ;
 
@@ -61,14 +61,15 @@ public:
    *  @param[out]    theInfo   Informations about the hard process of the 
    *                           generated interaction.
    */
-  virtual StatusCode hadronize( HepMC3::GenEvent * theEvent , 
-                                LHCb::GenCollision * theInfo ) = 0 ;
+  virtual StatusCode hadronize( HepMC3::GenEventPtr theEvent , 
+                                LHCb::GenCollision * theInfo ,
+                                HepRandomEnginePtr & engine ) = 0 ;
 
   /// Save the parton level event (when the fragmentation is turned off)
-  virtual void savePartonEvent( HepMC3::GenEvent * theEvent ) = 0 ;
+  virtual void savePartonEvent( HepMC3::GenEventPtr theEvent ) = 0 ;
 
   /// Retrieve the previously saved parton event to re-hadronize it.
-  virtual void retrievePartonEvent( HepMC3::GenEvent * theEvent ) = 0 ;
+  virtual void retrievePartonEvent( HepMC3::GenEventPtr theEvent ) = 0 ;
 
   /// Print configuration of production generator 
   virtual void printRunningConditions( ) const = 0 ;

@@ -14,7 +14,9 @@ namespace HepMC3{
       DecayedByDecayGenAndProducedByProdGen = 888,
       SignalInLabFrame = 889,
       SignalAtRest = 998,
-      StableInDecayGen = 999
+      StableInDecayGen = 999,
+      ReDecay = 1042,
+      ChildOfReDecay = 1043
     };
   }
 
@@ -31,6 +33,8 @@ namespace HepMC3{
       case Status::StableInDecayGen                      : return s << "StableInDecayGen";
       case Status::PythiaIncomingParton                  : return s << "PythiaIncomingParton";
       case Status::PythiaHardProcess                     : return s << "PythiaHardProcess";
+      case Status::ReDecay                               : return s << "ReDecay";
+      case Status::ChildOfReDecay                        : return s << "ChildOfReDecay";
       default : return s << "ERROR wrong value " << int(e) << " for enum Status::statusType";
     }
   }
@@ -47,6 +51,8 @@ namespace HepMC3{
       case Status::StableInDecayGen                      : return Status::StableInDecayGen                     ;
       case Status::PythiaIncomingParton                  : return Status::PythiaIncomingParton;
       case Status::PythiaHardProcess                     : return Status::PythiaHardProcess;
+      case Status::ReDecay                               : return Status::ReDecay;
+      case Status::ChildOfReDecay                        : return Status::ChildOfReDecay;
     }
     return Status::Unknown;
   }

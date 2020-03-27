@@ -133,7 +133,7 @@ StatusCode Signal::initialize( ) {
   else m_signalBr = 0. ;
 
   info() << endmsg ;  
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   if ( 0. == m_signalBr ) 
     warning() 
@@ -231,7 +231,7 @@ StatusCode Signal::isolateSignal( const HepMC3::GenParticlePtr & theSignal )
 //=============================================================================
 StatusCode Signal::fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle ,
                                    const HepMC3::GenParticlePtr& theOldParticle,
-                                   HepMC3::GenEvent * theEvent) 
+                                   HepMC3::GenEvent* theEvent) 
   const {
   StatusCode sc = StatusCode::SUCCESS ;
   //
@@ -343,7 +343,7 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   ParticleVector::const_iterator from = particleList.begin() ;
   ParticleVector::const_iterator to = particleList.end() ;
 
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int keyP = 0, keyAP = 0;
 
   if ( onlyForwardParticles ) {
@@ -366,7 +366,7 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   particleCounter += nP ;
   antiparticleCounter += nAntiP ;
 
-  genFSR->incrementGenCounter(keyP, nP);
-  genFSR->incrementGenCounter(keyAP, nAntiP);
+  if(genFSR) genFSR->incrementGenCounter(keyP, nP);
+  if(genFSR) genFSR->incrementGenCounter(keyAP, nAntiP);
 
 }

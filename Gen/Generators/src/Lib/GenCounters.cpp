@@ -204,7 +204,7 @@ void GenCounters::setupExcitedCountersNames( ExcitedCNames & B ,
 // Count excited states counters
 //=============================================================================
 void GenCounters::updateExcitedStatesCounters
-( const HepMC3::GenEvent * theEvent , ExcitedCounter & thebExcitedC ,
+( const HepMC3::GenEvent* theEvent , ExcitedCounter & thebExcitedC ,
   ExcitedCounter & thecExcitedC ) {
 
   // Signal Vertex
@@ -262,7 +262,7 @@ void GenCounters::updateExcitedStatesCounters
 //=============================================================================
 // Update the counters of number of different hadrons in selected events
 //=============================================================================
-void GenCounters::updateHadronCounters( const HepMC3::GenEvent * theEvent ,
+void GenCounters::updateHadronCounters( const HepMC3::GenEvent* theEvent ,
                                         BHadronCounter & thebHadC , 
                                         BHadronCounter & theantibHadC ,
                                         DHadronCounter & thecHadC ,
@@ -347,10 +347,11 @@ void GenCounters::updateHadronCounters( const HepMC3::GenEvent * theEvent ,
 //=============================================================================                    
 // Update the genFRS in selected events                                                            
 //=============================================================================                    
-void GenCounters::updateHadronFSR( const HepMC3::GenEvent * theEvent ,
+void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
                                    LHCb::GenFSR* genFSR,
                                    const std::string option)
 {  
+  if(!genFSR) return;
   // Signal Vertex                                                                        
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr

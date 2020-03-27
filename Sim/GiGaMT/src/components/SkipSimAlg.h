@@ -8,6 +8,7 @@
 #include "GaudiKernel/ServiceHandle.h"
 #include "GiGaMT/IGiGaMTSvc.h"
 #include "HepMC3/GenEvent.h"
+#include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 
 class IHepMC3ToMCTruthConverter;
@@ -26,7 +27,7 @@ namespace LHCb
  *  @date   21.2.2019
  *
  */
-class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const std::vector<HepMC3::GenEvent>& )>
+class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const HepMC3::GenEventPtrs& )>
 {
 public:
   /// Standard constructor
@@ -36,7 +37,7 @@ public:
 
   virtual ~SkipSimAlg() = default;
 
-  Gaussino::MCTruthPtrs operator()( const std::vector<HepMC3::GenEvent>& ) const override;
+  Gaussino::MCTruthPtrs operator()( const HepMC3::GenEventPtrs& ) const override;
 
 private:
   ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};

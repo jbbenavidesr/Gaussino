@@ -49,7 +49,7 @@ StatusCode GenMonitorAlg::initialize()
   return StatusCode::SUCCESS;
 }
 
-void GenMonitorAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents ) const
+void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
   debug() << "==> Execute" << endmsg;
 
@@ -59,7 +59,7 @@ void GenMonitorAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents
   int nPileUp( 0 );
 
   for ( auto& hepmcevent : hepmcevents ) {
-    auto gen_name = hepmcevent.attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
+    auto gen_name = hepmcevent->attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
 
     // Check if monitor has to be applied to this event
     if ( !m_generatorName.empty() ) {
@@ -72,14 +72,14 @@ void GenMonitorAlg::operator()( const std::vector<HepMC3::GenEvent>& hepmcevents
     // Get the signal process ID from the attributes
     if ( produceHistos() ) {
       auto sig_proc_id = 
-          hepmcevent.attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
+          hepmcevent->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
       std::lock_guard<std::mutex> lock( m_histo_lock );
       m_hProcess->fill( sig_proc_id );
     }
 
     bool primFound = false;
     nPileUp++;
-    for ( auto& hepMCpart : hepmcevent.particles() ) {
+    for ( auto& hepMCpart : hepmcevent->particles() ) {
       nParticles++;
       if ( produceHistos() ) {
         // Identify primary vertex and fill histograms

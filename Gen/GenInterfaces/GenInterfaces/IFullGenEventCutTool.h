@@ -7,6 +7,7 @@
 
 // from Event
 #include "HepMC3/GenEvent.h"
+#include "HepMCUser/typedefs.h"
 #include "Event/GenCollision.h"
 
 #include <vector>
@@ -21,7 +22,8 @@
  *  @date   2005-11-17
  */
 
-struct IFullGenEventCutTool : extend_interfaces<IAlgTool> {
+class IFullGenEventCutTool : public extend_interfaces<IAlgTool> {
+  public:
 
   DeclareInterfaceID( IFullGenEventCutTool , 3 , 0 ) ;
 
@@ -31,7 +33,7 @@ struct IFullGenEventCutTool : extend_interfaces<IAlgTool> {
    *                            pile-up interactions of the event.
    *  @return    true  if the full event passes the cut.
    */  
-  virtual bool studyFullEvent( const std::vector<HepMC3::GenEvent> & theEvents ,
+  virtual bool studyFullEvent( const HepMC3::GenEventPtrs & theEvents ,
                                const LHCb::GenCollisions & theCollisions ) 
     const = 0 ;
 };

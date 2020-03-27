@@ -69,7 +69,7 @@ StatusCode MomentumSpectrum::initialize() {
   }
   info() << endmsg ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   // -- Open the file containing the spectrum
   TFile *file = TFile::Open( m_inputFileName.c_str(), "READ" );

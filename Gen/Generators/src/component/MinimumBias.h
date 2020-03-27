@@ -30,7 +30,7 @@ class MinimumBias : public ExternalGenerator {
    *  Implements ISampleGeneratorTool::generate.
    */
   virtual bool generate( const unsigned int nPileUp , 
-                         std::vector<HepMC3::GenEvent> & theEvents ,
+                         HepMC3::GenEventPtrs & theEvents ,
                          LHCb::GenCollisions & theCollisions,
                          HepRandomEnginePtr & ) const override;
 

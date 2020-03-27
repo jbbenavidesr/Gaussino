@@ -29,9 +29,14 @@ namespace Gaussino
   namespace MCTruthsLocation
   {
     const std::string Default = "MC/Truths";
+    const std::string SignalTruthsMap = "MC/SignalTruths";
   }
   namespace LinkedParticleMCParticleLinksLocation
   {
     const std::string Default = "MC/LinkedParticleMCParticleLinksLocation";
+  }
+  namespace ReDecayToken
+  {
+    const std::string Default = "ReDecay/Token";
   }
 }

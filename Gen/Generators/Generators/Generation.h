@@ -24,6 +24,7 @@ class ICounterLogFile;
 #include "Event/GenCollision.h"
 #include "Event/GenHeader.h"
 #include "HepMC3/GenEvent.h"
+#include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 
 namespace HepMC3
@@ -45,10 +46,10 @@ namespace HepMC3
  */
 class Generation
     : public Gaudi::Functional::MultiTransformer<
-          std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
+          std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ),
           Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
 {
-private:
+protected:
   Gaudi::Property<std::string> m_sampleGenerationToolName{this, "SampleGenerationTool", "MinimumBias",
                                                           "Name of the ISampleGenerationTool - MinimumBias, ..."};
   Gaudi::Property<int> m_eventType{this, "EventType", 30000000, "Event type"};
@@ -101,7 +102,7 @@ public:
    *     and accept or reject the event.
    *  -# Store in event store the accepted event.
    */
-  virtual std::tuple<std::vector<HepMC3::GenEvent>, LHCb::GenCollisions, LHCb::GenHeader>
+  virtual std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
   operator()( const LHCb::GenHeader& ) const override;
 
   /** Algorithm finalization.
@@ -110,8 +111,10 @@ public:
   virtual StatusCode finalize() override;
 
 protected:
+  virtual std::tuple<std::vector<HepMC3::GenEventPtr>, LHCb::GenCollisions, LHCb::GenHeader>
+  callOperatorImplementation( const LHCb::GenHeader&, HepRandomEnginePtr& engine ) const;
   /// Decay the event with the IDecayTool.
-  StatusCode decayEvent( HepMC3::GenEvent* theEvent , HepRandomEnginePtr & engine ) const;
+  StatusCode decayEvent( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) const;
 
 private:
   /// Reference to file records data service

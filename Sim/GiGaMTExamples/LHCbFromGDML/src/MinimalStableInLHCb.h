@@ -26,7 +26,7 @@ class MinimalStableInLHCb : public extends<GaudiTool, IFullGenEventCutTool> {
    *  max angles, different values for charged and neutrals)
    *  Implements IGenCutTool::applyCut.
    */
-  virtual bool studyFullEvent( const std::vector<HepMC3::GenEvent> & theEvents ,
+  virtual bool studyFullEvent( const HepMC3::GenEventPtrs & theEvents ,
                                const LHCb::GenCollisions & theCollisions ) const override;
 
 };

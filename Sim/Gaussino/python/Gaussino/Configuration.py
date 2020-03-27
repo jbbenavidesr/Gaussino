@@ -7,7 +7,7 @@ __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import log
-from Gaussino.Utilities import (ppService, dataService,
+from Gaussino.Utilities import (ppService, dataService, redecayService,
                                 auditorService, histogramService)
 from Gaussino.Utilities import configure_edm_conversion
 from Gaussino.Generation import GenPhase
@@ -36,6 +36,7 @@ class Gaussino(ConfigurableUser):
         ,"RandomGenerator"   : 'Ranlux'  # NOQA
         ,"EvtMax"            : -1  # NOQA
         ,"EnableHive"        : False  # NOQA
+        ,"ReDecay"           : False  # NOQA
         ,"ThreadPoolSize"    : 2  # NOQA
         ,"EventSlots"        : 2  # NOQA
         ,"ConvertEDM"        : False  # NOQA
@@ -81,6 +82,8 @@ class Gaussino(ConfigurableUser):
         ppService()
         dataService()
         auditorService()
+        if(self.getProp("ReDecay")):
+            redecayService()
 
         phases = self.getProp("Phases")
         if "Generator" not in phases:
@@ -93,7 +96,7 @@ class Gaussino(ConfigurableUser):
             GenPhase().configure_genonly()
 
         if self.getProp('ConvertEDM'):
-            ApplicationMgr().TopAlg += configure_edm_conversion()
+            ApplicationMgr().TopAlg += configure_edm_conversion(self.getProp("ReDecay"))
 
         histogramService()
 

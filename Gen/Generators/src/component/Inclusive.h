@@ -59,7 +59,7 @@ class Inclusive : public ExternalGenerator {
    *     of the inclusive list in the event have pz < 0.
    */
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC3::GenEvent> & theEvents ,
+                         HepMC3::GenEventPtrs & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
                          HepRandomEnginePtr & engine ) const override;
 

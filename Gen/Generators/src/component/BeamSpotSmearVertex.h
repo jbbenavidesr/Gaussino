@@ -32,7 +32,7 @@ public:
    *  Gaussian smearing of spatial position of primary event truncated
    *  at a given number of sigma. 
    */
-  virtual StatusCode smearVertex( HepMC3::GenEvent * theEvent , HepRandomEnginePtr & engine ) ;
+  virtual StatusCode smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) ;
   
  private:
   /// Number of sigma above which to cut for x-axis smearing (set by options)

@@ -24,7 +24,7 @@ public:
   virtual StatusCode initialize( ) override;    ///< Tool initialization
   
   virtual bool generate( const unsigned int nPileUp ,
-                         std::vector<HepMC3::GenEvent> & theEvents ,
+                         HepMC3::GenEventPtrs & theEvents ,
                          LHCb::GenCollisions & theCollisions ,
                          HepRandomEnginePtr & engine ) const override;
 

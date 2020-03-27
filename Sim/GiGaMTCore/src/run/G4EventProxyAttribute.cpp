@@ -1,0 +1,1 @@
+#include "GiGaMTCoreTruth/MCTruthAttribute.h"

@@ -106,7 +106,7 @@ double BeamSpotMarkovChainSampleVertex::gauss4D( LHCb::BeamParameters * beamp ,
 //=============================================================================
 // Markov chain sampler
 //=============================================================================
-StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC3::GenEvent * theEvent ,
+StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC3::GenEventPtr theEvent ,
                                                          HepRandomEnginePtr & engine )
 {
   CLHEP::RandGauss gaussDistX{engine.getref(), 0., 0.025};

@@ -65,7 +65,7 @@ StatusCode Special::initialize( ) {
 // Finalize method
 //=============================================================================
 StatusCode Special::finalize( ) {
-  std::vector< HepMC3::GenEvent * >::iterator iter ;
+  std::vector< HepMC3::GenEventPtr >::iterator iter ;
   for ( iter = m_pileUpEventsVector.begin() ; 
         iter != m_pileUpEventsVector.end() ; ++iter ) 
     delete (*iter) ;
@@ -87,11 +87,11 @@ StatusCode Special::finalize( ) {
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool Special::generate( const unsigned int nPileUp , 
-                        std::vector<HepMC3::GenEvent> & theEvents , 
+                        HepMC3::GenEventPtrs & theEvents , 
                         LHCb::GenCollisions & theCollisions , HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
 
   bool result = false ;
 
@@ -132,7 +132,7 @@ bool Special::generate( const unsigned int nPileUp ,
       if ( m_pileUpEventsVector.empty() ) generatePileUp( engine ) ;
       
       // retrieve now pile-up events
-      HepMC3::GenEvent * pileUpEvent = m_pileUpEventsVector.back() ;
+      HepMC3::GenEventPtr pileUpEvent = m_pileUpEventsVector.back() ;
       (*theGenEvent) =  ( * pileUpEvent ) ;
 
       m_pileUpEventsVector.pop_back() ;
@@ -181,7 +181,7 @@ void Special::generatePileUp(HepRandomEnginePtr & engine ) const {
   
   // generate given number of events
   for ( unsigned int i = 0 ; i < m_maxInteractions ; ++i ) {
-    HepMC3::GenEvent * theEvent = new HepMC3::GenEvent ;
+    HepMC3::GenEventPtr theEvent = new HepMC3::GenEvent ;
     LHCb::GenCollision * theCollision = new LHCb::GenCollision ;
     m_pileUpProductionTool -> generateEvent( theEvent , 
                                              theCollision , engine ) ;

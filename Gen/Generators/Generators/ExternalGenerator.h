@@ -94,7 +94,7 @@ class ExternalGenerator : public GaudiTool ,
    *                                the ParticlePropertySvc or/and the EvtGen 
    *                                decay table).
    */
-  StatusCode decayHeavyParticles( HepMC3::GenEvent * theEvent , 
+  StatusCode decayHeavyParticles( HepMC3::GenEventPtr theEvent , 
                                   const LHCb::ParticleID::Quark theQuark , 
                                   const int signalPid , HepRandomEnginePtr & engine) const;
   
@@ -107,13 +107,13 @@ class ExternalGenerator : public GaudiTool ,
    *                            PID is in the pidList.
    *  @return     true if the event contains a particle with correct PID.
    */
-  bool checkPresence( const PIDs & pidList , HepMC3::GenEvent * theEvent ,
+  bool checkPresence( const PIDs & pidList , HepMC3::GenEventPtr theEvent ,
                       ParticleVector & particleList ) const ;
 
   /** Parity flip (z -> -z and pz -> -pz) the event
    *  @param[in,out] theEvent   Event to flip
    */
-  void revertEvent( HepMC3::GenEvent * theEvent ) const ;
+  void revertEvent( HepMC3::GenEvent* theEvent ) const ;
 
   /** Count the number of particle with pz > 0 
    *  @param[in] particleList  List of particles
@@ -132,9 +132,9 @@ class ExternalGenerator : public GaudiTool ,
    *  @param[out]    theHardInfo     Object where to store hard process
    *                                 informations of the next interaction.
    */
-  void prepareInteraction( std::vector<HepMC3::GenEvent> * theEvents ,
+  void prepareInteraction( HepMC3::GenEventPtrs * theEvents ,
                            LHCb::GenCollisions * theCollisions , 
-                           HepMC3::GenEvent * & theGenEvent ,
+                           HepMC3::GenEventPtr & theGenEvent ,
                            LHCb::GenCollision * & theGenCollision ) const ;
 
   /** Production tool (interface to external generator) to use to 
@@ -153,7 +153,11 @@ class ExternalGenerator : public GaudiTool ,
   /// Name assigned to the HepMC event and stored with it
   std::string m_hepMCName ;
 
- private:  
+ protected:
+  /// Location where to store FSR counters (set by options)
+  /// Not used in this class directly but by almost all 
+  /// derived classes
+  std::string  m_FSRName;
   /** Decode commands (given by job options) to configure LHAPDF library.
    *  @param[in] theCommandVector  Vector of string to configure LHAPDF. The
    *                               syntax of the command is "lhacontrol block

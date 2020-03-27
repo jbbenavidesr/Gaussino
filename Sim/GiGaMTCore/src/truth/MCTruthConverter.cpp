@@ -4,6 +4,9 @@
 #include "Geant4/G4SystemOfUnits.hh"
 #include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
 #include "GiGaMTCoreTruth/LinkedParticleHelpers.h"
+#include "GiGaMTCoreRun/SimResults.h"
+#include "GiGaMTCoreRun/SimResultsProxyAttribute.h"
+#include "Defaults/HepMCAttributes.h"
 #include "Helpers.h"
 #include "HepMC3/Relatives.h"
 #include "HepMCUser/Status.h"
@@ -51,7 +54,7 @@ namespace Gaussino
     return tmp_store.size();
   }
 
-  void MCTruthData::VerifyStructure() const
+  int MCTruthData::VerifyStructure() const
   {
 
     std::set<LinkedParticle*> visited;
@@ -65,6 +68,7 @@ namespace Gaussino
       rec_down( rp );
     }
     if ( visited.size() < m_linkedParticles.size() ) {
+      return 1;
       throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
     }
 
@@ -81,8 +85,33 @@ namespace Gaussino
       }
     }
     if ( visited.size() < m_linkedParticles.size() ) {
-      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+      return 2;
     }
+    return 0;
+  }
+
+  void MCTruthData::RemoveDecayTreesWithSimResults() {
+    std::function<void( LinkedParticle* )> rec_checker = [&]( LinkedParticle* lp ) {
+      if ( auto hepmc = lp->HepMC(); hepmc ) {
+        if ( auto [g4proxyptr, mctruthptr] =
+                 hepmc->attribute<HepMC3::SimResultsAttribute>( Gaussino::HepMC::Attributes::SimResults )->value();
+             g4proxyptr && mctruthptr ) {
+          if ( auto prodvtx = lp->GetProdVtx(); prodvtx ) {
+            prodvtx->outgoing_mctruths.insert( mctruthptr );
+          } else {
+            this->m_slave_mctruths.push_back( mctruthptr );
+          }
+          m_contained_proxies.insert( g4proxyptr );
+          for ( auto& contained : mctruthptr->m_contained_proxies ) { m_contained_proxies.insert( contained ); }
+          EraseDecayTree( lp );
+        } else {
+          for(auto child:lp->GetChildren()){
+            rec_checker(child);
+          }
+        }
+      }
+    };
+    for ( auto lp : m_root_particles ) { rec_checker( lp ); }
   }
 
   ///////////////////////////////////////////////////////////
@@ -92,6 +121,8 @@ namespace Gaussino
   void MCTruthConverter::Declare( const HepMC3::ConstGenParticlePtr& particle, ConversionType type )
   {
     auto ptr = new LinkedParticle{m_pcounter++, particle};
+    // If the particle has the ReDecay status code, mark the corresponding linked particle accordingly.
+    // This information will later be used to associate the correct signal event components here.
     ptr->SetType( type );
     if ( m_hepmc_to_linked.find( particle->parent_event() ) == std::end( m_hepmc_to_linked ) ) {
       m_hepmc_to_linked[particle->parent_event()] = {};
@@ -149,7 +180,7 @@ namespace Gaussino
       AddToG4Event( event );
     } else {
       for ( auto& lp : m_linkedParticles ) {
-        lp->SetType( Gaussino::ConversionType::MC );
+        if(lp->GetType() == Gaussino::ConversionType::G4 )lp->SetType( Gaussino::ConversionType::MC );
       }
     }
   }
@@ -249,7 +280,6 @@ namespace Gaussino
         throw std::runtime_error( msg.str() );
       }
     }
-    VerifyStructure();
   } // namespace Gaussino
   void MCTruthTracker::AddToG4Event( G4Event* g4event )
   {
@@ -430,7 +460,6 @@ namespace Gaussino
     }
     to_delete.clear();
 
-    VerifyStructure();
   }
 
   const LinkedParticle* MCTruth::GetParticleFromTrackID( int trackid ) const
@@ -441,7 +470,7 @@ namespace Gaussino
     return nullptr;
   }
 
-  void MCTruth::EraseLinkedParticle( LinkedParticle* lp )
+  void MCTruthData::EraseLinkedParticle( LinkedParticle* lp )
   {
     m_linkedParticles.erase( lp );
     // Get copies of the container holding smartpointers to the
@@ -484,7 +513,16 @@ namespace Gaussino
       }
     }
   }
-  void MCTruth::EraseDecayTree( LinkedParticle* lp )
+
+  LinkedParticle::PtrSet MCTruth::GetRootParticlesIncludingSlaves() const {
+    LinkedParticle::PtrSet tmp_ret = m_root_particles;
+    for(auto & slave : m_slave_mctruths){
+      for(auto & srp : slave->GetRootParticles()){
+        tmp_ret.insert(srp);
+      }
+    }
+    return tmp_ret; }
+  void MCTruthData::EraseDecayTree( LinkedParticle* lp )
   {
     for ( auto child : lp->GetChildren() ) {
       EraseDecayTree( child );

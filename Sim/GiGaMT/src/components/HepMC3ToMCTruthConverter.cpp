@@ -9,12 +9,14 @@
 // Geant4
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4SystemOfUnits.hh"
+#include "Geant4/G4ParticleTable.hh"
 
 // HepMC3
 #include "GaudiKernel/Vector4DTypes.h"
 #include "HepMC3/FourVector.h"
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenVertex.h"
+#include "HepMC3/Relatives.h"
 #include "HepMC3/Units.h"
 #include "HepMCUtils/PrintDecayTree.h"
 #include "Math/GenVector/Boost.h"
@@ -26,8 +28,7 @@
 // Declaration of the Tool
 DECLARE_COMPONENT( HepMC3ToMCTruthConverter )
 
-double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, const HepMC3::GenVertexPtr& E )
-{
+double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, const HepMC3::GenVertexPtr& E ) {
   if ( !E ) return 0;
   Gaudi::LorentzVector A( P->position() ), B( E->position() );
   Gaudi::LorentzVector AB = B - A;
@@ -37,54 +38,93 @@ double lifetime( const HepMC3::FourVector mom, const HepMC3::GenVertexPtr& P, co
 
   // Boost displacement 4-vector to rest frame of particle.
   Gaudi::LorentzVector M( mom );
-  ROOT::Math::Boost theBoost( M.BoostToCM() );
+  ROOT::Math::Boost    theBoost( M.BoostToCM() );
   Gaudi::LorentzVector ABStar = theBoost( AB );
 
   // Switch back to time.
   return ABStar.T() / Gaudi::Units::c_light;
 }
 
+Gaussino::ConversionType HepMC3ToMCTruthConverter::GetConversionType( const HepMC3::ConstGenParticlePtr& particle ) const {
+  if(particle->status() == HepMC3::Status::ReDecay){
+    return Gaussino::ConversionType::REDECAY;
+  } else if (IsTraveling( particle )){
+    return Gaussino::ConversionType::G4;
+  }
+  return  Gaussino::ConversionType::MC;
+}
+
 Gaussino::MCTruthConverterPtrs
-HepMC3ToMCTruthConverter::BuildConverter( const std::vector<HepMC3::GenEvent>& hepmc_events ) const
-{
+HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_events ) const {
   Gaussino::MCTruthConverterPtrs converters;
 
-  for ( const HepMC3::GenEvent& genEvt : hepmc_events ) {
-    if (msgLevel(MSG::VERBOSE)){
-        m_ppSvc.retrieve();
-        for(size_t ib=0; ib<genEvt.beams().size();ib++){
-          verbose() << "HepMC event dump: beam=" << ib << " \n" << PrintDecay(genEvt.beams().at(ib), 0, m_ppSvc.get()) << endmsg;
-        }
+  for ( auto& genEvt : hepmc_events ) {
+    if ( msgLevel( MSG::VERBOSE ) ) {
+      m_ppSvc.retrieve().ignore();
+      for ( size_t ib = 0; ib < genEvt->beams().size(); ib++ ) {
+        verbose() << "HepMC event dump: beam=" << ib << " \n"
+                  << PrintDecay( genEvt->beams().at( ib ), 0, m_ppSvc.get() ) << endmsg;
+      }
     }
     auto converter = std::make_unique<Gaussino::MCTruthConverter>();
-    if ( genEvt.length_unit() != HepMC3::Units::MM || genEvt.momentum_unit() != HepMC3::Units::MEV ) {
+    if ( genEvt->length_unit() != HepMC3::Units::MM || genEvt->momentum_unit() != HepMC3::Units::MEV ) {
       error() << "Units of HepMC event do not match. Skipping event" << endmsg;
       continue;
     }
-    for ( auto& part : genEvt.particles() ) {
-      if ( !keep( part ) ) {
-        continue;
-      }
-      converter->Declare( part, IsTraveling( part ) ? Gaussino::ConversionType::G4 : Gaussino::ConversionType::MC );
+    for ( auto& part : genEvt->particles() ) {
+      if ( !keep( part ) ) { continue; }
+      // We add all the particles here to the container without caring about whether those particles have previously been simulated in another MCTruth object. This will be done during the linking when the container is prepared for Geant4.
+      converter->Declare( part, GetConversionType(part) );
     }
     converters.push_back( std::move( converter ) );
   }
   return converters;
 }
 
-bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const
-{
+Gaussino::MCTruthConverterPtr
+HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::ConstGenParticlePtr& part ) const {
+  auto                           genEvt = part->parent_event();
+
+  if ( genEvt->length_unit() != HepMC3::Units::MM || genEvt->momentum_unit() != HepMC3::Units::MEV ) {
+    error() << "Units of HepMC event do not match. Skipping event" << endmsg;
+    return nullptr;
+  }
+  auto converter = std::make_unique<Gaussino::MCTruthConverter>();
+  if ( keep( part ) ) { 
+    converter->Declare( part, GetConversionType(part) );
+  }
+  for ( auto& desc : HepMC3::Relatives::DESCENDANTS( part ) ) {
+    if ( !keep( desc ) ) { continue; }
+    converter->Declare( desc, GetConversionType(desc) );
+  }
+  return converter;
+}
+
+bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC3::ConstGenParticlePtr& part ) const {
   // Return for Geant4 tracking if stable.
   auto ev = part->end_vertex();
   if ( !ev ) {
+    if(m_check_particle.value() && !G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id())){
+      PrintDecay(*std::begin(part->parent_event()->beams()));
+      std::stringstream msg;
+      msg << "Particle " << part->pdg_id() << " has no endvertex but is unknown to Geant4";
+      throw GaudiException(msg.str(), "HepMC3ToMCTruthConverter::IsTraveling", StatusCode::FAILURE);
+    }
     return true;
   }
 
   // Determine the travel distance.
-  auto pv     = part->production_vertex();
+  auto   pv   = part->production_vertex();
   double dist = ( ev->position() - pv->position() ).p3mod();
 
   if ( dist < m_travelLimit ) return false;
+
+  if(m_check_particle.value() && !G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id())){
+    PrintDecay(*std::begin(part->parent_event()->beams()));
+    std::stringstream msg;
+    msg << "Particle " << part->pdg_id() << " has travels " << dist << "mm but is unknown to Geant4";
+    throw GaudiException(msg.str(), "HepMC3ToMCTruthConverter::IsTraveling", StatusCode::FAILURE);
+  }
 
   return true;
 }
@@ -92,16 +132,19 @@ bool HepMC3ToMCTruthConverter::IsTraveling( const HepMC3::ConstGenParticlePtr& p
 //=============================================================================
 // Decides if a particle should be kept in MCParticles.
 //=============================================================================
-bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle ) const
-{
+bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle ) const {
   LHCb::ParticleID pid( particle->pdg_id() );
   // Get the signal process ID as we will need this multiple times.
   // If the IntAttribute for the process ID was not added to the event,
   // a default constructed shared pointer to IntAttribute is returned which
   // by default initialises the process ID to 0 which is identical to the
   // behaviour in HepMC2 where the default value was 0 as well.
-  auto sig_proc_id =
-      particle->parent_event()->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
+  int sig_proc_id{0};
+  if ( auto attr =
+           particle->parent_event()->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID );
+       attr ) {
+    sig_proc_id = attr->value();
+  }
   switch ( particle->status() ) {
   case HepMC3::Status::StableInProdGen:
     return true;
@@ -113,12 +156,18 @@ bool HepMC3ToMCTruthConverter::keep( const HepMC3::ConstGenParticlePtr& particle
     return true;
   case HepMC3::Status::StableInDecayGen:
     return true;
+  // Always keep the particle marked for ReDecay
+  case HepMC3::Status::ReDecay:
+    return true;
+  // Reject children of ReDecay particles
+  case HepMC3::Status::ChildOfReDecay:
+    return false;
 
-  //these act as placeholders before status codes can be put in MCEvent
-	case 21:
-	  return true; //case LHCb::HepMCEvent::PythiaIncomingParton: return true;
-	case 22:
-	  return true; //case LHCb::HepMCEvent::PythiaHardProcess: return true;
+    // these act as placeholders before status codes can be put in MCEvent
+  case 21:
+    return true; // case LHCb::HepMCEvent::PythiaIncomingParton: return true;
+  case 22:
+    return true; // case LHCb::HepMCEvent::PythiaHardProcess: return true;
 
   // For some processes the resonance has status 3.
   case HepMC3::Status::DocumentationParticle:

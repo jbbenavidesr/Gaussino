@@ -23,10 +23,6 @@ public:
   /// Retrieve interface ID
   DeclareInterfaceID(IGiGaMTGeoSvc, 1, 0);
 
-  virtual StatusCode initialize() override = 0;
-
-  virtual StatusCode finalize() override = 0;
-
   virtual G4VPhysicalVolume* constructWorld() = 0;
   virtual void constructSDandField() = 0;
 

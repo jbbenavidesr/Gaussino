@@ -11,6 +11,10 @@ def configure_giga_alg(**kwargs):
 
     """
     from Configurables import GiGaAlg
+    from Configurables import Gaussino
+    if Gaussino().getProp('ReDecay'):
+        from Configurables import ReDecaySimAlg
+        return ReDecaySimAlg()
 
     TESLocation = "/Event/Gen/HepMCEvents"
     return GiGaAlg(

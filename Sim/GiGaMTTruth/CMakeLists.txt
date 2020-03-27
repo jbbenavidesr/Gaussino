@@ -21,6 +21,4 @@ FindG4libs(digits_hits event geometry global graphics_reps materials persistency
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
-gaudi_add_module(GiGaMTTruth
-        src/components/*.cpp
-        LINK_LIBRARIES GaudiAlgLib HepMCUtils GiGaMTCoreTruthLib PartPropLib)
+gaudi_install_headers(GiGaMTTruth)

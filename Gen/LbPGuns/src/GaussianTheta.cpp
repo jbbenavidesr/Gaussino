@@ -68,7 +68,7 @@ StatusCode GaussianTheta::initialize( ) {
     ppSvc->find( LHCb::ParticleID( m_pdgCode ) ) ; 
   m_mass = particle->mass();
       
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
      
   if ( m_maxMom < m_minMom ) 
     return Error( "Invalid options for momentum range" ) ;

@@ -9,6 +9,7 @@
 #include "Defaults/Locations.h"
 #include "GaudiAlg/Consumer.h"
 #include "HepMC3/GenEvent.h"
+#include "HepMCUser/typedefs.h"
 
 namespace HepMC3
 {
@@ -22,7 +23,7 @@ namespace HepMC3
  *  @author Dominik Muller
  *  @date   2018-03-23
  */
-class HepMCWriter : public Gaudi::Functional::Consumer<void( const std::vector<HepMC3::GenEvent>& )>
+class HepMCWriter : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs& )>
 {
 
 private:
@@ -39,7 +40,7 @@ public:
 
   virtual ~HepMCWriter() = default;
 
-  void operator()( const std::vector<HepMC3::GenEvent>& ) const override;
+  void operator()( const HepMC3::GenEventPtrs& ) const override;
   virtual StatusCode finalize() override;
   virtual StatusCode initialize() override;
 

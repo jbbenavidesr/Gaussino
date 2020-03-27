@@ -8,6 +8,7 @@
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMCUtils/PrintDecayTree.h"
+#include "HepMC3/GenEvent.h"
 
 #include "GiGaMTCoreTruth/Common.h"
 #include "GiGaMTCoreTruth/LinkedParticle.h"
@@ -16,11 +17,24 @@
 #include "Geant4/G4PrimaryParticle.hh"
 #include "Geant4/G4PrimaryVertex.hh"
 
+#include <functional>
+
+class G4EventProxy;
+
 // MCTruthConverter objects build on top of each other. To prevent incorrect use, this object evolves in stages, that
 // each trigger internal transformations of the event structure.
 
 namespace Gaussino
 {
+  typedef std::shared_ptr<MCTruthConverter> MCTruthConverterPtr;
+  typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
+  typedef std::shared_ptr<MCTruthTracker> MCTruthTrackerPtr;
+  typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
+  typedef std::shared_ptr<MCTruth> MCTruthPtr;
+  typedef std::vector<MCTruthPtr> MCTruthPtrs;
+
+  typedef std::function<std::shared_ptr<MCTruth>()> MCTruthPtrGetter;
+  typedef std::vector<MCTruthPtrGetter> MCTruthPtrGetters;
 
   class MCTruthData
   {
@@ -29,15 +43,31 @@ namespace Gaussino
     virtual ~MCTruthData();
     template <typename STREAM>
     STREAM& DumpToStream(
-        STREAM&, std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
+        STREAM&, std::string base_sace="", std::function<std::string( int )> pdg_to_name = []( int i ) { return std::to_string( i ); } );
     size_t GetNParticles() const;
     size_t GetNVertices() const;
+    // Return none-owning list of all contained particles
+    std::set<LinkedParticle*> GetParticles() const {
+      return m_linkedParticles;
+    }
+    std::set<std::shared_ptr<G4EventProxy>>& GetContainedProxies(){return m_contained_proxies;};
 
+
+    void EraseLinkedParticle( LinkedParticle* lp );
+    void EraseDecayTree( LinkedParticle* lp );
+    // Checks the consistency of the structure. Return 0 if all is good,
+    // return 1 if not all particles can be reached from root
+    // and 2 if not all particles can be reached from final state
+    int VerifyStructure() const;
   protected:
     MCTruthData() = default;
     MCTruthData( MCTruthData&& right ) noexcept;
-    // Checks the consistency of the structure. Throws an exception
-    void VerifyStructure() const;
+    // Recursively loop from the root particles and remove all decay trees which
+    // have a SimResult assigned to the respective HepMC record.
+    // Attaches the MCTruth to the respective vertex or the root level.
+    // Collects all contained G4EventProxy objects from the sim results included.
+    // This is done recursively if multiple levels of contained MCTruths are part of this.
+    void RemoveDecayTreesWithSimResults();
     // Owning container of the linked particle objects
     std::set<LinkedParticle*> m_linkedParticles;
     // Some helpful maps to organise the data
@@ -48,7 +78,10 @@ namespace Gaussino
     std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
     std::unordered_map<int, LinkedParticle*> m_tracking_to_linked;
+    // Set to store identified identified root particles of this mctruth structure
     LinkedParticle::PtrSet m_root_particles;
+    // List of slave mctruth objects that should be treated as root in this mctruth structure
+    MCTruthPtrs m_slave_mctruths;
 
     // Some consistence checking internal variables
     G4Event* m_geant4_event{nullptr};
@@ -56,6 +89,8 @@ namespace Gaussino
     // Internal counter to be used for the ID of LinkedParticles
     // to keep container ordered
     unsigned int m_pcounter{0};
+    std::set<std::shared_ptr<G4EventProxy>> m_contained_proxies;
+
   };
 
   // Class to register HepMC particles with their conversion type.
@@ -115,20 +150,13 @@ namespace Gaussino
     // set ConversionsType flags will be overwritten to ConversionType::MC before proceeding.
     MCTruth( MCTruthTracker&& right );
     LinkedParticle::PtrSet GetRootParticles() const { return m_root_particles; }
+    LinkedParticle::PtrSet GetRootParticlesIncludingSlaves() const;
     const LinkedParticle* GetParticleFromTrackID( int trackid ) const;
 
   private:
     void DoCleanup();
-    void EraseLinkedParticle( LinkedParticle* lp );
-    void EraseDecayTree( LinkedParticle* lp );
   };
 
-  typedef std::unique_ptr<MCTruthConverter> MCTruthConverterPtr;
-  typedef std::vector<MCTruthConverterPtr> MCTruthConverterPtrs;
-  typedef std::unique_ptr<MCTruthTracker> MCTruthTrackerPtr;
-  typedef std::vector<MCTruthTrackerPtr> MCTruthTrackerPtrs;
-  typedef std::unique_ptr<MCTruth> MCTruthPtr;
-  typedef std::vector<MCTruthPtr> MCTruthPtrs;
   // Helper function to merge containers of MCTruthConverterPtr into a single converter
   // Useful when splitting/assigning the work to to Geant4 workers
   // Will return a new converter with all input converters become invalid
@@ -145,12 +173,12 @@ namespace Gaussino
 } // namespace Gaussino
 
 template <typename STREAM>
-STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::string( int )> pdg_to_name )
+STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::string base_space, std::function<std::string( int )> pdg_to_name)
 {
   const std::string spacer = "|---";
-  out << "#############################################\n";
-  out << "# Beginning dump of converter\n";
-  out << "#############################################\n";
+  out << base_space <<"#############################################\n";
+  out << base_space <<"# Beginning dump of converter\n";
+  out << base_space <<"#############################################\n";
 
   std::set<LinkedParticle*> visited;
   unsigned int i_root                                           = 1;
@@ -163,11 +191,17 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
       for ( auto& dp : lp->GetChildren() ) {
         rec_print( dp, spacing + spacer );
       }
-    }
+      for (auto & endvtx: lp->GetEndVtxs()){
+        for(auto & mctruth: endvtx->outgoing_mctruths){
+          mctruth->DumpToStream(out, spacing+spacer, pdg_to_name);
+        }
+      }
+    } 
+
   };
   for ( auto& rp : m_root_particles ) {
     out << "-------- Beginning root particle " << i_root << " --------\n";
-    rec_print( rp, "" );
+    rec_print( rp, base_space );
     i_root++;
   }
 
@@ -179,8 +213,8 @@ STREAM& Gaussino::MCTruthData::DumpToStream( STREAM& out, std::function<std::str
       }
     }
   }
-  out << "#############################################\n";
-  out << "# Finished dump of converter\n";
-  out << "#############################################\n";
+  out << base_space <<"#############################################\n";
+  out << base_space <<"# Finished dump of converter\n";
+  out << base_space <<"#############################################\n";
   return out;
 }

@@ -47,6 +47,9 @@ public:
 protected:
 
 private:
+  /// Location where to store FSR counters (set by options)
+  std::string  m_FSRName;
+
   ICounterLogFile * m_xmlLogTool ; ///< XML File for generator counters
   
   std::string m_beamParameters ; ///< Location of beam parameters (set by options)

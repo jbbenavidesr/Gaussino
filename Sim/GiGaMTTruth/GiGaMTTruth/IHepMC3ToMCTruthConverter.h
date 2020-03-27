@@ -4,6 +4,7 @@
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
+#include "HepMCUser/typedefs.h"
 
 class G4Event;
 namespace HepMC{
@@ -26,5 +27,6 @@ public:
    * Converts an HepMC3 event to Geant4
    *  
    */
-  virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const std::vector<HepMC3::GenEvent> &) const = 0;
+  virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const HepMC3::GenEventPtrs &) const = 0;
+  virtual  Gaussino::MCTruthConverterPtr BuildConverter(const HepMC3::ConstGenParticlePtr &) const = 0;
 };

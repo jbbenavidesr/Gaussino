@@ -116,7 +116,7 @@ StatusCode Cosmics::initialize() {
   info() << "Phi range: " << m_minPhi / Gaudi::Units::rad << " rad <-> "
          << m_maxPhi / Gaudi::Units::rad << " rad" << endmsg ;
 
-  release( ppSvc ) ;
+  release( ppSvc ).ignore() ;
 
   return sc ;
 }

@@ -49,7 +49,7 @@ SignalPlain::~SignalPlain( ) { ; }
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
 bool SignalPlain::generate( const unsigned int nPileUp , 
-                            std::vector<HepMC3::GenEvent> & theEvents , 
+                            HepMC3::GenEventPtrs & theEvents , 
                             LHCb::GenCollisions & theCollisions ,
                             HepRandomEnginePtr & engine ) const {
   StatusCode sc ;
@@ -59,9 +59,8 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
   bool hasFlipped = false ;
   bool hasFailed = false ;
   LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEvent * theGenEvent( 0 ) ;
-  
-  auto genFSR = GenFSRMTManager::GetGenFSR();
+  HepMC3::GenEventPtr theGenEvent( 0 ) ;
+  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
   int key = 0;  
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
@@ -73,7 +72,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
 
     if ( ! result ) {
       // Decay particles heavier than the particles to look at
-      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine) ;
+      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine).ignore() ;
       
       // Check if one particle of the requested list is present in event
       ParticleVector theParticleList ;
@@ -90,7 +89,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
             chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
           if ( hasFailed ) {
             HepMCUtils::RemoveDaughters( theSignal ) ;
-            Error( "Skip event" ) ;
+            Error( "Skip event" ).ignore() ;
             return false ;
           }
 
@@ -101,7 +100,7 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
 
             m_nEventsBeforeCut++ ;
             key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-            genFSR->incrementGenCounter(key, 1);
+            if(genFSR) genFSR->incrementGenCounter(key, 1);
 
             // count particles in 4pi
             updateCounters( theParticleList , m_nParticlesBeforeCut , 
@@ -109,20 +108,20 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
             
             bool passCut = true ;
             if ( 0 != m_cutTool ) 
-              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent ,
+              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() ,
                                                theGenCollision ) ;
             
             if ( passCut && ( ! theParticleList.empty() ) ) {
               if ( ! isInverted ) {
                 m_nEventsAfterCut++ ;
                 key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-                genFSR->incrementGenCounter(key, 1);              
+                if(genFSR) genFSR->incrementGenCounter(key, 1);              
               }
 
               if ( isInverted ) {
                 ++m_nInvertedEvents ;
                 key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-                genFSR->incrementGenCounter(key, 1);                
+                if(genFSR) genFSR->incrementGenCounter(key, 1);                
               }
 
               // Count particles passing the generator level cut with pz > 0     
@@ -141,25 +140,25 @@ bool SignalPlain::generate( const unsigned int nPileUp ,
               if ( theSignal -> pdg_id() > 0 ) {
                 ++m_nSig ;
                 key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-                genFSR->incrementGenCounter(key, 1);
+                if(genFSR) genFSR->incrementGenCounter(key, 1);
               }
               else {
                 ++m_nSigBar ;
                 key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");                
-                genFSR->incrementGenCounter(key, 1);
+                if(genFSR) genFSR->incrementGenCounter(key, 1);
               }
               
 
               // Update counters
-              GenCounters::updateHadronCounters( theGenEvent , m_bHadC , 
+              GenCounters::updateHadronCounters( theGenEvent.get() , m_bHadC , 
                                                  m_antibHadC , m_cHadC , 
                                                  m_anticHadC , m_bbCounter ,
                                                  m_ccCounter ) ;
-              GenCounters::updateExcitedStatesCounters( theGenEvent , 
+              GenCounters::updateExcitedStatesCounters( theGenEvent.get() , 
                                                         m_bExcitedC , 
                                                         m_cExcitedC ) ;
               
-              GenCounters::updateHadronFSR( theGenEvent, genFSR, "Acc");
+              if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
               
 
               result = true ;

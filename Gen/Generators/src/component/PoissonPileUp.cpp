@@ -32,7 +32,7 @@ StatusCode PoissonPileUp::initialize() {
   if (sc.isFailure()) return sc;
 
   m_xmlLogTool = tool<ICounterLogFile>("XmlCounterLogFile");
-  if (!m_xmlLogTool) Warning("No XML Counter log tool found");
+  if (!m_xmlLogTool) sc &= Warning("No XML Counter log tool found");
 
   return sc;
 }

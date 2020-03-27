@@ -36,6 +36,7 @@
 
 // local
 #include "GiGaMT.h"
+#include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 
 //-----------------------------------------------------------------------------
 // Implementation of the general components of the GiGaMT service.
@@ -117,7 +118,15 @@ StatusCode GiGaMT::initialize()
     particleTable->DumpTable( "all" );
   }
 
+  if(m_nWorkerThreads.value() == 0){
+    m_nWorkerThreads.set(std::thread::hardware_concurrency());
+  }
+
   return StatusCode::SUCCESS;
+}
+
+bool GiGaMT::particleKnownToGeant4(int pdg_id) const {
+    return (bool) G4ParticleTable::GetParticleTable()->FindParticle(pdg_id);
 }
 
 //=============================================================================
@@ -167,8 +176,8 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
                                                                     HepRandomEnginePtr& engine ) const
 {
   auto start_time = Clock::now();
-  std::list<std::promise<GiGaSimReturn>> promises;
-  std::list<std::future<GiGaSimReturn>> futures;
+  std::list<std::promise<Gaussino::GiGaSimReturn>> promises;
+  std::list<std::future<Gaussino::GiGaSimReturn>> futures;
   if ( m_splitPileUp.value() ) {
     // Submit every HepMC event separarely to the queue
     for ( auto& conv : _in ) {
@@ -192,6 +201,14 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     return_events.emplace_back( std::move( evt ) );
     return_truths.emplace_back( std::move( tru ) );
   }
+  for(auto & truth: return_truths){
+    for(auto & cevt:truth->GetContainedProxies()){
+      return_events.push_back(cevt);
+    }
+  }
+  if(auto it = std::unique(std::begin(return_events), std::end(return_events)); it != std::end(return_events)){
+    warning() << "Had to remove non-unique G4EventProxy. Something is wrong!" << endmsg;
+  }
 
   auto end_time = Clock::now();
   debug() << "Simulation complete after " << std::setprecision( 2 )
@@ -199,10 +216,21 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
           << endmsg;
   for ( auto monitool : m_MoniTools ) {
     for ( auto& g4eventproxy : return_events ) {
-      monitool->monitor( *g4eventproxy.event() );
+      monitool->monitor( *g4eventproxy->event() ).ignore();
     }
   }
 
   return std::make_tuple<G4EventProxies, Gaussino::MCTruthPtrs>( std::move( return_events ),
                                                                  std::move( return_truths ) );
+}
+
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3::GenEventPtrs & _in,
+                                                                    HepRandomEnginePtr& engine ) const {
+  return simulate(m_converterTool->BuildConverter(_in), engine);
+}
+
+std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaMT::simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& engine ) const {
+
+  auto [proxies, truths] = simulate({m_converterTool->BuildConverter(_in)}, engine);
+  return {*std::begin(proxies), *std::begin(truths)};
 }

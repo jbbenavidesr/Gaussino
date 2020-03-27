@@ -67,6 +67,7 @@ namespace HepMCUtils
   /// Type of HepMC particles container ordered with barcodes
   typedef std::set<HepMC3::GenParticlePtr, particleOrder> ParticleSet;
   typedef std::set<HepMC3::ConstGenParticlePtr, particleOrder> ConstParticleSet;
+
 } // namespace HepMCUtils
 
 //=============================================================================

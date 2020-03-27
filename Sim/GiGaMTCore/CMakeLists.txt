@@ -22,10 +22,6 @@ FindG4libs(digits_hits event geometry global graphics_reps materials persistency
 add_definitions(-DG4MULTITHREADED)
 add_definitions(-DG4USE_STD11)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_definitions(-DTRUTHDEBUG)
-endif()
-
 gaudi_add_library(GiGaMTCoreMessageLib
                  src/message/*.cpp
                  PUBLIC_HEADERS GiGaMTCoreMessage)
