@@ -14,10 +14,13 @@ gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTTruth
                          Sim/GiGaMTCore)
 
-add_definitions(-DG4MULTITHREADED)
-add_definitions(-DG4USE_STD11)
 AddHepMC3()
 find_package(ROOT COMPONENTS MathCore GenVector)
+
+if(${Geant4_config_version} VERSION_LESS "10.06")
+  add_definitions(-DG4MULTITHREADED)
+  add_definitions(-DG4USE_STD11)
+endif()
 
 gaudi_add_library(GiGaMTLib
                   src/Lib/*.cpp

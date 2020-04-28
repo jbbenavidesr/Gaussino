@@ -19,8 +19,11 @@ find_package(ROOT COMPONENTS MathCore GenVector)
 FindG4libs(digits_hits event geometry global graphics_reps materials persistency
            particles processes run tracking track intercoms physicslists)
 
-add_definitions(-DG4MULTITHREADED)
-add_definitions(-DG4USE_STD11)
+if(${Geant4_config_version} VERSION_LESS "10.06")
+  add_definitions(-DG4MULTITHREADED)
+  add_definitions(-DG4USE_STD11)
+endif()
+
 
 gaudi_add_library(GiGaMTCoreMessageLib
                  src/message/*.cpp

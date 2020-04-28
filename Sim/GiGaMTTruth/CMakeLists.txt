@@ -11,14 +11,15 @@ gaudi_depends_on_subdirs(NewRnd
                          Kernel/PartProp
                          Sim/GiGaMTCore)
 
-find_package(CLHEP COMPONENTS Random Vector)
-find_package(XercesC)
+if(${Geant4_config_version} VERSION_LESS "10.06")
+  add_definitions(-DG4MULTITHREADED)
+  add_definitions(-DG4USE_STD11)
+endif()
+
+
 AddHepMC3()
 
 FindG4libs(digits_hits event geometry global graphics_reps materials persistency
            particles processes run tracking track intercoms physicslists)
-
-add_definitions(-DG4MULTITHREADED)
-add_definitions(-DG4USE_STD11)
 
 gaudi_install_headers(GiGaMTTruth)

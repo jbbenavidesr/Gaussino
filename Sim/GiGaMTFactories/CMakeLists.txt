@@ -16,8 +16,10 @@ gaudi_depends_on_subdirs(GaudiAlg
                          HepMC3
                          Sim/GiGaMTGeo) 
 
-add_definitions(-DG4MULTITHREADED)
-add_definitions(-DG4USE_STD11)
+if(${Geant4_config_version} VERSION_LESS "10.06")
+  add_definitions(-DG4MULTITHREADED)
+  add_definitions(-DG4USE_STD11)
+endif()
 
 AddHepMC3()
 
