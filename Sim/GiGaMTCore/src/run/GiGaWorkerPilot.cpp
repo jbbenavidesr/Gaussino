@@ -26,6 +26,7 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   nWorkers      = right.nWorkers;
   nDeleted      = right.nDeleted;
   nCreated      = right.nCreated;
+  m_track_eventstructure = right.m_track_eventstructure;
   m_for_cleanup = std::move( right.m_for_cleanup );
 }
 
@@ -147,7 +148,7 @@ void GiGaWorkerPilot::operator()()
       tracker->DumpToStream( sstr );
       m_before_sim = sstr.str();
       if ( printDebug() ) {
-        debug( sstr.str() );
+        debug( m_before_sim );
       }
     }
     auto code = tracker->VerifyStructure();
@@ -171,7 +172,7 @@ void GiGaWorkerPilot::operator()()
       tracker->DumpToStream( sstr );
       m_after_sim = sstr.str();
       if ( printDebug() ) {
-        debug( sstr.str() );
+        debug( m_after_sim );
       }
     }
 
@@ -190,10 +191,10 @@ void GiGaWorkerPilot::operator()()
     if(m_track_eventstructure){
       std::stringstream sstr;
       sstr << "\nAfter cleanup\n";
-      tracker->DumpToStream( sstr );
-      m_after_sim = sstr.str();
+      mctruth->DumpToStream( sstr );
+      m_after_cleanup = sstr.str();
       if ( printDebug() ) {
-        debug( sstr.str() );
+        debug( m_after_cleanup );
       }
     }
 

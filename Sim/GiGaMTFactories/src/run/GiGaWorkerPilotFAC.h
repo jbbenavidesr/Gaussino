@@ -11,7 +11,7 @@ class GiGaWorkerPilotFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaWorkerPi
 {
 public:
   using extends::extends;
-  Gaudi::Property<size_t> m_blub{this, "SomeProp", 1};
+  Gaudi::Property<bool> m_track_structure{this, "PrintMCTruth", false};
 
   GiGaWorkerPilot* construct() const override;
 

@@ -11,6 +11,7 @@ GiGaWorkerPilot* GiGaWorkerPilotFAC::construct() const
 
   auto pilot = new GiGaWorkerPilot{};
   pilot->SetMessageInterface( message_interface() );
+  pilot->m_track_eventstructure= m_track_structure.value();
   pilot->iWorker = n_created - 1;
   return pilot;
 }

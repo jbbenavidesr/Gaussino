@@ -33,6 +33,7 @@ class GenPhase(ConfigurableUser):
         "Production"          : '',  # NOQA
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
+        "ParticleGun"         : False,  # NOQA
         "Production_kwargs"   : {},  # NOQA
         "ConvertEDM"          : False,  # NOQA
         "SampleGenerationTool": 'SignalPlain',   # NOQA
@@ -62,12 +63,7 @@ class GenPhase(ConfigurableUser):
     def setOtherProps(self, other, names):
         self.propagateProperties(names, other)
 
-    def configure_phase(self):  # NOQA
-        EvtMax = self.getProp('EvtMax')
-        if EvtMax <= 0:
-            raise RuntimeError("Generating events but selected '%s' events." % EvtMax)  # NOQA
-
-        seq = []
+    def configure_generation(self, seq):
         # Algorithm that produces the actual HepMC by talking to stuff
         SampleGenerationTool = self.getProp('SampleGenerationTool')
         ProductionTool = self.getProp('ProductionTool')
@@ -177,6 +173,48 @@ class GenPhase(ConfigurableUser):
             siggen_alg.PileUpTool = 'ReDecayPileUp'
             siggen_alg.VertexSmearingTool = ''
             siggen_alg.DecayTool = DecayTool
+
+    def configure_pgun(self, seq):
+        """Simple utility function to create and configure an instance of particle
+        gun
+
+        :**kwargs: Optional keyword arguments (not curently used)
+        :returns: ParticleGun instance
+
+        """
+
+        from GaudiKernel.SystemOfUnits import GeV, rad
+        from Configurables import ParticleGun
+        pgun = ParticleGun("ParticleGun")
+        pgun.EventType = 53210205
+
+        from Configurables import MomentumRange
+        pgun.addTool(MomentumRange, name="MomentumRange")
+        pgun.ParticleGunTool = "MomentumRange"
+
+        from Configurables import FlatNParticles
+        pgun.addTool(FlatNParticles, name="FlatNParticles")
+        pgun.NumberOfParticlesTool = "FlatNParticles"
+        pgun.FlatNParticles.MinNParticles = 1
+        pgun.FlatNParticles.MaxNParticles = 1
+        pgun.MomentumRange.PdgCodes = [-2112]
+
+        pgun.MomentumRange.MomentumMin = 2.0*GeV
+        pgun.MomentumRange.MomentumMax = 100.0*GeV
+        pgun.MomentumRange.ThetaMin = 0.015*rad
+        pgun.MomentumRange.ThetaMax = 0.300*rad
+        seq += [pgun]
+
+    def configure_phase(self):  # NOQA
+        EvtMax = self.getProp('EvtMax')
+        if EvtMax <= 0:
+            raise RuntimeError("Generating events but selected '%s' events." % EvtMax)  # NOQA
+
+        seq = []
+        if self.getProp('ParticleGun'):
+            self.configure_pgun(seq)
+        else:
+            self.configure_generation(seq)
 
         # Algorithm to initialise the random seeds and make a GenHeader
         rnd_init = configure_rnd_init()

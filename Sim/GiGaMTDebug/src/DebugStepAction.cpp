@@ -48,6 +48,12 @@ void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
   G4cout << "PreStepPoint = " << presteppos << "\n";
   G4cout << "PostStepPoint = " << poststeppos << "\n";
   G4cout << "Track momentum = " << fourmomentum << "\n";
+  if(auto proc=step->GetPostStepPoint()->GetProcessDefinedStep(); proc)
+    G4cout << "PostStepPoint Process = " << proc->GetProcessName() << "\n";
+
+  if(auto proc=step->GetPreStepPoint()->GetProcessDefinedStep(); proc)
+    G4cout << "PreStepPoint Process = " << proc->GetProcessName() << "\n";
+  G4cout << "Track momentum = " << fourmomentum << "\n";
 
   G4cout << "Is first in volume: " <<step->IsFirstStepInVolume() << "\n";
   G4cout << "Is last in volume: " <<step->IsLastStepInVolume() << "\n";

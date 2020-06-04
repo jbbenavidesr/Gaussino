@@ -123,7 +123,7 @@ double LinkedParticle::GetDecayTimeHepMC() const
   if ( !m_hepmc ) return -2;
   auto E = m_hepmc->end_vertex();
   auto P = m_hepmc->production_vertex();
-  if ( !E ) return 0;
+  if ( !E ) return -1;
   ROOT::Math::PxPyPzEVector A( P->position() ), B( E->position() );
   ROOT::Math::PxPyPzEVector AB = B - A;
 

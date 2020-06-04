@@ -41,6 +41,7 @@ class Gaussino(ConfigurableUser):
         ,"EventSlots"        : 2  # NOQA
         ,"ConvertEDM"        : False  # NOQA
         ,"ForceRandomEngine"   : 'NONE'  # NOQA
+        ,"ParticleTable"    : "$GAUSSINOROOT/data/ParticleTable.txt"  # NOQA
       }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -79,7 +80,7 @@ class Gaussino(ConfigurableUser):
     def __apply_configuration__(self):
         if self.getProp("EnableHive"):
             self.setupHive()
-        ppService()
+        ppService(self.getProp('ParticleTable'))
         dataService()
         auditorService()
         if(self.getProp("ReDecay")):

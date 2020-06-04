@@ -58,11 +58,23 @@ Gaussino::MCTruthConverterPtrs
 HepMC3ToMCTruthConverter::BuildConverter( const HepMC3::GenEventPtrs& hepmc_events ) const {
   Gaussino::MCTruthConverterPtrs converters;
 
+  unsigned int iEvent{0};
   for ( auto& genEvt : hepmc_events ) {
+    iEvent++;
     if ( msgLevel( MSG::VERBOSE ) ) {
       m_ppSvc.retrieve().ignore();
+      verbose() << "Beam particles: " << endmsg;
+      for ( auto beam:genEvt->beams() ) {
+
+        if(auto tmp = m_ppSvc->find( LHCb::ParticleID( beam->pdg_id() ) ); tmp){
+            verbose() << tmp->name();
+        } else {
+            verbose() << "UNKNOWN(" << beam->pdg_id() << ")";
+        }
+        verbose() << " -> #" << beam->id() << ", " << HepMC3::to_status_type(beam->status()) << endmsg;
+      }
       for ( size_t ib = 0; ib < genEvt->beams().size(); ib++ ) {
-        verbose() << "HepMC event dump: beam=" << ib << " \n"
+        verbose() << "HepMC event " << iEvent << " dump: beam=" << ib << " \n"
                   << PrintDecay( genEvt->beams().at( ib ), 0, m_ppSvc.get() ) << endmsg;
       }
     }

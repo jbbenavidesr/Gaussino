@@ -45,12 +45,12 @@ def get_set_configurable(parent, propertyname, value=""):
 
 
 @run_once
-def ppService(name=Configurable.DefaultName):
+def ppService(table, name=Configurable.DefaultName):
     from Configurables import ApplicationMgr, LHCb__ParticlePropertySvc
     log.info("Configuring ParticlePropertySvc")
     ppservice = LHCb__ParticlePropertySvc(
         name,
-        ParticlePropertiesFile="$GAUSSINOROOT/data/ParticleTable.txt")
+        ParticlePropertiesFile=table)
     ApplicationMgr().ExtSvc += [ppservice]
     return ppservice
 
@@ -146,6 +146,7 @@ def gigaService(name=Configurable.DefaultName, debugcommunication=False):
     giga = GiGaMT()
     if debugcommunication:
         conf = get_set_configurable(giga, 'WorkerPilotFactory')
+        conf.PrintMCTruth = True
         conf.OutputLevel = -10
 
     actioninit = get_set_configurable(giga, 'ActionInitializer')

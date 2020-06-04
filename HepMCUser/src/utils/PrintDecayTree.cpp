@@ -1,5 +1,6 @@
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
+#include "HepMC3/GenVertex.h"
 #include <sstream>
 #include "HepMCUtils/PrintDecayTree.h"
 
@@ -8,8 +9,13 @@
 #include "Kernel/ParticleProperty.h"
 #include "HepMCUser/Status.h"
 
-std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level, const LHCb::IParticlePropertySvc* ppsvc)
+std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level, const LHCb::IParticlePropertySvc* ppsvc, IDs* usedid)
 {
+  IDs* tmp{nullptr};
+  if(!usedid){
+    tmp = new IDs{};
+    usedid = tmp;
+  }
   std::string space = "";
   for ( int i = 0; i < level; i++ ) {
     space += "|---> ";
@@ -32,10 +38,18 @@ std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level, cons
     outstream << atts << ",";
   }
   outstream << "} \n";
-  if ( part->end_vertex() ) {
-    for ( auto p : part->children() ) {
-      outstream << PrintDecay( p, level + 1, ppsvc );
+  if ( auto ev = part->end_vertex(); ev ) {
+    if(usedid->count(ev->id()) > 0){
+      outstream << space << " *** Already printed this vertex *** \n";
+    } else {
+      usedid->insert(ev->id());
+      for ( auto p : part->children() ) {
+        outstream << PrintDecay( p, level + 1, ppsvc, usedid );
+      }
     }
+  }
+  if(tmp){
+    delete tmp;
   }
   return outstream.str();
 }
