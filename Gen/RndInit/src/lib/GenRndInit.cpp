@@ -29,7 +29,7 @@ StatusCode GenRndInit::initialize()
   m_eventMax = std::atoi( value.c_str() );
   debug() << "Retrieved EvtMax = " << m_eventMax << endmsg;
   info() << "Setting barrier sync for " << Gaudi::Concurrency::ConcurrencyFlags::numThreads() << endmsg;
-  m_barrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() - 1 );
+  m_barrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() );
   return StatusCode::SUCCESS;
 }
 

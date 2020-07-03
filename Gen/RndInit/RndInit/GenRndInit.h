@@ -87,10 +87,10 @@ protected:
     void wait()
     {
       std::unique_lock<std::mutex> lock{_mutex};
-      if ( --m_n_waiting == 0 ) {
+      if ( --m_n_waiting <= 0 ) {
         _cv.notify_all();
       } else {
-        _cv.wait( lock, [this] { return m_n_waiting == 0; } );
+        _cv.wait( lock, [this] { return m_n_waiting <= 0; } );
       }
     }
     MTBarrier()                   = delete;
