@@ -51,6 +51,7 @@ StatusCode GenMonitorAlg::initialize()
 
 void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 {
+  std::lock_guard<std::mutex> lock( m_histo_lock );
   debug() << "==> Execute" << endmsg;
 
   // Initialize counters
@@ -73,7 +74,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
     if ( produceHistos() ) {
       auto sig_proc_id = 
           hepmcevent->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
-      std::lock_guard<std::mutex> lock( m_histo_lock );
       m_hProcess->fill( sig_proc_id );
     }
 
@@ -87,7 +87,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
           if ( ( hepMCpart->status() == 1 ) || ( hepMCpart->status() == 888 ) ) {
             primFound = true;
             if ( hepMCpart->production_vertex() ) {
-              std::lock_guard<std::mutex> lock( m_histo_lock );
               m_hPrimX->fill( hepMCpart->production_vertex()->position().x() / Gaudi::Units::mm );
               m_hPrimY->fill( hepMCpart->production_vertex()->position().y() / Gaudi::Units::mm );
               m_hPrimZ->fill( hepMCpart->production_vertex()->position().z() / Gaudi::Units::mm );
@@ -102,7 +101,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
           }
         }
 
-        std::lock_guard<std::mutex> lock( m_histo_lock );
         m_hPartP->fill( hepMCpart->momentum().p3mod() / Gaudi::Units::GeV );
         m_hPartPDG->fill( hepMCpart->pdg_id() );
       }
@@ -113,7 +111,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
       if ( ( hepMCpart->status() != 2 ) && ( hepMCpart->status() != 3 ) ) {
         nParticlesStable++;
         if ( produceHistos() ) {
-          std::lock_guard<std::mutex> lock( m_histo_lock );
           m_hProtoP->fill( hepMCpart->momentum().p3mod() / Gaudi::Units::GeV );
           m_hProtoPDG->fill( hepMCpart->pdg_id() );
           m_hProtoLTime->fill( GaussGenUtil::lifetime( hepMCpart ) / Gaudi::Units::mm );
@@ -132,7 +129,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
               ++nParChStabEtaAcc;
             }
             if ( produceHistos() ) {
-              std::lock_guard<std::mutex> lock( m_histo_lock );
               m_hStableEta->fill( pseudoRap );
               m_hStablePt->fill( hepMCpart->momentum().perp() / Gaudi::Units::GeV );
             }
@@ -143,7 +139,6 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
   }
 
   if ( produceHistos() ) {
-    std::lock_guard<std::mutex> lock( m_histo_lock );
     m_hNPart->fill( nParticles );
     m_hNStable->fill( nParticlesStable );
     m_hNSCharg->fill( nParticlesStableCharged );
