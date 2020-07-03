@@ -8,4 +8,4 @@ namespace DD4hepGaudiMessaging {
  * later.*/
 dd4hep::PrintLevel Convert(MSG::Level level);
 MSG::Level Convert(dd4hep::PrintLevel level);
-}  // namespace DD4HepGaudiMessaging
+}  // namespace DD4hepGaudiMessaging

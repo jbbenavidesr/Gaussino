@@ -29,6 +29,7 @@ find_package(Boost COMPONENTS system thread filesystem)
 
 include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS})
 AddHepMC3()
+AddDD4hepDDG4()
 
 message(STATUS "ROOTSYS -> ${ROOTSYS}")
 set(ENV{ROOTSYS} ${ROOTSYS})
@@ -50,6 +51,8 @@ gaudi_add_library(GiGaMTDD4hepLib
                   PUBLIC_HEADERS GiGaMTDD4hep
                   INCLUDE_DIRS LbDD4hep DD4hep
                   LINK_LIBRARIES DD4hep ${DD4hep_COMPONENT_LIBRARIES} ROOT GiGaMTCoreRunLib ${DD4hepDDG4_LIBRARIES}) 
+
+add_dependencies(GiGaMTDD4hepLib DD4hepDDG4Ext) 
 
 gaudi_add_module(GiGaMTDD4hep
                  src/components/*.cpp 

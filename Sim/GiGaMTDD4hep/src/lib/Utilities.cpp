@@ -1,4 +1,4 @@
-#include "GiGaMTDD4Hep/Utilities.h"
+#include "GiGaMTDD4hep/Utilities.h"
 
 dd4hep::PrintLevel DD4hepGaudiMessaging::Convert(MSG::Level level) {
   switch (level) {

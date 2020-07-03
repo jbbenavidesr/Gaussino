@@ -10,7 +10,7 @@ class Detector;
 
 /** @class GDMLDetectorConstruction
  *
- *  Detector construction wrapper that converts a DD4Hep detector into a Geant4
+ *  Detector construction wrapper that converts a DD4hep detector into a Geant4
  * detector
  *
  *  @author Dominik Muller
@@ -21,15 +21,15 @@ class DD4hepDetectorConstruction : public G4VUserDetectorConstruction{
 
   public:
   /**  Constructor.
-   *   @param[in] Reference to the DD4Hep detector.
+   *   @param[in] Reference to the DD4hep detector.
    */
   explicit DD4hepDetectorConstruction(const dd4hep::Detector& detector);
   /**  Default constructor.
-   *   Reference to the DD4Hep detector taken from the global instance.
+   *   Reference to the DD4hep detector taken from the global instance.
    */
   DD4hepDetectorConstruction();
   virtual ~DD4hepDetectorConstruction() = default;
-  /**  Create volumes using the DD4Hep converter.
+  /**  Create volumes using the DD4hep converter.
    *   @return World wolume.
    */
   virtual G4VPhysicalVolume* Construct() override;

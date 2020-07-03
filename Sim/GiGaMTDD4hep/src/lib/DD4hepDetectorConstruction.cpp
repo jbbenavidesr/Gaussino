@@ -1,8 +1,8 @@
 // Geant
-#include "GiGaMTDD4Hep/DD4hepDetectorConstruction.h"
+#include "GiGaMTDD4hep/DD4hepDetectorConstruction.h"
 #include <functional>
 
-// DD4Hep
+// DD4hep
 #include "DD4hep/Detector.h"
 #include "DDG4/Geant4Converter.h"
 #include "DDG4/Geant4Mapping.h"

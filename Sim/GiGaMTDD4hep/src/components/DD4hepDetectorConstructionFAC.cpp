@@ -4,7 +4,7 @@
 #include "Geant4/G4VUserDetectorConstruction.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "LbDD4hep/IDD4hepSvc.h"
-#include "GiGaMTDD4Hep/DD4hepDetectorConstruction.h"
+#include "GiGaMTDD4hep/DD4hepDetectorConstruction.h"
 
 /** @class DD4hepDetectorConstructionFAC SimG4Components/src/DD4hepDetectorConstructionFAC.h DD4hepDetectorConstructionFAC.h
  *
@@ -31,7 +31,7 @@ public:
   G4VUserDetectorConstruction* construct() const override;
 };
 
-#include "GiGaMTDD4Hep/Utilities.h"
+#include "GiGaMTDD4hep/Utilities.h"
 
 DECLARE_COMPONENT(DD4hepDetectorConstructionFAC)
 
