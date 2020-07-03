@@ -1,4 +1,4 @@
-
+#pragma once
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/Relatives.h"
