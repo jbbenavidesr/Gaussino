@@ -47,21 +47,6 @@ void printChildren(HepMC3::GenParticlePtr part, int level) {
       std::cerr << "compareGenEvent: event numbers differ " << std::endl;
       return false;
     }
-    // Compare all the attributes
-    for ( auto& vt1 : e1.attributes() ) {
-      if(vt1.first == "GenCrossSection"){
-      continue;}
-      if(vt1.first == "GeneratorName"){
-      continue;}
-      for ( auto& vt2 : vt1.second ) {
-        auto val1 = vt2.second->unparsed_string();
-        auto val2 = e2.attributes().at( vt1.first ).at( vt2.first )->unparsed_string();
-        if ( val1 != val2 ) {
-          std::cerr << "compareAttributes: " << vt1.first << " = " << val1 << " & " <<val2 << std::endl;
-          return false;
-        }
-      }
-    }
     if ( !compareSignalProcessVertex( e1, e2 ) ) {
       return false;
     }
@@ -84,6 +69,21 @@ void printChildren(HepMC3::GenParticlePtr part, int level) {
     }
     if ( !compareVertices( e1, e2 ) ) {
       return false;
+    }
+    // Compare all the attributes
+    for ( auto& vt1 : e1.attributes() ) {
+      if(vt1.first == "GenCrossSection"){
+      continue;}
+      if(vt1.first == "GeneratorName"){
+      continue;}
+      for ( auto& vt2 : vt1.second ) {
+        auto val1 = vt2.second->unparsed_string();
+        auto val2 = e2.attributes().at( vt1.first ).at( vt2.first )->unparsed_string();
+        if ( val1 != val2 ) {
+          std::cerr << "compareAttributes: " << vt1.first << " = " << val1 << " & " <<val2 << std::endl;
+          return false;
+        }
+      }
     }
     return true;
   }
