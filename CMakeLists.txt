@@ -48,7 +48,7 @@ macro(AddDD4hepDDG4)
     link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 
     set(DD4hepDDG4_LIBRARIES
-          -lDDG4LCIO
+          #-lDDG4LCIO
           -lDDG4Legacy  
           -lDDG4Plugins  
           -lDDG4Python  
