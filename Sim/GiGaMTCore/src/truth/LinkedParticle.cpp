@@ -187,7 +187,10 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     if ( !m_prodvtx ) {
       vertex = m_prodvtx = std::make_shared<LinkedVertex>( GetID() );
       if ( part->HepMC() && HepMC() ) {
-        m_prodvtx->hepmc_vtx = part->HepMC()->end_vertex().get();
+        // If both are HepMC particles, assign the production vertex of the child
+        // to the vertex. If particles are skipped this will lead to multiple end vertices
+        // for the particle potentially
+        m_prodvtx->hepmc_vtx = part->m_hepmc->end_vertex().get();
       }
     } else {
       // If a production vertex exists before but we haven't identified the vertex

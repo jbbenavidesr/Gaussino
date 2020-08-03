@@ -486,11 +486,13 @@ namespace Gaussino
     // an intermediate particle is removed.
     auto parents  = lp->GetParents();
     auto children = lp->GetChildren();
+
     delete lp; // Destructor will remove this particle from the vertices
     // The production vertex of this particle was particle was an endvertex
     // of its parents. If the particle was the only one produced in this vertex,
     // the vertex now has no more outgoing particles and is deleted from the partents.
-    if ( prodvtx || prodvtx->outgoing_particles.size() == 0 ) {
+    if ( prodvtx && prodvtx->outgoing_particles.size() == 0 ) {
+
       for ( auto& in : prodvtx->incoming_particle ) {
         in->GetEndVtxs().erase( prodvtx );
       }

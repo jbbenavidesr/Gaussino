@@ -14,7 +14,7 @@
 // GaussTools
 //#include "GaussTools/GaussTrajectory.h"
 #include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
-//#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
 /// local
 #include "GiGaMTCoreTruth/TruthFlaggingTrackAction.h"
 
@@ -96,6 +96,14 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
   // the information as this gives a non-const track
   auto ti = GaussinoTrackInformation::Get();
 
+  // Flag all primaries to be stored if requested
+  if ( storePrimaries && 0 == track->GetParentID() ) {
+    ti->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
+
+    // FIXME: fillGaussTrackInformation( track );
+    return;
+  } /// RETURN !!!
+
   if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) ) {
     if ( storeUpToZmax && ( track->GetVertexPosition().z() > zMaxToStore ) ) {
       return;
@@ -103,6 +111,7 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
     // Only set the preliminary flag to allow for rejection in posttrackaction
     ti->setToPrelStoreTruth( true );
   }
+
 }
 
 void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
@@ -122,9 +131,9 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   auto this_track_info = GaussinoTrackInformation::Get();
 
   // if only to a certain z, check z and set flag
-  bool zstore = true;
+  bool notrejected = true;
   if ( storeUpToZmax && ( track->GetVertexPosition().z() > zMaxToStore ) ) {
-    zstore = false;
+    notrejected = false;
   }
 
   if ( rejectRICHphe ) {
@@ -137,20 +146,20 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
            ( "TorchTBMcpPhotoElectricProcess" == process->GetProcessName() ) ||
            ( "TorchTBMcpEnergyLossProcess" == process->GetProcessName() ) ) {
         warning( "RichHpd/Pmt/Mcp PhotoelectricProcess  RichHpd/Pmt/Mcp SiEnergyLossProcess particles not kept" );
-        return;
+        notrejected = false;
       }
     }
   }
 
   if ( rejectOptPhot ) {
     if ( track->GetDefinition()->GetParticleName() == "opticalphoton" ) {
-      return;
+      notrejected = false;
     }
   }
 
   // if reject rich photoelectrons check and store
   // (3) store  all     particles ?
-  if ( storeAll && zstore ) {
+  if ( storeAll && notrejected ) {
     // FIXME: trackMgr->SetStoreTrajectory( true );
     this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
     // FIXME: setProcess( track );
@@ -170,8 +179,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         }
         if ( !( dtr->GetDynamicParticle()->GetPreAssignedDecayProducts() ) ) {
           auto child_track_info = GaussinoTrackInformation::Get( dtr );
-          // Only store preliminary to allow for rejection later on
-          child_track_info->setToPrelStoreTruth( true );
+          child_track_info->setToStoreTruth( true );
         }
       }
       // FIXME: trackMgr->SetStoreTrajectory( true );
@@ -195,7 +203,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
 
   // (5) store particles with kinetic energy over the threshold value.
   //     See also PreAction
-  if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) && zstore ) {
+  if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) && notrejected ) {
     // FIXME: setProcess( track );
     // FIXME: fillGaussTrackInformation( track );
     // FIXME: trackMgr()->SetStoreTrajectory( true );
@@ -205,7 +213,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   } /// RETURN !!!
 
   // (6) store all predefined particle types:
-  if ( storeByOwnType && ( ownStoredTypes.count( track->GetDefinition() ) > 0 ) && zstore ) {
+  if ( storeByOwnType && ( ownStoredTypes.count( track->GetDefinition() ) > 0 ) && notrejected ) {
     // FIXME: setProcess( track );
     // FIXME: fillGaussTrackInformation( track );
     // FIXME: trackMgr()->SetStoreTrajectory( true );
@@ -216,7 +224,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   // (7) store the particle if it has a certain type of daughter particle
   //     or at least one from secondaries  particle have kinetic energy over
   //     threshold
-  if ( storeByChildType || ( storeByChildEnergy && 0 != trackMgr->GimmeSecondaries() && zstore ) ) {
+  if ( storeByChildType || ( storeByChildEnergy && 0 != trackMgr->GimmeSecondaries() && notrejected ) ) {
     const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
     for ( unsigned int index = 0; index < childrens->size(); ++index ) {
       const G4Track* tr = ( *childrens )[index];
@@ -232,7 +240,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
         return;
       } /// RETURN
         //
-      if ( storeByChildType && ( childStoredTypes.count( tr->GetDefinition() ) > 0 ) && zstore ) {
+      if ( storeByChildType && ( childStoredTypes.count( tr->GetDefinition() ) > 0 ) && notrejected ) {
         // FIXME: setProcess( track );
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
@@ -243,7 +251,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
 
   // (7.5) store tracks according to creator process of its daughters
-  if ( storeBySecondariesProcess && 0 != trackMgr->GimmeSecondaries() && zstore ) {
+  if ( storeBySecondariesProcess && 0 != trackMgr->GimmeSecondaries() && notrejected ) {
     const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
     for ( unsigned int index = 0; index < childrens->size(); ++index ) {
       const G4Track* tr = ( *childrens )[index];
@@ -262,7 +270,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
 
   // (7.6) store tracks according to creator process
-  if ( storeByOwnProcess && zstore ) {
+  if ( storeByOwnProcess && notrejected ) {
     if ( ownStoredProcess.count( track->GetCreatorProcess()->GetProcessName() ) > 0 ) {
       // FIXME: setProcess( track );
       // FIXME: fillGaussTrackInformation( track );
@@ -273,7 +281,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
   // (8) Now make the preliminary flag permanent if the tracks survived until here
   // and weren't rejected
-  if( this_track_info->prelStoreTruth() ) { 
+  if( this_track_info->prelStoreTruth() && notrejected) { 
     //setProcess( track ) ;
     //fillGaussTrackInformation( track ) ;          
     //trackMgr()->SetStoreTrajectory( true );   
@@ -292,10 +300,10 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   // if track is not to be stored, propagate it's parent ID (stored) to its
   // secondaries
   if ( !( this_track_info->storeTruth() ) ) {
+    if ( 0 == track->GetParentID() ) {
+      G4cerr << __PRETTY_FUNCTION__ << " Dangerous: Primary Particle is not requested to be stored" << G4endl;
+    }
     if ( trackMgr->GimmeSecondaries() ) {
-      if ( 0 == track->GetParentID() ) {
-        G4cerr << __PRETTY_FUNCTION__ << " Dangerous: Primary Particle is not requested to be stored" << G4endl;
-      }
 
       G4TrackVector* childrens = trackMgr->GimmeSecondaries();
       for ( unsigned int index = 0; index < childrens->size(); ++index ) {
