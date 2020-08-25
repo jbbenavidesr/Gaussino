@@ -34,6 +34,7 @@ class GenPhase(ConfigurableUser):
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
         "ParticleGun"         : False,  # NOQA
+        "ParticleGunUseDefault": True,  # NOQA
         "Production_kwargs"   : {},  # NOQA
         "ConvertEDM"          : False,  # NOQA
         "SampleGenerationTool": 'SignalPlain',   # NOQA
@@ -186,23 +187,25 @@ class GenPhase(ConfigurableUser):
         from GaudiKernel.SystemOfUnits import GeV, rad
         from Configurables import ParticleGun
         pgun = ParticleGun("ParticleGun")
-        pgun.EventType = 53210205
 
-        from Configurables import MomentumRange
-        pgun.addTool(MomentumRange, name="MomentumRange")
-        pgun.ParticleGunTool = "MomentumRange"
+        if self.getProp('ParticleGunUseDefault'):
+            pgun.EventType = 53210205
 
-        from Configurables import FlatNParticles
-        pgun.addTool(FlatNParticles, name="FlatNParticles")
-        pgun.NumberOfParticlesTool = "FlatNParticles"
-        pgun.FlatNParticles.MinNParticles = 1
-        pgun.FlatNParticles.MaxNParticles = 1
-        pgun.MomentumRange.PdgCodes = [-2112]
+            from Configurables import MomentumRange
+            pgun.addTool(MomentumRange, name="MomentumRange")
+            pgun.ParticleGunTool = "MomentumRange"
 
-        pgun.MomentumRange.MomentumMin = 2.0*GeV
-        pgun.MomentumRange.MomentumMax = 100.0*GeV
-        pgun.MomentumRange.ThetaMin = 0.015*rad
-        pgun.MomentumRange.ThetaMax = 0.300*rad
+            from Configurables import FlatNParticles
+            pgun.addTool(FlatNParticles, name="FlatNParticles")
+            pgun.NumberOfParticlesTool = "FlatNParticles"
+            pgun.FlatNParticles.MinNParticles = 1
+            pgun.FlatNParticles.MaxNParticles = 1
+            pgun.MomentumRange.PdgCodes = [-2112]
+
+            pgun.MomentumRange.MomentumMin = 2.0*GeV
+            pgun.MomentumRange.MomentumMax = 100.0*GeV
+            pgun.MomentumRange.ThetaMin = 0.015*rad
+            pgun.MomentumRange.ThetaMax = 0.300*rad
         seq += [pgun]
 
     def configure_phase(self):  # NOQA
@@ -244,7 +247,7 @@ class GenPhase(ConfigurableUser):
         except:
             pass
         seq += [alg]
-        
+
         ApplicationMgr().TopAlg += seq
 
     @staticmethod
