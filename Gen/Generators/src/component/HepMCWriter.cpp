@@ -5,16 +5,59 @@
 #include "Defaults/HepMCAttributes.h"
 #include "HepMC3/WriterAscii.h"
 #include "HepMC3/WriterHEPEVT.h"
-//#include "HepMC3/WriterRoot.h"
-//#include "HepMC3/WriterRootTree.h"
+#include "HepMC3/WriterRoot.h"
+#include "HepMC3/WriterRootTree.h"
 
-//-----------------------------------------------------------------------------
-// Implementation file for class : HepMCWriter
-//
-// 2018-03-23 : D. Muller
-//-----------------------------------------------------------------------------
+// Include files
+// from STL
+#include <mutex>
+#include <string>
 
-// Declaration of the Algorithm Factory
+// from Gaudi
+#include "Defaults/Locations.h"
+#include "GaudiAlg/Consumer.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMCUser/typedefs.h"
+
+namespace HepMC3
+{
+  class Writer;
+}
+
+/** @class HepMCWriter HepMCWriter.h Algorithms/HepMCWriter.h
+ *
+ *  Algorithm to write the produced HepMC events as a TTree into a ROOT file
+ *
+ *  @author Dominik Muller
+ *  @date   2018-03-23
+ */
+class HepMCWriter : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs& )>
+{
+
+private:
+  // Name of the output file is automatically set in the configuration and manually specific values
+  // are most likely ignored!
+  Gaudi::Property<std::string> m_outputFileName{this, "OutputFileName", ""};
+  Gaudi::Property<std::string> m_writer_name{
+      this, "Writer", "WriterRootTree", "Writer to use. Options: [WriterRoot, WriterRootTree, WriterAscii, WriterHEPEVT]"};
+
+public:
+  /// Standard constructor
+  HepMCWriter( const std::string& name, ISvcLocator* pSvcLocator )
+      : Consumer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}} ){};
+
+  virtual ~HepMCWriter() = default;
+
+  void operator()( const HepMC3::GenEventPtrs& ) const override;
+  virtual StatusCode finalize() override;
+  virtual StatusCode initialize() override;
+
+private:
+  HepMC3::Writer* m_writer = nullptr;
+  mutable std::mutex m_writer_lock;
+  mutable std::atomic_uint m_counter{0};
+};
+
 DECLARE_COMPONENT( HepMCWriter )
 
 StatusCode HepMCWriter::initialize()
@@ -26,11 +69,11 @@ StatusCode HepMCWriter::initialize()
   debug() << "==> Initialize" << endmsg;
 
   if ( m_outputFileName != "" ) {
-    //if ( m_writer_name == "WriterRoot" ) {
-      //m_writer = new HepMC3::WriterRoot( m_outputFileName );
-    //} else if ( m_writer_name == "WriterRootTree" ) {
-      //m_writer = new HepMC3::WriterRootTree( m_outputFileName );
-    if ( m_writer_name == "WriterAscii" ) {
+    if ( m_writer_name == "WriterRoot" ) {
+      m_writer = new HepMC3::WriterRoot( m_outputFileName );
+    } else if ( m_writer_name == "WriterRootTree" ) {
+      m_writer = new HepMC3::WriterRootTree( m_outputFileName );
+    } else if ( m_writer_name == "WriterAscii" ) {
       m_writer = new HepMC3::WriterAscii( m_outputFileName );
     } else if ( m_writer_name == "WriterHEPEVT" ) {
       m_writer = new HepMC3::WriterHEPEVT( m_outputFileName );

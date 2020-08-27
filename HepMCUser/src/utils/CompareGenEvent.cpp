@@ -103,7 +103,6 @@ void printChildren(HepMC3::GenParticlePtr part, int level) {
     }
     auto s1   = sp1->value();
     auto s2   = sp2->value();
-    auto test = *s1;
     if ( s1 && s2 ) {
       if ( ( *s1 ) != ( *s2 ) ) {
         std::cerr << "compareSignalProcessVertex: signal process vertices differ " << std::endl;

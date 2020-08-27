@@ -329,8 +329,8 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
 
   //Just before writing, set the event and run number of the HepMC events so they are persisted.
   for(auto & evt : theEvents){
-    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(old_gen_header.evtNumber()));
+    evt->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(old_gen_header.runNumber()));
   }
 
   return std::make_tuple(std::move(theEvents), std::move(theCollisions), std::move(theGenHeader));

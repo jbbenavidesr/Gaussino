@@ -30,7 +30,6 @@ class GenPhase(ConfigurableUser):
         "B1Particle"          : 'p',  # NOQA
         "B2Particle"          : 'p',  # NOQA
         "EvtMax"              : -1,  # NOQA
-        "Production"          : '',  # NOQA
         "WriteHepMC"          : False,  # NOQA
         "GenMonitor"          : False,  # NOQA
         "ParticleGun"         : False,  # NOQA

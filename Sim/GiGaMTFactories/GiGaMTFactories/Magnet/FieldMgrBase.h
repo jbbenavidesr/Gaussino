@@ -13,7 +13,8 @@
 /** @class FieldMgrBase
  *
  * Implements the basic functionality to construct and configure
- * the G4FieldManager. A purely virtual function remains
+ * the G4FieldManager. A purely virtual function remains which is used
+ * to construct the G4MagneticField that can be overloaded.
  *
  *  @author Dominik Muller
  *  @date   2019-06-03

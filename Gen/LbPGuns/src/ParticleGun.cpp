@@ -169,8 +169,8 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
     for ( unsigned int i = 0 ; i < nParticles ; ++i ) {
       // Prepare event container
       prepareInteraction( &theEvents , &theCollisions , theGenEvent , theGenCollision ) ;
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().evt()));
-      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(Gaudi::Hive::currentContext().eventID().run_number()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiEventNumber, std::make_shared<HepMC3::IntAttribute>(theOldGenHeader.evtNumber()));
+      theGenEvent->add_attribute(Gaussino::HepMC::Attributes::GaudiRunNumber, std::make_shared<HepMC3::IntAttribute>(theOldGenHeader.runNumber()));
 
       // If sampling the mass, change the energy of the particle appropriately
       if (m_sampleMass.value()) {
@@ -197,8 +197,12 @@ ParticleGun::operator()( const LHCb::GenHeader& theOldGenHeader ) const {
                                 thePdgId ,
                                 HepMC3::Status::StableInProdGen )};
 
+      auto beam = std::make_shared<HepMC3::GenParticle>();
+      beam->set_status(HepMC3::Status::DocumentationParticle);
+      v->add_particle_in(beam);
       v -> add_particle_out( p ) ;
       theGenEvent->add_vertex( v ) ;
+      theGenEvent->add_beam_particle( beam );
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID,
           std::make_shared<HepMC3::IntAttribute>(nParticles));
       theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex,
