@@ -1,7 +1,6 @@
 // Include files
 
 // local
-#include "HepMCWriter.h"
 #include "Defaults/HepMCAttributes.h"
 #include "HepMC3/WriterAscii.h"
 #include "HepMC3/WriterHEPEVT.h"
