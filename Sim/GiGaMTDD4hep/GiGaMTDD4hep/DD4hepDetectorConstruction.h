@@ -57,6 +57,7 @@ class DD4hepDetectorConstruction : public G4VUserDetectorConstruction{
   void SetDebugRegions(bool val = true) { m_debugRegions = val; }
 
   private:
+
   /// Reference to the detector handed over by the constructor for convenience.
   const dd4hep::Detector& m_detector;
   sdConstructor m_sd_constructor = [](const dd4hep::Detector&) {};
@@ -74,4 +75,5 @@ class DD4hepDetectorConstruction : public G4VUserDetectorConstruction{
   bool m_debugPlacements = false;
   /// Property: Flag to debug regions during conversion mechanism
   bool m_debugRegions = false;
+
 };
