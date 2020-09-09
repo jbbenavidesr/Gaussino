@@ -82,14 +82,9 @@ StatusCode GiGaMT::initialize()
     return StatusCode::FAILURE;
   }
 
-  /// print ALL properties
-  typedef std::vector<Property*> Properties;
-  const Properties& properties = getProperties();
-  MsgStream msg( msgSvc(), name() );
-  msg << MSG::DEBUG << " List of ALL properties of " << System::typeinfoName( typeid( *this ) ) << "/" << this->name()
-      << "   #properties = " << properties.size() << endmsg;
-  for ( Properties::const_reverse_iterator property = properties.rbegin(); properties.rend() != property; ++property ) {
-    msg << MSG::DEBUG << "Property ['Name': Value] = " << ( **property ) << endmsg;
+  if(m_nWorkerThreads.value() == 0){
+    warning() << "No number of threads set. Setting to " << std::thread::hardware_concurrency() << endmsg;
+    m_nWorkerThreads.set(std::thread::hardware_concurrency());
   }
 
   /// Dump all particles known to Geant4
@@ -116,10 +111,6 @@ StatusCode GiGaMT::initialize()
   if ( m_printParticles.value() ) {
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     particleTable->DumpTable( "all" );
-  }
-
-  if(m_nWorkerThreads.value() == 0){
-    m_nWorkerThreads.set(std::thread::hardware_concurrency());
   }
 
   return StatusCode::SUCCESS;
