@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GaudiKernel/Property.h"
+#include "Gaudi/Property.h"
 #include "GaudiKernel/Service.h"
 #include "GenBeam/IBeamInfoSvc.h"
 
