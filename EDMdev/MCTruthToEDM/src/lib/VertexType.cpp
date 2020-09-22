@@ -84,7 +84,10 @@ namespace Gaussino {
                         "you managed this but it is not supported."
                      << endmsg;
       }
-      if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
+      if(lv->HasPreassignedType()){
+          return_vtx_type = vertexType(lv->GetProcessID());
+      }
+      else if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
                         []( LinkedParticle* p ) -> bool { return p->G4Truth(); } ) ) {
         auto first_proc = ( *std::begin( lv->outgoing_particles ) )->G4Truth()->GetCreatorID();
         if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),

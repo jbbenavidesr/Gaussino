@@ -398,6 +398,15 @@ namespace Gaussino
     m_linkedParticles.insert( ptr );
   }
 
+  void MCTruthTracker::DeclareEnd(const HepMC3::FourVector& position, int procid, int parentID ){
+    if ( m_tracking_to_linked.find( parentID ) == std::end( m_tracking_to_linked ) ) {
+      G4cerr << __PRETTY_FUNCTION__ << " no linked particle with parentID found. Skipping!" << G4endl;
+      return;
+    }
+    auto parentLP = m_tracking_to_linked[parentID];
+    parentLP->AddEndVertex(position, procid);
+  }
+
   ///////////////////////////////////////////////////////////
   // MCTruth
   //////////////////////////////////////////////////////////

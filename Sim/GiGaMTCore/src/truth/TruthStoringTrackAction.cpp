@@ -78,10 +78,21 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
   }
 
   auto track_info = GaussinoTrackInformation::Get();
+  HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
+                              track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
+    // get the process type of the origin vertex
+    int creatorID = processID( track->GetCreatorProcess() );
+    // Get User information from primary particle to set Vertex type
+    // OscillatedAndDecay and to set SignalFlag
+
+    auto event_info = GaussinoEventInformation::Get();
+
+    if ( !event_info ) {
+      G4cerr << __PRETTY_FUNCTION__ << " no event information. " << G4endl;
+      return;
+    }
 
   if ( track_info->storeTruth() ) {
-    HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
-                                track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
     HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
                                track->GetGlobalTime() );
 
@@ -114,17 +125,6 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
         }
       }
     }
-    // get the process type of the origin vertex
-    int creatorID = processID( track->GetCreatorProcess() );
-
-    // Get User information from primary particle to set Vertex type
-    // OscillatedAndDecay and to set SignalFlag
-
-    auto event_info = GaussinoEventInformation::Get();
-    if ( !event_info ) {
-      G4cerr << __PRETTY_FUNCTION__ << " no event information. " << G4endl;
-      return;
-    }
 
     HepMC3::FourVector final_fourmomentum{track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
                                           track->GetTotalEnergy()};
@@ -152,7 +152,12 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
     } else {
       event_info->TruthTracker()->Declare( particle, track->GetParentID() );
     }
+  } else if (addEndVertices && track_info->directParent() && !track_info->isSuspendedAndSaved()){
+    // If the particle is not to be saved, add the endvertex with the corresponding process nonetheless
+    if ( track->GetTrackStatus() == G4TrackStatus::fSuspend ) { track_info->suspendedAndSaved(); }
+    event_info->TruthTracker()->DeclareEnd(prodpos, creatorID, track->GetParentID());
   }
+
 }
 
 int TruthStoringTrackAction::processID( const G4VProcess* creator ) {

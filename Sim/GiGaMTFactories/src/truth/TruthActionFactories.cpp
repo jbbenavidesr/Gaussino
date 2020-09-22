@@ -58,6 +58,7 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
 #include "Kernel/ParticleProperty.h"
 
 class TruthStoringTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4UserTrackingAction>> {
+  Gaudi::Property<bool>                                m_endvertices{this, "AddEndVertices", true};
   using extends::extends;
   StatusCode initialize() override {
     auto sc = extends::initialize();
@@ -74,6 +75,7 @@ class TruthStoringTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4Us
       if ( pid ) { return pid->pdgID().pid(); }
       return std::nullopt;
     };
+    action->addEndVertices = m_endvertices.value();
     return action;
   }
 

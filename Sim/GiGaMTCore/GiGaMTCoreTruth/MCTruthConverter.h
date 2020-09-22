@@ -123,6 +123,7 @@ namespace Gaussino
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
     void Declare( Gaussino::G4TruthParticle* particle, int parentID );
+    void DeclareEnd(const HepMC3::FourVector& position, int procid, int parentID );
     void RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID );
     bool AlreadyRegisteredPrimary( unsigned int primaryID) const;
 

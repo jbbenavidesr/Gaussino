@@ -204,6 +204,17 @@ void LinkedParticle::AddParent( LinkedParticle* part )
   vertex->outgoing_particles.insert( this );
 }
 
+void LinkedParticle::AddEndVertex( const HepMC3::FourVector& position, int procid ) {
+  for ( auto& vtx : GetEndVtxs() ) {
+    if ( Gaussino::LinkedParticleHelpers::CompareFourVector( vtx->GetPosition(), position ) &&
+         vtx->GetProcessID() == procid ) {
+      return;
+    }
+  }
+  std::shared_ptr<LinkedVertex> endvtx{new EndLinkedVertex{GetID(), position, procid}};
+  m_endvtxs.insert( endvtx );
+}
+
 void LinkedParticle::AddChild( LinkedParticle* part ) { part->AddParent( this ); }
 
 template <typename T>
