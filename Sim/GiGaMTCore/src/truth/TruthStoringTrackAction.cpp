@@ -160,7 +160,7 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
     // Only do this if the track is not in a suspended state
     if(addEndVertices && track->GetTrackStatus() != G4TrackStatus::fSuspend){
       auto trackMgr = G4UserTrackingAction::fpTrackingManager;
-      if ( trackMgr->GimmeSecondaries() || trackMgr->GimmeSecondaries()->size() == 0 ) {
+      if ( !trackMgr->GimmeSecondaries() || trackMgr->GimmeSecondaries()->size() == 0 ) {
         event_info->TruthTracker()->DeclareEnd(endpos, 0, track->GetTrackID());
       }
     }
