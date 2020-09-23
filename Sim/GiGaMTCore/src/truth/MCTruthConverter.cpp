@@ -80,7 +80,7 @@ namespace Gaussino
       }
     };
     for ( auto& rp : m_linkedParticles ) {
-      if ( rp->GetEndVtxs().empty() ) {
+      if ( rp->GetEndVtxs().empty() || rp->GetChildren().size() == 0 ) {
         rec_up( rp );
       }
     }
@@ -190,7 +190,7 @@ namespace Gaussino
     LinkedParticle::PtrSet root_particles;
     auto& table = m_hepmc_to_linked[evt];
     std::vector<LinkedParticle*> tmp_linked;
-    auto tmp_link = table | ranges::v3::view::transform( []( auto& pr ) { return pr.second; } );
+    auto tmp_link = table | ranges::views::transform( []( auto& pr ) { return pr.second; } );
 
     // Find all root particles, i.e. those
     std::copy_if( std::begin( tmp_link ), std::end( tmp_link ),

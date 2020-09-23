@@ -129,28 +129,40 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
     HepMC3::FourVector final_fourmomentum{track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
                                           track->GetTotalEnergy()};
     // Skip if the track has already been saved because it was previously suspended
-    if ( track_info->isSuspendedAndSaved() ) { return; }
-    if ( track->GetTrackStatus() == G4TrackStatus::fSuspend ) { track_info->suspendedAndSaved(); }
+    //
+    if ( !track_info->isSuspendedAndSaved() ) {
+      if ( track->GetTrackStatus() == G4TrackStatus::fSuspend ) { track_info->suspendedAndSaved(); }
 
-    auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID,   creatorID, fourmomentum,
-                                                  final_fourmomentum,  prodpos, endpos};
-    // Now check if the particle is a primary particle, i.e. we have already created
-    // a linked particle for it.
-    if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
-      auto primary_info = GaussinoPrimaryParticleInformation::Get( track->GetDynamicParticle()->GetPrimaryParticle() );
-      auto linkedparticleID = primary_info->getLinkedID();
-      if ( linkedparticleID == 0 ) {
-        G4cerr << __PRETTY_FUNCTION__ << " track is primary but user info does not point to a LinkedParticle."
-               << G4endl;
+      auto particle = new Gaussino::G4TruthParticle{track->GetTrackID(), pdgID,   creatorID, fourmomentum,
+                                                    final_fourmomentum,  prodpos, endpos};
+      // Now check if the particle is a primary particle, i.e. we have already created
+      // a linked particle for it.
+      if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
+        auto primary_info =
+            GaussinoPrimaryParticleInformation::Get( track->GetDynamicParticle()->GetPrimaryParticle() );
+        auto linkedparticleID = primary_info->getLinkedID();
+        if ( linkedparticleID == 0 ) {
+          G4cerr << __PRETTY_FUNCTION__ << " track is primary but user info does not point to a LinkedParticle."
+                 << G4endl;
+        }
+
+        // First check if the G4TruthInformation has already been provided
+        // This can happen if the track is suspended during processing, usually to keep
+        // the number of optical photons down as much as possible. In this case we ignore
+        // the additional truth information provided.
+        event_info->TruthTracker()->RegisterPrimary( particle, linkedparticleID );
+      } else {
+        event_info->TruthTracker()->Declare( particle, track->GetParentID() );
       }
+    }
 
-      // First check if the G4TruthInformation has already been provided
-      // This can happen if the track is suspended during processing, usually to keep
-      // the number of optical photons down as much as possible. In this case we ignore
-      // the additional truth information provided.
-      event_info->TruthTracker()->RegisterPrimary( particle, linkedparticleID );
-    } else {
-      event_info->TruthTracker()->Declare( particle, track->GetParentID() );
+    // Lastly, add an explicit endvertex if the track does not have any children and is not in suspended state
+    // Only do this if the track is not in a suspended state
+    if(addEndVertices && track->GetTrackStatus() != G4TrackStatus::fSuspend){
+      auto trackMgr = G4UserTrackingAction::fpTrackingManager;
+      if ( trackMgr->GimmeSecondaries() || trackMgr->GimmeSecondaries()->size() == 0 ) {
+        event_info->TruthTracker()->DeclareEnd(endpos, 0, track->GetTrackID());
+      }
     }
   } else if (addEndVertices && track_info->directParent() && !track_info->isSuspendedAndSaved()){
     // If the particle is not to be saved, add the endvertex with the corresponding process nonetheless

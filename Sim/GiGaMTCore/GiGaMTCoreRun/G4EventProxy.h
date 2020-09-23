@@ -34,7 +34,7 @@ public:
     G4int i = -1;
     if ( colname.find( "/" ) == std::string::npos ) // HCname only
     {
-      for ( G4int j = 0; j < m_event->GetHCofThisEvent()->GetCapacity(); j++ ) {
+      for ( size_t j = 0; j < m_event->GetHCofThisEvent()->GetCapacity(); j++ ) {
         auto col = m_event->GetHCofThisEvent()->GetHC( j );
         if ( !col ) {
           continue;
@@ -45,7 +45,7 @@ public:
         }
       }
     } else {
-      for ( G4int j = 0; j < m_event->GetHCofThisEvent()->GetCapacity(); j++ ) {
+      for ( size_t j = 0; j < m_event->GetHCofThisEvent()->GetCapacity(); j++ ) {
         auto col = m_event->GetHCofThisEvent()->GetHC( j );
         if ( !col ) {
           continue;
