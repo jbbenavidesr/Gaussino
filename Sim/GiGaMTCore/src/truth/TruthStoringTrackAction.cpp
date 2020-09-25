@@ -156,13 +156,19 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
       }
     }
 
-    // Lastly, add an explicit endvertex if the track does not have any children and is not in suspended state
-    // Only do this if the track is not in a suspended state
+    // Lastly, explicitly add the endvertex if the if the particle is not suspended.
+    // This vertex is only buffered in the truth tracker and added as an endvertex
+    // if the corresponding linkedparticle did not receive an endvertex from any potential
+    // children for the same position to avoid double counting.
+    // Check for suspended is added to avoid issues where a track propagation is interrupted
+    // and continued later on. If the track is not in suspended state, it is the true end of the
+    // processing
     if(addEndVertices && track->GetTrackStatus() != G4TrackStatus::fSuspend){
-      auto trackMgr = G4UserTrackingAction::fpTrackingManager;
-      if ( !trackMgr->GimmeSecondaries() || trackMgr->GimmeSecondaries()->size() == 0 ) {
-        event_info->TruthTracker()->DeclareEnd(endpos, 0, track->GetTrackID());
+      int type = 0;
+      if(auto stepproc = track->GetStep()->GetPostStepPoint()->GetProcessDefinedStep();stepproc){
+        type = processID(stepproc);
       }
+      event_info->TruthTracker()->BufferEnd(endpos, 0, track->GetTrackID());
     }
   } else if (addEndVertices && track_info->directParent() && !track_info->isSuspendedAndSaved()){
     // If the particle is not to be saved, add the endvertex with the corresponding process nonetheless

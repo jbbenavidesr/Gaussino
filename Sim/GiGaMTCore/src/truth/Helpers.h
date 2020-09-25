@@ -7,7 +7,7 @@ namespace Gaussino::LinkedParticleHelpers
 {
   // Compare whether
   template <typename FP>
-  bool essentiallyEqual( FP a, FP b, FP epsilon=0.00001 )
+  bool essentiallyEqual( FP a, FP b, FP epsilon=0.0001 )
   {
     return fabs( a - b ) <= ( ( fabs( a ) > fabs( b ) ? fabs( b ) : fabs( a ) ) * epsilon );
   }

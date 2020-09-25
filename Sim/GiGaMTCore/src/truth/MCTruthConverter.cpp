@@ -22,6 +22,7 @@ namespace Gaussino
       , m_hepmc_to_linked{std::move( right.m_hepmc_to_linked )}
       , m_primary_to_linked{std::move( right.m_primary_to_linked )}
       , m_tracking_to_linked{std::move( right.m_tracking_to_linked )}
+      , m_buffered_endvertices{std::move( right.m_buffered_endvertices )}
       , m_root_particles{std::move( right.m_root_particles )}
       , m_geant4_event{right.m_geant4_event}
       , m_geant4_vertex{right.m_geant4_vertex}
@@ -30,6 +31,7 @@ namespace Gaussino
     right.m_linkedParticles.clear();
     right.m_hepmc_to_linked.clear();
     right.m_primary_to_linked.clear();
+    right.m_buffered_endvertices.clear();
     right.m_tracking_to_linked.clear();
     right.m_root_particles.clear();
   }
@@ -398,13 +400,23 @@ namespace Gaussino
     m_linkedParticles.insert( ptr );
   }
 
-  void MCTruthTracker::DeclareEnd(const HepMC3::FourVector& position, int procid, int parentID ){
-    if ( m_tracking_to_linked.find( parentID ) == std::end( m_tracking_to_linked ) ) {
-      G4cerr << __PRETTY_FUNCTION__ << " no linked particle with parentID found. Skipping!" << G4endl;
+  void MCTruthTracker::DeclareEnd(const HepMC3::FourVector& position, int procid, int trackID ){
+    if ( m_tracking_to_linked.find( trackID ) == std::end( m_tracking_to_linked ) ) {
+      G4cerr << __PRETTY_FUNCTION__ << " no linked particle with trackID found. Skipping!" << G4endl;
       return;
     }
-    auto parentLP = m_tracking_to_linked[parentID];
+    auto parentLP = m_tracking_to_linked[trackID];
     parentLP->AddEndVertex(position, procid);
+  }
+
+  void MCTruthTracker::BufferEnd(const HepMC3::FourVector& position, int procid, int trackID ){
+    if ( m_tracking_to_linked.find( trackID ) == std::end( m_tracking_to_linked ) ) {
+      G4cerr << __PRETTY_FUNCTION__ << " no linked particle with trackID found. Skipping!" << G4endl;
+      return;
+    }
+    m_buffered_endvertices.emplace( std::piecewise_construct,
+              std::forward_as_tuple(trackID),
+              std::forward_as_tuple(position, procid ));
   }
 
   ///////////////////////////////////////////////////////////
@@ -429,6 +441,21 @@ namespace Gaussino
 
   void MCTruth::DoCleanup()
   {
+    // First, loop over all particles and add the buffered endvertices if none are present
+    // at the correct location
+    for(auto & [trackID, data]: m_buffered_endvertices){
+      auto position = data.first;
+      auto type = data.second;
+      auto & lp = m_tracking_to_linked[trackID];
+      auto found = std::any_of(std::begin(lp->GetEndVtxs()), std::end(lp->GetEndVtxs()), [=] (auto & vertex){
+          return Gaussino::LinkedParticleHelpers::CompareFourVector( vertex->GetPosition(), position );
+          });
+      if(!found){
+        lp->AddEndVertex(position, type);
+      }
+    }
+    m_buffered_endvertices.clear();
+
     // Idea: Loop recursively and remove un-used decay trees:
     // Definitely remove particles and their decays that have been handed over
     // to G4 but did not receive a corresponding G4Truth particle. Typical example
