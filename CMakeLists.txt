@@ -42,7 +42,19 @@ macro(AddHepMC3)
     -lHepMC3
     -lHepMC3rootIO
     -lHepMC3search)
-    #-lHepMC3rootIO)
+endmacro()
+
+macro(AddDD4hepDDG4)
+    include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/include)
+    link_directories(${CMAKE_INSTALL_PREFIX}/lib)
+
+    set(DD4hepDDG4_LIBRARIES
+          #-lDDG4LCIO
+          -lDDG4Legacy  
+          -lDDG4Plugins  
+          -lDDG4Python  
+          -lDDG4  
+          -lDDPython)
 endmacro()
 
 # Declare project name and version
