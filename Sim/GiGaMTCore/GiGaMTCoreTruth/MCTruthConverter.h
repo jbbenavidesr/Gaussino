@@ -78,6 +78,7 @@ namespace Gaussino
     std::unordered_map<unsigned int, LinkedParticle*> m_primary_to_linked;
     // Map G4TruthParticles (i.e. make during tracking) to LinkedParticle
     std::unordered_map<int, LinkedParticle*> m_tracking_to_linked;
+    std::unordered_map<int, std::pair<HepMC3::FourVector, int>> m_buffered_endvertices;
     // Set to store identified identified root particles of this mctruth structure
     LinkedParticle::PtrSet m_root_particles;
     // List of slave mctruth objects that should be treated as root in this mctruth structure
@@ -123,6 +124,11 @@ namespace Gaussino
     // Declare the particle and its intended conversion type. This will register the necessary
     // information in the internal storage elements.
     void Declare( Gaussino::G4TruthParticle* particle, int parentID );
+    // Declare an explicit endvertex with a specified position
+    void DeclareEnd(const HepMC3::FourVector& position, int procid, int trackID );
+    // Buffer a potential endvertex that will only be assigned if no other endvertex is either declared
+    // or indirectly created from the creation of a child.
+    void BufferEnd(const HepMC3::FourVector& position, int procid, int trackID );
     void RegisterPrimary( Gaussino::G4TruthParticle* particle, unsigned int primaryID );
     bool AlreadyRegisteredPrimary( unsigned int primaryID) const;
 

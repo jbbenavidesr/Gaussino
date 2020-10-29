@@ -67,6 +67,8 @@ public:
   // Two convenient functions, both link bidirectional
   void AddParent( LinkedParticle* part );
   void AddChild( LinkedParticle* part );
+  // Dedicated function to add endvertex without children
+  void AddEndVertex( const HepMC3::FourVector&, int);
   PtrSet GetParents() const;
   PtrSet GetChildren() const;
 
@@ -122,16 +124,36 @@ class LinkedVertex
 {
 public:
   LinkedVertex() = delete;
-  LinkedVertex( int id ) : m_id( id ) {}
+  virtual ~LinkedVertex() = default;
+  LinkedVertex( unsigned int id ) : m_id( id ) {}
   LinkedParticle::PtrSet incoming_particle;
   LinkedParticle::PtrSet outgoing_particles;
   std::set<std::shared_ptr<Gaussino::MCTruth>> outgoing_mctruths;
   unsigned int m_id;
   unsigned int GetID() const { return m_id; }
-  int GetProcessID() const;
-  HepMC3::FourVector GetPosition() const;
+  virtual int GetProcessID() const;
+  virtual HepMC3::FourVector GetPosition() const;
+  virtual bool HasPreassignedType() const {return false;};
   bool HasOutgoingMCTruth(){return outgoing_mctruths.size()>0;}
   const HepMC3::GenVertex* hepmc_vtx{nullptr};
+};
+
+// Small extension for the linkedvertex helper class specifically designed as logical endvertex
+// for a particle that does not have outgoing particles (either because they are not stored in don't exist).
+// Therefore the class must store the position and ProcessID directly.
+class EndLinkedVertex : public LinkedVertex {
+public:
+  EndLinkedVertex()          = delete;
+  virtual ~EndLinkedVertex() = default;
+  EndLinkedVertex( unsigned int id, const HepMC3::FourVector& pos, int procid )
+      : LinkedVertex( id ), m_position{pos}, m_process_id{procid} {}
+  virtual HepMC3::FourVector GetPosition() const override { return m_position; };
+  virtual int GetProcessID() const override { return m_process_id; };
+  virtual bool HasPreassignedType() const override{return true;};
+
+private:
+  HepMC3::FourVector m_position;
+  int                m_process_id;
 };
 
 std::ostream& operator<<( std::ostream&, const LinkedParticle& );

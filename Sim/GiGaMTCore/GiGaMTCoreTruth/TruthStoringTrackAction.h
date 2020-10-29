@@ -43,6 +43,8 @@ public:
   void PostUserTrackingAction( const G4Track* track ) override;
 
   std::function<std::optional<int>(const std::string &)> m_fNameToID = [](const std::string &){return std::nullopt;};
+
+  bool addEndVertices{false};
 protected:
   // Function to return an integer ID for the process. Currently
   // implements the default LHCb behavior and codes but is declared

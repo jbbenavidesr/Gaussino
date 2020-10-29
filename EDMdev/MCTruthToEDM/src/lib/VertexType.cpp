@@ -74,6 +74,8 @@ namespace Gaussino {
         return_vtx_type = LHCb::MCVertex::StringFragmentation;
       else
         return_vtx_type = LHCb::MCVertex::DecayVertex;
+    } else if(lv->HasPreassignedType()){
+          return_vtx_type = vertexType(lv->GetProcessID());
     } else if ( lv->outgoing_particles.size() > 0 ) {
       // If the vertex was not produced during the generation phase, get something from G4
       // Therefore, all children should have been handled by G4 and have the same creatorID assigned
@@ -84,7 +86,7 @@ namespace Gaussino {
                         "you managed this but it is not supported."
                      << endmsg;
       }
-      if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
+      else if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
                         []( LinkedParticle* p ) -> bool { return p->G4Truth(); } ) ) {
         auto first_proc = ( *std::begin( lv->outgoing_particles ) )->G4Truth()->GetCreatorID();
         if ( std::all_of( std::begin( lv->outgoing_particles ), std::end( lv->outgoing_particles ),
