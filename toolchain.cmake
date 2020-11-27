@@ -22,7 +22,7 @@ if(NOT DEFINED GAUDI_OLD_STYLE_PROJECT)
   set(GAUDI_OLD_STYLE_PROJECT ${GAUDI_OLD_STYLE_PROJECT} CACHE BOOL "true if the top level CMakeLists file contains a call to gaudi_project")
 endif()
 
-if(NOT GAUDI_OLD_STYLE_PROJECT)
+if(NOT GAUDI_OLD_STYLE_PROJECT AND "$ENV{GAUDI_OLD_STYLE_PROJECT}" STREQUAL "")
   # for new style CMake projects, or vanilla CMake projects
   if("$ENV{BINARY_TAG}" STREQUAL "" OR "$ENV{LCG_VERSION}" STREQUAL "")
     message(FATAL_ERROR "The environment variables BINARY_TAG and LCG_VERSION mut be set for new style CMake projects")
@@ -53,6 +53,20 @@ else()
 # this check is needed because the toolchain is called when checking the
 # compiler (without the proper cache)
 if(NOT CMAKE_SOURCE_DIR MATCHES "CMakeTmp")
+  # Avoid using Gaudi's get_host_binary_tag.py script as it doesn't support Python 3.8
+  # https://gitlab.cern.ch/gaudi/Gaudi/-/issues/123
+  execute_process(COMMAND "lb-host-binary-tag"
+                  OUTPUT_VARIABLE HOST_BINARY_TAG
+                  RESULT_VARIABLE HOST_BINARY_RETURN
+                  ERROR_VARIABLE  HOST_BINARY_ERROR
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  set(HOST_BINARY_TAG ${HOST_BINARY_TAG} CACHE STRING "BINARY_TAG of the host")
+  if(HOST_BINARY_RETURN OR NOT HOST_BINARY_TAG)
+    message(FATAL_ERROR "Error getting host binary tag\nFailed to execute ${HOST_BINARY_TAG_COMMAND}\n"
+                        "HOST_BINARY_TAG value: ${HOST_BINARY_TAG}\n"
+                        "Program Return Value: ${HOST_BINARY_RETURN}\n"
+                        "Error Message: ${HOST_BINARY_ERROR}\n")
+  endif()
 
   find_file(default_toolchain NAMES GaudiDefaultToolchain.cmake
             HINTS ${CMAKE_SOURCE_DIR}/cmake
@@ -73,6 +87,9 @@ if(NOT CMAKE_SOURCE_DIR MATCHES "CMakeTmp")
     # - xenv (conflicts with the version in the build environment)
     list(FILTER CMAKE_PREFIX_PATH EXCLUDE REGEX "(LCG_|lcg/nightlies).*(ninja|Gaudi|xenv)")
   endif()
+
+  # Make sure that when the toolchain is invoked again it uses this branch
+  set(ENV{GAUDI_OLD_STYLE_PROJECT} "${CMAKE_SOURCE_DIR}")
 endif()
 endif()
 
