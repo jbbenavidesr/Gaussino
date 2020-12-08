@@ -82,7 +82,7 @@ StatusCode GenRndInit::finalize()
   delete m_barrier;
   if ( m_firstTimingEvent >= 0 ) {
     auto end_time = Clock::now();
-
+    info() << m_evtCounter << " events processed" << endmsg;
     info() << "Measured event loop time (" << m_evtTimingCounter
            << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
            << endmsg;
