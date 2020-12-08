@@ -40,7 +40,8 @@ macro(AddHepMC3)
 
   set(HEPMC3_LIBRARIES
     -lHepMC3
-    -lHepMC3rootIO
+    # FIXME: disabled because of HepMC & HepMC3 namespace collision
+    # -lHepMC3rootIO
     -lHepMC3search)
 endmacro()
 
