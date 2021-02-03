@@ -51,7 +51,7 @@ endmacro()
 # Declare project name and version
 gaudi_project(Gaussino v1r0
               FORTRAN
-              USE LHCb v1r0
+              USE Run2Support v0r0
                   Geant4 v104r1
               DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*
