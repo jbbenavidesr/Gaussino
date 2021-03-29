@@ -20,6 +20,9 @@ ExternalProject_Add(HepMC3Ext
        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_LIST_DIR}/hepmc3_toolchain.cmake
        -DHEPMC3_ENABLE_PYTHON=OFF
        -DHEPMC3_INSTALL_INTERFACES=ON
+       # Do not install examples (installed directories are detected as
+       # packages by the old Gaudi toolchain):
+       -DHEPMC3_INSTALL_EXAMPLES=OFF
        -DCMAKE_BUILD_TYPE=Debug
        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
        #-DROOT_DIR=${ROOTSYS}
