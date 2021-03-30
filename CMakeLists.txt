@@ -11,6 +11,16 @@ set(GEANT4_BUILD_MULTITHREADED ON)
 find_package(GaudiProject)
 #---------------------------------------------------------------
 
+# Set the CMP0074 policy that dictates how the packages are looked up
+# this should allow overriding the LCG versions of package XXX,
+# provided, XXX_ROOT is set
+if (POLICY CMP0074)
+  cmake_policy(SET CMP0074 NEW)
+  message(STATUS "Setting the policy CMP0074 to NEW")
+else()
+  message(STATUS "Policy CMP0074 not available: LCG packages NOT overriden by _ROOT environment variable")
+endif()
+
 # hide warnings from some external projects
 find_package(Boost)
 find_package(ROOT)
@@ -56,6 +66,10 @@ macro(AddDD4hepDDG4)
           -lDDG4  
           -lDDPython)
 endmacro()
+
+# make sure pkg-config looks for packages on CMAKE_PREFIX_PATH and system
+set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
+list(APPEND CMAKE_PREFIX_PATH /usr)
 
 # Declare project name and version
 gaudi_project(Gaussino v1r0
