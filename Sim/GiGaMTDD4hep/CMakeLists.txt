@@ -29,7 +29,6 @@ find_package(Boost COMPONENTS system thread filesystem)
 
 include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS})
 AddHepMC3()
-AddDD4hepDDG4()
 
 message(STATUS "ROOTSYS -> ${ROOTSYS}")
 set(ENV{ROOTSYS} ${ROOTSYS})
@@ -41,16 +40,13 @@ endif()
 
 find_package(DD4hep REQUIRED CONFIG COMPONENTS DDCore)
 
-message(STATUS "DD4hepDDG4_INCLUDE_DIRS: ${DD4hepDDG4_INCLUDE_DIRS}")
-message(STATUS "DD4hepDDG4_LIBRARIES: ${DD4hepDDG4_LIBRARIES}")
-
-include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${DD4hep_INCLUDE_DIRS}  ${DD4hepDDG4_INCLUDE_DIRS})
+include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${DD4hep_INCLUDE_DIRS})
 
 gaudi_add_library(GiGaMTDD4hepLib
                   src/lib/*.cpp 
                   PUBLIC_HEADERS GiGaMTDD4hep
                   INCLUDE_DIRS LbDD4hep DD4hep
-                  LINK_LIBRARIES DD4hep ${DD4hep_COMPONENT_LIBRARIES} ROOT GiGaMTCoreRunLib ${DD4hepDDG4_LIBRARIES}) 
+                  LINK_LIBRARIES DD4hep ${DD4hep_COMPONENT_LIBRARIES} ROOT GiGaMTCoreRunLib DD4hep::DDG4)
 
 add_dependencies(GiGaMTDD4hepLib DD4hepDDG4Ext) 
 
