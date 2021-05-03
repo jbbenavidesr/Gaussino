@@ -81,9 +81,11 @@ versions = [
     'mimazure-docs',
 ]
 
-from git import Repo
-repo = Repo(search_parent_directories=True)
-current_version = repo.active_branch.name  # FIXME: for now, later master
+
+# from git import Repo
+# repo = Repo(search_parent_directories=True)
+# current_version = repo.active_branch.name
+current_version = 'mimazure-docs'  # FIXME: for now, later master
 
 # tell the theme which version we're currently on ('current_version' affects
 # the lower-left rtd menu and 'version' affects the logo-area version)
