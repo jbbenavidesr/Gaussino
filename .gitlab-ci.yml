@@ -30,3 +30,44 @@ check-formatting:
       - apply-formatting.patch
     when: on_failure
     expire_in: 1 week
+
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+build-docs:
+  stage: docs
+  image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
+  tags:
+    - cvmfs
+  # Change pip's cache directory so we can cache it
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  script:
+    - reasons=
+    - make -C docs html || reasons+='ERROR failed html generation\n'
+    - if [ -n "$reasons" ]; then echo -e $reasons; exit 1; fi
+  allow_failure:
+    exit_codes: 77
+  artifacts:
+    paths:
+      - docs/_build/html/
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - .cache/pip
+
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+deploy-docs:
+  stage: deploy
+  image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
+  variables:
+    EOS_PATH: "/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME" #FIXME: for testing
+    CI_OUTPUT_DIR: "doc/_build/html"
+    METHOD: "rsync"
+  before_script:
+    # As the previous stage is allowed to fail, skip this stage if the previous
+    # did not complete successfully (i.e. did not create the html directory)
+    - test -d $CI_OUTPUT_DIR || { echo "WARNING docs not built, stopping"; exit 77; }
+  script:
+    - deploy-eos && echo -e "Deployed at\n\n\t/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME/index.html"
+  allow_failure:
+    exit_codes: 77
+
