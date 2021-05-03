@@ -62,7 +62,7 @@ deploy-docs:
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
   variables:
     EOS_PATH: "/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME" #FIXME: for testing
-    CI_OUTPUT_DIR: "doc/_build/html"
+    CI_OUTPUT_DIR: "docs/_build/html"
     METHOD: "rsync"
   before_script:
     # As the previous stage is allowed to fail, skip this stage if the previous
