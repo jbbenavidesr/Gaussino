@@ -46,6 +46,7 @@ build-docs:
   tags:
     - cvmfs
   script:
+    - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
     - reasons=
     - make -C docs html || reasons+='ERROR failed html generation\n'
     - if [ -n "$reasons" ]; then echo -e $reasons; exit 1; fi
