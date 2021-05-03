@@ -71,3 +71,31 @@ html_context = {
 # Napoleon settings
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
+
+
+# -- Custom Versioning settings -----------------------------------------------
+# Implemented manually as READTHEDOCS handle them once already hosted
+
+website_root = 'test-gaussino-docs'
+html_context['display_lower_left'] = True
+
+# visible versions
+versions = [
+    'master',
+    'mimazure-docs',
+]
+
+from git import Repo
+repo = Repo(search_parent_directories=True)
+current_version = repo.active_branch.name # FIXME: for now, later master
+
+# tell the theme which version we're currently on ('current_version' affects
+# the lower-left rtd menu and 'version' affects the logo-area version)
+html_context['current_version'] = current_version
+html_context['version'] = current_version
+
+# POPULATE LINKS TO OTHER VERSIONS
+html_context['versions'] = list()
+
+for version in versions:
+   html_context['versions'].append( (version, '/' + website_root + '/' + version + '/') )
