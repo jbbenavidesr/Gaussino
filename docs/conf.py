@@ -14,7 +14,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'Gaussino'
@@ -23,7 +22,6 @@ author = 'LHCb Collaboration'
 
 # The full version, including alpha/beta/rc tags
 release = 'v0r1'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -45,7 +43,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -72,7 +69,6 @@ html_context = {
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 
-
 # -- Custom Versioning settings -----------------------------------------------
 # Implemented manually as READTHEDOCS handle them once already hosted
 
@@ -87,7 +83,7 @@ versions = [
 
 from git import Repo
 repo = Repo(search_parent_directories=True)
-current_version = repo.active_branch.name # FIXME: for now, later master
+current_version = repo.active_branch.name  # FIXME: for now, later master
 
 # tell the theme which version we're currently on ('current_version' affects
 # the lower-left rtd menu and 'version' affects the logo-area version)
@@ -98,4 +94,5 @@ html_context['version'] = current_version
 html_context['versions'] = list()
 
 for version in versions:
-   html_context['versions'].append( (version, '/' + website_root + '/' + version + '/') )
+    html_context['versions'].append((version,
+                                     '/' + website_root + '/' + version + '/'))
