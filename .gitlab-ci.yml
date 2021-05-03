@@ -45,9 +45,6 @@ build-docs:
   image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
   tags:
     - cvmfs
-  # Change pip's cache directory so we can cache it
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   script:
     - reasons=
     - make -C docs html || reasons+='ERROR failed html generation\n'
@@ -57,10 +54,6 @@ build-docs:
   artifacts:
     paths:
       - docs/_build/html/
-  cache:
-    key: "$CI_JOB_NAME"
-    paths:
-      - .cache/pip
 
 # inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
 deploy-docs:
