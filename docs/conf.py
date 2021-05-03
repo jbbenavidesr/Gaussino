@@ -81,7 +81,6 @@ versions = [
     'mimazure-docs',
 ]
 
-
 # from git import Repo
 # repo = Repo(search_parent_directories=True)
 # current_version = repo.active_branch.name
