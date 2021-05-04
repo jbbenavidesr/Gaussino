@@ -1,2 +1,5 @@
-Configuration
+Gaussino
 =============
+
+.. autoclass:: Gaussino.Configuration.Gaussino
+   :members:

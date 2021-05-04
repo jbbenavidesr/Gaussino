@@ -23,17 +23,13 @@ Welcome to Gaussino's documentation!
    :maxdepth: 1
 
    configuration/gaussino
+   configuration/generation
+   configuration/simulation
 
 .. toctree::
    :caption: Examples
    :hidden:
    :maxdepth: 1
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 
 
 Indices and tables
