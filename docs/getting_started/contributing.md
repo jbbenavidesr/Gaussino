@@ -1,0 +1,3 @@
+# Contributing
+
+The future framework (for LHCb) consists of two components, Gaussino and Gauss. Gaussino contains all core functionality which should be independent of LHCb. It should incorporate all framework related issues and define all necessary interfaces and implement the interplay between them. Gauss itself is based on Gaussino and should only contain the specific implementations of the interfaces defined in Gaussino and the necessary configuration to setup the application. Changes should be introduced via merge requests targetting the `master` branch. Adding the label `lhcb-gaussino` will include them in the nightly build.
