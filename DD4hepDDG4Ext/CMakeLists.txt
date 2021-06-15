@@ -2,7 +2,7 @@ gaudi_subdir(DD4hepDDG4Ext v1r0)
 
 # Define EvtGen external project
 set(DD4hep_GIT_SOURCE "https://gitlab.cern.ch/Gaussino/DD4hep.git" CACHE STRING "URL of the DD4hep git repository")
-set(DD4hep_GIT_TAG "patched_cmake" CACHE STRING "Tag of DD4hep to be used")
+set(DD4hep_GIT_TAG "v01-16-01-patches" CACHE STRING "Tag of DD4hep to be used")
 
 find_package(ROOT)
 find_package(Boost)
