@@ -1,6 +1,6 @@
 from Configurables import Generation, MinimumBias, Pythia8Production
 from Configurables import Inclusive, SignalPlain, SignalRepeatedHadronization
-from Configurables import Special
+# from Configurables import Special
 
 Pythia8TurnOffFragmentation = [ "HadronLevel:all = off" ]
 
@@ -27,14 +27,14 @@ gen.SignalRepeatedHadronization.addTool( Pythia8Production , name = "Pythia8Prod
 gen.SignalRepeatedHadronization.Pythia8Production.Tuning = "LHCbDefault.cmd"
 gen.SignalRepeatedHadronization.Pythia8Production.Commands += Pythia8TurnOffFragmentation
 
-gen.addTool( Special , name = "Special" )
-gen.Special.ProductionTool = "Pythia8Production"
-gen.Special.addTool( Pythia8Production , name = "Pythia8Production" )
-gen.Special.Pythia8Production.Tuning = "LHCbDefault.cmd"
-gen.Special.PileUpProductionTool = "Pythia8Production/Pythia8PileUp"
-gen.Special.addTool(Pythia8Production, name = "Pythia8PileUp")
-gen.Special.Pythia8PileUp.Tuning = "LHCbDefault.cmd"
-gen.Special.ReinitializePileUpGenerator  = False
+# gen.addTool( Special , name = "Special" )
+# gen.Special.ProductionTool = "Pythia8Production"
+# gen.Special.addTool( Pythia8Production , name = "Pythia8Production" )
+# gen.Special.Pythia8Production.Tuning = "LHCbDefault.cmd"
+# gen.Special.PileUpProductionTool = "Pythia8Production/Pythia8PileUp"
+# gen.Special.addTool(Pythia8Production, name = "Pythia8PileUp")
+# gen.Special.Pythia8PileUp.Tuning = "LHCbDefault.cmd"
+# gen.Special.ReinitializePileUpGenerator  = False
 
 # Use same generator and configuration for spillover
 from Configurables import Gauss
