@@ -47,10 +47,18 @@ build-docs:
     - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
   tags:
     - cvmfs
+  variables:
+    NIGHTLIES_PATH: "/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest"
+    LOCAL_PYTHON: "InstallArea/x86_64-centos7-gcc10-opt/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
+    - pip install myst_parser
     - reasons=
-    - make -C docs html || reasons+='ERROR failed html generation\n'
+    - export PYTHONPATHBKP=$PYTHONPATH
+    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
+    - export PYTHONPATHBKP=$(find $PWD -type d \( -path ./InstallArea -o -path ./build \) -prune -false -o -name "python" -print | paste -sd ":" - ):$PYTHONPATHBKP
+    - echo "$PYTHONPATHBKP"
+    - PYTHONPATH=$PYTHONPATHBKP make -C docs html || reasons+='ERROR failed html generation\n'
     - if [ -n "$reasons" ]; then echo -e $reasons; exit 1; fi
   allow_failure:
     exit_codes: 77
