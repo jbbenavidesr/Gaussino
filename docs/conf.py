@@ -75,7 +75,7 @@ napoleon_numpy_docstring = True
 # -- Custom Versioning settings -----------------------------------------------
 # Implemented manually as READTHEDOCS handle them once already hosted
 
-website_root = 'test-gaussino-docs'
+website_root = 'gaussino'
 html_context['display_lower_left'] = True
 
 # visible versions

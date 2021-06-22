@@ -73,7 +73,7 @@ deploy-docs:
   rules:
     - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
   variables:
-    EOS_PATH: "/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME" #FIXME: for testing
+    EOS_PATH: "/eos/project/l/lhcbwebsites/www/projects/gaussino/$CI_COMMIT_REF_NAME"
     CI_OUTPUT_DIR: "docs/_build/html"
     METHOD: "rsync"
   before_script:
@@ -81,7 +81,7 @@ deploy-docs:
     # did not complete successfully (i.e. did not create the html directory)
     - test -d $CI_OUTPUT_DIR || { echo "WARNING docs not built, stopping"; exit 77; }
   script:
-    - deploy-eos && echo -e "Deployed at\n\n\t/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME/index.html"
+    - deploy-eos && echo -e "Deployed at\n\n\t/eos/project/l/lhcbwebsites/www/projects/gaussino/$CI_COMMIT_REF_NAME/index.html"
   allow_failure:
     exit_codes: 77
 
