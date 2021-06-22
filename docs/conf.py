@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
+    'myst_parser',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -74,19 +75,18 @@ napoleon_numpy_docstring = True
 # -- Custom Versioning settings -----------------------------------------------
 # Implemented manually as READTHEDOCS handle them once already hosted
 
-website_root = 'test-gaussino-docs'
+website_root = 'gaussino'
 html_context['display_lower_left'] = True
 
 # visible versions
 versions = [
     'master',
-    'mimazure-docs',
 ]
 
 # from git import Repo
 # repo = Repo(search_parent_directories=True)
 # current_version = repo.active_branch.name
-current_version = 'mimazure-docs'  # FIXME: for now, later master
+current_version = 'master'
 
 # tell the theme which version we're currently on ('current_version' affects
 # the lower-left rtd menu and 'version' affects the logo-area version)
