@@ -44,7 +44,7 @@ build-docs:
   stage: docs
   image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
   rules:
-    - if: '$CI_COMMIT_REF_PROTECTED == "true"' 
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
   tags:
     - cvmfs
   script:
@@ -63,7 +63,7 @@ deploy-docs:
   stage: deploy
   image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
   rules:
-    - if: '$CI_COMMIT_REF_PROTECTED == "true"' 
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
   variables:
     EOS_PATH: "/eos/user/m/mimazure/www/test-gaussino-docs/$CI_COMMIT_REF_NAME" #FIXME: for testing
     CI_OUTPUT_DIR: "docs/_build/html"
