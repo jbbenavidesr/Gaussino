@@ -37,6 +37,9 @@
 #include "Geant4/G4HadronPhysicsFTFP_BERT.hh"
 #include "Geant4/G4HadronPhysicsFTFP_BERT_HP.hh"
 
+// Optical physics
+#include "Geant4/G4OpticalPhysics.hh"
+
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4DecayPhysics, "GiGaMT_G4DecayPhysics" )
 
@@ -117,3 +120,7 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HadronPhysicsFTFP_BERT_HP, "GiGaMT_G4HadronP
 
 typedef GiGaMTG4PhysicsConstrFAC<G4NeutronTrackingCut> GiGaMT_G4NeutronTrackingCut;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4NeutronTrackingCut, "GiGaMT_G4NeutronTrackingCut" )
+
+// Cerenkov and Optical physics
+typedef GiGaMTG4PhysicsConstrFAC<G4OpticalPhysics> GiGaMT_G4OpticalPhysics;
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4OpticalPhysics, "GiGaMT_G4OpticalPhysics" )
