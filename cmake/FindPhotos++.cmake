@@ -21,11 +21,12 @@
 
 # Enforce a minimal list if none is explicitly requested
 if(NOT PHOTOS++_FIND_COMPONENTS)
-  set(PHOTOS++_FIND_COMPONENTS Photospp PhotosppHEPEVT PhotosppHepMC)
+  set(PHOTOS++_FIND_COMPONENTS Fortran CxxInterface  # versions <3.58
+                               pp HEPEVT ppHepMC)    # versions >=3.58
 endif()
 
 foreach(component ${PHOTOS++_FIND_COMPONENTS})
-  find_library(PHOTOS++_${component}_LIBRARY NAMES ${component}
+  find_library(PHOTOS++_${component}_LIBRARY NAMES Photos${component}
                HINTS ${PHOTOS++_ROOT_DIR}/lib
                      $ENV{PHOTOSPP_ROOT_DIR}/lib
                      ${PHOTOSPP_ROOT_DIR}/lib)
