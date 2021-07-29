@@ -1,5 +1,5 @@
 from __future__ import print_function
-from Utilities import get_set_configurable
+from Gaussino.Utilities import get_set_configurable
 from GaudiKernel import SystemOfUnits
 
 
