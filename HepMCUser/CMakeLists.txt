@@ -18,7 +18,7 @@ gaudi_add_library(HepMCUtils
                   src/utils/*.cpp
                   PUBLIC_HEADERS HepMCUtils
                   INCLUDE_DIRS HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS} ROOT
-                  LINK_LIBRARIES ${HEPMC3_LIBRARIES} GaudiAlgLib ROOT)
+                  LINK_LIBRARIES ${HEPMC3_LIBRARIES} GaudiAlgLib ROOT PartPropLib)
 
 #gaudi_add_library(HepMCUser
                   #src/user/*.cpp

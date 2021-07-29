@@ -14,7 +14,8 @@ find_package(HepMC)
 gaudi_add_library(MCTruthToEDMLib
                  src/lib/*.cpp
                  PUBLIC_HEADERS MCTruthToEDM
-                 LINK_LIBRARIES GiGaMTCoreTruthLib MCEvent)
+		 INCLUDE_DIRS HepMC
+		 LINK_LIBRARIES GiGaMTCoreTruthLib MCEvent)
 
 gaudi_add_module(MCTruthToEDM
                  src/components/*.cpp
