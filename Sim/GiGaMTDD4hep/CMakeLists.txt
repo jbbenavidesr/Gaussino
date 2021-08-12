@@ -40,6 +40,11 @@ endif()
 
 find_package(DD4hep REQUIRED CONFIG COMPONENTS DDCore)
 
+# When building our own DD4hep, we need to manually add the installation to LD_LIBRARY_PATH.
+# Using gaudi_build_env() makes it so that downstream projects also have this.
+# TODO Why doesn't this happen "automatically" and is there a better way?
+gaudi_build_env(PREPEND LD_LIBRARY_PATH ${DD4hep_ROOT}/lib)
+
 include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${DD4hep_INCLUDE_DIRS})
 
 gaudi_add_library(GiGaMTDD4hepLib
