@@ -14,8 +14,7 @@
 
 DECLARE_COMPONENT( GDMLConstructionFactory )
 
-G4VUserDetectorConstruction* GDMLConstructionFactory::construct() const
-{
+G4VUserDetectorConstruction* GDMLConstructionFactory::construct() const {
   auto constr = new GDMLDetectorConstruction( m_gdmlFile );
   return constr;
 }
