@@ -19,7 +19,6 @@
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4PVPlacement.hh"
 
-
 StatusCode ExternalDetector::WorldCreator::initialize() {
   return GaudiAlgorithm::initialize().andThen( [&]() -> StatusCode {
     debug() << "Retrieving material " << m_worldMaterial.value() << " from the conditions" << endmsg;

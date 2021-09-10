@@ -25,10 +25,10 @@ class G4LogicalVolume;
 
 namespace ExternalDetector {
 
-  template<class Solid>
+  template <class Solid>
   class Embedder : public extends<GaudiTool, IExternalDetectorEmbedder> {
 
-  static_assert( std::is_base_of<G4VSolid, Solid>::value );
+    static_assert( std::is_base_of<G4VSolid, Solid>::value );
 
   protected:
     // position of the volume
@@ -48,7 +48,7 @@ namespace ExternalDetector {
   public:
     using extends::extends;
 
-    StatusCode                 initialize() override;
+    StatusCode initialize() override;
 
     virtual Solid*             build() const = 0;
     virtual StatusCode         embed( G4VPhysicalVolume* motherVolume ) const override;

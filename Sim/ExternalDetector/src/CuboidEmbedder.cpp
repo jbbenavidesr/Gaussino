@@ -28,7 +28,7 @@ namespace ExternalDetector {
     using Embedder::Embedder;
 
     inline virtual G4Box* build() const override {
-      return new G4Box( m_boxName.value(), m_xSize.value() / 2., m_ySize.value() / 2., m_zSize.value() / 2.);
+      return new G4Box( m_boxName.value(), m_xSize.value() / 2., m_ySize.value() / 2., m_zSize.value() / 2. );
     }
   };
 } // namespace ExternalDetector

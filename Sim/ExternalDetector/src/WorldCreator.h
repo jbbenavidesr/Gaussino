@@ -29,7 +29,7 @@ namespace ExternalDetector {
     Gaudi::Property<std::string> m_outfile{this, "Output", "ExternalWorld.gdml"};
 
     ToolHandleArray<IExternalDetectorEmbedder> m_ext_dets{this};
-    Gaudi::Property<std::vector<std::string>> m_ext_dets_names{
+    Gaudi::Property<std::vector<std::string>>  m_ext_dets_names{
         this,
         "ExternalDetectors",
         {},

@@ -20,18 +20,16 @@
 
 namespace ExternalDetector {
 
-  template<class Solid>
+  template <class Solid>
   StatusCode Embedder<Solid>::initialize() {
     return extends::initialize().andThen( [&] {
       StatusCode sc = StatusCode::SUCCESS;
-      if ( !m_sensDetName.empty() ) { 
-        sc &= m_sensDetName.retrieve();
-      }
+      if ( !m_sensDetName.empty() ) { sc &= m_sensDetName.retrieve(); }
       return sc;
     } );
   }
 
-  template<class Solid>
+  template <class Solid>
   StatusCode Embedder<Solid>::embed( G4VPhysicalVolume* motherVolume ) const {
     if ( !motherVolume ) {
       error() << "Mother volume was not set." << endmsg;
@@ -57,7 +55,7 @@ namespace ExternalDetector {
     return StatusCode::SUCCESS;
   }
 
-  template<class Solid>
+  template <class Solid>
   G4VPhysicalVolume* Embedder<Solid>::place( G4LogicalVolume* motherLVolume ) const {
     auto box = build();
     if ( !box ) {
@@ -68,10 +66,10 @@ namespace ExternalDetector {
     if ( m_materialName.value().empty() ) {
       warning() << "Empty material name for " << m_lVolName.value() << endmsg;
       material = motherLVolume->GetMaterial();
-      if( material ) {
+      if ( material ) {
         warning() << "Setting its mother volume material: " << material->GetName() << endmsg;
       } else {
-        warning() << "Mother volume's material was not set either. Leaving nullptr. " << endmsg; 
+        warning() << "Mother volume's material was not set either. Leaving nullptr. " << endmsg;
       }
     } else {
       material = G4Material::GetMaterial( m_materialName.value(), true );

@@ -63,7 +63,8 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         if type(moni_algs) is dict:
             for det_name, moni_alg_props in moni_algs.items():
                 if det_name not in self._added_hits_algs:
-                    log.warning("External hit algorithm not set for " + det_name)
+                    log.warning("External hit algorithm not set for " +
+                                det_name)
                     continue
                 self._check_props(det_name, moni_alg_props)
                 alg_conf = getattr(Configurables, moni_alg_props['Type'])
