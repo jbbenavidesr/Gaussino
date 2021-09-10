@@ -33,9 +33,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
 
     // Import external geometry
-    for (auto& embedder : m_ext_dets) {
-      embedder->embed(world).ignore();
-    }
+    for ( auto& embedder : m_ext_dets ) { embedder->embed( world ).ignore(); }
 
     SaveGDML( world->GetLogicalVolume() );
     return world;
@@ -73,9 +71,7 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
 #include "Geant4/G4GDMLParser.hh"
 
 void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
-  if(m_outfile.value() == ""){
-    return;
-  }
+  if ( m_outfile.value() == "" ) { return; }
   if ( !world ) {
     error() << "Null pointer to world volume" << endmsg;
     return;

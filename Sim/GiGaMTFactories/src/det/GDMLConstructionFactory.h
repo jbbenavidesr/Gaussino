@@ -23,8 +23,7 @@
  *  @author Dominik Muller
  */
 
-class GDMLConstructionFactory : public extends<GaudiTool, GiGaFactoryBase<G4VUserDetectorConstruction>>
-{
+class GDMLConstructionFactory : public extends<GaudiTool, GiGaFactoryBase<G4VUserDetectorConstruction>> {
 private:
   Gaudi::Property<std::string> m_gdmlFile{this, "GDML", ""};
 
