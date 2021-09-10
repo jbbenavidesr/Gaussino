@@ -354,20 +354,21 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   ParticleVector::const_iterator to = particleList.end() ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int keyP = 0, keyAP = 0;
+  auto keyP = LHCb::GenCountersFSR::CounterKey::AllEvt;
+  auto keyAP = LHCb::GenCountersFSR::CounterKey::AllEvt;
 
   if ( onlyForwardParticles ) {
     // if the particle has been inverted z -> -z, do not count it
     if ( ! isInverted ) {
-      keyP = LHCb::GenCountersFSR::CounterKeyToType("AfterPCut");      
-      keyAP = LHCb::GenCountersFSR::CounterKeyToType("AfterantiPCut");
+      keyP = LHCb::GenCountersFSR::CounterKey::AfterPCut;      
+      keyAP = LHCb::GenCountersFSR::CounterKey::AfterantiPCut;
 
       nP = std::count_if( from , to , isForwardParticle() ) ;
       nAntiP = std::count_if( from , to , isForwardAntiParticle() ) ;
     }
   } else {
-    keyP = LHCb::GenCountersFSR::CounterKeyToType("BeforePCut");    
-    keyAP = LHCb::GenCountersFSR::CounterKeyToType("BeforeantiPCut");
+    keyP = LHCb::GenCountersFSR::CounterKey::BeforePCut;    
+    keyAP = LHCb::GenCountersFSR::CounterKey::BeforeantiPCut;
 
     nP = std::count_if( from , to , isParticle() ) ;
     nAntiP = particleList.size() - nP ;

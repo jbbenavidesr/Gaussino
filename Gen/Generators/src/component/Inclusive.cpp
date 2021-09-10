@@ -125,7 +125,6 @@ bool Inclusive::generate( const unsigned int nPileUp ,
   //unsigned int theccCounter , thebbCounter ;
   
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int key = 0;
   
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
@@ -176,8 +175,9 @@ bool Inclusive::generate( const unsigned int nPileUp ,
         if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Gen");
 
         ++m_nEventsBeforeCut ;
-        key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        if(genFSR) genFSR->incrementGenCounter(key, 1);
+        if(genFSR) {
+          genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::BeforeLevelCut, 1);
+        }
         bool passCut = true ;
         if ( 0 != m_cutTool ) 
           passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() , 
@@ -192,13 +192,15 @@ bool Inclusive::generate( const unsigned int nPileUp ,
           if ( 0 == nPositivePz( theParticleList ) ) {
             revertEvent( theGenEvent.get() ) ;
             ++m_nInvertedEvents ;
-            key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            if(genFSR) genFSR->incrementGenCounter(key, 1);
+            if(genFSR) {
+              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtInverted, 1);
+            }
           }
           else
           {
-            key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            if(genFSR) genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) {
+              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AfterLevelCut, 1);
+            }
           }
 
           GenCounters::AddTo( m_bHadCAccepted , thebHadC ) ;
