@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: IBeamTool.h,v 1.4 2008-05-29 14:21:46 gcorti Exp $
 #ifndef GENERATORS_IBEAMTOOL_H 
 #define GENERATORS_IBEAMTOOL_H 1

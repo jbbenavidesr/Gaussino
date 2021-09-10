@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: BeamToolForPythia8.h,v 1.1.1.1 2012-11-26 17:02:19 amartens Exp $
 #ifndef LBPYTHIA8_BEAMTOOLFORPYTHIA8_H
 #define LBPYTHIA8_BEAMTOOLFORPYTHIA8_H 1
