@@ -18,6 +18,7 @@
 
 class IGiGaMTGeoSvc;
 class IGaussinoTool;
+class IExternalDetectorEmbedder;
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
@@ -40,6 +41,16 @@ protected:
   void DressVolumes() const;
   void SaveGDML(G4LogicalVolume*) const;
   ServiceHandle<IGiGaMTGeoSvc> m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
+
+  // External Detectors
+  ToolHandleArray<IExternalDetectorEmbedder> m_ext_dets{this};
+  using ExtDets = std::vector<std::string>;
+  Gaudi::Property<ExtDets> m_ext_dets_names{
+    this, "ExternalDetectors", {},
+    tool_array_setter(m_ext_dets, m_ext_dets_names),
+    Gaudi::Details::Property::ImmediatelyInvokeHandler{true}
+  };
+
   ToolHandleArray<IGaussinoTool> m_afterGeo{this};
   Gaudi::Property<std::vector<std::string>> m_afterGeoNames{
       this, "AfterGeoConstructionTools", {},

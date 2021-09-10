@@ -14,7 +14,10 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/SystemOfUnits.h"
 // GiGa
-#include "GiGa/IExternalDetectorEmbedder.h"
+#include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
+#include "GiGaMTFactories/GiGaFactoryBase.h"
+// Geant4
+#include "Geant4/G4VSensitiveDetector.hh"
 
 class G4VSolid;
 class G4VPhysicalVolume;
@@ -40,10 +43,12 @@ namespace ExternalDetector {
     Gaudi::Property<std::string> m_lVolName{this, "LogicalVolumeName", "CustomLVol"};
     Gaudi::Property<std::string> m_pVolName{this, "PhysicalVolumeName", "CustomPVol"};
     // name of the sensitive detector
-    Gaudi::Property<std::string> m_sensDetName{this, "SensDetName", std::string()};
+    ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> m_sensDetName{this, "SensDetName", ""};
 
   public:
     using extends::extends;
+
+    StatusCode                 initialize() override;
 
     virtual Solid*             build() const = 0;
     virtual StatusCode         embed( G4VPhysicalVolume* motherVolume ) const override;

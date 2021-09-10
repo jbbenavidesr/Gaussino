@@ -10,8 +10,6 @@
 \*****************************************************************************/
 // local
 #include "Embedder.h"
-// GiGa
-#include "GiGa/IGiGaSensDet.h"
 // G4
 #include "Geant4/G4Box.hh"
 #include "Geant4/G4GDMLParser.hh"
@@ -21,6 +19,17 @@
 #include "Geant4/G4SDManager.hh"
 
 namespace ExternalDetector {
+
+  template<class Solid>
+  StatusCode Embedder<Solid>::initialize() {
+    return extends::initialize().andThen( [&] {
+      StatusCode sc = StatusCode::SUCCESS;
+      if ( !m_sensDetName.empty() ) { 
+        sc &= m_sensDetName.retrieve();
+      }
+      return sc;
+    } );
+  }
 
   template<class Solid>
   StatusCode Embedder<Solid>::embed( G4VPhysicalVolume* motherVolume ) const {
@@ -36,13 +45,13 @@ namespace ExternalDetector {
       return StatusCode::FAILURE;
     }
 
-    if ( !m_sensDetName.value().empty() ) {
-      auto sensDet    = tool<IGiGaSensDet>( m_sensDetName.value() );
+    if ( !m_sensDetName.empty() ) {
+      auto sensDet    = m_sensDetName->construct();
       auto sd_manager = G4SDManager::GetSDMpointer();
       if ( !sd_manager ) return StatusCode::FAILURE;
       sd_manager->AddNewDetector( sensDet );
       pvol->GetLogicalVolume()->SetSensitiveDetector( sensDet );
-      debug() << "Registered sensitive " << m_sensDetName.value() << " for " << m_pVolName.value() << endmsg;
+      debug() << "Registered sensitive " << m_sensDetName->name() << " for " << m_pVolName.value() << endmsg;
     }
     debug() << "Successfully embedded " << m_pVolName.value() << " in its mothers volume!" << endmsg;
     return StatusCode::SUCCESS;

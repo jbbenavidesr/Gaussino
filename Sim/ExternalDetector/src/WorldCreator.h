@@ -13,7 +13,7 @@
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiKernel/SystemOfUnits.h"
 // GiGa
-#include "GiGa/IExternalDetectorEmbedder.h"
+#include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
 
 namespace ExternalDetector {
   class WorldCreator : public GaudiAlgorithm {

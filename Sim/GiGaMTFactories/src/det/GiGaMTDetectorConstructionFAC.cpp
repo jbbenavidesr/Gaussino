@@ -13,6 +13,8 @@
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 
+#include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
+
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
@@ -29,6 +31,12 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     debug() << "Calling world constructor" << endmsg;
     auto world = m_geoSvc->constructWorld();
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
+
+    // Import external geometry
+    for (auto& embedder : m_ext_dets) {
+      embedder->embed(world).ignore();
+    }
+
     SaveGDML( world->GetLogicalVolume() );
     return world;
   } );
