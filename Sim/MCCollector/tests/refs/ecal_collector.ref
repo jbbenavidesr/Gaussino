@@ -1,0 +1,558 @@
+Ecut value = 5.0
+Gauss run option selected for Upgraded RICH  =   GTB
+Upgrade RICH simulation for the data in year =  2022
+Upgrade RICH simulation now configured
+ApplicationMgr    SUCCESS
+====================================================================================================================================
+====================================================================================================================================
+ApplicationMgr       INFO Application Manager Configured successfully
+ToolSvc.GitDDDB            INFO opening Git repository '/cvmfs/lhcb.cern.ch/lib/lhcb/git-conddb/DDDB.git'
+ToolSvc.GitDDDB            INFO using commit 'upgrade/dddb-20210617' corresponding to 1871f1bb5c0d68c81dda62e84cf1eb3a45513521
+ToolSvc.GitSIMCOND         INFO opening Git repository '/cvmfs/lhcb.cern.ch/lib/lhcb/git-conddb/SIMCOND.git'
+ToolSvc.GitSIMCOND         INFO using commit 'upgrade/sim-20210617-vc-mu100' corresponding to 869557e04541c3250ce6b4d35ec4bffe66820c60
+DetectorPersistencySvc     INFO Added successfully Conversion service:XmlCnvSvc
+DetectorDataSvc         SUCCESS Detector description database: git:/lhcb.xml
+ Geant4 version Name: geant4-10-06-patch-02    (29-May-2020)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+SimulationSvc              INFO Loading simulation attributes file ".../SimulationRICHAerogelOff.xml" ...
+GiGa.ModularPL             INFO GiGaPhysListModular initializing
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmOpt2Physics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.DecayPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.EmExtraPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.IonPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.ElasticPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.FTFP_BERTPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.StoppingPhysics
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.NeutronTrkCut
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorOpCkv
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysConstructorPhotoDetector
+GiGa.ModularPL             INFO Registered GiGa.ModularPL.GiGaPhysUnknownParticles
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : PART102
+      issued by : G4ParticleDefintion::G4ParticleDefintion
+Strange PDGEncoding
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+GiGa                       INFO Used Physics List Object is GiGaPhysListModular/GiGa.ModularPL
+GiGa                       INFO Stacking Action Object is not required to be loaded
+GiGa                       INFO Used Tracking Action Object is GiGaTrackActionSequence/GiGa.TrackSeq
+GiGa                       INFO Used  Stepping Action Object is GiGaStepActionSequence/GiGa.StepSeq
+GiGa                       INFO Used  Event Action Object is GiGaEventActionSequence/GiGa.EventSeq
+GiGa                       INFO Used  Run Action Object is GiGaRunActionSequence/GiGa.RunSeq
+EventClockSvc.FakeEve...   INFO Event times generated from 0 with steps of 0
+EventClockSvc.FakeEve...   INFO Run numbers generated from 0 every 0 events
+GaussGeo                   INFO ============================================
+GaussGeo                   INFO =  useAlignment: 1
+GaussGeo                   INFO =  alignAll: 1
+GaussGeo                   INFO =  alignDetsNames:
+GaussGeo                   INFO =    None
+GaussGeo                   INFO ============================================
+DeFTDetector               INFO Current FT geometry version =   64
+RootHistSvc                INFO Writing ROOT histograms to: UndefinedROOTOutputFileName
+HistogramPersistencySvc    INFO Added successfully Conversion service:RootHistSvc
+HistogramDataSvc           INFO Added stream file:data/gausscalo as GaussCalo
+RFileCnv                   INFO opening Root file "data/gausscalo.root" for reading
+GaussGeo.ZeroField         INFO createFieldMgr(): null magnetic field
+GaussGeo.EcalCollector    DEBUG Initialize base class GaudiCommon<AlgTool>
+GaussGeo.EcalCollector    DEBUG could not locate CounterSummarySvc, no counter summary will be made
+GaussGeo.EcalCollector    DEBUG List of ALL properties of ExternalDetector::CuboidEmbedder/GaussGeo.EcalCollector  #properties = NN
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'AuditFinalize':False
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'AuditInitialize':False
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'AuditStart':False
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'AuditStop':False
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'BoxName':Cuboid
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'Context':
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'ContextService':AlgContextSvc
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'CounterList':[ '.*' ]
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'ErrorsPrint':True
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'ExtraInputs':[]
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'ExtraOutputs':[]
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'LogicalVolumeName':EcalCollectorLVol
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'MaterialName':
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'MonitorService':MonitorSvc
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'OutputLevel':2
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'PhysicalVolumeName':EcalCollectorPVol
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'PropertiesPrint':False
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'RootInTES':
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'SensDetName':MCCollectorSensDet/EcalCollectorSDet
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'TypePrint':True
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'xAngle':-0.0036128316
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'xPos':0.0000000
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'xSize':20000.000
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'yPos':0.0000000
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'ySize':20000.000
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'zPos':11947.995
+GaussGeo.EcalCollector    DEBUG Property ['Name': Value] =  'zSize':10.000000
+GaussGeo.EcalCollector  WARNING Empty material name for EcalCollectorLVol
+GaussGeo.EcalCollector  WARNING Setting its mother volume material: /dd/Materials/Air
+ToolSvc.EcalCollector...  DEBUG Initialize base class GaudiCommon<AlgTool>
+ToolSvc.EcalCollector...  DEBUG could not locate CounterSummarySvc, no counter summary will be made
+ToolSvc.EcalCollector...  DEBUG List of ALL properties of MCCollector::SensDet/ToolSvc.EcalCollectorSDet  #properties = NN
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'Active':True
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'AuditFinalize':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'AuditInitialize':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'AuditStart':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'AuditStop':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'Context':
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'ContextService':AlgContextSvc
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'CounterList':[ '.*' ]
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'DetectorPath':
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'ErrorsPrint':True
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'ExtraInputs':[]
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'ExtraOutputs':[]
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'GiGaService':GiGa
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'GiGaSetUpService':GiGa
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'MonitorService':MonitorSvc
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'OnlyAtBoundary':True
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'OnlyForward':True
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'OutputLevel':2
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'PropertiesPrint':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'RequireEDep':False
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'RootInTES':
+ToolSvc.EcalCollector...  DEBUG Property ['Name': Value] =  'TypePrint':True
+ToolSvc.EcalCollector...  DEBUG Sens det shortened name ToolSvc.EcalCollectorSDet -> EcalCollectorSDet
+ToolSvc.EcalCollector...  DEBUG MCCollector::SensDet::initialize() Names for G4VSensitiveDetector are:  Path=/ Name=EcalCollectorSDet FullPathName=/EcalCollectorSDet
+ToolSvc.EcalCollector...  DEBUG MCCollector::SensDet::initialize() Sensitive Detector is activated
+GaussGeo.EcalCollector    DEBUG Registering tool ToolSvc.EcalCollectorSDet
+GaussGeo.EcalCollector    DEBUG Registered sensitive MCCollectorSensDet/EcalCollectorSDet for EcalCollectorPVol
+GaussGeo.EcalCollector    DEBUG Successfully embedded EcalCollectorPVol in its mothers volume!
+GaussGeo                WARNING Magnetic Field was not requested to be loaded
+GaussGeo                   INFO ================================
+GaussGeo                   INFO =    Converted objects
+GaussGeo                   INFO =
+GaussGeo                   INFO =    DetElements : 	2
+GaussGeo                   INFO =    Elements : 	33
+GaussGeo                   INFO =    Isotopes : 	2
+GaussGeo                   INFO =    LAssemblies : 	1
+GaussGeo                   INFO =    LVolumes : 	63
+GaussGeo                   INFO =    Mixtures : 	11
+GaussGeo                   INFO =
+GaussGeo                   INFO =    Constructed figures
+GaussGeo                   INFO =
+GaussGeo                   INFO =    G4Box : 	70
+GaussGeo                   INFO =    G4Polycone : 	5
+GaussGeo                   INFO =    G4Tubs : 	10
+GaussGeo                   INFO ================================
+GiGa                       INFO GiGa User Interface session is not required to be launched
+GiGa                       INFO Visualisation Manager is not required to be created.
+RndmGenSvc.Engine          INFO Generator engine type:CLHEP::RanluxEngine
+RndmGenSvc.Engine          INFO Current Seed:1234567 Luxury:3
+RndmGenSvc.Engine          INFO This is the GEANT4 engine!
+RndmGenSvc                 INFO Using Random engine:HepRndm::Engine<CLHEP::RanluxEngine>
+GaussSequencer             INFO Member list: GaudiSequencer/Generator, GaudiSequencer/Simulation
+Generator                  INFO Member list: GaudiSequencer/GeneratorSlotMainSeq
+GeneratorSlotMainSeq       INFO Member list: GenInit/GaussGen, ParticleGun, GaudiSequencer/GenMonitor
+GaussGen                SUCCESS ==================================================================
+GaussGen                SUCCESS Requested to process 1 events
+GaussGen                SUCCESS ==================================================================
+GaussGen                   INFO Create BeamForInitialization
+GaussGen                   INFO Beam Parameters :
+GaussGen                   INFO Energy = 3.5 TeV
+GaussGen                   INFO Bunch length RMS = 82.03 mm
+GaussGen                   INFO Normalized emittance = 0.0037 mm
+GaussGen                   INFO Revolution frequency = 11.245 kHz
+GaussGen                   INFO Total cross-section assumed = 91.1 mb
+GaussGen                   INFO Horizontal crossing angle = -0.52 mrad
+GaussGen                   INFO Vertical crossing angle = 0 mrad
+GaussGen                   INFO Horizontal beam line angle = -0.075 mrad
+GaussGen                   INFO Vertical beam line angle = 0.035 mrad
+GaussGen                   INFO beta star = 3.1 m
+GaussGen                   INFO Bunch spacing = 50 ns
+GaussGen                   INFO Beam spot = (0.459,-0.015,0.5) mm
+GaussGen                   INFO Luminosity = 2.47e+29 /cm2/s
+GaussGen                   INFO Nu = 2.00104
+GaussGen                   INFO emittance = 9.91888e-07
+GaussGen                   INFO Luminous region = ( 0.03921, 0.03921, 58.004 ), mm
+ParticleGun.FlatNPart...   INFO Number of particles per event chosen randomly between 10 and 10
+ParticleGun.FlatPtRap...   INFO Particle type chosen randomly from :
+ParticleGun.FlatPtRap...   INFO  gamma
+ParticleGun.FlatPtRap...   INFO pT range: 0.5 GeV <-> 0.5 GeV
+ParticleGun.FlatPtRap...   INFO Rapidity range: 2.5 <-> 4.8
+ParticleGun             SUCCESS ==================================================================
+ParticleGun             SUCCESS Requested to generate EventType 50000000
+ParticleGun             SUCCESS ==================================================================
+GenMonitor                 INFO Member list: GenMonitorAlg
+GenMonitorAlg              INFO Monitor will be applied to all events in container /Event/Gen/HepMCEvents
+Simulation                 INFO Member list: GiGaDataStoreAlgorithm/GiGaStore, GaudiSequencer/MainEventSeq
+MainEventSeq               INFO Member list: SimInit/MainEventGaussSim, GaudiSequencer/MainSimulation
+MainEventGaussSim       SUCCESS ==================================================================
+MainEventGaussSim       SUCCESS Requested to process 1 events
+MainEventGaussSim       SUCCESS ==================================================================
+MainSimulation             INFO Member list: GaudiSequencer/MakeMainSim, GaudiSequencer/SimMonitor
+MakeMainSim                INFO Member list: GenerationToSimulation/GenToSim, GiGaFlushAlgorithm/GiGaFlush, GiGaCheckEventStatus/GiGaCheckEvent, SimulationToMCTruth/SimToMCTruth, GaudiSequencer/DetectorsHits, GaudiSequencer/MainEventDataPacking, PGPrimaryVertex
+DetectorsHits              INFO Member list: GetCaloHitsAlg/GetEcalHits, GetMCCollectorHitsAlg/GetEcalCollectorHits
+GetEcalCollectorHits      DEBUG Initialize base class GaudiCommon<Algorithm>
+GetEcalCollectorHits      DEBUG could not locate CounterSummarySvc, no counter summary will be made
+GetEcalCollectorHits      DEBUG List of ALL properties of MCCollector::HitsAlg/GetEcalCollectorHits  #properties = NN
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'AuditExecute':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'AuditFinalize':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'AuditInitialize':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'AuditStart':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'AuditStop':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'Cardinality':0
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'CollectionName':EcalCollectorSDet/Hits
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'Context':
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'CounterList':[ '.*' ]
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'Enable':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'ErrorMax':1
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'ErrorsPrint':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'ExtraInputs':[]
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'ExtraOutputs':[]
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'GiGaService':GiGa
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'KineCnvService':GiGaKine
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'MCHitsLocation':MC/EcalCollector/Hits
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'MonitorService':MonitorSvc
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'NeededResources':[  ]
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'OutputLevel':2
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'PropertiesPrint':False
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'RegisterForContextService':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'RequireObjects':[  ]
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'RootInTES':
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'Timeline':False
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'TypePrint':True
+GetEcalCollectorHits      DEBUG Property ['Name': Value] =  'VetoObjects':[  ]
+GetEcalCollectorHits      DEBUG input handles: 0
+GetEcalCollectorHits      DEBUG output handles: 1
+GetEcalCollectorHits      DEBUG Changing MC/EcalCollector/Hits to /Event/MC/EcalCollector/Hits
+GetEcalCollectorHits      DEBUG Data Deps for GetEcalCollectorHits
+  + OUTPUT '/Event/MC/EcalCollector/Hits'
+MainEventDataPacking       INFO Member list: PackMCParticle, PackMCVertex, DataPacking::Pack<LHCb::MCEcalHitPacker>/MCEcalHitPacker
+SimMonitor                 INFO Member list: GiGaGetEventAlg/GiGaGetMainEvent, MCTruthMonitor/MainMCTruthMonitor, GiGaGetHitsAlg, GaudiSequencer/DetectorsMonitor, GaudiSequencer/DataUnpackTest
+DetectorsMonitor           INFO Member list: MCCaloMonitor/EcalMonitor
+DataUnpackTest             INFO Member list: UnpackMCVertex, UnpackMCParticle, CompareMCVertex, CompareMCParticle, DataPacking::Unpack<LHCb::MCEcalHitPacker>/UnpackEcalHits, DataPacking::Check<LHCb::MCEcalHitPacker>/CheckEcalHits
+EventLoopMgr            WARNING Unable to locate service "EventSelector"
+EventLoopMgr            WARNING No events will be processed from external input.
+ApplicationMgr             INFO Application Manager Initialized successfully
+ApplicationMgr             INFO Application Manager Started successfully
+GaussGen                   INFO Evt 1,  Run 1,  Nr. in job = 1 with seeds [1, 1, 644571761, 0]
+MainEventGaussSim          INFO Evt 1,  Run 1,  Nr. in job = 1 with seeds [1, 1, 1711122878, 0]
+GiGa.GiGaMgr               INFO GiGaRunManager::  Geometry will be extracted from GaussGeo
+ FTFP_BERT : new threshold between BERT and FTFP is over the interval
+ for pions :   3 to 6 GeV
+ for kaons :   3 to 6 GeV
+ for proton :  3 to 6 GeV
+ for neutron : 3 to 6 GeV
+GiGa.ModularPL.GiGaPh...   INFO RICH Optical Process activation status 0
+G4Transportation:  Current values for thresholds related to  the killing of looping tracks:
+    Warning Energy   = 100 MeV   ( below this tracks are killed without warning )
+    Important Energy = 250  ( above this tracks are given multiple chances )
+    Extra Trials     = 10 'important' tracks, i.e. those above 'important' energy
+GiGa.ModularPL.GiGaPh...   INFO  RICHPmtPhysProcess Activation status  0
+GiGa.ModularPL             INFO  The production cut for gamma is set to 	5 mm
+GiGa.ModularPL             INFO  The production cut for electron is set to 	5 mm
+GiGa.ModularPL             INFO  The production cut for positron is set to 	5 mm
+====================================================================
+                  HADRONIC PROCESSES SUMMARY (verbose level 1)
+                           Hadronic Processes for neutron
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---> 100 TeV
+     Cr_sctns:        G4NeutronElasticXS: 0 eV  ---> 100 TeV
+  Process: neutronInelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:      G4NeutronInelasticXS: 0 eV  ---> 100 TeV
+  Process: nCapture
+        Model:               nRadCapture: 0 eV  ---> 100 TeV
+     Cr_sctns:        G4NeutronCaptureXS: 0 eV  ---> 100 TeV
+  Process: nKiller
+                           Hadronic Processes for GenericIon
+  Process: ionInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+                           Hadronic Processes for He3
+  Process: He3Inelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+                           Hadronic Processes for alpha
+  Process: alphaInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+                           Hadronic Processes for anti_He3
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_He3Inelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for anti_alpha
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_alphaInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for anti_deuteron
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_deuteronInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for anti_neutron
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_neutronInelastic
+        Model:                      FTFP: 0 eV  ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for anti_proton
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_protonInelastic
+        Model:                      FTFP: 0 eV  ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for anti_triton
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_tritonInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+                           Hadronic Processes for deuteron
+  Process: dInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+                           Hadronic Processes for e+
+  Process: electronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---> 100 TeV
+                           Hadronic Processes for e-
+  Process: electronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---> 100 TeV
+                           Hadronic Processes for gamma
+  Process: photonNuclear
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+        Model:           TheoFSGenerator: 3 GeV ---> 100 TeV
+     Cr_sctns:            PhotoNuclearXS: 0 eV  ---> 100 TeV
+                           Hadronic Processes for kaon+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: kaon+Inelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+                           Hadronic Processes for kaon-
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: kaon-Inelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: hBertiniCaptureAtRest
+                           Hadronic Processes for lambda
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: lambdaInelastic
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+                           Hadronic Processes for mu+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---> 100 TeV
+                           Hadronic Processes for mu-
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---> 100 TeV
+  Process: muMinusCaptureAtRest
+                           Hadronic Processes for pi+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: pi+Inelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+                           Hadronic Processes for pi-
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: pi-Inelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: hBertiniCaptureAtRest
+                           Hadronic Processes for proton
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: protonInelastic
+        Model:                      FTFP: 3 GeV ---> 100 TeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+                           Hadronic Processes for triton
+  Process: tInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+================================================================
+=======================================================================
+======       Pre-compound/De-excitation Physics Parameters     ========
+=======================================================================
+Type of pre-compound inverse x-section              3
+Pre-compound model active                           1
+Pre-compound excitation low energy (MeV)            0.1
+Pre-compound excitation high energy (MeV)           30
+Type of de-excitation inverse x-section             3
+Type of de-excitation factory                       Evaporation+GEM
+Number of de-excitation channels                    68
+Min excitation energy (keV)                         0.01
+Min energy per nucleon for multifragmentation (MeV) 2e+05
+Limit excitation energy for Fermi BreakUp (MeV)     20
+Level density (1/MeV)                               0.075
+Use simple level density model                      1
+Use discrete excitation energy of the residual      0
+Time limit for long lived isomeres (ns)             1000
+Internal e- conversion flag                         1
+Store e- internal conversion data                   0
+Electron internal conversion ID                     2
+Correlated gamma emission flag                      0
+Max 2J for sampling of angular correlations         10
+Upload data before 1st event for                Z < 9
+=======================================================================
+GiGaGetMainEvent           INFO Number of extracted MCParticles 'MC/Particles' 	10
+GiGaGetMainEvent           INFO Number of extracted MCVertices  'MC/Vertices'  	20
+EcalCollector matched with Ecal hits!
+ApplicationMgr             INFO Application Manager Stopped successfully
+GaussGen                SUCCESS ==================================================================
+GaussGen                SUCCESS 1 events processed
+GaussGen                SUCCESS ==================================================================
+ParticleGun                INFO **************************************************
+ParticleGun                INFO ***********   Generation counters   **************
+Number of generated events : 1
+Number of generated particles : 10
+Number of accepted events : 1
+Number of particles in accepted events : 10
+GenMonitorAlg              INFO
+======================== Generators Statistics ====================
+=                                                                 =
+= Number of particles generated: 10
+= Number of events: 1
+= Mean multiplicity: 10
+=                                                                 =
+= Number of pseudo stable particles generated: 10
+= Number of events: 1
+= Mean pseudo stable multiplicity: 10
+=                                                                 =
+= Number of charged stable particles generated: 0
+= Number of events: 1
+= Mean charged stable multiplicity: 0
+=                                                                 =
+= Number of charged stable particles in LHCb eta 0
+= Number of events: 1
+= Mean charged stable multiplicity in LHCb eta: 0
+=                                                                 =
+===================================================================
+MainEventGaussSim       SUCCESS ==================================================================
+MainEventGaussSim       SUCCESS 1 events processed
+MainEventGaussSim       SUCCESS ==================================================================
+GetEcalCollectorHits      DEBUG Finalize base class GaudiAlgorithm
+GetEcalCollectorHits      DEBUG Tools to release :
+GetEcalCollectorHits      DEBUG Services to release :
+RootHistSvc             WARNING no ROOT output file name, Histograms cannot be persistified
+EventLoopMgr               INFO Histograms converted successfully according to request.
+ToolSvc                    INFO Removing all tools created by ToolSvc
+ToolSvc.EcalCollector...  DEBUG  ==> Finalize the base class GaudiTool
+ToolSvc.EcalCollector...  DEBUG Tools to release :
+ToolSvc.EcalCollector...  DEBUG Services to release :
+GaussGeo.EcalCollector    DEBUG  ==> Finalize the base class GaudiTool
+GaussGeo.EcalCollector    DEBUG Tools to release : ToolSvc.EcalCollectorSDet
+GaussGeo.EcalCollector    DEBUG Releasing tool 'ToolSvc.EcalCollectorSDet'
+GaussGeo.EcalCollector    DEBUG De-Registering tool ToolSvc.EcalCollectorSDet
+GaussGeo.EcalCollector    DEBUG The tool 'ToolSvc.EcalCollectorSDet' of type 'MCCollector::SensDet' is released
+GaussGeo.EcalCollector    DEBUG Services to release :
+GiGa.GiGaMgr               INFO GiGaRunManager:: GiGaRunManager Finalization
+*****Chrono*****           INFO  The Final CPU consumption ( Chrono ) Table (ordered)
+******Stat******           INFO  The Final stat Table (not ordered)
+******Stat******           INFO  |    Counter     |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+******Stat******           INFO  | "#MCParticles" |         1 |         10 |     10.000 |     0.0000 |      10.000 |      10.000 |
+******Stat******           INFO  | "#MCVertices"  |         1 |         20 |     20.000 |     0.0000 |      20.000 |      20.000 |
+******Stat******           INFO  | "#Spd MCHits"  |         1 |        296 |     296.00 |     0.0000 |      296.00 |      296.00 |
+ChronoStatSvc.finalize()   INFO  Service finalized successfully
+ApplicationMgr             INFO Application Manager Finalized successfully
+ApplicationMgr             INFO Application Manager Terminated successfully
+CheckEcalHits              INFO Number of counters : 6
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+ | "Diff.    - Energy"                             |       296 |-0.0001789369 |-6.0452e-07 | 2.8016e-05 | -4.9730e-05 |  4.9811e-05 |
+ | "Diff.    - TOF"                                |       296 |          0 |      0.0000 |      0.0000 |       0.0000 |       0.0000 |
+ | "Original - Energy"                             |       296 |   10845.84 |     36.641 |     170.10 |   0.0092534 |      1858.5 |
+ | "Original - TOF"                                |       296 |          0 |      0.0000 |      0.0000 |       0.0000 |       0.0000 |
+ | "Unpacked - Energy"                             |       296 |   10845.84 |     36.641 |     170.10 |   0.0093000 |      1858.5 |
+ | "Unpacked - TOF"                                |       296 |          0 |      0.0000 |      0.0000 |       0.0000 |       0.0000 |
+GaussGen.GaussGenMemory    INFO Number of counters : 1
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+GaussGeo.Ecal              INFO Number of counters : 4
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+ | "#energy"                                       |         1 |   10.84584 |     10.846 |      0.0000 |      10.846 |      10.846 |
+ | "#hits"                                         |         1 |        233 |     233.00 |      0.0000 |      233.00 |      233.00 |
+ | "#subhits"                                      |         1 |        296 |     296.00 |      0.0000 |      296.00 |      296.00 |
+ | "#tslots"                                       |         1 |        296 |     296.00 |      0.0000 |      296.00 |      296.00 |
+MCEcalHitPacker            INFO Number of counters : 1
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+ | "# PackedData"                                  |         1 |        296 |     296.00 |      0.0000 |      296.00 |      296.00 |
+MainEventGaussSim.Mai...   INFO Number of counters : 1
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+UnpackEcalHits             INFO Number of counters : 1
+ |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |
+ | "# UnPackedData"                                |         1 |        296 |     296.00 |      0.0000 |      296.00 |      296.00 |
