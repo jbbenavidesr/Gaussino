@@ -11,13 +11,12 @@
 
 // Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
-#include "GaudiAlg/Producer.h"
-// GiGa TODO: modernize in Gauss-on-Gaussino
-#include "GiGa/GiGaHitsByName.h"
-#include "GiGa/IGiGaSvc.h"
-#include "GiGaCnv/GiGaKineRefTable.h"
-#include "GiGaCnv/IGiGaCnvSvcLocation.h"
-#include "GiGaCnv/IGiGaKineCnvSvc.h"
+#include "GaudiAlg/Transformer.h"
+// GiGaMT
+#include "GiGaMTCoreRun/G4EventProxy.h"
+#include "GiGaMTCoreTruth/MCTruthConverter.h"
+#include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
+#include "Defaults/Locations.h"
 // local
 #include "MCCollectorHit.h"
 // LHCb
@@ -25,71 +24,52 @@
 #include "Event/MCExtendedHit.h"
 
 namespace MCCollector {
-  class HitsAlg : public Gaudi::Functional::Producer<LHCb::MCHits()> {
+  class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits(const G4EventProxies&, const LinkedParticleMCParticleLinks&)> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
-        : Producer( name, pSvcLocator, KeyValue{"MCHitsLocation", ""} ) {}
+        : Transformer( name, pSvcLocator, {{KeyValue{"Input", Gaussino::G4EventsLocation::Default},
+            KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}}},
+            KeyValue{"MCHitsLocation", ""} ) {}
 
-    virtual LHCb::MCHits operator()() const override;
+    virtual LHCb::MCHits operator()(const G4EventProxies&, const LinkedParticleMCParticleLinks&) const override;
 
   protected:
-    // TODO: modernize in Gauss-on-Gaussino
-    ServiceHandle<IGiGaSvc> m_gigaSvc{this, "GiGaService", "GiGa"};
-    // TODO: modernize in Gauss-on-Gaussino
-    ServiceHandle<IGiGaKineCnvSvc> m_kineSvc{this, "KineCnvService", IGiGaCnvSvcLocation::Kine};
-
     Gaudi::Property<std::string>   m_colName{this, "CollectionName", ""};
   };
 } // namespace MCCollector
 
 
-LHCb::MCHits MCCollector::HitsAlg::operator()() const {
+LHCb::MCHits MCCollector::HitsAlg::operator()(const G4EventProxies& evtprxs, const LinkedParticleMCParticleLinks& mclinks) const {
 
   LHCb::MCHits hits;
-  // TODO: modernize in Gauss-on-Gaussino
-  if ( !m_gigaSvc ) {
-    error() << "IGiGaSvc* points to NULL" << endmsg;
-    return hits;
-  }
+  for (auto& evtprx : evtprxs) {
+    auto hitCollection = evtprx->GetHitCollection<HitsCollection>(m_colName.value());
 
-  // TODO: modernize in Gauss-on-Gaussino
-  GiGaHitsByName col( m_colName.value() );
-  *m_gigaSvc >> col; // also StatusCode sc = retrieveHitCollection( col );
-                     // in TRY/CATCH&PRINT
-
-  // TODO: modernize in Gauss-on-Gaussino
-  if ( 0 == col.hits() ) { warning() << "The hit collection='" << m_colName.value() << "' is not found!" << endmsg; }
-
-  // TODO: modernize in Gauss-on-Gaussino
-  GiGaUtil::FastCast<G4VHitsCollection, HitsCollection> mccollectorhits;
-  const HitsCollection*                                 hitCollection = mccollectorhits( col.hits() );
-  if ( 0 == hitCollection ) {
-    error() << "Wrong Collection type" << endmsg;
-    return hits;
-  }
-
-  int numOfHits = hitCollection->entries();
-
-  for ( int iG4Hit = 0; iG4Hit < numOfHits; ++iG4Hit ) {
-    LHCb::MCExtendedHit* newHit = new LHCb::MCExtendedHit();
-    auto                 g4Hit  = ( *hitCollection )[iG4Hit];
-    Gaudi::XYZPoint      entry( g4Hit->GetEntryPos() );
-    Gaudi::XYZVector     mom( g4Hit->GetMomentum() );
-    newHit->setMomentum( mom );
-    newHit->setEntry( entry );
-    newHit->setEnergy( g4Hit->GetEdep() );
-    newHit->setP( g4Hit->GetMomentum().mag() );
-    // TODO: modernize in Gauss-on-Gaussino
-    // fill reference to MCParticle using the Geant4->MCParticle table
-    GiGaKineRefTable& table   = m_kineSvc->table();
-    int               trackID = g4Hit->GetTrackID();
-    if ( table[trackID].particle() ) {
-      newHit->setMCParticle( table[trackID].particle() );
-    } else {
-      warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;
+    if (!hitCollection) {
+      warning() << "The hit collection='" + m_colName + "' is not found!" << endmsg;
+      continue;
     }
-    //
-    hits.add( newHit );
+
+    int numOfHits = hitCollection->entries();
+    for ( int iG4Hit = 0; iG4Hit < numOfHits; ++iG4Hit ) {
+      LHCb::MCExtendedHit* newHit = new LHCb::MCExtendedHit();
+      auto                 g4Hit  = ( *hitCollection )[iG4Hit];
+      Gaudi::XYZPoint      entry( g4Hit->GetEntryPos() );
+      Gaudi::XYZVector     mom( g4Hit->GetMomentum() );
+      newHit->setMomentum( mom );
+      newHit->setEntry( entry );
+      newHit->setEnergy( g4Hit->GetEdep() );
+      newHit->setP( g4Hit->GetMomentum().mag() );
+      int               trackID = g4Hit->GetTrackID();
+      if (auto lp = evtprx->truth()->GetParticleFromTrackID(trackID); lp)
+      if ( auto it = mclinks.find(lp); it != std::end(mclinks) ) {
+        newHit->setMCParticle( it->second );
+      } else {
+        warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;
+      }
+      //
+      hits.add( newHit );
+    }
   }
 
   return hits;

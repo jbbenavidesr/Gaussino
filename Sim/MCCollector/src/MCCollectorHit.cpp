@@ -12,7 +12,7 @@
 // local
 #include "MCCollectorHit.h"
 
-G4Allocator<MCCollector::Hit> MCCollector::HitAllocator;
+G4ThreadLocal G4Allocator<MCCollector::Hit> MCCollector::HitAllocator;
 
 void* MCCollector::Hit::operator new( size_t ) {
   void* aHitAllocator;

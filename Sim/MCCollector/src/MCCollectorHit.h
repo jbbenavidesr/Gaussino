@@ -11,7 +11,7 @@
 #pragma once
 
 // GiGa
-#include "GaussTools/GaussHitBase.h"
+#include "GiGaMTCoreDet/GaussHitBase.h"
 
 // G4
 #include "Geant4/G4Allocator.hh"
@@ -19,7 +19,7 @@
 #include "Geant4/G4ThreeVector.hh"
 
 namespace MCCollector {
-  class Hit : public GaussHitBase {
+  class Hit : public Gaussino::HitBase {
 
   public:
 

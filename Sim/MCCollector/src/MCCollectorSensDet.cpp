@@ -8,6 +8,14 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+//#include "GaussTools/GaussTrackInformation.h"
+
+// local
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
+#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "MCCollectorHit.h"
+#include "GiGaMTFactories/GiGaMTG4SensDetFactory.h"
+
 // from CLHEP
 #include "CLHEP/Geometry/Point3D.h"
 
@@ -15,6 +23,7 @@
 #include "GaudiKernel/MsgStream.h"
 
 // from Geant4
+#include "Geant4/G4VSensitiveDetector.hh"
 #include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4SDManager.hh"
@@ -24,9 +33,58 @@
 #include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4ios.hh"
 
-// local
-#include "MCCollectorSensDet.h"
+namespace MCCollector {
+  class SensDet : public G4VSensitiveDetector, public virtual GiGaMessage {
 
+  public:
+    inline SensDet( const std::string& name ) : G4VSensitiveDetector( name ) {
+      collectionName.insert( "Hits" );
+    }
+
+    void Initialize( G4HCofThisEvent* HCE ) override;
+
+    bool ProcessHits( G4Step* step, G4TouchableHistory* history ) override;
+    
+    inline void setRequireEDep   (bool requireEDep)    { m_requireEDep    = requireEDep; }
+    inline void setOnlyForward   (bool onlyForward)    { m_onlyForward    = onlyForward; }
+    inline void setOnlyAtBoundary (bool onlyAtBoundary) { m_onlyAtBoundary = onlyAtBoundary; }
+
+  protected:
+    HitsCollection* m_col;
+
+    bool m_requireEDep = false;
+    bool m_onlyForward = true;
+    bool m_onlyAtBoundary = false;
+  };
+
+  class SensDetFactory : public GiGaMTG4SensDetFactory<SensDet> {
+
+
+    // Watch out: default dE/dx=0 true by default
+    Gaudi::Property<bool> m_requireEDep{this, "RequireEDep", false};
+
+    // Only forward particles
+    Gaudi::Property<bool> m_onlyForward{this, "OnlyForward", true};
+
+    // Only hits at the boundary
+    Gaudi::Property<bool> m_onlyAtBoundary{this, "OnlyAtBoundary", false};
+
+    public:
+    
+    using base_fac = GiGaMTG4SensDetFactory<SensDet>;
+    using base_fac::base_fac;
+
+    SensDet* construct() const override { 
+      auto sensdet = base_fac::construct();
+      sensdet->setRequireEDep(m_requireEDep.value()); 
+      sensdet->setOnlyForward(m_onlyForward.value()); 
+      sensdet->setOnlyAtBoundary(m_onlyAtBoundary.value());
+      return sensdet;
+    }
+  };
+} // namespace MCCollector
+
+DECLARE_COMPONENT_WITH_ID( MCCollector::SensDetFactory, "MCCollectorSensDet" )
 
 void MCCollector::SensDet::Initialize( G4HCofThisEvent* HCE ) {
 
@@ -37,9 +95,7 @@ void MCCollector::SensDet::Initialize( G4HCofThisEvent* HCE ) {
   HCE->AddHitsCollection( HCID, m_col );
 
   // standard print left as is
-  Print( " Initialize(): CollectionName='" + m_col->GetName() + "' for SensDet='" + m_col->GetSDname() + "'",
-         StatusCode::SUCCESS, MSG::VERBOSE )
-      .ignore();
+  debug(" Initialize(): CollectionName='" + m_col->GetName() + "' for SensDet='" + m_col->GetSDname() + "'");
 }
 
 bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* history */ ) {
@@ -49,17 +105,17 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
 
   // If required to have energy deposition check
   double edep = step->GetTotalEnergyDeposit();
-  if ( m_requireEDep.value() && edep <= 0.0 ) return false;
+  if ( m_requireEDep && edep <= 0.0 ) return false;
   if ( step->GetStepLength() == 0. ) return false;
 
   auto preStep = step->GetPreStepPoint();
 
   // do not store hits created by particles moving backwards
   auto premom = preStep->GetMomentum();
-  if ( m_onlyForward.value() && premom.z() < 0. ) return false;
+  if ( m_onlyForward && premom.z() < 0. ) return false;
 
   // do not store hits created not at the boundary
-  if ( m_onlyAtBoundary.value() && preStep->GetStepStatus() != 1 ) return false;
+  if ( m_onlyAtBoundary && preStep->GetStepStatus() != 1 ) return false;
 
   auto prepos = preStep->GetPosition();
   auto newHit = new MCCollector::Hit();
@@ -70,13 +126,12 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
   int trid = track->GetTrackID();
   newHit->SetTrackID( trid );
   auto ui = track->GetUserInformation();
-  auto gi = (GaussTrackInformation*)ui;
+  auto gi = (GaussinoTrackInformation*)ui;
   gi->setCreatedHit( true );
-  gi->setToBeStored( true );
+  gi->setToStoreTruth( true );
   gi->addHit( newHit );
 
   m_col->insert( newHit );
   return true;
 }
 
-DECLARE_COMPONENT_WITH_ID( MCCollector::SensDet, "MCCollectorSensDet" )
