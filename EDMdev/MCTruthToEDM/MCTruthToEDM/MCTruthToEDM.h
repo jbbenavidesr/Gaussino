@@ -49,14 +49,14 @@ public:
   /// Standard constructor.
   MCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer(
-            name, pSvcLocator, {{KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
-                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}}},
-            {{
+            name, pSvcLocator, {KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
+                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}},
+            {
                 KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
                 KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
                 KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
                 KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default},
-            }} ){};
+            } ){};
   virtual ~MCTruthToEDM() = default; ///< Destructor.
   virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
   operator()( const Gaussino::MCTruthPtrs&, const LHCb::GenHeader& ) const override;

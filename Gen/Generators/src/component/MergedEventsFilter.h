@@ -38,10 +38,10 @@ class MergedEventsFilter
   /// Standard constructor
   MergedEventsFilter(const std::string& name, ISvcLocator* pSvcLocator)
       : Consumer(name, pSvcLocator,
-                 {{KeyValue{"HepMCEventLocation",
-                            Gaussino::HepMCEventLocation::Default},
-                   KeyValue{"GenCollisions",
-                            LHCb::GenCollisionLocation::Default}}}) {}
+                 {KeyValue{"HepMCEventLocation",
+                           Gaussino::HepMCEventLocation::Default},
+                  KeyValue{"GenCollisions",
+                           LHCb::GenCollisionLocation::Default}}) {}
 
   virtual void operator()(const HepMC3::GenEventPtrs&,
                           const LHCb::GenCollisions&) const override;

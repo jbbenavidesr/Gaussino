@@ -45,8 +45,8 @@ public:
   /// Standard constructor
   GenRndInit( const std::string& name, ISvcLocator* pSvcLocator )
       : Producer( name, pSvcLocator,
-          {{KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration},
-                   KeyValue{"BeamParameters", LHCb::BeamParametersLocation::Default}}} )
+          {KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration},
+                   KeyValue{"BeamParameters", LHCb::BeamParametersLocation::Default}} )
   {
   }
   using Clock = std::chrono::high_resolution_clock;
