@@ -27,8 +27,8 @@ namespace MCCollector {
   class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits(const G4EventProxies&, const LinkedParticleMCParticleLinks&)> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
-        : Transformer( name, pSvcLocator, {{KeyValue{"Input", Gaussino::G4EventsLocation::Default},
-            KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}}},
+        : Transformer( name, pSvcLocator, {KeyValue{"Input", Gaussino::G4EventsLocation::Default},
+            KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}},
             KeyValue{"MCHitsLocation", ""} ) {}
 
     virtual LHCb::MCHits operator()(const G4EventProxies&, const LinkedParticleMCParticleLinks&) const override;
@@ -61,13 +61,15 @@ LHCb::MCHits MCCollector::HitsAlg::operator()(const G4EventProxies& evtprxs, con
       newHit->setEnergy( g4Hit->GetEdep() );
       newHit->setP( g4Hit->GetMomentum().mag() );
       int               trackID = g4Hit->GetTrackID();
-      if (auto lp = evtprx->truth()->GetParticleFromTrackID(trackID); lp)
-      if ( auto it = mclinks.find(lp); it != std::end(mclinks) ) {
-        newHit->setMCParticle( it->second );
+      if ( auto lp = evtprx->truth()->GetParticleFromTrackID(trackID); lp ) {
+        if ( auto it = mclinks.find(lp); it != std::end(mclinks) ) {
+          newHit->setMCParticle( it->second );
+        } else {
+          warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;
+        }
       } else {
-        warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;
+        warning() << "No LinkedParticle found. Something went seriously wrong. trackID: " << trackID << endmsg;
       }
-      //
       hits.add( newHit );
     }
   }
