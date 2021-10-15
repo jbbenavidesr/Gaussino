@@ -48,9 +48,9 @@ public:
   /// Standard constructor
   ReDecaySimAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator, {KeyValue{"InputOriginal", Gaussino::HepMCEventLocation::Default}, KeyValue{"InputSignal", Gaussino::HepMCEventLocation::Signal}},
-                          {{KeyValue{"OutputG4Events", Gaussino::G4EventsLocation::Default},
-                            KeyValue{"OutputMCTruths", Gaussino::MCTruthsLocation::Default},
-                            KeyValue{"OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap}}} ){};
+                          {KeyValue{"OutputG4Events", Gaussino::G4EventsLocation::Default},
+                           KeyValue{"OutputMCTruths", Gaussino::MCTruthsLocation::Default},
+                           KeyValue{"OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap}} ){};
 
   virtual ~ReDecaySimAlg() = default;
 

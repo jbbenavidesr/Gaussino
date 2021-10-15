@@ -45,8 +45,8 @@ public:
   /// Standard constructor
   GiGaAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}},
-                          {{KeyValue{"OutputG4Events", Gaussino::G4EventsLocation::Default},
-                            KeyValue{"OutputMCTruths", Gaussino::MCTruthsLocation::Default}}} ){};
+                          {KeyValue{"OutputG4Events", Gaussino::G4EventsLocation::Default},
+                           KeyValue{"OutputMCTruths", Gaussino::MCTruthsLocation::Default}} ){};
 
   virtual ~GiGaAlg() = default;
 

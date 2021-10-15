@@ -37,8 +37,8 @@ public:
   /// Standard constructor
   MCTruthMonitor( const std::string& name, ISvcLocator* pSvcLocator )
       : Consumer( name, pSvcLocator,
-                  {{KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
-                    KeyValue{"Vertices", Gaussino::MCVertexLocation::Default}}} )
+                  {KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
+                    KeyValue{"Vertices", Gaussino::MCVertexLocation::Default}} )
   {
     setProduceHistos( false );
   };

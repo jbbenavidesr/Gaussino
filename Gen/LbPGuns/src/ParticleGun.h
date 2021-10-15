@@ -64,9 +64,9 @@ public:
   ParticleGun( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
                           {KeyValue{"GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration}},
-                          {{KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
-                            KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
-                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}}} )
+                          {KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
+                           KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
+                           KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}} )
   {
   }
 
