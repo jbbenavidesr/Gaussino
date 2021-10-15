@@ -105,7 +105,6 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
   int theSignalPID = *m_pids.begin() ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int key = 0;
 
   if ( m_cpMixture ) {
     // decide which flavour to generate : 
@@ -155,8 +154,9 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
       ParticleVector theParticleList ;
       if ( checkPresence( signalPid , theGenEvent , theParticleList ) ) {
         m_nEventsBeforeCut++ ;
-        key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");
-        if(genFSR) genFSR->incrementGenCounter(key, 1);
+        if(genFSR) {
+          genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::BeforeLevelCut, 1);
+        }
         
         updateCounters( theParticleList , m_nParticlesBeforeCut , 
                         m_nAntiParticlesBeforeCut , false , false ) ;
@@ -201,13 +201,15 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           
           if ( isInverted ) {
             ++m_nInvertedEvents ;
-            key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-            if(genFSR) genFSR->incrementGenCounter(key, 1); 
+            if(genFSR) {
+              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtInverted, 1); 
+            }
           }
           else
           {
-            key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-            if(genFSR) genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) {
+              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AfterLevelCut, 1);
+            }
           }
 
           if ( m_cleanEvents ) { 
@@ -222,14 +224,16 @@ bool SignalForcedFragmentation::generate( const unsigned int nPileUp ,
           // Count signal B and signal Bbar
           if ( theSignal -> pdg_id() > 0 ) {
             ++m_nSig ;
-            key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-            if(genFSR) genFSR->incrementGenCounter(key, 1);
+            if(genFSR) {
+              genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::EvtSignal, 1);
+            }
           }
           else
           {
             ++m_nSigBar ;
-            key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
-            if(genFSR) genFSR->incrementGenCounter(key, 1);            
+            if(genFSR) {
+              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtantiSignal, 1);
+            }
           }
 
           // Update counters
