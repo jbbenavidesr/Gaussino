@@ -65,9 +65,7 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
 #include "Geant4/G4GDMLParser.hh"
 
 void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
-  if(m_outfile.value() == ""){
-    return;
-  }
+  if ( m_outfile.value() == "" ) { return; }
   if ( !world ) {
     error() << "Null pointer to world volume" << endmsg;
     return;
