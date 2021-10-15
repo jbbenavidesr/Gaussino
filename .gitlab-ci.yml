@@ -15,6 +15,10 @@ stages:
 
 variables:
   TARGET_BRANCH: master
+  BINARY_TAG: x86_64_v2-centos7-gcc10-opt
+  LCG_VERSION: 100
+  NO_LBLOGIN: "1"
+
 
 check-copyright:
   image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
