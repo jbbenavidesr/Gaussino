@@ -14,19 +14,15 @@
 gaudi_subdir(ExternalDetector v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
-                         Det/DetDesc
                          Sim/GiGaMTCore
                          Sim/GiGaMTFactories)
 
 
 AddHepMC3()                    
-find_package(XercesC)
 find_package(Boost)
 find_package(CLHEP)
 
-FindG4libs(persistency)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${XERCESC_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
 
 gaudi_add_module(ExternalDetector
                  src/*.cpp

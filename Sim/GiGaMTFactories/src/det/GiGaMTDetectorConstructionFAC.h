@@ -19,6 +19,7 @@
 class IGiGaMTGeoSvc;
 class IGaussinoTool;
 class IExternalDetectorEmbedder;
+class G4Material;
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
@@ -45,19 +46,21 @@ protected:
                                                             {},
                                                             tool_array_setter( m_afterGeo, m_afterGeoNames ),
                                                             Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+
+private:
+
   // External Detectors
   ToolHandleArray<IExternalDetectorEmbedder> m_ext_dets{this};
-  using ExtDets = std::vector<std::string>;
-  Gaudi::Property<ExtDets> m_ext_dets_names{this,
-                                            "ExternalDetectors",
-                                            {},
-                                            tool_array_setter( m_ext_dets, m_ext_dets_names ),
-                                            Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+  using ExternalDetectors = std::vector<std::string>;
+  Gaudi::Property<ExternalDetectors> m_ext_dets_names{this,
+                                                      "ExternalDetectors",
+                                                      {},
+                                                      tool_array_setter( m_ext_dets, m_ext_dets_names ),
+                                                      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
   Gaudi::Property<std::string> m_schema{this, "Schema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
   Gaudi::Property<std::string> m_outfile{this, "Output", ""};
 
-private:
   SensDetVolumeMap                       m_sens_dets;
   Gaudi::Property<SensDetNameVolumesMap> m_namemap{this,
                                                    "SensDetVolumeMap",
@@ -71,4 +74,17 @@ private:
                                                      }
                                                    },
                                                    Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+  
+  // External Materials
+  // it's called external materials, and will most likely be used by ExternalDetector package only, 
+  // but please note that it has GiGaFactoryBase<G4Material>, so any factory inheriting from G4Material will suffice
+  using ExternalMaterialTool = GiGaFactoryBase<G4Material>;
+  ToolHandleArray<ExternalMaterialTool> m_ext_mats{this};
+  using ExternalMaterials = std::vector<std::string>;
+  Gaudi::Property<ExternalMaterials> m_ext_mats_names{this,
+                                                      "ExternalMaterials",
+                                                      {},
+                                                      tool_array_setter( m_ext_mats, m_ext_mats_names ),
+                                                      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+  
 };

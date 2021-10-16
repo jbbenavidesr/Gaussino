@@ -20,6 +20,8 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         'Sensitive': {},
         'Hit': {},
         'Moni': {},
+        # can be used without detectors:
+        'Materials': {},
     }
 
     _added_dets = []
@@ -28,6 +30,19 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
     def embed(self, geo):
         if not geo:
             raise RuntimeError("ERROR: GeoService not provided")
+        for name, props in self.getProp("Materials").items():
+            self._check_props(name, props, required=[])
+            if 'Type' not in props:
+                # TODO: for now it can only be of type ExternalMaterial
+                props['Type'] = 'ExternalMaterial'
+            if 'Name' not in props:
+                props['Name'] = name
+            tool_conf = getattr(Configurables, props['Type'])
+            tool = tool_conf(props['Name'], **self._refine_props(props))
+            geo.addTool(tool, name=props['Name'])
+            geo.ExternalMaterials.append(props['Type'] + '/' + props['Name'])
+            log.info("Registered external material tool {} of type {}.".format(props['Name'], props['Type']))
+
         for name, props in self.getProp("Shapes").items():
             self._check_props(name, props)
             tool_name = props['Type'] + 'Embedder'

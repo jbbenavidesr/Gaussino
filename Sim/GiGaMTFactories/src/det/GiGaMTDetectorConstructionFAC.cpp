@@ -28,6 +28,10 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
 G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   auto detconst = new GiGaMTDetectorConstruction();
   detconst->SetWorldConstructor( [&]() {
+    
+    // Import external materials
+    for ( auto& material : m_ext_mats ) { material->construct(); }
+
     debug() << "Calling world constructor" << endmsg;
     auto world = m_geoSvc->constructWorld();
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
