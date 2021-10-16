@@ -29,7 +29,8 @@ class SimPhase(ConfigurableUser):
             "/tracking/verbose 0",
             "/process/eLoss/verbose 0"
         ],
-        "G4EndRunCommand": []
+        "G4EndRunCommand": [],
+        "ExternalDetectorEmbedder": "",
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -49,16 +50,38 @@ class SimPhase(ConfigurableUser):
         self.propagateProperties(names, other)
 
     def configure_phase(self):
-
+        seq = []
         gigaService(debugcommunication=self.getProp('DebugCommunication'))
 
         giga_alg = configure_giga_alg()
-
-        seq = []
         seq += [giga_alg]
+
+        geo_algs = self.set_base_detector_geometry()
+        seq += geo_algs
+
         ApplicationMgr().TopAlg += seq
         if self.getProp('TrackTruth'):
             if self.getProp('DebugCommunication'):
                 append_truth_actions(OutputLevel=-10)
             else:
                 append_truth_actions()
+
+    def set_base_detector_geometry(self):
+        from Configurables import GiGaMT, GiGaMTDetectorConstructionFAC
+        giga = GiGaMT()
+        algs = []
+        dettool = giga.addTool(GiGaMTDetectorConstructionFAC, "GiGaMTDetectorConstructionFAC")
+
+        # Add external detectors geometries
+        # TODO: external geometry was prepared to operate with spillover
+        # but it is not available yet
+        # so for now there are no 'slot' param in the algos
+        embedder_name = self.getProp("ExternalDetectorEmbedder")
+        if embedder_name:
+            from Configurables import ExternalDetectorEmbedder
+            embedder = ExternalDetectorEmbedder(embedder_name)
+            embedder.embed(dettool)
+            algs += embedder.activate_hits_alg() # no slot for now!
+            algs += embedder.activate_moni_alg() # no slot for now!
+        return algs
+

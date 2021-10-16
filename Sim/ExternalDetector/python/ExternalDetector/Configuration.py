@@ -22,6 +22,9 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         'Moni': {},
         # can be used without detectors:
         'Materials': {},
+        # only if you want to implement a custom, external world
+        # this is mostly for testing purposes
+        'World': {},
     }
 
     _added_dets = []
@@ -49,7 +52,17 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
             tool = self._embedding_tool(name, tool_name, props)
             geo.addTool(tool, name=name)
             geo.ExternalDetectors.append(tool_name + '/' + name)
+            log.info("Registered external detector {} of type {}.".format(name, tool_name))
             self._added_dets.append(name)
+
+        world = self.getProp('World')
+        if world:
+            self._check_props('World', world, required=['Type', 'WorldMaterial'])
+            svc_conf = getattr(Configurables, world['Type'])
+            svc = svc_conf(**self._refine_props(world))
+            geo.GiGaMTGeoSvc = world['Type']
+            log.info("Registered external world service of type {}.".format(world['Type']))
+
 
     def activate_hits_alg(self, slot=""):
         algs = []

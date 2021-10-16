@@ -8,62 +8,81 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-// local
-#include "WorldCreator.h"
-// LHCb
-#include "DetDesc/Material.h"
+
 // G4
 #include "Geant4/G4Box.hh"
-#include "Geant4/G4GDMLParser.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4PVPlacement.hh"
+// Gaudi
+#include "GaudiKernel/Service.h"
+#include "GaudiKernel/SystemOfUnits.h"
+// GiGaMT
+#include "GiGaMTGeo/IGiGaMTGeoSvc.h"
+
+namespace ExternalDetector {
+  class WorldCreator : public Service, virtual public IGiGaMTGeoSvc {
+
+    // required
+    Gaudi::Property<std::string> m_worldMaterial{this, "WorldMaterial", ""};
+
+    // optional
+    Gaudi::Property<std::string> m_worldName{this, "WorldName", "WorldBox"};
+    Gaudi::Property<std::string> m_worldLogicalVolumeName{this, "WorldLogicalVolumeName", "WorldLVol"};
+    Gaudi::Property<std::string> m_worldPhysicalVolumeName{this, "WorldPhysicalVolumeName", "WorldPVol"};
+    Gaudi::Property<double>      m_worldSizeX{this, "WorldSizeX", 50. * Gaudi::Units::m};
+    Gaudi::Property<double>      m_worldSizeY{this, "WorldSizeY", 50. * Gaudi::Units::m};
+    Gaudi::Property<double>      m_worldSizeZ{this, "WorldSizeZ", 50. * Gaudi::Units::m};
+
+  public:
+    using Service::Service;
+    StatusCode initialize() override;
+    virtual G4VPhysicalVolume* constructWorld() override;
+    inline virtual void constructSDandField() override {};
+    virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
+  };
+} // namespace ExternalDetector
+
+DECLARE_COMPONENT_WITH_ID( ExternalDetector::WorldCreator, "ExternalWorldCreator" )
 
 StatusCode ExternalDetector::WorldCreator::initialize() {
-  return GaudiAlgorithm::initialize().andThen( [&]() -> StatusCode {
-    debug() << "Retrieving material " << m_worldMaterial.value() << " from the conditions" << endmsg;
-    auto material = getDet<Material>( m_worldMaterial.value() );
-    if ( !material ) {
-      error() << "Material not found!" << endmsg;
+  return Service::initialize().andThen( [&]() -> StatusCode {
+    if ( m_worldMaterial.value().empty() ) {
+      error() << "External world must have a material defined!" << endmsg;
       return StatusCode::FAILURE;
-    }
-    auto g4material =
-        new G4Material( material->registry()->identifier(), material->Z(), material->A(), material->density(),
-                        (G4State)material->state(), material->temperature(), material->pressure() );
-
-    if ( !g4material ) {
-      error() << "Could not create g4material!" << endmsg;
-      return StatusCode::FAILURE;
-    }
-
-    debug() << "Creating external world in G4" << endmsg;
-    auto world_sbox = new G4Box( "WorldBox", m_worldSizeX.value(), m_worldSizeY.value(), m_worldSizeZ.value() );
-    auto world_lvol = new G4LogicalVolume( world_sbox, g4material, "World", 0, 0, 0 );
-    auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), "WorldPV", world_lvol, 0, false, 0, false );
-    if ( !world_pvol ) {
-      error() << "No physical world volume" << endmsg;
-      return StatusCode::FAILURE;
-    }
-
-    if ( m_ext_dets_names.empty() ) {
-      warning() << "No external detectors to embed found!" << endmsg;
-    } else {
-      for ( auto& ext_det : m_ext_dets ) {
-        debug() << "Embedding now an external detector: " << ext_det->name() << endmsg;
-        ext_det->embed( world_pvol ).ignore();
-      }
-    }
-
-    debug() << "External world created!" << endmsg;
-
-    if ( m_writeGDML.value() ) {
-      debug() << "Writing geometry to: " << m_outfile.value() << endmsg;
-      G4GDMLParser g4writer;
-      g4writer.SetSDExport( true );
-      g4writer.Write( m_outfile.value(), world_pvol, true, m_schema.value() );
     }
     return StatusCode::SUCCESS;
-  } );
+  });
 }
 
-DECLARE_COMPONENT_WITH_ID( ExternalDetector::WorldCreator, "ExternalDetectorWorldCreator" )
+G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
+  debug() << "Retrieving material " << m_worldMaterial.value();
+  auto g4material = G4Material::GetMaterial( m_worldMaterial.value() );
+
+  if ( !g4material ) {
+    error() << "Material: " << m_worldMaterial.value() << " does not exist!" << endmsg;
+    return nullptr;
+  }
+
+  debug() << "Creating an external world in G4" << endmsg;
+  auto world_sbox = new G4Box( m_worldName.value(), m_worldSizeX.value(), m_worldSizeY.value(), m_worldSizeZ.value() );
+  auto world_lvol = new G4LogicalVolume( world_sbox, g4material, m_worldLogicalVolumeName.value(), 0, 0, 0 );
+  auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), m_worldPhysicalVolumeName.value(), world_lvol, 0, false, 0, false );
+  
+  debug() << "External world created!" << endmsg;
+  return world_pvol;
+}
+
+StatusCode ExternalDetector::WorldCreator::queryInterface( const InterfaceID& id, void** ppI ) {
+  if ( 0 == ppI ) {
+    return StatusCode::FAILURE; //  RETURN !!!
+  } else if ( IGiGaMTGeoSvc::interfaceID() == id ) {
+    *ppI = static_cast<IGiGaMTGeoSvc*>( this );
+  } else {
+    return Service::queryInterface( id, ppI ); //  RETURN !!!
+  }
+
+  addRef();
+
+  return StatusCode::SUCCESS;
+}
