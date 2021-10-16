@@ -8,21 +8,20 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import CondDB
-CondDB().Upgrade = True
 
-from Configurables import LHCbApp
-LHCbApp().DataType = "Upgrade"
-LHCbApp().DDDBtag = "upgrade/dddb-20210617"
-LHCbApp().CondDBtag = "upgrade/sim-20210617-vc-mu100"
-LHCbApp().Simulation = True
+from Configurables import Gaussino
+Gaussino().EvtMax = 1
+Gaussino().EnableHive = True
+Gaussino().ThreadPoolSize = 1
+Gaussino().EventSlots = 1
+
+# some dumb generation, not important, just fast
+from Gaussino.Generation import GenPhase
+GenPhase().ParticleGun = True
+GenPhase().ParticleGunUseDefault = True
 
 # setting up external geometry service
-from Configurables import ExternalDetectorWorldCreator
-from Gaudi.Configuration import DEBUG
-creator = ExternalDetectorWorldCreator()
-creator.OutputLevel = DEBUG
-#creator.WriteGDML = True
+
 
 # adding external detectors
 from Configurables import ExternalDetectorEmbedder
@@ -35,21 +34,36 @@ external.Shapes = {
         "xSize": 1. * m,
         "ySize": 1. * m,
         "zSize": 1. * m,
+        "OutputLevel": DEBUG,
     },
 }
 
 external.Sensitive = {
     "MyCube": {
-        "Type": "GiGaSensDetTracker",
+        "Type": "MCCollectorSensDet",
+        "OutputLevel": DEBUG,
+    },
+}
+
+# plain/testing geometry service
+external.World = {
+    "WorldMaterial": "OuterSpace",
+    "Type": "ExternalWorldCreator",
+    "OutputLevel": DEBUG,
+}
+
+# material needed for the external world
+from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
+external.Materials = {
+    "OuterSpace": {
+        "AtomicMass": 1.,
+        "MassNumber": 1.01 * g / mole,
+        "Density": 1.e-25 * g / cm3,
+        "Pressure": 3.e-18 * pascal,
+        "Temperature": 2.73 * kelvin,
     },
 }
 
 # here embedding of the geometry takes place
-external.embed(creator)
-
-from Configurables import ApplicationMgr
-ApplicationMgr().TopAlg += [creator]
-
-import GaudiPython as GP
-appMgr = GP.AppMgr()
-appMgr.initialize()
+from Gaussino.Simulation import SimPhase
+SimPhase().ExternalDetectorEmbedder = "Testing"

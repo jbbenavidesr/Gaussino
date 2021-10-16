@@ -10,7 +10,7 @@
     or submit itself to any jurisdiction.
 -->
 <extension class="GaudiTest.GaudiExeTest" kind="test">
-<argument name="program"><text>python</text></argument>
+<argument name="program"><text>gaudirun.py</text></argument>
 <argument name="timeout"><integer>600</integer></argument>
 <argument name="args"><set>
   <text>../options/external_cube.py</text>
@@ -18,7 +18,7 @@
 <argument name="validator"><text>
 results = [
     'Successfully embedded MyCubePVol in its mothers volume!',
-    'Registered sensitive GiGaSensDetTracker/MyCubeSDet for MyCubePVol',
+    'Registered sensitive GiGaMT.GiGaMTDetectorConstructionFAC.MyCube.MyCubeSDet for MyCubePVol',
     'External world created!',
 ]
 for result in results:
