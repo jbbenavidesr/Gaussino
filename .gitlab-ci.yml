@@ -8,15 +8,27 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
+stages:
+  - check
+  - docs
+  - deploy
+
 variables:
   TARGET_BRANCH: master
+  BINARY_TAG: x86_64_v2-centos7-gcc10-opt
+  LCG_VERSION: 100
+  NO_LBLOGIN: "1"
+
+
 check-copyright:
   image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
+  stage: check
   script:
     - curl -o lb-check-copyright "https://gitlab.cern.ch/lhcb-core/LbDevTools/raw/master/LbDevTools/SourceTools.py?inline=false"
     - python lb-check-copyright origin/${TARGET_BRANCH}
 check-formatting:
   image: gitlab-registry.cern.ch/lhcb-docker/style-checker
+  stage: check
   script:
     - if [ ! -e .clang-format ] ; then
     -   curl -o .clang-format "https://gitlab.cern.ch/lhcb-core/LbDevTools/raw/master/LbDevTools/data/default.clang-format?inline=false"
@@ -30,3 +42,50 @@ check-formatting:
       - apply-formatting.patch
     when: on_failure
     expire_in: 1 week
+
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+build-docs:
+  stage: docs
+  image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
+  tags:
+    - cvmfs
+  variables:
+    NIGHTLIES_PATH: "/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest"
+    LOCAL_PYTHON: "InstallArea/x86_64_v2-centos7-gcc10-opt/python"
+  script:
+    - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
+    - pip install myst_parser
+    - reasons=
+    - export PYTHONPATHBKP=$PYTHONPATH
+    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
+    - export PYTHONPATHBKP=$(find $PWD -type d \( -path ./InstallArea -o -path ./build \) -prune -false -o -name "python" -print | paste -sd ":" - ):$PYTHONPATHBKP
+    - echo "$PYTHONPATHBKP"
+    - PYTHONPATH=$PYTHONPATHBKP make -C docs html || reasons+='ERROR failed html generation\n'
+    - if [ -n "$reasons" ]; then echo -e $reasons; exit 1; fi
+  allow_failure:
+    exit_codes: 77
+  artifacts:
+    paths:
+      - docs/_build/html/
+
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+deploy-docs:
+  stage: deploy
+  image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
+  variables:
+    EOS_PATH: "/eos/project/l/lhcbwebsites/www/projects/gaussino/$CI_COMMIT_REF_NAME"
+    CI_OUTPUT_DIR: "docs/_build/html"
+    METHOD: "rsync"
+  before_script:
+    # As the previous stage is allowed to fail, skip this stage if the previous
+    # did not complete successfully (i.e. did not create the html directory)
+    - test -d $CI_OUTPUT_DIR || { echo "WARNING docs not built, stopping"; exit 77; }
+  script:
+    - deploy-eos && echo -e "Deployed at\n\n\t/eos/project/l/lhcbwebsites/www/projects/gaussino/$CI_COMMIT_REF_NAME/index.html"
+  allow_failure:
+    exit_codes: 77
+
