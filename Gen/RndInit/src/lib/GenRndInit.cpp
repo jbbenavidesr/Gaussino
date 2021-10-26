@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // Include files
 #include <cmath>
 
@@ -82,7 +92,7 @@ StatusCode GenRndInit::finalize()
   delete m_barrier;
   if ( m_firstTimingEvent >= 0 ) {
     auto end_time = Clock::now();
-
+    info() << m_evtCounter << " events processed" << endmsg;
     info() << "Measured event loop time (" << m_evtTimingCounter
            << ") [ns]: " << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - m_start_time ).count()
            << endmsg;

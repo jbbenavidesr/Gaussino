@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 #pragma once
 
 // Gaudi.
@@ -39,14 +49,14 @@ public:
   /// Standard constructor.
   MCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer(
-            name, pSvcLocator, {{KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
-                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}}},
-            {{
+            name, pSvcLocator, {KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
+                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}},
+            {
                 KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
                 KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
                 KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
                 KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default},
-            }} ){};
+            } ){};
   virtual ~MCTruthToEDM() = default; ///< Destructor.
   virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
   operator()( const Gaussino::MCTruthPtrs&, const LHCb::GenHeader& ) const override;

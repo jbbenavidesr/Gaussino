@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // Gaudi.
 #include "GaudiKernel/System.h"
 #include "Kernel/ParticleProperty.h"
@@ -35,6 +45,12 @@
 //
 // 2007-07-31 : Arthur de Gromard, Philip Ilten
 //-----------------------------------------------------------------------------
+
+namespace {
+  constexpr LHCb::GenCountersFSR::CounterKey to_CounterKey( LHCb::CrossSectionsFSR::CrossSectionKey k) {
+    return static_cast<LHCb::GenCountersFSR::CounterKey>( k + 100 );
+  }
+}
 
 //=============================================================================
 // Default constructor.
@@ -313,13 +329,13 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEventPtr theEvent,
 
   // Store the minimum bias cross-section in the GenFSR.
   std::vector<int> codes = m_pythia->info.codesHard();
-  int key = LHCb::CrossSectionsFSR::MBCrossSection;
-  if (genFSR && genFSR->hasGenCounter(key+100)) {
-    longlong count = genFSR->getGenCounterInfo(100 + key).second;
+  auto key = LHCb::CrossSectionsFSR::MBCrossSection;
+  if (genFSR && genFSR->hasGenCounter(to_CounterKey(key))) {
+    longlong count = genFSR->getGenCounterInfo(to_CounterKey(key)).second;
     count = m_pythia->info.nAccepted(key) - count;
-    if (count > 0) genFSR->incrementGenCounter(key + 100, count); 
+    if (count > 0) genFSR->incrementGenCounter(to_CounterKey(key), count); 
   } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
-    genFSR->addGenCounter(100 + key, m_pythia->info.nAccepted(key));
+    genFSR->addGenCounter(to_CounterKey(key), m_pythia->info.nAccepted(key));
   if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
   if(genFSR) genFSR->addCrossSection
     (key, LHCb::GenFSR::CrossValues("Total cross-section", 
@@ -327,13 +343,13 @@ StatusCode Pythia8Production::generateEvent(HepMC3::GenEventPtr theEvent,
 
   // Store the others cross-sections in the GenFSR.
   for (unsigned int code = 0; code < codes.size(); ++code) {
-    key = codes[code];
-    if (genFSR && genFSR->hasGenCounter(key + 100)) {
-      longlong count = genFSR->getGenCounterInfo(100 + key).second;
+    key = static_cast<LHCb::CrossSectionsFSR::CrossSectionKey>(codes[code]);
+    if (genFSR && genFSR->hasGenCounter(to_CounterKey(key))) {
+      longlong count = genFSR->getGenCounterInfo(to_CounterKey(key)).second;
       count = m_pythia->info.nAccepted(key) - count;
-      if (count > 0) genFSR->incrementGenCounter(key + 100, count);
+      if (count > 0) genFSR->incrementGenCounter(to_CounterKey(key), count);
     } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
-      genFSR->addGenCounter(100 + key, m_pythia->info.nAccepted(key));
+      genFSR->addGenCounter(to_CounterKey(key), m_pythia->info.nAccepted(key));
     if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
     if(genFSR) genFSR->addCrossSection
       (key, LHCb::GenFSR::CrossValues(m_pythia->info.nameProc(key), 

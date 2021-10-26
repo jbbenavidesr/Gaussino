@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: Signal.cpp,v 1.25 2009-10-22 16:43:05 robbep Exp $
 // Include files 
 
@@ -344,20 +354,21 @@ void Signal::updateCounters( const ParticleVector & particleList ,
   ParticleVector::const_iterator to = particleList.end() ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int keyP = 0, keyAP = 0;
+  auto keyP = LHCb::GenCountersFSR::CounterKey::AllEvt;
+  auto keyAP = LHCb::GenCountersFSR::CounterKey::AllEvt;
 
   if ( onlyForwardParticles ) {
     // if the particle has been inverted z -> -z, do not count it
     if ( ! isInverted ) {
-      keyP = LHCb::GenCountersFSR::CounterKeyToType("AfterPCut");      
-      keyAP = LHCb::GenCountersFSR::CounterKeyToType("AfterantiPCut");
+      keyP = LHCb::GenCountersFSR::CounterKey::AfterPCut;      
+      keyAP = LHCb::GenCountersFSR::CounterKey::AfterantiPCut;
 
       nP = std::count_if( from , to , isForwardParticle() ) ;
       nAntiP = std::count_if( from , to , isForwardAntiParticle() ) ;
     }
   } else {
-    keyP = LHCb::GenCountersFSR::CounterKeyToType("BeforePCut");    
-    keyAP = LHCb::GenCountersFSR::CounterKeyToType("BeforeantiPCut");
+    keyP = LHCb::GenCountersFSR::CounterKey::BeforePCut;    
+    keyAP = LHCb::GenCountersFSR::CounterKey::BeforeantiPCut;
 
     nP = std::count_if( from , to , isParticle() ) ;
     nAntiP = particleList.size() - nP ;

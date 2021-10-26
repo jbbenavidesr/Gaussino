@@ -1,3 +1,13 @@
+###############################################################################
+# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+#                                                                             #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
+#                                                                             #
+# In applying this licence, CERN does not waive the privileges and immunities #
+# granted to it by virtue of its status as an Intergovernmental Organization  #
+# or submit itself to any jurisdiction.                                       #
+###############################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 
 # Reduce the total number of warnings by A LOT until ROOT has been modified
@@ -28,6 +38,10 @@ find_package(CLHEP)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS}
                            ${CLHEP_INCLUDE_DIRS})
 
+# Add -O0 to remove optimizations when using gcc
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0" CACHE STRING "bla" FORCE)
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0" CACHE STRING "bla" FORCE)
+
 macro(FindG4libs)
     # FIXME: this should be an imported target
     foreach(name ${ARGN})
@@ -50,7 +64,8 @@ macro(AddHepMC3)
 
   set(HEPMC3_LIBRARIES
     -lHepMC3
-    -lHepMC3rootIO
+    # FIXME: disabled because of HepMC & HepMC3 namespace collision
+    # -lHepMC3rootIO
     -lHepMC3search)
 endmacro()
 
@@ -74,7 +89,7 @@ list(APPEND CMAKE_PREFIX_PATH /usr)
 # Declare project name and version
 gaudi_project(Gaussino v1r0
               FORTRAN
-              USE GaudiExtensions v1r0
+              USE Run2Support v0r0
                   Geant4 v104r1
               DATA Gen/PGunsData VERSION v1r*
                    Gen/DecFiles VERSION v30r*

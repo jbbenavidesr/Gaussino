@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: MergedEventsFilter.h,v 1.1 2008-05-06 08:27:55 gcorti Exp $
 #ifndef GENERATORS_MERGEDEVENTSFILTER_H
 #define GENERATORS_MERGEDEVENTSFILTER_H 1
@@ -28,10 +38,10 @@ class MergedEventsFilter
   /// Standard constructor
   MergedEventsFilter(const std::string& name, ISvcLocator* pSvcLocator)
       : Consumer(name, pSvcLocator,
-                 {{KeyValue{"HepMCEventLocation",
-                            Gaussino::HepMCEventLocation::Default},
-                   KeyValue{"GenCollisions",
-                            LHCb::GenCollisionLocation::Default}}}) {}
+                 {KeyValue{"HepMCEventLocation",
+                           Gaussino::HepMCEventLocation::Default},
+                  KeyValue{"GenCollisions",
+                           LHCb::GenCollisionLocation::Default}}) {}
 
   virtual void operator()(const HepMC3::GenEventPtrs&,
                           const LHCb::GenCollisions&) const override;

@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: FixedLuminosity.cpp,v 1.6 2009-04-07 16:11:21 gcorti Exp $
 // Include files 
 
@@ -74,19 +84,20 @@ unsigned int FixedLuminosity::numberOfPileUp( HepRandomEnginePtr & engine ) {
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int key = 0;
 
   unsigned int result = 0 ;
   while ( 0 == result ) {
     m_nEvents++ ;
-    key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
-    if(genFSR) genFSR->incrementGenCounter(key,1);
+    if(genFSR) {
+      genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
+    }
     CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
     result = (unsigned int) poissonGenerator() ;
     if ( 0 == result ) {
       m_numberOfZeroInteraction++ ;
-      key =LHCb::GenCountersFSR::CounterKeyToType("ZeroInt");
-      if(genFSR) genFSR->incrementGenCounter(key, 1); 
+      if(genFSR) {
+        genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::ZeroInt, 1); 
+      }
     }
   }
   return result ;

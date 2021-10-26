@@ -1,3 +1,0 @@
-pythia8        240
-lhapdf         6.2.3
-photos++       3.56

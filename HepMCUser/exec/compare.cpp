@@ -1,27 +1,39 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 #include "Defaults/HepMCAttributes.h"
 #include "HepMC3/Attribute.h"
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/ReaderAscii.h"
-#include "HepMC3/ReaderRoot.h"
-#include "HepMC3/ReaderRootTree.h"
+// #include "HepMC3/ReaderRoot.h"
+// #include "HepMC3/ReaderRootTree.h"
 #include "HepMCUtils/CompareGenEvent.h"
 
 int main( int, char* argv[] )
 {
   HepMC3::Reader* reader1, *reader2;
-  if(std::string(argv[1]).find(".txt") != std::string::npos){
-      reader1 = new HepMC3::ReaderAscii(argv[1]);
-  } else {
-      reader1 = new HepMC3::ReaderRootTree(argv[1]);
-  }
-  if(std::string(argv[2]).find(".txt") != std::string::npos){
-      reader2 = new HepMC3::ReaderAscii(argv[2]);
-  } else {
-      reader2 = new HepMC3::ReaderRootTree(argv[2]);
-  }
-  //reader1 = new HepMC3::ReaderAscii(argv[1]);
-  //reader2 = new HepMC3::ReaderAscii(argv[2]);
+  // FIXME: disabled because of HepMC & HepMC3 namespace collision 
+  // if(std::string(argv[1]).find(".txt") != std::string::npos){
+  //     reader1 = new HepMC3::ReaderAscii(argv[1]);
+  // } else {
+  //     reader1 = new HepMC3::ReaderRootTree(argv[1]);
+  // }
+  // if(std::string(argv[2]).find(".txt") != std::string::npos){
+  //     reader2 = new HepMC3::ReaderAscii(argv[2]);
+  // } else {
+  //     reader2 = new HepMC3::ReaderRootTree(argv[2]);
+  // }
+  reader1 = new HepMC3::ReaderAscii(argv[1]);
+  reader2 = new HepMC3::ReaderAscii(argv[2]);
+  
   std::map<std::pair<int, int>, HepMC3::GenEvent*> events1;
 
   while ( true ) {

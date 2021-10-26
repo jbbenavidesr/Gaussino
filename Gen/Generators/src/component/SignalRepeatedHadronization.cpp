@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: SignalRepeatedHadronization.cpp,v 1.14 2007-02-22 13:30:24 robbep Exp $
 // Include files 
 
@@ -86,7 +96,6 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
   HepMC3::GenParticlePtr theSignal ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int key = 0;
 
   for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
     bool partonEventWithSignalQuarks = false ;
@@ -154,8 +163,9 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
               // Count particles and anti-particles of Signal type before 
               // the cut in all directions
               m_nEventsBeforeCut++ ;
-              key = LHCb::GenCountersFSR::CounterKeyToType("BeforeLevelCut");              
-              if(genFSR) genFSR->incrementGenCounter(key, 1);
+              if(genFSR) {
+				genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::BeforeLevelCut, 1);
+			  }
 
               updateCounters( theParticleList , m_nParticlesBeforeCut , 
                               m_nAntiParticlesBeforeCut , false , false ) ;            
@@ -170,14 +180,16 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
 
                 if ( ! isInverted ) {
                   m_nEventsAfterCut++ ;
-                  key = LHCb::GenCountersFSR::CounterKeyToType("AfterLevelCut");
-                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) {
+					genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AfterLevelCut, 1);
+				  }
                 }
 
                 if ( isInverted ) {
                   ++m_nInvertedEvents ;
-                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtInverted");
-                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) {
+					genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtInverted, 1);
+				  }
                 }
 
                 // Count particles and anti-particles of Signal type with
@@ -201,13 +213,15 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp ,
                 
                 if ( theSignal -> pdg_id() > 0 ) {
                   ++m_nSig ;
-                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtSignal");
-                  if(genFSR) genFSR->incrementGenCounter(key, 1);
+                  if(genFSR) {
+					genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtSignal, 1);
+				  }
                 }
                 else {
                   ++m_nSigBar ;
-                  key = LHCb::GenCountersFSR::CounterKeyToType("EvtantiSignal");
-                  if(genFSR) genFSR->incrementGenCounter(key, 1);                  
+                  if(genFSR) {
+					genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtantiSignal, 1);
+				  }
                 }
 
                 // Update counters

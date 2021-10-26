@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 #include "GiGaMTDetectorConstructionFAC.h"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
@@ -55,9 +65,7 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
 #include "Geant4/G4GDMLParser.hh"
 
 void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
-  if(m_outfile.value() == ""){
-    return;
-  }
+  if ( m_outfile.value() == "" ) { return; }
   if ( !world ) {
     error() << "Null pointer to world volume" << endmsg;
     return;

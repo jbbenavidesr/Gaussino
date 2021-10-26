@@ -1,8 +1,18 @@
+###############################################################################
+# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+#                                                                             #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
+#                                                                             #
+# In applying this licence, CERN does not waive the privileges and immunities #
+# granted to it by virtue of its status as an Intergovernmental Organization  #
+# or submit itself to any jurisdiction.                                       #
+###############################################################################
 gaudi_subdir(DD4hepDDG4Ext v1r0)
 
 # Define EvtGen external project
 set(DD4hep_GIT_SOURCE "https://gitlab.cern.ch/Gaussino/DD4hep.git" CACHE STRING "URL of the DD4hep git repository")
-set(DD4hep_GIT_TAG "patched_cmake" CACHE STRING "Tag of DD4hep to be used")
+set(DD4hep_GIT_TAG "v01-16-01-patches" CACHE STRING "Tag of DD4hep to be used")
 
 find_package(ROOT)
 find_package(Boost)

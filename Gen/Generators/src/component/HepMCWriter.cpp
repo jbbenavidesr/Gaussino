@@ -1,11 +1,21 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // Include files
 
 // local
 #include "Defaults/HepMCAttributes.h"
 #include "HepMC3/WriterAscii.h"
 #include "HepMC3/WriterHEPEVT.h"
-#include "HepMC3/WriterRoot.h"
-#include "HepMC3/WriterRootTree.h"
+// #include "HepMC3/WriterRoot.h"
+// #include "HepMC3/WriterRootTree.h"
 
 // Include files
 // from STL
@@ -68,11 +78,13 @@ StatusCode HepMCWriter::initialize()
   debug() << "==> Initialize" << endmsg;
 
   if ( m_outputFileName != "" ) {
-    if ( m_writer_name == "WriterRoot" ) {
-      m_writer = new HepMC3::WriterRoot( m_outputFileName );
-    } else if ( m_writer_name == "WriterRootTree" ) {
-      m_writer = new HepMC3::WriterRootTree( m_outputFileName );
-    } else if ( m_writer_name == "WriterAscii" ) {
+    // FIXME: disabled because of HepMC & HepMC3 namespace collision
+    // if ( m_writer_name == "WriterRoot" ) {
+    //   m_writer = new HepMC3::WriterRoot( m_outputFileName );
+    // } else if ( m_writer_name == "WriterRootTree" ) {
+    //   m_writer = new HepMC3::WriterRootTree( m_outputFileName );
+    // }
+    if ( m_writer_name == "WriterAscii" ) {
       m_writer = new HepMC3::WriterAscii( m_outputFileName );
     } else if ( m_writer_name == "WriterHEPEVT" ) {
       m_writer = new HepMC3::WriterHEPEVT( m_outputFileName );

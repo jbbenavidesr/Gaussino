@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: Generation.h,v 1.9 2007-07-03 16:31:36 gcorti Exp $
 #ifndef GENERATORS_GENERATION_H
 #define GENERATORS_GENERATION_H 1
@@ -71,9 +81,9 @@ public:
   Generation( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
                           {KeyValue{"GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration}},
-                          {{KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
+                          {KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
                             KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
-                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}}} )
+                            KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}} )
   {
   }
 

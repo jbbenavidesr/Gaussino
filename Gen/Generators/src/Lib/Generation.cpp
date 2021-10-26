@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: Generation.cpp,v 1.33 2009-06-15 17:02:35 gcorti Exp $
 // Include files 
 #include <map>
@@ -179,9 +189,6 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
 
   interactionCounter theIntCounter ;
 
-  // variables to store counters in FSR                                                              
-  int key = 0;  
-  std::string name = " ";
 
   // Generate a set of interaction until a good one is found
   bool goodEvent = false ;
@@ -211,13 +218,11 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
     //++m_nEvents ;    m_nInteractions += nPileUp ;
 
     // increase the generated events counter in the FSR                                                                                                          
-    name = "EvtGenerated";
-    key = LHCb::GenCountersFSR::CounterKeyToType(name);
-    if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
+    if(m_genFSR) m_genFSR->incrementGenCounter(
+        LHCb::GenCountersFSR::CounterKey::EvtGenerated, 1);
     // increase the generated interactions counter in the FSR                                                                                                    
-    name = "IntGenerated";
-    key = LHCb::GenCountersFSR::CounterKeyToType(name);    
-    if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
+    if(m_genFSR) m_genFSR->incrementGenCounter(
+        LHCb::GenCountersFSR::CounterKey::IntGenerated, nPileUp);
 
     // Update interaction counters
     if ( 0 < nPileUp ) { 
@@ -230,7 +235,7 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
       }
     
       // Increse the generated interactions counters in FSR                                                                                                      
-      updateFSRCounters(theIntCounter, m_genFSR, "Gen");
+      if(m_genFSR) updateFSRCounters(theIntCounter, m_genFSR, "Gen");
 
       //GenCounters::AddTo( m_intC , theIntCounter ) ;
 
@@ -272,17 +277,17 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
         if ( goodEvent ) {
           //++m_nBeforeFullEvent ;
           // increase the counter of events before the full event generator level cut in the FSR                                                                 
-          name = "BeforeFullEvt";
-          key = LHCb::GenCountersFSR::CounterKeyToType(name);          
-          if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
+          if(m_genFSR) {
+            m_genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::BeforeFullEvt, 1);
+          }
           goodEvent = m_fullGenEventCutTool -> studyFullEvent( theEvents , 
                                                              theCollisions );
           if ( goodEvent ) {
             //++m_nAfterFullEvent ;
             // increase the counter of events after the full event generator level cut in the FSR                                                                
-            name = "AfterFullEvt";
-            key = LHCb::GenCountersFSR::CounterKeyToType(name);
-            if(m_genFSR) m_genFSR->incrementGenCounter(key,1);            
+            if(m_genFSR) {
+              m_genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AfterFullEvt, 1);
+            }
           }
         }
       }
@@ -293,21 +298,20 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
   //m_nAcceptedInteractions += nPileUp ;
   
   // increase the generated events counter in the FSR                                                                                                            
-  name = "EvtAccepted";
-  key = LHCb::GenCountersFSR::CounterKeyToType(name);
-  if(m_genFSR) m_genFSR->incrementGenCounter(key,1);
+  if(m_genFSR) {
+    m_genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtAccepted, 1);
+  }
 
   // increase the generated interactions counter in the FSR                                                                                                      
-  name = "IntAccepted";
-  key = LHCb::GenCountersFSR::CounterKeyToType(name);  
-  if(m_genFSR) m_genFSR->incrementGenCounter(key,nPileUp);
+  if(m_genFSR) {
+    m_genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::IntAccepted, nPileUp);
+  }
 
   if ( 0 < nPileUp ) {
     //GenCounters::AddTo( m_intCAccepted , theIntCounter ) ;
 
     // Increse the accepted interactions counters in FSR                                                                                                         
-    updateFSRCounters(theIntCounter, m_genFSR, "Acc");
-
+    if(m_genFSR) updateFSRCounters(theIntCounter, m_genFSR, "Acc");
   }
     
   // Copy the HepMCevents and Collisions from the temporary containers to 
@@ -538,16 +542,8 @@ void Generation::updateFSRCounters( interactionCounter & theCounter,
                                     LHCb::GenFSR* m_genFSR,
                                     const std::string option) const
 {
-  int key = 0; 
-  longlong count = 0;
-  std::string name[7]= {"Oneb","Threeb","PromptB","Onec","Threec","PromptC","bAndc"};  
-  std::string cname = "";
-
-  for(int i=0; i<7; i++)
-  {
-    cname = name[i]+option;
-    key = LHCb::GenCountersFSR::CounterKeyToType(cname);
-    count = theCounter[i];
-    if(m_genFSR) m_genFSR->incrementGenCounter(key,count); 
-  } 
+  std::string name[7]= {"Oneb", "Threeb", "PromptB", "Onec", "Threec", "PromptC", "bAndc"};  
+  for(int i=0; i<7; i++) {
+    m_genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKeyToType(name[i] + option), theCounter[i]);
+  }
 }

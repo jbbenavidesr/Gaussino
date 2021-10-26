@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // Local.
 #include "MCInterfaces/IFlagSignalChain.h"
 
@@ -63,15 +73,15 @@ public:
   /// Standard constructor.
   ReDecayMCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer(
-            name, pSvcLocator, {{KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
+            name, pSvcLocator, {KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
                 KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default},
-                KeyValue{"OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap}}},
-            {{
+                KeyValue{"OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap}},
+            {
                 KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
                 KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
                 KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
                 KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default},
-            }} ){};
+            } ){};
   virtual ~ReDecayMCTruthToEDM() = default; ///< Destructor.
   virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
   operator()( const Gaussino::MCTruthPtrs&, const LHCb::GenHeader&, const Gaussino::ReDecay::SignalTruths &  ) const override;

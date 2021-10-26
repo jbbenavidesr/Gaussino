@@ -1,3 +1,13 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
 // $Id: GenCounters.cpp,v 1.5 2007-09-11 17:48:32 robbep Exp $
 // Include files
 
@@ -358,7 +368,6 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
   // pointing to nullptr.
   auto signal_process_vertex =
       theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
-  int key = 0;
   
   // Count B :                                                                                    
   std::vector< HepMC3::ConstGenParticlePtr > rootB ;
@@ -383,19 +392,19 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
       {
         if (1 == thePid.jSpin())
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("B"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("B"+option), 1);
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bstar"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bstar"+option), 1); 
         } 
       }
       else
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("B2star"+option);
-        genFSR->incrementGenCounter(key, 1);                                                                                        
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("B2star"+option), 1);
       } 
     } 
   }
@@ -422,19 +431,19 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
       {
         if (1 == thePid.jSpin())
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("D"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("D"+option), 1); 
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Dstar"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Dstar"+option), 1); 
         } 
       }
       else
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("D2star"+option);
-        genFSR->incrementGenCounter(key, 1); 
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("D2star"+option), 1); 
       } 
     } 
   }
@@ -461,56 +470,56 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
       {                                                                                                                              
         if ( thePid.hasUp() )                                                                                                         
         {                                                              
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bplus"+option);
-          genFSR->incrementGenCounter(key, 1);                                                                                       
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bplus"+option), 1);
         }                                                                                                                          
         else if ( thePid.hasDown() )                                                                                                  
         {                                                                 
-          key = LHCb::GenCountersFSR::CounterKeyToType("B0"+option);
-          genFSR->incrementGenCounter(key, 1);                                                                                       
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("B0"+option), 1);
         }                                                                                                                          
         else if ( thePid.hasStrange() )                                                                                               
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bs0"+option); 
-          genFSR->incrementGenCounter(key, 1);
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bs0"+option), 1);
         }
         else if ( thePid.hasCharm() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bcplus"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bcplus"+option), 1); 
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("bb"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("bb"+option), 1); 
         } 
       }
       else
       {
         if ( thePid.hasUp() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bminus"+option);
-          genFSR->incrementGenCounter(key, 1);
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bminus"+option), 1);
         }
         else if ( thePid.hasDown() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("antiB0"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("antiB0"+option), 1); 
         }
         else if ( thePid.hasStrange() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("antiBs0"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("antiBs0"+option), 1); 
         }
         else if ( thePid.hasCharm() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Bcminus"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Bcminus"+option), 1);
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("bb"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("bb"+option), 1); 
         } 
       } 
     }
@@ -518,13 +527,13 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
     {
       if ( thePid.pid() < 0 )
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("bBaryon"+option);
-        genFSR->incrementGenCounter(key, 1); 
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("bBaryon"+option), 1); 
       }
       else
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("antibBaryon"+option);
-        genFSR->incrementGenCounter(key, 1); 
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("antibBaryon"+option), 1); 
       } 
     } 
   }
@@ -551,46 +560,46 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
       {
         if ( thePid.hasUp() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("D0"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("D0"+option), 1); 
         }
         else if ( thePid.hasDown() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Dplus"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Dplus"+option), 1); 
         }
         else if ( thePid.hasStrange() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Dsplus"+option);
-          genFSR->incrementGenCounter(key, 1);
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Dsplus"+option), 1);
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("cc"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("cc"+option), 1); 
         } 
       }
       else
       {
         if ( thePid.hasUp() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("antiD0"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("antiD0"+option), 1); 
         }
         else if ( thePid.hasDown() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Dminus"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Dminus"+option), 1); 
         }
         else if ( thePid.hasStrange() )
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("Dsminus"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("Dsminus"+option), 1); 
         }
         else
         {
-          key = LHCb::GenCountersFSR::CounterKeyToType("cc"+option);
-          genFSR->incrementGenCounter(key, 1); 
+          genFSR->incrementGenCounter(
+              LHCb::GenCountersFSR::CounterKeyToType("cc"+option), 1); 
         } 
       } 
     }
@@ -598,13 +607,13 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
     {
       if ( thePid.pid() > 0 )
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("cBaryon"+option);
-        genFSR->incrementGenCounter(key, 1); 
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("cBaryon"+option), 1); 
       }
       else
       {
-        key = LHCb::GenCountersFSR::CounterKeyToType("anticBaryon"+option);
-        genFSR->incrementGenCounter(key, 1); 
+        genFSR->incrementGenCounter(
+            LHCb::GenCountersFSR::CounterKeyToType("anticBaryon"+option), 1); 
       } 
     } 
   } 

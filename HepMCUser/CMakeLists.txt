@@ -1,3 +1,13 @@
+###############################################################################
+# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+#                                                                             #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
+#                                                                             #
+# In applying this licence, CERN does not waive the privileges and immunities #
+# granted to it by virtue of its status as an Intergovernmental Organization  #
+# or submit itself to any jurisdiction.                                       #
+###############################################################################
 ################################################################################
 # Package: HepMCUser
 #
@@ -18,7 +28,7 @@ gaudi_add_library(HepMCUtils
                   src/utils/*.cpp
                   PUBLIC_HEADERS HepMCUtils
                   INCLUDE_DIRS HepMCUser Defaults ${RANGEV3_INCLUDE_DIRS} ROOT
-                  LINK_LIBRARIES ${HEPMC3_LIBRARIES} GaudiAlgLib ROOT)
+                  LINK_LIBRARIES ${HEPMC3_LIBRARIES} GaudiAlgLib ROOT PartPropLib)
 
 #gaudi_add_library(HepMCUser
                   #src/user/*.cpp
