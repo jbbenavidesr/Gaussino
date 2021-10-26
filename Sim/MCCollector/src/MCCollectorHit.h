@@ -22,7 +22,6 @@ namespace MCCollector {
   class Hit : public Gaussino::HitBase {
 
   public:
-
     void* operator new( size_t );
     void  operator delete( void* aHit );
 
@@ -36,12 +35,10 @@ namespace MCCollector {
     inline G4ThreeVector GetMomentum() { return m_momentum; }
 
   private:
-
     G4ThreeVector m_entryPos;
     G4ThreeVector m_exitPos;
     G4double      m_edep;
     G4ThreeVector m_momentum;
-
   };
 
   using HitsCollection = G4THitsCollection<Hit>;

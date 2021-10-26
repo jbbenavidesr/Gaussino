@@ -22,7 +22,6 @@ GenPhase().ParticleGunUseDefault = True
 
 # setting up external geometry service
 
-
 # adding external detectors
 from Configurables import ExternalDetectorEmbedder
 external = ExternalDetectorEmbedder("Testing")

@@ -48,7 +48,6 @@ protected:
                                                             Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
 private:
-
   // External Detectors
   ToolHandleArray<IExternalDetectorEmbedder> m_ext_dets{this};
   using ExternalDetectors = std::vector<std::string>;
@@ -74,9 +73,9 @@ private:
                                                      }
                                                    },
                                                    Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-  
+
   // External Materials
-  // it's called external materials, and will most likely be used by ExternalDetector package only, 
+  // it's called external materials, and will most likely be used by ExternalDetector package only,
   // but please note that it has GiGaFactoryBase<G4Material>, so any factory inheriting from G4Material will suffice
   using ExternalMaterialTool = GiGaFactoryBase<G4Material>;
   ToolHandleArray<ExternalMaterialTool> m_ext_mats{this};
@@ -86,5 +85,4 @@ private:
                                                       {},
                                                       tool_array_setter( m_ext_mats, m_ext_mats_names ),
                                                       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-  
 };

@@ -20,6 +20,6 @@ void* MCCollector::Hit::operator new( size_t ) {
   return aHitAllocator;
 }
 
-void MCCollector::Hit::operator delete( void* aHitAllocator ) { 
+void MCCollector::Hit::operator delete( void* aHitAllocator ) {
   MCCollector::HitAllocator.FreeSingle( (MCCollector::Hit*)aHitAllocator );
 }

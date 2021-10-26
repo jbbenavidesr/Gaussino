@@ -36,10 +36,10 @@ namespace ExternalDetector {
 
   public:
     using Service::Service;
-    StatusCode initialize() override;
+    StatusCode                 initialize() override;
     virtual G4VPhysicalVolume* constructWorld() override;
-    inline virtual void constructSDandField() override {};
-    virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
+    inline virtual void        constructSDandField() override{};
+    virtual StatusCode         queryInterface( const InterfaceID& iid, void** pI ) override;
   };
 } // namespace ExternalDetector
 
@@ -52,7 +52,7 @@ StatusCode ExternalDetector::WorldCreator::initialize() {
       return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;
-  });
+  } );
 }
 
 G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
@@ -67,8 +67,9 @@ G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
   debug() << "Creating an external world in G4" << endmsg;
   auto world_sbox = new G4Box( m_worldName.value(), m_worldSizeX.value(), m_worldSizeY.value(), m_worldSizeZ.value() );
   auto world_lvol = new G4LogicalVolume( world_sbox, g4material, m_worldLogicalVolumeName.value(), 0, 0, 0 );
-  auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), m_worldPhysicalVolumeName.value(), world_lvol, 0, false, 0, false );
-  
+  auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), m_worldPhysicalVolumeName.value(), world_lvol, 0,
+                                       false, 0, false );
+
   debug() << "External world created!" << endmsg;
   return world_pvol;
 }

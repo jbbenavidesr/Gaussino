@@ -17,7 +17,6 @@ from Gaussino.SimUtils import configure_giga_alg, append_truth_actions
 
 
 class SimPhase(ConfigurableUser):
-
     """Configurable for the Simulation phase in Gaussino. Does not implement
     a self.__apply_configuration__ itself. Instead, all member functions are
     explicitly called during the configuration of Gaussino()"""
@@ -25,10 +24,8 @@ class SimPhase(ConfigurableUser):
     __slots__ = {
         "DebugCommunication": False,
         "TrackTruth": True,
-        "G4BeginRunCommand": [
-            "/tracking/verbose 0",
-            "/process/eLoss/verbose 0"
-        ],
+        "G4BeginRunCommand":
+        ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
         "ExternalDetectorEmbedder": "",
     }
@@ -70,7 +67,8 @@ class SimPhase(ConfigurableUser):
         from Configurables import GiGaMT, GiGaMTDetectorConstructionFAC
         giga = GiGaMT()
         algs = []
-        dettool = giga.addTool(GiGaMTDetectorConstructionFAC, "GiGaMTDetectorConstructionFAC")
+        dettool = giga.addTool(GiGaMTDetectorConstructionFAC,
+                               "GiGaMTDetectorConstructionFAC")
 
         # Add external detectors geometries
         # TODO: external geometry was prepared to operate with spillover
@@ -81,7 +79,6 @@ class SimPhase(ConfigurableUser):
             from Configurables import ExternalDetectorEmbedder
             embedder = ExternalDetectorEmbedder(embedder_name)
             embedder.embed(dettool)
-            algs += embedder.activate_hits_alg() # no slot for now!
-            algs += embedder.activate_moni_alg() # no slot for now!
+            algs += embedder.activate_hits_alg()  # no slot for now!
+            algs += embedder.activate_moni_alg()  # no slot for now!
         return algs
-

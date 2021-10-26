@@ -13,39 +13,42 @@
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/Transformer.h"
 // GiGaMT
+#include "Defaults/Locations.h"
 #include "GiGaMTCoreRun/G4EventProxy.h"
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
 #include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
-#include "Defaults/Locations.h"
 // local
 #include "MCCollectorHit.h"
 // LHCb
-#include "Event/MCHit.h"
 #include "Event/MCExtendedHit.h"
+#include "Event/MCHit.h"
 
 namespace MCCollector {
-  class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits(const G4EventProxies&, const LinkedParticleMCParticleLinks&)> {
+  class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits( const G4EventProxies&,
+                                                                      const LinkedParticleMCParticleLinks& )> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
-        : Transformer( name, pSvcLocator, {KeyValue{"Input", Gaussino::G4EventsLocation::Default},
-            KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}},
-            KeyValue{"MCHitsLocation", ""} ) {}
+        : Transformer(
+              name, pSvcLocator,
+              {KeyValue{"Input", Gaussino::G4EventsLocation::Default},
+               KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}},
+              KeyValue{"MCHitsLocation", ""} ) {}
 
-    virtual LHCb::MCHits operator()(const G4EventProxies&, const LinkedParticleMCParticleLinks&) const override;
+    virtual LHCb::MCHits operator()( const G4EventProxies&, const LinkedParticleMCParticleLinks& ) const override;
 
   protected:
-    Gaudi::Property<std::string>   m_colName{this, "CollectionName", ""};
+    Gaudi::Property<std::string> m_colName{this, "CollectionName", ""};
   };
 } // namespace MCCollector
 
-
-LHCb::MCHits MCCollector::HitsAlg::operator()(const G4EventProxies& evtprxs, const LinkedParticleMCParticleLinks& mclinks) const {
+LHCb::MCHits MCCollector::HitsAlg::operator()( const G4EventProxies&                evtprxs,
+                                               const LinkedParticleMCParticleLinks& mclinks ) const {
 
   LHCb::MCHits hits;
-  for (auto& evtprx : evtprxs) {
-    auto hitCollection = evtprx->GetHitCollection<HitsCollection>(m_colName.value());
+  for ( auto& evtprx : evtprxs ) {
+    auto hitCollection = evtprx->GetHitCollection<HitsCollection>( m_colName.value() );
 
-    if (!hitCollection) {
+    if ( !hitCollection ) {
       warning() << "The hit collection='" + m_colName + "' is not found!" << endmsg;
       continue;
     }
@@ -60,9 +63,9 @@ LHCb::MCHits MCCollector::HitsAlg::operator()(const G4EventProxies& evtprxs, con
       newHit->setEntry( entry );
       newHit->setEnergy( g4Hit->GetEdep() );
       newHit->setP( g4Hit->GetMomentum().mag() );
-      int               trackID = g4Hit->GetTrackID();
-      if ( auto lp = evtprx->truth()->GetParticleFromTrackID(trackID); lp ) {
-        if ( auto it = mclinks.find(lp); it != std::end(mclinks) ) {
+      int trackID = g4Hit->GetTrackID();
+      if ( auto lp = evtprx->truth()->GetParticleFromTrackID( trackID ); lp ) {
+        if ( auto it = mclinks.find( lp ); it != std::end( mclinks ) ) {
           newHit->setMCParticle( it->second );
         } else {
           warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;

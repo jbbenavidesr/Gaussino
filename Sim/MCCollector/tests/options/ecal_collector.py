@@ -26,9 +26,9 @@ Gauss().DataType = "Upgrade"
 
 # only ECAL & NS in LHCb
 from Configurables import Gauss
-Gauss().DetectorGeo  = { "Detectors": ['Ecal', 'Shield'] }
-Gauss().DetectorSim  = { "Detectors": ['Ecal'] }
-Gauss().DetectorMoni = { "Detectors": ['Ecal'] }
+Gauss().DetectorGeo = {"Detectors": ['Ecal', 'Shield']}
+Gauss().DetectorSim = {"Detectors": ['Ecal']}
+Gauss().DetectorMoni = {"Detectors": ['Ecal']}
 Gauss().BeamPipe = "BeamPipeOff"
 
 # Particle Gun On

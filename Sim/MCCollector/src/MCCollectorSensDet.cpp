@@ -11,10 +11,10 @@
 //#include "GaussTools/GaussTrackInformation.h"
 
 // local
-#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
-#include "MCCollectorHit.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 #include "GiGaMTFactories/GiGaMTG4SensDetFactory.h"
+#include "MCCollectorHit.h"
 
 // from CLHEP
 #include "CLHEP/Geometry/Point3D.h"
@@ -23,7 +23,6 @@
 #include "GaudiKernel/MsgStream.h"
 
 // from Geant4
-#include "Geant4/G4VSensitiveDetector.hh"
 #include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4SDManager.hh"
@@ -31,34 +30,32 @@
 #include "Geant4/G4TouchableHistory.hh"
 #include "Geant4/G4Track.hh"
 #include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4VSensitiveDetector.hh"
 #include "Geant4/G4ios.hh"
 
 namespace MCCollector {
   class SensDet : public G4VSensitiveDetector, public virtual GiGaMessage {
 
   public:
-    inline SensDet( const std::string& name ) : G4VSensitiveDetector( name ) {
-      collectionName.insert( "Hits" );
-    }
+    inline SensDet( const std::string& name ) : G4VSensitiveDetector( name ) { collectionName.insert( "Hits" ); }
 
     void Initialize( G4HCofThisEvent* HCE ) override;
 
     bool ProcessHits( G4Step* step, G4TouchableHistory* history ) override;
-    
-    inline void setRequireEDep   (bool requireEDep)    { m_requireEDep    = requireEDep; }
-    inline void setOnlyForward   (bool onlyForward)    { m_onlyForward    = onlyForward; }
-    inline void setOnlyAtBoundary (bool onlyAtBoundary) { m_onlyAtBoundary = onlyAtBoundary; }
+
+    inline void setRequireEDep( bool requireEDep ) { m_requireEDep = requireEDep; }
+    inline void setOnlyForward( bool onlyForward ) { m_onlyForward = onlyForward; }
+    inline void setOnlyAtBoundary( bool onlyAtBoundary ) { m_onlyAtBoundary = onlyAtBoundary; }
 
   protected:
     HitsCollection* m_col;
 
-    bool m_requireEDep = false;
-    bool m_onlyForward = true;
+    bool m_requireEDep    = false;
+    bool m_onlyForward    = true;
     bool m_onlyAtBoundary = false;
   };
 
   class SensDetFactory : public GiGaMTG4SensDetFactory<SensDet> {
-
 
     // Watch out: default dE/dx=0 true by default
     Gaudi::Property<bool> m_requireEDep{this, "RequireEDep", false};
@@ -69,16 +66,15 @@ namespace MCCollector {
     // Only hits at the boundary
     Gaudi::Property<bool> m_onlyAtBoundary{this, "OnlyAtBoundary", false};
 
-    public:
-    
+  public:
     using base_fac = GiGaMTG4SensDetFactory<SensDet>;
     using base_fac::base_fac;
 
-    SensDet* construct() const override { 
+    SensDet* construct() const override {
       auto sensdet = base_fac::construct();
-      sensdet->setRequireEDep(m_requireEDep.value()); 
-      sensdet->setOnlyForward(m_onlyForward.value()); 
-      sensdet->setOnlyAtBoundary(m_onlyAtBoundary.value());
+      sensdet->setRequireEDep( m_requireEDep.value() );
+      sensdet->setOnlyForward( m_onlyForward.value() );
+      sensdet->setOnlyAtBoundary( m_onlyAtBoundary.value() );
       return sensdet;
     }
   };
@@ -95,7 +91,7 @@ void MCCollector::SensDet::Initialize( G4HCofThisEvent* HCE ) {
   HCE->AddHitsCollection( HCID, m_col );
 
   // standard print left as is
-  debug(" Initialize(): CollectionName='" + m_col->GetName() + "' for SensDet='" + m_col->GetSDname() + "'");
+  debug( " Initialize(): CollectionName='" + m_col->GetName() + "' for SensDet='" + m_col->GetSDname() + "'" );
 }
 
 bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* history */ ) {
@@ -134,4 +130,3 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
   m_col->insert( newHit );
   return true;
 }
-
