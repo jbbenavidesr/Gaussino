@@ -1,5 +1,5 @@
 Gaussino
 =============
 
-.. autoclass:: Gaussino.Configuration.Gaussino
+.. automodule:: Gaussino.Configuration.Gaussino
    :members:
