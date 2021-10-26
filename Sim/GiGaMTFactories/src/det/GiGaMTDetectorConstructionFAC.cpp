@@ -10,19 +10,41 @@
 \*****************************************************************************/
 #include "GiGaMTDetectorConstructionFAC.h"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
+#include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
-
-#include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
-
+#include <filesystem>
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
-  auto sc = extends::initialize();
-  // Retrieve the factory tools here to avoid the retrieval happening in multiple
-  // threads
-  for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
-  return sc;
+  return extends::initialize().andThen( [&]() -> StatusCode {
+    StatusCode sc = StatusCode::SUCCESS;
+
+    // Retrieve the factory tools here to avoid the retrieval happening in multiple
+    // threads
+    for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
+
+    if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
+      warning() << "GDML file " << m_outfile.value() << " already exists! "
+                << "G4 will abort execution if the file GDML already exists." << endmsg;
+      if ( m_outfileOverwrite.value() ) {
+        warning() << "Removing the GDML file: " << m_outfile.value() << endmsg;
+        std::filesystem::remove( m_outfile.value() );
+      } else {
+        error() << "Overwriting the GDML is disabled." << endmsg;
+        return StatusCode::FAILURE;
+      }
+    }
+
+    return sc;
+  } );
+}
+
+StatusCode GiGaMTDetectorConstructionFAC::finalize() {
+  return extends::finalize().andThen( [&]() -> StatusCode {
+    if ( !m_outfile.value().empty() ) { return SaveGDML(); }
+    return StatusCode::SUCCESS;
+  } );
 }
 
 G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
@@ -38,7 +60,6 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     // Import external geometry
     for ( auto& embedder : m_ext_dets ) { embedder->embed( world ).ignore(); }
 
-    SaveGDML( world->GetLogicalVolume() );
     return world;
   } );
   detconst->SetSDConstructor( [&]() {
@@ -73,14 +94,16 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
 
 #include "Geant4/G4GDMLParser.hh"
 
-void GiGaMTDetectorConstructionFAC::SaveGDML( G4LogicalVolume* world ) const {
-  if ( m_outfile.value() == "" ) { return; }
-  if ( !world ) {
-    error() << "Null pointer to world volume" << endmsg;
-    return;
-  }
-  G4GDMLParser g4writer;
+StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
   try {
+    G4GDMLParser g4writer;
+    g4writer.SetSDExport( m_exportSD.value() );
+    g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
+    G4LogicalVolume* world = nullptr;
     g4writer.Write( m_outfile.value(), world, true, m_schema.value() );
-  } catch ( std::logic_error& lerr ) { error() << "Caught an exception " << lerr.what() << endmsg; }
+  } catch ( std::exception& err ) {
+    error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;
+    return StatusCode::FAILURE;
+  }
+  return StatusCode::SUCCESS;
 }

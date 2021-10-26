@@ -66,3 +66,11 @@ external.Materials = {
 # here embedding of the geometry takes place
 from Gaussino.Simulation import SimPhase
 SimPhase().ExternalDetectorEmbedder = "Testing"
+
+# Write to GDML
+SimPhase().ExportGDML = {
+    "GDMLFileName": "ExternalCube.gdml",
+    "GDMLFileNameOverwrite": True,
+    "GDMLExportEnergyCuts": True,
+    "GDMLExportSD": True,
+}

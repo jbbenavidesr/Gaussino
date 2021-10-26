@@ -27,6 +27,7 @@ class SimPhase(ConfigurableUser):
         "G4BeginRunCommand":
         ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
+        "ExportGDML": {},
         "ExternalDetectorEmbedder": "",
     }
 
@@ -81,4 +82,15 @@ class SimPhase(ConfigurableUser):
             embedder.embed(dettool)
             algs += embedder.activate_hits_alg()  # no slot for now!
             algs += embedder.activate_moni_alg()  # no slot for now!
+
+        # Save as a GDML File
+        gdml_export = self.getProp("ExportGDML")
+        if type(gdml_export) is not dict:
+            raise RuntimeError("ExportGDML should be a dictionary of options")
+        else:
+            for name, value in gdml_export.items():
+                if name.startswith('GDML'):
+                    setattr(dettool, name, value)
+                else:
+                    raise RuntimeError("GDML options start with GDML")
         return algs

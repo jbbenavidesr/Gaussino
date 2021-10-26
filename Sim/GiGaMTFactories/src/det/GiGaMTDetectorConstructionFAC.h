@@ -30,6 +30,7 @@ public:
 
   G4VUserDetectorConstruction* construct() const override;
   StatusCode                   initialize() override;
+  StatusCode                   finalize() override;
 
 protected:
   typedef std::pair<std::string, std::vector<std::string>>  SensDetNameVolumesPair;
@@ -38,7 +39,7 @@ protected:
   typedef std::map<std::string, SensDetFac>                 SensDetVolumeMap;
 
   void                                      DressVolumes() const;
-  void                                      SaveGDML( G4LogicalVolume* ) const;
+  StatusCode                                SaveGDML() const;
   ServiceHandle<IGiGaMTGeoSvc>              m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
   ToolHandleArray<IGaussinoTool>            m_afterGeo{this};
   Gaudi::Property<std::vector<std::string>> m_afterGeoNames{this,
@@ -57,8 +58,14 @@ private:
                                                       tool_array_setter( m_ext_dets, m_ext_dets_names ),
                                                       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
-  Gaudi::Property<std::string> m_schema{this, "Schema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
-  Gaudi::Property<std::string> m_outfile{this, "Output", ""};
+  // GDML Export
+  Gaudi::Property<std::string> m_schema{this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
+  Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
+  Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
+                                           "Overwrite a GDML if it already exists"};
+  // export auxilliary information
+  Gaudi::Property<bool> m_exportSD{this, "GDMLExportSD", false};
+  Gaudi::Property<bool> m_exportEnergyCuts{this, "GDMLExportEnergyCuts", false};
 
   SensDetVolumeMap                       m_sens_dets;
   Gaudi::Property<SensDetNameVolumesMap> m_namemap{this,
