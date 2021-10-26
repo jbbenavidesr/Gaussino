@@ -94,14 +94,14 @@ unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
   if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
 
   auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  int key = 0;
 
   unsigned int result = 0 ;
   double mean , currentLuminosity;
   while ( 0 == result ) {
     m_nEvents++ ;
-    key = LHCb::GenCountersFSR::CounterKeyToType("AllEvt");
-    if(genFSR) genFSR->incrementGenCounter(key,1);
+    if(genFSR) {
+      genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
+    }
     currentLuminosity = beam -> luminosity() * m_fillDuration / m_beamDecayTime /
       ( 1.0 - exp( -m_fillDuration / m_beamDecayTime ) ) ;
 
@@ -110,8 +110,9 @@ unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
     result = (unsigned int) poissonGenerator() ;
     if ( 0 == result ) {
       m_numberOfZeroInteraction++ ;
-      key =LHCb::GenCountersFSR::CounterKeyToType("ZeroInt");
-      if(genFSR) genFSR->incrementGenCounter(key, 1);
+      if(genFSR) {
+        genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::ZeroInt, 1);
+      }
     }
   }
   

@@ -41,9 +41,9 @@ class CheckMCStructure
   /// Standard constructor
   CheckMCStructure(const std::string& name, ISvcLocator* pSvcLocator)
       : Consumer(name, pSvcLocator,
-                 {{KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
-                   KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
-                   KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}}}){};
+                 {KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
+                  KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
+                  KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}}){};
 
   void operator()(const LHCb::MCParticles&, const LHCb::MCVertices&,
                   const LHCb::MCHeader&) const override;
