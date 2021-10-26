@@ -100,21 +100,21 @@ for version in versions:
     html_context['versions'].append((version,
                                      '/' + website_root + '/' + version + '/'))
 
-
 from importlib import import_module
 from pprint import pformat
 from docutils.parsers.rst import Directive
 from docutils import nodes
 from sphinx import addnodes
 
+
 class PrettyDictionaryDirective(Directive):
     """Makes the dictionaries prettier"""
     required_arguments = 4
 
     def run(self):
-        module_name     = self.arguments[0]
-        class_name      = self.arguments[1]
-        member_name     = self.arguments[2]
+        module_name = self.arguments[0]
+        class_name = self.arguments[1]
+        member_name = self.arguments[2]
         name_to_display = self.arguments[3]
 
         member = getattr(import_module(module_name), class_name)
@@ -125,8 +125,8 @@ class PrettyDictionaryDirective(Directive):
         literal['language'] = 'python'
 
         return [
-                addnodes.desc_name(text=name_to_display),
-                addnodes.desc_content('', literal)
+            addnodes.desc_name(text=name_to_display),
+            addnodes.desc_content('', literal)
         ]
 
 

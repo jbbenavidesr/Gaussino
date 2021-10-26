@@ -17,6 +17,9 @@ Welcome to Gaussino's documentation!
    :hidden:
    :maxdepth: 2
 
+   getting_started/installing.md
+   getting_started/contributing.md
+
 .. toctree::
    :caption: Configuration
    :hidden:
