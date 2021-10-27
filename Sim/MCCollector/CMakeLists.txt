@@ -14,7 +14,9 @@
 gaudi_subdir(MCCollector v1r0)
 
 gaudi_depends_on_subdirs(Sim/GiGaMTCore
-			 Sim/GiGaMTFactories)
+			 Sim/GiGaMTFactories
+             Sim/GiGaMTCore
+             EDMdev/MCTruthToEDM)
 
 AddHepMC3()
 find_package(Boost)
@@ -24,6 +26,6 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_
 gaudi_add_module(MCCollector
                  src/*.cpp
 		 INCLUDE_DIRS GiGaMTFactories
-                 LINK_LIBRARIES GiGaMTCoreRunLib)
+                 LINK_LIBRARIES GiGaMTCoreTruthLib MCTruthToEDMLib)
 
 gaudi_add_test(QMTest QMTEST)
