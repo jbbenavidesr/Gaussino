@@ -23,12 +23,15 @@ variables:
 check-copyright:
   image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
   stage: check
+  only: [merge_requests]
   script:
     - curl -o lb-check-copyright "https://gitlab.cern.ch/lhcb-core/LbDevTools/raw/master/LbDevTools/SourceTools.py?inline=false"
     - python lb-check-copyright origin/${TARGET_BRANCH}
+
 check-formatting:
   image: gitlab-registry.cern.ch/lhcb-docker/style-checker
   stage: check
+  only: [merge_requests]
   script:
     - if [ ! -e .clang-format ] ; then
     -   curl -o .clang-format "https://gitlab.cern.ch/lhcb-core/LbDevTools/raw/master/LbDevTools/data/default.clang-format?inline=false"
