@@ -29,6 +29,7 @@ class SimPhase(ConfigurableUser):
         "G4EndRunCommand": [],
         "ExportGDML": {},
         "ExternalDetectorEmbedder": "",
+        "ParallelGeometry": False,
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -82,6 +83,17 @@ class SimPhase(ConfigurableUser):
             embedder.embed(dettool)
             algs += embedder.activate_hits_alg()  # no slot for now!
             algs += embedder.activate_moni_alg()  # no slot for now!
+
+
+        # Add parallel geometry
+        par_geo = self.getProp("ParallelGeometry")
+        if par_geo:
+            from Configurables import ParallelGeometry
+            par_geo = ParallelGeometry()
+            par_geo.attach(detool)
+            for par_ext_emd in par_geo._external_embedders:
+                self._external_embedders.append(par_ext_emd)
+            #par_geo.world_to_gdml(giga.RunSeq)
 
         # Save as a GDML File
         gdml_export = self.getProp("ExportGDML")

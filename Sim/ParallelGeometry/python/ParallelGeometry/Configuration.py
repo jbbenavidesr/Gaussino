@@ -48,7 +48,7 @@ class ParallelGeometry(LHCbConfigurableUser):
 
     _external_embedders = []
 
-    def attach(self, run_tool):
+    def attach(self, dettool):
         worlds = self.getProp("ParallelWorlds")
         if type(worlds) is dict:
             par_worlds_tools = []
@@ -72,9 +72,9 @@ class ParallelGeometry(LHCbConfigurableUser):
                     ExternalDetectorEmbedder(embedder).embed(fac)
                     self._external_embedders.append(embedder)
 
-                run_tool.addTool(fac, name=world_name)
-                par_worlds_tools.append(getattr(run_tool, world_name))
-            run_tool.ParallelWorlds = par_worlds_tools
+                dettool.addTool(fac, name=world_name)
+                par_worlds_tools.append(getattr(dettool, world_name))
+            dettool.ParallelWorlds = par_worlds_tools
 
     def attach_physics(self, modular_list):
         physics = self.getProp("ParallelPhysics")

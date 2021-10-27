@@ -70,6 +70,13 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     DressVolumes();
   } );
 
+  // Setup parallel worlds
+  for ( auto& par_world_fac : m_par_worlds ) {
+    debug() << "Setting up parallel world " << par_world_fac->name() << endmsg;
+    auto par_world = par_world_fac->construct();
+    detconst->RegisterParallelWorld( par_world );
+  }
+
   return detconst;
 }
 

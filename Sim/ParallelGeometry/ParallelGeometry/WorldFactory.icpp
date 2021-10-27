@@ -1,0 +1,61 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
+
+template<class ParallelWorld>
+ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const {
+
+  auto                   world_name = name();
+  std::string::size_type posdot     = world_name.find( "." );
+  while ( posdot != std::string::npos ) {
+    world_name.erase( 0, posdot + 1 );
+    posdot = world_name.find( "." );
+  }
+
+  auto par_world = new ParallelWorld{world_name};
+
+  debug() << "Setting up a world constructor for " << name() << " parallel world" << endmsg;
+  par_world->setWorldConstructor( [&]( G4VPhysicalVolume* world ) {
+    debug() << "Constructing world for " << name() << " parallel world" << endmsg;
+    if ( !m_worldMaterial.value().empty() ) {
+      auto lvol     = world->GetLogicalVolume();
+      auto material = G4Material::GetMaterial( m_worldMaterial.value(), true );
+      if ( material ) {
+        debug() << "Setting " << m_worldMaterial.value() << " as the parallel world's material for " << lvol->GetName()
+                << endmsg;
+        lvol->SetMaterial( material );
+      } else {
+        warning() << "Material " << m_worldMaterial.value() << " not found. Leaving nullptr." << endmsg;
+      }
+    }
+
+    // Import external geometry
+    for ( auto& embedder : m_ext_dets ) {
+      debug() << "Calling embedder" << embedder->name() << " in " << world->GetName() << endmsg;
+      embedder->embed( world ).ignore();
+    }
+
+    // Run additional functionality
+    debug() << "Constructing additional world functionalities for " << name() << " parallel world" << endmsg;
+    additionalWorldConstrution( world );
+  } );
+
+  debug() << "Setting up a SD constructor for " << name() << " parallel world" << endmsg;
+  par_world->setSDConstructor( [&]() { 
+    // mostly empty, implemented in ExternalEmbedders
+    debug() << "Constructing a SD constructor for " << name() << " parallel world" << endmsg;
+
+    // Run additional functionality
+    debug() << "Constructing additional SD functionalities for " << name() << " parallel world" << endmsg;
+    additionalSDConstrution();     
+   } );
+
+  return par_world;
+}

@@ -14,18 +14,24 @@
 gaudi_subdir(ParallelGeometry v1r0)
 
 gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GaussTools)
+                         Sim/GiGaMTCore
+                         Sim/GiGaMTFactories)
 
-
+AddHepMC3()                                              
 find_package(Boost)
 find_package(CLHEP)
 
-
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
 
+gaudi_add_library(ParallelGeometryLib
+                  src/Lib/*.cpp
+                  PUBLIC_HEADERS ParallelGeometry
+                  INCLUDE_DIRS Sim/GiGaMTFactories ${RANGEV3_INCLUDE_DIRS}
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+
 gaudi_add_module(ParallelGeometry
-                 src/*.cpp
-                 LINK_LIBRARIES GaudiAlgLib GaussToolsLib ${GEANT4_LIBS})
+                 src/Components/*.cpp
+                 LINK_LIBRARIES ParallelGeometryLib)
 
 gaudi_install_python_modules()
 gaudi_add_test(QMTest QMTEST)
