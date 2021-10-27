@@ -84,7 +84,6 @@ class SimPhase(ConfigurableUser):
             algs += embedder.activate_hits_alg()  # no slot for now!
             algs += embedder.activate_moni_alg()  # no slot for now!
 
-
         # Add parallel geometry
         par_geo = self.getProp("ParallelGeometry")
         if par_geo:

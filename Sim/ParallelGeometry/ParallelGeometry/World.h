@@ -17,13 +17,13 @@ class G4VPhysicalVolume;
 
 namespace ParallelGeometry {
   using WorldConstructor = std::function<void( G4VPhysicalVolume* )>;
-  using SDConstructor = std::function<void()>;
-  
+  using SDConstructor    = std::function<void()>;
+
   class World : public G4VUserParallelWorld {
 
   protected:
     WorldConstructor m_world_constructor;
-    SDConstructor m_sd_constructor;
+    SDConstructor    m_sd_constructor;
 
   public:
     World( std::string name );

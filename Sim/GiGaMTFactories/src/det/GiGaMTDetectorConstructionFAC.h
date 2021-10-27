@@ -96,14 +96,13 @@ private:
                                                       {},
                                                       tool_array_setter( m_ext_mats, m_ext_mats_names ),
                                                       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-    
+
   // Parallel Geometry
   using ParallelWorlds = std::vector<std::string>;
   ToolHandleArray<GiGaFactoryBase<G4VUserParallelWorld>> m_par_worlds;
-  Gaudi::Property<ParallelWorlds> m_par_worlds_names {this,
-                                                      "ParallelWorlds",
-                                                      {},
-                                                      tool_array_setter( m_par_worlds, m_par_worlds_names ),
-                                                      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-
+  Gaudi::Property<ParallelWorlds>                        m_par_worlds_names{this,
+                                                     "ParallelWorlds",
+                                                     {},
+                                                     tool_array_setter( m_par_worlds, m_par_worlds_names ),
+                                                     Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 };

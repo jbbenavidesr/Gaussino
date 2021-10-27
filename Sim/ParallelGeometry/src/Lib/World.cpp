@@ -17,6 +17,8 @@ void ParallelGeometry::World::Construct() { m_world_constructor( GetWorld() ); }
 
 void ParallelGeometry::World::ConstructSD() { m_sd_constructor(); }
 
-void ParallelGeometry::World::setWorldConstructor( ParallelGeometry::WorldConstructor constr ) { m_world_constructor = constr; };
+void ParallelGeometry::World::setWorldConstructor( ParallelGeometry::WorldConstructor constr ) {
+  m_world_constructor = constr;
+};
 
 void ParallelGeometry::World::setSDConstructor( ParallelGeometry::SDConstructor constr ) { m_sd_constructor = constr; };

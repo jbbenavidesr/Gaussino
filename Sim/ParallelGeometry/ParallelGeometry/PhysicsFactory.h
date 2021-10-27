@@ -25,11 +25,12 @@ namespace ParallelGeometry {
   protected:
     // Layered Mass Geometry: if on, then you can define materials in the parallel world and they will overwrite
     // those in the mass geometry. If more than one parallel world is defined, then those later defined will be
-    // on the top of the hierarchy.  
-    Gaudi::Property<bool> m_layeredMass {this, "LayeredMass", false, "Parallel world on top of the mass geometry"};
-    Gaudi::Property<std::string> m_worldName {this, "WorldName", "", "Corresponding name of the parallel world"};
+    // on the top of the hierarchy.
+    Gaudi::Property<bool> m_layeredMass{this, "LayeredMass", false, "Parallel world on top of the mass geometry"};
+    Gaudi::Property<std::string> m_worldName{this, "WorldName", "", "Corresponding name of the parallel world"};
     // optional
-    Gaudi::Property<bool> m_standardProcess {this, "StandardProcess", true, "Run the standard implementation of the ConstructProcess() method or not"};
+    Gaudi::Property<bool> m_standardProcess{this, "StandardProcess", true,
+                                            "Run the standard implementation of the ConstructProcess() method or not"};
 
     inline virtual void additionalParticleConstructor() const {};
     inline virtual void additionalProcessConstructor() const {};
@@ -40,17 +41,17 @@ namespace ParallelGeometry {
     ParallelPhysics* construct() const override {
       debug() << "Constructing fast simulation physics: " << name() << endmsg;
       auto physics = new Physics{m_worldName.value(), m_layeredMass.value(), m_standardProcess.value()};
-      
+
       physics->SetPhysicsName( name() );
       physics->SetVerboseLevel( verbosity() );
 
-      physics->setParticleConstructor([&]() {
+      physics->setParticleConstructor( [&]() {
         debug() << "Constructing a particle constructor for " << name() << " parallel physics" << endmsg;
         // additional implementation
         additionalParticleConstructor();
       } );
 
-      physics->setProcessConstructor([&]() {
+      physics->setProcessConstructor( [&]() {
         debug() << "Constructing a process constructor for " << name() << " parallel physics" << endmsg;
         // additional implementation
         additionalProcessConstructor();

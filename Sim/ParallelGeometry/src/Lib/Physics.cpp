@@ -11,19 +11,20 @@
 
 #include "ParallelGeometry/Physics.h"
 
-
-ParallelGeometry::Physics::Physics( std::string parallelWorld, bool layeredMass, bool runStandardProcess) : G4ParallelWorldPhysics( parallelWorld, layeredMass ), m_runStandardProcess(runStandardProcess) {}
-
+ParallelGeometry::Physics::Physics( std::string parallelWorld, bool layeredMass, bool runStandardProcess )
+    : G4ParallelWorldPhysics( parallelWorld, layeredMass ), m_runStandardProcess( runStandardProcess ) {}
 
 void ParallelGeometry::Physics::ConstructParticle() { m_particle_constructor(); }
 
-void ParallelGeometry::Physics::ConstructProcess() { 
-  if ( m_runStandardProcess ) {
-    G4ParallelWorldPhysics::ConstructProcess();
-  }
+void ParallelGeometry::Physics::ConstructProcess() {
+  if ( m_runStandardProcess ) { G4ParallelWorldPhysics::ConstructProcess(); }
   m_process_constructor();
 }
 
-void ParallelGeometry::Physics::setParticleConstructor( ParallelGeometry::ParticleConstructor constr ) { m_particle_constructor = constr; }
+void ParallelGeometry::Physics::setParticleConstructor( ParallelGeometry::ParticleConstructor constr ) {
+  m_particle_constructor = constr;
+}
 
-void ParallelGeometry::Physics::setProcessConstructor( ParallelGeometry::ProcessConstructor constr ) { m_process_constructor = constr; }
+void ParallelGeometry::Physics::setProcessConstructor( ParallelGeometry::ProcessConstructor constr ) {
+  m_process_constructor = constr;
+}

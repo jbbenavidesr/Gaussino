@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 
-template<class ParallelWorld>
+template <class ParallelWorld>
 ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const {
 
   auto                   world_name = name();
@@ -48,14 +48,14 @@ ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const 
   } );
 
   debug() << "Setting up a SD constructor for " << name() << " parallel world" << endmsg;
-  par_world->setSDConstructor( [&]() { 
+  par_world->setSDConstructor( [&]() {
     // mostly empty, implemented in ExternalEmbedders
     debug() << "Constructing a SD constructor for " << name() << " parallel world" << endmsg;
 
     // Run additional functionality
     debug() << "Constructing additional SD functionalities for " << name() << " parallel world" << endmsg;
-    additionalSDConstrution();     
-   } );
+    additionalSDConstrution();
+  } );
 
   return par_world;
 }

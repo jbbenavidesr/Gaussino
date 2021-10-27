@@ -16,17 +16,17 @@
 namespace ParallelGeometry {
 
   using ParticleConstructor = std::function<void()>;
-  using ProcessConstructor = std::function<void()>;
+  using ProcessConstructor  = std::function<void()>;
 
   class Physics : public G4ParallelWorldPhysics {
 
   protected:
     ParticleConstructor m_particle_constructor;
-    ProcessConstructor m_process_constructor;
-    bool m_runStandardProcess = true;
+    ProcessConstructor  m_process_constructor;
+    bool                m_runStandardProcess = true;
 
   public:
-    Physics( std::string, bool, bool);
+    Physics( std::string, bool, bool );
     virtual ~Physics() = default;
 
     virtual void ConstructParticle() override;

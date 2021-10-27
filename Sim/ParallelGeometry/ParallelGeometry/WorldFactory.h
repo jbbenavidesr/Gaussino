@@ -11,21 +11,21 @@
 #pragma once
 
 // Geant4
-#include "Geant4/G4VUserParallelWorld.hh"
-#include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4Material.hh"
+#include "Geant4/G4VPhysicalVolume.hh"
+#include "Geant4/G4VUserParallelWorld.hh"
 // local
-#include "ParallelGeometry/World.h"
 #include "GaudiAlg/FunctionalDetails.h"
-#include "Utils/ToolProperty.h"
-#include "GiGaMTFactories/GiGaTool.h"
-#include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
+#include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTFactories/GiGaTool.h"
+#include "ParallelGeometry/World.h"
+#include "Utils/ToolProperty.h"
 
 namespace ParallelGeometry {
 
-  template<class ParallelWorld>
+  template <class ParallelWorld>
   class WorldFactory : public extends<GiGaTool, GiGaFactoryBase<G4VUserParallelWorld>> {
     static_assert( std::is_base_of<ParallelGeometry::World, ParallelWorld>::value );
 
@@ -43,11 +43,10 @@ namespace ParallelGeometry {
     ToolHandleArray<ExternalDetector::IEmbedder> m_ext_dets{this};
     using ExternalDetectors = std::vector<std::string>;
     Gaudi::Property<ExternalDetectors> m_ext_dets_names{this,
-                                                       "ExternalDetectors",
-                                                       {},
-                                                       tool_array_setter( m_ext_dets, m_ext_dets_names ),
-                                                       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-
+                                                        "ExternalDetectors",
+                                                        {},
+                                                        tool_array_setter( m_ext_dets, m_ext_dets_names ),
+                                                        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
   };
 } // namespace ParallelGeometry
 
