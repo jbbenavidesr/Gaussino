@@ -27,7 +27,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_
 gaudi_add_module(ExternalDetector
                  src/*.cpp
                  INCLUDE_DIRS GiGaMTFactories XercesC ${HEPMC3_INCLUDE_DIR}
-                 LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib DetDescLib XercesC ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+                 LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib XercesC ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
 
 gaudi_install_python_modules()
 gaudi_add_test(QMTest QMTEST)

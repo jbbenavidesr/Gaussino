@@ -18,8 +18,11 @@
 
 class IGiGaMTGeoSvc;
 class IGaussinoTool;
-class IExternalDetectorEmbedder;
 class G4Material;
+
+namespace ExternalDetector {
+  class IEmbedder;
+}
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
@@ -50,7 +53,7 @@ protected:
 
 private:
   // External Detectors
-  ToolHandleArray<IExternalDetectorEmbedder> m_ext_dets{this};
+  ToolHandleArray<ExternalDetector::IEmbedder> m_ext_dets{this};
   using ExternalDetectors = std::vector<std::string>;
   Gaudi::Property<ExternalDetectors> m_ext_dets_names{this,
                                                       "ExternalDetectors",

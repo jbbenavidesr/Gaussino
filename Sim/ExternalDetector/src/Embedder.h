@@ -26,7 +26,7 @@ class G4LogicalVolume;
 namespace ExternalDetector {
 
   template <class Solid>
-  class Embedder : public extends<GaudiTool, IExternalDetectorEmbedder> {
+  class Embedder : public extends<GaudiTool, IEmbedder> {
 
     static_assert( std::is_base_of<G4VSolid, Solid>::value );
 

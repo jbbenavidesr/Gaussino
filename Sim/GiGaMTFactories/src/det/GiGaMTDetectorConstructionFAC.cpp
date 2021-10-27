@@ -51,6 +51,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   auto detconst = new GiGaMTDetectorConstruction();
   detconst->SetWorldConstructor( [&]() {
     // Import external materials
+    debug() << "Setting up external materials" << endmsg;
     for ( auto& material : m_ext_mats ) { material->construct(); }
 
     debug() << "Calling world constructor" << endmsg;
@@ -58,6 +59,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
 
     // Import external geometry
+    debug() << "Setting up external embedder in mass geometry" << endmsg;
     for ( auto& embedder : m_ext_dets ) { embedder->embed( world ).ignore(); }
 
     return world;

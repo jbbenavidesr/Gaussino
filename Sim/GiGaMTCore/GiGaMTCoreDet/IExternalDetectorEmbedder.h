@@ -14,10 +14,12 @@
 
 class G4VPhysicalVolume;
 
-class IExternalDetectorEmbedder : virtual public IAlgTool {
+namespace ExternalDetector {
+  class IEmbedder : virtual public IAlgTool {
 
-public:
-  DeclareInterfaceID( IExternalDetectorEmbedder, 1, 0 );
+  public:
+    DeclareInterfaceID( IEmbedder, 1, 0 );
 
-  virtual StatusCode embed( G4VPhysicalVolume* world ) const = 0;
-};
+    virtual StatusCode embed( G4VPhysicalVolume* world ) const = 0;
+  };
+} // namespace ExternalDetector
