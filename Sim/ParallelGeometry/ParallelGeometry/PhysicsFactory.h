@@ -19,7 +19,7 @@
 namespace ParallelGeometry {
 
   template <class ParallelPhysics>
-  class PhysicsFactory : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4ParallelWorldPhysics>> {
+  class PhysicsFactory : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
     static_assert( std::is_base_of<Physics, ParallelPhysics>::value );
 
   protected:
@@ -29,37 +29,16 @@ namespace ParallelGeometry {
     Gaudi::Property<bool> m_layeredMass{this, "LayeredMass", false, "Parallel world on top of the mass geometry"};
     Gaudi::Property<std::string> m_worldName{this, "WorldName", "", "Corresponding name of the parallel world"};
     // optional
-    Gaudi::Property<bool> m_standardProcess{this, "StandardProcess", true,
-                                            "Run the standard implementation of the ConstructProcess() method or not"};
+    Gaudi::Property<std::vector<int>> m_particlePIDs{
+        this, "ParticlePIDs", {}, "List of particle PIDs to be tracked; track all if empty"};
 
-    inline virtual void additionalParticleConstructor() const {};
-    inline virtual void additionalProcessConstructor() const {};
+    virtual bool additionalProcessConstructor() const { return true; };
 
   public:
     using extends::extends;
-
-    ParallelPhysics* construct() const override {
-      debug() << "Constructing fast simulation physics: " << name() << endmsg;
-      auto physics = new Physics{m_worldName.value(), m_layeredMass.value(), m_standardProcess.value()};
-
-      physics->SetPhysicsName( name() );
-      physics->SetVerboseLevel( verbosity() );
-
-      physics->setParticleConstructor( [&]() {
-        debug() << "Constructing a particle constructor for " << name() << " parallel physics" << endmsg;
-        // additional implementation
-        additionalParticleConstructor();
-      } );
-
-      physics->setProcessConstructor( [&]() {
-        debug() << "Constructing a process constructor for " << name() << " parallel physics" << endmsg;
-        // additional implementation
-        additionalProcessConstructor();
-      } );
-
-      debug() << "Constructed fast simulation physics:" << name() << endmsg;
-      return physics;
-    }
+    ParallelPhysics* construct() const override;
   };
 
 } // namespace ParallelGeometry
+
+#include "PhysicsFactory.icpp"

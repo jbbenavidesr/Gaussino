@@ -27,6 +27,7 @@ class SimPhase(ConfigurableUser):
         "G4BeginRunCommand":
         ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
+        "PhysicsConstructors": [],
         "ExportGDML": {},
         "ExternalDetectorEmbedder": "",
         "ParallelGeometry": False,
@@ -55,6 +56,8 @@ class SimPhase(ConfigurableUser):
         giga_alg = configure_giga_alg()
         seq += [giga_alg]
 
+        self.set_base_physics()
+
         geo_algs = self.set_base_detector_geometry()
         seq += geo_algs
 
@@ -64,6 +67,24 @@ class SimPhase(ConfigurableUser):
                 append_truth_actions(OutputLevel=-10)
             else:
                 append_truth_actions()
+
+    def set_base_physics(self):
+        from Configurables import GiGaMT
+        giga = GiGaMT()
+
+        from Configurables import GiGaMTModularPhysListFAC
+        gmpl = giga.addTool(
+            GiGaMTModularPhysListFAC("ModularPL"), name="ModularPL")
+        giga.PhysicsListFactory = "GiGaMTModularPhysListFAC/ModularPL"
+        gmpl = giga.ModularPL
+
+        gmpl.PhysicsConstructors = self.getProp('PhysicsConstructors')
+
+        # Add parallel physics
+        par_geo = self.getProp("ParallelGeometry")
+        if par_geo:
+            from Configurables import ParallelGeometry
+            ParallelGeometry().attach_physics(gmpl)
 
     def set_base_detector_geometry(self):
         from Configurables import GiGaMT, GiGaMTDetectorConstructionFAC
@@ -89,9 +110,9 @@ class SimPhase(ConfigurableUser):
         if par_geo:
             from Configurables import ParallelGeometry
             par_geo = ParallelGeometry()
-            par_geo.attach(detool)
-            for par_ext_emd in par_geo._external_embedders:
-                self._external_embedders.append(par_ext_emd)
+            algs += par_geo.attach(dettool)
+            #for par_ext_emd in par_geo._external_embedders:
+            #    self._external_embedders.append(par_ext_emd)
             #par_geo.world_to_gdml(giga.RunSeq)
 
         # Save as a GDML File

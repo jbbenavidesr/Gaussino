@@ -8,30 +8,22 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#pragma once
 
-// Geant4
-#include "Geant4/G4ParallelWorldPhysics.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+template <class ParallelPhysics>
+ParallelPhysics* ParallelGeometry::PhysicsFactory<ParallelPhysics>::construct() const {
+  debug() << "Constructing parallel physics: " << name() << endmsg;
+  auto physics = new Physics{m_worldName.value(), m_layeredMass.value()};
 
-namespace ParallelGeometry {
+  physics->SetVerboseLevel( verbosity() );
+  physics->SetMessageInterface( message_interface() );
+  physics->setParticlePIDs( m_particlePIDs.value() );
+  physics->setProcessConstructor( [&]() {
+    debug() << "Constructing a process constructor for " << name() << " parallel physics" << endmsg;
 
-  using ProcessConstructor = std::function<bool()>;
+    // additional implementation
+    return additionalProcessConstructor();
+  } );
 
-  class Physics : public GiGaMessage, public G4ParallelWorldPhysics {
-
-  protected:
-    ProcessConstructor m_process_constructor;
-    bool               m_layeredMass  = false;
-    std::vector<int>   m_particlePIDs = {};
-
-  public:
-    Physics( std::string, bool );
-    virtual ~Physics() = default;
-
-    virtual void ConstructProcess() override;
-
-    void setProcessConstructor( ProcessConstructor );
-    void setParticlePIDs( std::vector<int> );
-  };
-} // namespace ParallelGeometry
+  debug() << "Constructed fast simulation physics:" << name() << endmsg;
+  return physics;
+}

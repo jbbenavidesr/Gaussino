@@ -24,6 +24,7 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
     // threads
     for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
     for ( auto& embedder : m_ext_dets ) { sc &= embedder.retrieve(); }
+    for ( auto& par_world : m_par_worlds ) { sc &= par_world.retrieve(); }
 
     if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
       warning() << "GDML file " << m_outfile.value() << " already exists! "
