@@ -20,7 +20,9 @@
 #include "CLHEP/Geometry/Point3D.h"
 
 // from Gaudi
+#include "Gaudi/Accumulators.h"
 #include "GaudiKernel/MsgStream.h"
+#include "GaudiKernel/SystemOfUnits.h"
 
 // from Geant4
 #include "Geant4/G4HCofThisEvent.hh"
@@ -39,13 +41,17 @@ namespace MCCollector {
   public:
     inline SensDet( const std::string& name ) : G4VSensitiveDetector( name ) { collectionName.insert( "Hits" ); }
 
-    void Initialize( G4HCofThisEvent* HCE ) override;
+    void Initialize( G4HCofThisEvent* ) override;
+    void EndOfEvent( G4HCofThisEvent* ) override;
 
-    bool ProcessHits( G4Step* step, G4TouchableHistory* history ) override;
+    bool ProcessHits( G4Step*, G4TouchableHistory* ) override;
 
     inline void setRequireEDep( bool requireEDep ) { m_requireEDep = requireEDep; }
     inline void setOnlyForward( bool onlyForward ) { m_onlyForward = onlyForward; }
     inline void setOnlyAtBoundary( bool onlyAtBoundary ) { m_onlyAtBoundary = onlyAtBoundary; }
+
+    Gaudi::Accumulators::SummingCounter<>* m_hits_no{nullptr};
+    Gaudi::Accumulators::SummingCounter<>* m_energy{nullptr};
 
   protected:
     HitsCollection* m_col;
@@ -56,6 +62,10 @@ namespace MCCollector {
   };
 
   class SensDetFactory : public GiGaMTG4SensDetFactory<SensDet> {
+
+  protected:
+    mutable Gaudi::Accumulators::SummingCounter<> m_hits_no{this, "#collector hits"};
+    mutable Gaudi::Accumulators::SummingCounter<> m_energy{this, "#collector energy"};
 
     // Watch out: default dE/dx=0 true by default
     Gaudi::Property<bool> m_requireEDep{this, "RequireEDep", false};
@@ -75,6 +85,8 @@ namespace MCCollector {
       sensdet->setRequireEDep( m_requireEDep.value() );
       sensdet->setOnlyForward( m_onlyForward.value() );
       sensdet->setOnlyAtBoundary( m_onlyAtBoundary.value() );
+      sensdet->m_hits_no = &m_hits_no;
+      sensdet->m_energy  = &m_energy;
       return sensdet;
     }
   };
@@ -129,4 +141,22 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
 
   m_col->insert( newHit );
   return true;
+}
+
+void MCCollector::SensDet::EndOfEvent( G4HCofThisEvent* /* HCE */ ) {
+  int    hits_no = 0;
+  double energy  = 0.;
+
+  std::vector<MCCollector::Hit*>* hits = m_col->GetVector();
+  for ( auto& hit : *hits ) {
+    hits_no++;
+    energy += hit->GetEdep();
+  }
+
+  debug( boost::str( boost::format( "%s  #Hits=%5d Energy=%8.3g[GeV] " ) % m_col->GetSDname() % hits_no %
+                     ( energy / Gaudi::Units::GeV ) ) );
+  if ( m_hits_no && m_energy ) {
+    ( *m_hits_no ) += hits_no;
+    ( *m_energy ) += energy;
+  }
 }
