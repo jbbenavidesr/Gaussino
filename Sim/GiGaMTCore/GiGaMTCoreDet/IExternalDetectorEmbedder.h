@@ -21,5 +21,6 @@ namespace ExternalDetector {
     DeclareInterfaceID( IEmbedder, 1, 0 );
 
     virtual StatusCode embed( G4VPhysicalVolume* world ) const = 0;
+    virtual StatusCode embedSD() const { return StatusCode::SUCCESS; };
   };
 } // namespace ExternalDetector

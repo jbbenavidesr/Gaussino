@@ -139,6 +139,7 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
             self._check_props(name, sens_det_props)
             sens_det_conf = getattr(Configurables, sens_det_props['Type'])
             sens_det_name = name + 'SDet'
+            self._register_prop(sens_det_props, 'DetName', sens_det_name)
             self._register_prop(props, 'SensDetName',
                                 sens_det_props['Type'] + '/' + sens_det_name)
             sens_det_conf(sens_det_name, **self._refine_props(sens_det_props))

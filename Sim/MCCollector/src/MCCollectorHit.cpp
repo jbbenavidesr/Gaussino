@@ -12,14 +12,14 @@
 // local
 #include "MCCollectorHit.h"
 
-G4ThreadLocal G4Allocator<MCCollector::Hit> MCCollector::HitAllocator;
+G4ThreadLocal G4Allocator<MCCollector::Hit>* MCCollector::HitAllocator;
 
 void* MCCollector::Hit::operator new( size_t ) {
-  void* aHitAllocator;
-  aHitAllocator = (void*)MCCollector::HitAllocator.MallocSingle();
-  return aHitAllocator;
+  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
+  return (void*)MCCollector::HitAllocator->MallocSingle();
 }
 
-void MCCollector::Hit::operator delete( void* aHitAllocator ) {
-  MCCollector::HitAllocator.FreeSingle( (MCCollector::Hit*)aHitAllocator );
+void MCCollector::Hit::operator delete( void* hit ) {
+  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
+  MCCollector::HitAllocator->FreeSingle( (MCCollector::Hit*)hit );
 }

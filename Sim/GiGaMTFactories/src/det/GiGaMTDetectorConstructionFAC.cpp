@@ -23,6 +23,7 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
     // Retrieve the factory tools here to avoid the retrieval happening in multiple
     // threads
     for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
+    for ( auto& embedder : m_ext_dets ) { sc &= embedder.retrieve(); }
 
     if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
       warning() << "GDML file " << m_outfile.value() << " already exists! "
@@ -59,7 +60,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
 
     // Import external geometry
-    debug() << "Setting up external embedder in mass geometry" << endmsg;
+    debug() << "Setting up external embedder volumes in mass geometry" << endmsg;
     for ( auto& embedder : m_ext_dets ) { embedder->embed( world ).ignore(); }
 
     return world;
@@ -67,6 +68,11 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   detconst->SetSDConstructor( [&]() {
     debug() << "Calling SD and Field constructor" << endmsg;
     m_geoSvc->constructSDandField();
+
+    // Import external SD
+    debug() << "Setting up external embedder SD in mass geometry" << endmsg;
+    for ( auto& embedder : m_ext_dets ) { embedder->embedSD().ignore(); }
+
     DressVolumes();
   } );
 

@@ -14,6 +14,7 @@
 #include "Geant4/G4Box.hh"
 #include "Geant4/G4GDMLParser.hh"
 #include "Geant4/G4LogicalVolume.hh"
+#include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4PVPlacement.hh"
 #include "Geant4/G4SDManager.hh"
@@ -24,9 +25,24 @@ namespace ExternalDetector {
   StatusCode Embedder<Solid>::initialize() {
     return extends::initialize().andThen( [&] {
       StatusCode sc = StatusCode::SUCCESS;
-      if ( !m_sensDetName.empty() ) { sc &= m_sensDetName.retrieve(); }
+      if ( m_sensDet ) { sc &= m_sensDet.retrieve(); }
       return sc;
     } );
+  }
+
+  template <class Solid>
+  StatusCode Embedder<Solid>::embedSD() const {
+    if ( m_sensDet ) {
+      auto sensDet    = m_sensDet->construct();
+      auto sd_manager = G4SDManager::GetSDMpointer();
+      if ( !sd_manager ) return StatusCode::FAILURE;
+      auto lvol = G4LogicalVolumeStore::GetInstance()->GetVolume( m_lVolName.value() );
+      if ( !lvol ) return StatusCode::FAILURE;
+      sd_manager->AddNewDetector( sensDet );
+      lvol->SetSensitiveDetector( sensDet );
+      debug() << "Registered sensitive " << sensDet->GetName() << " for " << m_pVolName.value() << endmsg;
+    }
+    return StatusCode::SUCCESS;
   }
 
   template <class Solid>
@@ -43,14 +59,6 @@ namespace ExternalDetector {
       return StatusCode::FAILURE;
     }
 
-    if ( !m_sensDetName.empty() ) {
-      auto sensDet    = m_sensDetName->construct();
-      auto sd_manager = G4SDManager::GetSDMpointer();
-      if ( !sd_manager ) return StatusCode::FAILURE;
-      sd_manager->AddNewDetector( sensDet );
-      pvol->GetLogicalVolume()->SetSensitiveDetector( sensDet );
-      debug() << "Registered sensitive " << m_sensDetName->name() << " for " << m_pVolName.value() << endmsg;
-    }
     debug() << "Successfully embedded " << m_pVolName.value() << " in its mothers volume!" << endmsg;
     return StatusCode::SUCCESS;
   }

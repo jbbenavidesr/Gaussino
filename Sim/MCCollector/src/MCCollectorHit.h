@@ -43,5 +43,5 @@ namespace MCCollector {
 
   using HitsCollection = G4THitsCollection<Hit>;
 
-  extern G4ThreadLocal G4Allocator<Hit> HitAllocator;
+  extern G4ThreadLocal G4Allocator<Hit>* HitAllocator;
 } // namespace MCCollector
