@@ -20,6 +20,12 @@ from Gaussino.Generation import GenPhase
 GenPhase().ParticleGun = True
 GenPhase().ParticleGunUseDefault = True
 
+from Gaussino.Simulation import SimPhase
+SimPhase().PhysicsConstructors = [
+    "GiGaMT_G4HadronPhysicsFTFP_BERT",
+    "GiGaMT_G4EmStandardPhysics",
+]
+
 # setting up external geometry service
 
 # adding external detectors

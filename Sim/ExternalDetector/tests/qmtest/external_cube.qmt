@@ -18,7 +18,7 @@
 <argument name="validator"><text>
 results = [
     'Successfully embedded MyCubePVol in its mothers volume!',
-    'Registered sensitive GiGaMT.GiGaMTDetectorConstructionFAC.MyCube.MyCubeSDet for MyCubePVol',
+    'Registered sensitive MyCubeSDet for MyCubePVol',
     'External world created!',
 ]
 for result in results:
