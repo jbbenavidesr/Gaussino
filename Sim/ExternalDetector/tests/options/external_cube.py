@@ -65,7 +65,7 @@ external.World = {
 from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
 external.Materials = {
     "OuterSpace": {
-        "AtomicMass": 1.,
+        "AtomicNumber": 1.,
         "MassNumber": 1.01 * g / mole,
         "Density": 1.e-25 * g / cm3,
         "Pressure": 3.e-18 * pascal,

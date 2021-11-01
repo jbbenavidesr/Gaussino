@@ -36,8 +36,7 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         for name, props in self.getProp("Materials").items():
             self._check_props(name, props, required=[])
             if 'Type' not in props:
-                # TODO: for now it can only be of type ExternalMaterial
-                props['Type'] = 'ExternalMaterial'
+                props['Type'] = 'MaterialFromChemicalProperties'
             if 'Name' not in props:
                 props['Name'] = name
             tool_conf = getattr(Configurables, props['Type'])
