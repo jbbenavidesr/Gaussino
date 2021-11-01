@@ -11,6 +11,7 @@
 #include "GiGaMTDetectorConstructionFAC.h"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
 #include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
+#include "GiGaMTCoreDet/IExternalDetectorMaterialEmbedder.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 #include <filesystem>
@@ -54,7 +55,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   detconst->SetWorldConstructor( [&]() {
     // Import external materials
     debug() << "Setting up external materials" << endmsg;
-    for ( auto& material : m_ext_mats ) { material->construct(); }
+    for ( auto& material : m_ext_mats ) { material->embed().ignore(); }
 
     debug() << "Calling world constructor" << endmsg;
     auto world = m_geoSvc->constructWorld();

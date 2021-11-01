@@ -17,9 +17,10 @@
 // GiGaMT
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
+#include "GiGaMTCoreDet/IExternalDetectorMaterialEmbedder.h"
 
 namespace ExternalDetector {
-  class MaterialFactory : public extends<GiGaTool, GiGaFactoryBase<G4Material>> {
+  class MaterialFactory : public extends<GiGaTool, IMaterialEmbedder> {
 
     // required
     Gaudi::Property<std::string> m_name{this, "Name", ""};
@@ -37,7 +38,7 @@ namespace ExternalDetector {
   public:
     using extends::extends;
     StatusCode  initialize() override;
-    G4Material* construct() const override;
+    StatusCode  embed() const override;
   };
 } // namespace ExternalDetector
 
@@ -90,11 +91,12 @@ StatusCode ExternalDetector::MaterialFactory::initialize() {
   } );
 }
 
-G4Material* ExternalDetector::MaterialFactory::construct() const {
-  debug() << "Constructing external material: " << m_name.value() << endmsg;
+StatusCode ExternalDetector::MaterialFactory::embed() const {
+  debug() << "Embedding external material: " << m_name.value() << endmsg;
   auto g4material =
       new G4Material( m_name.value(), m_atomicMass.value(), m_massNumber.value() * Gaudi::Units::g / Gaudi::Units::mole,
                       m_density.value() * Gaudi::Units::g / Gaudi::Units::cm3, m_state,
                       m_temperature.value() * Gaudi::Units::kelvin, m_pressure.value() * Gaudi::Units::Pa );
-  return g4material;
+  if (!g4material) return StatusCode::FAILURE;
+  return StatusCode::SUCCESS;
 }

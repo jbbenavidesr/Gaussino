@@ -23,6 +23,7 @@ class G4VUserParallelWorld;
 
 namespace ExternalDetector {
   class IEmbedder;
+  class IMaterialEmbedder;
 }
 
 // Factory class implemented as a GaudiTool that creates and configures the
@@ -86,10 +87,7 @@ private:
                                                    Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
   // External Materials
-  // it's called external materials, and will most likely be used by ExternalDetector package only,
-  // but please note that it has GiGaFactoryBase<G4Material>, so any factory inheriting from G4Material will suffice
-  using ExternalMaterialTool = GiGaFactoryBase<G4Material>;
-  ToolHandleArray<ExternalMaterialTool> m_ext_mats{this};
+  ToolHandleArray<ExternalDetector::IMaterialEmbedder> m_ext_mats{this};
   using ExternalMaterials = std::vector<std::string>;
   Gaudi::Property<ExternalMaterials> m_ext_mats_names{this,
                                                       "ExternalMaterials",
