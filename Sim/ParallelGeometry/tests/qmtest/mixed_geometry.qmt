@@ -10,15 +10,16 @@
     or submit itself to any jurisdiction.
 -->
 <extension class="GaudiTest.GaudiExeTest" kind="test">
-<argument name="program"><text>python</text></argument>
+<argument name="program"><text>gaudirun.py</text></argument>
 <argument name="timeout"><integer>600</integer></argument>
 <argument name="args"><set>
   <text>../options/mixed_geometry.py</text>
 </set></argument>
 <argument name="validator"><text>
 results = [
-    "All collectors generated the same hits!",
-    "All collectors see vacuum!",
+    "#Hits=    1 Energy=       0[GeV] in MassPlaneSDet",
+    "#Hits=    1 Energy=       0[GeV] in ParallelPlane1SDe",
+    "#Hits=    1 Energy=       0[GeV] in ParallelPlane2SDet",
 ]
 for result in results:
     if stdout.find(result) == -1:

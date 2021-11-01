@@ -153,8 +153,8 @@ void MCCollector::SensDet::EndOfEvent( G4HCofThisEvent* /* HCE */ ) {
     energy += hit->GetEdep();
   }
 
-  debug( boost::str( boost::format( "%s  #Hits=%5d Energy=%8.3g[GeV] " ) % m_col->GetSDname() % hits_no %
-                     ( energy / Gaudi::Units::GeV ) ) );
+  debug( boost::str( boost::format( "#Hits=%5d Energy=%8.3g[GeV] in %s" ) % hits_no % ( energy / Gaudi::Units::GeV ) %
+                     m_col->GetSDname() ) );
   if ( m_hits_no && m_energy ) {
     ( *m_hits_no ) += hits_no;
     ( *m_energy ) += energy;

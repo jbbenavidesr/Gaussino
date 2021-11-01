@@ -57,9 +57,6 @@ G4Material* ExternalDetector::MaterialFromChemicalPropertiesFactory::construct()
     return nullptr;
   }
   debug() << "Constructed external MaterialFromElements: " << m_name.value() << endmsg;
-  if ( msgLevel( MSG::DEBUG ) ) {
-    debug() << "\n" << *( g4material ) << endmsg;
-    // g4material->GetMaterialPropertiesTable()->DumpTable();
-  }
+  debug() << "\n" << *( g4material ) << endmsg;
   return g4material;
 }

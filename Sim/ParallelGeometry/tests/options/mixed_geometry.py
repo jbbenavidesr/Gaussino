@@ -1,37 +1,40 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb Collaboration           #
+# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
-# This software is distributed under the terms of the GNU General Public      #
-# Licence version 3 (GPL Version 3), copied verbatim in the file "COPYING".   #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
 #                                                                             #
 # In applying this licence, CERN does not waive the privileges and immunities #
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import CondDB
-CondDB().Upgrade = True
 
-from Configurables import LHCbApp
-LHCbApp().DDDBtag = "upgrade/dddb-20210617"
-LHCbApp().CondDBtag = "upgrade/sim-20210617-vc-mu100"
-LHCbApp().Simulation = True
-LHCbApp().EvtMax = 1
+# standard Gaussino
+from Configurables import Gaussino
+Gaussino().EvtMax = 1
+Gaussino().EnableHive = True
+Gaussino().ThreadPoolSize = 1
+Gaussino().EventSlots = 1
 
-# empty LHCb
-from Configurables import Gauss
-Gauss().DetectorGeo = {'Detectors': []}
-Gauss().DetectorSim = {'Detectors': []}
-Gauss().DetectorMoni = {'Detectors': []}
-Gauss().BeamPipe = 'BeamPipeOff'
-Gauss().DataType = 'Upgrade'
+from Configurables import GiGaMT
+GiGaMT().NumberOfWorkerThreads = 1
 
-# Particle Gun On
-# shoots just one photon along z
-from Gaudi.Configuration import importOptions
-importOptions("$LBPGUNSROOT/options/PGuns.py")
+# Enable EDM as we will create hits
+from Configurables import Gaussino
+Gaussino().ConvertEDM = True
+
+# Activate EM physics
+from Gaussino.Simulation import SimPhase
+SimPhase().PhysicsConstructors = ["GiGaMT_G4EmStandardPhysics"]
+
+# Particle Gun
+# shoots just one 1 GeV photon along z
+from Gaussino.Generation import GenPhase
+GenPhase().ParticleGun = True
+GenPhase().ParticleGunUseDefault = False
+
 from Configurables import ParticleGun
 pgun = ParticleGun("ParticleGun")
-
 from Configurables import FixedMomentum
 pgun.ParticleGunTool = "FixedMomentum"
 pgun.addTool(FixedMomentum, name="FixedMomentum")
@@ -40,14 +43,46 @@ pgun.FixedMomentum.px = 0. * GeV
 pgun.FixedMomentum.py = 0. * GeV
 pgun.FixedMomentum.pz = 1. * GeV
 pgun.FixedMomentum.PdgCodes = [22]
-
 from Configurables import FlatNParticles
 pgun.NumberOfParticlesTool = "FlatNParticles"
 pgun.addTool(FlatNParticles, name="FlatNParticles")
 pgun.FlatNParticles.MinNParticles = 1
 pgun.FlatNParticles.MaxNParticles = 1
 
-# Generic options for both detectors
+# plain/testing geometry service
+from Gaudi.Configuration import DEBUG
+world = {
+    'WorldMaterial': 'OuterSpace',
+    'Type': 'ExternalWorldCreator',
+    'OutputLevel': DEBUG,
+}
+
+# material needed for the external world
+from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
+from Gaudi.Configuration import DEBUG
+materials = {
+    "OuterSpace": {
+        'AtomicNumber': 1.,
+        'MassNumber': 1.01 * g / mole,
+        'Density': 1.e-25 * g / cm3,
+        'Pressure': 3.e-18 * pascal,
+        'Temperature': 2.73 * kelvin,
+        'State': 'Gas',
+        'OutputLevel': DEBUG,
+    },
+    'Pb': {
+        'Type': 'MaterialFromElements',
+        'Symbols': ['Pb'],
+        'AtomicNumbers': [82.],
+        'MassNumbers': [207.2 * g / mole],
+        'MassFractions': [1.],
+        'Density': 11.29 * g / cm3,
+        'State': 'Solid',
+        'OutputLevel': DEBUG,
+    },
+}
+
+# Generic options for all detectors
 from GaudiKernel.SystemOfUnits import m
 generic_shape = {
     'Type': 'Cuboid',
@@ -57,55 +92,43 @@ generic_shape = {
     'xSize': 5. * m,
     'ySize': 5. * m,
     'zSize': 1. * m,
+    'OutputLevel': DEBUG,
 }
 
 generic_sensitive = {
     'Type': 'MCCollectorSensDet',
     'RequireEDep': False,
     'OnlyForward': False,
+    'OutputLevel': DEBUG,
 }
 
 generic_hit = {
     'Type': 'GetMCCollectorHitsAlg',
+    'OutputLevel': DEBUG,
 }
 
-# External Detector in Mass Geometry
+# External detector embedders in mass & parallel geometry
 from Configurables import ExternalDetectorEmbedder
 mass_embedder = ExternalDetectorEmbedder('MassEmbedder')
-
-mass_embedder.Shapes = {'MassPlane': dict(generic_shape)}
-mass_embedder.Shapes['MassPlane']['MaterialName'] = '/dd/Materials/Ecal/EcalPb'
-mass_embedder.Sensitive = {'MassPlane': dict(generic_sensitive)}
-mass_embedder.Hit = {'MassPlane': dict(generic_hit)}
-
-Gauss().ExternalDetectorEmbedder = 'MassEmbedder'
-
-# External Detector in Parallel Geometry
-from Configurables import ExternalDetectorEmbedder
 parallel_embedder_1 = ExternalDetectorEmbedder('ParallelEmbedder1')
 parallel_embedder_2 = ExternalDetectorEmbedder('ParallelEmbedder2')
 
-materials_to_prefetch = []
+mass_embedder.Shapes = {'MassPlane': dict(generic_shape)}
+mass_embedder.Shapes['MassPlane']["MaterialName"] = 'Pb'
+mass_embedder.Sensitive = {'MassPlane': dict(generic_sensitive)}
+mass_embedder.Hit = {'MassPlane': dict(generic_hit)}
+mass_embedder.Materials = materials
+mass_embedder.World = world
 
 parallel_embedder_1.Shapes = {'ParallelPlane1': dict(generic_shape)}
+parallel_embedder_1.Shapes['ParallelPlane1']["MaterialName"] = 'OuterSpace'
 parallel_embedder_1.Sensitive = {'ParallelPlane1': dict(generic_sensitive)}
 parallel_embedder_1.Hit = {'ParallelPlane1': dict(generic_hit)}
 
-parallel_embedder_1_material = '/dd/Materials/Vacuum'
-parallel_embedder_1.Shapes['ParallelPlane1'][
-    'MaterialName'] = parallel_embedder_1_material
-materials_to_prefetch.append(
-    parallel_embedder_1_material)  # prefetch the material in GaussGeo
-
 parallel_embedder_2.Shapes = {'ParallelPlane2': dict(generic_shape)}
+parallel_embedder_2.Shapes['ParallelPlane2']["MaterialName"] = 'Pb'
 parallel_embedder_2.Sensitive = {'ParallelPlane2': dict(generic_sensitive)}
 parallel_embedder_2.Hit = {'ParallelPlane2': dict(generic_hit)}
-
-parallel_embedder_2_material = '/dd/Materials/Ecal/EcalPb'
-parallel_embedder_2.Shapes['ParallelPlane2'][
-    'MaterialName'] = parallel_embedder_2_material
-materials_to_prefetch.append(
-    parallel_embedder_2_material)  # prefetch the material in GaussGeo
 
 from Configurables import ParallelGeometry
 ParallelGeometry().ParallelWorlds = {
@@ -119,47 +142,17 @@ ParallelGeometry().ParallelWorlds = {
 ParallelGeometry().ParallelPhysics = {
     'ParallelWorld1': {
         'LayeredMass': True,
+        'ParticlePIDs': [22],
     },
     'ParallelWorld2': {
         'LayeredMass': False,
+        'ParticlePIDs': [22],
     },
 }
 
-from Configurables import GaussGeo
-GaussGeo().PrefetchMaterials = materials_to_prefetch
+from Gaussino.Simulation import SimPhase
+SimPhase().ParallelGeometry = True
 
-from Configurables import Gauss
-Gauss().ParallelGeometry = True
-
-import GaudiPython as GP
-
-
-class CheckHits(GP.PyAlgorithm):
-    def execute(self):
-        evt = appMgr.evtsvc()
-        mass_plane_1_vals = [
-            hit.entry().X() + hit.entry().Y() + hit.energy()
-            for hit in evt['MC/MassPlane/Hits']
-        ]
-        parallel_plane_1_vals = [
-            hit.entry().X() + hit.entry().Y() + hit.energy()
-            for hit in evt['MC/ParallelPlane1/Hits']
-        ]
-        parallel_plane_2_vals = [
-            hit.entry().X() + hit.entry().Y() + hit.energy()
-            for hit in evt['MC/ParallelPlane2/Hits']
-        ]
-
-        if mass_plane_1_vals == parallel_plane_1_vals == parallel_plane_2_vals:
-            print("All collectors generated the same hits!"
-                  )  # it means that parallel geo works ok
-        if sum(mass_plane_1_vals) == sum(parallel_plane_1_vals) == sum(
-                parallel_plane_1_vals) == 0.:
-            print("All collectors see vacuum!"
-                  )  # it means that layeres are applied correctly
-        return True
-
-
-appMgr = GP.AppMgr()
-appMgr.addAlgorithm(CheckHits())
-appMgr.run(1)
+# here embedding of the geometry takes place
+from Gaussino.Simulation import SimPhase
+SimPhase().ExternalDetectorEmbedder = "MassEmbedder"
