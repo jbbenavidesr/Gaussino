@@ -15,9 +15,9 @@
 // Geant4
 #include "Geant4/G4Material.hh"
 // GiGaMT
+#include "GiGaMTCoreDet/IExternalDetectorMaterialEmbedder.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
-#include "GiGaMTCoreDet/IExternalDetectorMaterialEmbedder.h"
 
 namespace ExternalDetector {
   class MaterialFactory : public extends<GiGaTool, IMaterialEmbedder> {
@@ -37,8 +37,8 @@ namespace ExternalDetector {
 
   public:
     using extends::extends;
-    StatusCode  initialize() override;
-    StatusCode  embed() const override;
+    StatusCode initialize() override;
+    StatusCode embed() const override;
   };
 } // namespace ExternalDetector
 
@@ -97,6 +97,6 @@ StatusCode ExternalDetector::MaterialFactory::embed() const {
       new G4Material( m_name.value(), m_atomicMass.value(), m_massNumber.value() * Gaudi::Units::g / Gaudi::Units::mole,
                       m_density.value() * Gaudi::Units::g / Gaudi::Units::cm3, m_state,
                       m_temperature.value() * Gaudi::Units::kelvin, m_pressure.value() * Gaudi::Units::Pa );
-  if (!g4material) return StatusCode::FAILURE;
+  if ( !g4material ) return StatusCode::FAILURE;
   return StatusCode::SUCCESS;
 }

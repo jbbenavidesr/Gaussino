@@ -24,10 +24,15 @@ find_package(CLHEP)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
 
+gaudi_add_library(ExternalDetectorLib
+                  src/Lib/*.cpp
+                  PUBLIC_HEADERS ExternalDetector
+                  INCLUDE_DIRS GiGaMTFactories XercesC ${HEPMC3_INCLUDE_DIR}
+                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib XercesC ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+
 gaudi_add_module(ExternalDetector
-                 src/*.cpp
-                 INCLUDE_DIRS GiGaMTFactories XercesC ${HEPMC3_INCLUDE_DIR}
-                 LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib XercesC ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+                 src/Components/*.cpp
+                 LINK_LIBRARIES ExternalDetectorLib)
 
 gaudi_install_python_modules()
 gaudi_add_test(QMTest QMTEST)

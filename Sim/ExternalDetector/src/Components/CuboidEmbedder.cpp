@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // local
-#include "Embedder.h"
+#include "ExternalDetector/Embedder.h"
 // Gaudi
 #include "GaudiKernel/SystemOfUnits.h"
 // G4

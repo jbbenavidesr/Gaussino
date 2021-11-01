@@ -9,11 +9,15 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
+# standard Gaussino
 from Configurables import Gaussino
 Gaussino().EvtMax = 1
 Gaussino().EnableHive = True
 Gaussino().ThreadPoolSize = 1
 Gaussino().EventSlots = 1
+
+from Configurables import GiGaMT
+GiGaMT().NumberOfWorkerThreads = 1
 
 # some dumb generation, not important, just fast
 from Gaussino.Generation import GenPhase

@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // local
-#include "Embedder.h"
+#include "ExternalDetector/Embedder.h"
 // G4
 #include "Geant4/G4Box.hh"
 #include "Geant4/G4GDMLParser.hh"

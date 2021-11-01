@@ -24,7 +24,7 @@ class G4VUserParallelWorld;
 namespace ExternalDetector {
   class IEmbedder;
   class IMaterialEmbedder;
-}
+} // namespace ExternalDetector
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
