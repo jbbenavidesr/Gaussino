@@ -11,9 +11,12 @@
 """
 Utilities to configure the Simulation step of Gaussino
 """
+import Configurables
+from Configurables import GiGaMT
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaussino.Utilities import gigaService
 from Gaussino.SimUtils import configure_giga_alg, append_truth_actions
+from GaudiKernel.SystemOfUnits import mm, km
 
 
 class SimPhase(ConfigurableUser):
@@ -27,7 +30,16 @@ class SimPhase(ConfigurableUser):
         "G4BeginRunCommand":
         ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
+        # physics related properties
         "PhysicsConstructors": [],
+        "CutForElectron": -1. * km,
+        "CutForPositron": -1 * km,
+        "CutForGamma": -1 * km,
+        "DumpCutsTable": False,
+        # geometry related properties
+        "GeometryService": "",
+        "SensDetMap": {},
+        "ExtraGeoTools": [],
         "ExportGDML": {},
         "ExternalDetectorEmbedder": "",
         "ParallelGeometry": False,
@@ -36,6 +48,12 @@ class SimPhase(ConfigurableUser):
     def __init__(self, name=Configurable.DefaultName, **kwargs):
         kwargs["name"] = name
         super(SimPhase, self).__init__(*(), **kwargs)
+
+    def _addConstructorsWithNames(self, tool, joint_names):
+        for joint_name in joint_names:
+            if '/' in joint_name:
+                template, name = joint_name.split('/')
+                tool.addTool(getattr(Configurables, template), name=name)
 
     # @brief Set the given property in another configurable object
     #  @param other The other configurable to set the property for
@@ -57,7 +75,6 @@ class SimPhase(ConfigurableUser):
         seq += [giga_alg]
 
         self.set_base_physics()
-
         geo_algs = self.set_base_detector_geometry()
         seq += geo_algs
 
@@ -69,16 +86,14 @@ class SimPhase(ConfigurableUser):
                 append_truth_actions()
 
     def set_base_physics(self):
-        from Configurables import GiGaMT
-        giga = GiGaMT()
-
         from Configurables import GiGaMTModularPhysListFAC
-        gmpl = giga.addTool(
-            GiGaMTModularPhysListFAC("ModularPL"), name="ModularPL")
-        giga.PhysicsListFactory = "GiGaMTModularPhysListFAC/ModularPL"
-        gmpl = giga.ModularPL
+        giga = GiGaMT()
+        gmpl = giga.addTool(GiGaMTModularPhysListFAC(), name="ModularPL")
+        giga.PhysicsListFactory = getattr(giga, "ModularPL")
 
-        gmpl.PhysicsConstructors = self.getProp('PhysicsConstructors')
+        phys_list = self.getProp('PhysicsConstructors')
+        gmpl.PhysicsConstructors = phys_list
+        self._addConstructorsWithNames(gmpl, phys_list)
 
         # Add parallel physics
         par_geo = self.getProp("ParallelGeometry")
@@ -87,11 +102,18 @@ class SimPhase(ConfigurableUser):
             ParallelGeometry().attach_physics(gmpl)
 
     def set_base_detector_geometry(self):
-        from Configurables import GiGaMT, GiGaMTDetectorConstructionFAC
-        giga = GiGaMT()
+        from Configurables import GiGaMTDetectorConstructionFAC
         algs = []
-        dettool = giga.addTool(GiGaMTDetectorConstructionFAC,
-                               "GiGaMTDetectorConstructionFAC")
+        giga = GiGaMT()
+        dettool = giga.addTool(
+            GiGaMTDetectorConstructionFAC(), name="DetConst")
+        giga.DetectorConstruction = getattr(giga, "DetConst")
+
+        dettool.GiGaMTGeoSvc = self.getProp("GeometryService")
+        dettool.SensDetVolumeMap = self.getProp("SensDetMap")
+        extra_tools = self.getProp("ExtraGeoTools")
+        dettool.AfterGeoConstructionTools = extra_tools
+        self._addConstructorsWithNames(dettool, extra_tools)
 
         # Add external detectors geometries
         # TODO: external geometry was prepared to operate with spillover
