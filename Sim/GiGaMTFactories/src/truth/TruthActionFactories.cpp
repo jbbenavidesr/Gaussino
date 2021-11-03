@@ -63,8 +63,8 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
       warning() << "StoreUpToZmax activated, but used with the default ZmaxForStoring = 10 km" << endmsg;
     }
     action->zMaxToStore   = m_zMaxToStore.value();
-    action->zMaxTilt   = m_zMaxTilt.value();
-    action->zMaxYShift   = m_zMaxYShift.value();
+    action->zMaxTilt      = m_zMaxTilt.value();
+    action->zMaxYShift    = m_zMaxYShift.value();
     action->rejectRICHphe = m_rejectRICHphe.value();
     action->rejectOptPhot = m_rejectOptPhot.value();
     return action;
@@ -75,7 +75,7 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
 #include "Kernel/ParticleProperty.h"
 
 class TruthStoringTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4UserTrackingAction>> {
-  Gaudi::Property<bool>                                m_endvertices{this, "AddEndVertices", true};
+  Gaudi::Property<bool> m_endvertices{this, "AddEndVertices", true};
   using extends::extends;
   StatusCode initialize() override {
     auto sc = extends::initialize();

@@ -39,14 +39,13 @@ class G4ParticleDefinition;
  *  @date    23/01/2001
  */
 
-class TruthFlaggingTrackAction : virtual public G4UserTrackingAction, virtual public GiGaMessage
-{
+class TruthFlaggingTrackAction : virtual public G4UserTrackingAction, virtual public GiGaMessage {
   /// friend factory for instantiation
   //  friend class GiGaFactory<TruthFlaggingTrackAction>;
 
 public:
   /// useful typedefs
-  typedef std::vector<std::string> TypeNames;
+  typedef std::vector<std::string>                        TypeNames;
   typedef std::unordered_set<const G4ParticleDefinition*> PartDefs;
 
   /// destructor (virtual and protected)
@@ -67,7 +66,7 @@ public:
   void PostUserTrackingAction( const G4Track* ) override;
 
 private:
-  void Setup();
+  void           Setup();
   std::once_flag run_setup_flag;
   /// Utility function to fill GaussTrack informations
   // FIXME: Used only for trajectories to removing this for now
@@ -135,7 +134,6 @@ public:
   PartDefs childStoredTypes{};
   ///
 private:
-
   /// ZMax plane (transformed z = 0 plane)
   ZMaxPlane zMaxPlane;
 };

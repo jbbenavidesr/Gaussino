@@ -23,8 +23,8 @@
 //#include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 // GaussTools
 //#include "GaussTools/GaussTrajectory.h"
-#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 #include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreTruth/GaussinoTrackInformation.h"
 /// local
 #include "GiGaMTCoreTruth/TruthFlaggingTrackAction.h"
 
@@ -37,13 +37,12 @@
  *  @return status code
  */
 // ============================================================================
-void TruthFlaggingTrackAction::Setup()
-{
+void TruthFlaggingTrackAction::Setup() {
 
   // prepare the zMax plane
-  zMaxPlane.prepare(zMaxToStore, zMaxTilt, zMaxYShift);
-  if (zMaxTilt < 0. * CLHEP::degree || zMaxTilt > 45. * CLHEP::degree) {
-    warning("Tilt for zMaxToStore is out of [0, 45] degrees range");
+  zMaxPlane.prepare( zMaxToStore, zMaxTilt, zMaxYShift );
+  if ( zMaxTilt < 0. * CLHEP::degree || zMaxTilt > 45. * CLHEP::degree ) {
+    warning( "Tilt for zMaxToStore is out of [0, 45] degrees range" );
   }
 
   if ( storeByOwnType ) {
@@ -56,15 +55,15 @@ void TruthFlaggingTrackAction::Setup()
     for ( auto name : ownStoredTypesNames ) {
       const G4ParticleDefinition* pd = table->FindParticle( name );
       if ( 0 == pd ) {
-        G4cerr << __PRETTY_FUNCTION__ << std::string( "Could not find G4ParticleDefinition" ) + "for particle name='" + name + "'!"
-               << G4endl;
+        G4cerr << __PRETTY_FUNCTION__
+               << std::string( "Could not find G4ParticleDefinition" ) + "for particle name='" + name + "'!" << G4endl;
       }
       ownStoredTypes.insert( pd );
     }
     //
     if ( ownStoredTypes.empty() ) {
-      G4cerr << __PRETTY_FUNCTION__ << std::string( "OwnTypesContainer is empty! Deactivate the " ) + "'StoreByOwnType' option!"
-             << G4endl;
+      G4cerr << __PRETTY_FUNCTION__
+             << std::string( "OwnTypesContainer is empty! Deactivate the " ) + "'StoreByOwnType' option!" << G4endl;
       storeByOwnType = false; ///< NB !!!
     }
   }
@@ -93,17 +92,18 @@ void TruthFlaggingTrackAction::Setup()
   return verbose( "Setup successfully" );
 }
 
-void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
-{
+void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track ) {
   std::call_once( run_setup_flag, [this]() { this->Setup(); } );
   auto trackMgr = G4UserTrackingAction::fpTrackingManager;
   // Is the track valid? Is tracking manager valid?
   if ( !track ) {
-    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!" << G4endl;
+    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!"
+           << G4endl;
     return;
   }
   if ( !trackMgr ) {
-    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!" << G4endl;
+    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!"
+           << G4endl;
     return;
   }
 
@@ -122,26 +122,24 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
 
   if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) ) {
     auto trackVrxPos = track->GetVertexPosition();
-    if ( storeUpToZmax && ( zMaxPlane.Distance(trackVrxPos.y(), trackVrxPos.z()) > .0 ) ) {
-      return;
-    }
+    if ( storeUpToZmax && ( zMaxPlane.Distance( trackVrxPos.y(), trackVrxPos.z() ) > .0 ) ) { return; }
     // Only set the preliminary flag to allow for rejection in posttrackaction
     ti->setToPrelStoreTruth( true );
   }
-
 }
 
-void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
-{
+void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
   std::call_once( run_setup_flag, [this]() { this->Setup(); } );
   auto trackMgr = G4UserTrackingAction::fpTrackingManager;
   // Is the track valid? Is tracking manager valid?
   if ( !track ) {
-    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!" << G4endl;
+    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!"
+           << G4endl;
     return;
   }
   if ( !trackMgr ) {
-    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!" << G4endl;
+    G4cerr << __PRETTY_FUNCTION__ << "Failed to cast existing UserTrackInformation. Overwriting existing one!"
+           << G4endl;
     return;
   }
 
@@ -150,9 +148,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   // if only to a certain z, check z and set flag
   bool notrejected = true;
   auto trackVrxPos = track->GetVertexPosition();
-  if ( storeUpToZmax && ( zMaxPlane.Distance(trackVrxPos.y(), trackVrxPos.z()) > 0. ) ) {
-    notrejected = false;
-  }
+  if ( storeUpToZmax && ( zMaxPlane.Distance( trackVrxPos.y(), trackVrxPos.z() ) > 0. ) ) { notrejected = false; }
 
   if ( rejectRICHphe ) {
     const G4VProcess* process = track->GetCreatorProcess();
@@ -170,9 +166,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
 
   if ( rejectOptPhot ) {
-    if ( track->GetDefinition()->GetParticleName() == "opticalphoton" ) {
-      notrejected = false;
-    }
+    if ( track->GetDefinition()->GetParticleName() == "opticalphoton" ) { notrejected = false; }
   }
 
   // if reject rich photoelectrons check and store
@@ -192,9 +186,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
 
       for ( unsigned int index = 0; index < childrens->size(); ++index ) {
         G4Track* dtr = ( *childrens )[index];
-        if ( !dtr ) {
-          continue;
-        }
+        if ( !dtr ) { continue; }
         if ( !( dtr->GetDynamicParticle()->GetPreAssignedDecayProducts() ) ) {
           auto child_track_info = GaussinoTrackInformation::Get( dtr );
           child_track_info->setToStoreTruth( true );
@@ -246,9 +238,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
     const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
     for ( unsigned int index = 0; index < childrens->size(); ++index ) {
       const G4Track* tr = ( *childrens )[index];
-      if ( 0 == tr ) {
-        continue;
-      }
+      if ( 0 == tr ) { continue; }
       //
       if ( storeByChildEnergy && ( tr->GetKineticEnergy() > childEnergyThreshold ) ) {
         // FIXME: setProcess( track );
@@ -273,9 +263,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
     const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
     for ( unsigned int index = 0; index < childrens->size(); ++index ) {
       const G4Track* tr = ( *childrens )[index];
-      if ( 0 == tr ) {
-        continue;
-      }
+      if ( 0 == tr ) { continue; }
       //
       if ( childStoredProcess.count( tr->GetCreatorProcess()->GetProcessName() ) > 0 ) {
         // FIXME: setProcess( track );
@@ -299,13 +287,13 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
   }
   // (8) Now make the preliminary flag permanent if the tracks survived until here
   // and weren't rejected
-  if( this_track_info->prelStoreTruth() && notrejected) { 
-    //setProcess( track ) ;
-    //fillGaussTrackInformation( track ) ;          
-    //trackMgr()->SetStoreTrajectory( true );   
-    this_track_info->setToStoreTruth(true);
-    return; 
-  }  /// RETURN 
+  if ( this_track_info->prelStoreTruth() && notrejected ) {
+    // setProcess( track ) ;
+    // fillGaussTrackInformation( track ) ;
+    // trackMgr()->SetStoreTrajectory( true );
+    this_track_info->setToStoreTruth( true );
+    return;
+  } /// RETURN
 
   // check if track is to be stored ???????????????????????????????????????
   // FIXME: This isn't doing anything right now as we right now do not support
@@ -326,9 +314,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
       G4TrackVector* childrens = trackMgr->GimmeSecondaries();
       for ( unsigned int index = 0; index < childrens->size(); ++index ) {
         G4Track* child_track = ( *childrens )[index];
-        if ( !child_track ) {
-          continue;
-        }
+        if ( !child_track ) { continue; }
 
         if ( child_track->GetParentID() != track->GetTrackID() ) {
           G4cerr << __PRETTY_FUNCTION__ << " Child ID is not equal to track ID" << G4endl;
