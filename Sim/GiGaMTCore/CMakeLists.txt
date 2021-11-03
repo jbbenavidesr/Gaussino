@@ -47,6 +47,10 @@ gaudi_add_library(GiGaMTCoreTruthLib
 
 add_dependencies(GiGaMTCoreTruthLib HepMC3Ext)
 
+gaudi_add_unit_test(test_zMaxTilt tests/src/test_zMaxTilt.cpp
+                    LINK_LIBRARIES GaudiKernel GiGaMTCoreTruthLib
+                    TYPE Boost)
+
 gaudi_add_library(GiGaMTCoreRunLib
                  src/run/*.cpp
                  PUBLIC_HEADERS GiGaMTCoreRun
