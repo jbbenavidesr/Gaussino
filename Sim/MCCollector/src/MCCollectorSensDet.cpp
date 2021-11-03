@@ -20,7 +20,6 @@
 #include "CLHEP/Geometry/Point3D.h"
 
 // from Gaudi
-#include "Gaudi/Accumulators.h"
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/SystemOfUnits.h"
 
@@ -49,9 +48,7 @@ namespace MCCollector {
     inline void setRequireEDep( bool requireEDep ) { m_requireEDep = requireEDep; }
     inline void setOnlyForward( bool onlyForward ) { m_onlyForward = onlyForward; }
     inline void setOnlyAtBoundary( bool onlyAtBoundary ) { m_onlyAtBoundary = onlyAtBoundary; }
-
-    Gaudi::Accumulators::SummingCounter<>* m_hits_no{nullptr};
-    Gaudi::Accumulators::SummingCounter<>* m_energy{nullptr};
+    inline void setPrintStats( bool printStats ) { m_printStats = printStats; }
 
   protected:
     HitsCollection* m_col;
@@ -59,14 +56,12 @@ namespace MCCollector {
     bool m_requireEDep    = false;
     bool m_onlyForward    = true;
     bool m_onlyAtBoundary = false;
+    bool m_printStats     = false;
   };
 
   class SensDetFactory : public GiGaMTG4SensDetFactory<SensDet> {
 
   protected:
-    mutable Gaudi::Accumulators::SummingCounter<> m_hits_no{this, "#collector hits"};
-    mutable Gaudi::Accumulators::SummingCounter<> m_energy{this, "#collector energy"};
-
     // Watch out: default dE/dx=0 true by default
     Gaudi::Property<bool> m_requireEDep{this, "RequireEDep", false};
 
@@ -75,6 +70,9 @@ namespace MCCollector {
 
     // Only hits at the boundary
     Gaudi::Property<bool> m_onlyAtBoundary{this, "OnlyAtBoundary", false};
+
+    // Print additional information at the end of each event
+    Gaudi::Property<bool> m_printStats{this, "PrintStats", false};
 
   public:
     using base_fac = GiGaMTG4SensDetFactory<SensDet>;
@@ -85,8 +83,7 @@ namespace MCCollector {
       sensdet->setRequireEDep( m_requireEDep.value() );
       sensdet->setOnlyForward( m_onlyForward.value() );
       sensdet->setOnlyAtBoundary( m_onlyAtBoundary.value() );
-      sensdet->m_hits_no = &m_hits_no;
-      sensdet->m_energy  = &m_energy;
+      sensdet->setPrintStats( m_printStats.value() );
       return sensdet;
     }
   };
@@ -144,19 +141,20 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
 }
 
 void MCCollector::SensDet::EndOfEvent( G4HCofThisEvent* /* HCE */ ) {
-  int    hits_no = 0;
-  double energy  = 0.;
+  if ( m_printStats ) {
+    int    hits_no = 0;
+    double energy  = 0.;
 
-  std::vector<MCCollector::Hit*>* hits = m_col->GetVector();
-  for ( auto& hit : *hits ) {
-    hits_no++;
-    energy += hit->GetEdep();
-  }
+    std::set<int> unique_particles;
 
-  debug( boost::str( boost::format( "#Hits=%5d Energy=%8.3g[GeV] in %s" ) % hits_no % ( energy / Gaudi::Units::GeV ) %
-                     m_col->GetSDname() ) );
-  if ( m_hits_no && m_energy ) {
-    ( *m_hits_no ) += hits_no;
-    ( *m_energy ) += energy;
+    std::vector<MCCollector::Hit*>* hits = m_col->GetVector();
+    for ( auto& hit : *hits ) {
+      hits_no++;
+      energy += hit->GetEdep();
+      unique_particles.insert( hit->GetTrackID() );
+    }
+
+    always( boost::str( boost::format( "#Hits=%5d Energy=%8.3g[GeV] #Particles=%5d in %s" ) % hits_no %
+                        ( energy / Gaudi::Units::GeV ) % unique_particles.size() % m_col->GetSDname() ) );
   }
 }

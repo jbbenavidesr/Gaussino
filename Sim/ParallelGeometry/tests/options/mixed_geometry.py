@@ -99,6 +99,7 @@ generic_sensitive = {
     'Type': 'MCCollectorSensDet',
     'RequireEDep': False,
     'OnlyForward': False,
+    'PrintStats': True,
     'OutputLevel': DEBUG,
 }
 

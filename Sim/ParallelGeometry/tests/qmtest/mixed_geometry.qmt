@@ -16,14 +16,14 @@
   <text>../options/mixed_geometry.py</text>
 </set></argument>
 <argument name="validator"><text>
-results = [
-    "#Hits=    1 Energy=       0[GeV] in MassPlaneSDet",
-    "#Hits=    1 Energy=       0[GeV] in ParallelPlane1SDe",
-    "#Hits=    1 Energy=       0[GeV] in ParallelPlane2SDet",
+options = [
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in MassPlaneSDet",
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in ParallelPlane1SDet",
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in ParallelPlane2SDet",
 ]
-for result in results:
-    if stdout.find(result) == -1:
+for option in options:
+    if stdout.find(option) == -1:
         causes.append('Parallel Geometry does not work as expected!')
-        result['GaudiTest.expected_string'] = result.Quote(result)
+        result['GaudiTest.expected_string'] = result.Quote(option)
 </text></argument>
 </extension>
