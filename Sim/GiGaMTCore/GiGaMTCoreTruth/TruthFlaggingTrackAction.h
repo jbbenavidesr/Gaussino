@@ -17,6 +17,7 @@
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "Geant4/G4UserTrackingAction.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreTruth/ZMaxPlane.h"
 
 #include <unordered_set>
 // forward declarations
@@ -118,7 +119,11 @@ public:
   /// to a certain z
   bool storeUpToZmax{true};
   /// value of z max for storage
-  double zMaxToStore{12280 * CLHEP::mm};
+  double zMaxToStore{10. * CLHEP::km};
+  /// tilt of zMax plane in degrees
+  double zMaxTilt{0. * CLHEP::degree};
+  /// y shift of zMax plane
+  double zMaxYShift{0. * CLHEP::mm};
   /// bool to keep or not RICHPhotoelectrons
   bool rejectRICHphe{true};
   /// bool to keep or not optical photons
@@ -129,4 +134,8 @@ public:
   /// container of definitions  of child types
   PartDefs childStoredTypes{};
   ///
+private:
+
+  /// ZMax plane (transformed z = 0 plane)
+  ZMaxPlane zMaxPlane;
 };

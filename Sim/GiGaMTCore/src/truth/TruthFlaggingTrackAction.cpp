@@ -39,7 +39,13 @@
 // ============================================================================
 void TruthFlaggingTrackAction::Setup()
 {
-  //
+
+  // prepare the zMax plane
+  zMaxPlane.prepare(zMaxToStore, zMaxTilt, zMaxYShift);
+  if (zMaxTilt < 0. * CLHEP::degree || zMaxTilt > 45. * CLHEP::degree) {
+    warning("Tilt for zMaxToStore is out of [0, 45] degrees range");
+  }
+
   if ( storeByOwnType ) {
     ownStoredTypes.clear();
     G4ParticleTable* table = G4ParticleTable::GetParticleTable();
@@ -115,7 +121,8 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track )
   } /// RETURN !!!
 
   if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) ) {
-    if ( storeUpToZmax && ( track->GetVertexPosition().z() > zMaxToStore ) ) {
+    auto trackVrxPos = track->GetVertexPosition();
+    if ( storeUpToZmax && ( zMaxPlane.Distance(trackVrxPos.y(), trackVrxPos.z()) > .0 ) ) {
       return;
     }
     // Only set the preliminary flag to allow for rejection in posttrackaction
@@ -142,7 +149,8 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track )
 
   // if only to a certain z, check z and set flag
   bool notrejected = true;
-  if ( storeUpToZmax && ( track->GetVertexPosition().z() > zMaxToStore ) ) {
+  auto trackVrxPos = track->GetVertexPosition();
+  if ( storeUpToZmax && ( zMaxPlane.Distance(trackVrxPos.y(), trackVrxPos.z()) > 0. ) ) {
     notrejected = false;
   }
 
