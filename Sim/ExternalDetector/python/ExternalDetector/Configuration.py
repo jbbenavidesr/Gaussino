@@ -96,13 +96,19 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
                     log.warning("External hit algorithm not set for " +
                                 det_name)
                     continue
-                self._check_props(det_name, moni_alg_props)
+                self._check_props(
+                    det_name,
+                    moni_alg_props,
+                    required=['Type', 'HitsPropertyName'])
+                moni_alg_props[moni_alg_props[
+                    'HitsPropertyName']] = 'MC/' + det_name + '/Hits'
                 alg_conf = getattr(Configurables, moni_alg_props['Type'])
-                moni_alg_name = moni_alg_props['Type'] + slot
+                moni_alg_name = det_name + moni_alg_props['Type'] + slot
                 alg = alg_conf(
                     moni_alg_name,
-                    CollectorHits='MC/' + det_name + '/Hits',
-                    **self._refine_props(moni_alg_props))
+                    **self._refine_props(
+                        moni_alg_props,
+                        keys_to_refine=['Type', 'HitsPropertyName']))
                 log.info("Registered external monitoring " + moni_alg_name)
                 algs.append(alg)
         return algs
@@ -116,7 +122,7 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
             if not props.get(req):
                 raise RuntimeError(
                     "ERROR: Property {} for {} not provided.".format(
-                        req.lower(), name))
+                        req, name))
 
     def _refine_props(self, props, keys_to_refine=['Type']):
         return {
