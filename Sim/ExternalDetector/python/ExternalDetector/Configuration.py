@@ -49,8 +49,7 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         for name, props in self.getProp("Shapes").items():
             self._check_props(name, props)
             tool_name = props['Type'] + 'Embedder'
-            tool = self._embedding_tool(name, tool_name, props)
-            geo.addTool(tool, name=name)
+            self._embedding_tool(name, geo, tool_name, props)
             geo.ExternalDetectors.append(tool_name + '/' + name)
             log.info("Registered external detector {} of type {}.".format(
                 name, tool_name))
@@ -134,7 +133,7 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         if not props.get(key):
             props[key] = prop
 
-    def _embedding_tool(self, name, tool_name, props):
+    def _embedding_tool(self, name, geo, tool_name, props):
         log.info("Registering external {} as {}".format(name, tool_name))
         tool_conf = getattr(Configurables, tool_name)
         sens_det_props = self.getProp('Sensitive').get(name)
@@ -143,9 +142,14 @@ class ExternalDetectorEmbedder(LHCbConfigurableUser):
         if sens_det_props:
             self._check_props(name, sens_det_props)
             sens_det_conf = getattr(Configurables, sens_det_props['Type'])
-            sens_det_name = name + 'SDet'
-            self._register_prop(sens_det_props, 'DetName', sens_det_name)
-            self._register_prop(props, 'SensDetName',
-                                sens_det_props['Type'] + '/' + sens_det_name)
-            sens_det_conf(sens_det_name, **self._refine_props(sens_det_props))
-        return tool_conf(name, **self._refine_props(props))
+            self._register_prop(sens_det_props, 'SensDetName', name + 'SDet')
+            self._register_prop(
+                props, 'SensDet',
+                sens_det_props['Type'] + '/' + sens_det_props['SensDetName'])
+            sens_det_tool = sens_det_conf(
+                sens_det_props['SensDetName'],
+                **self._refine_props(sens_det_props, ['Type', 'SensDetName']))
+        tool = tool_conf(name, **self._refine_props(props))
+        if sens_det_tool:
+            tool.addTool(sens_det_tool)
+        geo.addTool(tool, name=name)

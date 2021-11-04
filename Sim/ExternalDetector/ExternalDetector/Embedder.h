@@ -43,7 +43,7 @@ namespace ExternalDetector {
     Gaudi::Property<std::string> m_lVolName{this, "LogicalVolumeName", "CustomLVol"};
     Gaudi::Property<std::string> m_pVolName{this, "PhysicalVolumeName", "CustomPVol"};
     // name of the sensitive detector
-    PublicToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> m_sensDet{this, "SensDetName", ""};
+    ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> m_sensDet{this, "SensDet", ""};
 
   public:
     using extends::extends;
