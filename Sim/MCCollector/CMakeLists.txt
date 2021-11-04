@@ -27,5 +27,3 @@ gaudi_add_module(MCCollector
                  src/*.cpp
 		 INCLUDE_DIRS GiGaMTFactories
                  LINK_LIBRARIES GiGaMTCoreTruthLib MCTruthToEDMLib)
-
-gaudi_add_test(QMTest QMTEST)
