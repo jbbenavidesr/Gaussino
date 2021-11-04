@@ -12,7 +12,6 @@
 Utilities to configure the Simulation step of Gaussino
 """
 import Configurables
-from Configurables import GiGaMT
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaussino.Utilities import gigaService
 from Gaussino.SimUtils import configure_giga_alg, append_truth_actions
@@ -71,11 +70,14 @@ class SimPhase(ConfigurableUser):
         seq = []
         gigaService(debugcommunication=self.getProp('DebugCommunication'))
 
+        from Configurables import GiGaMT
+        giga = GiGaMT()
+
         giga_alg = configure_giga_alg()
         seq += [giga_alg]
 
-        self.set_base_physics()
-        geo_algs = self.set_base_detector_geometry()
+        self.set_base_physics(giga)
+        geo_algs = self.set_base_detector_geometry(giga)
         seq += geo_algs
 
         ApplicationMgr().TopAlg += seq
@@ -85,9 +87,8 @@ class SimPhase(ConfigurableUser):
             else:
                 append_truth_actions()
 
-    def set_base_physics(self):
+    def set_base_physics(self, giga):
         from Configurables import GiGaMTModularPhysListFAC
-        giga = GiGaMT()
         gmpl = giga.addTool(GiGaMTModularPhysListFAC(), name="ModularPL")
         giga.PhysicsListFactory = getattr(giga, "ModularPL")
 
@@ -101,10 +102,9 @@ class SimPhase(ConfigurableUser):
             from Configurables import ParallelGeometry
             ParallelGeometry().attach_physics(gmpl)
 
-    def set_base_detector_geometry(self):
+    def set_base_detector_geometry(self, giga):
         from Configurables import GiGaMTDetectorConstructionFAC
         algs = []
-        giga = GiGaMT()
         dettool = giga.addTool(
             GiGaMTDetectorConstructionFAC(), name="DetConst")
         giga.DetectorConstruction = getattr(giga, "DetConst")
