@@ -135,9 +135,21 @@ from Configurables import ParallelGeometry
 ParallelGeometry().ParallelWorlds = {
     'ParallelWorld1': {
         'ExternalDetectorEmbedder': 'ParallelEmbedder1',
+        'ExportGDML': {
+            'GDMLFileName': 'ParallelWorld1.gdml',
+            'GDMLFileNameOverwrite': True,
+            'GDMLExportSD': True,
+            'GDMLExportEnergyCuts': True,
+        },
     },
     'ParallelWorld2': {
         'ExternalDetectorEmbedder': 'ParallelEmbedder2',
+        'ExportGDML': {
+            'GDMLFileName': 'ParallelWorld2.gdml',
+            'GDMLFileNameOverwrite': True,
+            'GDMLExportSD': True,
+            'GDMLExportEnergyCuts': True,
+        },
     },
 }
 ParallelGeometry().ParallelPhysics = {
@@ -157,3 +169,10 @@ SimPhase().ParallelGeometry = True
 # here embedding of the geometry takes place
 from Gaussino.Simulation import SimPhase
 SimPhase().ExternalDetectorEmbedder = "MassEmbedder"
+
+SimPhase().ExportGDML = {
+    'GDMLFileName': 'MassWorld.gdml',
+    'GDMLFileNameOverwrite': True,
+    'GDMLExportSD': True,
+    'GDMLExportEnergyCuts': True,
+}
