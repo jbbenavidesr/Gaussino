@@ -49,14 +49,16 @@ namespace MCCollector {
     inline void setOnlyForward( bool onlyForward ) { m_onlyForward = onlyForward; }
     inline void setOnlyAtBoundary( bool onlyAtBoundary ) { m_onlyAtBoundary = onlyAtBoundary; }
     inline void setPrintStats( bool printStats ) { m_printStats = printStats; }
+    inline void setForceStoreTruth( bool forceStoreTruth ) { m_forceStoreTruth = forceStoreTruth; }
 
   protected:
     HitsCollection* m_col;
 
-    bool m_requireEDep    = false;
-    bool m_onlyForward    = true;
-    bool m_onlyAtBoundary = false;
-    bool m_printStats     = false;
+    bool m_requireEDep     = false;
+    bool m_onlyForward     = true;
+    bool m_onlyAtBoundary  = false;
+    bool m_printStats      = false;
+    bool m_forceStoreTruth = false;
   };
 
   class SensDetFactory : public GiGaMTG4SensDetFactory<SensDet> {
@@ -74,6 +76,9 @@ namespace MCCollector {
     // Print additional information at the end of each event
     Gaudi::Property<bool> m_printStats{this, "PrintStats", false};
 
+    // Force storing info about tracks & particles
+    Gaudi::Property<bool> m_forceStoreTruth{this, "ForceStoreTruth", false};
+
   public:
     using base_fac = GiGaMTG4SensDetFactory<SensDet>;
     using base_fac::base_fac;
@@ -84,6 +89,7 @@ namespace MCCollector {
       sensdet->setOnlyForward( m_onlyForward.value() );
       sensdet->setOnlyAtBoundary( m_onlyAtBoundary.value() );
       sensdet->setPrintStats( m_printStats.value() );
+      sensdet->setForceStoreTruth( m_forceStoreTruth.value() );
       return sensdet;
     }
   };
@@ -133,7 +139,7 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
   auto ui = track->GetUserInformation();
   auto gi = (GaussinoTrackInformation*)ui;
   gi->setCreatedHit( true );
-  gi->setToStoreTruth( true );
+  if ( m_forceStoreTruth ) { gi->setToStoreTruth( true ); }
   gi->addHit( newHit );
 
   m_col->insert( newHit );
