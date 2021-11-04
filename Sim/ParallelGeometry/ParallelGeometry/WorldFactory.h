@@ -29,11 +29,24 @@ namespace ParallelGeometry {
   class WorldFactory : public extends<GiGaTool, GiGaFactoryBase<G4VUserParallelWorld>> {
     static_assert( std::is_base_of<ParallelGeometry::World, ParallelWorld>::value );
 
+    // GDML Export
+    Gaudi::Property<std::string> m_schema{this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
+    Gaudi::Property<bool>        m_refs{this, "GDMLAddReferences", true};
+    Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
+    Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
+                                             "Overwrite a GDML if it already exists"};
+    // export auxilliary information
+    Gaudi::Property<bool> m_exportSD{this, "GDMLExportSD", false};
+    Gaudi::Property<bool> m_exportEnergyCuts{this, "GDMLExportEnergyCuts", false};
+
   public:
     using extends::extends;
+    StatusCode             initialize() override;
+    StatusCode             finalize() override;
     virtual ParallelWorld* construct() const override;
 
   protected:
+    std::string         parseName() const;
     inline virtual void additionalWorldConstrution( G4VPhysicalVolume* ) const {};
     inline virtual void additionalSDConstrution() const {};
 

@@ -18,10 +18,21 @@ class ParallelGeometry(LHCbConfigurableUser):
     __slots__ = {
         "ParallelWorlds": {},
         #
+        #
+        # Note! Make sure that all your detectors have materials
+        # if you want to export a GDML
+        # i.e. material != nullptr, as G4GDMLParser will most likely crash
+        #
         # ex. {
         #     "ParWorld1": {
         #         "Type": "DefaultWorld", # default
         #         "ExternalDetectorEmbedder": "ExtDetEmb1",
+        #         "ExportGDML: {
+        #             'GDMLFileName': 'ParWorld1.gdml',
+        #             'GDMLFileNameOverwrite': True,
+        #             'GDMLExportSD': True,
+        #             'GDMLExportEnergyCuts': True,
+        #         },
         #     },
         # },
         #
@@ -32,18 +43,6 @@ class ParallelGeometry(LHCbConfigurableUser):
         #         "Type": "DefaultParallelPhysics", # default
         #     },
         # },
-        #
-        "SaveGDML": {}
-        #
-        # Note! Make sure that all your detectors have materials
-        # i.e. material != nullptr, as G4GDMLParser will most likely crash
-        #
-        # ex. {
-        #     "ParWorld1": {
-        #         "Output": "ParWorld1.gdml",
-        #         "ExportSD": True, # more options in GDMLRunAction
-        #     },
-        # }
     }
 
     _external_embedders = []
@@ -64,8 +63,9 @@ class ParallelGeometry(LHCbConfigurableUser):
                 fac_conf = getattr(Configurables, factype)
                 fac = fac_conf(
                     world_name,
-                    **self._refine_props(props,
-                                         ['Type', 'ExternalDetectorEmbedder']))
+                    **self._refine_props(
+                        props,
+                        ['Type', 'ExternalDetectorEmbedder', 'ExportGDML']))
 
                 embedder_name = props.get("ExternalDetectorEmbedder")
                 if embedder_name:
@@ -75,6 +75,20 @@ class ParallelGeometry(LHCbConfigurableUser):
                     algs += embedder.activate_hits_alg()  # no slot for now!
                     algs += embedder.activate_moni_alg()  # no slot for now!
                     self._external_embedders.append(embedder_name)
+
+                # Save as a GDML File
+                gdml_export = props.get("ExportGDML")
+                if gdml_export:
+                    if type(gdml_export) is not dict:
+                        raise RuntimeError(
+                            "ExportGDML should be a dictionary of options")
+                    else:
+                        for name, value in gdml_export.items():
+                            if name.startswith('GDML'):
+                                setattr(fac, name, value)
+                            else:
+                                raise RuntimeError(
+                                    "GDML options start with GDML")
 
                 dettool.addTool(fac, name=world_name)
                 par_worlds_tools.append(getattr(dettool, world_name))

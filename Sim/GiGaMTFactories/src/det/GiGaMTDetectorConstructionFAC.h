@@ -64,6 +64,7 @@ private:
 
   // GDML Export
   Gaudi::Property<std::string> m_schema{this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
+  Gaudi::Property<bool>        m_refs{this, "GDMLAddReferences", true};
   Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
   Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
                                            "Overwrite a GDML if it already exists"};

@@ -116,7 +116,7 @@ StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
     g4writer.SetSDExport( m_exportSD.value() );
     g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
     G4LogicalVolume* world = nullptr;
-    g4writer.Write( m_outfile.value(), world, true, m_schema.value() );
+    g4writer.Write( m_outfile.value(), world, m_refs.value(), m_schema.value() );
   } catch ( std::exception& err ) {
     error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;
     return StatusCode::FAILURE;
