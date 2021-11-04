@@ -64,3 +64,5 @@ gaudi_add_library(GiGaMTCoreCutLib
                  LINK_LIBRARIES CLHEP ${GEANT4_LIBS}  GiGaMTCoreMessageLib)
 
 gaudi_install_headers(GiGaMTCoreDet)
+
+gaudi_add_test(QMTest QMTEST)
