@@ -8,12 +8,70 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import LHCbConfigurableUser
+from Gaudi.Configuration import ConfigurableUser
 from Gaudi.Configuration import log
 import Configurables
 
+__author__ = "Michal Mazurek"
+__email__ = "michal.mazurek@cern.ch"
 
-class ParallelGeometry(LHCbConfigurableUser):
+
+class ParallelGeometry(ConfigurableUser):
+    """This class sets up external detectors (from ``ExternalDetector``
+    package) in parallel worlds on top of mass geometry. This can be used
+    in studies where we would like to have volumes / sensitive detectors
+    overlapping each other.
+
+    :var ParallelWorlds: Properties of the parallel worlds (there can be more
+        than one parallel world).
+    :vartype ParallelWorlds: dict, required
+
+    :var ParallelPhysics: Properties of the physics factories that add a
+        special behaviour of the particles tracked in the parallel worlds.
+    :vartype ParallelPhysics: dict, required
+
+    .. note::
+        Note! Make sure that all your detectors have materials
+        if you want to export a GDML ( in parallel geometry volumes do not
+        have have materials defined)
+        i.e. material != nullptr, as G4GDMLParser will most likely crash
+
+
+    :Example:
+
+        .. highlight:: python
+        .. code-block:: python
+
+            from Gaussino.Simulation import SimPhase
+            SimPhase().ParallelGeometry = True
+
+
+            from Configurables import ParallelGeometry
+            ParallelGeometry().ParallelWorlds = {
+                'ParallelWorld1': {
+                    'ExternalDetectorEmbedder': 'ParallelEmbedder',
+                    'ExportGDML': {
+                        'GDMLFileName': 'ParallelWorld1.gdml',
+                        'GDMLFileNameOverwrite': True,
+                        'GDMLExportSD': True,
+                        'GDMLExportEnergyCuts': True,
+                    },
+                },
+            }
+
+            ParallelGeometry().ParallelPhysics = {
+                'ParallelWorld1': {
+                    'LayeredMass': False,
+                    # -> False = see material of the world below in stack
+                    'ParticlePIDs': [22],
+                    # -> empty means track all particles
+                },
+            }
+
+            # then define ParallelEmbedder as in the ``ExternalDetector``
+            # section
+
+    """
 
     __slots__ = {
         "ParallelWorlds": {},
@@ -41,6 +99,7 @@ class ParallelGeometry(LHCbConfigurableUser):
         # ex. {
         #     "ParWorld1": {
         #         "Type": "DefaultParallelPhysics", # default
+        #         "LayeredMass": "", # default
         #     },
         # },
     }
@@ -48,6 +107,12 @@ class ParallelGeometry(LHCbConfigurableUser):
     _external_embedders = []
 
     def attach(self, dettool):
+        """ Takes care of setting up the right tools and factories responsible
+        for the parallel geometries as defined in ``ParallelWorlds`` property.
+
+        :param dettool: Detector construction tool, should be
+            ``GiGaMTDetectorConstructionFAC``
+        """
         algs = []
         worlds = self.getProp("ParallelWorlds")
         if type(worlds) is dict:
@@ -96,20 +161,25 @@ class ParallelGeometry(LHCbConfigurableUser):
         return algs
 
     def attach_physics(self, modular_list):
+        """ Takes care of setting up the right tools and factories responsible
+        for the parallel physics factories that correspond to the parallel worlds.
+        All these properties should be provided in ``ParallelPhysics`` property.
+
+        :param modular_list: Modular physics list tool, should be
+            ``GiGaMTModularPhysListFAC``
+        """
         physics = self.getProp("ParallelPhysics")
         if type(physics) is dict:
             for world_name, phys_props in physics.items():
                 name = world_name + "Physics"
                 self._check_props(name, phys_props)
                 factype = phys_props.get('Type')
-                # TODO: maybe there'll be a need to set a different physics list
-                # for now it'll be always "DefaultParallelPhysicsFactory"
-                log.warning(
-                    "Physics Factory is fixed for now: DefaultParallelPhysics")
                 factype = "DefaultParallelPhysics"
-                # if not factype:
-                #     log.warning("No factory type specified for {}. Using default physics world factory".format(world_name))
-                #     factype = "DefaultParallelPhysics"
+                if not factype:
+                    log.warning(
+                        "No factory type specified for {}. Using default physics world factory"
+                        .format(world_name))
+                    factype = "DefaultParallelPhysics"
                 if factype == "DefaultParallelPhysics":
                     phys_props["WorldName"] = world_name
                 fac_conf = getattr(Configurables, factype)
@@ -117,18 +187,6 @@ class ParallelGeometry(LHCbConfigurableUser):
                 modular_list.addTool(pwph)
                 modular_list.PhysicsConstructors.append(
                     getattr(modular_list, name))
-
-    def world_to_gdml(self, run_seq):
-        world_gdmls = self.getProp("SaveGDML")
-        if type(world_gdmls) is dict:
-            from Configurables import GDMLRunAction
-            for world_name, gdml_props in world_gdmls.items():
-                name = "GDMLRunAction" + world_name
-                self._check_props(name, gdml_props)
-                gdml_props["ParallelWorldName"] = world_name
-                gdml_tool = GDMLRunAction(name, **gdml_props)
-                run_seq.addTool(gdml_tool, name)
-                run_seq.Members.append(getattr(run_seq, name))
 
     def _refine_props(self, props, keys_to_refine=['Type']):
         return {

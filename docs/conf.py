@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'myst_parser',
+    'sphinx.ext.graphviz',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -81,6 +82,7 @@ html_context['display_lower_left'] = True
 # visible versions
 versions = [
     'master',
+    'v0r1',
 ]
 
 # from git import Repo

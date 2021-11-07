@@ -3,7 +3,7 @@
 Please note that Gaussino is an experiment-independent package. If you are looking for a concrete experiment implementation, here is the list:
 - Gauss-on-Gaussino (LHCb Experiment)
 
-## Running from the nighlties (Gauss-on-Gaussino)
+## Running from the nighlties
 
 Currently it is only possible to build Gaussino with the help of nightly builds.
 
@@ -20,10 +20,15 @@ source /cvmfs/lhcb.cern.ch/lib/LbEnv
 2. Configure the platform
 
 ```
-lb-set-platform x86_64-centos7-gcc9-opt
+lb-set-platform x86_64_v2-centos7-gcc10-opt
 ```
 
-### Building from source (recommended)
+### Building from source
+
+```{eval-rst}
+.. note::
+    This is the recommended way for now.
+```
 
 1. Add the nightlies path to ```CMAKE_PREFIX_PATH``` directly from the destination
 
@@ -34,13 +39,13 @@ lb-set-platform x86_64-centos7-gcc9-opt
     OR by fetching the nightlies locally
 
     ```
-    lbn-install --verbose --platforms=x86_64-centos7-gcc9-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
-    export CMAKE_PREFIX_PATH=$PWD/lhcb-gaussino/Today:${CMAKE_PREFIX_PATH}
+    lbn-install --verbose --platforms=x86_64_v2-centos7-gcc10-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
+    export CMAKE_PREFIX_PATH=$PWD:$PWD/GitCondDB/InstallArea/x86_64_v2-centos7-gcc10-opt:${CMAKE_PREFIX_PATH}
     ```
 
-2. (Optional) get vtune amplifier
+2. Get vtune amplifier
     ```
-    export CMAKE_PREFIX_PATH=/cvmfs/projects.cern.ch/intelsw/psxe/linux/x86_64/2019/vtune_amplifier:${CMAKE_PREFIX_PATH}
+    export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/cvmfs/projects.cern.ch/intelsw/psxe/linux/x86_64/2019/vtune_amplifier 
     ```
 
 3. Clone the repository and apply all pending merge requests with a label ```lhcb-gaussino```.
@@ -48,9 +53,6 @@ lb-set-platform x86_64-centos7-gcc9-opt
     ```
     git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
     cd Gaussino
-    git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/origin/mr/*'
-    git checkout -b _local
-    git merge --no-edit origin/mr/9 origin/mr/18 origin/mr/21
     ```
 
 4. Configure, build and install:
@@ -65,7 +67,12 @@ lb-set-platform x86_64-centos7-gcc9-opt
     ./build/run gaudirun.py your_options.py
     ```
 
-### Working on a satellite project (not yet working)
+### Working on a satellite project
+
+```{eval-rst}
+.. warning::
+    This is not working yet.
+```
 
 1. Get a skeleton of your project by typing:
 
@@ -94,7 +101,12 @@ lb-set-platform x86_64-centos7-gcc9-opt
     make
     ```
 
-### Working on a satellite project with nightlies locally (not yet working)
+### Working on a satellite project with nightlies locally
+
+```{eval-rst}
+.. warning::
+    This is not working yet.
+```
 
 This might be useful if you want a local copy of the projects in the nighlt slot or if you're looking for a nightly slot that is no longer present in ```/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino```
 

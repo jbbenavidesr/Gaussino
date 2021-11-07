@@ -1,13 +1,6 @@
 # Simulation
 Configuration related to the simulation phase.
 
-## Options
-
-```{eval-rst}
-.. pretty-dict:: Gaussino.Simulation SimPhase __slots__ Default
-```
-
-## `SimPhase` class description
 
 ```{eval-rst}
 .. currentmodule:: Gaussino.Simulation

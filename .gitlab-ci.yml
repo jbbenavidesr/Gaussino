@@ -59,7 +59,7 @@ build-docs:
     LOCAL_PYTHON: "InstallArea/x86_64_v2-centos7-gcc10-opt/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
-    - pip install myst_parser
+    - pip install myst_parser graphviz
     - reasons=
     - export PYTHONPATHBKP=$PYTHONPATH
     - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP

@@ -1,13 +1,6 @@
 # Generation
 Configuration related to the generation phase.
 
-## Options
-
-```{eval-rst}
-.. pretty-dict:: Gaussino.Generation GenPhase __slots__ Default
-```
-
-## `GenPhase` class description
 
 ```{eval-rst}
 .. currentmodule:: Gaussino.Generation

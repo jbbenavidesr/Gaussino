@@ -22,17 +22,21 @@ Welcome to Gaussino's documentation!
 
 .. toctree::
    :caption: Configuration
-   :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
 
    configuration/gaussino
    configuration/generation
    configuration/simulation
+   configuration/external_detector
+   configuration/parallel_geometry
 
 .. toctree::
    :caption: Examples
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
+   
+   examples/external_detector
+   examples/parallel_geometry
 
 
 Indices and tables

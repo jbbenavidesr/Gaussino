@@ -1,13 +1,6 @@
 # Gaussino
 Main configuration class
 
-## Options
-
-```{eval-rst}
-.. pretty-dict:: Gaussino.Configuration Gaussino __slots__ Default
-```
-
-## `Gaussino` class description
 
 ```{eval-rst}
 .. currentmodule:: Gaussino.Configuration
