@@ -35,7 +35,9 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
   Gaudi::Property<bool>                                m_storeByOwnProcess{this, "StoreByOwnProcess", false};
   Gaudi::Property<std::vector<std::string>>            m_ownStoredProcess{this, "StoredOwnProcesses", {}};
   Gaudi::Property<bool>                                m_storeUpToZmax{this, "StoreUpToZ", true};
-  Gaudi::Property<double>                              m_zMaxToStore{this, "ZmaxForStoring", 12280 * CLHEP::mm};
+  Gaudi::Property<double>                              m_zMaxToStore{this, "ZmaxForStoring", 10. * CLHEP::km};
+  Gaudi::Property<double>                              m_zMaxTilt{this, "ZmaxForStoringTilt", 0. * CLHEP::degree};
+  Gaudi::Property<double>                              m_zMaxYShift{this, "ZmaxForStoringYShift", 0. * CLHEP::mm};
   Gaudi::Property<bool>                                m_rejectRICHphe{this, "RejectRICHPhotoelectrons", true};
   Gaudi::Property<bool>                                m_rejectOptPhot{this, "RejectOpticalPhotons", true};
 
@@ -57,7 +59,12 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
     action->storeByOwnProcess = m_storeByOwnProcess.value();
     action->ownStoredProcess.insert( std::begin( m_ownStoredProcess ), std::end( m_ownStoredProcess ) );
     action->storeUpToZmax = m_storeUpToZmax.value();
-    action->zMaxToStore   = m_zMaxToStore;
+    if ( m_storeUpToZmax.value() && m_zMaxToStore.value() == 10. * CLHEP::km ) {
+      warning() << "StoreUpToZmax activated, but used with the default ZmaxForStoring = 10 km" << endmsg;
+    }
+    action->zMaxToStore   = m_zMaxToStore.value();
+    action->zMaxTilt      = m_zMaxTilt.value();
+    action->zMaxYShift    = m_zMaxYShift.value();
     action->rejectRICHphe = m_rejectRICHphe.value();
     action->rejectOptPhot = m_rejectOptPhot.value();
     return action;
@@ -68,7 +75,7 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
 #include "Kernel/ParticleProperty.h"
 
 class TruthStoringTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4UserTrackingAction>> {
-  Gaudi::Property<bool>                                m_endvertices{this, "AddEndVertices", true};
+  Gaudi::Property<bool> m_endvertices{this, "AddEndVertices", true};
   using extends::extends;
   StatusCode initialize() override {
     auto sc = extends::initialize();
