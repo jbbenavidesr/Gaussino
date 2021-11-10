@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'myst_parser',
+    'sphinx.ext.graphviz',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -81,6 +82,7 @@ html_context['display_lower_left'] = True
 # visible versions
 versions = [
     'master',
+    'v0r1',
 ]
 
 # from git import Repo
@@ -99,3 +101,36 @@ html_context['versions'] = list()
 for version in versions:
     html_context['versions'].append((version,
                                      '/' + website_root + '/' + version + '/'))
+
+from importlib import import_module
+from pprint import pformat
+from docutils.parsers.rst import Directive
+from docutils import nodes
+from sphinx import addnodes
+
+
+class PrettyDictionaryDirective(Directive):
+    """Makes the dictionaries prettier"""
+    required_arguments = 4
+
+    def run(self):
+        module_name = self.arguments[0]
+        class_name = self.arguments[1]
+        member_name = self.arguments[2]
+        name_to_display = self.arguments[3]
+
+        member = getattr(import_module(module_name), class_name)
+        member = getattr(member, member_name)
+        code = pformat(member, 2)
+
+        literal = nodes.literal_block(code, code)
+        literal['language'] = 'python'
+
+        return [
+            addnodes.desc_name(text=name_to_display),
+            addnodes.desc_content('', literal)
+        ]
+
+
+def setup(app):
+    app.add_directive('pretty-dict', PrettyDictionaryDirective)

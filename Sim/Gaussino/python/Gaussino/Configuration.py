@@ -14,7 +14,6 @@ High level configuration tools for Gaussino
 
 __author__ = "Dominik Muller <dominik.muller@cern.ch>"
 
-
 from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from Gaudi.Configuration import log
 from Gaussino.Utilities import (ppService, dataService, redecayService,
@@ -25,49 +24,175 @@ from Gaussino.Simulation import SimPhase
 
 
 class Gaussino(ConfigurableUser):
+    """Main Configurable of Gaussino.
 
+    .. warning::
+        Some of these options have to be revisited as they
+        might be inactive or redundant.
+
+    :var Histograms: default: ``"DEFAULT"``
+    :vartype Histograms: str, optional
+
+    :var DatasetName: default: ``"Gaussino"``
+    :vartype DatasetName: str, optional
+
+    :var DatasetNameForced: default: ``False``
+    :vartype DatasetNameForced: bool, optional
+
+    :var DataType: default: ``""``
+    :vartype DataType: str, optional
+
+    :var SpilloverPaths: default: ``[]``
+    :vartype SpilloverPaths: list, optional
+
+    :var Phases: default: ``["Generator","Simulation"]``
+    :vartype Phases: list, optional
+
+    :var OutputType: default: ``'SIM'``
+    :vartype OutputType: str, optional
+
+    :var EnablePack: default: ``True``
+    :vartype EnablePack: bool, optional
+
+    :var DataPackingChecks: default: ``True``
+    :vartype DataPackingChecks: bool, optional
+
+    :var WriteFSR: default: ``True``
+    :vartype WriteFSR: bool, optional
+
+    :var MergeGenFSR: default: ``False``
+    :vartype MergeGenFSR: bool, optional
+
+    :var Debug: default: ``False``
+    :vartype Debug: bool, optional
+
+    :var BeamPipe: default: ``"BeamPipeOn"``
+    :vartype BeamPipe: str, optional
+
+    :var ReplaceWithGDML: default:
+        ``[ { "volsToReplace": [], "gdmlFile": "" } ]``
+    :vartype ReplaceWithGDML: list, optional
+
+    :var RandomGenerator: default: ``'Ranlux'``
+    :vartype RandomGenerator: str, optional
+
+    :var EvtMax: default: ``-1``
+    :vartype EvtMax: int, optional
+
+    :var EnableHive: default: ``False``
+    :vartype EnableHive: bool, optional
+
+    :var ReDecay: default: ``False``
+    :vartype ReDecay: bool, optional
+
+    :var ThreadPoolSize: default: ``2``
+    :vartype ThreadPoolSize: int, optional
+
+    :var EventSlots: default: ``2``
+    :vartype EventSlots: int, optional
+
+    :var ConvertEDM: default: ``False``
+    :vartype ConvertEDM: bool, optional
+
+    :var ForceRandomEngine: default: ``'NONE'``
+    :vartype ForceRandomEngine: str, optional
+
+    :var ParticleTable: default: ``'$GAUSSINOROOT/data/ParticleTable.txt'``
+    :vartype ParticleTable: str, optional
+    """
     __used_configurables__ = [GenPhase]
 
     __slots__ = {
-        "Histograms"         : "DEFAULT"  # NOQA
-        ,"DatasetName"       : "Gaussino"  # NOQA
-        ,"DatasetNameForced" : False  # NOQA
-        ,"DataType"          : ""  # NOQA
-        ,"SpilloverPaths"    : []  # NOQA
-        ,"Phases"            : ["Generator","Simulation"] # The Gauss phases to include in the SIM file  # NOQA
-        ,"OutputType"        : 'SIM'  # NOQA
-        ,"EnablePack"        : True  # NOQA
-        ,"DataPackingChecks" : True  # NOQA
-        ,"WriteFSR"          : True  # NOQA
-        ,"MergeGenFSR"       : False  # NOQA
-        ,"Debug"             : False  # NOQA
-        ,"BeamPipe"          : "BeamPipeOn" # _beamPipeSwitch = 1  # NOQA
-        ,"ReplaceWithGDML"   : [ { "volsToReplace": [], "gdmlFile": "" } ]  # NOQA
-        ,"RandomGenerator"   : 'Ranlux'  # NOQA
-        ,"EvtMax"            : -1  # NOQA
-        ,"EnableHive"        : False  # NOQA
-        ,"ReDecay"           : False  # NOQA
-        ,"ThreadPoolSize"    : 2  # NOQA
-        ,"EventSlots"        : 2  # NOQA
-        ,"ConvertEDM"        : False  # NOQA
-        ,"ForceRandomEngine"   : 'NONE'  # NOQA
-        ,"ParticleTable"    : "$GAUSSINOROOT/data/ParticleTable.txt"  # NOQA
-      }
+        "Histograms":
+        "DEFAULT"  # NOQA
+        ,
+        "DatasetName":
+        "Gaussino"  # NOQA
+        ,
+        "DatasetNameForced":
+        False  # NOQA
+        ,
+        "DataType":
+        ""  # NOQA
+        ,
+        "SpilloverPaths": []  # NOQA
+        ,
+        "Phases":
+        ["Generator",
+         "Simulation"]  # The Gauss phases to include in the SIM file  # NOQA
+        ,
+        "OutputType":
+        'SIM'  # NOQA
+        ,
+        "EnablePack":
+        True  # NOQA
+        ,
+        "DataPackingChecks":
+        True  # NOQA
+        ,
+        "WriteFSR":
+        True  # NOQA
+        ,
+        "MergeGenFSR":
+        False  # NOQA
+        ,
+        "Debug":
+        False  # NOQA
+        ,
+        "BeamPipe":
+        "BeamPipeOn"  # _beamPipeSwitch = 1  # NOQA
+        ,
+        "ReplaceWithGDML": [{
+            "volsToReplace": [],
+            "gdmlFile": ""
+        }]  # NOQA
+        ,
+        "RandomGenerator":
+        'Ranlux'  # NOQA
+        ,
+        "EvtMax":
+        -1  # NOQA
+        ,
+        "EnableHive":
+        False  # NOQA
+        ,
+        "ReDecay":
+        False  # NOQA
+        ,
+        "ThreadPoolSize":
+        2  # NOQA
+        ,
+        "EventSlots":
+        2  # NOQA
+        ,
+        "ConvertEDM":
+        False  # NOQA
+        ,
+        "ForceRandomEngine":
+        'NONE'  # NOQA
+        ,
+        "ParticleTable":
+        "$GAUSSINOROOT/data/ParticleTable.txt"  # NOQA
+    }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
         kwargs["name"] = name
         super(Gaussino, self).__init__(*(), **kwargs)
 
-    # @brief Set the given property in another configurable object
-    #  @param other The other configurable to set the property for
-    #  @param name  The property name
     def setOtherProp(self, other, name):
+        """Set the given property in another configurable object
+
+        :param other: The other configurable to set the property for
+        :param name:  The property name
+        """
         self.propagateProperty(name, other)
 
-    # @brief Set the given properties in another configurable object
-    #  @param other The other configurable to set the property for
-    #  @param names The property names
     def setOtherProps(self, other, names):
+        """ Set the given properties in another configurable object
+
+        :param other: The other configurable to set the property for
+        :param names: The property names
+        """
         self.propagateProperties(names, other)
 
     def setupHive(self):
@@ -93,7 +218,7 @@ class Gaussino(ConfigurableUser):
         ppService(self.getProp('ParticleTable'))
         dataService()
         auditorService()
-        if(self.getProp("ReDecay")):
+        if (self.getProp("ReDecay")):
             redecayService()
 
         phases = self.getProp("Phases")
@@ -107,7 +232,8 @@ class Gaussino(ConfigurableUser):
             GenPhase().configure_genonly()
 
         if self.getProp('ConvertEDM'):
-            ApplicationMgr().TopAlg += configure_edm_conversion(self.getProp("ReDecay"))
+            ApplicationMgr().TopAlg += configure_edm_conversion(
+                self.getProp("ReDecay"))
 
         histogramService()
 
@@ -126,7 +252,9 @@ class Gaussino(ConfigurableUser):
                     pass
                 else:
                     log.info('Forced random engine of {} to {}'.format(
-                        name, neweng,))
+                        name,
+                        neweng,
+                    ))
 
         if self.getProp('ForceRandomEngine') != 'NONE':
             appendPostConfigAction(force_engine)
@@ -164,5 +292,6 @@ class Gaussino(ConfigurableUser):
     def co(self):
         from Gaudi.Configuration import allConfigurables
         for c in allConfigurables:
-            if hasattr(c, 'ExtraInputs') and '/Event/IOVLock' not in c.ExtraInputs:  # NOQA
+            if hasattr(c, 'ExtraInputs'
+                       ) and '/Event/IOVLock' not in c.ExtraInputs:  # NOQA
                 c.ExtraInputs.append('/Event/IOVLock')

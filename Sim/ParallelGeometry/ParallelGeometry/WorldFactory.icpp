@@ -1,0 +1,124 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
+#include "Geant4/G4GDMLParser.hh"
+#include <filesystem>
+
+template <class ParallelWorld>
+StatusCode ParallelGeometry::WorldFactory<ParallelWorld>::initialize() {
+  return extends::initialize().andThen( [&]() -> StatusCode {
+    if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
+      warning() << "GDML file " << m_outfile.value() << " already exists! "
+                << "G4 will abort execution if the file GDML already exists." << endmsg;
+      if ( m_outfileOverwrite.value() ) {
+        warning() << "Removing the GDML file: " << m_outfile.value() << endmsg;
+        std::filesystem::remove( m_outfile.value() );
+      } else {
+        error() << "Overwriting the GDML is disabled." << endmsg;
+        return StatusCode::FAILURE;
+      }
+    }
+    return StatusCode::SUCCESS;
+  } );
+}
+
+template <class ParallelWorld>
+std::string ParallelGeometry::WorldFactory<ParallelWorld>::parseName() const {
+  auto                   world_name = name();
+  std::string::size_type posdot     = world_name.find( "." );
+  while ( posdot != std::string::npos ) {
+    world_name.erase( 0, posdot + 1 );
+    posdot = world_name.find( "." );
+  }
+  return world_name;
+}
+
+template <class ParallelWorld>
+ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const {
+  auto world_name = parseName();
+  auto par_world  = new ParallelWorld{world_name};
+
+  debug() << "Setting up a world constructor for " << name() << " parallel world" << endmsg;
+  par_world->setWorldConstructor( [&]( G4VPhysicalVolume* world ) {
+    debug() << "Constructing world for " << name() << " parallel world" << endmsg;
+    if ( !m_worldMaterial.value().empty() ) {
+      auto lvol     = world->GetLogicalVolume();
+      auto material = G4Material::GetMaterial( m_worldMaterial.value(), true );
+      if ( material ) {
+        debug() << "Setting " << m_worldMaterial.value() << " as the parallel world's material for " << lvol->GetName()
+                << endmsg;
+        lvol->SetMaterial( material );
+      } else {
+        warning() << "Material " << m_worldMaterial.value() << " not found. Leaving nullptr." << endmsg;
+      }
+    }
+
+    // Import external geometry volumes
+    for ( auto& embedder : m_ext_dets ) {
+      debug() << "Calling embedder" << embedder->name() << " in " << world->GetName() << endmsg;
+      embedder->embed( world ).ignore();
+    }
+
+    // Run additional functionality
+    debug() << "Constructing additional world functionalities for " << name() << " parallel world" << endmsg;
+    additionalWorldConstrution( world );
+  } );
+
+  debug() << "Setting up a SD constructor for " << name() << " parallel world" << endmsg;
+  par_world->setSDConstructor( [&]() {
+    // mostly empty, implemented in ExternalEmbedders
+    debug() << "Constructing a SD for " << name() << " parallel world" << endmsg;
+
+    // Import external geometry SD
+    for ( auto& embedder : m_ext_dets ) {
+      debug() << "Calling SD embedder" << embedder->name() << " for " << world_name << endmsg;
+      embedder->embedSD().ignore();
+    }
+
+    // Run additional functionality
+    debug() << "Constructing additional SD functionalities for " << name() << " parallel world" << endmsg;
+    additionalSDConstrution();
+  } );
+
+  return par_world;
+}
+
+template <class ParallelWorld>
+StatusCode ParallelGeometry::WorldFactory<ParallelWorld>::finalize() {
+  return extends::finalize().andThen( [&]() -> StatusCode {
+    if ( !m_outfile.value().empty() ) {
+      try {
+        G4GDMLParser g4writer;
+        g4writer.SetSDExport( m_exportSD.value() );
+        g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
+        auto transMgr      = G4TransportationManager::GetTransportationManager();
+        auto g4wv          = transMgr->GetParallelWorld( parseName() );
+        auto g4wvl         = g4wv->GetLogicalVolume();
+        auto material_null = !g4wvl->GetMaterial();
+        if ( material_null ) {
+          warning() << "Parallel world's material is nullptr! "
+                    << "This is ok for simulation, but not for GDML export. "
+                    << "Setting it temporarily to mass world's material" << endmsg;
+          auto mass_material = transMgr->GetNavigatorForTracking()->GetWorldVolume()->GetLogicalVolume()->GetMaterial();
+          g4wvl->SetMaterial( mass_material );
+        }
+        g4writer.Write( m_outfile.value(), g4wv, m_refs.value(), m_schema.value() );
+        if ( material_null ) {
+          warning() << "Setting parallel world's material back to nullptr." << endmsg;
+          g4wvl->SetMaterial( nullptr );
+        }
+      } catch ( std::exception& err ) {
+        error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;
+        return StatusCode::FAILURE;
+      }
+    }
+    return StatusCode::SUCCESS;
+  } );
+}

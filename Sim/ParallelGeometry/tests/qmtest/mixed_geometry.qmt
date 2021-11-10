@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE extension  PUBLIC '-//QM/2.3/Extension//EN'  'http://www.codesourcery.com/qm/dtds/2.3/-//qm/2.3/extension//en.dtd'>
+<!--
+    (c) Copyright 2021 CERN for the benefit of the LHCb Collaboration
+
+    This software is distributed under the terms of the GNU General Public
+    Licence version 3 (GPL Version 3), copied verbatim in the file "COPYING".
+
+    In applying this licence, CERN does not waive the privileges and immunities
+    granted to it by virtue of its status as an Intergovernmental Organization
+    or submit itself to any jurisdiction.
+-->
+<extension class="GaudiTest.GaudiExeTest" kind="test">
+<argument name="program"><text>gaudirun.py</text></argument>
+<argument name="timeout"><integer>600</integer></argument>
+<argument name="args"><set>
+  <text>../options/mixed_geometry.py</text>
+</set></argument>
+<argument name="validator"><text>
+options = [
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in MassPlaneSDet",
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in ParallelPlane1SDet",
+    "#Hits=    1 Energy=       0[GeV] #Particles=    1 in ParallelPlane2SDet",
+]
+for option in options:
+    if stdout.find(option) == -1:
+        causes.append('Parallel Geometry does not work as expected!')
+        result['GaudiTest.expected_string'] = result.Quote(option)
+</text></argument>
+</extension>
