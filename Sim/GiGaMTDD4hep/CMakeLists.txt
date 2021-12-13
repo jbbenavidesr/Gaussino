@@ -14,6 +14,7 @@
 ################################################################################
 gaudi_subdir(GiGaMTDD4hep v1r0)
 
+if(USE_DD4HEP)
 
 gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTFactories
@@ -58,3 +59,4 @@ add_dependencies(GiGaMTDD4hepLib DD4hepDDG4Ext)
 gaudi_add_module(GiGaMTDD4hep
                  src/components/*.cpp 
                  LINK_LIBRARIES GiGaMTDD4hepLib GaudiAlgLib)
+endif()

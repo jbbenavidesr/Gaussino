@@ -10,6 +10,7 @@
 ###############################################################################
 gaudi_subdir(DD4hepDDG4Ext v1r0)
 
+if(USE_DD4HEP)
 # Define EvtGen external project
 set(DD4hep_GIT_SOURCE "https://gitlab.cern.ch/Gaussino/DD4hep.git" CACHE STRING "URL of the DD4hep git repository")
 set(DD4hep_GIT_TAG "v01-16-01-patches" CACHE STRING "Tag of DD4hep to be used")
@@ -74,3 +75,4 @@ install(DIRECTORY "${INSTALL_DIR}/lib/"
         PATTERN "python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}" EXCLUDE)
 install(DIRECTORY "${INSTALL_DIR}/lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages/"
         DESTINATION python)
+endif()
