@@ -10,7 +10,7 @@
 ###############################################################################
 cmake_minimum_required(VERSION 3.6)
 
-set(LCG_LAYER LHCB_6 CACHE STRING "Specific set of version to use")
+set(LCG_LAYER LHCB_7 CACHE STRING "Specific set of version to use")
 option(LCG_USE_GENERATORS "enable/disable use of LCG generators" ON)
 
 
