@@ -20,7 +20,12 @@ source /cvmfs/lhcb.cern.ch/lib/LbEnv
 2. Configure the platform
 
 ```
-lb-set-platform x86_64_v2-centos7-gcc10-opt
+lb-set-platform x86_64_v2-centos7-gcc11-opt
+```
+
+```{eval-rst}
+.. note::
+    Use `x86_64_v2-centos7-gcc10+dd4hep-opt` if you want work with Detector/DD4hep.
 ```
 
 ### Building from source
@@ -39,29 +44,36 @@ lb-set-platform x86_64_v2-centos7-gcc10-opt
     OR by fetching the nightlies locally
 
     ```
-    lbn-install --verbose --platforms=x86_64_v2-centos7-gcc10-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
-    export CMAKE_PREFIX_PATH=$PWD:$PWD/GitCondDB/InstallArea/x86_64_v2-centos7-gcc10-opt:${CMAKE_PREFIX_PATH}
+    lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
+    export CMAKE_PREFIX_PATH=$PWD:${CMAKE_PREFIX_PATH}
     ```
 
-2. Get vtune amplifier
-    ```
-    export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/cvmfs/projects.cern.ch/intelsw/psxe/linux/x86_64/2019/vtune_amplifier 
+    ```{eval-rst}
+    .. note::
+        Use `x86_64_v2-centos7-gcc10+dd4hep-opt` if you want work with Detector/DD4hep.
     ```
 
-3. Clone the repository and apply all pending merge requests with a label ```lhcb-gaussino```.
+
+2. Clone the repository.
 
     ```
     git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
     cd Gaussino
     ```
+    
+    ```{eval-rst}
+    .. note::
+       Don't forget to merge all pending merge requests with a label ```lhcb-gaussino```!
+    ```
 
-4. Configure, build and install:
+
+3. Configure, build and install:
     ```
     cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
     make -C build -j4 install
     ``` 
 
-5. Run
+4. Run
 
     ```
     ./build/run gaudirun.py your_options.py
