@@ -58,18 +58,15 @@ typedef GiGaMTG4PhysicsConstrFAC<G4IonPhysics> GiGaMT_G4IonPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
 
 template <typename PhysConstr>
-class GiGaMTG4PhysicsConstrFAC<PhysConstr,
-                               typename std::enable_if<std::is_same<PhysConstr, G4StoppingPhysics>::value,
-                                                       PhysConstr>::type>
-    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
-{
-  Gaudi::Property<bool> m_useMuonMinusCapturetool{this, "UseMuonMinusCapture", true,
-                          "Parameter 'UseMuonMinusCapture' for the constructor of G4StoppingPhysics"};
+class GiGaMTG4PhysicsConstrFAC<
+    PhysConstr, typename std::enable_if<std::is_same<PhysConstr, G4StoppingPhysics>::value, PhysConstr>::type>
+    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
+  Gaudi::Property<bool> m_useMuonMinusCapturetool{
+      this, "UseMuonMinusCapture", true, "Parameter 'UseMuonMinusCapture' for the constructor of G4StoppingPhysics"};
 
 public:
   using extends::extends;
-  PhysConstr* construct() const override
-  {
+  PhysConstr* construct() const override {
     auto tmp = new PhysConstr{name(), verbosity(), m_useMuonMinusCapturetool.value()};
     return tmp;
   }
@@ -85,22 +82,20 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4NeutronTrackingCut, "GiGaMT_G4NeutronTrackin
 
 // Specialization for those HadronPhysics lists with quasi elastic option
 template <typename PhysConstr>
-class GiGaMTG4PhysicsConstrFAC<PhysConstr,
-                               typename std::enable_if<std::is_same<PhysConstr, G4HadronPhysicsQGSP_BERT>::value ||
-                                                       std::is_same<PhysConstr, G4HadronPhysicsQGSP_BERT_HP>::value ||
-                                                       std::is_same<PhysConstr, G4HadronPhysicsQGSP_FTFP_BERT>::value ||
-                                                       std::is_same<PhysConstr, G4HadronPhysicsFTFP_BERT>::value ||
-                                                       std::is_same<PhysConstr, G4HadronPhysicsFTFP_BERT_HP>::value,
-                                                       PhysConstr>::type>
-    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
-{
+class GiGaMTG4PhysicsConstrFAC<
+    PhysConstr, typename std::enable_if<std::is_same<PhysConstr, G4HadronPhysicsQGSP_BERT>::value ||
+                                            std::is_same<PhysConstr, G4HadronPhysicsQGSP_BERT_HP>::value ||
+                                            std::is_same<PhysConstr, G4HadronPhysicsQGSP_FTFP_BERT>::value ||
+                                            std::is_same<PhysConstr, G4HadronPhysicsFTFP_BERT>::value ||
+                                            std::is_same<PhysConstr, G4HadronPhysicsFTFP_BERT_HP>::value,
+                                        PhysConstr>::type>
+    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
   Gaudi::Property<bool> m_quasiElastic{this, "QuasiElastic", true,
                                        "Parameter 'quasiElastic' for the constructor of HadronPhysicsQGSP_BERT"};
 
 public:
   using extends::extends;
-  PhysConstr* construct() const override
-  {
+  PhysConstr* construct() const override {
     auto tmp = new PhysConstr{name(), m_quasiElastic.value()};
     tmp->SetVerboseLevel( verbosity() );
     return tmp;
