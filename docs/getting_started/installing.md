@@ -35,13 +35,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
     This is the recommended way for now.
 ```
 
-1. Add the nightlies path to ```CMAKE_PREFIX_PATH``` directly from the destination
-
-    ```
-    export CMAKE_PREFIX_PATH=/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/Today:${CMAKE_PREFIX_PATH}
-    ```
-
-    OR by fetching the nightlies locally
+1. Fetch the nightlies locally 
 
     ```
     lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
@@ -50,9 +44,14 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
     ```{eval-rst}
     .. note::
-        Use `x86_64_v2-centos7-gcc10+dd4hep-opt` if you want work with Detector/DD4hep.
+        Use `x86_64_v2-centos7-gcc11+dd4hep-opt` if you want work with Detector/DD4hep.
     ```
 
+    OR (less recommended) add the nightlies path to ```CMAKE_PREFIX_PATH``` directly from the destination
+
+    ```
+    export CMAKE_PREFIX_PATH=/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest:${CMAKE_PREFIX_PATH}
+    ```
 
 2. Clone the repository.
 
