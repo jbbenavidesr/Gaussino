@@ -38,7 +38,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 1. Fetch the nightlies locally 
 
     ```
-    lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=GitCondDB,Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
+    lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
     export CMAKE_PREFIX_PATH=$PWD:${CMAKE_PREFIX_PATH}
     ```
 
