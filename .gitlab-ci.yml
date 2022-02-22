@@ -56,7 +56,7 @@ build-docs:
     - cvmfs
   variables:
     NIGHTLIES_PATH: "/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest"
-    LOCAL_PYTHON: "InstallArea/x86_64_v2-centos7-gcc10-opt/python"
+    LOCAL_PYTHON: "InstallArea/$BINARY_TAG/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
     - pip install myst_parser graphviz
