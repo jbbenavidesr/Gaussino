@@ -15,8 +15,8 @@ stages:
 
 variables:
   TARGET_BRANCH: master
-  BINARY_TAG: x86_64_v2-centos7-gcc10-opt
-  LCG_VERSION: 100
+  BINARY_TAG: x86_64_v2-centos7-gcc11-opt
+  LCG_VERSION: 101
   NO_LBLOGIN: "1"
 
 
