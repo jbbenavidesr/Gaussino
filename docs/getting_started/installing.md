@@ -25,7 +25,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
 ```{eval-rst}
 .. note::
-    Use `x86_64_v2-centos7-gcc10+dd4hep-opt` if you want work with Detector/DD4hep.
+    Use `x86_64_v2-centos7-gcc11+dd4hep-opt` if you want work with Detector/DD4hep.
 ```
 
 ### Building from source
