@@ -8,7 +8,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
 
 # Reduce the total number of warnings by A LOT until ROOT has been modified
 option(GAUDI_SUGGEST_OVERRIDE "enable warnings for missing override keyword" OFF)
@@ -67,19 +67,6 @@ macro(AddHepMC3)
     # FIXME: disabled because of HepMC & HepMC3 namespace collision
     # -lHepMC3rootIO
     -lHepMC3search)
-endmacro()
-
-macro(AddDD4hepDDG4)
-    include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/include)
-    link_directories(${CMAKE_INSTALL_PREFIX}/lib)
-
-    set(DD4hepDDG4_LIBRARIES
-          #-lDDG4LCIO
-          -lDDG4Legacy  
-          -lDDG4Plugins  
-          -lDDG4Python  
-          -lDDG4  
-          -lDDPython)
 endmacro()
 
 # make sure pkg-config looks for packages on CMAKE_PREFIX_PATH and system
