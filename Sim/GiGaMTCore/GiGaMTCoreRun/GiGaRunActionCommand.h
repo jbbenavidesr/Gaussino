@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "Geant4/G4UserRunAction.hh"
+#include "G4UserRunAction.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include <string>
 #include <vector>

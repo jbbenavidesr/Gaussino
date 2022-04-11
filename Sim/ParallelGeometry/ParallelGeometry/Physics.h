@@ -11,7 +11,7 @@
 #pragma once
 
 // Geant4
-#include "Geant4/G4ParallelWorldPhysics.hh"
+#include "G4ParallelWorldPhysics.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 
 namespace ParallelGeometry {

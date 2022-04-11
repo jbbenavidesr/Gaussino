@@ -11,8 +11,8 @@
 #pragma once
 
 // from Gaudi
-#include "Geant4/G4VPhysicalVolume.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4VUserDetectorConstruction.hh"
 #include <functional>
 
 //@class GiGaMTDetectorConstruction

@@ -10,14 +10,14 @@
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
 
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4GeometryManager.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
-#include "Geant4/G4MTRunManager.hh"
-#include "Geant4/G4StateManager.hh"
-#include "Geant4/G4TransportationManager.hh"
-#include "Geant4/G4UImanager.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4Event.hh"
+#include "G4GeometryManager.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4MTRunManager.hh"
+#include "G4StateManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4UImanager.hh"
+#include "G4VUserDetectorConstruction.hh"
 
 #include <mutex>
 

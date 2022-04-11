@@ -10,8 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4VHitsCollection.hh"
+#include "G4Event.hh"
+#include "G4VHitsCollection.hh"
 #include <memory>
 
 class GiGaWorkerPilot;

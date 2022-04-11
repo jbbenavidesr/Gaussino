@@ -12,8 +12,8 @@
 
 // Include files
 #include "GiGaMTFactories/GiGaTool.h"
-#include "Geant4/G4EmStandardPhysics_option1.hh"
-#include "Geant4/G4VPhysicsConstructor.hh"
+#include "G4EmStandardPhysics_option1.hh"
+#include "G4VPhysicsConstructor.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 /** GiGaMTPhysConstr

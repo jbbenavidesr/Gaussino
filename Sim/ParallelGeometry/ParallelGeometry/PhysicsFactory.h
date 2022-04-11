@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 // Geant4
-#include "Geant4/G4ParallelWorldPhysics.hh"
+#include "G4ParallelWorldPhysics.hh"
 // local
 #include "GiGaMTFactories/GiGaMTG4PhysicsConstrFAC.h"
 #include "GiGaMTFactories/GiGaMTG4PhysicsFactory.h"

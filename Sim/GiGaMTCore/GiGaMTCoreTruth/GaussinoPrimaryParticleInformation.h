@@ -9,8 +9,8 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #pragma once
-#include "Geant4/G4VUserPrimaryParticleInformation.hh"
-#include "Geant4/G4PrimaryParticle.hh"
+#include "G4VUserPrimaryParticleInformation.hh"
+#include "G4PrimaryParticle.hh"
 
 /** @class GaussinoPrimaryParticleInformation
  *

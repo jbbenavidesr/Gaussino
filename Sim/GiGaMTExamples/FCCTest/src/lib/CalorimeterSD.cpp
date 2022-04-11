@@ -11,12 +11,12 @@
 #include "FCCTest/CalorimeterSD.h"
 #include "FCCTest/CalorimeterHit.h"
 
-#include "Geant4/G4HCofThisEvent.hh"
-#include "Geant4/G4SDManager.hh"
-#include "Geant4/G4Step.hh"
-#include "Geant4/G4TouchableHistory.hh"
-#include "Geant4/G4Track.hh"
-#include "Geant4/G4VTouchable.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4SDManager.hh"
+#include "G4Step.hh"
+#include "G4TouchableHistory.hh"
+#include "G4Track.hh"
+#include "G4VTouchable.hh"
 
 namespace FCCTest
 {

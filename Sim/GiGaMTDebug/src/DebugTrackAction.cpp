@@ -8,8 +8,8 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "Geant4/G4UserTrackingAction.hh"
-#include "Geant4/G4VProcess.hh"
+#include "G4UserTrackingAction.hh"
+#include "G4VProcess.hh"
 
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "HepMC3/FourVector.h"
@@ -22,9 +22,9 @@
 // from Gaudi
 
 // G4
-#include "Geant4/G4ParticleDefinition.hh"
-#include "Geant4/G4PrimaryParticle.hh"
-#include "Geant4/G4TrackingManager.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4TrackingManager.hh"
 
 // Included for vertex types
 // FIXME: Need to reorganise when splitting LHCb
@@ -197,7 +197,7 @@ namespace Gaussino
 #include "GaudiAlg/GaudiTool.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
-#include "Geant4/G4UserTrackingAction.hh"
+#include "G4UserTrackingAction.hh"
 
 class DebugTrackActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserTrackingAction>>
 {

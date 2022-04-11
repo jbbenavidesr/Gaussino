@@ -11,7 +11,7 @@
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
 #include "ConverterInfo.h"
 #include "GaudiKernel/GaudiException.h"
-#include "Geant4/G4SystemOfUnits.hh"
+#include "G4SystemOfUnits.hh"
 #include "GiGaMTCoreTruth/GaussinoPrimaryParticleInformation.h"
 #include "GiGaMTCoreTruth/LinkedParticleHelpers.h"
 #include "GiGaMTCoreRun/SimResults.h"

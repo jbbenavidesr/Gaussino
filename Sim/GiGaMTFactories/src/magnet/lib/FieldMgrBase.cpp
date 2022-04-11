@@ -10,11 +10,11 @@
 \*****************************************************************************/
 #include "GiGaMTFactories/Magnet/FieldMgrBase.h"
 #include "GaudiKernel/GaudiException.h"
-#include "Geant4/G4ChordFinder.hh"
-#include "Geant4/G4MagIntegratorStepper.hh"
-#include "Geant4/G4Mag_UsualEqRhs.hh"
-#include "Geant4/G4PropagatorInField.hh"
-#include "Geant4/G4TransportationManager.hh"
+#include "G4ChordFinder.hh"
+#include "G4MagIntegratorStepper.hh"
+#include "G4Mag_UsualEqRhs.hh"
+#include "G4PropagatorInField.hh"
+#include "G4TransportationManager.hh"
 
 namespace Gaussino
 {

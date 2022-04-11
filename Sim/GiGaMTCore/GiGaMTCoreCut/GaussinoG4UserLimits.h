@@ -15,8 +15,8 @@
 
 enum ULtype {ULMinEkine, ULMaxTime, ULMaxStepLength, ULMaxTrackLength, ULMinRange};
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4UserLimits.hh"
+#include "globals.hh"
+#include "G4UserLimits.hh"
 #include <map>
 
 class G4Track;
@@ -94,7 +94,7 @@ inline bool operator!= ( const Gaussino::UserLimits& ul1 ,
 { return !(ul1 == ul2) ; }
 
 }
-#include "Geant4/G4Track.hh"
+#include "G4Track.hh"
 
 inline const G4String& Gaussino::UserLimits::GetType() const
 {

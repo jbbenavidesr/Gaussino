@@ -15,15 +15,15 @@
 #include "GiGaMTRegions/IRegionsDefinitionSvc.h"
 #include "GiGaMTRegions/RegionCuts.h"
 
-#include "Geant4/G4LogicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
 
 // local
 #include "GiGaRegionsTool.h"
 
 // G4
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4ProductionCuts.hh"
-#include "Geant4/G4Region.hh"
+#include "G4LogicalVolume.hh"
+#include "G4ProductionCuts.hh"
+#include "G4Region.hh"
 
 // Declaration of the Tool Factory
 DECLARE_COMPONENT( GiGaRegionsTool )

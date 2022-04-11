@@ -10,8 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
-#include "Geant4/G4UserTrackingAction.hh"
-#include "Geant4/G4VProcess.hh"
+#include "G4UserTrackingAction.hh"
+#include "G4VProcess.hh"
 
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "HepMC3/FourVector.h"

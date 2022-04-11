@@ -14,10 +14,10 @@
 #include <string>
 #include <vector>
 /// Geant4
-#include "Geant4/G4Allocator.hh"
-#include "Geant4/G4EventManager.hh"
-#include "Geant4/G4TrackingManager.hh"
-#include "Geant4/G4VUserTrackInformation.hh"
+#include "G4Allocator.hh"
+#include "G4EventManager.hh"
+#include "G4TrackingManager.hh"
+#include "G4VUserTrackInformation.hh"
 /// GaussTools
 #include "GiGaMTCoreDet/GaussHitBase.h"
 #include "GiGaMTCoreTruth/DetTrackInfo.h"

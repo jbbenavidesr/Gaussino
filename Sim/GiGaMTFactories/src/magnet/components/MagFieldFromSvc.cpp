@@ -21,7 +21,7 @@
 #include "GaudiKernel/Vector3DTypes.h"
 
 // local
-#include "Geant4/G4MagneticField.hh"
+#include "G4MagneticField.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"

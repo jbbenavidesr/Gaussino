@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "Geant4/G4VUserPhysicsList.hh"
+#include "G4VUserPhysicsList.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GaudiAlg/GaudiTool.h"
 

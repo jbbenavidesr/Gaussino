@@ -11,7 +11,7 @@
 #pragma once
 
 // Include files
-#include "Geant4/G4VSensitiveDetector.hh"
+#include "G4VSensitiveDetector.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 

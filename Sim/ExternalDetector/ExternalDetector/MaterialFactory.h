@@ -14,7 +14,7 @@
 #include "GaudiKernel/PhysicalConstants.h"
 #include "GaudiKernel/SystemOfUnits.h"
 // Geant4
-#include "Geant4/G4Material.hh"
+#include "G4Material.hh"
 // GiGaMT
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"

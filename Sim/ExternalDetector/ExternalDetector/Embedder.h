@@ -17,7 +17,7 @@
 #include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 // Geant4
-#include "Geant4/G4VSensitiveDetector.hh"
+#include "G4VSensitiveDetector.hh"
 
 class G4VSolid;
 class G4VPhysicalVolume;

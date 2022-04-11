@@ -9,22 +9,22 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GaudiAlg/GaudiTool.h"
-#include "Geant4/G4EquationOfMotion.hh"
-#include "Geant4/G4MagIntegratorStepper.hh"
+#include "G4EquationOfMotion.hh"
+#include "G4MagIntegratorStepper.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
-#include "Geant4/G4ExplicitEuler.hh"
-#include "Geant4/G4ImplicitEuler.hh"
-#include "Geant4/G4SimpleRunge.hh"
-#include "Geant4/G4SimpleHeum.hh"
-#include "Geant4/G4ClassicalRK4.hh"
-#include "Geant4/G4CashKarpRKF45.hh"
-#include "Geant4/G4RKG3_Stepper.hh"
-#include "Geant4/G4HelixExplicitEuler.hh"
-#include "Geant4/G4HelixImplicitEuler.hh"
-#include "Geant4/G4HelixSimpleRunge.hh"
-#include "Geant4/G4HelixHeum.hh"
+#include "G4ExplicitEuler.hh"
+#include "G4ImplicitEuler.hh"
+#include "G4SimpleRunge.hh"
+#include "G4SimpleHeum.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4CashKarpRKF45.hh"
+#include "G4RKG3_Stepper.hh"
+#include "G4HelixExplicitEuler.hh"
+#include "G4HelixImplicitEuler.hh"
+#include "G4HelixSimpleRunge.hh"
+#include "G4HelixHeum.hh"
 
 template <typename STEPPER>
 class GiGaMTMagnetStepperFAC : public extends<GaudiTool, GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*> >

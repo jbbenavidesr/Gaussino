@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "Geant4/G4WorkerRunManager.hh"
+#include "G4WorkerRunManager.hh"
 
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 

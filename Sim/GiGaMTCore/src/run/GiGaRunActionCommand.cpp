@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaRunActionCommand.h"
-#include "Geant4/G4UImanager.hh"
+#include "G4UImanager.hh"
 
 // ============================================================================
 /** performe the action at the begin of each run

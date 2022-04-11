@@ -15,7 +15,7 @@
 #include <vector>
 // GiGa
 #include "CLHEP/Units/SystemOfUnits.h"
-#include "Geant4/G4UserTrackingAction.hh"
+#include "G4UserTrackingAction.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTCoreTruth/ZMaxPlane.h"
 
