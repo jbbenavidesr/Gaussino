@@ -39,7 +39,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
     ```
     lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
-    export CMAKE_PREFIX_PATH=${PWD}/lhcb-gaussino/Today:${CMAKE_PREFIX_PATH}
+    lb-set-workspace ./lhcb-gaussino/Today
     ```
 
     ```{eval-rst}
