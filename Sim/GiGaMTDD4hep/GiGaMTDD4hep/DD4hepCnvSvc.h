@@ -20,7 +20,7 @@
 #include "GaudiKernel/IIncidentSvc.h"
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/Transform3DTypes.h"
-#include "Geant4/G4VSensitiveDetector.hh"
+#include "G4VSensitiveDetector.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 #include "Kernel/IPropertyConfigSvc.h"

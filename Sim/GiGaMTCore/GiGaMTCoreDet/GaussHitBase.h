@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 // Include files
-#include "Geant4/G4VHit.hh"
+#include "G4VHit.hh"
 
 /** @class Det/GaussHitBase Det/GaussHitBase.h GaussTools/Det/GaussHitBase.h
  *

@@ -8,11 +8,11 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "Geant4/G4Box.hh"
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4NistManager.hh"
-#include "Geant4/G4PVPlacement.hh"
-#include "Geant4/G4SystemOfUnits.hh"
+#include "G4Box.hh"
+#include "G4LogicalVolume.hh"
+#include "G4NistManager.hh"
+#include "G4PVPlacement.hh"
+#include "G4SystemOfUnits.hh"
 
 // local
 #include "IronBoxGeo.h"

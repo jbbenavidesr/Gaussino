@@ -22,9 +22,9 @@
 #include "Kernel/ParticleProperty.h"
 
 // G4
-#include "Geant4/G4ParticleDefinition.hh"
-#include "Geant4/G4PrimaryParticle.hh"
-#include "Geant4/G4TrackingManager.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4TrackingManager.hh"
 
 // Included for vertex types
 // FIXME: Need to reorganise when splitting LHCb

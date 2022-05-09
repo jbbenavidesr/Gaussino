@@ -8,8 +8,8 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "Geant4/G4UserSteppingAction.hh"
-#include "Geant4/globals.hh"
+#include "G4UserSteppingAction.hh"
+#include "globals.hh"
 
 namespace Gaussino
 {
@@ -24,10 +24,10 @@ namespace Gaussino
   };
 }
 
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4RunManager.hh"
-#include "Geant4/G4Step.hh"
+#include "G4Event.hh"
+#include "G4LogicalVolume.hh"
+#include "G4RunManager.hh"
+#include "G4Step.hh"
 #include "HepMC3/FourVector.h"
 
 template <typename T>
@@ -73,7 +73,7 @@ void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
 #include "GaudiAlg/GaudiTool.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
-#include "Geant4/G4UserTrackingAction.hh"
+#include "G4UserTrackingAction.hh"
 
 class DebugStepActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserSteppingAction>>
 {

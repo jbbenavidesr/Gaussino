@@ -13,12 +13,12 @@
 #include "ParallelGeometry/Physics.h"
 
 // Geant4
-#include "Geant4/G4ParallelWorldPhysics.hh"
-#include "Geant4/G4ParallelWorldProcess.hh"
-#include "Geant4/G4ParticleDefinition.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4ProcessManager.hh"
-#include "Geant4/G4TransportationManager.hh"
+#include "G4ParallelWorldPhysics.hh"
+#include "G4ParallelWorldProcess.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
+#include "G4ProcessManager.hh"
+#include "G4TransportationManager.hh"
 
 ParallelGeometry::Physics::Physics( std::string parallelWorld, bool layeredMass )
     : G4ParallelWorldPhysics( parallelWorld, layeredMass ), m_layeredMass( layeredMass ) {}

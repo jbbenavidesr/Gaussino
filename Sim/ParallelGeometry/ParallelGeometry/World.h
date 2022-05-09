@@ -11,7 +11,7 @@
 #pragma once
 
 // Geant4
-#include "Geant4/G4VUserParallelWorld.hh"
+#include "G4VUserParallelWorld.hh"
 
 class G4VPhysicalVolume;
 

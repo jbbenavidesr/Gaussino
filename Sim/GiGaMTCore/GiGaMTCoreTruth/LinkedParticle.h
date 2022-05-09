@@ -11,7 +11,7 @@
 #pragma once
 #include <set>
 
-#include "Geant4/G4PrimaryParticle.hh"
+#include "G4PrimaryParticle.hh"
 #include "GiGaMTCoreTruth/Common.h"
 #include "GiGaMTCoreTruth/G4TruthParticle.h"
 #include "HepMC3/FourVector.h"

@@ -10,8 +10,8 @@
 \*****************************************************************************/
 #pragma once
 // Geant
-#include "Geant4/G4GDMLParser.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4GDMLParser.hh"
+#include "G4VUserDetectorConstruction.hh"
 #include <functional>
 
 /** @class GDMLDetectorConstruction

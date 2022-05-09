@@ -12,7 +12,7 @@
 
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 // Geant4 includes
-#include "Geant4/G4MTRunManager.hh"
+#include "G4MTRunManager.hh"
 
 //@class GiGaMTRunManager
 //@brief Specilization of the G4MTRunManager class for Gaussino

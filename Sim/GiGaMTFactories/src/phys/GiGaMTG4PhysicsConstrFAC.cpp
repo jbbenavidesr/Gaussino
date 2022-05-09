@@ -13,32 +13,32 @@
 #include "GiGaMTFactories/GiGaMTG4PhysicsConstrFAC.h"
 
 // Geant4 physics lists
-#include "Geant4/G4DecayPhysics.hh"
+#include "G4DecayPhysics.hh"
 
 // EM physics
-#include "Geant4/G4EmExtraPhysics.hh"
-#include "Geant4/G4EmStandardPhysics.hh"
-#include "Geant4/G4EmStandardPhysics_option1.hh"
-#include "Geant4/G4EmStandardPhysics_option2.hh"
-#include "Geant4/G4EmStandardPhysics_option3.hh"
+#include "G4EmExtraPhysics.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option1.hh"
+#include "G4EmStandardPhysics_option2.hh"
+#include "G4EmStandardPhysics_option3.hh"
 
 // Ion and hadrons
-#include "Geant4/G4HadronElasticPhysics.hh"
-#include "Geant4/G4HadronElasticPhysicsHP.hh"
-#include "Geant4/G4IonPhysics.hh"
-#include "Geant4/G4NeutronTrackingCut.hh"
-#include "Geant4/G4StoppingPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4HadronElasticPhysicsHP.hh"
+#include "G4IonPhysics.hh"
+#include "G4NeutronTrackingCut.hh"
+#include "G4StoppingPhysics.hh"
 
-#include "Geant4/G4HadronPhysicsQGSP_BERT.hh"
-#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
-#include "Geant4/G4HadronPhysicsQGSP_FTFP_BERT.hh"
+#include "G4HadronPhysicsQGSP_BERT.hh"
+#include "G4HadronPhysicsQGSP_BERT_HP.hh"
+#include "G4HadronPhysicsQGSP_FTFP_BERT.hh"
 
 // FTFP hadrons
-#include "Geant4/G4HadronPhysicsFTFP_BERT.hh"
-#include "Geant4/G4HadronPhysicsFTFP_BERT_HP.hh"
+#include "G4HadronPhysicsFTFP_BERT.hh"
+#include "G4HadronPhysicsFTFP_BERT_HP.hh"
 
 // Optical physics
-#include "Geant4/G4OpticalPhysics.hh"
+#include "G4OpticalPhysics.hh"
 
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4DecayPhysics, "GiGaMT_G4DecayPhysics" )

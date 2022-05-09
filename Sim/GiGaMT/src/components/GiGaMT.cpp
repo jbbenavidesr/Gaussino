@@ -24,14 +24,14 @@
 #include "GaudiKernel/Stat.h"
 
 // from G4
-#include "Geant4/G4MaterialTable.hh"
-#include "Geant4/G4NistManager.hh"
-#include "Geant4/G4ParticlePropertyTable.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4UIsession.hh"
-#include "Geant4/G4VUserActionInitialization.hh"
-#include "Geant4/G4VUserPhysicsList.hh"
-#include "Geant4/G4VVisManager.hh"
+#include "G4MaterialTable.hh"
+#include "G4NistManager.hh"
+#include "G4ParticlePropertyTable.hh"
+#include "G4ParticleTable.hh"
+#include "G4UIsession.hh"
+#include "G4VUserActionInitialization.hh"
+#include "G4VUserPhysicsList.hh"
+#include "G4VVisManager.hh"
 
 // from GiGaMT
 #include "CLHEP/Random/RandomEngine.h"

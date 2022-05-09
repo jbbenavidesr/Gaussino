@@ -14,7 +14,7 @@
 #include "GiGaMTCoreTruth/TruthFlaggingTrackAction.h"
 #include "GiGaMTCoreTruth/TruthStoringTrackAction.h"
 
-#include "Geant4/G4UserTrackingAction.hh"
+#include "G4UserTrackingAction.hh"
 
 class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4UserTrackingAction>> {
   using extends::extends;

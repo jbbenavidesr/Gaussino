@@ -11,7 +11,7 @@
 #pragma once
 
 #include "GaudiAlg/GaudiTool.h"
-#include "Geant4/G4VUserActionInitialization.hh"
+#include "G4VUserActionInitialization.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"

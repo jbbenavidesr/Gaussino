@@ -12,7 +12,7 @@
 #include "GiGaMTDD4hep/DD4hepCnvSvc.h"
 
 // Geant4
-#include "Geant4/G4SDManager.hh"
+#include "G4SDManager.hh"
 #include "TSystem.h"
 
 // ============================================================================

@@ -14,9 +14,9 @@
 #include "GiGaMTCoreDet/GaussHitBase.h"
 
 // G4
-#include "Geant4/G4Allocator.hh"
-#include "Geant4/G4THitsCollection.hh"
-#include "Geant4/G4ThreeVector.hh"
+#include "G4Allocator.hh"
+#include "G4THitsCollection.hh"
+#include "G4ThreeVector.hh"
 
 namespace MCCollector {
   class Hit : public Gaussino::HitBase {

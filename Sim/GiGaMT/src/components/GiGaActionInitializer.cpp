@@ -12,10 +12,10 @@
 
 // Using the Multi-action lists in Geant4 since 10.3
 // Even though they publically inherit from std::vector
-#include "Geant4/G4MultiEventAction.hh"
-#include "Geant4/G4MultiRunAction.hh"
-#include "Geant4/G4MultiSteppingAction.hh"
-#include "Geant4/G4MultiTrackingAction.hh"
+#include "G4MultiEventAction.hh"
+#include "G4MultiRunAction.hh"
+#include "G4MultiSteppingAction.hh"
+#include "G4MultiTrackingAction.hh"
 
 DECLARE_COMPONENT( GiGaActionInitializer )
 

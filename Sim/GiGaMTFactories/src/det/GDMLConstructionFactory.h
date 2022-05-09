@@ -12,7 +12,7 @@
 
 // Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4VUserDetectorConstruction.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 /** @class GDMLConstructionFactory SimG4Components/src/GDMLConstructionFactory.h GDMLConstructionFactory.h

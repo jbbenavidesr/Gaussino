@@ -10,17 +10,17 @@
 \*****************************************************************************/
 #include "FCCTest/CalorimeterHit.h"
 
-#include "Geant4/G4AttDef.hh"
-#include "Geant4/G4AttDefStore.hh"
-#include "Geant4/G4AttValue.hh"
-#include "Geant4/G4Box.hh"
-#include "Geant4/G4Colour.hh"
-#include "Geant4/G4SystemOfUnits.hh"
-#include "Geant4/G4UIcommand.hh"
-#include "Geant4/G4UnitsTable.hh"
-#include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4VisAttributes.hh"
-#include "Geant4/G4ios.hh"
+#include "G4AttDef.hh"
+#include "G4AttDefStore.hh"
+#include "G4AttValue.hh"
+#include "G4Box.hh"
+#include "G4Colour.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UIcommand.hh"
+#include "G4UnitsTable.hh"
+#include "G4VVisManager.hh"
+#include "G4VisAttributes.hh"
+#include "G4ios.hh"
 
 namespace FCCTest
 {

@@ -13,7 +13,7 @@
 // Gaudi
 #include "GaudiKernel/SystemOfUnits.h"
 // G4
-#include "Geant4/G4Box.hh"
+#include "G4Box.hh"
 
 namespace ExternalDetector {
   class CuboidEmbedder : public Embedder<G4Box> {

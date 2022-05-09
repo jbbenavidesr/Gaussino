@@ -17,9 +17,9 @@
 #include "Kernel/ParticleProperty.h"
 
 // Geant4
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4SystemOfUnits.hh"
-#include "Geant4/G4ParticleTable.hh"
+#include "G4Event.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ParticleTable.hh"
 
 // HepMC3
 #include "GaudiKernel/Vector4DTypes.h"

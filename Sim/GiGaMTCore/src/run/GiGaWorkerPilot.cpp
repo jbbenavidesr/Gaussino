@@ -17,12 +17,12 @@
 
 #include <string>
 
-#include "Geant4/G4AutoDelete.hh"
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4UImanager.hh"
-#include "Geant4/G4UserWorkerThreadInitialization.hh"
-#include "Geant4/G4VUserActionInitialization.hh"
-#include "Geant4/G4WorkerThread.hh"
+#include "G4AutoDelete.hh"
+#include "G4Event.hh"
+#include "G4UImanager.hh"
+#include "G4UserWorkerThreadInitialization.hh"
+#include "G4VUserActionInitialization.hh"
+#include "G4WorkerThread.hh"
 
 GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) )
 {
