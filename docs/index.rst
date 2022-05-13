@@ -17,7 +17,8 @@ Welcome to the Gaussino's documentation!
    :hidden:
    :maxdepth: 2
 
-   getting_started/installing.md
+   getting_started/gaussino.md
+   getting_started/gauss.md
    getting_started/contributing.md
 
 .. toctree::

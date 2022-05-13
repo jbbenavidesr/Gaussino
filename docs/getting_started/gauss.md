@@ -1,0 +1,165 @@
+# Working with Gauss-on-Gaussino [TO BE MOVED]
+```{eval-rst}
+.. attention::
+    This section will be moved to a new documentation website dedicated to Gauss.
+```
+
+## Using the LHCb nightly build system
+
+### Building Gauss and Gaussino from source
+
+If you wish to work with Gauss (LHCb simulation framework) based on Gaussino's core functionalities, follow the recipe in the section dedicated to Gaussino (see: [](./gaussino.md#working-with-gaussino)) and go back to the directory where your local copy of the nighly slot resides. 
+
+```{eval-rst}
+.. tip::
+    If you do not have any changes in Gaussino, you can use Gaussino directly from the nightlies. Just follow the same recipe up to the section `Fetch the nightlies locally <./gaussino.md#fetch-the-nightlies-locally>`_ and add Gaussino to the list of copied projects:
+
+    .. code-block:: shell
+
+        lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+```
+
+
+#### Clone Gauss and prepare your local development branch
+```shell
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+```
+
+As Gauss-on-Gaussino is not yet on `master` we have to base all our developments on a dedicated branch: `Futurev4`.
+
+```shell
+git checkout -b your_local_dev_branch Futurev4
+```
+The rest is very similar to the development in Gaussino:
+
+```{eval-rst}
+.. attention::
+    Don't forget to merge all pending merge requests with a label ``lhcb-gaussino`` (or any other MR that was picked up in the nightly)!
+```
+
+In order to get the list of pending merge requests check the checkout report by clicking on the **black arrow** next to the **Gauss project** on the [website](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino). You will get a list of the MR ids that are needed to work with this build of Gauss. For example, if the MRs are Gauss!800 and Gauss!845, you can do the following:
+
+```shell
+git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+git merge --no-edit 800 845
+```
+
+
+#### Configure, build and install Gauss-on-Gaussino
+
+```shell
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+``` 
+
+#### Run Gauss
+
+```shell
+./run gaudirun.py your_options.py
+```
+
+### Example 1: building Gauss only
+
+Below you will find a summary of the commands that should cover the majority of the use cases.
+
+```shell
+source /cvmfs/lhcb.cern.ch/lib/LbEnv
+lb-set-platform x86_64_v2-centos7-gcc11-opt
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+cd lhcb-gaussino/Today
+lb-set-workspace .
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+git checkout -b your_local_dev_branch Futurev4
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+```
+
+### Example 2: building Gauss & Gaussino
+
+Below you will find a summary of the commands that should cover the majority of the use cases in which we need to modify both Gauss & Gaussino.
+
+```shell
+source /cvmfs/lhcb.cern.ch/lib/LbEnv
+lb-set-platform x86_64_v2-centos7-gcc11-opt
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+cd lhcb-gaussino/Today
+lb-set-workspace .
+git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
+cd Gaussino
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 23 45
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+cd ../..
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+git checkout -b your_local_dev_branch Futurev4
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+```
+
+### Example 3: working with DD4hep/Detector
+
+Below you will find a summary of the commands needed to work with DD4hep/Detector. There should be ne need to change anything in Gaussino, so we will only build Gauss.
+
+```shell
+source /cvmfs/lhcb.cern.ch/lib/LbEnv
+lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+cd lhcb-gaussino/Today
+lb-set-workspace .
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+git checkout -b your_local_dev_branch Futurev4
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+```
+
+### Example 4: working with fast simulations with Geant4 10.7
+
+Below you will find a summary of the commands needed to work with fast simulations with Geant4 10.7. In this example we will also build Gaussino as there might be some changes required in the generic fast simulation interface.
+
+```shell
+source /cvmfs/lhcb.cern.ch/lib/LbEnv
+lb-set-platform x86_64_v2-centos7-gcc11-opt
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino-fastsim Today
+cd lhcb-gaussino-fastsim/Today
+lb-set-workspace .
+git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
+cd Gaussino
+git checkout -b your_local_dev_branch FASTSIM
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 23 45
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+cd ../..
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+git checkout -b your_local_dev_branch FASTSIM
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+```
