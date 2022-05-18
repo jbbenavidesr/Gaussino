@@ -29,7 +29,8 @@ cd Gauss
 As Gauss-on-Gaussino is not yet on `master` we have to base all our developments on a dedicated branch: `Futurev4`.
 
 ```shell
-git checkout -b your_local_dev_branch Futurev4
+git checkout Futurev4
+git checkout -b your_local_dev_branch
 ```
 The rest is very similar to the development in Gaussino:
 
@@ -72,7 +73,8 @@ cd lhcb-gaussino/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout -b your_local_dev_branch Futurev4
+git checkout Futurev4
+git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
@@ -103,7 +105,8 @@ make -j4 install
 cd ../..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout -b your_local_dev_branch Futurev4
+git checkout Futurev4
+git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
@@ -124,7 +127,8 @@ cd lhcb-gaussino/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout -b your_local_dev_branch Futurev4
+git checkout Futurev4
+git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
@@ -145,7 +149,8 @@ cd lhcb-gaussino-fastsim/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
 cd Gaussino
-git checkout -b your_local_dev_branch FASTSIM
+git checkout FASTSIM
+git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 23 45
@@ -155,7 +160,8 @@ make -j4 install
 cd ../..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout -b your_local_dev_branch FASTSIM
+git checkout FASTSIM
+git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
