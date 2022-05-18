@@ -18,6 +18,11 @@ In gitlab, open a MR targeting the `master` branch. Adding the `lhcb-gaussino` l
 
 ## Developing Gauss-on-Gaussino
 
+```{eval-rst}
+.. attention::
+    This sub-section will be moved to a new documentation website dedicated to Gauss.
+```
+
 The instructions are almost the same as for Gaussino in the previous section: [](./contributing.md#developing-gaussino). The only difference is that the MR should be targeting `Futurev4` branch.
 
 ## Fast simulation developments with Geant4 10.7

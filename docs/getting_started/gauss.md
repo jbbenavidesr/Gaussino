@@ -61,7 +61,7 @@ make -j4 install
 ./run gaudirun.py your_options.py
 ```
 
-### Example 1: building Gauss only
+### Example 1 building Gauss only
 
 Below you will find a summary of the commands that should cover the majority of the use cases.
 
@@ -83,7 +83,7 @@ cd build
 make -j4 install
 ```
 
-### Example 2: building Gauss & Gaussino
+### Example 2 building Gauss and Gaussino
 
 Below you will find a summary of the commands that should cover the majority of the use cases in which we need to modify both Gauss & Gaussino.
 
@@ -115,9 +115,9 @@ cd build
 make -j4 install
 ```
 
-### Example 3: working with DD4hep/Detector
+### Example 3 working with DD4hep and Detector from the nightlies
 
-Below you will find a summary of the commands needed to work with DD4hep/Detector. There should be ne need to change anything in Gaussino, so we will only build Gauss.
+Below you will find a summary of the commands needed to work with DD4hep/Detector that is taken from the nightlies. There should be ne need to change anything in Gaussino, so we will only build Gauss.
 
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
@@ -137,7 +137,66 @@ cd build
 make -j4 install
 ```
 
-### Example 4: working with fast simulations with Geant4 10.7
+### Example 4 working with DD4hep and Detector built locally
+
+Below you will find a summary of the commands needed to work with DD4hep/Detector that is built locally. In this case, we have to rebuild all the projects downstream with respect to the Detector.
+
+```shell
+source /cvmfs/lhcb.cern.ch/lib/LbEnv
+lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE lhcb-gaussino Today
+cd lhcb-gaussino/Today
+lb-set-workspace .
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Detector.git
+cd Detector
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+lb-project-init .
+make -j4 install
+cd ..
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/LHCb.git
+cd LHCb
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+lb-project-init .
+make -j4 install
+cd ..
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Run2Support.git
+cd Run2Support
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+lb-project-init .
+make -j4 install
+cd ..
+git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
+cd Gaussino
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 23 45
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+cd ../..
+git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
+cd Gauss
+git checkout Futurev4
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 800 845
+cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
+cd build
+make -j4 install
+```
+
+### Example 5: working with fast simulations with Geant4 10.7
 
 Below you will find a summary of the commands needed to work with fast simulations with Geant4 10.7. In this example we will also build Gaussino as there might be some changes required in the generic fast simulation interface.
 

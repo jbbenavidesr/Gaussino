@@ -14,7 +14,6 @@ Welcome to the Gaussino's documentation!
 
 .. toctree::
    :caption: Getting started
-   :hidden:
    :maxdepth: 2
 
    getting_started/gaussino.md
@@ -33,11 +32,12 @@ Welcome to the Gaussino's documentation!
 
 .. toctree::
    :caption: Examples
-   :hidden:
    :maxdepth: 2
    
    examples/external_detector
    examples/parallel_geometry
+   examples/adding_subdetector_in_detector
+   examples/adding_subdetector_in_dd4hep
 
 
 Indices and tables
