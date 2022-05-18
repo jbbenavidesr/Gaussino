@@ -50,15 +50,14 @@ git merge --no-edit 800 845
 #### Configure, build and install Gauss-on-Gaussino
 
 ```shell
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ``` 
 
 #### Run Gauss
 
 ```shell
-./run gaudirun.py your_options.py
+./build.x86_64_v2-centos7-gcc11-opt/run gaudirun.py your_options.py
 ```
 
 ### Example 1 building Gauss only
@@ -78,8 +77,7 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ```
 
@@ -99,10 +97,9 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 23 45
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
-cd ../..
+cd ..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
 git checkout Futurev4
@@ -110,8 +107,7 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ```
 
@@ -132,8 +128,7 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ```
 
@@ -180,10 +175,9 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 23 45
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
-cd ../..
+cd ..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
 git checkout Futurev4
@@ -191,8 +185,7 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ```
 
@@ -213,10 +206,9 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 23 45
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
-cd ../..
+cd ..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
 git checkout FASTSIM
@@ -224,7 +216,6 @@ git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
 # git merge --no-edit 800 845
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ```

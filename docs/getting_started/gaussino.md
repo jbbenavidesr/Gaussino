@@ -90,15 +90,14 @@ git merge --no-edit 24 51
 #### Configure, build and install Gaussino
 
 ```shell
-cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake -B build
-cd build
+lb-project-init .
 make -j4 install
 ``` 
 
 #### Run Gaussino
 
 ```shell
-./run gaudirun.py your_options.py
+./build.x86_64_v2-centos7-gcc11-opt/run gaudirun.py your_options.py
 ```
 
 ### Working on a satellite project
