@@ -1,4 +1,4 @@
-# Adding a new sub-detector with Detector [TO BE MOVED]
+# Adding a new DD4hep sub-detector with Detector [TO BE MOVED]
 
 ## Preparing Gauss for adding new sub-detectors
 

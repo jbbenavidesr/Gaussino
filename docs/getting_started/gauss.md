@@ -17,6 +17,8 @@ If you wish to work with Gauss (LHCb simulation framework) based on Gaussino's c
     .. code-block:: shell
 
         lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+
+We really encourage you to use `lbn-install` as it generates a local copy of the nightly build directly on your machine and will create the most stable environment for your developments.  
 ```
 
 
@@ -26,7 +28,7 @@ git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
 ```
 
-As Gauss-on-Gaussino is not yet on `master` we have to base all our developments on a dedicated branch: `Futurev4`.
+Gauss-on-Gaussino is develped on a dedicated branch: `Futurev4`. So your development has to start from this branch. 
 
 ```shell
 git checkout Futurev4
