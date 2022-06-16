@@ -15,8 +15,7 @@ stages:
 
 variables:
   TARGET_BRANCH: master
-  BINARY_TAG: x86_64_v2-centos7-gcc10-opt
-  LCG_VERSION: 100
+  BINARY_TAG: x86_64_v2-centos7-gcc11-opt
   NO_LBLOGIN: "1"
 
 
@@ -46,44 +45,71 @@ check-formatting:
     when: on_failure
     expire_in: 1 week
 
-# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
-build-docs:
+.docs-base:
   stage: docs
   image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
+  variables:
+    DOCS_VERSION: $CI_COMMIT_REF_NAME
   rules:
-    - if: '$CI_COMMIT_REF_PROTECTED == "true" || $CI_MERGE_REQUEST_LABELS =~ /Documentation/' 
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+    - if: $CI_MERGE_REQUEST_LABELS =~ /Python Documentation/
+    - if: $CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?$/
   tags:
     - cvmfs
+
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+build-docs:
+  extends: .docs-base
   variables:
     NIGHTLIES_PATH: "/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest"
-    LOCAL_PYTHON: "InstallArea/x86_64_v2-centos7-gcc10-opt/python"
+    LOCAL_PYTHON: "InstallArea/$BINARY_TAG/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
     - pip install myst_parser graphviz
-    - reasons=
+    # -> adding python directories of the upstream projects
     - export PYTHONPATHBKP=$PYTHONPATH
-    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
+    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
+    - export PYTHONPATHBKP=$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$PYTHONPATHBKP
+    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$PYTHONPATHBKP
+    # -> adding python directories of Gaussino
     - export PYTHONPATHBKP=$(find $PWD -type d \( -path ./InstallArea -o -path ./build \) -prune -false -o -name "python" -print | paste -sd ":" - ):$PYTHONPATHBKP
     - echo "$PYTHONPATHBKP"
-    - PYTHONPATH=$PYTHONPATHBKP make -C docs html || reasons+='ERROR failed html generation\n'
-    - if [ -n "$reasons" ]; then echo -e $reasons; exit 1; fi
-  allow_failure:
-    exit_codes: 77
+    # -> building the docs with a custom pythonpath
+    - PYTHONPATH=$PYTHONPATHBKP make -C docs html
+    - test -f docs/_build/html/index.html || exit 2
   artifacts:
     paths:
       - docs/_build/html/
+    expire_in: 1 month
 
 pages:
-  stage: deploy
-  image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
+  extends: .docs-base
+  needs:
+    - build-docs
+  variables:
+    # I found CI_PAGES_URL sometimes pointing to the wrong addresss
+    GAUSSINO_PAGES_URL: https://mimazure-gaussino.docs.cern.ch/
   script:
-    - mv docs/_build/html/ public
-  before_script:
-    - test -d docs/_build/html || { echo "WARNING docs not built, stopping"; exit 77; }
+    # accumulating content as in https://gitlab.com/gitlab-org/gitlab/-/issues/15156#note_214784368
+    # -> get the archive from the website with the accumulated content and copy it to public/
+    - echo "Deploying docs for ${DOCS_VERSION}"
+    - echo "Getting the latest versions from ${GAUSSINO_PAGES_URL}"
+    # -> curl will create content.tar.gz even if it does not exists
+    - curl -fkL "$GAUSSINO_PAGES_URL/content.tar.gz" -o "content.tar.gz" || echo "Could not get the archive, skipping..."
+    # -> ignore any unpacking errors, the history will be erased
+    #    note: this might need a bit of rethinking or to be blocked later
+    - tar -xzf content.tar.gz public/ || echo "Archive with other versions in a bad format or not found, skipping..."
+    # -> add only the new contents of the current version
+    - mkdir -p public/$DOCS_VERSION/
+    - rsync -a docs/_build/html/ public/$DOCS_VERSION/
+    # -> add all the necessary redirects
+    # - rm -f public/_redirects
+    # - echo "/ /master/index.html" >> public/_redirects
+    # -> create a new archive and put it on the website
+    - tar -zcf content.tar.gz public/
+    - cp content.tar.gz public/
   artifacts:
     paths:
     - public
-  allow_failure:
-    exit_codes: 77
-
+    expire_in: 1 month
 
