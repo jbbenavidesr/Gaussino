@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-![logo](/images/Gaussino.png) Welcome to the Gaussino's documentation!
+Welcome to the Gaussino's documentation!
 ====================================
 .. toctree::
    :caption: About
