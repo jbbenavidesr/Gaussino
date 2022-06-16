@@ -88,7 +88,7 @@ pages:
     - build-docs
   variables:
     # I found CI_PAGES_URL sometimes pointing to the wrong addresss
-    GAUSSINO_PAGES_URL: https://mimazure-gaussino.docs.cern.ch/
+    GAUSSINO_PAGES_URL: https://gaussino.docs.cern.ch/
   script:
     # accumulating content as in https://gitlab.com/gitlab-org/gitlab/-/issues/15156#note_214784368
     # -> get the archive from the website with the accumulated content and copy it to public/
