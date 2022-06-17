@@ -17,7 +17,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Gaussino'
-copyright = '2021, LHCb Collaboration'
+copyright = '2022, LHCb Collaboration'
 author = 'LHCb Collaboration'
 
 # The full version, including alpha/beta/rc tags
@@ -83,12 +83,10 @@ html_context['display_lower_left'] = True
 versions = [
     'master',
     'v0r1',
+    'FASTSIM',
 ]
 
-# from git import Repo
-# repo = Repo(search_parent_directories=True)
-# current_version = repo.active_branch.name
-current_version = 'master'
+current_version = os.getenv("DOCS_VERSION", "master")
 
 # tell the theme which version we're currently on ('current_version' affects
 # the lower-left rtd menu and 'version' affects the logo-area version)
