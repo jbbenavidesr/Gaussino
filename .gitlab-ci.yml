@@ -103,8 +103,9 @@ pages:
     - mkdir -p public/$DOCS_VERSION/
     - rsync -a docs/_build/html/ public/$DOCS_VERSION/
     # -> add all the necessary redirects
-    # - rm -f public/_redirects
-    # - echo "/ /master/index.html" >> public/_redirects
+    - rm -f public/_redirects
+    - echo "/index.html /master/index.html 301" >> public/_redirects
+    - echo "/ /master/index.html 301" >> public/_redirects
     # -> create a new archive and put it on the website
     - tar -zcf content.tar.gz public/
     - cp content.tar.gz public/
