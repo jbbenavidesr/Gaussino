@@ -106,6 +106,7 @@ pages:
     - rm -f public/_redirects
     - echo "/index.html /master/index.html 301" >> public/_redirects
     - echo "/ /master/index.html 301" >> public/_redirects
+    - echo "/gaussino /master/index.html 301" >> public/_redirects
     # -> create a new archive and put it on the website
     - tar -zcf content.tar.gz public/
     - cp content.tar.gz public/
