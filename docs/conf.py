@@ -98,6 +98,9 @@ html_context['version'] = current_version
 # POPULATE LINKS TO OTHER VERSIONS
 html_context['versions'] = list()
 
+# Auto-generated header anchors
+myst_heading_anchors = 3
+
 for version in versions:
     html_context['versions'].append((version,
                                      '/' + website_root + '/' + version + '/'))
