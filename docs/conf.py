@@ -17,7 +17,7 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = 'Gaussino'
-copyright = '2022, LHCb Collaboration'
+copyright = '2017-2022, CERN for the benefit of the LHCb and FCC collaborations'
 author = 'LHCb Collaboration'
 
 # The full version, including alpha/beta/rc tags
