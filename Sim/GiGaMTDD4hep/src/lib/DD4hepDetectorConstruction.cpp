@@ -17,7 +17,7 @@
 #include "DDG4/Geant4Converter.h"
 #include "DDG4/Geant4Mapping.h"
 
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4VUserDetectorConstruction.hh"
 
 DD4hepDetectorConstruction::DD4hepDetectorConstruction(
     const dd4hep::Detector& detector)

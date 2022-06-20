@@ -24,15 +24,15 @@
 #include "GaudiKernel/SystemOfUnits.h"
 
 // from Geant4
-#include "Geant4/G4HCofThisEvent.hh"
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4SDManager.hh"
-#include "Geant4/G4Step.hh"
-#include "Geant4/G4TouchableHistory.hh"
-#include "Geant4/G4Track.hh"
-#include "Geant4/G4VPhysicalVolume.hh"
-#include "Geant4/G4VSensitiveDetector.hh"
-#include "Geant4/G4ios.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4LogicalVolume.hh"
+#include "G4SDManager.hh"
+#include "G4Step.hh"
+#include "G4TouchableHistory.hh"
+#include "G4Track.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4VSensitiveDetector.hh"
+#include "G4ios.hh"
 
 namespace MCCollector {
   class SensDet : public G4VSensitiveDetector, public virtual GiGaMessage {

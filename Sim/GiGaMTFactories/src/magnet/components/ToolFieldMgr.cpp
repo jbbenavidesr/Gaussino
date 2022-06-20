@@ -8,7 +8,7 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "Geant4/G4MagneticField.hh"
+#include "G4MagneticField.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/Magnet/FieldMgrBase.h"
 #include "GaudiKernel/ToolHandle.h"

@@ -10,6 +10,7 @@
 ###############################################################################
 gaudi_subdir(DD4hepDDG4Ext v1r0)
 
+if(USE_DD4HEP)
 # Define EvtGen external project
 set(DD4hep_GIT_SOURCE "https://gitlab.cern.ch/Gaussino/DD4hep.git" CACHE STRING "URL of the DD4hep git repository")
 set(DD4hep_GIT_TAG "v01-16-01-patches" CACHE STRING "Tag of DD4hep to be used")
@@ -35,16 +36,43 @@ ExternalProject_Add(DD4hepDDG4Ext
     -DDD4HEP_USE_EXISTING_DD4HEP=${DD4hep_DIR}
     -DDD4HEP_BUILD_PACKAGES=DDG4
     -DDD4HEP_USE_GEANT4=ON
-    -DLCG_USE_NATIVE_COMPILER=${LCG_USE_NATIVE_COMPILER}
-    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+    -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
     -DCMAKE_CXX_STANDARD=${DD4HepDDG4_CXX_STANDARD}
     -DDD4HEP_SELECTED_NAME=DD4hepDDG4
-    -DCMAKE_INSTALL_LIBDIR=lib
+    "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -Wno-suggest-override"  # less strict warnings
+  # This works around a CMake issue with the Ninja generator where it
+  # does not understand imported libraries, and instead needs `BUILD_BYPRODUCTS`
+  # explicitly set.
+  # https://cmake.org/pipermail/cmake/2015-April/060234.html
+  BUILD_BYPRODUCTS <INSTALL_DIR>/lib/libDDG4.so
   CMAKE_COMMAND ${env_cmd} --xml ${env_xml} cmake
   BUILD_COMMAND ${env_cmd} --xml ${env_xml} cmake --build .
 )
-                                                                                                
-#set(DD4hepDDG4_INCLUDE_DIRS  "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "" FORCE)
-#set(DD4hepDDG4_DIR "${CMAKE_INSTALL_PREFIX}/cmake" CACHE PATH "" FORCE)
-#set(DD4hepDDG4_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/libDDG4LCIO.so" "${CMAKE_INSTALL_PREFIX}/lib/libDDG4Legacy.so" "${CMAKE_INSTALL_PREFIX}/lib/libDDG4Plugins.so" "${CMAKE_INSTALL_PREFIX}/lib/libDDG4Python.so" "${CMAKE_INSTALL_PREFIX}/lib/libDDG4.so" CACHE STRING "" FORCE)
-#set(DD4hepDDG4_FOUND YES CACHE BOOL "" FORCE)
+
+ExternalProject_Get_property(DD4hepDDG4Ext INSTALL_DIR)
+
+# Inspired from http://mesos.apache.org/documentation/latest/cmake-examples/#imported-libraries
+add_library(DD4hep::DDG4 SHARED IMPORTED GLOBAL)
+set_target_properties(DD4hep::DDG4 PROPERTIES IMPORTED_LOCATION ${INSTALL_DIR}/lib/libDDG4.so)
+target_include_directories(DD4hep::DDG4 SYSTEM INTERFACE ${INSTALL_DIR}/include)
+# This works around a CMake issue with setting include directories of
+# imported libraries built with `ExternalProject_Add`.cmake/DD4hepBuild.cmake
+# https://gitlab.kitware.com/cmake/cmake/issues/15052
+file(MAKE_DIRECTORY ${INSTALL_DIR}/include)
+
+# The external project's install rules are not part of the main project's
+# install rules, so if anything from the external project should be
+# installed as part of the main build, these need to be specified in the main
+# build as additional install() commands.
+# https://cmake.org/cmake/help/v3.20/module/ExternalProject.html
+#
+# Use DD4hep's installation location (see cmake/DD4hepBuild.cmake)
+# > SET(DD4HEP_PYTHON_INSTALL_DIR lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages)
+install(DIRECTORY "${INSTALL_DIR}/include/"
+        DESTINATION include)
+install(DIRECTORY "${INSTALL_DIR}/lib/"
+        DESTINATION lib
+        PATTERN "python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}" EXCLUDE)
+install(DIRECTORY "${INSTALL_DIR}/lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages/"
+        DESTINATION python)
+endif()

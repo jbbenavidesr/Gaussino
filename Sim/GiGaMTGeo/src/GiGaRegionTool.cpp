@@ -9,11 +9,11 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // G4
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
-#include "Geant4/G4ProductionCuts.hh"
-#include "Geant4/G4Region.hh"
-#include "Geant4/G4RegionStore.hh"
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4ProductionCuts.hh"
+#include "G4Region.hh"
+#include "G4RegionStore.hh"
 
 // local
 #include "GiGaRegionTool.h"

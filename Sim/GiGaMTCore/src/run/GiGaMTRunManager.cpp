@@ -10,16 +10,16 @@
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
-#include "Geant4/G4StateManager.hh"
-#include "Geant4/G4GeometryManager.hh"
-#include "Geant4/G4UserRunAction.hh"
-#include "Geant4/G4Run.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
-#include "Geant4/G4MTRunManagerKernel.hh"
+#include "G4StateManager.hh"
+#include "G4GeometryManager.hh"
+#include "G4UserRunAction.hh"
+#include "G4Run.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4MTRunManagerKernel.hh"
 
-#include "Geant4/G4IonTable.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4CascadeInterface.hh"
+#include "G4IonTable.hh"
+#include "G4ParticleTable.hh"
+#include "G4CascadeInterface.hh"
 
 #include "GaudiKernel/ISvcLocator.h"
 #include "GaudiKernel/Bootstrap.h"

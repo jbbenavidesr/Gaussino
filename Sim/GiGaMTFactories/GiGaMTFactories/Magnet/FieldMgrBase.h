@@ -13,10 +13,10 @@
 // Include files
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "GaudiKernel/ToolHandle.h"
-#include "Geant4/G4Mag_EqRhs.hh"
-#include "Geant4/G4FieldManager.hh"
-#include "Geant4/G4MagIntegratorStepper.hh"
-#include "Geant4/G4MagneticField.hh"
+#include "G4Mag_EqRhs.hh"
+#include "G4FieldManager.hh"
+#include "G4MagIntegratorStepper.hh"
+#include "G4MagneticField.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 

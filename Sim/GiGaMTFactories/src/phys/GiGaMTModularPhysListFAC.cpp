@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTModularPhysListFAC.h"
-#include "Geant4/G4VModularPhysicsList.hh"
+#include "G4VModularPhysicsList.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 
 DECLARE_COMPONENT( GiGaMTModularPhysListFAC )

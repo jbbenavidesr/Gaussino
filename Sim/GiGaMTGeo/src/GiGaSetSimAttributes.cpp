@@ -14,8 +14,8 @@
 // SimSvc
 #include "GiGaMTRegions/IRegionsDefinitionSvc.h"
 // Geant4
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
 #include "GiGaMTCoreCut/GaussinoG4UserLimits.h"
 // local
 #include "GiGaSetSimAttributes.h"

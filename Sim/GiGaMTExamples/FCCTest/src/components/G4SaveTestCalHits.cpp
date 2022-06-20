@@ -17,7 +17,7 @@
 #include "GaudiKernel/ITHistSvc.h"
 
 // Geant4
-#include "Geant4/G4Event.hh"
+#include "G4Event.hh"
 
 DECLARE_COMPONENT( G4SaveTestCalHits )
 

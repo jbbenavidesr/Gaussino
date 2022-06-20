@@ -12,7 +12,7 @@
 
 // Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4VUserDetectorConstruction.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 /** @class G4GdmlTestDetector SimG4Components/src/G4GdmlTestDetector.h G4GdmlTestDetector.h

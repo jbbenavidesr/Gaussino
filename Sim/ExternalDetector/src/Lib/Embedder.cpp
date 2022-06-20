@@ -11,13 +11,13 @@
 // local
 #include "ExternalDetector/Embedder.h"
 // G4
-#include "Geant4/G4Box.hh"
-#include "Geant4/G4GDMLParser.hh"
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4LogicalVolumeStore.hh"
-#include "Geant4/G4Material.hh"
-#include "Geant4/G4PVPlacement.hh"
-#include "Geant4/G4SDManager.hh"
+#include "G4Box.hh"
+#include "G4GDMLParser.hh"
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4Material.hh"
+#include "G4PVPlacement.hh"
+#include "G4SDManager.hh"
 
 namespace ExternalDetector {
 

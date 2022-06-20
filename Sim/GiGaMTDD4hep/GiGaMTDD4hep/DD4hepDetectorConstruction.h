@@ -12,7 +12,7 @@
 // Geant
 #include <functional>
 #include "DD4hep/Printout.h"
-#include "Geant4/G4VUserDetectorConstruction.hh"
+#include "G4VUserDetectorConstruction.hh"
 
 namespace dd4hep {
 class Detector;

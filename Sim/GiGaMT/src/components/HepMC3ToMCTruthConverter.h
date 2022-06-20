@@ -14,7 +14,7 @@
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/ServiceHandle.h"
 #include "GaudiKernel/SystemOfUnits.h"
-#include "Geant4/G4SystemOfUnits.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
 #include "HepMC3/GenParticle.h"

@@ -17,7 +17,7 @@
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
 
-#include "Geant4/G4Event.hh"
+#include "G4Event.hh"
 #include "HepMC3/GenEvent.h"
 
 // Main worker thread class that is instantiated in the

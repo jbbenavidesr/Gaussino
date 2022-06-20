@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 /// Geant4
-#include "Geant4/G4EventManager.hh"
-#include "Geant4/G4VUserEventInformation.hh"
+#include "G4EventManager.hh"
+#include "G4VUserEventInformation.hh"
 #include "GiGaMTCoreTruth/MCTruthConverter.h"
 
 /** @class GaussinoTrackInformation GaussinoTrackInformation.h

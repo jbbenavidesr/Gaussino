@@ -25,7 +25,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
 ```{eval-rst}
 .. note::
-    Use `x86_64_v2-centos7-gcc10+dd4hep-opt` if you want work with Detector/DD4hep.
+    Use `x86_64_v2-centos7-gcc11+dd4hep-opt` if you want work with Detector/DD4hep.
 ```
 
 ### Building from source
@@ -39,7 +39,7 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
     ```
     lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
-    export CMAKE_PREFIX_PATH=$PWD:${CMAKE_PREFIX_PATH}
+    lb-set-workspace ./lhcb-gaussino/Today
     ```
 
     ```{eval-rst}

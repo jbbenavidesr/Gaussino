@@ -23,9 +23,9 @@
 #include "GiGaMTCoreTruth/Common.h"
 #include "GiGaMTCoreTruth/LinkedParticle.h"
 
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4PrimaryParticle.hh"
-#include "Geant4/G4PrimaryVertex.hh"
+#include "G4Event.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4PrimaryVertex.hh"
 
 #include <functional>
 

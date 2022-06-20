@@ -17,8 +17,8 @@
 #include "TSystem.h"
 
 // Geant4
-#include "Geant4/G4VUserDetectorConstruction.hh"
-#include "Geant4/G4FieldManager.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "G4FieldManager.hh"
 
 /** @class DD4hepDetectorConstructionFAC SimG4Components/src/DD4hepDetectorConstructionFAC.h DD4hepDetectorConstructionFAC.h
  *

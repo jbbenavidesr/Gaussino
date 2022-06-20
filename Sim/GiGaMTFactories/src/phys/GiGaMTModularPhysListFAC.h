@@ -12,8 +12,8 @@
 // G4
 #include "GaudiAlg/GaudiTool.h"
 #include "GaudiKernel/ToolHandle.h"
-#include "Geant4/G4VPhysicsConstructor.hh"
-#include "Geant4/G4VUserPhysicsList.hh"
+#include "G4VPhysicsConstructor.hh"
+#include "G4VUserPhysicsList.hh"
 
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"

@@ -87,8 +87,8 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
   return detconst;
 }
 
-#include "Geant4/G4LogicalVolumeStore.hh"
-#include "Geant4/G4SDManager.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SDManager.hh"
 
 void GiGaMTDetectorConstructionFAC::DressVolumes() const {
   auto sdmanager = G4SDManager::GetSDMpointer();
@@ -108,7 +108,7 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
   }
 }
 
-#include "Geant4/G4GDMLParser.hh"
+#include "G4GDMLParser.hh"
 
 StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
   try {
