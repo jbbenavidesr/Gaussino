@@ -78,7 +78,6 @@ napoleon_numpy_docstring = True
 # -- Custom Versioning settings -----------------------------------------------
 # Implemented manually as READTHEDOCS handle them once already hosted
 
-website_root = 'gaussino'
 html_context['display_lower_left'] = True
 
 # visible versions
@@ -102,8 +101,7 @@ html_context['versions'] = list()
 myst_heading_anchors = 3
 
 for version in versions:
-    html_context['versions'].append((version,
-                                     '/' + website_root + '/' + version + '/'))
+    html_context['versions'].append((version, '/' + version + '/'))
 
 from importlib import import_module
 from pprint import pformat
