@@ -37,3 +37,4 @@ gaudi_add_module(GiGaMTGeoUtils
 
 gaudi_install_headers(GiGaMTGeo)
 gaudi_install_headers(GiGaMTRegions)
+gaudi_add_test(QMTest QMTEST)
