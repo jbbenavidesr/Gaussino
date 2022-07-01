@@ -55,7 +55,12 @@ master_doc = 'index'
 #
 html_theme = 'sphinx_rtd_theme'
 
-html_logo = 'gaussinologo.png'
+html_logo = 'images/gaussino_logo.png'
+
+html_theme_options = {
+    'logo_only': True,
+    'style_nav_header_background': '#343131',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
