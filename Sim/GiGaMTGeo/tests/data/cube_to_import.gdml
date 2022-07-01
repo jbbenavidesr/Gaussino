@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+<!--
+    (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations
+
+    This software is distributed under the terms of the Apache License
+    version 2 (Apache-2.0), copied verbatim in the file "COPYING".
+
+    In applying this licence, CERN does not waive the privileges and immunities
+    granted to it by virtue of its status as an Intergovernmental Organization
+    or submit itself to any jurisdiction.
+-->
+
+  <define/>
+
+  <materials>
+    <isotope N="1" Z="1" name="H10x1ee5e10">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x1ee5e80">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x1ee5ef0">
+      <fraction n="0.999885" ref="H10x1ee5e10"/>
+      <fraction n="0.000115" ref="H20x1ee5e80"/>
+    </element>
+    <material name="OuterSpace0x1ee5ce0" state="gas">
+      <T unit="K" value="2.73"/>
+      <P unit="pascal" value="1.87245306593404e-14"/>
+      <MEE unit="eV" value="19.2"/>
+      <D unit="g/cm3" value="6.24151021978012e-07"/>
+      <fraction n="1" ref="H0x1ee5ef0"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box lunit="mm" name="Cuboid0x1eef200" x="1000" y="1000" z="1000"/>
+    <box lunit="mm" name="WorldBox0x1eeecd0" x="100000" y="100000" z="100000"/>
+  </solids>
+
+  <structure>
+    <volume name="CubeToImportLVol0x1eefa70">
+      <materialref ref="OuterSpace0x1ee5ce0"/>
+      <solidref ref="Cuboid0x1eef200"/>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="SensDet" auxvalue="MyCubeSDet"/>
+    </volume>
+    <volume name="WorldLVol0x1eef630">
+      <materialref ref="OuterSpace0x1ee5ce0"/>
+      <solidref ref="WorldBox0x1eeecd0"/>
+      <physvol name="CubeToImportPVol0x1eefa10">
+        <volumeref ref="CubeToImportLVol0x1eefa70"/>
+        <position name="CubeToImportPVol0x1eefa10_pos" unit="mm" x="0" y="0" z="10000"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0"/>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="WorldLVol0x1eef630"/>
+  </setup>
+
+</gdml>

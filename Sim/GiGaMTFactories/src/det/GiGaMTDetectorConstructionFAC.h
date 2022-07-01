@@ -20,6 +20,7 @@ class IGiGaMTGeoSvc;
 class IGaussinoTool;
 class G4Material;
 class G4VUserParallelWorld;
+class IGDMLReader;
 
 namespace ExternalDetector {
   class IEmbedder;
@@ -42,7 +43,7 @@ protected:
   typedef ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> SensDetFac;
   typedef std::map<std::string, SensDetFac>                 SensDetVolumeMap;
 
-  void                                      DressVolumes() const;
+  StatusCode                                DressVolumes() const;
   StatusCode                                SaveGDML() const;
   ServiceHandle<IGiGaMTGeoSvc>              m_geoSvc{this, "GiGaMTGeoSvc", "GiGaMTGeo"};
   ToolHandleArray<IGaussinoTool>            m_afterGeo{this};
@@ -63,7 +64,7 @@ private:
                                                       Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
   // GDML Export
-  Gaudi::Property<std::string> m_schema{this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
+  Gaudi::Property<std::string> m_schema{this, "GDMLSchema", ""};
   Gaudi::Property<bool>        m_refs{this, "GDMLAddReferences", true};
   Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
   Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
@@ -71,6 +72,15 @@ private:
   // export auxilliary information
   Gaudi::Property<bool> m_exportSD{this, "GDMLExportSD", false};
   Gaudi::Property<bool> m_exportEnergyCuts{this, "GDMLExportEnergyCuts", false};
+
+  // GDML Import
+  ToolHandleArray<IGDMLReader> m_gdml_readers{this};
+  using GDMLReaders = std::vector<std::string>;
+  Gaudi::Property<GDMLReaders> m_gdml_readers_names{this,
+                                                    "GDMLReaders",
+                                                    {},
+                                                    tool_array_setter( m_gdml_readers, m_gdml_readers_names ),
+                                                    Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 
   SensDetVolumeMap                       m_sens_dets;
   Gaudi::Property<SensDetNameVolumesMap> m_namemap{this,

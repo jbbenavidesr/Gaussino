@@ -11,6 +11,7 @@
 #include "GiGaMTDetectorConstructionFAC.h"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
 #include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
+#include "GiGaMTGeo/IGDMLReader.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 #include <filesystem>
@@ -60,9 +61,21 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     auto world = m_geoSvc->constructWorld();
     for ( auto& tool : m_afterGeo ) { tool->process().ignore(); }
 
+    // Import GDML geometry
+    debug() << "Setting up volumes from GDML in mass geometry" << endmsg;
+    for ( auto& reader : m_gdml_readers ) {
+      if ( reader->import( world ).isFailure() ) {
+        throw GaudiException( "Failed to import the GDML geometry", "GDMLReader", StatusCode::FAILURE );
+      }
+    }
+
     // Import external geometry
     debug() << "Setting up external embedder volumes in mass geometry" << endmsg;
-    for ( auto& embedder : m_ext_dets ) { embedder->embed( world ).ignore(); }
+    for ( auto& embedder : m_ext_dets ) {
+      if ( embedder->embed( world ).isFailure() ) {
+        throw GaudiException( "Failed to embed external geometry", "ExternalGeometry", StatusCode::FAILURE );
+      }
+    }
 
     return world;
   } );
@@ -72,9 +85,15 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 
     // Import external SD
     debug() << "Setting up external embedder SD in mass geometry" << endmsg;
-    for ( auto& embedder : m_ext_dets ) { embedder->embedSD().ignore(); }
+    for ( auto& embedder : m_ext_dets ) {
+      if ( embedder->embedSD().isFailure() ) {
+        throw GaudiException( "Failed to embed external sensitive detectors", "ExternalGeometry", StatusCode::FAILURE );
+      }
+    }
 
-    DressVolumes();
+    if ( DressVolumes().isFailure() ) {
+      throw GaudiException( "Failed to attach sensitive detector classes", "DressVolumes", StatusCode::FAILURE );
+    }
   } );
 
   // Setup parallel worlds
@@ -90,7 +109,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 #include "G4LogicalVolumeStore.hh"
 #include "G4SDManager.hh"
 
-void GiGaMTDetectorConstructionFAC::DressVolumes() const {
+StatusCode GiGaMTDetectorConstructionFAC::DressVolumes() const {
   auto sdmanager = G4SDManager::GetSDMpointer();
   for ( auto& [name, volumes] : m_namemap ) {
     auto& tool    = m_sens_dets.at( name );
@@ -103,9 +122,11 @@ void GiGaMTDetectorConstructionFAC::DressVolumes() const {
         vol->SetSensitiveDetector( sensdet );
       } else {
         error() << "Couldn't find " << volname << endmsg;
+        return StatusCode::FAILURE;
       }
     }
   }
+  return StatusCode::SUCCESS;
 }
 
 #include "G4GDMLParser.hh"
@@ -116,7 +137,11 @@ StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
     g4writer.SetSDExport( m_exportSD.value() );
     g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
     G4LogicalVolume* world = nullptr;
-    g4writer.Write( m_outfile.value(), world, m_refs.value(), m_schema.value() );
+    if ( !m_schema.value().empty() ) {
+      g4writer.Write( m_outfile.value(), world, m_refs.value(), m_schema.value() );
+    } else {
+      g4writer.Write( m_outfile.value(), world, m_refs.value() );
+    }
   } catch ( std::exception& err ) {
     error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;
     return StatusCode::FAILURE;

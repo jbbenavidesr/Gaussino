@@ -74,6 +74,9 @@ class SimPhase(ConfigurableUser):
     :var ExportGDML: default: ``{}``
     :vartype ExportGDML: dict, optional
 
+    :var ImportGDML: default: ``[]``
+    :vartype ImportGDML: list, optional
+
     :var ExternalDetectorEmbedder: default: ``""``, name of the embedder used
         when creating external geometry
     :vartype ExternalDetectorEmbedder: str, optional
@@ -99,6 +102,7 @@ class SimPhase(ConfigurableUser):
         "SensDetMap": {},
         "ExtraGeoTools": [],
         "ExportGDML": {},
+        "ImportGDML": [],
         "ExternalDetectorEmbedder": "",
         "ParallelGeometry": False,
     }
@@ -211,14 +215,28 @@ class SimPhase(ConfigurableUser):
             #    self._external_embedders.append(par_ext_emd)
             #par_geo.world_to_gdml(giga.RunSeq)
 
+        self._setup_gdml_import(dettool)
+
         # Save as a GDML File
         gdml_export = self.getProp("ExportGDML")
         if type(gdml_export) is not dict:
             raise RuntimeError("ExportGDML should be a dictionary of options")
-        else:
-            for name, value in gdml_export.items():
-                if name.startswith('GDML'):
-                    setattr(dettool, name, value)
-                else:
-                    raise RuntimeError("GDML options start with GDML")
+        for name, value in gdml_export.items():
+            if name.startswith('GDML'):
+                setattr(dettool, name, value)
+            else:
+                raise RuntimeError("GDML options start with GDML")
         return algs
+
+    def _setup_gdml_import(self, dettool):
+        gdml_imports = self.getProp("ImportGDML")
+        if type(gdml_imports) is not list:
+            raise RuntimeError("ImportGDML should be a list of dicts")
+        from Configurables import GDMLReader
+        for gdml_import in gdml_imports:
+            if type(gdml_import) is not dict:
+                raise RuntimeError("Elements of ImportGDML should be dicts")
+            name = gdml_import["GDMLFileName"] + "Reader"
+            reader = GDMLReader(name, **gdml_import)
+            dettool.addTool(reader, name=name)
+            dettool.GDMLReaders.append('GDMLReader/' + name)
