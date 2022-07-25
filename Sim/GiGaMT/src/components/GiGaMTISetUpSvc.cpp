@@ -62,6 +62,9 @@ StatusCode GiGaMT::InitializeMainThread() const
   main_mgr->SetUserInitialization( m_ActionInitializerFactory->construct() );
   main_mgr->G4RunManager::SetUserInitialization( m_detConstFactory->construct() );
 
+  // visualization
+  m_visMgrFactory->construct();
+
   main_mgr->Initialize();
 
   return StatusCode::SUCCESS;
