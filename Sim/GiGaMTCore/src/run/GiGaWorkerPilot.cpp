@@ -139,6 +139,22 @@ void GiGaWorkerPilot::operator()()
     debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
       debug( "Sentinel detected, ending loop" );
+      // FIXME: now introducing a potentially dangerous loop that should wait
+      // until all the worker threads finished the postprocessing steps in G4
+      // note: this should be working, but we might want to be extra careful
+      // when running productions for example, I see 2 solutions:
+      // -> putting additional flag that will activate this extra check when
+      //    we actually know that the postprocessing takes place
+      // -> adding some timeout
+      // if ( postProcessing) {
+      while ( nCreated > nDeleted  ) {
+        std::stringstream strea;
+        strea << "Didn't delete all G4 events " << nDeleted << "/" << nCreated;
+        warning( strea.str() );
+        CleanUp();
+        std::this_thread::sleep_for(std::chrono::milliseconds( 100 ));
+      }
+      // }
 
       // We put the payload back into the queue to trigger a cascading
       // shut down of all threads if one sentinel was pushed into the queue
@@ -245,10 +261,18 @@ void GiGaWorkerPilot::CleanUp()
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
-  for ( auto evt : m_for_cleanup ) {
-    debug( "Deleting G4Event" );
-    nDeleted++;
-    delete evt;
-  }
-  m_for_cleanup.clear();
+  auto evs_to_remove = std::remove_if(m_for_cleanup.begin(), m_for_cleanup.end(), [&](G4Event* evt) -> bool {
+    auto postActions = evt->GetNumberOfGrips();
+    // FIXME: extra flag to be added (see comment above)
+    // if ( postActions <= 0 || !postprocessing)
+    if ( postActions <= 0 ) {
+      debug( "Deleting G4Event" );
+      nDeleted++;
+      delete evt;
+      return true;
+    }
+    debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string(postActions) );
+    return false;
+  } );
+  m_for_cleanup.erase(evs_to_remove, m_for_cleanup.end());
 }
