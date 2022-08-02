@@ -83,6 +83,10 @@ class SimPhase(ConfigurableUser):
 
     :var ParallelGeometry: default: ``False``
     :vartype ParallelGeometry: bool, optional
+
+    :var Visualization: default: ``False``, activate various visualization
+        configurables
+    :vartype Visualization: bool, optional
     """
 
     __slots__ = {
@@ -105,6 +109,7 @@ class SimPhase(ConfigurableUser):
         "ImportGDML": [],
         "ExternalDetectorEmbedder": "",
         "ParallelGeometry": False,
+        "Visualization": False,
     }
 
     def __init__(self, name=Configurable.DefaultName, **kwargs):
@@ -147,6 +152,11 @@ class SimPhase(ConfigurableUser):
         self.set_base_physics(giga)
         geo_algs = self.set_base_detector_geometry(giga)
         seq += geo_algs
+
+        # Activate visualization module
+        if self.getProp("Visualization"):
+            from Configurables import Geant4Visualization
+            Geant4Visualization().apply(giga)
 
         ApplicationMgr().TopAlg += seq
         if self.getProp('TrackTruth'):

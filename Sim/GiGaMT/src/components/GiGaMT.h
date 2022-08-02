@@ -82,7 +82,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
                                                                                       "GiGaActionInitializer"};
   ToolHandle<IHepMC3ToMCTruthConverter> m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
   ToolHandleArray<IG4MonitoringTool> m_MoniTools{this};
-  ToolHandle<GiGaFactoryBase<G4VisManager>> m_visMgrFactory{this, "VisManager", "GiGaVisManager"};
+  ToolHandle<GiGaFactoryBase<G4VisManager>> m_visMgrFactory{this, "VisManager", ""};
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{
       this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames )};
 

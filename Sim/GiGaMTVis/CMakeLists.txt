@@ -34,3 +34,5 @@ gaudi_add_module(GiGaMTVis
                  src/*.cpp
                  INCLUDE_DIRS Sim/GiGaMTFactories 
                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreMessageLib ${GEANT4_LIBS})
+
+gaudi_install_python_modules()
