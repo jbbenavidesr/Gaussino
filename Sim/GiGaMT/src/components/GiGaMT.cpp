@@ -145,7 +145,7 @@ StatusCode GiGaMT::finalize()
   }
   always() << "Finalized all G4 worker threads" << endmsg;
   auto main_mgr = GiGaMTRunManager::GetGiGaMTRunManager();
-  main_mgr->RunTermination();
+  main_mgr->SafeRunTermination();
   delete main_mgr;
 
   if (!m_visMgrFactory.name().empty() ) {

@@ -59,6 +59,11 @@ void GiGaMTRunManager::Initialize() {
 }
 
 void GiGaMTRunManager::RunTermination() {
+  std::string msg = "Geant4 terminated the run internally. This should not have happened!";
+  throw std::runtime_error(msg);
+}
+
+void GiGaMTRunManager::SafeRunTermination() {
   debug("Geant4 Run terminated.");
   // WaitForEndEventLoopWorkers();
   // -> disabled as it won't do anything, as G4 barrier is disabled
