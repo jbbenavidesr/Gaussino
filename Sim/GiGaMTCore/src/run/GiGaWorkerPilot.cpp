@@ -23,11 +23,14 @@
 #include "G4UserWorkerThreadInitialization.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4WorkerThread.hh"
+#include "G4Run.hh"
 
 GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) )
 {
   m_input_queue       = right.m_input_queue;
   right.m_input_queue = nullptr;
+
+  m_postprocessing = right.m_postprocessing;
 
   m_context       = right.m_context;
   right.m_context = nullptr;
@@ -36,6 +39,7 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   nWorkers      = right.nWorkers;
   nDeleted      = right.nDeleted;
   nCreated      = right.nCreated;
+  nKept         = right.nKept;
   m_track_eventstructure = right.m_track_eventstructure;
   m_for_cleanup = std::move( right.m_for_cleanup );
 }
@@ -103,7 +107,12 @@ void GiGaWorkerPilot::FinalizeWorker()
 
   G4Threading::WorkerThreadLeavesPool();
   delete m_context;
-  if ( nCreated > nDeleted ) {
+  if (m_postprocessing && nKept > 0) {
+    std::stringstream strea;
+    strea << "Asked to keep some events by Geant4. "
+          << "Created: " << nCreated << ", Kept: " << nKept << ", Deleted: " << nDeleted;
+    debug( strea.str() );
+  } else if ( nCreated > nDeleted ) {
     std::stringstream strea;
     strea << "Didn't delete all G4 events " << nDeleted << "/" << nCreated;
     warning( strea.str() );
@@ -139,22 +148,18 @@ void GiGaWorkerPilot::operator()()
     debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
       debug( "Sentinel detected, ending loop" );
-      // FIXME: now introducing a potentially dangerous loop that should wait
+      // now introducing a potentially dangerous loop that should wait
       // until all the worker threads finished the postprocessing steps in G4
       // note: this should be working, but we might want to be extra careful
-      // when running productions for example, I see 2 solutions:
-      // -> putting additional flag that will activate this extra check when
-      //    we actually know that the postprocessing takes place
-      // -> adding some timeout
-      // if ( postProcessing) {
-      while ( nCreated > nDeleted  ) {
-        std::stringstream strea;
-        strea << "Didn't delete all G4 events " << nDeleted << "/" << nCreated;
-        warning( strea.str() );
-        CleanUp();
-        std::this_thread::sleep_for(std::chrono::milliseconds( 100 ));
+      // when running productions. Here, I added an additional flag that will 
+      // activate this extra checkk when we actually know that the
+      // postprocessing takes place
+      if ( m_postprocessing ) {
+        while ( nCreated > nDeleted && nKept < nCreated - nDeleted ) {
+          CleanUp();
+          std::this_thread::sleep_for(std::chrono::milliseconds( 500 ));
+        }
       }
-      // }
 
       // We put the payload back into the queue to trigger a cascading
       // shut down of all threads if one sentinel was pushed into the queue
@@ -192,6 +197,15 @@ void GiGaWorkerPilot::operator()()
     G4Random::setTheEngine( engine.get() );
 
     mgr->ProcessEvent( evt );
+
+    if (m_postprocessing) {
+      if( evt->ToBeKept() ) {
+        debug("Asked to keep this event by Geant4");
+        GiGaMTRunManager::GetGiGaMTRunManager()->GetNonConstCurrentRun()->StoreEvent(evt);
+        nKept++;
+      }
+    }
+
     if(m_track_eventstructure){
       std::stringstream sstr;
       sstr << "\nAfter simulation\n";
@@ -262,17 +276,20 @@ void GiGaWorkerPilot::CleanUp()
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
   auto evs_to_remove = std::remove_if(m_for_cleanup.begin(), m_for_cleanup.end(), [&](G4Event* evt) -> bool {
-    auto postActions = evt->GetNumberOfGrips();
-    // FIXME: extra flag to be added (see comment above)
-    // if ( postActions <= 0 || !postprocessing)
-    if ( postActions <= 0 ) {
-      debug( "Deleting G4Event" );
-      nDeleted++;
-      delete evt;
-      return true;
+    if (m_postprocessing) {
+      auto postActions = evt->GetNumberOfGrips();
+      if (postActions > 0) {
+        debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string(postActions) );
+        return false;
+      } else if ( evt->ToBeKept() ) {
+        debug( "Not deleting G4Event. Gaussino was asked to keep the event." );
+        return true;
+      }
     }
-    debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string(postActions) );
-    return false;
+    debug( "Deleting G4Event" );
+    nDeleted++;
+    delete evt;
+    return true;
   } );
   m_for_cleanup.erase(evs_to_remove, m_for_cleanup.end());
 }

@@ -74,6 +74,8 @@ public:
     m_input_queue = que;
   }
 
+  void setPostProcessing (bool postprocessing) { m_postprocessing = postprocessing; }
+
   // Returns singleton instance of initialization barrier.
   // First call determines the created number of threads that
   // are have to arrive at the barrier before all are given
@@ -107,11 +109,15 @@ private:
   GiGaPayloadQueue* m_input_queue = nullptr;
   G4WorkerThread* m_context       = nullptr;
 
+  // Events post-processing
+  bool m_postprocessing = false;
+
   // Number of worker
   size_t iWorker  = 0;
   size_t nWorkers = 0;
   size_t nDeleted = 0;
   size_t nCreated = 0;
+  size_t nKept = 0;
   // Internal strings to store different states of the processed event
   // FIXME: These should not be used in production version
   std::string m_before_sim, m_after_sim, m_after_cleanup;
