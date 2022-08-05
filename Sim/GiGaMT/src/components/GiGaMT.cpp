@@ -31,7 +31,7 @@
 #include "G4UIsession.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4VUserPhysicsList.hh"
-#include "G4VVisManager.hh"
+#include "G4VisManager.hh"
 
 // from GiGaMT
 #include "CLHEP/Random/RandomEngine.h"
@@ -145,6 +145,14 @@ StatusCode GiGaMT::finalize()
   }
   always() << "Finalized all G4 worker threads" << endmsg;
   delete GiGaMTRunManager::GetGiGaMTRunManager();
+
+  if (!m_visMgrFactory.name().empty() ) {
+    auto vis_mgr = G4VisManager::GetInstance();
+    if (vis_mgr) {
+      debug() << "Deleting G4VisManager: " << m_visMgrFactory.name() << endmsg; 
+      delete vis_mgr;
+    }
+  }
 
   // error printout
   if ( 0 != m_errors.size() || 0 != m_warnings.size() || 0 != m_exceptions.size() ) {
