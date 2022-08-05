@@ -35,24 +35,52 @@ class Geant4Visualization(ConfigurableUser):
 
     __slots__ = {
         "Driver": "",
+        # geometry
         "DrawGeometry": True,
-        "Debug": True,
+        # event data
+        "DrawTrajectories": True,
+        "DrawG4Hits": True,
+        # view
+        "CameraPhi": 0,  # deg,
+        "CameraTheta": 0,  # deg,
+        "Zoom": 1,
+        # other
+        "CombineEvents": True,
+        "Debug": False,
     }
 
     _available_drivers = [
         'ASCIITree',
+        'DAWNFILE',
+        'OpenGLImmediateX',
+        'OpenGLStoredX',
     ]
 
     _parsed_drivers = {
         'ASCIITree': 'ATree',
+        'OpenGLImmediateX': 'OGLIX',
+        'OpenGLStoredX': 'OGLSX',
     }
+
+    _only_geometry_drivers = [
+        'ASCIITree',
+    ]
+
+    # some drivers open a window
+    # it might be therefore useful to open
+    # an interactive UI session
+    _interactive_drivers = [
+        'OpenGLImmediateX',
+        'OpenGLStoredX',
+    ]
 
     def apply(self, giga):
         """ Main method to be called from SimPhase()
 
         :param giga: GiGaMT configurable
         """
-        if not self.getProp("Driver"):
+        driver = self.getProp("Driver")
+        if not driver:
             log.info("Geant4 visualization is turned off.")
             return
 
@@ -84,21 +112,86 @@ class Geant4Visualization(ConfigurableUser):
         # and now append vis UI commands
         # note: order is important!
         self._activate_g4_driver(cmds)
+
+        self._set_view(cmds)
+
         if self.getProp("DrawGeometry"):
             self._draw_geometry(cmds)
+
+        visualize_data = self.getProp("DrawTrajectories") or self.getProp(
+            "DrawG4Hits")
+        if visualize_data and driver in self._only_geometry_drivers:
+            if self.isPropertySet("DrawTrajectories") or self.isPropertySet(
+                    "DrawG4Hits"):
+                raise ValueError(
+                    driver +
+                    " does not support visualizing of the event data.")
+            return
+
+        if self.getProp("DrawTrajectories"):
+            self._draw_trajectories(cmds)
+
+        if self.getProp("DrawG4Hits"):
+            self._draw_g4hits(cmds)
+
+        self._set_other(cmds, actioninit)
 
     def _activate_g4_driver(self, cmds):
         driver = self.getProp("Driver")
         if driver not in self._available_drivers:
             raise NotImplementedError(driver +
-                                      "is not an available G4 driver.")
+                                      " is not an available G4 driver.")
         main_cmd = '/vis/open '
         parsed_driver = self._parsed_drivers.get(driver, driver)
         main_cmd += parsed_driver
-        cmds['init'] += [main_cmd]
+        cmds['init'] += [
+            main_cmd,
+            '/vis/scene/create',
+        ]
+
+    def _set_view(self, cmds):
+        theta = self.getProp("CameraTheta")
+        phi = self.getProp("CameraPhi")
+        if theta or phi:
+            cmd = "/vis/viewer/set/viewpointThetaPhi {} {}".format(theta, phi)
+            cmds['init'].append(cmd)
+        zoom = self.getProp("Zoom")
+        if zoom != 1:
+            cmds['init'].append("/vis/viewer/zoom {}".format(zoom))
 
     def _draw_geometry(self, cmds):
         cmds['init'] += [
-            "/vis/drawVolume",
-            "/vis/viewer/flush",  # TODO: this should be optional
+            "/vis/scene/add/volume",
+            "/vis/sceneHandler/attach",
         ]
+
+    def _draw_trajectories(self, cmds):
+        cmds['init'] += [
+            "/vis/scene/add/trajectories smooth",
+            # TODO: factory should be a property
+            "/vis/modeling/trajectories/create/drawByCharge",
+        ]
+
+    def _draw_g4hits(self, cmds):
+        cmds['init'] += [
+            "/vis/scene/add/hits",
+        ]
+
+    def _set_other(self, cmds, actioninit):
+        combine = self.getProp("CombineEvents")
+        driver = self.getProp("Driver")
+        if combine:
+            if driver == "OpenGLImmediateX":
+                raise NotImplementedError(
+                    "OpenGLImmediateX does not work correctly with event accumulation."
+                )
+            cmds['init'].append("/vis/scene/endOfEventAction accumulate")
+
+        # for interactive drivers enable UI sessions
+        if driver in self._interactive_drivers:
+            if combine:
+                cmds['end_run'].append("/vis/viewer/refresh")
+                actioninit.GiGaRunActionCommand.EndOfRunUISession = True
+            else:
+                cmds['end_event'].append("/vis/viewer/refresh")
+                actioninit.GiGaEventActionCommand.EndOfEventUISession = True
