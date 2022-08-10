@@ -37,6 +37,9 @@ class Geant4Visualization(ConfigurableUser):
         "Driver": "",
         # geometry
         "DrawGeometry": True,
+        "Volumes": [],
+        "VolumesCopyNumber": {},
+        "VolumesDepthOfDescent": {},
         # event data
         "DrawTrajectories": True,
         "DrawG4Hits": True,
@@ -85,9 +88,11 @@ class Geant4Visualization(ConfigurableUser):
             return
 
         # activate GiGaVisManager
+        from Configurables import GiGaVisManager
         giga.VisManager = "GiGaVisManager"
+        vismgr = GiGaVisManager("GiGaMT.GiGaVisManager")
         if self.getProp("Debug"):
-            giga.VisManager.OutputLevel = DEBUG
+            vismgr.OutputLevel = DEBUG
 
         # access the UI interface
         actioninit = giga.ActionInitializer
@@ -160,10 +165,15 @@ class Geant4Visualization(ConfigurableUser):
             cmds['init'].append("/vis/viewer/zoom {}".format(zoom))
 
     def _draw_geometry(self, cmds):
-        cmds['init'] += [
-            "/vis/scene/add/volume",
-            "/vis/sceneHandler/attach",
-        ]
+        cmd = "/vis/scene/add/volume"
+        vols = self.getProp("Volumes")
+        for vol in vols:
+            copy_no = self.getProp("VolumesCopyNumber").get(vol, -1)
+            depth = self.getProp("VolumesDepthOfDescent").get(vol, -1)
+            cmds['init'].append("{} {} {} {}".format(cmd, vol, copy_no, depth))
+        if not vols:
+            cmds['init'].append(cmd)
+        cmds['init'].append("/vis/sceneHandler/attach")
 
     def _draw_trajectories(self, cmds):
         cmds['init'] += [
