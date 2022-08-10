@@ -40,6 +40,7 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   nDeleted      = right.nDeleted;
   nCreated      = right.nCreated;
   nKept         = right.nKept;
+  nToProcess    = right.nToProcess;
   m_track_eventstructure = right.m_track_eventstructure;
   m_for_cleanup = std::move( right.m_for_cleanup );
 }
@@ -94,7 +95,7 @@ void GiGaWorkerPilot::InitializeWorker()
 void GiGaWorkerPilot::FinalizeWorker()
 {
   debug( "Finalizing the worker for thread " + std::to_string( iWorker ) );
-  CleanUp();                             // Delete any remaining events handled by this worker thread.
+  CleanUp(true);                             // Delete any remaining events handled by this worker thread.
   debug( "Finished clean-up for thread " + std::to_string( iWorker ) );
   G4Threading::WorkerThreadLeavesPool(); // FIXME: necessary?
   delete GiGaWorkerRunManager::GetGiGaWorkerRunManager();
@@ -107,12 +108,7 @@ void GiGaWorkerPilot::FinalizeWorker()
 
   G4Threading::WorkerThreadLeavesPool();
   delete m_context;
-  if (m_postprocessing && nKept > 0) {
-    std::stringstream strea;
-    strea << "Asked to keep some events by Geant4. "
-          << "Created: " << nCreated << ", Kept: " << nKept << ", Deleted: " << nDeleted;
-    debug( strea.str() );
-  } else if ( nCreated > nDeleted ) {
+  if ( nCreated > nDeleted ) {
     std::stringstream strea;
     strea << "Didn't delete all G4 events " << nDeleted << "/" << nCreated;
     warning( strea.str() );
@@ -148,18 +144,6 @@ void GiGaWorkerPilot::operator()()
     debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
       debug( "Sentinel detected, ending loop" );
-      // now introducing a potentially dangerous loop that should wait
-      // until all the worker threads finished the postprocessing steps in G4
-      // note: this should be working, but we might want to be extra careful
-      // when running productions. Here, I added an additional flag that will 
-      // activate this extra checkk when we actually know that the
-      // postprocessing takes place
-      if ( m_postprocessing ) {
-        while ( nCreated > nDeleted && nKept < nCreated - nDeleted ) {
-          CleanUp();
-          std::this_thread::sleep_for(std::chrono::milliseconds( 500 ));
-        }
-      }
 
       // We put the payload back into the queue to trigger a cascading
       // shut down of all threads if one sentinel was pushed into the queue
@@ -256,6 +240,16 @@ void GiGaWorkerPilot::operator()()
     nCreated++;
   }
 
+  if ( m_postprocessing ) {
+    do {
+      CleanUp();
+      std::this_thread::sleep_for(std::chrono::milliseconds( 500 ));
+    }
+    while ( nToProcess > 0 );
+    GetPostProcessingBarrier().wait();
+    GetFinalBarrier().wait();
+  }
+
   FinalizeWorker();
 }
 
@@ -267,7 +261,7 @@ void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt )
   m_for_cleanup.push_back( evt );
 }
 
-void GiGaWorkerPilot::CleanUp()
+void GiGaWorkerPilot::CleanUp( bool force )
 {
   // Might be incorrect but avoids taking the lock. As this function
   // is also called during finalisation, no events can get lost.
@@ -275,11 +269,13 @@ void GiGaWorkerPilot::CleanUp()
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
+  size_t localNToProcess = 0;
   auto evs_to_remove = std::remove_if(m_for_cleanup.begin(), m_for_cleanup.end(), [&](G4Event* evt) -> bool {
-    if (m_postprocessing) {
+    if (!force && m_postprocessing) {
       auto postActions = evt->GetNumberOfGrips();
       if (postActions > 0) {
         debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string(postActions) );
+        localNToProcess++;
         return false;
       } else if ( evt->ToBeKept() ) {
         debug( "Not deleting G4Event. Gaussino was asked to keep the event." );
@@ -291,5 +287,6 @@ void GiGaWorkerPilot::CleanUp()
     delete evt;
     return true;
   } );
+  nToProcess = localNToProcess;
   m_for_cleanup.erase(evs_to_remove, m_for_cleanup.end());
 }
