@@ -153,17 +153,18 @@ class SimPhase(ConfigurableUser):
         geo_algs = self.set_base_detector_geometry(giga)
         seq += geo_algs
 
-        # Activate visualization module
-        if self.getProp("Visualization"):
-            from Configurables import Geant4Visualization
-            Geant4Visualization().apply(giga)
-
         ApplicationMgr().TopAlg += seq
         if self.getProp('TrackTruth'):
             if self.getProp('DebugCommunication'):
                 append_truth_actions(OutputLevel=-10)
             else:
                 append_truth_actions()
+
+        # Activate visualization module
+        if self.getProp("Visualization"):
+            from Configurables import Geant4Visualization
+            Geant4Visualization().apply(giga)
+
 
     def set_base_physics(self, giga):
         """ Main method that configures the physics list
