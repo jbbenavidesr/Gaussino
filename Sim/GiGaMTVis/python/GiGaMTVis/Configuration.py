@@ -37,6 +37,7 @@ class Geant4Visualization(ConfigurableUser):
         "Driver": "",
         # geometry
         "DrawGeometry": True,
+        "GeometryStyle": "wireframe",
         "Volumes": [],
         "VolumesCopyNumber": {},
         "VolumesDepthOfDescent": {},
@@ -181,6 +182,15 @@ class Geant4Visualization(ConfigurableUser):
         if not vols:
             cmds['init'].append(cmd)
         cmds['init'].append("/vis/sceneHandler/attach")
+        style = self.getProp("GeometryStyle")
+        styles = ['wireframe', 'surface', 'cloud']
+        if style not in styles:
+            raise ValueError(
+                "Only the following styles of geometry are available: [{}]".
+                format((", ").join(styles)))
+        if style == 'surface':
+            cmds['init'].append("/vis/viewer/colourByDensity")
+        cmds['init'].append("/vis/viewer/set/style " + style)
 
     def _draw_trajectories(self, cmds, actioninit):
         cmds['init'].append("/vis/scene/add/trajectories smooth")
