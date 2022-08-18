@@ -25,13 +25,10 @@
 #include "GaudiKernel/Bootstrap.h"
 
 
-GiGaMTRunManager::GiGaMTRunManager()
-  : G4MTRunManager()
-{}
+GiGaMTRunManager::GiGaMTRunManager() : G4MTRunManager() {}
 
 
-GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager()
-{
+GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager() {
   // Grab thread-local pointer from base class
   auto* wrm = G4MTRunManager::GetMasterRunManager();
   if ( wrm ) {
@@ -42,8 +39,7 @@ GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager()
 }
 
 
-void GiGaMTRunManager::Initialize()
-{
+void GiGaMTRunManager::Initialize() {
   // Set up geometry and physics in base class.
   // Why doesn't this call G4MTRunManager?
   // Probably because G4MTRunManager seems to call BeamOn(0) which
@@ -62,51 +58,17 @@ void GiGaMTRunManager::Initialize()
   PrepareCommandsStack();
 }
 
+void GiGaMTRunManager::RunTermination() {
+  std::string msg = "Geant4 terminated the run internally. This should not have happened!";
+  throw std::runtime_error(msg);
+}
 
-//void GiGaMTRunManager::InitializeGeometry()
-//{
-  ////FIXME: This needs to do something ...
-
-
-//}
-
-//void GiGaMTRunManager::InitializePhysics()
-//{
-  //kernel->InitializePhysics();
-
-  //G4CascadeInterface::Initialize();
-  //physicsInitialized = true;
-
-//}
-
-
-// I suspect a lot of this could just be delegated to the base class.
-// I wonder if something there breaks in Athena..
-void GiGaMTRunManager::RunTermination()
-{
-  // vanilla G4 calls a different method... why?
-  CleanUpPreviousEvents();
-  previousEvents->clear();
-
-  if(userRunAction) { userRunAction->EndOfRunAction(currentRun); }
-
-  delete currentRun;
-  currentRun = nullptr;
-  runIDCounter++;
-
-  G4StateManager* stateManager = G4StateManager::GetStateManager();
-  stateManager->SetNewState(G4State_Idle);
-
-  G4GeometryManager::GetInstance()->OpenGeometry();
-
-  kernel->RunTermination();
-
-  userRunAction = nullptr;
-  userEventAction = nullptr;
-  userSteppingAction = nullptr;
-  userStackingAction = nullptr;
-  userTrackingAction = nullptr;
-  // physicsList = nullptr;
-  userDetector = nullptr;
-  userPrimaryGeneratorAction = nullptr;
+void GiGaMTRunManager::SafeRunTermination() {
+  debug("Geant4 Run terminated.");
+  // WaitForEndEventLoopWorkers();
+  // -> disabled as it won't do anything, as G4 barrier is disabled
+  // G4RunManager::TerminateEventLoop()
+  // -> disabled as the event loop is controlled by Gaussino
+  G4RunManager::RunTermination();
+  // -> this will call kernel->RunTermination() and any EndOfRunAction
 }

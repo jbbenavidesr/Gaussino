@@ -39,8 +39,15 @@ public:
   GiGaMTRunManager( const GiGaMTRunManager& ) = delete;
   GiGaMTRunManager( GiGaMTRunManager&& )      = delete;
 
-  /// G4 function called at the end of a run
+  /// G4 function called at end of run. Should not be called. G4 can call
+  /// it internally, but it does not handle the event loop. Sould result
+  /// in an error. For GiGa use SafeRunTermination.
   void RunTermination() override final;
+
+  /// RunTermination called by GiGaMT to make sure that G4 did not
+  /// trigger the termination of the run internally.
+  void SafeRunTermination();
+
 
   /// We cram all of the initialization of the run manager stuff in here.
   /// This then includes some of the things that in normal G4 are called
