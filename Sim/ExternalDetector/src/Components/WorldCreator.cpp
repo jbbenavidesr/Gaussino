@@ -14,6 +14,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 #include "G4PVPlacement.hh"
+#include "G4VisAttributes.hh"
 // Gaudi
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/SystemOfUnits.h"
@@ -33,6 +34,8 @@ namespace ExternalDetector {
     Gaudi::Property<double>      m_worldSizeX{this, "WorldSizeX", 50. * Gaudi::Units::m};
     Gaudi::Property<double>      m_worldSizeY{this, "WorldSizeY", 50. * Gaudi::Units::m};
     Gaudi::Property<double>      m_worldSizeZ{this, "WorldSizeZ", 50. * Gaudi::Units::m};
+    // visual attributes
+    Gaudi::Property<double> m_visible{this, "Visible", false};
 
   public:
     using Service::Service;
@@ -69,6 +72,12 @@ G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
   auto world_lvol = new G4LogicalVolume( world_sbox, g4material, m_worldLogicalVolumeName.value(), 0, 0, 0 );
   auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), m_worldPhysicalVolumeName.value(), world_lvol, 0,
                                        false, 0, false );
+
+  if ( !m_visible.value() ) {
+    auto visattr = new G4VisAttributes();
+    visattr->SetVisibility( false );
+    world_lvol->SetVisAttributes( visattr );
+  }
 
   debug() << "External world created!" << endmsg;
   return world_pvol;
