@@ -17,20 +17,39 @@
 #include "G4TrajectoryFilterFactories.hh"
 #include "G4TrajectoryModelFactories.hh"
 */
+#include "G4VFilter.hh"
+#include "G4VModelFactory.hh"
+#include "G4VTrajectory.hh"
 // Gaussino
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
+#include "Utils/ToolProperty.h"
 
 namespace GiGa {
+  class VisManagerFactory;
   class VisManager : public G4VisManager, public GiGaMessage {
+    friend class VisManagerFactory;
+
   public:
+    using G4TrajFilterFactory = G4VModelFactory<G4VFilter<G4VTrajectory>>;
     VisManager( std::string verbosityString ) : G4VisManager( verbosityString ){};
     void RegisterGraphicsSystems() override;
     void RegisterModelFactories() override;
+
+  private:
+    std::vector<G4TrajFilterFactory*> m_traj_factories = {};
   };
 
   class VisManagerFactory : public extends<GiGaTool, GiGaFactoryBase<G4VisManager>> {
+    ToolHandleArray<GiGaFactoryBase<G4TrajFilterFactory>> m_traj_factories{this};
+    Gaudi::Property<std::vector<std::string>>             m_traj_factories_names{
+        this,
+        "TrajectoryFactories",
+        {},
+        tool_array_setter( m_traj_factories, m_traj_factories_names ),
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+
   public:
     using extends::extends;
     std::string           verbosityString() const;
@@ -70,6 +89,8 @@ void GiGa::VisManager::RegisterModelFactories() {
   // Digi filter models
   RegisterModelFactory(new G4DigiAttributeFilterFactory());
   */
+
+  for ( auto& factory : m_traj_factories ) { RegisterModelFactory( factory ); }
 }
 
 std::string GiGa::VisManagerFactory::verbosityString() const {
@@ -89,6 +110,7 @@ std::string GiGa::VisManagerFactory::verbosityString() const {
 G4VisManager* GiGa::VisManagerFactory::construct() const {
   auto vis_mgr = new VisManager{verbosityString()};
   vis_mgr->SetMessageInterface( message_interface() );
+  for ( auto& factory : m_traj_factories ) { vis_mgr->m_traj_factories.emplace_back( factory->construct() ); }
   vis_mgr->Initialize();
   return vis_mgr;
 }

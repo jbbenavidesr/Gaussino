@@ -18,9 +18,11 @@ gaudi_depends_on_subdirs(GaudiAlg
                          Sim/GiGaMTFactories)
 
 FindG4libs(
-  event 
+  event
+  global
   graphics_reps
   vis_management
+  modeling
   Tree
 )
 
