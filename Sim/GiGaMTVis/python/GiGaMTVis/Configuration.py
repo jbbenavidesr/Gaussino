@@ -220,11 +220,10 @@ class Geant4Visualization(ConfigurableUser):
         min_init_p = self.getProp("TrajectoryMinPT")
         max_init_p = self.getProp("TrajectoryMaxPT")
         if min_init_p or max_init_p:
-            from Configurables import GiGaTrajectoryInitialTransverseMomentumFilter
-            vismgr.TrajectoryFactories.append(
-                "GiGaTrajectoryInitialTransverseMomentumFilter")
-            factory = GiGaTrajectoryInitialMomentumFilter(
-                "GiGaMT.GiGaVisManager.GiGaTrajectoryInitialTransverseMomentumFilter")
+            from Configurables import GiGaTrajectoryInitialPTFilter
+            vismgr.TrajectoryFactories.append("GiGaTrajectoryInitialPTFilter")
+            factory = GiGaTrajectoryInitialPTFilter(
+                "GiGaMT.GiGaVisManager.GiGaTrajectoryInitialPTFilter")
             if min_init_p:
                 factory.MinPT = min_init_p
             if max_init_p:
