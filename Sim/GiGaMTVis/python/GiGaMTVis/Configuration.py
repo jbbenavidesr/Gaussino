@@ -14,6 +14,9 @@ from Gaudi.Configuration import (
     DEBUG,
 )
 
+from GaudiKernel.SystemOfUnits import (
+    MeV, )
+
 __author__ = "Filip Bilandžija, Michał Mazurek"
 __email__ = "michal.mazurek@cern.ch"
 
@@ -45,6 +48,8 @@ class Geant4Visualization(ConfigurableUser):
         "DrawTrajectories": True,
         "StoreTrajectories": "Marked",
         "DrawG4Hits": True,
+        "TrajectoryMinPT": 0 * MeV,
+        "TrajectoryMaxPT": 0 * MeV,
         # view
         "CameraPhi": 0,  # deg,
         "CameraTheta": 0,  # deg,
@@ -142,7 +147,7 @@ class Geant4Visualization(ConfigurableUser):
             return
 
         if self.getProp("DrawTrajectories"):
-            self._draw_trajectories(cmds, actioninit)
+            self._draw_trajectories(cmds, actioninit, vismgr)
 
         if self.getProp("DrawG4Hits"):
             self._draw_g4hits(cmds)
@@ -192,7 +197,7 @@ class Geant4Visualization(ConfigurableUser):
             cmds['init'].append("/vis/viewer/colourByDensity")
         cmds['init'].append("/vis/viewer/set/style " + style)
 
-    def _draw_trajectories(self, cmds, actioninit):
+    def _draw_trajectories(self, cmds, actioninit, vismgr):
         cmds['init'].append("/vis/scene/add/trajectories smooth")
         # warning: adding trajectories will set storing of the trajectories
         #          by default, so additional checks have to be made if
@@ -211,6 +216,21 @@ class Geant4Visualization(ConfigurableUser):
 
         # TODO: factory should be a property
         cmds['init'].append("/vis/modeling/trajectories/create/drawByCharge")
+
+        min_init_p = self.getProp("TrajectoryMinPT")
+        max_init_p = self.getProp("TrajectoryMaxPT")
+        if min_init_p or max_init_p:
+            from Configurables import GiGaTrajectoryInitialTransverseMomentumFilter
+            vismgr.TrajectoryFactories.append(
+                "GiGaTrajectoryInitialTransverseMomentumFilter")
+            factory = GiGaTrajectoryInitialMomentumFilter(
+                "GiGaMT.GiGaVisManager.GiGaTrajectoryInitialTransverseMomentumFilter")
+            if min_init_p:
+                factory.MinPT = min_init_p
+            if max_init_p:
+                factory.MaxPT = max_init_p
+            cmds['init'].append(
+                "/vis/filtering/trajectories/create/initialPTFilter")
 
     def _draw_g4hits(self, cmds):
         cmds['init'] += [
