@@ -51,9 +51,9 @@ class Geant4Visualization(ConfigurableUser):
         "TrajectoryMinPT": 0 * MeV,
         "TrajectoryMaxPT": 0 * MeV,
         # view
-        "CameraPhi": 0,  # deg,
-        "CameraTheta": 0,  # deg,
-        "Zoom": 1,
+        "CameraPhi": 0.,  # deg,
+        "CameraTheta": 0.,  # deg,
+        "Zoom": 1.,
         # other
         "CombineEvents": True,
         "Debug": False,
