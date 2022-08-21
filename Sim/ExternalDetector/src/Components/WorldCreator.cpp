@@ -74,9 +74,7 @@ G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
                                        false, 0, false );
 
   if ( !m_visible.value() ) {
-    auto visattr = new G4VisAttributes();
-    visattr->SetVisibility( false );
-    world_lvol->SetVisAttributes( visattr );
+    world_lvol->SetVisAttributes( G4VisAttributes::Invisible );
   }
 
   debug() << "External world created!" << endmsg;
