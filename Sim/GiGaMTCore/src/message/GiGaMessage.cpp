@@ -9,4 +9,72 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
-thread_local std::string GiGaMessage::NameTag{"Master"};
+thread_local std::string GiGa::Message::NameTag{"Master"};
+
+using namespace std::string_literals;
+
+GiGa::Message::~Message() {
+  if ( m_msg ) { delete m_msg; }
+}
+
+GiGa::Message::Message( GiGa::Message&& right ) {
+  m_msg       = right.m_msg;
+  right.m_msg = nullptr;
+}
+
+void GiGa::Message::debug( std::string message ) const {
+  if ( !m_msg || !printDebug() ) return;
+  m_msg->debug( "[ "s + NameTag + " ] "s + message );
+}
+
+void GiGa::Message::verbose( std::string message ) const {
+  if ( !m_msg || !printVerbose() ) return;
+  m_msg->verbose( "[ "s + NameTag + " ] "s + message );
+}
+
+void GiGa::Message::error( std::string message, unsigned int mx ) const {
+  if ( !m_msg ) return;
+  auto toprint = "[ "s + NameTag + " ] "s;
+  if ( mx > 0 ) {
+    const size_t num = increment( m_errors, message );
+    if ( num > mx ) return;
+    if ( num == mx ) {
+      m_msg->error( toprint + "The ERROR message is suppressed : '"s + message + "'"s );
+      return;
+    }
+  }
+  m_msg->error( toprint + message );
+}
+
+void GiGa::Message::warning( std::string message, unsigned int mx ) const {
+  if ( !m_msg ) return;
+  auto toprint = "[ "s + NameTag + " ] "s;
+  if ( mx > 0 ) {
+    const size_t num = increment( m_warnings, message );
+    if ( num > mx ) return;
+    if ( num == mx ) {
+      m_msg->warning( toprint + "The WARNING message is suppressed : '"s + message + "'"s );
+      return;
+    }
+  }
+  m_msg->warning( toprint + message );
+}
+
+void GiGa::Message::info( std::string message, unsigned int mx ) const {
+  if ( !m_msg ) return;
+  auto toprint = "[ "s + NameTag + " ] "s;
+  if ( mx > 0 ) {
+    const size_t num = increment( m_infos, message );
+    if ( num > mx ) return;
+    if ( num == mx ) {
+      m_msg->info( toprint + "The INFO message is suppressed : '"s + message + "'"s );
+      return;
+    }
+  }
+  m_msg->info( toprint + message );
+}
+
+void GiGa::Message::always( std::string message ) const {
+  if ( !m_msg ) return;
+  m_msg->always( "[ "s + NameTag + " ] "s + message );
+}

@@ -26,18 +26,20 @@ find_package(XercesC)
 AddHepMC3()
 find_package(ROOT COMPONENTS MathCore GenVector)
 
-FindG4libs(digits_hits event geometry global graphics_reps materials persistency
-           particles processes run tracking track intercoms physicslists)
-
 if(${Geant4_config_version} VERSION_LESS "10.06")
   add_definitions(-DG4MULTITHREADED)
   add_definitions(-DG4USE_STD11)
 endif()
 
+FindG4libs(intercoms)
 
 gaudi_add_library(GiGaMTCoreMessageLib
                  src/message/*.cpp
-                 PUBLIC_HEADERS GiGaMTCoreMessage)
+                 PUBLIC_HEADERS GiGaMTCoreMessage
+                 LINK_LIBRARIES ${GEANT4_LIBS})
+
+FindG4libs(digits_hits event geometry global graphics_reps materials persistency
+           particles processes run tracking track intercoms physicslists interfaces vis_management)
 
 gaudi_add_library(GiGaMTCoreTruthLib
                  src/truth/*.cpp
