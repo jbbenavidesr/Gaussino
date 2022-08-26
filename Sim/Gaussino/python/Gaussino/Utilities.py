@@ -23,6 +23,7 @@ def run_once(func):
             if key not in func.store:
                 func.store[key] = func(*args, **kwargs)
             return func.store[key]
+
     return decorated
 
 
@@ -58,9 +59,7 @@ def get_set_configurable(parent, propertyname, value=""):
 def ppService(table, name=Configurable.DefaultName):
     from Configurables import ApplicationMgr, LHCb__ParticlePropertySvc
     log.info("Configuring ParticlePropertySvc")
-    ppservice = LHCb__ParticlePropertySvc(
-        name,
-        ParticlePropertiesFile=table)
+    ppservice = LHCb__ParticlePropertySvc(name, ParticlePropertiesFile=table)
     ApplicationMgr().ExtSvc += [ppservice]
     return ppservice
 
@@ -162,11 +161,16 @@ def gigaService(name=Configurable.DefaultName, debugcommunication=False):
     actioninit = get_set_configurable(giga, 'ActionInitializer')
     from Configurables import GiGaRunActionCommand
     actioninit.RunActions += ['GiGaRunActionCommand']
-    commands = actioninit.addTool(
-        GiGaRunActionCommand,
-        "GiGaRunActionCommand")
-    commands.BeginOfRunCommands = SimPhase().getProp('G4BeginRunCommand')
-    commands.EndOfRunCommands = SimPhase().getProp('G4EndRunCommand')
+    run_commands = actioninit.addTool(GiGaRunActionCommand)
+    run_commands.BeginOfRunCommands = SimPhase().getProp('G4BeginRunCommand')
+    run_commands.EndOfRunCommands = SimPhase().getProp('G4EndRunCommand')
+
+    from Configurables import GiGaEventActionCommand
+    actioninit.EventActions += ['GiGaEventActionCommand']
+    event_commands = actioninit.addTool(GiGaEventActionCommand)
+    event_commands.BeginOfEventCommands = SimPhase().getProp(
+        'G4BeginEventCommand')
+    event_commands.EndOfEventCommands = SimPhase().getProp('G4EndEventCommand')
     ApplicationMgr().ExtSvc += [giga]
     return giga
 
@@ -186,8 +190,11 @@ def configure_edm_conversion(redecay=False, **kwargs):
     else:
         from Configurables import MCTruthToEDM
         conv = MCTruthToEDM()
-    return [conv, CheckMCStructure(),
-            MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True)]
+    return [
+        conv,
+        CheckMCStructure(),
+        MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True)
+    ]
 
 
 @run_once
