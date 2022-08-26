@@ -33,10 +33,16 @@ class SimPhase(ConfigurableUser):
 
     :var G4BeginRunCommand: default:
         ``["/tracking/verbose 0", "/process/eLoss/verbose 0"]``
-    :vartype G4BeginRunCommand: bool, optional
+    :vartype G4BeginRunCommand: list, optional
 
     :var G4EndRunCommand: default: ``[]``
-    :vartype G4EndRunCommand: bool, optional
+    :vartype G4EndRunCommand: list, optional
+
+    :var G4BeginEventCommand: default: ``[]``
+    :vartype G4BeginEventCommand: list, optional
+
+    :var G4EndEventCommand: default: ``[]``
+    :vartype G4EndEventCommand: list, optional
 
     Physics related properties
 
@@ -95,6 +101,8 @@ class SimPhase(ConfigurableUser):
         "G4BeginRunCommand":
         ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
+        "G4BeginEventCommand": [],
+        "G4EndEventCommand": [],
         # physics related properties
         "PhysicsConstructors": [],
         "CutForElectron": -1. * km,
