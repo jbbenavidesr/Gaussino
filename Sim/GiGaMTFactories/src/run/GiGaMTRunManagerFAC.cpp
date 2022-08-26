@@ -23,6 +23,7 @@ GiGaMTRunManager* GiGaMTRunManagerFAC::construct() const {
 
   auto mgr = GiGaMTRunManager::GetGiGaMTRunManager();
   mgr->SetMessageInterface(message_interface());
+  mgr->setInitCommands( m_initCommands.value() );
   created = true;
   return mgr;
 }
