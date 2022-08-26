@@ -24,8 +24,10 @@
 static std::mutex workerInitMutex;
 
 GiGaWorkerRunManager::GiGaWorkerRunManager() : G4WorkerRunManager()
-// TODO: what if we need to make these configurable?
 {
+  // disable automatic behaviour, the decision on how to interpret
+  // the status of the command should be handled by Gaussino
+  G4UImanager::GetUIpointer()->SetIgnoreCmdNotFound(false);
 }
 
 GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager()
