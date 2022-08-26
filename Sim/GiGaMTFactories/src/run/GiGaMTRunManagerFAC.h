@@ -23,4 +23,5 @@ class GiGaMTRunManagerFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaMTRunMa
   GiGaMTRunManager* construct() const override;
   private:
   static std::atomic_bool created;
+  Gaudi::Property<std::vector<std::string>> m_initCommands{this, "InitCommands", {}};
 };

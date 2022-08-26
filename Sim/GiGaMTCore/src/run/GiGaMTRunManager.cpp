@@ -48,6 +48,13 @@ void GiGaMTRunManager::Initialize() {
   G4RunManager::Initialize();
   // Construct scoring worlds
   ConstructScoringWorlds();
+  // Run all the commands that are needed to work before
+  // the run is initilized (this simulates commands that are
+  // added in a main function of Geant4)
+  for ( auto& cmd : m_initCommands ) {
+    info("InitCommand(): execute '" + cmd + "'");
+    applyUIcommand( cmd );
+  }
   // Run initialization in G4RunManager.
   // Normally done in BeamOn.
   RunInitialization();

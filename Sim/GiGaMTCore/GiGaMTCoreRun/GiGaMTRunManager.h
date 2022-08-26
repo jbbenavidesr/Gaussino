@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/GiGaUIMessage.h"
 // Geant4 includes
 #include "G4MTRunManager.hh"
 
@@ -27,7 +27,7 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTRunManager : public G4MTRunManager, public GiGaMessage
+class GiGaMTRunManager : public G4MTRunManager, public GiGa::UIMessage
 {
 
 public:
@@ -60,6 +60,8 @@ public:
   virtual void ThisWorkerReady() override final{};
   virtual void ThisWorkerEndEventLoop() override final{};
 
+  void setInitCommands(std::vector<std::string> initCommands) { m_initCommands = initCommands; }
+
 protected:
   /// Initialize the G4 geometry on the master
   //void InitializeGeometry() override final;
@@ -77,4 +79,6 @@ protected:
 private:
   /// Pure singleton hence private constructor
   GiGaMTRunManager();
+
+  std::vector<std::string> m_initCommands = {};
 };
