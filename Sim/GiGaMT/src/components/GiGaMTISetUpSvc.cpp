@@ -59,6 +59,7 @@ StatusCode GiGaMT::InitializeMainThread() const
   // This will instantiate call the singleton for the run manager and apply
   // any configuration given to the factory (none at the moment!).
   auto main_mgr = m_mTRunManagerFactory->construct();
+  main_mgr->SetNumberOfEventsToBeProcessed(m_nWorkerThreads);
   main_mgr->SetUserInitialization( m_physListFactory->construct() );
   main_mgr->SetUserInitialization( m_ActionInitializerFactory->construct() );
   main_mgr->G4RunManager::SetUserInitialization( m_detConstFactory->construct() );
