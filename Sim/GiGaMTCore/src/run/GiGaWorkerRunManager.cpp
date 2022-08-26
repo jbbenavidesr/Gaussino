@@ -115,16 +115,12 @@ void GiGaWorkerRunManager::InitializePhysics()
   G4RunManager::InitializePhysics();
 }
 
-bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
+bool GiGaWorkerRunManager::ProcessEvent( G4Event* currentEvent )
 {
 
   G4StateManager* stateManager = G4StateManager::GetStateManager();
   stateManager->SetNewState( G4State_GeomClosed );
 
-  currentEvent = event;
-
-  eventManager->SetVerboseLevel(3);
-  //eventManager->GetTrackingManager()->SetVerboseLevel(3);
   eventManager->ProcessOneEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
@@ -133,13 +129,15 @@ bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
     return true;
   }
 
-  this->AnalyzeEvent( currentEvent );
+  AnalyzeEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
              "Event Aborted at Analysis level" );
     currentEvent = nullptr;
     return true;
   }
+
+  UpdateScoring();
 
   //this->StackPreviousEvent( currentEvent );
   bool abort   = currentEvent->IsAborted();
