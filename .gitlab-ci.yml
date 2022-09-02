@@ -44,6 +44,7 @@ check-formatting:
       - apply-formatting.patch
     when: on_failure
     expire_in: 1 week
+  allow_failure: true
 
 .docs-base:
   stage: docs
