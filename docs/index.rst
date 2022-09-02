@@ -30,6 +30,7 @@ Welcome to the Gaussino's documentation!
    configuration/external_detector
    configuration/parallel_geometry
    configuration/gdml
+   configuration/visualization
 
 .. toctree::
    :caption: Examples
