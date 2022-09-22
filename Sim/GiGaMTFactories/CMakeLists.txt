@@ -18,44 +18,95 @@
 # FIXME: This requirement should probably be enforced somehow...
 # 
 #################################################################################
-gaudi_subdir(GiGaMTFactories v1r0)
+#[=======================================================================[.rst:
+Sim/GiGaMTFactories
+---------------------------
+#]=======================================================================]
 
-gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTCore
-                         Sim/SimInterfaces
-                         HepMC3
-                         Sim/GiGaMTGeo) 
+gaudi_add_header_only_library(GiGaMTFactoriesLib
+    LINK
+        Gaudi::GaudiKernel
+)
 
-if(${Geant4_config_version} VERSION_LESS "10.06")
-  add_definitions(-DG4MULTITHREADED)
-  add_definitions(-DG4USE_STD11)
-endif()
 
-AddHepMC3()
-
-# GigaMTCoreLib should pull in all the dependencies on Geant 4 etc
 gaudi_add_module(GiGaMTRunFactories
-        src/run/*.cpp
-        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
+    SOURCES
+        src/Components/GiGaMTRunManagerFAC.cpp
+	src/Components/GiGaRunActionCommandFAC.cpp
+	src/Components/GiGaWorkerPilotFAC.cpp
+    LINK
+        HepMC3::HepMC3
+        Gaussino::GiGaMTFactoriesLib
+	Gaussino::GiGaMTCoreRunLib
+)
+
+gaudi_add_header_only_library(GiGaMTPhysFactoriesLib)
+
 
 gaudi_add_module(GiGaMTPhysFactories
-        src/phys/*.cpp
-        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
+    SOURCES
+	src/Components/GiGaMTModularPhysListFAC.cpp
+	src/Components/GiGaMTG4PhysicsConstrFAC.cpp
+	src/Components/GiGaMTG4PhysicsFactory.cpp
+    LINK
+        CLHEP::CLHEP
+        Geant4::G4run
+        Geant4::G4physicslists
+        Gaudi::GaudiAlgLib
+        Gaussino::GiGaMTFactoriesLib
+        Gaussino::GiGaMTCoreMessageLib
+)
+
+gaudi_add_header_only_library(GiGaMTDetFactoriesLib)
+
 
 gaudi_add_module(GiGaMTDetFactories
-        src/det/*.cpp
-        INCLUDE_DIRS SimInterfaces
-        LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib)
+    SOURCES
+        src/Components/GiGaMTDetectorConstructionFAC.cpp
+	src/Components/GDMLConstructionFactory.cpp
+    LINK
+    	CLHEP::Vector
+	Geant4::G4digits_hits
+	Geant4::G4geometry
+	Geant4::G4global
+	Geant4::G4persistency
+	Geant4::G4run
+	Gaudi::GaudiAlgLib
+	XercesC::XercesC
+	Gaussino::UtilsLib
+	Gaussino::GiGaMTCoreDetLib
+	Gaussino::GiGaMTFactoriesLib
+	Gaussino::GiGaMTGeoLib
+	Gaussino::SimInterfacesLib
+)
 
 gaudi_add_module(GiGaMTTruthFactories
-        src/truth/*.cpp
-        LINK_LIBRARIES GiGaMTCoreTruthLib GaudiAlgLib)
+    SOURCES
+        src/Components/TruthActionFactories.cpp
+    LINK
+        Gaussino::GiGaMTFactoriesLib
+	Gaussino::GiGaMTCoreMessageLib
+	Gaussino::GiGaMTCoreRunLib
+)
 
 gaudi_add_library(GiGaMTMagnetFactoriesLib
-                  src/magnet/lib/*.cpp
-                  PUBLIC_HEADERS GiGaMTFactories
-                  LINK_LIBRARIES GiGaMTCoreRunLib GaudiAlgLib GaudiKernel)
+    SOURCES
+        src/Lib/FieldMgrBase.cpp
+    LINK
+        PUBLIC
+	    CLHEP::CLHEP
+	    Geant4::G4geometry
+	    Gaudi::GaudiKernel
+	    Gaudi::GaudiAlgLib
+	    Gaussino::GiGaMTCoreMessageLib
+)
 
 gaudi_add_module(GiGaMTMagnetFactories
-        src/magnet/components/*.cpp
-        LINK_LIBRARIES GiGaMTMagnetFactoriesLib)
+    SOURCES
+        src/Components/MagFieldFromSvc.cpp
+	src/Components/Steppers.cpp
+	src/Components/ToolFieldMgr.cpp
+	src/Components/ZeroFieldMgr.cpp
+    LINK
+        Gaussino::GiGaMTMagnetFactoriesLib
+)

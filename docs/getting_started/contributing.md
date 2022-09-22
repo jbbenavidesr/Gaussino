@@ -23,11 +23,11 @@ In gitlab, open a MR targeting the `master` branch. Adding the `lhcb-gaussino` l
     This sub-section will be moved to a new documentation website dedicated to Gauss.
 ```
 
-The instructions are almost the same as for Gaussino in the previous section: [](./contributing.md#developing-gaussino). The only difference is that the MR should be targeting `Futurev4` branch.
+The instructions are almost the same as for Gaussino in the previous section: [](./contributing.md#developing-gaussino). The only difference is that the MR should be targeting `Futurev5` branch.
 
 ## Fast simulation developments with Geant4 10.7
 
-All the developments related to fast simulations with Geant4 10.7 are tested in the `lhcb-gaussino-fastsim` nightly slot. We have a dedicated target branch in Gaussino and Gauss-on-Gaussino for these developments: `FASTSIM`. Therefore, you can follow the instructions as in [](./gaussino.md#working-with-gaussino), [](./gauss.md#working-with-gauss-on-gaussino-to-be-moved), [](./contributing.md#developing-gaussino) and [](./contributing.md#developing-gauss-on-gaussino) and change `lhcb-gaussino` to `lhcb-gaussino-fastsim` and `master` to `FASTSIM` (in Gauss: `Futurev4` to `FASTSIM`). 
+All the developments related to fast simulations with Geant4 10.7 are tested in the `lhcb-gaussino-fastsim` nightly slot. We have a dedicated target branch in Gaussino and Gauss-on-Gaussino for these developments: `FASTSIM`. Therefore, you can follow the instructions as in [](./gaussino.md#working-with-gaussino), [](./gauss.md#working-with-gauss-on-gaussino-to-be-moved), [](./contributing.md#developing-gaussino) and [](./contributing.md#developing-gauss-on-gaussino) and change `lhcb-gaussino` to `lhcb-gaussino-fastsim` and `master` to `FASTSIM` (in Gauss: `Futurev5` to `FASTSIM`). 
 
 ## Documentation
 

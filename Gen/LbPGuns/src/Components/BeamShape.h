@@ -1,0 +1,73 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
+#ifndef PARTICLEGUNS_BEAMSHAPE_H
+#define PARTICLEGUNS_BEAMSHAPE_H 1
+
+// Include files
+// from Gaudi
+#include "GaudiAlg/GaudiTool.h"
+
+// from ParticleGuns
+#include "LbPGuns/IParticleGunTool.h"
+
+/** @class BeamShape BeamShape.h "BeamShape.h"
+ *
+ *  @author M. Lieng
+ *  @date 2009-10-23
+ */
+class BeamShape : public GaudiTool , virtual public IParticleGunTool {
+ public:
+  
+  /// Constructor
+  BeamShape( const std::string & type , const std::string & name , 
+              const IInterface * parent ) ;
+  
+  virtual ~BeamShape() ; ///< Destructor
+  
+  /// Initialize method
+  virtual StatusCode initialize() override;
+  
+  /// Generate the particle
+  virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
+                                 Gaudi::LorentzVector & origin , 
+                                 int & pdgId , HepRandomEnginePtr& engine ) override;
+                                 
+  /// Print counters
+  virtual void printCounters( ) override {};
+  
+ private:
+  // Setable Properties
+  double m_xCenter;   // Beam center position
+  double m_yCenter;   // Beam center position
+  double m_zCenter;   // Production point
+  int m_zDir;         // Beam direction (Beam 1: 1, Beam 2: -1)
+  double m_theta;     // Beam angle (inclination)
+  double m_phi;       // Beam angle (azimuth)
+  double m_momentum;  // Beam particle momentum
+  double m_xEmm;      // Transverse emmitance
+  double m_yEmm;      // Transverse emmitance
+  double m_xBeta;     // Optical beta function
+  double m_yBeta;     // Optical beta function
+  double m_xAlpha;    // Correlation function
+  double m_yAlpha;    // Correlation function
+  int  m_pdgCode;     // PDG particle id number
+
+	// Local Member Data:
+  double m_xSigma;
+  double m_ySigma;
+  double m_pxCenter;
+  double m_pyCenter;
+  double m_pxSigma;
+  double m_pySigma;
+  double m_mass;
+} ;
+
+#endif // PARTICLEGUNS_BEAMSHAPE_H

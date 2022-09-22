@@ -16,7 +16,7 @@ If you wish to work with Gauss (LHCb simulation framework) based on Gaussino's c
 
     .. code-block:: shell
 
-        lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+        lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino, GaussinoExtLibs lhcb-gaussino Today
 
 We really encourage you to use `lbn-install` as it generates a local copy of the nightly build directly on your machine and will create the most stable environment for your developments.  
 ```
@@ -28,10 +28,10 @@ git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
 ```
 
-Gauss-on-Gaussino is develped on a dedicated branch: `Futurev4`. So your development has to start from this branch. 
+Gauss-on-Gaussino is develped on a dedicated branch: `Futurev5`. So your development has to start from this branch. 
 
 ```shell
-git checkout Futurev4
+git checkout Futurev5
 git checkout -b your_local_dev_branch
 ```
 The rest is very similar to the development in Gaussino:
@@ -69,12 +69,13 @@ Below you will find a summary of the commands that should cover the majority of 
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+export LCG_VERSION=101
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout Futurev4
+git checkout Futurev5
 git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
@@ -90,7 +91,8 @@ Below you will find a summary of the commands that should cover the majority of 
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+export LCG_VERSION=101
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
@@ -104,7 +106,7 @@ make -j4 install
 cd ..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout Futurev4
+git checkout Futurev5
 git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
@@ -120,12 +122,13 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,Gaussino lhcb-gaussino Today
+export LCG_VERSION=101
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout Futurev4
+git checkout Futurev5
 git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
@@ -141,6 +144,7 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
+export LCG_VERSION=101
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
@@ -171,6 +175,15 @@ git checkout -b your_local_dev_branch
 lb-project-init .
 make -j4 install
 cd ..
+git clone ssh://git@gitlab.cern.ch:7999/Gaussino/GaussinoExtLibs.git
+cd GaussinoExtLibs
+git checkout -b your_local_dev_branch
+# check the MRs!
+# git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
+# git merge --no-edit 23 45
+lb-project-init .
+make -j4 install
+cd ..
 git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
 cd Gaussino
 git checkout -b your_local_dev_branch
@@ -182,7 +195,7 @@ make -j4 install
 cd ..
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
-git checkout Futurev4
+git checkout Futurev5
 git checkout -b your_local_dev_branch
 # check the MRs!
 # git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
@@ -198,7 +211,9 @@ Below you will find a summary of the commands needed to work with fast simulatio
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino-fastsim Today
+export LCG_VERSION=101
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs
+lhcb-gaussino-fastsim Today
 cd lhcb-gaussino-fastsim/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git

@@ -8,25 +8,27 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: GaussAlgs
-################################################################################
-gaudi_subdir(RndInit v1r0)
-
-gaudi_depends_on_subdirs(GaudiAlg
-                         NewRnd
-                         Gen/GenBeam
-                         Event/GenEvent
-                         #FIXME: For platform and kernel streaming, I think ?!?!
-                         Kernel/LHCbKernel
-                         Defaults)
+#[=======================================================================[.rst:
+Gen/RndInit
+-----------
+#]=======================================================================]
 
 gaudi_add_library(RndInitLib
-                 src/lib/*.cpp
-                 PUBLIC_HEADERS RndInit
-                 INCLUDE_DIRS GenBeam
-                 LINK_LIBRARIES GaudiAlgLib GenEvent LHCbKernel NewRnd)
+    SOURCES
+        src/Lib/GenRndInit.cpp
+    LINK
+        PUBLIC
+	    Gaudi::GaudiAlgLib
+	    LHCb::GenEvent # TODO: [LHCb DEPENDENCY]
+	    Gaussino::Defaults
+	    Gaussino::NewRndLib
+	    Gaussino::GenBeamLib
+)
 
 gaudi_add_module(RndInit
-                 src/components/*.cpp
-                 LINK_LIBRARIES RndInitLib)
+    SOURCES
+        src/Components/GenRndInitComp.cpp
+	src/Components/SeedingTool.cpp
+    LINK
+        Gaussino::RndInitLib
+)

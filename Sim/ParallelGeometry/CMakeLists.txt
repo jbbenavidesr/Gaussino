@@ -8,30 +8,31 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: ParallelGeometry
-################################################################################
-gaudi_subdir(ParallelGeometry v1r0)
-
-gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTCore
-                         Sim/GiGaMTFactories)
-
-AddHepMC3()                                              
-find_package(Boost)
-find_package(CLHEP)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
-
+#[=======================================================================[.rst:
+Sim/ParallelGeometry
+--------------------
+#]=======================================================================]
 gaudi_add_library(ParallelGeometryLib
-                  src/Lib/*.cpp
-                  PUBLIC_HEADERS ParallelGeometry
-                  INCLUDE_DIRS Sim/GiGaMTFactories ${RANGEV3_INCLUDE_DIRS}
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+    SOURCES
+        src/Lib/Physics.cpp
+        src/Lib/World.cpp
+    LINK
+        PUBLIC
+            XercesC::XercesC
+            Geant4::G4physicslists
+            Gaussino::GiGaMTPhysFactoriesLib
+            Gaussino::GiGaMTCoreRunLib
+)
 
 gaudi_add_module(ParallelGeometry
-                 src/Components/*.cpp
-                 LINK_LIBRARIES ParallelGeometryLib)
+    SOURCES
+        src/Components/DefaultPhysicsFactory.cpp
+        src/Components/DefaultWorldFactory.cpp
+    LINK
+        Geant4::G4persistency
+        Gaussino::ParallelGeometryLib
+)
 
-gaudi_install_python_modules()
-gaudi_add_test(QMTest QMTEST)
+gaudi_install(PYTHON)
+gaudi_generate_confuserdb()
+gaudi_add_tests(QMTest)

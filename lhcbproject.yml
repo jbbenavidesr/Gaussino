@@ -1,0 +1,4 @@
+name: Gaussino
+licence: Apache-2.0
+dependencies:
+  - GaussinoExtLibs

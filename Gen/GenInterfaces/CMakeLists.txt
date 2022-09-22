@@ -8,17 +8,12 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
+#[=======================================================================[.rst:
+Gen/GenInterfaces
+-----------------
+#]=======================================================================]
 ################################################################################
 # Package: GenInterface
 ################################################################################
-gaudi_subdir(GenInterfaces v1r0)
-
-gaudi_depends_on_subdirs(HepMC3
-                         NewRnd)
-
-AddHepMC3()
-
-gaudi_install_headers(GenInterfaces)
-
-gaudi_install_headers(
-  Event)
+gaudi_add_header_only_library(GenInterfacesLib)
+gaudi_add_header_only_library(EventLib)

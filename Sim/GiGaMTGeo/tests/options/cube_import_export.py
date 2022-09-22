@@ -82,10 +82,10 @@ SimPhase().ExternalDetectorEmbedder = "Testing"
 
 # Import GDML
 import os
-root = os.getenv("GAUSSINO_PROJECT_ROOT")
+root = os.getenv("GIGAMTGEOROOT")
 SimPhase().ImportGDML = [
     {
-        "GDMLFileName": root + "/Sim/GiGaMTGeo/tests/data/cube_to_import.gdml",
+        "GDMLFileName": root + "/tests/data/cube_to_import.gdml",
         "OutputLevel": DEBUG,
     },
 ]
