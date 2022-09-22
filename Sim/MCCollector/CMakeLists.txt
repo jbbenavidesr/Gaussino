@@ -8,22 +8,20 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: MCCollector
-################################################################################
-gaudi_subdir(MCCollector v1r0)
+#[=======================================================================[.rst:
+Sim/MCCollector
+---------------
 
-gaudi_depends_on_subdirs(Sim/GiGaMTCore
-			 Sim/GiGaMTFactories
-             Sim/GiGaMTCore
-             EDMdev/MCTruthToEDM)
-
-AddHepMC3()
-find_package(Boost)
-find_package(CLHEP)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
-
+Author: Michał Mazurek
+#]=======================================================================]
 gaudi_add_module(MCCollector
-                 src/*.cpp
-		 INCLUDE_DIRS GiGaMTFactories
-                 LINK_LIBRARIES GiGaMTCoreTruthLib MCTruthToEDMLib)
+    SOURCES
+        src/Components/GetMCCollectorHitsAlg.cpp
+        src/Components/MCCollectorHit.cpp
+        src/Components/MCCollectorSensDet.cpp
+    LINK
+        Gaussino::GiGaMTCoreRunLib
+        Gaussino::GiGaMTFactoriesLib
+        Gaussino::GiGaMTDetFactoriesLib
+        Gaussino::MCTruthToEDMLib
+)

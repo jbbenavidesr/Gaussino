@@ -8,28 +8,26 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-gaudi_subdir(MCTruthToEDM v1r0)
-
-gaudi_depends_on_subdirs(Event/GenEvent
-                         Event/MCEvent
-                         Sim/GiGaMTCore
-                         Defaults
-                         HepMC3
-                         HepMCUser)
-
-AddHepMC3()
-find_package(HepMC)
-
+#[=======================================================================[.rst:
+EDMdev/MCTruthToEDM
+-------------------
+#]=======================================================================]
 
 gaudi_add_library(MCTruthToEDMLib
-                 src/lib/*.cpp
-                 PUBLIC_HEADERS MCTruthToEDM
-		 INCLUDE_DIRS HepMC
-		 LINK_LIBRARIES GiGaMTCoreTruthLib MCEvent)
+    SOURCES
+        src/Lib/MCTruthToEDM.cpp
+	src/Lib/VertexType.cpp
+    LINK
+        PUBLIC
+	    LHCb::GenEvent # TODO: [LHCb DEPENDENCY]
+	    Gaussino::GiGaMTCoreRunLib
+	    Gaussino::GiGaMTTruthLib
+)
 
 gaudi_add_module(MCTruthToEDM
-                 src/components/*.cpp
-                 INCLUDE_DIRS ${HEPMC_INCLUDE_DIR} Defaults
-                 LINK_LIBRARIES MCTruthToEDMLib)
-
-add_dependencies(MCTruthToEDM HepMC3Ext)
+    SOURCES
+        src/Components/CheckMCStructure.cpp
+	src/Components/MCTruthToEDMComp.cpp
+    LINK
+        Gaussino::MCTruthToEDMLib
+)

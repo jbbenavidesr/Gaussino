@@ -8,24 +8,20 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: GaussMonitor
-################################################################################
-gaudi_subdir(GaussMonitor v8r2)
-
-gaudi_depends_on_subdirs(Event/GenEvent
-                         Event/MCEvent
-                         GaudiAlg
-                         Defaults
-                         HepMC3
-                         HepMCUser
-                         Kernel/PartProp)
-
-AddHepMC3()
+#[=======================================================================[.rst:
+Moni/GaussMonitor
+-----------------
+#]=======================================================================]
 
 gaudi_add_module(GaussMonitor
-                 src/*.cpp
-                 INCLUDE_DIRS AIDA ${HEPMC3_INCLUDE_DIR} HepMCUser
-                 LINK_LIBRARIES GaudiAlgLib GenEvent PartPropLib ${HEPMC3_LIBRARIES} MCEvent)
-
-add_dependencies(GaussMonitor HepMC3Ext)
+    SOURCES
+        src/Components/GaussGenUtil.cpp
+        src/Components/GenMonitorAlg.cpp
+        src/Components/MCTruthMonitor.cpp
+    LINK
+        HepMC3::HepMC3
+        LHCb::MCEvent     # TODO: [LHCb DEPENDENCY]
+        LHCb::PartPropLib # TODO: [LHCb DEPENDENCY]
+        Gaussino::Defaults
+        Gaussino::HepMCUserLib
+)

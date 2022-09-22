@@ -12,4 +12,4 @@
 
 gaudirun.py $GAUSSINOROOT/tests/options/pgun_reproducibility_A.py
 gaudirun.py $GAUSSINOROOT/tests/options/pgun_reproducibility_B.py
-compareHepMCEvents.exe FirstRun-HepMC.txt SecondRun-HepMC.txt
+compareHepMCEvents FirstRun-HepMC.txt SecondRun-HepMC.txt

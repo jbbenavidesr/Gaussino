@@ -11,7 +11,6 @@ You can check the nighlty build status by visiting https://lhcb-nightlies.web.ce
 -  [```lhcb-gaussino```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/) standard slot for the majority of developments,
 -  [```lhcb-gaussino-fastsim```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino-fastsim/) nightly slot dedicated to fast simulation developments with Geant4 10.7,
 -  [```lhcb-gaussino-prerelease```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino-prerelease/) the most stable version of Gaussino used to prepare beta releases with LHCb stack,
--  [```lhcb-gaussino-new-cmake```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino-new-cmake/) a temporary nightly slot testing the modernized CMake
 
 Gaussino is built in each nightly slots on 3 platforms:
 - ```x86_64_v2-centos7-gcc11-opt``` release build with DetDesc geometry,
@@ -32,6 +31,7 @@ The following will make sure that you have the most recent platform.
 
 ```shell
 lb-set-platform x86_64_v2-centos7-gcc11-opt
+export LCG_VERSION=101
 ```
 
 ```{eval-rst}
@@ -48,11 +48,11 @@ lb-set-platform x86_64_v2-centos7-gcc11-opt
 
 #### Fetch the nightlies locally
 
-We're going to create a local copy of the projects used in the nightly slot. Gaussino requires Gaudi, Detector, LHCb and Run2Support. LHCb and Run2Support are used when building Gaussino in the LHCb stack.
+We're going to create a local copy of the projects used in the nightly slot. Gaussino requires Gaudi, Detector, LHCb, Run2Support and GaussinoExtLibs. LHCb and Run2Support are used when building Gaussino in the LHCb stack.
     
 
 ```shell
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support lhcb-gaussino Today
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
 ```

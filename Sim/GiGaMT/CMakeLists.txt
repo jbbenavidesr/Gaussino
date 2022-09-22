@@ -8,37 +8,36 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: GiGaMT 
-# This contains the fundamental GiGaMT service that sets up the entire mess in
-# its initialization and provides the function to call that handles the simulation.
-# Also there is the main simulation algorithm that actually uses the service
-#################################################################################
-gaudi_subdir(GiGaMT v1r0)
+#[=======================================================================[.rst:
+Sim/GiGaMT
+----------
 
-gaudi_depends_on_subdirs(GaudiAlg
-                         HepMCUser
-                         NewRnd
-                         Sim/SimInterfaces
-                         Sim/GiGaMTFactories
-                         Sim/GiGaMTTruth
-                         Sim/GiGaMTCore)
-
-AddHepMC3()
-find_package(ROOT COMPONENTS MathCore GenVector)
-
-if(${Geant4_config_version} VERSION_LESS "10.06")
-  add_definitions(-DG4MULTITHREADED)
-  add_definitions(-DG4USE_STD11)
-endif()
+This contains the fundamental GiGaMT service that sets up the entire mess in
+its initialization and provides the function to call that handles the simulation.
+Also there is the main simulation algorithm that actually uses the service
+#]=======================================================================]
 
 gaudi_add_library(GiGaMTLib
-                  src/Lib/*.cpp
-                  PUBLIC_HEADERS GiGaMT 
-                  INCLUDE_DIRS HepMC GiGaMTFactories SimInterfaces HepMCUser GiGaMTTruth ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib ${HEPMC3_LIBRARIES} NewRnd )
-add_dependencies(GiGaMTLib HepMC3Ext)
+    SOURCES
+        src/Lib/GiGaException.cpp
+	src/Lib/GiGaUtil.cpp
+    LINK
+        PUBLIC
+	    Gaussino::GiGaMTFactoriesLib
+	    Gaussino::HepMCUserLib
+	    Gaussino::SimInterfacesLib
+)
 
 gaudi_add_module(GiGaMT
-        src/components/*.cpp
-        LINK_LIBRARIES GiGaMTLib ROOT)
+    SOURCES
+        src/Components/GiGaActionInitializer.cpp
+	src/Components/GiGaAlg.cpp
+	src/Components/GiGaMT.cpp
+	src/Components/GiGaMTISetUpSvc.cpp
+	src/Components/HepMC3ToMCTruthConverter.cpp
+	src/Components/SkipSimAlg.cpp
+    LINK
+        Gaussino::GiGaMTCoreRunLib
+        Gaussino::GiGaMTTruthLib
+        Gaussino::GiGaMTLib
+)

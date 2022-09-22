@@ -8,11 +8,9 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: Defaults
-#
-#################################################################################
+#[=======================================================================[.rst:
+Defaults
+--------
+#]=======================================================================]
 
-gaudi_subdir(Defaults v1r0)
-
-gaudi_install_headers(Defaults)
+gaudi_add_header_only_library(Defaults)
