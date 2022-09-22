@@ -8,9 +8,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: SimInterface
-################################################################################
-gaudi_subdir(SimInterfaces v1r0)
-
-gaudi_install_headers(SimInterfaces)
+#[=======================================================================[.rst:
+Sim/SimInterfaces
+-----------------
+#]=======================================================================]
+gaudi_add_header_only_library(SimInterfacesLib)

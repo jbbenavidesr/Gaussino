@@ -8,55 +8,36 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
+#[=======================================================================[.rst:
+Sim/GiGaMTDD4hep
+----------------
+#]=======================================================================]
 ################################################################################
 # Package: GiGaMTDD4hep
 # Interfaces to load the detector from the DD4hep geometry service
 ################################################################################
-gaudi_subdir(GiGaMTDD4hep v1r0)
 
 if(USE_DD4HEP)
+    gaudi_add_library(GiGaMTDD4hepLib
+        SOURCES
+            src/Lib/DD4hepCnvSvc.cpp
+            src/Lib/DD4hepDetectorConstruction.cpp
+            src/Lib/Utilities.cpp
+        LINK
+            PUBLIC
+                DD4hep::DDCore
+                DD4hep::DDG4
+                Gaussino::GiGaMTFactoriesLib
+		Gaussino::GiGaMTGeoLib
+                Gaussino::GiGaMTCoreRunLib
+    ) 
 
-gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTFactories
-                         Sim/GiGaMTCore
-                         Sim/SimInterfaces
-                         Sim/GiGaMTGeo
-                         DD4hepDDG4Ext
-                         Det/LbDD4hep)
-
-find_package(ROOT COMPONENTS Geom Core GenVector Matrix Physics)
-
-find_package(Boost COMPONENTS system thread filesystem)
-
-include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS})
-AddHepMC3()
-
-message(STATUS "ROOTSYS -> ${ROOTSYS}")
-set(ENV{ROOTSYS} ${ROOTSYS})
-
-if(${Geant4_config_version} VERSION_LESS "10.06")
-  add_definitions(-DG4MULTITHREADED)
-  add_definitions(-DG4USE_STD11)
-endif()
-
-find_package(DD4hep REQUIRED CONFIG COMPONENTS DDCore)
-
-# When building our own DD4hep, we need to manually add the installation to LD_LIBRARY_PATH.
-# Using gaudi_build_env() makes it so that downstream projects also have this.
-# TODO Why doesn't this happen "automatically" and is there a better way?
-gaudi_build_env(PREPEND LD_LIBRARY_PATH ${DD4hep_ROOT}/lib)
-
-include_directories(SYSTEM  ${ROOT_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${DD4hep_INCLUDE_DIRS})
-
-gaudi_add_library(GiGaMTDD4hepLib
-                  src/lib/*.cpp 
-                  PUBLIC_HEADERS GiGaMTDD4hep
-                  INCLUDE_DIRS LbDD4hep DD4hep
-                  LINK_LIBRARIES DD4hep ${DD4hep_COMPONENT_LIBRARIES} ROOT GiGaMTCoreRunLib DD4hep::DDG4)
-
-add_dependencies(GiGaMTDD4hepLib DD4hepDDG4Ext) 
-
-gaudi_add_module(GiGaMTDD4hep
-                 src/components/*.cpp 
-                 LINK_LIBRARIES GiGaMTDD4hepLib GaudiAlgLib)
+    gaudi_add_module(GiGaMTDD4hep
+        SOURCES
+            src/Components/DD4hepCnvSvcConf.cpp
+            src/Components/DD4hepDetectorConstructionFAC.cpp
+        LINK
+            LHCb::LbDD4hepLib # FIXME: [LHCb DEPENDENCY]
+            Gaussino::GiGaMTDD4hepLib
+    )
 endif()

@@ -15,56 +15,84 @@
 # run managers). While the Gaudi cmake plugins are used to handle this package,
 # none of the modified classes should depend on anything Gaudi related.
 #################################################################################
-gaudi_subdir(GiGaMTCore v1r0)
-gaudi_depends_on_subdirs(NewRnd
-                         Event/MCEvent  # FIXME: Don't like this
-                         HepMC3
-                         HepMCUser)
+#[=======================================================================[.rst:
+Sim/GiGaMTCore
+--------------
+#]=======================================================================]
 
-find_package(CLHEP COMPONENTS Random Vector)
-find_package(XercesC)
-AddHepMC3()
-find_package(ROOT COMPONENTS MathCore GenVector)
-
-if(${Geant4_config_version} VERSION_LESS "10.06")
-  add_definitions(-DG4MULTITHREADED)
-  add_definitions(-DG4USE_STD11)
-endif()
-
-FindG4libs(intercoms)
+gaudi_add_header_only_library(GiGaMTCoreUtilsLib)
+gaudi_add_header_only_library(GiGaMTCoreDetLib)
 
 gaudi_add_library(GiGaMTCoreMessageLib
-                 src/message/*.cpp
-                 PUBLIC_HEADERS GiGaMTCoreMessage
-                 LINK_LIBRARIES ${GEANT4_LIBS})
-
-FindG4libs(digits_hits event geometry global graphics_reps materials persistency
-           particles processes run tracking track intercoms physicslists interfaces vis_management)
-
-gaudi_add_library(GiGaMTCoreTruthLib
-                 src/truth/*.cpp
-                 PUBLIC_HEADERS GiGaMTCoreTruth
-                 INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd HepMCUtils
-                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC ${ROOT_LIBRARIES} HepMCUtils MCEvent  GiGaMTCoreMessageLib)
-
-add_dependencies(GiGaMTCoreTruthLib HepMC3Ext)
-
-gaudi_add_unit_test(test_zMaxTilt tests/src/test_zMaxTilt.cpp
-                    LINK_LIBRARIES GaudiKernel GiGaMTCoreTruthLib
-                    TYPE Boost)
-
-gaudi_add_library(GiGaMTCoreRunLib
-                 src/run/*.cpp
-                 PUBLIC_HEADERS GiGaMTCoreRun
-                 INCLUDE_DIRS ${HEPMC3_INCLUDE_DIR} CLHEP Geant4 XercesC NewRnd
-                 LINK_LIBRARIES ${HEPMC3_LIBRARIES} CLHEP ${GEANT4_LIBS} XercesC GiGaMTCoreTruthLib GiGaMTCoreMessageLib)
+    SOURCES
+        src/Lib/GiGaMessage.cpp
+        src/Lib/GiGaUIMessage.cpp
+    LINK
+    	PUBLIC
+	    Geant4::G4intercoms
+)
 
 gaudi_add_library(GiGaMTCoreCutLib
-                 src/cut/*.cpp
-                 PUBLIC_HEADERS GiGaMTCoreCut
-                 INCLUDE_DIRS CLHEP Geant4
-                 LINK_LIBRARIES CLHEP ${GEANT4_LIBS}  GiGaMTCoreMessageLib)
+    SOURCES
+        src/Lib/GaussinoG4UserLimits.cpp
+    LINK
+        PUBLIC
+            CLHEP::Vector
+            CLHEP::Random
+	    Geant4::G4global
+            Gaussino::GiGaMTCoreMessageLib
+)
 
-gaudi_install_headers(GiGaMTCoreDet)
+gaudi_add_library(GiGaMTCoreRunLib
+    SOURCES
+        src/Lib/Common.cpp
+        src/Lib/ConverterInfo.cpp
+        src/Lib/G4EventProxy.cpp
+	src/Lib/G4EventProxyAttribute.cpp
+        src/Lib/GaussinoEventInformation.cpp
+        src/Lib/GaussinoPrimaryParticleInformation.cpp
+        src/Lib/GaussinoTrackInformation.cpp
+	src/Lib/GiGaMTRunManager.cpp
+	src/Lib/GiGaWorkerPayload.cpp
+	src/Lib/GiGaWorkerPilot.cpp
+	src/Lib/GiGaWorkerRunManager.cpp
+        src/Lib/Helpers.cpp
+        src/Lib/LinkedParticle.cpp
+        src/Lib/LinkedParticleHelpers.cpp
+        src/Lib/MCTruthAttribute.cpp
+        src/Lib/MCTruthConverter.cpp
+        src/Lib/SimResultsAttribute.cpp
+        src/Lib/TruthFlaggingTrackAction.cpp
+        src/Lib/TruthStoringTrackAction.cpp
+        src/Lib/ZMaxPlane.cpp
+    LINK
+        PUBLIC
+	    HepMC3::HepMC3
+	    HepMC3::HepMC3search
+	    Geant4::G4event
+	    Geant4::G4geometry
+	    Geant4::G4global
+	    Geant4::G4intercoms
+	    Geant4::G4particles
+	    Geant4::G4processes
+	    Geant4::G4run
+	    Geant4::G4track
+	    Geant4::G4tracking
+	    LHCb::MCEvent         # TODO: [LHCb DEPENDENCY]
+	    Gaussino::HepMCUtilsLib
+	    Gaussino::NewRndLib
+            Gaussino::GiGaMTCoreUtilsLib
+            Gaussino::GiGaMTCoreMessageLib
+            Gaussino::GiGaMTCoreDetLib
+)
 
-gaudi_add_test(QMTest QMTEST)
+gaudi_add_tests(QMTest)
+
+gaudi_add_executable(test_zMaxTilt
+    SOURCES tests/test_zMaxTilt.cpp
+    LINK
+    	Boost::unit_test_framework
+	Gaudi::GaudiKernel
+	Gaussino::GiGaMTCoreRunLib
+    TEST
+)

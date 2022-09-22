@@ -8,52 +8,55 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: LbPythia8
-################################################################################
-gaudi_subdir(LbPythia8 v12r0)
-
-gaudi_depends_on_subdirs(Gen/GenInterfaces
-                         Event/GenEvent
-                         Kernel/PartProp
-                         GaudiAlg
-                         NewRnd
-                         HepMC3
-                         HepMCUser
-                         Utils
-                         Defaults)
-
-find_package(Pythia8 COMPONENTS pythia8 pythia8tohepmc)
-AddHepMC3()
-find_package(LHAPDF)
-find_package(Boost COMPONENTS filesystem system)
-find_package(ROOT)
-find_package(CLHEP)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${HEPMC3_INCLUDE_DIRS} ${PYTHIA8_INCLUDE_DIRS})
-
+#[=======================================================================[.rst:
+Gen/LbPytha8
+------------
+#]=======================================================================]
 gaudi_add_library(LbPythia8Lib
-                  src/Lib/*.cpp
-                  NO_PUBLIC_HEADERS
-                  INCLUDE_DIRS Boost Pythia8 ROOT ${HEPMC3_INCLUDE_DIR} Gen/GenInterfaces Defaults HepMCUser Utils NewRnd
-                  LINK_LIBRARIES Boost GaudiAlgLib Pythia8 ${HEPMC3_LIBRARIES} ROOT PartPropLib LHAPDF GenEvent)
-
-add_dependencies(LbPythia8Lib HepMC3Ext)
+    SOURCES
+        src/Lib/BeamToolForPythia8.cpp
+    	src/Lib/LhcbHooks.cpp
+	src/Lib/Pythia8Production.cpp
+	src/Lib/Pythia8ProductionMT.cpp
+    LINK
+        PUBLIC
+	    Pythia8::Pythia8
+	    HepMC3::HepMC3
+	    Gaudi::GaudiAlgLib
+	    LHCb::GenEvent     # TODO: [LHCb DEPENDENCY]
+	    LHCb::PartPropLib  # TODO: [LHCb DEPENDENCY]
+	    Gaussino::GenInterfacesLib
+	    Gaussino::UtilsLib
+	    Gaussino::NewRndLib
+	    Gaussino::HepMCUserLib
+	    Gaussino::Defaults
+)
 
 gaudi_add_module(LbPythia8
-                 src/component/*.cpp
-                 LINK_LIBRARIES LbPythia8Lib)
+    SOURCES
+        src/Components/Pythia8ProductionFactory.cpp
+    LINK
+    	Gaussino::LbPythia8Lib
+)
 
-gaudi_env(SET PYTHIA8XML ${PYTHIA8_XML})
+# TODO: [NEW CMAKE] needed?
+#gaudi_env(SET PYTHIA8XML ${PYTHIA8_XML})
 
 gaudi_add_executable(Pythia8Reproducibility
-                     exec/minimal.cxx
-                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils
-                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils)
-
-find_package(HepMC)
+    SOURCES
+        exec/minimal.cxx
+    LINK
+        Pythia8::Pythia8
+	HepMC3::HepMC3
+	Gaussino::HepMCUtilsLib
+)
 
 gaudi_add_executable(HepMCConverterTest
-                     exec/convtest.cxx
-                     INCLUDE_DIRS Pythia8 ${HEPMC3_INCLUDE_DIR} CLHEP HepMCUtils HepMC
-                     LINK_LIBRARIES Pythia8 ${HEPMC3_LIBRARIES} CLHEP HepMCUtils HepMC)
+    SOURCES
+        exec/convtest.cxx
+    LINK
+    	Pythia8::Pythia8
+	HepMC3::HepMC3
+	HepMC::HepMC
+	Gaussino::HepMCUtilsLib
+)

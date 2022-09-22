@@ -25,7 +25,7 @@ check-copyright:
   only: [merge_requests]
   script:
     - curl -o lb-check-copyright "https://gitlab.cern.ch/lhcb-core/LbDevTools/raw/master/LbDevTools/SourceTools.py?inline=false"
-    - python lb-check-copyright origin/${TARGET_BRANCH}
+    - python lb-check-copyright origin/${TARGET_BRANCH} --exclude lhcbproject.yml
 
 check-formatting:
   image: gitlab-registry.cern.ch/lhcb-docker/style-checker

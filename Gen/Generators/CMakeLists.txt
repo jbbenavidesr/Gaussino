@@ -8,43 +8,72 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: Generators
-################################################################################
-gaudi_subdir(Generators v16r0)
-
-gaudi_depends_on_subdirs(Event/GenEvent
-                         GaudiAlg
-                         NewRnd
-                         #FIXME: Gen/EvtGen
-                         #FIXME: Gen/EvtGenExtras
-                         #FIXME: Kernel/MCInterfaces
-                         #FIXME: Kernel/LHCbKernel
-                         Kernel/PartProp
-                         Defaults
-                         HepMC3
-                         HepMCUser
-                         Gen/GenInterfaces)
-
-find_package(Boost COMPONENTS filesystem system)
-find_package(Photos++)
-AddHepMC3()
-
-string(REPLACE "-pedantic" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
-string(REPLACE "-Wall" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
-string(REPLACE "-Wextra" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
-string(REPLACE "-Werror=return-type" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+#[=======================================================================[.rst:
+Gen/Generators
+--------------
+#]=======================================================================]
 
 gaudi_add_library(GeneratorsLib
-                  src/Lib/*.cpp src/Lib/*.F
-                  PUBLIC_HEADERS Generators
-                  INCLUDE_DIRS Kernel/MCInterfaces Gen/GenInterfaces HepMCUser ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES GenEvent GaudiAlgLib PartPropLib ${HEPMC3_LIBRARIES} NewRnd)
+    SOURCES
+    	src/Lib/f77units.F
+        src/Lib/getaddr.cpp
+	src/Lib/pythiaoutput_utils.F
+	src/Lib/ExternalGenerator.cpp
+	src/Lib/F77Utils.cpp
+	src/Lib/Generation.cpp
+	src/Lib/GenCounters.cpp
+	src/Lib/LbPhotos.cpp
+	src/Lib/LbTaula.cpp
+	src/Lib/LhaPdf.cpp
+	src/Lib/LBPHOTOS.F
+	src/Lib/LBTAULA.F
+	src/Lib/LHAPDFCommonBlocks.cpp
+	src/Lib/LHAPDFUtils.F
+	src/Lib/Scale.cpp
+	src/Lib/Signal.cpp
+	src/Lib/StreamForGenerator.cpp
+	src/Lib/StringParse.cpp
+    LINK
+    	PUBLIC
+	    Gaudi::GaudiAlgLib
+	    LHCb::GenEvent # TODO: [LHCb DEPENDENCY]
+	    Gaussino::HepMCUtilsLib
+	    Gaussino::NewRndLib
+	    Gaussino::UtilsLib
+	    Gaussino::GenInterfacesLib
+	    Gaussino::EventLib
 
-add_dependencies(GeneratorsLib HepMC3Ext)
+)
 
 gaudi_add_module(Generators
-                 src/component/*.cpp
-                 INCLUDE_DIRS Boost Kernel/MCInterfaces  Gen/GenInterfaces Photos++
-                 LINK_LIBRARIES Boost GenEvent GaudiAlgLib LHCbKernel GeneratorsLib Photos++) 
-
+    SOURCES
+        src/Components/AsymmetricCollidingBeams.cpp
+	src/Components/BeamSpotMarkovChainSampleVertex.cpp
+	src/Components/BeamSpotSmearVertex.cpp
+	src/Components/CollidingBeams.cpp
+	src/Components/FixedLuminosity.cpp
+	src/Components/FixedLuminosityForRareProcess.cpp
+	src/Components/FixedLuminosityForSpillOver.cpp
+	src/Components/FixedNInteractions.cpp
+	src/Components/FixedTarget.cpp
+	src/Components/FlatSmearVertex.cpp
+	src/Components/FlatZSmearVertex.cpp
+	src/Components/GenerationComp.cpp
+	src/Components/HepMCWriter.cpp
+	src/Components/HistoSmearVertex.cpp
+	src/Components/Inclusive.cpp
+	src/Components/MergedEventsFilter.cpp
+	src/Components/MinimumBias.cpp
+	src/Components/PoissonPileUp.cpp
+	src/Components/ReadHepMCAsciiFile.cpp
+	src/Components/SaveSignalBInformation.cpp
+	src/Components/SignalForcedFragmentation.cpp
+	src/Components/SignalPlain.cpp
+	src/Components/SignalRepeatedHadronization.cpp
+	src/Components/StandAloneDecayTool.cpp
+	src/Components/UniformSmearVertex.cpp
+	src/Components/VariableLuminosity.cpp
+	src/Components/XmlCounterLogFile.cpp
+    LINK
+        Gaussino::GeneratorsLib
+)

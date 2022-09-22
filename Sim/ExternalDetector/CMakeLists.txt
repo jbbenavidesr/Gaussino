@@ -8,31 +8,37 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: ExternalDetector
-################################################################################
-gaudi_subdir(ExternalDetector v1r0)
+#[=======================================================================[.rst:
+Sim/ExternalDetector
+--------------------
 
-gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTCore
-                         Sim/GiGaMTFactories)
-
-
-AddHepMC3()                    
-find_package(Boost)
-find_package(CLHEP)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
-
+Author: Michał Mazurek
+#]=======================================================================]
 gaudi_add_library(ExternalDetectorLib
-                  src/Lib/*.cpp
-                  PUBLIC_HEADERS ExternalDetector
-                  INCLUDE_DIRS GiGaMTFactories XercesC ${HEPMC3_INCLUDE_DIR}
-                  LINK_LIBRARIES GaudiAlgLib GiGaMTCoreRunLib XercesC ${HEPMC3_LIBRARIES} ${GEANT4_LIBS})
+    SOURCES
+        src/Lib/Embedder.cpp
+        src/Lib/MaterialFactory.cpp
+    LINK
+        PUBLIC
+            Gaudi::GaudiAlgLib
+            XercesC::XercesC
+            Geant4::G4digits_hits
+            Geant4::G4geometry
+            Gaussino::GiGaMTFactoriesLib
+            Gaussino::GiGaMTCoreDetLib
+)
 
 gaudi_add_module(ExternalDetector
-                 src/Components/*.cpp
-                 LINK_LIBRARIES ExternalDetectorLib)
+    SOURCES
+        src/Components/CuboidEmbedder.cpp
+        src/Components/MaterialFromChemicalPropertiesFactory.cpp
+        src/Components/MaterialFromElements.cpp
+        src/Components/WorldCreator.cpp
+    LINK
+        Gaussino::ExternalDetectorLib
+        Gaussino::GiGaMTGeoLib
+)
 
-gaudi_install_python_modules()
-gaudi_add_test(QMTest QMTEST)
+gaudi_install(PYTHON)
+gaudi_generate_confuserdb()
+gaudi_add_tests(QMTest)
