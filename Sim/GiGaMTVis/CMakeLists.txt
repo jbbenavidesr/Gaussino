@@ -1,40 +1,35 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb Collaboration           #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
-# This software is distributed under the terms of the GNU General Public      #
-# Licence version 3 (GPL Version 3), copied verbatim in the file "COPYING".   #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
 #                                                                             #
 # In applying this licence, CERN does not waive the privileges and immunities #
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: GiGaMTVis
-################################################################################
-gaudi_subdir(GiGaMTVis v1r0)
-
-gaudi_depends_on_subdirs(GaudiAlg
-                         Sim/GiGaMTCore
-                         Sim/GiGaMTFactories)
-
-FindG4libs(
-  event
-  global
-  graphics_reps
-  vis_management
-  modeling
-  Tree
-)
-
-find_package(Boost)
-find_package(CLHEP)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${CLHEP_INCLUDE_DIRS} ${Geant4_INCLUDE_DIRS})
-
+#[=======================================================================[.rst:
+Sim/GiGaMTVis
+-------------
+#]=======================================================================]
 
 gaudi_add_module(GiGaMTVis
-                 src/*.cpp
-                 INCLUDE_DIRS Sim/GiGaMTFactories 
-                 LINK_LIBRARIES GaudiAlgLib GiGaMTCoreMessageLib ${GEANT4_LIBS})
+    SOURCES
+        src/GiGaTrajectoryTransverseMomentumFilter.cpp
+        src/GiGaVisManager.cpp
+    LINK
+    	Geant4::G4event
+    	Geant4::G4global
+    	Geant4::G4graphics_reps
+    	Geant4::G4vis_management
+    	Geant4::G4modeling
+    	Geant4::G4Tree
+        Gaudi::GaudiAlgLib
+        Gaussino::GiGaMTCoreMessageLib
+	Gaussino::GiGaMTFactoriesLib
+	Gaussino::UtilsLib
+)
 
-gaudi_install_python_modules()
+gaudi_generate_confuserdb()
+
+gaudi_install(PYTHON)

@@ -55,8 +55,10 @@ gaussino_add_subdirectories(
     Sim/GiGaMTExamples/LHCbFromGDML
     Sim/GiGaMTFactories
     Sim/GiGaMTGeo
+    Sim/GiGaMTPhoenix
     Sim/GiGaMTReDecay
     Sim/GiGaMTTruth
+    Sim/GiGaMTVis
     Sim/MCCollector
     Sim/ParallelGeometry
     Sim/SimInterfaces
