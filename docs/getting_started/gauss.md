@@ -41,6 +41,15 @@ The rest is very similar to the development in Gaussino:
     Don't forget to merge all pending merge requests with a label ``lhcb-gaussino`` (or any other MR that was picked up in the nightly)!
 ```
 
+```{eval-rst}
+.. hint::
+    The list of open merge requests with the label ``lhcb-gaussino`` can be acquired automatically with this command:
+
+    .. code-block:: shell-session
+    
+        curl -s "https://gitlab.cern.ch/api/v4/projects/2606/merge_requests?state=opened&labels=lhcb-gaussino" | jq '.[].iid'
+```
+
 In order to get the list of pending merge requests check the checkout report by clicking on the **black arrow** next to the **Gauss project** on the [website](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino). You will get a list of the MR ids that are needed to work with this build of Gauss. For example, if the MRs are Gauss!800 and Gauss!845, you can do the following:
 
 ```shell
