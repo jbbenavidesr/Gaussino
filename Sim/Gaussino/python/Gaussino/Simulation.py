@@ -169,6 +169,11 @@ class SimPhase(ConfigurableUser):
         gmpl.PhysicsConstructors = phys_list
         self._addConstructorsWithNames(gmpl, phys_list)
 
+        gmpl.CutForElectron = self.getProp("CutForElectron")
+        gmpl.CutForGamma = self.getProp("CutForGamma")
+        gmpl.CutForPositron = self.getProp("CutForPositron")
+        gmpl.DumpCutsTable = self.getProp("DumpCutsTable")
+
         # Add parallel physics
         par_geo = self.getProp("ParallelGeometry")
         if par_geo:
