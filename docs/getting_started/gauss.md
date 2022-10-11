@@ -132,8 +132,8 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
 export LCG_VERSION=101x
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
-cd lhcb-gaussino/Today
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-dd4hep Today
+cd lhcb-dd4hep/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Gauss
 cd Gauss
@@ -154,8 +154,8 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
 export LCG_VERSION=101x
-lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE lhcb-gaussino Today
-cd lhcb-gaussino/Today
+lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE lhcb-dd4hep Today
+cd lhcb-dd4hep/Today
 lb-set-workspace .
 git clone ssh://git@gitlab.cern.ch:7999/lhcb/Detector.git
 cd Detector

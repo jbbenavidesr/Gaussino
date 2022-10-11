@@ -9,6 +9,7 @@ Please note that Gaussino is an experiment-independent package. If you are looki
 
 You can check the nighlty build status by visiting https://lhcb-nightlies.web.cern.ch/nightly/. There are a few nightly slots currently available for Gaussino:
 -  [```lhcb-gaussino```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/) standard slot for the majority of developments,
+-  [```lhcb-dd4hep```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/) the nightly slot used for the integration of DD4hep sub-detectors,
 -  [```lhcb-gaussino-fastsim```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino-fastsim/) nightly slot dedicated to fast simulation developments with Geant4 10.7,
 -  [```lhcb-gaussino-prerelease```](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino-prerelease/) the most stable version of Gaussino used to prepare beta releases with LHCb stack,
 
@@ -36,7 +37,7 @@ export LCG_VERSION=101x
 
 ```{eval-rst}
 .. tip::
-    Use ``x86_64_v2-centos7-gcc11+dd4hep-opt`` if you want to work with **Detector/DD4hep**.
+    Use ``x86_64_v2-centos7-gcc11+dd4hep-opt`` on ``lhcb-dd4hep`` if you want to work with **Detector/DD4hep**.
 ```
 
 ### Building Gaussino from source
@@ -59,7 +60,7 @@ lb-set-workspace .
 
 ```{eval-rst}
 .. tip::
-    Use ``x86_64_v2-centos7-gcc11+dd4hep-opt`` if you want to work with Detector/DD4hep.
+    Use ``x86_64_v2-centos7-gcc11+dd4hep-opt`` on ``lhcb-dd4hep`` if you want to work with **Detector/DD4hep**.
 ```
 
 ```{eval-rst}
