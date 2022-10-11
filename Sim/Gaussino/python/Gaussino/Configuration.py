@@ -79,16 +79,16 @@ class Gaussino(ConfigurableUser):
     :var EvtMax: default: ``-1``
     :vartype EvtMax: int, optional
 
-    :var EnableHive: default: ``False``
+    :var EnableHive: default: ``True``
     :vartype EnableHive: bool, optional
 
     :var ReDecay: default: ``False``
     :vartype ReDecay: bool, optional
 
-    :var ThreadPoolSize: default: ``2``
+    :var ThreadPoolSize: default: ``1``
     :vartype ThreadPoolSize: int, optional
 
-    :var EventSlots: default: ``2``
+    :var EventSlots: default: ``1``
     :vartype EventSlots: int, optional
 
     :var ConvertEDM: default: ``False``
@@ -154,16 +154,16 @@ class Gaussino(ConfigurableUser):
         -1  # NOQA
         ,
         "EnableHive":
-        False  # NOQA
+        True  # NOQA
         ,
         "ReDecay":
         False  # NOQA
         ,
         "ThreadPoolSize":
-        2  # NOQA
+        1  # NOQA
         ,
         "EventSlots":
-        2  # NOQA
+        1  # NOQA
         ,
         "ConvertEDM":
         False  # NOQA
@@ -196,7 +196,17 @@ class Gaussino(ConfigurableUser):
         self.propagateProperties(names, other)
 
     def setupHive(self):
-        '''Enable Hive event loop manager'''
+        '''Enable Hive event loop manager
+           this is a very similar method as in LHCbApp
+        '''
+        if not self.getProp("EnableHive"):
+            # FIXME: Running without GaudiHive has not been tested
+            #        and may lead to unexpected behaviour
+            #        this is disabled for now
+            log.error("EnableHive must be set. Running without "
+                      "GaudiHive has not been tested and may lead to"
+                      "unexpected behaviour")
+            raise ValueError("EnableHive must be set.")
         from Configurables import HiveWhiteBoard
         whiteboard = HiveWhiteBoard("EventDataSvc")
         whiteboard.EventSlots = self.getProp('EventSlots')
@@ -213,8 +223,7 @@ class Gaussino(ConfigurableUser):
         # appendPostConfigAction(self.co)
 
     def __apply_configuration__(self):
-        if self.getProp("EnableHive"):
-            self.setupHive()
+        self.setupHive()
         ppService(self.getProp('ParticleTable'))
         dataService()
         auditorService()
