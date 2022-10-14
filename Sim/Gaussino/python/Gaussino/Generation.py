@@ -100,6 +100,9 @@ class GenPhase(ConfigurableUser):
     :var ProductionTool: default: ``'Pythia8Production'``
     :vartype ProductionTool: str, optional
 
+    :var ProductionToolOpts: default: ``{}``
+    :vartype ProductionToolOpts: dict, optional
+
     :var DecayTool: default: ``''``
     :vartype DecayTool: str, optional
 
@@ -165,6 +168,7 @@ class GenPhase(ConfigurableUser):
         'FixedLuminosityWithSvc',  # NOQA
         "ProductionTool":
         'Pythia8Production',  # NOQA
+        "ProductionToolOpts": {},
         "DecayTool":
         '',  # NOQA
         "CutTool":
@@ -248,6 +252,11 @@ class GenPhase(ConfigurableUser):
             gen_alg.FullGenEventCutTool = ''
         prod = get_set_configurable(sgt, 'ProductionTool', ProductionTool)
         if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
+            # For now keep it only for Pythia, but potentially in future we
+            # want to do this for all possible production tools
+            prot_opts = self.getProp('ProductionToolOpts')
+            for n, v in prot_opts.items():
+                prod.setProp(n, v)
             prod.BeamToolName = 'CollidingBeamsWithSvc'
 
         if ProductionTool == "Pythia8ProductionMT":

@@ -40,8 +40,7 @@
 // Declaration of the Algorithm Factory
 DECLARE_COMPONENT( GenMonitorAlg )
 
-StatusCode GenMonitorAlg::initialize()
-{
+StatusCode GenMonitorAlg::initialize() {
 
   StatusCode sc = GaudiHistoAlg::initialize(); // must be executed first
   if ( sc.isFailure() ) return sc;             // error printed already by GaudiHistoAlg
@@ -52,15 +51,12 @@ StatusCode GenMonitorAlg::initialize()
     info() << "Monitor will be applied to events produced with generator " << m_generatorName << endmsg;
   }
 
-  if ( produceHistos() ) {
-    bookHistos();
-  }
+  if ( produceHistos() ) { bookHistos(); }
 
   return StatusCode::SUCCESS;
 }
 
-void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
-{
+void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const {
   std::lock_guard<std::mutex> lock( m_histo_lock );
   debug() << "==> Execute" << endmsg;
 
@@ -70,21 +66,23 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
   int nPileUp( 0 );
 
   for ( auto& hepmcevent : hepmcevents ) {
-    auto gen_name = hepmcevent->attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
+    auto gen_name =
+        hepmcevent->attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName )->value();
 
     // Check if monitor has to be applied to this event
     if ( !m_generatorName.empty() ) {
-      if ( m_generatorName != gen_name ) {
-        continue;
-      }
+      if ( m_generatorName != gen_name ) { continue; }
     }
     debug() << "Monitor for " << gen_name << endmsg;
 
     // Get the signal process ID from the attributes
     if ( produceHistos() ) {
-      auto sig_proc_id = 
-          hepmcevent->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID )->value();
-      m_hProcess->fill( sig_proc_id );
+      auto sig_proc_id_attr =
+          hepmcevent->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::SignalProcessID );
+      if ( sig_proc_id_attr ) {
+        auto sig_proc_id = sig_proc_id_attr->value();
+        m_hProcess->fill( sig_proc_id );
+      }
     }
 
     bool primFound = false;
@@ -135,9 +133,7 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
             ++nParticlesStableCharged;
             double pseudoRap = hepMCpart->momentum().pseudoRapidity();
             // in LHCb acceptance
-            if ( ( pseudoRap > m_minEta ) && ( pseudoRap < m_maxEta ) ) {
-              ++nParChStabEtaAcc;
-            }
+            if ( ( pseudoRap > m_minEta ) && ( pseudoRap < m_maxEta ) ) { ++nParChStabEtaAcc; }
             if ( produceHistos() ) {
               m_hStableEta->fill( pseudoRap );
               m_hStablePt->fill( hepMCpart->momentum().perp() / Gaudi::Units::GeV );
@@ -167,8 +163,7 @@ void GenMonitorAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 //=============================================================================
 //  Finalize
 //=============================================================================
-StatusCode GenMonitorAlg::finalize()
-{
+StatusCode GenMonitorAlg::finalize() {
 
   debug() << "==> Finalize" << endmsg;
 
@@ -199,8 +194,7 @@ StatusCode GenMonitorAlg::finalize()
 //============================================================================
 // Booking of histograms
 //============================================================================
-void GenMonitorAlg::bookHistos()
-{
+void GenMonitorAlg::bookHistos() {
 
   debug() << "==> Book histograms" << endmsg;
 
