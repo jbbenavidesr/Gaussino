@@ -124,42 +124,37 @@ class GaussinoGeometry(GaussinoConfigurable):
         dettool.AfterGeoConstructionTools = extra_tools
         add_constructors_with_names(dettool, extra_tools)
 
-        self._set_external_detector(dettool)
-        self._set_parallel_geometry(dettool)
+        algs = []
+        algs += self._set_external_detector(dettool)
+        algs += self._set_parallel_geometry(dettool)
         self._set_gdml_import(dettool)
         self._set_gdml_export(dettool)
 
-    def _set_external_detector(self, dettool):
+        from Configurables import ApplicationMgr
+        ApplicationMgr().TopAlg += algs
+
+    def _set_external_detector(self, dettool) -> list:
         # Add external detectors geometries
         # TODO: external geometry was prepared to operate with spillover
         # but it is not available yet
         # so for now there are no 'slot' param in the algos
         embedder_name = self.getProp("ExternalDetectorEmbedder")
         if not embedder_name:
-            return
+            return []
         log.debug(f"-> Configuring external detector: {embedder_name}")
         algs = []
         embedder = ExternalDetectorEmbedder(embedder_name)
         embedder.embed(dettool)
         algs += embedder.activate_hits_alg()  # no slot for now!
         algs += embedder.activate_moni_alg()  # no slot for now!
-        from Configurables import ApplicationMgr
+        return algs
 
-        ApplicationMgr().TopAlg += algs
-
-    def _set_parallel_geometry(self, dettool):
+    def _set_parallel_geometry(self, dettool) -> list:
         par_geo = ParallelGeometry()
         if not par_geo.getProp("ParallelWorlds"):
-            return
+            return []
         log.debug("-> Configuring geometry in parallel worlds")
-        algs = []
-        algs += par_geo.attach(dettool)
-        # for par_ext_emd in par_geo._external_embedders:
-        #    self._external_embedders.append(par_ext_emd)
-        # par_geo.world_to_gdml(giga.RunSeq)
-        from Configurables import ApplicationMgr
-
-        ApplicationMgr().TopAlg += algs
+        return par_geo.attach(dettool)
 
     def _set_gdml_export(self, dettool):
         gdml_export = self.getProp("ExportGDML")

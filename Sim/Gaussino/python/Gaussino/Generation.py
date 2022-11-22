@@ -15,7 +15,10 @@ from GaudiKernel import SystemOfUnits
 from Gaudi.Configuration import log
 
 # Configurables (do NOT use 'from Configurables' here)
-from Gaussino.Utilities import GaussinoConfigurable
+from Gaussino.Utilities import (
+    GaussinoConfigurable,
+    get_set_configurable,
+)
 
 
 class GaussinoGeneration(GaussinoConfigurable):
@@ -167,19 +170,23 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     def __apply_configuration__(self):
         """Main configuration method for the generation phase."""
+        seq = []
         if self.getProp("ParticleGun"):
-            self._configure_pgun()
+            seq += self._configure_pgun()
         else:
-            self._configure_generation()
+            seq += self._configure_generation()
 
-        self._configure_rnd_init()
-        self._configure_gen_monitor()
-        self._configure_hepmc_writer()
+        seq += self._configure_rnd_init()
+        seq += self._configure_gen_monitor()
+        seq += self._configure_hepmc_writer()
 
         if self.only_generation_phase:
-            self._configure_genonly()
+            seq += self._configure_genonly()
 
-    def _configure_generation(self):
+        from Configurables import ApplicationMgr
+        ApplicationMgr().TopAlg += seq
+
+    def _configure_generation(self) -> list:
         """Configuration method for the generation other than
         a particle gun.
         """
@@ -302,11 +309,9 @@ class GaussinoGeneration(GaussinoConfigurable):
             siggen_alg.PileUpTool = "ReDecayPileUp"
             siggen_alg.VertexSmearingTool = ""
             siggen_alg.DecayTool = DecayTool
-        from Configurables import ApplicationMgr
+        return seq
 
-        ApplicationMgr().TopAlg += seq
-
-    def _configure_pgun(self):
+    def _configure_pgun(self) -> list:
         """Simple utility function to create and configure an instance of particle gun"""
         from Configurables import ParticleGun
 
@@ -318,57 +323,40 @@ class GaussinoGeneration(GaussinoConfigurable):
             )
             log.error(msg)
             raise AttributeError(msg)
-        pgun = ParticleGun()
-        from Configurables import ApplicationMgr
+        return [ParticleGun()]
 
-        ApplicationMgr().TopAlg.append(pgun)
-
-    def _configure_rnd_init(self):
+    def _configure_rnd_init(self) -> list:
         """Simple utility function to create and configure an instance GenRndInit"""
-        conf = None
-        if self.redecay:
-            from Configurables import GenReDecayInit
-
-            conf = GenReDecayInit
-            name = "GenReDecayInit"
-        else:
-            from Configurables import GenRndInit
-
-            conf = GenRndInit
-            name = "GenRndInit"
-
         from Configurables import (
+            GenRndInit,
+            GenReDecayInit,
             SeedingTool,
-            ApplicationMgr,
         )
+        conf = GenRndInit
+        if self.redecay:
+            conf = GenReDecayInit
 
-        conf(name).addTool(SeedingTool, name="SeedingTool")
-        from Configurables import ApplicationMgr
+        conf().addTool(SeedingTool, name="SeedingTool")
+        return [conf()]
 
-        ApplicationMgr().TopAlg.append(conf(name))
-
-    def _configure_gen_monitor(self):
+    def _configure_gen_monitor(self) -> list:
         """Simple utility function to create and configure a GenMonitorAlg instance"""
         if not self.getProp("GenMonitor"):
-            return
-        from Configurables import GenMonitorAlg, ApplicationMgr
+            return []
+        from Configurables import GenMonitorAlg
 
-        ApplicationMgr().TopAlg.append(
-            GenMonitorAlg(
-                "GenMonitorAlg",
-                HistoProduce=True,
-                Input="/Event/Gen/HepMCEvents",
-            )
+        alg = GenMonitorAlg(
+            "GenMonitorAlg",
+            HistoProduce=True,
+            Input="/Event/Gen/HepMCEvents",
         )
+        return [alg]
 
-    def _configure_hepmc_writer(self):
+    def _configure_hepmc_writer(self) -> list:
         """Simple utility function to create and configure a HepMCinstance"""
         if not self.getProp("WriteHepMC"):
-            return
-        from Configurables import (
-            HepMCWriter,
-            ApplicationMgr,
-        )
+            return []
+        from Configurables import HepMCWriter
 
         alg = HepMCWriter()
         alg.Input = "/Event/Gen/HepMCEvents"
@@ -388,33 +376,26 @@ class GaussinoGeneration(GaussinoConfigurable):
         else:
             print("Unknown writer name specified, not going to write")
             alg.OutputFileName = ""
-        ApplicationMgr().TopAlg().append(alg)
+        return [alg]
 
-    def _configure_genonly(self):
+    def _configure_genonly(self) -> list:
         """Method that is used when only the generation phase
         is used.
         """
-        seq = []
-        from Configurables import Gaussino
-
-        if Gaussino().getProp("ReDecay"):
-            from Configurables import ReDecaySkipSimAlg
-
-            alg = ReDecaySkipSimAlg()
-        else:
-            from Configurables import SkipSimAlg
-
-            alg = SkipSimAlg()
-        from Gaussino.Utilities import get_set_configurable
-
-        tool = get_set_configurable(alg, "HepMCConverter")
+        from Configurables import (
+            SkipSimAlg,
+            ReDecaySkipSimAlg,
+        )
+        alg_conf = SkipSimAlg
+        if self.redecay:
+            alg_conf = ReDecaySkipSimAlg
+        tool = get_set_configurable(alg_conf(), "HepMCConverter")
         try:
+            # FIXME: Michal M. this needs a bit more of investigation
             tool.CheckParticle = False
-        except:
+        except AttributeError:
             pass
-        seq += [alg]
-
-        ApplicationMgr().TopAlg += seq
+        return [alg_conf()]
 
     @staticmethod
     def eventType():
