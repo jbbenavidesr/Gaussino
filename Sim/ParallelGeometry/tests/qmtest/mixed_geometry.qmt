@@ -13,6 +13,11 @@
 <argument name="program"><text>gaudirun.py</text></argument>
 <argument name="timeout"><integer>600</integer></argument>
 <argument name="args"><set>
+  <text>$GAUSSINOOPTS/General/Events-1.py</text>
+  <text>$GAUSSINOOPTS/General/Debug.py</text>
+  <text>$GAUSSINOOPTS/General/ConvertEDM.py</text>
+  <text>$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py</text>
+  <text>$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py</text>
   <text>../options/mixed_geometry.py</text>
 </set></argument>
 <argument name="validator"><text>
