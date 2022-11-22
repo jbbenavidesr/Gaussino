@@ -32,6 +32,10 @@ if (NOT USE_DD4HEP)
     set(GAUSSINO_IGNORE_SUBDIRS Sim/GiGaMTDD4hep)
 endif()
 
+gaussino_env(
+    SET GAUSSINOOPTS ${PROJECT_SOURCE_DIR}/Sim/Gaussino/options
+)
+
 gaussino_add_subdirectories(
     Defaults
     EDMdev/MCTruthToEDM

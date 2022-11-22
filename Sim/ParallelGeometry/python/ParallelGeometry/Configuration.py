@@ -107,7 +107,7 @@ class ParallelGeometry(ConfigurableUser):
     _external_embedders = []
 
     def attach(self, dettool):
-        """ Takes care of setting up the right tools and factories responsible
+        """Takes care of setting up the right tools and factories responsible
         for the parallel geometries as defined in ``ParallelWorlds`` property.
 
         :param dettool: Detector construction tool, should be
@@ -119,22 +119,26 @@ class ParallelGeometry(ConfigurableUser):
             par_worlds_tools = []
             for world_name, props in worlds.items():
                 self._check_props(world_name, props)
-                factype = props.get('Type')
+                factype = props.get("Type")
                 if not factype:
                     log.warning(
-                        "No factory type specified for {}. Using default world factory"
-                        .format(world_name))
+                        "No factory type specified for {}. Using default world factory".format(
+                            world_name
+                        )
+                    )
                     factype = "DefaultParallelWorld"
                 fac_conf = getattr(Configurables, factype)
                 fac = fac_conf(
                     world_name,
                     **self._refine_props(
-                        props,
-                        ['Type', 'ExternalDetectorEmbedder', 'ExportGDML']))
+                        props, ["Type", "ExternalDetectorEmbedder", "ExportGDML"]
+                    )
+                )
 
                 embedder_name = props.get("ExternalDetectorEmbedder")
                 if embedder_name:
                     from Configurables import ExternalDetectorEmbedder
+
                     embedder = ExternalDetectorEmbedder(embedder_name)
                     embedder.embed(fac)
                     algs += embedder.activate_hits_alg()  # no slot for now!
@@ -146,14 +150,14 @@ class ParallelGeometry(ConfigurableUser):
                 if gdml_export:
                     if type(gdml_export) is not dict:
                         raise RuntimeError(
-                            "ExportGDML should be a dictionary of options")
+                            "ExportGDML should be a dictionary of options"
+                        )
                     else:
                         for name, value in gdml_export.items():
-                            if name.startswith('GDML'):
+                            if name.startswith("GDML"):
                                 setattr(fac, name, value)
                             else:
-                                raise RuntimeError(
-                                    "GDML options start with GDML")
+                                raise RuntimeError("GDML options start with GDML")
 
                 dettool.addTool(fac, name=world_name)
                 par_worlds_tools.append(getattr(dettool, world_name))
@@ -161,7 +165,7 @@ class ParallelGeometry(ConfigurableUser):
         return algs
 
     def attach_physics(self, modular_list):
-        """ Takes care of setting up the right tools and factories responsible
+        """Takes care of setting up the right tools and factories responsible
         for the parallel physics factories that correspond to the parallel worlds.
         All these properties should be provided in ``ParallelPhysics`` property.
 
@@ -173,29 +177,27 @@ class ParallelGeometry(ConfigurableUser):
             for world_name, phys_props in physics.items():
                 name = world_name + "Physics"
                 self._check_props(name, phys_props)
-                factype = phys_props.get('Type')
+                factype = phys_props.get("Type")
                 factype = "DefaultParallelPhysics"
                 if not factype:
                     log.warning(
-                        "No factory type specified for {}. Using default physics world factory"
-                        .format(world_name))
+                        "No factory type specified for {}. Using default physics world factory".format(
+                            world_name
+                        )
+                    )
                     factype = "DefaultParallelPhysics"
                 if factype == "DefaultParallelPhysics":
                     phys_props["WorldName"] = world_name
                 fac_conf = getattr(Configurables, factype)
                 pwph = fac_conf(name, **self._refine_props(phys_props))
                 modular_list.addTool(pwph)
-                modular_list.PhysicsConstructors.append(
-                    getattr(modular_list, name))
+                modular_list.PhysicsConstructors.append(getattr(modular_list, name))
 
-    def _refine_props(self, props, keys_to_refine=['Type']):
-        return {
-            key: prop
-            for key, prop in props.items() if key not in keys_to_refine
-        }
+    def _refine_props(self, props, keys_to_refine=["Type"]):
+        return {key: prop for key, prop in props.items() if key not in keys_to_refine}
 
     def _check_props(self, name, props):
         if type(props) is not dict:
             raise RuntimeError(
-                "ERROR: Dictionary of {} properties not provided.".format(
-                    name))
+                "ERROR: Dictionary of {} properties not provided.".format(name)
+            )

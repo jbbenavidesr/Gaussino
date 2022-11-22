@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,11 +8,22 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-#[=======================================================================[.rst:
-Sim/Gaussino
-------------
-#]=======================================================================]
-gaudi_install(PYTHON)
-gaudi_generate_confuserdb()
-gaudi_add_tests(QMTest)
-gaudi_add_tests(pytest)
+from GaudiKernel import SystemOfUnits as units
+
+OUTER_SPACE = {
+    "AtomicNumber": 1.0,
+    "MassNumber": 1.01 * units.g / units.mole,
+    "Density": 1.0e-25 * units.g / units.cm3,
+    "Pressure": 3.0e-18 * units.pascal,
+    "Temperature": 2.73 * units.kelvin,
+}
+
+LEAD = {
+    "Type": "MaterialFromElements",
+    "Symbols": ["Pb"],
+    "AtomicNumbers": [82.0],
+    "MassNumbers": [207.2 * units.g / units.mole],
+    "MassFractions": [1.0],
+    "Density": 11.29 * units.g / units.cm3,
+    "State": "Solid",
+}

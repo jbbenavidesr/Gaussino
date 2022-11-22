@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,11 +8,6 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-#[=======================================================================[.rst:
-Sim/Gaussino
-------------
-#]=======================================================================]
-gaudi_install(PYTHON)
-gaudi_generate_confuserdb()
-gaudi_add_tests(QMTest)
-gaudi_add_tests(pytest)
+from Configurables import GaussinoSimulation
+
+GaussinoSimulation().PhysicsConstructors.append("GiGaMT_G4EmStandardPhysics")

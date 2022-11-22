@@ -13,12 +13,17 @@
 <argument name="program"><text>gaudirun.py</text></argument>
 <argument name="timeout"><integer>600</integer></argument>
 <argument name="args"><set>
-  <text>../options/external_cube.py</text>
+  <text>$GAUSSINOOPTS/General/Events-1.py</text>
+  <text>$GAUSSINOOPTS/General/Debug.py</text>
+  <text>$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py</text>
+  <text>$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py</text>
+  <text>$GAUSSINOOPTS/Geometry/ExternalDetector-SimpleCube.py</text>
+  <text>$GAUSSINOOPTS/Geometry/GDMLExport-Extended.py</text>
 </set></argument>
 <argument name="validator"><text>
 results = [
-    'Successfully embedded MyCubePVol in its mothers volume!',
-    'Registered sensitive MyCubeSDet for MyCubePVol',
+    'Successfully embedded ExternalDetectorEmbedder_0_CubePVol in its mothers volume!',
+    'Registered sensitive ExternalDetectorEmbedder_0_CubeSDet for ExternalDetectorEmbedder_0_CubePVol',
     'External world created!',
 ]
 for result in results:

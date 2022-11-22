@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,21 +8,18 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-"""
-High level and utility functions to set up the Generation step in Gaussino
-"""
+__author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
+__email__ = "lhcb-simulation@cern.ch"
 
-from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
 from GaudiKernel import SystemOfUnits
 from Gaudi.Configuration import log
-from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
-from Gaussino.GenUtils import configure_hepmc_writer
+
+# Configurables (do NOT use 'from Configurables' here)
+from Gaussino.Utilities import GaussinoConfigurable
 
 
-class GenPhase(ConfigurableUser):
-    """Configurable for the Generation phase in Gaussino. Does not implement
-    a self.__apply_configuration__ itself. Instead, all member functions are
-    explicitly called during the configuration of Gaussino()
+class GaussinoGeneration(GaussinoConfigurable):
+    """Configurable for the Generation phase in Gaussino.
 
     :var BeamMomentum: default: ``3.5 * SystemOfUnits.TeV``
     :vartype BeamMomentum: float, optional
@@ -119,113 +116,96 @@ class GenPhase(ConfigurableUser):
     :vartype FullGenEventToolOpts: dict, optional
     """
 
-    __slots__ = {
-        "BeamMomentum":
-        3.5 * SystemOfUnits.TeV,  # NOQA
-        "BeamHCrossingAngle":
-        -0.520 * SystemOfUnits.mrad,  # NOQA
-        "BeamVCrossingAngle":
-        0.0,  # NOQA
-        "BeamEmittance":
-        0.0037 * SystemOfUnits.mm,  # NOQA
-        "BeamBetaStar":
-        3.1 * SystemOfUnits.m,  # NOQA
-        "BeamLineAngles":
-        [-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad],  # NOQA
+    GAUSSINO_GENERATION_OPTIONS = {
+        "BeamMomentum": 3.5 * SystemOfUnits.TeV,
+        "BeamHCrossingAngle": -0.520 * SystemOfUnits.mrad,
+        "BeamVCrossingAngle": 0.0,
+        "BeamEmittance": 0.0037 * SystemOfUnits.mm,
+        "BeamBetaStar": 3.1 * SystemOfUnits.m,
+        "BeamLineAngles": [-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad],
         "InteractionPosition": [
-            0.459 * SystemOfUnits.mm, -0.015 * SystemOfUnits.mm,
-            0.5 * SystemOfUnits.mm
-        ],  # NOQA
-        "BunchRMS":
-        82.03 * SystemOfUnits.mm,  # NOQA
-        "Luminosity":
-        0.247 * (10**30) / (SystemOfUnits.cm2 * SystemOfUnits.s),  # NOQA
-        "TotalCrossSection":
-        91.1 * SystemOfUnits.millibarn,  # NOQA
-        "B2Momentum":
-        3.5 * SystemOfUnits.TeV,  # NOQA
-        "B1Particle":
-        'p',  # NOQA
-        "B2Particle":
-        'p',  # NOQA
-        "EvtMax":
-        -1,  # NOQA
-        "WriteHepMC":
-        False,  # NOQA
-        "GenMonitor":
-        False,  # NOQA
-        "ParticleGun":
-        False,  # NOQA
-        "ParticleGunUseDefault":
-        True,  # NOQA
-        "Production_kwargs": {},  # NOQA
-        "ConvertEDM":
-        False,  # NOQA
-        "SampleGenerationTool":
-        'SignalPlain',  # NOQA
-        "SampleGenerationToolOpts": {},  # NOQA
-        "PileUpTool":
-        'FixedLuminosityWithSvc',  # NOQA
-        "ProductionTool":
-        'Pythia8Production',  # NOQA
+            0.459 * SystemOfUnits.mm,
+            -0.015 * SystemOfUnits.mm,
+            0.5 * SystemOfUnits.mm,
+        ],
+        "BunchRMS": 82.03 * SystemOfUnits.mm,
+        "Luminosity": 0.247 * (10**30) / (SystemOfUnits.cm2 * SystemOfUnits.s),
+        "TotalCrossSection": 91.1 * SystemOfUnits.millibarn,
+        "B2Momentum": 3.5 * SystemOfUnits.TeV,
+        "B1Particle": "p",
+        "B2Particle": "p",
+        "EvtMax": -1,
+        "WriteHepMC": False,
+        "GenMonitor": False,
+        "ParticleGun": False,
+        "Production_kwargs": {},
+        "ConvertEDM": False,
+        "SampleGenerationTool": "SignalPlain",
+        "SampleGenerationToolOpts": {},
+        "PileUpTool": "FixedLuminosityWithSvc",
+        "ProductionTool": "Pythia8Production",
         "ProductionToolOpts": {},
-        "DecayTool":
-        '',  # NOQA
-        "CutTool":
-        '',  # NOQA
-        "CutToolOpts": {},  # NOQA
-        "FullGenEventCutTool":
-        '',  # NOQA
-        "FullGenEventCutToolOpts": {}  # NOQA
+        "DecayTool": "",
+        "CutTool": "",
+        "CutToolOpts": {},
+        "FullGenEventCutTool": "",
+        "FullGenEventCutToolOpts": {},
     }
 
-    def __init__(self, name=Configurable.DefaultName, **kwargs):
-        kwargs["name"] = name
-        super(GenPhase, self).__init__(*(), **kwargs)
+    __slots__ = {
+        **GAUSSINO_GENERATION_OPTIONS,
+    }
 
-    def setOtherProp(self, other, name):
-        """Set the given property in another configurable object
+    __required_configurables__ = [
+        "Gaussino",
+    ]
 
-        :param other: The other configurable to set the property for
-        :param name:  The property name
-        """
-        self.propagateProperty(name, other)
+    # internal options to be set by Gaussino
+    only_generation_phase = False
+    redecay = False
+    output_name = False
 
-    def setOtherProps(self, other, names):
-        """ Set the given properties in another configurable object
+    def __apply_configuration__(self):
+        """Main configuration method for the generation phase."""
+        if self.getProp("ParticleGun"):
+            self._configure_pgun()
+        else:
+            self._configure_generation()
 
-        :param other: The other configurable to set the property for
-        :param names: The property names
-        """
-        self.propagateProperties(names, other)
+        self._configure_rnd_init()
+        self._configure_gen_monitor()
+        self._configure_hepmc_writer()
 
-    def configure_generation(self, seq):
-        """ Configuration method for the generation other than
+        if self.only_generation_phase:
+            self._configure_genonly()
+
+    def _configure_generation(self):
+        """Configuration method for the generation other than
         a particle gun.
-
-        :param seq: list of algorithms
         """
         # Algorithm that produces the actual HepMC by talking to stuff
-        SampleGenerationTool = self.getProp('SampleGenerationTool')
-        ProductionTool = self.getProp('ProductionTool')
-        DecayTool = self.getProp('DecayTool')
-        CutTool = self.getProp('CutTool')
-        FullGenEventCutTool = self.getProp('FullGenEventCutTool')
-        PileUpTool = self.getProp('PileUpTool')
+        SampleGenerationTool = self.getProp("SampleGenerationTool")
+        ProductionTool = self.getProp("ProductionTool")
+        DecayTool = self.getProp("DecayTool")
+        CutTool = self.getProp("CutTool")
+        FullGenEventCutTool = self.getProp("FullGenEventCutTool")
+        PileUpTool = self.getProp("PileUpTool")
 
-        from Gaussino.Utilities import beaminfoService
-        from Gaussino.Utilities import get_set_configurable
         beaminfoService()
         from Configurables import Gaussino
+
         if Gaussino().getProp("ReDecay"):
             from Configurables import ReDecayGeneration
+
             gen_alg = ReDecayGeneration()
         else:
             from Configurables import Generation
+
             gen_alg = Generation()
-        sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
-                                   SampleGenerationTool)
-        sgt_opts = self.getProp('SampleGenerationToolOpts')
+        sgt = get_set_configurable(
+            gen_alg, "SampleGenerationTool", SampleGenerationTool
+        )
+        sgt_opts = self.getProp("SampleGenerationToolOpts")
         for n, v in sgt_opts.items():
             sgt.setProp(n, v)
         try:
@@ -233,38 +213,40 @@ class GenPhase(ConfigurableUser):
         except:
             pass
         try:
-            if CutTool != '':
-                ct = get_set_configurable(sgt, 'CutTool', CutTool)
-                ct_opts = self.getProp('CutToolOpts')
+            if CutTool != "":
+                ct = get_set_configurable(sgt, "CutTool", CutTool)
+                ct_opts = self.getProp("CutToolOpts")
                 for n, v in ct_opts.items():
                     ct.setProp(n, v)
             else:
-                sgt.CutTool = ''
+                sgt.CutTool = ""
         except Exception as e:
-            log.error('Could not configure CutTool', e)
-        if FullGenEventCutTool != '':
-            ct = get_set_configurable(gen_alg, 'FullGenEventCutTool',
-                                      FullGenEventCutTool)
-            ct_opts = self.getProp('FullGenEventCutToolOpts')
+            log.error("Could not configure CutTool", e)
+        if FullGenEventCutTool != "":
+            ct = get_set_configurable(
+                gen_alg, "FullGenEventCutTool", FullGenEventCutTool
+            )
+            ct_opts = self.getProp("FullGenEventCutToolOpts")
             for n, v in ct_opts.items():
                 ct.setProp(n, v)
         else:
-            gen_alg.FullGenEventCutTool = ''
-        prod = get_set_configurable(sgt, 'ProductionTool', ProductionTool)
+            gen_alg.FullGenEventCutTool = ""
+        prod = get_set_configurable(sgt, "ProductionTool", ProductionTool)
         if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
             # For now keep it only for Pythia, but potentially in future we
             # want to do this for all possible production tools
-            prot_opts = self.getProp('ProductionToolOpts')
+            prot_opts = self.getProp("ProductionToolOpts")
             for n, v in prot_opts.items():
                 prod.setProp(n, v)
-            prod.BeamToolName = 'CollidingBeamsWithSvc'
+            prod.BeamToolName = "CollidingBeamsWithSvc"
 
         if ProductionTool == "Pythia8ProductionMT":
             from Configurables import Gaussino
+
             prod.NThreads = Gaussino().ThreadPoolSize
 
         gen_alg.PileUpTool = PileUpTool
-        gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
+        gen_alg.VertexSmearingTool = "BeamSpotSmearVertexWithSvc"
         gen_alg.DecayTool = DecayTool
 
         seq += [gen_alg]
@@ -272,21 +254,23 @@ class GenPhase(ConfigurableUser):
         # Now do it all again for the signal part
         if Gaussino().getProp("ReDecay"):
             from Configurables import ReDecaySignalGeneration
+
             siggen_alg = ReDecaySignalGeneration()
 
-            siggen_alg.HepMCEventLocation = 'Gen/SignalDecayTree'
-            siggen_alg.GenCollisionLocation = 'Gen/SignalCollisions'
-            siggen_alg.GenHeaderOutputLocation = 'Gen/SignalGenHeader'
+            siggen_alg.HepMCEventLocation = "Gen/SignalDecayTree"
+            siggen_alg.GenCollisionLocation = "Gen/SignalCollisions"
+            siggen_alg.GenHeaderOutputLocation = "Gen/SignalGenHeader"
 
             seq += [siggen_alg]
-            sgt = get_set_configurable(siggen_alg, 'SampleGenerationTool',
-                                       'SignalPlain')
+            sgt = get_set_configurable(
+                siggen_alg, "SampleGenerationTool", "SignalPlain"
+            )
             sgt.RevertWhenBackward = False  # Don't invert in the redecay part
             siggen_alg.GenFSRLocation = ""
             sgt.GenFSRLocation = ""
-            sgt_opts = self.getProp('SampleGenerationToolOpts')
-            if 'SignalPIDList' in sgt_opts:
-                sgt.setProp('SignalPIDList', sgt_opts['SignalPIDList'])
+            sgt_opts = self.getProp("SampleGenerationToolOpts")
+            if "SignalPIDList" in sgt_opts:
+                sgt.setProp("SignalPIDList", sgt_opts["SignalPIDList"])
             else:
                 # FIXME: First only support signal like org tool
                 log.error("Original sample generation tool not of signal type")
@@ -295,100 +279,135 @@ class GenPhase(ConfigurableUser):
             except:
                 pass
             try:
-                if CutTool != '':
-                    ct = get_set_configurable(sgt, 'CutTool', CutTool)
-                    ct_opts = self.getProp('CutToolOpts')
+                if CutTool != "":
+                    ct = get_set_configurable(sgt, "CutTool", CutTool)
+                    ct_opts = self.getProp("CutToolOpts")
                     for n, v in ct_opts.items():
                         ct.setProp(n, v)
                 else:
-                    sgt.CutTool = ''
+                    sgt.CutTool = ""
             except Exception as e:
-                log.error('Could not configure CutTool', e)
-            if FullGenEventCutTool != '':
-                ct = get_set_configurable(siggen_alg, 'FullGenEventCutTool',
-                                          FullGenEventCutTool)
-                ct_opts = self.getProp('FullGenEventCutToolOpts')
+                log.error("Could not configure CutTool", e)
+            if FullGenEventCutTool != "":
+                ct = get_set_configurable(
+                    siggen_alg, "FullGenEventCutTool", FullGenEventCutTool
+                )
+                ct_opts = self.getProp("FullGenEventCutToolOpts")
                 for n, v in ct_opts.items():
                     ct.setProp(n, v)
             else:
-                siggen_alg.FullGenEventCutTool = ''
-            prod = get_set_configurable(sgt, 'ProductionTool',
-                                        'ReDecayProduction')
+                siggen_alg.FullGenEventCutTool = ""
+            prod = get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
 
-            siggen_alg.PileUpTool = 'ReDecayPileUp'
-            siggen_alg.VertexSmearingTool = ''
+            siggen_alg.PileUpTool = "ReDecayPileUp"
+            siggen_alg.VertexSmearingTool = ""
             siggen_alg.DecayTool = DecayTool
+        from Configurables import ApplicationMgr
 
-    def configure_pgun(self, seq):
-        """Simple utility function to create and configure an instance of particle
-        gun
-
-        :param seq: list of algorithms
-        """
-
-        from GaudiKernel.SystemOfUnits import GeV, rad
-        from Configurables import ParticleGun
-        pgun = ParticleGun("ParticleGun")
-
-        if self.getProp('ParticleGunUseDefault'):
-            pgun.EventType = 53210205
-
-            from Configurables import MomentumRange
-            pgun.addTool(MomentumRange, name="MomentumRange")
-            pgun.ParticleGunTool = "MomentumRange"
-
-            from Configurables import FlatNParticles
-            pgun.addTool(FlatNParticles, name="FlatNParticles")
-            pgun.NumberOfParticlesTool = "FlatNParticles"
-            pgun.FlatNParticles.MinNParticles = 1
-            pgun.FlatNParticles.MaxNParticles = 1
-            pgun.MomentumRange.PdgCodes = [-2112]
-
-            pgun.MomentumRange.MomentumMin = 2.0 * GeV
-            pgun.MomentumRange.MomentumMax = 100.0 * GeV
-            pgun.MomentumRange.ThetaMin = 0.015 * rad
-            pgun.MomentumRange.ThetaMax = 0.300 * rad
-        seq += [pgun]
-
-    def configure_phase(self):  # NOQA
-        """ Main configuration method for the generation phase. """
-        EvtMax = self.getProp('EvtMax')
-        if EvtMax <= 0:
-            raise RuntimeError(
-                "Generating events but selected '%s' events." % EvtMax)  # NOQA
-
-        seq = []
-        if self.getProp('ParticleGun'):
-            self.configure_pgun(seq)
-        else:
-            self.configure_generation(seq)
-
-        # Algorithm to initialise the random seeds and make a GenHeader
-        rnd_init = configure_rnd_init()
-
-        seq += [rnd_init]
-        if self.getProp('GenMonitor'):
-            gen_moni = configure_gen_monitor()
-            seq += [gen_moni]
-        if self.getProp('WriteHepMC'):
-            seq += [configure_hepmc_writer()]
-        # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
         ApplicationMgr().TopAlg += seq
 
-    def configure_genonly(self):
-        """ Method that is used when only the generation phase
+    def _configure_pgun(self):
+        """Simple utility function to create and configure an instance of particle gun"""
+        from Configurables import ParticleGun
+
+        if "ParticleGun" not in ParticleGun.configurables:
+            msg = (
+                "The generation algorithm is set to use a ParticleGun, but no "
+                "ParticleGun() configurable was registered! Make sure to include "
+                "all the required tools!"
+            )
+            log.error(msg)
+            raise AttributeError(msg)
+        pgun = ParticleGun()
+        from Configurables import ApplicationMgr
+
+        ApplicationMgr().TopAlg.append(pgun)
+
+    def _configure_rnd_init(self):
+        """Simple utility function to create and configure an instance GenRndInit"""
+        conf = None
+        if self.redecay:
+            from Configurables import GenReDecayInit
+
+            conf = GenReDecayInit
+            name = "GenReDecayInit"
+        else:
+            from Configurables import GenRndInit
+
+            conf = GenRndInit
+            name = "GenRndInit"
+
+        from Configurables import (
+            SeedingTool,
+            ApplicationMgr,
+        )
+
+        conf(name).addTool(SeedingTool, name="SeedingTool")
+        from Configurables import ApplicationMgr
+
+        ApplicationMgr().TopAlg.append(conf(name))
+
+    def _configure_gen_monitor(self):
+        """Simple utility function to create and configure a GenMonitorAlg instance"""
+        if not self.getProp("GenMonitor"):
+            return
+        from Configurables import GenMonitorAlg, ApplicationMgr
+
+        ApplicationMgr().TopAlg.append(
+            GenMonitorAlg(
+                "GenMonitorAlg",
+                HistoProduce=True,
+                Input="/Event/Gen/HepMCEvents",
+            )
+        )
+
+    def _configure_hepmc_writer(self):
+        """Simple utility function to create and configure a HepMCinstance"""
+        if not self.getProp("WriteHepMC"):
+            return
+        from Configurables import (
+            HepMCWriter,
+            ApplicationMgr,
+        )
+
+        alg = HepMCWriter()
+        alg.Input = "/Event/Gen/HepMCEvents"
+        filename = self.output_name + "-HepMC"
+        if hasattr(alg, "Writer"):
+            writer = alg.Writer
+        else:
+            writer = "WriterRootTree"
+        print("writer={}".format(writer))
+        if writer in ["WriterRootTree", "WriterRoot"]:
+            print("Setting root file")
+            alg.OutputFileName = filename + ".root"
+        elif writer in ["WriterAscii"]:
+            alg.OutputFileName = filename + ".txt"
+        elif writer in ["WriterHEPEVT"]:
+            alg.OutputFileName = filename + ".evt"
+        else:
+            print("Unknown writer name specified, not going to write")
+            alg.OutputFileName = ""
+        ApplicationMgr().TopAlg().append(alg)
+
+    def _configure_genonly(self):
+        """Method that is used when only the generation phase
         is used.
         """
         seq = []
         from Configurables import Gaussino
-        if Gaussino().getProp('ReDecay'):
+
+        if Gaussino().getProp("ReDecay"):
             from Configurables import ReDecaySkipSimAlg
+
             alg = ReDecaySkipSimAlg()
         else:
             from Configurables import SkipSimAlg
+
             alg = SkipSimAlg()
         from Gaussino.Utilities import get_set_configurable
-        tool = get_set_configurable(alg, 'HepMCConverter')
+
+        tool = get_set_configurable(alg, "HepMCConverter")
         try:
             tool.CheckParticle = False
         except:
@@ -400,7 +419,8 @@ class GenPhase(ConfigurableUser):
     @staticmethod
     def eventType():
         from Configurables import Generation
-        evtType = ''
+
+        evtType = ""
         if Generation("Generation").isPropertySet("EventType"):
             evtType = str(Generation("Generation").EventType)
         return evtType
