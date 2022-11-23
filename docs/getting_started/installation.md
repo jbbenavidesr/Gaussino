@@ -1,9 +1,9 @@
-# Working with Gaussino
+# Installation
 
 Please note that Gaussino is an experiment-independent package. If you are looking for a concrete experiment implementation, here is the list:
-- Gauss-on-Gaussino (LHCb Experiment, for now using the nightly build system)
+- [Gauss-on-Gaussino in the LHCb Experiment](https://lhcb-gauss.docs.cern.ch/master/index.html)
 
-## Using the LHCb nightly build system
+## Using the LHCb infrastructure
 
 ### About the nightly system
 
@@ -18,7 +18,15 @@ Gaussino is built in each nightly slots on 3 platforms:
 - ```x86_64_v2-centos7-gcc11-dbg``` debug build with DetDesc geometry,
 - ```x86_64_v2-centos7-gcc11+dd4hep-opt``` release build with DD4Hep geometry,
 
-### Configuring the environment 
+
+### Building Gaussino from source
+
+```{eval-rst}
+.. note::
+    This is the recommended way for now.
+```
+
+#### Configuring the environment 
 
 Make sure that you are using LbEnv on lxplus or similar. You can run this to be sure:
 
@@ -26,7 +34,7 @@ Make sure that you are using LbEnv on lxplus or similar. You can run this to be 
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 ```
 
-### Configure the platform
+#### Configure the platform
 
 The following will make sure that you have the most recent platform.
 
@@ -38,13 +46,6 @@ export LCG_VERSION=101x
 ```{eval-rst}
 .. tip::
     Use ``x86_64_v2-centos7-gcc11+dd4hep-opt`` on ``lhcb-dd4hep`` if you want to work with **Detector/DD4hep**.
-```
-
-### Building Gaussino from source
-
-```{eval-rst}
-.. note::
-    This is the recommended way for now.
 ```
 
 #### Fetch the nightlies locally
@@ -68,29 +69,11 @@ lb-set-workspace .
     The ``Today`` version of the nightly slot might not always be available. Please, always check directly on the website if the build of Gaussino & Gauss was successful (cells in the `table <https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/>`_ should be either orange or green, but not red!). Always use the latest version that was successful (``yesterday``, ``1222`` etc.). 
 ```
 
-#### Clone Gaussino and prepare your local development branch
+#### Clone, configure, build and install Gaussino
 
 ```shell
 git clone ssh://git@gitlab.cern.ch:7999/Gaussino/Gaussino.git
 cd Gaussino
-git checkout -b your_local_dev_branch
-```
-
-```{eval-rst}
-.. attention::
-    Don't forget to merge all pending merge requests with a label ``lhcb-gaussino`` (or any other MR that was picked up in the nightly)!
-```
-
-In order to get the list of pending merge requests check the checkout report by clicking on the **black arrow** next to the **Gaussino project** on the [website](https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino). You will get a list of the MR ids that are needed to work with this build of Gaussino. For example, if the MRs are Gaussino!24 and Gaussino!51, you can do the following:
-
-```shell
-git fetch && git fetch origin '+refs/merge-requests/*/head:refs/remotes/*'
-git merge --no-edit 24 51
-```
-
-#### Configure, build and install Gaussino
-
-```shell
 lb-project-init .
 make -j4 install
 ``` 
@@ -100,7 +83,7 @@ make -j4 install
 ```shell
 ./build.x86_64_v2-centos7-gcc11-opt/run gaudirun.py your_options.py
 ```
-
+<!--
 ### Working on a satellite project
 
 ```{eval-rst}
@@ -208,3 +191,4 @@ git lb-checkout Gaussino/master Sim/Gaussino
 ```shell
 make
 ```
+-->
