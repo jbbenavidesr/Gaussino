@@ -12,6 +12,7 @@ from GaudiKernel.Configurable import (
     applyConfigurableUsers,
     Configurable,
 )
+import decorator
 
 from Gaudi.Configuration import importOptions
 
@@ -22,7 +23,7 @@ import GaudiKernel.ProcessJobOptions  # needed to change global var
 
 
 def reset_configurables(example):
-    def wrapper(*args, **kwargs):
+    def wrapper(example, *args, **kwargs):
         for conf in Configurable.allConfigurables.values():
             conf.configurables.clear()
         Configurable.allConfigurables.clear()
@@ -30,38 +31,45 @@ def reset_configurables(example):
         GaudiKernel.ProcessJobOptions._included_files = set()
         example(*args, **kwargs)
 
-    return wrapper
+    return decorator.decorator(wrapper, example)
 
 
 def em_physics(example):
-    def wrapper(*args, **kwargs):
+    def wrapper(example, *args, **kwargs):
         importOptions("$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py")
         example(*args, **kwargs)
 
-    return wrapper
+    return decorator.decorator(wrapper, example)
 
 
 def photon(example):
-    def wrapper(*args, **kwargs):
+    def wrapper(example, *args, **kwargs):
         importOptions(
             "$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py"
         )
         example(*args, **kwargs)
 
-    return wrapper
+    return decorator.decorator(wrapper, example)
 
 
 def one_event(example):
-    def wrapper(*args, **kwargs):
+    def wrapper(example, *args, **kwargs):
         importOptions("$GAUSSINOOPTS/General/Events-1.py")
         example(*args, **kwargs)
 
-    return wrapper
+    return decorator.decorator(wrapper, example)
 
 
 def cube(example):
-    def wrapper(*args, **kwargs):
+    def wrapper(example, *args, **kwargs):
         importOptions("$GAUSSINOOPTS/Geometry/ExternalDetector-SimpleCube.py")
         example(*args, **kwargs)
 
-    return wrapper
+    return decorator.decorator(wrapper, example)
+
+def only_generation(example):
+    def wrapper(example, *args, **kwargs):
+        importOptions("$GAUSSINOOPTS/General/OnlyGeneration.py")
+        example(*args, **kwargs)
+
+    return decorator.decorator(wrapper, example)
