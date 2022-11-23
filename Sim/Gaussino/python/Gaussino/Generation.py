@@ -343,22 +343,21 @@ class GaussinoGeneration(GaussinoConfigurable):
 
         alg = HepMCWriter()
         alg.Input = "/Event/Gen/HepMCEvents"
-        filename = self.output_name + "-HepMC"
         if hasattr(alg, "Writer"):
             writer = alg.Writer
         else:
             writer = "WriterRootTree"
-        print("writer={}".format(writer))
+        log.debug(f"Using HepMCWriter: {writer}")
         if writer in ["WriterRootTree", "WriterRoot"]:
-            print("Setting root file")
-            alg.OutputFileName = filename + ".root"
-        elif writer in ["WriterAscii"]:
-            alg.OutputFileName = filename + ".txt"
-        elif writer in ["WriterHEPEVT"]:
-            alg.OutputFileName = filename + ".evt"
+            alg.OutputFileName = f"{self.output_name}-HepMC.root"
+        elif writer == "WriterAscii":
+            alg.OutputFileName = f"{self.output_name}-HepMC.txt"
+        elif writer == "WriterHEPEVT":
+            alg.OutputFileName = f"{self.output_name}-HepMC.evt"
         else:
-            print("Unknown writer name specified, not going to write")
-            alg.OutputFileName = ""
+            msg = "Unknown HepMCWriter file extension."
+            log.error(msg)
+            raise ValueError(msg)
         return [alg]
 
     def _configure_genonly(self) -> list:

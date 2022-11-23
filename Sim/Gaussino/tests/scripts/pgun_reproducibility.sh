@@ -12,14 +12,14 @@
 
 gaudirun.py \
     $GAUSSINOOPTS/General/Events-1k.py \
-    $GAUSSINOOPTS/General/OnlyGenerator.py \
+    $GAUSSINOOPTS/General/OnlyGeneration.py \
     $GAUSSINOOPTS/General/Threads-20.py \
     $GAUSSINOROOT/tests/options/pgun_reproducibility.py \
     $GAUSSINOROOT/tests/options/pgun_reproducibility_A.py
 
 gaudirun.py \
     $GAUSSINOOPTS/General/Events-1k.py \
-    $GAUSSINOOPTS/General/OnlyGenerator.py \
+    $GAUSSINOOPTS/General/OnlyGeneration.py \
     $GAUSSINOOPTS/General/Threads-20.py \
     $GAUSSINOROOT/tests/options/pgun_reproducibility.py \
     $GAUSSINOROOT/tests/options/pgun_reproducibility_B.py

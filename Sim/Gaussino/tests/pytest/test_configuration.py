@@ -53,3 +53,29 @@ def test_no_hive():
 
         Gaussino().EnableHive = False
         applyConfigurableUsers()
+
+@reset_configurables
+@one_event
+@only_generation
+@photon
+@pytest.mark.parametrize(
+    "writer, correct", [
+        ("WriterRootTree", True),
+        ("WriterRootTree", True),
+        ("WriterAscii", True),
+        ("WriterHEPEVT", True),
+        ("WriterThatDoesNotExist", False),
+    ]
+)
+def test_hepmcwriter(writer, correct):
+    from Configurables import (
+        GaussinoGeneration,
+        HepMCWriter,
+    )
+    GaussinoGeneration().WriteHepMC = True
+    HepMCWriter().Writer = writer
+    if correct:
+        applyConfigurableUsers()
+    else:
+        with pytest.raises(ValueError, match=r".*HepMCWriter.*"):
+            applyConfigurableUsers()
