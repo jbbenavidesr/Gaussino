@@ -27,6 +27,39 @@ from Gaussino.Geometry import GaussinoGeometry
 
 
 class GaussinoSimulation(GaussinoConfigurable):
+    """Configurable for the simulation phase.
+
+    :var PhysicsConstructors: default: ``[]``, list of the factories used
+        to attach physics to the main modular list
+    :vartype PhysicsConstructors: list, required
+
+    :var TrackTruth: default: ``True``
+    :vartype TrackTruth: bool, optional
+
+    G4 commands
+
+    :var G4BeginRunCommand: default:
+        ``["/tracking/verbose 0", "/process/eLoss/verbose 0"]``
+    :vartype G4BeginRunCommand: bool, optional
+
+    :var G4EndRunCommand: default: ``[]``
+    :vartype G4EndRunCommand: bool, optional
+
+    Cuts
+
+    :var CutForElectron: default: ``-1. * km``
+    :vartype CutForElectron: float, optional
+
+    :var CutForGamma: default: ``-1. * km``
+    :vartype CutForGamma: float, optional
+
+    :var CutForPositron: default: ``-1. * km``
+    :vartype CutForPositron: float, optional
+
+    :var DumpCutsTable: default: ``False``
+    :vartype DumpCutsTable: bool, optional
+    """
+
 
     __required_configurables__ = [
         "Gaussino",
@@ -36,7 +69,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         GaussinoGeometry,
     ]
 
-    GAUSSINO_SIMULATION_OPTIONS = {
+    __slots__ = {
         "TrackTruth": True,
         "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
@@ -45,10 +78,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         "CutForPositron": -1 * SystemOfUnits.km,
         "CutForGamma": -1 * SystemOfUnits.km,
         "DumpCutsTable": False,
-    }
-
-    __slots__ = {
-        **GAUSSINO_SIMULATION_OPTIONS,
     }
 
     # internal options to be set by Gaussino

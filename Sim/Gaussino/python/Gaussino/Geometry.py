@@ -24,43 +24,6 @@ from ParallelGeometry.Configuration import ParallelGeometry
 
 class GaussinoGeometry(GaussinoConfigurable):
     """Configurable for the geometry in Gaussino.
-    nstead, all member functions are
-    explicitly called during the configuration of Gaussino()
-
-    General properties
-
-    :var DebugCommunication: default: ``False``
-    :vartype DebugCommunication: bool, optional
-
-    :var TrackTruth: default: ``False``
-    :vartype TrackTruth: bool, optional
-
-    :var G4BeginRunCommand: default:
-        ``["/tracking/verbose 0", "/process/eLoss/verbose 0"]``
-    :vartype G4BeginRunCommand: bool, optional
-
-    :var G4EndRunCommand: default: ``[]``
-    :vartype G4EndRunCommand: bool, optional
-
-    Physics related properties
-
-    :var CutForElectron: default: ``-1. * km``
-    :vartype CutForElectron: float, optional
-
-    :var CutForGamma: default: ``-1. * km``
-    :vartype CutForGamma: float, optional
-
-    :var CutForPositron: default: ``-1. * km``
-    :vartype CutForPositron: float, optional
-
-    :var DumpCutsTable: default: ``False``
-    :vartype DumpCutsTable: bool, optional
-
-    :var PhysicsConstructors: default: ``[]``, list of the factories used
-        to attach physics to the main modular list
-    :vartype PhysicsConstructors: list, optional
-
-    Geometry related properties
 
     :var GeometryService: default: ``""``, name of the geometry service, if
         not provided then some custom geometry must be provided or using the
@@ -84,10 +47,11 @@ class GaussinoGeometry(GaussinoConfigurable):
     :var ExternalDetectorEmbedder: default: ``""``, name of the embedder used
         when creating external geometry
     :vartype ExternalDetectorEmbedder: str, optional
-
-    :var ParallelGeometry: default: ``False``
-    :vartype ParallelGeometry: bool, optional
     """
+
+    __required_configurables__ = [
+        "Gaussino",
+    ]
 
     __slots__ = {
         "GeometryService": "",
@@ -97,12 +61,6 @@ class GaussinoGeometry(GaussinoConfigurable):
         "ImportGDML": [],
         "ExternalDetectorEmbedder": "",
     }
-
-    __required_configurables__ = [
-        "Gaussino",
-    ]
-
-    __used_configurables__ = []
 
     def __apply_configuration__(self):
         log.debug("Configuring GaussinoGeometry")

@@ -11,10 +11,9 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
-from GaudiKernel import SystemOfUnits
+from GaudiKernel import SystemOfUnits as units
 from Gaudi.Configuration import log
 
-# Configurables (do NOT use 'from Configurables' here)
 from Gaussino.Utilities import (
     GaussinoConfigurable,
     get_set_configurable,
@@ -24,41 +23,41 @@ from Gaussino.Utilities import (
 class GaussinoGeneration(GaussinoConfigurable):
     """Configurable for the Generation phase in Gaussino.
 
-    :var BeamMomentum: default: ``3.5 * SystemOfUnits.TeV``
+    :var BeamMomentum: default: ``3.5 * units.TeV``
     :vartype BeamMomentum: float, optional
 
-    :var BeamHCrossingAngle: default: ``-0.520 * SystemOfUnits.mrad``
+    :var BeamHCrossingAngle: default: ``-0.520 * units.mrad``
     :vartype BeamHCrossingAngle: float, optional
 
     :var BeamVCrossingAngle: default: ``0.0``
     :vartype BeamVCrossingAngle: float, optional
 
-    :var BeamEmittance: default: ``0.0037 * SystemOfUnits.mm``
+    :var BeamEmittance: default: ``0.0037 * units.mm``
     :vartype BeamEmittance: float, optional
 
-    :var BeamBetaStar: default: ``3.1 * SystemOfUnits.m``
+    :var BeamBetaStar: default: ``3.1 * units.m``
     :vartype BeamBetaStar: float, optional
 
     :var BeamLineAngles: default:
-        ``[-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad]``
+        ``[-0.075 * units.mrad, 0.035 * units.mrad]``
     :vartype BeamLineAngles: list, optional
 
     :var InteractionPosition: default:
-        ``[0.459 * SystemOfUnits.mm, -0.015 * SystemOfUnits.mm,
-        0.5 * SystemOfUnits.mm]``
+        ``[0.459 * units.mm, -0.015 * units.mm,
+        0.5 * units.mm]``
     :vartype InteractionPosition: list, optional
 
-    :var BunchRMS: default: ``82.03 * SystemOfUnits.mm``
+    :var BunchRMS: default: ``82.03 * units.mm``
     :vartype BunchRMS: float, optional
 
     :var Luminosity: default:
-        ``0.247 * (10 ** 30) / (SystemOfUnits.cm2 * SystemOfUnits.s)``
+        ``2.47e29 / (units.cm2 * units.s)``
     :vartype Luminosity: float, optional
 
-    :var TotalCrossSection: default: ``91.1 * SystemOfUnits.millibarn``
+    :var TotalCrossSection: default: ``91.1 * units.millibarn``
     :vartype TotalCrossSection: float, optional
 
-    :var B2Momentum: default: ``3.5 * SystemOfUnits.TeV``
+    :var B2Momentum: default: ``3.5 * units.TeV``
     :vartype B2Momentum: float, optional
 
     :var B1Particle: default: ``'p'``
@@ -66,9 +65,6 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     :var B2Particle: default: ``'p'``
     :vartype B2Particle: str, optional
-
-    :var EvtMax: default: ``-1``
-    :vartype EvtMax: int, optional
 
     :var WriteHepMC: default: ``False``
     :vartype WriteHepMC: bool, optional
@@ -79,15 +75,6 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var ParticleGun: default: ``False``
     :vartype ParticleGun: bool, optional
 
-    :var ParticleGunUseDefault: default: ``False``
-    :vartype ParticleGunUseDefault: bool, optional
-
-    :var Production_kwargs: default: ``{}``
-    :vartype Production_kwargs: dict, optional
-
-    :var ConvertEDM: default: ``False``
-    :vartype ConvertEDM: bool, optional
-
     :var SampleGenerationTool: default: ``'SignalPlain'``
     :vartype SampleGenerationTool: str, optional
 
@@ -97,7 +84,9 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var PileUpTool: default: ``'FixedLuminosityWithSvc'``
     :vartype PileUpTool: str, optional
 
-    :var ProductionTool: default: ``'Pythia8Production'``
+    :var ProductionTool: default: ``'Pythia8ProductionMT'``,
+        for Pythia8 there are 2 possibilities: ``'Pythia8Production'`` (shared)
+        and ``'Pythia8ProductionMT'`` (thread-local) interface
     :vartype ProductionTool: str, optional
 
     :var ProductionToolOpts: default: ``{}``
@@ -117,36 +106,37 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     :var FullGenEventToolOpts: default: ``{}``
     :vartype FullGenEventToolOpts: dict, optional
-    """
 
-    GAUSSINO_GENERATION_OPTIONS = {
-        "BeamMomentum": 3.5 * SystemOfUnits.TeV,
-        "BeamHCrossingAngle": -0.520 * SystemOfUnits.mrad,
+    """
+    __required_configurables__ = [
+        "Gaussino",
+    ]
+
+    __slots__ = {
+        "BeamMomentum": 3.5 * units.TeV,
+        "BeamHCrossingAngle": -0.520 * units.mrad,
         "BeamVCrossingAngle": 0.0,
-        "BeamEmittance": 0.0037 * SystemOfUnits.mm,
-        "BeamBetaStar": 3.1 * SystemOfUnits.m,
-        "BeamLineAngles": [-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad],
+        "BeamEmittance": 0.0037 * units.mm,
+        "BeamBetaStar": 3.1 * units.m,
+        "BeamLineAngles": [-0.075 * units.mrad, 0.035 * units.mrad],
         "InteractionPosition": [
-            0.459 * SystemOfUnits.mm,
-            -0.015 * SystemOfUnits.mm,
-            0.5 * SystemOfUnits.mm,
+            0.459 * units.mm,
+            -0.015 * units.mm,
+            0.5 * units.mm,
         ],
-        "BunchRMS": 82.03 * SystemOfUnits.mm,
-        "Luminosity": 0.247 * (10**30) / (SystemOfUnits.cm2 * SystemOfUnits.s),
-        "TotalCrossSection": 91.1 * SystemOfUnits.millibarn,
-        "B2Momentum": 3.5 * SystemOfUnits.TeV,
+        "BunchRMS": 82.03 * units.mm,
+        "Luminosity": 2.47e29 / (units.cm2 * units.s),
+        "TotalCrossSection": 91.1 * units.millibarn,
+        "B2Momentum": 3.5 * units.TeV,
         "B1Particle": "p",
         "B2Particle": "p",
-        "EvtMax": -1,
         "WriteHepMC": False,
         "GenMonitor": False,
         "ParticleGun": False,
-        "Production_kwargs": {},
-        "ConvertEDM": False,
         "SampleGenerationTool": "SignalPlain",
         "SampleGenerationToolOpts": {},
         "PileUpTool": "FixedLuminosityWithSvc",
-        "ProductionTool": "Pythia8Production",
+        "ProductionTool": "Pythia8ProductionMT",
         "ProductionToolOpts": {},
         "DecayTool": "",
         "CutTool": "",
@@ -155,13 +145,6 @@ class GaussinoGeneration(GaussinoConfigurable):
         "FullGenEventCutToolOpts": {},
     }
 
-    __slots__ = {
-        **GAUSSINO_GENERATION_OPTIONS,
-    }
-
-    __required_configurables__ = [
-        "Gaussino",
-    ]
 
     # internal options to be set by Gaussino
     only_generation_phase = False

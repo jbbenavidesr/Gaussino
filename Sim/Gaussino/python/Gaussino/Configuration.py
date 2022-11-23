@@ -25,11 +25,27 @@ from Gaussino.Geometry import GaussinoGeometry
 
 
 class Gaussino(GaussinoConfigurable):
-    """Main Configurable of Gaussino.
+    """
+    Main Configurable of Gaussino. It is dedicated to the
+    confiuration of general properties. Please, visit other
+    configurables for more options:
 
-    .. warning::
-        Some of these options have to be revisited as they
-        might be inactive or redundant.
+        - GaussinoGeneration (configuration of the generation phase)
+        - GaussinoSimulation (configuration of the simulation phase)
+        - GaussinoGeometry (configuration of the geometry)
+
+    **Main**
+
+    :var EvtMax: default: ``-1``,
+        no. of event to produce, must be > 0
+    :vartype EvtMax: int, required
+
+    :var Phases: default: ``["Generation","Simulation"]``,
+        possible only: ``["Generation", "Simulation"]``
+        or ``["Generation"]``
+    :vartype Phases: list, optional
+
+    **Output**
 
     :var Histograms: default: ``"DEFAULT"``
     :vartype Histograms: str, optional
@@ -40,51 +56,14 @@ class Gaussino(GaussinoConfigurable):
     :var DatasetNameForced: default: ``False``
     :vartype DatasetNameForced: bool, optional
 
-    :var DataType: default: ``""``
-    :vartype DataType: str, optional
-
-    :var SpilloverPaths: default: ``[]``
-    :vartype SpilloverPaths: list, optional
-
-    :var Phases: default: ``["Generator","Simulation"]``
-    :vartype Phases: list, optional
-
     :var OutputType: default: ``'SIM'``
     :vartype OutputType: str, optional
 
-    :var EnablePack: default: ``True``
-    :vartype EnablePack: bool, optional
+    **Multi-threading**
 
-    :var DataPackingChecks: default: ``True``
-    :vartype DataPackingChecks: bool, optional
-
-    :var WriteFSR: default: ``True``
-    :vartype WriteFSR: bool, optional
-
-    :var MergeGenFSR: default: ``False``
-    :vartype MergeGenFSR: bool, optional
-
-    :var Debug: default: ``False``
-    :vartype Debug: bool, optional
-
-    :var BeamPipe: default: ``"BeamPipeOn"``
-    :vartype BeamPipe: str, optional
-
-    :var ReplaceWithGDML: default:
-        ``[ { "volsToReplace": [], "gdmlFile": "" } ]``
-    :vartype ReplaceWithGDML: list, optional
-
-    :var RandomGenerator: default: ``'Ranlux'``
-    :vartype RandomGenerator: str, optional
-
-    :var EvtMax: default: ``-1``
-    :vartype EvtMax: int, optional
-
-    :var EnableHive: default: ``True``
+    :var EnableHive: default: ``True``,
+        must be always set (for now)
     :vartype EnableHive: bool, optional
-
-    :var ReDecay: default: ``False``
-    :vartype ReDecay: bool, optional
 
     :var ThreadPoolSize: default: ``1``
     :vartype ThreadPoolSize: int, optional
@@ -92,11 +71,17 @@ class Gaussino(GaussinoConfigurable):
     :var EventSlots: default: ``1``
     :vartype EventSlots: int, optional
 
+    **Other**
+
+    :var Debug: default: ``False``,
+        increase verbosity for the whole application
+    :vartype Debug: bool, optional
+
+    :var ReDecay: default: ``False``
+    :vartype ReDecay: bool, optional
+
     :var ConvertEDM: default: ``False``
     :vartype ConvertEDM: bool, optional
-
-    :var ForceRandomEngine: default: ``'NONE'``
-    :vartype ForceRandomEngine: str, optional
 
     :var ParticleTable: default: ``'$GAUSSINOROOT/data/ParticleTable.txt'``
     :vartype ParticleTable: str, optional
@@ -108,34 +93,29 @@ class Gaussino(GaussinoConfigurable):
         GaussinoGeometry,
     ]
 
-    MT_PROPERTIES = {
-        "EnableHive": True,
-        "ThreadPoolSize": 1,
-        "EventSlots": 1,
-        "Geant4WorkerThreads": 1,
-    }
-
-    GENERAL_PROPERTIES = {
+    __slots__ = {
+        # Main
+        "EvtMax": -1,
+        "Phases": ["Generator", "Simulation"],
+        # Output
         "Histograms": "DEFAULT",
         "DatasetName": "Gaussino",
         "DatasetNameForced": False,
-        # FIXME: Spillover not supported yet
-        # "SpilloverPaths": [],
-        "Phases": ["Generator", "Simulation"],
         "OutputType": "SIM",
-        # FIXME: FSR not supported yet
-        # "WriteFSR": True,
-        # "MergeGenFSR": False,
-        "EvtMax": -1,
+        # Multi-threading
+        "EnableHive": True,
+        "ThreadPoolSize": 1,
+        "EventSlots": 1,
+        # Other
+        "Debug": False,
         "ReDecay": False,
         "ConvertEDM": False,
         "ParticleTable": "$GAUSSINOROOT/data/ParticleTable.txt",
-        "Debug": False,
-    }
-
-    __slots__ = {
-        **GENERAL_PROPERTIES,
-        **MT_PROPERTIES,
+        # FIXME: Spillover not supported yet
+        # "SpilloverPaths": [],
+        # FIXME: FSR not supported yet
+        # "WriteFSR": True,
+        # "MergeGenFSR": False,
     }
 
     def __apply_configuration__(self):
@@ -183,7 +163,7 @@ class Gaussino(GaussinoConfigurable):
 
     def _check_options_compatibility(self):
         if self.getProp("EvtMax") <= 0:
-            msg = "EvtMax must be >= 0"
+            msg = "EvtMax must be > 0"
             log.error(msg)
             raise ValueError(msg)
 
@@ -221,7 +201,7 @@ class Gaussino(GaussinoConfigurable):
     def _setup_geant4MT(self):
         from Configurables import GiGaMT
 
-        GiGaMT().NumberOfWorkerThreads = self.getProp("Geant4WorkerThreads")
+        GiGaMT().NumberOfWorkerThreads = self.getProp("ThreadPoolSize")
 
     def _set_particle_property_service(self):
         from Configurables import (
@@ -271,6 +251,7 @@ class Gaussino(GaussinoConfigurable):
         from Configurables import (
             RootHistCnv__PersSvc,
             ApplicationMgr,
+            HistogramPersistencySvc,
         )
 
         log.debug("Configuring HistogramPersistencySvc")
@@ -286,8 +267,6 @@ class Gaussino(GaussinoConfigurable):
             return
 
         # Use a default histogram file name if not already set
-        from Gaudi.Configuration import HistogramPersistencySvc
-
         hst_prs_svc = HistogramPersistencySvc()
         if not hst_prs_svc.isPropertySet("OutputFile"):
             histos_name = self._get_output_name() + "-histos.root"
