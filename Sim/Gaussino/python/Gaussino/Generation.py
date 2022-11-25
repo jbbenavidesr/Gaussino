@@ -26,10 +26,10 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var BeamMomentum: default: ``3.5 * units.TeV``
     :vartype BeamMomentum: float, optional
 
-    :var BeamHCrossingAngle: default: ``-0.520 * units.mrad``
+    :var BeamHCrossingAngle: default: ``0.0 * units.mrad``
     :vartype BeamHCrossingAngle: float, optional
 
-    :var BeamVCrossingAngle: default: ``0.0``
+    :var BeamVCrossingAngle: default: ``0.0 * units.mrad``
     :vartype BeamVCrossingAngle: float, optional
 
     :var BeamEmittance: default: ``0.0037 * units.mm``
@@ -39,12 +39,12 @@ class GaussinoGeneration(GaussinoConfigurable):
     :vartype BeamBetaStar: float, optional
 
     :var BeamLineAngles: default:
-        ``[-0.075 * units.mrad, 0.035 * units.mrad]``
+        ``[0.0 * units.mrad, 0.0 * units.mrad]``
     :vartype BeamLineAngles: list, optional
 
     :var InteractionPosition: default:
-        ``[0.459 * units.mm, -0.015 * units.mm,
-        0.5 * units.mm]``
+        ``[0.0 * units.mm, 0.0 * units.mm,
+        0.0 * units.mm]``
     :vartype InteractionPosition: list, optional
 
     :var BunchRMS: default: ``82.03 * units.mm``
@@ -56,6 +56,9 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     :var TotalCrossSection: default: ``91.1 * units.millibarn``
     :vartype TotalCrossSection: float, optional
+
+    :var RevolutionFrequency: default: ``11.245 * units.kilohertz``
+    :vartype RevolutionFrequency: float, optional
 
     :var WriteHepMC: default: ``False``
     :vartype WriteHepMC: bool, optional
@@ -106,19 +109,20 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     __slots__ = {
         "BeamMomentum": 3.5 * units.TeV,
-        "BeamHCrossingAngle": -0.520 * units.mrad,
-        "BeamVCrossingAngle": 0.0,
+        "BeamHCrossingAngle": 0.0 * units.mrad,
+        "BeamVCrossingAngle": 0.0 * units.mrad,
         "BeamEmittance": 0.0037 * units.mm,
         "BeamBetaStar": 3.1 * units.m,
-        "BeamLineAngles": [-0.075 * units.mrad, 0.035 * units.mrad],
+        "BeamLineAngles": [0.0 * units.mrad, 0.0 * units.mrad],
         "InteractionPosition": [
-            0.459 * units.mm,
-            -0.015 * units.mm,
-            0.5 * units.mm,
+            0.0 * units.mm,
+            0.0 * units.mm,
+            0.0 * units.mm,
         ],
         "BunchRMS": 82.03 * units.mm,
         "Luminosity": 2.47e29 / (units.cm2 * units.s),
         "TotalCrossSection": 91.1 * units.millibarn,
+        "RevolutionFrequency": 11.245 * units.kilohertz,
         # FIXME: beam particles are now fixed in LHCbDefaults.cmd
         #        to be meade generic!
         # "B2Momentum": 3.5 * units.TeV,
@@ -173,7 +177,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         )
 
         seq = []
-        self._set_beam_properties()
+        self._set_beam_parameters()
         gen_alg = Generation
         if self.redecay:
             gen_alg = ReDecayGeneration()
@@ -219,6 +223,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             YLuminousRegion=meanY,
             ZLuminousRegion=meanZ,
             BunchLengthRMS=self.getProp("BunchRMS"),
+            RevolutionFrequency=self.getProp("RevolutionFrequency")
         )
         ApplicationMgr().ExtSvc.append(svc)
 

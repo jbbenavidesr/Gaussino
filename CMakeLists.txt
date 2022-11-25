@@ -34,6 +34,10 @@ endif()
 
 gaussino_env(
     SET GAUSSINOOPTS ${PROJECT_SOURCE_DIR}/Sim/Gaussino/options
+    # FIXME: use non-LHCb LHAPDFSets
+    SET LHAPDF_DATA_PATH /cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/LHAPDFSets/v62r3/data
+    SET PYTHIA8XML ${PYTHIA8_XML}
+    SET PYTHIA8DATA ${PYTHIA8_XML}
 )
 
 gaussino_add_subdirectories(

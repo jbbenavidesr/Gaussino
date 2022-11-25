@@ -306,7 +306,7 @@ class Gaussino(GaussinoConfigurable):
 
     def _configure_generation_phase(self):
         phases = self.getProp("Phases")
-        if "Generator" not in phases:
+        if "Generation" not in phases:
             msg = "Must have the generator phase"
             log.error(msg)
             raise ValueError(msg)
@@ -337,4 +337,4 @@ class Gaussino(GaussinoConfigurable):
             output_name += "-" + self.eventType()
         if self.getProp("EvtMax") > 0:
             output_name += f"-{self.getProp('EvtMax')}ev"
-        return f"{output_name}-{time.localtime().strftime('%Y%m%d')}"
+        return f"{output_name}-{time.strftime('%Y%m%d')}"
