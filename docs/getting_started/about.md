@@ -1,8 +1,11 @@
-# Gaussino
+# About
 
-## Short description
+## Description
 
-The LHCb simulation team decided to move all the experiment-independent components from the simulation software and place it in a separate project, called Gaussino, as a core simulation framework. Gaussino can also work as a standalone application. Gaussino follows the Gaudi's inter-event-based parallelism of the event loop, in which algorithms are scheduled in a way that guarantees thread-safety. Gaussino communicates with Geant4 objects by creating corresponding factories that act as Gaudi tools. In the event loop, Gaudi places the generated event on the top of a FIFO queue. Geant4 worker threads then take the event from the queue and perform the simulation following their own multi-threading scheme.
+```{eval-rst}
+.. attention::
+    This is a work in progress.
+```
 
 ## Further reading
 
