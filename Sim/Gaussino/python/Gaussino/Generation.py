@@ -57,15 +57,6 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var TotalCrossSection: default: ``91.1 * units.millibarn``
     :vartype TotalCrossSection: float, optional
 
-    :var B2Momentum: default: ``3.5 * units.TeV``
-    :vartype B2Momentum: float, optional
-
-    :var B1Particle: default: ``'p'``
-    :vartype B1Particle: str, optional
-
-    :var B2Particle: default: ``'p'``
-    :vartype B2Particle: str, optional
-
     :var WriteHepMC: default: ``False``
     :vartype WriteHepMC: bool, optional
 
@@ -108,6 +99,7 @@ class GaussinoGeneration(GaussinoConfigurable):
     :vartype FullGenEventToolOpts: dict, optional
 
     """
+
     __required_configurables__ = [
         "Gaussino",
     ]
@@ -127,9 +119,11 @@ class GaussinoGeneration(GaussinoConfigurable):
         "BunchRMS": 82.03 * units.mm,
         "Luminosity": 2.47e29 / (units.cm2 * units.s),
         "TotalCrossSection": 91.1 * units.millibarn,
-        "B2Momentum": 3.5 * units.TeV,
-        "B1Particle": "p",
-        "B2Particle": "p",
+        # FIXME: beam particles are now fixed in LHCbDefaults.cmd
+        #        to be meade generic!
+        # "B2Momentum": 3.5 * units.TeV,
+        # "B1Particle": "p",
+        # "B2Particle": "p",
         "WriteHepMC": False,
         "GenMonitor": False,
         "ParticleGun": False,
@@ -144,7 +138,6 @@ class GaussinoGeneration(GaussinoConfigurable):
         "FullGenEventCutTool": "",
         "FullGenEventCutToolOpts": {},
     }
-
 
     # internal options to be set by Gaussino
     only_generation_phase = False
@@ -167,132 +160,161 @@ class GaussinoGeneration(GaussinoConfigurable):
             seq += self._configure_genonly()
 
         from Configurables import ApplicationMgr
+
         ApplicationMgr().TopAlg += seq
 
     def _configure_generation(self) -> list:
         """Configuration method for the generation other than
         a particle gun.
         """
-        # Algorithm that produces the actual HepMC by talking to stuff
-        SampleGenerationTool = self.getProp("SampleGenerationTool")
-        ProductionTool = self.getProp("ProductionTool")
-        DecayTool = self.getProp("DecayTool")
-        CutTool = self.getProp("CutTool")
-        FullGenEventCutTool = self.getProp("FullGenEventCutTool")
-        PileUpTool = self.getProp("PileUpTool")
+        from Configurables import (
+            Generation,
+            ReDecayGeneration,
+        )
 
-        beaminfoService()
-        from Configurables import Gaussino
-
-        if Gaussino().getProp("ReDecay"):
-            from Configurables import ReDecayGeneration
-
+        seq = []
+        self._set_beam_properties()
+        gen_alg = Generation
+        if self.redecay:
             gen_alg = ReDecayGeneration()
-        else:
-            from Configurables import Generation
+        gen_alg = gen_alg()
 
-            gen_alg = Generation()
+        # -> sample generation
+        sgt = self._set_sample_generation_tool(gen_alg)
+        # -> decay tool
+        self._set_decay_tool(gen_alg)
+        # -> cut tool
+        self._set_cut_tool(sgt)
+        # -> full gen event cut tool
+        self._set_full_gen_evt_cut_tool(gen_alg)
+        # -> production tool
+        self._set_production_tool(sgt)
+        # -> pileup tool
+        self._set_pileup_tool(gen_alg)
+        # -> vertex smearing tool
+        self._set_vertex_smearing_tool(gen_alg)
+        seq.append(gen_alg)
+
+        if self.redecay:
+            seq.append(self._set_redecay_signal_generation())
+        return seq
+
+    def _set_beam_parameters(self):
+        from Configurables import BeamInfoSvc, ApplicationMgr
+
+        log.debug("Configuring BeamInfoSvc")
+        xAngleBeamLine, yAngleBeamLine = self.getProp("BeamLineAngles")
+        meanX, meanY, meanZ = self.getProp("InteractionPosition")
+        svc = BeamInfoSvc(
+            BeamEnergy=self.getProp("BeamMomentum"),
+            HorizontalCrossingAngle=self.getProp("BeamHCrossingAngle"),
+            VerticalCrossingAngle=self.getProp("BeamVCrossingAngle"),
+            NormalizedEmittance=self.getProp("BeamEmittance"),
+            BetaStar=self.getProp("BeamBetaStar"),
+            HorizontalBeamlineAngle=xAngleBeamLine,
+            VerticalBeamlineAngle=yAngleBeamLine,
+            Luminosity=self.getProp("Luminosity"),
+            TotalCrossSection=self.getProp("TotalCrossSection"),
+            XLuminousRegion=meanX,
+            YLuminousRegion=meanY,
+            ZLuminousRegion=meanZ,
+            BunchLengthRMS=self.getProp("BunchRMS"),
+        )
+        ApplicationMgr().ExtSvc.append(svc)
+
+    def _set_sample_generation_tool(self, gen_alg):
         sgt = get_set_configurable(
-            gen_alg, "SampleGenerationTool", SampleGenerationTool
+            gen_alg, "SampleGenerationTool", self.getProp("SampleGenerationTool")
         )
         sgt_opts = self.getProp("SampleGenerationToolOpts")
-        for n, v in sgt_opts.items():
-            sgt.setProp(n, v)
+        for option, value in self.getProp("SampleGenerationToolOpts").items():
+            sgt.setProp(option, value)
+        return sgt
+
+    def _set_cut_tool(self, signal_tool):
+        cut_tool = self.getProp("CutTool")
+        if cut_tool:
+            ct = get_set_configurable(signal_tool, "CutTool", cut_tool)
+            ct_opts = self.getProp("CutToolOpts")
+            for option, value in ct_opts.items():
+                ct.setProp(option, value)
+        else:
+            signal_tool.CutTool = ""
+
+    def _set_decay_tool(self, gen_alg):
+        gen_alg.DecayTool = self.getProp("DecayTool")
         try:
-            sgt.DecayTool = DecayTool
-        except:
+            gen_alg.SampleGenerationTool.DecayTool = self.getProp("DecayTool")
+        except AttributeError:
             pass
-        try:
-            if CutTool != "":
-                ct = get_set_configurable(sgt, "CutTool", CutTool)
-                ct_opts = self.getProp("CutToolOpts")
-                for n, v in ct_opts.items():
-                    ct.setProp(n, v)
-            else:
-                sgt.CutTool = ""
-        except Exception as e:
-            log.error("Could not configure CutTool", e)
-        if FullGenEventCutTool != "":
-            ct = get_set_configurable(
-                gen_alg, "FullGenEventCutTool", FullGenEventCutTool
-            )
+
+    def _set_full_gen_evt_cut_tool(self, gen_alg):
+        tool = self.getProp("FullGenEventCutTool")
+        if tool:
+            ct = get_set_configurable(gen_alg, "FullGenEventCutTool", tool)
             ct_opts = self.getProp("FullGenEventCutToolOpts")
-            for n, v in ct_opts.items():
-                ct.setProp(n, v)
+            for option, value in ct_opts.items():
+                ct.setProp(option, value)
         else:
             gen_alg.FullGenEventCutTool = ""
-        prod = get_set_configurable(sgt, "ProductionTool", ProductionTool)
-        if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
-            # For now keep it only for Pythia, but potentially in future we
+
+    def _set_production_tool(self, signal_tool):
+        tool = self.getProp("ProductionTool")
+        prod = get_set_configurable(signal_tool, "ProductionTool", tool)
+        if tool in ["Pythia8Production", "Pythia8ProductionMT"]:
+            # FIXME: For now keep it only for Pythia, but potentially in future we
             # want to do this for all possible production tools
             prot_opts = self.getProp("ProductionToolOpts")
-            for n, v in prot_opts.items():
-                prod.setProp(n, v)
+            for option, value in prot_opts.items():
+                prod.setProp(option, value)
             prod.BeamToolName = "CollidingBeamsWithSvc"
+        else:
+            msg = "Unsupported production tool."
+            log.error(msg)
+            raise ValueError(msg)
+        if tool == "Pythia8ProductionMT":
+            prod.NThreads = self.threads
 
-        if ProductionTool == "Pythia8ProductionMT":
-            from Configurables import Gaussino
+    def _set_pileup_tool(self, gen_alg):
+        gen_alg.PileUpTool = self.getProp("PileUpTool")
 
-            prod.NThreads = Gaussino().ThreadPoolSize
-
-        gen_alg.PileUpTool = PileUpTool
+    def _set_vertex_smearing_tool(self, gen_alg):
         gen_alg.VertexSmearingTool = "BeamSpotSmearVertexWithSvc"
-        gen_alg.DecayTool = DecayTool
 
-        seq += [gen_alg]
+    def _set_redecay_signal_generation(self):
+        from Configurables import ReDecaySignalGeneration
 
-        # Now do it all again for the signal part
-        if Gaussino().getProp("ReDecay"):
-            from Configurables import ReDecaySignalGeneration
+        siggen_alg = ReDecaySignalGeneration()
+        siggen_alg.HepMCEventLocation = "Gen/SignalDecayTree"
+        siggen_alg.GenCollisionLocation = "Gen/SignalCollisions"
+        siggen_alg.GenHeaderOutputLocation = "Gen/SignalGenHeader"
+        siggen_alg.GenFSRLocation = ""
 
-            siggen_alg = ReDecaySignalGeneration()
-
-            siggen_alg.HepMCEventLocation = "Gen/SignalDecayTree"
-            siggen_alg.GenCollisionLocation = "Gen/SignalCollisions"
-            siggen_alg.GenHeaderOutputLocation = "Gen/SignalGenHeader"
-
-            seq += [siggen_alg]
-            sgt = get_set_configurable(
-                siggen_alg, "SampleGenerationTool", "SignalPlain"
-            )
-            sgt.RevertWhenBackward = False  # Don't invert in the redecay part
-            siggen_alg.GenFSRLocation = ""
-            sgt.GenFSRLocation = ""
-            sgt_opts = self.getProp("SampleGenerationToolOpts")
-            if "SignalPIDList" in sgt_opts:
-                sgt.setProp("SignalPIDList", sgt_opts["SignalPIDList"])
-            else:
-                # FIXME: First only support signal like org tool
-                log.error("Original sample generation tool not of signal type")
-            try:
-                sgt.DecayTool = DecayTool
-            except:
-                pass
-            try:
-                if CutTool != "":
-                    ct = get_set_configurable(sgt, "CutTool", CutTool)
-                    ct_opts = self.getProp("CutToolOpts")
-                    for n, v in ct_opts.items():
-                        ct.setProp(n, v)
-                else:
-                    sgt.CutTool = ""
-            except Exception as e:
-                log.error("Could not configure CutTool", e)
-            if FullGenEventCutTool != "":
-                ct = get_set_configurable(
-                    siggen_alg, "FullGenEventCutTool", FullGenEventCutTool
-                )
-                ct_opts = self.getProp("FullGenEventCutToolOpts")
-                for n, v in ct_opts.items():
-                    ct.setProp(n, v)
-            else:
-                siggen_alg.FullGenEventCutTool = ""
-            prod = get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
-
-            siggen_alg.PileUpTool = "ReDecayPileUp"
-            siggen_alg.VertexSmearingTool = ""
-            siggen_alg.DecayTool = DecayTool
-        return seq
+        # -> sample generation
+        sgt = get_set_configurable(siggen_alg, "SampleGenerationTool", "SignalPlain")
+        sgt.RevertWhenBackward = False  # Don't invert in the redecay part
+        sgt.GenFSRLocation = ""
+        sgt_opts = self.getProp("SampleGenerationToolOpts")
+        if "SignalPIDList" in sgt_opts:
+            sgt.setProp("SignalPIDList", sgt_opts["SignalPIDList"])
+        else:
+            # FIXME: First only support signal like org tool
+            msg = "Original sample generation tool not of signal type"
+            log.error(msg)
+            raise ValueError(msg)
+        # -> decay tool
+        self._set_decay_tool(siggen_alg)
+        # -> cut tool
+        self._set_cut_tool(sgt)
+        # -> full gen event cut tool
+        self._set_full_gen_evt_cut_tool(siggen_alg)
+        # -> production tool
+        prod = get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
+        # -> pileup tool
+        siggen_alg.PileUpTool = "ReDecayPileUp"
+        # -> vertex smearing tool
+        siggen_alg.VertexSmearingTool = ""
+        return siggen_alg
 
     def _configure_pgun(self) -> list:
         """Simple utility function to create and configure an instance of particle gun"""
@@ -315,6 +337,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             GenReDecayInit,
             SeedingTool,
         )
+
         conf = GenRndInit
         if self.redecay:
             conf = GenReDecayInit
@@ -368,6 +391,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             SkipSimAlg,
             ReDecaySkipSimAlg,
         )
+
         alg_conf = SkipSimAlg
         if self.redecay:
             alg_conf = ReDecaySkipSimAlg

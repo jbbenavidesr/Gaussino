@@ -175,9 +175,11 @@ class Gaussino(GaussinoConfigurable):
             # FIXME: Running without GaudiHive has not been tested
             #        and may lead to unexpected behaviour
             #        this is disabled for now
-            log.error("EnableHive must be set. Running without "
-                      "GaudiHive has not been tested and may lead to"
-                      "unexpected behaviour")
+            log.error(
+                "EnableHive must be set. Running without "
+                "GaudiHive has not been tested and may lead to"
+                "unexpected behaviour"
+            )
             raise ValueError("EnableHive must be set.")
         from Configurables import (
             HiveWhiteBoard,
@@ -289,20 +291,15 @@ class Gaussino(GaussinoConfigurable):
         from Configurables import (
             CheckMCStructure,
             MCTruthMonitor,
+            ReDecayMCTruthToEDM,
+            MCTruthToEDM,
         )
 
+        conv = MCTruthToEDM
         if redecay:
-            log.debug("Adding ReDecayMCTruthToEDM")
-            from Configurables import ReDecayMCTruthToEDM
-
-            conv = ReDecayMCTruthToEDM()
-        else:
-            log.debug("Adding MCTruthToEDM")
-            from Configurables import MCTruthToEDM
-
-            conv = MCTruthToEDM()
+            conv = ReDecayMCTruthToEDM
         return [
-            conv,
+            conv(),
             CheckMCStructure(),
             MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True),
         ]
@@ -310,7 +307,7 @@ class Gaussino(GaussinoConfigurable):
     def _configure_generation_phase(self):
         phases = self.getProp("Phases")
         if "Generator" not in phases:
-            msg = "Must have Generator phase"
+            msg = "Must have the generator phase"
             log.error(msg)
             raise ValueError(msg)
         if "Simulation" not in phases:
@@ -318,6 +315,7 @@ class Gaussino(GaussinoConfigurable):
         self.propagateProperty("EvtMax", GaussinoGeneration())
         GaussinoGeneration.redecay = self.getProp("ReDecay")
         GaussinoGeneration.output_name = self._get_output_name()
+        GaussinoGeneration.threads = self.getProp("ThreadPoolSize")
 
     def _configure_simulation_phase(self):
         GaussinoSimulation.redecay = self.getProp("ReDecay")
@@ -339,12 +337,4 @@ class Gaussino(GaussinoConfigurable):
             output_name += "-" + self.eventType()
         if self.getProp("EvtMax") > 0:
             output_name += f"-{self.getProp('EvtMax')}ev"
-        file_id = str(time.localtime().tm_year)
-        if time.localtime().tm_mon < 10:
-            file_id += "0"
-        file_id += str(time.localtime().tm_mon)
-        if time.localtime().tm_mday < 10:
-            file_id += "0"
-        file_id += str(time.localtime().tm_mday)
-        output_name += "-" + file_id
-        return output_name
+        return f"{output_name}-{time.localtime().strftime('%Y%m%d')}"
