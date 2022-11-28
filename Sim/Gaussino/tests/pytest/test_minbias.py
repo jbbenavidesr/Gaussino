@@ -8,5 +8,17 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import Gaussino
-Gaussino().Phases = ["Generation"]
+from Gaussino.pytest.helpers import *
+from Gaussino.pytest.options import *
+
+@reset_configurables
+@events_10
+@only_generation
+@minbias
+@pp
+@debug
+def test_minbias():
+    ex = run_gaudi()
+    assert "Registering tool Generation.MinimumBias.Pythia8ProductionMT" in ex.stdout
+    assert "Beginning dump of converter" in ex.stdout
+    assert ex.returncode == 0

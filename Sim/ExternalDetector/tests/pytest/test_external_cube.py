@@ -8,5 +8,27 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import Gaussino
-Gaussino().Phases = ["Generation"]
+from Gaussino.pytest.helpers import *
+from Gaussino.pytest.options import *
+
+EXPECTED_STRINGS = [
+    'Successfully embedded ExternalDetectorEmbedder_0_CubePVol in its mothers volume!',
+    'Registered sensitive ExternalDetectorEmbedder_0_CubeSDet for ExternalDetectorEmbedder_0_CubePVol',
+    'External world created!',
+]
+
+
+@reset_configurables
+@events_1
+@photon
+@em_physics
+@cube
+@debug
+def test_external_cube():
+    ex = run_gaudi(
+        # additional options
+        "$GAUSSINOOPTS/Geometry/GDMLExport-Extended.py",
+    )
+    assert ex.returncode == 0
+    for exp in EXPECTED_STRINGS:
+        assert exp in ex.stdout

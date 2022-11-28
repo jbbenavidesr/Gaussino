@@ -16,5 +16,4 @@ Gaussino(
     EnableHive=True,
     ThreadPoolSize=nevents,
     EventSlots=nevents,
-    Geant4WorkerThreads=nevents,
 )

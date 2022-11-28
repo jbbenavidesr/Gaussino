@@ -9,11 +9,12 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 import pytest
-from helpers import *
+from Gaussino.pytest.helpers import *
+from Gaussino.pytest.options import *
 
 
 @reset_configurables
-@one_event
+@events_1
 @em_physics
 @photon
 @cube
@@ -31,7 +32,7 @@ def test_undefined_evt_max():
 
 
 @reset_configurables
-@one_event
+@events_1
 @em_physics
 @cube
 def test_no_particle_gun():
@@ -43,7 +44,7 @@ def test_no_particle_gun():
 
 
 @reset_configurables
-@one_event
+@events_1
 @em_physics
 @photon
 @cube
@@ -55,7 +56,7 @@ def test_no_hive():
         applyConfigurableUsers()
 
 @reset_configurables
-@one_event
+@events_1
 @only_generation
 @photon
 @pytest.mark.parametrize(

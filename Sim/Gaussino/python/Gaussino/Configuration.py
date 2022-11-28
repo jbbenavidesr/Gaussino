@@ -96,7 +96,7 @@ class Gaussino(GaussinoConfigurable):
     __slots__ = {
         # Main
         "EvtMax": -1,
-        "Phases": ["Generator", "Simulation"],
+        "Phases": ["Generation", "Simulation"],
         # Output
         "Histograms": "DEFAULT",
         "DatasetName": "Gaussino",

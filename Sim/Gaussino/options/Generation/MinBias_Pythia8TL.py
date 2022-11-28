@@ -8,5 +8,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import Gaussino
-Gaussino().Phases = ["Generation"]
+from Configurables import GaussinoGeneration
+GaussinoGeneration().SampleGenerationTool = "MinimumBias"
+GaussinoGeneration().ProductionTool = "Pythia8ProductionMT"
+GaussinoGeneration().PileUpTool = "FixedLuminosityWithSvc"

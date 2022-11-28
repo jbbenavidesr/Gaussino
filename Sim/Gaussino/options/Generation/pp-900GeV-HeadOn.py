@@ -8,5 +8,15 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import Gaussino
-Gaussino().Phases = ["Generation"]
+from GaudiKernel import SystemOfUnits as units
+from Configurables import GaussinoGeneration
+
+GaussinoGeneration(
+    BeamMomentum = 900 * units.GeV,
+    RevolutionFrequency=11.245 * units.kilohertz,
+    TotalCrossSection=101.5 * units.millibarn,
+    InteractionPosition = [0.0] * 3,
+    BeamHCrossingAngle=0.0 * units.mrad,
+    BeamVCrossingAngle=0.0 * units.mrad,
+    BeamLineAngles=[0.0, 0.0],
+)
