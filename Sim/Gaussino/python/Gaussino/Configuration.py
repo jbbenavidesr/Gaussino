@@ -40,8 +40,8 @@ class Gaussino(GaussinoConfigurable):
         no. of event to produce, must be > 0
     :vartype EvtMax: int, required
 
-    :var Phases: default: ``["Generation","Simulation"]``,
-        possible only: ``["Generation", "Simulation"]``
+    :var Phases: default: ``["Generator","Simulation"]``,
+        possible only: ``["Generator", "Simulation"]``
         or ``["Generation"]``
     :vartype Phases: list, optional
 
@@ -71,6 +71,9 @@ class Gaussino(GaussinoConfigurable):
     :var EventSlots: default: ``1``
     :vartype EventSlots: int, optional
 
+    :var TimingSkipAtStart: default: ``1``
+    :vartype TimingSkipAtStart: int, optional
+
     **Other**
 
     :var Debug: default: ``False``,
@@ -96,7 +99,7 @@ class Gaussino(GaussinoConfigurable):
     __slots__ = {
         # Main
         "EvtMax": -1,
-        "Phases": ["Generation", "Simulation"],
+        "Phases": ["Generator", "Simulation"],
         # Output
         "Histograms": "DEFAULT",
         "DatasetName": "Gaussino",
@@ -106,6 +109,7 @@ class Gaussino(GaussinoConfigurable):
         "EnableHive": True,
         "ThreadPoolSize": 1,
         "EventSlots": 1,
+        "TimingSkipAtStart": 1,
         # Other
         "Debug": False,
         "ReDecay": False,
@@ -144,6 +148,10 @@ class Gaussino(GaussinoConfigurable):
 
         ApplicationMgr().EvtMax = self.getProp("EvtMax")
         ApplicationMgr().EvtSel = "NONE"
+
+        # ensure the configurables are called
+        for conf in self.__used_configurables__:
+            conf()
 
     def _set_debug_mode(self):
         if self.getProp("Debug"):
@@ -186,6 +194,7 @@ class Gaussino(GaussinoConfigurable):
             ApplicationMgr,
             HiveSlimEventLoopMgr,
             AvalancheSchedulerSvc,
+            GenRndInit,
         )
 
         whiteboard = HiveWhiteBoard("EventDataSvc")
@@ -199,6 +208,9 @@ class Gaussino(GaussinoConfigurable):
         self.propagateProperty("ThreadPoolSize", eventloopmgr)
         scheduler.ThreadPoolSize = self.getProp("ThreadPoolSize")
         ApplicationMgr().EventLoop = eventloopmgr
+
+        # propagate the barrier to GenRndInit
+        GenRndInit().TimingSkipAtStart = self.getProp("TimingSkipAtStart")
 
     def _setup_geant4MT(self):
         from Configurables import GiGaMT
@@ -306,7 +318,7 @@ class Gaussino(GaussinoConfigurable):
 
     def _configure_generation_phase(self):
         phases = self.getProp("Phases")
-        if "Generation" not in phases:
+        if "Generator" not in phases:
             msg = "Must have the generator phase"
             log.error(msg)
             raise ValueError(msg)
@@ -320,7 +332,8 @@ class Gaussino(GaussinoConfigurable):
     def _configure_simulation_phase(self):
         GaussinoSimulation.redecay = self.getProp("ReDecay")
         if "Simulation" not in self.getProp("Phases"):
-            GaussinoSimulation._only_generation_phase = True
+            GaussinoSimulation.only_generation_phase = True
+            GaussinoGeometry.only_generation_phase = True
 
     def _get_output_name(self):
         """
@@ -334,7 +347,7 @@ class Gaussino(GaussinoConfigurable):
             output_name = "Gaussino"
         evt_type = GaussinoGeneration.eventType()
         if evt_type:
-            output_name += "-" + self.eventType()
+            output_name += "-" + evt_type
         if self.getProp("EvtMax") > 0:
             output_name += f"-{self.getProp('EvtMax')}ev"
         return f"{output_name}-{time.strftime('%Y%m%d')}"

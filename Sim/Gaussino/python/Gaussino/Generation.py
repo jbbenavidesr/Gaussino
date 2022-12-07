@@ -186,7 +186,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         # -> sample generation
         sgt = self._set_sample_generation_tool(gen_alg)
         # -> decay tool
-        self._set_decay_tool(gen_alg)
+        self._set_decay_tool(gen_alg, sgt)
         # -> cut tool
         self._set_cut_tool(sgt)
         # -> full gen event cut tool
@@ -246,10 +246,10 @@ class GaussinoGeneration(GaussinoConfigurable):
         else:
             signal_tool.CutTool = ""
 
-    def _set_decay_tool(self, gen_alg):
+    def _set_decay_tool(self, gen_alg, sgt):
         gen_alg.DecayTool = self.getProp("DecayTool")
         try:
-            gen_alg.SampleGenerationTool.DecayTool = self.getProp("DecayTool")
+            sgt.DecayTool = self.getProp("DecayTool")
         except AttributeError:
             pass
 
@@ -308,7 +308,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             log.error(msg)
             raise ValueError(msg)
         # -> decay tool
-        self._set_decay_tool(siggen_alg)
+        self._set_decay_tool(siggen_alg, sgt)
         # -> cut tool
         self._set_cut_tool(sgt)
         # -> full gen event cut tool

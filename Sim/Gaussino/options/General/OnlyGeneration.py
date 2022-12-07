@@ -9,4 +9,4 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Configurables import Gaussino
-Gaussino().Phases = ["Generation"]
+Gaussino().Phases = ["Generator"]

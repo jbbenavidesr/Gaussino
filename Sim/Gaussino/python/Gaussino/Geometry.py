@@ -62,8 +62,14 @@ class GaussinoGeometry(GaussinoConfigurable):
         "ExternalDetectorEmbedder": "",
     }
 
+    # internal options to be set by Gaussino
+    only_generation_phase = False
+
     def __apply_configuration__(self):
         log.debug("Configuring GaussinoGeometry")
+        if GaussinoGeometry.only_generation_phase:
+            log.debug("-> Only the generation phase, skipping.")
+            return
         from Configurables import (
             GiGaMTDetectorConstructionFAC,
             GiGaMT,

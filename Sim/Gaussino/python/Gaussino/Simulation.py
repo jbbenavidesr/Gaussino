@@ -86,8 +86,9 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     def __apply_configuration__(self):
         log.debug("Configuring GaussinoSimulation")
-        if self.only_generation_phase:
+        if GaussinoSimulation.only_generation_phase:
             log.debug("-> Only the generation phase, skipping.")
+            return
         self._set_giga_service()
         self._set_giga_alg()
         self._set_physics()
@@ -122,7 +123,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         from Configurables import ApplicationMgr
 
         log.debug("-> Configuring GiGa algorithm")
-        if self.redecay:
+        if GaussinoSimulation.redecay:
             log.debug("--> Using ReDecaySimAlg")
             from Configurables import ReDecaySimAlg
 
