@@ -10,10 +10,10 @@
 ###############################################################################
 from Configurables import Gaussino
 
-nevents = 4
+nthreads = 4
 
 Gaussino(
     EnableHive=True,
-    ThreadPoolSize=nevents,
-    EventSlots=nevents,
+    ThreadPoolSize=nthreads,
+    EventSlots=nthreads,
 )
