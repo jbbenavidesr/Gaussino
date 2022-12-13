@@ -30,9 +30,9 @@ class Gaussino(GaussinoConfigurable):
     confiuration of general properties. Please, visit other
     configurables for more options:
 
-        - GaussinoGeneration (configuration of the generation phase)
-        - GaussinoSimulation (configuration of the simulation phase)
-        - GaussinoGeometry (configuration of the geometry)
+        - :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` (configuration of the generation phase)
+        - :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>` (configuration of the simulation phase)
+        - :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>` (configuration of the geometry)
 
     **Main**
 
