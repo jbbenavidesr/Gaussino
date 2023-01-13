@@ -47,13 +47,12 @@ StatusCode DD4hepCnvSvc::initialize() {
     for ( auto& pp : g4map.volumeManager()->g4Paths ) {
       debug() << "/";
       for ( auto& pv : pp.first ) { debug() << pv->GetName() << "/"; }
-      debug() << " ID:" << pp.second << endmsg;
+      debug() << " ID:" << pp.second.volumeID << endmsg;
     }
     for ( auto& [dd4hep_volume, g4_volume] : g4map.data().g4Volumes ) {
       if ( !dd4hep_volume.isValid() || !dd4hep_volume.isSensitive() ) { continue; }
       auto dd4hep_sensdet_name = dd4hep_volume.sensitiveDetector().name();
       debug() << "Active volume '" << dd4hep_volume.name() << "' SensDet: '" << dd4hep_sensdet_name << "'" << endmsg;
-      if ( dd4hep_volume.isSensitive() ) {}
     }
   }
 
