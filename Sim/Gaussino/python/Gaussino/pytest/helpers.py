@@ -43,11 +43,7 @@ def run_gaudi(*args, **kwargs):
     cmd = ["gaudirun.py"]
     cmd += GaudiKernel.ProcessJobOptions._included_files
     cmd.extend(str(x) for x in args)
-    ex = run(
-        cmd,
-        capture_output=True,
-        text=True,
-        **kwargs
-    )
-    print(ex.stdout) # will print only with `pytest ... -s`
+    ex = run(cmd, capture_output=True, text=True, **kwargs)
+    print(ex.stdout)  # will print only with `pytest ... -s`
+    print(ex.stderr)
     return ex
