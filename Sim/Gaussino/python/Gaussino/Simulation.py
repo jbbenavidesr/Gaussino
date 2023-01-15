@@ -65,10 +65,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         "Gaussino",
     ]
 
-    __used_configurables__ = [
-        GaussinoGeometry,
-    ]
-
     __slots__ = {
         "TrackTruth": True,
         "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
