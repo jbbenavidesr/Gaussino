@@ -40,7 +40,7 @@ The following will make sure that you have the most recent platform.
 
 ```shell
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 ```
 
 ```{eval-rst}
