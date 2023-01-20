@@ -78,7 +78,7 @@ Below you will find a summary of the commands that should cover the majority of 
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
@@ -100,7 +100,7 @@ Below you will find a summary of the commands that should cover the majority of 
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-gaussino Today
 cd lhcb-gaussino/Today
 lb-set-workspace .
@@ -131,7 +131,7 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs,Gaussino lhcb-dd4hep Today
 cd lhcb-dd4hep/Today
 lb-set-workspace .
@@ -153,7 +153,7 @@ Below you will find a summary of the commands needed to work with DD4hep/Detecto
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11+dd4hep-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11+dd4hep-opt --projects=Gaudi,Geant4,DBASE lhcb-dd4hep Today
 cd lhcb-dd4hep/Today
 lb-set-workspace .
@@ -220,7 +220,7 @@ Below you will find a summary of the commands needed to work with fast simulatio
 ```shell
 source /cvmfs/lhcb.cern.ch/lib/LbEnv
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-export LCG_VERSION=101x
+export LCG_VERSION=101a
 lbn-install --verbose --platforms=x86_64_v2-centos7-gcc11-opt --projects=Gaudi,Geant4,DBASE,Detector,LHCb,Run2Support,GaussinoExtLibs
 lhcb-gaussino-fastsim Today
 cd lhcb-gaussino-fastsim/Today
