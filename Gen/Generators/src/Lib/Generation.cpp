@@ -153,10 +153,10 @@ Generation::callOperatorImplementation( const LHCb::GenHeader& old_gen_header, H
   {
     std::string decFiles = "";
     int evtType = 0;
-    std::string path = gSystem->Getenv("DECFILESROOT");
+    auto path = gSystem->Getenv("DECFILESROOT");
     std::string decFiles_file = "";
    
-    if(path!=NULL)
+    if(path)
     {
       decFiles_file = path;
     

@@ -41,4 +41,4 @@ gaudi_add_module(GiGaMTGeoUtils
 	Geant4::G4persistency
 )
 
-gaudi_add_tests(QMTest)
+gaudi_add_tests(pytest)

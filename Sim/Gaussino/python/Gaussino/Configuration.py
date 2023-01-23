@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,27 +8,44 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-"""
-High level configuration tools for Gaussino
-"""
+__author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
+__email__ = "lhcb-simulation@cern.ch"
 
-__author__ = "Dominik Muller <dominik.muller@cern.ch>"
+import time
+from Gaudi.Configuration import (
+    log,
+    appendPostConfigAction,
+)
 
-from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from Gaudi.Configuration import log
-from Gaussino.Utilities import (ppService, dataService, redecayService,
-                                auditorService, histogramService)
-from Gaussino.Utilities import configure_edm_conversion
-from Gaussino.Generation import GenPhase
-from Gaussino.Simulation import SimPhase
+# Configurables (do NOT use 'from Configurables' here)
+from Gaussino.Utilities import GaussinoConfigurable
+from Gaussino.Generation import GaussinoGeneration
+from Gaussino.Simulation import GaussinoSimulation
+from Gaussino.Geometry import GaussinoGeometry
 
 
-class Gaussino(ConfigurableUser):
-    """Main Configurable of Gaussino.
+class Gaussino(GaussinoConfigurable):
+    """
+    Main Configurable of Gaussino. It is dedicated to the
+    confiuration of general properties. Please, visit other
+    configurables for more options:
 
-    .. warning::
-        Some of these options have to be revisited as they
-        might be inactive or redundant.
+        - :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` (configuration of the generation phase)
+        - :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>` (configuration of the simulation phase)
+        - :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>` (configuration of the geometry)
+
+    **Main**
+
+    :var EvtMax: default: ``-1``,
+        no. of event to produce, must be > 0
+    :vartype EvtMax: int, required
+
+    :var Phases: default: ``["Generator","Simulation"]``,
+        possible only: ``["Generator", "Simulation"]``
+        or ``["Generation"]``
+    :vartype Phases: list, optional
+
+    **Output**
 
     :var Histograms: default: ``"DEFAULT"``
     :vartype Histograms: str, optional
@@ -39,51 +56,14 @@ class Gaussino(ConfigurableUser):
     :var DatasetNameForced: default: ``False``
     :vartype DatasetNameForced: bool, optional
 
-    :var DataType: default: ``""``
-    :vartype DataType: str, optional
-
-    :var SpilloverPaths: default: ``[]``
-    :vartype SpilloverPaths: list, optional
-
-    :var Phases: default: ``["Generator","Simulation"]``
-    :vartype Phases: list, optional
-
     :var OutputType: default: ``'SIM'``
     :vartype OutputType: str, optional
 
-    :var EnablePack: default: ``True``
-    :vartype EnablePack: bool, optional
+    **Multi-threading**
 
-    :var DataPackingChecks: default: ``True``
-    :vartype DataPackingChecks: bool, optional
-
-    :var WriteFSR: default: ``True``
-    :vartype WriteFSR: bool, optional
-
-    :var MergeGenFSR: default: ``False``
-    :vartype MergeGenFSR: bool, optional
-
-    :var Debug: default: ``False``
-    :vartype Debug: bool, optional
-
-    :var BeamPipe: default: ``"BeamPipeOn"``
-    :vartype BeamPipe: str, optional
-
-    :var ReplaceWithGDML: default:
-        ``[ { "volsToReplace": [], "gdmlFile": "" } ]``
-    :vartype ReplaceWithGDML: list, optional
-
-    :var RandomGenerator: default: ``'Ranlux'``
-    :vartype RandomGenerator: str, optional
-
-    :var EvtMax: default: ``-1``
-    :vartype EvtMax: int, optional
-
-    :var EnableHive: default: ``True``
+    :var EnableHive: default: ``True``,
+        must be always set (for now)
     :vartype EnableHive: bool, optional
-
-    :var ReDecay: default: ``False``
-    :vartype ReDecay: bool, optional
 
     :var ThreadPoolSize: default: ``1``
     :vartype ThreadPoolSize: int, optional
@@ -91,216 +71,283 @@ class Gaussino(ConfigurableUser):
     :var EventSlots: default: ``1``
     :vartype EventSlots: int, optional
 
+    :var TimingSkipAtStart: default: ``1``
+    :vartype TimingSkipAtStart: int, optional
+
+    **Other**
+
+    :var Debug: default: ``False``,
+        increase verbosity for the whole application
+    :vartype Debug: bool, optional
+
+    :var ReDecay: default: ``False``
+    :vartype ReDecay: bool, optional
+
     :var ConvertEDM: default: ``False``
     :vartype ConvertEDM: bool, optional
-
-    :var ForceRandomEngine: default: ``'NONE'``
-    :vartype ForceRandomEngine: str, optional
 
     :var ParticleTable: default: ``'$GAUSSINOROOT/data/ParticleTable.txt'``
     :vartype ParticleTable: str, optional
     """
-    __used_configurables__ = [GenPhase]
+
+    __used_configurables__ = [
+        GaussinoGeneration,
+        GaussinoSimulation,
+        GaussinoGeometry,
+    ]
 
     __slots__ = {
-        "Histograms":
-        "DEFAULT"  # NOQA
-        ,
-        "DatasetName":
-        "Gaussino"  # NOQA
-        ,
-        "DatasetNameForced":
-        False  # NOQA
-        ,
-        "DataType":
-        ""  # NOQA
-        ,
-        "SpilloverPaths": []  # NOQA
-        ,
-        "Phases":
-        ["Generator",
-         "Simulation"]  # The Gauss phases to include in the SIM file  # NOQA
-        ,
-        "OutputType":
-        'SIM'  # NOQA
-        ,
-        "EnablePack":
-        True  # NOQA
-        ,
-        "DataPackingChecks":
-        True  # NOQA
-        ,
-        "WriteFSR":
-        True  # NOQA
-        ,
-        "MergeGenFSR":
-        False  # NOQA
-        ,
-        "Debug":
-        False  # NOQA
-        ,
-        "BeamPipe":
-        "BeamPipeOn"  # _beamPipeSwitch = 1  # NOQA
-        ,
-        "ReplaceWithGDML": [{
-            "volsToReplace": [],
-            "gdmlFile": ""
-        }]  # NOQA
-        ,
-        "RandomGenerator":
-        'Ranlux'  # NOQA
-        ,
-        "EvtMax":
-        -1  # NOQA
-        ,
-        "EnableHive":
-        True  # NOQA
-        ,
-        "ReDecay":
-        False  # NOQA
-        ,
-        "ThreadPoolSize":
-        1  # NOQA
-        ,
-        "EventSlots":
-        1  # NOQA
-        ,
-        "ConvertEDM":
-        False  # NOQA
-        ,
-        "ForceRandomEngine":
-        'NONE'  # NOQA
-        ,
-        "ParticleTable":
-        "$GAUSSINOROOT/data/ParticleTable.txt"  # NOQA
+        # Main
+        "EvtMax": -1,
+        "Phases": ["Generator", "Simulation"],
+        # Output
+        "Histograms": "DEFAULT",
+        "DatasetName": "Gaussino",
+        "DatasetNameForced": False,
+        "OutputType": "SIM",
+        # Multi-threading
+        "EnableHive": True,
+        "ThreadPoolSize": 1,
+        "EventSlots": 1,
+        "TimingSkipAtStart": 1,
+        # Other
+        "Debug": False,
+        "ReDecay": False,
+        "ConvertEDM": False,
+        "ParticleTable": "$GAUSSINOROOT/data/ParticleTable.txt",
+        # FIXME: Spillover not supported yet
+        # "SpilloverPaths": [],
+        # FIXME: FSR not supported yet
+        # "WriteFSR": True,
+        # "MergeGenFSR": False,
     }
 
-    def __init__(self, name=Configurable.DefaultName, **kwargs):
-        kwargs["name"] = name
-        super(Gaussino, self).__init__(*(), **kwargs)
+    def __apply_configuration__(self):
+        self._set_debug_mode()
+        self._check_options_compatibility()
 
-    def setOtherProp(self, other, name):
-        """Set the given property in another configurable object
+        # MT options
+        self._setup_hive()
+        self._setup_geant4MT()
 
-        :param other: The other configurable to set the property for
-        :param name:  The property name
+        # Services
+        self._set_particle_property_service()
+        self._set_data_service()
+        self._set_auditor_service()
+        self._set_redecay_service()
+        self._set_histogram_service()
+
+        # Phases
+        self._configure_generation_phase()
+        self._configure_simulation_phase()
+
+        # EDM conversion
+        self._configure_edm_conversion()
+
+        from Configurables import ApplicationMgr
+
+        ApplicationMgr().EvtMax = self.getProp("EvtMax")
+        ApplicationMgr().EvtSel = "NONE"
+
+        # ensure the configurables are called
+        for conf in self.__used_configurables__:
+            conf()
+
+    def _set_debug_mode(self):
+        if self.getProp("Debug"):
+            log.setLevel("DEBUG")
+
+            def debug_all_configurables():
+                from GaudiKernel.Configurable import Configurable
+                from Gaudi.Configuration import DEBUG
+
+                for conf in Configurable.allConfigurables.values():
+                    try:
+                        conf.OutputLevel = DEBUG
+                    except AttributeError:
+                        pass
+
+            appendPostConfigAction(debug_all_configurables)
+
+    def _check_options_compatibility(self):
+        if self.getProp("EvtMax") <= 0:
+            msg = "EvtMax must be > 0"
+            log.error(msg)
+            raise ValueError(msg)
+
+    def _setup_hive(self):
+        """Enable Hive event loop manager
+        this is a very similar method as in LHCbApp
         """
-        self.propagateProperty(name, other)
-
-    def setOtherProps(self, other, names):
-        """ Set the given properties in another configurable object
-
-        :param other: The other configurable to set the property for
-        :param names: The property names
-        """
-        self.propagateProperties(names, other)
-
-    def setupHive(self):
-        '''Enable Hive event loop manager
-           this is a very similar method as in LHCbApp
-        '''
         if not self.getProp("EnableHive"):
             # FIXME: Running without GaudiHive has not been tested
             #        and may lead to unexpected behaviour
             #        this is disabled for now
-            log.error("EnableHive must be set. Running without "
-                      "GaudiHive has not been tested and may lead to"
-                      "unexpected behaviour")
+            log.error(
+                "EnableHive must be set. Running without "
+                "GaudiHive has not been tested and may lead to"
+                "unexpected behaviour"
+            )
             raise ValueError("EnableHive must be set.")
-        from Configurables import HiveWhiteBoard
+        from Configurables import (
+            HiveWhiteBoard,
+            ApplicationMgr,
+            HiveSlimEventLoopMgr,
+            AvalancheSchedulerSvc,
+            GenRndInit,
+        )
+
         whiteboard = HiveWhiteBoard("EventDataSvc")
-        whiteboard.EventSlots = self.getProp('EventSlots')
+        whiteboard.EventSlots = self.getProp("EventSlots")
         ApplicationMgr().ExtSvc.insert(0, whiteboard)
 
-        from Configurables import HiveSlimEventLoopMgr, AvalancheSchedulerSvc
         scheduler = AvalancheSchedulerSvc()
         eventloopmgr = HiveSlimEventLoopMgr(SchedulerName=scheduler)
 
         # initialize hive settings if not already set
-        self.propagateProperty('ThreadPoolSize', eventloopmgr)
-        scheduler.ThreadPoolSize = self.getProp('ThreadPoolSize')
+        self.propagateProperty("ThreadPoolSize", eventloopmgr)
+        scheduler.ThreadPoolSize = self.getProp("ThreadPoolSize")
         ApplicationMgr().EventLoop = eventloopmgr
-        # appendPostConfigAction(self.co)
 
-    def __apply_configuration__(self):
-        self.setupHive()
-        ppService(self.getProp('ParticleTable'))
-        dataService()
-        auditorService()
-        if (self.getProp("ReDecay")):
-            redecayService()
+        # propagate the barrier to GenRndInit
+        GenRndInit().TimingSkipAtStart = self.getProp("TimingSkipAtStart")
 
+    def _setup_geant4MT(self):
+        from Configurables import GiGaMT
+
+        GiGaMT().NumberOfWorkerThreads = self.getProp("ThreadPoolSize")
+
+    def _set_particle_property_service(self):
+        from Configurables import (
+            ApplicationMgr,
+            LHCb__ParticlePropertySvc,
+        )
+
+        log.debug("Configuring ParticlePropertySvc")
+        ppservice = LHCb__ParticlePropertySvc()
+        ppservice.ParticlePropertiesFile = self.getProp("ParticleTable")
+        ApplicationMgr().ExtSvc += [ppservice]
+
+    def _set_data_service(self):
+        from Configurables import ApplicationMgr, EventDataSvc
+
+        log.debug("Configuring EventDataSvc")
+        datasvc = EventDataSvc("EventDataSvc")
+        datasvc.ForceLeaves = True
+        datasvc.RootCLID = 1
+        ApplicationMgr().ExtSvc += [datasvc]
+
+    def _set_auditor_service(self):
+        from Configurables import (
+            ApplicationMgr,
+            AuditorSvc,
+        )
+
+        log.debug("Configuring AuditorSvc")
+        ApplicationMgr().ExtSvc += ["AuditorSvc"]
+        ApplicationMgr().AuditAlgorithms = True
+        AuditorSvc().Auditors += ["TimingAuditor"]
+
+    def _set_redecay_service(self):
+        if not self.getProp("ReDecay"):
+            return
+        from Configurables import (
+            ApplicationMgr,
+            ReDecaySvc,
+        )
+
+        log.debug("Configuring ReDecaySvc")
+        redecaysvc = ReDecaySvc()
+        redecaysvc.EvtMax = self.getProp("EvtMax")
+        ApplicationMgr().ExtSvc += [redecaysvc]
+
+    def _set_histogram_service(self):
+        from Configurables import (
+            RootHistCnv__PersSvc,
+            ApplicationMgr,
+            HistogramPersistencySvc,
+        )
+
+        log.debug("Configuring HistogramPersistencySvc")
+        ApplicationMgr().HistogramPersistency = "ROOT"
+        RootHistCnv__PersSvc().ForceAlphaIds = True
+        hist_opt = self.getProp("Histograms").upper()
+        if hist_opt not in ["NONE", "DEFAULT"]:
+            msg = f"Unknown Histograms option '{hist_opt}'."
+            log.error(msg)
+            raise ValueError(msg)
+        if hist_opt == "NONE":
+            log.warning("No histograms will be produced")
+            return
+
+        # Use a default histogram file name if not already set
+        hst_prs_svc = HistogramPersistencySvc()
+        if not hst_prs_svc.isPropertySet("OutputFile"):
+            histos_name = self._get_output_name() + "-histos.root"
+            hst_prs_svc.OutputFile = histos_name
+
+    def _configure_edm_conversion(self):
+        if not self.getProp("ConvertEDM"):
+            return
+        log.debug("Configuring EDM conversion.")
+        from Configurables import ApplicationMgr
+
+        ApplicationMgr().TopAlg += self.edm_algorithms(self.getProp("ReDecay"))
+
+    @staticmethod
+    def edm_algorithms(redecay=False):
+        """Simple utility function to create and configure the
+        EDM conversion algorithms, it is static as it can be use
+        by externa apps
+        """
+        from Configurables import (
+            CheckMCStructure,
+            MCTruthMonitor,
+            ReDecayMCTruthToEDM,
+            MCTruthToEDM,
+        )
+
+        conv = MCTruthToEDM
+        if redecay:
+            conv = ReDecayMCTruthToEDM
+        return [
+            conv(),
+            CheckMCStructure(),
+            MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True),
+        ]
+
+    def _configure_generation_phase(self):
         phases = self.getProp("Phases")
         if "Generator" not in phases:
-            raise Exception("Must have Generator phase")
-        self.setOtherProps(GenPhase(), ['EvtMax'])
-        GenPhase().configure_phase()
-        if "Simulation" in phases:
-            SimPhase().configure_phase()
-        else:
-            GenPhase().configure_genonly()
+            msg = "Must have the generator phase"
+            log.error(msg)
+            raise ValueError(msg)
+        if "Simulation" not in phases:
+            GaussinoGeneration.only_generation_phase = True
+        self.propagateProperty("EvtMax", GaussinoGeneration())
+        GaussinoGeneration.redecay = self.getProp("ReDecay")
+        GaussinoGeneration.output_name = self._get_output_name()
+        GaussinoGeneration.threads = self.getProp("ThreadPoolSize")
 
-        if self.getProp('ConvertEDM'):
-            ApplicationMgr().TopAlg += configure_edm_conversion(
-                self.getProp("ReDecay"))
+    def _configure_simulation_phase(self):
+        GaussinoSimulation.redecay = self.getProp("ReDecay")
+        if "Simulation" not in self.getProp("Phases"):
+            GaussinoSimulation.only_generation_phase = True
+            GaussinoGeometry.only_generation_phase = True
 
-        histogramService()
-
-        ApplicationMgr().EvtMax = self.getProp('EvtMax')
-        ApplicationMgr().EvtSel = 'NONE'
-
-        from Gaudi.Configuration import appendPostConfigAction
-
-        def force_engine():
-            from Gaudi import Configuration
-            neweng = self.getProp('ForceRandomEngine')
-            for name, conf in Configuration.allConfigurables.items():
-                try:
-                    conf.setProp('RandomEngine', neweng)
-                except:
-                    pass
-                else:
-                    log.info('Forced random engine of {} to {}'.format(
-                        name,
-                        neweng,
-                    ))
-
-        if self.getProp('ForceRandomEngine') != 'NONE':
-            appendPostConfigAction(force_engine)
-
-    eventType = staticmethod(GenPhase.eventType)
-
-    def outputName(self):
+    def _get_output_name(self):
         """
         Build a name for the output file, based on input options.
         Combines DatasetName, EventType, Number of events and Date
         """
-        import time
-        outputName = self.getProp("DatasetName")
+        output_name = self.getProp("DatasetName")
         if self.getProp("DatasetNameForced"):
-            return outputName
-        if outputName == "":
-            outputName = 'Gaussino'
-        if self.eventType() != "":
-            if outputName != "":
-                outputName += '-'
-            outputName += self.eventType()
-        if self.EvtMax > 0:
-            outputName += '-' + str(self.EvtMax) + 'ev'
-        idFile = str(time.localtime().tm_year)
-        if time.localtime().tm_mon < 10:
-            idFile += '0'
-        idFile += str(time.localtime().tm_mon)
-        if time.localtime().tm_mday < 10:
-            idFile += '0'
-        idFile += str(time.localtime().tm_mday)
-        outputName += '-' + idFile
-        return outputName
-
-    # hack from MiniBrunel configuration
-    def co(self):
-        from Gaudi.Configuration import allConfigurables
-        for c in allConfigurables:
-            if hasattr(c, 'ExtraInputs'
-                       ) and '/Event/IOVLock' not in c.ExtraInputs:  # NOQA
-                c.ExtraInputs.append('/Event/IOVLock')
+            return output_name
+        if not output_name:
+            output_name = "Gaussino"
+        evt_type = GaussinoGeneration.eventType()
+        if evt_type:
+            output_name += "-" + evt_type
+        if self.getProp("EvtMax") > 0:
+            output_name += f"-{self.getProp('EvtMax')}ev"
+        return f"{output_name}-{time.strftime('%Y%m%d')}"

@@ -137,6 +137,5 @@ class PrettyDictionaryDirective(Directive):
             addnodes.desc_content('', literal)
         ]
 
-
 def setup(app):
     app.add_directive('pretty-dict', PrettyDictionaryDirective)

@@ -72,7 +72,7 @@ ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const 
   } );
 
   debug() << "Setting up a SD constructor for " << name() << " parallel world" << endmsg;
-  par_world->setSDConstructor( [&]() {
+  par_world->setSDConstructor( [&, world_name]() {
     // mostly empty, implemented in ExternalEmbedders
     debug() << "Constructing a SD for " << name() << " parallel world" << endmsg;
 

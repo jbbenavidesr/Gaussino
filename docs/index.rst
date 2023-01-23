@@ -1,23 +1,45 @@
-.. Gaussino documentation master file, created by
-   sphinx-quickstart on Fri Apr 30 15:52:59 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Gaussino
+========
 
-Welcome to the Gaussino's documentation!
-====================================
-.. toctree::
-   :caption: About
-   :hidden:
-   :maxdepth: 2
+Gaussino is a new core simulation framework for high-energy physics experiments. It allows easy prototyping and testing of new technologies. It is a modular framework with 4 main components:
+- the generation of events,
+- the detector simulation,
+- geometry services,
+- monitoring and saving of the output.
 
-   about/gaussino
+.. figure:: images/gaussino_modules.png
+  :width: 70%
+  :align: center
+
+  Modular structure of Gaussino
+
+  
+
+
+Gaussino can be used as the core project for more experiment specific projects or it can be used in a standalone mode. This documentation is devoted only to its standalone mode. Below you will find a list of projects using Gaussino:
+
+- `Gauss-on-Gaussino, the LHCb Simulation framework <https://lhcb-gauss.docs.cern.ch/master/index.html>`_
+
+
+.. figure:: images/gaussino_cube.png
+    :figwidth: 40%
+    :align: center
+
+    Gaussino in a standalone mode
+
+.. figure:: images/gaussino_lhcb_front.png
+    :figwidth: 50%
+    :align: center
+
+    LHCb detector in Gauss-on-Gaussino
+
 
 .. toctree::
    :caption: Getting started
    :maxdepth: 2
 
-   getting_started/gaussino.md
-   getting_started/gauss.md
+   getting_started/about.md
+   getting_started/installation.md
    getting_started/contributing.md
 
 .. toctree::
@@ -27,9 +49,7 @@ Welcome to the Gaussino's documentation!
    configuration/gaussino
    configuration/generation
    configuration/simulation
-   configuration/external_detector
-   configuration/parallel_geometry
-   configuration/gdml
+   configuration/geometry
 
 .. toctree::
    :caption: Examples
@@ -37,7 +57,6 @@ Welcome to the Gaussino's documentation!
    
    examples/external_detector
    examples/parallel_geometry
-   examples/adding_subdetector_in_detector
    examples/adding_subdetector_in_dd4hep
 
 
