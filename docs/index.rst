@@ -2,18 +2,18 @@ Gaussino
 ========
 
 Gaussino is a new core simulation framework for high-energy physics experiments. It allows easy prototyping and testing of new technologies. It is a modular framework with 4 main components:
+
 - the generation of events,
 - the detector simulation,
 - geometry services,
 - monitoring and saving of the output.
 
+
 .. figure:: images/gaussino_modules.png
-  :width: 70%
-  :align: center
+    :figwidth: 70%
+    :align: center
 
-  Modular structure of Gaussino
-
-  
+    Modular structure of Gaussino
 
 
 Gaussino can be used as the core project for more experiment specific projects or it can be used in a standalone mode. This documentation is devoted only to its standalone mode. Below you will find a list of projects using Gaussino:
@@ -38,9 +38,11 @@ Gaussino can be used as the core project for more experiment specific projects o
    :caption: Getting started
    :maxdepth: 2
 
-   getting_started/about.md
    getting_started/installation.md
+   getting_started/first_simulation_job
    getting_started/contributing.md
+   getting_started/further_reading.md
+
 
 .. toctree::
    :caption: Configuration
@@ -52,12 +54,14 @@ Gaussino can be used as the core project for more experiment specific projects o
    configuration/geometry
 
 .. toctree::
-   :caption: Examples
+   :caption: Examples & Tutorials
    :maxdepth: 2
-   
+
    examples/external_detector
    examples/parallel_geometry
-   examples/adding_subdetector_in_dd4hep
+   examples/dd4hep_standalone
+   examples/pp
+   examples/gdml
 
 
 Indices and tables

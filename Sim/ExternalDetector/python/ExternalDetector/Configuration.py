@@ -8,8 +8,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Gaudi.Configuration import ConfigurableUser
-from Gaudi.Configuration import log
+from Gaudi.Configuration import (
+    ConfigurableUser,
+    log,
+)
 import Configurables
 
 __author__ = "Michal Mazurek"
@@ -52,10 +54,11 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         .. highlight:: python
         .. code-block:: python
 
-            from Gaussino.Simulation import SimPhase
-            SimPhase().ExternalDetectorEmbedder = "MyEmbedder"
-
-            from Configurables import ExternalDetectorEmbedder
+            from Configurables import (
+                GaussinoSimulation,
+                ExternalDetectorEmbedder,
+            )
+            GaussinoSimulation().ExternalDetectorEmbedder = "MyEmbedder"
             external = ExternalDetectorEmbedder("MyEmbedder")
 
             external.Shapes = {

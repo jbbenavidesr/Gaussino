@@ -58,7 +58,7 @@ check-formatting:
   tags:
     - cvmfs
 
-# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml
 build-docs:
   extends: .docs-base
   variables:
@@ -66,7 +66,7 @@ build-docs:
     LOCAL_PYTHON: "InstallArea/$BINARY_TAG/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
-    - pip install myst_parser graphviz
+    - pip install myst_parser graphviz docutils\<0.17
     # -> adding python directories of the upstream projects
     - export PYTHONPATHBKP=$PYTHONPATH
     - export PYTHONPATHBKP=$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
@@ -118,7 +118,6 @@ pages:
       done
     # -> move the current version
     - rm -rf public/$DOCS_VERSION
-    - mkdir -p public/$DOCS_VERSION
     - mv docs/_build/html public/$DOCS_VERSION
     # -> add all the necessary redirects
     - rm -f public/_redirects

@@ -27,7 +27,9 @@ from Gaussino.Geometry import GaussinoGeometry
 
 
 class GaussinoSimulation(GaussinoConfigurable):
-    """Configurable for the simulation phase.
+    """Configurable for the Simulation phase in Gaussino.
+
+    **Main**
 
     :var PhysicsConstructors: default: ``[]``, list of the factories used
         to attach physics to the main modular list
@@ -36,7 +38,7 @@ class GaussinoSimulation(GaussinoConfigurable):
     :var TrackTruth: default: ``True``
     :vartype TrackTruth: bool, optional
 
-    G4 commands
+    **G4 commands**
 
     :var G4BeginRunCommand: default:
         ``["/tracking/verbose 0", "/process/eLoss/verbose 0"]``
@@ -45,7 +47,7 @@ class GaussinoSimulation(GaussinoConfigurable):
     :var G4EndRunCommand: default: ``[]``
     :vartype G4EndRunCommand: bool, optional
 
-    Cuts
+    **Cuts**
 
     :var CutForElectron: default: ``-1. * km``
     :vartype CutForElectron: float, optional
@@ -66,10 +68,13 @@ class GaussinoSimulation(GaussinoConfigurable):
     ]
 
     __slots__ = {
+        # MAIN
         "TrackTruth": True,
+        "PhysicsConstructors": [],
+        # G4 commands
         "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
-        "PhysicsConstructors": [],
+        # Cuts
         "CutForElectron": -1.0 * SystemOfUnits.km,
         "CutForPositron": -1 * SystemOfUnits.km,
         "CutForGamma": -1 * SystemOfUnits.km,
@@ -78,9 +83,17 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     # internal options to be set by Gaussino
     only_generation_phase = False
+    """ options set internally by Gaussino() """
     redecay = False
+    """ options set internally by Gaussino() """
 
     def __apply_configuration__(self):
+        """Main configuration method for the simulation phase.
+        It applies the properties of the simulation phase right after the main
+        :class:`Gaussino <Gaussino.Configuration.Gaussino>` and generation
+        :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` configurable, but before
+        the geometry configurable :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
+        """
         log.debug("Configuring GaussinoSimulation")
         if GaussinoSimulation.only_generation_phase:
             log.debug("-> Only the generation phase, skipping.")
@@ -94,12 +107,20 @@ class GaussinoSimulation(GaussinoConfigurable):
         GaussinoGeometry()
 
     def _check_options_compatibility(self):
+        """Checks the general compatibility of the provided properties.
+
+        Raises:
+            ValueError: if no physics contructors were provided
+        """
         if not self.getProp("PhysicsConstructors"):
             msg = "No physics constructors specified!"
             log.error(msg)
             raise ValueError(msg)
 
     def _set_giga_service(self):
+        """Sets up the main simulation service ``GiGaMT``. It will be
+        available throughout the whole execution time of the simulation.
+        """
         from Configurables import (
             ApplicationMgr,
             GiGaMT,
@@ -116,6 +137,14 @@ class GaussinoSimulation(GaussinoConfigurable):
         ApplicationMgr().ExtSvc += [giga]
 
     def _set_giga_alg(self):
+        """Sets up the main simulation algorithm:
+
+        - ``ReDecaySimAlg`` when using ReDecay,
+        - ``GiGaAlg`` otherwise.
+
+         The algorithm is executed right after the generation algorithms, but
+         before hit extraction and monitoring algorithms.
+        """
         from Configurables import ApplicationMgr
 
         log.debug("-> Configuring GiGa algorithm")
@@ -132,6 +161,8 @@ class GaussinoSimulation(GaussinoConfigurable):
             ApplicationMgr().TopAlg += [alg]
 
     def _set_physics(self):
+        """Sets up the physics constructors and applies the cuts.
+        """
         from Configurables import (
             GiGaMTModularPhysListFAC,
             GiGaMT,
@@ -157,6 +188,9 @@ class GaussinoSimulation(GaussinoConfigurable):
             ParallelGeometry().attach_physics(gmpl)
 
     def _set_truth_actions(self):
+        """Sets up the custom optimization features that decide
+        which tracks/particles should be stored and which not.
+        """
         if not self.getProp("TrackTruth"):
             return
         log.debug("-> Configuring truth actions")
@@ -178,7 +212,7 @@ class GaussinoSimulation(GaussinoConfigurable):
             TruthFlaggingTrackAction,
             "TruthFlaggingTrackAction",
         )
-        storing = actioninit.addTool(
+        actioninit.addTool(
             TruthStoringTrackAction,
             "TruthStoringTrackAction",
         )
