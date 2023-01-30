@@ -1,4 +1,5 @@
 # Geometry
+
 Configuration related to the geometry used in the simulation phase.
 
 ## Main Geometry Configuration
@@ -10,18 +11,18 @@ Configuration related to the geometry used in the simulation phase.
    :show-inheritance:
    :undoc-members:
    :special-members: __apply_configuration__
-   :private-members: _set_external_detector, _set_parallel_geometry, _set_gdml_export, _set_gdml_import
+   :members:
+   :private-members:
 ```
 
 ## External Detector
-
 
 Gaussino as a standalone application does not have a 'main' geometry service. `ExternalDetector` package provides an abstract geometry service that can work on its own, but it also works with any of the 'main' geometry services (e.g. LHCb's `GaussGeo`, `DD4hepCnvSvc`). `ExternalDetector` provides all the necessary tools that are needed to embed volumes and make them sensitive. Moreover, it is possible to attach hit extraction and monitoring algorithms.
 
 ```{eval-rst}
 .. Important::
     `ExternalDetector` can work as a standalone geometry service or it can work wit other geometry services.
-  
+
 ```
 
 ### `ExternalDetector` configuration
@@ -31,8 +32,9 @@ Gaussino as a standalone application does not have a 'main' geometry service. `E
 
 .. autoclass:: ExternalDetectorEmbedder
    :show-inheritance:
-   :members: embed, activate_hits_alg, activate_moni_alg
    :undoc-members:
+   :members:
+   :private-members:
 ```
 
 ### External World (standalone mode)
@@ -88,18 +90,17 @@ external.Materials = {
 and the `Geant4` output:
 
 ```
-GiGaMT.DetConst...  DEBUG 
- Material: OuterSpace    density:  0.001 mg/cm3  RadL: 1010.068 km   Nucl.Int.Length: 560.762 km 
+GiGaMT.DetConst...  DEBUG
+ Material: OuterSpace    density:  0.001 mg/cm3  RadL: 1010.068 km   Nucl.Int.Length: 560.762 km
                        Imean:  19.200 eV   temperature:   2.73 K  pressure:   0.00 atm
 
    --->  Element: H (H)   Z =  1.0   N =     1   A =  1.008 g/mole
          --->  Isotope:    H1   Z =  1   N =   1   A =   1.01 g/mole   abundance: 99.989 %
          --->  Isotope:    H2   Z =  1   N =   2   A =   2.01 g/mole   abundance:  0.011 %
-          ElmMassFraction: 100.00 %  ElmAbundance 100.00 % 
+          ElmMassFraction: 100.00 %  ElmAbundance 100.00 %
 ```
 
 #### MaterialFromElements
-
 
 `MaterialFromElements` creates a `G4Material` given the properties of the used elements. Below you'll find an example of the material made out of lead.
 
@@ -130,8 +131,8 @@ external.Materials = {
 and the `Geant4` output:
 
 ```
-GiGaMT.DetConst.Pb  DEBUG 
- Material:       Pb    density: 11.290 g/cm3   RadL:   5.642 mm   Nucl.Int.Length:  18.344 cm 
+GiGaMT.DetConst.Pb  DEBUG
+ Material:       Pb    density: 11.290 g/cm3   RadL:   5.642 mm   Nucl.Int.Length:  18.344 cm
                        Imean: 823.000 eV   temperature: 273.15 K  pressure: 6241.51 atm
 
    --->  Element: Pb (Pb)   Z = 82.0   N =   207   A = 207.200 g/mole
@@ -139,7 +140,7 @@ GiGaMT.DetConst.Pb  DEBUG
          --->  Isotope: Pb206   Z = 82   N = 206   A = 205.97 g/mole   abundance: 24.100 %
          --->  Isotope: Pb207   Z = 82   N = 207   A = 206.98 g/mole   abundance: 22.100 %
          --->  Isotope: Pb208   Z = 82   N = 208   A = 207.98 g/mole   abundance: 52.400 %
-          ElmMassFraction: 100.00 %  ElmAbundance 100.00 % 
+          ElmMassFraction: 100.00 %  ElmAbundance 100.00 %
 ```
 
 
@@ -257,9 +258,9 @@ DECLARE_COMPONENT_WITH_ID( ExternalDetector::SphereEmbedder, "SphereEmbedder" )
 
 ## Parallel Geometry
 
-This adds a new package `ParallelGeometry` that allows for adding external detectors (from `ExternalDetector` package) in parallel worlds on top of mass geometry. This can be used in studies where we would like to have volumes / sensitive detectors overlapping each other. 
+This adds a new package `ParallelGeometry` that allows for adding external detectors (from `ExternalDetector` package) in parallel worlds on top of mass geometry. This can be used in studies where we would like to have volumes / sensitive detectors overlapping each other.
 
-Embedding a volume / sensitive detector in a parallel world is almost the same as for the mass geometry with the exception that materials are not required to be defined i.e. can be `nullptr`. If that is the case, then all the particles just "see" the boundaries coming from the parallel world. 
+Embedding a volume / sensitive detector in a parallel world is almost the same as for the mass geometry with the exception that materials are not required to be defined i.e. can be `nullptr`. If that is the case, then all the particles just "see" the boundaries coming from the parallel world.
 
 If you actually want to set any material in your parallel world, then make sure you have `LayeredMass=True` in the configuration of parallel world physics. Otherwise, it won't work. If `LayeredMass=True`, then all the worlds below in your stack will see the material of that world.
 
@@ -271,7 +272,8 @@ If you actually want to set any material in your parallel world, then make sure 
 
 .. autoclass:: ParallelGeometry
    :show-inheritance:
-   :members: attach, attach_physics, world_to_gdml
    :undoc-members:
+   :members:
+   :private-members:
 ```
 

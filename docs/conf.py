@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.todo',
     'myst_parser',
     'sphinx.ext.graphviz',
+    'sphinx.ext.autosectionlabel',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -88,7 +89,7 @@ html_context['display_lower_left'] = True
 # visible versions
 versions = [
     'master',
-    'v0r1',
+    'v0r0',
     'FASTSIM',
 ]
 
@@ -105,37 +106,26 @@ html_context['versions'] = list()
 # Auto-generated header anchors
 myst_heading_anchors = 3
 
+todo_include_todos = True
+
+autosectionlabel_prefix_document = True
+
 for version in versions:
     html_context['versions'].append((version, '/' + version + '/'))
 
-from importlib import import_module
-from pprint import pformat
-from docutils.parsers.rst import Directive
-from docutils import nodes
-from sphinx import addnodes
 
+def hide_non_private(app, what, name, obj, skip, options):
+    """Filters out configurable properties. Not the best way of doing
+    this, as it filters all public members that start with a capital
+    letter. Maybe a better way of doing this should be enforced.
+    """
+    if ('members' in options and name and name[0].isupper()
+            and name in options['members']):
+        return True
+    if name in ["configurables", "_properties"]:
+        return True
+    return None
 
-class PrettyDictionaryDirective(Directive):
-    """Makes the dictionaries prettier"""
-    required_arguments = 4
-
-    def run(self):
-        module_name = self.arguments[0]
-        class_name = self.arguments[1]
-        member_name = self.arguments[2]
-        name_to_display = self.arguments[3]
-
-        member = getattr(import_module(module_name), class_name)
-        member = getattr(member, member_name)
-        code = pformat(member, 2)
-
-        literal = nodes.literal_block(code, code)
-        literal['language'] = 'python'
-
-        return [
-            addnodes.desc_name(text=name_to_display),
-            addnodes.desc_content('', literal)
-        ]
 
 def setup(app):
-    app.add_directive('pretty-dict', PrettyDictionaryDirective)
+    app.connect('autodoc-skip-member', hide_non_private)

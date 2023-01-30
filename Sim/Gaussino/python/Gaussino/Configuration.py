@@ -97,10 +97,10 @@ class Gaussino(GaussinoConfigurable):
     ]
 
     __slots__ = {
-        # Main
+        # MAIN
         "EvtMax": -1,
         "Phases": ["Generator", "Simulation"],
-        # Output
+        # OUTPUT
         "Histograms": "DEFAULT",
         "DatasetName": "Gaussino",
         "DatasetNameForced": False,
@@ -110,7 +110,7 @@ class Gaussino(GaussinoConfigurable):
         "ThreadPoolSize": 1,
         "EventSlots": 1,
         "TimingSkipAtStart": 1,
-        # Other
+        # OTHER
         "Debug": False,
         "ReDecay": False,
         "ConvertEDM": False,
@@ -123,6 +123,12 @@ class Gaussino(GaussinoConfigurable):
     }
 
     def __apply_configuration__(self):
+        """Main configuration method for Gaussino. It is called as the first one, and
+        then propagates the properties to:
+        - :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>`,
+        - :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>`,
+        - :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
+        """
         self._set_debug_mode()
         self._check_options_compatibility()
 
@@ -154,6 +160,8 @@ class Gaussino(GaussinoConfigurable):
             conf()
 
     def _set_debug_mode(self):
+        """Sets up the debug mode in python logger and all the configurables.
+        """
         if self.getProp("Debug"):
             log.setLevel("DEBUG")
 
@@ -170,14 +178,22 @@ class Gaussino(GaussinoConfigurable):
             appendPostConfigAction(debug_all_configurables)
 
     def _check_options_compatibility(self):
+        """Checks the general compatibility of the properties.
+
+        Raises:
+            ValueError: if ``EvtMax`` is not provided
+        """
         if self.getProp("EvtMax") <= 0:
             msg = "EvtMax must be > 0"
             log.error(msg)
             raise ValueError(msg)
 
     def _setup_hive(self):
-        """Enable Hive event loop manager
+        """Enables Hive event loop manager.
         this is a very similar method as in LHCbApp
+
+        Raises:
+            ValueError: if ``EnableHive`` is disabled
         """
         if not self.getProp("EnableHive"):
             # FIXME: Running without GaudiHive has not been tested
@@ -213,11 +229,18 @@ class Gaussino(GaussinoConfigurable):
         GenRndInit().TimingSkipAtStart = self.getProp("TimingSkipAtStart")
 
     def _setup_geant4MT(self):
+        """Sets up the Geant4 multi-threading options.
+        """
         from Configurables import GiGaMT
 
         GiGaMT().NumberOfWorkerThreads = self.getProp("ThreadPoolSize")
 
     def _set_particle_property_service(self):
+        """Sets up the particle property service.
+
+            .. todo ::
+                LHCb project dependency!
+        """
         from Configurables import (
             ApplicationMgr,
             LHCb__ParticlePropertySvc,
@@ -229,6 +252,8 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().ExtSvc += [ppservice]
 
     def _set_data_service(self):
+        """Sets up the data service: ``EventDataSvc``.
+        """
         from Configurables import ApplicationMgr, EventDataSvc
 
         log.debug("Configuring EventDataSvc")
@@ -238,6 +263,8 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().ExtSvc += [datasvc]
 
     def _set_auditor_service(self):
+        """Sets up the auditor service: ``AuditorSvc``.
+        """
         from Configurables import (
             ApplicationMgr,
             AuditorSvc,
@@ -249,6 +276,8 @@ class Gaussino(GaussinoConfigurable):
         AuditorSvc().Auditors += ["TimingAuditor"]
 
     def _set_redecay_service(self):
+        """Sets up a dedicated service when using ReDecay: ``ReDecaySvc``.
+        """
         if not self.getProp("ReDecay"):
             return
         from Configurables import (
@@ -262,6 +291,11 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().ExtSvc += [redecaysvc]
 
     def _set_histogram_service(self):
+        """Sets up the service responsible for producing histograms.
+
+        Raises:
+            ValueError: when unknown option in the list of ``Historgrams``
+        """
         from Configurables import (
             RootHistCnv__PersSvc,
             ApplicationMgr,
@@ -287,6 +321,8 @@ class Gaussino(GaussinoConfigurable):
             hst_prs_svc.OutputFile = histos_name
 
     def _configure_edm_conversion(self):
+        """Sets up EDM algorithms for Gaussino.
+        """
         if not self.getProp("ConvertEDM"):
             return
         log.debug("Configuring EDM conversion.")
@@ -296,9 +332,17 @@ class Gaussino(GaussinoConfigurable):
 
     @staticmethod
     def edm_algorithms(redecay=False):
-        """Simple utility function to create and configure the
-        EDM conversion algorithms, it is static as it can be use
-        by externa apps
+        """Sets up a special algorithm responsible for linking ``MCParticles``
+        and ``MCVertices``  to ``MCHits`` via ``LinkedParticle``. It is either:
+
+        - ``ReDecayMCTruthToEDM`` when in ReDeacay mode,
+        - ``MCTruthToEDM`` otherwise.
+
+        Args:
+            redecay (bool, optional): Using Redecay or not. Defaults to False.
+
+        Returns:
+            list: list of needed EDM algorithms
         """
         from Configurables import (
             CheckMCStructure,
@@ -317,6 +361,12 @@ class Gaussino(GaussinoConfigurable):
         ]
 
     def _configure_generation_phase(self):
+        """Configures a subset of properties of the generation phase and propagates
+        them to :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>`.
+
+        Raises:
+            ValueError: if the ``Generator`` phase is not provided
+        """
         phases = self.getProp("Phases")
         if "Generator" not in phases:
             msg = "Must have the generator phase"
@@ -330,14 +380,16 @@ class Gaussino(GaussinoConfigurable):
         GaussinoGeneration.threads = self.getProp("ThreadPoolSize")
 
     def _configure_simulation_phase(self):
+        """Configures a subset of properties of the simulation phase and propagates
+        them to :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>`.
+        """
         GaussinoSimulation.redecay = self.getProp("ReDecay")
         if "Simulation" not in self.getProp("Phases"):
             GaussinoSimulation.only_generation_phase = True
             GaussinoGeometry.only_generation_phase = True
 
     def _get_output_name(self):
-        """
-        Build a name for the output file, based on input options.
+        """Build a name for the output file, based on input options.
         Combines DatasetName, EventType, Number of events and Date
         """
         output_name = self.getProp("DatasetName")

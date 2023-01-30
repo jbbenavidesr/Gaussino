@@ -1,4 +1,4 @@
-# Adding a new sub-detector with DD4hep standalone
+# Working with DD4hep in Gaussino standalone
 
 ```{eval-rst}
 .. attention::

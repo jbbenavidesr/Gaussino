@@ -12,6 +12,7 @@ __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
 from GaudiKernel import SystemOfUnits as units
+from GaudiKernel.ConfigurableMeta import ConfigurableMeta
 from Gaudi.Configuration import log
 
 from Gaussino.Utilities import (
@@ -22,6 +23,61 @@ from Gaussino.Utilities import (
 
 class GaussinoGeneration(GaussinoConfigurable):
     """Configurable for the Generation phase in Gaussino.
+
+    **Main**
+
+    :var WriteHepMC: default: ``False``
+    :vartype WriteHepMC: bool, optional
+
+    **Generation modules**
+
+    :var SampleGenerationTool: default: ``'SignalPlain'``
+    :vartype SampleGenerationTool: str, optional
+
+    :var SampleGenerationToolOpts: default: ``{}``
+    :vartype SampleGenerationToolOpts: dict, optional
+
+    :var PileUpTool: default: ``'FixedLuminosityWithSvc'``
+    :vartype PileUpTool: str, optional
+
+    :var ProductionTool: default: ``'Pythia8ProductionMT'``,
+        for Pythia8 there are 2 possibilities: ``'Pythia8Production'`` (shared)
+        and ``'Pythia8ProductionMT'`` (thread-local) interface
+    :vartype ProductionTool: str, optional
+
+    :var ProductionToolOpts: default: ``{}``
+    :vartype ProductionToolOpts: dict, optional
+
+    :var DecayTool: default: ``''``
+    :vartype DecayTool: str, optional
+
+    :var CutTool: default: ``''``
+    :vartype CutTool: str, optional
+
+    :var CutToolOpts: default: ``{}``
+    :vartype CutToolOpts: dict, optional
+
+    :var FullGenEventTool: default: ``''``
+    :vartype FullGenEventTool: str, optional
+
+    :var FullGenEventToolOpts: default: ``{}``
+    :vartype FullGenEventToolOpts: dict, optional
+
+    **Monitoring**
+
+    :var GenMonitor: default: ``False``
+    :vartype GenMonitor: bool, optional
+
+    **Particle gun options**
+
+    :var ParticleGun: default: ``False``
+    :vartype ParticleGun: bool, optional
+
+    **Beam options**
+
+    .. todo::
+
+        Custom ``B1Particle`` and ``B2Particle`` are not available yet!
 
     :var BeamMomentum: default: ``3.5 * units.TeV``
     :vartype BeamMomentum: float, optional
@@ -59,48 +115,6 @@ class GaussinoGeneration(GaussinoConfigurable):
 
     :var RevolutionFrequency: default: ``11.245 * units.kilohertz``
     :vartype RevolutionFrequency: float, optional
-
-    :var WriteHepMC: default: ``False``
-    :vartype WriteHepMC: bool, optional
-
-    :var GenMonitor: default: ``False``
-    :vartype GenMonitor: bool, optional
-
-    :var ParticleGun: default: ``False``
-    :vartype ParticleGun: bool, optional
-
-    :var SampleGenerationTool: default: ``'SignalPlain'``
-    :vartype SampleGenerationTool: str, optional
-
-    :var SampleGenerationToolOpts: default: ``{}``
-    :vartype SampleGenerationToolOpts: dict, optional
-
-    :var PileUpTool: default: ``'FixedLuminosityWithSvc'``
-    :vartype PileUpTool: str, optional
-
-    :var ProductionTool: default: ``'Pythia8ProductionMT'``,
-        for Pythia8 there are 2 possibilities: ``'Pythia8Production'`` (shared)
-        and ``'Pythia8ProductionMT'`` (thread-local) interface
-    :vartype ProductionTool: str, optional
-
-    :var ProductionToolOpts: default: ``{}``
-    :vartype ProductionToolOpts: dict, optional
-
-    :var DecayTool: default: ``''``
-    :vartype DecayTool: str, optional
-
-    :var CutTool: default: ``''``
-    :vartype CutTool: str, optional
-
-    :var CutToolOpts: default: ``{}``
-    :vartype CutToolOpts: dict, optional
-
-    :var FullGenEventTool: default: ``''``
-    :vartype FullGenEventTool: str, optional
-
-    :var FullGenEventToolOpts: default: ``{}``
-    :vartype FullGenEventToolOpts: dict, optional
-
     """
 
     __required_configurables__ = [
@@ -108,6 +122,24 @@ class GaussinoGeneration(GaussinoConfigurable):
     ]
 
     __slots__ = {
+        # MAIN
+        "WriteHepMC": False,
+        # GENERATION MODULES
+        "SampleGenerationTool": "SignalPlain",
+        "SampleGenerationToolOpts": {},
+        "PileUpTool": "FixedLuminosityWithSvc",
+        "ProductionTool": "Pythia8ProductionMT",
+        "ProductionToolOpts": {},
+        "DecayTool": "",
+        "CutTool": "",
+        "CutToolOpts": {},
+        "FullGenEventCutTool": "",
+        "FullGenEventCutToolOpts": {},
+        # MONITORING
+        "GenMonitor": False,
+        # PARTICLE GUN OPTIONS
+        "ParticleGun": False,
+        # BEAM OPTIONS
         "BeamMomentum": 3.5 * units.TeV,
         "BeamHCrossingAngle": 0.0 * units.mrad,
         "BeamVCrossingAngle": 0.0 * units.mrad,
@@ -128,28 +160,26 @@ class GaussinoGeneration(GaussinoConfigurable):
         # "B2Momentum": 3.5 * units.TeV,
         # "B1Particle": "p",
         # "B2Particle": "p",
-        "WriteHepMC": False,
-        "GenMonitor": False,
-        "ParticleGun": False,
-        "SampleGenerationTool": "SignalPlain",
-        "SampleGenerationToolOpts": {},
-        "PileUpTool": "FixedLuminosityWithSvc",
-        "ProductionTool": "Pythia8ProductionMT",
-        "ProductionToolOpts": {},
-        "DecayTool": "",
-        "CutTool": "",
-        "CutToolOpts": {},
-        "FullGenEventCutTool": "",
-        "FullGenEventCutToolOpts": {},
     }
 
     # internal options to be set by Gaussino
     only_generation_phase = False
+    """ options set internally by Gaussino() """
     redecay = False
+    """ options set internally by Gaussino() """
     output_name = False
+    """ options set internally by Gaussino() """
 
     def __apply_configuration__(self):
-        """Main configuration method for the generation phase."""
+        """Main configuration method for the generation phase.
+        It applies the properties of the generation phase right after the main
+        :class:`Gaussino <Gaussino.Configuration.Gaussino>` configurable, but before
+        the detector transport and geometry configurables:
+        :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>` and
+        :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
+        """
+        from Configurables import ApplicationMgr
+
         seq = []
         if self.getProp("ParticleGun"):
             seq += self._configure_pgun()
@@ -163,13 +193,24 @@ class GaussinoGeneration(GaussinoConfigurable):
         if self.only_generation_phase:
             seq += self._configure_genonly()
 
-        from Configurables import ApplicationMgr
-
         ApplicationMgr().TopAlg += seq
 
     def _configure_generation(self) -> list:
         """Configuration method for the generation other than
-        a particle gun.
+        a particle gun. The idea is to set all the modules required for
+        the main generation algorithm.
+
+            - sample generation tool
+            - decay tool,
+            - cut tool,
+            - production tool,
+            - pile-up tool,
+            - vertex smearing tool,
+
+        The main generation algorithm could be either ``Generation`` or ``ReDecayGeneration``.
+
+        Returns:
+            list: list of algorithms
         """
         from Configurables import (
             Generation,
@@ -204,6 +245,8 @@ class GaussinoGeneration(GaussinoConfigurable):
         return seq
 
     def _set_beam_parameters(self):
+        """Sets up all the beam parametres of ``BeamInfoSvc`` service.
+        """
         from Configurables import BeamInfoSvc, ApplicationMgr
 
         log.debug("Configuring BeamInfoSvc")
@@ -227,26 +270,45 @@ class GaussinoGeneration(GaussinoConfigurable):
         )
         ApplicationMgr().ExtSvc.append(svc)
 
-    def _set_sample_generation_tool(self, gen_alg):
+    def _set_sample_generation_tool(self, gen_alg) -> ConfigurableMeta:
+        """Sets up the sample generation tool, i.e. ``MinimumBias``, ``Inclusive``, etc.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+
+        Returns:
+            ConfigurableMeta: ``SampleGenerationTool``
+        """
         sgt = get_set_configurable(
             gen_alg, "SampleGenerationTool", self.getProp("SampleGenerationTool")
         )
         sgt_opts = self.getProp("SampleGenerationToolOpts")
-        for option, value in self.getProp("SampleGenerationToolOpts").items():
+        for option, value in sgt_opts.items():
             sgt.setProp(option, value)
         return sgt
 
-    def _set_cut_tool(self, signal_tool):
+    def _set_cut_tool(self, sgt):
+        """Sets up the cut tool.
+
+        Args:
+            sgt (ConfigurableMeta): Sample generation tool configured earlier.
+        """
         cut_tool = self.getProp("CutTool")
         if cut_tool:
-            ct = get_set_configurable(signal_tool, "CutTool", cut_tool)
+            ct = get_set_configurable(sgt, "CutTool", cut_tool)
             ct_opts = self.getProp("CutToolOpts")
             for option, value in ct_opts.items():
                 ct.setProp(option, value)
         else:
-            signal_tool.CutTool = ""
+            sgt.CutTool = ""
 
     def _set_decay_tool(self, gen_alg, sgt):
+        """Sets up the decay tool.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+            sgt (ConfigurableMeta): Sample generation tool configured earlier
+        """
         gen_alg.DecayTool = self.getProp("DecayTool")
         try:
             sgt.DecayTool = self.getProp("DecayTool")
@@ -254,6 +316,11 @@ class GaussinoGeneration(GaussinoConfigurable):
             pass
 
     def _set_full_gen_evt_cut_tool(self, gen_alg):
+        """Sets up the ``FullGenEventCutTool``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
         tool = self.getProp("FullGenEventCutTool")
         if tool:
             ct = get_set_configurable(gen_alg, "FullGenEventCutTool", tool)
@@ -263,9 +330,22 @@ class GaussinoGeneration(GaussinoConfigurable):
         else:
             gen_alg.FullGenEventCutTool = ""
 
-    def _set_production_tool(self, signal_tool):
+    def _set_production_tool(self, sgt):
+        """Sets up the production tool.
+
+        .. todo::
+
+            So far, only ``Pythia8Production`` and ``Pythia8ProductionMT``
+            are supported.
+
+        Args:
+            sgt (ConfigurableMeta): Sample generation tool configured earlier.
+
+        Raises:
+            ValueError: if unsupported ``ProductionTool`` provided.
+        """
         tool = self.getProp("ProductionTool")
-        prod = get_set_configurable(signal_tool, "ProductionTool", tool)
+        prod = get_set_configurable(sgt, "ProductionTool", tool)
         if tool in ["Pythia8Production", "Pythia8ProductionMT"]:
             # FIXME: For now keep it only for Pythia, but potentially in future we
             # want to do this for all possible production tools
@@ -281,12 +361,42 @@ class GaussinoGeneration(GaussinoConfigurable):
             prod.NThreads = self.threads
 
     def _set_pileup_tool(self, gen_alg):
+        """Sets up the pile-up tool.
+
+        .. todo::
+
+            Pass on the pile-up tool options via ``PileUpToolOpts``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
         gen_alg.PileUpTool = self.getProp("PileUpTool")
 
     def _set_vertex_smearing_tool(self, gen_alg):
+        """Sets up the vertex smearing tool.
+
+        .. todo::
+
+            Investigate if any options need to be passed via ``GaussinoGeneration``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
         gen_alg.VertexSmearingTool = "BeamSpotSmearVertexWithSvc"
 
     def _set_redecay_signal_generation(self):
+        """Sets up the ReDecay equivalent of the signal generation tool.
+
+        .. todo::
+
+            Needs testing and revising!
+
+        Raises:
+            ValueError: if ``SignalPIDList`` not in the options
+
+        Returns:
+            ConfigurableMeta: ``ReDecaySignalGeneration``
+        """
         from Configurables import ReDecaySignalGeneration
 
         siggen_alg = ReDecaySignalGeneration()
@@ -314,7 +424,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         # -> full gen event cut tool
         self._set_full_gen_evt_cut_tool(siggen_alg)
         # -> production tool
-        prod = get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
+        get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
         # -> pileup tool
         siggen_alg.PileUpTool = "ReDecayPileUp"
         # -> vertex smearing tool
@@ -322,7 +432,20 @@ class GaussinoGeneration(GaussinoConfigurable):
         return siggen_alg
 
     def _configure_pgun(self) -> list:
-        """Simple utility function to create and configure an instance of particle gun"""
+        """Sets up the ParticleGun algorithm.
+
+        .. todo::
+            Set up & test passing of the options to particle gun tools
+            in a similar way that is done for the main generation algorithm.
+
+        Raises:
+            AttributeError: if ParticleGun chosen to be the main
+                generation algorithm, but no options were passed to the
+                configurable ``ParticleGun``
+
+        Returns:
+            list: list of algorithms
+        """
         from Configurables import ParticleGun
 
         if "ParticleGun" not in ParticleGun.configurables:
@@ -336,7 +459,12 @@ class GaussinoGeneration(GaussinoConfigurable):
         return [ParticleGun()]
 
     def _configure_rnd_init(self) -> list:
-        """Simple utility function to create and configure an instance GenRndInit"""
+        """Creates the algorithm responsible for the seed generation. It is either
+        ``GenRndInit`` or ``GenReDecayInit``
+
+        Returns:
+            list: list of algorithms
+        """
         from Configurables import (
             GenRndInit,
             GenReDecayInit,
@@ -351,7 +479,11 @@ class GaussinoGeneration(GaussinoConfigurable):
         return [conf()]
 
     def _configure_gen_monitor(self) -> list:
-        """Simple utility function to create and configure a GenMonitorAlg instance"""
+        """Creates the monitoring algorithm for the generation step: ``GenMonitorAlg``.
+
+        Returns:
+            list: list of algorithms
+        """
         if not self.getProp("GenMonitor"):
             return []
         from Configurables import GenMonitorAlg
@@ -364,7 +496,19 @@ class GaussinoGeneration(GaussinoConfigurable):
         return [alg]
 
     def _configure_hepmc_writer(self) -> list:
-        """Simple utility function to create and configure a HepMCinstance"""
+        """Creates an algorithm responsible for wrtiting the generator
+        data in HepMC format to a file:
+
+            - ``WriterRootTree`` to a root file,
+            - ``WriterAsciiTree`` to a txt file,
+            - ``WriterHEPEVT`` to an evt file.
+
+        Raises:
+            ValueError: if unknown writer provided
+
+        Returns:
+            list: list of algorithms
+        """
         if not self.getProp("WriteHepMC"):
             return []
         from Configurables import HepMCWriter
@@ -389,8 +533,13 @@ class GaussinoGeneration(GaussinoConfigurable):
         return [alg]
 
     def _configure_genonly(self) -> list:
-        """Method that is used when only the generation phase
-        is used.
+        """Configures a dedicated algorithm in case we skip the simulation part
+
+            - ``ReDecaySkipSimAlg`` when used in ReDecay mode,
+            - ``SkipSimAlg``  otherwise.
+
+        Returns:
+            list: list of algorithms
         """
         from Configurables import (
             SkipSimAlg,
@@ -409,7 +558,17 @@ class GaussinoGeneration(GaussinoConfigurable):
         return [alg_conf()]
 
     @staticmethod
-    def eventType():
+    def eventType() -> str:
+        """Checks is the event type was set, otherwise returns
+        an empty string
+
+        .. todo::
+
+            Rethink this.
+
+        Returns:
+            str: event type
+        """
         from Configurables import Generation
 
         evtType = ""

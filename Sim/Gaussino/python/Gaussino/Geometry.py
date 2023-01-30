@@ -12,6 +12,7 @@ __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
 from Gaudi.Configuration import log
+from GaudiKernel.ConfigurableMeta import ConfigurableMeta
 from Gaussino.Utilities import (
     add_constructors_with_names,
     GaussinoConfigurable,
@@ -25,12 +26,14 @@ from ParallelGeometry.Configuration import ParallelGeometry
 class GaussinoGeometry(GaussinoConfigurable):
     """Configurable for the geometry in Gaussino.
 
+    **Main**
+
     :var GeometryService: default: ``""``, name of the geometry service, if
         not provided then some custom geometry must be provided or using the
         external detector package
     :vartype GeometryService: str, optional
 
-    :var SensDetMap: default: ``{}``, additional map of  sensitive volumes
+    :var SensDetMap: default: ``{}``, additional map of sensitive volumes
         to volumes added on top of any geometry service
     :vartype SensDetMap: dict, optional
 
@@ -38,11 +41,15 @@ class GaussinoGeometry(GaussinoConfigurable):
         the geometry
     :vartype ExtraGeoTools: list, optional
 
+    **Handling GDML files**
+
     :var ExportGDML: default: ``{}``
     :vartype ExportGDML: dict, optional
 
     :var ImportGDML: default: ``[]``
     :vartype ImportGDML: list, optional
+
+    **External Detector**
 
     :var ExternalDetectorEmbedder: default: ``""``, name of the embedder used
         when creating external geometry
@@ -54,18 +61,28 @@ class GaussinoGeometry(GaussinoConfigurable):
     ]
 
     __slots__ = {
+        # MAIN
         "GeometryService": "",
         "SensDetMap": {},
         "ExtraGeoTools": [],
+        # HANDLING GDML FILES
         "ExportGDML": {},
         "ImportGDML": [],
+        # EXTERNAL DETECTOR
         "ExternalDetectorEmbedder": "",
     }
 
     # internal options to be set by Gaussino
     only_generation_phase = False
+    """ options set internally by Gaussino() """
 
     def __apply_configuration__(self):
+        """Main configuration method for the geometry to be used in Gaussino.
+        It applies the properties of the geoemtry right after the simulation configurable
+        :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>`, generation
+        :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` and the main configurable:
+        :class:`Gaussino <Gaussino.Configuration.Gaussino>`.
+        """
         log.debug("Configuring GaussinoGeometry")
         if GaussinoGeometry.only_generation_phase:
             log.debug("-> Only the generation phase, skipping.")
@@ -97,7 +114,17 @@ class GaussinoGeometry(GaussinoConfigurable):
         from Configurables import ApplicationMgr
         ApplicationMgr().TopAlg += algs
 
-    def _set_external_detector(self, dettool) -> list:
+    def _set_external_detector(self, dettool: ConfigurableMeta) -> list:
+        """Sets up the external detector package if requested.
+        See more info in a dedicated section below.
+
+        Args:
+            dettool (ConfigurableMeta): detector constructor
+                ``GiGaMTDetectorConstructionFAC("DetConst")``
+
+        Returns:
+            list: list of algorithms
+        """
         # Add external detectors geometries
         # TODO: external geometry was prepared to operate with spillover
         # but it is not available yet
@@ -113,14 +140,35 @@ class GaussinoGeometry(GaussinoConfigurable):
         algs += embedder.activate_moni_alg()  # no slot for now!
         return algs
 
-    def _set_parallel_geometry(self, dettool) -> list:
+    def _set_parallel_geometry(self, dettool: ConfigurableMeta) -> list:
+        """Sets up the parallel geoemtry package if requested. It works only
+        with the external detector package. See more info in a dedicated section below.
+
+        Args:
+            dettool (ConfigurableMeta): detector constructor
+                ``GiGaMTDetectorConstructionFAC("DetConst")``
+
+        Returns:
+            list: list of algorithms
+        """
         par_geo = ParallelGeometry()
         if not par_geo.getProp("ParallelWorlds"):
             return []
         log.debug("-> Configuring geometry in parallel worlds")
         return par_geo.attach(dettool)
 
-    def _set_gdml_export(self, dettool):
+    def _set_gdml_export(self, dettool: ConfigurableMeta):
+        """Sets up the properties needed to export the geometry to a GDML file.
+        See more info in a dedicated section below.
+
+        Args:
+            dettool (ConfigurableMeta): detector constructor
+                ``GiGaMTDetectorConstructionFAC("DetConst")``
+
+        Raises:
+            RuntimeError: if ``ExportGDML`` not a dictionary
+            RuntimeError: if options of ``ExportGDML`` do not start with `GDML*`
+        """
         gdml_export = self.getProp("ExportGDML")
         if type(gdml_export) is not dict:
             raise RuntimeError("ExportGDML should be a dictionary of options")
@@ -131,6 +179,18 @@ class GaussinoGeometry(GaussinoConfigurable):
                 raise RuntimeError("GDML options start with GDML")
 
     def _set_gdml_import(self, dettool):
+        """Sets up the properties needed to import geometry from a GDML file.
+        The geometry can be added to the geometry created with a geometry service.
+        See more info in a dedicated section below.
+
+        Args:
+            dettool (ConfigurableMeta): detector constructor
+                ``GiGaMTDetectorConstructionFAC("DetConst")``
+
+        Raises:
+            RuntimeError: if ``ImportGDML`` not a dictionary
+            RuntimeError: if values of ``ImportGDML`` are not dictionaries either
+       """
         gdml_imports = self.getProp("ImportGDML")
         if type(gdml_imports) is not list:
             raise RuntimeError("ImportGDML should be a list of dicts")

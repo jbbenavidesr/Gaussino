@@ -42,10 +42,6 @@ class ParallelGeometry(ConfigurableUser):
         .. highlight:: python
         .. code-block:: python
 
-            from Gaussino.Simulation import SimPhase
-            SimPhase().ParallelGeometry = True
-
-
             from Configurables import ParallelGeometry
             ParallelGeometry().ParallelWorlds = {
                 'ParallelWorld1': {
