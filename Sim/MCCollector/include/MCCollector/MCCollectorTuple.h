@@ -1,5 +1,5 @@
 /*****************************************************************************\
-* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+* (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  *
 *                                                                             *
 * This software is distributed under the terms of the Apache License          *
 * version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
@@ -8,18 +8,26 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+#pragma once
 
-// local
-#include "MCCollectorHit.h"
+// LHCb
+#include "Event/MCHeader.h"
+#include "Event/MCHit.h"
+// Gaudi
+#include "GaudiAlg/GaudiTupleAlg.h"
 
-G4ThreadLocal G4Allocator<MCCollector::Hit>* MCCollector::HitAllocator;
+namespace MCCollector {
 
-void* MCCollector::Hit::operator new( size_t ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  return (void*)MCCollector::HitAllocator->MallocSingle();
-}
+  class TupleAlg : public GaudiTupleAlg {
 
-void MCCollector::Hit::operator delete( void* hit ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  MCCollector::HitAllocator->FreeSingle( (MCCollector::Hit*)hit );
-}
+    Gaudi::Property<std::string> m_tupleName{this, "TupleName", "Particles"};
+
+  public:
+    using GaudiTupleAlg::GaudiTupleAlg;
+
+  protected:
+    void                                   fillCollectorTuple( const LHCb::MCHeader&, const LHCb::MCHits& ) const;
+    mutable Gaudi::Accumulators::Counter<> m_collHitsCounter{this, "CollectorHitsCounter"};
+  };
+
+} // namespace MCCollector
