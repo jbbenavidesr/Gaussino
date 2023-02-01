@@ -117,9 +117,6 @@ class GaussinoGeneration(GaussinoConfigurable):
     :vartype RevolutionFrequency: float, optional
     """
 
-    __required_configurables__ = [
-        "Gaussino",
-    ]
 
     __slots__ = {
         # MAIN

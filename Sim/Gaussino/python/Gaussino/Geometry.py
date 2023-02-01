@@ -56,10 +56,6 @@ class GaussinoGeometry(GaussinoConfigurable):
     :vartype ExternalDetectorEmbedder: str, optional
     """
 
-    __required_configurables__ = [
-        "Gaussino",
-    ]
-
     __slots__ = {
         # MAIN
         "GeometryService": "",

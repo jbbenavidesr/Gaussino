@@ -63,10 +63,6 @@ class GaussinoSimulation(GaussinoConfigurable):
     """
 
 
-    __required_configurables__ = [
-        "Gaussino",
-    ]
-
     __slots__ = {
         # MAIN
         "TrackTruth": True,

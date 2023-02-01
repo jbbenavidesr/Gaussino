@@ -28,6 +28,8 @@ def test_minimum_working_example():
 @cube
 def test_undefined_evt_max():
     with pytest.raises(ValueError, match=r".*EvtMax.*"):
+        from Configurables import Gaussino
+        Gaussino()
         applyConfigurableUsers()
 
 
