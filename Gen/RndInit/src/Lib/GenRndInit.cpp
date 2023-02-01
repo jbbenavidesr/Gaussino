@@ -25,32 +25,31 @@
 
 // Declaration of the Algorithm Factory
 
-StatusCode GenRndInit::initialize()
-{
-  StatusCode sc = GaudiAlgorithm::initialize();
-  if ( sc.isFailure() ) return sc;
-
-  if ( sc.isFailure() ) return Error( " Fatal error while retrieving Property EvtMax " );
-  auto appMgr  = service( "ApplicationMgr" );
-  auto propMgr = appMgr.as<IProperty>();
-  std::string value;
-  sc = propMgr->getProperty( "EvtMax", value );
-
-  m_eventMax = std::atoi( value.c_str() );
-  debug() << "Retrieved EvtMax = " << m_eventMax << endmsg;
-  info() << "Setting barrier sync for " << Gaudi::Concurrency::ConcurrencyFlags::numThreads() << endmsg;
-  m_barrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() );
-  return StatusCode::SUCCESS;
+StatusCode GenRndInit::initialize() {
+  return Producer::initialize().andThen( [&] {
+    auto        appMgr  = service( "ApplicationMgr" );
+    auto        propMgr = appMgr.as<IProperty>();
+    std::string value;
+    if ( propMgr->getProperty( "EvtMax", value ).isFailure() ) {
+      error() << "Error fetching EvtMax property from the ApplicationMgr";
+      return StatusCode::FAILURE;
+    }
+    m_eventMax = std::atoi( value.c_str() );
+    debug() << "Retrieved EvtMax = " << m_eventMax << endmsg;
+    info() << "Setting barrier sync for " << Gaudi::Concurrency::ConcurrencyFlags::numThreads() << endmsg;
+    m_barrier = new MTBarrier( Gaudi::Concurrency::ConcurrencyFlags::numThreads() );
+    return StatusCode::SUCCESS;
+  } );
 }
 
-std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
-{
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenRndInit::operator()() const {
   debug() << "==> Execute" << endmsg;
-
   // Initialize the random number
-  longlong eventNumber = m_firstEvent - 1 + this->increaseEventCounter();
-  if ( m_firstTimingEvent > 0 ) {
-    if ( eventNumber == ( m_firstEvent.value() + m_firstTimingEvent.value() ) ) {
+  auto eventNumber   = m_firstEvent - 1 + this->increaseEventCounter();
+  auto barrier_event = m_firstEvent.value() + m_firstTimingEvent.value();
+
+  if ( m_firstTimingEvent.value() > 0 ) {
+    if ( eventNumber == barrier_event ) {
       debug() << "Organising timing" << endmsg;
       // Initialising the start time for more precise monitoring
       // when the event loop is in full swing.
@@ -58,21 +57,19 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
       m_wait_at_barrier = false;
       m_start_time      = Clock::now();
       info() << "Started loop timing!" << endmsg;
-    } else if ( eventNumber > ( m_firstEvent.value() + m_firstTimingEvent.value() ) && m_wait_at_barrier ) {
+    } else if ( eventNumber > barrier_event && m_wait_at_barrier ) {
       m_barrier->wait();
       m_wait_at_barrier = false;
     }
   }
-  if ( eventNumber >= ( m_firstEvent.value() + m_firstTimingEvent.value() ) ) {
-    m_evtTimingCounter++;
-  }
+  if ( eventNumber >= barrier_event ) { m_evtTimingCounter++; }
 
   // Configure the event information in the event context
   // Places the event and run number onto the TES for other algorithms
   // to access when configuring their random engines.
-  SetSeedPair( eventNumber, m_runNumber );
+  SetSeedPair( eventNumber, m_runNumber.value() );
 
-  printEventRun( eventNumber, m_runNumber );
+  printEventRun( eventNumber, m_runNumber.value() );
 
   // Create GenHeader and partially fill it - updated during phase execution
   LHCb::GenHeader header{};
@@ -80,15 +77,21 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenRndInit::operator()() const
   // header->setApplicationName( this->appName() );
   // FIXME: Application Version
   // header->setApplicationVersion( this->appVersion() );
-  header.setRunNumber( m_runNumber );
+  header.setRunNumber( m_runNumber.value() );
   header.setEvtNumber( eventNumber );
   header.setEvType( 0 );
   auto beam = createBeamParameters();
-  return std::make_tuple( header, beam );
+
+  // Create ODIN
+  LHCb::ODIN odin{};
+  // Fill ODIN from event header
+  odin.setRunNumber( m_runNumber.value() );
+  odin.setEventNumber( eventNumber );
+
+  return std::make_tuple( header, beam, odin );
 }
 
-StatusCode GenRndInit::finalize()
-{
+StatusCode GenRndInit::finalize() {
   delete m_barrier;
   if ( m_firstTimingEvent >= 0 ) {
     auto end_time = Clock::now();
@@ -99,22 +102,19 @@ StatusCode GenRndInit::finalize()
     info() << "Time per event: "
            << std::chrono::duration_cast<std::chrono::seconds>( end_time - m_start_time ).count() /
                   (double)m_evtTimingCounter
-           << " seconds."
-           << endmsg;
+           << " seconds." << endmsg;
   }
-  return base_class::finalize();
+  return Producer::finalize();
 }
 
-void GenRndInit::printEventRun( long long event, int run, std::vector<long int>* seeds ) const
-{
+void GenRndInit::printEventRun( long long event, int run, std::vector<long int>* seeds ) const {
   info() << "Evt " << event << ",  Run " << run;
   info() << ",  Nr. in job = " << eventCounter();
   if ( 0 != seeds ) info() << " with seeds " << *seeds;
   info() << endmsg;
 }
 
-LHCb::BeamParameters GenRndInit::createBeamParameters() const
-{
+LHCb::BeamParameters GenRndInit::createBeamParameters() const {
   LHCb::BeamParameters ret{};
   // create beam parameter object
   ret.setEnergy( m_beamInfoSvc->energy() );
@@ -129,6 +129,14 @@ LHCb::BeamParameters GenRndInit::createBeamParameters() const
   ret.setBunchSpacing( m_beamInfoSvc->bunchSpacing() );
   ret.setBeamSpot( m_beamInfoSvc->beamSpot() );
   ret.setLuminosity( m_beamInfoSvc->luminosity() );
-
   return ret;
+}
+
+void GenRndInit::MTBarrier::wait() {
+  std::unique_lock<std::mutex> lock{_mutex};
+  if ( --m_n_waiting <= 0 ) {
+    _cv.notify_all();
+  } else {
+    _cv.wait( lock, [this] { return m_n_waiting <= 0; } );
+  }
 }
