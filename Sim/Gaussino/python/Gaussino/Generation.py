@@ -186,7 +186,6 @@ class GaussinoGeneration(GaussinoConfigurable):
         else:
             seq += self._configure_generation()
 
-        seq += self._configure_rnd_init()
         seq += self._configure_gen_monitor()
         seq += self._configure_hepmc_writer()
 
@@ -457,26 +456,6 @@ class GaussinoGeneration(GaussinoConfigurable):
             log.error(msg)
             raise AttributeError(msg)
         return [ParticleGun()]
-
-    def _configure_rnd_init(self) -> list:
-        """Creates the algorithm responsible for the seed generation. It is either
-        ``GenRndInit`` or ``GenReDecayInit``
-
-        Returns:
-            list: list of algorithms
-        """
-        from Configurables import (
-            GenRndInit,
-            GenReDecayInit,
-            SeedingTool,
-        )
-
-        conf = GenRndInit
-        if self.redecay:
-            conf = GenReDecayInit
-
-        conf().addTool(SeedingTool, name="SeedingTool")
-        return [conf()]
 
     def _configure_gen_monitor(self) -> list:
         """Creates the monitoring algorithm for the generation step: ``GenMonitorAlg``.

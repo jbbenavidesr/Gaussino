@@ -80,3 +80,55 @@ def test_hepmcwriter(writer, correct):
     else:
         with pytest.raises(ValueError, match=r".*HepMCWriter.*"):
             applyConfigurableUsers()
+
+@reset_configurables
+@events_1
+@em_physics
+@photon
+@cube
+@pytest.mark.parametrize(
+    "redecay", [
+        True,
+        False,
+    ]
+)
+def test_no_run_number_through_genrndinit(redecay):
+    with pytest.raises(ValueError, match=r".*RunNumber.*"):
+        from Configurables import Gaussino
+        Gaussino().ReDecay = redecay
+        if not redecay:
+            from Configurables import GenRndInit
+            GenRndInit().RunNumber = 1
+        else:
+            from Configurables import GenReDecayInit
+            GenReDecayInit().RunNumber = 1
+        applyConfigurableUsers()
+
+@reset_configurables
+@events_1
+@em_physics
+@photon
+@cube
+@pytest.mark.parametrize(
+    "redecay", [
+        True,
+        False,
+    ]
+)
+def test_correct_genrndinit_setup(redecay):
+    from Configurables import Gaussino
+    Gaussino().ReDecay = redecay
+    run_no = 0
+    if not redecay:
+        from Configurables import GenRndInit
+        run_no = GenRndInit().getProp("RunNumber")
+    else:
+        from Configurables import GenReDecayInit
+        run_no = GenReDecayInit().getProp("RunNumber")
+    Gaussino().RunNumber = run_no + 1
+    applyConfigurableUsers()
+    if not redecay:
+        assert GenRndInit().getProp("RunNumber") == run_no + 1
+    else:
+        assert GenReDecayInit().getProp("RunNumber") == run_no + 1
+
