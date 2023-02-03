@@ -45,6 +45,12 @@ class Gaussino(GaussinoConfigurable):
         or ``["Generation"]``
     :vartype Phases: list, optional
 
+    :var FirstEventNumber: default: ``1``
+    :vartype FirstEventNumber: int, optional
+
+    :var RunNumber: default: ``1``
+    :vartype RunNumber: int, optional
+
     **Output**
 
     :var Histograms: default: ``"DEFAULT"``
@@ -100,6 +106,8 @@ class Gaussino(GaussinoConfigurable):
         # MAIN
         "EvtMax": -1,
         "Phases": ["Generator", "Simulation"],
+        "FirstEventNumber": 1,
+        "RunNumber": 1,
         # OUTPUT
         "Histograms": "DEFAULT",
         "DatasetName": "Gaussino",
@@ -135,6 +143,9 @@ class Gaussino(GaussinoConfigurable):
         # MT options
         self._setup_hive()
         self._setup_geant4MT()
+
+        # Seed
+        self._configure_rnd_init()
 
         # Services
         self._set_particle_property_service()
@@ -227,6 +238,34 @@ class Gaussino(GaussinoConfigurable):
 
         # propagate the barrier to GenRndInit
         GenRndInit().TimingSkipAtStart = self.getProp("TimingSkipAtStart")
+
+    def _configure_rnd_init(self):
+        """Creates the algorithm responsible for the seed generation. It is either
+        ``GenRndInit`` or ``GenReDecayInit``
+        """
+        from Configurables import (
+            ApplicationMgr,
+            GenRndInit,
+            GenReDecayInit,
+            SeedingTool,
+        )
+
+        conf = GenRndInit
+        if self.getProp("ReDecay"):
+            conf = GenReDecayInit
+
+        if conf().isPropertySet("RunNumber"):
+            # disable direct setting of the GenRndInit().RunNumber
+            # -> the reason is that it is also needed by the ODIN generator in Gauss
+            msg = "'RunNumber' must be set internally via GaussinoGeneration()!"
+            log.error(msg)
+            raise ValueError(msg)
+        conf(
+            RunNumber=self.getProp("RunNumber"),
+            FirstEventNumber=self.getProp("FirstEventNumber"),
+        )
+        conf().addTool(SeedingTool, name="SeedingTool")
+        ApplicationMgr().TopAlg.append(conf())
 
     def _setup_geant4MT(self):
         """Sets up the Geant4 multi-threading options.
