@@ -8,9 +8,9 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "RndInit/GenRndInit.h"
-#include "GiGaMTReDecay/Token.h"
 #include "GiGaMTReDecay/IRedecaySvc.h"
+#include "GiGaMTReDecay/Token.h"
+#include "RndInit/GenRndInit.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : GenReDecayInit
@@ -19,45 +19,29 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-class GenReDecayInit : public GenRndInit
-{
+class GenReDecayInit : public GenRndInit {
 
 public:
-  /// Standard constructor
   using GenRndInit::GenRndInit;
 
-  virtual StatusCode initialize() override;
-  virtual StatusCode finalize() override;
-  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const override;
-
-  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters> operator()() const override;
-
-protected:
-
+  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> operator()() const override;
 
 private:
-  ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
+  ServiceHandle<IReDecaySvc>                              m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
   mutable DataObjectWriteHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, this};
 };
 
 DECLARE_COMPONENT( GenReDecayInit )
 
-StatusCode GenReDecayInit::initialize()
-{
-  StatusCode sc = GenRndInit::initialize();
-  return sc;
-}
-
-std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenReDecayInit::operator()() const
-{
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenReDecayInit::operator()() const {
   debug() << "==> Execute" << endmsg;
-  auto ret = GenRndInit::operator()();
-  auto seedpair = GetSeedPair();
-  auto [event, run] = seedpair;
-  auto token = m_redecaysvc->obtainToken(seedpair);
+  auto ret                        = GenRndInit::operator()();
+  auto                   seedpair = GetSeedPair();
+  auto [event, run]               = seedpair;
+  auto token                      = m_redecaysvc->obtainToken( seedpair );
   info() << "Evt " << event << ",  Run " << run;
   info() << ",  Nr. in job = " << eventCounter();
-  if(token.IsOriginal()){
+  if ( token.IsOriginal() ) {
     info() << " Original";
   } else {
     info() << " ReDecayed";
@@ -66,13 +50,4 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters> GenReDecayInit::operator()() c
   m_tokenhandle.put( std::move( token ) );
 
   return ret;
-}
-
-StatusCode GenReDecayInit::finalize()
-{
-  return GenRndInit::finalize();
-}
-
-void GenReDecayInit::printEventRun( long long , int , std::vector<long int>* ) const
-{
 }
