@@ -17,9 +17,9 @@ Please note that Gaussino is an experiment-independent package. If you are looki
 
     Currently, Gaussino is built in each nightly slots on 3 platforms:
 
-    - **x86_64_v2-centos7-gcc11-opt** release build with **DetDesc only** geometry,
-    - **x86_64_v2-centos7-gcc11-dbg** debug build with **DetDesc only** geometry,
-    - **x86_64_v2-centos7-gcc11+dd4hep-opt** release build with both **DetDesc & DD4Hep** geometry,
+    - **x86_64_v2-centos7-gcc11-opt** release build with **DetDesc & DD4Hep** geometry,
+    - **x86_64_v2-centos7-gcc11-dbg** debug build with **DetDesc & DD4Hep** geometry,
+    - **x86_64_v2-centos7-gcc11+detdesc-opt** release build with **DetDesc only** geometry,
 ```
 
 ## Building full Gaussino (LHCb)
@@ -36,14 +36,9 @@ source /cvmfs/lhcb.cern.ch/lib/LbEnv
 
 The following will make sure that you have the most recent platform.
 
-```{eval-rst}
-.. tip::
-    Use **x86_64_v2-centos7-gcc11+dd4hep-opt** if you want to work with **DD4hep**.
-```
-
 ```shell
 lb-set-platform x86_64_v2-centos7-gcc11-opt
-export LCG_VERSION=101a
+export LCG_VERSION=102b
 ```
 
 Fetch the nightlies locally
