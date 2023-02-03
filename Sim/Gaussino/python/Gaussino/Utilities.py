@@ -22,21 +22,12 @@ from GaudiKernel.ConfigurableDb import getConfigurable
 
 class GaussinoConfigurable(ConfigurableUser):
 
-    __required_configurables__ = []
     _rigid = False
 
     def __init__(self, name=Configurable.DefaultName, _enabled=True, **kwargs):
         super(GaussinoConfigurable, self).__init__(
             name=name, _enabled=_enabled, **kwargs
         )
-        if _enabled:
-            for req_conf_name in self.__required_configurables__:
-                req_conf = getConfigurable(req_conf_name)
-                if not req_conf.configurables:
-                    self._enabled = False
-                    req = req_conf()
-                    req.__used_instances__.append(self)
-                    self.__users__.append(req)
         self._rigid = True
 
     def __setattr__(self, key, value):
