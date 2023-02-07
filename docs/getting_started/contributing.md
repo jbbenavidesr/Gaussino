@@ -1,10 +1,9 @@
 # Contributing
 
-The future framework (for LHCb) consists of two components, Gaussino and Gauss. Gaussino contains all core functionality which should be independent of LHCb. It should incorporate all framework related issues and define all necessary interfaces and implement the interplay between them. Gauss itself is based on Gaussino and should only contain the specific implementations of the interfaces defined in Gaussino and the necessary configuration to setup the application. 
-
+Gaussino contains all the core functionalities which should be independent of any experiment. It should incorporate all the framework related issues, define all the necessary interfaces and implement the interplay between them.
 ## Developing Gaussino
 
-Please make sure that you followed the recipe described in [](./gaussino.md#working-with-gaussino) and make sure that you work on your local development branch.
+Please make sure that you followed the recipe described in [](./installation.md#installation) and make sure that you work on your local development branch.
 
 Changes should be introduced via merge requests targeting the `master` branch. If you wish to open a MR with your local branch (the name of the branch should start with your username, e.g. `username-some-changes`), then you can directly push the changes to the branch in the remote repository:
 
@@ -12,26 +11,17 @@ Changes should be introduced via merge requests targeting the `master` branch. I
 git add file1 file2
 git commit -m "The description of your commit"
 git push origin username-some-changes
-```  
-
-In gitlab, open a MR targeting the `master` branch. Adding the `lhcb-gaussino` label will include your changes in the next nightly build of `lhcb-gaussino`.
-
-## Developing Gauss-on-Gaussino
-
-```{eval-rst}
-.. attention::
-    This sub-section will be moved to a new documentation website dedicated to Gauss.
 ```
 
-The instructions are almost the same as for Gaussino in the previous section: [](./contributing.md#developing-gaussino). The only difference is that the MR should be targeting `Futurev5` branch.
+In gitlab, open a MR targeting the `master` branch.
 
-## Fast simulation developments with Geant4 10.7
+## Testing your MR in the nightly system
 
-All the developments related to fast simulations with Geant4 10.7 are tested in the `lhcb-gaussino-fastsim` nightly slot. We have a dedicated target branch in Gaussino and Gauss-on-Gaussino for these developments: `FASTSIM`. Therefore, you can follow the instructions as in [](./gaussino.md#working-with-gaussino), [](./gauss.md#working-with-gauss-on-gaussino-to-be-moved), [](./contributing.md#developing-gaussino) and [](./contributing.md#developing-gauss-on-gaussino) and change `lhcb-gaussino` to `lhcb-gaussino-fastsim` and `master` to `FASTSIM` (in Gauss: `Futurev5` to `FASTSIM`). 
+Adding a label with the name of nightly slot in which you wish to test your MR, will include it in the next build of this slot. For example, if you add `lhcb-gaussino` label, your MR will be included in the next nightly build of `lhcb-gaussino`.
 
 ## Documentation
 
-1. Add a `Documentation` label to your MR. This will activate the gitlab CI pipeline.
+1. Add a `Python Documentation` label to your MR. This will activate the gitlab CI pipeline.
 
 2. Edit or add new markdown (`.md`) or reStructured Text (`.rst`) files in the `docs/` repository and make sure they are listed in the `index.rst` file. You can mix both by creating a markdown file and then putting rst in the following format:
 
@@ -41,6 +31,6 @@ Your reStructured Text in markdown.
 ```{}
 ```
 
-3. Your documentation should be accessible at `https://lhcbdoc.web.cern.ch/lhcbdoc/gaussino/name-of-your-branch/index.html`
+3. Your documentation should be accessible at `https://gaussino.docs.cern.ch/name-of-your-branch/index.html`
 
-4. You can test the documentation locally by running `gitlab-runner exec shell build-docs`. Standard `make docs` will not work, as we need to add python paths of other projects.
+4. You can test the documentation locally by running `gitlab-runner exec shell build-docs`.

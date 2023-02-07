@@ -5,26 +5,15 @@
 Here's an example of how you can embed an empty cube in a parallel world that will also be activated as an `MCCollector` type of sensitive detector:
 
 ```python
-from Configurables import Gaussino
-Gaussino().EvtMax = 1
-Gaussino().EnableHive = True
-Gaussino().ThreadPoolSize = 1
-Gaussino().EventSlots = 1
+from Gaudi.Configuration import importOptions
+importOptions("$GAUSSINOOPTS/General/Events-1.py")
+importOptions("$GAUSSINOOPTS/General/ConvertEDM.py")
+importOptions("$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py")
+importOptions("$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py")
 
-from Configurables import GiGaMT
-GiGaMT().NumberOfWorkerThreads = 1
-
-# some dumb generation, not important, just fast
-from Gaussino.Generation import GenPhase
-GenPhase().ParticleGun = True
-GenPhase().ParticleGunUseDefault = True
-
-from Gaussino.Simulation import SimPhase
-SimPhase().ParallelGeometry = True
-
+from ExternalDetector.Materials import OUTER_SPACE
 from Configurables import ExternalDetectorEmbedder
 parallel_embedder = ExternalDetectorEmbedder("CubeEmbedder")
-
 
 # sets up the mass geometry
 parallel_embedder.World = {
@@ -36,13 +25,7 @@ parallel_embedder.World = {
 # material needed for the external world
 from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
 parallel_embedder.Materials = {
-    "OuterSpace": {
-        "AtomicNumber": 1.,
-        "MassNumber": 1.01 * g / mole,
-        "Density": 1.e-25 * g / cm3,
-        "Pressure": 3.e-18 * pascal,
-        "Temperature": 2.73 * kelvin,
-    },
+    "OuterSpace": OUTER_SPACE,
 }
 
 parallel_embedder.Shapes = {
@@ -73,101 +56,57 @@ ParallelGeometry().ParallelPhysics = {
     },
 }
 ```
-## Mixed geometry 
+
+## Mixed geometry
 
 Here you'll find 3 same-size sensitive detectors (of type `MCCollector`) each placed in a different world. One of them is placed in the mass world and is made out of the lead. The second one is made out of the vacuum and placed in a parallel world, right on top of the mass world. Finally, the last one is placed in another parallel world on top of the other worlds.
 
-A single 1 GeV photon is released along the z-axis. Because the last world on the stack has `LayerdMass=False`, the material is not overridden and the photon "sees" vacuum as the material of the plane. As a result, it does not deposit any energy within its body. 
+A single 1 GeV photon is released along the z-axis. Because the last world on the stack has `LayerdMass=False`, the material is not overridden and the photon "sees" vacuum as the material of the plane. As a result, it does not deposit any energy within its body.
 
 This example is also used as a test `mixed_geometry.qmt`. The test checks whether the hits generated in all three sensitive detectors are EXACTLY the same. They should be registered in the same place and have 0 energy deposit.
 
 ![mixed_geometry](/images/mixed_geometry.png)
 
 ```python
-# standard Gaussino
-from Configurables import Gaussino
-Gaussino().EvtMax = 1
-Gaussino().EnableHive = True
-Gaussino().ThreadPoolSize = 1
-Gaussino().EventSlots = 1
+from Gaudi.Configuration import importOptions
 
-from Configurables import GiGaMT
-GiGaMT().NumberOfWorkerThreads = 1
+importOptions("$GAUSSINOOPTS/General/Events-1.py")
+importOptions("$GAUSSINOOPTS/General/ConvertEDM.py")
+importOptions("$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py")
+importOptions("$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py")
 
-# Enable EDM as we will create hits
-from Configurables import Gaussino
-Gaussino().ConvertEDM = True
-
-# Activate EM physics
-from Gaussino.Simulation import SimPhase
-SimPhase().PhysicsConstructors = ["GiGaMT_G4EmStandardPhysics"]
-
-# Particle Gun
-# shoots just one 1 GeV photon along z
-from Gaussino.Generation import GenPhase
-GenPhase().ParticleGun = True
-GenPhase().ParticleGunUseDefault = False
-
-from Configurables import ParticleGun
-pgun = ParticleGun("ParticleGun")
-from Configurables import FixedMomentum
-pgun.ParticleGunTool = "FixedMomentum"
-pgun.addTool(FixedMomentum, name="FixedMomentum")
-from GaudiKernel.SystemOfUnits import GeV
-pgun.FixedMomentum.px = 0. * GeV
-pgun.FixedMomentum.py = 0. * GeV
-pgun.FixedMomentum.pz = 1. * GeV
-pgun.FixedMomentum.PdgCodes = [22]
-from Configurables import FlatNParticles
-pgun.NumberOfParticlesTool = "FlatNParticles"
-pgun.addTool(FlatNParticles, name="FlatNParticles")
-pgun.FlatNParticles.MinNParticles = 1
-pgun.FlatNParticles.MaxNParticles = 1
+from GaudiKernel import SystemOfUnits as units
+from ExternalDetector.Materials import (
+    OUTER_SPACE,
+    LEAD,
+)
+from Configurables import (
+    GaussinoGeometry,
+    ExternalDetectorEmbedder,
+    ParallelGeometry,
+)
 
 # plain/testing geometry service
-from Gaudi.Configuration import DEBUG
 world = {
     'WorldMaterial': 'OuterSpace',
     'Type': 'ExternalWorldCreator',
-    'OutputLevel': DEBUG,
 }
 
 # material needed for the external world
-from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
-from Gaudi.Configuration import DEBUG
 materials = {
-    "OuterSpace": {
-        'AtomicNumber': 1.,
-        'MassNumber': 1.01 * g / mole,
-        'Density': 1.e-25 * g / cm3,
-        'Pressure': 3.e-18 * pascal,
-        'Temperature': 2.73 * kelvin,
-        'State': 'Gas',
-        'OutputLevel': DEBUG,
-    },
-    'Pb': {
-        'Type': 'MaterialFromElements',
-        'Symbols': ['Pb'],
-        'AtomicNumbers': [82.],
-        'MassNumbers': [207.2 * g / mole],
-        'MassFractions': [1.],
-        'Density': 11.29 * g / cm3,
-        'State': 'Solid',
-        'OutputLevel': DEBUG,
-    },
+    "OuterSpace": OUTER_SPACE,
+    'Pb': LEAD,
 }
 
 # Generic options for all detectors
-from GaudiKernel.SystemOfUnits import m
 generic_shape = {
     'Type': 'Cuboid',
-    'xPos': 0. * m,
-    'yPos': 0. * m,
-    'zPos': 5. * m,
-    'xSize': 5. * m,
-    'ySize': 5. * m,
-    'zSize': 1. * m,
-    'OutputLevel': DEBUG,
+    'xPos': 0. * units.m,
+    'yPos': 0. * units.m,
+    'zPos': 5. * units.m,
+    'xSize': 5. * units.m,
+    'ySize': 5. * units.m,
+    'zSize': 1. * units.m,
 }
 
 generic_sensitive = {
@@ -175,17 +114,16 @@ generic_sensitive = {
     'RequireEDep': False,
     'OnlyForward': False,
     'PrintStats': True,
-    'OutputLevel': DEBUG,
 }
 
 generic_hit = {
     'Type': 'GetMCCollectorHitsAlg',
-    'OutputLevel': DEBUG,
 }
 
 # External detector embedders in mass & parallel geometry
-from Configurables import ExternalDetectorEmbedder
 mass_embedder = ExternalDetectorEmbedder('MassEmbedder')
+# here embedding of the geometry takes place
+GaussinoGeometry().ExternalDetectorEmbedder = "MassEmbedder"
 parallel_embedder_1 = ExternalDetectorEmbedder('ParallelEmbedder1')
 parallel_embedder_2 = ExternalDetectorEmbedder('ParallelEmbedder2')
 
@@ -206,7 +144,6 @@ parallel_embedder_2.Shapes['ParallelPlane2']["MaterialName"] = 'Pb'
 parallel_embedder_2.Sensitive = {'ParallelPlane2': dict(generic_sensitive)}
 parallel_embedder_2.Hit = {'ParallelPlane2': dict(generic_hit)}
 
-from Configurables import ParallelGeometry
 ParallelGeometry().ParallelWorlds = {
     'ParallelWorld1': {
         'ExternalDetectorEmbedder': 'ParallelEmbedder1',
@@ -238,17 +175,11 @@ ParallelGeometry().ParallelPhysics = {
     },
 }
 
-from Gaussino.Simulation import SimPhase
-SimPhase().ParallelGeometry = True
-
-# here embedding of the geometry takes place
-from Gaussino.Simulation import SimPhase
-SimPhase().ExternalDetectorEmbedder = "MassEmbedder"
-
-SimPhase().ExportGDML = {
+GaussinoGeometry().ExportGDML = {
     'GDMLFileName': 'MassWorld.gdml',
     'GDMLFileNameOverwrite': True,
     'GDMLExportSD': True,
     'GDMLExportEnergyCuts': True,
 }
+
 ```

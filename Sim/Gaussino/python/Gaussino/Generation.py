@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,85 +8,28 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-"""
-High level and utility functions to set up the Generation step in Gaussino
-"""
+__author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
+__email__ = "lhcb-simulation@cern.ch"
 
-from Gaudi.Configuration import ConfigurableUser, Configurable, ApplicationMgr
-from GaudiKernel import SystemOfUnits
+from GaudiKernel import SystemOfUnits as units
+from GaudiKernel.ConfigurableMeta import ConfigurableMeta
 from Gaudi.Configuration import log
-from Gaussino.GenUtils import configure_rnd_init, configure_gen_monitor
-from Gaussino.GenUtils import configure_hepmc_writer
+
+from Gaussino.Utilities import (
+    GaussinoConfigurable,
+    get_set_configurable,
+)
 
 
-class GenPhase(ConfigurableUser):
-    """Configurable for the Generation phase in Gaussino. Does not implement
-    a self.__apply_configuration__ itself. Instead, all member functions are
-    explicitly called during the configuration of Gaussino()
+class GaussinoGeneration(GaussinoConfigurable):
+    """Configurable for the Generation phase in Gaussino.
 
-    :var BeamMomentum: default: ``3.5 * SystemOfUnits.TeV``
-    :vartype BeamMomentum: float, optional
-
-    :var BeamHCrossingAngle: default: ``-0.520 * SystemOfUnits.mrad``
-    :vartype BeamHCrossingAngle: float, optional
-
-    :var BeamVCrossingAngle: default: ``0.0``
-    :vartype BeamVCrossingAngle: float, optional
-
-    :var BeamEmittance: default: ``0.0037 * SystemOfUnits.mm``
-    :vartype BeamEmittance: float, optional
-
-    :var BeamBetaStar: default: ``3.1 * SystemOfUnits.m``
-    :vartype BeamBetaStar: float, optional
-
-    :var BeamLineAngles: default:
-        ``[-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad]``
-    :vartype BeamLineAngles: list, optional
-
-    :var InteractionPosition: default:
-        ``[0.459 * SystemOfUnits.mm, -0.015 * SystemOfUnits.mm,
-        0.5 * SystemOfUnits.mm]``
-    :vartype InteractionPosition: list, optional
-
-    :var BunchRMS: default: ``82.03 * SystemOfUnits.mm``
-    :vartype BunchRMS: float, optional
-
-    :var Luminosity: default:
-        ``0.247 * (10 ** 30) / (SystemOfUnits.cm2 * SystemOfUnits.s)``
-    :vartype Luminosity: float, optional
-
-    :var TotalCrossSection: default: ``91.1 * SystemOfUnits.millibarn``
-    :vartype TotalCrossSection: float, optional
-
-    :var B2Momentum: default: ``3.5 * SystemOfUnits.TeV``
-    :vartype B2Momentum: float, optional
-
-    :var B1Particle: default: ``'p'``
-    :vartype B1Particle: str, optional
-
-    :var B2Particle: default: ``'p'``
-    :vartype B2Particle: str, optional
-
-    :var EvtMax: default: ``-1``
-    :vartype EvtMax: int, optional
+    **Main**
 
     :var WriteHepMC: default: ``False``
     :vartype WriteHepMC: bool, optional
 
-    :var GenMonitor: default: ``False``
-    :vartype GenMonitor: bool, optional
-
-    :var ParticleGun: default: ``False``
-    :vartype ParticleGun: bool, optional
-
-    :var ParticleGunUseDefault: default: ``False``
-    :vartype ParticleGunUseDefault: bool, optional
-
-    :var Production_kwargs: default: ``{}``
-    :vartype Production_kwargs: dict, optional
-
-    :var ConvertEDM: default: ``False``
-    :vartype ConvertEDM: bool, optional
+    **Generation modules**
 
     :var SampleGenerationTool: default: ``'SignalPlain'``
     :vartype SampleGenerationTool: str, optional
@@ -97,8 +40,13 @@ class GenPhase(ConfigurableUser):
     :var PileUpTool: default: ``'FixedLuminosityWithSvc'``
     :vartype PileUpTool: str, optional
 
-    :var ProductionTool: default: ``'Pythia8Production'``
+    :var ProductionTool: default: ``'Pythia8ProductionMT'``,
+        for Pythia8 there are 2 possibilities: ``'Pythia8Production'`` (shared)
+        and ``'Pythia8ProductionMT'`` (thread-local) interface
     :vartype ProductionTool: str, optional
+
+    :var ProductionToolOpts: default: ``{}``
+    :vartype ProductionToolOpts: dict, optional
 
     :var DecayTool: default: ``''``
     :vartype DecayTool: str, optional
@@ -114,284 +62,492 @@ class GenPhase(ConfigurableUser):
 
     :var FullGenEventToolOpts: default: ``{}``
     :vartype FullGenEventToolOpts: dict, optional
+
+    **Monitoring**
+
+    :var GenMonitor: default: ``False``
+    :vartype GenMonitor: bool, optional
+
+    **Particle gun options**
+
+    :var ParticleGun: default: ``False``
+    :vartype ParticleGun: bool, optional
+
+    **Beam options**
+
+    .. todo::
+
+        Custom ``B1Particle`` and ``B2Particle`` are not available yet!
+
+    :var BeamMomentum: default: ``3.5 * units.TeV``
+    :vartype BeamMomentum: float, optional
+
+    :var BeamHCrossingAngle: default: ``0.0 * units.mrad``
+    :vartype BeamHCrossingAngle: float, optional
+
+    :var BeamVCrossingAngle: default: ``0.0 * units.mrad``
+    :vartype BeamVCrossingAngle: float, optional
+
+    :var BeamEmittance: default: ``0.0037 * units.mm``
+    :vartype BeamEmittance: float, optional
+
+    :var BeamBetaStar: default: ``3.1 * units.m``
+    :vartype BeamBetaStar: float, optional
+
+    :var BeamLineAngles: default:
+        ``[0.0 * units.mrad, 0.0 * units.mrad]``
+    :vartype BeamLineAngles: list, optional
+
+    :var InteractionPosition: default:
+        ``[0.0 * units.mm, 0.0 * units.mm,
+        0.0 * units.mm]``
+    :vartype InteractionPosition: list, optional
+
+    :var BunchRMS: default: ``82.03 * units.mm``
+    :vartype BunchRMS: float, optional
+
+    :var Luminosity: default:
+        ``2.47e29 / (units.cm2 * units.s)``
+    :vartype Luminosity: float, optional
+
+    :var TotalCrossSection: default: ``91.1 * units.millibarn``
+    :vartype TotalCrossSection: float, optional
+
+    :var RevolutionFrequency: default: ``11.245 * units.kilohertz``
+    :vartype RevolutionFrequency: float, optional
     """
 
+
     __slots__ = {
-        "BeamMomentum":
-        3.5 * SystemOfUnits.TeV,  # NOQA
-        "BeamHCrossingAngle":
-        -0.520 * SystemOfUnits.mrad,  # NOQA
-        "BeamVCrossingAngle":
-        0.0,  # NOQA
-        "BeamEmittance":
-        0.0037 * SystemOfUnits.mm,  # NOQA
-        "BeamBetaStar":
-        3.1 * SystemOfUnits.m,  # NOQA
-        "BeamLineAngles":
-        [-0.075 * SystemOfUnits.mrad, 0.035 * SystemOfUnits.mrad],  # NOQA
+        # MAIN
+        "WriteHepMC": False,
+        # GENERATION MODULES
+        "SampleGenerationTool": "SignalPlain",
+        "SampleGenerationToolOpts": {},
+        "PileUpTool": "FixedLuminosityWithSvc",
+        "ProductionTool": "Pythia8ProductionMT",
+        "ProductionToolOpts": {},
+        "DecayTool": "",
+        "CutTool": "",
+        "CutToolOpts": {},
+        "FullGenEventCutTool": "",
+        "FullGenEventCutToolOpts": {},
+        # MONITORING
+        "GenMonitor": False,
+        # PARTICLE GUN OPTIONS
+        "ParticleGun": False,
+        # BEAM OPTIONS
+        "BeamMomentum": 3.5 * units.TeV,
+        "BeamHCrossingAngle": 0.0 * units.mrad,
+        "BeamVCrossingAngle": 0.0 * units.mrad,
+        "BeamEmittance": 0.0037 * units.mm,
+        "BeamBetaStar": 3.1 * units.m,
+        "BeamLineAngles": [0.0 * units.mrad, 0.0 * units.mrad],
         "InteractionPosition": [
-            0.459 * SystemOfUnits.mm, -0.015 * SystemOfUnits.mm,
-            0.5 * SystemOfUnits.mm
-        ],  # NOQA
-        "BunchRMS":
-        82.03 * SystemOfUnits.mm,  # NOQA
-        "Luminosity":
-        0.247 * (10**30) / (SystemOfUnits.cm2 * SystemOfUnits.s),  # NOQA
-        "TotalCrossSection":
-        91.1 * SystemOfUnits.millibarn,  # NOQA
-        "B2Momentum":
-        3.5 * SystemOfUnits.TeV,  # NOQA
-        "B1Particle":
-        'p',  # NOQA
-        "B2Particle":
-        'p',  # NOQA
-        "EvtMax":
-        -1,  # NOQA
-        "WriteHepMC":
-        False,  # NOQA
-        "GenMonitor":
-        False,  # NOQA
-        "ParticleGun":
-        False,  # NOQA
-        "ParticleGunUseDefault":
-        True,  # NOQA
-        "Production_kwargs": {},  # NOQA
-        "ConvertEDM":
-        False,  # NOQA
-        "SampleGenerationTool":
-        'SignalPlain',  # NOQA
-        "SampleGenerationToolOpts": {},  # NOQA
-        "PileUpTool":
-        'FixedLuminosityWithSvc',  # NOQA
-        "ProductionTool":
-        'Pythia8Production',  # NOQA
-        "DecayTool":
-        '',  # NOQA
-        "CutTool":
-        '',  # NOQA
-        "CutToolOpts": {},  # NOQA
-        "FullGenEventCutTool":
-        '',  # NOQA
-        "FullGenEventCutToolOpts": {}  # NOQA
+            0.0 * units.mm,
+            0.0 * units.mm,
+            0.0 * units.mm,
+        ],
+        "BunchRMS": 82.03 * units.mm,
+        "Luminosity": 2.47e29 / (units.cm2 * units.s),
+        "TotalCrossSection": 91.1 * units.millibarn,
+        "RevolutionFrequency": 11.245 * units.kilohertz,
+        # FIXME: beam particles are now fixed in LHCbDefaults.cmd
+        #        to be meade generic!
+        # "B2Momentum": 3.5 * units.TeV,
+        # "B1Particle": "p",
+        # "B2Particle": "p",
     }
 
-    def __init__(self, name=Configurable.DefaultName, **kwargs):
-        kwargs["name"] = name
-        super(GenPhase, self).__init__(*(), **kwargs)
+    # internal options to be set by Gaussino
+    only_generation_phase = False
+    """ options set internally by Gaussino() """
+    redecay = False
+    """ options set internally by Gaussino() """
+    output_name = False
+    """ options set internally by Gaussino() """
 
-    def setOtherProp(self, other, name):
-        """Set the given property in another configurable object
-
-        :param other: The other configurable to set the property for
-        :param name:  The property name
+    def __apply_configuration__(self):
+        """Main configuration method for the generation phase.
+        It applies the properties of the generation phase right after the main
+        :class:`Gaussino <Gaussino.Configuration.Gaussino>` configurable, but before
+        the detector transport and geometry configurables:
+        :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>` and
+        :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
         """
-        self.propagateProperty(name, other)
+        from Configurables import ApplicationMgr
 
-    def setOtherProps(self, other, names):
-        """ Set the given properties in another configurable object
+        seq = []
+        if self.getProp("ParticleGun"):
+            seq += self._configure_pgun()
+        else:
+            seq += self._configure_generation()
 
-        :param other: The other configurable to set the property for
-        :param names: The property names
+        seq += self._configure_gen_monitor()
+        seq += self._configure_hepmc_writer()
+
+        if self.only_generation_phase:
+            seq += self._configure_genonly()
+
+        ApplicationMgr().TopAlg += seq
+
+    def _configure_generation(self) -> list:
+        """Configuration method for the generation other than
+        a particle gun. The idea is to set all the modules required for
+        the main generation algorithm.
+
+            - sample generation tool
+            - decay tool,
+            - cut tool,
+            - production tool,
+            - pile-up tool,
+            - vertex smearing tool,
+
+        The main generation algorithm could be either ``Generation`` or ``ReDecayGeneration``.
+
+        Returns:
+            list: list of algorithms
         """
-        self.propagateProperties(names, other)
+        from Configurables import (
+            Generation,
+            ReDecayGeneration,
+        )
 
-    def configure_generation(self, seq):
-        """ Configuration method for the generation other than
-        a particle gun.
-
-        :param seq: list of algorithms
-        """
-        # Algorithm that produces the actual HepMC by talking to stuff
-        SampleGenerationTool = self.getProp('SampleGenerationTool')
-        ProductionTool = self.getProp('ProductionTool')
-        DecayTool = self.getProp('DecayTool')
-        CutTool = self.getProp('CutTool')
-        FullGenEventCutTool = self.getProp('FullGenEventCutTool')
-        PileUpTool = self.getProp('PileUpTool')
-
-        from Gaussino.Utilities import beaminfoService
-        from Gaussino.Utilities import get_set_configurable
-        beaminfoService()
-        from Configurables import Gaussino
-        if Gaussino().getProp("ReDecay"):
-            from Configurables import ReDecayGeneration
+        seq = []
+        self._set_beam_parameters()
+        gen_alg = Generation
+        if self.redecay:
             gen_alg = ReDecayGeneration()
-        else:
-            from Configurables import Generation
-            gen_alg = Generation()
-        sgt = get_set_configurable(gen_alg, 'SampleGenerationTool',
-                                   SampleGenerationTool)
-        sgt_opts = self.getProp('SampleGenerationToolOpts')
-        for n, v in sgt_opts.items():
-            sgt.setProp(n, v)
-        try:
-            sgt.DecayTool = DecayTool
-        except:
-            pass
-        try:
-            if CutTool != '':
-                ct = get_set_configurable(sgt, 'CutTool', CutTool)
-                ct_opts = self.getProp('CutToolOpts')
-                for n, v in ct_opts.items():
-                    ct.setProp(n, v)
-            else:
-                sgt.CutTool = ''
-        except Exception as e:
-            log.error('Could not configure CutTool', e)
-        if FullGenEventCutTool != '':
-            ct = get_set_configurable(gen_alg, 'FullGenEventCutTool',
-                                      FullGenEventCutTool)
-            ct_opts = self.getProp('FullGenEventCutToolOpts')
-            for n, v in ct_opts.items():
-                ct.setProp(n, v)
-        else:
-            gen_alg.FullGenEventCutTool = ''
-        prod = get_set_configurable(sgt, 'ProductionTool', ProductionTool)
-        if ProductionTool in ["Pythia8Production", "Pythia8ProductionMT"]:
-            prod.BeamToolName = 'CollidingBeamsWithSvc'
+        gen_alg = gen_alg()
 
-        if ProductionTool == "Pythia8ProductionMT":
-            from Configurables import Gaussino
-            prod.NThreads = Gaussino().ThreadPoolSize
+        # -> sample generation
+        sgt = self._set_sample_generation_tool(gen_alg)
+        # -> decay tool
+        self._set_decay_tool(gen_alg, sgt)
+        # -> cut tool
+        self._set_cut_tool(sgt)
+        # -> full gen event cut tool
+        self._set_full_gen_evt_cut_tool(gen_alg)
+        # -> production tool
+        self._set_production_tool(sgt)
+        # -> pileup tool
+        self._set_pileup_tool(gen_alg)
+        # -> vertex smearing tool
+        self._set_vertex_smearing_tool(gen_alg)
+        seq.append(gen_alg)
 
-        gen_alg.PileUpTool = PileUpTool
-        gen_alg.VertexSmearingTool = 'BeamSpotSmearVertexWithSvc'
-        gen_alg.DecayTool = DecayTool
+        if self.redecay:
+            seq.append(self._set_redecay_signal_generation())
+        return seq
 
-        seq += [gen_alg]
-
-        # Now do it all again for the signal part
-        if Gaussino().getProp("ReDecay"):
-            from Configurables import ReDecaySignalGeneration
-            siggen_alg = ReDecaySignalGeneration()
-
-            siggen_alg.HepMCEventLocation = 'Gen/SignalDecayTree'
-            siggen_alg.GenCollisionLocation = 'Gen/SignalCollisions'
-            siggen_alg.GenHeaderOutputLocation = 'Gen/SignalGenHeader'
-
-            seq += [siggen_alg]
-            sgt = get_set_configurable(siggen_alg, 'SampleGenerationTool',
-                                       'SignalPlain')
-            sgt.RevertWhenBackward = False  # Don't invert in the redecay part
-            siggen_alg.GenFSRLocation = ""
-            sgt.GenFSRLocation = ""
-            sgt_opts = self.getProp('SampleGenerationToolOpts')
-            if 'SignalPIDList' in sgt_opts:
-                sgt.setProp('SignalPIDList', sgt_opts['SignalPIDList'])
-            else:
-                # FIXME: First only support signal like org tool
-                log.error("Original sample generation tool not of signal type")
-            try:
-                sgt.DecayTool = DecayTool
-            except:
-                pass
-            try:
-                if CutTool != '':
-                    ct = get_set_configurable(sgt, 'CutTool', CutTool)
-                    ct_opts = self.getProp('CutToolOpts')
-                    for n, v in ct_opts.items():
-                        ct.setProp(n, v)
-                else:
-                    sgt.CutTool = ''
-            except Exception as e:
-                log.error('Could not configure CutTool', e)
-            if FullGenEventCutTool != '':
-                ct = get_set_configurable(siggen_alg, 'FullGenEventCutTool',
-                                          FullGenEventCutTool)
-                ct_opts = self.getProp('FullGenEventCutToolOpts')
-                for n, v in ct_opts.items():
-                    ct.setProp(n, v)
-            else:
-                siggen_alg.FullGenEventCutTool = ''
-            prod = get_set_configurable(sgt, 'ProductionTool',
-                                        'ReDecayProduction')
-
-            siggen_alg.PileUpTool = 'ReDecayPileUp'
-            siggen_alg.VertexSmearingTool = ''
-            siggen_alg.DecayTool = DecayTool
-
-    def configure_pgun(self, seq):
-        """Simple utility function to create and configure an instance of particle
-        gun
-
-        :param seq: list of algorithms
+    def _set_beam_parameters(self):
+        """Sets up all the beam parametres of ``BeamInfoSvc`` service.
         """
+        from Configurables import BeamInfoSvc, ApplicationMgr
 
-        from GaudiKernel.SystemOfUnits import GeV, rad
+        log.debug("Configuring BeamInfoSvc")
+        xAngleBeamLine, yAngleBeamLine = self.getProp("BeamLineAngles")
+        meanX, meanY, meanZ = self.getProp("InteractionPosition")
+        svc = BeamInfoSvc(
+            BeamEnergy=self.getProp("BeamMomentum"),
+            HorizontalCrossingAngle=self.getProp("BeamHCrossingAngle"),
+            VerticalCrossingAngle=self.getProp("BeamVCrossingAngle"),
+            NormalizedEmittance=self.getProp("BeamEmittance"),
+            BetaStar=self.getProp("BeamBetaStar"),
+            HorizontalBeamlineAngle=xAngleBeamLine,
+            VerticalBeamlineAngle=yAngleBeamLine,
+            Luminosity=self.getProp("Luminosity"),
+            TotalCrossSection=self.getProp("TotalCrossSection"),
+            XLuminousRegion=meanX,
+            YLuminousRegion=meanY,
+            ZLuminousRegion=meanZ,
+            BunchLengthRMS=self.getProp("BunchRMS"),
+            RevolutionFrequency=self.getProp("RevolutionFrequency")
+        )
+        ApplicationMgr().ExtSvc.append(svc)
+
+    def _set_sample_generation_tool(self, gen_alg) -> ConfigurableMeta:
+        """Sets up the sample generation tool, i.e. ``MinimumBias``, ``Inclusive``, etc.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+
+        Returns:
+            ConfigurableMeta: ``SampleGenerationTool``
+        """
+        sgt = get_set_configurable(
+            gen_alg, "SampleGenerationTool", self.getProp("SampleGenerationTool")
+        )
+        sgt_opts = self.getProp("SampleGenerationToolOpts")
+        for option, value in sgt_opts.items():
+            sgt.setProp(option, value)
+        return sgt
+
+    def _set_cut_tool(self, sgt):
+        """Sets up the cut tool.
+
+        Args:
+            sgt (ConfigurableMeta): Sample generation tool configured earlier.
+        """
+        cut_tool = self.getProp("CutTool")
+        if cut_tool:
+            ct = get_set_configurable(sgt, "CutTool", cut_tool)
+            ct_opts = self.getProp("CutToolOpts")
+            for option, value in ct_opts.items():
+                ct.setProp(option, value)
+        else:
+            sgt.CutTool = ""
+
+    def _set_decay_tool(self, gen_alg, sgt):
+        """Sets up the decay tool.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+            sgt (ConfigurableMeta): Sample generation tool configured earlier
+        """
+        gen_alg.DecayTool = self.getProp("DecayTool")
+        try:
+            sgt.DecayTool = self.getProp("DecayTool")
+        except AttributeError:
+            pass
+
+    def _set_full_gen_evt_cut_tool(self, gen_alg):
+        """Sets up the ``FullGenEventCutTool``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
+        tool = self.getProp("FullGenEventCutTool")
+        if tool:
+            ct = get_set_configurable(gen_alg, "FullGenEventCutTool", tool)
+            ct_opts = self.getProp("FullGenEventCutToolOpts")
+            for option, value in ct_opts.items():
+                ct.setProp(option, value)
+        else:
+            gen_alg.FullGenEventCutTool = ""
+
+    def _set_production_tool(self, sgt):
+        """Sets up the production tool.
+
+        .. todo::
+
+            So far, only ``Pythia8Production`` and ``Pythia8ProductionMT``
+            are supported.
+
+        Args:
+            sgt (ConfigurableMeta): Sample generation tool configured earlier.
+
+        Raises:
+            ValueError: if unsupported ``ProductionTool`` provided.
+        """
+        tool = self.getProp("ProductionTool")
+        prod = get_set_configurable(sgt, "ProductionTool", tool)
+        if tool in ["Pythia8Production", "Pythia8ProductionMT"]:
+            # FIXME: For now keep it only for Pythia, but potentially in future we
+            # want to do this for all possible production tools
+            prot_opts = self.getProp("ProductionToolOpts")
+            for option, value in prot_opts.items():
+                prod.setProp(option, value)
+            prod.BeamToolName = "CollidingBeamsWithSvc"
+        else:
+            msg = "Unsupported production tool."
+            log.error(msg)
+            raise ValueError(msg)
+        if tool == "Pythia8ProductionMT":
+            prod.NThreads = self.threads
+
+    def _set_pileup_tool(self, gen_alg):
+        """Sets up the pile-up tool.
+
+        .. todo::
+
+            Pass on the pile-up tool options via ``PileUpToolOpts``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
+        gen_alg.PileUpTool = self.getProp("PileUpTool")
+
+    def _set_vertex_smearing_tool(self, gen_alg):
+        """Sets up the vertex smearing tool.
+
+        .. todo::
+
+            Investigate if any options need to be passed via ``GaussinoGeneration``.
+
+        Args:
+            gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
+        """
+        gen_alg.VertexSmearingTool = "BeamSpotSmearVertexWithSvc"
+
+    def _set_redecay_signal_generation(self):
+        """Sets up the ReDecay equivalent of the signal generation tool.
+
+        .. todo::
+
+            Needs testing and revising!
+
+        Raises:
+            ValueError: if ``SignalPIDList`` not in the options
+
+        Returns:
+            ConfigurableMeta: ``ReDecaySignalGeneration``
+        """
+        from Configurables import ReDecaySignalGeneration
+
+        siggen_alg = ReDecaySignalGeneration()
+        siggen_alg.HepMCEventLocation = "Gen/SignalDecayTree"
+        siggen_alg.GenCollisionLocation = "Gen/SignalCollisions"
+        siggen_alg.GenHeaderOutputLocation = "Gen/SignalGenHeader"
+        siggen_alg.GenFSRLocation = ""
+
+        # -> sample generation
+        sgt = get_set_configurable(siggen_alg, "SampleGenerationTool", "SignalPlain")
+        sgt.RevertWhenBackward = False  # Don't invert in the redecay part
+        sgt.GenFSRLocation = ""
+        sgt_opts = self.getProp("SampleGenerationToolOpts")
+        if "SignalPIDList" in sgt_opts:
+            sgt.setProp("SignalPIDList", sgt_opts["SignalPIDList"])
+        else:
+            # FIXME: First only support signal like org tool
+            msg = "Original sample generation tool not of signal type"
+            log.error(msg)
+            raise ValueError(msg)
+        # -> decay tool
+        self._set_decay_tool(siggen_alg, sgt)
+        # -> cut tool
+        self._set_cut_tool(sgt)
+        # -> full gen event cut tool
+        self._set_full_gen_evt_cut_tool(siggen_alg)
+        # -> production tool
+        get_set_configurable(sgt, "ProductionTool", "ReDecayProduction")
+        # -> pileup tool
+        siggen_alg.PileUpTool = "ReDecayPileUp"
+        # -> vertex smearing tool
+        siggen_alg.VertexSmearingTool = ""
+        return siggen_alg
+
+    def _configure_pgun(self) -> list:
+        """Sets up the ParticleGun algorithm.
+
+        .. todo::
+            Set up & test passing of the options to particle gun tools
+            in a similar way that is done for the main generation algorithm.
+
+        Raises:
+            AttributeError: if ParticleGun chosen to be the main
+                generation algorithm, but no options were passed to the
+                configurable ``ParticleGun``
+
+        Returns:
+            list: list of algorithms
+        """
         from Configurables import ParticleGun
-        pgun = ParticleGun("ParticleGun")
 
-        if self.getProp('ParticleGunUseDefault'):
-            pgun.EventType = 53210205
+        if "ParticleGun" not in ParticleGun.configurables:
+            msg = (
+                "The generation algorithm is set to use a ParticleGun, but no "
+                "ParticleGun() configurable was registered! Make sure to include "
+                "all the required tools!"
+            )
+            log.error(msg)
+            raise AttributeError(msg)
+        return [ParticleGun()]
 
-            from Configurables import MomentumRange
-            pgun.addTool(MomentumRange, name="MomentumRange")
-            pgun.ParticleGunTool = "MomentumRange"
+    def _configure_gen_monitor(self) -> list:
+        """Creates the monitoring algorithm for the generation step: ``GenMonitorAlg``.
 
-            from Configurables import FlatNParticles
-            pgun.addTool(FlatNParticles, name="FlatNParticles")
-            pgun.NumberOfParticlesTool = "FlatNParticles"
-            pgun.FlatNParticles.MinNParticles = 1
-            pgun.FlatNParticles.MaxNParticles = 1
-            pgun.MomentumRange.PdgCodes = [-2112]
-
-            pgun.MomentumRange.MomentumMin = 2.0 * GeV
-            pgun.MomentumRange.MomentumMax = 100.0 * GeV
-            pgun.MomentumRange.ThetaMin = 0.015 * rad
-            pgun.MomentumRange.ThetaMax = 0.300 * rad
-        seq += [pgun]
-
-    def configure_phase(self):  # NOQA
-        """ Main configuration method for the generation phase. """
-        EvtMax = self.getProp('EvtMax')
-        if EvtMax <= 0:
-            raise RuntimeError(
-                "Generating events but selected '%s' events." % EvtMax)  # NOQA
-
-        seq = []
-        if self.getProp('ParticleGun'):
-            self.configure_pgun(seq)
-        else:
-            self.configure_generation(seq)
-
-        # Algorithm to initialise the random seeds and make a GenHeader
-        rnd_init = configure_rnd_init()
-
-        seq += [rnd_init]
-        if self.getProp('GenMonitor'):
-            gen_moni = configure_gen_monitor()
-            seq += [gen_moni]
-        if self.getProp('WriteHepMC'):
-            seq += [configure_hepmc_writer()]
-        # seq.Members += [GenerationToSimulation(), CheckMCStructure()]
-        ApplicationMgr().TopAlg += seq
-
-    def configure_genonly(self):
-        """ Method that is used when only the generation phase
-        is used.
+        Returns:
+            list: list of algorithms
         """
-        seq = []
-        from Configurables import Gaussino
-        if Gaussino().getProp('ReDecay'):
-            from Configurables import ReDecaySkipSimAlg
-            alg = ReDecaySkipSimAlg()
-        else:
-            from Configurables import SkipSimAlg
-            alg = SkipSimAlg()
-        from Gaussino.Utilities import get_set_configurable
-        tool = get_set_configurable(alg, 'HepMCConverter')
-        try:
-            tool.CheckParticle = False
-        except:
-            pass
-        seq += [alg]
+        if not self.getProp("GenMonitor"):
+            return []
+        from Configurables import GenMonitorAlg
 
-        ApplicationMgr().TopAlg += seq
+        alg = GenMonitorAlg(
+            "GenMonitorAlg",
+            HistoProduce=True,
+            Input="/Event/Gen/HepMCEvents",
+        )
+        return [alg]
+
+    def _configure_hepmc_writer(self) -> list:
+        """Creates an algorithm responsible for wrtiting the generator
+        data in HepMC format to a file:
+
+            - ``WriterRootTree`` to a root file,
+            - ``WriterAsciiTree`` to a txt file,
+            - ``WriterHEPEVT`` to an evt file.
+
+        Raises:
+            ValueError: if unknown writer provided
+
+        Returns:
+            list: list of algorithms
+        """
+        if not self.getProp("WriteHepMC"):
+            return []
+        from Configurables import HepMCWriter
+
+        alg = HepMCWriter()
+        alg.Input = "/Event/Gen/HepMCEvents"
+        if hasattr(alg, "Writer"):
+            writer = alg.Writer
+        else:
+            writer = "WriterRootTree"
+        log.debug(f"Using HepMCWriter: {writer}")
+        if writer in ["WriterRootTree", "WriterRoot"]:
+            alg.OutputFileName = f"{self.output_name}-HepMC.root"
+        elif writer == "WriterAscii":
+            alg.OutputFileName = f"{self.output_name}-HepMC.txt"
+        elif writer == "WriterHEPEVT":
+            alg.OutputFileName = f"{self.output_name}-HepMC.evt"
+        else:
+            msg = "Unknown HepMCWriter file extension."
+            log.error(msg)
+            raise ValueError(msg)
+        return [alg]
+
+    def _configure_genonly(self) -> list:
+        """Configures a dedicated algorithm in case we skip the simulation part
+
+            - ``ReDecaySkipSimAlg`` when used in ReDecay mode,
+            - ``SkipSimAlg``  otherwise.
+
+        Returns:
+            list: list of algorithms
+        """
+        from Configurables import (
+            SkipSimAlg,
+            ReDecaySkipSimAlg,
+        )
+
+        alg_conf = SkipSimAlg
+        if self.redecay:
+            alg_conf = ReDecaySkipSimAlg
+        tool = get_set_configurable(alg_conf(), "HepMCConverter")
+        try:
+            # FIXME: Michal M. this needs a bit more of investigation
+            tool.CheckParticle = False
+        except AttributeError:
+            pass
+        return [alg_conf()]
 
     @staticmethod
-    def eventType():
+    def eventType() -> str:
+        """Checks is the event type was set, otherwise returns
+        an empty string
+
+        .. todo::
+
+            Rethink this.
+
+        Returns:
+            str: event type
+        """
         from Configurables import Generation
-        evtType = ''
+
+        evtType = ""
         if Generation("Generation").isPropertySet("EventType"):
             evtType = str(Generation("Generation").EventType)
         return evtType

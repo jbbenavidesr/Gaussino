@@ -58,7 +58,7 @@ check-formatting:
   tags:
     - cvmfs
 
-# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml      
+# inspired by https://gitlab.cern.ch/lhcb/Moore/-/blob/master/.gitlab-ci.yml
 build-docs:
   extends: .docs-base
   variables:
@@ -66,7 +66,7 @@ build-docs:
     LOCAL_PYTHON: "InstallArea/$BINARY_TAG/python"
   script:
     - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
-    - pip install myst_parser graphviz
+    - pip install myst_parser graphviz docutils\<0.17
     # -> adding python directories of the upstream projects
     - export PYTHONPATHBKP=$PYTHONPATH
     - export PYTHONPATHBKP=$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
@@ -85,11 +85,12 @@ build-docs:
 
 pages:
   extends: .docs-base
-  needs:
-    - build-docs
   variables:
     # I found CI_PAGES_URL sometimes pointing to the wrong addresss
     GAUSSINO_PAGES_URL: https://gaussino.docs.cern.ch/
+    MAX_TIME_IN_DAYS: 7
+  needs:
+    - build-docs
   script:
     # accumulating content as in https://gitlab.com/gitlab-org/gitlab/-/issues/15156#note_214784368
     # -> get the archive from the website with the accumulated content and copy it to public/
@@ -100,9 +101,24 @@ pages:
     # -> ignore any unpacking errors, the history will be erased
     #    note: this might need a bit of rethinking or to be blocked later
     - tar -xzf content.tar.gz public/ || echo "Archive with other versions in a bad format or not found, skipping..."
-    # -> add only the new contents of the current version
-    - mkdir -p public/$DOCS_VERSION/
-    - rsync -a docs/_build/html/ public/$DOCS_VERSION/
+    # -> loop over all the possible version created so far and remove development ones that are older than MAX_TIME_IN_DAYS
+    - >
+      for version in $(find public/ -maxdepth 1 -mindepth 1 -type d -not -name "master" -not -name "FASTSIM" -not -name "v*" ); do
+        echo "-> Checking version: '${version}'"
+        MAX_TIME=$(expr $MAX_TIME_IN_DAYS \* 86400)
+        VERSION_TIME=$(stat ${version} -c %Y)
+        CURRENT_TIME=$(date +%s)
+        ELAPSED_TIME=$(expr $CURRENT_TIME - $VERSION_TIME)
+        if (($ELAPSED_TIME > $MAX_TIME )); then
+          echo "--> Expired. Removing."
+          rm -r $version
+        else
+          echo "--> Not expired."
+        fi
+      done
+    # -> move the current version
+    - rm -rf public/$DOCS_VERSION
+    - mv docs/_build/html public/$DOCS_VERSION
     # -> add all the necessary redirects
     - rm -f public/_redirects
     - echo "/index.html /master/index.html 301" >> public/_redirects
@@ -114,5 +130,4 @@ pages:
   artifacts:
     paths:
     - public
-    expire_in: 1 month
-
+    expire_in: 1 hour

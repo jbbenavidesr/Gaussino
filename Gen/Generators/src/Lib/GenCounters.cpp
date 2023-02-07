@@ -15,8 +15,8 @@
 #include "Generators/GenCounters.h"
 
 // Generators
-#include "HepMCUtils/HepMCUtils.h"
 #include "HepMCUser/Status.h"
+#include "HepMCUtils/HepMCUtils.h"
 
 // HepMC
 #include "HepMC3/GenEvent.h"
@@ -27,8 +27,8 @@
 #include "Defaults/HepMCAttributes.h"
 
 // Event
-#include "Event/GenFSR.h"
 #include "Event/GenCountersFSR.h"
+#include "Event/GenFSR.h"
 
 // LHCb
 #include "Kernel/ParticleID.h"
@@ -36,127 +36,123 @@
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at root of decay
 //=============================================================================
-struct isRootB : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool > {
+struct isRootB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 
   /// test operator, returns true if it is a root B
-  bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
+  bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
-      return false ;
-    
+    if ( part->status() == HepMC3::Status::DocumentationParticle ) return false;
+
     // Check if particle has a b quark
-    LHCb::ParticleID thePid( part -> pdg_id() ) ;
-    if ( ! thePid.hasBottom() ) return false ;
+    LHCb::ParticleID thePid( part->pdg_id() );
+    if ( !thePid.hasBottom() ) return false;
 
     // Check if particle has a mother
-    if ( ! part -> production_vertex() ) return true ;
+    if ( !part->production_vertex() ) return true;
 
-    // Check all parents of the B 
-    for ( auto & parent : HepMC3::Relatives::PARENTS(part) ) {
-      LHCb::ParticleID parentID( parent -> pdg_id() ) ;
-      if ( parentID.hasBottom() && (thePid.abspid()==5 || parentID.abspid()!=5)) return false ;
+    // Check all parents of the B
+    for ( auto& parent : HepMC3::Relatives::PARENTS( part ) ) {
+      LHCb::ParticleID parentID( parent->pdg_id() );
+      if ( parentID.hasBottom() && ( thePid.abspid() == 5 || parentID.abspid() != 5 ) ) return false;
     }
 
     // If no parent is a B, then it is a root B
-    return true ;
+    return true;
   }
 };
 
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at root of decay
 //=============================================================================
-struct isRootD : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool > {
+struct isRootD : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 
   /// test operator, returns true if it is a root D
-  bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
+  bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
 
     // Do not consider documentation and special particles
-    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
-      return false ;
+    if ( part->status() == HepMC3::Status::DocumentationParticle ) return false;
 
     // Check if particle has a c quark
-    LHCb::ParticleID thePid( part -> pdg_id() ) ;
-    if ( ! thePid.hasCharm() ) return false ;
-    if ( thePid.hasBottom() ) return false ;
+    LHCb::ParticleID thePid( part->pdg_id() );
+    if ( !thePid.hasCharm() ) return false;
+    if ( thePid.hasBottom() ) return false;
 
     // Check if particle has a mother
-    if ( ! part -> production_vertex() ) return true ;
+    if ( !part->production_vertex() ) return true;
 
     // Check all parents of the D
-    for ( auto & parent : HepMC3::Relatives::PARENTS(part) ) {
-      LHCb::ParticleID parentID( parent -> pdg_id() ) ;
-      if ( parentID.hasCharm()  && (parentID.abspid()!=4 || thePid.abspid()==4)) return false ;
+    for ( auto& parent : HepMC3::Relatives::PARENTS( part ) ) {
+      LHCb::ParticleID parentID( parent->pdg_id() );
+      if ( parentID.hasCharm() && ( parentID.abspid() != 4 || thePid.abspid() == 4 ) ) return false;
     }
 
     // If no parent is a D, then it is a root D
-    return true ;
+    return true;
   }
 };
 
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at end of decay tree
 //=============================================================================
-struct isEndB : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool > {
+struct isEndB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 
   /// Test operator. Returns true if particle is the last B
-  bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
+  bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
-      return false ;
+    if ( part->status() == HepMC3::Status::DocumentationParticle ) return false;
 
     // Test if particle has a b quark
-    LHCb::ParticleID thePid( part -> pdg_id() ) ;
-    if ( ! thePid.hasBottom() ) return false ;
+    LHCb::ParticleID thePid( part->pdg_id() );
+    if ( !thePid.hasBottom() ) return false;
 
     // test oscillation
-    if ( ! HepMCUtils::IsBAtProduction( part ) ) return false ;
+    if ( !HepMCUtils::IsBAtProduction( part ) ) return false;
 
     // Test if the B has daughters (here we are sure it has not oscillated)
-    if ( ! part -> end_vertex() ) return true ;
-    
+    if ( !part->end_vertex() ) return true;
+
     // Loop over daughters to check if they are B hadrons
-    for ( auto & child : HepMC3::Relatives::CHILDREN(part) ){
-      LHCb::ParticleID childID( child -> pdg_id() ) ;
+    for ( auto& child : HepMC3::Relatives::CHILDREN( part ) ) {
+      LHCb::ParticleID childID( child->pdg_id() );
       if ( childID.hasBottom() ) {
-        if ( child -> pdg_id() == - part -> pdg_id() ) return true ;
-        return false ;
+        if ( child->pdg_id() == -part->pdg_id() ) return true;
+        return false;
       }
     }
 
     // If not, then it is a end B
-    return true ;
+    return true;
   }
 };
 
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at end of decay tree
 //=============================================================================
-struct isEndD : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool > {
+struct isEndD : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 
   /// Test operator. Returns true if it is the last D
-  bool operator() ( const HepMC3::ConstGenParticlePtr & part ) const {
+  bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
 
     // Do not look at special particles
-    if ( part -> status() == HepMC3::Status::DocumentationParticle ) 
-      return false ;
+    if ( part->status() == HepMC3::Status::DocumentationParticle ) return false;
 
     // Check if it has a c quark
-    LHCb::ParticleID thePid( part -> pdg_id() ) ;
-    if ( ! thePid.hasCharm() ) return false ;
+    LHCb::ParticleID thePid( part->pdg_id() );
+    if ( !thePid.hasCharm() ) return false;
 
     // Check if it has daughters
-    if ( ! part -> end_vertex() ) return true ;
+    if ( !part->end_vertex() ) return true;
 
     // Loop over the daughters to find a D hadron
-    for ( auto & child : HepMC3::Relatives::CHILDREN(part) ) {
-      LHCb::ParticleID childID( child -> pdg_id() ) ;
-      if ( childID.hasCharm() ) return false ;
+    for ( auto& child : HepMC3::Relatives::CHILDREN( part ) ) {
+      LHCb::ParticleID childID( child->pdg_id() );
+      if ( childID.hasCharm() ) return false;
     }
 
     // If not, then it is a End D
-    return true ;
+    return true;
   }
 };
 
@@ -169,452 +165,359 @@ struct isEndD : std::unary_function< const HepMC3::ConstGenParticlePtr &, bool >
 //=============================================================================
 // Setup names of B hadron counters
 //=============================================================================
-void GenCounters::setupBHadronCountersNames( BHadronCNames & BC , 
-                                             BHadronCNames & antiBC ) {
-    BC[ Bd ] = "B0" ;
-    BC[ Bu ] = "B+" ;
-    BC[ Bs ] = "Bs0" ;
-    BC[ Bc ] = "Bc+" ;
-    BC[ bBaryon ] = "b-Baryon" ;
+void GenCounters::setupBHadronCountersNames( BHadronCNames& BC, BHadronCNames& antiBC ) {
+  BC[Bd]      = "B0";
+  BC[Bu]      = "B+";
+  BC[Bs]      = "Bs0";
+  BC[Bc]      = "Bc+";
+  BC[bBaryon] = "b-Baryon";
 
-    antiBC[ Bd ] = "anti-B0" ;
-    antiBC[ Bu ] = "B-" ;
-    antiBC[ Bs ] = "anti-Bs0" ;
-    antiBC[ Bc ] = "Bc-" ;
-    antiBC[ bBaryon ] = "anti-b-Baryon" ;
+  antiBC[Bd]      = "anti-B0";
+  antiBC[Bu]      = "B-";
+  antiBC[Bs]      = "anti-Bs0";
+  antiBC[Bc]      = "Bc-";
+  antiBC[bBaryon] = "anti-b-Baryon";
 }
 
 //=============================================================================
 // Setup names of D hadron counters
 //=============================================================================
-void GenCounters::setupDHadronCountersNames( DHadronCNames & DC , 
-                                             DHadronCNames & antiDC ) {
-    DC[ D0 ] = "D0" ;
-    DC[ Dch ] = "D+" ;
-    DC[ Ds ] = "Ds+" ;
-    DC[ cBaryon ] = "c-Baryon" ;
+void GenCounters::setupDHadronCountersNames( DHadronCNames& DC, DHadronCNames& antiDC ) {
+  DC[D0]      = "D0";
+  DC[Dch]     = "D+";
+  DC[Ds]      = "Ds+";
+  DC[cBaryon] = "c-Baryon";
 
-    antiDC[ D0 ] = "anti-D0" ;
-    antiDC[ Dch ] = "D-" ;
-    antiDC[ Ds ] = "Ds-" ;
-    antiDC[ cBaryon ] = "anti-c-Baryon" ;
+  antiDC[D0]      = "anti-D0";
+  antiDC[Dch]     = "D-";
+  antiDC[Ds]      = "Ds-";
+  antiDC[cBaryon] = "anti-c-Baryon";
 }
 
 //=============================================================================
 // Setup names of B excited states
 //=============================================================================
-void GenCounters::setupExcitedCountersNames( ExcitedCNames & B , 
-                                             const std::string & root ) {
-  B[ _0star ] = root + "(L=0,J=0)";
-    B[ _1star ] = root + "* (L=0, J=1)" ;
-    B[ _2star ] = root + "** (L=1, J=0,1,2)" ;
+void GenCounters::setupExcitedCountersNames( ExcitedCNames& B, const std::string& root ) {
+  B[_0star] = root + "(L=0,J=0)";
+  B[_1star] = root + "* (L=0, J=1)";
+  B[_2star] = root + "** (L=1, J=0,1,2)";
 }
 
 //=============================================================================
 // Count excited states counters
 //=============================================================================
-void GenCounters::updateExcitedStatesCounters
-( const HepMC3::GenEvent* theEvent , ExcitedCounter & thebExcitedC ,
-  ExcitedCounter & thecExcitedC ) {
+void GenCounters::updateExcitedStatesCounters( const HepMC3::GenEvent* theEvent, ExcitedCounter& thebExcitedC,
+                                               ExcitedCounter& thecExcitedC ) {
 
   // Signal Vertex
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr
   // pointing to nullptr.
-  auto signal_process_vertex =
-      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
+  auto signal_process_vertex_attribute =
+      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
+  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
   // Count B :
-  std::vector< HepMC3::ConstGenParticlePtr > rootB ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()) ,
-                  std::back_inserter( rootB ) , isRootB() ) ;
+  std::vector<HepMC3::ConstGenParticlePtr> rootB;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( rootB ),
+                   isRootB() );
 
-  std::vector< HepMC3::ConstGenParticlePtr >::const_iterator iter ;
+  std::vector<HepMC3::ConstGenParticlePtr>::const_iterator iter;
 
-  for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter ) {
+  for ( iter = rootB.begin(); iter != rootB.end(); ++iter ) {
     if ( signal_process_vertex ) {
-      if ( ! HepMCUtils::commonTrees( signal_process_vertex,
-                                      (*iter) -> end_vertex() ) ) 
-        continue ;
+      if ( !HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
 
     if ( thePid.isMeson() ) {
       if ( 0 == thePid.lSpin() ) {
-        if ( 1 == thePid.jSpin() ) ++thebExcitedC[ _0star ] ;
-        else ++thebExcitedC[ _1star ] ;
-      } else ++thebExcitedC[ _2star ] ;
+        if ( 1 == thePid.jSpin() )
+          ++thebExcitedC[_0star];
+        else
+          ++thebExcitedC[_1star];
+      } else
+        ++thebExcitedC[_2star];
     }
   }
 
   // Count D :
-  std::vector< HepMC3::ConstGenParticlePtr > rootD ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()),
-                  std::back_inserter( rootD ) , isRootD() ) ;
+  std::vector<HepMC3::ConstGenParticlePtr> rootD;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( rootD ),
+                   isRootD() );
 
-  for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter ) {
-    if ( signal_process_vertex) {
-      if ( ! HepMCUtils::commonTrees( signal_process_vertex, 
-                                      (*iter) -> end_vertex() ) ) 
-        continue ;
+  for ( iter = rootD.begin(); iter != rootD.end(); ++iter ) {
+    if ( signal_process_vertex ) {
+      if ( !HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
-    
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
     if ( thePid.isMeson() ) {
       if ( 0 == thePid.lSpin() ) {
-        if ( 1 == thePid.jSpin() ) ++thecExcitedC[ _0star ] ;
-        else ++thecExcitedC[ _1star ] ;
-        } else ++thecExcitedC[ _2star ] ;
+        if ( 1 == thePid.jSpin() )
+          ++thecExcitedC[_0star];
+        else
+          ++thecExcitedC[_1star];
+      } else
+        ++thecExcitedC[_2star];
     }
-  }       
+  }
 }
 
 //=============================================================================
 // Update the counters of number of different hadrons in selected events
 //=============================================================================
-void GenCounters::updateHadronCounters( const HepMC3::GenEvent* theEvent ,
-                                        BHadronCounter & thebHadC , 
-                                        BHadronCounter & theantibHadC ,
-                                        DHadronCounter & thecHadC ,
-                                        DHadronCounter & theanticHadC ,
-                                        std::atomic_uint & thebbCounter ,
-                                        std::atomic_uint & theccCounter ) {
+void GenCounters::updateHadronCounters( const HepMC3::GenEvent* theEvent, BHadronCounter& thebHadC,
+                                        BHadronCounter& theantibHadC, DHadronCounter& thecHadC,
+                                        DHadronCounter& theanticHadC, std::atomic_uint& thebbCounter,
+                                        std::atomic_uint& theccCounter ) {
   // Signal vertex
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr
   // pointing to nullptr.
-  auto signal_process_vertex =
-      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
+  auto signal_process_vertex_attribute =
+      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
+  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
   // Count B:
-  std::vector< HepMC3::ConstGenParticlePtr > endB ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()),
-                  std::back_inserter( endB ) , isEndB() ) ;
-  std::vector< HepMC3::ConstGenParticlePtr >::const_iterator iter ;
-  
-  for ( iter = endB.begin() ; iter != endB.end() ; ++iter ) {
+  std::vector<HepMC3::ConstGenParticlePtr> endB;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( endB ),
+                   isEndB() );
+  std::vector<HepMC3::ConstGenParticlePtr>::const_iterator iter;
+
+  for ( iter = endB.begin(); iter != endB.end(); ++iter ) {
     if ( signal_process_vertex ) {
-      if ( HepMCUtils::commonTrees( signal_process_vertex, 
-                                    (*iter) -> end_vertex() ) )
-        continue ;
+      if ( HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
-    
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
-    
+
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
+
     if ( thePid.isMeson() ) {
       if ( thePid.pid() > 0 ) {
-        if ( thePid.hasUp() ) ++thebHadC[ Bu ] ;
-        else if ( thePid.hasDown() ) ++thebHadC[ Bd ] ;
-        else if ( thePid.hasStrange() ) ++thebHadC[ Bs ] ;
-        else if ( thePid.hasCharm() ) ++thebHadC[ Bc ] ;
-        else ++thebbCounter ;
+        if ( thePid.hasUp() )
+          ++thebHadC[Bu];
+        else if ( thePid.hasDown() )
+          ++thebHadC[Bd];
+        else if ( thePid.hasStrange() )
+          ++thebHadC[Bs];
+        else if ( thePid.hasCharm() )
+          ++thebHadC[Bc];
+        else
+          ++thebbCounter;
       } else {
-        if ( thePid.hasUp() ) ++theantibHadC[ Bu ] ;
-        else if ( thePid.hasDown() ) ++theantibHadC[ Bd ] ;
-        else if ( thePid.hasStrange() ) ++theantibHadC[ Bs ] ;
-        else if ( thePid.hasCharm() ) ++theantibHadC[ Bc ] ;
-        else ++thebbCounter ;
+        if ( thePid.hasUp() )
+          ++theantibHadC[Bu];
+        else if ( thePid.hasDown() )
+          ++theantibHadC[Bd];
+        else if ( thePid.hasStrange() )
+          ++theantibHadC[Bs];
+        else if ( thePid.hasCharm() )
+          ++theantibHadC[Bc];
+        else
+          ++thebbCounter;
       }
     } else if ( thePid.isBaryon() ) {
-      if ( thePid.pid() < 0 ) ++thebHadC[ bBaryon ] ;
-      else ++theantibHadC[ bBaryon ] ;
+      if ( thePid.pid() < 0 )
+        ++thebHadC[bBaryon];
+      else
+        ++theantibHadC[bBaryon];
     }
   }
-  
-  std::vector< HepMC3::ConstGenParticlePtr > endD ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()),
-                  std::back_inserter( endD ) , isEndD() ) ;
-  
-  for ( iter = endD.begin() ; iter != endD.end() ; ++iter ) {
+
+  std::vector<HepMC3::ConstGenParticlePtr> endD;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( endD ),
+                   isEndD() );
+
+  for ( iter = endD.begin(); iter != endD.end(); ++iter ) {
     if ( signal_process_vertex ) {
-      if ( HepMCUtils::commonTrees( signal_process_vertex,
-                                    (*iter) -> end_vertex() ) ) 
-        continue ;
+      if ( HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
-    
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
-    
+
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
+
     if ( thePid.isMeson() ) {
       if ( thePid.pid() > 0 ) {
-        if ( thePid.hasUp() ) ++thecHadC[ D0 ] ;
-        else if ( thePid.hasDown() ) ++thecHadC[ Dch ] ;
-        else if ( thePid.hasStrange() ) ++thecHadC[ Ds ] ;
-        else ++theccCounter ;
+        if ( thePid.hasUp() )
+          ++thecHadC[D0];
+        else if ( thePid.hasDown() )
+          ++thecHadC[Dch];
+        else if ( thePid.hasStrange() )
+          ++thecHadC[Ds];
+        else
+          ++theccCounter;
       } else {
-        if ( thePid.hasUp() ) ++theanticHadC[ D0 ] ;
-        else if ( thePid.hasDown() ) ++theanticHadC[ Dch ] ;
-        else if ( thePid.hasStrange() ) ++theanticHadC[ Ds ] ;
-        else ++theccCounter ;
+        if ( thePid.hasUp() )
+          ++theanticHadC[D0];
+        else if ( thePid.hasDown() )
+          ++theanticHadC[Dch];
+        else if ( thePid.hasStrange() )
+          ++theanticHadC[Ds];
+        else
+          ++theccCounter;
       }
     } else if ( thePid.isBaryon() ) {
-      if ( thePid.pid() > 0 ) ++thecHadC[ cBaryon ] ;
-      else ++theanticHadC[ cBaryon ] ;
+      if ( thePid.pid() > 0 )
+        ++thecHadC[cBaryon];
+      else
+        ++theanticHadC[cBaryon];
     }
-  } 
+  }
 }
 
-
-//=============================================================================                    
-// Update the genFRS in selected events                                                            
-//=============================================================================                    
-void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent ,
-                                   LHCb::GenFSR* genFSR,
-                                   const std::string option)
-{  
-  if(!genFSR) return;
-  // Signal Vertex                                                                        
+//=============================================================================
+// Update the genFRS in selected events
+//=============================================================================
+void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent, LHCb::GenFSR* genFSR, const std::string option ) {
+  if ( !genFSR ) return;
+  // Signal Vertex
   // In HepMC3 now stored as an event attribute. If it does not exist, the default
   // constructor is used to construct the attribute. This will yield a GenVertexPtr
   // pointing to nullptr.
-  auto signal_process_vertex =
-      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex )->value();
-  
-  // Count B :                                                                                    
-  std::vector< HepMC3::ConstGenParticlePtr > rootB ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()) ,
-                  std::back_inserter( rootB ) , isRootB() ) ;
+  auto signal_process_vertex_attribute =
+      theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
+  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
-  std::vector< HepMC3::ConstGenParticlePtr >::const_iterator iter ;
+  // Count B :
+  std::vector<HepMC3::ConstGenParticlePtr> rootB;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( rootB ),
+                   isRootB() );
 
-  for ( iter = rootB.begin() ; iter != rootB.end() ; ++iter )
-  {
-    if ( signal_process_vertex )
-    {  
-      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
-                                      (*iter) -> end_vertex() ) )
-        continue ; 
-    }    
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+  std::vector<HepMC3::ConstGenParticlePtr>::const_iterator iter;
 
-    if (thePid.isMeson())
-    {
-      if (0 == thePid.lSpin())
-      {
-        if (1 == thePid.jSpin())
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("B"+option), 1);
+  for ( iter = rootB.begin(); iter != rootB.end(); ++iter ) {
+    if ( signal_process_vertex ) {
+      if ( !HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
+    }
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
+
+    if ( thePid.isMeson() ) {
+      if ( 0 == thePid.lSpin() ) {
+        if ( 1 == thePid.jSpin() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "B" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bstar" + option ), 1 );
         }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bstar"+option), 1); 
-        } 
+      } else {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "B2star" + option ), 1 );
       }
-      else
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("B2star"+option), 1);
-      } 
-    } 
+    }
   }
 
-  // Count D :                                                                                     
-  std::vector< HepMC3::ConstGenParticlePtr > rootD ;  
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()),
-                  std::back_inserter( rootD ) , isRootD() ) ;
+  // Count D :
+  std::vector<HepMC3::ConstGenParticlePtr> rootD;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( rootD ),
+                   isRootD() );
 
-  for ( iter = rootD.begin() ; iter != rootD.end() ; ++iter )
-  {
-    if ( signal_process_vertex)
-    {
-      if ( ! HepMCUtils::commonTrees( signal_process_vertex ,
-                                      (*iter) -> end_vertex() ) )
-        continue ; 
+  for ( iter = rootD.begin(); iter != rootD.end(); ++iter ) {
+    if ( signal_process_vertex ) {
+      if ( !HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
 
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() );
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
 
-    if (thePid.isMeson())
-    {
-      if (0 == thePid.lSpin())
-      {
-        if (1 == thePid.jSpin())
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("D"+option), 1); 
+    if ( thePid.isMeson() ) {
+      if ( 0 == thePid.lSpin() ) {
+        if ( 1 == thePid.jSpin() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "D" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Dstar" + option ), 1 );
         }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Dstar"+option), 1); 
-        } 
+      } else {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "D2star" + option ), 1 );
       }
-      else
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("D2star"+option), 1); 
-      } 
-    } 
+    }
   }
 
-  // Count B:                                                                                     
-  std::vector< HepMC3::ConstGenParticlePtr > endB ;
-  HepMC3::copy_if( std::begin(theEvent->particles()) , std::end(theEvent->particles()) ,
-                  std::back_inserter( endB ) , isEndB() ) ;
+  // Count B:
+  std::vector<HepMC3::ConstGenParticlePtr> endB;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( endB ),
+                   isEndB() );
 
-  for ( iter = endB.begin() ; iter != endB.end() ; ++iter )
-  {
-    if ( signal_process_vertex )
-    {
-      if ( HepMCUtils::commonTrees( signal_process_vertex ,
-                                    (*iter) -> end_vertex() ) )
-        continue ;      
+  for ( iter = endB.begin(); iter != endB.end(); ++iter ) {
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
 
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
 
-    if ( thePid.isMeson() )                                                                                                               
-    {                                                                                                                                  
-      if ( thePid.pid() > 0 )
-      {                                                                                                                              
-        if ( thePid.hasUp() )                                                                                                         
-        {                                                              
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bplus"+option), 1);
-        }                                                                                                                          
-        else if ( thePid.hasDown() )                                                                                                  
-        {                                                                 
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("B0"+option), 1);
-        }                                                                                                                          
-        else if ( thePid.hasStrange() )                                                                                               
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bs0"+option), 1);
+    if ( thePid.isMeson() ) {
+      if ( thePid.pid() > 0 ) {
+        if ( thePid.hasUp() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bplus" + option ), 1 );
+        } else if ( thePid.hasDown() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "B0" + option ), 1 );
+        } else if ( thePid.hasStrange() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bs0" + option ), 1 );
+        } else if ( thePid.hasCharm() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bcplus" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "bb" + option ), 1 );
         }
-        else if ( thePid.hasCharm() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bcplus"+option), 1); 
+      } else {
+        if ( thePid.hasUp() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bminus" + option ), 1 );
+        } else if ( thePid.hasDown() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "antiB0" + option ), 1 );
+        } else if ( thePid.hasStrange() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "antiBs0" + option ), 1 );
+        } else if ( thePid.hasCharm() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Bcminus" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "bb" + option ), 1 );
         }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("bb"+option), 1); 
-        } 
       }
-      else
-      {
-        if ( thePid.hasUp() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bminus"+option), 1);
-        }
-        else if ( thePid.hasDown() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("antiB0"+option), 1); 
-        }
-        else if ( thePid.hasStrange() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("antiBs0"+option), 1); 
-        }
-        else if ( thePid.hasCharm() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Bcminus"+option), 1);
-        }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("bb"+option), 1); 
-        } 
-      } 
+    } else if ( thePid.isBaryon() ) {
+      if ( thePid.pid() < 0 ) {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "bBaryon" + option ), 1 );
+      } else {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "antibBaryon" + option ), 1 );
+      }
     }
-    else if ( thePid.isBaryon() )
-    {
-      if ( thePid.pid() < 0 )
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("bBaryon"+option), 1); 
-      }
-      else
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("antibBaryon"+option), 1); 
-      } 
-    } 
   }
 
-  // Count D:                                                                                   
-  std::vector< HepMC3::ConstGenParticlePtr > endD ;
-  HepMC3::copy_if( std::begin(theEvent->particles()), std::end(theEvent->particles()) ,
-                  std::back_inserter( endD ) , isEndD() ) ;
+  // Count D:
+  std::vector<HepMC3::ConstGenParticlePtr> endD;
+  HepMC3::copy_if( std::begin( theEvent->particles() ), std::end( theEvent->particles() ), std::back_inserter( endD ),
+                   isEndD() );
 
-  for ( iter = endD.begin() ; iter != endD.end() ; ++iter )
-  {
-    if ( signal_process_vertex )
-    {
-      if ( HepMCUtils::commonTrees( signal_process_vertex ,
-                                    (*iter) -> end_vertex() ) )
-        continue ;      
+  for ( iter = endD.begin(); iter != endD.end(); ++iter ) {
+    if ( signal_process_vertex ) {
+      if ( HepMCUtils::commonTrees( signal_process_vertex, ( *iter )->end_vertex() ) ) continue;
     }
 
-    LHCb::ParticleID thePid( (*iter) -> pdg_id() ) ;
+    LHCb::ParticleID thePid( ( *iter )->pdg_id() );
 
-    if ( thePid.isMeson() )
-    {
-      if ( thePid.pid() > 0 )
-      {
-        if ( thePid.hasUp() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("D0"+option), 1); 
+    if ( thePid.isMeson() ) {
+      if ( thePid.pid() > 0 ) {
+        if ( thePid.hasUp() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "D0" + option ), 1 );
+        } else if ( thePid.hasDown() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Dplus" + option ), 1 );
+        } else if ( thePid.hasStrange() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Dsplus" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "cc" + option ), 1 );
         }
-        else if ( thePid.hasDown() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Dplus"+option), 1); 
+      } else {
+        if ( thePid.hasUp() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "antiD0" + option ), 1 );
+        } else if ( thePid.hasDown() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Dminus" + option ), 1 );
+        } else if ( thePid.hasStrange() ) {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "Dsminus" + option ), 1 );
+        } else {
+          genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "cc" + option ), 1 );
         }
-        else if ( thePid.hasStrange() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Dsplus"+option), 1);
-        }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("cc"+option), 1); 
-        } 
       }
-      else
-      {
-        if ( thePid.hasUp() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("antiD0"+option), 1); 
-        }
-        else if ( thePid.hasDown() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Dminus"+option), 1); 
-        }
-        else if ( thePid.hasStrange() )
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("Dsminus"+option), 1); 
-        }
-        else
-        {
-          genFSR->incrementGenCounter(
-              LHCb::GenCountersFSR::CounterKeyToType("cc"+option), 1); 
-        } 
-      } 
+    } else if ( thePid.isBaryon() ) {
+      if ( thePid.pid() > 0 ) {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "cBaryon" + option ), 1 );
+      } else {
+        genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKeyToType( "anticBaryon" + option ), 1 );
+      }
     }
-    else if ( thePid.isBaryon() )
-    {
-      if ( thePid.pid() > 0 )
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("cBaryon"+option), 1); 
-      }
-      else
-      {
-        genFSR->incrementGenCounter(
-            LHCb::GenCountersFSR::CounterKeyToType("anticBaryon"+option), 1); 
-      } 
-    } 
-  } 
+  }
 }

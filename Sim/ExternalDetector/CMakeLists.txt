@@ -41,4 +41,4 @@ gaudi_add_module(ExternalDetector
 
 gaudi_install(PYTHON)
 gaudi_generate_confuserdb()
-gaudi_add_tests(QMTest)
+gaudi_add_tests(pytest)

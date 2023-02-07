@@ -8,8 +8,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Gaudi.Configuration import ConfigurableUser
-from Gaudi.Configuration import log
+from Gaudi.Configuration import (
+    ConfigurableUser,
+    log,
+)
 import Configurables
 
 __author__ = "Michal Mazurek"
@@ -52,10 +54,11 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         .. highlight:: python
         .. code-block:: python
 
-            from Gaussino.Simulation import SimPhase
-            SimPhase().ExternalDetectorEmbedder = "MyEmbedder"
-
-            from Configurables import ExternalDetectorEmbedder
+            from Configurables import (
+                GaussinoSimulation,
+                ExternalDetectorEmbedder,
+            )
+            GaussinoSimulation().ExternalDetectorEmbedder = "MyEmbedder"
             external = ExternalDetectorEmbedder("MyEmbedder")
 
             external.Shapes = {
@@ -114,7 +117,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
     """
 
     __slots__ = {
-        'Shapes': {},
+        "Shapes": {},
         #
         # ex. Cuboid
         #
@@ -139,7 +142,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #
         #
         #
-        'Sensitive': {},
+        "Sensitive": {},
         #
         # ex. MCCollectorSensDet
         #
@@ -153,7 +156,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #
         #
         #
-        'Hit': {},
+        "Hit": {},
         #
         # ex. GetMCCollectorHitsAlg
         #
@@ -167,7 +170,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #
         #
         #
-        'Moni': {},
+        "Moni": {},
         #
         # ex. SomeMonitoringAlgorithm
         #
@@ -181,7 +184,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #
         #
         #
-        'Materials': {},
+        "Materials": {},
         #
         # ex. 1
         #
@@ -229,7 +232,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #
         # only if you want to implement a custom, external world
         # this is mostly for testing purposes
-        'World': {},
+        "World": {},
         #
         # ex.
         #
@@ -251,7 +254,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
     _added_hits_algs = []
 
     def embed(self, geo):
-        """ Takes care of setting up the right tools and factories responsible
+        """Takes care of setting up the right tools and factories responsible
         for the geometry. It is based on the properties provided in ``Shapes``,
         ``Sensitive``, ``Materials``, and ``World``. Properties correspond to
         the properites used by each factory.
@@ -263,38 +266,42 @@ class ExternalDetectorEmbedder(ConfigurableUser):
             raise RuntimeError("ERROR: GeoService not provided")
         for name, props in self.getProp("Materials").items():
             self._check_props(name, props, required=[])
-            if 'Type' not in props:
-                props['Type'] = 'MaterialFromChemicalProperties'
-            if 'Name' not in props:
-                props['Name'] = name
-            tool_conf = getattr(Configurables, props['Type'])
-            tool = tool_conf(props['Name'], **self._refine_props(props))
-            geo.addTool(tool, name=props['Name'])
-            geo.ExternalMaterials.append(props['Type'] + '/' + props['Name'])
-            log.info("Registered external material tool {} of type {}.".format(
-                props['Name'], props['Type']))
+            if "Type" not in props:
+                props["Type"] = "MaterialFromChemicalProperties"
+            if "Name" not in props:
+                props["Name"] = name
+            tool_conf = getattr(Configurables, props["Type"])
+            tool = tool_conf(props["Name"], **self._refine_props(props))
+            geo.addTool(tool, name=props["Name"])
+            geo.ExternalMaterials.append(props["Type"] + "/" + props["Name"])
+            log.info(
+                "Registered external material tool {} of type {}.".format(
+                    props["Name"], props["Type"]
+                )
+            )
 
         for name, props in self.getProp("Shapes").items():
             self._check_props(name, props)
-            tool_name = props['Type'] + 'Embedder'
+            tool_name = props["Type"] + "Embedder"
             self._embedding_tool(name, geo, tool_name, props)
-            geo.ExternalDetectors.append(tool_name + '/' + name)
-            log.info("Registered external detector {} of type {}.".format(
-                name, tool_name))
+            geo.ExternalDetectors.append(tool_name + "/" + name)
+            log.info(
+                "Registered external detector {} of type {}.".format(name, tool_name)
+            )
             self._added_dets.append(name)
 
-        world = self.getProp('World')
+        world = self.getProp("World")
         if world:
-            self._check_props(
-                'World', world, required=['Type', 'WorldMaterial'])
-            svc_conf = getattr(Configurables, world['Type'])
+            self._check_props("World", world, required=["Type", "WorldMaterial"])
+            svc_conf = getattr(Configurables, world["Type"])
             svc_conf(**self._refine_props(world))
-            geo.GiGaMTGeoSvc = world['Type']
-            log.info("Registered external world service of type {}.".format(
-                world['Type']))
+            geo.GiGaMTGeoSvc = world["Type"]
+            log.info(
+                "Registered external world service of type {}.".format(world["Type"])
+            )
 
     def activate_hits_alg(self, slot=""):
-        """ Takes care of setting up the right hit extraction algorithms.
+        """Takes care of setting up the right hit extraction algorithms.
         It is based on the properties provided in ``Hit``, but the volume must
         be created before as mentioned by ``Shapes``. Properties correspond to
         the properites used by each hit extraction factory.
@@ -302,27 +309,28 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         :param slot: additional naming for spill-over, not working for now
         """
         algs = []
-        hit_algs = self.getProp('Hit')
+        hit_algs = self.getProp("Hit")
         if type(hit_algs) is dict:
             for det_name, hit_alg_props in hit_algs.items():
                 if det_name not in self._added_dets:
                     log.warning("External geometry not set for " + det_name)
                     continue
                 self._check_props(det_name, hit_alg_props)
-                alg_conf = getattr(Configurables, hit_alg_props['Type'])
-                hit_alg_name = 'Get' + det_name + 'Hits' + slot
+                alg_conf = getattr(Configurables, hit_alg_props["Type"])
+                hit_alg_name = "Get" + det_name + "Hits" + slot
                 alg = alg_conf(
                     hit_alg_name,
-                    MCHitsLocation='MC/' + det_name + '/Hits',
-                    CollectionName=det_name + 'SDet/Hits',
-                    **self._refine_props(hit_alg_props))
+                    MCHitsLocation="MC/" + det_name + "/Hits",
+                    CollectionName=det_name + "SDet/Hits",
+                    **self._refine_props(hit_alg_props)
+                )
                 log.info("Registered external hit extraction " + hit_alg_name)
                 self._added_hits_algs.append(det_name)
                 algs.append(alg)
         return algs
 
     def activate_moni_alg(self, slot=""):
-        """ Takes care of setting up the right monitoring algorithms.
+        """Takes care of setting up the right monitoring algorithms.
         It is based on the properties provided in ``Moni``, but the volume must
         be created before as mentioned by ``Shapes``. Properties correspond to
         the properites used by each hit extraction factory.
@@ -330,46 +338,43 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         :param slot: additional naming for spill-over, not working for now
         """
         algs = []
-        moni_algs = self.getProp('Moni')
+        moni_algs = self.getProp("Moni")
         if type(moni_algs) is dict:
             for det_name, moni_alg_props in moni_algs.items():
                 if det_name not in self._added_hits_algs:
-                    log.warning("External hit algorithm not set for " +
-                                det_name)
+                    log.warning("External hit algorithm not set for " + det_name)
                     continue
                 self._check_props(
-                    det_name,
-                    moni_alg_props,
-                    required=['Type', 'HitsPropertyName'])
-                moni_alg_props[moni_alg_props[
-                    'HitsPropertyName']] = 'MC/' + det_name + '/Hits'
-                alg_conf = getattr(Configurables, moni_alg_props['Type'])
-                moni_alg_name = det_name + moni_alg_props['Type'] + slot
+                    det_name, moni_alg_props, required=["Type", "HitsPropertyName"]
+                )
+                moni_alg_props[moni_alg_props["HitsPropertyName"]] = (
+                    "MC/" + det_name + "/Hits"
+                )
+                alg_conf = getattr(Configurables, moni_alg_props["Type"])
+                moni_alg_name = det_name + moni_alg_props["Type"] + slot
                 alg = alg_conf(
                     moni_alg_name,
                     **self._refine_props(
-                        moni_alg_props,
-                        keys_to_refine=['Type', 'HitsPropertyName']))
+                        moni_alg_props, keys_to_refine=["Type", "HitsPropertyName"]
+                    )
+                )
                 log.info("Registered external monitoring " + moni_alg_name)
                 algs.append(alg)
         return algs
 
-    def _check_props(self, name, props, required=['Type']):
+    def _check_props(self, name, props, required=["Type"]):
         if type(props) is not dict:
             raise RuntimeError(
-                "ERROR: Dictionary of {} properties not provided.".format(
-                    name))
+                "ERROR: Dictionary of {} properties not provided.".format(name)
+            )
         for req in required:
             if not props.get(req):
                 raise RuntimeError(
-                    "ERROR: Property {} for {} not provided.".format(
-                        req, name))
+                    "ERROR: Property {} for {} not provided.".format(req, name)
+                )
 
-    def _refine_props(self, props, keys_to_refine=['Type']):
-        return {
-            key: prop
-            for key, prop in props.items() if key not in keys_to_refine
-        }
+    def _refine_props(self, props, keys_to_refine=["Type"]):
+        return {key: prop for key, prop in props.items() if key not in keys_to_refine}
 
     def _register_prop(self, props, key, prop):
         if not props.get(key):
@@ -378,19 +383,22 @@ class ExternalDetectorEmbedder(ConfigurableUser):
     def _embedding_tool(self, name, geo, tool_name, props):
         log.info("Registering external {} as {}".format(name, tool_name))
         tool_conf = getattr(Configurables, tool_name)
-        sens_det_props = self.getProp('Sensitive').get(name)
-        self._register_prop(props, 'LogicalVolumeName', name + "LVol")
-        self._register_prop(props, 'PhysicalVolumeName', name + "PVol")
+        sens_det_props = self.getProp("Sensitive").get(name)
+        self._register_prop(props, "LogicalVolumeName", name + "LVol")
+        self._register_prop(props, "PhysicalVolumeName", name + "PVol")
         if sens_det_props:
             self._check_props(name, sens_det_props)
-            sens_det_conf = getattr(Configurables, sens_det_props['Type'])
-            self._register_prop(sens_det_props, 'SensDetName', name + 'SDet')
+            sens_det_conf = getattr(Configurables, sens_det_props["Type"])
+            self._register_prop(sens_det_props, "SensDetName", name + "SDet")
             self._register_prop(
-                props, 'SensDet',
-                sens_det_props['Type'] + '/' + sens_det_props['SensDetName'])
+                props,
+                "SensDet",
+                sens_det_props["Type"] + "/" + sens_det_props["SensDetName"],
+            )
             sens_det_tool = sens_det_conf(
-                sens_det_props['SensDetName'],
-                **self._refine_props(sens_det_props, ['Type', 'SensDetName']))
+                sens_det_props["SensDetName"],
+                **self._refine_props(sens_det_props, ["Type", "SensDetName"])
+            )
         tool = tool_conf(name, **self._refine_props(props))
         if sens_det_tool:
             tool.addTool(sens_det_tool)

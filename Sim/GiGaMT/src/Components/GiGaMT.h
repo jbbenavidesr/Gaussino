@@ -86,7 +86,7 @@ class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMT
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{
       this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames )};
 
-  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 0};
+  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 1};
   Gaudi::Property<bool> m_splitPileUp{this, "SplitPileUp", false};
   Gaudi::Property<bool> m_printParticles{this, "PrintG4Particles", false};
   Gaudi::Property<bool> m_printMaterials{this, "PrintG4Materials", false};

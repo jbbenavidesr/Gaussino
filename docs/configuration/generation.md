@@ -1,13 +1,15 @@
 # Generation
 Configuration related to the generation phase.
 
+## Main Generation Configuration
 
 ```{eval-rst}
 .. currentmodule:: Gaussino.Generation
 
-.. autoclass:: GenPhase
+.. autoclass:: GaussinoGeneration
    :show-inheritance:
-   :members: setOtherProp, setOtherProps, configure_generation, configure_pgun, configure_phase, configure_genonly, event_type
    :undoc-members:
    :special-members: __apply_configuration__
+   :members:
+   :private-members:
 ```

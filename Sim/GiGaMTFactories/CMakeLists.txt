@@ -103,6 +103,11 @@ gaudi_add_library(GiGaMTMagnetFactoriesLib
 	    Gaussino::GiGaMTCoreMessageLib
 )
 
+# Workaround for unresolved symbol
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set_source_files_properties(src/Lib/FieldMgrBase.cpp PROPERTIES COMPILE_OPTIONS "-O2")
+endif()
+
 gaudi_add_module(GiGaMTMagnetFactories
     SOURCES
         src/Components/MagFieldFromSvc.cpp
