@@ -13,7 +13,7 @@ from GaudiKernel import SystemOfUnits as units
 from Configurables import (
     GaussinoSimulation,
     ExternalDetectorEmbedder,
-    Geant4Visualization,
+    GaussinoVisualization,
 )
 
 external = ExternalDetectorEmbedder("ExternalDetectorEmbedder_0")
@@ -21,19 +21,20 @@ external.Shapes["ExternalDetectorEmbedder_0_Cube"]["MaterialName"] = "Si"
 external.Materials["Si"] = SILICA
 
 GaussinoSimulation().Visualization = True
-g4vis = Geant4Visualization()
-g4vis.Driver = "DAWNFILE"
-g4vis.DrawGeometry = True
-g4vis.DrawTrajectories = True
-g4vis.DrawG4Hits = True
-g4vis.CameraPhi = 205
-g4vis.CameraTheta = 40
-g4vis.TrajectoryModel = "drawByParticleID"
-g4vis.TrajectoryType = "smooth"
-g4vis.TrajectoryFilters = [{
-    "FilterType": "momentumMagnitudeFilter",
-    "MinValue": 2 * units.MeV
-}]
-g4vis.StoreTrajectories = "All"
-g4vis.DrawG4Hits = True
-g4vis.Debug = True
+GaussinoVisualization(
+    Framework=["Geant4"],
+    Driver="DAWNFILE",
+    DrawGeometry=True,
+    DrawTrajectories=True,
+    DrawG4Hits=True,
+    CameraPhi=205,
+    CameraTheta=40,
+    TrajectoryModel="drawByParticleID",
+    TrajectoryType="smooth",
+    TrajectoryFilters=[{
+        "FilterType": "momentumMagnitudeFilter",
+        "MinValue": 2 * units.MeV
+    }],
+    StoreTrajectories="All",
+    Debug=True,
+)

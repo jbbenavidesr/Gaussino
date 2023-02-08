@@ -251,5 +251,5 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     def _activate_visualizations(self, giga):
         if self.getProp("Visualization"):
-            from Configurables import Geant4Visualization
-            Geant4Visualization().apply(giga)
+            from Configurables import GaussinoVisualization
+            GaussinoVisualization().apply(giga)

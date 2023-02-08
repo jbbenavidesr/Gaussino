@@ -21,7 +21,7 @@ Configuration related to visualization.
 ```{eval-rst}
 .. currentmodule:: GiGaMTVis.Configuration
 
-.. autoclass:: Geant4Visualization
+.. autoclass:: GaussinoVisualization
    :show-inheritance:
    :undoc-members:
    :members:

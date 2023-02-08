@@ -23,11 +23,15 @@ __author__ = "Filip Bilandžija, Michał Mazurek"
 __email__ = "michal.mazurek@cern.ch"
 
 
-class Geant4Visualization(ConfigurableUser):
+class GaussinoVisualization(ConfigurableUser):
     """This class sets up and provides all the necessary tools that are needed
     for visualization and filtering of geometry, tracks and hits in Geant4. It
     also provides presets for some trajectory models, while retaining the option
     for users to build their own custom trajectory model.
+
+    :var Framework: default: ``['Geant4']``
+        Framework for the visualization. Options are ``"Geant4"`` and ``"Phoenix"`.
+    :vartype Framework: list, required
 
     :var Driver: default: ``ASCIITree``,
         Geant4 visualization drivers. The list of available drivers is:
@@ -134,10 +138,10 @@ class Geant4Visualization(ConfigurableUser):
 
             # Initialize visualization and choose
             # the Geant4 driver and storage options
-            from Configurables import SimPhase
-            SimPhase().Visualization = True
-            from Configurables import Geant4Visualization
-            g4vis = Geant4Visualization()
+            from Configurables import GaussinoSimulation
+            GaussinoSimulation().Visualization = True
+            from Configurables import GaussinoVisualization
+            g4vis = GaussinoVisualization()
             g4vis.Driver = "OpenGLStoredX"
             g4vis.StoreTrajectories = "All"
 
@@ -178,7 +182,8 @@ class Geant4Visualization(ConfigurableUser):
     """
 
     __slots__ = {
-        "Driver": "",
+        "Framework": ["Geant4"],
+        "Driver": "ASCIITree",
         # geometry
         "DrawGeometry": False,
         # verbosity
@@ -207,6 +212,8 @@ class Geant4Visualization(ConfigurableUser):
         "Zoom": 1,
         # OpenGLSettings
         "OGLExportFileName": "",
+        # Phoenix settings:
+        "PhoenixOutputFile": "gaussino_phoenix.json",
         # other
         "CombineEvents": True,
         "Debug": False,
@@ -244,7 +251,7 @@ class Geant4Visualization(ConfigurableUser):
     ]
 
     # Available trajectory models:
-    _available_trajectory_models = [
+    _available_g4_trajectory_models = [
         'customTrajectoryModel', 'drawByCharge', 'drawByEncounteredVolume',
         'drawByOriginVolume', 'drawByParticleID', 'generic', 'drawByMomentum',
         'drawByKineticEnergy'
@@ -255,17 +262,30 @@ class Geant4Visualization(ConfigurableUser):
         'drawByParticleID', 'generic'
     ]
 
+    _phoenix_trajectory_models = [
+        'drawByParticleID',
+        'drawByMomentum',
+        'drawByKineticEnergy',
+        'drawByCharge'
+    ]
+
     # Available trajectory filters
-    _trajectory_filters = [
+    _available_g4_trajectory_filters = [
         'chargeFilter', 'customTrajectoryFilter', 'encounteredVolumeFilter',
         'originVolumeFilter', 'particleFilter', 'momentumMagnitudeFilter',
-        'kineticEnergyFilter', 'transverseMomentumFilter', 'pseudorapidityFilter'
+        'kineticEnergyFilter', 'transverseMomentumFilter'
     ]
 
     # Default trajectory filters
     _default_trajectory_filters = [
         'chargeFilter', 'encounteredVolumeFilter', 'originVolumeFilter',
         'particleFilter', 'attributeFilter'
+    ]
+
+    _phoenix_trajectory_filters = [
+        'chargeFilter', 'momentumMagnitudeFilter',
+        'kineticEnergyFilter', 'transverseMomentumFilter',
+        'pseudorapidityFilter'
     ]
 
     _storing_trajectories = [
@@ -320,29 +340,22 @@ class Geant4Visualization(ConfigurableUser):
         "Representation": "fullArrow"
     }
 
+    _gaussino_colors_hex = {
+        "red": "FF0000",
+        "green": "00FF00",
+        "blue": "0000FF",
+        "cyan": "00FFFF",
+        "magenta": "FF00FF",
+        "orange": "FFAA00",
+        "yellow": "FFFF00",
+        "purple": "AA22FF"
+    }
+
     _visualization_model = {}
 
     _visualization_filters = []
 
     def apply(self, giga):
-        """ Main method to be called from SimPhase()
-
-        :param giga: GiGaMT configurable
-        """
-        driver = self.getProp("Driver")
-        if not driver:
-            log.info("Geant4 visualization is turned off.")
-            return
-
-        # activate GiGaVisManager
-        from Configurables import GiGaVisManager
-        giga.VisManager = "GiGaVisManager"
-        vismgr = GiGaVisManager("GiGaMT.GiGaVisManager")
-        if self.getProp("Debug"):
-            vismgr.OutputLevel = DEBUG
-
-        vismgr.RequiredDriver = driver
-        # access the UI interface
         actioninit = giga.ActionInitializer
         run_action = actioninit.GiGaRunActionCommand
         event_action = actioninit.GiGaEventActionCommand
@@ -362,11 +375,62 @@ class Geant4Visualization(ConfigurableUser):
             'end_event': event_action.EndOfEventCommands,
         }
 
+        if "Geant4" in self.getProp("Framework"):
+            self._apply_g4(giga, cmds, actioninit)
+        if "Phoenix" in self.getProp("Framework"):
+            self._apply_phoenix(cmds, actioninit)
+
+    def _apply_phoenix(self, cmds, actioninit):
+        from Configurables import LHCb__Phoenix__Sink
+        sink = LHCb__Phoenix__Sink()
+        sink.FileName=self.getProp("PhoenixOutputFile")
+
+        from Configurables import ApplicationMgr
+        appMgr = ApplicationMgr()
+        appMgr.ExtSvc.append(sink)
+
+        from Configurables import GiGaPhoenixDumpG4Trajectories
+        dumpg4traj = GiGaPhoenixDumpG4Trajectories()
+
+        if self.getProp("DrawTrajectories"):
+            self._set_trajectory_storage(cmds, actioninit)
+            # phoenix vis without Geant4 vis in gaussino doesn't support smooth or rich traj yet
+            dumpg4traj.TrajectoryType = ""
+            if "Geant4" in self.getProp("Framework"):
+                dumpg4traj.TrajectoryType = self.getProp("TrajectoryType")
+            self._set_phoenix_trajectory_model(dumpg4traj)
+            self._set_phoenix_trajectory_filters(dumpg4traj)
+
+        appMgr.TopAlg.append(dumpg4traj)
+
+    def _apply_g4(self, giga, cmds, actioninit):
+        """ Main method to be called from SimPhase()
+
+        :param giga: GiGaMT configurable
+        """
+        driver = self.getProp("Driver")
+        if self.getProp("Framework") == "Phoenix":
+            driver = "OpenGLStoredX"
+        if not driver:
+            log.info("Geant4 visualization is turned off.")
+            return
+
+        # activate GiGaVisManager
+        from Configurables import GiGaVisManager
+        giga.VisManager = "GiGaVisManager"
+        vismgr = GiGaVisManager("GiGaMT.GiGaVisManager")
+        if self.getProp("Debug"):
+            vismgr.OutputLevel = DEBUG
+
+        vismgr.RequiredDriver = driver
+        # access the UI interface
+
         # and now append vis UI commands
         # note: order is important!
+
         self._activate_g4_driver(cmds)
 
-        self._activate_fields(cmds)
+        self._activate_g4_fields(cmds)
 
         self._set_view(cmds)
 
@@ -386,13 +450,14 @@ class Geant4Visualization(ConfigurableUser):
             self._draw_geometry(cmds)
 
         if self.getProp("DrawTrajectories"):
-            self._draw_trajectories(cmds, actioninit)
+            self._set_trajectory_storage(cmds, actioninit)
+            self._draw_g4_trajectories(cmds, actioninit)
             if self.isPropertySet("TrajectoryModel"):
-                self._create_trajectory_model()
-                self._set_trajectory_model(cmds)
+                self._create_g4_trajectory_model()
+                self._set_g4_trajectory_model(cmds)
             if self.isPropertySet("TrajectoryFilters"):
-                self._create_trajectory_filters()
-                self._set_trajectory_filters(cmds, vismgr)
+                self._create_g4_trajectory_filters()
+                self._set_g4_trajectory_filters(cmds, vismgr)
 
         if self.getProp("DrawG4Hits"):
             self._draw_g4hits(cmds)
@@ -405,6 +470,41 @@ class Geant4Visualization(ConfigurableUser):
                         command_argument='',
                         phase='init'):
         cmds[phase].append("{} {}".format(ui_command, command_argument))
+
+    def _find_color_hex(self, color_key):
+        if color_key in self._gaussino_colors_hex.keys():
+            return self._gaussino_colors_hex[color_key]
+        return color_key
+
+    def _unit_str_conversion(self, unit):
+        if unit == "eV":
+            return 1e-6 * MeV
+        if unit == "keV":
+            return 1e-3 * MeV
+        if unit == "MeV":
+            return MeV
+        if unit == "GeV":
+            return 1e3 * MeV
+        if unit == "TeV":
+            return 1e6 * MeV
+        if unit == "PeV":
+            return 1e9 * MeV
+        raise NotImplementedError("Unit " + unit + " is not supported.")
+
+    def _set_trajectory_storage(self, cmds, actioninit):
+        store_type = self.getProp("StoreTrajectories")
+        if store_type not in self._storing_trajectories:
+            raise ValueError(
+                "Only the following types of trajectory storing are available: [{}]"
+                .format((", ").join(self._storing_trajectories)))
+        if store_type == "Marked":
+            self._set_ui_command(cmds, "/tracking/storeTrajectory", 0)
+            actioninit.TruthFlaggingTrackAction.StoreMarkedTrajectories = True
+        elif store_type == "Truth":
+            self._set_ui_command(cmds, "/tracking/storeTrajectory", 0)
+            actioninit.TruthFlaggingTrackAction.StoreTrajectories = True
+        else:
+            self._set_ui_command(cmds, "/tracking/storeTrajectory", 1)
 
     def _activate_g4_driver(self, cmds):
         """ Method to activate on of the available Geant4 drivers
@@ -471,7 +571,7 @@ class Geant4Visualization(ConfigurableUser):
             self._set_ui_command(cmds, "/run/verbose", run_verbosity,
                                  'begin_run')
 
-    def _draw_trajectories(self, cmds, actioninit):
+    def _draw_g4_trajectories(self, cmds, actioninit):
         """ Method to configure trajectory visualization and it's properties:
             trajectory type, storing of trajectories and geometry style
 
@@ -483,17 +583,7 @@ class Geant4Visualization(ConfigurableUser):
         # warning: adding trajectories will set storing of the trajectories
         #          by default, so additional checks have to be made if
         #          storing is to be done internally in Gaussino
-        store_type = self.getProp("StoreTrajectories")
-        if store_type not in self._storing_trajectories:
-            raise ValueError(
-                "Only the following types of trajectory storing are available: [{}]"
-                .format((", ").join(self._storing_trajectories)))
-        if store_type == "Marked":
-            self._set_ui_command(cmds, "/tracking/storeTrajectory", 0)
-            actioninit.TruthFlaggingTrackAction.StoreMarkedTrajectories = True
-        elif store_type == "Truth":
-            self._set_ui_command(cmds, "/tracking/storeTrajectory", 0)
-            actioninit.TruthFlaggingTrackAction.StoreTrajectories = True
+        self._set_trajectory_storage(cmds, actioninit)
 
         style = self.getProp("GeometryStyle")
         styles = ['wireframe', 'surface', 'cloud']
@@ -505,7 +595,7 @@ class Geant4Visualization(ConfigurableUser):
             self._set_ui_command(cmds, "/vis/viewer/colourByDensity")
         self._set_ui_command(cmds, "/vis/viewer/set/style", style)
 
-    def _create_trajectory_model(self):
+    def _create_g4_trajectory_model(self):
         """ Method for creating the trajectory model to be used in ``_set_trajectory_model``
 
         """
@@ -513,7 +603,7 @@ class Geant4Visualization(ConfigurableUser):
         trajectory_model_options = self.getProp("TrajectoryModelOptions")
         trajectory_model = self._default_trajectory_model_options | trajectory_model_options
 
-        if trajectory_model_name not in self._available_trajectory_models:
+        if trajectory_model_name not in self._available_g4_trajectory_models:
             raise NotImplementedError(
                 trajectory_model_name +
                 " is not an available G4 Trajectory Model.")
@@ -540,7 +630,7 @@ class Geant4Visualization(ConfigurableUser):
                         trajectory_model_options['LineColors']):
                 trajectory_model['LineColors'] = [
                     'interval1 cyan', 'interval2 orange', 'interval3 green',
-                    'interval4 blue', 'interval5 green'
+                    'interval4 blue', 'interval5 red'
                 ]
 
         elif trajectory_model_name == 'customTrajectoryModel':
@@ -549,7 +639,7 @@ class Geant4Visualization(ConfigurableUser):
         for key in trajectory_model.keys():
             self._visualization_model[key] = trajectory_model[key]
 
-    def _set_trajectory_model(self, cmds):
+    def _set_g4_trajectory_model(self, cmds):
         """ Method to set the trajectory visualization model
 
         :param cmds: List of visualization commands
@@ -599,7 +689,46 @@ class Geant4Visualization(ConfigurableUser):
                         cmds, cmd_with_traj_key +
                         "/{}/setLineColourRGBA".format(key), color)
 
-    def _create_trajectory_filters(self):
+    def _set_phoenix_trajectory_model(self, dumpg4traj):
+        if self.getProp("TrajectoryModel") in self._phoenix_trajectory_models:
+            dumpg4traj.TrajectoryModel = self.getProp("TrajectoryModel")
+
+            if self.isPropertySet("TrajectoryModelOptions"):
+                model_options = self.getProp("TrajectoryModelOptions")
+
+                if "LineColors" in model_options.keys():
+                    if self.getProp("TrajectoryModel") == "drawByCharge":
+                        charge_colors = {"Positive":  "0000FF", "Negative": "FF0000", "Neutral": "00FF00"}
+                        for color_str in model_options["LineColors"]:
+                            charge, color_val = color_str.split(" ", 1)
+                            charge_colors[charge] = self._find_color_hex(color_val)
+                        dumpg4traj.ChargeColors = charge_colors
+
+                    elif self.getProp("TrajectoryModel") == "drawByParticleID":
+                        particle_colors = {"gamma": "00FF00", "e-": "FF0000", "e+": "0000FF", "pi-": "FF00FF", "pi+": "FF00FF", "proton": "00FFFF"}
+                        for color_str in model_options["LineColors"]:
+                            particle, color_val = color_str.split(" ", 1)
+                            particle_colors[particle] = self._find_color_hex(color_val)
+                        dumpg4traj.ParticleIDColors = particle_colors
+
+                    else:
+                        intervals = {}
+                        interval_colors = {}
+                        for interval_str in model_options["Intervals"]:
+                            interval_key, lower_bound, lower_bound_unit, upper_bound, upper_bound_unit = interval_str.split(" ", 4)
+                            intervals[interval_key] = (
+                                float(lower_bound) * self._unit_str_conversion(lower_bound_unit),
+                                float(upper_bound) * self._unit_str_conversion(upper_bound_unit)
+                            )
+                        for color_str in model_options["LineColors"]:
+                            interval_key, color = color_str.split(" ", 2)
+                            interval_colors[self._find_color_hex(color)] = intervals[interval_key]
+                        dumpg4traj.IntervalColors = interval_colors
+
+        else:
+            raise NotImplementedError("Trajectory model '{}' is not implemented in Phoenix.".format(self.getProp("TrajectoryModel")))
+
+    def _create_g4_trajectory_filters(self):
         """ Method for creating trajectory filters to be used in ``_set_trajectory_filters``
 
         """
@@ -610,7 +739,7 @@ class Geant4Visualization(ConfigurableUser):
             ) or not filter_options["FilterType"]:
                 raise ValueError("Filter Type is not provided.")
 
-            if filter_options["FilterType"] not in self._trajectory_filters:
+            if filter_options["FilterType"] not in self._available_g4_trajectory_filters:
                 raise NotImplementedError(
                     filter_options["FilterType"] +
                     " is not an available G4 Trajectory Filter.")
@@ -658,8 +787,8 @@ class Geant4Visualization(ConfigurableUser):
                         "MinValue"] and "MaxValue" in filter_options.keys(
                         ) and filter_options["MaxValue"]:
                     g4filter["Intervals"] = [
-                        "{} {}".format(filter_options["MinValue"],
-                                       filter_options["MaxValue"])
+                        "{} MeV {} MeV".format(filter_options["MinValue"] / MeV,
+                                       filter_options["MaxValue"] / MeV)
                     ]
                 elif "MinValue" in filter_options.keys(
                 ) and filter_options["MinValue"]:
@@ -695,7 +824,7 @@ class Geant4Visualization(ConfigurableUser):
 
             self._visualization_filters.append(g4filter)
 
-    def _set_trajectory_filters(self, cmds, vismgr):
+    def _set_g4_trajectory_filters(self, cmds, vismgr):
         """ Method to set the trajectory filters used in the visualization
 
         :param cmds: List of visualization commands
@@ -782,6 +911,72 @@ class Geant4Visualization(ConfigurableUser):
                     self._set_ui_command(
                         cmds, cmd_preset + "/create/initialEtaFilter")
 
+
+    def _set_phoenix_trajectory_filters(self, dumpg4traj):
+        trajectory_filters = self.getProp("TrajectoryFilters")
+
+        for filter in trajectory_filters:
+            if "FilterType" not in filter.keys(
+            ) or not filter["FilterType"]:
+                raise ValueError("Filter Type is not provided.")
+
+            if filter["FilterType"] not in self._phoenix_trajectory_filters:
+                raise NotImplementedError(
+                    filter["FilterType"] +
+                    " is not an available G4 Trajectory Filter.")
+
+            if filter["FilterType"] == "chargeFilter":
+                chargeValues = []
+                if 'addPositiveChargeParticles' in filter[
+                        "Options"]:
+                    chargeValues.append(1.)
+                if 'addNegativeChargeParticles' in filter[
+                        "Options"]:
+                    chargeValues.append(-1.)
+                if 'addNeutralParticles' in filter["Options"]:
+                    chargeValues.append(0.)
+
+                if "IsInclusive" in filter.keys() and not filter["IsInclusive"]:
+                    chargeValues = list(set([-1., 0., 1.]) - set(chargeValues))
+
+                dumpg4traj.AcceptedCharges = chargeValues
+
+            else:
+                min_value, max_value = 0, 0
+
+                if "MinValue" in filter.keys() and filter["MinValue"]:
+                    min_value = filter["MinValue"]
+                if "MaxValue" in filter.keys() and filter["MaxValue"]:
+                    max_value = filter["MaxValue"]
+
+                if "IsInclusive" in filter.keys() and not filter["IsInclusive"]:
+                    min_value, max_value = max_value, min_value
+
+                if filter["FilterType"] == "momentumMagnitudeFilter":
+                    if min_value:
+                        dumpg4traj.MinP = min_value
+                    if max_value:
+                        dumpg4traj.MaxP = max_value
+
+                if filter["FilterType"] == "transverseMomentumFilter":
+                    if min_value:
+                        dumpg4traj.MinPt = min_value
+                    if max_value:
+                        dumpg4traj.MaxPt = max_value
+
+                if filter["FilterType"] == "kineticEnergyFilter":
+                    if min_value:
+                        dumpg4traj.MinKE = min_value
+                    if max_value:
+                        dumpg4traj.MaxKE = max_value
+
+                if filter["FilterType"] == "pseudorapidityFilter":
+                    if min_value:
+                        dumpg4traj.MinEta = min_value
+                    if max_value:
+                        dumpg4traj.MaxEta = max_value
+
+
     def _draw_g4hits(self, cmds):
         """ Method for adding visualization of hits
 
@@ -805,15 +1000,19 @@ class Geant4Visualization(ConfigurableUser):
                                  "accumulate")
 
         # for interactive drivers enable UI sessions
+        end_ui_session = True
+        if self.getProp("Framework") == "Phoenix":
+            end_ui_session = False
+
         if driver in self._interactive_drivers:
             if combine:
                 self._set_ui_command(
                     cmds, "/vis/viewer/refresh", phase="end_run")
-                actioninit.GiGaRunActionCommand.EndOfRunUISession = True
+                actioninit.GiGaRunActionCommand.EndOfRunUISession = end_ui_session
             else:
                 self._set_ui_command(
                     cmds, "/vis/viewer/refresh", phase="end_event")
-                actioninit.GiGaEventActionCommand.EndOfEventUISession = True
+                actioninit.GiGaEventActionCommand.EndOfEventUISession = end_ui_session
 
         if driver == "OpenGLImmediateX" or driver == "OpenGLStoredX":
             exportFileName = self.getProp("OGLExportFileName")
@@ -821,7 +1020,7 @@ class Geant4Visualization(ConfigurableUser):
                 self._set_ui_command(cmds, "/vis/ogl/export", exportFileName,
                                      "end_run")
 
-    def _activate_fields(self, cmds):
+    def _activate_g4_fields(self, cmds):
         """ Method for adding the visualization of the electic and the magnetic field
 
         :param cmds: List of visualization commands
