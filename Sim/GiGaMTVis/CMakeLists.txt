@@ -24,6 +24,9 @@ gaudi_add_module(GiGaMTVis
     	Geant4::G4vis_management
     	Geant4::G4modeling
     	Geant4::G4Tree
+      Geant4::G4FR
+      Geant4::G4visHepRep
+      Geant4::G4OpenGL
         Gaudi::GaudiAlgLib
         Gaussino::GiGaMTCoreMessageLib
 	Gaussino::GiGaMTFactoriesLib
@@ -33,3 +36,5 @@ gaudi_add_module(GiGaMTVis
 gaudi_generate_confuserdb()
 
 gaudi_install(PYTHON)
+
+gaudi_add_tests(pytest)
