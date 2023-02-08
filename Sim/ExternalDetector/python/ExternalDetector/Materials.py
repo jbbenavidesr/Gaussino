@@ -27,3 +27,13 @@ LEAD = {
     "Density": 11.29 * units.g / units.cm3,
     "State": "Solid",
 }
+
+SILICA = {
+    "Type": "MaterialFromElements",
+    "Symbols": ["Si"],
+    "AtomicNumbers": [14.],
+    "MassNumbers": [27.9769 * units.g / units.mole],
+    "MassFractions": [1.],
+    "Density": 2.329 * units.g / units.cm3,
+    "State": "Solid",
+}

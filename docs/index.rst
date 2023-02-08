@@ -52,7 +52,6 @@ Gaussino can be used as the core project for more experiment specific projects o
    configuration/generation
    configuration/simulation
    configuration/geometry
-   configuration/visualization
 
 .. toctree::
    :caption: Examples & Tutorials
