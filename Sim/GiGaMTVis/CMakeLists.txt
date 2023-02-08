@@ -16,6 +16,7 @@ Sim/GiGaMTVis
 gaudi_add_module(GiGaMTVis
     SOURCES
         src/GiGaTrajectoryTransverseMomentumFilter.cpp
+        src/GiGaTrajectoryPseudorapidityFilter.cpp
         src/GiGaVisManager.cpp
     LINK
     	Geant4::G4event
