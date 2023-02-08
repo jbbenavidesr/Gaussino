@@ -32,9 +32,9 @@ namespace GiGa::TrajectoryInitialPT {
 
   public:
     Filter( const std::string& name = "Unspecified", double minMom = 0., double maxMom = 0. );
-    inline virtual bool Evaluate( const G4VTrajectory& traj ) const;
-    inline virtual void Print( std::ostream& ) const;
-    inline virtual void Clear(){};
+    inline virtual bool Evaluate( const G4VTrajectory& traj ) const override;
+    inline virtual void Print( std::ostream& ) const override;
+    inline virtual void Clear() override {};
   };
 
   using G4TrajFilter        = G4VFilter<G4VTrajectory>;
@@ -48,7 +48,7 @@ namespace GiGa::TrajectoryInitialPT {
     using Messengers         = std::vector<G4UImessenger*>;
     using ModelAndMessengers = std::pair<G4TrajFilter*, Messengers>;
     FilterG4Factory() : G4TrajFilterFactory( "initialPTFilter" ){};
-    ModelAndMessengers Create( const G4String&, const G4String& );
+    ModelAndMessengers Create( const G4String&, const G4String& ) override;
     inline void        setMinPt( double min_pt ) { m_min_pt = min_pt; };
     inline void        setMaxPt( double max_pt ) { m_max_pt = max_pt; };
   };
