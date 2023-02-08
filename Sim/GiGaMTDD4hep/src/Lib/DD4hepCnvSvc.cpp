@@ -12,8 +12,8 @@
 #include "GiGaMTDD4hep/DD4hepCnvSvc.h"
 
 // Geant4
-#include "G4SDManager.hh"
 #include "G4LogicalVolumeStore.hh"
+#include "G4SDManager.hh"
 #include "G4VisAttributes.hh"
 #include "TSystem.h"
 
@@ -59,22 +59,22 @@ StatusCode DD4hepCnvSvc::initialize() {
   }
 
   auto world_lvol = m_world_root->GetLogicalVolume();
-  world_lvol->SetVisAttributes(G4VisAttributes::Invisible);
+  world_lvol->SetVisAttributes( G4VisAttributes::Invisible );
 
   if ( !m_invisibleVolumes.value().empty() ) {
     auto vol_store = G4LogicalVolumeStore::GetInstance();
     if ( !vol_store ) {
       error() << "G4LogicalVolumeStore points to NULL" << endmsg;
       return StatusCode::FAILURE;
-    } 
+    }
 
     for ( auto& vol_name : m_invisibleVolumes.value() ) {
-      auto vol = vol_store->GetVolume(vol_name);
-      if (!vol) {
+      auto vol = vol_store->GetVolume( vol_name );
+      if ( !vol ) {
         warning() << "Cannot find " << vol_name << "in the volume store!" << endmsg;
         continue;
       }
-      vol->SetVisAttributes(G4VisAttributes::Invisible);
+      vol->SetVisAttributes( G4VisAttributes::Invisible );
     }
   }
 

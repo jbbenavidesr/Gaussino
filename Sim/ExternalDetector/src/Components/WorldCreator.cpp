@@ -73,9 +73,7 @@ G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
   auto world_pvol = new G4PVPlacement( nullptr, CLHEP::Hep3Vector(), m_worldPhysicalVolumeName.value(), world_lvol, 0,
                                        false, 0, false );
 
-  if ( !m_visible.value() ) {
-    world_lvol->SetVisAttributes( G4VisAttributes::Invisible );
-  }
+  if ( !m_visible.value() ) { world_lvol->SetVisAttributes( G4VisAttributes::Invisible ); }
 
   debug() << "External world created!" << endmsg;
   return world_pvol;

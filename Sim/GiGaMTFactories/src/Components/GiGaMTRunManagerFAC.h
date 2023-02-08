@@ -8,20 +8,20 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+#include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
-#include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
 // Factory class implemented as a GaudiTool that creates and configures the
 // GiGaMTRunMangager singleton.
 
-class GiGaMTRunManagerFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaMTRunManager>>
-{
-  public:
+class GiGaMTRunManagerFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaMTRunManager>> {
+public:
   using extends::extends;
 
   GiGaMTRunManager* construct() const override;
-  private:
-  static std::atomic_bool created;
+
+private:
+  static std::atomic_bool                   created;
   Gaudi::Property<std::vector<std::string>> m_initCommands{this, "InitCommands", {}};
 };

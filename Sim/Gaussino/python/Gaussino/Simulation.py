@@ -72,14 +72,14 @@ class GaussinoSimulation(GaussinoConfigurable):
     :vartype DumpCutsTable: bool, optional
     """
 
-
     __slots__ = {
         # MAIN
         "TrackTruth": True,
         "PhysicsConstructors": [],
         "Visualization": False,
         # G4 commands
-        "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
+        "G4BeginRunCommand":
+        ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
         "G4BeginEventCommand": [],
         "G4EndEventCommand": [],
@@ -142,13 +142,15 @@ class GaussinoSimulation(GaussinoConfigurable):
         actioninit = get_set_configurable(giga, "ActionInitializer")
 
         actioninit.RunActions += ["GiGaRunActionCommand"]
-        run_commands = actioninit.addTool(GiGaRunActionCommand, "GiGaRunActionCommand")
+        run_commands = actioninit.addTool(GiGaRunActionCommand,
+                                          "GiGaRunActionCommand")
         run_commands.BeginOfRunCommands = self.getProp("G4BeginRunCommand")
         run_commands.EndOfRunCommands = self.getProp("G4EndRunCommand")
 
         actioninit.EventActions += ['GiGaEventActionCommand']
         event_commands = actioninit.addTool(GiGaEventActionCommand)
-        event_commands.BeginOfEventCommands = self.getProp('G4BeginEventCommand')
+        event_commands.BeginOfEventCommands = self.getProp(
+            'G4BeginEventCommand')
         event_commands.EndOfEventCommands = self.getProp('G4EndEventCommand')
 
         self._activate_visualizations(giga)

@@ -17,10 +17,10 @@
 #include "GaudiKernel/SmartIF.h"
 
 // Gaudi includes
+#include "G4VSensitiveDetector.hh"
 #include "GaudiKernel/IIncidentSvc.h"
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/Transform3DTypes.h"
-#include "G4VSensitiveDetector.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 #include "Kernel/IPropertyConfigSvc.h"
@@ -71,7 +71,7 @@ private:
                                                  "${DETECTOR_PROJECT_ROOT}/compact/LHCb-no-GDML.xml",
                                                  "Location of the XML detector description"};
 
-  Gaudi::Property<std::vector<std::string>>           m_invisibleVolumes{this, "InvisibleVolumes", {}};
+  Gaudi::Property<std::vector<std::string>> m_invisibleVolumes{this, "InvisibleVolumes", {}};
 
   StatusCode register_mag_field( const std::string& name, G4LogicalVolume* );
   StatusCode register_sensitive( const std::string& name, G4LogicalVolume* );

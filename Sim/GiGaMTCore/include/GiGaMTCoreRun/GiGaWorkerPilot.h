@@ -12,10 +12,10 @@
 
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
 
-#include "GiGaMTCoreUtils/GiGaMTUtils.h"
-#include "GiGaMTCoreRun/GiGaWorkerPayload.h"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreRun/GiGaWorkerPayload.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
+#include "GiGaMTCoreUtils/GiGaMTUtils.h"
 
 #include "G4Event.hh"
 #include "HepMC3/GenEvent.h"
@@ -33,8 +33,7 @@ class GiGaWorkerPilotFAC;
 class G4EventProxy;
 class G4WorkerThread;
 
-class GiGaWorkerPilot : public GiGaMessage
-{
+class GiGaWorkerPilot : public GiGaMessage {
   friend class GiGaWorkerPilotFAC;
   friend class G4EventProxy;
 
@@ -68,30 +67,26 @@ public:
 
   // Set the queue to retrieve the payload from.
   // This should be be done only once and I really don't know why we don't just simply hardcode this.
-  void SetInputQueue( GiGaPayloadQueue* que )
-  {
+  void SetInputQueue( GiGaPayloadQueue* que ) {
     debug( "Setting input queue" );
     m_input_queue = que;
   }
 
-  void setPostProcessing (bool postprocessing) { m_postprocessing = postprocessing; }
+  void setPostProcessing( bool postprocessing ) { m_postprocessing = postprocessing; }
 
   // Returns singleton instance of initialization barrier.
   // First call determines the created number of threads that
   // are have to arrive at the barrier before all are given
   // the go-ahead.
-  static GiGaMTBarrier& GetInitBarrier( std::size_t num_threads = 0 )
-  {
+  static GiGaMTBarrier& GetInitBarrier( std::size_t num_threads = 0 ) {
     static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
-  static GiGaMTBarrier& GetFinalBarrier( std::size_t num_threads = 0 )
-  {
+  static GiGaMTBarrier& GetFinalBarrier( std::size_t num_threads = 0 ) {
     static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
-  static GiGaMTBarrier& GetPostProcessingBarrier( std::size_t num_threads = 0 )
-  {
+  static GiGaMTBarrier& GetPostProcessingBarrier( std::size_t num_threads = 0 ) {
     static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
@@ -104,7 +99,7 @@ private:
   // Marked private so only the Proxy objects have access to this function.
   // FIXME: ugly sadface
   void RegisterForCleanUp( G4Event* evt );
-  void CleanUp(bool forced = false);
+  void CleanUp( bool forced = false );
 
   // Constructor is private as these objects are supposed to
   // only be created using the corresponding factories
@@ -112,22 +107,22 @@ private:
 
   // Pointer to the input queue
   GiGaPayloadQueue* m_input_queue = nullptr;
-  G4WorkerThread* m_context       = nullptr;
+  G4WorkerThread*   m_context     = nullptr;
 
   // Events post-processing
   bool m_postprocessing = false;
 
   // Number of worker
-  size_t iWorker  = 0;
-  size_t nWorkers = 0;
-  size_t nDeleted = 0;
-  size_t nCreated = 0;
-  size_t nKept = 0;
+  size_t iWorker    = 0;
+  size_t nWorkers   = 0;
+  size_t nDeleted   = 0;
+  size_t nCreated   = 0;
+  size_t nKept      = 0;
   size_t nToProcess = 0;
   // Internal strings to store different states of the processed event
   // FIXME: These should not be used in production version
-  std::string m_before_sim, m_after_sim, m_after_cleanup;
-  bool m_track_eventstructure{false};
+  std::string           m_before_sim, m_after_sim, m_after_cleanup;
+  bool                  m_track_eventstructure{false};
   std::vector<G4Event*> m_for_cleanup{};
-  std::mutex m_cleanup_lock{};
+  std::mutex            m_cleanup_lock{};
 };

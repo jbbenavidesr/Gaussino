@@ -53,13 +53,12 @@
 // It's implementation is based on commong Geant4 examples and the documentation.
 // Note however that not much will happen here as GiGaMTRunManager deactivated a lot
 // of the internal workings.
-StatusCode GiGaMT::InitializeMainThread() const
-{
+StatusCode GiGaMT::InitializeMainThread() const {
   // Start by creating the worker thread by using the corresponding factory.
   // This will instantiate call the singleton for the run manager and apply
   // any configuration given to the factory (none at the moment!).
   auto main_mgr = m_mTRunManagerFactory->construct();
-  main_mgr->SetNumberOfEventsToBeProcessed(m_nWorkerThreads);
+  main_mgr->SetNumberOfEventsToBeProcessed( m_nWorkerThreads );
   main_mgr->SetUserInitialization( m_physListFactory->construct() );
   main_mgr->SetUserInitialization( m_ActionInitializerFactory->construct() );
   main_mgr->G4RunManager::SetUserInitialization( m_detConstFactory->construct() );
@@ -89,7 +88,7 @@ StatusCode GiGaMT::InitializeMainThread() const
     }
     if ( !currentSceneHandler->GetScene() ) {
       error() << "Must create an instance of G4Scene for the visualization thread. "
-              << "Add '/vis/scene/create' and '/vis/sceneHandler/attach' " 
+              << "Add '/vis/scene/create' and '/vis/sceneHandler/attach' "
               << "or a compound command to the initCommands." << endmsg;
       return StatusCode::FAILURE;
     }
@@ -103,8 +102,7 @@ StatusCode GiGaMT::InitializeMainThread() const
   return StatusCode::SUCCESS;
 }
 
-StatusCode GiGaMT::InitializeWorkerThreads() const
-{
+StatusCode GiGaMT::InitializeWorkerThreads() const {
 
   debug() << "Beginning worker thread creation" << endmsg;
   // Barrier to synchronise the initialization of the threads to only
@@ -122,8 +120,8 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
     }
 
     // FIXME: Add call-back for converter to workerpilot
-    //pilot->SetConverter(
-        //[&]( const std::vector<const HepMC3::GenEventPtr>& evts ) { return m_conversionTool->g4Event( evts ); } );
+    // pilot->SetConverter(
+    //[&]( const std::vector<const HepMC3::GenEventPtr>& evts ) { return m_conversionTool->g4Event( evts ); } );
     m_workerThreads.emplace_back( std::move( *pilot ) );
     delete pilot;
   }

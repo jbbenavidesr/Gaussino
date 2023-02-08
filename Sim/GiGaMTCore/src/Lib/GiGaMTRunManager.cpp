@@ -10,23 +10,21 @@
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
-#include "G4StateManager.hh"
 #include "G4GeometryManager.hh"
-#include "G4UserRunAction.hh"
-#include "G4Run.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4MTRunManagerKernel.hh"
+#include "G4Run.hh"
+#include "G4StateManager.hh"
+#include "G4UserRunAction.hh"
 
+#include "G4CascadeInterface.hh"
 #include "G4IonTable.hh"
 #include "G4ParticleTable.hh"
-#include "G4CascadeInterface.hh"
 
-#include "GaudiKernel/ISvcLocator.h"
 #include "GaudiKernel/Bootstrap.h"
-
+#include "GaudiKernel/ISvcLocator.h"
 
 GiGaMTRunManager::GiGaMTRunManager() : G4MTRunManager() {}
-
 
 GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager() {
   // Grab thread-local pointer from base class
@@ -37,7 +35,6 @@ GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager() {
     return new GiGaMTRunManager;
   }
 }
-
 
 void GiGaMTRunManager::Initialize() {
   // Set up geometry and physics in base class.
@@ -52,7 +49,7 @@ void GiGaMTRunManager::Initialize() {
   // the run is initilized (this simulates commands that are
   // added in a main function of Geant4)
   for ( auto& cmd : m_initCommands ) {
-    info("InitCommand(): execute '" + cmd + "'");
+    info( "InitCommand(): execute '" + cmd + "'" );
     applyUIcommand( cmd );
   }
   // Run initialization in G4RunManager.
@@ -67,11 +64,11 @@ void GiGaMTRunManager::Initialize() {
 
 void GiGaMTRunManager::RunTermination() {
   std::string msg = "Geant4 terminated the run internally. This should not have happened!";
-  throw std::runtime_error(msg);
+  throw std::runtime_error( msg );
 }
 
 void GiGaMTRunManager::SafeRunTermination() {
-  debug("Geant4 Run terminated.");
+  debug( "Geant4 Run terminated." );
   // WaitForEndEventLoopWorkers();
   // -> disabled as it won't do anything, as G4 barrier is disabled
   // G4RunManager::TerminateEventLoop()

@@ -263,9 +263,7 @@ class GaussinoVisualization(ConfigurableUser):
     ]
 
     _phoenix_trajectory_models = [
-        'drawByParticleID',
-        'drawByMomentum',
-        'drawByKineticEnergy',
+        'drawByParticleID', 'drawByMomentum', 'drawByKineticEnergy',
         'drawByCharge'
     ]
 
@@ -283,9 +281,8 @@ class GaussinoVisualization(ConfigurableUser):
     ]
 
     _phoenix_trajectory_filters = [
-        'chargeFilter', 'momentumMagnitudeFilter',
-        'kineticEnergyFilter', 'transverseMomentumFilter',
-        'pseudorapidityFilter'
+        'chargeFilter', 'momentumMagnitudeFilter', 'kineticEnergyFilter',
+        'transverseMomentumFilter', 'pseudorapidityFilter'
     ]
 
     _storing_trajectories = [
@@ -383,7 +380,7 @@ class GaussinoVisualization(ConfigurableUser):
     def _apply_phoenix(self, cmds, actioninit):
         from Configurables import LHCb__Phoenix__Sink
         sink = LHCb__Phoenix__Sink()
-        sink.FileName=self.getProp("PhoenixOutputFile")
+        sink.FileName = self.getProp("PhoenixOutputFile")
 
         from Configurables import ApplicationMgr
         appMgr = ApplicationMgr()
@@ -698,35 +695,53 @@ class GaussinoVisualization(ConfigurableUser):
 
                 if "LineColors" in model_options.keys():
                     if self.getProp("TrajectoryModel") == "drawByCharge":
-                        charge_colors = {"Positive":  "0000FF", "Negative": "FF0000", "Neutral": "00FF00"}
+                        charge_colors = {
+                            "Positive": "0000FF",
+                            "Negative": "FF0000",
+                            "Neutral": "00FF00"
+                        }
                         for color_str in model_options["LineColors"]:
                             charge, color_val = color_str.split(" ", 1)
-                            charge_colors[charge] = self._find_color_hex(color_val)
+                            charge_colors[charge] = self._find_color_hex(
+                                color_val)
                         dumpg4traj.ChargeColors = charge_colors
 
                     elif self.getProp("TrajectoryModel") == "drawByParticleID":
-                        particle_colors = {"gamma": "00FF00", "e-": "FF0000", "e+": "0000FF", "pi-": "FF00FF", "pi+": "FF00FF", "proton": "00FFFF"}
+                        particle_colors = {
+                            "gamma": "00FF00",
+                            "e-": "FF0000",
+                            "e+": "0000FF",
+                            "pi-": "FF00FF",
+                            "pi+": "FF00FF",
+                            "proton": "00FFFF"
+                        }
                         for color_str in model_options["LineColors"]:
                             particle, color_val = color_str.split(" ", 1)
-                            particle_colors[particle] = self._find_color_hex(color_val)
+                            particle_colors[particle] = self._find_color_hex(
+                                color_val)
                         dumpg4traj.ParticleIDColors = particle_colors
 
                     else:
                         intervals = {}
                         interval_colors = {}
                         for interval_str in model_options["Intervals"]:
-                            interval_key, lower_bound, lower_bound_unit, upper_bound, upper_bound_unit = interval_str.split(" ", 4)
+                            interval_key, lower_bound, lower_bound_unit, upper_bound, upper_bound_unit = interval_str.split(
+                                " ", 4)
                             intervals[interval_key] = (
-                                float(lower_bound) * self._unit_str_conversion(lower_bound_unit),
-                                float(upper_bound) * self._unit_str_conversion(upper_bound_unit)
-                            )
+                                float(lower_bound) *
+                                self._unit_str_conversion(lower_bound_unit),
+                                float(upper_bound) *
+                                self._unit_str_conversion(upper_bound_unit))
                         for color_str in model_options["LineColors"]:
                             interval_key, color = color_str.split(" ", 2)
-                            interval_colors[self._find_color_hex(color)] = intervals[interval_key]
+                            interval_colors[self._find_color_hex(
+                                color)] = intervals[interval_key]
                         dumpg4traj.IntervalColors = interval_colors
 
         else:
-            raise NotImplementedError("Trajectory model '{}' is not implemented in Phoenix.".format(self.getProp("TrajectoryModel")))
+            raise NotImplementedError(
+                "Trajectory model '{}' is not implemented in Phoenix.".format(
+                    self.getProp("TrajectoryModel")))
 
     def _create_g4_trajectory_filters(self):
         """ Method for creating trajectory filters to be used in ``_set_trajectory_filters``
@@ -739,7 +754,8 @@ class GaussinoVisualization(ConfigurableUser):
             ) or not filter_options["FilterType"]:
                 raise ValueError("Filter Type is not provided.")
 
-            if filter_options["FilterType"] not in self._available_g4_trajectory_filters:
+            if filter_options[
+                    "FilterType"] not in self._available_g4_trajectory_filters:
                 raise NotImplementedError(
                     filter_options["FilterType"] +
                     " is not an available G4 Trajectory Filter.")
@@ -787,8 +803,9 @@ class GaussinoVisualization(ConfigurableUser):
                         "MinValue"] and "MaxValue" in filter_options.keys(
                         ) and filter_options["MaxValue"]:
                     g4filter["Intervals"] = [
-                        "{} MeV {} MeV".format(filter_options["MinValue"] / MeV,
-                                       filter_options["MaxValue"] / MeV)
+                        "{} MeV {} MeV".format(
+                            filter_options["MinValue"] / MeV,
+                            filter_options["MaxValue"] / MeV)
                     ]
                 elif "MinValue" in filter_options.keys(
                 ) and filter_options["MinValue"]:
@@ -808,7 +825,9 @@ class GaussinoVisualization(ConfigurableUser):
                         "Maximum or minimum value should be set when using Momentum Magnitude or Kinetic Energy Filter."
                     )
 
-            if filter_options["FilterType"] == 'transverseMomentumFilter' or filter_options["FilterType"] == 'pseudorapidityFilter':
+            if filter_options[
+                    "FilterType"] == 'transverseMomentumFilter' or filter_options[
+                        "FilterType"] == 'pseudorapidityFilter':
                 if "MinValue" in filter_options.keys(
                 ) and filter_options["MinValue"]:
                     g4filter["MinValue"] = filter_options["MinValue"]
@@ -911,13 +930,11 @@ class GaussinoVisualization(ConfigurableUser):
                     self._set_ui_command(
                         cmds, cmd_preset + "/create/initialEtaFilter")
 
-
     def _set_phoenix_trajectory_filters(self, dumpg4traj):
         trajectory_filters = self.getProp("TrajectoryFilters")
 
         for filter in trajectory_filters:
-            if "FilterType" not in filter.keys(
-            ) or not filter["FilterType"]:
+            if "FilterType" not in filter.keys() or not filter["FilterType"]:
                 raise ValueError("Filter Type is not provided.")
 
             if filter["FilterType"] not in self._phoenix_trajectory_filters:
@@ -927,16 +944,15 @@ class GaussinoVisualization(ConfigurableUser):
 
             if filter["FilterType"] == "chargeFilter":
                 chargeValues = []
-                if 'addPositiveChargeParticles' in filter[
-                        "Options"]:
+                if 'addPositiveChargeParticles' in filter["Options"]:
                     chargeValues.append(1.)
-                if 'addNegativeChargeParticles' in filter[
-                        "Options"]:
+                if 'addNegativeChargeParticles' in filter["Options"]:
                     chargeValues.append(-1.)
                 if 'addNeutralParticles' in filter["Options"]:
                     chargeValues.append(0.)
 
-                if "IsInclusive" in filter.keys() and not filter["IsInclusive"]:
+                if "IsInclusive" in filter.keys(
+                ) and not filter["IsInclusive"]:
                     chargeValues = list(set([-1., 0., 1.]) - set(chargeValues))
 
                 dumpg4traj.AcceptedCharges = chargeValues
@@ -949,7 +965,8 @@ class GaussinoVisualization(ConfigurableUser):
                 if "MaxValue" in filter.keys() and filter["MaxValue"]:
                     max_value = filter["MaxValue"]
 
-                if "IsInclusive" in filter.keys() and not filter["IsInclusive"]:
+                if "IsInclusive" in filter.keys(
+                ) and not filter["IsInclusive"]:
                     min_value, max_value = max_value, min_value
 
                 if filter["FilterType"] == "momentumMagnitudeFilter":
@@ -975,7 +992,6 @@ class GaussinoVisualization(ConfigurableUser):
                         dumpg4traj.MinEta = min_value
                     if max_value:
                         dumpg4traj.MaxEta = max_value
-
 
     def _draw_g4hits(self, cmds):
         """ Method for adding visualization of hits

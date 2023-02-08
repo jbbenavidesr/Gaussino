@@ -27,8 +27,7 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTRunManager : public G4MTRunManager, public GiGa::UIMessage
-{
+class GiGaMTRunManager : public G4MTRunManager, public GiGa::UIMessage {
 
 public:
   // Gets the singleton instance of the GiGaMTRunManager.
@@ -48,7 +47,6 @@ public:
   /// trigger the termination of the run internally.
   void SafeRunTermination();
 
-
   /// We cram all of the initialization of the run manager stuff in here.
   /// This then includes some of the things that in normal G4 are called
   /// immediately before the event loop.
@@ -60,14 +58,14 @@ public:
   virtual void ThisWorkerReady() override final{};
   virtual void ThisWorkerEndEventLoop() override final{};
 
-  void setInitCommands(std::vector<std::string> initCommands) { m_initCommands = initCommands; }
+  void setInitCommands( std::vector<std::string> initCommands ) { m_initCommands = initCommands; }
 
 protected:
   /// Initialize the G4 geometry on the master
-  //void InitializeGeometry() override final;
+  // void InitializeGeometry() override final;
 
   // Initialize the physics list on the master
-  //void InitializePhysics() override final;
+  // void InitializePhysics() override final;
 
   // Disable G4's barrier synchronization by implementing these methods
   // and leaving them empty. These are probably called at some point

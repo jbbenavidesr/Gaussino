@@ -34,7 +34,7 @@ namespace GiGa::TrajectoryInitialPT {
     Filter( const std::string& name = "Unspecified", double minMom = 0., double maxMom = 0. );
     inline virtual bool Evaluate( const G4VTrajectory& traj ) const override;
     inline virtual void Print( std::ostream& ) const override;
-    inline virtual void Clear() override {};
+    inline virtual void Clear() override{};
   };
 
   using G4TrajFilter        = G4VFilter<G4VTrajectory>;

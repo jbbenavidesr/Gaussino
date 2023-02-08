@@ -14,8 +14,8 @@
 #include "G4HepRepFile.hh"
 #include "G4VisManager.hh"
 #ifdef G4VIS_USE_OPENGLX
-#include "G4OpenGLImmediateX.hh"
-#include "G4OpenGLStoredX.hh"
+#  include "G4OpenGLImmediateX.hh"
+#  include "G4OpenGLStoredX.hh"
 #endif
 
 #include "G4DigiFilterFactories.hh"
@@ -44,19 +44,19 @@ namespace GiGa {
     void RegisterModelFactories() override;
 
   private:
-    std::vector<G4TrajFilterFactory*> m_traj_factories = {};
-    std::string m_required_driver = "";
+    std::vector<G4TrajFilterFactory*> m_traj_factories  = {};
+    std::string                       m_required_driver = "";
   };
 
   class VisManagerFactory : public extends<GiGaTool, GiGaFactoryBase<G4VisManager>> {
-    ToolHandleArray<GiGaFactoryBase<G4TrajFilterFactory>> m_traj_factories{ this };
+    ToolHandleArray<GiGaFactoryBase<G4TrajFilterFactory>> m_traj_factories{this};
     Gaudi::Property<std::vector<std::string>>             m_traj_factories_names{
         this,
         "TrajectoryFactories",
         {},
         tool_array_setter( m_traj_factories, m_traj_factories_names ),
-        Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
-    Gaudi::Property<std::string> m_required_driver { this, "RequiredDriver", "" };
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+    Gaudi::Property<std::string> m_required_driver{this, "RequiredDriver", ""};
 
   public:
     using extends::extends;
@@ -76,17 +76,19 @@ void GiGa::VisManager::RegisterGraphicsSystems() {
   } else if ( m_required_driver == "HepRep" ) {
     RegisterGraphicsSystem( new G4HepRepFile );
   } else if ( m_required_driver == "OpenGLImmediateX" ) {
-    #ifdef G4VIS_USE_OPENGLX
-      RegisterGraphicsSystem( new G4OpenGLImmediateX );
-    #else
-      G4Exception("GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException, "G4 not built with OPENGLX");
-    #endif
+#ifdef G4VIS_USE_OPENGLX
+    RegisterGraphicsSystem( new G4OpenGLImmediateX );
+#else
+    G4Exception( "GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException,
+                 "G4 not built with OPENGLX" );
+#endif
   } else if ( m_required_driver == "OpenGLStoredX" ) {
-    #ifdef G4VIS_USE_OPENGLX
-      RegisterGraphicsSystem( new G4OpenGLStoredX );
-    #else
-      G4Exception("GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException, "G4 not built with OPENGLX");
-    #endif
+#ifdef G4VIS_USE_OPENGLX
+    RegisterGraphicsSystem( new G4OpenGLStoredX );
+#else
+    G4Exception( "GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException,
+                 "G4 not built with OPENGLX" );
+#endif
   } else {
     G4cout << "Requested driver is not available!" << G4endl;
   }
@@ -136,7 +138,7 @@ std::string GiGa::VisManagerFactory::verbosityString() const {
 }
 
 G4VisManager* GiGa::VisManagerFactory::construct() const {
-  auto vis_mgr = new VisManager{ verbosityString() };
+  auto vis_mgr = new VisManager{verbosityString()};
   vis_mgr->SetMessageInterface( message_interface() );
   vis_mgr->m_required_driver = m_required_driver;
   for ( auto& factory : m_traj_factories ) { vis_mgr->m_traj_factories.emplace_back( factory->construct() ); }

@@ -9,9 +9,9 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaWorkerPilot.h"
+#include "GaudiKernel/GaudiException.h"
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
-#include "GaudiKernel/GaudiException.h"
 
 #include "GiGaMTCoreRun/GaussinoEventInformation.h"
 
@@ -19,14 +19,13 @@
 
 #include "G4AutoDelete.hh"
 #include "G4Event.hh"
+#include "G4Run.hh"
 #include "G4UImanager.hh"
 #include "G4UserWorkerThreadInitialization.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4WorkerThread.hh"
-#include "G4Run.hh"
 
-GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) )
-{
+GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) ) {
   m_input_queue       = right.m_input_queue;
   right.m_input_queue = nullptr;
 
@@ -35,20 +34,19 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   m_context       = right.m_context;
   right.m_context = nullptr;
 
-  iWorker       = right.iWorker;
-  nWorkers      = right.nWorkers;
-  nDeleted      = right.nDeleted;
-  nCreated      = right.nCreated;
-  nKept         = right.nKept;
-  nToProcess    = right.nToProcess;
+  iWorker                = right.iWorker;
+  nWorkers               = right.nWorkers;
+  nDeleted               = right.nDeleted;
+  nCreated               = right.nCreated;
+  nKept                  = right.nKept;
+  nToProcess             = right.nToProcess;
   m_track_eventstructure = right.m_track_eventstructure;
-  m_for_cleanup = std::move( right.m_for_cleanup );
+  m_for_cleanup          = std::move( right.m_for_cleanup );
 }
 
-void GiGaWorkerPilot::InitializeWorker()
-{
+void GiGaWorkerPilot::InitializeWorker() {
   debug( "Initializing the worker for thread " + std::to_string( iWorker ) );
-  GiGaMessage::NameTag = "Worker #" + std::to_string(iWorker);
+  GiGaMessage::NameTag = "Worker #" + std::to_string( iWorker );
   // Following code is modelled based on the code in
   // G4UserWorkerThreadInitialization::CreateAndStartWorker and
   // G4MTRunManagerKernel::StartThread with slight modifications.
@@ -66,9 +64,7 @@ void GiGaWorkerPilot::InitializeWorker()
   //============================
   if ( master_mgr->GetUserActionInitialization() ) {
     G4VSteppingVerbose* sv = master_mgr->GetUserActionInitialization()->InitializeSteppingVerbose();
-    if ( sv ) {
-      G4VSteppingVerbose::SetInstance( sv );
-    }
+    if ( sv ) { G4VSteppingVerbose::SetInstance( sv ); }
   }
 
   m_context->BuildGeometryAndPhysicsVector();
@@ -86,16 +82,13 @@ void GiGaWorkerPilot::InitializeWorker()
   //================================
   // Step-4: Initialize worker run manager
   //================================
-  if ( master_mgr->GetUserActionInitialization() ) {
-    master_mgr->GetNonConstUserActionInitialization()->Build();
-  }
+  if ( master_mgr->GetUserActionInitialization() ) { master_mgr->GetNonConstUserActionInitialization()->Build(); }
   worker_mgr->Initialize();
 }
 
-void GiGaWorkerPilot::FinalizeWorker()
-{
+void GiGaWorkerPilot::FinalizeWorker() {
   debug( "Finalizing the worker for thread " + std::to_string( iWorker ) );
-  CleanUp(true);                             // Delete any remaining events handled by this worker thread.
+  CleanUp( true ); // Delete any remaining events handled by this worker thread.
   debug( "Finished clean-up for thread " + std::to_string( iWorker ) );
   G4Threading::WorkerThreadLeavesPool(); // FIXME: necessary?
   delete GiGaWorkerRunManager::GetGiGaWorkerRunManager();
@@ -121,8 +114,7 @@ void GiGaWorkerPilot::FinalizeWorker()
 
 void GiGaWorkerPilot::RunTermination() {}
 
-void GiGaWorkerPilot::operator()()
-{
+void GiGaWorkerPilot::operator()() {
   debug( "Starting up thread ..." );
 
   // Create and initialize the worker run manager
@@ -138,8 +130,8 @@ void GiGaWorkerPilot::operator()()
   while ( true ) {
     m_input_queue->wait_dequeue( payload );
 
-    m_before_sim = "";
-    m_after_sim = "";
+    m_before_sim    = "";
+    m_after_sim     = "";
     m_after_cleanup = "";
     debug( "Queue length " + std::to_string( m_input_queue->size_approx() ) );
     if ( !payload ) {
@@ -150,28 +142,26 @@ void GiGaWorkerPilot::operator()()
       m_input_queue->enqueue( std::move( payload ) );
       break;
     }
-    auto & [ truth_converter, engine, ret_promise ] = *payload;
+    auto& [truth_converter, engine, ret_promise] = *payload;
     CleanUp();
     // We now have a list of MCTruthConverter. Each needs to be triggered to link their contents and fill the
     // Geant4 event to be simulated.
-    auto evt = new G4Event{};
+    auto                        evt = new G4Event{};
     Gaussino::MCTruthTrackerPtr tracker =
         std::make_unique<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
-    if(m_track_eventstructure){
+    if ( m_track_eventstructure ) {
       std::stringstream sstr;
       sstr << "\nBefore simulation\n";
       tracker->DumpToStream( sstr );
       m_before_sim = sstr.str();
-      if ( printDebug() ) {
-        debug( m_before_sim );
-      }
+      if ( printDebug() ) { debug( m_before_sim ); }
     }
     auto code = tracker->VerifyStructure();
-    if(code == 1){
-      error(m_before_sim);
+    if ( code == 1 ) {
+      error( m_before_sim );
       throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
-    } else if (code == 2){
-      error(m_before_sim);
+    } else if ( code == 2 ) {
+      error( m_before_sim );
       throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     evt->SetUserInformation( new GaussinoEventInformation( tracker.get() ) );
@@ -182,60 +172,56 @@ void GiGaWorkerPilot::operator()()
 
     mgr->ProcessEvent( evt );
 
-    if (m_postprocessing) {
-      if( evt->ToBeKept() ) {
-        debug("Asked to keep this event by Geant4");
-        GiGaMTRunManager::GetGiGaMTRunManager()->GetNonConstCurrentRun()->StoreEvent(evt);
+    if ( m_postprocessing ) {
+      if ( evt->ToBeKept() ) {
+        debug( "Asked to keep this event by Geant4" );
+        GiGaMTRunManager::GetGiGaMTRunManager()->GetNonConstCurrentRun()->StoreEvent( evt );
         nKept++;
       }
     }
 
-    if(m_track_eventstructure){
+    if ( m_track_eventstructure ) {
       std::stringstream sstr;
       sstr << "\nAfter simulation\n";
       tracker->DumpToStream( sstr );
       m_after_sim = sstr.str();
-      if ( printDebug() ) {
-        debug( m_after_sim );
-      }
+      if ( printDebug() ) { debug( m_after_sim ); }
     }
 
     code = tracker->VerifyStructure();
-    if(code == 1){
-      error(m_before_sim);
-      error(m_after_sim);
+    if ( code == 1 ) {
+      error( m_before_sim );
+      error( m_after_sim );
       throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
-    } else if (code == 2){
-      error(m_before_sim);
-      error(m_after_sim);
+    } else if ( code == 2 ) {
+      error( m_before_sim );
+      error( m_after_sim );
       throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     Gaussino::MCTruthPtr mctruth = std::make_unique<Gaussino::MCTruth>( std::move( *tracker.get() ) );
 
-    if(m_track_eventstructure){
+    if ( m_track_eventstructure ) {
       std::stringstream sstr;
       sstr << "\nAfter cleanup\n";
       mctruth->DumpToStream( sstr );
       m_after_cleanup = sstr.str();
-      if ( printDebug() ) {
-        debug( m_after_cleanup );
-      }
+      if ( printDebug() ) { debug( m_after_cleanup ); }
     }
 
     code = mctruth->VerifyStructure();
-    if(code == 1){
-      error(m_before_sim);
-      error(m_after_sim);
-      error(m_after_cleanup);
+    if ( code == 1 ) {
+      error( m_before_sim );
+      error( m_after_sim );
+      error( m_after_cleanup );
       throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
-    } else if (code == 2){
-      error(m_before_sim);
-      error(m_after_sim);
-      error(m_after_cleanup);
+    } else if ( code == 2 ) {
+      error( m_before_sim );
+      error( m_after_sim );
+      error( m_after_cleanup );
       throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
     }
     debug( "Geant4 finished processing the event." );
-    G4EventProxyPtr proxy = std::make_shared<G4EventProxy>(evt, mctruth.get(), this);
+    G4EventProxyPtr proxy = std::make_shared<G4EventProxy>( evt, mctruth.get(), this );
     ret_promise->set_value( std::make_tuple( std::move( proxy ), std::move( mctruth ) ) );
     nCreated++;
   }
@@ -243,9 +229,8 @@ void GiGaWorkerPilot::operator()()
   if ( m_postprocessing ) {
     do {
       CleanUp();
-      std::this_thread::sleep_for(std::chrono::milliseconds( 500 ));
-    }
-    while ( nToProcess > 0 );
+      std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+    } while ( nToProcess > 0 );
     GetPostProcessingBarrier().wait();
     GetFinalBarrier().wait();
   }
@@ -253,28 +238,26 @@ void GiGaWorkerPilot::operator()()
   FinalizeWorker();
 }
 
-void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt )
-{
+void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt ) {
   // Need to lock access as multiple Gaudi TES destruction
   // could potentially add here in parallel
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
   m_for_cleanup.push_back( evt );
 }
 
-void GiGaWorkerPilot::CleanUp( bool force )
-{
+void GiGaWorkerPilot::CleanUp( bool force ) {
   // Might be incorrect but avoids taking the lock. As this function
   // is also called during finalisation, no events can get lost.
   if ( m_for_cleanup.size() == 0 ) return;
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{m_cleanup_lock};
-  size_t localNToProcess = 0;
-  auto evs_to_remove = std::remove_if(m_for_cleanup.begin(), m_for_cleanup.end(), [&](G4Event* evt) -> bool {
-    if (!force && m_postprocessing) {
+  size_t                      localNToProcess = 0;
+  auto evs_to_remove = std::remove_if( m_for_cleanup.begin(), m_for_cleanup.end(), [&]( G4Event* evt ) -> bool {
+    if ( !force && m_postprocessing ) {
       auto postActions = evt->GetNumberOfGrips();
-      if (postActions > 0) {
-        debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string(postActions) );
+      if ( postActions > 0 ) {
+        debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string( postActions ) );
         localNToProcess++;
         return false;
       } else if ( evt->ToBeKept() ) {
@@ -287,6 +270,6 @@ void GiGaWorkerPilot::CleanUp( bool force )
     delete evt;
     return true;
   } );
-  nToProcess = localNToProcess;
-  m_for_cleanup.erase(evs_to_remove, m_for_cleanup.end());
+  nToProcess         = localNToProcess;
+  m_for_cleanup.erase( evs_to_remove, m_for_cleanup.end() );
 }

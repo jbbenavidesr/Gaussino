@@ -29,10 +29,10 @@
 #include "G4ParticlePropertyTable.hh"
 #include "G4ParticleTable.hh"
 #include "G4UIsession.hh"
+#include "G4UserRunAction.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4VUserPhysicsList.hh"
 #include "G4VisManager.hh"
-#include "G4UserRunAction.hh"
 
 // from GiGaMT
 #include "CLHEP/Random/RandomEngine.h"
@@ -64,8 +64,7 @@ DECLARE_COMPONENT( GiGaMT )
 //=============================================================================
 // query interface
 //=============================================================================
-StatusCode GiGaMT::queryInterface( const InterfaceID& id, void** ppI )
-{
+StatusCode GiGaMT::queryInterface( const InterfaceID& id, void** ppI ) {
   if ( 0 == ppI ) {
     return StatusCode::FAILURE; //  RETURN !!!
   } else if ( IGiGaMTSvc::interfaceID() == id ) {
@@ -84,8 +83,7 @@ StatusCode GiGaMT::queryInterface( const InterfaceID& id, void** ppI )
 //=============================================================================
 // service initialization
 //=============================================================================
-StatusCode GiGaMT::initialize()
-{
+StatusCode GiGaMT::initialize() {
   // initialize the base class
   StatusCode sc = Service::initialize();
   if ( sc.isFailure() ) {
@@ -93,9 +91,9 @@ StatusCode GiGaMT::initialize()
     return StatusCode::FAILURE;
   }
 
-  if(m_nWorkerThreads.value() == 0){
+  if ( m_nWorkerThreads.value() == 0 ) {
     warning() << "No number of threads set. Setting to " << std::thread::hardware_concurrency() << endmsg;
-    m_nWorkerThreads.set(std::thread::hardware_concurrency());
+    m_nWorkerThreads.set( std::thread::hardware_concurrency() );
   }
 
   /// Dump all particles known to Geant4
@@ -127,15 +125,14 @@ StatusCode GiGaMT::initialize()
   return StatusCode::SUCCESS;
 }
 
-bool GiGaMT::particleKnownToGeant4(int pdg_id) const {
-    return (bool) G4ParticleTable::GetParticleTable()->FindParticle(pdg_id);
+bool GiGaMT::particleKnownToGeant4( int pdg_id ) const {
+  return (bool)G4ParticleTable::GetParticleTable()->FindParticle( pdg_id );
 }
 
 //=============================================================================
 // service finalization
 //=============================================================================
-StatusCode GiGaMT::finalize()
-{
+StatusCode GiGaMT::finalize() {
   // Trigger the termination of the worker threads which are blocking
   // on an empty queue right now by pushing the sentinel the worker threads
   m_payloadQueue.enqueue( std::nullopt );
@@ -145,41 +142,39 @@ StatusCode GiGaMT::finalize()
     // additional 2 barriers are added here in case G4 will apply some postprocessing
     // (in Gaussino it is used for now only in the case when we use G4VisManager)
     // the reason for this is that postprocessing can be done on a separate thread and we have
-    // to make sure that the master and worker threads will wait with the deletion 
+    // to make sure that the master and worker threads will wait with the deletion
     auto& postProcBarrier = GiGaWorkerPilot::GetPostProcessingBarrier( m_nWorkerThreads + 1 );
-    auto& finalBarrier = GiGaWorkerPilot::GetFinalBarrier( m_nWorkerThreads + 1 );
+    auto& finalBarrier    = GiGaWorkerPilot::GetFinalBarrier( m_nWorkerThreads + 1 );
     postProcBarrier.wait();
     // now we call EndOfRunAction a bit eariler (normally it would be done in SafeRunTermination()
     // the idea is that we do not want to delete G4 objects and end the event loop before
     // any additional postprocessing and the use of kept events is done by G4
-    auto run_actions = const_cast<G4UserRunAction*>(main_mgr->GetUserRunAction());
+    auto run_actions = const_cast<G4UserRunAction*>( main_mgr->GetUserRunAction() );
     if ( run_actions ) {
       auto run = main_mgr->GetNonConstCurrentRun();
       if ( !run ) {
         error() << "G4Run not available before terminating the event loop!" << endmsg;
         return StatusCode::FAILURE;
       }
-      run_actions->EndOfRunAction(run);
+      run_actions->EndOfRunAction( run );
       delete run_actions;
       run_actions = nullptr;
-      main_mgr->SetUserAction(run_actions);
+      main_mgr->SetUserAction( run_actions );
     }
     finalBarrier.wait();
   }
 
   //
   // Wait for the worker threads that will finalize now automatically
-  for ( auto& t : m_workerThreads ) {
-    t.join();
-  }
+  for ( auto& t : m_workerThreads ) { t.join(); }
   always() << "Finalized all G4 worker threads" << endmsg;
   main_mgr->SafeRunTermination();
   delete main_mgr;
 
-  if (!m_visMgrFactory.name().empty() ) {
+  if ( !m_visMgrFactory.name().empty() ) {
     auto vis_mgr = G4VisManager::GetInstance();
-    if (vis_mgr) {
-      debug() << "Deleting G4VisManager: " << m_visMgrFactory.name() << endmsg; 
+    if ( vis_mgr ) {
+      debug() << "Deleting G4VisManager: " << m_visMgrFactory.name() << endmsg;
       delete vis_mgr;
     }
   }
@@ -212,11 +207,10 @@ StatusCode GiGaMT::finalize()
 }
 
 std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in,
-                                                                    HepRandomEnginePtr& engine ) const
-{
-  auto start_time = Clock::now();
+                                                                    HepRandomEnginePtr&              engine ) const {
+  auto                                             start_time = Clock::now();
   std::list<std::promise<Gaussino::GiGaSimReturn>> promises;
-  std::list<std::future<Gaussino::GiGaSimReturn>> futures;
+  std::list<std::future<Gaussino::GiGaSimReturn>>  futures;
   if ( m_splitPileUp.value() ) {
     // Submit every HepMC event separarely to the queue
     for ( auto& conv : _in ) {
@@ -231,7 +225,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     // Merge the individual pileup converters into one
     m_payloadQueue.enqueue( GiGaWorkerPayload{std::move( conv ), engine, &prom} );
   }
-  G4EventProxies return_events;
+  G4EventProxies        return_events;
   Gaussino::MCTruthPtrs return_truths;
   return_events.reserve( promises.size() );
   return_truths.reserve( promises.size() );
@@ -240,12 +234,11 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     return_events.emplace_back( std::move( evt ) );
     return_truths.emplace_back( std::move( tru ) );
   }
-  for(auto & truth: return_truths){
-    for(auto & cevt:truth->GetContainedProxies()){
-      return_events.push_back(cevt);
-    }
+  for ( auto& truth : return_truths ) {
+    for ( auto& cevt : truth->GetContainedProxies() ) { return_events.push_back( cevt ); }
   }
-  if(auto it = std::unique(std::begin(return_events), std::end(return_events)); it != std::end(return_events)){
+  if ( auto it = std::unique( std::begin( return_events ), std::end( return_events ) );
+       it != std::end( return_events ) ) {
     warning() << "Had to remove non-unique G4EventProxy. Something is wrong!" << endmsg;
   }
 
@@ -254,22 +247,21 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
           << std::chrono::duration_cast<std::chrono::nanoseconds>( end_time - start_time ).count() / 1e9 << " seconds."
           << endmsg;
   for ( auto monitool : m_MoniTools ) {
-    for ( auto& g4eventproxy : return_events ) {
-      monitool->monitor( *g4eventproxy->event() ).ignore();
-    }
+    for ( auto& g4eventproxy : return_events ) { monitool->monitor( *g4eventproxy->event() ).ignore(); }
   }
 
   return std::make_tuple<G4EventProxies, Gaussino::MCTruthPtrs>( std::move( return_events ),
                                                                  std::move( return_truths ) );
 }
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3::GenEventPtrs & _in,
-                                                                    HepRandomEnginePtr& engine ) const {
-  return simulate(m_converterTool->BuildConverter(_in), engine);
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3::GenEventPtrs& _in,
+                                                                    HepRandomEnginePtr&         engine ) const {
+  return simulate( m_converterTool->BuildConverter( _in ), engine );
 }
 
-std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaMT::simulateDecay( const HepMC3::GenParticlePtr & _in, HepRandomEnginePtr& engine ) const {
+std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaMT::simulateDecay( const HepMC3::GenParticlePtr& _in,
+                                                                         HepRandomEnginePtr&           engine ) const {
 
-  auto [proxies, truths] = simulate({m_converterTool->BuildConverter(_in)}, engine);
-  return {*std::begin(proxies), *std::begin(truths)};
+  auto [proxies, truths] = simulate( {m_converterTool->BuildConverter( _in )}, engine );
+  return {*std::begin( proxies ), *std::begin( truths )};
 }
