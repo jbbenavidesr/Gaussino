@@ -259,7 +259,7 @@ class Geant4Visualization(ConfigurableUser):
     _trajectory_filters = [
         'chargeFilter', 'customTrajectoryFilter', 'encounteredVolumeFilter',
         'originVolumeFilter', 'particleFilter', 'momentumMagnitudeFilter',
-        'kineticEnergyFilter', 'transverseMomentumFilter'
+        'kineticEnergyFilter', 'transverseMomentumFilter', 'pseudorapidityFilter'
     ]
 
     # Default trajectory filters
@@ -279,10 +279,12 @@ class Geant4Visualization(ConfigurableUser):
         'particleFilter': 'gaussinoPF',
         'originVolumeFilter': 'gaussinoOVF',
         'attributeFilter': 'gaussinoAF',
-        'generic': 'gaussinoG',
+        'generic': 'gaussinoGF',
         'momentumMagnitudeFilter': 'gaussinoIMagF',
         'kineticEnergyFilter': 'gaussinoIKEF',
-        'transverseMomentumFilter': 'gaussinoPTF'
+        'transverseMomentumFilter': 'gaussinoPTF',
+        'pseudorapidityFilter': 'gaussinoPF',
+        'customTrajectoryFilter': 'gaussinoCTF'
     }
 
     chargeFilterPresets = {
@@ -677,7 +679,7 @@ class Geant4Visualization(ConfigurableUser):
                         "Maximum or minimum value should be set when using Momentum Magnitude or Kinetic Energy Filter."
                     )
 
-            if filter_options["FilterType"] == 'transverseMomentumFilter':
+            if filter_options["FilterType"] == 'transverseMomentumFilter' or filter_options["FilterType"] == 'pseudorapidityFilter':
                 if "MinValue" in filter_options.keys(
                 ) and filter_options["MinValue"]:
                     g4filter["MinValue"] = filter_options["MinValue"]
@@ -764,6 +766,21 @@ class Geant4Visualization(ConfigurableUser):
                         factory.MaxPT = g4filter["MaxValue"]
                     self._set_ui_command(
                         cmds, cmd_preset + "/create/initialPTFilter")
+
+            elif g4filter["FilterType"] == 'pseudorapidityFilter':
+                if "MinValue" in g4filter.keys(
+                ) or "MaxValue" in g4filter.keys():
+                    from Configurables import GiGaTrajectoryInitialEtaFilter
+                    vismgr.TrajectoryFactories.append(
+                        "GiGaTrajectoryInitialEtaFilter")
+                    factory = GiGaTrajectoryInitialEtaFilter(
+                        "GiGaMT.GiGaVisManager.GiGaTrajectoryInitialEtaFilter")
+                    if "MinValue" in g4filter.keys():
+                        factory.MinEta = g4filter["MinValue"]
+                    if "MaxValue" in g4filter.keys():
+                        factory.MaxEta = g4filter["MaxValue"]
+                    self._set_ui_command(
+                        cmds, cmd_preset + "/create/initialEtaFilter")
 
     def _draw_g4hits(self, cmds):
         """ Method for adding visualization of hits
