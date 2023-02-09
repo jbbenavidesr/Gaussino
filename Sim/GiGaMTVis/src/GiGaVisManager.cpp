@@ -13,10 +13,8 @@
 #include "G4DAWNFILE.hh"
 #include "G4HepRepFile.hh"
 #include "G4VisManager.hh"
-#ifdef G4VIS_USE_OPENGLX
-#  include "G4OpenGLImmediateX.hh"
-#  include "G4OpenGLStoredX.hh"
-#endif
+#include "G4OpenGLImmediateX.hh"
+#include "G4OpenGLStoredX.hh"
 
 #include "G4DigiFilterFactories.hh"
 #include "G4HitFilterFactories.hh"
@@ -76,19 +74,9 @@ void GiGa::VisManager::RegisterGraphicsSystems() {
   } else if ( m_required_driver == "HepRep" ) {
     RegisterGraphicsSystem( new G4HepRepFile );
   } else if ( m_required_driver == "OpenGLImmediateX" ) {
-#ifdef G4VIS_USE_OPENGLX
     RegisterGraphicsSystem( new G4OpenGLImmediateX );
-#else
-    G4Exception( "GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException,
-                 "G4 not built with OPENGLX" );
-#endif
   } else if ( m_required_driver == "OpenGLStoredX" ) {
-#ifdef G4VIS_USE_OPENGLX
     RegisterGraphicsSystem( new G4OpenGLStoredX );
-#else
-    G4Exception( "GiGa::VisManager::RegisterGraphicsSystems()", "PART112", FatalException,
-                 "G4 not built with OPENGLX" );
-#endif
   } else {
     G4cout << "Requested driver is not available!" << G4endl;
   }

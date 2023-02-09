@@ -9,27 +9,24 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Gaudi.Configuration import (
-    ConfigurableUser,
     log,
     DEBUG,
 )
-
-from GaudiKernel.SystemOfUnits import (
-    MeV, )
-
+from GaudiKernel import SystemOfUnits as units
+from Gaussino.Utilities import GaussinoConfigurable
 import copy
 
 __author__ = "Filip Bilandžija, Michał Mazurek"
 __email__ = "michal.mazurek@cern.ch"
 
 
-class GaussinoVisualization(ConfigurableUser):
+class GaussinoVisualization(GaussinoConfigurable):
     """This class sets up and provides all the necessary tools that are needed
     for visualization and filtering of geometry, tracks and hits in Geant4. It
     also provides presets for some trajectory models, while retaining the option
     for users to build their own custom trajectory model.
 
-    :var Framework: default: ``['Geant4']``
+    :var Framework: default: ``[]``
         Framework for the visualization. Options are ``"Geant4"`` and ``"Phoenix"`.
     :vartype Framework: list, required
 
@@ -138,8 +135,6 @@ class GaussinoVisualization(ConfigurableUser):
 
             # Initialize visualization and choose
             # the Geant4 driver and storage options
-            from Configurables import GaussinoSimulation
-            GaussinoSimulation().Visualization = True
             from Configurables import GaussinoVisualization
             g4vis = GaussinoVisualization()
             g4vis.Driver = "OpenGLStoredX"
@@ -182,7 +177,7 @@ class GaussinoVisualization(ConfigurableUser):
     """
 
     __slots__ = {
-        "Framework": ["Geant4"],
+        "Framework": [],
         "Driver": "ASCIITree",
         # geometry
         "DrawGeometry": False,
@@ -205,7 +200,7 @@ class GaussinoVisualization(ConfigurableUser):
         "TrajectoryFilters": [],
         # store trajectories
         "StoreTrajectories": "Marked",
-        "DrawG4Hits": True,
+        "DrawG4Hits": False,
         # view
         "CameraPhi": 0,  # deg,
         "CameraTheta": 0,  # deg,
@@ -219,7 +214,7 @@ class GaussinoVisualization(ConfigurableUser):
         "Debug": False,
         # fields
         "ElectricField": {},
-        "MagneticField": {}
+        "MagneticField": {},
     }
 
     _available_drivers = [
@@ -352,12 +347,19 @@ class GaussinoVisualization(ConfigurableUser):
 
     _visualization_filters = []
 
-    def apply(self, giga):
+    def __apply_configuration__(self):
+        frameworks = self.getProp("Framework")
+        if not frameworks:
+            return
+
+        from Configurables import (
+            GiGaMT,
+            GiGaMTRunManagerFAC,
+        )
+        giga = GiGaMT()
         actioninit = giga.ActionInitializer
         run_action = actioninit.GiGaRunActionCommand
         event_action = actioninit.GiGaEventActionCommand
-
-        from Configurables import GiGaMTRunManagerFAC
         # this has to be accessed this way...
         run_mgr = GiGaMTRunManagerFAC("GiGaMT.GiGaMTRunManagerFAC")
 
@@ -372,9 +374,9 @@ class GaussinoVisualization(ConfigurableUser):
             'end_event': event_action.EndOfEventCommands,
         }
 
-        if "Geant4" in self.getProp("Framework"):
+        if "Geant4" in frameworks:
             self._apply_g4(giga, cmds, actioninit)
-        if "Phoenix" in self.getProp("Framework"):
+        if "Phoenix" in frameworks:
             self._apply_phoenix(cmds, actioninit)
 
     def _apply_phoenix(self, cmds, actioninit):
@@ -401,10 +403,6 @@ class GaussinoVisualization(ConfigurableUser):
         appMgr.TopAlg.append(dumpg4traj)
 
     def _apply_g4(self, giga, cmds, actioninit):
-        """ Main method to be called from SimPhase()
-
-        :param giga: GiGaMT configurable
-        """
         driver = self.getProp("Driver")
         if self.getProp("Framework") == "Phoenix":
             driver = "OpenGLStoredX"
@@ -475,17 +473,17 @@ class GaussinoVisualization(ConfigurableUser):
 
     def _unit_str_conversion(self, unit):
         if unit == "eV":
-            return 1e-6 * MeV
+            return 1e-6 * units.MeV
         if unit == "keV":
-            return 1e-3 * MeV
+            return 1e-3 * units.MeV
         if unit == "MeV":
-            return MeV
+            return units.MeV
         if unit == "GeV":
-            return 1e3 * MeV
+            return 1e3 * units.MeV
         if unit == "TeV":
-            return 1e6 * MeV
+            return 1e6 * units.MeV
         if unit == "PeV":
-            return 1e9 * MeV
+            return 1e9 * units.MeV
         raise NotImplementedError("Unit " + unit + " is not supported.")
 
     def _set_trajectory_storage(self, cmds, actioninit):
@@ -513,7 +511,7 @@ class GaussinoVisualization(ConfigurableUser):
             raise NotImplementedError(driver +
                                       " is not an available G4 driver.")
         parsed_driver = self._parsed_drivers.get(driver, driver)
-        self._set_ui_command(cmds, '/vis/open', parsed_driver)
+        self._set_ui_command(cmds, '/vis/open', f"{parsed_driver} 1500x1500+600+400")
         self._set_ui_command(cmds, '/vis/scene/create')
         # '/vis/sceneHandler/create {}'.format(parsed_driver)
 
@@ -548,6 +546,16 @@ class GaussinoVisualization(ConfigurableUser):
             self._set_ui_command(cmds, cmd)
         self._set_ui_command(cmds, "/vis/sceneHandler/attach")
 
+        style = self.getProp("GeometryStyle")
+        styles = ['wireframe', 'surface', 'cloud']
+        if style not in styles:
+            raise ValueError(
+                "Only the following styles of geometry are available: [{}]".
+                format((", ").join(styles)))
+        if style == 'surface':
+            self._set_ui_command(cmds, "/vis/viewer/colourByDensity")
+        self._set_ui_command(cmds, "/vis/viewer/set/style", style)
+
     def _set_verbosity(self, cmds):
         """ Method to set the verbosity of tracking, event and run
 
@@ -581,16 +589,6 @@ class GaussinoVisualization(ConfigurableUser):
         #          by default, so additional checks have to be made if
         #          storing is to be done internally in Gaussino
         self._set_trajectory_storage(cmds, actioninit)
-
-        style = self.getProp("GeometryStyle")
-        styles = ['wireframe', 'surface', 'cloud']
-        if style not in styles:
-            raise ValueError(
-                "Only the following styles of geometry are available: [{}]".
-                format((", ").join(styles)))
-        if style == 'surface':
-            self._set_ui_command(cmds, "/vis/viewer/colourByDensity")
-        self._set_ui_command(cmds, "/vis/viewer/set/style", style)
 
     def _create_g4_trajectory_model(self):
         """ Method for creating the trajectory model to be used in ``_set_trajectory_model``
@@ -804,21 +802,21 @@ class GaussinoVisualization(ConfigurableUser):
                         ) and filter_options["MaxValue"]:
                     g4filter["Intervals"] = [
                         "{} MeV {} MeV".format(
-                            filter_options["MinValue"] / MeV,
-                            filter_options["MaxValue"] / MeV)
+                            filter_options["MinValue"] / units.MeV,
+                            filter_options["MaxValue"] / units.MeV)
                     ]
                 elif "MinValue" in filter_options.keys(
                 ) and filter_options["MinValue"]:
                     g4filter["Intervals"] = [
                         "0.0 keV {} MeV".format(
-                            filter_options["MinValue"] / MeV)
+                            filter_options["MinValue"] / units.MeV)
                     ]
                     g4filter["Invert"] = True
                 elif "MaxValue" in filter_options.keys(
                 ) and filter_options["MaxValue"]:
                     g4filter["Intervals"] = [
                         "0.0 keV {} MeV".format(
-                            filter_options["MaxValue"] / MeV)
+                            filter_options["MaxValue"] / units.MeV)
                     ]
                 else:
                     raise ValueError(

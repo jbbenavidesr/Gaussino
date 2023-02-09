@@ -34,8 +34,4 @@ gaudi_add_module(GiGaMTVis
 	Gaussino::UtilsLib
 )
 
-gaudi_generate_confuserdb()
-
-gaudi_install(PYTHON)
-
 gaudi_add_tests(pytest)

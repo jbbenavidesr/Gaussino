@@ -11,7 +11,6 @@
 from ExternalDetector.Materials import SILICA
 from GaudiKernel import SystemOfUnits as units
 from Configurables import (
-    GaussinoSimulation,
     ExternalDetectorEmbedder,
     GaussinoVisualization,
 )
@@ -20,7 +19,6 @@ external = ExternalDetectorEmbedder("ExternalDetectorEmbedder_0")
 external.Shapes["ExternalDetectorEmbedder_0_Cube"]["MaterialName"] = "Si"
 external.Materials["Si"] = SILICA
 
-GaussinoSimulation().Visualization = True
 GaussinoVisualization(
     Framework=["Geant4"],
     Driver="DAWNFILE",

@@ -24,6 +24,7 @@ from Gaussino.Utilities import (
 # Configurables
 from ParallelGeometry.Configuration import ParallelGeometry
 from Gaussino.Geometry import GaussinoGeometry
+from Gaussino.Visualization import GaussinoVisualization
 
 
 class GaussinoSimulation(GaussinoConfigurable):
@@ -37,10 +38,6 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     :var TrackTruth: default: ``True``
     :vartype TrackTruth: bool, optional
-
-    :var Visualization: default: ``False``, activate various visualization
-        configurables
-    :vartype Visualization: bool, optional
 
     **G4 commands**
 
@@ -72,11 +69,15 @@ class GaussinoSimulation(GaussinoConfigurable):
     :vartype DumpCutsTable: bool, optional
     """
 
+    __used_configurables__ = [
+        GaussinoGeometry,
+        GaussinoVisualization,
+    ]
+
     __slots__ = {
         # MAIN
         "TrackTruth": True,
         "PhysicsConstructors": [],
-        "Visualization": False,
         # G4 commands
         "G4BeginRunCommand":
         ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
@@ -152,8 +153,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         event_commands.BeginOfEventCommands = self.getProp(
             'G4BeginEventCommand')
         event_commands.EndOfEventCommands = self.getProp('G4EndEventCommand')
-
-        self._activate_visualizations(giga)
 
         ApplicationMgr().ExtSvc += [giga]
 
@@ -250,8 +249,3 @@ class GaussinoSimulation(GaussinoConfigurable):
         flagging.StoredChildProcesses = ["RichG4Cerenkov", "Decay"]
         flagging.StoreByOwnProcess = True
         flagging.StoredOwnProcesses = ["Decay"]
-
-    def _activate_visualizations(self, giga):
-        if self.getProp("Visualization"):
-            from Configurables import GaussinoVisualization
-            GaussinoVisualization().apply(giga)
