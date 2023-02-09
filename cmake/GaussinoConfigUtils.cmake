@@ -148,13 +148,11 @@ function(gaussino_finalize_configuration)
     string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPCASE)
     get_property(packages_found GLOBAL PROPERTY PACKAGES_FOUND)
     get_property(ENVIRONMENT GLOBAL PROPERTY ${PROJECT_NAME}_ENVIRONMENT)
-    string(REPLACE "${PROJECT_SOURCE_DIR}" "\${${PROJECT_NAME_UPCASE}_PROJECT_ROOT}"
-        ENVIRONMENT "${ENVIRONMENT}")
+    string(REPLACE "${PROJECT_SOURCE_DIR}/" "\${${PROJECT_NAME_UPCASE}_PROJECT_ROOT}/" ENVIRONMENT "${ENVIRONMENT}")
     foreach(pack IN LISTS packages_found)
         string(TOUPPER "${pack}" PROJ)
         if(DEFINED ${PROJ}_PROJECT_ROOT)
-            string(REPLACE "${${PROJ}_PROJECT_ROOT}" "\${${PROJ}_PROJECT_ROOT}"
-                ENVIRONMENT "${ENVIRONMENT}")
+          string(REPLACE "${${PROJ}_PROJECT_ROOT}/" "\${${PROJ}_PROJECT_ROOT}/" ENVIRONMENT "${ENVIRONMENT}")
         endif()
     endforeach()
     #  record "persistent options" for downstream projects
