@@ -27,17 +27,6 @@ endif()
 # -- Public dependencies
 lhcb_find_package(GaussinoExtLibs REQUIRED) # TODO: [NEW CMAKE] temporary project
 
-if(Geant4_FOUND)
-    get_cmake_property(variables VARIABLES)
-    foreach(var ${variables})
-	string(REGEX MATCH "Geant4_DATASET_([A-Za-z0-9]+)_ENVVAR" _ ${var})
-	if(NOT CMAKE_MATCH_1 STREQUAL "")
-	    # copy the Geant4Data variables using GaudiToolbox.cmake
-	    lhcb_env(SET ${Geant4_DATASET_${CMAKE_MATCH_1}_ENVVAR} ${Geant4_DATASET_${CMAKE_MATCH_1}_PATH})
-	endif()
-    endforeach()
-endif()
-
 find_package(HepMC3 REQUIRED)
 find_package(Pythia8 REQUIRED)
 
