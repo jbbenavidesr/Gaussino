@@ -145,8 +145,8 @@ StatusCode DD4hepCnvSvc::register_mag_field( const std::string& name, G4LogicalV
                                       std::forward_as_tuple( name, this ) );
 
     if ( !mmap_name_to_fieldmgrfac[name].retrieve().isSuccess() ) {
-      warning() << "Could not field manager " << name << "." << endmsg;
-      warning() << "What do we say to the geo service? Not today ..." << endmsg;
+      error() << "Field manager not found: '" << name << "'" << endmsg;
+      return StatusCode::FAILURE;
     }
   }
 

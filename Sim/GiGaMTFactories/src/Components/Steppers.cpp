@@ -1,5 +1,5 @@
 /*****************************************************************************\
-* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+* (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  *
 *                                                                             *
 * This software is distributed under the terms of the Apache License          *
 * version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
@@ -8,64 +8,44 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "GaudiAlg/GaudiTool.h"
-#include "G4EquationOfMotion.hh"
-#include "G4MagIntegratorStepper.hh"
+
+// Geant4
+#include "G4CashKarpRKF45.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4ExplicitEuler.hh"
+#include "G4HelixExplicitEuler.hh"
+#include "G4HelixHeum.hh"
+#include "G4HelixImplicitEuler.hh"
+#include "G4HelixSimpleRunge.hh"
+#include "G4ImplicitEuler.hh"
+#include "G4RKG3_Stepper.hh"
+#include "G4SimpleHeum.hh"
+#include "G4SimpleRunge.hh"
+
+// Gaussino
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
-#include "G4ExplicitEuler.hh"
-#include "G4ImplicitEuler.hh"
-#include "G4SimpleRunge.hh"
-#include "G4SimpleHeum.hh"
-#include "G4ClassicalRK4.hh"
-#include "G4CashKarpRKF45.hh"
-#include "G4RKG3_Stepper.hh"
-#include "G4HelixExplicitEuler.hh"
-#include "G4HelixImplicitEuler.hh"
-#include "G4HelixSimpleRunge.hh"
-#include "G4HelixHeum.hh"
+class G4Mag_EqRhs;
 
-template <typename STEPPER>
-class GiGaMTMagnetStepperFAC : public extends<GaudiTool, GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*> >
-{
-  static_assert( std::is_base_of<G4MagIntegratorStepper, STEPPER>::value );
+namespace Gaussino::MagneticField {
+  template <typename STEPPER>
+  class StepperFactory : public extends<GiGaTool, GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>> {
+    static_assert( std::is_base_of<G4MagIntegratorStepper, STEPPER>::value );
 
-public:
-  using extends::extends;
-  virtual STEPPER* construct( G4Mag_EqRhs* equation ) const override
-  {
-    auto tmp = new STEPPER{equation};
-    return tmp;
-  }
-};
+  public:
+    using extends::extends;
+    virtual STEPPER* construct( G4Mag_EqRhs* equation ) const override { return new STEPPER{equation}; }
+  };
+} // namespace Gaussino::MagneticField
 
-typedef GiGaMTMagnetStepperFAC<G4ExplicitEuler> GiGaMT_G4ExplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ExplicitEuler, "G4ExplicitEuler" )
-
-typedef GiGaMTMagnetStepperFAC<G4ImplicitEuler> GiGaMT_G4ImplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ImplicitEuler, "G4ImplicitEuler" )
-
-typedef GiGaMTMagnetStepperFAC<G4SimpleRunge> GiGaMT_G4SimpleRunge;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4SimpleRunge, "G4SimpleRunge" )
-
-typedef GiGaMTMagnetStepperFAC<G4ClassicalRK4> GiGaMT_G4ClassicalRK4;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4ClassicalRK4, "G4ClassicalRK4" )
-
-typedef GiGaMTMagnetStepperFAC<G4CashKarpRKF45> GiGaMT_G4CashKarpRKF45;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4CashKarpRKF45, "G4CashKarpRKF45" )
-
-typedef GiGaMTMagnetStepperFAC<G4RKG3_Stepper> GiGaMT_G4RKG3_Stepper;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4RKG3_Stepper, "G4RKG3_Stepper" )
-
-typedef GiGaMTMagnetStepperFAC<G4HelixExplicitEuler> GiGaMT_G4HelixExplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixExplicitEuler, "G4HelixExplicitEuler" )
-
-typedef GiGaMTMagnetStepperFAC<G4HelixImplicitEuler> GiGaMT_G4HelixImplicitEuler;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixImplicitEuler, "G4HelixImplicitEuler" )
-
-typedef GiGaMTMagnetStepperFAC<G4HelixSimpleRunge> GiGaMT_G4HelixSimpleRunge;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixSimpleRunge, "G4HelixSimpleRunge" )
-
-typedef GiGaMTMagnetStepperFAC<G4HelixHeum> GiGaMT_G4HelixHeum;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_G4HelixHeum, "G4HelixHeum" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4ExplicitEuler>, "G4ExplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4ImplicitEuler>, "G4ImplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4SimpleRunge>, "G4SimpleRunge" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4ClassicalRK4>, "G4ClassicalRK4" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4CashKarpRKF45>, "G4CashKarpRKF45" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4RKG3_Stepper>, "G4RKG3_Stepper" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4HelixExplicitEuler>, "G4HelixExplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4HelixImplicitEuler>, "G4HelixImplicitEuler" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4HelixSimpleRunge>, "G4HelixSimpleRunge" )
+DECLARE_COMPONENT_WITH_ID( Gaussino::MagneticField::StepperFactory<G4HelixHeum>, "G4HelixHeum" )
