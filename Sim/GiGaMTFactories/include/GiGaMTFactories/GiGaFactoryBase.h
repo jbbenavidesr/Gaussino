@@ -32,9 +32,7 @@ public:
   using iid      = Gaudi::InterfaceId<GiGaFactoryBase<T, Args...>, 3, 0>;
   using ext_iids = typename iid::iids;
 
-  //using extend_interfaces::extend_interfaces;
-  //
-  virtual ~GiGaFactoryBase() = default;
+  using extend_interfaces::extend_interfaces;
 
   virtual T* construct(std::conditional_t<std::is_pointer_v<Args>,Args,const Args&>...) const = 0;
 };
