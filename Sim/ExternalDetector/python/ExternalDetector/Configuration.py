@@ -49,6 +49,9 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         other volumes created by the ``ExternalDetector``.
     :vartype Materials: dict, optional
 
+    :var MagneticField: Properties of the magnetic field factory.
+    :vartype MagneticField: dict, optional
+
     :Example:
 
         .. highlight:: python
@@ -248,6 +251,23 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #     + other properties used by the WorldFactory
         #       e.g. OutputLevel etc.
         # }
+        # only if you implemented the custom, external world
+        'MagneticField': {},
+        #
+        # ex.
+        #
+        # 'MagneticField': {
+        #   "Type": "UniformMagneticField",
+        #     -> type of the factory used to build the world
+        #   "Name": "YourOptionalName",
+        #     -> optional name for the magnetic field
+        #   "B_x": 0. * tesla,
+        #   "B_y": 0. * tesla,
+        #   "B_z": 0. * tesla,
+        #     -> this is equivalent to no magnetic field
+        #     + other properties used by the magnetic field factory
+        #       e.g. OutputLevel etc.
+        # }
     }
 
     _added_dets = []
@@ -292,13 +312,30 @@ class ExternalDetectorEmbedder(ConfigurableUser):
 
         world = self.getProp("World")
         if world:
-            self._check_props("World", world, required=["Type", "WorldMaterial"])
+            self._check_props(
+                "World", world, required=["Type", "WorldMaterial"])
             svc_conf = getattr(Configurables, world["Type"])
-            svc_conf(**self._refine_props(world))
+            world_svc = svc_conf(**self._refine_props(world))
             geo.GiGaMTGeoSvc = world["Type"]
-            log.info(
-                "Registered external world service of type {}.".format(world["Type"])
-            )
+            log.info("Registered external world service of type {}.".format(
+                world["Type"]))
+
+            mag_field_props = self.getProp('MagneticField')
+            if mag_field_props:
+                self._check_props("MagneticField", mag_field_props)
+                mag_field_conf = getattr(Configurables,
+                                         mag_field_props['Type'])
+                name = mag_field_props.get("Name", mag_field_props['Type'])
+                mag_field_tool = mag_field_conf(
+                    name,
+                    **self._refine_props(
+                        mag_field_props, keys_to_refine=['Type', 'Name']))
+                from Configurables import MagneticFieldManager
+                world_svc.FieldManager = "MagneticFieldManager/FieldMgr"
+                world_svc.addTool(MagneticFieldManager("FieldMgr"), name="FieldMgr")
+                world_svc.FieldMgr.StepperFactory = "G4ClassicalRK4"
+                world_svc.FieldMgr.FieldFactory = mag_field_tool.getFullName()
+                world_svc.FieldMgr.addTool(mag_field_tool, name=name)
 
     def activate_hits_alg(self, slot=""):
         """Takes care of setting up the right hit extraction algorithms.

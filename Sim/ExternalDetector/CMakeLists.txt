@@ -37,6 +37,7 @@ gaudi_add_module(ExternalDetector
     LINK
         Gaussino::ExternalDetectorLib
         Gaussino::GiGaMTGeoLib
+        Gaussino::GiGaMTCoreMessageLib
 )
 
 gaudi_install(PYTHON)

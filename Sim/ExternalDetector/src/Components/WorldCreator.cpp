@@ -11,13 +11,16 @@
 
 // G4
 #include "G4Box.hh"
+#include "G4FieldManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 #include "G4PVPlacement.hh"
 // Gaudi
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/SystemOfUnits.h"
-// GiGaMT
+
+// Gaussino
+#include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 
 namespace ExternalDetector {
@@ -34,11 +37,13 @@ namespace ExternalDetector {
     Gaudi::Property<double>      m_worldSizeY{this, "WorldSizeY", 50. * Gaudi::Units::m};
     Gaudi::Property<double>      m_worldSizeZ{this, "WorldSizeZ", 50. * Gaudi::Units::m};
 
+    ToolHandle<GiGaFactoryBase<G4FieldManager, bool>> m_fieldMgr{this, "FieldManager", ""};
+
   public:
     using Service::Service;
     StatusCode                 initialize() override;
     virtual G4VPhysicalVolume* constructWorld() override;
-    inline virtual void        constructSDandField() override{};
+    inline virtual void        constructSDandField() override;
     virtual StatusCode         queryInterface( const InterfaceID& iid, void** pI ) override;
   };
 } // namespace ExternalDetector
@@ -72,6 +77,12 @@ G4VPhysicalVolume* ExternalDetector::WorldCreator::constructWorld() {
 
   debug() << "External world created!" << endmsg;
   return world_pvol;
+}
+
+void ExternalDetector::WorldCreator::constructSDandField() {
+  // note: we do not assign sensitive classes to detectors here
+  // -> this is done via embedSD() in external embedders
+  if ( !m_fieldMgr.name().empty() ) { m_fieldMgr->construct( true ); }
 }
 
 StatusCode ExternalDetector::WorldCreator::queryInterface( const InterfaceID& id, void** ppI ) {
