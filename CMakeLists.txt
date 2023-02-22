@@ -73,7 +73,6 @@ gaussino_add_subdirectories(
 
 gaudi_install(CMAKE
     # helpers to find external projects
-    cmake/FindHepMC3.cmake
     cmake/FindPythia8.cmake
     cmake/GaussinoConfigUtils.cmake
     cmake/GaussinoConfig.cmake.in

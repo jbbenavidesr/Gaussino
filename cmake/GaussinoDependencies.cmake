@@ -33,11 +33,7 @@ find_package(Pythia8 REQUIRED)
 if(USE_DD4HEP)
     set(CMAKE_CXX_STANDARD ${GAUDI_CXX_STANDARD})
     find_package(DD4hep REQUIRED DDCore)
-    find_package(DD4hepDDG4 
-	REQUIRED 
-	PATHS ${GAUSSINOEXTLIBS_PREFIX_DIR}/cmake
-       	NO_DEFAULT_PATH
-    )
+    find_package(DD4hepDDG4 REQUIRED)
 endif()
 
 # -- Private dependencies
