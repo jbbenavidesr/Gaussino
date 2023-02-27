@@ -9,30 +9,27 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-Sim/MCCollector
----------------
+Sim/GiGaMTExamples/CustomSimulationExamples
+-------------------------------------------
 #]=======================================================================]
 
-gaudi_add_library(MCCollectorLib
+gaudi_add_module(ImmediateDeposit
     SOURCES
-        src/Lib/MCCollectorHit.cpp
-        src/Lib/MCCollectorSensDet.cpp
-        src/Lib/MCCollectorTuple.cpp
+        src/Components/ImmediateDepositModel.cpp
     LINK
-        PUBLIC
-            Gaussino::GiGaMTCoreRunLib
-            Gaussino::GiGaMTFactoriesLib
-            Gaussino::GiGaMTDetFactoriesLib
-            Gaussino::MCTruthToEDMLib
+        Gaussino::CustomSimulationLib
 )
 
-gaudi_add_module(MCCollector
+gaudi_add_module(LinearDeposit
     SOURCES
-        src/Components/GetMCCollectorHitsAlg.cpp
-        src/Components/MCCollector.cpp
-        src/Components/MCCollectorSensDetComponent.cpp
+        src/Components/LinearDepositModel.cpp
     LINK
-    	Gaussino::MCCollectorLib
+        Gaussino::CustomSimulationLib
 )
 
-gaudi_add_tests(pytest)
+gaudi_add_module(ShowerModel
+    SOURCES
+        src/Components/ShowerModel.cpp
+    LINK
+        Gaussino::CustomSimulationLib
+)

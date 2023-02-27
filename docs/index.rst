@@ -62,6 +62,7 @@ Gaussino can be used as the core project for more experiment specific projects o
    examples/dd4hep_standalone
    examples/pp
    examples/gdml
+   examples/custom_simulation
 
 
 Indices and tables

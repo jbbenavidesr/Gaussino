@@ -8,18 +8,29 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+#pragma once
 
-// local
-#include "MCCollectorHit.h"
+// Geant4
+#include "G4FastHit.hh"
+#include "G4FastTrack.hh"
+#include "G4Navigator.hh"
+#include "G4TouchableHandle.hh"
 
-G4ThreadLocal G4Allocator<MCCollector::Hit>* MCCollector::HitAllocator;
+namespace Gaussino::CustomSimulation {
+  // FIXME: this is just a dumb copy of G4FastSimHitMaker in order to introduce
+  // a workaround
+  class HitMaker {
 
-void* MCCollector::Hit::operator new( size_t ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  return (void*)MCCollector::HitAllocator->MallocSingle();
-}
+  public:
+    HitMaker();
+    ~HitMaker();
+    void        make( const G4FastHit& aHit, const G4FastTrack& aTrack );
+    inline void SetNameOfWorldWithSD( const G4String& aName ) { fWorldWithSdName = aName; };
 
-void MCCollector::Hit::operator delete( void* hit ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  MCCollector::HitAllocator->FreeSingle( (MCCollector::Hit*)hit );
-}
+  private:
+    G4TouchableHandle fTouchableHandle;
+    G4Navigator*      fpNavigator;
+    G4bool            fNaviSetup;
+    G4String          fWorldWithSdName;
+  };
+} // namespace Gaussino::CustomSimulation

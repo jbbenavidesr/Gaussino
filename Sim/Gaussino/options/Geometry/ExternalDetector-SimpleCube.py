@@ -33,6 +33,7 @@ external.Shapes = {
 external.Sensitive = {
     cube_name: {
         "Type": "MCCollectorSensDet",
+        "PrintStats": True,
     },
 }
 

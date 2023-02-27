@@ -23,14 +23,31 @@ list(PREPEND CMAKE_MODULE_PATH
     ${PROJECT_SOURCE_DIR}/cmake
 )
 
+option(CUSTOMSIM "Using custom simulations" ON)
+set(Gaussino_PERSISTENT_OPTIONS CUSTOMSIM)
+
 set(WITH_Gaussino_PRIVATE_DEPENDENCIES TRUE)
 include(GaussinoDependencies)
 
 gaussino_initialize_configuration()
 
-if (NOT USE_DD4HEP)
-    set(GAUSSINO_IGNORE_SUBDIRS Sim/GiGaMTDD4hep)
+# check if we have DD4hep support
+if (USE_DD4HEP)
+    set(DD4hepDirsName DD4hepDirs)
+else()
+    set(DD4hepDirsName GAUSSINO_IGNORE_SUBDIRS)
 endif()
+list(APPEND ${DD4hepDirsName} Sim/GiGaMTDD4hep)
+
+if(CUSTOMSIM)
+    set(CustomSimulationDirsName CustomSimulationDirs)
+else()
+    set(CustomSimulationDirsName GAUSSINO_IGNORE_SUBDIRS)
+endif()
+list(APPEND ${CustomSimulationDirsName}
+    Sim/CustomSimulation
+    Sim/GiGaMTExamples/CustomSimulationExamples
+)
 
 gaussino_env(
     SET GAUSSINOOPTS ${PROJECT_SOURCE_DIR}/Sim/Gaussino/options
@@ -53,10 +70,11 @@ gaussino_add_subdirectories(
     Moni/GaussMonitor
     NewRnd
     Sim/ExternalDetector
+    ${CustomSimulationDirs}
     Sim/Gaussino
     Sim/GiGaMT
     Sim/GiGaMTCore
-    Sim/GiGaMTDD4hep
+    ${DD4hepDirs}
     Sim/GiGaMTDebug
     Sim/GiGaMTExamples/FCCTest
     Sim/GiGaMTExamples/IronBox

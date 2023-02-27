@@ -1,0 +1,39 @@
+###############################################################################
+# (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  #
+#                                                                             #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
+#                                                                             #
+# In applying this licence, CERN does not waive the privileges and immunities #
+# granted to it by virtue of its status as an Intergovernmental Organization  #
+# or submit itself to any jurisdiction.                                       #
+###############################################################################
+from Gaussino.pytest.helpers import run_gaudi, reset_configurables
+from Gaussino.pytest.options import (
+    events_1,
+    photon,
+    em_physics,
+    cube,
+    debug,
+)
+
+EXPECTED_STRINGS = [
+    "#Hits=    0 Energy=       0[GeV] #Particles=    0 in MassVacuumCaloSDet",
+    "#Hits=    1 Energy=       1[GeV] #Particles=    1 in ParallelLeadCaloSDet",
+]
+
+
+@reset_configurables
+@events_1
+@photon
+@em_physics
+@cube
+@debug
+def test_immediate_deposit_cube():
+    ex = run_gaudi(
+        # additional options
+        "$CUSTOMSIMULATIONROOT/tests/options/immediate_deposit_parallel_plane.py",
+    )
+    assert ex.returncode == 0
+    for exp in EXPECTED_STRINGS:
+        assert exp in ex.stdout

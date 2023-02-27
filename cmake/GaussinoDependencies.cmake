@@ -27,6 +27,12 @@ endif()
 # -- Public dependencies
 lhcb_find_package(GaussinoExtLibs REQUIRED) # TODO: [NEW CMAKE] temporary project
 
+# custom simulations work only with G4 > 10.7
+# + make sure it is set once and only in Gaussino
+if(NOT Gaussino_FOUND AND Geant4_VERSION VERSION_LESS "10.7")
+  set(CUSTOMSIM OFF)
+endif()
+
 find_package(HepMC3 REQUIRED)
 find_package(Pythia8 REQUIRED)
 
@@ -34,6 +40,10 @@ if(USE_DD4HEP)
     set(CMAKE_CXX_STANDARD ${GAUDI_CXX_STANDARD})
     find_package(DD4hep REQUIRED DDCore)
     find_package(DD4hepDDG4 REQUIRED)
+endif()
+
+if(CUSTOMSIM)
+    add_compile_definitions(CUSTOMSIM)
 endif()
 
 # -- Private dependencies
