@@ -21,6 +21,7 @@ void MCCollector::TupleAlg::fillCollectorTuple( const LHCb::MCHeader& evt, const
     collT->column( "Entry_X", entry.X() ).ignore();
     collT->column( "Entry_Y", entry.Y() ).ignore();
     collT->column( "Entry_Z", entry.Z() ).ignore();
+    collT->column( "Energy", extHit->energy() ).ignore();
     auto mom = extHit->momentum();
     collT->column( "Momentum", extHit->p() ).ignore();
     collT->column( "Momentum_X", mom.X() ).ignore();
@@ -30,7 +31,7 @@ void MCCollector::TupleAlg::fillCollectorTuple( const LHCb::MCHeader& evt, const
     collT->column( "Particle_Index", particle->index() ).ignore();
     collT->column( "Particle_PID", particle->particleID().pid() ).ignore();
     auto sc = collT->write();
-    if ( sc.isFailure() ) { throw GaudiException( "NTuple not wrtitten!", "CaloCollector", StatusCode::FAILURE ); }
+    if ( sc.isFailure() ) { throw GaudiException( "NTuple not wrtitten!", name(), StatusCode::FAILURE ); }
     ++m_collHitsCounter;
   }
 }

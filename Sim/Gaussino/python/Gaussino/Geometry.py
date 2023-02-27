@@ -104,10 +104,12 @@ class GaussinoGeometry(GaussinoConfigurable):
         algs = []
         algs += self._set_external_detector(dettool)
         algs += self._set_parallel_geometry(dettool)
+        self._set_custom_simulation_regions(dettool)
         self._set_gdml_import(dettool)
         self._set_gdml_export(dettool)
 
         from Configurables import ApplicationMgr
+
         ApplicationMgr().TopAlg += algs
 
     def _set_external_detector(self, dettool: ConfigurableMeta) -> list:
@@ -153,6 +155,22 @@ class GaussinoGeometry(GaussinoConfigurable):
         log.debug("-> Configuring geometry in parallel worlds")
         return par_geo.attach(dettool)
 
+    def _set_custom_simulation_regions(self, dettool: ConfigurableMeta):
+        """Sets up the fast simulation interface that will assign models to
+        the regions.
+
+        Args:
+            dettool (ConfigurableMeta): detector constructor
+                ``GiGaMTDetectorConstructionFAC("DetConst")``
+        """
+        from Configurables import GaussinoSimulation
+
+        cust_sim_creator_name = GaussinoSimulation().getProp("CustomSimulation")
+        if cust_sim_creator_name:
+            from Configurables import CustomSimulation
+
+            CustomSimulation(cust_sim_creator_name).create(dettool)
+
     def _set_gdml_export(self, dettool: ConfigurableMeta):
         """Sets up the properties needed to export the geometry to a GDML file.
         See more info in a dedicated section below.
@@ -186,7 +204,7 @@ class GaussinoGeometry(GaussinoConfigurable):
         Raises:
             RuntimeError: if ``ImportGDML`` not a dictionary
             RuntimeError: if values of ``ImportGDML`` are not dictionaries either
-       """
+        """
         gdml_imports = self.getProp("ImportGDML")
         if type(gdml_imports) is not list:
             raise RuntimeError("ImportGDML should be a list of dicts")

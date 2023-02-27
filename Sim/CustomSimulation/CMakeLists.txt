@@ -9,30 +9,32 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-Sim/MCCollector
----------------
+Sim/CustomSimulation
+--------------------
 #]=======================================================================]
 
-gaudi_add_library(MCCollectorLib
+gaudi_add_library(CustomSimulationLib
     SOURCES
-        src/Lib/MCCollectorHit.cpp
-        src/Lib/MCCollectorSensDet.cpp
-        src/Lib/MCCollectorTuple.cpp
+        src/Lib/HitMaker.cpp
+        src/Lib/Physics.cpp
     LINK
         PUBLIC
-            Gaussino::GiGaMTCoreRunLib
-            Gaussino::GiGaMTFactoriesLib
-            Gaussino::GiGaMTDetFactoriesLib
-            Gaussino::MCTruthToEDMLib
+	    Geant4::G4physicslists
+        Gaussino::GiGaMTCoreMessageLib
+	    Gaussino::GiGaMTFactoriesLib
+	    Gaussino::GiGaMTPhysFactoriesLib
 )
 
-gaudi_add_module(MCCollector
+gaudi_add_module(CustomSimulation
     SOURCES
-        src/Components/GetMCCollectorHitsAlg.cpp
-        src/Components/MCCollector.cpp
-        src/Components/MCCollectorSensDetComponent.cpp
+        src/Components/DefaultPhysicsFactory.cpp
+        src/Components/RegionFactory.cpp
     LINK
-    	Gaussino::MCCollectorLib
+        Gaussino::CustomSimulationLib
 )
+
+gaudi_install(PYTHON)
+
+gaudi_generate_confuserdb()
 
 gaudi_add_tests(pytest)

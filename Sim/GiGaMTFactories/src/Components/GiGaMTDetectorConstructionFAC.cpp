@@ -26,6 +26,8 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
     for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
     for ( auto& embedder : m_ext_dets ) { sc &= embedder.retrieve(); }
     for ( auto& par_world : m_par_worlds ) { sc &= par_world.retrieve(); }
+    for ( auto& fac : m_cust_region_factories ) { sc &= fac.retrieve(); }
+    for ( auto& fac : m_cust_model_factories ) { sc &= fac.retrieve(); }
 
     if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
       warning() << "GDML file " << m_outfile.value() << " already exists! "
@@ -79,6 +81,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 
     return world;
   } );
+
   detconst->SetSDConstructor( [&]() {
     debug() << "Calling SD and Field constructor" << endmsg;
     m_geoSvc->constructSDandField();
@@ -93,6 +96,18 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 
     if ( DressVolumes().isFailure() ) {
       throw GaudiException( "Failed to attach sensitive detector classes", "DressVolumes", StatusCode::FAILURE );
+    }
+
+    // import custom simulation regions
+    for ( auto& cust_region_factory : m_cust_region_factories ) {
+      debug() << "Calling fast region constructor " << cust_region_factory->name() << endmsg;
+      cust_region_factory->construct();
+    }
+
+    // import custom simulation models
+    for ( auto& cust_model_factory : m_cust_model_factories ) {
+      debug() << "Calling fast model constructor " << cust_model_factory->name() << endmsg;
+      cust_model_factory->construct();
     }
   } );
 

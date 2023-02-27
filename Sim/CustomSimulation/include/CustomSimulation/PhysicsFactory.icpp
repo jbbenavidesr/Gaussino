@@ -1,0 +1,38 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
+
+template <class TPhysics>
+StatusCode Gaussino::CustomSimulation::PhysicsFactory<TPhysics>::initialize() {
+  return base_class::initialize().andThen( [&]() -> StatusCode {
+    if ( m_particlePIDs.value().empty() ) {
+      this->error() << "ParticlePIDs cannot be empty" << endmsg;
+      return StatusCode::FAILURE;
+    }
+
+    if ( m_particleWorlds.value().size() != m_particlePIDs.value().size() ) {
+      this->error() << "ParticlePIDs and ParticleWorlds lists must have the same size" << endmsg;
+      return StatusCode::FAILURE;
+    }
+
+    return StatusCode::SUCCESS;
+  } );
+}
+
+template <class TPhysics>
+TPhysics* Gaussino::CustomSimulation::PhysicsFactory<TPhysics>::construct() const {
+  this->debug() << "Constructing fast simulation physics: " << this->name() << endmsg;
+  auto physics = base_class::construct();
+  if ( this->msgLevel( MSG::VERBOSE ) ) { physics->BeVerbose(); }
+  physics->setParticlePIDs( m_particlePIDs.value() );
+  physics->setParticleWorlds( m_particleWorlds.value() );
+  this->debug() << "Constructed fast simulation physics:" << this->name() << endmsg;
+  return physics;
+}

@@ -45,7 +45,7 @@ ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const 
   auto world_name = parseName();
   auto par_world  = new ParallelWorld{world_name};
 
-  debug() << "Setting up a world constructor for " << name() << " parallel world" << endmsg;
+  debug() << "Setting up a world constructor for " << world_name << " parallel world" << endmsg;
   par_world->setWorldConstructor( [&]( G4VPhysicalVolume* world ) {
     debug() << "Constructing world for " << name() << " parallel world" << endmsg;
     if ( !m_worldMaterial.value().empty() ) {
@@ -78,13 +78,25 @@ ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const 
 
     // Import external geometry SD
     for ( auto& embedder : m_ext_dets ) {
-      debug() << "Calling SD embedder" << embedder->name() << " for " << world_name << endmsg;
+      debug() << "Calling SD embedder" << embedder->name() << " for " << name() << endmsg;
       embedder->embedSD().ignore();
     }
 
     // Run additional functionality
     debug() << "Constructing additional SD functionalities for " << name() << " parallel world" << endmsg;
     additionalSDConstrution();
+
+    // import custom simulation regions
+    for ( auto& cust_region_factory : m_cust_region_factories ) {
+      debug() << "Calling custom region constructor " << cust_region_factory->name() << endmsg;
+      cust_region_factory->construct();
+    }
+
+    // import custom simulation models
+    for ( auto& cust_model_factory : m_cust_model_factories ) {
+      debug() << "Calling custom model constructor " << cust_model_factory->name() << endmsg;
+      cust_model_factory->construct();
+    }
   } );
 
   return par_world;

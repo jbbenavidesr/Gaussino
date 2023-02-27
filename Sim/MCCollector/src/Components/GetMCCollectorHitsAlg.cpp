@@ -12,13 +12,16 @@
 // Gaudi
 #include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/Transformer.h"
+
 // GiGaMT
 #include "Defaults/Locations.h"
 #include "GiGaMTCoreRun/G4EventProxy.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
+
 // local
-#include "MCCollectorHit.h"
+#include "MCCollector/MCCollectorHit.h"
+
 // LHCb
 #include "Event/MCExtendedHit.h"
 #include "Event/MCHit.h"

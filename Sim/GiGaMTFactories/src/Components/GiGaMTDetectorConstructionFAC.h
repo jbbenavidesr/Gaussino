@@ -12,6 +12,7 @@
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
+#include "G4VFastSimulationModel.hh"
 #include "GaudiAlg/FunctionalDetails.h"
 #include "GaudiAlg/FunctionalUtilities.h"
 #include "Utils/ToolProperty.h"
@@ -116,4 +117,23 @@ private:
                                                      {},
                                                      tool_array_setter( m_par_worlds, m_par_worlds_names ),
                                                      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+
+  // Custom Simulation
+  using CustomSimulationModelFactory = GiGaFactoryBase<G4VFastSimulationModel>;
+  ToolHandleArray<CustomSimulationModelFactory> m_cust_model_factories{this};
+  Gaudi::Property<std::vector<std::string>>     m_cust_model_factories_names{
+      this,
+      "CustomSimulationModelFactories",
+      {},
+      tool_array_setter( m_cust_model_factories, m_cust_model_factories_names ),
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+
+  using CustomSimulationRegionFactory = GiGaFactoryBase<G4Region>;
+  ToolHandleArray<CustomSimulationRegionFactory> m_cust_region_factories{this};
+  Gaudi::Property<std::vector<std::string>>      m_cust_region_factories_names{
+      this,
+      "CustomSimulationRegionFactories",
+      {},
+      tool_array_setter( m_cust_region_factories, m_cust_region_factories_names ),
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
 };

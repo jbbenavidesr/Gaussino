@@ -81,6 +81,7 @@ class ParallelGeometry(ConfigurableUser):
         #     "ParWorld1": {
         #         "Type": "DefaultWorld", # default
         #         "ExternalDetectorEmbedder": "ExtDetEmb1",
+        #         "CustomSimulation": "MyCustomSimCreator",
         #         "ExportGDML: {
         #             'GDMLFileName': 'ParWorld1.gdml',
         #             'GDMLFileNameOverwrite': True,
@@ -127,7 +128,13 @@ class ParallelGeometry(ConfigurableUser):
                 fac = fac_conf(
                     world_name,
                     **self._refine_props(
-                        props, ["Type", "ExternalDetectorEmbedder", "ExportGDML"]
+                        props,
+                        [
+                            "Type",
+                            "ExternalDetectorEmbedder",
+                            "CustomSimulation",
+                            "ExportGDML",
+                        ],
                     )
                 )
 
@@ -140,6 +147,13 @@ class ParallelGeometry(ConfigurableUser):
                     algs += embedder.activate_hits_alg()  # no slot for now!
                     algs += embedder.activate_moni_alg()  # no slot for now!
                     self._external_embedders.append(embedder_name)
+
+                # Add custom simulation models for parallel geometry
+                cust_sim_creator_name = props.get("CustomSimulation")
+                if cust_sim_creator_name:
+                    from Configurables import CustomSimulation
+
+                    CustomSimulation(cust_sim_creator_name).create(fac)
 
                 # Save as a GDML File
                 gdml_export = props.get("ExportGDML")
@@ -188,6 +202,17 @@ class ParallelGeometry(ConfigurableUser):
                 pwph = fac_conf(name, **self._refine_props(phys_props))
                 modular_list.addTool(pwph)
                 modular_list.PhysicsConstructors.append(getattr(modular_list, name))
+
+                # Add custom simulation physics in the parallel world
+                cust_sim_creator_name = self.getProp("ParallelWorlds")[world_name].get(
+                    "CustomSimulation"
+                )
+                if cust_sim_creator_name:
+                    from Configurables import CustomSimulation
+
+                    CustomSimulation(cust_sim_creator_name).attach_physics(
+                        modular_list, world_name
+                    )
 
     def _refine_props(self, props, keys_to_refine=["Type"]):
         return {key: prop for key, prop in props.items() if key not in keys_to_refine}
