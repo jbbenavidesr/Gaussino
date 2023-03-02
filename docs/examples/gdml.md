@@ -80,6 +80,9 @@ GaussinoGeometry().ExportGDML = {
     "GDMLFileName": "export.gdml",
     # G4 will crash if the file with same name already exists
     "GDMLFileNameOverwrite": True,
+    # name of the volume name that will be the root in the gdml file
+    # leave empty for the default world volume
+    "GDMLRootVolumeName": "",
     # add unique references to the names
     "GDMLAddReferences": True,
     # export auxilliary information

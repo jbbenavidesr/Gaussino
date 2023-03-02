@@ -15,6 +15,7 @@
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 #include <filesystem>
+#include "G4LogicalVolumeStore.hh"
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
@@ -151,11 +152,23 @@ StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
     G4GDMLParser g4writer;
     g4writer.SetSDExport( m_exportSD.value() );
     g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
-    G4LogicalVolume* world = nullptr;
+    G4LogicalVolume* root = nullptr;
+    if ( !m_rootVolumeName.value().empty() ) {
+      auto vol_store = G4LogicalVolumeStore::GetInstance();
+      if ( !vol_store ) {
+        error() << "G4LogicalVolumeStore points to NULL" << endmsg;
+        return StatusCode::FAILURE;
+      }
+      root = vol_store->GetVolume( m_rootVolumeName.value() );
+      if ( !root ) {
+        error() << "Cannot find " << m_rootVolumeName << "in the volume store!" << endmsg;
+        return StatusCode::FAILURE;
+      }
+    }
     if ( !m_schema.value().empty() ) {
-      g4writer.Write( m_outfile.value(), world, m_refs.value(), m_schema.value() );
+      g4writer.Write( m_outfile.value(), root, m_refs.value(), m_schema.value() );
     } else {
-      g4writer.Write( m_outfile.value(), world, m_refs.value() );
+      g4writer.Write( m_outfile.value(), root, m_refs.value() );
     }
   } catch ( std::exception& err ) {
     error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;
