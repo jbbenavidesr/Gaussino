@@ -68,6 +68,7 @@ private:
   Gaudi::Property<std::string> m_schema{this, "GDMLSchema", ""};
   Gaudi::Property<bool>        m_refs{this, "GDMLAddReferences", true};
   Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
+  Gaudi::Property<std::string> m_rootVolumeName{this, "GDMLRootVolumeName", "", "Name of the root volume"};
   Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
                                            "Overwrite a GDML if it already exists"};
   // export auxilliary information
