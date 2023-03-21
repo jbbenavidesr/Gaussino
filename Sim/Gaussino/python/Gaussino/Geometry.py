@@ -79,8 +79,9 @@ class GaussinoGeometry(GaussinoConfigurable):
         :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` and the main configurable:
         :class:`Gaussino <Gaussino.Configuration.Gaussino>`.
         """
+        from Configurables import Gaussino
         log.debug("Configuring GaussinoGeometry")
-        if GaussinoGeometry.only_generation_phase:
+        if "Simulation" not in Gaussino().getProp("Phases"):
             log.debug("-> Only the generation phase, skipping.")
             return
         from Configurables import (
