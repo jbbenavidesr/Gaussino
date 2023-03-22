@@ -1,4 +1,5 @@
 # Simulation
+
 Configuration related to the simulation phase.
 
 ## Main Simulation Configuration
@@ -14,9 +15,25 @@ Configuration related to the simulation phase.
    :private-members:
 ```
 
-## Visualization
-Configuration related to visualization.
+## Custom Simulation
 
+This adds a new package `CustomSimulation` that allows for adding custom simulation models (interfacing `Geant4` fast simulation hooks). Custom simulation models can be added in both the mass and parallel geometry. Adding custom simulation models in a separate parallel worlds is recommended. Please, take a look at the examples section to get more information.
+
+### `CustomSimulation` class description
+
+```{eval-rst}
+.. currentmodule:: CustomSimulation.Configuration
+
+.. autoclass:: CustomSimulation
+   :show-inheritance:
+   :undoc-members:
+   :members:
+   :private-members:
+```
+
+## Visualization
+
+Configuration related to visualization.
 
 ```{eval-rst}
 .. currentmodule:: GiGaMTVis.Configuration
@@ -29,6 +46,7 @@ Configuration related to visualization.
 ```
 
 ### Trajectory model options
+
 As seen in previous section, users can fully modify or create their own trajectory models. Property `TrajectoryModelOptions` is an object which is used for that purpose. It's properties are shown in next snippet.
 
 ```python
@@ -83,6 +101,7 @@ vis.TrajectoryModelOptions = {
 ```
 
 ### Trajectory filters
+
 Trajectory filters can be configured through `TrajectoryFilters` property.
 It takes a list of objects, each containing information for one filter.
 Properties of the object are shown in the next example.
@@ -140,6 +159,7 @@ vis.TrajectoryFilters = [{
 ```
 
 ### Magnetic and electric field visualization
+
 Both the magnetic and the electric field can be visualized using `MagneticField`and `ElectricField` properties, respectively.
 Both have same properties shown in the next snippet.
 

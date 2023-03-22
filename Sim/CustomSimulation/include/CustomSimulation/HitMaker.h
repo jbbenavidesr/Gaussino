@@ -8,28 +8,29 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "GiGaMTMagnetFactories/FieldMgrBase.h"
-class G4ChordFinder;
+#pragma once
 
-/** @class ZeroFieldMgr
- *
- *  Simple magnetic field manager that has a G4MagneticField nullptr.
- *  This effectively turns of the field in the assigned volumes.
- *  Useful if there is a global magnetic field that should be
- *  ignored in only a few volumes
- *
- *  @author Dominik Muller
- *  @date   2019-06-04
- */
-class ZeroFieldMgr : public Gaussino::FieldMgrBase
-{
-public:
-  using Gaussino::FieldMgrBase::FieldMgrBase;
+// Geant4
+#include "G4FastHit.hh"
+#include "G4FastTrack.hh"
+#include "G4Navigator.hh"
+#include "G4TouchableHandle.hh"
 
-  G4MagneticField* field() const override {return nullptr;};
+namespace Gaussino::CustomSimulation {
+  // FIXME: this is just a dumb copy of G4FastSimHitMaker in order to introduce
+  // a workaround
+  class HitMaker {
 
-  virtual ~ZeroFieldMgr( ) = default;
+  public:
+    HitMaker();
+    ~HitMaker();
+    void        make( const G4FastHit& aHit, const G4FastTrack& aTrack );
+    inline void SetNameOfWorldWithSD( const G4String& aName ) { fWorldWithSdName = aName; };
 
-};
-
-DECLARE_COMPONENT( ZeroFieldMgr )
+  private:
+    G4TouchableHandle fTouchableHandle;
+    G4Navigator*      fpNavigator;
+    G4bool            fNaviSetup;
+    G4String          fWorldWithSdName;
+  };
+} // namespace Gaussino::CustomSimulation

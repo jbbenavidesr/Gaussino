@@ -1,0 +1,48 @@
+/*****************************************************************************\
+* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+*                                                                             *
+* This software is distributed under the terms of the Apache License          *
+* version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
+*                                                                             *
+* In applying this licence, CERN does not waive the privileges and immunities *
+* granted to it by virtue of its status as an Intergovernmental Organization  *
+* or submit itself to any jurisdiction.                                       *
+\*****************************************************************************/
+
+// Geant4
+#include "G4RegionStore.hh"
+
+template <class TModel>
+StatusCode Gaussino::CustomSimulation::ModelFactory<TModel>::initialize() {
+  return extends::initialize().andThen( [&]() -> StatusCode {
+    if ( m_model.value().empty() ) {
+      error() << "Model name was not provided." << endmsg;
+      return StatusCode::FAILURE;
+    }
+
+    if ( m_region.value().empty() ) {
+      error() << "Region name was not provided." << endmsg;
+      return StatusCode::FAILURE;
+    }
+    return StatusCode::SUCCESS;
+  } );
+}
+
+template <class TModel>
+TModel* Gaussino::CustomSimulation::ModelFactory<TModel>::construct() const {
+
+  debug() << "Loading fast simulation region " << m_region.value() << endmsg;
+  auto region = G4RegionStore::GetInstance()->GetRegion( m_region.value() );
+
+  if ( !region ) {
+    error() << "Region '" << m_region.value() << "' was not found" << endmsg;
+    return nullptr;
+  }
+
+  debug() << "Loading fast simulation model " << m_model.value() << endmsg;
+  auto model = new TModel{m_model.value(), region};
+  model->SetMessageInterface( message_interface() );
+
+  debug() << "Loaded fast simulation model " << m_model.value() << endmsg;
+  return model;
+}

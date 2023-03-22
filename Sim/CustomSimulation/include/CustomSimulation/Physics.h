@@ -8,18 +8,29 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+#pragma once
 
-// local
-#include "MCCollectorHit.h"
+// Geant4
+#include "G4FastSimulationPhysics.hh"
 
-G4ThreadLocal G4Allocator<MCCollector::Hit>* MCCollector::HitAllocator;
+// Gaussino
+#include "GiGaMTCoreMessage/IGiGaMessage.h"
 
-void* MCCollector::Hit::operator new( size_t ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  return (void*)MCCollector::HitAllocator->MallocSingle();
-}
+namespace Gaussino::CustomSimulation {
+  using ParticlePIDs   = std::vector<int>;
+  using ParticleWorlds = std::vector<std::string>;
 
-void MCCollector::Hit::operator delete( void* hit ) {
-  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
-  MCCollector::HitAllocator->FreeSingle( (MCCollector::Hit*)hit );
-}
+  class Physics : public GiGaMessage, public G4FastSimulationPhysics {
+
+  protected:
+    ParticlePIDs   m_particlePIDs   = {};
+    ParticleWorlds m_particleWorlds = {};
+
+  public:
+    using G4FastSimulationPhysics::G4FastSimulationPhysics;
+    virtual void ConstructProcess() override;
+
+    void setParticlePIDs( ParticlePIDs );
+    void setParticleWorlds( ParticleWorlds );
+  };
+} // namespace Gaussino::CustomSimulation

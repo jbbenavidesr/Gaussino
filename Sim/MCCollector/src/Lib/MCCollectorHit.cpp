@@ -8,29 +8,18 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "G4MagneticField.hh"
-#include "GiGaMTFactories/GiGaFactoryBase.h"
-#include "GiGaMTMagnetFactories/FieldMgrBase.h"
-#include "GaudiKernel/ToolHandle.h"
 
-/** @class ToolFieldMgr
- *
- *  Tool that interfaces the call to field() to an externally provided factory for G4MagneticField.
- *
- *  @author Dominik Muller
- *  @date   2019-06-05
- */
-class ToolFieldMgr : public Gaussino::FieldMgrBase
-{
-public:
-  using Gaussino::FieldMgrBase::FieldMgrBase;
+// local
+#include "MCCollector/MCCollectorHit.h"
 
-  G4MagneticField* field() const override { return m_magfield_constructor->construct(); };
+G4ThreadLocal G4Allocator<MCCollector::Hit>* MCCollector::HitAllocator;
 
-  virtual ~ToolFieldMgr() = default;
+void* MCCollector::Hit::operator new( size_t ) {
+  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
+  return (void*)MCCollector::HitAllocator->MallocSingle();
+}
 
-private:
-  ToolHandle<GiGaFactoryBase<G4MagneticField>> m_magfield_constructor{this, "MagneticField", "MagFieldFromSvc"};
-};
-
-DECLARE_COMPONENT( ToolFieldMgr )
+void MCCollector::Hit::operator delete( void* hit ) {
+  if ( !MCCollector::HitAllocator ) { MCCollector::HitAllocator = new G4Allocator<MCCollector::Hit>; }
+  MCCollector::HitAllocator->FreeSingle( (MCCollector::Hit*)hit );
+}

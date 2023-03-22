@@ -15,6 +15,7 @@
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 #include <filesystem>
+#include "G4LogicalVolumeStore.hh"
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
@@ -26,6 +27,8 @@ StatusCode GiGaMTDetectorConstructionFAC::initialize() {
     for ( auto& keypairs : m_sens_dets ) { sc &= keypairs.second.retrieve(); }
     for ( auto& embedder : m_ext_dets ) { sc &= embedder.retrieve(); }
     for ( auto& par_world : m_par_worlds ) { sc &= par_world.retrieve(); }
+    for ( auto& fac : m_cust_region_factories ) { sc &= fac.retrieve(); }
+    for ( auto& fac : m_cust_model_factories ) { sc &= fac.retrieve(); }
 
     if ( !m_outfile.value().empty() && std::filesystem::exists( m_outfile.value() ) ) {
       warning() << "GDML file " << m_outfile.value() << " already exists! "
@@ -79,6 +82,7 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 
     return world;
   } );
+
   detconst->SetSDConstructor( [&]() {
     debug() << "Calling SD and Field constructor" << endmsg;
     m_geoSvc->constructSDandField();
@@ -93,6 +97,18 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
 
     if ( DressVolumes().isFailure() ) {
       throw GaudiException( "Failed to attach sensitive detector classes", "DressVolumes", StatusCode::FAILURE );
+    }
+
+    // import custom simulation regions
+    for ( auto& cust_region_factory : m_cust_region_factories ) {
+      debug() << "Calling fast region constructor " << cust_region_factory->name() << endmsg;
+      cust_region_factory->construct();
+    }
+
+    // import custom simulation models
+    for ( auto& cust_model_factory : m_cust_model_factories ) {
+      debug() << "Calling fast model constructor " << cust_model_factory->name() << endmsg;
+      cust_model_factory->construct();
     }
   } );
 
@@ -136,11 +152,23 @@ StatusCode GiGaMTDetectorConstructionFAC::SaveGDML() const {
     G4GDMLParser g4writer;
     g4writer.SetSDExport( m_exportSD.value() );
     g4writer.SetEnergyCutsExport( m_exportEnergyCuts.value() );
-    G4LogicalVolume* world = nullptr;
+    G4LogicalVolume* root = nullptr;
+    if ( !m_rootVolumeName.value().empty() ) {
+      auto vol_store = G4LogicalVolumeStore::GetInstance();
+      if ( !vol_store ) {
+        error() << "G4LogicalVolumeStore points to NULL" << endmsg;
+        return StatusCode::FAILURE;
+      }
+      root = vol_store->GetVolume( m_rootVolumeName.value() );
+      if ( !root ) {
+        error() << "Cannot find " << m_rootVolumeName << "in the volume store!" << endmsg;
+        return StatusCode::FAILURE;
+      }
+    }
     if ( !m_schema.value().empty() ) {
-      g4writer.Write( m_outfile.value(), world, m_refs.value(), m_schema.value() );
+      g4writer.Write( m_outfile.value(), root, m_refs.value(), m_schema.value() );
     } else {
-      g4writer.Write( m_outfile.value(), world, m_refs.value() );
+      g4writer.Write( m_outfile.value(), root, m_refs.value() );
     }
   } catch ( std::exception& err ) {
     error() << "Caught an exception while writing a GDML file: " << err.what() << endmsg;

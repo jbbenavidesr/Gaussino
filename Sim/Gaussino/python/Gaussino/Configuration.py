@@ -151,7 +151,6 @@ class Gaussino(GaussinoConfigurable):
 
         # Services
         self._set_particle_property_service()
-        self._set_data_service()
         self._set_auditor_service()
         self._set_redecay_service()
         self._set_histogram_service()
@@ -171,6 +170,7 @@ class Gaussino(GaussinoConfigurable):
         # ensure the configurables are called
         for conf in self.__used_configurables__:
             conf()
+
 
     def _set_debug_mode(self):
         """Sets up the debug mode in python logger and all the configurables.
@@ -226,8 +226,13 @@ class Gaussino(GaussinoConfigurable):
             GenRndInit,
         )
 
-        whiteboard = HiveWhiteBoard("EventDataSvc")
-        whiteboard.EventSlots = self.getProp("EventSlots")
+        whiteboard = HiveWhiteBoard(
+            "EventDataSvc",
+            EventSlots=self.getProp("EventSlots"),
+            ForceLeaves=True,
+            RootCLID=1,
+        )
+
         ApplicationMgr().ExtSvc.insert(0, whiteboard)
 
         scheduler = AvalancheSchedulerSvc()
@@ -291,17 +296,6 @@ class Gaussino(GaussinoConfigurable):
         ppservice = LHCb__ParticlePropertySvc()
         ppservice.ParticlePropertiesFile = self.getProp("ParticleTable")
         ApplicationMgr().ExtSvc += [ppservice]
-
-    def _set_data_service(self):
-        """Sets up the data service: ``EventDataSvc``.
-        """
-        from Configurables import ApplicationMgr, EventDataSvc
-
-        log.debug("Configuring EventDataSvc")
-        datasvc = EventDataSvc("EventDataSvc")
-        datasvc.ForceLeaves = True
-        datasvc.RootCLID = 1
-        ApplicationMgr().ExtSvc += [datasvc]
 
     def _set_auditor_service(self):
         """Sets up the auditor service: ``AuditorSvc``.

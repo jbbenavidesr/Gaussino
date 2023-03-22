@@ -12,25 +12,27 @@
 Sim/MCCollector
 ---------------
 #]=======================================================================]
+
 gaudi_add_library(MCCollectorLib
     SOURCES
+        src/Lib/MCCollectorHit.cpp
+        src/Lib/MCCollectorSensDet.cpp
         src/Lib/MCCollectorTuple.cpp
     LINK
         PUBLIC
             Gaussino::GiGaMTCoreRunLib
+            Gaussino::GiGaMTFactoriesLib
+            Gaussino::GiGaMTDetFactoriesLib
+            Gaussino::MCTruthToEDMLib
 )
-
 
 gaudi_add_module(MCCollector
     SOURCES
         src/Components/GetMCCollectorHitsAlg.cpp
         src/Components/MCCollector.cpp
-        src/Components/MCCollectorHit.cpp
-        src/Components/MCCollectorSensDet.cpp
+        src/Components/MCCollectorSensDetComponent.cpp
     LINK
-        Gaussino::MCCollectorLib
-        Gaussino::GiGaMTDetFactoriesLib
-        Gaussino::MCTruthToEDMLib
+    	Gaussino::MCCollectorLib
 )
 
 gaudi_add_tests(pytest)

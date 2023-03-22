@@ -89,6 +89,8 @@ class GaussinoSimulation(GaussinoConfigurable):
         "CutForPositron": -1 * SystemOfUnits.km,
         "CutForGamma": -1 * SystemOfUnits.km,
         "DumpCutsTable": False,
+        # Custom Simulation
+        "CustomSimulation": "",  # name of the configurable
     }
 
     # internal options to be set by Gaussino
@@ -181,8 +183,7 @@ class GaussinoSimulation(GaussinoConfigurable):
             ApplicationMgr().TopAlg += [alg]
 
     def _set_physics(self):
-        """Sets up the physics constructors and applies the cuts.
-        """
+        """Sets up the physics constructors and applies the cuts."""
         from Configurables import (
             GiGaMTModularPhysListFAC,
             GiGaMT,
@@ -206,6 +207,13 @@ class GaussinoSimulation(GaussinoConfigurable):
         if ParallelGeometry().getProp("ParallelPhysics"):
             log.debug("-> Configuring physics in parallel worlds")
             ParallelGeometry().attach_physics(gmpl)
+
+        # Add custom simulation physics
+        cust_sim_creator_name = self.getProp("CustomSimulation")
+        if cust_sim_creator_name:
+            from Configurables import CustomSimulation
+
+            CustomSimulation(cust_sim_creator_name).attach_physics(gmpl)
 
     def _set_truth_actions(self):
         """Sets up the custom optimization features that decide

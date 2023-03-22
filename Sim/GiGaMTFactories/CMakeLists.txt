@@ -8,24 +8,15 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-################################################################################
-# Package: GiGaMTFactories 
-#
-# This package will contain the factories to construct the various G4 objects.
-# This is done to clearly separate the G4 world from any Gaudi configurables parts.
-# All factories should be thread-safe and implement a constant method 'construct' which
-# and returns the constructed type by value.
-# FIXME: This requirement should probably be enforced somehow...
-# 
-#################################################################################
 #[=======================================================================[.rst:
 Sim/GiGaMTFactories
----------------------------
+-------------------
 #]=======================================================================]
 
 gaudi_add_header_only_library(GiGaMTFactoriesLib
     LINK
-        Gaudi::GaudiKernel
+		Gaudi::GaudiKernel
+		Gaudi::GaudiAlgLib
 )
 
 
@@ -93,27 +84,19 @@ gaudi_add_module(GiGaMTTruthFactories
 
 gaudi_add_library(GiGaMTMagnetFactoriesLib
     SOURCES
-        src/Lib/FieldMgrBase.cpp
+		src/Lib/MagneticField.cpp
     LINK
         PUBLIC
-	    CLHEP::CLHEP
-	    Geant4::G4geometry
-	    Gaudi::GaudiKernel
-	    Gaudi::GaudiAlgLib
-	    Gaussino::GiGaMTCoreMessageLib
+			Geant4::G4geometry
+			Gaussino::GiGaMTFactoriesLib
+			Gaussino::GiGaMTCoreMessageLib
 )
-
-# Workaround for unresolved symbol
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  set_source_files_properties(src/Lib/FieldMgrBase.cpp PROPERTIES COMPILE_OPTIONS "-O2")
-endif()
 
 gaudi_add_module(GiGaMTMagnetFactories
     SOURCES
-        src/Components/MagFieldFromSvc.cpp
-	src/Components/Steppers.cpp
-	src/Components/ToolFieldMgr.cpp
-	src/Components/ZeroFieldMgr.cpp
+		src/Components/Steppers.cpp
+		src/Components/MagneticFieldManager.cpp
+		src/Components/UniformMagneticField.cpp
     LINK
         Gaussino::GiGaMTMagnetFactoriesLib
 )
