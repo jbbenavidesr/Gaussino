@@ -22,15 +22,6 @@
 namespace ExternalDetector {
 
   template <class Solid>
-  StatusCode Embedder<Solid>::initialize() {
-    return extends::initialize().andThen( [&] {
-      StatusCode sc = StatusCode::SUCCESS;
-      if ( m_sensDet ) { sc &= m_sensDet.retrieve(); }
-      return sc;
-    } );
-  }
-
-  template <class Solid>
   StatusCode Embedder<Solid>::embedSD() const {
     if ( m_sensDet ) {
       auto sensDet    = m_sensDet->construct();
