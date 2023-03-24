@@ -42,6 +42,9 @@ namespace ExternalDetector {
     // name of the logical volume
     Gaudi::Property<std::string> m_lVolName{this, "LogicalVolumeName", "CustomLVol"};
     Gaudi::Property<std::string> m_pVolName{this, "PhysicalVolumeName", "CustomPVol"};
+    // (optional) provide the logical volume name of its mother, empty <=> world
+    // note: the orderd of construction matters in this case (the mother must be constructed first)
+    Gaudi::Property<std::string> m_motherVolumeName{this, "MotherVolumeName", ""};
     // name of the sensitive detector
     ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> m_sensDet{this, "SensDet", ""};
 
