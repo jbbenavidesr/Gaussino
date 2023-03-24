@@ -11,7 +11,6 @@
 // local
 #include "ExternalDetector/Embedder.h"
 // G4
-#include "G4Box.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -19,6 +18,8 @@
 #include "G4PVPlacement.hh"
 #include "G4SDManager.hh"
 
+class G4Box;
+class G4Tubs;
 namespace ExternalDetector {
 
   template <class Solid>
@@ -97,3 +98,4 @@ namespace ExternalDetector {
 } // namespace ExternalDetector
 
 template class ExternalDetector::Embedder<G4Box>;
+template class ExternalDetector::Embedder<G4Tubs>;
