@@ -152,7 +152,7 @@ class Gaussino(GaussinoConfigurable):
 
         # Phases
         self._configure_generation_phase()
-        self._configure_simulation_phase()
+        # self._configure_simulation_phase()
 
         # EDM conversion
         self._configure_edm_conversion()
@@ -414,26 +414,8 @@ class Gaussino(GaussinoConfigurable):
         Raises:
             ValueError: if the ``Generator`` phase is not provided
         """
-        phases = self.getProp("Phases")
-        if "Generator" not in phases:
-            msg = "Must have the generator phase"
-            log.error(msg)
-            raise ValueError(msg)
-        if "Simulation" not in phases:
-            GaussinoGeneration.only_generation_phase = True
         self.propagateProperty("EvtMax", GaussinoGeneration())
-        GaussinoGeneration.redecay = self.getProp("ReDecay")
-        GaussinoGeneration.output_name = self._get_output_name()
-        GaussinoGeneration.threads = self.getProp("ThreadPoolSize")
 
-    def _configure_simulation_phase(self):
-        """Configures a subset of properties of the simulation phase and propagates
-        them to :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>`.
-        """
-        GaussinoSimulation.redecay = self.getProp("ReDecay")
-        if "Simulation" not in self.getProp("Phases"):
-            GaussinoSimulation.only_generation_phase = True
-            GaussinoGeometry.only_generation_phase = True
 
     def _get_output_name(self):
         """Build a name for the output file, based on input options.
