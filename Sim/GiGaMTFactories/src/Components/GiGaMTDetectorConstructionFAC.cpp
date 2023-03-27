@@ -102,13 +102,18 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     // import custom simulation regions
     for ( auto& cust_region_factory : m_cust_region_factories ) {
       debug() << "Calling fast region constructor " << cust_region_factory->name() << endmsg;
-      cust_region_factory->construct();
+      auto region = cust_region_factory->construct();
+      if (!region) {
+        throw GaudiException( "Failed to create the custom simulation region: " + cust_region_factory->name(), "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
+      }
     }
 
     // import custom simulation models
     for ( auto& cust_model_factory : m_cust_model_factories ) {
       debug() << "Calling fast model constructor " << cust_model_factory->name() << endmsg;
-      cust_model_factory->construct();
+      if (!cust_model_factory->construct()) {
+        throw GaudiException( "Failed to create the custom simulation model: " + cust_model_factory->name(), "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
+      };
     }
   } );
 

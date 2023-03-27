@@ -53,7 +53,7 @@ StatusCode Gaussino::CustomSimulation::RegionFactory::initialize() {
 G4Region* Gaussino::CustomSimulation::RegionFactory::construct() const {
   auto region = G4RegionStore::GetInstance()->GetRegion( m_region_name.value() );
   if ( region ) {
-    warning() << "Fast Region '" + m_region_name.value() + "'  already exists " << endmsg;
+    debug() << "Fast Region '" + m_region_name.value() + "' already exists " << endmsg;
     return region;
   }
 
@@ -81,25 +81,24 @@ G4Region* Gaussino::CustomSimulation::RegionFactory::construct() const {
     for ( auto& volume_name : m_volumes.value() ) {
       auto lvol = volume_store->GetVolume( volume_name );
       if ( !lvol ) {
-        error() << "G4LogicalVolume '" + volume_name + "' is invalid ";
+        error() << "G4LogicalVolume '" + volume_name + "' is invalid " << endmsg;
         return nullptr;
       }
       if ( auto lregion = lvol->GetRegion(); lregion ) {
-        error() << "G4LogicalVolume '" + volume_name + "' already belongs to another region '" + lregion->GetName();
-        return nullptr;
+        debug() << "G4LogicalVolume '" + volume_name + "' already belongs to another region '" + lregion->GetName()
+                << "'."
+                << "This will be overriden with " << m_region_name.value() << endmsg;
       }
       lvolumes.push_back( lvol );
     }
   }
 
   region = new G4Region( m_region_name.value() );
-
   for ( auto& lvol : lvolumes ) {
     lvol->SetRegion( region );
     // TODO: should it be root logical volume for all the volumes?
     region->AddRootLogicalVolume( lvol );
   }
-
   return region;
 }
 
