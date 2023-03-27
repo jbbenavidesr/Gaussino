@@ -148,10 +148,7 @@ class Gaussino(GaussinoConfigurable):
         self._configure_rnd_init()
 
         # Services
-        self._set_particle_property_service()
-        self._set_auditor_service()
-        self._set_redecay_service()
-        self._set_histogram_service()
+        self._configure_services()
 
         # Phases
         self._configure_generation_phase()
@@ -278,6 +275,23 @@ class Gaussino(GaussinoConfigurable):
         from Configurables import GiGaMT
 
         GiGaMT().NumberOfWorkerThreads = self.getProp("ThreadPoolSize")
+
+    def _configure_services(self):
+        """Sets up the general Gaudi services needed in Gaussino.
+        """
+        from Configurables import ApplicationMgr
+
+        log.debug("Configuring services")
+
+        self._set_particle_property_service()
+        self._set_auditor_service()
+        self._set_redecay_service()
+        self._set_histogram_service()
+
+        # other services
+        ApplicationMgr().ExtSvc += [
+            "Gaudi::Monitoring::MessageSvcSink",
+        ]
 
     def _set_particle_property_service(self):
         """Sets up the particle property service.
