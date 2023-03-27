@@ -38,13 +38,30 @@ namespace ExternalDetector {
   }
 
   template <class Solid>
-  StatusCode Embedder<Solid>::embed( G4VPhysicalVolume* motherVolume ) const {
-    if ( !motherVolume ) {
-      error() << "Mother volume was not set." << endmsg;
-      return StatusCode::FAILURE;
+  StatusCode Embedder<Solid>::embed( G4VPhysicalVolume* world ) const {
+
+    G4LogicalVolume* motherLVol = nullptr;
+
+    if ( m_motherVolumeName.value().empty() ) {
+      if ( !world ) {
+        error() << "Mother volume was not set." << endmsg;
+        return StatusCode::FAILURE;
+      }
+      motherLVol = world->GetLogicalVolume();
+    } else {
+      auto vol_store = G4LogicalVolumeStore::GetInstance();
+      if ( !vol_store ) {
+        error() << "G4LogicalVolumeStore points to NULL" << endmsg;
+        return StatusCode::FAILURE;
+      }
+      motherLVol = vol_store->GetVolume( m_motherVolumeName.value() );
+      if ( !motherLVol ) {
+        error() << "Cannot find '" << m_motherVolumeName.value() << "' in the volume store!" << endmsg;
+        return StatusCode::FAILURE;
+      }
     }
 
-    auto pvol = place( motherVolume->GetLogicalVolume() );
+    auto pvol = place( motherLVol );
 
     if ( !pvol ) {
       error() << "Cannot create " << m_pVolName.value() << " physical volume" << endmsg;
