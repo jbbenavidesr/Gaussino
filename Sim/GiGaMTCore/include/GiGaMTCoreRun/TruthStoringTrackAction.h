@@ -10,14 +10,21 @@
 \*****************************************************************************/
 #pragma once
 
+// Geant4
 #include "G4UserTrackingAction.hh"
 #include "G4VProcess.hh"
 
+// Gaussino
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
+
+// HepMC3
 #include "HepMC3/FourVector.h"
+
+// STL
 #include <string>
 #include <unordered_set>
 #include <functional>
+#include <optional>
 
 // namespace LHCb {
 // class IParticlePropertySvc;

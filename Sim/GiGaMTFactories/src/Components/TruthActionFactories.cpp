@@ -8,12 +8,17 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+
+// Gaudi
+#include "GaudiKernel/SystemOfUnits.h"
+
+// Gaussino
+#include "GiGaMTCoreRun/TruthFlaggingTrackAction.h"
+#include "GiGaMTCoreRun/TruthStoringTrackAction.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
-#include "GiGaMTCoreRun/TruthFlaggingTrackAction.h"
-#include "GiGaMTCoreRun/TruthStoringTrackAction.h"
-
+// Geant4
 #include "G4UserTrackingAction.hh"
 
 class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4UserTrackingAction>> {
@@ -23,23 +28,28 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
   Gaudi::Property<bool>   m_storePrimaries{this, "StorePrimaries", true};
   Gaudi::Property<bool>   m_storeDecayProducts{this, "StoreForcedDecays", true};
   Gaudi::Property<bool>   m_storeByOwnEnergy{this, "StoreByOwnEnergy", false};
-  Gaudi::Property<double> m_ownEnergyThreshold{this, "OwnEnergyThreshold", 10 * CLHEP::TeV};
+  Gaudi::Property<double> m_ownEnergyThreshold{this, "OwnEnergyThreshold", 10 * Gaudi::Units::TeV};
   Gaudi::Property<bool>   m_storeByOwnType{this, "StoreByOwnType", false};
   Gaudi::Property<bool>   m_storeByChildEnergy{this, "StoreByChildEnergy", false};
   Gaudi::Property<bool>   m_storeByChildType{this, "StoreByChildType", false};
-  Gaudi::Property<double> m_childEnergyThreshold{this, "ChildEnergyThreshold", 10 * CLHEP::TeV};
+  Gaudi::Property<double> m_childEnergyThreshold{this, "ChildEnergyThreshold", 10 * Gaudi::Units::TeV};
   Gaudi::Property<TruthFlaggingTrackAction::TypeNames> m_ownStoredTypes{this, "StoredOwnTypes", {}};
   Gaudi::Property<TruthFlaggingTrackAction::TypeNames> m_childStoredTypesNames{this, "StoredChildTypes", {}};
   Gaudi::Property<bool>                                m_storeBySecondariesProcess{this, "StoreByChildProcess", false};
   Gaudi::Property<std::vector<std::string>>            m_childStoredProcess{this, "StoredChildProcesses", {}};
   Gaudi::Property<bool>                                m_storeByOwnProcess{this, "StoreByOwnProcess", false};
   Gaudi::Property<std::vector<std::string>>            m_ownStoredProcess{this, "StoredOwnProcesses", {}};
-  Gaudi::Property<bool>                                m_storeUpToZmax{this, "StoreUpToZ", true};
-  Gaudi::Property<double>                              m_zMaxToStore{this, "ZmaxForStoring", 10. * CLHEP::km};
-  Gaudi::Property<double>                              m_zMaxTilt{this, "ZmaxForStoringTilt", 0. * CLHEP::degree};
-  Gaudi::Property<double>                              m_zMaxYShift{this, "ZmaxForStoringYShift", 0. * CLHEP::mm};
-  Gaudi::Property<bool>                                m_rejectRICHphe{this, "RejectRICHPhotoelectrons", true};
-  Gaudi::Property<bool>                                m_rejectOptPhot{this, "RejectOpticalPhotons", true};
+  // forward detectors (limit on z)
+  Gaudi::Property<bool>   m_storeUpToZmax{this, "StoreUpToZ", true};
+  Gaudi::Property<double> m_zMaxToStore{this, "ZmaxForStoring", 10. * Gaudi::Units::km};
+  Gaudi::Property<double> m_zMaxTilt{this, "ZmaxForStoringTilt", 0. * Gaudi::Units::degree};
+  Gaudi::Property<double> m_zMaxYShift{this, "ZmaxForStoringYShift", 0. * Gaudi::Units::mm};
+  // cylindrical detectors (limit on rho)
+  Gaudi::Property<bool>   m_storeUpToRhomax{this, "StoreUpToRho", false};
+  Gaudi::Property<double> m_rhoMaxToStore{this, "RhomaxForStoring", 10. * Gaudi::Units::km};
+  // RICH detectors
+  Gaudi::Property<bool> m_rejectRICHphe{this, "RejectRICHPhotoelectrons", true};
+  Gaudi::Property<bool> m_rejectOptPhot{this, "RejectOpticalPhotons", true};
 
   virtual G4UserTrackingAction* construct() const override {
     auto action = new TruthFlaggingTrackAction{};
@@ -59,12 +69,17 @@ class TruthFlaggingTrackActionFAC : public extends<GiGaTool, GiGaFactoryBase<G4U
     action->storeByOwnProcess = m_storeByOwnProcess.value();
     action->ownStoredProcess.insert( std::begin( m_ownStoredProcess ), std::end( m_ownStoredProcess ) );
     action->storeUpToZmax = m_storeUpToZmax.value();
-    if ( m_storeUpToZmax.value() && m_zMaxToStore.value() == 10. * CLHEP::km ) {
+    if ( m_storeUpToZmax.value() && m_zMaxToStore.value() == 10. * Gaudi::Units::km ) {
       warning() << "StoreUpToZmax activated, but used with the default ZmaxForStoring = 10 km" << endmsg;
     }
-    action->zMaxToStore   = m_zMaxToStore.value();
-    action->zMaxTilt      = m_zMaxTilt.value();
-    action->zMaxYShift    = m_zMaxYShift.value();
+    action->zMaxToStore     = m_zMaxToStore.value();
+    action->zMaxTilt        = m_zMaxTilt.value();
+    action->zMaxYShift      = m_zMaxYShift.value();
+    action->storeUpToRhomax = m_storeUpToRhomax.value();
+    if ( m_storeUpToRhomax.value() && m_rhoMaxToStore.value() == 10. * Gaudi::Units::km ) {
+      warning() << "StoreUpToRhomax activated, but used with the default RhomaxForStoring = 10 km" << endmsg;
+    }
+    action->rhoMaxToStore = m_rhoMaxToStore.value();
     action->rejectRICHphe = m_rejectRICHphe.value();
     action->rejectOptPhot = m_rejectOptPhot.value();
     return action;
