@@ -55,6 +55,7 @@ namespace ExternalDetector {
           }
         },
         Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+    Gaudi::Property<std::vector<std::string>> m_extraVolumesToSensDet{this, "ExtraVolumesToSensDet", {}};
 
   public:
     using extends::extends;

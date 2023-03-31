@@ -28,11 +28,25 @@ namespace ExternalDetector {
       auto sensDet    = m_sensDet->construct();
       auto sd_manager = G4SDManager::GetSDMpointer();
       if ( !sd_manager ) return StatusCode::FAILURE;
-      auto lvol = G4LogicalVolumeStore::GetInstance()->GetVolume( m_lVolName.value() );
+      auto vol_store = G4LogicalVolumeStore::GetInstance();
+      if ( !vol_store ) {
+        error() << "G4LogicalVolumeStore points to NULL" << endmsg;
+        return StatusCode::FAILURE;
+      }
+      auto lvol = vol_store->GetVolume( m_lVolName.value() );
       if ( !lvol ) return StatusCode::FAILURE;
       sd_manager->AddNewDetector( sensDet );
       lvol->SetSensitiveDetector( sensDet );
       debug() << "Registered sensitive " << sensDet->GetName() << " for " << m_pVolName.value() << endmsg;
+      for ( const auto& extraVolName : m_extraVolumesToSensDet.value() ) {
+        auto extraVol = vol_store->GetVolume( extraVolName );
+        if ( !extraVol ) {
+          error() << "Cannot find '" << extraVolName << "' in the volume store!" << endmsg;
+          return StatusCode::FAILURE;
+        }
+        extraVol->SetSensitiveDetector( sensDet );
+        debug() << "Registered sensitive " << sensDet->GetName() << " for an extra volume " << extraVolName << endmsg;
+      }
     }
     return StatusCode::SUCCESS;
   }
