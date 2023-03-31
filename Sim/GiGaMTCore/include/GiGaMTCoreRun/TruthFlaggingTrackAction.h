@@ -9,19 +9,23 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #pragma once
+
 // STL
 #include <mutex>
 #include <string>
 #include <vector>
-// GiGa
-#include "CLHEP/Units/SystemOfUnits.h"
+
+// Gaussino
 #include "G4UserTrackingAction.hh"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTCoreRun/ZMaxPlane.h"
 
+// Gaudi
+#include "GaudiKernel/SystemOfUnits.h"
+
 #include <unordered_set>
+
 // forward declarations
-// template <class TYPE> class GiGaFactory;
 class G4Track;
 class G4ParticleDefinition;
 
@@ -95,9 +99,9 @@ public:
   ///  all tracks which has a daughter of given type are stored
   bool storeByChildType{false};
   /// threshold for own kinetic energy
-  double ownEnergyThreshold{10 * CLHEP::TeV};
+  double ownEnergyThreshold{10 * Gaudi::Units::TeV};
   /// threshold for child kinetic energy
-  double childEnergyThreshold{10 * CLHEP::TeV};
+  double childEnergyThreshold{10 * Gaudi::Units::TeV};
 
   /// container of names of own   types
   TypeNames ownStoredTypesNames{};
@@ -114,15 +118,21 @@ public:
   /// container for own process names
   std::unordered_set<std::string> ownStoredProcess{};
 
-  /// for flags above beside primary, forced decays and marked store up
-  /// to a certain z
+  // FORWARD DETECTORS
+  // for flags above beside primary, forced decays and marked store up
+  // to a certain z
   bool storeUpToZmax{true};
   /// value of z max for storage
-  double zMaxToStore{10. * CLHEP::km};
+  double zMaxToStore{10. * Gaudi::Units::km};
   /// tilt of zMax plane in degrees
-  double zMaxTilt{0. * CLHEP::degree};
+  double zMaxTilt{0. * Gaudi::Units::degree};
   /// y shift of zMax plane
-  double zMaxYShift{0. * CLHEP::mm};
+  double zMaxYShift{0. * Gaudi::Units::mm};
+
+  // CYLINDRICAL DETECTORS
+  bool   storeUpToRhomax{false};
+  double rhoMaxToStore{10. * Gaudi::Units::km};
+
   /// bool to keep or not RICHPhotoelectrons
   bool rejectRICHphe{true};
   /// bool to keep or not optical photons
