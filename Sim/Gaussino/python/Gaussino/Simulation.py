@@ -93,11 +93,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         "CustomSimulation": "",  # name of the configurable
     }
 
-    # internal options to be set by Gaussino
-    only_generation_phase = False
-    """ options set internally by Gaussino() """
-    redecay = False
-    """ options set internally by Gaussino() """
 
     def __apply_configuration__(self):
         """Main configuration method for the simulation phase.
@@ -106,10 +101,12 @@ class GaussinoSimulation(GaussinoConfigurable):
         :class:`GaussinoGeneration <Gaussino.Generation.GaussinoGeneration>` configurable, but before
         the geometry configurable :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
         """
+        from Configurables import Gaussino
         log.debug("Configuring GaussinoSimulation")
-        if GaussinoSimulation.only_generation_phase:
-            log.debug("-> Only the generation phase, skipping.")
+        if "Simulation" not in Gaussino().getProp("Phases"):
+            log.debug("-> No simulation phase, skipping.")
             return
+
         self._set_giga_service()
         self._set_giga_alg()
         self._set_physics()
@@ -167,10 +164,10 @@ class GaussinoSimulation(GaussinoConfigurable):
          The algorithm is executed right after the generation algorithms, but
          before hit extraction and monitoring algorithms.
         """
-        from Configurables import ApplicationMgr
+        from Configurables import ApplicationMgr, Gaussino
 
         log.debug("-> Configuring GiGa algorithm")
-        if GaussinoSimulation.redecay:
+        if Gaussino().getProp("ReDecay"):
             log.debug("--> Using ReDecaySimAlg")
             from Configurables import ReDecaySimAlg
 

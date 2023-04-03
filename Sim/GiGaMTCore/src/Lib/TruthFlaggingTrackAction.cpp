@@ -23,8 +23,8 @@
 //#include "GiGaCnv/GiGaPrimaryParticleInformation.h"
 // GaussTools
 //#include "GaussTools/GaussTrajectory.h"
-#include "GiGaMTCoreRun/GaussinoTrackInformation.h"
 #include "GiGaMTCoreRun/GaussinoPrimaryParticleInformation.h"
+#include "GiGaMTCoreRun/GaussinoTrackInformation.h"
 /// local
 #include "GiGaMTCoreRun/TruthFlaggingTrackAction.h"
 
@@ -39,10 +39,17 @@
 // ============================================================================
 void TruthFlaggingTrackAction::Setup() {
 
+  if ( storeUpToZmax && storeUpToRhomax ) {
+    error( "'storeUpToZmax' and 'storeUpToRhomax' are set at the same time."
+           "Use the former one for forward detectors and the latter for cylindrical detectors." );
+  }
+
   // prepare the zMax plane
-  zMaxPlane.prepare( zMaxToStore, zMaxTilt, zMaxYShift );
-  if ( zMaxTilt < 0. * CLHEP::degree || zMaxTilt > 45. * CLHEP::degree ) {
-    warning( "Tilt for zMaxToStore is out of [0, 45] degrees range" );
+  if ( storeUpToZmax ) {
+    zMaxPlane.prepare( zMaxToStore, zMaxTilt, zMaxYShift );
+    if ( zMaxTilt < 0. * CLHEP::degree || zMaxTilt > 45. * CLHEP::degree ) {
+      warning( "Tilt for zMaxToStore is out of [0, 45] degrees range" );
+    }
   }
 
   if ( storeByOwnType ) {
@@ -123,6 +130,7 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track ) {
   if ( storeByOwnEnergy && ( track->GetKineticEnergy() > ownEnergyThreshold ) ) {
     auto trackVrxPos = track->GetVertexPosition();
     if ( storeUpToZmax && ( zMaxPlane.Distance( trackVrxPos.y(), trackVrxPos.z() ) > .0 ) ) { return; }
+    if ( storeUpToRhomax && trackVrxPos.getRho() > rhoMaxToStore ) { return; }
     // Only set the preliminary flag to allow for rejection in posttrackaction
     ti->setToPrelStoreTruth( true );
   }
@@ -149,6 +157,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
   bool notrejected = true;
   auto trackVrxPos = track->GetVertexPosition();
   if ( storeUpToZmax && ( zMaxPlane.Distance( trackVrxPos.y(), trackVrxPos.z() ) > 0. ) ) { notrejected = false; }
+  if ( storeUpToRhomax && trackVrxPos.getRho() > rhoMaxToStore ) { notrejected = false; }
 
   if ( rejectRICHphe ) {
     const G4VProcess* process = track->GetCreatorProcess();

@@ -159,14 +159,6 @@ class GaussinoGeneration(GaussinoConfigurable):
         # "B2Particle": "p",
     }
 
-    # internal options to be set by Gaussino
-    only_generation_phase = False
-    """ options set internally by Gaussino() """
-    redecay = False
-    """ options set internally by Gaussino() """
-    output_name = False
-    """ options set internally by Gaussino() """
-
     def __apply_configuration__(self):
         """Main configuration method for the generation phase.
         It applies the properties of the generation phase right after the main
@@ -175,7 +167,11 @@ class GaussinoGeneration(GaussinoConfigurable):
         :class:`GaussinoSimulation <Gaussino.Simulation.GaussinoSimulation>` and
         :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
         """
-        from Configurables import ApplicationMgr
+        from Configurables import ApplicationMgr, Gaussino
+
+        if "Generator" not in Gaussino().getProp("Phases"):
+            log.debug("-> No generation phase, skipping.")
+            return
 
         seq = []
         if self.getProp("ParticleGun"):
@@ -186,7 +182,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         seq += self._configure_gen_monitor()
         seq += self._configure_hepmc_writer()
 
-        if self.only_generation_phase:
+        if "Simulation" not in Gaussino().getProp("Phases"):
             seq += self._configure_genonly()
 
         ApplicationMgr().TopAlg += seq
@@ -209,6 +205,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             list: list of algorithms
         """
         from Configurables import (
+            Gaussino,
             Generation,
             ReDecayGeneration,
         )
@@ -216,7 +213,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         seq = []
         self._set_beam_parameters()
         gen_alg = Generation
-        if self.redecay:
+        if Gaussino().getProp("ReDecay"):
             gen_alg = ReDecayGeneration()
         gen_alg = gen_alg()
 
@@ -236,7 +233,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         self._set_vertex_smearing_tool(gen_alg)
         seq.append(gen_alg)
 
-        if self.redecay:
+        if Gaussino().getProp("ReDecay"):
             seq.append(self._set_redecay_signal_generation())
         return seq
 
@@ -354,7 +351,8 @@ class GaussinoGeneration(GaussinoConfigurable):
             log.error(msg)
             raise ValueError(msg)
         if tool == "Pythia8ProductionMT":
-            prod.NThreads = self.threads
+            from Configurables import Gaussino
+            prod.NThreads = Gaussino().getProp("ThreadPoolSize")
 
     def _set_pileup_tool(self, gen_alg):
         """Sets up the pile-up tool.
@@ -487,7 +485,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         """
         if not self.getProp("WriteHepMC"):
             return []
-        from Configurables import HepMCWriter
+        from Configurables import Gaussino, HepMCWriter
 
         alg = HepMCWriter()
         alg.Input = "/Event/Gen/HepMCEvents"
@@ -496,12 +494,13 @@ class GaussinoGeneration(GaussinoConfigurable):
         else:
             writer = "WriterRootTree"
         log.debug(f"Using HepMCWriter: {writer}")
+        output_name = Gaussino()._get_output_name()
         if writer in ["WriterRootTree", "WriterRoot"]:
-            alg.OutputFileName = f"{self.output_name}-HepMC.root"
+            alg.OutputFileName = f"{output_name}-HepMC.root"
         elif writer == "WriterAscii":
-            alg.OutputFileName = f"{self.output_name}-HepMC.txt"
+            alg.OutputFileName = f"{output_name}-HepMC.txt"
         elif writer == "WriterHEPEVT":
-            alg.OutputFileName = f"{self.output_name}-HepMC.evt"
+            alg.OutputFileName = f"{output_name}-HepMC.evt"
         else:
             msg = "Unknown HepMCWriter file extension."
             log.error(msg)
@@ -518,12 +517,13 @@ class GaussinoGeneration(GaussinoConfigurable):
             list: list of algorithms
         """
         from Configurables import (
+            Gaussino,
             SkipSimAlg,
             ReDecaySkipSimAlg,
         )
 
         alg_conf = SkipSimAlg
-        if self.redecay:
+        if Gaussino().getProp("ReDecay"):
             alg_conf = ReDecaySkipSimAlg
         tool = get_set_configurable(alg_conf(), "HepMCConverter")
         try:

@@ -42,13 +42,23 @@ namespace ExternalDetector {
     // name of the logical volume
     Gaudi::Property<std::string> m_lVolName{this, "LogicalVolumeName", "CustomLVol"};
     Gaudi::Property<std::string> m_pVolName{this, "PhysicalVolumeName", "CustomPVol"};
+    // (optional) provide the logical volume name of its mother, empty <=> world
+    // note: the orderd of construction matters in this case (the mother must be constructed first)
+    Gaudi::Property<std::string> m_motherVolumeName{this, "MotherVolumeName", ""};
     // name of the sensitive detector
-    ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>> m_sensDet{this, "SensDet", ""};
+    GiGaFactoryBase<G4VSensitiveDetector>* m_sensDet = nullptr;
+    Gaudi::Property<std::string>           m_sensDetName{
+        this, "SensDet", "",
+        [this]( auto& ) {
+          if ( !m_sensDetName.value().empty() ) {
+            toolSvc()->retrieveTool( m_sensDetName.value(), m_sensDet, this ).ignore();
+          }
+        },
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+    Gaudi::Property<std::vector<std::string>> m_extraVolumesToSensDet{this, "ExtraVolumesToSensDet", {}};
 
   public:
     using extends::extends;
-
-    StatusCode initialize() override;
 
     virtual Solid*             build() const = 0;
     virtual StatusCode         embed( G4VPhysicalVolume* motherVolume ) const override;

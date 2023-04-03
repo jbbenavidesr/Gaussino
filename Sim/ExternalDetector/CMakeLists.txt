@@ -31,8 +31,10 @@ gaudi_add_library(ExternalDetectorLib
 gaudi_add_module(ExternalDetector
     SOURCES
         src/Components/CuboidEmbedder.cpp
+        src/Components/TubeEmbedder.cpp
         src/Components/MaterialFromChemicalPropertiesFactory.cpp
         src/Components/MaterialFromElements.cpp
+        src/Components/MaterialFromNIST.cpp
         src/Components/WorldCreator.cpp
     LINK
         Gaussino::ExternalDetectorLib

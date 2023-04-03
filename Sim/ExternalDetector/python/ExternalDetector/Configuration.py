@@ -423,6 +423,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         sens_det_props = self.getProp("Sensitive").get(name)
         self._register_prop(props, "LogicalVolumeName", name + "LVol")
         self._register_prop(props, "PhysicalVolumeName", name + "PVol")
+        sens_det_tool = None
         if sens_det_props:
             self._check_props(name, sens_det_props)
             sens_det_conf = getattr(Configurables, sens_det_props["Type"])
@@ -432,10 +433,14 @@ class ExternalDetectorEmbedder(ConfigurableUser):
                 "SensDet",
                 sens_det_props["Type"] + "/" + sens_det_props["SensDetName"],
             )
+            self._register_prop(sens_det_props, "ExtraVolumesToSensDet", [])
+            self._register_prop(props, "ExtraVolumesToSensDet",
+                                sens_det_props["ExtraVolumesToSensDet"])
             sens_det_tool = sens_det_conf(
                 sens_det_props["SensDetName"],
-                **self._refine_props(sens_det_props, ["Type", "SensDetName"])
-            )
+                **self._refine_props(
+                    sens_det_props,
+                    ["Type", "SensDetName", "ExtraVolumesToSensDet"]))
         tool = tool_conf(name, **self._refine_props(props))
         if sens_det_tool:
             tool.addTool(sens_det_tool)
