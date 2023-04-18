@@ -23,6 +23,7 @@
 #include "Event/ODIN.h"
 #include "NewRnd/RndAlgSeeder.h"
 #include "Utils/LocalTL.h"
+#include "GaudiKernel/Memory.h"
 
 /** @class GenRndInit GenRndInit.h
  *
@@ -39,6 +40,9 @@ protected:
   Gaudi::Property<long long> m_firstEvent{this, "FirstEventNumber", 1, "Number of the first event"};
   Gaudi::Property<long long> m_firstTimingEvent{this, "TimingSkipAtStart", 1, "Number of the event to start the clock"};
   Gaudi::Property<unsigned int> m_runNumber{this, "RunNumber", 1, "The run number"};
+
+  mutable Gaudi::Accumulators::StatCounter<> m_totMem{this, "Total Memory [MB]"};
+  mutable Gaudi::Accumulators::StatCounter<> m_totMemPerThread{this, "Total Memory per Thread [MB]"};
 
 public:
   GenRndInit( const std::string& name, ISvcLocator* pSvcLocator )
