@@ -37,4 +37,4 @@ gaudi_install(PYTHON)
 
 gaudi_generate_confuserdb()
 
-gaudi_add_tests(pytest)
+gaudi_add_pytest()
