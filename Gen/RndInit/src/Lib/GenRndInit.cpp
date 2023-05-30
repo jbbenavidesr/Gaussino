@@ -64,6 +64,10 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenRndInit::operat
   }
   if ( eventNumber >= barrier_event ) { m_evtTimingCounter++; }
 
+  auto mem = System::virtualMemory() / 1000.;
+  m_totMem += mem;
+  m_totMemPerThread += mem / Gaudi::Concurrency::ConcurrencyFlags::numThreads();
+
   // Configure the event information in the event context
   // Places the event and run number onto the TES for other algorithms
   // to access when configuring their random engines.
