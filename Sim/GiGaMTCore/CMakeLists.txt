@@ -83,7 +83,7 @@ gaudi_add_library(GiGaMTCoreRunLib
             Gaussino::GiGaMTCoreDetLib
 )
 
-gaudi_add_tests(pytest)
+gaudi_add_pytest()
 
 gaudi_add_executable(test_zMaxTilt
     SOURCES tests/test_zMaxTilt.cpp

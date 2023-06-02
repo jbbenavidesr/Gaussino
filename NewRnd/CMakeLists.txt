@@ -40,4 +40,4 @@ gaudi_add_executable(GaussinoTestgRandom
         NewRndLib
 )
 
-gaudi_add_tests(pytest)
+gaudi_add_pytest()

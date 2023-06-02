@@ -35,4 +35,4 @@ gaudi_add_module(MCCollector
     	Gaussino::MCCollectorLib
 )
 
-gaudi_add_tests(pytest)
+gaudi_add_pytest()
