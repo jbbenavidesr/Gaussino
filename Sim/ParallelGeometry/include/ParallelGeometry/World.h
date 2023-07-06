@@ -10,6 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
+#include <functional>
+
 // Geant4
 #include "G4VUserParallelWorld.hh"
 
