@@ -47,6 +47,7 @@ endif()
 list(APPEND ${CustomSimulationDirsName}
     Sim/CustomSimulation
     Sim/GiGaMTExamples/CustomSimulationExamples
+    Sim/GiGaMTExamples/G4Par04
 )
 
 gaussino_env(

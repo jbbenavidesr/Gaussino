@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -9,35 +9,24 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-NewRnd
-------
+Sim/GiGaMTExamples/G4Par04
+---------------------------------------
 #]=======================================================================]
 
-gaudi_add_library(NewRndLib
+gaudi_add_module(G4Par04
     SOURCES
-        src/Lib/RndAlgSeeder.cpp
-        src/Lib/RndCommon.cpp
-        src/Lib/RndGlobal.cpp
+        src/CaloG4Hit.cpp
+        src/CaloSensitiveDetector.cpp
+        src/CollectorG4Hit.cpp
+        src/CollectorSensitiveDetector.cpp
+        src/GetCaloHitsAlg.cpp
+        src/GetCollectorHitsAlg.cpp
+        src/Monitoring.cpp
     LINK
-        PUBLIC
-            CLHEP::Random
-            Gaudi::GaudiKernel
-            Gaudi::GaudiAlgLib
-            Gaussino::UtilsLib
+        Gaussino::CustomSimulationLib
+        Gaussino::MCCollectorLib
+        Gaussino::GiGaMTCoreRunLib
 )
 
-gaudi_add_module(NewRndComponents
-    SOURCES
-        src/Components/Engines.cpp
-    LINK
-        NewRndLib
-)
-
-gaudi_add_executable(GaussinoTestgRandom
-    SOURCES
-        exec/GaussinoTestgRandom.cxx
-    LINK
-        NewRndLib
-)
-
+gaudi_install(PYTHON)
 gaudi_add_pytest()

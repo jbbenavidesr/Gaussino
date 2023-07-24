@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -8,10 +8,29 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-#[=======================================================================[.rst:
-Sim/Gaussino
-------------
-#]=======================================================================]
-gaudi_install(PYTHON)
-gaudi_generate_confuserdb()
-gaudi_add_pytest()
+
+from Configurables import (
+    GaussinoSimulation,
+    CustomSimulation,
+)
+
+
+def set_mesh_model(
+    pdg_codes: list = [22, 11, -11],
+    detector_name: str = "Collector",
+):
+    GaussinoSimulation().CustomSimulation = "MeshModelSimulation"
+    customsim = CustomSimulation("MeshModelSimulation")
+    customsim.Model = {
+        "MeshModel": {
+            "Type": "Gaussino__G4Par04__MeshModelFactory",
+        }
+    }
+    customsim.Region = {
+        "MeshModel": {
+            "SensitiveDetectorName": f"{detector_name}SDet",
+        }
+    }
+    customsim.Physics = {
+        "ParticlePIDs": pdg_codes,
+    }
