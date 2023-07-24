@@ -17,6 +17,36 @@ from Gaussino.pytest.options import (
     cube,
 )
 
+def config():
+    from ExternalDetector.Materials import SILICA
+    from GaudiKernel import SystemOfUnits as units
+    from Configurables import (
+        ExternalDetectorEmbedder,
+        GaussinoVisualization,
+    )
+
+    external = ExternalDetectorEmbedder("ExternalDetectorEmbedder_0")
+    external.Shapes["ExternalDetectorEmbedder_0_Cube"]["MaterialName"] = "Si"
+    external.Materials["Si"] = SILICA
+
+    GaussinoVisualization(
+        Framework=["Geant4"],
+        Driver="DAWNFILE",
+        DrawGeometry=True,
+        DrawTrajectories=True,
+        DrawG4Hits=True,
+        CameraPhi=205,
+        CameraTheta=40,
+        TrajectoryModel="drawByParticleID",
+        TrajectoryType="smooth",
+        TrajectoryFilters=[{
+            "FilterType": "momentumMagnitudeFilter",
+            "MinValue": 2 * units.MeV
+        }],
+        StoreTrajectories="All",
+        Debug=True,
+    )
+
 
 @events_1
 @debug
@@ -26,7 +56,8 @@ from Gaussino.pytest.options import (
 def test_cube_dawnfile():
     ex = run_gaudi(
         # additional options
-        "$GIGAMTVISROOT/tests/options/cube_dawnfile.py", )
+        f"{__file__}:config",
+    )
     assert ex.returncode == 0
     expected_strings = [
         "Graphics system set to DAWNFILE (DAWNFILE)",

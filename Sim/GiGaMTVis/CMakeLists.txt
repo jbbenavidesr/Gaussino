@@ -37,4 +37,4 @@ if(GEANT4_USE_OPENGL_X11)
     target_link_libraries(GiGaMTVis PRIVATE Geant4::G4OpenGL)
 endif()
 
-gaudi_add_tests(pytest)
+gaudi_add_pytest()
