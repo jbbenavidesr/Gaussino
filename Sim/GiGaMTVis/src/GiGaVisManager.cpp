@@ -8,13 +8,16 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-// G4
+// Geant4
 #include "G4ASCIITree.hh"
 #include "G4DAWNFILE.hh"
 #include "G4HepRepFile.hh"
 #include "G4VisManager.hh"
+
+#ifdef G4VIS_USE_OPENGLX
 #include "G4OpenGLImmediateX.hh"
 #include "G4OpenGLStoredX.hh"
+#endif
 
 #include "G4DigiFilterFactories.hh"
 #include "G4HitFilterFactories.hh"
@@ -73,10 +76,12 @@ void GiGa::VisManager::RegisterGraphicsSystems() {
     RegisterGraphicsSystem( new G4DAWNFILE );
   } else if ( m_required_driver == "HepRep" ) {
     RegisterGraphicsSystem( new G4HepRepFile );
+  #ifdef G4VIS_USE_OPENGLX
   } else if ( m_required_driver == "OpenGLImmediateX" ) {
     RegisterGraphicsSystem( new G4OpenGLImmediateX );
   } else if ( m_required_driver == "OpenGLStoredX" ) {
     RegisterGraphicsSystem( new G4OpenGLStoredX );
+  #endif
   } else {
     G4cout << "Requested driver is not available!" << G4endl;
   }

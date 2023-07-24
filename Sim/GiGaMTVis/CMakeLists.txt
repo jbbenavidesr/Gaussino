@@ -19,19 +19,22 @@ gaudi_add_module(GiGaMTVis
         src/GiGaTrajectoryPseudorapidityFilter.cpp
         src/GiGaVisManager.cpp
     LINK
-    	Geant4::G4event
-    	Geant4::G4global
-    	Geant4::G4graphics_reps
-    	Geant4::G4vis_management
-    	Geant4::G4modeling
-    	Geant4::G4Tree
-      Geant4::G4FR
-      Geant4::G4visHepRep
-      Geant4::G4OpenGL
+        Geant4::G4event
+        Geant4::G4global
+        Geant4::G4graphics_reps
+        Geant4::G4vis_management
+        Geant4::G4modeling
+        Geant4::G4Tree
+        Geant4::G4FR
+        Geant4::G4visHepRep
         Gaudi::GaudiAlgLib
         Gaussino::GiGaMTCoreMessageLib
-	Gaussino::GiGaMTFactoriesLib
-	Gaussino::UtilsLib
+        Gaussino::GiGaMTFactoriesLib
+        Gaussino::UtilsLib
 )
+
+if(GEANT4_USE_OPENGL_X11)
+    target_link_libraries(GiGaMTVis PRIVATE Geant4::G4OpenGL)
+endif()
 
 gaudi_add_tests(pytest)
