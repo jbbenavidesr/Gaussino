@@ -10,7 +10,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "GiGaMTCoreMessage/GiGaUIMessage.h"
+#include "GiGaMTCoreMessage/UIMessage.h"
 // Geant4 includes
 #include "G4MTRunManager.hh"
 
@@ -27,7 +27,7 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTRunManager : public G4MTRunManager, public GiGa::UIMessage {
+class GiGaMTRunManager : public G4MTRunManager, public Gsino::UIMessage {
 
 public:
   // Gets the singleton instance of the GiGaMTRunManager.

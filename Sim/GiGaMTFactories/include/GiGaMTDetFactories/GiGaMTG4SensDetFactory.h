@@ -46,7 +46,7 @@ protected:
 };
 
 template <typename T>
-using hasGiGaMessage = typename std::enable_if<std::is_base_of<GiGaMessage, T>::value>::type;
+using hasGiGaMessage = typename std::enable_if<std::is_base_of<Gsino::Message, T>::value>::type;
 
 template <typename SENSDET, typename dummy = void>
 class GiGaMTG4SensDetFactory : public extends<GiGaMTG4SensDet, GiGaFactoryBase<G4VSensitiveDetector>>

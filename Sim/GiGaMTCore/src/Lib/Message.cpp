@@ -8,31 +8,31 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
-thread_local std::string GiGa::Message::NameTag{"Master"};
+#include "GiGaMTCoreMessage/IMessage.h"
+thread_local std::string Gsino::Message::NameTag{"Master"};
 
 using namespace std::string_literals;
 
-GiGa::Message::~Message() {
+Gsino::Message::~Message() {
   if ( m_msg ) { delete m_msg; }
 }
 
-GiGa::Message::Message( GiGa::Message&& right ) {
+Gsino::Message::Message( Gsino::Message&& right ) {
   m_msg       = right.m_msg;
   right.m_msg = nullptr;
 }
 
-void GiGa::Message::debug( std::string message ) const {
+void Gsino::Message::debug( std::string message ) const {
   if ( !m_msg || !printDebug() ) return;
   m_msg->debug( "[ "s + NameTag + " ] "s + message );
 }
 
-void GiGa::Message::verbose( std::string message ) const {
+void Gsino::Message::verbose( std::string message ) const {
   if ( !m_msg || !printVerbose() ) return;
   m_msg->verbose( "[ "s + NameTag + " ] "s + message );
 }
 
-void GiGa::Message::error( std::string message, unsigned int mx ) const {
+void Gsino::Message::error( std::string message, unsigned int mx ) const {
   if ( !m_msg ) return;
   auto toprint = "[ "s + NameTag + " ] "s;
   if ( mx > 0 ) {
@@ -46,7 +46,7 @@ void GiGa::Message::error( std::string message, unsigned int mx ) const {
   m_msg->error( toprint + message );
 }
 
-void GiGa::Message::warning( std::string message, unsigned int mx ) const {
+void Gsino::Message::warning( std::string message, unsigned int mx ) const {
   if ( !m_msg ) return;
   auto toprint = "[ "s + NameTag + " ] "s;
   if ( mx > 0 ) {
@@ -60,7 +60,7 @@ void GiGa::Message::warning( std::string message, unsigned int mx ) const {
   m_msg->warning( toprint + message );
 }
 
-void GiGa::Message::info( std::string message, unsigned int mx ) const {
+void Gsino::Message::info( std::string message, unsigned int mx ) const {
   if ( !m_msg ) return;
   auto toprint = "[ "s + NameTag + " ] "s;
   if ( mx > 0 ) {
@@ -74,7 +74,7 @@ void GiGa::Message::info( std::string message, unsigned int mx ) const {
   m_msg->info( toprint + message );
 }
 
-void GiGa::Message::always( std::string message ) const {
+void Gsino::Message::always( std::string message ) const {
   if ( !m_msg ) return;
   m_msg->always( "[ "s + NameTag + " ] "s + message );
 }

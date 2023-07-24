@@ -12,7 +12,7 @@
 
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
 
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTCoreRun/GiGaWorkerPayload.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "GiGaMTCoreUtils/GiGaMTUtils.h"
@@ -33,7 +33,7 @@ class GiGaWorkerPilotFAC;
 class G4EventProxy;
 class G4WorkerThread;
 
-class GiGaWorkerPilot : public GiGaMessage {
+class GiGaWorkerPilot : public Gsino::Message {
   friend class GiGaWorkerPilotFAC;
   friend class G4EventProxy;
 

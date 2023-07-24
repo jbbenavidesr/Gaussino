@@ -15,7 +15,7 @@
 #include <string>
 #include <thread>
 
-namespace GiGa {
+namespace Gsino {
   // Basic interface for wrapping some external messaging service
   // into the G4 parts of GiGa without depending on it directly,
   // e.g. Gaudi MsgSvc.
@@ -72,8 +72,4 @@ namespace GiGa {
 
     const IMessage* m_msg = nullptr;
   };
-} // namespace GiGa
-
-// use aliases to support old naming
-using IGiGaMessage = GiGa::IMessage;
-using GiGaMessage  = GiGa::Message;
+} // namespace Gsino

@@ -25,7 +25,7 @@
 #include "G4VUserActionInitialization.hh"
 #include "G4WorkerThread.hh"
 
-GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) ) {
+GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : Gsino::Message( std::move( right ) ) {
   m_input_queue       = right.m_input_queue;
   right.m_input_queue = nullptr;
 
@@ -46,7 +46,7 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
 
 void GiGaWorkerPilot::InitializeWorker() {
   debug( "Initializing the worker for thread " + std::to_string( iWorker ) );
-  GiGaMessage::NameTag = "Worker #" + std::to_string( iWorker );
+  Gsino::Message::NameTag = "Worker #" + std::to_string( iWorker );
   // Following code is modelled based on the code in
   // G4UserWorkerThreadInitialization::CreateAndStartWorker and
   // G4MTRunManagerKernel::StartThread with slight modifications.

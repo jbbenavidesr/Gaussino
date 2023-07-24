@@ -21,7 +21,7 @@
 #include "G4VTrajectory.hh"
 
 // Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
@@ -40,7 +40,7 @@ namespace GiGa::TrajectoryInitialPT {
   using G4TrajFilter        = G4VFilter<G4VTrajectory>;
   using G4TrajFilterFactory = G4VModelFactory<G4TrajFilter>;
 
-  class FilterG4Factory : public G4TrajFilterFactory, public GiGaMessage {
+  class FilterG4Factory : public G4TrajFilterFactory, public Gsino::Message {
     double m_min_pt = 0.;
     double m_max_pt = 0.;
 

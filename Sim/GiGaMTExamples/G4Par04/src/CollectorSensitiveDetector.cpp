@@ -22,14 +22,14 @@
 // Gaussino
 #include "CollectorG4Hit.h"
 #include "EventInformation.h"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTCoreRun/GaussinoTrackInformation.h"
 #include "GiGaMTDetFactories/GiGaMTG4SensDetFactory.h"
 
 namespace Gaussino::G4Par04 {
   struct CollectorSensDet : public G4VSensitiveDetector,
                             public G4VFastSimSensitiveDetector,
-                            public virtual GiGaMessage {
+                            public virtual Gsino::Message {
     inline CollectorSensDet( const std::string& name )
         : G4VSensitiveDetector( name ), m_hitsMap( std::make_shared<CollectorG4Hit::Map>() ) {
       collectionName.insert( "Hits" );

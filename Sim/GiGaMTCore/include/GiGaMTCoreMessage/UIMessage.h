@@ -9,33 +9,25 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 
-// G4
-#include "G4UIcommandStatus.hh"
-#include "G4UImanager.hh"
+#pragma once
+
 // Gaussino
-#include "GiGaMTCoreMessage/GiGaUIMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
-void GiGa::UIMessage::applyUIcommand( std::string command ) const {
-  auto ui = G4UImanager::GetUIpointer();
+/**
+ * @class Gsino::UIMessage
+ *
+ * Extends standard Gsino::Message with additional method that calls the UI
+ * manager and parses the status of the command correctly.
+ *
+ *  @author Michał Mazurek
+ *  @date   28/07/2022
+ */
 
-  if ( !ui ) {
-    std::string msg = "G4UImanager* points to NULL!";
-    error( msg );
-    throw std::runtime_error( msg );
-  }
-
-  auto status = ui->ApplyCommand( command );
-  switch ( status ) {
-  case G4UIcommandStatus::fCommandSucceeded:
-    debug( "UICommand succeeded." );
-    return;
-  case G4UIcommandStatus::fCommandNotFound:
-    error( "UICommand not found." );
-    return;
-  case fIllegalApplicationState:
-    error( "Illegal application state." );
-    return;
-  default:
-    error( "Illegal parmeter (" + std::to_string( status % 100 ) + ")" );
-  }
-}
+namespace Gsino {
+  class UIMessage : public Message {
+  public:
+    using Message::Message;
+    void applyUIcommand( std::string command ) const;
+  };
+} // namespace Gsino

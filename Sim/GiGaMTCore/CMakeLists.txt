@@ -9,7 +9,7 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 ################################################################################
-# Package: GiGaMTCore 
+# Package: GiGaMTCore
 #
 # This package should contain all modified core Geant4 classes (e.g.
 # run managers). While the Gaudi cmake plugins are used to handle this package,
@@ -25,8 +25,8 @@ gaudi_add_header_only_library(GiGaMTCoreDetLib)
 
 gaudi_add_library(GiGaMTCoreMessageLib
     SOURCES
-        src/Lib/GiGaMessage.cpp
-        src/Lib/GiGaUIMessage.cpp
+        src/Lib/Message.cpp
+        src/Lib/UIMessage.cpp
     LINK
     	PUBLIC
 	    Geant4::G4intercoms

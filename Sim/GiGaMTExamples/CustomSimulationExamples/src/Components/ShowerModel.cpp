@@ -21,7 +21,7 @@
 #include "CustomSimulation/ModelFactory.h"
 
 namespace Gaussino::CustomSimulation::ShowerModel {
-  class Model : public G4VFastSimulationModel, public GiGaMessage {
+  class Model : public G4VFastSimulationModel, public Gsino::Message {
 
     std::unique_ptr<HitMaker> m_hitMaker; // FIXME: change to G4FastSimHitMaker whenever possible
 

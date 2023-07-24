@@ -10,11 +10,11 @@
 \*****************************************************************************/
 #include "GiGaMTModularPhysListFAC.h"
 #include "G4VModularPhysicsList.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
 DECLARE_COMPONENT( GiGaMTModularPhysListFAC )
 
-class GiGaMTModularPhysList : public GiGaMessage, public G4VModularPhysicsList
+class GiGaMTModularPhysList : public Gsino::Message, public G4VModularPhysicsList
 {
   friend class GiGaMTModularPhysListFAC;
   void SetCuts() override;

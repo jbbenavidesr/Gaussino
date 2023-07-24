@@ -28,14 +28,14 @@
 #include "G4VModelFactory.hh"
 #include "G4VTrajectory.hh"
 // Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 #include "Utils/ToolProperty.h"
 
 namespace GiGa {
   class VisManagerFactory;
-  class VisManager : public G4VisManager, public GiGaMessage {
+  class VisManager : public G4VisManager, public Gsino::Message {
     friend class VisManagerFactory;
 
   public:

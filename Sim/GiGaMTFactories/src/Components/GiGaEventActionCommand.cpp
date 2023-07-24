@@ -12,7 +12,7 @@
 #include "G4UIterminal.hh"
 #include "G4UserEventAction.hh"
 // Gaussino
-#include "GiGaMTCoreMessage/GiGaUIMessage.h"
+#include "GiGaMTCoreMessage/UIMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
@@ -32,7 +32,7 @@ namespace GiGa {
 
   using EventCommands = std::vector<std::string>;
 
-  class EventActionCommand : public G4UserEventAction, public UIMessage {
+  class EventActionCommand : public G4UserEventAction, public Gsino::UIMessage {
 
     EventCommands m_beginCmds = {};
     EventCommands m_endCmds   = {};

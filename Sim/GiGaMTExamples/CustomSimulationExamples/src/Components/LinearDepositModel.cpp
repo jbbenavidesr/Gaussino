@@ -19,7 +19,7 @@
 
 namespace Gaussino::CustomSimulation::LinearDeposit {
 
-  class Model : public G4VFastSimulationModel, public GiGaMessage {
+  class Model : public G4VFastSimulationModel, public Gsino::Message {
 
     std::unique_ptr<HitMaker> m_hitMaker;
     double                    m_eDepFrac{1.0};

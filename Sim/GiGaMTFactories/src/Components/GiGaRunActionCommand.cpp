@@ -12,7 +12,7 @@
 #include "G4UIterminal.hh"
 #include "G4UserRunAction.hh"
 // Gaussino
-#include "GiGaMTCoreMessage/GiGaUIMessage.h"
+#include "GiGaMTCoreMessage/UIMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
@@ -32,7 +32,7 @@
 namespace GiGa {
   using RunCommands = std::vector<std::string>;
 
-  class RunActionCommand : public G4UserRunAction, public UIMessage {
+  class RunActionCommand : public G4UserRunAction, public Gsino::UIMessage {
 
     RunCommands m_beginCmds = {};
     RunCommands m_endCmds   = {};

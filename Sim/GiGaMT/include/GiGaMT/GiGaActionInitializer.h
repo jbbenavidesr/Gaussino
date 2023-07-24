@@ -12,7 +12,6 @@
 
 #include "GaudiAlg/GaudiTool.h"
 #include "G4VUserActionInitialization.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 #include "Utils/ToolProperty.h"
