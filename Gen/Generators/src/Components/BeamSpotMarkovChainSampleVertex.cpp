@@ -173,7 +173,7 @@ StatusCode BeamSpotMarkovChainSampleVertex::smearVertex( HepMC3::GenEventPtr the
     if ( !OK ) { x = HepMC3::FourVector(0,0,0,0); }
 
   }
-  if ( UNLIKELY(!OK) )
+  if ( !OK )
   {
     Warning( "Markov Chain sampling for PV (x,y,z,t) failed" ).ignore();
   }
