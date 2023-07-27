@@ -36,7 +36,7 @@
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at root of decay
 //=============================================================================
-struct isRootB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
+struct isRootB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 
   /// test operator, returns true if it is a root B
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -65,7 +65,7 @@ struct isRootB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at root of decay
 //=============================================================================
-struct isRootD : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
+struct isRootD : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 
   /// test operator, returns true if it is a root D
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -95,7 +95,7 @@ struct isRootD : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at end of decay tree
 //=============================================================================
-struct isEndB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
+struct isEndB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 
   /// Test operator. Returns true if particle is the last B
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -130,7 +130,7 @@ struct isEndB : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at end of decay tree
 //=============================================================================
-struct isEndD : std::unary_function<const HepMC3::ConstGenParticlePtr&, bool> {
+struct isEndD : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 
   /// Test operator. Returns true if it is the last D
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
