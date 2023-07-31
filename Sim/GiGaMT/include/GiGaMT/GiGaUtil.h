@@ -105,7 +105,7 @@ namespace GiGaUtil
    *  @date 23/07/2001
    */ 
   template <class TYPE>
-  class Eraser: public std::unary_function<TYPE*,TYPE*>
+  class Eraser: public std::function<TYPE*(TYPE*)>
   { 
   public:
     
@@ -142,7 +142,7 @@ namespace GiGaUtil
    *  @date 23/07/2001
    */ 
   template <class FROM,class TO> 
-  struct FastCast : std::unary_function<FROM*,TO*>
+  struct FastCast : std::function<TO*(FROM*)>
   {
   public :
     /** the only one essential method 

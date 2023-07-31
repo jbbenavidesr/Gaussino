@@ -40,7 +40,7 @@
 #include"CLHEP/Random/RandFlat.h"
 
 // Function to test if a HepMC3::GenParticle is Particle (or antiParticle) 
-struct isParticle : std::unary_function< const HepMC3::GenParticlePtr & , bool > {
+struct isParticle : std::function<bool(const HepMC3::GenParticlePtr&)> {
   bool operator() ( const HepMC3::GenParticlePtr & part ) const {
     return ( part -> pdg_id() > 0 ) ; 
   }
@@ -48,14 +48,14 @@ struct isParticle : std::unary_function< const HepMC3::GenParticlePtr & , bool >
 
 // Functions to test if a HepMC3::GenParticle goes forward
 struct isForwardParticle : 
-  std::unary_function< const HepMC3::GenParticlePtr & , bool > {
+  std::function<bool(const HepMC3::GenParticlePtr&)> {
   bool operator() ( const HepMC3::GenParticlePtr & part ) const {
     return ( ( part -> pdg_id() > 0 ) && ( part -> momentum().pz() > 0 ) ) ; 
   }
 };
 
 struct isForwardAntiParticle : 
-  std::unary_function< const HepMC3::GenParticlePtr & , bool > {
+  std::function<bool(const HepMC3::GenParticlePtr&)> {
   bool operator() ( const HepMC3::GenParticlePtr & part ) const {
     return ( ( part -> pdg_id() < 0 ) && ( part -> momentum().pz() > 0 ) ) ; 
   }
