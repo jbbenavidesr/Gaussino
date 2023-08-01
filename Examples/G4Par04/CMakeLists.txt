@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -9,23 +9,24 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-Sim/GiGaMTExamples/LHCbFromGDML
--------------------------------
+Examples/G4Par04
+---------------------------------------
 #]=======================================================================]
-################################################################################
-# Package: LHCbFromGDML
-# Simple setup to add the frozen LHCb geometry from a GDML file to Gaussino.
-#
-# Author: Dominik Muller, GDML file from Ben Couturier
-#
-################################################################################
-gaudi_add_module(LHCbFromGDML
+
+gaudi_add_module(G4Par04
     SOURCES
-        src/MinimalStableInLHCb.cpp
+        src/CaloG4Hit.cpp
+        src/CaloSensitiveDetector.cpp
+        src/CollectorG4Hit.cpp
+        src/CollectorSensitiveDetector.cpp
+        src/GetCaloHitsAlg.cpp
+        src/GetCollectorHitsAlg.cpp
+        src/Monitoring.cpp
     LINK
-        HepMC3::HepMC3
-        Gaudi::GaudiAlgLib
-        LHCb::GenEvent  # TODO: [LHCb DEPENDENCY]
-        Gaussino::GenInterfacesLib
-        Gaussino::HepMCUserLib
+        Gaussino::CustomSimulationLib
+        Gaussino::MCCollectorLib
+        Gaussino::GiGaMTCoreRunLib
 )
+
+gaudi_install(PYTHON)
+gaudi_add_pytest()
