@@ -14,7 +14,7 @@
 // from Gaudi
 #include <vector>
 #include "GaudiAlg/Consumer.h"
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 
 // Event.
 #include "Event/MCHeader.h"
@@ -36,7 +36,8 @@ class IParticlePropertySvc;
 }
 class CheckMCStructure
     : public Gaudi::Functional::Consumer<void(
-          const LHCb::MCParticles&, const LHCb::MCVertices&, const LHCb::MCHeader&)> {
+          const LHCb::MCParticles&, const LHCb::MCVertices&, const LHCb::MCHeader&),
+          Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
   public:
   /// Standard constructor
   CheckMCStructure(const std::string& name, ISvcLocator* pSvcLocator)

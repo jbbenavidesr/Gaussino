@@ -17,6 +17,7 @@
 #include "Defaults/Locations.h"
 #include "Event/GenCollision.h"
 #include "GaudiAlg/Consumer.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "HepMC3/GenEvent.h"
 
 class IFullGenEventCutTool;
@@ -30,7 +31,8 @@ class IFullGenEventCutTool;
  */
 class MergedEventsFilter
     : public Gaudi::Functional::Consumer<void(
-          const HepMC3::GenEventPtrs&, const LHCb::GenCollisions&)> {
+          const HepMC3::GenEventPtrs&, const LHCb::GenCollisions&),
+          Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
   ToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
       this, "FullGenEventCutTool", ""};
 

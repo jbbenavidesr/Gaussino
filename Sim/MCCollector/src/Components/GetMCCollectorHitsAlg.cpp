@@ -10,8 +10,9 @@
 \*****************************************************************************/
 
 // Gaudi
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
+
 
 // GiGaMT
 #include "Defaults/Locations.h"
@@ -28,7 +29,8 @@
 
 namespace MCCollector {
   class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits( const G4EventProxies&,
-                                                                      const LinkedParticleMCParticleLinks& )> {
+                                                                      const LinkedParticleMCParticleLinks& ),
+                                                                    Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
         : Transformer(
