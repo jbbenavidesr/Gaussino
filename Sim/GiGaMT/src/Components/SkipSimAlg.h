@@ -10,16 +10,19 @@
 \*****************************************************************************/
 #pragma once
 
-#include <vector>
-
-#include "Defaults/Locations.h"
-#include "GaudiAlg/Consumer.h"
+// Gaudi
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
 #include "GaudiKernel/ServiceHandle.h"
+
+// Gaussino
+#include "Defaults/Locations.h"
 #include "GiGaMT/IGiGaMTSvc.h"
-#include "HepMC3/GenEvent.h"
-#include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
+#include "HepMCUser/typedefs.h"
+
+// HepMC3
+#include "HepMC3/GenEvent.h"
 
 class IHepMC3ToMCTruthConverter;
 namespace LHCb
@@ -37,7 +40,8 @@ namespace LHCb
  *  @date   21.2.2019
  *
  */
-class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const HepMC3::GenEventPtrs& )>
+class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const HepMC3::GenEventPtrs& ),
+                                                         Gaudi::Functional::Traits::useLegacyGaudiAlgorithm>
 {
 public:
   /// Standard constructor

@@ -11,8 +11,8 @@
 #pragma once
 
 // Gaudi.
-#include "GaudiAlg/GaudiAlgorithm.h"
 #include "GaudiAlg/Transformer.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
 // Event.
@@ -41,9 +41,11 @@
  *  @date 2018-04-09
  */
 
+
 class MCTruthToEDM : public Gaudi::Functional::MultiTransformer<
                          std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>(
-                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader &  )>
+                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader & ),
+                             Gaudi::Functional::Traits::useLegacyGaudiAlgorithm>
 {
 public:
   /// Standard constructor.
