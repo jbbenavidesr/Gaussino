@@ -9,38 +9,27 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-Sim/GiGaMTExamples/FCCTest
---------------------------
+Examples/CustomSimulationExamples
+---------------------------------
 #]=======================================================================]
-################################################################################
-# Package: FCCTest
-# Adapted from Gaussino FCC TestGeometry package: https://gitlab.cern.ch/jlingema/Gauss/tree/refactor/
-# Original author: Anna Zaborowska
-#
-################################################################################
 
-gaudi_add_library(FCCTestLib
+gaudi_add_module(ImmediateDeposit
     SOURCES
-        src/Lib/CalorimeterHit.cpp
-	src/Lib/CalorimeterSD.cpp
+        src/Components/ImmediateDepositModel.cpp
     LINK
-        PUBLIC
-	    Gaussino::GiGaMTCoreRunLib
-	    Gaussino::SimInterfacesLib
+        Gaussino::CustomSimulationLib
 )
 
-gaudi_add_module(FCCTestPlugins
+gaudi_add_module(LinearDeposit
     SOURCES
-        src/Components/G4GdmlTestDetector.cpp
-	src/Components/G4SaveTestCalHits.cpp
+        src/Components/LinearDepositModel.cpp
     LINK
-    	Geant4::G4persistency
-        Gaussino::FCCTestLib
-    	Gaussino::GiGaMTFactoriesLib
+        Gaussino::CustomSimulationLib
 )
 
-# FIXME: this test is stupid, what does it test?
-#gaudi_add_tests(GeantGdmlWithSD
-#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#    FRAMEWORK tests/options/geant_fullsim_gdml.py
-#    #)
+gaudi_add_module(ShowerModel
+    SOURCES
+        src/Components/ShowerModel.cpp
+    LINK
+        Gaussino::CustomSimulationLib
+)
