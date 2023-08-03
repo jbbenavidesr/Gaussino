@@ -22,40 +22,37 @@
 /** @class FlatPtRapidity FlatPtRapidity.h "FlatPtRapidity.h"
  *
  *  Particle gun with given momentum range
- *  
+ *
  *  @author Dan Johnson
  *  @date   2016-02-19
  */
-class FlatPtRapidity : public GaudiTool , virtual public IParticleGunTool {
- public:
-  
+class FlatPtRapidity : public GaudiTool, virtual public IParticleGunTool {
+public:
   /// Constructor
-  FlatPtRapidity( const std::string & type , const std::string& name, 
-                 const IInterface * parent ) ;
-  
+  FlatPtRapidity( const std::string& type, const std::string& name, const IInterface* parent );
+
   /// Destructor
   virtual ~FlatPtRapidity();
-  
+
   /// Initialize particle gun parameters
   virtual StatusCode initialize() override;
 
   /// Generation of particles
-  virtual void generateParticle( Gaudi::LorentzVector & momentum , 
-                                 Gaudi::LorentzVector & origin , 
-                                 int & pdgId , HepRandomEnginePtr& engine ) override;
+  virtual void generateParticle( Gaudi::LorentzVector& momentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                 HepRandomEnginePtr& engine ) override;
 
   /// Print counters
-  virtual void printCounters( ) override {};
-                                 
- private:  
-  double m_minPt;       ///< Minimum pT (Set by options)  
+  virtual void printCounters() override{};
+
+private:
+  double m_minPt;       ///< Minimum pT (Set by options)
   double m_minRapidity; ///< Minimum rapidity (Set by options)
 
   double m_maxPt;       ///< Maximum pT (Set by options)
   double m_maxRapidity; ///< Maximum rapidity (Set by options)
 
   /// Pdg Codes of particles to generate (Set by options)
-  std::vector<int>         m_pdgCodes;
+  std::vector<int> m_pdgCodes;
 
   /// Names of particles to generate
   std::vector<std::string> m_names;

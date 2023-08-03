@@ -27,17 +27,17 @@ namespace Gaussino::G4Par04 {
     mutable std::mutex m_lock;
 
     // detector
-    Gaudi::Property<double> m_cellSizeZ{this, "CellSizeZ", -1};
-    Gaudi::Property<double> m_cellSizeRho{this, "CellSizeRho", -1};
-    Gaudi::Property<double> m_cellSizePhi{this, "CellSizePhi", -1};
-    Gaudi::Property<int>    m_cellNumZ{this, "CellNumZ", -1};
-    Gaudi::Property<int>    m_cellNumRho{this, "CellNumRho", -1};
-    Gaudi::Property<int>    m_cellNumPhi{this, "CellNumPhi", -1};
+    Gaudi::Property<double> m_cellSizeZ{ this, "CellSizeZ", -1 };
+    Gaudi::Property<double> m_cellSizeRho{ this, "CellSizeRho", -1 };
+    Gaudi::Property<double> m_cellSizePhi{ this, "CellSizePhi", -1 };
+    Gaudi::Property<int>    m_cellNumZ{ this, "CellNumZ", -1 };
+    Gaudi::Property<int>    m_cellNumRho{ this, "CellNumRho", -1 };
+    Gaudi::Property<int>    m_cellNumPhi{ this, "CellNumPhi", -1 };
 
     // tuples
-    Gaudi::Property<bool>        m_trainingData{this, "TrainingData", false};
-    Gaudi::Property<std::string> m_caloHitsTupleName{this, "CaloHitsTupleName", "CaloHits"};
-    Gaudi::Property<std::string> m_collectorHitsTupleName{this, "CollectorHitsTupleName", "CollectorHits"};
+    Gaudi::Property<bool>        m_trainingData{ this, "TrainingData", false };
+    Gaudi::Property<std::string> m_caloHitsTupleName{ this, "CaloHitsTupleName", "CaloHits" };
+    Gaudi::Property<std::string> m_collectorHitsTupleName{ this, "CollectorHitsTupleName", "CollectorHits" };
 
     // histograms
     AIDA::IHistogram1D* h_energyParticle    = nullptr;
@@ -56,20 +56,21 @@ namespace Gaussino::G4Par04 {
     AIDA::IHistogram1D* h_cellEnergy        = nullptr;
 
     // histogram properties
-    Gaudi::Property<double> m_maxEnergyHist{this, "MaxEnergyHist", 1. * Gaudi::Units::GeV};
+    Gaudi::Property<double> m_maxEnergyHist{ this, "MaxEnergyHist", 1. * Gaudi::Units::GeV };
 
     // counters
-    mutable Gaudi::Accumulators::StatCounter<> m_calohits{this, "#CaloHits"};
-    mutable Gaudi::Accumulators::StatCounter<> m_collhits{this, "#CollectorHits"};
-    mutable Gaudi::Accumulators::StatCounter<> m_numNonZeroThresholdCells{this, "NonZeroThresholdCells (>.5 keV)"};
-    mutable Gaudi::Accumulators::StatCounter<> m_fastHits{this, "#FastSimHits"};
-    mutable Gaudi::Accumulators::StatCounter<> m_fullHits{this, "#FullSimHits"};
-    mutable Gaudi::Accumulators::StatCounter<> m_totalEnergy{this, "Energy Deposit [MeV]"};
-    mutable Gaudi::Accumulators::StatCounter<> m_particleEnergy{this, "Particle Energy [MeV]"};
+    mutable Gaudi::Accumulators::StatCounter<> m_calohits{ this, "#CaloHits" };
+    mutable Gaudi::Accumulators::StatCounter<> m_collhits{ this, "#CollectorHits" };
+    mutable Gaudi::Accumulators::StatCounter<> m_numNonZeroThresholdCells{ this, "NonZeroThresholdCells (>.5 keV)" };
+    mutable Gaudi::Accumulators::StatCounter<> m_fastHits{ this, "#FastSimHits" };
+    mutable Gaudi::Accumulators::StatCounter<> m_fullHits{ this, "#FullSimHits" };
+    mutable Gaudi::Accumulators::StatCounter<> m_totalEnergy{ this, "Energy Deposit [MeV]" };
+    mutable Gaudi::Accumulators::StatCounter<> m_particleEnergy{ this, "Particle Energy [MeV]" };
 
   public:
     Monitoring( const std::string& name, ISvcLocator* pSvcLocator )
-        : Consumer( name, pSvcLocator, {KeyValue{"CaloHitsLocation", ""}, KeyValue{"CollectorHitsLocation", ""}} ) {}
+        : Consumer( name, pSvcLocator,
+                    { KeyValue{ "CaloHitsLocation", "" }, KeyValue{ "CollectorHitsLocation", "" } } ) {}
 
     StatusCode initialize() override {
       return Consumer::initialize().andThen( [&]() -> StatusCode {
@@ -104,14 +105,14 @@ namespace Gaussino::G4Par04 {
         }
 
         h_energyParticle  = book( "energyParticle", "Primary energy;E_{MC} (GeV);Entries", 0,
-                                 1.1 * m_maxEnergyHist / Gaudi::Units::GeV, 1024 );
+                                  1.1 * m_maxEnergyHist / Gaudi::Units::GeV, 1024 );
         h_energyDeposited = book( "energyDeposited", "Deposited energy;E_{MC} (GeV);Entries", 0,
                                   1.1 * m_maxEnergyHist / Gaudi::Units::GeV, 1024 );
         h_energyRatio =
             book( "energyRatio", "Ratio of energy deposited to primary;E_{dep} /  E_{MC};Entries", 0, 1, 1024 );
         // h_time         = book( "time", "Simulation time; time (s);Entries", 0, 100, 1024 );
         h_longProfile  = book( "longProfile", "Longitudinal profile;t (mm);#LTE#GT (MeV)", -.5 * m_cellSizeZ,
-                              ( m_cellNumZ - .5 ) * m_cellSizeZ, m_cellNumZ );
+                               ( m_cellNumZ - .5 ) * m_cellSizeZ, m_cellNumZ );
         h_transProfile = book( "transProfile", "Transverse profile;r (mm);#LTE#GT (MeV)", -.5 * m_cellSizeRho,
                                ( m_cellNumRho - .5 ) * m_cellSizeRho, m_cellNumRho );
         h_longFirstMoment =

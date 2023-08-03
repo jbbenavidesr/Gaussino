@@ -10,28 +10,23 @@
 \*****************************************************************************/
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 
-#include "G4StateManager.hh"
 #include "G4GeometryManager.hh"
-#include "G4UserRunAction.hh"
-#include "G4Run.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4MTRunManagerKernel.hh"
+#include "G4Run.hh"
+#include "G4StateManager.hh"
+#include "G4UserRunAction.hh"
 
+#include "G4CascadeInterface.hh"
 #include "G4IonTable.hh"
 #include "G4ParticleTable.hh"
-#include "G4CascadeInterface.hh"
 
-#include "GaudiKernel/ISvcLocator.h"
 #include "GaudiKernel/Bootstrap.h"
+#include "GaudiKernel/ISvcLocator.h"
 
+GiGaMTRunManager::GiGaMTRunManager() : G4MTRunManager() {}
 
-GiGaMTRunManager::GiGaMTRunManager()
-  : G4MTRunManager()
-{}
-
-
-GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager()
-{
+GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager() {
   // Grab thread-local pointer from base class
   auto* wrm = G4MTRunManager::GetMasterRunManager();
   if ( wrm ) {
@@ -41,9 +36,7 @@ GiGaMTRunManager* GiGaMTRunManager::GetGiGaMTRunManager()
   }
 }
 
-
-void GiGaMTRunManager::Initialize()
-{
+void GiGaMTRunManager::Initialize() {
   // Set up geometry and physics in base class.
   // Why doesn't this call G4MTRunManager?
   // Probably because G4MTRunManager seems to call BeamOn(0) which
@@ -62,51 +55,47 @@ void GiGaMTRunManager::Initialize()
   PrepareCommandsStack();
 }
 
-
-//void GiGaMTRunManager::InitializeGeometry()
+// void GiGaMTRunManager::InitializeGeometry()
 //{
-  ////FIXME: This needs to do something ...
-
+////FIXME: This needs to do something ...
 
 //}
 
-//void GiGaMTRunManager::InitializePhysics()
+// void GiGaMTRunManager::InitializePhysics()
 //{
-  //kernel->InitializePhysics();
+// kernel->InitializePhysics();
 
-  //G4CascadeInterface::Initialize();
-  //physicsInitialized = true;
+// G4CascadeInterface::Initialize();
+// physicsInitialized = true;
 
 //}
-
 
 // I suspect a lot of this could just be delegated to the base class.
 // I wonder if something there breaks in Athena..
-void GiGaMTRunManager::RunTermination()
-{
+void GiGaMTRunManager::RunTermination() {
   // vanilla G4 calls a different method... why?
   CleanUpPreviousEvents();
   previousEvents->clear();
 
-  if(userRunAction) { userRunAction->EndOfRunAction(currentRun); }
+  if ( userRunAction ) { userRunAction->EndOfRunAction( currentRun ); }
 
   delete currentRun;
   currentRun = nullptr;
   runIDCounter++;
 
   G4StateManager* stateManager = G4StateManager::GetStateManager();
-  stateManager->SetNewState(G4State_Idle);
+  stateManager->SetNewState( G4State_Idle );
 
   G4GeometryManager::GetInstance()->OpenGeometry();
 
   kernel->RunTermination();
 
-  userRunAction = nullptr;
-  userEventAction = nullptr;
+  userRunAction      = nullptr;
+  userEventAction    = nullptr;
   userSteppingAction = nullptr;
   userStackingAction = nullptr;
   userTrackingAction = nullptr;
   // physicsList = nullptr;
-  userDetector = nullptr;
+  userDetector               = nullptr;
   userPrimaryGeneratorAction = nullptr;
 }

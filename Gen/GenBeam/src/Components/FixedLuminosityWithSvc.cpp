@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedLuminosityWithSvc.cpp,v 1.6 2009-04-07 16:11:21 gcorti Exp $
-// Include files 
+// Include files
 
 // local
 #include "FixedLuminosityWithSvc.h"
@@ -19,15 +19,15 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
-#include "Event/GenCountersFSR.h"
 
 // From Generators
 #include "GenInterfaces/ICounterLogFile.h"
 
-#include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandPoisson.h"
+#include "CLHEP/Random/RandomEngine.h"
 #include "GenBeam/IBeamInfoSvc.h"
 
 //-----------------------------------------------------------------------------
@@ -40,78 +40,66 @@
 
 DECLARE_COMPONENT( FixedLuminosityWithSvc )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-FixedLuminosityWithSvc::FixedLuminosityWithSvc( const std::string& type,
-                                  const std::string& name,
-                                  const IInterface* parent )
-  : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool ( 0 ) ,
-    m_numberOfZeroInteraction( 0 ) ,
-    m_nEvents( 0 ) {
-    declareInterface< IPileUpTool >( this ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
+FixedLuminosityWithSvc::FixedLuminosityWithSvc( const std::string& type, const std::string& name,
+                                                const IInterface* parent )
+    : GaudiTool( type, name, parent ), m_xmlLogTool( 0 ), m_numberOfZeroInteraction( 0 ), m_nEvents( 0 ) {
+  declareInterface<IPileUpTool>( this );
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
 }
 
 //=============================================================================
-// Destructor 
+// Destructor
 //=============================================================================
-FixedLuminosityWithSvc::~FixedLuminosityWithSvc( ) { ; }
+FixedLuminosityWithSvc::~FixedLuminosityWithSvc() { ; }
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode FixedLuminosityWithSvc::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode FixedLuminosityWithSvc::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
   //  XMl log file
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
-  m_beaminfosvc = svc<IBeamInfoSvc>("BeamInfoSvc", true);
+  m_xmlLogTool  = tool<ICounterLogFile>( "XmlCounterLogFile" );
+  m_beaminfosvc = svc<IBeamInfoSvc>( "BeamInfoSvc", true );
 
-  return sc ;
+  return sc;
 }
 
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosityWithSvc::numberOfPileUp( HepRandomEnginePtr & engine ) {
-  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+unsigned int FixedLuminosityWithSvc::numberOfPileUp( HepRandomEnginePtr& engine ) {
+  auto genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
-  unsigned int result = 0 ;
+  unsigned int result = 0;
   while ( 0 == result ) {
-    m_nEvents++ ;
-    if(genFSR) {
-      genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
-    }
-    CLHEP::RandPoisson poissonGenerator{engine.getref(), m_beaminfosvc->nu()};
-    result = (unsigned int) poissonGenerator() ;
+    m_nEvents++;
+    if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::AllEvt, 1 ); }
+    CLHEP::RandPoisson poissonGenerator{ engine.getref(), m_beaminfosvc->nu() };
+    result = (unsigned int)poissonGenerator();
     if ( 0 == result ) {
-      m_numberOfZeroInteraction++ ;
-      if(genFSR) {
-        genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::ZeroInt, 1);
-      }
+      m_numberOfZeroInteraction++;
+      if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::ZeroInt, 1 ); }
     }
   }
-  return result ;
+  return result;
 }
 
 //=============================================================================
 // Print the specific pile up counters
 //=============================================================================
-void FixedLuminosityWithSvc::printPileUpCounters( ) {
-  //FIXME: Printout
-  //printCounter( m_xmlLogTool , "all events (including empty events)", m_nEvents ) ;
-  //printCounter( m_xmlLogTool , "events with 0 interaction" , 
-                //m_numberOfZeroInteraction ) ;
+void FixedLuminosityWithSvc::printPileUpCounters() {
+  // FIXME: Printout
+  // printCounter( m_xmlLogTool , "all events (including empty events)", m_nEvents ) ;
+  // printCounter( m_xmlLogTool , "events with 0 interaction" ,
+  // m_numberOfZeroInteraction ) ;
 }
 
 //=============================================================================
 // Finalize method
 //=============================================================================
-StatusCode FixedLuminosityWithSvc::finalize( ) {
-  return GaudiTool::finalize( ) ;
-}
+StatusCode FixedLuminosityWithSvc::finalize() { return GaudiTool::finalize(); }

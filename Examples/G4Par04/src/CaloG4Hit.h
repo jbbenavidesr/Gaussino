@@ -25,7 +25,7 @@ class G4AttDef;
 namespace Gaussino::G4Par04 {
   struct CaloG4Hit : public HitBase {
     void* operator new( size_t );
-    void  operator delete( void* aHit );
+    void operator delete( void* aHit );
     /// Visualise hits. If pointer to the logical volume was set, cell shape is
     /// drawn taking into account proper radial position (taken from fRhoId)
     virtual void Draw() final;
@@ -84,7 +84,7 @@ namespace Gaussino::G4Par04 {
     /// Phi ID of readout cell
     G4int fPhiId = -1;
     /// Position
-    G4ThreeVector fPos = {-1, -1, -1};
+    G4ThreeVector fPos = { -1, -1, -1 };
     /// Rotation
     G4RotationMatrix fRot;
     /// Time

@@ -8,21 +8,20 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#ifndef GENERATORS_LBPHOTOS_H 
+#ifndef GENERATORS_LBPHOTOS_H
 #define GENERATORS_LBPHOTOS_H 1
 
 // Include files
 
 /** @class LbPhotos LbPhotos.h Generators/LbPhotos.h
- *  
+ *
  *
  *  @author Patrick Robbe
  *  @date   2013-05-31
  */
 class LbPhotos {
-public: 
+public:
   /// Set output unit of Photos
-  static void setOutputUnit( int outputUnit ) ;
-
+  static void setOutputUnit( int outputUnit );
 };
 #endif // GENERATORS_LBPHOTOS_H

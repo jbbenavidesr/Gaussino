@@ -19,16 +19,16 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
-#include "Event/GenCountersFSR.h"
 
 // From Generators
-#include "Generators/GenCounters.h"
 #include "GenInterfaces/ICounterLogFile.h"
+#include "Generators/GenCounters.h"
 
-#include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandPoisson.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : VariableLuminosity
@@ -40,98 +40,82 @@
 
 DECLARE_COMPONENT( VariableLuminosity )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-VariableLuminosity::VariableLuminosity( const std::string& type,
-                                        const std::string& name,
-                                        const IInterface* parent )
-  : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_numberOfZeroInteraction( 0 ) ,
-    m_nEvents( 0 ) {
+VariableLuminosity::VariableLuminosity( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent ), m_xmlLogTool( 0 ), m_numberOfZeroInteraction( 0 ), m_nEvents( 0 ) {
 
-    using CLHEP::s;
-    declareInterface< IPileUpTool >( this ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
-    declareProperty( "BeamParameters" ,
-                     m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
-    declareProperty ( "FillDuration"  , m_fillDuration  = 7.0 * 3600 * s    ) ;
-    declareProperty ( "BeamDecayTime" , m_beamDecayTime = 10.0 * 3600 * s   ) ;
+  using CLHEP::s;
+  declareInterface<IPileUpTool>( this );
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
+  declareProperty( "BeamParameters", m_beamParameters = LHCb::BeamParametersLocation::Default );
+  declareProperty( "FillDuration", m_fillDuration = 7.0 * 3600 * s );
+  declareProperty( "BeamDecayTime", m_beamDecayTime = 10.0 * 3600 * s );
 }
 
 //=============================================================================
 // Destructor
 //=============================================================================
-VariableLuminosity::~VariableLuminosity( ) { ; }
+VariableLuminosity::~VariableLuminosity() { ; }
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode VariableLuminosity::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode VariableLuminosity::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
   // XML file
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
+  m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
 
   using CLHEP::s;
-  info() << "Poisson distribution with 'LHCb mean'. " << endmsg ;
-  info() << "Fill duration (hours): " << m_fillDuration / 3600 / s << endmsg ;
-  info() << "Beam decay time (hours): " << m_beamDecayTime / 3600 / s
-         << endmsg ;
+  info() << "Poisson distribution with 'LHCb mean'. " << endmsg;
+  info() << "Fill duration (hours): " << m_fillDuration / 3600 / s << endmsg;
+  info() << "Beam decay time (hours): " << m_beamDecayTime / 3600 / s << endmsg;
 
-  return sc ;
+  return sc;
 }
 
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr & engine) {
-  LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
-  if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
+unsigned int VariableLuminosity::numberOfPileUp( HepRandomEnginePtr& engine ) {
+  LHCb::BeamParameters* beam = get<LHCb::BeamParameters>( m_beamParameters );
+  if ( 0 == beam ) Exception( "No beam parameters registered" );
 
-  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
-  unsigned int result = 0 ;
-  double mean , currentLuminosity;
+  unsigned int result = 0;
+  double       mean, currentLuminosity;
   while ( 0 == result ) {
-    m_nEvents++ ;
-    if(genFSR) {
-      genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
-    }
-    currentLuminosity = beam -> luminosity() * m_fillDuration / m_beamDecayTime /
-      ( 1.0 - exp( -m_fillDuration / m_beamDecayTime ) ) ;
+    m_nEvents++;
+    if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::AllEvt, 1 ); }
+    currentLuminosity =
+        beam->luminosity() * m_fillDuration / m_beamDecayTime / ( 1.0 - exp( -m_fillDuration / m_beamDecayTime ) );
 
-    mean = currentLuminosity * beam -> totalXSec() / beam -> revolutionFrequency() ;
-    CLHEP::RandPoisson poissonGenerator{engine.getref(), mean};
-    result = (unsigned int) poissonGenerator() ;
+    mean = currentLuminosity * beam->totalXSec() / beam->revolutionFrequency();
+    CLHEP::RandPoisson poissonGenerator{ engine.getref(), mean };
+    result = (unsigned int)poissonGenerator();
     if ( 0 == result ) {
-      m_numberOfZeroInteraction++ ;
-      if(genFSR) {
-        genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::ZeroInt, 1);
-      }
+      m_numberOfZeroInteraction++;
+      if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::ZeroInt, 1 ); }
     }
   }
-  
-  return result ;
+
+  return result;
 }
 
 //=============================================================================
 // Print the specific pile up counters
 //=============================================================================
-void VariableLuminosity::printPileUpCounters( ) {
-  using namespace GenCounters ;
-  printCounter( m_xmlLogTool , "all events (including empty events)" , m_nEvents ) ;
-  printCounter( m_xmlLogTool , "events with 0 interaction" ,
-                m_numberOfZeroInteraction ) ;
+void VariableLuminosity::printPileUpCounters() {
+  using namespace GenCounters;
+  printCounter( m_xmlLogTool, "all events (including empty events)", m_nEvents );
+  printCounter( m_xmlLogTool, "events with 0 interaction", m_numberOfZeroInteraction );
 }
 
 //=============================================================================
 // Finalize method
 //=============================================================================
-StatusCode VariableLuminosity::finalize( ) {
-  return GaudiTool::finalize( ) ;
-}
+StatusCode VariableLuminosity::finalize() { return GaudiTool::finalize(); }

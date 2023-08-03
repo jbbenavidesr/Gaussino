@@ -15,9 +15,9 @@
 namespace HepMC3 {
   class SimResultsAttribute : public Attribute {
   public:
-    SimResultsAttribute() : Attribute(), m_val{nullptr, nullptr} {}
+    SimResultsAttribute() : Attribute(), m_val{ nullptr, nullptr } {}
     SimResultsAttribute( Gaussino::GiGaSimReturn val ) : Attribute(), m_val( val ) {}
-    SimResultsAttribute( Gaussino::MCTruthPtr val, G4EventProxyPtr val2 ) : Attribute(), m_val{val2, val} {}
+    SimResultsAttribute( Gaussino::MCTruthPtr val, G4EventProxyPtr val2 ) : Attribute(), m_val{ val2, val } {}
 
     bool from_string( const string& ) override { return true; };
 

@@ -17,8 +17,8 @@
 #include "HepMCUser/typedefs.h"
 
 class G4Event;
-namespace HepMC{
-class GenEvent;
+namespace HepMC {
+  class GenEvent;
 }
 
 /** @class IHepMC3ToMCTruthConverter
@@ -29,14 +29,14 @@ class GenEvent;
  *  @date   15.02.2019
  */
 
-class IHepMC3ToMCTruthConverter: virtual public IAlgTool {
+class IHepMC3ToMCTruthConverter : virtual public IAlgTool {
 public:
-  DeclareInterfaceID(IHepMC3ToMCTruthConverter, 1, 0);
+  DeclareInterfaceID( IHepMC3ToMCTruthConverter, 1, 0 );
 
-  /** 
+  /**
    * Converts an HepMC3 event to Geant4
-   *  
+   *
    */
-  virtual  Gaussino::MCTruthConverterPtrs BuildConverter(const HepMC3::GenEventPtrs &) const = 0;
-  virtual  Gaussino::MCTruthConverterPtr BuildConverter(const HepMC3::ConstGenParticlePtr &) const = 0;
+  virtual Gaussino::MCTruthConverterPtrs BuildConverter( const HepMC3::GenEventPtrs& ) const        = 0;
+  virtual Gaussino::MCTruthConverterPtr  BuildConverter( const HepMC3::ConstGenParticlePtr& ) const = 0;
 };

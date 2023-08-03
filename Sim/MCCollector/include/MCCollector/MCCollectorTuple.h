@@ -20,14 +20,14 @@ namespace MCCollector {
 
   class TupleAlg : public GaudiTupleAlg {
 
-    Gaudi::Property<std::string> m_tupleName{this, "TupleName", "Particles"};
+    Gaudi::Property<std::string> m_tupleName{ this, "TupleName", "Particles" };
 
   public:
     using GaudiTupleAlg::GaudiTupleAlg;
 
   protected:
     void                                   fillCollectorTuple( const LHCb::MCHeader&, const LHCb::MCHits& ) const;
-    mutable Gaudi::Accumulators::Counter<> m_collHitsCounter{this, "CollectorHitsCounter"};
+    mutable Gaudi::Accumulators::Counter<> m_collHitsCounter{ this, "CollectorHitsCounter" };
   };
 
 } // namespace MCCollector

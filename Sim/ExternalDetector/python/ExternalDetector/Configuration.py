@@ -8,11 +8,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Gaudi.Configuration import (
-    ConfigurableUser,
-    log,
-)
 import Configurables
+from Gaudi.Configuration import ConfigurableUser, log
 
 __author__ = "Michal Mazurek"
 __email__ = "michal.mazurek@cern.ch"
@@ -252,7 +249,7 @@ class ExternalDetectorEmbedder(ConfigurableUser):
         #       e.g. OutputLevel etc.
         # }
         # only if you implemented the custom, external world
-        'MagneticField': {},
+        "MagneticField": {},
         #
         # ex.
         #
@@ -312,25 +309,27 @@ class ExternalDetectorEmbedder(ConfigurableUser):
 
         world = self.getProp("World")
         if world:
-            self._check_props(
-                "World", world, required=["Type", "WorldMaterial"])
+            self._check_props("World", world, required=["Type", "WorldMaterial"])
             svc_conf = getattr(Configurables, world["Type"])
             world_svc = svc_conf(**self._refine_props(world))
             geo.GiGaMTGeoSvc = world["Type"]
-            log.info("Registered external world service of type {}.".format(
-                world["Type"]))
+            log.info(
+                "Registered external world service of type {}.".format(world["Type"])
+            )
 
-            mag_field_props = self.getProp('MagneticField')
+            mag_field_props = self.getProp("MagneticField")
             if mag_field_props:
                 self._check_props("MagneticField", mag_field_props)
-                mag_field_conf = getattr(Configurables,
-                                         mag_field_props['Type'])
-                name = mag_field_props.get("Name", mag_field_props['Type'])
+                mag_field_conf = getattr(Configurables, mag_field_props["Type"])
+                name = mag_field_props.get("Name", mag_field_props["Type"])
                 mag_field_tool = mag_field_conf(
                     name,
                     **self._refine_props(
-                        mag_field_props, keys_to_refine=['Type', 'Name']))
+                        mag_field_props, keys_to_refine=["Type", "Name"]
+                    )
+                )
                 from Configurables import MagneticFieldManager
+
                 world_svc.FieldManager = "MagneticFieldManager/FieldMgr"
                 world_svc.addTool(MagneticFieldManager("FieldMgr"), name="FieldMgr")
                 world_svc.FieldMgr.StepperFactory = "G4ClassicalRK4"
@@ -434,13 +433,15 @@ class ExternalDetectorEmbedder(ConfigurableUser):
                 sens_det_props["Type"] + "/" + sens_det_props["SensDetName"],
             )
             self._register_prop(sens_det_props, "ExtraVolumesToSensDet", [])
-            self._register_prop(props, "ExtraVolumesToSensDet",
-                                sens_det_props["ExtraVolumesToSensDet"])
+            self._register_prop(
+                props, "ExtraVolumesToSensDet", sens_det_props["ExtraVolumesToSensDet"]
+            )
             sens_det_tool = sens_det_conf(
                 sens_det_props["SensDetName"],
                 **self._refine_props(
-                    sens_det_props,
-                    ["Type", "SensDetName", "ExtraVolumesToSensDet"]))
+                    sens_det_props, ["Type", "SensDetName", "ExtraVolumesToSensDet"]
+                )
+            )
         tool = tool_conf(name, **self._refine_props(props))
         if sens_det_tool:
             tool.addTool(sens_det_tool)

@@ -12,42 +12,52 @@
 # STANDARD GAUSSINO OPTIONS
 # i.e. number of events and threads
 from Configurables import Gaussino
+
 Gaussino().EvtMax = 100
 Gaussino().EnableHive = True
 Gaussino().ThreadPoolSize = 1
 Gaussino().EventSlots = 1
 from Configurables import GiGaMT
+
 GiGaMT().NumberOfWorkerThreads = 1
 # activate EM physics
 from Gaussino.Simulation import SimPhase
+
 SimPhase().PhysicsConstructors = [
     "GiGaMT_G4EmStandardPhysics",
 ]
 # Enable EDM as we will create hits
 from Configurables import Gaussino
+
 Gaussino().ConvertEDM = True
+
+from Gaudi.Configuration import DEBUG
 
 # PARTICLE GUN
 # -> we will create 5 photons per event
 # -> transverse momentum sampled from [5, 100] MeV
 # -> pseudorapidity sampled from [1., 2.1]
 from Gaussino.Generation import GenPhase
-from Gaudi.Configuration import DEBUG
+
 GenPhase().ParticleGun = True
 GenPhase().ParticleGunUseDefault = False
 from Configurables import ParticleGun
+
 pgun = ParticleGun("ParticleGun")
 pgun.OutputLevel = DEBUG
 from Configurables import FlatPtRapidity
+
 pgun.ParticleGunTool = "FlatPtRapidity"
 pgun.addTool(FlatPtRapidity, name="FlatPtRapidity")
 from GaudiKernel.SystemOfUnits import GeV, MeV
-pgun.FlatPtRapidity.PtMin = 5. * MeV
-pgun.FlatPtRapidity.PtMax = 100. * MeV
+
+pgun.FlatPtRapidity.PtMin = 5.0 * MeV
+pgun.FlatPtRapidity.PtMax = 100.0 * MeV
 pgun.FlatPtRapidity.RapidityMin = 1
 pgun.FlatPtRapidity.RapidityMax = 2.1
 pgun.FlatPtRapidity.PdgCodes = [22]
 from Configurables import FlatNParticles
+
 pgun.NumberOfParticlesTool = "FlatNParticles"
 pgun.addTool(FlatNParticles, name="FlatNParticles")
 pgun.FlatNParticles.MinNParticles = 5
@@ -56,8 +66,10 @@ pgun.FlatNParticles.MaxNParticles = 5
 # MASS WORLD
 # activating external geometry embedder in mass geometry
 from Gaussino.Simulation import SimPhase
+
 SimPhase().ExternalDetectorEmbedder = "MassGeometryEmbedder"
 from Configurables import ExternalDetectorEmbedder
+
 mass = ExternalDetectorEmbedder("MassGeometryEmbedder")
 # activate empty world for testing
 mass.World = {
@@ -67,52 +79,54 @@ mass.World = {
 }
 # no materials are defined during testing
 # material needed for our setup are
-from GaudiKernel.SystemOfUnits import g, cm3, pascal, mole, kelvin
+from GaudiKernel.SystemOfUnits import cm3, g, kelvin, mole, pascal
+
 mass.Materials = {
     # almost vaccum
     "OuterSpace": {
-        "AtomicNumber": 1.,
+        "AtomicNumber": 1.0,
         "MassNumber": 1.01 * g / mole,
-        "Density": 1.e-25 * g / cm3,
-        "Pressure": 3.e-18 * pascal,
+        "Density": 1.0e-25 * g / cm3,
+        "Pressure": 3.0e-18 * pascal,
         "Temperature": 2.73 * kelvin,
-        'OutputLevel': DEBUG,
+        "OutputLevel": DEBUG,
     },
     # Pb for the toy calorimeter
-    'Pb': {
-        'Type': 'MaterialFromElements',
-        'Symbols': ['Pb'],
-        'AtomicNumbers': [82.],
-        'MassNumbers': [207.2 * g / mole],
-        'MassFractions': [1.],
-        'Density': 11.29 * g / cm3,
-        'State': 'Solid',
-        'OutputLevel': DEBUG,
+    "Pb": {
+        "Type": "MaterialFromElements",
+        "Symbols": ["Pb"],
+        "AtomicNumbers": [82.0],
+        "MassNumbers": [207.2 * g / mole],
+        "MassFractions": [1.0],
+        "Density": 11.29 * g / cm3,
+        "State": "Solid",
+        "OutputLevel": DEBUG,
     },
 }
 
 # TOY CALORIMETER (IN MASS WORLD)
 # -> It will register the hits coming from the detailed simulation
 from GaudiKernel.SystemOfUnits import m, mm
+
 # Creating a 10m x 10m x 2m toy CALO volume
 # -> it will be placed at z = 3m
 # -> and made out of Pb
-mass.Shapes['Calo'] = {
+mass.Shapes["Calo"] = {
     "Type": "Cuboid",
-    "zPos": 3. * m,
-    "xSize": 10. * m,
-    "ySize": 10. * m,
-    "zSize": 2. * m,
+    "zPos": 3.0 * m,
+    "xSize": 10.0 * m,
+    "ySize": 10.0 * m,
+    "zSize": 2.0 * m,
     "OutputLevel": DEBUG,
     "MaterialName": "Pb",
 }
 # Make the toy CALO an active/sensitive volume
 # -> It will now register hits
 # -> for this purpose we are using a generic MCCollectorSensDet factory
-mass.Sensitive['Calo'] = {
+mass.Sensitive["Calo"] = {
     "Type": "MCCollectorSensDet",
     # print hits stats at the end of each event
-    'PrintStats': True,
+    "PrintStats": True,
     # discard hits with no energy deposition
     "RequireEDep": True,
     "OnlyForward": False,
@@ -121,14 +135,14 @@ mass.Sensitive['Calo'] = {
 }
 # Add the hit extraction algorithm
 # -> this is necessary to convert G4Hits into MCHits
-mass.Hit['Calo'] = {
+mass.Hit["Calo"] = {
     "Type": "GetMCCollectorHitsAlg",
     "OutputLevel": DEBUG,
 }
 # Add the tuple writer
 # -> this is necessary to write the tuple to a .root file
 # note: this won't work for many threads
-mass.Moni['Calo'] = {
+mass.Moni["Calo"] = {
     "Type": "ShowerModelCaloTupleWriter",
     "HitsPropertyName": "HitsCollection",
     "OutputLevel": DEBUG,
@@ -146,10 +160,10 @@ mass.Moni['Calo'] = {
 # -> made out of vacuum
 mass.Shapes["Collector"] = {
     "Type": "Cuboid",
-    "zPos": 1. * m,
-    "xSize": 10. * m,
+    "zPos": 1.0 * m,
+    "xSize": 10.0 * m,
     "ySize": 10 * m,
-    "zSize": .01 * mm,
+    "zSize": 0.01 * mm,
     "OutputLevel": DEBUG,
     "MaterialName": "OuterSpace",
 }
@@ -158,7 +172,7 @@ mass.Shapes["Collector"] = {
 # -> for this purpose we are using a generic MCCollectorSensDet factory
 mass.Sensitive["Collector"] = {
     "Type": "MCCollectorSensDet",
-    'PrintStats': True,
+    "PrintStats": True,
     # not required to have an energy deposit as we want
     # the information about all particles
     "RequireEDep": False,
@@ -193,11 +207,14 @@ from Gaudi.Configuration import appendPostConfigAction
 
 def updateZMax():
     from Configurables import TruthFlaggingTrackAction
+
     trth = TruthFlaggingTrackAction(
-        "GiGaMT.GiGaActionInitializer.TruthFlaggingTrackAction")
+        "GiGaMT.GiGaActionInitializer.TruthFlaggingTrackAction"
+    )
     # just after the collector
-    end_of_collector = mass.Shapes['Collector'][
-        'zPos'] + mass.Shapes['Collector']['zSize'] / 2.
+    end_of_collector = (
+        mass.Shapes["Collector"]["zPos"] + mass.Shapes["Collector"]["zSize"] / 2.0
+    )
     trth.ZmaxForStoring = end_of_collector
     trth.OutputLevel = DEBUG
 
@@ -212,21 +229,21 @@ appendPostConfigAction(updateZMax)
 parallel = ExternalDetectorEmbedder("ParallelGeometryEmbedder")
 # Creating a 10m x 10m x 0.01m toy CALO volume
 # -> it will placed just in front of the toy calo (in the mass world)
-toy_calo_front = mass.Shapes['Calo']['zPos'] - mass.Shapes['Calo']['zSize'] / 2.
-parallel.Shapes['FastCalo'] = {
+toy_calo_front = mass.Shapes["Calo"]["zPos"] - mass.Shapes["Calo"]["zSize"] / 2.0
+parallel.Shapes["FastCalo"] = {
     "Type": "Cuboid",
-    "zPos": toy_calo_front + 0.01 * mm / 2.,
-    "xSize": 10. * m,
-    "ySize": 10. * m,
+    "zPos": toy_calo_front + 0.01 * mm / 2.0,
+    "xSize": 10.0 * m,
+    "ySize": 10.0 * m,
     "zSize": 0.01 * mm,
     "OutputLevel": DEBUG,
 }
 # Make the FAST CALO an active/sensitive volume
 # -> It will now register hits
 # -> for this purpose we are using a generic MCCollectorSensDet factory
-parallel.Sensitive['FastCalo'] = {
+parallel.Sensitive["FastCalo"] = {
     "Type": "MCCollectorSensDet",
-    'PrintStats': True,
+    "PrintStats": True,
     "RequireEDep": False,
     "OnlyForward": True,
     "OnlyAtBoundary": False,
@@ -234,14 +251,14 @@ parallel.Sensitive['FastCalo'] = {
 }
 # Add the hit extraction algorithm
 # -> this is necessary to convert G4Hits into MCHits
-parallel.Hit['FastCalo'] = {
+parallel.Hit["FastCalo"] = {
     "Type": "GetMCCollectorHitsAlg",
     "OutputLevel": DEBUG,
 }
 # Add the tuple writer
 # -> this is necessary to write the tuple to a .root file
 # note: this won't work for many threads
-parallel.Moni['FastCalo'] = {
+parallel.Moni["FastCalo"] = {
     "Type": "ShowerModelCaloTupleWriter",
     "HitsPropertyName": "HitsCollection",
     "OutputLevel": DEBUG,
@@ -249,62 +266,65 @@ parallel.Moni['FastCalo'] = {
 
 # PARALLEL WORLD
 from Gaussino.Simulation import SimPhase
+
 # activate parallel geometry
 SimPhase().ParallelGeometry = True
 from Configurables import ParallelGeometry
+
 pargeo = ParallelGeometry()
 # Options of the parallel world
-pargeo.ParallelWorlds['FastCaloParallelWorld'] = {
+pargeo.ParallelWorlds["FastCaloParallelWorld"] = {
     # -> add the external detector embedder
-    'ExternalDetectorEmbedder': 'ParallelGeometryEmbedder',
+    "ExternalDetectorEmbedder": "ParallelGeometryEmbedder",
     # -> add the fast simulation creator
-    'FastSimulationCreator': 'ParallelFastSimulation',
+    "FastSimulationCreator": "ParallelFastSimulation",
     "OutputLevel": DEBUG,
 }
-pargeo.ParallelPhysics['FastCaloParallelWorld'] = {
+pargeo.ParallelPhysics["FastCaloParallelWorld"] = {
     # -> LayeredMass = False eans that the parallel world will
     #    see the same materials as in the mass world
-    'LayeredMass': False,
+    "LayeredMass": False,
     # -> track only the gammas in the parallel world
-    'ParticlePIDs': [22],
+    "ParticlePIDs": [22],
     "OutputLevel": DEBUG,
 }
 
 # SHOWER MODEL (IN PARALLEL WORLD)
 from Configurables import FastSimulationCreator
-from GaudiKernel.SystemOfUnits import cm, MeV
-fastsim = FastSimulationCreator('ParallelFastSimulation')
+from GaudiKernel.SystemOfUnits import MeV, cm
 
-fastsim.Model['CaloShowerModel'] = {
-    'Type': 'ShowerModel',
+fastsim = FastSimulationCreator("ParallelFastSimulation")
+
+fastsim.Model["CaloShowerModel"] = {
+    "Type": "ShowerModel",
     # do not kill track as we want to observe
     # detailed simulation in a standard calorimeter
-    'KillTrack': False,
+    "KillTrack": False,
     # how many hits should be generated per shower
-    'HitsPerShower': 2000,
+    "HitsPerShower": 2000,
     # moliere radius in Pb
-    'ShowerRadius': 1.234688 * cm,
+    "ShowerRadius": 1.234688 * cm,
     # shape param of gamma distr.
-    'ShowerShapeParameter': 2.5567196,
+    "ShowerShapeParameter": 2.5567196,
     # scale param of gamma distr.
-    'ShowerScaleParameter': .5,
-    'OutputLevel': DEBUG,
+    "ShowerScaleParameter": 0.5,
+    "OutputLevel": DEBUG,
 }
-fastsim.Region['CaloShowerModel'] = {
+fastsim.Region["CaloShowerModel"] = {
     # specify to which sensitive detector will
     # that region be connected to
-    'SensitiveDetectorName': 'FastCaloSDet',
-    'OutputLevel': DEBUG,
+    "SensitiveDetectorName": "FastCaloSDet",
+    "OutputLevel": DEBUG,
 }
 fastsim.Physics = {
-    'ParticlePIDs': [22],
-    'OutputLevel': DEBUG,
+    "ParticlePIDs": [22],
+    "OutputLevel": DEBUG,
 }
 
 # NTUPLE FILE
 from Configurables import ApplicationMgr
+
 ApplicationMgr().ExtSvc += ["NTupleSvc"]
 from Configurables import NTupleSvc
-NTupleSvc().Output = [
-    "FILE1 DATAFILE='ShowerModelTuple.root' TYP='ROOT' OPT='NEW'"
-]
+
+NTupleSvc().Output = ["FILE1 DATAFILE='ShowerModelTuple.root' TYP='ROOT' OPT='NEW'"]

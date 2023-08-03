@@ -11,6 +11,7 @@
 import decorator
 from Gaudi.Configuration import importOptions
 
+
 def add_option(option_file):
     def wrapper(example, *args, **kwargs):
         importOptions(option_file)
@@ -18,11 +19,14 @@ def add_option(option_file):
 
     return lambda example: decorator.decorator(wrapper, example)
 
+
 debug = add_option("$GAUSSINOOPTS/General/Debug.py")
 em_physics = add_option("$GAUSSINOOPTS/Simulation/G4EmStandardPhysics.py")
 edm = add_option("$GAUSSINOOPTS/General/ConvertEDM.py")
 photon = add_option("$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Photon1GeV.py")
-electron = add_option("$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Electron1GeV.py")
+electron = add_option(
+    "$GAUSSINOOPTS/Generation/ParticleGun-FixedMomentum-Electron1GeV.py"
+)
 events_1 = add_option("$GAUSSINOOPTS/General/Events-1.py")
 events_10 = add_option("$GAUSSINOOPTS/General/Events-10.py")
 cube = add_option("$GAUSSINOOPTS/Geometry/ExternalDetector-SimpleCube.py")

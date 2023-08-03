@@ -36,7 +36,7 @@
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at root of decay
 //=============================================================================
-struct isRootB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
+struct isRootB : std::function<bool( const HepMC3::ConstGenParticlePtr& )> {
 
   /// test operator, returns true if it is a root B
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -65,7 +65,7 @@ struct isRootB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at root of decay
 //=============================================================================
-struct isRootD : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
+struct isRootD : std::function<bool( const HepMC3::ConstGenParticlePtr& )> {
 
   /// test operator, returns true if it is a root D
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -95,7 +95,7 @@ struct isRootD : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a B hadron at end of decay tree
 //=============================================================================
-struct isEndB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
+struct isEndB : std::function<bool( const HepMC3::ConstGenParticlePtr& )> {
 
   /// Test operator. Returns true if particle is the last B
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -130,7 +130,7 @@ struct isEndB : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
 //=============================================================================
 // Function to test if a HepMC3::GenParticle is a D hadron at end of decay tree
 //=============================================================================
-struct isEndD : std::function<bool(const HepMC3::ConstGenParticlePtr&)> {
+struct isEndD : std::function<bool( const HepMC3::ConstGenParticlePtr& )> {
 
   /// Test operator. Returns true if it is the last D
   bool operator()( const HepMC3::ConstGenParticlePtr& part ) const {
@@ -215,7 +215,7 @@ void GenCounters::updateExcitedStatesCounters( const HepMC3::GenEvent* theEvent,
   // pointing to nullptr.
   auto signal_process_vertex_attribute =
       theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
-  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  HepMC3::ConstGenVertexPtr signal_process_vertex{ nullptr };
   if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
   // Count B :
@@ -278,7 +278,7 @@ void GenCounters::updateHadronCounters( const HepMC3::GenEvent* theEvent, BHadro
   // pointing to nullptr.
   auto signal_process_vertex_attribute =
       theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
-  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  HepMC3::ConstGenVertexPtr signal_process_vertex{ nullptr };
   if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
   // Count B:
@@ -377,7 +377,7 @@ void GenCounters::updateHadronFSR( const HepMC3::GenEvent* theEvent, LHCb::GenFS
   // pointing to nullptr.
   auto signal_process_vertex_attribute =
       theEvent->attribute<HepMC3::VertexAttribute>( Gaussino::HepMC::Attributes::SignalProcessVertex );
-  HepMC3::ConstGenVertexPtr signal_process_vertex{nullptr};
+  HepMC3::ConstGenVertexPtr signal_process_vertex{ nullptr };
   if ( signal_process_vertex_attribute ) { signal_process_vertex = signal_process_vertex_attribute->value(); }
 
   // Count B :

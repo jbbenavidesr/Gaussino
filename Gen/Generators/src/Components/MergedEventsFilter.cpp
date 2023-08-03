@@ -28,20 +28,17 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-DECLARE_COMPONENT(MergedEventsFilter)
+DECLARE_COMPONENT( MergedEventsFilter )
 
 //=============================================================================
 // Main execution
 //=============================================================================
-void MergedEventsFilter::operator()(
-    const HepMC3::GenEventPtrs& theEvents,
-    const LHCb::GenCollisions& theCollisions) const {
-  if (msgLevel(MSG::DEBUG)) debug() << "==> Execute" << endmsg;
+void MergedEventsFilter::operator()( const HepMC3::GenEventPtrs& theEvents,
+                                     const LHCb::GenCollisions&  theCollisions ) const {
+  if ( msgLevel( MSG::DEBUG ) ) debug() << "==> Execute" << endmsg;
 
   // Apply generator level cut on full event
   bool goodEvent = true;
-  if (m_fullGenEventCutTool) {
-    goodEvent = m_fullGenEventCutTool->studyFullEvent(theEvents, theCollisions);
-  }
-  setFilterPassed(goodEvent);
+  if ( m_fullGenEventCutTool ) { goodEvent = m_fullGenEventCutTool->studyFullEvent( theEvents, theCollisions ); }
+  setFilterPassed( goodEvent );
 }

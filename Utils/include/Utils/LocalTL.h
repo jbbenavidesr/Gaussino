@@ -22,17 +22,14 @@ using IsPointer = typename std::enable_if<std::is_pointer<T>::value>::type;
 
 // Primary template for the storage interface
 template <typename T, typename Sfinae = void>
-class LocalTLImpl
-{
+class LocalTLImpl {
 public:
-  inline void initialize( unsigned int id )
-  {
+  inline void initialize( unsigned int id ) {
     if ( storage().size() <= id ) storage().resize( id + 1, nullptr );
     if ( !storage().at( id ) ) storage().at( id ) = new T{};
   }
 
-  inline void destroy( unsigned int id )
-  {
+  inline void destroy( unsigned int id ) {
     if ( storage().size() > id && storage().at( id ) ) {
       delete storage().at( id );
       storage().at( id ) = nullptr;
@@ -43,8 +40,7 @@ public:
 
 private:
   typedef std::vector<T*> storage_container;
-  storage_container& storage() const
-  {
+  storage_container&      storage() const {
     static thread_local storage_container _storage;
     return _storage;
   }
@@ -52,27 +48,21 @@ private:
 
 // Specialization for pointer types to avoid additional new
 template <typename T>
-class LocalTLImpl<T, IsPointer<T>>
-{
+class LocalTLImpl<T, IsPointer<T>> {
 public:
-  inline void initialize( unsigned int id )
-  {
+  inline void initialize( unsigned int id ) {
     if ( storage().size() <= id ) storage().resize( id + 1, nullptr );
   };
 
-  inline void destroy( unsigned int id )
-  {
-    if ( storage().size() > id && storage().at( id ) ) {
-      storage().at( id ) = nullptr;
-    }
+  inline void destroy( unsigned int id ) {
+    if ( storage().size() > id && storage().at( id ) ) { storage().at( id ) = nullptr; }
   };
 
   inline T& get( unsigned int id ) const { return storage().at( id ); };
 
 private:
   typedef std::vector<T> storage_container;
-  storage_container& storage() const
-  {
+  storage_container&     storage() const {
     static thread_local storage_container _storage;
     return _storage;
   }
@@ -81,27 +71,21 @@ private:
 // Specialization for fundamental types which are stored
 // directly in the vector for improved performance
 template <typename T>
-class LocalTLImpl<T, IsFundamental<T>>
-{
+class LocalTLImpl<T, IsFundamental<T>> {
 public:
-  inline void initialize( unsigned int id )
-  {
+  inline void initialize( unsigned int id ) {
     if ( storage().size() <= id ) storage().resize( id + 1, T{} );
   };
 
-  inline void destroy( unsigned int id )
-  {
-    if ( storage().size() > id && storage().at( id ) ) {
-      storage().at( id ) = T{};
-    }
+  inline void destroy( unsigned int id ) {
+    if ( storage().size() > id && storage().at( id ) ) { storage().at( id ) = T{}; }
   };
 
   inline T& get( unsigned int id ) const { return storage().at( id ); }
 
 private:
   typedef std::vector<T> storage_container;
-  storage_container& storage() const
-  {
+  storage_container&     storage() const {
     static thread_local storage_container _storage;
     return _storage;
   }
@@ -109,8 +93,7 @@ private:
 
 // A templated cache to store a thread-private data of type VALTYPE.
 template <class T>
-class LocalTL
-{
+class LocalTL {
 public:
   LocalTL();
   // Default constructor
@@ -121,8 +104,7 @@ public:
   virtual ~LocalTL();
   // Default destructor
 
-  inline T& get() const
-  {
+  inline T& get() const {
     impl.initialize( m_id );
     return impl.get( m_id );
   }
@@ -134,33 +116,31 @@ public:
 
   LocalTL( const LocalTL& rhs );
   LocalTL& operator=( const LocalTL& rhs );
-  T operator->() { return get(); }
+  T        operator->() { return get(); }
 
 private:
-  int m_id;
-  mutable LocalTLImpl<T> impl;
+  int                     m_id;
+  mutable LocalTLImpl<T>  impl;
   static std::atomic_uint sm_inst_ctr;
   static std::atomic_uint sm_dstr_ctr;
 };
 
 // Initialize static members
 template <class V>
-std::atomic_uint LocalTL<V>::sm_inst_ctr{0};
+std::atomic_uint LocalTL<V>::sm_inst_ctr{ 0 };
 
 template <class V>
-std::atomic_uint LocalTL<V>::sm_dstr_ctr{0};
+std::atomic_uint LocalTL<V>::sm_dstr_ctr{ 0 };
 
 template <class V>
-LocalTL<V>::LocalTL()
-{
+LocalTL<V>::LocalTL() {
   // Assign the current global counter to this instance
   // The counter is defined as atomic so should be fine
   m_id = sm_inst_ctr++;
 }
 
 template <class V>
-LocalTL<V>::LocalTL( const LocalTL<V>& rhs )
-{
+LocalTL<V>::LocalTL( const LocalTL<V>& rhs ) {
   if ( this == &rhs ) return;
   m_id = sm_inst_ctr++;
   // Force copy of cached data
@@ -169,8 +149,7 @@ LocalTL<V>::LocalTL( const LocalTL<V>& rhs )
 }
 
 template <class V>
-LocalTL<V>& LocalTL<V>::operator=( const LocalTL<V>& rhs )
-{
+LocalTL<V>& LocalTL<V>::operator=( const LocalTL<V>& rhs ) {
   if ( this == &rhs ) return *this;
   // Force copy of cached data
   V aCopy = rhs.get();
@@ -179,42 +158,34 @@ LocalTL<V>& LocalTL<V>::operator=( const LocalTL<V>& rhs )
 }
 
 template <class V>
-LocalTL<V>::LocalTL( const V& v )
-{
+LocalTL<V>::LocalTL( const V& v ) {
   m_id = sm_inst_ctr++;
   put( v );
 }
 
 template <class V>
-LocalTL<V>::~LocalTL()
-{
+LocalTL<V>::~LocalTL() {
   // Need to lock this as the two counters are accessed
   impl.destroy( m_id );
 }
 
 template <class V>
-void LocalTL<V>::put( const V& val ) const
-{
+void LocalTL<V>::put( const V& val ) const {
   get() = val;
 }
 
 template <typename T>
-class GarbageBin
-{
+class GarbageBin {
   static_assert( std::is_pointer<T>::value, "blub" );
 
 public:
   static void Add( T obj ) { Instance().push_back( obj ); }
-  ~GarbageBin()
-  {
-    for ( auto& obj : _store ) {
-      delete _store;
-    }
+  ~GarbageBin() {
+    for ( auto& obj : _store ) { delete _store; }
   }
 
 private:
-  static GarbageBin& Instance()
-  {
+  static GarbageBin& Instance() {
     static GarbageBin _instance{};
     return _instance;
   }

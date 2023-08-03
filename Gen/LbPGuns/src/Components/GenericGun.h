@@ -20,7 +20,7 @@
 #include "LbPGuns/IParticleGunTool.h"
 
 namespace SPGGenMode {
-  enum Mode { FixedMode = 1, GaussMode , FlatMode } ;
+  enum Mode { FixedMode = 1, GaussMode, FlatMode };
 }
 
 /** @class GenericGun GenericGun.h "GenericGun.h"
@@ -39,28 +39,25 @@ namespace SPGGenMode {
  *  @author W. Pokorski
  *  @date 2000-03-01
  */
-class GenericGun : public GaudiTool , virtual public IParticleGunTool {
- public:
-  
+class GenericGun : public GaudiTool, virtual public IParticleGunTool {
+public:
   /// Constructor
-  GenericGun( const std::string & type , const std::string & name , 
-              const IInterface * parent ) ;
-  
-  virtual ~GenericGun() ; ///< Destructor
-  
+  GenericGun( const std::string& type, const std::string& name, const IInterface* parent );
+
+  virtual ~GenericGun(); ///< Destructor
+
   /// Initialize method
   virtual StatusCode initialize() override;
-  
+
   /// Generate the particle
-  virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
-                                 Gaudi::LorentzVector & origin , 
-                                 int & pdgId , HepRandomEnginePtr & engine ) override;
-                                 
+  virtual void generateParticle( Gaudi::LorentzVector& fourMomentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                 HepRandomEnginePtr& engine ) override;
+
   /// Print counters
-  virtual void printCounters( ) override {};
-  
- private:
-	// Setable Properties:-
+  virtual void printCounters() override{};
+
+private:
+  // Setable Properties:-
   double m_requestedPt;
   double m_requestedEta;
   double m_requestedPhi;
@@ -73,16 +70,15 @@ class GenericGun : public GaudiTool , virtual public IParticleGunTool {
   double m_sigmaPt;
   double m_sigmaEta;
   double m_sigmaPhi;
-  int m_PtGenMode , m_EtaGenMode , m_PhiGenMode ; 
-  int m_pdgCode;  
+  int    m_PtGenMode, m_EtaGenMode, m_PhiGenMode;
+  int    m_pdgCode;
 
-	// Local Member Data:
-  double m_mass ;
+  // Local Member Data:
+  double m_mass;
 
-	// Private Methods:
-  double generateValue( const int mode , const double val , 
-                        const double sigma , const double min , 
-                        const double max , HepRandomEnginePtr & engine ) ;
-} ;
+  // Private Methods:
+  double generateValue( const int mode, const double val, const double sigma, const double min, const double max,
+                        HepRandomEnginePtr& engine );
+};
 
 #endif // PARTICLEGUNS_GENERICGUN_H

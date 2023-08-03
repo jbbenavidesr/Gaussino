@@ -24,10 +24,9 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTDetectorConstruction final : public G4VUserDetectorConstruction
-{
+class GiGaMTDetectorConstruction final : public G4VUserDetectorConstruction {
   typedef std::function<G4VPhysicalVolume*()> worldConstructor;
-  typedef std::function<void()> sdConstructor;
+  typedef std::function<void()>               sdConstructor;
 
 public:
   using G4VUserDetectorConstruction::G4VUserDetectorConstruction;
@@ -35,13 +34,12 @@ public:
   ~GiGaMTDetectorConstruction(){};
 
   virtual G4VPhysicalVolume* Construct() override final { return m_world_constructor(); }
-  virtual void ConstructSDandField() override final { m_sd_constructor(); }
+  virtual void               ConstructSDandField() override final { m_sd_constructor(); }
 
-  void SetWorldConstructor(worldConstructor constr){m_world_constructor=constr;}
-  void SetSDConstructor(sdConstructor constr){m_sd_constructor=constr;}
+  void SetWorldConstructor( worldConstructor constr ) { m_world_constructor = constr; }
+  void SetSDConstructor( sdConstructor constr ) { m_sd_constructor = constr; }
 
 private:
   worldConstructor m_world_constructor;
-  sdConstructor m_sd_constructor;
-
+  sdConstructor    m_sd_constructor;
 };

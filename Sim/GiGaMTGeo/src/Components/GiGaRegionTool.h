@@ -23,8 +23,7 @@
  *  @date   2003-05-30
  *  @author Dominik Muller
  */
-class GiGaRegionTool : public extends<GaudiTool, IGaussinoTool>
-{
+class GiGaRegionTool : public extends<GaudiTool, IGaussinoTool> {
 public:
   using extends::extends;
 
@@ -39,15 +38,15 @@ public:
 private:
   typedef std::vector<std::string> Volumes;
 
-  Gaudi::Property<std::string> m_region{this, "Region", "UNKNOWN"};
-  Gaudi::Property<Volumes> m_volumes{this, "Volumes", {}};
+  Gaudi::Property<std::string> m_region{ this, "Region", "UNKNOWN" };
+  Gaudi::Property<Volumes>     m_volumes{ this, "Volumes", {} };
 
   // cut for gammas
-  Gaudi::Property<double> m_gamma{this, "CutForGamma", 10 * CLHEP::mm};
+  Gaudi::Property<double> m_gamma{ this, "CutForGamma", 10 * CLHEP::mm };
   // cut for electrons
-  Gaudi::Property<double> m_electron{this, "CutForElectron", 10 * CLHEP::mm};
+  Gaudi::Property<double> m_electron{ this, "CutForElectron", 10 * CLHEP::mm };
   // cut for positrons
-  Gaudi::Property<double> m_positron{this, "CutForPositron", 10 * CLHEP::mm};
+  Gaudi::Property<double> m_positron{ this, "CutForPositron", 10 * CLHEP::mm };
 
-  Gaudi::Property<bool> m_overwrite{this, "Overwrite", true};
+  Gaudi::Property<bool> m_overwrite{ this, "Overwrite", true };
 };

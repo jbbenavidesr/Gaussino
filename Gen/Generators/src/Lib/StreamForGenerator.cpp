@@ -14,8 +14,6 @@
 // local
 #include "Generators/StreamForGenerator.h"
 
-MsgStream * StreamForGenerator::s_gaudiStream = 0 ;
+MsgStream* StreamForGenerator::s_gaudiStream = 0;
 
-MsgStream *& StreamForGenerator::getStream() {
-  return s_gaudiStream ;
-}
+MsgStream*& StreamForGenerator::getStream() { return s_gaudiStream; }

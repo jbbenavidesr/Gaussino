@@ -8,10 +8,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Configurables import (
-    GaussinoSimulation,
-    CustomSimulation,
-)
+from Configurables import CustomSimulation, GaussinoSimulation
 
 GaussinoSimulation(
     CustomSimulation="ImmediateDepositCreator",

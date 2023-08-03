@@ -32,17 +32,16 @@
 
 #include "MCTruthToEDM/VertexType.h"
 
-#include<set>
+#include <set>
 
-std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks> MCTruthToEDM::
-operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHeader ) const
-{
+std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
+MCTruthToEDM::operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader& genHeader ) const {
   // Create containers in TES for MCParticles and MCVertices.
-  LHCb::MCParticles m_particleContainer;
-  LHCb::MCVertices m_vertexContainer;
+  LHCb::MCParticles             m_particleContainer;
+  LHCb::MCVertices              m_vertexContainer;
   LinkedParticleMCParticleLinks particle_links;
-  size_t n_LinkedParticles{0};
-  size_t n_LinkedVertices{0};
+  size_t                        n_LinkedParticles{ 0 };
+  size_t                        n_LinkedVertices{ 0 };
   for ( auto& mctruth : mctruths ) {
     n_LinkedParticles += mctruth->GetNParticles();
     n_LinkedVertices += mctruth->GetNVertices();
@@ -55,12 +54,12 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
 
   m_particleContainer.reserve( n_LinkedParticles );
   m_vertexContainer.reserve( n_LinkedVertices );
-  Converter converter{m_particleContainer, m_vertexContainer, particle_links, msgStream()};
+  Converter converter{ m_particleContainer, m_vertexContainer, particle_links, msgStream() };
 
   // Create some MCHeader.
   LHCb::MCHeader mcHeader;
-  mcHeader.setEvtNumber(genHeader.evtNumber());
-  mcHeader.setRunNumber(genHeader.runNumber());
+  mcHeader.setEvtNumber( genHeader.evtNumber() );
+  mcHeader.setRunNumber( genHeader.runNumber() );
   // Create a set to store a pointer to createed primary vertices.
   // This will be searched for every root particle to assign them to the
   // same vertex if necessary
@@ -73,8 +72,8 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
     // FIXME: Introduce global setting server to only activate the special event processing
     // when needed? Might be slight performance improvement
     for ( auto rp : mt->GetRootParticlesIncludingSlaves() ) {
-      LHCb::MCVertex* primary{nullptr};
-      auto foundpv = FindPV( rp, pvs );
+      LHCb::MCVertex* primary{ nullptr };
+      auto            foundpv = FindPV( rp, pvs );
       // Attach to the found vertex, if not create a new one
       if ( foundpv ) {
         primary = foundpv;
@@ -98,8 +97,7 @@ operator()( const Gaussino::MCTruthPtrs& mctruths, const LHCb::GenHeader &genHea
 // Convert a decay tree into MCParticle or to G4PrimaryParticle.
 //=============================================================================
 
-LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
-{
+LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const {
 
   auto essentiallyEqual = []( float a, float b, float epsilon = 0.00001 ) {
     return fabs( a - b ) <= ( ( fabs( a ) > fabs( b ) ? fabs( b ) : fabs( a ) ) * epsilon );
@@ -108,9 +106,7 @@ LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
   // Vertex finder for the PV of a root particle
   auto finder_hepmc = [&]( VertexSet::key_type p ) {
     if ( lp->HepMC() && lp->HepMC()->production_vertex().get() == p.second ) {
-      if ( msgLevel( MSG::DEBUG ) ) {
-        debug() << "Found PV for " << *lp << " via HepMC production vertex" << endmsg;
-      }
+      if ( msgLevel( MSG::DEBUG ) ) { debug() << "Found PV for " << *lp << " via HepMC production vertex" << endmsg; }
       return true;
     }
     return false;
@@ -128,37 +124,30 @@ LHCb::MCVertex* MCTruthToEDM::FindPV( LinkedParticle* lp, VertexSet& pvs ) const
     return false;
   };
   auto found = std::find_if( std::begin( pvs ), std::end( pvs ), finder_hepmc );
-  if ( found != std::end( pvs ) ) {
-    return found->first;
-  }
+  if ( found != std::end( pvs ) ) { return found->first; }
   found = std::find_if( std::begin( pvs ), std::end( pvs ), finder_position );
-  if ( found != std::end( pvs ) ) {
-    return found->first;
-  }
+  if ( found != std::end( pvs ) ) { return found->first; }
   return nullptr;
 }
 
-LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( const HepMC3::FourVector& fm )
-{
+LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( const HepMC3::FourVector& fm ) {
   auto ret = new LHCb::MCVertex{};
-  ret->setPosition( Gaudi::XYZPoint{fm.x(), fm.y(), fm.z()} );
+  ret->setPosition( Gaudi::XYZPoint{ fm.x(), fm.y(), fm.z() } );
   ret->setTime( fm.t() );
   m_vertices.insert( ret );
 
   return ret;
 }
 
-LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv )
-{
+LHCb::MCVertex* MCTruthToEDM::Converter::createVertex( LinkedVertex* lv ) {
   auto fm  = lv->GetPosition();
   auto ret = createVertex( fm );
   already_converted.insert( lv );
-  ret->setType(Gaussino::GetLinkedVertexType(lv, &msgStream));
+  ret->setType( Gaussino::GetLinkedVertexType( lv, &msgStream ) );
   return ret;
 }
 
-void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex* originVertex )
-{
+void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex* originVertex ) {
   auto mcp = makeMCParticle( particle );
   mcp->setOriginVertex( originVertex );
   originVertex->addToProducts( mcp );
@@ -173,25 +162,20 @@ void MCTruthToEDM::Converter::convert( LinkedParticle* particle, LHCb::MCVertex*
     auto endVertex = createVertex( ev.get() );
     endVertex->setMother( mcp );
     mcp->addToEndVertices( endVertex );
-    for ( auto& child : ev->outgoing_particles ) {
-      convert( child, endVertex );
-    }
+    for ( auto& child : ev->outgoing_particles ) { convert( child, endVertex ); }
     // Now convert all outgoing mctruth objects from this vertex.
     // Additional MCTruth objects that exist on root level are handled in the
     // main loop over all root particles
-    for(auto & slavetruth: ev->outgoing_mctruths){
-      if(msgStream.currentLevel() <= MSG::DEBUG){
+    for ( auto& slavetruth : ev->outgoing_mctruths ) {
+      if ( msgStream.currentLevel() <= MSG::DEBUG ) {
         msgStream << MSG::DEBUG << "Adding outgoing MCTruth to record." << endmsg;
       };
-      for ( auto& child : slavetruth->GetRootParticlesIncludingSlaves() ) {
-        convert( child, endVertex );
-      }
+      for ( auto& child : slavetruth->GetRootParticlesIncludingSlaves() ) { convert( child, endVertex ); }
     }
   }
 }
 
-LHCb::MCParticle* MCTruthToEDM::Converter::makeMCParticle( LinkedParticle* particle )
-{
+LHCb::MCParticle* MCTruthToEDM::Converter::makeMCParticle( LinkedParticle* particle ) {
   // Create and insert into TES.
   // LHCb::MCParticle* mcp = new LHCb::MCParticle();
   auto mcp = new LHCb::MCParticle{};
@@ -200,7 +184,7 @@ LHCb::MCParticle* MCTruthToEDM::Converter::makeMCParticle( LinkedParticle* parti
 
   // Set properties.
   Gaudi::LorentzVector mom( particle->GetMomentum() );
-  LHCb::ParticleID pid( particle->GetPDG() );
+  LHCb::ParticleID     pid( particle->GetPDG() );
   mcp->setMomentum( mom );
   mcp->setParticleID( pid );
 

@@ -28,7 +28,7 @@ namespace Gaussino::ReDecay {
     friend IReDecaySvc;
 
   public:
-    friend MsgStream& operator<<<Token>( MsgStream&, const Token& );
+    friend MsgStream& operator<< <Token>( MsgStream&, const Token& );
     Token()               = default;
     Token( const Token& ) = delete;
     Token( Token&& right ) {
@@ -39,28 +39,29 @@ namespace Gaussino::ReDecay {
       m_original_event_seedpair = right.m_original_event_seedpair;
     };
     ~Token();
-    bool IsOriginal(){
-      return m_original_event_seedpair == m_this_event_seedpair;
-    }
+    bool IsOriginal() { return m_original_event_seedpair == m_this_event_seedpair; }
 
   private:
     Random::SeedPair m_this_event_seedpair{};
     Random::SeedPair m_original_event_seedpair{};
-    IReDecaySvc*     m_redecay_svc{nullptr};
-    bool             m_original{false};
+    IReDecaySvc*     m_redecay_svc{ nullptr };
+    bool             m_original{ false };
   };
 
   class TokenGuard {
     friend IReDecaySvc;
-    private:
-      TokenGuard() = delete;
-      TokenGuard(IReDecaySvc* svc): m_svc{svc}{}
-      TokenGuard(const TokenGuard &) = delete;
-    public:
-      ~TokenGuard();
-    private:
-      IReDecaySvc* m_svc{nullptr};
+
+  private:
+    TokenGuard() = delete;
+    TokenGuard( IReDecaySvc* svc ) : m_svc{ svc } {}
+    TokenGuard( const TokenGuard& ) = delete;
+
+  public:
+    ~TokenGuard();
+
+  private:
+    IReDecaySvc* m_svc{ nullptr };
   };
 } // namespace Gaussino::ReDecay
 template <>
-MsgStream& operator<<<Gaussino::ReDecay::Token>( MsgStream& strm, const Gaussino::ReDecay::Token& token );
+MsgStream& operator<< <Gaussino::ReDecay::Token>( MsgStream& strm, const Gaussino::ReDecay::Token& token );

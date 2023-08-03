@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedNInteractions.cpp,v 1.5 2009-04-07 16:11:21 gcorti Exp $
-// Include files 
+// Include files
 
 // local
 #include "FixedNInteractions.h"
@@ -17,7 +17,7 @@
 // from Gaudi
 #include "GaudiKernel/SystemOfUnits.h"
 
-// from Event 
+// from Event
 #include "Event/GenHeader.h"
 
 //-----------------------------------------------------------------------------
@@ -30,46 +30,40 @@
 
 DECLARE_COMPONENT( FixedNInteractions )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-FixedNInteractions::FixedNInteractions( const std::string& type,
-                                        const std::string& name,
-                                        const IInterface* parent )
-  : GaudiTool ( type, name , parent ) {
-    declareInterface< IPileUpTool >( this ) ;
-    declareProperty ( "NInteractions" , m_nInteractions = 1 ) ;
+FixedNInteractions::FixedNInteractions( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent ) {
+  declareInterface<IPileUpTool>( this );
+  declareProperty( "NInteractions", m_nInteractions = 1 );
 }
 
 //=============================================================================
-// Destructor 
+// Destructor
 //=============================================================================
-FixedNInteractions::~FixedNInteractions( ) { }
+FixedNInteractions::~FixedNInteractions() {}
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode FixedNInteractions::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode FixedNInteractions::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
-  if ( 1 == m_nInteractions ) 
-    info() << "Single Interaction Mode" << endmsg ;
-  else info() << "Fixed Number of Interactions per Event = : "
-              << m_nInteractions << endmsg ;
-  return sc ;
+  if ( 1 == m_nInteractions )
+    info() << "Single Interaction Mode" << endmsg;
+  else
+    info() << "Fixed Number of Interactions per Event = : " << m_nInteractions << endmsg;
+  return sc;
 }
 
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedNInteractions::numberOfPileUp( HepRandomEnginePtr & ) {
-  return m_nInteractions ;
-}
+unsigned int FixedNInteractions::numberOfPileUp( HepRandomEnginePtr& ) { return m_nInteractions; }
 
 //=============================================================================
 // Print the specific pile up counters
 //=============================================================================
-void FixedNInteractions::printPileUpCounters( ) { }
-
+void FixedNInteractions::printPileUpCounters() {}

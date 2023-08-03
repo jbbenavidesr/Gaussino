@@ -23,9 +23,9 @@
 namespace Gaussino::CustomSimulation {
   class RegionFactory : public extends<GiGaTool, GiGaFactoryBase<G4Region>> {
 
-    Gaudi::Property<std::string>              m_region_name{this, "Name", ""};
-    Gaudi::Property<std::string>              m_det_name{this, "SensitiveDetectorName", ""};
-    Gaudi::Property<std::vector<std::string>> m_volumes{this, "Volumes", {}};
+    Gaudi::Property<std::string>              m_region_name{ this, "Name", "" };
+    Gaudi::Property<std::string>              m_det_name{ this, "SensitiveDetectorName", "" };
+    Gaudi::Property<std::vector<std::string>> m_volumes{ this, "Volumes", {} };
 
   public:
     using extends::extends;

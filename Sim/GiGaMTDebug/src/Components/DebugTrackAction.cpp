@@ -46,10 +46,8 @@
  *  @date   28/02/2019
  */
 
-namespace Gaussino
-{
-  class DebugTrackAction : virtual public G4UserTrackingAction
-  {
+namespace Gaussino {
+  class DebugTrackAction : virtual public G4UserTrackingAction {
   public:
     virtual ~DebugTrackAction()                 = default;
     DebugTrackAction()                          = default;
@@ -72,47 +70,45 @@ namespace Gaussino
     static std::unordered_set<std::string> m_hadronicProcesses;
   };
 
-  /*static*/ std::unordered_set<std::string> DebugTrackAction::m_hadronicProcesses = {"KaonPlusInelastic",
-                                                                                      "PionMinusAbsorptionAtRest",
-                                                                                      "KaonZeroLInelastic",
-                                                                                      "KaonZeroSInelastic",
-                                                                                      "MuonMinusCaptureAtRest",
-                                                                                      "TritonInelastic",
-                                                                                      "KaonMinusAbsorption",
-                                                                                      "LambdaInelastic",
-                                                                                      "SigmaMinusInelastic",
-                                                                                      "LCapture",
-                                                                                      "AntiNeutronAnnihilationAtRest",
-                                                                                      "AntiProtonAnnihilationAtRest",
-                                                                                      "AntiLambdaInelastic",
-                                                                                      "AntiXiZeroInelastic",
-                                                                                      "AntiSigmaPlusInelastic",
-                                                                                      "SigmaPlusInelastic",
-                                                                                      "XiMinusInelastic",
-                                                                                      "XiZeroInelastic",
-                                                                                      "AntiSigmaMinusInelastic",
-                                                                                      "AntiXiMinusInelastic",
-                                                                                      "OmegaMinusInelastic",
-                                                                                      "AntiOmegaMinusInelastic",
-                                                                                      "AlphaInelastic"};
+  /*static*/ std::unordered_set<std::string> DebugTrackAction::m_hadronicProcesses = { "KaonPlusInelastic",
+                                                                                       "PionMinusAbsorptionAtRest",
+                                                                                       "KaonZeroLInelastic",
+                                                                                       "KaonZeroSInelastic",
+                                                                                       "MuonMinusCaptureAtRest",
+                                                                                       "TritonInelastic",
+                                                                                       "KaonMinusAbsorption",
+                                                                                       "LambdaInelastic",
+                                                                                       "SigmaMinusInelastic",
+                                                                                       "LCapture",
+                                                                                       "AntiNeutronAnnihilationAtRest",
+                                                                                       "AntiProtonAnnihilationAtRest",
+                                                                                       "AntiLambdaInelastic",
+                                                                                       "AntiXiZeroInelastic",
+                                                                                       "AntiSigmaPlusInelastic",
+                                                                                       "SigmaPlusInelastic",
+                                                                                       "XiMinusInelastic",
+                                                                                       "XiZeroInelastic",
+                                                                                       "AntiSigmaMinusInelastic",
+                                                                                       "AntiXiMinusInelastic",
+                                                                                       "OmegaMinusInelastic",
+                                                                                       "AntiOmegaMinusInelastic",
+                                                                                       "AlphaInelastic" };
 
   template <typename T>
-  T& operator<<( T& ostr, const HepMC3::FourVector& fv )
-  {
+  T& operator<<( T& ostr, const HepMC3::FourVector& fv ) {
     ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
     return ostr;
   }
 
-  void DebugTrackAction::PreUserTrackingAction( const G4Track* track )
-  {
+  void DebugTrackAction::PreUserTrackingAction( const G4Track* track ) {
     // new track is being started
     // we record its initial momentum
-    int pdgID = track->GetDefinition()->GetPDGEncoding();
+    int                pdgID = track->GetDefinition()->GetPDGEncoding();
     HepMC3::FourVector endpos( track->GetPosition().x(), track->GetPosition().y(), track->GetPosition().z(),
                                track->GetGlobalTime() );
 
-    HepMC3::FourVector fourmomentum ( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
-                                        track->GetTotalEnergy() );
+    HepMC3::FourVector fourmomentum( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
+                                     track->GetTotalEnergy() );
     G4cout << "##### STARTING NEW TRACK #####" << G4endl;
     G4cout << "TrackID " << track->GetTrackID() << G4endl;
     G4cout << "ParentID " << track->GetParentID() << G4endl;
@@ -122,8 +118,7 @@ namespace Gaussino
     G4cout << "Momentum: " << fourmomentum << G4endl;
   }
 
-  void DebugTrackAction::PostUserTrackingAction( const G4Track* track )
-  {
+  void DebugTrackAction::PostUserTrackingAction( const G4Track* track ) {
     if ( !track->GetUserInformation() ) {
       G4cerr << __PRETTY_FUNCTION__
              << " Could not find user track information. Likely wrong order of actions in sequence!" << G4endl;
@@ -141,14 +136,11 @@ namespace Gaussino
       G4cout << *primary_info << G4endl;
     }
 
-    if ( track_info->storeTruth() ) {
-      G4cout << "Will be stored" << G4endl;
-    }
+    if ( track_info->storeTruth() ) { G4cout << "Will be stored" << G4endl; }
     G4cout << "##### FINISHED NEW TRACK #####" << G4endl;
   }
 
-  LHCb::MCVertex::MCVertexType DebugTrackAction::processID( const G4VProcess* creator )
-  {
+  LHCb::MCVertex::MCVertexType DebugTrackAction::processID( const G4VProcess* creator ) {
     // FIXME: Need to define those codes somewhere centrally
 
     LHCb::MCVertex::MCVertexType processID = LHCb::MCVertex::Unknown;
@@ -199,8 +191,7 @@ namespace Gaussino
 
 #include "G4UserTrackingAction.hh"
 
-class DebugTrackActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserTrackingAction>>
-{
+class DebugTrackActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserTrackingAction>> {
   using extends::extends;
   virtual G4UserTrackingAction* construct() const override { return new Gaussino::DebugTrackAction{}; }
 };

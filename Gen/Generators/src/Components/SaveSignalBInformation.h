@@ -31,14 +31,13 @@
  *  @date   2013-06-26
  */
 class SaveSignalBInformation
-    : public Gaudi::Functional::Transformer<HepMC3::GenEventPtrs( const HepMC3::GenEventPtrs& )>
-{
+    : public Gaudi::Functional::Transformer<HepMC3::GenEventPtrs( const HepMC3::GenEventPtrs& )> {
 
 public:
   /// Standard constructor
   SaveSignalBInformation( const std::string& name, ISvcLocator* pSvcLocator )
-      : Transformer( name, pSvcLocator, {KeyValue{"InputHepMCEvent", Gaussino::HepMCEventLocation::Default}},
-                     {KeyValue{"OutputHepMCEvent", Gaussino::HepMCEventLocation::BInfo}} ){};
+      : Transformer( name, pSvcLocator, { KeyValue{ "InputHepMCEvent", Gaussino::HepMCEventLocation::Default } },
+                     { KeyValue{ "OutputHepMCEvent", Gaussino::HepMCEventLocation::BInfo } } ){};
 
   virtual ~SaveSignalBInformation(){}; ///< Destructor
 
@@ -50,6 +49,7 @@ private:
   HepMC3::GenEventPtr extractSignal( const HepMC3::ConstGenVertexPtr& theVertex ) const;
 
   /// make a new HepMC event
-  StatusCode fillHepMCEvent( HepMC3::GenParticlePtr & theNewParticle, const HepMC3::ConstGenParticlePtr & theOldParticle ) const;
+  StatusCode fillHepMCEvent( HepMC3::GenParticlePtr&            theNewParticle,
+                             const HepMC3::ConstGenParticlePtr& theOldParticle ) const;
 };
 #endif // COMPONENT_SAVESIGNALBINFORMATION_H

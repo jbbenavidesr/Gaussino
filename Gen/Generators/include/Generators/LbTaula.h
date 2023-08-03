@@ -8,21 +8,20 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#ifndef GENERATORS_LBTAULA_H 
+#ifndef GENERATORS_LBTAULA_H
 #define GENERATORS_LBTAULA_H 1
 
 // Include files
 
 /** @class LbTaula LbTaula.h Generators/LbTaula.h
- *  
+ *
  *
  *  @author Patrick Robbe
  *  @date   2013-05-31
  */
 class LbTaula {
-public: 
+public:
   /// Set output unit of Taula
-  static void setOutputUnit( int outputUnit ) ;
-
+  static void setOutputUnit( int outputUnit );
 };
 #endif // GENERATORS_LBTAULA_H

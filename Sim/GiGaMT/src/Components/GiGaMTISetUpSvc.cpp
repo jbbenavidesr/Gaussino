@@ -32,7 +32,7 @@
 #include "GiGaMTCoreRun/GiGaMTRunManager.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTTruth/IHepMC3ToMCTruthConverter.h"
-//#include "GiGa/GiGaUtil.h"
+// #include "GiGa/GiGaUtil.h"
 /// local
 #include "GiGaMT.h"
 #include "GiGaMT/GiGaActionInitializer.h"
@@ -52,8 +52,7 @@
 // It's implementation is based on commong Geant4 examples and the documentation.
 // Note however that not much will happen here as GiGaMTRunManager deactivated a lot
 // of the internal workings.
-StatusCode GiGaMT::InitializeMainThread() const
-{
+StatusCode GiGaMT::InitializeMainThread() const {
   // Start by creating the worker thread by using the corresponding factory.
   // This will instantiate call the singleton for the run manager and apply
   // any configuration given to the factory (none at the moment!).
@@ -67,8 +66,7 @@ StatusCode GiGaMT::InitializeMainThread() const
   return StatusCode::SUCCESS;
 }
 
-StatusCode GiGaMT::InitializeWorkerThreads() const
-{
+StatusCode GiGaMT::InitializeWorkerThreads() const {
 
   debug() << "Beginning worker thread creation" << endmsg;
   // Barrier to synchronise the initialization of the threads to only
@@ -80,8 +78,8 @@ StatusCode GiGaMT::InitializeWorkerThreads() const
     auto pilot = m_workerPilotFactory->construct();
     pilot->SetInputQueue( &m_payloadQueue );
     // FIXME: Add call-back for converter to workerpilot
-    //pilot->SetConverter(
-        //[&]( const std::vector<const HepMC3::GenEventPtr>& evts ) { return m_conversionTool->g4Event( evts ); } );
+    // pilot->SetConverter(
+    //[&]( const std::vector<const HepMC3::GenEventPtr>& evts ) { return m_conversionTool->g4Event( evts ); } );
     m_workerThreads.emplace_back( std::move( *pilot ) );
     delete pilot;
   }

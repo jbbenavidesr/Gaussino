@@ -51,16 +51,16 @@ namespace Gaussino::MagneticField {
     virtual G4FieldManager*  construct( const bool& ) const override;
 
   private:
-    ToolHandle<GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>> m_stepper_factory{this, "StepperFactory",
-                                                                                        "G4ClassicalRK4"};
-    ToolHandle<GiGaFactoryBase<G4MagneticField>> m_field_factory{this, "FieldFactory", "UniformMagneticField"};
+    ToolHandle<GiGaFactoryBase<G4MagIntegratorStepper, G4Mag_EqRhs*>> m_stepper_factory{ this, "StepperFactory",
+                                                                                         "G4ClassicalRK4" };
+    ToolHandle<GiGaFactoryBase<G4MagneticField>> m_field_factory{ this, "FieldFactory", "UniformMagneticField" };
 
-    Gaudi::Property<double> m_minStep{this, "MinStep", 0.01 * Gaudi::Units::mm};
-    Gaudi::Property<double> m_deltaChord{this, "DeltaChord", 0.25 * Gaudi::Units::mm};
-    Gaudi::Property<double> m_deltaintersection{this, "DeltaIntersection", 1e-05 * Gaudi::Units::mm};
-    Gaudi::Property<double> m_deltaonestep{this, "DeltaOneStep", 0.001 * Gaudi::Units::mm};
-    Gaudi::Property<double> m_minimumEpsilonStep{this, "MinEpsilonStep", 5e-05 * Gaudi::Units::mm};
-    Gaudi::Property<double> m_maximumEpsilonStep{this, "MaxEpsilonStep", 0.001 * Gaudi::Units::mm};
+    Gaudi::Property<double> m_minStep{ this, "MinStep", 0.01 * Gaudi::Units::mm };
+    Gaudi::Property<double> m_deltaChord{ this, "DeltaChord", 0.25 * Gaudi::Units::mm };
+    Gaudi::Property<double> m_deltaintersection{ this, "DeltaIntersection", 1e-05 * Gaudi::Units::mm };
+    Gaudi::Property<double> m_deltaonestep{ this, "DeltaOneStep", 0.001 * Gaudi::Units::mm };
+    Gaudi::Property<double> m_minimumEpsilonStep{ this, "MinEpsilonStep", 5e-05 * Gaudi::Units::mm };
+    Gaudi::Property<double> m_maximumEpsilonStep{ this, "MaxEpsilonStep", 0.001 * Gaudi::Units::mm };
   };
 } // namespace Gaussino::MagneticField
 
@@ -71,7 +71,7 @@ StatusCode Gaussino::MagneticField::FieldManagerFactory::initialize() {
 }
 
 G4FieldManager* Gaussino::MagneticField::FieldManagerFactory::construct( const bool& global ) const {
-  G4FieldManager* manager{nullptr};
+  G4FieldManager* manager{ nullptr };
   if ( global ) {
     auto mgr = G4TransportationManager::GetTransportationManager();
     if ( !mgr ) { throw GaudiException( "Invalid Transportation manager", name(), StatusCode::FAILURE ); }

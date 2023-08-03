@@ -24,7 +24,7 @@ namespace HepMCUtils {
     class AncestorsWrapper : public HepMC3::Relatives {
 
     public:
-      virtual ~AncestorsWrapper() = default;
+      virtual ~AncestorsWrapper()  = default;
       constexpr AncestorsWrapper() = default;
 
       HepMC3::GenParticles_type<HepMC3::GenParticlePtr> operator()( HepMC3::GenParticlePtr input ) const override {
@@ -45,7 +45,7 @@ namespace HepMCUtils {
     class DescendantsWrapper : public HepMC3::Relatives {
 
     public:
-      virtual ~DescendantsWrapper() = default;
+      virtual ~DescendantsWrapper()  = default;
       constexpr DescendantsWrapper() = default;
 
       HepMC3::GenParticles_type<HepMC3::GenParticlePtr> operator()( HepMC3::GenParticlePtr input ) const override {
@@ -66,5 +66,5 @@ namespace HepMCUtils {
     static const DescendantsWrapper DESCENDANTS;
     static const AncestorsWrapper   ANCESTORS;
   };
-  const HepMC3::Relatives & RelativesFromID(int idx);
+  const HepMC3::Relatives& RelativesFromID( int idx );
 } // namespace HepMCUtils

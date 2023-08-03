@@ -21,8 +21,7 @@
 #include "GaudiKernel/IAlgTool.h"
 
 class G4Event;
-namespace HepMC
-{
+namespace HepMC {
   class GenEvent;
 }
 
@@ -34,49 +33,46 @@ namespace HepMC
  *  @date   22.6.2018
  */
 
-class IExtEngine : virtual public IAlgTool, virtual public RndCommon::RndConstructor
-{
+class IExtEngine : virtual public IAlgTool, virtual public RndCommon::RndConstructor {
 public:
   DeclareInterfaceID( IExtEngine, 1, 0 );
-  virtual ~IExtEngine() = default;
+  virtual ~IExtEngine()                                      = default;
   virtual CLHEP::HepRandomEngine* construct() const override = 0;
 };
 
-namespace Random
-{
+namespace Random {
   typedef std::pair<unsigned int, unsigned int> SeedPair;
-  const std::string Location = "SeedsInternalUsage";
-}
+  const std::string                             Location = "SeedsInternalUsage";
+} // namespace Random
 
-class RndAlgSeeder : public GaudiAlgorithm
-{
-  Gaudi::Property<int> m_forcedSeed{this, "ForcedSeed", 0, "Force seed to value if not 0"};
-  ToolHandle<IExtEngine> m_engine_tool{this, "RandomEngine", "MixMaxRng"};
+class RndAlgSeeder : public GaudiAlgorithm {
+  Gaudi::Property<int>   m_forcedSeed{ this, "ForcedSeed", 0, "Force seed to value if not 0" };
+  ToolHandle<IExtEngine> m_engine_tool{ this, "RandomEngine", "MixMaxRng" };
 
 public:
-  using GaudiAlgorithm::GaudiAlgorithm;
   using GaudiAlgorithm::finalize;
+  using GaudiAlgorithm::GaudiAlgorithm;
   using GaudiAlgorithm::initialize;
 
 protected:
   // Checks if a new engine needs to be created, does so and returns a reference to it.
   HepRandomEnginePtr createRndmEngine() const;
+
 private:
-  DataObjectReadHandle<Random::SeedPair> m_forseed{Random::Location, this};
+  DataObjectReadHandle<Random::SeedPair> m_forseed{ Random::Location, this };
 };
 
-class RndInitAlg : public GaudiAlgorithm
-{
+class RndInitAlg : public GaudiAlgorithm {
 
 public:
-  using GaudiAlgorithm::GaudiAlgorithm;
   using GaudiAlgorithm::finalize;
+  using GaudiAlgorithm::GaudiAlgorithm;
   using GaudiAlgorithm::initialize;
 
 protected:
   void SetSeedPair( unsigned int val1, unsigned int val2 ) const { m_forseed.put( Random::SeedPair{ val1, val2 } ); }
-  std::pair<unsigned int, unsigned int> GetSeedPair( ) const { return *m_forseed.get(); }
+  std::pair<unsigned int, unsigned int> GetSeedPair() const { return *m_forseed.get(); }
 
 private:
-  mutable DataObjectWriteHandle<Random::SeedPair> m_forseed{Random::Location, this};
+  mutable DataObjectWriteHandle<Random::SeedPair> m_forseed{ Random::Location, this };
 };

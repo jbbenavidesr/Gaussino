@@ -8,13 +8,13 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-import pytest
 from subprocess import run
+
+import pytest
 from Gaussino.pytest.helpers import *
 
-@pytest.mark.parametrize(
-    "threads", [1, 4, 20]
-)
+
+@pytest.mark.parametrize("threads", [1, 4, 20])
 def test_pgun_reproducibility(threads):
     reset_configurables_now()
     ex_A = run_gaudi(
@@ -43,5 +43,5 @@ def test_pgun_reproducibility(threads):
         capture_output=True,
         text=True,
     )
-    print(comparison.stdout) # will print with `pytest ... -s`
+    print(comparison.stdout)  # will print with `pytest ... -s`
     assert comparison.returncode == 0

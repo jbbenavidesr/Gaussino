@@ -10,8 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
-#include "GiGaMTReDecay/IReDecaySorter.h"
 #include "GaudiAlg/GaudiTool.h"
+#include "GiGaMTReDecay/IReDecaySorter.h"
 #include "HepMC3/GenParticle_fwd.h"
 #include "HepMCUser/typedefs.h"
 
@@ -22,16 +22,13 @@
 //-----------------------------------------------------------------------------
 
 // Declaration of the Algorithm Factory
-class BaseSorter : public extends<GaudiTool, IReDecaySorter>
-{
+class BaseSorter : public extends<GaudiTool, IReDecaySorter> {
 
 public:
   /// Standard constructor
   using extends::extends;
 
 protected:
-
-  void RecursiveTagger(HepMC3::GenParticlePtr) const;
-  void RemoveDecayTrees(std::vector<HepMC3::GenEventPtr> &) const;
-
+  void RecursiveTagger( HepMC3::GenParticlePtr ) const;
+  void RemoveDecayTrees( std::vector<HepMC3::GenEventPtr>& ) const;
 };

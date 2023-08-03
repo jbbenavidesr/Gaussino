@@ -22,9 +22,9 @@ namespace Gaussino::CustomSimulation {
 
   protected:
     Gaudi::Property<ParticlePIDs> m_particlePIDs{
-        this, "ParticlePIDs", {}, "List of particle PIDs to be tracked; track all if empty"};
+        this, "ParticlePIDs", {}, "List of particle PIDs to be tracked; track all if empty" };
     Gaudi::Property<ParticleWorlds> m_particleWorlds{
-        this, "ParticleWorlds", {}, "List of particle parallel worlds; empty means mass world"};
+        this, "ParticleWorlds", {}, "List of particle parallel worlds; empty means mass world" };
 
   public:
     using base_class = GiGaMTG4PhysicsConstrFAC<TPhysics>;

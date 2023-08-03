@@ -16,11 +16,8 @@
  *  @param run pointer to Geant4 run object
  */
 // ============================================================================
-void GiGaRunActionCommand::BeginOfRunAction( const G4Run* run )
-{
-  if ( 0 == run ) {
-    warning( "BeginOfRunAction:: G4Run* points to NULL!" );
-  }
+void GiGaRunActionCommand::BeginOfRunAction( const G4Run* run ) {
+  if ( 0 == run ) { warning( "BeginOfRunAction:: G4Run* points to NULL!" ); }
   /// get Geant4 UI manager
   G4UImanager* ui = G4UImanager::GetUIpointer();
   if ( 0 == ui ) {
@@ -39,11 +36,8 @@ void GiGaRunActionCommand::BeginOfRunAction( const G4Run* run )
  *  @param run pointer to Geant4 run object
  */
 // ============================================================================
-void GiGaRunActionCommand::EndOfRunAction( const G4Run* run )
-{
-  if ( 0 == run ) {
-    warning( "EndOfRunAction:: G4Run* points to NULL!" );
-  }
+void GiGaRunActionCommand::EndOfRunAction( const G4Run* run ) {
+  if ( 0 == run ) { warning( "EndOfRunAction:: G4Run* points to NULL!" ); }
   /// get Geant4 UI manager
   G4UImanager* ui = G4UImanager::GetUIpointer();
   if ( 0 == ui ) {

@@ -28,8 +28,7 @@
 
 class GiGaRunActionCommandFAC;
 
-class GiGaRunActionCommand : public virtual G4UserRunAction, public GiGaMessage
-{
+class GiGaRunActionCommand : public virtual G4UserRunAction, public GiGaMessage {
   friend class GiGaRunActionCommandFAC;
 
 public:

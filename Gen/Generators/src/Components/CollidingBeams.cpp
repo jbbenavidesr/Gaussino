@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: CollidingBeams.cpp,v 1.5 2007-02-08 17:46:06 gcorti Exp $
-// Include files 
+// Include files
 
 // local
 #include "CollidingBeams.h"
@@ -21,8 +21,8 @@
 #include "Event/BeamParameters.h"
 #include "GenEvent/BeamForInitialization.h"
 
-#include "NewRnd/RndGlobal.h"
 #include "CLHEP/Random/RandGauss.h"
+#include "NewRnd/RndGlobal.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : CollidingBeams
@@ -34,89 +34,63 @@
 
 DECLARE_COMPONENT( CollidingBeams )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-CollidingBeams::CollidingBeams( const std::string& type,
-                                const std::string& name,
-                                const IInterface* parent )
-  : GaudiTool ( type, name , parent ) {
-    declareInterface< IBeamTool >( this ) ;
-    declareProperty( "BeamParameters" , 
-                     m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
+CollidingBeams::CollidingBeams( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent ) {
+  declareInterface<IBeamTool>( this );
+  declareProperty( "BeamParameters", m_beamParameters = LHCb::BeamParametersLocation::Default );
 }
 
 //=============================================================================
-// Destructor 
+// Destructor
 //=============================================================================
-CollidingBeams::~CollidingBeams( ) { ; }
-
+CollidingBeams::~CollidingBeams() { ; }
 
 //=============================================================================
 // Mean value of the beam momentum
 //=============================================================================
-void CollidingBeams::getMeanBeams( Gaudi::XYZVector & pBeam1 , 
-                                   Gaudi::XYZVector & pBeam2 )
-  const {
+void CollidingBeams::getMeanBeams( Gaudi::XYZVector& pBeam1, Gaudi::XYZVector& pBeam2 ) const {
   // Retrieve beam parameters from the static class
-  LHCb::BeamParameters * beam = 
-    BeamForInitialization::getInitialBeamParameters() ;
-  if ( 0 == beam ) 
-    Exception( "No beam parameters in initialization" ) ;
+  LHCb::BeamParameters* beam = BeamForInitialization::getInitialBeamParameters();
+  if ( 0 == beam ) Exception( "No beam parameters in initialization" );
 
-  double p1x, p1y, p1z, p2x, p2y, p2z ;
-  
-  p1x = beam -> energy() * 
-    sin( beam -> horizontalCrossingAngle() +
-         beam -> horizontalBeamlineAngle() ) ;
-  p1y = beam -> energy() * 
-    sin( beam -> verticalCrossingAngle() + 
-         beam -> verticalBeamlineAngle() ) ;
-  p1z = beam -> energy() ;
-  pBeam1.SetXYZ( p1x, p1y, p1z ) ;
+  double p1x, p1y, p1z, p2x, p2y, p2z;
 
-  p2x = beam -> energy() * 
-    sin( beam -> horizontalCrossingAngle() - 
-         beam -> horizontalBeamlineAngle() ) ;
-  p2y = beam -> energy() * 
-    sin( beam -> verticalCrossingAngle() - 
-         beam -> verticalBeamlineAngle() ) ;
-  p2z = -beam -> energy() ;
-  pBeam2.SetXYZ( p2x, p2y, p2z ) ;
+  p1x = beam->energy() * sin( beam->horizontalCrossingAngle() + beam->horizontalBeamlineAngle() );
+  p1y = beam->energy() * sin( beam->verticalCrossingAngle() + beam->verticalBeamlineAngle() );
+  p1z = beam->energy();
+  pBeam1.SetXYZ( p1x, p1y, p1z );
+
+  p2x = beam->energy() * sin( beam->horizontalCrossingAngle() - beam->horizontalBeamlineAngle() );
+  p2y = beam->energy() * sin( beam->verticalCrossingAngle() - beam->verticalBeamlineAngle() );
+  p2z = -beam->energy();
+  pBeam2.SetXYZ( p2x, p2y, p2z );
 }
 
 //=============================================================================
 // Current value of the smeared beams
 //=============================================================================
-void CollidingBeams::getBeams( Gaudi::XYZVector & pBeam1 , 
-                               Gaudi::XYZVector & pBeam2 ) {
+void CollidingBeams::getBeams( Gaudi::XYZVector& pBeam1, Gaudi::XYZVector& pBeam2 ) {
   // Retrieve beam parameters
-  LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
-  if ( 0 == beam ) Exception( "No beam parameters in TES" ) ;
+  LHCb::BeamParameters* beam = get<LHCb::BeamParameters>( m_beamParameters );
+  if ( 0 == beam ) Exception( "No beam parameters in TES" );
 
-  CLHEP::RandGauss gaussianDist{ThreadLocalEngine::Get(), 0, 1};
+  CLHEP::RandGauss gaussianDist{ ThreadLocalEngine::Get(), 0, 1 };
 
-  double p1x, p1y, p1z, p2x, p2y, p2z ;
-  p1x = beam -> energy() * 
-    sin( beam -> horizontalCrossingAngle() + 
-         beam -> horizontalBeamlineAngle() + 
-         gaussianDist() * beam -> angleSmear() ) ;
-  p1y = beam -> energy() * 
-    sin( beam -> verticalCrossingAngle() + 
-         beam -> verticalBeamlineAngle() +
-         gaussianDist() * beam -> angleSmear() ) ;
-  p1z = beam -> energy() ;
-  pBeam1.SetXYZ( p1x, p1y, p1z ) ;
+  double p1x, p1y, p1z, p2x, p2y, p2z;
+  p1x = beam->energy() *
+        sin( beam->horizontalCrossingAngle() + beam->horizontalBeamlineAngle() + gaussianDist() * beam->angleSmear() );
+  p1y = beam->energy() *
+        sin( beam->verticalCrossingAngle() + beam->verticalBeamlineAngle() + gaussianDist() * beam->angleSmear() );
+  p1z = beam->energy();
+  pBeam1.SetXYZ( p1x, p1y, p1z );
 
-  p2x = beam -> energy() * 
-    sin( beam -> horizontalCrossingAngle() - 
-         beam -> horizontalBeamlineAngle() + 
-         gaussianDist() * beam -> angleSmear() ) ;
-  p2y = beam -> energy() * 
-    sin( beam -> verticalCrossingAngle() - 
-         beam -> verticalBeamlineAngle() +
-         gaussianDist() * beam -> angleSmear() ) ;
-  p2z = -beam -> energy() ;
-  pBeam2.SetXYZ( p2x, p2y, p2z ) ;
+  p2x = beam->energy() *
+        sin( beam->horizontalCrossingAngle() - beam->horizontalBeamlineAngle() + gaussianDist() * beam->angleSmear() );
+  p2y = beam->energy() *
+        sin( beam->verticalCrossingAngle() - beam->verticalBeamlineAngle() + gaussianDist() * beam->angleSmear() );
+  p2z = -beam->energy();
+  pBeam2.SetXYZ( p2x, p2y, p2z );
 }

@@ -16,12 +16,13 @@ namespace ExternalDetector {
   class MaterialFromElements : public MaterialFactory {
 
     // required
-    Gaudi::Property<std::vector<std::string>> m_symbols{this, "Symbols", {}, "Symbols of the elements"};
+    Gaudi::Property<std::vector<std::string>> m_symbols{ this, "Symbols", {}, "Symbols of the elements" };
     Gaudi::Property<std::vector<double>>      m_fractions{
-        this, "MassFractions", {}, "Mass fractions of each element [0.-1.]"};
-    Gaudi::Property<std::vector<double>> m_atomicNumbers{this, "AtomicNumbers", {}, "Atomic numbers Z of each element"};
+        this, "MassFractions", {}, "Mass fractions of each element [0.-1.]" };
+    Gaudi::Property<std::vector<double>> m_atomicNumbers{
+        this, "AtomicNumbers", {}, "Atomic numbers Z of each element" };
     Gaudi::Property<std::vector<double>> m_massNumbers{
-        this, "MassNumbers", {}, "Mass numbers A [g/mole] of each element"};
+        this, "MassNumbers", {}, "Mass numbers A [g/mole] of each element" };
 
   public:
     using MaterialFactory::MaterialFactory;

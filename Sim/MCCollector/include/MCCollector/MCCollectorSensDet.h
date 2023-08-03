@@ -73,19 +73,19 @@ namespace MCCollector {
 
   protected:
     // Watch out: default dE/dx=0 true by default
-    Gaudi::Property<bool> m_requireEDep{this, "RequireEDep", false};
+    Gaudi::Property<bool> m_requireEDep{ this, "RequireEDep", false };
 
     // Only forward particles
-    Gaudi::Property<bool> m_onlyForward{this, "OnlyForward", true};
+    Gaudi::Property<bool> m_onlyForward{ this, "OnlyForward", true };
 
     // Only hits at the boundary
-    Gaudi::Property<bool> m_onlyAtBoundary{this, "OnlyAtBoundary", false};
+    Gaudi::Property<bool> m_onlyAtBoundary{ this, "OnlyAtBoundary", false };
 
     // Print additional information at the end of each event
-    Gaudi::Property<bool> m_printStats{this, "PrintStats", false};
+    Gaudi::Property<bool> m_printStats{ this, "PrintStats", false };
 
     // Force storing info about tracks & particles
-    Gaudi::Property<bool> m_forceStoreTruth{this, "ForceStoreTruth", false};
+    Gaudi::Property<bool> m_forceStoreTruth{ this, "ForceStoreTruth", false };
 
   public:
     using base_fac = GiGaMTG4SensDetFactory<AnySensDet>;

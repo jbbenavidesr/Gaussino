@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedLuminosity.h,v 1.4 2009-04-07 16:11:21 gcorti Exp $
-#ifndef GENERATORS_FIXEDLUMINOSITY_H 
+#ifndef GENERATORS_FIXEDLUMINOSITY_H
 #define GENERATORS_FIXEDLUMINOSITY_H 1
 
 // Include files
@@ -19,53 +19,51 @@
 #include "GenInterfaces/IPileUpTool.h"
 
 // forward declaration
-class ICounterLogFile ;
+class ICounterLogFile;
 
 /** @class FixedLuminosity FixedLuminosity.h "FixedLuminosity.h"
- *  
+ *
  *  Tool to compute variable number of pile up events
  *  depending on beam parameters
- * 
+ *
  *  @author Patrick Robbe
  *  @date   2005-08-17
  */
 class FixedLuminosity : public GaudiTool, virtual public IPileUpTool {
 public:
   /// Standard constructor
-  FixedLuminosity( const std::string& type, const std::string& name,
-                   const IInterface* parent) ;
+  FixedLuminosity( const std::string& type, const std::string& name, const IInterface* parent );
 
-  virtual ~FixedLuminosity( ); ///< Destructor
+  virtual ~FixedLuminosity(); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) override;
-  
+  virtual StatusCode initialize() override;
+
   /// Finalize method
-  virtual StatusCode finalize( ) override;
+  virtual StatusCode finalize() override;
 
   /** Implements IPileUpTool::numberOfPileUp
    *  Returns the number of pile-up interactions in one event. It follows
-   *  a Poisson distribution with 
+   *  a Poisson distribution with
    *  mean = Luminosity * cross_section / crossing_rate.
    *  The fixed luminosity is returned in the GenHeader.
    */
-  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & engine ) override;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr& engine ) override;
 
   /// Implements IPileUpTool::printPileUpCounters
-  virtual void printPileUpCounters( ) override;
+  virtual void printPileUpCounters() override;
 
 protected:
-
 private:
   /// Location where to store FSR counters (set by options)
-  std::string  m_FSRName;
+  std::string m_FSRName;
 
-  ICounterLogFile * m_xmlLogTool ; ///< XML File for generator counters
-  
-  std::string m_beamParameters ; ///< Location of beam parameters (set by options)
+  ICounterLogFile* m_xmlLogTool; ///< XML File for generator counters
 
-  int    m_numberOfZeroInteraction ; ///< Counter of empty events
+  std::string m_beamParameters; ///< Location of beam parameters (set by options)
 
-  int    m_nEvents ; ///< Counter of events (including empty events)
+  int m_numberOfZeroInteraction; ///< Counter of empty events
+
+  int m_nEvents; ///< Counter of events (including empty events)
 };
 #endif // GENERATORS_FIXEDLUMINOSITY_H

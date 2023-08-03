@@ -12,16 +12,14 @@ __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
 import time
-from Gaudi.Configuration import (
-    log,
-    appendPostConfigAction,
-)
+
+from Gaudi.Configuration import appendPostConfigAction, log
+from Gaussino.Generation import GaussinoGeneration
+from Gaussino.Geometry import GaussinoGeometry
+from Gaussino.Simulation import GaussinoSimulation
 
 # Configurables (do NOT use 'from Configurables' here)
 from Gaussino.Utilities import GaussinoConfigurable
-from Gaussino.Generation import GaussinoGeneration
-from Gaussino.Simulation import GaussinoSimulation
-from Gaussino.Geometry import GaussinoGeometry
 
 
 class Gaussino(GaussinoConfigurable):
@@ -166,16 +164,14 @@ class Gaussino(GaussinoConfigurable):
         for conf in self.__used_configurables__:
             conf()
 
-
     def _set_debug_mode(self):
-        """Sets up the debug mode in python logger and all the configurables.
-        """
+        """Sets up the debug mode in python logger and all the configurables."""
         if self.getProp("Debug"):
             log.setLevel("DEBUG")
 
             def debug_all_configurables():
-                from GaudiKernel.Configurable import Configurable
                 from Gaudi.Configuration import DEBUG
+                from GaudiKernel.Configurable import Configurable
 
                 for conf in Configurable.allConfigurables.values():
                     try:
@@ -214,11 +210,11 @@ class Gaussino(GaussinoConfigurable):
             )
             raise ValueError("EnableHive must be set.")
         from Configurables import (
-            HiveWhiteBoard,
             ApplicationMgr,
-            HiveSlimEventLoopMgr,
             AvalancheSchedulerSvc,
             GenRndInit,
+            HiveSlimEventLoopMgr,
+            HiveWhiteBoard,
         )
 
         whiteboard = HiveWhiteBoard(
@@ -247,8 +243,8 @@ class Gaussino(GaussinoConfigurable):
         """
         from Configurables import (
             ApplicationMgr,
-            GenRndInit,
             GenReDecayInit,
+            GenRndInit,
             SeedingTool,
         )
 
@@ -270,15 +266,13 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().TopAlg.append(conf())
 
     def _setup_geant4MT(self):
-        """Sets up the Geant4 multi-threading options.
-        """
+        """Sets up the Geant4 multi-threading options."""
         from Configurables import GiGaMT
 
         GiGaMT().NumberOfWorkerThreads = self.getProp("ThreadPoolSize")
 
     def _configure_services(self):
-        """Sets up the general Gaudi services needed in Gaussino.
-        """
+        """Sets up the general Gaudi services needed in Gaussino."""
         from Configurables import ApplicationMgr
 
         log.debug("Configuring services")
@@ -296,13 +290,10 @@ class Gaussino(GaussinoConfigurable):
     def _set_particle_property_service(self):
         """Sets up the particle property service.
 
-            .. todo ::
-                LHCb project dependency!
+        .. todo ::
+            LHCb project dependency!
         """
-        from Configurables import (
-            ApplicationMgr,
-            LHCb__ParticlePropertySvc,
-        )
+        from Configurables import ApplicationMgr, LHCb__ParticlePropertySvc
 
         log.debug("Configuring ParticlePropertySvc")
         ppservice = LHCb__ParticlePropertySvc()
@@ -310,12 +301,8 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().ExtSvc += [ppservice]
 
     def _set_auditor_service(self):
-        """Sets up the auditor service: ``AuditorSvc``.
-        """
-        from Configurables import (
-            ApplicationMgr,
-            AuditorSvc,
-        )
+        """Sets up the auditor service: ``AuditorSvc``."""
+        from Configurables import ApplicationMgr, AuditorSvc
 
         log.debug("Configuring AuditorSvc")
         ApplicationMgr().ExtSvc += ["AuditorSvc"]
@@ -323,14 +310,10 @@ class Gaussino(GaussinoConfigurable):
         AuditorSvc().Auditors += ["TimingAuditor"]
 
     def _set_redecay_service(self):
-        """Sets up a dedicated service when using ReDecay: ``ReDecaySvc``.
-        """
+        """Sets up a dedicated service when using ReDecay: ``ReDecaySvc``."""
         if not self.getProp("ReDecay"):
             return
-        from Configurables import (
-            ApplicationMgr,
-            ReDecaySvc,
-        )
+        from Configurables import ApplicationMgr, ReDecaySvc
 
         log.debug("Configuring ReDecaySvc")
         redecaysvc = ReDecaySvc()
@@ -344,9 +327,9 @@ class Gaussino(GaussinoConfigurable):
             ValueError: when unknown option in the list of ``Historgrams``
         """
         from Configurables import (
-            RootHistCnv__PersSvc,
             ApplicationMgr,
             HistogramPersistencySvc,
+            RootHistCnv__PersSvc,
         )
 
         log.debug("Configuring HistogramPersistencySvc")
@@ -368,8 +351,7 @@ class Gaussino(GaussinoConfigurable):
             hst_prs_svc.OutputFile = histos_name
 
     def _configure_edm_conversion(self):
-        """Sets up EDM algorithms for Gaussino.
-        """
+        """Sets up EDM algorithms for Gaussino."""
         if not self.getProp("ConvertEDM"):
             return
         log.debug("Configuring EDM conversion.")
@@ -394,8 +376,8 @@ class Gaussino(GaussinoConfigurable):
         from Configurables import (
             CheckMCStructure,
             MCTruthMonitor,
-            ReDecayMCTruthToEDM,
             MCTruthToEDM,
+            ReDecayMCTruthToEDM,
         )
 
         conv = MCTruthToEDM
@@ -415,7 +397,6 @@ class Gaussino(GaussinoConfigurable):
             ValueError: if the ``Generator`` phase is not provided
         """
         self.propagateProperty("EvtMax", GaussinoGeneration())
-
 
     def _get_output_name(self):
         """Build a name for the output file, based on input options.

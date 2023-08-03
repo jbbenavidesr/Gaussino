@@ -23,12 +23,12 @@ namespace ExternalDetector {
   class MaterialFactory : public extends<GiGaTool, GiGaFactoryBase<G4Material>> {
   protected:
     // required
-    Gaudi::Property<std::string> m_name{this, "Name", ""};
-    Gaudi::Property<double>      m_density{this, "Density", 0., "Density in g/cm3"};
+    Gaudi::Property<std::string> m_name{ this, "Name", "" };
+    Gaudi::Property<double>      m_density{ this, "Density", 0., "Density in g/cm3" };
     // optional
-    Gaudi::Property<double>      m_pressure{this, "Pressure", Gaudi::Units::STP_Pressure, "Pressure in Pa"};
-    Gaudi::Property<double>      m_temperature{this, "Temperature", Gaudi::Units::STP_Temperature, "Temperature in K"};
-    Gaudi::Property<std::string> m_stateName{this, "State", "Undefined", "Undefined/Solid/Liquid/Gas"};
+    Gaudi::Property<double> m_pressure{ this, "Pressure", Gaudi::Units::STP_Pressure, "Pressure in Pa" };
+    Gaudi::Property<double> m_temperature{ this, "Temperature", Gaudi::Units::STP_Temperature, "Temperature in K" };
+    Gaudi::Property<std::string> m_stateName{ this, "State", "Undefined", "Undefined/Solid/Liquid/Gas" };
 
     G4State m_state = G4State::kStateUndefined;
 

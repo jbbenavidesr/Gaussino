@@ -8,14 +8,14 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from GaudiKernel import SystemOfUnits as units
 from Configurables import (
+    FlatNParticles,
     GaussinoGeneration,
     HepMCWriter,
-    ParticleGun,
-    FlatNParticles,
     MomentumRange,
+    ParticleGun,
 )
+from GaudiKernel import SystemOfUnits as units
 
 GaussinoGeneration().WriteHepMC = True
 HepMCWriter().Writer = "WriterAscii"

@@ -9,12 +9,11 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: GaussGenUtil.h,v 1.1 2007-03-07 18:51:00 gcorti Exp $
-#ifndef GAUSSGENUTIL_H 
+#ifndef GAUSSGENUTIL_H
 #define GAUSSGENUTIL_H 1
 
 // Include files
 #include "HepMC3/GenParticle.h"
-
 
 /** @namespace GenUtil GenUtil.h
  *  @brief Utilities for generator
@@ -27,7 +26,7 @@
 namespace GaussGenUtil {
 
   double lifetime( const HepMC3::ConstGenParticlePtr& );
-  
+
 }
 
 #endif // GAUSSGENUTIL_H

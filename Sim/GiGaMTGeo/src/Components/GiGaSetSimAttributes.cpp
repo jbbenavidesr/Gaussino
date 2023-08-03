@@ -39,17 +39,14 @@ DECLARE_COMPONENT( GiGaSetSimAttributes )
  *  @param name name of the volume
  */
 // ============================================================================
-G4LogicalVolume* GiGaSetSimAttributes::g4volume( const std::string& address ) const
-{
+G4LogicalVolume* GiGaSetSimAttributes::g4volume( const std::string& address ) const {
   const G4LogicalVolumeStore* store = G4LogicalVolumeStore::GetInstance();
   if ( 0 == store ) {
     Error( "g4volume('" + address + "'): G4LogicalVolumeStore* is NULL!" ).ignore();
     return 0;
   }
   auto vol = store->GetVolume( address );
-  if ( vol ) {
-    return vol;
-  }
+  if ( vol ) { return vol; }
   Error( "g4volume('" + address + "'): volume is not found!" ).ignore();
   return 0;
 }
@@ -61,12 +58,9 @@ G4LogicalVolume* GiGaSetSimAttributes::g4volume( const std::string& address ) co
  *  @return status code
  */
 // ============================================================================
-StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
-{
+StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const {
 
-  if ( !m_simSvc.isValid() ) {
-    return Error( " process('" + vol + "'): simSvc () is NULL! " );
-  }
+  if ( !m_simSvc.isValid() ) { return Error( " process('" + vol + "'): simSvc () is NULL! " ); }
 
   // for all volumes
   if ( vol.empty() ) {
@@ -80,29 +74,21 @@ StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
   } // RETURN
   else if ( "ALL" == vol ) {
     const G4LogicalVolumeStore* store = G4LogicalVolumeStore::GetInstance();
-    if ( 0 == store ) {
-      return Error( " process('" + vol + "'): G4LogicalVolumeStore* is invalid" );
-    }
+    if ( 0 == store ) { return Error( " process('" + vol + "'): G4LogicalVolumeStore* is invalid" ); }
     StatusCode sc = StatusCode::SUCCESS;
     for ( auto vol : *store ) {
-      if ( 0 != vol ) {
-        sc &= process( vol->GetName() );
-      }
+      if ( 0 != vol ) { sc &= process( vol->GetName() ); }
     }
     return StatusCode::SUCCESS; // RETURN
   };
 
   G4LogicalVolume* g4lv = g4volume( vol );
 
-  if ( 0 == g4lv ) {
-    return Error( " process('" + vol + "'): G4LogicalVolume* is invalid" );
-  }
+  if ( 0 == g4lv ) { return Error( " process('" + vol + "'): G4LogicalVolume* is invalid" ); }
 
   // set new limits ?
   const bool newAttributes = m_simSvc->hasSimAttribute( vol );
-  if ( !newAttributes ) {
-    return StatusCode::SUCCESS;
-  } // RETURN
+  if ( !newAttributes ) { return StatusCode::SUCCESS; } // RETURN
 
   typedef std::map<int, const SimAttribute*> SimAttributes;
 
@@ -114,41 +100,27 @@ StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
 
   for ( auto& [pid, attr] : *partattr ) {
 
-    if ( 0 == attr ) {
-      continue;
-    }
+    if ( 0 == attr ) { continue; }
 
     // set max allowed step
-    if ( -1 != attr->maxAllowedStep() ) {
-      ulimit.SetMaxAllowedStep( attr->maxAllowedStep(), pid );
-    }
+    if ( -1 != attr->maxAllowedStep() ) { ulimit.SetMaxAllowedStep( attr->maxAllowedStep(), pid ); }
 
     // set max track length
-    if ( -1 != attr->maxTrackLength() ) {
-      ulimit.SetUserMaxTrackLength( attr->maxTrackLength(), pid );
-    }
+    if ( -1 != attr->maxTrackLength() ) { ulimit.SetUserMaxTrackLength( attr->maxTrackLength(), pid ); }
 
     // set max time
-    if ( -1 != attr->maxTime() ) {
-      ulimit.SetUserMaxTime( attr->maxTime(), pid );
-    }
+    if ( -1 != attr->maxTime() ) { ulimit.SetUserMaxTime( attr->maxTime(), pid ); }
 
     // set minimum kinetic energy
-    if ( -1 != attr->minEkine() ) {
-      ulimit.SetUserMinEkine( attr->minEkine(), pid );
-    }
+    if ( -1 != attr->minEkine() ) { ulimit.SetUserMinEkine( attr->minEkine(), pid ); }
 
     // set minimum range
-    if ( -1 != attr->minRange() ) {
-      ulimit.SetUserMinRange( attr->minRange(), pid );
-    }
+    if ( -1 != attr->minRange() ) { ulimit.SetUserMinRange( attr->minRange(), pid ); }
   }
 
   // attach user limits to the given G4 volume
   StatusCode sc = setUserLimits( g4lv, ulimit );
-  if ( sc.isFailure() ) {
-    return Error( " process('" + vol + "'): error from setUserLimits", sc );
-  }
+  if ( sc.isFailure() ) { return Error( " process('" + vol + "'): error from setUserLimits", sc ); }
 
   return StatusCode::SUCCESS;
 }
@@ -161,11 +133,8 @@ StatusCode GiGaSetSimAttributes::process( const std::string& vol ) const
  *  @return status code
  */
 // ============================================================================
-StatusCode GiGaSetSimAttributes::setUserLimits( G4LogicalVolume* lv, const Gaussino::UserLimits& ul ) const
-{
-  if ( 0 == lv ) {
-    return Error( " setUserLimits(): volume* is NULL!" );
-  }
+StatusCode GiGaSetSimAttributes::setUserLimits( G4LogicalVolume* lv, const Gaussino::UserLimits& ul ) const {
+  if ( 0 == lv ) { return Error( " setUserLimits(): volume* is NULL!" ); }
 
   const std::string& volume = lv->GetName();
 
@@ -176,9 +145,7 @@ StatusCode GiGaSetSimAttributes::setUserLimits( G4LogicalVolume* lv, const Gauss
     if ( 0 == aux || ( ul != *aux ) ) {
       Warning( " setUserLimits ('" + volume + "') : G4LogicalVolume has user limits " ).ignore();
       // keep the existing limits
-      if ( !overwrite() ) {
-        return StatusCode::SUCCESS;
-      } // ATTENTNION
+      if ( !overwrite() ) { return StatusCode::SUCCESS; } // ATTENTNION
       Warning( " setUserLimits ('" + volume + "') : Existing limits are to be replaced " ).ignore();
       // overwrite existing limits!
       G4UserLimits* tmp = lv->GetUserLimits();
@@ -191,35 +158,27 @@ StatusCode GiGaSetSimAttributes::setUserLimits( G4LogicalVolume* lv, const Gauss
   }
 
   // set new user limits
-  if ( 0 == lv->GetUserLimits() ) {
-    lv->SetUserLimits( new Gaussino::UserLimits( ul ) );
-  }
+  if ( 0 == lv->GetUserLimits() ) { lv->SetUserLimits( new Gaussino::UserLimits( ul ) ); }
 
   Print( " setUserLimts ('" + volume + ") : \t new user limits are set ", StatusCode::SUCCESS, MSG::DEBUG ).ignore();
 
   typedef std::set<G4LogicalVolume*> LVs;
-  LVs daughters;
+  LVs                                daughters;
 
   // propagate the attributes to the daughter volumes
   const size_t nPV = lv->GetNoDaughters();
   for ( size_t iPV = 0; iPV < nPV; ++iPV ) {
     G4VPhysicalVolume* pv = lv->GetDaughter( iPV );
-    if ( 0 == pv ) {
-      return Error( " setUserLimits ('" + volume + "') : G4VPhysicalVolume* is invalid" );
-    }
+    if ( 0 == pv ) { return Error( " setUserLimits ('" + volume + "') : G4VPhysicalVolume* is invalid" ); }
     G4LogicalVolume* dlv = pv->GetLogicalVolume();
-    if ( 0 == dlv ) {
-      return Error( " setUserLimits ('" + volume + "') : daughter G4LogicalVolume is invalid" );
-    }
+    if ( 0 == dlv ) { return Error( " setUserLimits ('" + volume + "') : daughter G4LogicalVolume is invalid" ); }
     daughters.insert( dlv );
   }
 
   for ( LVs::const_iterator ilv = daughters.begin(); daughters.end() != ilv; ++ilv ) {
     G4LogicalVolume* dlv = *ilv;
-    StatusCode sc        = setUserLimits( dlv, ul );
-    if ( sc.isFailure() ) {
-      return Error( " setUserLimits ('" + volume + "') : cannot process daughter ", sc );
-    }
+    StatusCode       sc  = setUserLimits( dlv, ul );
+    if ( sc.isFailure() ) { return Error( " setUserLimits ('" + volume + "') : cannot process daughter ", sc ); }
   }
 
   return StatusCode::SUCCESS;

@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: VariableLuminosity.h,v 1.3 2009-04-07 16:11:21 gcorti Exp $
-#ifndef GENERATORS_VARIABLELUMINOSITY_H 
+#ifndef GENERATORS_VARIABLELUMINOSITY_H
 #define GENERATORS_VARIABLELUMINOSITY_H 1
 
 // Include files
@@ -19,28 +19,27 @@
 #include "GenInterfaces/IPileUpTool.h"
 
 // Forward declarations
-class ICounterLogFile ;
+class ICounterLogFile;
 
 /** @class VariableLuminosity VariableLuminosity.h "VariableLuminosity.h"
- *  
- *  Tool to compute variable number of pile up events depending on beam 
+ *
+ *  Tool to compute variable number of pile up events depending on beam
  *  parameters, with time-dependant luminosity. Concrete implementation
  *  of a IPileUpTool.
- * 
+ *
  *  @author Patrick Robbe
  *  @date   2005-08-17
  */
 class VariableLuminosity : public GaudiTool, virtual public IPileUpTool {
 public:
   /// Standard constructor
-  VariableLuminosity( const std::string& type, const std::string& name,
-                      const IInterface* parent);
+  VariableLuminosity( const std::string& type, const std::string& name, const IInterface* parent );
 
-  virtual ~VariableLuminosity( ); ///< Destructor
+  virtual ~VariableLuminosity(); ///< Destructor
 
   /// Initialize method
   virtual StatusCode initialize() override;
-  
+
   /// Finalize method
   virtual StatusCode finalize() override;
 
@@ -49,31 +48,31 @@ public:
    *  The number of pileup interactions follows a Poisson law
    *  with mean equal to Luminosity * cross_section / crossing_frequency
    *  The Luminosity is exponentially decreasing with beam decay time.
-   *  The mean luminosity is given in options so the maximum luminosity 
+   *  The mean luminosity is given in options so the maximum luminosity
    *  (at t=0) is computed using the fill duration.
    */
-  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & engine ) override;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr& engine ) override;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters() override;
 
 private:
   /// Location where to store FSR counters (set by options)
-  std::string  m_FSRName;
+  std::string m_FSRName;
 
-  std::string m_beamParameters ; ///< Location of beam parameters (set by options)
+  std::string m_beamParameters; ///< Location of beam parameters (set by options)
 
-  double m_fillDuration ; ///< Fill duration (set by options)
+  double m_fillDuration; ///< Fill duration (set by options)
 
-  double m_beamDecayTime ; ///< Beam decay time (set by options)
+  double m_beamDecayTime; ///< Beam decay time (set by options)
 
   /// XML Log tool
-  ICounterLogFile * m_xmlLogTool ;
+  ICounterLogFile* m_xmlLogTool;
 
   /// Counter of empty interactions
-  int    m_numberOfZeroInteraction ;
+  int m_numberOfZeroInteraction;
 
   /// Counter of events (including empty interactions)
-  int    m_nEvents ;
+  int m_nEvents;
 };
 #endif // GENERATORS_VARIABLELUMINOSITY_H

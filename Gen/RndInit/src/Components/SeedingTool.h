@@ -29,20 +29,18 @@ class IRndmGenSvc;
  */
 
 class SeedingTool : public GaudiTool, virtual public IRndSeedingTool {
-  public:
-  SeedingTool(const std::string& type, const std::string& name,
-              const IInterface* parent)
-      : GaudiTool(type, name, parent) {
-    declareInterface<IRndSeedingTool>(this);
+public:
+  SeedingTool( const std::string& type, const std::string& name, const IInterface* parent )
+      : GaudiTool( type, name, parent ) {
+    declareInterface<IRndSeedingTool>( this );
   }
 
   virtual StatusCode initialize() override;
 
-  virtual StatusCode seed(
-      unsigned int seed1, unsigned long long seed2,
-      std::shared_ptr<std::vector<long int>> seeds = nullptr) override;
+  virtual StatusCode seed( unsigned int seed1, unsigned long long seed2,
+                           std::shared_ptr<std::vector<long int>> seeds = nullptr ) override;
 
-  private:
+private:
   mutable SmartIF<IRndmGenSvc> m_randSvc;
-  mutable IRndmEngine* m_engine{nullptr};
+  mutable IRndmEngine*         m_engine{ nullptr };
 };

@@ -276,4 +276,3 @@ If you actually want to set any material in your parallel world, then make sure 
    :members:
    :private-members:
 ```
-

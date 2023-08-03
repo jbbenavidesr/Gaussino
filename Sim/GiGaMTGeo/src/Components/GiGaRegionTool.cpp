@@ -29,31 +29,26 @@ DECLARE_COMPONENT( GiGaRegionTool )
  *  @return status code
  */
 // ============================================================================
-StatusCode GiGaRegionTool::process( const std::string& /* region */ ) const
-{
+StatusCode GiGaRegionTool::process( const std::string& /* region */ ) const {
   // check the existence of the region
   G4Region* region = G4RegionStore::GetInstance()->GetRegion( m_region.value() );
   // FIXME: Should this really skip the rest or instead just updates the cuts and volumes?
   StatusCode sc = StatusCode::SUCCESS;
-  if ( 0 != region ) {
-    return Warning( " The Region '" + m_region + "'  already exist, skip " );
-  }
+  if ( 0 != region ) { return Warning( " The Region '" + m_region + "'  already exist, skip " ); }
 
   // create new region
   region = new G4Region( m_region.value() );
   // add volumes to the region
   for ( auto& ivolume : m_volumes ) {
     G4LogicalVolume* volume = G4LogicalVolumeStore::GetInstance()->GetVolume( ivolume );
-    if ( 0 == volume ) {
-      return Error( " G4LogicalVolume '" + ivolume + "' is invalid " );
-    }
+    if ( 0 == volume ) { return Error( " G4LogicalVolume '" + ivolume + "' is invalid " ); }
     if ( 0 != volume->GetRegion() && !m_overwrite ) {
       sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
-               "' , skip " );
+                     "' , skip " );
       continue;
     } else if ( 0 != volume->GetRegion() && m_overwrite ) {
       sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
-               "', overwrite " );
+                     "', overwrite " );
     }
     // set region
     volume->SetRegion( region );

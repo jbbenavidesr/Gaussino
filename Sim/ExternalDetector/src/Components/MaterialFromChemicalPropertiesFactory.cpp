@@ -16,8 +16,8 @@ namespace ExternalDetector {
   class MaterialFromChemicalPropertiesFactory : public MaterialFactory {
 
     // required
-    Gaudi::Property<double> m_atomicNumber{this, "AtomicNumber", 0., "Atomic number Z"};
-    Gaudi::Property<double> m_massNumber{this, "MassNumber", 0., "Mass number A [g/mole]"};
+    Gaudi::Property<double> m_atomicNumber{ this, "AtomicNumber", 0., "Atomic number Z" };
+    Gaudi::Property<double> m_massNumber{ this, "MassNumber", 0., "Mass number A [g/mole]" };
 
   public:
     using MaterialFactory::MaterialFactory;

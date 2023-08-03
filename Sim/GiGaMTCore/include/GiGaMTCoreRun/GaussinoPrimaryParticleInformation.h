@@ -9,8 +9,8 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #pragma once
-#include "G4VUserPrimaryParticleInformation.hh"
 #include "G4PrimaryParticle.hh"
+#include "G4VUserPrimaryParticleInformation.hh"
 
 /** @class GaussinoPrimaryParticleInformation
  *
@@ -19,8 +19,7 @@
  *  @author Dominik Muller
  *  @date   2019-02-27
  */
-class GaussinoPrimaryParticleInformation : public G4VUserPrimaryParticleInformation
-{
+class GaussinoPrimaryParticleInformation : public G4VUserPrimaryParticleInformation {
 public:
   GaussinoPrimaryParticleInformation()          = default;
   virtual ~GaussinoPrimaryParticleInformation() = default;
@@ -28,13 +27,12 @@ public:
 
   /// Get the linked particle
   unsigned int getLinkedID() { return m_linkedID; }
-  void setLinkedID(unsigned int lp) { m_linkedID = lp; }
-  void Print() const override {}
+  void         setLinkedID( unsigned int lp ) { m_linkedID = lp; }
+  void         Print() const override {}
 
-  inline static GaussinoPrimaryParticleInformation* Get( G4PrimaryParticle* part )
-  {
-    auto info = part->GetUserInformation();
-    GaussinoPrimaryParticleInformation* finfo{nullptr};
+  inline static GaussinoPrimaryParticleInformation* Get( G4PrimaryParticle* part ) {
+    auto                                info = part->GetUserInformation();
+    GaussinoPrimaryParticleInformation* finfo{ nullptr };
     if ( info ) {
       finfo = dynamic_cast<GaussinoPrimaryParticleInformation*>( info );
       if ( !finfo ) {
@@ -53,7 +51,5 @@ public:
 
 private:
   /// Flag to indicate if particle has oscillated
-  unsigned int m_linkedID{0};
+  unsigned int m_linkedID{ 0 };
 };
-
-

@@ -42,16 +42,16 @@ namespace Gaussino::G4Par04 {
     inline int  GetEventID() const { return m_EventID; }
 
   private:
-    double m_Edep  = 0;
-    int    m_ZId   = -1;
-    int    m_PhiId = -1;
-    int    m_RhoId = -1;
-    double m_Time  = -1;
-    int    m_Type  = -1;
-    int    m_TrackID  = -1;
-    int    m_EventID  = -1;
+    double m_Edep    = 0;
+    int    m_ZId     = -1;
+    int    m_PhiId   = -1;
+    int    m_RhoId   = -1;
+    double m_Time    = -1;
+    int    m_Type    = -1;
+    int    m_TrackID = -1;
+    int    m_EventID = -1;
   };
 
   using CaloHitPtr = std::shared_ptr<CaloHit>;
-  using CaloHits = std::vector<CaloHitPtr>;
+  using CaloHits   = std::vector<CaloHitPtr>;
 } // namespace Gaussino::G4Par04

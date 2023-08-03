@@ -23,7 +23,7 @@ namespace MCCollector {
 
   public:
     void* operator new( size_t );
-    void  operator delete( void* aHit );
+    void operator delete( void* aHit );
 
     inline void     SetEdep( G4double de ) { m_edep = de; }
     inline G4double GetEdep() { return m_edep; }

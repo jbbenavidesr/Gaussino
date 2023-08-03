@@ -8,14 +8,14 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from GaudiKernel import SystemOfUnits as units
 from Configurables import GaussinoGeneration
+from GaudiKernel import SystemOfUnits as units
 
 GaussinoGeneration(
-    BeamMomentum = 900 * units.GeV,
+    BeamMomentum=900 * units.GeV,
     RevolutionFrequency=11.245 * units.kilohertz,
     TotalCrossSection=101.5 * units.millibarn,
-    InteractionPosition = [0.0] * 3,
+    InteractionPosition=[0.0] * 3,
     BeamHCrossingAngle=0.0 * units.mrad,
     BeamVCrossingAngle=0.0 * units.mrad,
     BeamLineAngles=[0.0, 0.0],

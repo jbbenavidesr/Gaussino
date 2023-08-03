@@ -31,14 +31,14 @@ namespace ParallelGeometry {
     static_assert( std::is_base_of<ParallelGeometry::World, ParallelWorld>::value );
 
     // GDML Export
-    Gaudi::Property<std::string> m_schema{this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd"};
-    Gaudi::Property<bool>        m_refs{this, "GDMLAddReferences", true};
-    Gaudi::Property<std::string> m_outfile{this, "GDMLFileName", ""};
-    Gaudi::Property<bool>        m_outfileOverwrite{this, "GDMLFileNameOverwrite", false,
-                                             "Overwrite a GDML if it already exists"};
+    Gaudi::Property<std::string> m_schema{ this, "GDMLSchema", "$GDML_base/src/GDMLSchema/gdml.xsd" };
+    Gaudi::Property<bool>        m_refs{ this, "GDMLAddReferences", true };
+    Gaudi::Property<std::string> m_outfile{ this, "GDMLFileName", "" };
+    Gaudi::Property<bool>        m_outfileOverwrite{ this, "GDMLFileNameOverwrite", false,
+                                              "Overwrite a GDML if it already exists" };
     // export auxilliary information
-    Gaudi::Property<bool> m_exportSD{this, "GDMLExportSD", false};
-    Gaudi::Property<bool> m_exportEnergyCuts{this, "GDMLExportEnergyCuts", false};
+    Gaudi::Property<bool> m_exportSD{ this, "GDMLExportSD", false };
+    Gaudi::Property<bool> m_exportEnergyCuts{ this, "GDMLExportEnergyCuts", false };
 
   public:
     using extends::extends;
@@ -51,35 +51,35 @@ namespace ParallelGeometry {
     inline virtual void additionalWorldConstrution( G4VPhysicalVolume* ) const {};
     inline virtual void additionalSDConstrution() const {};
 
-    Gaudi::Property<std::string> m_worldMaterial{this, "WorldMaterial", ""};
+    Gaudi::Property<std::string> m_worldMaterial{ this, "WorldMaterial", "" };
 
     // External Detectors
-    ToolHandleArray<ExternalDetector::IEmbedder> m_ext_dets{this};
+    ToolHandleArray<ExternalDetector::IEmbedder> m_ext_dets{ this };
     using ExternalDetectors = std::vector<std::string>;
-    Gaudi::Property<ExternalDetectors> m_ext_dets_names{this,
-                                                        "ExternalDetectors",
-                                                        {},
-                                                        tool_array_setter( m_ext_dets, m_ext_dets_names ),
-                                                        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+    Gaudi::Property<ExternalDetectors> m_ext_dets_names{ this,
+                                                         "ExternalDetectors",
+                                                         {},
+                                                         tool_array_setter( m_ext_dets, m_ext_dets_names ),
+                                                         Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
 
     // Custom Simulation
     using CustomSimulationModelFactory = GiGaFactoryBase<G4VFastSimulationModel>;
-    ToolHandleArray<CustomSimulationModelFactory> m_cust_model_factories{this};
+    ToolHandleArray<CustomSimulationModelFactory> m_cust_model_factories{ this };
     Gaudi::Property<std::vector<std::string>>     m_cust_model_factories_names{
         this,
         "CustomSimulationModelFactories",
-        {},
+            {},
         tool_array_setter( m_cust_model_factories, m_cust_model_factories_names ),
-        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
 
     using CustomSimulationRegionFactory = GiGaFactoryBase<G4Region>;
-    ToolHandleArray<CustomSimulationRegionFactory> m_cust_region_factories{this};
+    ToolHandleArray<CustomSimulationRegionFactory> m_cust_region_factories{ this };
     Gaudi::Property<std::vector<std::string>>      m_cust_region_factories_names{
         this,
         "CustomSimulationRegionFactories",
-        {},
+             {},
         tool_array_setter( m_cust_region_factories, m_cust_region_factories_names ),
-        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
   };
 } // namespace ParallelGeometry
 

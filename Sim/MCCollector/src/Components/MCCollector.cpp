@@ -21,7 +21,7 @@ namespace MCCollector {
   public:
     Collector( const std::string& name, ISvcLocator* pSvcLocator )
         : Consumer( name, pSvcLocator,
-                    {KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}, KeyValue{"CollectorHits", ""}} ){};
+                    { KeyValue{ "MCHeader", LHCb::MCHeaderLocation::Default }, KeyValue{ "CollectorHits", "" } } ){};
 
     void operator()( const LHCb::MCHeader& evt, const LHCb::MCHits& collHits ) const override {
       fillCollectorTuple( evt, collHits );

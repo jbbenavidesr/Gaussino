@@ -18,15 +18,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 #ifdef WIN32
-extern "C" void* __stdcall GETADDR(void* arg) {
-  return(arg);
-}
+extern "C" void* __stdcall GETADDR( void* arg ) { return ( arg ); }
 #else
 extern "C" {
-  void* getaddr_(void* arg);
+void* getaddr_( void* arg );
 }
 
-void* getaddr_(void* arg) {
-  return(arg);
-}
+void* getaddr_( void* arg ) { return ( arg ); }
 #endif

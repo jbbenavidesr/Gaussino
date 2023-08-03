@@ -17,35 +17,22 @@
 #include "Math/GenVector/Boost.h"
 #include "Math/Vector4D.h"
 
-LinkedParticle::~LinkedParticle()
-{
+LinkedParticle::~LinkedParticle() {
   if ( m_tracking ) delete m_tracking;
   // Remove itself from the vertices
-  if ( m_prodvtx ) {
-    m_prodvtx->outgoing_particles.erase( this );
-  }
-  for ( auto& vtx : m_endvtxs ) {
-    vtx->incoming_particle.erase( this );
-  }
+  if ( m_prodvtx ) { m_prodvtx->outgoing_particles.erase( this ); }
+  for ( auto& vtx : m_endvtxs ) { vtx->incoming_particle.erase( this ); }
 }
 
-int LinkedParticle::GetPDG() const
-{
+int LinkedParticle::GetPDG() const {
   // FIXME: This information should be checked for consistency instead
-  if ( m_hepmc ) {
-    return m_hepmc->pdg_id();
-  }
-  if ( m_primary ) {
-    return m_primary->GetPDGcode();
-  }
-  if ( m_tracking ) {
-    return m_tracking->GetPdgID();
-  }
+  if ( m_hepmc ) { return m_hepmc->pdg_id(); }
+  if ( m_primary ) { return m_primary->GetPDGcode(); }
+  if ( m_tracking ) { return m_tracking->GetPdgID(); }
   return 0;
 }
 
-LinkedParticle::PtrSet LinkedParticle::GetParents() const
-{
+LinkedParticle::PtrSet LinkedParticle::GetParents() const {
   if ( m_prodvtx ) {
     return m_prodvtx->incoming_particle;
   } else {
@@ -53,8 +40,7 @@ LinkedParticle::PtrSet LinkedParticle::GetParents() const
   }
 }
 
-LinkedParticle::PtrSet LinkedParticle::GetChildren() const
-{
+LinkedParticle::PtrSet LinkedParticle::GetChildren() const {
   LinkedParticle::PtrSet children;
   for ( auto& vtx : m_endvtxs ) {
     children.insert( std::begin( vtx->outgoing_particles ), std::end( vtx->outgoing_particles ) );
@@ -62,8 +48,7 @@ LinkedParticle::PtrSet LinkedParticle::GetChildren() const
   return children;
 }
 
-HepMC3::FourVector LinkedParticle::GetMomentum() const
-{
+HepMC3::FourVector LinkedParticle::GetMomentum() const {
   // One special case:
   // If the particle has a Geant4 simulated parent but is itself MC only,
   // it's momentum as taken from HepMC might be wrong as it doesn't
@@ -81,26 +66,22 @@ HepMC3::FourVector LinkedParticle::GetMomentum() const
   // the entire decay tree to Geant4
   if ( auto g4parent = Gaussino::LPUtils::GetSimulatedG4Ancestor( this );
        g4parent && GetType() == Gaussino::ConversionType::MC ) {
-    ROOT::Math::PxPyPzEVector rparent_start{g4parent->G4Truth()->GetFinalMomentum()};
-    ROOT::Math::PxPyPzEVector rparent_final{g4parent->G4Truth()->GetMomentum()};
-    HepMC3::FourVector after =
-        ROOT::Math::Boost{-rparent_final.BoostToCM()}( ROOT::Math::Boost{rparent_start.BoostToCM()}( ret ) );
+    ROOT::Math::PxPyPzEVector rparent_start{ g4parent->G4Truth()->GetFinalMomentum() };
+    ROOT::Math::PxPyPzEVector rparent_final{ g4parent->G4Truth()->GetMomentum() };
+    HepMC3::FourVector        after =
+        ROOT::Math::Boost{ -rparent_final.BoostToCM() }( ROOT::Math::Boost{ rparent_start.BoostToCM() }( ret ) );
     return after;
   } else {
     return ret;
   }
 }
 
-int LinkedParticle::GetCreatorID() const
-{
-  if ( m_tracking ) {
-    return m_tracking->GetCreatorID();
-  }
+int LinkedParticle::GetCreatorID() const {
+  if ( m_tracking ) { return m_tracking->GetCreatorID(); }
   return -1;
 }
 
-HepMC3::FourVector LinkedParticle::GetOriginPosition() const
-{
+HepMC3::FourVector LinkedParticle::GetOriginPosition() const {
   // FIXME: This should not happen this way ... Should really reconsider and give
   // the entire decay tree to Geant4
   if ( auto g4parent = Gaussino::LPUtils::GetSimulatedG4Ancestor( this );
@@ -116,20 +97,14 @@ HepMC3::FourVector LinkedParticle::GetOriginPosition() const
   }
 }
 
-HepMC3::FourVector LinkedParticle::GetEndPosition() const
-{
+HepMC3::FourVector LinkedParticle::GetEndPosition() const {
   // FIXME: Need proper definition when more are present
-  if ( m_tracking ) {
-    return m_tracking->GetEndVertex();
-  }
-  if ( m_hepmc && m_hepmc->end_vertex() ) {
-    return m_hepmc->end_vertex()->position();
-  }
+  if ( m_tracking ) { return m_tracking->GetEndVertex(); }
+  if ( m_hepmc && m_hepmc->end_vertex() ) { return m_hepmc->end_vertex()->position(); }
   return HepMC3::FourVector{};
 }
 
-double LinkedParticle::GetDecayTimeHepMC() const
-{
+double LinkedParticle::GetDecayTimeHepMC() const {
   if ( !m_hepmc ) return -2;
   auto E = m_hepmc->end_vertex();
   auto P = m_hepmc->production_vertex();
@@ -142,22 +117,21 @@ double LinkedParticle::GetDecayTimeHepMC() const
 
   // Boost displacement 4-vector to rest frame of particle.
   ROOT::Math::PxPyPzEVector M( GetMomentum() );
-  ROOT::Math::Boost theBoost( M.BoostToCM() );
+  ROOT::Math::Boost         theBoost( M.BoostToCM() );
   ROOT::Math::PxPyPzEVector ABStar = theBoost( AB );
 
   // Switch back to time.
   return ABStar.T() / CLHEP::c_light;
 }
 
-void LinkedParticle::AddParent( LinkedParticle* part )
-{
+void LinkedParticle::AddParent( LinkedParticle* part ) {
   if ( m_hepmc && part->m_hepmc ) {
     if ( !Gaussino::LinkedParticleHelpers::CompareFourVector( m_hepmc->production_vertex()->position(),
                                                               part->m_hepmc->end_vertex()->position() ) ) {
       throw std::runtime_error( "Particle have HepMC but prod/end vertex are at different positions!" );
     }
   }
-  std::shared_ptr<LinkedVertex> vertex{nullptr};
+  std::shared_ptr<LinkedVertex> vertex{ nullptr };
   for ( auto& vtx : part->GetEndVtxs() ) {
     if ( m_hepmc && part->m_hepmc ) {
       // Treatment different for particles with HepMC record where the
@@ -187,9 +161,7 @@ void LinkedParticle::AddParent( LinkedParticle* part )
     if ( m_prodvtx && m_prodvtx.get() != vertex.get() ) {
       throw std::runtime_error( "Particle has production vertex that isn't same a HepMC-matched endvertex of parent." );
     }
-    if ( !m_prodvtx ) {
-      m_prodvtx = vertex;
-    }
+    if ( !m_prodvtx ) { m_prodvtx = vertex; }
   } else {
     // we did not find a matching vertex in the parents decay vertex list.
     // Either add this vertex to parent or create a new one if no
@@ -221,22 +193,21 @@ void LinkedParticle::AddEndVertex( const HepMC3::FourVector& position, int proci
       return;
     }
   }
-  std::shared_ptr<LinkedVertex> endvtx{new EndLinkedVertex{GetID(), position, procid}};
+  std::shared_ptr<LinkedVertex> endvtx{ new EndLinkedVertex{ GetID(), position, procid } };
   m_endvtxs.insert( endvtx );
 }
 
 void LinkedParticle::AddChild( LinkedParticle* part ) { part->AddParent( this ); }
 
 template <typename T>
-T& operator<<( T& ostr, const HepMC3::FourVector& fv )
-{
+T& operator<<( T& ostr, const HepMC3::FourVector& fv ) {
   ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
   return ostr;
 }
 
-std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
-{
-  out << " PDG: " << lp.GetPDG() << ", ID = " <<lp.GetID() << ", IDs = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 ) << ", "
+std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp ) {
+  out << " PDG: " << lp.GetPDG() << ", ID = " << lp.GetID() << ", IDs = [" << ( lp.m_hepmc ? lp.m_hepmc->id() : -1 )
+      << ", "
       << ( lp.m_primary
                ? std::to_string( lp.m_primary->GetTrackID() ) + "(" +
                      std::to_string( GaussinoPrimaryParticleInformation::Get( lp.m_primary )->getLinkedID() ) + ")"
@@ -247,23 +218,15 @@ std::ostream& operator<<( std::ostream& out, const LinkedParticle& lp )
   return out;
 }
 
-int LinkedVertex::GetProcessID() const
-  {
-    if ( outgoing_particles.size() > 0 ) {
-      return ( *std::begin( outgoing_particles ) )->GetCreatorID();
-    }
-    return -1;
-  }
+int LinkedVertex::GetProcessID() const {
+  if ( outgoing_particles.size() > 0 ) { return ( *std::begin( outgoing_particles ) )->GetCreatorID(); }
+  return -1;
+}
 
-HepMC3::FourVector LinkedVertex::GetPosition() const
-  {
-    // FIXME: Prioritize the location G4 simulated particles
-    if ( outgoing_particles.size() > 0 ) {
-      return ( *std::begin( outgoing_particles ) )->GetOriginPosition();
-    }
-    if ( incoming_particle.size() > 0 ) {
-      return ( *std::begin( incoming_particle ) )->GetEndPosition();
-    }
+HepMC3::FourVector LinkedVertex::GetPosition() const {
+  // FIXME: Prioritize the location G4 simulated particles
+  if ( outgoing_particles.size() > 0 ) { return ( *std::begin( outgoing_particles ) )->GetOriginPosition(); }
+  if ( incoming_particle.size() > 0 ) { return ( *std::begin( incoming_particle ) )->GetEndPosition(); }
 
-    throw std::runtime_error( "Trying to access position of vertex without associated particles" );
-  }
+  throw std::runtime_error( "Trying to access position of vertex without associated particles" );
+}

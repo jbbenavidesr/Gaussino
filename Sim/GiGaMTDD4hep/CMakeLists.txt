@@ -30,7 +30,7 @@ if(USE_DD4HEP)
                 Gaussino::GiGaMTFactoriesLib
 		Gaussino::GiGaMTGeoLib
                 Gaussino::GiGaMTCoreRunLib
-    ) 
+    )
 
     gaudi_add_module(GiGaMTDD4hep
         SOURCES

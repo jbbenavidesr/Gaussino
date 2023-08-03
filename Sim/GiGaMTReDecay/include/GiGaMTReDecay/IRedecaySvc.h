@@ -16,11 +16,11 @@
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
 #include "GiGaMTReDecay/Token.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 #include "Utils/LocalTL.h"
-#include "HepMCUser/typedefs.h"
-#include "HepMC3/GenParticle.h"
-#include "HepMC3/GenEvent.h"
 
 #include "Event/GenCollision.h"
 
@@ -50,49 +50,37 @@ public:
   virtual Gaussino::ReDecay::Token obtainToken( const Random::SeedPair& seedpair ) = 0;
   // Function for internal use to signal the service that a token has been used up. This will ultimately trigger the
   // deletion of any stored event once all redecays have been done.
-  virtual void removeToken( Gaussino::ReDecay::Token& token ) = 0;
-  Gaussino::ReDecay::TokenGuard setCurrentToken( const Gaussino::ReDecay::Token& token ){
+  virtual void                  removeToken( Gaussino::ReDecay::Token& token ) = 0;
+  Gaussino::ReDecay::TokenGuard setCurrentToken( const Gaussino::ReDecay::Token& token ) {
     m_currentToken = &token;
-    return Gaussino::ReDecay::TokenGuard(this);
+    return Gaussino::ReDecay::TokenGuard( this );
   }
-  bool isCurrentOriginal(){
-    return m_currentToken->m_original;
-  }
+  bool isCurrentOriginal() { return m_currentToken->m_original; }
 
-  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) = 0;
-  virtual void storeOriginalSimResult(const Gaussino::ReDecay::Token &, const Gaussino::GiGaSimReturns &) = 0;
+  virtual void storeOriginalHepMC( const Gaussino::ReDecay::Token&, std::vector<HepMC3::GenEventPtr>&,
+                                   LHCb::GenCollisions& )                                                 = 0;
+  virtual void storeOriginalSimResult( const Gaussino::ReDecay::Token&, const Gaussino::GiGaSimReturns& ) = 0;
 
-  virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) = 0;
-  virtual std::vector<HepMCData> & getOriginalHepMCData(){
-    return getOriginalHepMCData(*m_currentToken.get());
-  };
+  virtual std::vector<HepMCData>& getOriginalHepMCData( const Gaussino::ReDecay::Token& ) = 0;
+  virtual std::vector<HepMCData>& getOriginalHepMCData() { return getOriginalHepMCData( *m_currentToken.get() ); };
 
-  virtual Gaussino::GiGaSimReturns getOriginalSimResult(const Gaussino::ReDecay::Token &) = 0;
-  virtual Gaussino::GiGaSimReturns getOriginalSimResult(){
-    return getOriginalSimResult(*m_currentToken.get());
-  };
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult( const Gaussino::ReDecay::Token& ) = 0;
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult() { return getOriginalSimResult( *m_currentToken.get() ); };
 
-  virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) = 0;
-  virtual unsigned int getNPileUp(){
-    return getNPileUp(*m_currentToken.get());
-  };
+  virtual unsigned int getNPileUp( const Gaussino::ReDecay::Token& ) = 0;
+  virtual unsigned int getNPileUp() { return getNPileUp( *m_currentToken.get() ); };
   // Functions to return a specific pileup HepMC data.
-  virtual HepMCData getHepMCDataIterated(const Gaussino::ReDecay::Token &) = 0;
-  virtual HepMCData getHepMCDataIterated(){
-    return getHepMCDataIterated(*m_currentToken.get());
-  };
+  virtual HepMCData getHepMCDataIterated( const Gaussino::ReDecay::Token& ) = 0;
+  virtual HepMCData getHepMCDataIterated() { return getHepMCDataIterated( *m_currentToken.get() ); };
 
-  virtual unsigned long long getEncodedOriginalEvtInfo(const Gaussino::ReDecay::Token &) = 0;
-  virtual unsigned long long getEncodedOriginalEvtInfo(){
-    return getEncodedOriginalEvtInfo(*m_currentToken.get());
-  }
-
-
+  virtual unsigned long long getEncodedOriginalEvtInfo( const Gaussino::ReDecay::Token& ) = 0;
+  virtual unsigned long long getEncodedOriginalEvtInfo() { return getEncodedOriginalEvtInfo( *m_currentToken.get() ); }
 
 public:
 protected:
   /// virtual destructor
   virtual ~IReDecaySvc() = default;
+
 protected:
-  LocalTL<const Gaussino::ReDecay::Token*> m_currentToken{nullptr};
+  LocalTL<const Gaussino::ReDecay::Token*> m_currentToken{ nullptr };
 };

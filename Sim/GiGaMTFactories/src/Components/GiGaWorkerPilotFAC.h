@@ -17,11 +17,10 @@
 // managing the WorkerRunManager, the Gaudi side of this configuration also happens
 // here. TODO: rethink this ...
 
-class GiGaWorkerPilotFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaWorkerPilot>>
-{
+class GiGaWorkerPilotFAC : public extends<GiGaTool, GiGaFactoryBase<GiGaWorkerPilot>> {
 public:
   using extends::extends;
-  Gaudi::Property<bool> m_track_structure{this, "PrintMCTruth", false};
+  Gaudi::Property<bool> m_track_structure{ this, "PrintMCTruth", false };
 
   GiGaWorkerPilot* construct() const override;
 

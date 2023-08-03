@@ -20,8 +20,9 @@
 
 DECLARE_COMPONENT( ReDecaySkipSimAlg )
 
-std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSimAlg::
-                                                                                   operator()( const HepMC3::GenEventPtrs& originalhepmcevents, const HepMC3::GenEventPtrs& signalhepmcevents ) const {
+std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths>
+ReDecaySkipSimAlg::operator()( const HepMC3::GenEventPtrs& originalhepmcevents,
+                               const HepMC3::GenEventPtrs& signalhepmcevents ) const {
   debug() << "==> Execute" << endmsg;
   auto& token = *m_tokenhandle.get();
   // Now we store a thread-local reference to this token in the service.
@@ -29,7 +30,7 @@ std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSi
   // subsequent tools without having to change all the interfaces again to explicitly pass
   // it around (this might be changed in the future)
   auto tokenguard = m_redecaysvc->setCurrentToken( token );
-  auto engine = createRndmEngine();
+  auto engine     = createRndmEngine();
   // Get the individual components, make copies instead of reference because
   // we will modify the g4proxies in a moment.
   Gaussino::GiGaSimReturns ret_tuple;
@@ -37,14 +38,14 @@ std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSi
   if ( m_redecaysvc->isCurrentOriginal() ) {
     if ( msgLevel( MSG::DEBUG ) ) { debug() << "Handling original event " << endmsg; }
 
-    auto converters = m_converterTool->BuildConverter( originalhepmcevents );
+    auto                          converters = m_converterTool->BuildConverter( originalhepmcevents );
     Gaussino::MCTruthConverterPtr combined =
         Gaussino::MergeConverters( std::begin( converters ), std::end( converters ) );
 
     Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *combined.get() ) );
 
-    std::get<1>(ret_tuple).emplace_back( new Gaussino::MCTruth( std::move( *tracker.get() ) ) );
-    m_redecaysvc->storeOriginalSimResult( token, ret_tuple);
+    std::get<1>( ret_tuple ).emplace_back( new Gaussino::MCTruth( std::move( *tracker.get() ) ) );
+    m_redecaysvc->storeOriginalSimResult( token, ret_tuple );
   } else {
     // In this stip the containers are copied so we can safely append
     // the signal proxies for easier processing
@@ -81,10 +82,10 @@ std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSi
         if ( msgLevel( MSG::DEBUG ) ) {
           debug() << "Going to simulate a redecayed decay for " << pid_to_name( p->pid() ) << endmsg;
         }
-        auto converter = m_converterTool->BuildConverter( p );
-        Gaussino::MCTruthTrackerPtr tracker = std::make_unique<Gaussino::MCTruthTracker>( std::move( *converter ));
-        Gaussino::MCTruthPtr sigmctruth = std::make_shared<Gaussino::MCTruth>(std::move( *tracker));
-        signal_truths[org_lp] = sigmctruth;
+        auto                        converter  = m_converterTool->BuildConverter( p );
+        Gaussino::MCTruthTrackerPtr tracker    = std::make_unique<Gaussino::MCTruthTracker>( std::move( *converter ) );
+        Gaussino::MCTruthPtr        sigmctruth = std::make_shared<Gaussino::MCTruth>( std::move( *tracker ) );
+        signal_truths[org_lp]                  = sigmctruth;
       }
     }
   }
@@ -113,5 +114,5 @@ std::tuple<Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySkipSi
       } ) << endmsg;
     }
   }
-  return {std::move( mctruths ), std::move( signal_truths )};
+  return { std::move( mctruths ), std::move( signal_truths ) };
 }

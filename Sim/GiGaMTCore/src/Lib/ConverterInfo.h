@@ -14,10 +14,8 @@
 
 #include "GiGaMTCoreRun/Common.h"
 
-namespace Gaussino
-{
-  class ConverterInfo
-  {
+namespace Gaussino {
+  class ConverterInfo {
     ConverterInfo() = default;
   };
-}
+} // namespace Gaussino

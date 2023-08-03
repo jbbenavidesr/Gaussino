@@ -11,10 +11,9 @@
 #include "NewRnd/RndCommon.h"
 #include <sstream>
 
-namespace RndCommon
-{
-  std::vector<long> seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2, std::string label )
-  {
+namespace RndCommon {
+  std::vector<long> seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2,
+                                std::string label ) {
     std::vector<long> seeds;
     const std::string s =
         label + ( boost::io::str( boost::format( "_%1%_%2%" ) %
@@ -28,21 +27,18 @@ namespace RndCommon
     engine.setSeeds( seeds.data(), seeds.size() );
     return seeds;
   }
-  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label )
-  {
+  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2,
+                                std::string label ) {
     return seedEngine( *engine.get(), seed1, seed2, label );
   }
-}
+} // namespace RndCommon
 
-HepRandomEnginePtr HepRandomEnginePtr::createSubRndmEngine()
-{
-  if ( !m_constructor ) {
-    throw std::runtime_error( "No RndConsructor set for subengine creation" );
-  }
-  auto subeng  = m_children.emplace_back( m_constructor->construct() );
-  auto& engine = *get();
+HepRandomEnginePtr HepRandomEnginePtr::createSubRndmEngine() {
+  if ( !m_constructor ) { throw std::runtime_error( "No RndConsructor set for subengine creation" ); }
+  auto              subeng = m_children.emplace_back( m_constructor->construct() );
+  auto&             engine = *get();
   std::stringstream lbl;
   lbl << m_label << "_" << m_children.size();
-  RndCommon::seedEngine( engine, (unsigned int)engine, (unsigned int)engine, lbl.str());
+  RndCommon::seedEngine( engine, (unsigned int)engine, (unsigned int)engine, lbl.str() );
   return subeng;
 }

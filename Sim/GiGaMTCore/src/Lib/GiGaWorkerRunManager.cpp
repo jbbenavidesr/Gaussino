@@ -23,13 +23,12 @@
 
 static std::mutex workerInitMutex;
 
-GiGaWorkerRunManager::GiGaWorkerRunManager() : G4WorkerRunManager()
+GiGaWorkerRunManager::GiGaWorkerRunManager()
+    : G4WorkerRunManager()
 // TODO: what if we need to make these configurable?
-{
-}
+{}
 
-GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager()
-{
+GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager() {
   // Grab thread-local pointer from base class
   auto* wrm = G4RunManager::GetRunManager();
   if ( wrm ) {
@@ -39,8 +38,7 @@ GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager()
   }
 }
 
-void GiGaWorkerRunManager::Initialize()
-{
+void GiGaWorkerRunManager::Initialize() {
   // Locking this initialization to protect currently thread-unsafe services
   std::lock_guard<std::mutex> lock( workerInitMutex );
 
@@ -61,16 +59,16 @@ void GiGaWorkerRunManager::Initialize()
   ** If ATLAS ever decides to run multiple G4 runs in the same job, all the MT initialization
   ** will have to be thoroughly reviewed.
   */
-  G4MTRunManager* masterRM   = G4MTRunManager::GetMasterRunManager();
-  std::vector<G4String> cmds = masterRM->GetCommandStack();
-  G4UImanager* uimgr         = G4UImanager::GetUIpointer();
+  G4MTRunManager*       masterRM = G4MTRunManager::GetMasterRunManager();
+  std::vector<G4String> cmds     = masterRM->GetCommandStack();
+  G4UImanager*          uimgr    = G4UImanager::GetUIpointer();
   for ( const auto& it : cmds ) {
     int retVal = uimgr->ApplyCommand( it );
     if ( retVal != fCommandSucceeded ) {
-      std::string errMsg{"Failed to apply command <"};
+      std::string errMsg{ "Failed to apply command <" };
       errMsg += ( it + ">. Return value " + std::to_string( retVal ) );
-      error(errMsg);
-      //throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );
+      error( errMsg );
+      // throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );
     }
   }
 
@@ -81,18 +79,15 @@ void GiGaWorkerRunManager::Initialize()
   RunInitialization();
 }
 
-void GiGaWorkerRunManager::InitializeGeometry()
-{
+void GiGaWorkerRunManager::InitializeGeometry() {
   const std::string methodName = "GiGaWorkerRunManager::InitializeGeometry";
 
   // I don't think this does anything
-  if ( fGeometryHasBeenDestroyed ) {
-    G4TransportationManager::GetTransportationManager()->ClearParallelWorlds();
-  }
+  if ( fGeometryHasBeenDestroyed ) { G4TransportationManager::GetTransportationManager()->ClearParallelWorlds(); }
 
   // Get the world volume and give it to the kernel
   G4RunManagerKernel* masterKernel = G4MTRunManager::GetMasterRunManagerKernel();
-  G4VPhysicalVolume* worldVol      = masterKernel->GetCurrentWorld();
+  G4VPhysicalVolume*  worldVol     = masterKernel->GetCurrentWorld();
   kernel->WorkerDefineWorldVolume( worldVol, false );
   // We don't currently use parallel worlds in ATLAS, but someday we might
   kernel->SetNumberOfParallelWorld( masterKernel->GetNumberOfParallelWorld() );
@@ -105,24 +100,22 @@ void GiGaWorkerRunManager::InitializeGeometry()
   geometryInitialized = true;
 }
 
-void GiGaWorkerRunManager::InitializePhysics()
-{
+void GiGaWorkerRunManager::InitializePhysics() {
   const std::string methodName = "GiGaWorkerRunManager::InitializePhysics";
 
   // Call the base class
   G4RunManager::InitializePhysics();
 }
 
-bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
-{
+bool GiGaWorkerRunManager::ProcessEvent( G4Event* event ) {
 
   G4StateManager* stateManager = G4StateManager::GetStateManager();
   stateManager->SetNewState( G4State_GeomClosed );
 
   currentEvent = event;
 
-  eventManager->SetVerboseLevel(3);
-  //eventManager->GetTrackingManager()->SetVerboseLevel(3);
+  eventManager->SetVerboseLevel( 3 );
+  // eventManager->GetTrackingManager()->SetVerboseLevel(3);
   eventManager->ProcessOneEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
@@ -139,15 +132,14 @@ bool GiGaWorkerRunManager::ProcessEvent( G4Event* event )
     return true;
   }
 
-  //this->StackPreviousEvent( currentEvent );
+  // this->StackPreviousEvent( currentEvent );
   bool abort   = currentEvent->IsAborted();
   currentEvent = nullptr;
 
   return abort;
 }
 
-void GiGaWorkerRunManager::RunTermination()
-{
+void GiGaWorkerRunManager::RunTermination() {
   // Not sure what I should put here...
   // Maybe I can just use the base class?
   G4WorkerRunManager::RunTermination();

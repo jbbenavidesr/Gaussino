@@ -25,8 +25,7 @@
  *  @date   2018-06-04
  */
 
-class GiGaMessageImpl : public IGiGaMessage
-{
+class GiGaMessageImpl : public IGiGaMessage {
   friend class GiGaTool;
 
   GiGaMessageImpl() = delete;
@@ -39,21 +38,19 @@ public:
   void info( std::string message ) const override { msg << MSG::INFO << message << endmsg; }
   void always( std::string message ) const override { msg << MSG::ALWAYS << message << endmsg; }
   void warning( std::string message ) const override { msg << message << endmsg; }
-  int level() const override { return msg.level(); }
+  int  level() const override { return msg.level(); }
 
 private:
   mutable MsgStream msg;
 };
 
-class GiGaTool : public GaudiTool
-{
+class GiGaTool : public GaudiTool {
 
 public:
   using GaudiTool::GaudiTool;
   virtual ~GiGaTool(){};
 
-  GiGaMessageImpl* message_interface() const
-  {
+  GiGaMessageImpl* message_interface() const {
     MsgStream msg( msgSvc(), name() );
     msg.setLevel( msgLevel() );
     auto msgwrapper = new GiGaMessageImpl( msg );

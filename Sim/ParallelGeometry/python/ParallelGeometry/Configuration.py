@@ -8,9 +8,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Gaudi.Configuration import ConfigurableUser
-from Gaudi.Configuration import log
 import Configurables
+from Gaudi.Configuration import ConfigurableUser, log
 
 __author__ = "Michal Mazurek"
 __email__ = "michal.mazurek@cern.ch"

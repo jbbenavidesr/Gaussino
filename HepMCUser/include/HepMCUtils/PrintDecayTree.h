@@ -21,4 +21,5 @@
 
 typedef std::set<int> IDs;
 
-std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level = 0, const LHCb::IParticlePropertySvc* ppsvc = nullptr, IDs* id= nullptr );
+std::string PrintDecay( const HepMC3::ConstGenParticlePtr& part, int level = 0,
+                        const LHCb::IParticlePropertySvc* ppsvc = nullptr, IDs* id = nullptr );

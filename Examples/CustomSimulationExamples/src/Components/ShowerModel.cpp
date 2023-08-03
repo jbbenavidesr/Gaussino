@@ -49,15 +49,15 @@ namespace Gaussino::CustomSimulation::ShowerModel {
 
   class ModelFactory : public CustomSimulation::ModelFactory<Model> {
 
-    Gaudi::Property<bool>   m_killTrack{this, "KillTrack", true,
-                                      "Kill the track if fast simulated, otherwise propagate to the end of volume"};
-    Gaudi::Property<double> m_showerRadius{this, "ShowerRadius", -1,
-                                           "Radius of each shower will be sampled from (0.0, ShowerRadius]"};
-    Gaudi::Property<double> m_showerShapeParam{this, "ShowerShapeParameter", -1,
-                                               "Shape parameter of the gamma distribution"};
-    Gaudi::Property<double> m_showerScaleParam{this, "ShowerScaleParameter", -1,
-                                               "Scale parameter of the gamma distribution"};
-    Gaudi::Property<int>    m_hitsPerShower{this, "HitsPerShower", -1, "No. of hits to be generated for each shower"};
+    Gaudi::Property<bool>   m_killTrack{ this, "KillTrack", true,
+                                       "Kill the track if fast simulated, otherwise propagate to the end of volume" };
+    Gaudi::Property<double> m_showerRadius{ this, "ShowerRadius", -1,
+                                            "Radius of each shower will be sampled from (0.0, ShowerRadius]" };
+    Gaudi::Property<double> m_showerShapeParam{ this, "ShowerShapeParameter", -1,
+                                                "Shape parameter of the gamma distribution" };
+    Gaudi::Property<double> m_showerScaleParam{ this, "ShowerScaleParameter", -1,
+                                                "Scale parameter of the gamma distribution" };
+    Gaudi::Property<int>    m_hitsPerShower{ this, "HitsPerShower", -1, "No. of hits to be generated for each shower" };
 
   public:
     using base_class = CustomSimulation::ModelFactory<Model>;

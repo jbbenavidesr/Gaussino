@@ -8,12 +8,9 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from GaudiKernel import SystemOfUnits as units
-from Configurables import (
-    GaussinoGeometry,
-    ExternalDetectorEmbedder,
-)
+from Configurables import ExternalDetectorEmbedder, GaussinoGeometry
 from ExternalDetector.Materials import OUTER_SPACE
+from GaudiKernel import SystemOfUnits as units
 
 emb_id = len(ExternalDetectorEmbedder.configurables)
 emb_name = f"ExternalDetectorEmbedder_{emb_id}"

@@ -9,18 +9,21 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from GaudiKernel import SystemOfUnits as units
-from GaudiKernel import PhysicalConstants as constants
-from Gaudi.Configuration import appendPostConfigAction
 import math
+
 from Configurables import (
     Gaussino,
     GaussinoGeneration,
-    GaussinoSimulation,
     GaussinoGeometry,
+    GaussinoSimulation,
 )
-
-from Par04.generation import set_particle_gun_momentum_range, set_particle_gun_fixed_momentum
+from Gaudi.Configuration import appendPostConfigAction
+from GaudiKernel import PhysicalConstants as constants
+from GaudiKernel import SystemOfUnits as units
+from Par04.generation import (
+    set_particle_gun_fixed_momentum,
+    set_particle_gun_momentum_range,
+)
 from Par04.geometry import set_cylindrical_calo
 from Par04.monitoring import set_monitoring
 
@@ -95,9 +98,9 @@ GaussinoSimulation(
         "GiGaMT_G4IonPhysics",
         "GiGaMT_G4NeutronTrackingCut",
     ],
-    CutForElectron=700*units.micrometer,
-    CutForPositron=700*units.micrometer,
-    CutForGamma=700*units.micrometer,
+    CutForElectron=700 * units.micrometer,
+    CutForPositron=700 * units.micrometer,
+    CutForGamma=700 * units.micrometer,
     DumpCutsTable=True,
 )
 
@@ -109,11 +112,14 @@ set_monitoring(
     training_data=not opts["inference"],
 )
 
+
 # setting up the TruthFlaggingTrackAction options
 def updateRhoMax():
     from Configurables import TruthFlaggingTrackAction
+
     trth = TruthFlaggingTrackAction(
-        "GiGaMT.GiGaActionInitializer.TruthFlaggingTrackAction")
+        "GiGaMT.GiGaActionInitializer.TruthFlaggingTrackAction"
+    )
     trth.StoreUpToRho = True
     trth.StoreUpToZ = False
     trth.RhomaxForStoring = opts["detector_inner_radius"] - collector_width
@@ -129,6 +135,7 @@ def updateRhoMax():
     trth.StoreByChildProcess = False
     trth.StoreByChildEnergy = False
     trth.StoreByChildType = False
+
 
 appendPostConfigAction(updateRhoMax)
 

@@ -20,9 +20,9 @@
 /// GaudiKernel
 #include "GaudiKernel/MsgStream.h"
 /// GiGa
-//#include "GiGaCnv/GiGaPrimaryParticleInformation.h"
-// GaussTools
-//#include "GaussTools/GaussTrajectory.h"
+// #include "GiGaCnv/GiGaPrimaryParticleInformation.h"
+//  GaussTools
+// #include "GaussTools/GaussTrajectory.h"
 #include "GiGaMTCoreRun/GaussinoPrimaryParticleInformation.h"
 #include "GiGaMTCoreRun/GaussinoTrackInformation.h"
 /// local

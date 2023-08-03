@@ -20,8 +20,6 @@ namespace Gaussino::G4Par04 {
     return (void*)CollectorHitAllocator->MallocSingle();
   }
 
-  void CollectorG4Hit::operator delete( void* aHit ) {
-    CollectorHitAllocator->FreeSingle( (CollectorG4Hit*)aHit );
-  }
+  void CollectorG4Hit::operator delete( void* aHit ) { CollectorHitAllocator->FreeSingle( (CollectorG4Hit*)aHit ); }
 
 } // namespace Gaussino::G4Par04

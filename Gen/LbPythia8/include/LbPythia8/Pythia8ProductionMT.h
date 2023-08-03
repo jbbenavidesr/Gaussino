@@ -24,10 +24,9 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8Plugins/LHAFortran.h"
 
-//#include "Pythia8Plugins/HepMC2.h"
+// #include "Pythia8Plugins/HepMC2.h"
 #include <condition_variable>
 #include <mutex>
-
 
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
@@ -43,8 +42,7 @@
  * @author Dominik Muller
  * @date   5.7.2018
  */
-class Pythia8ProductionMT : public GaudiTool, virtual public IProductionTool
-{
+class Pythia8ProductionMT : public GaudiTool, virtual public IProductionTool {
 public:
   typedef std::vector<std::string> CommandVector;
 
@@ -82,7 +80,7 @@ public:
    * and vertex positions must be modified to match the LHCb standard. The
    * hard process information is also set.
    */
-  StatusCode toHepMC( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision ) const; 
+  StatusCode toHepMC( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision ) const;
 
   /// Set particle stable.
   virtual void setStable( const LHCb::ParticleProperty* thePP ) override;
@@ -100,7 +98,7 @@ public:
 
   /// Hadronize an event.
   virtual StatusCode hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
-                                HepRandomEnginePtr & engine) override;
+                                HepRandomEnginePtr& engine ) override;
 
   /// Save the Pythia 8 event record.
   virtual void savePartonEvent( HepMC3::GenEventPtr theEvent ) override;
@@ -140,11 +138,11 @@ public:
   // The Pythia 8 members. Just to be sure will have all of them
   // thread local. All these pointers are initialised to zero in
   // the threadlocal storage.
-  mutable LocalTL<Pythia8::Pythia*> m_pythia;   ///< The Pythia 8 generator.
-  mutable LocalTL<Pythia8::UserHooks*> m_hooks; ///< User hooks to veto events.
-  mutable LocalTL<Pythia8::LHAup*> m_lhaup;     ///< User specified hard process.
-  mutable LocalTL<Pythia8::Event> m_event;      ///< The Pythia 8 event record.
-  mutable LocalTL<std::set<int>> m_bws;                   ///< Set of particles with a valid BW.
+  mutable LocalTL<Pythia8::Pythia*>    m_pythia; ///< The Pythia 8 generator.
+  mutable LocalTL<Pythia8::UserHooks*> m_hooks;  ///< User hooks to veto events.
+  mutable LocalTL<Pythia8::LHAup*>     m_lhaup;  ///< User specified hard process.
+  mutable LocalTL<Pythia8::Event>      m_event;  ///< The Pythia 8 event record.
+  mutable LocalTL<std::set<int>>       m_bws;    ///< Set of particles with a valid BW.
 
   std::vector<const LHCb::ParticleProperty*> m_update_pp;
   std::vector<const LHCb::ParticleProperty*> m_stable_pp;
@@ -169,30 +167,28 @@ protected:
   int pythia8Id( const LHCb::ParticleProperty* thePP ) const;
 
   // Additional members.
-  IBeamTool* m_beamTool;                         ///< The Gaudi beam tool.
-  mutable LocalTL<BeamToolForPythia8*> m_pythiaBeamTool; ///< The Pythia 8 beam tool.
-  mutable std::atomic_int m_nEvents;             ///< Number of generated events.
-  CommandVector m_userSettings;                  ///< The user settings vector.
-  std::string m_tuningFile;                           ///< The global tuning file.
-  std::string m_tuningUserFile;                       ///< The user tuning file.
-  bool m_validate_HEPEVT;                        ///< Flag to validate the event.
-  bool m_listAllParticles;                       ///< Flag to list all the particles.
-  bool m_checkParticleProperties;                ///< Flag to check particle properties.
-  bool m_showBanner;                             ///< Flag to print the Pythia 8 banner.
-  ICounterLogFile* m_xmlLogTool;                 ///< The XML log file.
-  std::set<unsigned int> m_special;                   ///< The set of special particles.
-  static std::mutex m_pythia_lock;
-  mutable std::atomic_bool m_first_init{true};
+  IBeamTool*                           m_beamTool;                ///< The Gaudi beam tool.
+  mutable LocalTL<BeamToolForPythia8*> m_pythiaBeamTool;          ///< The Pythia 8 beam tool.
+  mutable std::atomic_int              m_nEvents;                 ///< Number of generated events.
+  CommandVector                        m_userSettings;            ///< The user settings vector.
+  std::string                          m_tuningFile;              ///< The global tuning file.
+  std::string                          m_tuningUserFile;          ///< The user tuning file.
+  bool                                 m_validate_HEPEVT;         ///< Flag to validate the event.
+  bool                                 m_listAllParticles;        ///< Flag to list all the particles.
+  bool                                 m_checkParticleProperties; ///< Flag to check particle properties.
+  bool                                 m_showBanner;              ///< Flag to print the Pythia 8 banner.
+  ICounterLogFile*                     m_xmlLogTool;              ///< The XML log file.
+  std::set<unsigned int>               m_special;                 ///< The set of special particles.
+  static std::mutex                    m_pythia_lock;
+  mutable std::atomic_bool             m_first_init{ true };
   /// Location where to store FSR counters (set by options)
-  std::string  m_FSRName;
+  std::string m_FSRName;
 
-  class Pythia8ThreadManager
-  {
+  class Pythia8ThreadManager {
 
   public:
-    ~Pythia8ThreadManager()
-    {
-      for ( auto[pythia, hooks, lhaup, beam] : store ) {
+    ~Pythia8ThreadManager() {
+      for ( auto [pythia, hooks, lhaup, beam] : store ) {
         if ( pythia ) delete pythia;
         if ( hooks ) delete hooks;
         if ( lhaup ) delete lhaup;
@@ -201,8 +197,7 @@ protected:
     }
     std::vector<std::tuple<Pythia8::Pythia*, Pythia8::UserHooks*, Pythia8::LHAup*, BeamToolForPythia8*>> store;
   };
-  class RndForPythia : public Pythia8::RndmEngine
-  {
+  class RndForPythia : public Pythia8::RndmEngine {
   public:
     RndForPythia( CLHEP::HepRandomEngine& engine ) : m_gen( engine, 0, 1 ) {}
     virtual double flat() override { return m_gen(); }
@@ -211,23 +206,21 @@ protected:
     CLHEP::RandFlat m_gen;
   };
 
-  Pythia8ThreadManager* m_manager{nullptr};
+  Pythia8ThreadManager* m_manager{ nullptr };
 
 private:
-  unsigned int m_nThreads{0};
+  unsigned int           m_nThreads{ 0 };
   mutable std::once_flag m_init_flag;
-  class P8MTBarrier
-  {
+  class P8MTBarrier {
   private:
-    std::mutex _mutex;
+    std::mutex              _mutex;
     std::condition_variable _cv;
-    std::size_t m_n_waiting;
+    std::size_t             m_n_waiting;
 
   public:
     explicit P8MTBarrier( std::size_t count ) : m_n_waiting( count ) {}
-    void wait()
-    {
-      std::unique_lock<std::mutex> lock{_mutex};
+    void wait() {
+      std::unique_lock<std::mutex> lock{ _mutex };
       if ( --m_n_waiting == 0 ) {
         _cv.notify_all();
       } else {
@@ -238,10 +231,9 @@ private:
     P8MTBarrier( const P8MTBarrier& ) = delete;
     P8MTBarrier( P8MTBarrier&& )      = delete;
   };
-  static P8MTBarrier& GetInitBarrier( std::size_t num_threads = 0 )
-  {
+  static P8MTBarrier& GetInitBarrier( std::size_t num_threads = 0 ) {
     static P8MTBarrier barrier( num_threads );
     return barrier;
   }
-  std::atomic_uint m_p8_init{0};
+  std::atomic_uint m_p8_init{ 0 };
 };

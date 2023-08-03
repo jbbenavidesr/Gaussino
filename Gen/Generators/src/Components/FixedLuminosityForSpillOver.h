@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedLuminosityForSpillOver.h,v 1.2 2009-04-07 16:11:21 gcorti Exp $
-#ifndef GENERATORS_FIXEDLUMINOSITYFORSPILLOVER_H 
+#ifndef GENERATORS_FIXEDLUMINOSITYFORSPILLOVER_H
 #define GENERATORS_FIXEDLUMINOSITYFORSPILLOVER_H 1
 
 // Include files
@@ -19,55 +19,53 @@
 #include "GenInterfaces/IPileUpTool.h"
 
 // forward declaration
-class ICounterLogFile ;
+class ICounterLogFile;
 
 /** @class FixedLuminosityForSpillOver FixedLuminosityForSpillOver.h "FixedLuminosityForSpillOver.h"
- *  
+ *
  *  Tool to compute variable number of pile up events
  *  depending on beam parameters.
  *  To be used for spill over generation because it accepts events
  *  with 0 interaction
- * 
+ *
  *  @author Patrick Robbe
  *  @date   2009-03-30
  */
 class FixedLuminosityForSpillOver : public GaudiTool, virtual public IPileUpTool {
 public:
   /// Standard constructor
-  FixedLuminosityForSpillOver( const std::string& type, const std::string& name,
-		               const IInterface* parent) ;
+  FixedLuminosityForSpillOver( const std::string& type, const std::string& name, const IInterface* parent );
 
-  virtual ~FixedLuminosityForSpillOver( ); ///< Destructor
+  virtual ~FixedLuminosityForSpillOver(); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) override;
-  
+  virtual StatusCode initialize() override;
+
   /// Finalize method
-  virtual StatusCode finalize( ) override;
+  virtual StatusCode finalize() override;
 
   /** Implements IPileUpTool::numberOfPileUp
    *  Returns the number of pile-up interactions in one event. It follows
-   *  a Poisson distribution with 
+   *  a Poisson distribution with
    *  mean = Luminosity * cross_section / crossing_rate.
    *  The fixed luminosity is returned as the currentLuminosity.
    */
-  virtual unsigned int numberOfPileUp( HepRandomEnginePtr & ) override;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr& ) override;
 
   /// Implements IPileUpTool::printPileUpCounters
-  virtual void printPileUpCounters( ) override;
+  virtual void printPileUpCounters() override;
 
 protected:
-
 private:
   /// Location where to store FSR counters (set by options)
-  std::string  m_FSRName;
+  std::string m_FSRName;
 
-  ICounterLogFile * m_xmlLogTool ; ///< Log file in XML
-  
-  std::string m_beamParameters ; ///< Location of beam parameters (set by options)
+  ICounterLogFile* m_xmlLogTool; ///< Log file in XML
 
-  int    m_numberOfZeroInteraction ; ///< Counter of empty events
+  std::string m_beamParameters; ///< Location of beam parameters (set by options)
 
-  int    m_nEvents ; ///< Counter of events (including empty events)
+  int m_numberOfZeroInteraction; ///< Counter of empty events
+
+  int m_nEvents; ///< Counter of events (including empty events)
 };
 #endif // GENERATORS_FIXEDLUMINOSITYFORSPILLOVER_H
