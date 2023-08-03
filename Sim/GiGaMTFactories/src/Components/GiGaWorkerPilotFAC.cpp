@@ -12,16 +12,15 @@
 
 DECLARE_COMPONENT( GiGaWorkerPilotFAC )
 
-/*static*/ std::atomic_uint GiGaWorkerPilotFAC::n_created{0};
+/*static*/ std::atomic_uint GiGaWorkerPilotFAC::n_created{ 0 };
 
-GiGaWorkerPilot* GiGaWorkerPilotFAC::construct() const
-{
+GiGaWorkerPilot* GiGaWorkerPilotFAC::construct() const {
   n_created++;
   debug() << "Creating instance number " << std::to_string( n_created ) << endmsg;
 
   auto pilot = new GiGaWorkerPilot{};
   pilot->SetMessageInterface( message_interface() );
-  pilot->m_track_eventstructure= m_track_structure.value();
-  pilot->iWorker = n_created - 1;
+  pilot->m_track_eventstructure = m_track_structure.value();
+  pilot->iWorker                = n_created - 1;
   return pilot;
 }

@@ -36,28 +36,21 @@ DECLARE_COMPONENT( GiGaRegionsTool )
  *  @return status code
  */
 // ============================================================================
-StatusCode GiGaRegionsTool::process( const std::string& region ) const
-{
-  StatusCode sc{StatusCode::SUCCESS};
-  if ( !m_simSvc.isValid() ) {
-    return Error( " process('" + region + "'): IRegionsDefinitionSvc* is invalid!" );
-  }
+StatusCode GiGaRegionsTool::process( const std::string& region ) const {
+  StatusCode sc{ StatusCode::SUCCESS };
+  if ( !m_simSvc.isValid() ) { return Error( " process('" + region + "'): IRegionsDefinitionSvc* is invalid!" ); }
 
   typedef IRegionsDefinitionSvc::VectOfRegCuts Regions;
-  typedef std::vector<std::string> Volumes;
+  typedef std::vector<std::string>             Volumes;
 
   const Regions* regions = m_simSvc->regionsDefs();
-  if ( 0 == regions ) {
-    return Error( " process('" + region + "'): Regions* poitns to NULL " );
-  }
+  if ( 0 == regions ) { return Error( " process('" + region + "'): Regions* poitns to NULL " ); }
 
   // loop over all regions
   debug() << " Number of G4 regions =  " << (int)regions->size() << endmsg;
   for ( auto& ireg : *regions ) {
     // all regions? or only selected region?
-    if ( !region.empty() && ireg.region() != region ) {
-      continue;
-    }
+    if ( !region.empty() && ireg.region() != region ) { continue; }
     debug() << " Process the region '" << ireg.region() << "'" << endmsg;
     //
     G4Region* reg = new G4Region( ireg.region() );
@@ -68,21 +61,22 @@ StatusCode GiGaRegionsTool::process( const std::string& region ) const
 
       G4LogicalVolume* volume = G4LogicalVolumeStore::GetInstance()->GetVolume( ivolume );
       if ( 0 == volume ) {
-        sc &= Error( " process('" + ireg.region() + "'): G4LogicalVolume* '" + ivolume + "' points to NULL, skip it  " );
+        sc &=
+            Error( " process('" + ireg.region() + "'): G4LogicalVolume* '" + ivolume + "' points to NULL, skip it  " );
         continue;
       }
 
       if ( 0 != volume->GetRegion() && !m_overwrite ) {
-        sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
-                 "' , skip " );
+        sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" +
+                       volume->GetRegion()->GetName() + "' , skip " );
         continue;
       } else if ( 0 != volume->GetRegion() && m_overwrite ) {
         if ( ( volume->GetRegion()->GetName() ) == "DefaultRegionForTheWorld" ) {
           debug() << "G4Region Change for  "
                   << " G4LogicalVolume '" << ivolume << " ' to " << reg->GetName() << endmsg;
         } else {
-          sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" + volume->GetRegion()->GetName() +
-                   "', overwrite " );
+          sc &= Warning( " G4LogicalVolume '" + ivolume + "' already belongs to region '" +
+                         volume->GetRegion()->GetName() + "', overwrite " );
         }
       }
       // set region
@@ -93,15 +87,9 @@ StatusCode GiGaRegionsTool::process( const std::string& region ) const
     // create production cuts
     G4ProductionCuts* cuts = new G4ProductionCuts();
 
-    if ( 0 <= ireg.gammaCut() ) {
-      cuts->SetProductionCut( ireg.gammaCut(), G4ProductionCuts::GetIndex( "gamma" ) );
-    }
-    if ( 0 <= ireg.electronCut() ) {
-      cuts->SetProductionCut( ireg.electronCut(), G4ProductionCuts::GetIndex( "e-" ) );
-    }
-    if ( 0 <= ireg.positronCut() ) {
-      cuts->SetProductionCut( ireg.positronCut(), G4ProductionCuts::GetIndex( "e+" ) );
-    }
+    if ( 0 <= ireg.gammaCut() ) { cuts->SetProductionCut( ireg.gammaCut(), G4ProductionCuts::GetIndex( "gamma" ) ); }
+    if ( 0 <= ireg.electronCut() ) { cuts->SetProductionCut( ireg.electronCut(), G4ProductionCuts::GetIndex( "e-" ) ); }
+    if ( 0 <= ireg.positronCut() ) { cuts->SetProductionCut( ireg.positronCut(), G4ProductionCuts::GetIndex( "e+" ) ); }
 
     // set production cuts for region
     reg->SetProductionCuts( cuts );

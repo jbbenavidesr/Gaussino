@@ -9,13 +9,11 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from GaudiKernel import SystemOfUnits as units
+from Configurables import ApplicationMgr
+from Configurables import Gaussino__G4Par04__Monitoring as moni
+from Configurables import NTupleSvc
 from GaudiKernel import PhysicalConstants as constants
-from Configurables import (
-    ApplicationMgr,
-    Gaussino__G4Par04__Monitoring as moni,
-    NTupleSvc,
-)
+from GaudiKernel import SystemOfUnits as units
 
 
 def set_monitoring(

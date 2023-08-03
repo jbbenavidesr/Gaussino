@@ -12,20 +12,18 @@
 #include "HepMC3/GenParticle.h"
 #include <string>
 
-namespace HepMC3
-{
-  class ParticleAttribute : public Attribute
-  {
+namespace HepMC3 {
+  class ParticleAttribute : public Attribute {
   public:
     ParticleAttribute() : Attribute(), m_val( nullptr ) {}
     ParticleAttribute( GenParticlePtr val ) : Attribute(), m_val( val ) {}
 
     bool from_string( const string& att ) override {
-      #ifdef HEPMC_HAS_CXX11
+#ifdef HEPMC_HAS_CXX11
       index = std::stoi( att );
-      #else
+#else
       index = atoi( att.c_str() );
-      #endif
+#endif
       return true;
     }
 
@@ -40,12 +38,9 @@ namespace HepMC3
     // to GenRunInfo to avoid failures in the template instantiation
     // of GenEvent::attribute<T>
     using Attribute::init;
-    virtual bool init( const GenEvent& geneve )
-    {
+    virtual bool init( const GenEvent& geneve ) {
       int pos_in_vec = index - 1;
-      if ( pos_in_vec >= (int) geneve.particles().size() ) {
-        return false;
-      }
+      if ( pos_in_vec >= (int)geneve.particles().size() ) { return false; }
       m_val = geneve.particles().at( pos_in_vec );
       return true;
     }
@@ -54,6 +49,6 @@ namespace HepMC3
 
   private:
     ConstGenParticlePtr m_val;
-    int index = -1; // Only used when creating object from string
+    int                 index = -1; // Only used when creating object from string
   };
-} // End HepMC3 namespace
+} // namespace HepMC3

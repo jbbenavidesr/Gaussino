@@ -35,7 +35,7 @@ namespace Gaussino::MagneticField {
 
   public:
     using extends::extends;
-    virtual STEPPER* construct( G4Mag_EqRhs* equation ) const override { return new STEPPER{equation}; }
+    virtual STEPPER* construct( G4Mag_EqRhs* equation ) const override { return new STEPPER{ equation }; }
   };
 } // namespace Gaussino::MagneticField
 

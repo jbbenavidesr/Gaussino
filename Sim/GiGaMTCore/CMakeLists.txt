@@ -9,7 +9,7 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 ################################################################################
-# Package: GiGaMTCore 
+# Package: GiGaMTCore
 #
 # This package should contain all modified core Geant4 classes (e.g.
 # run managers). While the Gaudi cmake plugins are used to handle this package,

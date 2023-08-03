@@ -16,25 +16,24 @@
 #include "GiGaMTCoreRun/G4EventProxy.h"
 
 // Gaudi
-#include "GaudiKernel/SystemOfUnits.h"
-#include "GaudiAlg/Transformer.h"
 #include "GaudiAlg/FunctionalUtilities.h"
+#include "GaudiAlg/Transformer.h"
+#include "GaudiKernel/SystemOfUnits.h"
 
 // LHCb
 #include "Event/MCHeader.h"
 
 namespace Gaussino::G4Par04 {
-  class GetCaloHitsAlg
-      : public Gaudi::Functional::Transformer<CaloHits( const LHCb::MCHeader&, const G4EventProxies& ),
-      Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
-    Gaudi::Property<std::vector<std::string>> m_colNames{this, "G4HitsCollectionNames", {}};
+  class GetCaloHitsAlg : public Gaudi::Functional::Transformer<CaloHits( const LHCb::MCHeader&, const G4EventProxies& ),
+                                                               Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
+    Gaudi::Property<std::vector<std::string>> m_colNames{ this, "G4HitsCollectionNames", {} };
 
   public:
     GetCaloHitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
         : Transformer( name, pSvcLocator,
-                       {KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
-                        KeyValue{"G4EventProxies", Gaussino::G4EventsLocation::Default}},
-                       KeyValue{"OutputHitsLocation", ""} ) {}
+                       { KeyValue{ "MCHeader", LHCb::MCHeaderLocation::Default },
+                         KeyValue{ "G4EventProxies", Gaussino::G4EventsLocation::Default } },
+                       KeyValue{ "OutputHitsLocation", "" } ) {}
 
     CaloHits operator()( const LHCb::MCHeader& header, const G4EventProxies& g4event_proxies ) const override {
       CaloHits hits        = {};

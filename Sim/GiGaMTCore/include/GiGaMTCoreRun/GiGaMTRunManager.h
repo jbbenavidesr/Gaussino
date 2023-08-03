@@ -27,8 +27,7 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTRunManager : public G4MTRunManager, public GiGaMessage
-{
+class GiGaMTRunManager : public G4MTRunManager, public GiGaMessage {
 
 public:
   // Gets the singleton instance of the GiGaMTRunManager.
@@ -55,10 +54,10 @@ public:
 
 protected:
   /// Initialize the G4 geometry on the master
-  //void InitializeGeometry() override final;
+  // void InitializeGeometry() override final;
 
   // Initialize the physics list on the master
-  //void InitializePhysics() override final;
+  // void InitializePhysics() override final;
 
   // Disable G4's barrier synchronization by implementing these methods
   // and leaving them empty. These are probably called at some point

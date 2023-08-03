@@ -9,13 +9,13 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTDetectorConstructionFAC.h"
+#include "G4LogicalVolumeStore.hh"
 #include "GiGaMTCoreDet/GiGaMTDetectorConstruction.h"
 #include "GiGaMTCoreDet/IExternalDetectorEmbedder.h"
 #include "GiGaMTGeo/IGDMLReader.h"
 #include "GiGaMTGeo/IGiGaMTGeoSvc.h"
 #include "SimInterfaces/IGaussinoTool.h"
 #include <filesystem>
-#include "G4LogicalVolumeStore.hh"
 DECLARE_COMPONENT( GiGaMTDetectorConstructionFAC )
 
 StatusCode GiGaMTDetectorConstructionFAC::initialize() {
@@ -103,16 +103,18 @@ G4VUserDetectorConstruction* GiGaMTDetectorConstructionFAC::construct() const {
     for ( auto& cust_region_factory : m_cust_region_factories ) {
       debug() << "Calling fast region constructor " << cust_region_factory->name() << endmsg;
       auto region = cust_region_factory->construct();
-      if (!region) {
-        throw GaudiException( "Failed to create the custom simulation region: " + cust_region_factory->name(), "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
+      if ( !region ) {
+        throw GaudiException( "Failed to create the custom simulation region: " + cust_region_factory->name(),
+                              "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
       }
     }
 
     // import custom simulation models
     for ( auto& cust_model_factory : m_cust_model_factories ) {
       debug() << "Calling fast model constructor " << cust_model_factory->name() << endmsg;
-      if (!cust_model_factory->construct()) {
-        throw GaudiException( "Failed to create the custom simulation model: " + cust_model_factory->name(), "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
+      if ( !cust_model_factory->construct() ) {
+        throw GaudiException( "Failed to create the custom simulation model: " + cust_model_factory->name(),
+                              "GiGaMTDetectorConstructionFAC", StatusCode::FAILURE );
       };
     }
   } );

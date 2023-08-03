@@ -10,8 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
-#include "GaudiAlg/GaudiTool.h"
 #include "G4VUserActionInitialization.hh"
+#include "GaudiAlg/GaudiTool.h"
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
@@ -43,15 +43,14 @@
  * object
  */
 
-typedef GiGaFactoryBase<G4UserRunAction> RunActionFactory;
-typedef GiGaFactoryBase<G4UserEventAction> EventActionFactory;
+typedef GiGaFactoryBase<G4UserRunAction>      RunActionFactory;
+typedef GiGaFactoryBase<G4UserEventAction>    EventActionFactory;
 typedef GiGaFactoryBase<G4UserStackingAction> StackingActionFactory;
 typedef GiGaFactoryBase<G4UserTrackingAction> TrackingActionFactory;
 typedef GiGaFactoryBase<G4UserSteppingAction> SteppingActionFactory;
 
 class GiGaActionInitializer : public extends<GiGaTool, GiGaFactoryBase<G4VUserActionInitialization>>,
-                              public G4VUserActionInitialization
-{
+                              public G4VUserActionInitialization {
 public:
   using extends::extends;
   // All actions can be provided as a list of strings which are then used to fetch
@@ -85,33 +84,33 @@ public:
 
 private:
   // Storage for the factories
-  ToolHandleArray<RunActionFactory> m_UserRunActionFactories{this};
-  ToolHandleArray<EventActionFactory> m_UserEventActionFactories{this};
-  ToolHandle<StackingActionFactory> m_UserStackingActionFactory{this, "StackingAction", ""};
-  ToolHandleArray<TrackingActionFactory> m_UserTrackingActionFactories{this};
-  ToolHandleArray<SteppingActionFactory> m_UserSteppingActionFactories{this};
+  ToolHandleArray<RunActionFactory>         m_UserRunActionFactories{ this };
+  ToolHandleArray<EventActionFactory>       m_UserEventActionFactories{ this };
+  ToolHandle<StackingActionFactory>         m_UserStackingActionFactory{ this, "StackingAction", "" };
+  ToolHandleArray<TrackingActionFactory>    m_UserTrackingActionFactories{ this };
+  ToolHandleArray<SteppingActionFactory>    m_UserSteppingActionFactories{ this };
   Gaudi::Property<std::vector<std::string>> m_UserRunAction{
       this,
       "RunActions",
       {},
       tool_array_setter( m_UserRunActionFactories, m_UserRunAction ),
-      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
   Gaudi::Property<std::vector<std::string>> m_UserEventAction{
       this,
       "EventActions",
       {},
       tool_array_setter( m_UserEventActionFactories, m_UserEventAction ),
-      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
   Gaudi::Property<std::vector<std::string>> m_UserTrackingAction{
       this,
       "TrackingActions",
       {},
       tool_array_setter( m_UserTrackingActionFactories, m_UserTrackingAction ),
-      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
   Gaudi::Property<std::vector<std::string>> m_UserSteppingAction{
       this,
       "SteppingActions",
       {},
       tool_array_setter( m_UserSteppingActionFactories, m_UserSteppingAction ),
-      Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
+      Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
 };

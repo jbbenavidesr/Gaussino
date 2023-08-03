@@ -27,19 +27,17 @@ public:
   /// Standard constructor
   ApplyPhotos( const std::string& name, ISvcLocator* pSvcLocator );
 
-  virtual ~ApplyPhotos( ); ///< Destructor
+  virtual ~ApplyPhotos(); ///< Destructor
 
-  virtual StatusCode initialize();    ///< Algorithm initialization
-  virtual StatusCode execute   ();    ///< Algorithm execution
-  virtual StatusCode finalize  ();    ///< Algorithm finalization
+  virtual StatusCode initialize(); ///< Algorithm initialization
+  virtual StatusCode execute();    ///< Algorithm execution
+  virtual StatusCode finalize();   ///< Algorithm finalization
 
 protected:
-
 private:
+  std::string m_hepMCEventLocation; ///< Input TES for HepMC events
 
-  std::string  m_hepMCEventLocation ;    ///< Input TES for HepMC events
-
-  std::vector< int > m_pdgIdList    ;    ///< list of the particle ID to study
-  std::set   < int > m_pdgIds       ;    ///< ordered list of PDG Ids
+  std::vector<int> m_pdgIdList; ///< list of the particle ID to study
+  std::set<int>    m_pdgIds;    ///< ordered list of PDG Ids
 };
 #endif // GENERATORS_APPLYPHOTOS_H

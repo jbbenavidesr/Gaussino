@@ -64,8 +64,7 @@ void Gaussino::G4Par04::CollectorSensDet::Initialize( G4HCofThisEvent* aHCE ) {
 
 void Gaussino::G4Par04::CollectorSensDet::EndOfEvent( G4HCofThisEvent* ) { m_hitsMap->clear(); }
 
-Gaussino::G4Par04::CollectorG4Hit*
-Gaussino::G4Par04::CollectorSensDet::RetrieveAndSetupHit( const G4Track* track ) {
+Gaussino::G4Par04::CollectorG4Hit* Gaussino::G4Par04::CollectorSensDet::RetrieveAndSetupHit( const G4Track* track ) {
 
   auto baseEventInfo = EventInformation::Get();
   auto eventInfo     = dynamic_cast<EventInformation*>( baseEventInfo );
@@ -104,8 +103,7 @@ bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( G4Step* step, G4Touchable
   return RetrieveAndSetupHit( track );
 }
 
-bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( const G4FastHit*   fastHit,
-                                                                     const G4FastTrack* fastTrack,
-                                                                     G4TouchableHistory* /* history */ ) {
+bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( const G4FastHit* fastHit, const G4FastTrack* fastTrack,
+                                                       G4TouchableHistory* /* history */ ) {
   return RetrieveAndSetupHit( fastTrack->GetPrimaryTrack() );
 }

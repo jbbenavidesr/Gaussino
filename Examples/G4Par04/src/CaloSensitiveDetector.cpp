@@ -37,12 +37,12 @@ namespace Gaussino::G4Par04 {
     CaloG4Hit*     RetrieveAndSetupHit( G4ThreeVector, const G4Track* );
 
     /// Number of mesh readout cells in cylindrical coordinates
-    G4ThreeVector fMeshNbOfCells = {10, 10, 10};
+    G4ThreeVector fMeshNbOfCells = { 10, 10, 10 };
     /// Size of mesh readout cells in cylindrical coordinates.
-    G4ThreeVector fMeshSizeOfCells = {1 * m, 2 * CLHEP::pi / 10., 1 * m};
+    G4ThreeVector fMeshSizeOfCells = { 1 * m, 2 * CLHEP::pi / 10., 1 * m };
 
   private:
-    CaloHitsCollection*              fHitsCollection = nullptr;
+    CaloHitsCollection*          fHitsCollection = nullptr;
     std::map<size_t, CaloG4Hit*> m_hitmap        = {};
     /// ID of collection of hits
     G4int fHitCollectionID = -1;
@@ -56,20 +56,20 @@ namespace Gaussino::G4Par04 {
     CaloSensDet* construct() const override {
       auto sensdet = BaseFactory::construct();
       sensdet->fMeshNbOfCells =
-          G4ThreeVector{(double)m_nbOfRhoCells.value(), (double)m_nbOfPhiCells.value(), (double)m_nbOfZCells.value()};
-      sensdet->fMeshSizeOfCells = G4ThreeVector{m_sizeOfRhoCells.value(),
-                                                2. * Gaudi::Units::pi / m_nbOfPhiCells.value(), m_sizeOfZCells.value()};
+          G4ThreeVector{ (double)m_nbOfRhoCells.value(), (double)m_nbOfPhiCells.value(), (double)m_nbOfZCells.value() };
+      sensdet->fMeshSizeOfCells = G4ThreeVector{
+          m_sizeOfRhoCells.value(), 2. * Gaudi::Units::pi / m_nbOfPhiCells.value(), m_sizeOfZCells.value() };
       return sensdet;
     }
 
   private:
     // 2.325 mm of tungsten =~ 0.25 * 9.327 mm = 0.25 * R_Moliere
-    Gaudi::Property<double> m_sizeOfRhoCells{this, "SizeOfRhoCells", 2.325 * Gaudi::Units::mm};
+    Gaudi::Property<double> m_sizeOfRhoCells{ this, "SizeOfRhoCells", 2.325 * Gaudi::Units::mm };
     // 2 * 1.4 mm of tungsten =~ 0.65 X_0
-    Gaudi::Property<double> m_sizeOfZCells{this, "SizeOfZCells", 3.4 * Gaudi::Units::mm};
-    Gaudi::Property<size_t> m_nbOfRhoCells{this, "NbOfRhoCells", 18};
-    Gaudi::Property<size_t> m_nbOfPhiCells{this, "NbOfPhiCells", 50};
-    Gaudi::Property<size_t> m_nbOfZCells{this, "NbOfZCells", 45};
+    Gaudi::Property<double> m_sizeOfZCells{ this, "SizeOfZCells", 3.4 * Gaudi::Units::mm };
+    Gaudi::Property<size_t> m_nbOfRhoCells{ this, "NbOfRhoCells", 18 };
+    Gaudi::Property<size_t> m_nbOfPhiCells{ this, "NbOfPhiCells", 50 };
+    Gaudi::Property<size_t> m_nbOfZCells{ this, "NbOfZCells", 45 };
   };
 } // namespace Gaussino::G4Par04
 
@@ -112,7 +112,7 @@ G4bool Gaussino::G4Par04::CaloSensDet::ProcessHits( G4Step* aStep, G4TouchableHi
 }
 
 G4bool Gaussino::G4Par04::CaloSensDet::ProcessHits( const G4FastHit* aHit, const G4FastTrack* aTrack,
-                                                                  G4TouchableHistory* ) {
+                                                    G4TouchableHistory* ) {
   G4double edep = aHit->GetEnergy();
   if ( edep == 0. ) return true;
 
@@ -136,9 +136,8 @@ G4bool Gaussino::G4Par04::CaloSensDet::ProcessHits( const G4FastHit* aHit, const
   return true;
 }
 
-Gaussino::G4Par04::CaloG4Hit*
-Gaussino::G4Par04::CaloSensDet::RetrieveAndSetupHit( G4ThreeVector  aGlobalPosition,
-                                                                   const G4Track* track ) {
+Gaussino::G4Par04::CaloG4Hit* Gaussino::G4Par04::CaloSensDet::RetrieveAndSetupHit( G4ThreeVector  aGlobalPosition,
+                                                                                   const G4Track* track ) {
   auto eventInfo = dynamic_cast<EventInformation*>( EventInformation::Get() );
   if ( !eventInfo ) {
     throw GaudiException( "No EventInformation available! Something is off with the configuration...",
@@ -155,7 +154,7 @@ Gaussino::G4Par04::CaloSensDet::RetrieveAndSetupHit( G4ThreeVector  aGlobalPosit
   int strackID = track->GetParentID();
   if ( !trackInfo->prelStoreTruth() && !trackInfo->storeTruth() ) { trackID = strackID; }
 
-  auto collHit = eventInfo->GetCollectorHit( trackID );
+  auto collHit           = eventInfo->GetCollectorHit( trackID );
   auto entrancePosition  = collHit->GetPosition();
   auto entranceDirection = collHit->GetDirection();
 

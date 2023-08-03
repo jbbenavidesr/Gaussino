@@ -9,6 +9,7 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Configurables import GaussinoGeneration
+
 GaussinoGeneration().SampleGenerationTool = "MinimumBias"
 GaussinoGeneration().ProductionTool = "Pythia8ProductionMT"
 GaussinoGeneration().PileUpTool = "FixedLuminosityWithSvc"

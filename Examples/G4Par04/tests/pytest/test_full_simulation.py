@@ -9,9 +9,10 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from Gaussino.pytest.helpers import run_gaudi, reset_configurables
-from Gaussino.pytest.options import events_1, edm
 import re
+
+from Gaussino.pytest.helpers import reset_configurables, run_gaudi
+from Gaussino.pytest.options import edm, events_1
 
 patterns = [
     r"\"\#FullSimHits\"\s+\|\s+1\s+\|\s+1124\s+\|\s+1124\.0\s+\|\s+0\.0000",

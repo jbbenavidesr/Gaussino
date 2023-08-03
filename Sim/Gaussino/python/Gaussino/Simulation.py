@@ -14,16 +14,15 @@ __email__ = "lhcb-simulation@cern.ch"
 
 from Gaudi.Configuration import log
 from GaudiKernel import SystemOfUnits
-
+from Gaussino.Geometry import GaussinoGeometry
 from Gaussino.Utilities import (
     GaussinoConfigurable,
-    get_set_configurable,
     add_constructors_with_names,
+    get_set_configurable,
 )
 
 # Configurables
 from ParallelGeometry.Configuration import ParallelGeometry
-from Gaussino.Geometry import GaussinoGeometry
 
 
 class GaussinoSimulation(GaussinoConfigurable):
@@ -78,7 +77,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         "CustomSimulation": "",  # name of the configurable
     }
 
-
     def __apply_configuration__(self):
         """Main configuration method for the simulation phase.
         It applies the properties of the simulation phase right after the main
@@ -87,6 +85,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         the geometry configurable :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
         """
         from Configurables import Gaussino
+
         log.debug("Configuring GaussinoSimulation")
         if "Simulation" not in Gaussino().getProp("Phases"):
             log.debug("-> No simulation phase, skipping.")
@@ -115,11 +114,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         """Sets up the main simulation service ``GiGaMT``. It will be
         available throughout the whole execution time of the simulation.
         """
-        from Configurables import (
-            ApplicationMgr,
-            GiGaMT,
-            GiGaRunActionCommand,
-        )
+        from Configurables import ApplicationMgr, GiGaMT, GiGaRunActionCommand
 
         log.debug("-> Configuring GiGa service: GiGaMT")
         giga = GiGaMT()
@@ -156,10 +151,7 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     def _set_physics(self):
         """Sets up the physics constructors and applies the cuts."""
-        from Configurables import (
-            GiGaMTModularPhysListFAC,
-            GiGaMT,
-        )
+        from Configurables import GiGaMT, GiGaMTModularPhysListFAC
 
         log.debug("-> Configuring physics constructors")
         giga = GiGaMT()
@@ -203,10 +195,7 @@ class GaussinoSimulation(GaussinoConfigurable):
             "TruthStoringTrackAction",
         ]
 
-        from Configurables import (
-            TruthFlaggingTrackAction,
-            TruthStoringTrackAction,
-        )
+        from Configurables import TruthFlaggingTrackAction, TruthStoringTrackAction
 
         flagging = actioninit.addTool(
             TruthFlaggingTrackAction,

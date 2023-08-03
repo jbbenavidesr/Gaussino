@@ -28,8 +28,7 @@
 #include "HepMC3/GenEvent.h"
 #include "HepMCUser/typedefs.h"
 
-namespace HepMC3
-{
+namespace HepMC3 {
   class Writer;
 }
 
@@ -40,37 +39,36 @@ namespace HepMC3
  *  @author Dominik Muller
  *  @date   2018-03-23
  */
-class HepMCWriter : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs& )>
-{
+class HepMCWriter : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs& )> {
 
 private:
   // Name of the output file is automatically set in the configuration and manually specific values
   // are most likely ignored!
-  Gaudi::Property<std::string> m_outputFileName{this, "OutputFileName", ""};
+  Gaudi::Property<std::string> m_outputFileName{ this, "OutputFileName", "" };
   Gaudi::Property<std::string> m_writer_name{
-      this, "Writer", "WriterRootTree", "Writer to use. Options: [WriterRoot, WriterRootTree, WriterAscii, WriterHEPEVT]"};
+      this, "Writer", "WriterRootTree",
+      "Writer to use. Options: [WriterRoot, WriterRootTree, WriterAscii, WriterHEPEVT]" };
 
 public:
   /// Standard constructor
   HepMCWriter( const std::string& name, ISvcLocator* pSvcLocator )
-      : Consumer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}} ){};
+      : Consumer( name, pSvcLocator, { KeyValue{ "Input", Gaussino::HepMCEventLocation::Default } } ){};
 
   virtual ~HepMCWriter() = default;
 
-  void operator()( const HepMC3::GenEventPtrs& ) const override;
+  void               operator()( const HepMC3::GenEventPtrs& ) const override;
   virtual StatusCode finalize() override;
   virtual StatusCode initialize() override;
 
 private:
-  HepMC3::Writer* m_writer = nullptr;
-  mutable std::mutex m_writer_lock;
-  mutable std::atomic_uint m_counter{0};
+  HepMC3::Writer*          m_writer = nullptr;
+  mutable std::mutex       m_writer_lock;
+  mutable std::atomic_uint m_counter{ 0 };
 };
 
 DECLARE_COMPONENT( HepMCWriter )
 
-StatusCode HepMCWriter::initialize()
-{
+StatusCode HepMCWriter::initialize() {
 
   StatusCode sc = Consumer::initialize();
   if ( sc.isFailure() ) return sc;
@@ -96,18 +94,16 @@ StatusCode HepMCWriter::initialize()
   return StatusCode::SUCCESS;
 }
 
-void HepMCWriter::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
-{
+void HepMCWriter::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const {
   debug() << "==> Execute" << endmsg;
-  if ( !m_writer ) {
-    return;
-  }
+  if ( !m_writer ) { return; }
 
   // I have no idea if this is thread safe so just lock it for now
   std::lock_guard<std::mutex> writerguard( m_writer_lock );
   for ( auto& evt : hepmcevents ) {
     debug() << " Writing HepMC event with eventnumber "
-            << evt->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value() << " and runnumber "
+            << evt->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiEventNumber )->value()
+            << " and runnumber "
             << evt->attribute<HepMC3::IntAttribute>( Gaussino::HepMC::Attributes::GaudiRunNumber )->value() << endmsg;
     m_writer->write_event( *evt.get() );
     m_counter++;
@@ -117,8 +113,7 @@ void HepMCWriter::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const
 //=============================================================================
 //  Finalize
 //=============================================================================
-StatusCode HepMCWriter::finalize()
-{
+StatusCode HepMCWriter::finalize() {
   if ( m_writer ) {
     m_writer->close();
     delete m_writer;

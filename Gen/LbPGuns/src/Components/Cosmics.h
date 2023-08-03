@@ -27,39 +27,33 @@
  *  @date   2008-05-18
  */
 
-class Cosmics : public GaudiTool , virtual public IParticleGunTool {
- public:
- 
+class Cosmics : public GaudiTool, virtual public IParticleGunTool {
+public:
   /// Constructor
-  Cosmics(const std::string& type, const std::string& name , 
-          const IInterface * parent ) ;
-  
+  Cosmics( const std::string& type, const std::string& name, const IInterface* parent );
+
   /// Destructor
   virtual ~Cosmics();
-  
+
   /// Initialize particle gun parameters
   virtual StatusCode initialize() override;
 
   /// Generation of particles
-  virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
-                                 Gaudi::LorentzVector & origin , int & pdgId ,
-                                 HepRandomEnginePtr & engine ) override;
-
+  virtual void generateParticle( Gaudi::LorentzVector& fourMomentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                 HepRandomEnginePtr& engine ) override;
 
   /// Print counters
-  virtual void printCounters( ) override {};
-    
- private:
+  virtual void printCounters() override{};
 
-  /// Flux function 
-  double muonSpec(double muMomentum, double Theta, double vDepth, 
-                              double overAngle);
-                                
+private:
+  /// Flux function
+  double muonSpec( double muMomentum, double Theta, double vDepth, double overAngle );
+
   /// Setable Properties:-
-  
+
   /// Minimum momentum of the mu at detection
   double m_minMom;
-  
+
   /// Minimum zenith angle of the cosmic ray
   double m_minTheta;
 
@@ -74,7 +68,7 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
 
   /// Maximum phi angle
   double m_maxPhi;
-  
+
   /// Minimum x position of the point of interaction of the muon
   /// with the detector; the vertex position is then extrapolated
   double m_minxvtx;
@@ -87,7 +81,6 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
   /// with the detector; the vertex position is then extrapolated
   double m_minyvtx;
 
-
   /// Maximum y position of the point of interaction of the muon
   /// with the detector; the vertex position is then extrapolated
   double m_maxyvtx;
@@ -96,18 +89,18 @@ class Cosmics : public GaudiTool , virtual public IParticleGunTool {
   /// with the detector; the vertex position is then extrapolated
   double m_zvtx;
 
-  ///Time I want the mu to interact; then the real
-  ///time of the vertex is extrapolated
+  /// Time I want the mu to interact; then the real
+  /// time of the vertex is extrapolated
   double m_time;
 
-  /// Theory model 
-  int m_model;  
+  /// Theory model
+  int m_model;
 
   /// Pdg Codes of particles to generate
-  std::vector<int>         m_pdgCodes;
+  std::vector<int> m_pdgCodes;
 
   /// Masses of particles to generate
-  std::vector<double>      m_masses;
+  std::vector<double> m_masses;
 
   /// Names of particles to generate
   std::vector<std::string> m_names;

@@ -23,20 +23,19 @@ namespace CLHEP {
 }
 
 /** @class ISimSvc ISimSvc.h "GenInterfaces/ISimSvc.h"
- *  
+ *
  *  Basic interface for simulation services
- * 
+ *
  *  @author Dominik Muller
  *  @date   2018-05-24
  */
 
-static const InterfaceID IID_ISimSvc( "ISimSvc" , 2 , 
-                                                  0 ) ;
+static const InterfaceID IID_ISimSvc( "ISimSvc", 2, 0 );
 
 class ISimSvc : virtual public IAlgTool {
 public:
-  static const InterfaceID& interfaceID() { return IID_ISimSvc ; }
-  
+  static const InterfaceID& interfaceID() { return IID_ISimSvc; }
+
   /// Simulate the HepMC events
-  virtual StatusCode simulate( const HepMC3::GenEventPtrs & theEvents , CLHEP::HepRandomEngine & engine ) = 0 ;
+  virtual StatusCode simulate( const HepMC3::GenEventPtrs& theEvents, CLHEP::HepRandomEngine& engine ) = 0;
 };

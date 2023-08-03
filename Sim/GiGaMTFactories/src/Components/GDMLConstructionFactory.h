@@ -11,8 +11,8 @@
 #pragma once
 
 // Gaudi
-#include "GaudiAlg/GaudiTool.h"
 #include "G4VUserDetectorConstruction.hh"
+#include "GaudiAlg/GaudiTool.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 
 /** @class GDMLConstructionFactory SimG4Components/src/GDMLConstructionFactory.h GDMLConstructionFactory.h
@@ -25,7 +25,7 @@
 
 class GDMLConstructionFactory : public extends<GaudiTool, GiGaFactoryBase<G4VUserDetectorConstruction>> {
 private:
-  Gaudi::Property<std::string> m_gdmlFile{this, "GDML", ""};
+  Gaudi::Property<std::string> m_gdmlFile{ this, "GDML", "" };
 
 public:
   using extends::extends;

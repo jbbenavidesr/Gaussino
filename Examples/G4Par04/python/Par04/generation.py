@@ -9,15 +9,9 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from GaudiKernel import SystemOfUnits as units
+from Configurables import FixedMomentum, FlatNParticles, MomentumRange, ParticleGun
 from GaudiKernel import PhysicalConstants as constants
-
-from Configurables import (
-    ParticleGun,
-    MomentumRange,
-    FixedMomentum,
-    FlatNParticles,
-)
+from GaudiKernel import SystemOfUnits as units
 
 
 def set_particle_gun_momentum_range(

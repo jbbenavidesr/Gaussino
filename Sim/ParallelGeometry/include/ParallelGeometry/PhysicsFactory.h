@@ -26,11 +26,11 @@ namespace ParallelGeometry {
     // Layered Mass Geometry: if on, then you can define materials in the parallel world and they will overwrite
     // those in the mass geometry. If more than one parallel world is defined, then those later defined will be
     // on the top of the hierarchy.
-    Gaudi::Property<bool> m_layeredMass{this, "LayeredMass", false, "Parallel world on top of the mass geometry"};
-    Gaudi::Property<std::string> m_worldName{this, "WorldName", "", "Corresponding name of the parallel world"};
+    Gaudi::Property<bool> m_layeredMass{ this, "LayeredMass", false, "Parallel world on top of the mass geometry" };
+    Gaudi::Property<std::string> m_worldName{ this, "WorldName", "", "Corresponding name of the parallel world" };
     // optional
     Gaudi::Property<std::vector<int>> m_particlePIDs{
-        this, "ParticlePIDs", {}, "List of particle PIDs to be tracked; track all if empty"};
+        this, "ParticlePIDs", {}, "List of particle PIDs to be tracked; track all if empty" };
 
     virtual bool additionalProcessConstructor() const { return true; };
 

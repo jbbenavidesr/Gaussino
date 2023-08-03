@@ -16,13 +16,13 @@
 #include "Event/GenCollision.h"
 #include "Event/GenHeader.h"
 #include "GaudiAlg/Transformer.h"
-#include "NewRnd/RndAlgSeeder.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMCUser/typedefs.h"
+#include "NewRnd/RndAlgSeeder.h"
 
 #include <atomic>
-#include <vector>
 #include <mutex>
+#include <vector>
 
 // Forward declarations
 class IParticleGunTool;
@@ -41,34 +41,32 @@ class IGenCutTool;
  *  @date   2008-05-18
  */
 class ParticleGun
-    : public Gaudi::Functional::MultiTransformer<
-          std::tuple<HepMC3::GenEventPtrs, LHCb::GenCollisions, LHCb::GenHeader>( const LHCb::GenHeader& ), Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>>
-{
+    : public Gaudi::Functional::MultiTransformer<std::tuple<HepMC3::GenEventPtrs, LHCb::GenCollisions, LHCb::GenHeader>(
+                                                     const LHCb::GenHeader& ),
+                                                 Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>> {
 private:
-  Gaudi::Property<std::string> m_particleGunToolName{this, "ParticleGunTool", "GenericGun"};
-  Gaudi::Property<int> m_eventType{this, "EventType", 50000000};
-  Gaudi::Property<std::string> m_numberOfParticlesToolName{this, "NumberOfParticlesTool",
-                                                           "FixedNInteractions/FixedNParticles"};
-  Gaudi::Property<std::string> m_decayToolName{this, "DecayTool", ""};
-  Gaudi::Property<std::string> m_vertexSmearingToolName{this, "VertexSmearingTool", ""};
-  Gaudi::Property<std::string> m_fullGenEventCutToolName{this, "FullGenEventCutTool", ""};
-  Gaudi::Property<std::string> m_genCutToolName{this, "GenCutTool", ""};
-  Gaudi::Property<int> m_sigPdgCode{this, "SignalPdgCode", 0};
-  Gaudi::Property<bool> m_sampleMass{this, "SampleMass", false};
-  Gaudi::Property<double> m_MassRange_min{this, "MassRange_min", -1.};
-  Gaudi::Property<double> m_MassRange_max{this, "MassRange_max", -1.};
+  Gaudi::Property<std::string> m_particleGunToolName{ this, "ParticleGunTool", "GenericGun" };
+  Gaudi::Property<int>         m_eventType{ this, "EventType", 50000000 };
+  Gaudi::Property<std::string> m_numberOfParticlesToolName{ this, "NumberOfParticlesTool",
+                                                            "FixedNInteractions/FixedNParticles" };
+  Gaudi::Property<std::string> m_decayToolName{ this, "DecayTool", "" };
+  Gaudi::Property<std::string> m_vertexSmearingToolName{ this, "VertexSmearingTool", "" };
+  Gaudi::Property<std::string> m_fullGenEventCutToolName{ this, "FullGenEventCutTool", "" };
+  Gaudi::Property<std::string> m_genCutToolName{ this, "GenCutTool", "" };
+  Gaudi::Property<int>         m_sigPdgCode{ this, "SignalPdgCode", 0 };
+  Gaudi::Property<bool>        m_sampleMass{ this, "SampleMass", false };
+  Gaudi::Property<double>      m_MassRange_min{ this, "MassRange_min", -1. };
+  Gaudi::Property<double>      m_MassRange_max{ this, "MassRange_max", -1. };
 
 public:
   typedef std::vector<HepMC3::GenParticlePtr> ParticleVector;
   /// Standard constructor
   ParticleGun( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
-                          {KeyValue{"GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration}},
-                          {KeyValue{"HepMCEventLocation", Gaussino::HepMCEventLocation::Default},
-                           KeyValue{"GenCollisionLocation", LHCb::GenCollisionLocation::Default},
-                           KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default}} )
-  {
-  }
+                          { KeyValue{ "GenHeaderInputLocation", Gaussino::GenHeaderLocation::PreGeneration } },
+                          { KeyValue{ "HepMCEventLocation", Gaussino::HepMCEventLocation::Default },
+                            KeyValue{ "GenCollisionLocation", LHCb::GenCollisionLocation::Default },
+                            KeyValue{ "GenHeaderOutputLocation", Gaussino::GenHeaderLocation::Default } } ) {}
 
   virtual ~ParticleGun() = default;
 
@@ -95,20 +93,21 @@ public:
 
 protected:
   /// Decay the event with the IDecayTool.
-  HepMC3::GenParticlePtr decayEvent( HepMC3::GenEventPtr theEvent, ParticleVector& particleList, HepRandomEnginePtr & engine, StatusCode& sc ) const;
+  HepMC3::GenParticlePtr decayEvent( HepMC3::GenEventPtr theEvent, ParticleVector& particleList,
+                                     HepRandomEnginePtr& engine, StatusCode& sc ) const;
 
   /// Perpare the particle containers
-  void prepareInteraction( HepMC3::GenEventPtrs * theEvents, LHCb::GenCollisions* theCollisions,
+  void prepareInteraction( HepMC3::GenEventPtrs* theEvents, LHCb::GenCollisions* theCollisions,
                            HepMC3::GenEventPtr& theGenEvent, LHCb::GenCollision*& theGenCollision ) const;
 
 private:
-  IParticleGunTool* m_particleGunTool{nullptr};
-  IPileUpTool* m_numberOfParticlesTool{nullptr};
-  IDecayTool* m_decayTool{nullptr};
-  ISampleGenerationTool* m_sampleGenerationTool{nullptr};
-  IVertexSmearingTool* m_vertexSmearingTool{nullptr};
-  IFullGenEventCutTool* m_fullGenEventCutTool{nullptr};
-  IGenCutTool* m_genCutTool{nullptr};
+  IParticleGunTool*      m_particleGunTool{ nullptr };
+  IPileUpTool*           m_numberOfParticlesTool{ nullptr };
+  IDecayTool*            m_decayTool{ nullptr };
+  ISampleGenerationTool* m_sampleGenerationTool{ nullptr };
+  IVertexSmearingTool*   m_vertexSmearingTool{ nullptr };
+  IFullGenEventCutTool*  m_fullGenEventCutTool{ nullptr };
+  IGenCutTool*           m_genCutTool{ nullptr };
 
   /// Name to put in the event
   std::string m_particleGunName;
@@ -133,6 +132,6 @@ private:
 
   /// Counter of events after the generator level cut
   mutable std::atomic_uint m_nAfterCut{};
-  mutable std::mutex debug_lock;
+  mutable std::mutex       debug_lock;
 };
 #endif // PARTICLEGUNS_PARTICLEGUN_H

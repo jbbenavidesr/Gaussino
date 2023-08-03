@@ -8,14 +8,12 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "HepMC3/Attribute.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
+#include "HepMC3/Attribute.h"
 #include <string>
 
-namespace HepMC3
-{
-  class MCTruthAttribute : public Attribute
-  {
+namespace HepMC3 {
+  class MCTruthAttribute : public Attribute {
   public:
     MCTruthAttribute() : Attribute(), m_val( nullptr ) {}
     MCTruthAttribute( Gaussino::MCTruthPtr val ) : Attribute(), m_val( val ) {}
@@ -30,14 +28,11 @@ namespace HepMC3
     // to GenRunInfo to avoid failures in the template instantiation
     // of GenEvent::attribute<T>
     using Attribute::init;
-    virtual bool init( const GenEvent& )
-    {
-      return true;
-    }
+    virtual bool init( const GenEvent& ) { return true; }
 
     void set_value( const Gaussino::MCTruthPtr& ptr ) { m_val = ptr; }
 
   private:
     Gaussino::MCTruthPtr m_val;
   };
-} // End HepMC namespace
+} // namespace HepMC3

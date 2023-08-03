@@ -19,17 +19,16 @@
  *  @date   2003-04-06
  *  @author Dominik Muller
  */
-class IGaussinoTool : virtual public IAlgTool
-{
+class IGaussinoTool : virtual public IAlgTool {
 public:
-  DeclareInterfaceID(IGaussinoTool,1,0);
-  
-  /** the only one essential method 
-   *  @param par parameters 
+  DeclareInterfaceID( IGaussinoTool, 1, 0 );
+
+  /** the only one essential method
+   *  @param par parameters
    *  @return status code
    */
-  virtual StatusCode process ( const std::string& parameter = "" ) const = 0 ;
-  
+  virtual StatusCode process( const std::string& parameter = "" ) const = 0;
+
 protected:
-  virtual ~IGaussinoTool() = default ;
+  virtual ~IGaussinoTool() = default;
 };

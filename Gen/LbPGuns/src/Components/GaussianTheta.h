@@ -27,34 +27,31 @@
  *  @author P. Robbe (adaptation to new structure)
  *  @date 2008-06-09
  */
-class GaussianTheta : public GaudiTool , virtual public IParticleGunTool {
- public:
-  
+class GaussianTheta : public GaudiTool, virtual public IParticleGunTool {
+public:
   /// Constructor
-  GaussianTheta( const std::string & type , const std::string & name , 
-                 const IInterface * parent ) ;
-  
-  virtual ~GaussianTheta() ; ///< Destructor
-  
+  GaussianTheta( const std::string& type, const std::string& name, const IInterface* parent );
+
+  virtual ~GaussianTheta(); ///< Destructor
+
   /// Initialize method
   virtual StatusCode initialize() override;
-  
+
   /// Generate the particle
-  virtual void generateParticle( Gaudi::LorentzVector & fourMomentum , 
-                                 Gaudi::LorentzVector & origin , 
-                                 int & pdgId , HepRandomEnginePtr & engine ) override;
-                                 
+  virtual void generateParticle( Gaudi::LorentzVector& fourMomentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                 HepRandomEnginePtr& engine ) override;
+
   /// Print counters
-  virtual void printCounters( ) override {};
-  
- private:
-  double m_mass ;
-  int m_pdgCode;  
-  double m_minMom , m_maxMom ; ///< Max and min momentum
-  double m_meanTheta ; ///< Mean value of theta
-  double m_sigmaTheta ; ///< Sigma of Theta Gaussian
-  double m_x_axis ;
-  double m_y_axis ;
-} ;
+  virtual void printCounters() override{};
+
+private:
+  double m_mass;
+  int    m_pdgCode;
+  double m_minMom, m_maxMom; ///< Max and min momentum
+  double m_meanTheta;        ///< Mean value of theta
+  double m_sigmaTheta;       ///< Sigma of Theta Gaussian
+  double m_x_axis;
+  double m_y_axis;
+};
 
 #endif // PARTICLEGUNS_GENERICGUN_H

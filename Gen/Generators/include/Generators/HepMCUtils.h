@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: HepMCUtils.h,v 1.8 2008-07-23 17:21:55 cattanem Exp $
-#ifndef GENERATORS_HEPMCUTILS_H 
+#ifndef GENERATORS_HEPMCUTILS_H
 #define GENERATORS_HEPMCUTILS_H 1
 
 // This include has been moved to Event/GenEvent package.

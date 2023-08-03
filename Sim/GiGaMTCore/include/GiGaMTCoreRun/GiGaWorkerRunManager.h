@@ -14,8 +14,7 @@
 
 #include "GiGaMTCoreMessage/IGiGaMessage.h"
 
-class GiGaWorkerRunManager : public G4WorkerRunManager , public GiGaMessage
-{
+class GiGaWorkerRunManager : public G4WorkerRunManager, public GiGaMessage {
 
 public:
   // Get the (pure) singleton instance

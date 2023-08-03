@@ -14,35 +14,30 @@
 // ============================================================================
 // $Log: not supported by cvs2svn $
 // ============================================================================
-#ifndef GENERATORS_SCALE_H 
-#define GENERATORS_SCALE_H 1
+#ifndef GENERATORS_SCALE_H
+#  define GENERATORS_SCALE_H 1
 // ============================================================================
-// HepMC 
+// HepMC
 // ============================================================================
-#include "HepMC3/GenEvent.h"
+#  include "HepMC3/GenEvent.h"
 // ============================================================================
 
-namespace GeneratorUtils 
-{
-  /** @fn scale 
-   *  Simple functon to rescale HepMCEvent 
-   *  in between Pythina and LHC units 
+namespace GeneratorUtils {
+  /** @fn scale
+   *  Simple functon to rescale HepMCEvent
+   *  in between Pythina and LHC units
    *  @param event generator event
-   *  @param mom   scale factor for 4-momentum 
-   *  @param time  scale factor for time component of the position vector  
+   *  @param mom   scale factor for 4-momentum
+   *  @param time  scale factor for time component of the position vector
    *  @author Vanya BELYAEV ibelyaev@physics.syr.edu
    *  @date   2006-10-05
    */
-  void scale
-  ( HepMC3::GenEvent* event , 
-    const double     mom   , 
-    const double     time  ) ;
-  
-} // end of namespace GeneratorUtils  
+  void scale( HepMC3::GenEvent* event, const double mom, const double time );
 
+} // end of namespace GeneratorUtils
 
 // ============================================================================
-// The END 
+// The END
 // ============================================================================
 #endif // GENERATORS_SCALE_H
 // ============================================================================

@@ -9,18 +9,13 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Configurables import (
-    GaussinoSimulation,
-    GaussinoGeometry,
-    ExternalDetectorEmbedder,
     CustomSimulation,
+    ExternalDetectorEmbedder,
+    GaussinoGeometry,
+    GaussinoSimulation,
     ParallelGeometry,
 )
-
-from ExternalDetector.Materials import (
-    OUTER_SPACE,
-    LEAD,
-)
-
+from ExternalDetector.Materials import LEAD, OUTER_SPACE
 from GaudiKernel import SystemOfUnits as units
 
 GaussinoSimulation(

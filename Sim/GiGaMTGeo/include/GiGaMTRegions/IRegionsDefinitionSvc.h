@@ -13,13 +13,12 @@
 // Include files
 #include "GaudiKernel/IInterface.h"
 
-#include "GiGaMTRegions/SimAttribute.h"
 #include "GiGaMTRegions/RegionCuts.h"
+#include "GiGaMTRegions/SimAttribute.h"
 #include <map>
 
 /// Declaration of the interface ID (interface id, major version, minor version)
-static const InterfaceID IID_IRegionsDefinitionSvc(948, 1 , 0);
-
+static const InterfaceID IID_IRegionsDefinitionSvc( 948, 1, 0 );
 
 /** @class IRegionsDefinitionSvc IRegionsDefinitionSvc.h SimDesc/IRegionsDefinitionSvc.h
  *
@@ -32,12 +31,11 @@ static const InterfaceID IID_IRegionsDefinitionSvc(948, 1 , 0);
  */
 
 class IRegionsDefinitionSvc : virtual public IInterface {
-  
-public:
 
-  // typedefs used  
+public:
+  // typedefs used
   typedef std::map<int, const SimAttribute*> PartAttr;
-  typedef std::vector<RegionCuts> VectOfRegCuts;
+  typedef std::vector<RegionCuts>            VectOfRegCuts;
 
   /// Retrieve interface ID
   static const InterfaceID& interfaceID() { return IID_IRegionsDefinitionSvc; }
@@ -49,25 +47,24 @@ public:
    * @return the simulation attribute that should be used to simulate
    * this logical volume
    */
-  virtual const PartAttr* simAttribute (const std::string volname) const = 0;
+  virtual const PartAttr* simAttribute( const std::string volname ) const = 0;
 
   /**
    * This method tells whether a simulation attribute is associated to a given
    * logical volume or not
    * @param vol the logical volume
    */
-  virtual bool hasSimAttribute (const std::string volname) const = 0;
+  virtual bool hasSimAttribute( const std::string volname ) const = 0;
 
   /**
    * This method returns the pointer to the vector of region definitions.
-   * @param 
+   * @param
    * @return std::vector<RegionCuts>
    */
-  virtual const std::vector<RegionCuts>* regionsDefs () const = 0;
+  virtual const std::vector<RegionCuts>* regionsDefs() const = 0;
 
   /**
    * this method erases the current set of attributes and loads a new set
    */
-  virtual void reload () = 0;
-
+  virtual void reload() = 0;
 };

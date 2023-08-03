@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: StreamForGenerator.h,v 1.2 2007-10-11 13:23:26 robbep Exp $
-#ifndef GENERATORS_STREAMFORGENERATOR_H 
+#ifndef GENERATORS_STREAMFORGENERATOR_H
 #define GENERATORS_STREAMFORGENERATOR_H 1
 
 // Include files
@@ -23,12 +23,10 @@
  */
 class StreamForGenerator {
 public:
-
-  static MsgStream *& getStream() ;
+  static MsgStream*& getStream();
 
 protected:
-
 private:
-  static MsgStream * s_gaudiStream ;
+  static MsgStream* s_gaudiStream;
 };
-#endif 
+#endif

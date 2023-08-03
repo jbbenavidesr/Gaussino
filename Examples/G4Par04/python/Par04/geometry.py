@@ -9,15 +9,12 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from Configurables import (
-    ExternalDetectorEmbedder,
-    ApplicationMgr,
-    Gaussino__G4Par04__GetCaloHitsAlg as GetCaloHitsAlg,
-    Gaussino__G4Par04__GetCollectorHitsAlg as GetCollectorHitsAlg,
-)
+from Configurables import ApplicationMgr, ExternalDetectorEmbedder
+from Configurables import Gaussino__G4Par04__GetCaloHitsAlg as GetCaloHitsAlg
+from Configurables import Gaussino__G4Par04__GetCollectorHitsAlg as GetCollectorHitsAlg
+from ExternalDetector.Materials import OUTER_SPACE
 from GaudiKernel import PhysicalConstants as constants
 from GaudiKernel import SystemOfUnits as units
-from ExternalDetector.Materials import OUTER_SPACE
 
 
 def set_cylindrical_calo(
@@ -67,7 +64,7 @@ def set_cylindrical_calo(
             "MaterialName": "OUTER_SPACE",
             "RMin": opts["detector_inner_radius"] - collector_width,
             "RMax": opts["detector_inner_radius"],
-            "Dz": world_size_Z / 2.,
+            "Dz": world_size_Z / 2.0,
             "SPhi": 0,
             "DPhi": 2 * constants.pi * units.radian,
         },
@@ -110,7 +107,9 @@ def set_cylindrical_calo(
     # so we have to modify a bit the standard way of doing this
     # (not the cleanest one, but this is what it is)
     first_sens_det = sens_det_names[0]
-    extra_vols = [f"{sens_det}LVol" for sens_det in sens_det_names if sens_det != first_sens_det]
+    extra_vols = [
+        f"{sens_det}LVol" for sens_det in sens_det_names if sens_det != first_sens_det
+    ]
     external.Sensitive[first_sens_det] = {
         "Type": "Gaussino__G4Par04__CaloSensDetFactory",
         "ExtraVolumesToSensDet": extra_vols,

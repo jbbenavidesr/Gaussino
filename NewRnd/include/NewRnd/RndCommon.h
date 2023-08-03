@@ -25,31 +25,27 @@
 
 class HepRandomEnginePtr;
 
-namespace RndCommon
-{
-  class RndConstructor
-  {
+namespace RndCommon {
+  class RndConstructor {
   public:
-    virtual ~RndConstructor() = default;
+    virtual ~RndConstructor()                         = default;
     virtual CLHEP::HepRandomEngine* construct() const = 0;
   };
 
   std::vector<long> seedEngine( CLHEP::HepRandomEngine& engine, unsigned int seed1, unsigned int seed2,
-                   std::string label = "Random" );
-  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2, std::string label = "Random" );
-}
+                                std::string label = "Random" );
+  std::vector<long> seedEngine( HepRandomEnginePtr& engine, unsigned int seed1, unsigned int seed2,
+                                std::string label = "Random" );
+} // namespace RndCommon
 
 // SmartPointer wrapper for HepRandomEngines that allows to optionally set a constructor for subengines.
 // Subengines are stored and deleted when wrapper is destroyed.
-class HepRandomEnginePtr
-{
+class HepRandomEnginePtr {
 public:
   HepRandomEnginePtr() = delete;
   HepRandomEnginePtr( CLHEP::HepRandomEngine* engine, const RndCommon::RndConstructor* constructor = nullptr,
                       std::string label = "Random" )
-      : m_engine( engine ), m_constructor( constructor ), m_label( label )
-  {
-  }
+      : m_engine( engine ), m_constructor( constructor ), m_label( label ) {}
 
   // Get pointer to storeed engine
   CLHEP::HepRandomEngine* get() { return m_engine.get(); }
@@ -59,8 +55,8 @@ public:
   HepRandomEnginePtr createSubRndmEngine();
 
 private:
-  std::shared_ptr<CLHEP::HepRandomEngine> m_engine{nullptr};
-  const RndCommon::RndConstructor* m_constructor{nullptr};
-  std::vector<HepRandomEnginePtr> m_children;
-  std::string m_label;
+  std::shared_ptr<CLHEP::HepRandomEngine> m_engine{ nullptr };
+  const RndCommon::RndConstructor*        m_constructor{ nullptr };
+  std::vector<HepRandomEnginePtr>         m_children;
+  std::string                             m_label;
 };

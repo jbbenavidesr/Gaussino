@@ -27,17 +27,17 @@ namespace ExternalDetector {
   class WorldCreator : public Service, virtual public IGiGaMTGeoSvc {
 
     // required
-    Gaudi::Property<std::string> m_worldMaterial{this, "WorldMaterial", ""};
+    Gaudi::Property<std::string> m_worldMaterial{ this, "WorldMaterial", "" };
 
     // optional
-    Gaudi::Property<std::string> m_worldName{this, "WorldName", "WorldBox"};
-    Gaudi::Property<std::string> m_worldLogicalVolumeName{this, "WorldLogicalVolumeName", "WorldLVol"};
-    Gaudi::Property<std::string> m_worldPhysicalVolumeName{this, "WorldPhysicalVolumeName", "WorldPVol"};
-    Gaudi::Property<double>      m_worldSizeX{this, "WorldSizeX", 50. * Gaudi::Units::m};
-    Gaudi::Property<double>      m_worldSizeY{this, "WorldSizeY", 50. * Gaudi::Units::m};
-    Gaudi::Property<double>      m_worldSizeZ{this, "WorldSizeZ", 50. * Gaudi::Units::m};
+    Gaudi::Property<std::string> m_worldName{ this, "WorldName", "WorldBox" };
+    Gaudi::Property<std::string> m_worldLogicalVolumeName{ this, "WorldLogicalVolumeName", "WorldLVol" };
+    Gaudi::Property<std::string> m_worldPhysicalVolumeName{ this, "WorldPhysicalVolumeName", "WorldPVol" };
+    Gaudi::Property<double>      m_worldSizeX{ this, "WorldSizeX", 50. * Gaudi::Units::m };
+    Gaudi::Property<double>      m_worldSizeY{ this, "WorldSizeY", 50. * Gaudi::Units::m };
+    Gaudi::Property<double>      m_worldSizeZ{ this, "WorldSizeZ", 50. * Gaudi::Units::m };
 
-    ToolHandle<GiGaFactoryBase<G4FieldManager, bool>> m_fieldMgr{this, "FieldManager", ""};
+    ToolHandle<GiGaFactoryBase<G4FieldManager, bool>> m_fieldMgr{ this, "FieldManager", "" };
 
   public:
     using Service::Service;

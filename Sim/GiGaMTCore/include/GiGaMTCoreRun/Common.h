@@ -12,8 +12,7 @@
 
 #include <ostream>
 
-namespace Gaussino
-{
+namespace Gaussino {
   enum class ConversionType { MC, G4, FROMG4, REDECAY };
 }
 

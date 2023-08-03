@@ -22,9 +22,9 @@ namespace Gaussino::CustomSimulation::LinearDeposit {
   class Model : public G4VFastSimulationModel, public GiGaMessage {
 
     std::unique_ptr<HitMaker> m_hitMaker;
-    double                    m_eDepFrac{1.0};
-    double                    m_eKillThr{50.0 * Gaudi::Units::MeV};
-    double                    m_stepLength{0. * Gaudi::Units::mm};
+    double                    m_eDepFrac{ 1.0 };
+    double                    m_eKillThr{ 50.0 * Gaudi::Units::MeV };
+    double                    m_stepLength{ 0. * Gaudi::Units::mm };
 
   public:
     Model( G4String modelName, G4Region* envelope );
@@ -40,9 +40,9 @@ namespace Gaussino::CustomSimulation::LinearDeposit {
 
   class ModelFactory : public CustomSimulation::ModelFactory<Model> {
 
-    Gaudi::Property<double> m_eDepFrac{this, "EnergyDepositFraction", 1.0};
-    Gaudi::Property<double> m_eKillThr{this, "KillEnergyThreshold", 50. * Gaudi::Units::MeV};
-    Gaudi::Property<double> m_stepLength{this, "FakeStepLength", 0. * Gaudi::Units::mm};
+    Gaudi::Property<double> m_eDepFrac{ this, "EnergyDepositFraction", 1.0 };
+    Gaudi::Property<double> m_eKillThr{ this, "KillEnergyThreshold", 50. * Gaudi::Units::MeV };
+    Gaudi::Property<double> m_stepLength{ this, "FakeStepLength", 0. * Gaudi::Units::mm };
 
   public:
     using base_class = CustomSimulation::ModelFactory<Model>;

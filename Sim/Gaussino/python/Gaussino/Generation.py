@@ -11,14 +11,10 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
+from Gaudi.Configuration import log
 from GaudiKernel import SystemOfUnits as units
 from GaudiKernel.ConfigurableMeta import ConfigurableMeta
-from Gaudi.Configuration import log
-
-from Gaussino.Utilities import (
-    GaussinoConfigurable,
-    get_set_configurable,
-)
+from Gaussino.Utilities import GaussinoConfigurable, get_set_configurable
 
 
 class GaussinoGeneration(GaussinoConfigurable):
@@ -117,7 +113,6 @@ class GaussinoGeneration(GaussinoConfigurable):
     :vartype RevolutionFrequency: float, optional
     """
 
-
     __slots__ = {
         # MAIN
         "WriteHepMC": False,
@@ -204,11 +199,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         Returns:
             list: list of algorithms
         """
-        from Configurables import (
-            Gaussino,
-            Generation,
-            ReDecayGeneration,
-        )
+        from Configurables import Gaussino, Generation, ReDecayGeneration
 
         seq = []
         self._set_beam_parameters()
@@ -238,9 +229,8 @@ class GaussinoGeneration(GaussinoConfigurable):
         return seq
 
     def _set_beam_parameters(self):
-        """Sets up all the beam parametres of ``BeamInfoSvc`` service.
-        """
-        from Configurables import BeamInfoSvc, ApplicationMgr
+        """Sets up all the beam parametres of ``BeamInfoSvc`` service."""
+        from Configurables import ApplicationMgr, BeamInfoSvc
 
         log.debug("Configuring BeamInfoSvc")
         xAngleBeamLine, yAngleBeamLine = self.getProp("BeamLineAngles")
@@ -259,7 +249,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             YLuminousRegion=meanY,
             ZLuminousRegion=meanZ,
             BunchLengthRMS=self.getProp("BunchRMS"),
-            RevolutionFrequency=self.getProp("RevolutionFrequency")
+            RevolutionFrequency=self.getProp("RevolutionFrequency"),
         )
         ApplicationMgr().ExtSvc.append(svc)
 
@@ -352,6 +342,7 @@ class GaussinoGeneration(GaussinoConfigurable):
             raise ValueError(msg)
         if tool == "Pythia8ProductionMT":
             from Configurables import Gaussino
+
             prod.NThreads = Gaussino().getProp("ThreadPoolSize")
 
     def _set_pileup_tool(self, gen_alg):
@@ -516,11 +507,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         Returns:
             list: list of algorithms
         """
-        from Configurables import (
-            Gaussino,
-            SkipSimAlg,
-            ReDecaySkipSimAlg,
-        )
+        from Configurables import Gaussino, ReDecaySkipSimAlg, SkipSimAlg
 
         alg_conf = SkipSimAlg
         if Gaussino().getProp("ReDecay"):

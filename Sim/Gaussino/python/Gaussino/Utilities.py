@@ -11,17 +11,11 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
-from Gaudi.Configuration import (
-    log,
-    ConfigurableUser,
-    Configurable,
-)
-
+from Gaudi.Configuration import Configurable, ConfigurableUser, log
 from GaudiKernel.ConfigurableDb import getConfigurable
 
 
 class GaussinoConfigurable(ConfigurableUser):
-
     _rigid = False
 
     def __init__(self, name=Configurable.DefaultName, _enabled=True, **kwargs):

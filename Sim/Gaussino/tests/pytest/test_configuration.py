@@ -29,6 +29,7 @@ def test_minimum_working_example():
 def test_undefined_evt_max():
     with pytest.raises(ValueError, match=r".*EvtMax.*"):
         from Configurables import Gaussino
+
         Gaussino()
         applyConfigurableUsers()
 
@@ -57,24 +58,24 @@ def test_no_hive():
         Gaussino().EnableHive = False
         applyConfigurableUsers()
 
+
 @reset_configurables
 @events_1
 @only_generation
 @photon
 @pytest.mark.parametrize(
-    "writer, correct", [
+    "writer, correct",
+    [
         ("WriterRootTree", True),
         ("WriterRootTree", True),
         ("WriterAscii", True),
         ("WriterHEPEVT", True),
         ("WriterThatDoesNotExist", False),
-    ]
+    ],
 )
 def test_hepmcwriter(writer, correct):
-    from Configurables import (
-        GaussinoGeneration,
-        HepMCWriter,
-    )
+    from Configurables import GaussinoGeneration, HepMCWriter
+
     GaussinoGeneration().WriteHepMC = True
     HepMCWriter().Writer = writer
     if correct:
@@ -83,28 +84,6 @@ def test_hepmcwriter(writer, correct):
         with pytest.raises(ValueError, match=r".*HepMCWriter.*"):
             applyConfigurableUsers()
 
-@reset_configurables
-@events_1
-@em_physics
-@photon
-@cube
-@pytest.mark.parametrize(
-    "redecay", [
-        True,
-        False,
-    ]
-)
-def test_no_run_number_through_genrndinit(redecay):
-    with pytest.raises(ValueError, match=r".*RunNumber.*"):
-        from Configurables import Gaussino
-        Gaussino().ReDecay = redecay
-        if not redecay:
-            from Configurables import GenRndInit
-            GenRndInit().RunNumber = 1
-        else:
-            from Configurables import GenReDecayInit
-            GenReDecayInit().RunNumber = 1
-        applyConfigurableUsers()
 
 @reset_configurables
 @events_1
@@ -112,20 +91,52 @@ def test_no_run_number_through_genrndinit(redecay):
 @photon
 @cube
 @pytest.mark.parametrize(
-    "redecay", [
+    "redecay",
+    [
         True,
         False,
-    ]
+    ],
+)
+def test_no_run_number_through_genrndinit(redecay):
+    with pytest.raises(ValueError, match=r".*RunNumber.*"):
+        from Configurables import Gaussino
+
+        Gaussino().ReDecay = redecay
+        if not redecay:
+            from Configurables import GenRndInit
+
+            GenRndInit().RunNumber = 1
+        else:
+            from Configurables import GenReDecayInit
+
+            GenReDecayInit().RunNumber = 1
+        applyConfigurableUsers()
+
+
+@reset_configurables
+@events_1
+@em_physics
+@photon
+@cube
+@pytest.mark.parametrize(
+    "redecay",
+    [
+        True,
+        False,
+    ],
 )
 def test_correct_genrndinit_setup(redecay):
     from Configurables import Gaussino
+
     Gaussino().ReDecay = redecay
     run_no = 0
     if not redecay:
         from Configurables import GenRndInit
+
         run_no = GenRndInit().getProp("RunNumber")
     else:
         from Configurables import GenReDecayInit
+
         run_no = GenReDecayInit().getProp("RunNumber")
     Gaussino().RunNumber = run_no + 1
     applyConfigurableUsers()
@@ -133,4 +144,3 @@ def test_correct_genrndinit_setup(redecay):
         assert GenRndInit().getProp("RunNumber") == run_no + 1
     else:
         assert GenReDecayInit().getProp("RunNumber") == run_no + 1
-

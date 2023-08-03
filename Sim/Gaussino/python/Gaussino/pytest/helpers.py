@@ -8,18 +8,17 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-import decorator
-from contextlib import redirect_stdout
 import io
+from contextlib import redirect_stdout
 
-from GaudiKernel.Configurable import (
-    applyConfigurableUsers,
-    Configurable,
-)
+import decorator
+
 # small workaround to reset confiurables
 # between the tests
 import GaudiKernel.Configurable  # needed to change global var
 import GaudiKernel.ProcessJobOptions  # needed to change global var
+from GaudiKernel.Configurable import Configurable, applyConfigurableUsers
+
 
 def reset_configurables_now():
     for conf in Configurable.allConfigurables.values():
@@ -27,6 +26,7 @@ def reset_configurables_now():
     Configurable.allConfigurables.clear()
     GaudiKernel.Configurable._appliedConfigurableUsers_ = False
     GaudiKernel.ProcessJobOptions._included_files = set()
+
 
 def reset_configurables(example):
     def wrapper(example, *args, **kwargs):

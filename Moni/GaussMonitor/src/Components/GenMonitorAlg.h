@@ -41,31 +41,29 @@
  *  @date   2018-03-08
  */
 class GenMonitorAlg : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs& ),
-                                                         Gaudi::Functional::Traits::BaseClass_t<GaudiHistoAlg>>
-{
+                                                         Gaudi::Functional::Traits::BaseClass_t<GaudiHistoAlg>> {
 public:
   /// Standard constructor
   GenMonitorAlg( const std::string& name, ISvcLocator* pSvcLocator )
-      : Consumer( name, pSvcLocator, {KeyValue{"Input", Gaussino::HepMCEventLocation::Default}} )
-  {
+      : Consumer( name, pSvcLocator, { KeyValue{ "Input", Gaussino::HepMCEventLocation::Default } } ) {
     setProduceHistos( false );
   };
 
   virtual ~GenMonitorAlg() = default; ///< Destructor
 
-  void operator()( const HepMC3::GenEventPtrs& ) const override;
-  virtual StatusCode finalize() override; ///< Algorithm finalization
+  void               operator()( const HepMC3::GenEventPtrs& ) const override;
+  virtual StatusCode finalize() override;   ///< Algorithm finalization
   virtual StatusCode initialize() override; ///< Algorithm finalization
 
 protected:
   void bookHistos(); ///< Book histograms
 
 private:
-  mutable std::atomic<int> m_counter{0};
-  mutable std::atomic<int> m_counterstable{0};
-  mutable std::atomic<int> m_counterCharged{0};
-  mutable std::atomic<int> m_counterChInEta{0};
-  mutable std::atomic<int> m_nEvents{0};
+  mutable std::atomic<int> m_counter{ 0 };
+  mutable std::atomic<int> m_counterstable{ 0 };
+  mutable std::atomic<int> m_counterCharged{ 0 };
+  mutable std::atomic<int> m_counterChInEta{ 0 };
+  mutable std::atomic<int> m_nEvents{ 0 };
 
   mutable std::mutex m_histo_lock;
 
@@ -91,7 +89,7 @@ private:
   AIDA::IHistogram2D* m_hPrimXvsZ;
   AIDA::IHistogram2D* m_hPrimYvsZ;
 
-  Gaudi::Property<double> m_minEta{this, "MinEta", 2.0};
-  Gaudi::Property<double> m_maxEta{this, "MaxEta", 4.9};
-  Gaudi::Property<std::string> m_generatorName{this, "ApplyTo", ""};
+  Gaudi::Property<double>      m_minEta{ this, "MinEta", 2.0 };
+  Gaudi::Property<double>      m_maxEta{ this, "MaxEta", 4.9 };
+  Gaudi::Property<std::string> m_generatorName{ this, "ApplyTo", "" };
 };

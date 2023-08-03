@@ -20,4 +20,4 @@
 // 2005-12-07 : Patrick Robbe
 //-----------------------------------------------------------------------------
 
-Lhacontrol LhaPdf::s_lhacontrol ;
+Lhacontrol LhaPdf::s_lhacontrol;

@@ -9,10 +9,7 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from Configurables import (
-    GaussinoSimulation,
-    CustomSimulation,
-)
+from Configurables import CustomSimulation, GaussinoSimulation
 
 
 def set_mesh_model(

@@ -8,22 +8,21 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "NewRnd/RndAlgSeeder.h"
 #include "GaudiAlg/GaudiTool.h"
+#include "NewRnd/RndAlgSeeder.h"
 
-#include "CLHEP/Random/MixMaxRng.h"
-#include "CLHEP/Random/RanluxEngine.h"
-#include "CLHEP/Random/MTwistEngine.h"
-#include "CLHEP/Random/RanshiEngine.h"
-#include "CLHEP/Random/RanecuEngine.h"
 #include "CLHEP/Random/DRand48Engine.h"
 #include "CLHEP/Random/Hurd160Engine.h"
 #include "CLHEP/Random/Hurd288Engine.h"
+#include "CLHEP/Random/MTwistEngine.h"
+#include "CLHEP/Random/MixMaxRng.h"
+#include "CLHEP/Random/RanecuEngine.h"
+#include "CLHEP/Random/RanluxEngine.h"
+#include "CLHEP/Random/RanshiEngine.h"
 
 template <typename ENGINE>
-class CLHEP_ENGINE : public extends<GaudiTool, IExtEngine>
-{
-  public:
+class CLHEP_ENGINE : public extends<GaudiTool, IExtEngine> {
+public:
   static_assert( std::is_base_of<CLHEP::HepRandomEngine, ENGINE>::value,
                  "Random engine must inherit from CLHEP::HepRandomEngine" );
   using extends::extends;

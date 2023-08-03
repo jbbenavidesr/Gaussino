@@ -43,7 +43,7 @@ std::string ParallelGeometry::WorldFactory<ParallelWorld>::parseName() const {
 template <class ParallelWorld>
 ParallelWorld* ParallelGeometry::WorldFactory<ParallelWorld>::construct() const {
   auto world_name = parseName();
-  auto par_world  = new ParallelWorld{world_name};
+  auto par_world  = new ParallelWorld{ world_name };
 
   debug() << "Setting up a world constructor for " << world_name << " parallel world" << endmsg;
   par_world->setWorldConstructor( [&]( G4VPhysicalVolume* world ) {

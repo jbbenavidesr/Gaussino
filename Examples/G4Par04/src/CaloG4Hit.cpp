@@ -53,7 +53,7 @@ namespace Gaussino::G4Par04 {
       G4Transform3D   trans( fRot, fPos );
       G4VisAttributes attribs;
       G4Tubs          solid( "draw", fRhoId * meshSize.x(), ( fRhoId + 1 ) * meshSize.x(), meshSize.z() / 2.,
-                    ( -numPhiCells / 2. + fPhiId ) * meshSize.y(), meshSize.y() );
+                             ( -numPhiCells / 2. + fPhiId ) * meshSize.y(), meshSize.y() );
       // Set colours depending on type of hit (full/fast sim)
       G4double colR = fType == 0 ? 0 : 1;
       G4double colG = fType == 0 ? 1 : 0;

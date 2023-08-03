@@ -79,4 +79,3 @@ NTupleSvc().Output = [
     "FILE1 DATAFILE='CaloCollector.root' TYP='ROOT' OPT='NEW'"
 ]
 ```
-

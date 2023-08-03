@@ -11,18 +11,16 @@
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
 
-namespace Gaussino
-{
-  class DebugStepAction : public G4UserSteppingAction
-  {
+namespace Gaussino {
+  class DebugStepAction : public G4UserSteppingAction {
   public:
-    DebugStepAction() = default;
+    DebugStepAction()          = default;
     virtual ~DebugStepAction() = default;
 
     // method from the base class
     virtual void UserSteppingAction( const G4Step* ) override;
   };
-}
+} // namespace Gaussino
 
 #include "G4Event.hh"
 #include "G4LogicalVolume.hh"
@@ -31,13 +29,11 @@ namespace Gaussino
 #include "HepMC3/FourVector.h"
 
 template <typename T>
-T& operator<<( T& ostr, const HepMC3::FourVector& fv )
-{
+T& operator<<( T& ostr, const HepMC3::FourVector& fv ) {
   ostr << "[" << fv.x() << ", " << fv.y() << ", " << fv.z() << ", " << fv.t() << "]";
   return ostr;
 }
-void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
-{
+void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step ) {
   G4cout << "#### BEGIN STEP ####\n";
   auto deltafourmomentum = HepMC3::FourVector( step->GetDeltaMomentum().x(), step->GetDeltaMomentum().y(),
                                                step->GetDeltaMomentum().z(), step->GetDeltaEnergy() );
@@ -47,9 +43,9 @@ void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
   auto poststeppos =
       HepMC3::FourVector( step->GetPostStepPoint()->GetPosition().x(), step->GetPostStepPoint()->GetPosition().y(),
                           step->GetPostStepPoint()->GetPosition().z(), step->GetPostStepPoint()->GetGlobalTime() );
-  auto track = step->GetTrack();
+  auto track        = step->GetTrack();
   auto fourmomentum = HepMC3::FourVector( track->GetMomentum().x(), track->GetMomentum().y(), track->GetMomentum().z(),
-                                     track->GetTotalEnergy() );
+                                          track->GetTotalEnergy() );
 
   // get volume of the current step
   G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
@@ -58,15 +54,15 @@ void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
   G4cout << "PreStepPoint = " << presteppos << "\n";
   G4cout << "PostStepPoint = " << poststeppos << "\n";
   G4cout << "Track momentum = " << fourmomentum << "\n";
-  if(auto proc=step->GetPostStepPoint()->GetProcessDefinedStep(); proc)
+  if ( auto proc = step->GetPostStepPoint()->GetProcessDefinedStep(); proc )
     G4cout << "PostStepPoint Process = " << proc->GetProcessName() << "\n";
 
-  if(auto proc=step->GetPreStepPoint()->GetProcessDefinedStep(); proc)
+  if ( auto proc = step->GetPreStepPoint()->GetProcessDefinedStep(); proc )
     G4cout << "PreStepPoint Process = " << proc->GetProcessName() << "\n";
   G4cout << "Track momentum = " << fourmomentum << "\n";
 
-  G4cout << "Is first in volume: " <<step->IsFirstStepInVolume() << "\n";
-  G4cout << "Is last in volume: " <<step->IsLastStepInVolume() << "\n";
+  G4cout << "Is first in volume: " << step->IsFirstStepInVolume() << "\n";
+  G4cout << "Is last in volume: " << step->IsLastStepInVolume() << "\n";
   G4cout << "#### END STEP ####" << std::endl;
 }
 
@@ -75,12 +71,9 @@ void Gaussino::DebugStepAction::UserSteppingAction( const G4Step* step )
 
 #include "G4UserTrackingAction.hh"
 
-class DebugStepActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserSteppingAction>>
-{
+class DebugStepActionFAC : public extends<GaudiTool, GiGaFactoryBase<G4UserSteppingAction>> {
   using extends::extends;
-  virtual G4UserSteppingAction* construct() const override {
-    return new Gaussino::DebugStepAction{};
-  }
+  virtual G4UserSteppingAction* construct() const override { return new Gaussino::DebugStepAction{}; }
 };
 
 DECLARE_COMPONENT_WITH_ID( DebugStepActionFAC, "DebugStepAction" )

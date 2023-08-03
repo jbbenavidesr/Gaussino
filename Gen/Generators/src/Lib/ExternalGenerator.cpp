@@ -9,32 +9,32 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: ExternalGenerator.cpp,v 1.27 2009-12-03 15:32:49 robbep Exp $
-// Include files 
+// Include files
 
 // local
 #include "Generators/ExternalGenerator.h"
 
 // Boost
-#include "boost/tokenizer.hpp"
 #include "boost/algorithm/string/erase.hpp"
+#include "boost/tokenizer.hpp"
 // Gaudi
-#include "Kernel/IParticlePropertySvc.h" 
+#include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
 // Kernal
-#include "GenInterfaces/IGenCutTool.h"
 #include "GenInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 
 // from Generators
+#include "CLHEP/Random/RandEngine.h"
+#include "Defaults/HepMCAttributes.h"
+#include "GenInterfaces/ICounterLogFile.h"
 #include "GenInterfaces/IProductionTool.h"
 #include "Generators/LhaPdf.h"
 #include "Generators/StringParse.h"
-#include "GenInterfaces/ICounterLogFile.h"
 #include "HepMCUtils/HepMCUtils.h"
-#include "Defaults/HepMCAttributes.h"
-#include "CLHEP/Random/RandEngine.h"
 
-#include "HepMCUser/Status.h"
 #include "Event/GenFSR.h"
+#include "HepMCUser/Status.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : ExternalGenerator
@@ -45,322 +45,289 @@
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-ExternalGenerator::ExternalGenerator( const std::string& type,
-                                      const std::string& name,
-                                      const IInterface* parent )
-  : GaudiTool ( type, name , parent ) , 
-    m_productionTool( 0 ) ,
-    m_decayTool( 0 ) ,
-    m_cutTool  ( 0 ) , 
-    m_xmlLogTool( 0 ) ,
-    m_ppSvc    ( 0 ) { 
-    m_defaultLhaPdfSettings.clear() ;
-    declareInterface< ISampleGenerationTool >( this ) ;
-    declareProperty( "ProductionTool" , 
-                     m_productionToolName = "Pythia8Production" ) ; 
-    declareProperty( "DecayTool" , m_decayToolName = "" ) ;
-    declareProperty( "CutTool" , m_cutToolName = "" ) ;
-    declareProperty( "LhaPdfCommands" , m_userLhaPdfSettings ) ;
-    declareProperty( "KeepOriginalProperties" , m_keepOriginalProperties = 
-                     false ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
-    m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 17 LHAPDF" ) ;
-    m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 16 NOSTAT" ) ;
-  }
+ExternalGenerator::ExternalGenerator( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent )
+    , m_productionTool( 0 )
+    , m_decayTool( 0 )
+    , m_cutTool( 0 )
+    , m_xmlLogTool( 0 )
+    , m_ppSvc( 0 ) {
+  m_defaultLhaPdfSettings.clear();
+  declareInterface<ISampleGenerationTool>( this );
+  declareProperty( "ProductionTool", m_productionToolName = "Pythia8Production" );
+  declareProperty( "DecayTool", m_decayToolName = "" );
+  declareProperty( "CutTool", m_cutToolName = "" );
+  declareProperty( "LhaPdfCommands", m_userLhaPdfSettings );
+  declareProperty( "KeepOriginalProperties", m_keepOriginalProperties = false );
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
+  m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 17 LHAPDF" );
+  m_defaultLhaPdfSettings.push_back( "lhacontrol lhaparm 16 NOSTAT" );
+}
 
 //=============================================================================
 // Destructor
 //=============================================================================
-ExternalGenerator::~ExternalGenerator( ) { ; }
+ExternalGenerator::~ExternalGenerator() { ; }
 
 //=============================================================================
 // Initialization method
 //=============================================================================
-StatusCode ExternalGenerator::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode ExternalGenerator::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
   if ( msgLevel( MSG::DEBUG ) ) {
-    LhaPdf::lhacontrol().setlhaparm( 19 , "DEBUG" ) ;
+    LhaPdf::lhacontrol().setlhaparm( 19, "DEBUG" );
+  } else {
+    LhaPdf::lhacontrol().setlhaparm( 19, "SILENT" );
   }
-  else {
-    LhaPdf::lhacontrol().setlhaparm( 19 , "SILENT" ) ;
-  }
-  
+
   // Set default LHAPDF parameters:
-  sc = parseLhaPdfCommands( m_defaultLhaPdfSettings ) ;
+  sc = parseLhaPdfCommands( m_defaultLhaPdfSettings );
   // Set user LHAPDF parameters:
-  sc = parseLhaPdfCommands( m_userLhaPdfSettings ) ;
-  if ( ! sc.isSuccess() ) 
-    return Error( "Unable to read LHAPDF commands" , sc ) ;
+  sc = parseLhaPdfCommands( m_userLhaPdfSettings );
+  if ( !sc.isSuccess() ) return Error( "Unable to read LHAPDF commands", sc );
 
   // retrieve the particle property service
-  m_ppSvc = svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
+  m_ppSvc = svc<LHCb::IParticlePropertySvc>( "LHCb::ParticlePropertySvc", true );
 
-  // obtain the Decay Tool 
+  // obtain the Decay Tool
   // (ATTENTION: it has to be initialized before the production tool)
-  if ( "" != m_decayToolName ) 
-    m_decayTool = tool< IDecayTool >( m_decayToolName ) ;
+  if ( "" != m_decayToolName ) m_decayTool = tool<IDecayTool>( m_decayToolName );
 
   // obtain the Production Tool
-  if ( "" != m_productionToolName ) 
-    m_productionTool = tool< IProductionTool >( m_productionToolName , this ) ;
+  if ( "" != m_productionToolName ) m_productionTool = tool<IProductionTool>( m_productionToolName, this );
 
   // update the particle properties of the production tool
   if ( 0 != m_productionTool ) {
-    LHCb::IParticlePropertySvc::iterator iter ;
-    for ( iter = m_ppSvc -> begin() ; iter != m_ppSvc -> end() ; ++iter ) {
-      if ( ( ! m_productionTool -> isSpecialParticle( *iter ) ) && 
-           ( ! m_keepOriginalProperties ) ) 
-        m_productionTool -> updateParticleProperties( *iter ) ;
+    LHCb::IParticlePropertySvc::iterator iter;
+    for ( iter = m_ppSvc->begin(); iter != m_ppSvc->end(); ++iter ) {
+      if ( ( !m_productionTool->isSpecialParticle( *iter ) ) && ( !m_keepOriginalProperties ) )
+        m_productionTool->updateParticleProperties( *iter );
       // set stable in the Production generator all particles known to the
       // decay tool
       if ( 0 != m_decayTool )
-        if ( m_decayTool -> isKnownToDecayTool( (*iter)->pdgID().pid() ) ) 
-          m_productionTool -> setStable( *iter ) ;    
+        if ( m_decayTool->isKnownToDecayTool( ( *iter )->pdgID().pid() ) ) m_productionTool->setStable( *iter );
     }
   }
 
   // obtain the cut tool
-  if ( "" != m_cutToolName ) 
-    m_cutTool = tool< IGenCutTool >( m_cutToolName , this ) ;
+  if ( "" != m_cutToolName ) m_cutTool = tool<IGenCutTool>( m_cutToolName, this );
 
-  if ( 0 != m_productionTool ) {
-    sc &= m_productionTool -> initializeGenerator();
-  }
+  if ( 0 != m_productionTool ) { sc &= m_productionTool->initializeGenerator(); }
 
   // obtain the log tool
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
+  m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
 
-  // now debug printout of Production Tool 
+  // now debug printout of Production Tool
   // has to be after all initializations to be sure correct values are printed
-  if ( 0 != m_productionTool ) { 
-    m_productionTool -> printRunningConditions( ) ;  
-    
-    boost::char_separator<char> sep(".");
-    boost::tokenizer< boost::char_separator<char> > 
-      strList( m_productionTool -> name() , sep ) ;
+  if ( 0 != m_productionTool ) {
+    m_productionTool->printRunningConditions();
 
-    
-    std::string result = "" ;
-    for ( boost::tokenizer< boost::char_separator<char> >::iterator 
-            tok_iter = strList.begin();
-          tok_iter != strList.end(); ++tok_iter)
-      result = (*tok_iter) ;
-    m_hepMCName = boost::algorithm::ierase_last_copy( result , "Production" ) ;
+    boost::char_separator<char>                   sep( "." );
+    boost::tokenizer<boost::char_separator<char>> strList( m_productionTool->name(), sep );
+
+    std::string result = "";
+    for ( boost::tokenizer<boost::char_separator<char>>::iterator tok_iter = strList.begin(); tok_iter != strList.end();
+          ++tok_iter )
+      result = ( *tok_iter );
+    m_hepMCName = boost::algorithm::ierase_last_copy( result, "Production" );
   } else {
-    m_hepMCName = "DecayAlone" ;
+    m_hepMCName = "DecayAlone";
   }
 
-  return StatusCode::SUCCESS ;
+  return StatusCode::SUCCESS;
 }
 
 //=============================================================================
 // Decay heavy excited particles
 //=============================================================================
-StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEventPtr theEvent,
-     const LHCb::ParticleID::Quark theQuark , const int signalPid , HepRandomEnginePtr & engine) const {
-  StatusCode sc ;
-  
-  if ( 0 == m_decayTool ) return StatusCode::SUCCESS ;
+StatusCode ExternalGenerator::decayHeavyParticles( HepMC3::GenEventPtr theEvent, const LHCb::ParticleID::Quark theQuark,
+                                                   const int signalPid, HepRandomEnginePtr& engine ) const {
+  StatusCode sc;
 
-  m_decayTool -> disableFlip() ;
+  if ( 0 == m_decayTool ) return StatusCode::SUCCESS;
 
-  HepMCUtils::ParticleSet particleSet ;  
+  m_decayTool->disableFlip();
+
+  HepMCUtils::ParticleSet particleSet;
 
   switch ( theQuark ) {
-    
+
   case LHCb::ParticleID::bottom: // decay only B
-    for (auto & part: theEvent->particles())
-      if ( LHCb::ParticleID( part -> pdg_id() ).hasQuark( theQuark ) ) 
-        particleSet.insert( part ) ;
-    break ;
-    
+    for ( auto& part : theEvent->particles() )
+      if ( LHCb::ParticleID( part->pdg_id() ).hasQuark( theQuark ) ) particleSet.insert( part );
+    break;
+
   case LHCb::ParticleID::charm: // decay B + D
-    for (auto & part: theEvent->particles()){
-      LHCb::ParticleID pid( part -> pdg_id() ) ;
-      if ( ( pid.hasQuark( theQuark ) ) || 
-           ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-        particleSet.insert( part ) ;
+    for ( auto& part : theEvent->particles() ) {
+      LHCb::ParticleID pid( part->pdg_id() );
+      if ( ( pid.hasQuark( theQuark ) ) || ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) particleSet.insert( part );
     }
-    break ;
-    
+    break;
+
   default:
-    
-    if ( 15 == LHCb::ParticleID(signalPid).abspid() ) // tau ?
+
+    if ( 15 == LHCb::ParticleID( signalPid ).abspid() ) // tau ?
     {
-      for (auto & part: theEvent->particles()){
-        LHCb::ParticleID pid( part -> pdg_id() ) ;
-        if ( ( pid.hasQuark( LHCb::ParticleID::charm  ) ) || 
-             ( pid.hasQuark( LHCb::ParticleID::bottom ) ) ) 
-          particleSet.insert( part ) ;
+      for ( auto& part : theEvent->particles() ) {
+        LHCb::ParticleID pid( part->pdg_id() );
+        if ( ( pid.hasQuark( LHCb::ParticleID::charm ) ) || ( pid.hasQuark( LHCb::ParticleID::bottom ) ) )
+          particleSet.insert( part );
       }
-      break ; 
-    }
-    else 
-    {
+      break;
+    } else {
       // decay all what is heavier than the signal
-      for (auto & part: theEvent->particles()){
-        LHCb::ParticleID pid( part -> pdg_id() ) ;
-        if ( part -> generated_mass() > 
-             m_ppSvc -> find( LHCb::ParticleID( signalPid ) ) -> mass() )
-          particleSet.insert( part ) ;
+      for ( auto& part : theEvent->particles() ) {
+        LHCb::ParticleID pid( part->pdg_id() );
+        if ( part->generated_mass() > m_ppSvc->find( LHCb::ParticleID( signalPid ) )->mass() )
+          particleSet.insert( part );
         // if signal is KS then decay also K0
         else if ( ( signalPid == 310 ) && ( pid.abspid() == 311 ) )
-          particleSet.insert( part ) ;
-      }      
+          particleSet.insert( part );
+      }
     }
-    break ; 
+    break;
   }
-  
-  for ( HepMCUtils::ParticleSet::iterator itHeavy = particleSet.begin() ; 
-        itHeavy != particleSet.end() ; ++itHeavy ) 
-    
-    if ( ( HepMC3::Status::StableInProdGen == (*itHeavy) -> status() ) && 
-         ( signalPid != abs( (*itHeavy) -> pdg_id() ) ) ) {
-      
-      if ( m_decayTool -> isKnownToDecayTool( (*itHeavy) -> pdg_id() ) ) {
-        sc = m_decayTool -> generateDecayWithLimit( *itHeavy , signalPid , engine) ;
-        if ( ! sc.isSuccess() ) return sc ;
-      } 
+
+  for ( HepMCUtils::ParticleSet::iterator itHeavy = particleSet.begin(); itHeavy != particleSet.end(); ++itHeavy )
+
+    if ( ( HepMC3::Status::StableInProdGen == ( *itHeavy )->status() ) &&
+         ( signalPid != abs( ( *itHeavy )->pdg_id() ) ) ) {
+
+      if ( m_decayTool->isKnownToDecayTool( ( *itHeavy )->pdg_id() ) ) {
+        sc = m_decayTool->generateDecayWithLimit( *itHeavy, signalPid, engine );
+        if ( !sc.isSuccess() ) return sc;
+      }
     }
-  
-  return StatusCode::SUCCESS ;
+
+  return StatusCode::SUCCESS;
 }
 
 //=============================================================================
 // Check the presence of a particle of given type in event
 // Attention : pidList must be sorted before begin used in this function
 //=============================================================================
-bool ExternalGenerator::checkPresence( const PIDs & pidList ,
-                                       HepMC3::GenEventPtr theEvent ,
-                                       ParticleVector & particleList ) const {
-  particleList.clear( ) ;
-      for (auto & part: theEvent->particles()){
-    if ( std::binary_search( pidList.begin() , pidList.end() ,
-                             part -> pdg_id() ) ) 
-      if ( ( HepMC3::Status::DocumentationParticle != part -> status() ) 
-           && ( HepMCUtils::IsBAtProduction( part ) ) )
-        particleList.push_back( part ) ;
-      }
+bool ExternalGenerator::checkPresence( const PIDs& pidList, HepMC3::GenEventPtr theEvent,
+                                       ParticleVector& particleList ) const {
+  particleList.clear();
+  for ( auto& part : theEvent->particles() ) {
+    if ( std::binary_search( pidList.begin(), pidList.end(), part->pdg_id() ) )
+      if ( ( HepMC3::Status::DocumentationParticle != part->status() ) && ( HepMCUtils::IsBAtProduction( part ) ) )
+        particleList.push_back( part );
+  }
 
-  std::sort( particleList.begin() , particleList.end() , 
-             HepMCUtils::compareHepMCParticles ) ;
+  std::sort( particleList.begin(), particleList.end(), HepMCUtils::compareHepMCParticles );
 
-  return ( ! particleList.empty() ) ;
+  return ( !particleList.empty() );
 }
 
 //=============================================================================
 // invert the event
 //=============================================================================
 void ExternalGenerator::revertEvent( HepMC3::GenEvent* theEvent ) const {
-  double x, y, z, t ;
-  for (auto & vtx:theEvent->vertices()){
-    x = vtx -> position().x() ;
-    y = vtx -> position().y() ;
-    z = vtx -> position().z() ;
-    t = vtx -> position().t() ;
-    vtx -> set_position( HepMC3::FourVector( x, y, -z, t ) ) ;
+  double x, y, z, t;
+  for ( auto& vtx : theEvent->vertices() ) {
+    x = vtx->position().x();
+    y = vtx->position().y();
+    z = vtx->position().z();
+    t = vtx->position().t();
+    vtx->set_position( HepMC3::FourVector( x, y, -z, t ) );
   }
 
-  double px, py, pz, E ;
-  for(auto & part: theEvent->particles()){
-    px = part -> momentum().px() ;
-    py = part -> momentum().py() ;
-    pz = part -> momentum().pz() ;
-    E  = part -> momentum().e() ;
-    part -> set_momentum( HepMC3::FourVector( px, py, -pz, E ) ) ;
-  }      
+  double px, py, pz, E;
+  for ( auto& part : theEvent->particles() ) {
+    px = part->momentum().px();
+    py = part->momentum().py();
+    pz = part->momentum().pz();
+    E  = part->momentum().e();
+    part->set_momentum( HepMC3::FourVector( px, py, -pz, E ) );
+  }
 }
 
 //=============================================================================
 // count the number of particles with pz > 0
 //=============================================================================
-unsigned int ExternalGenerator::nPositivePz( const ParticleVector 
-                                             & particleList ) const {
-  ParticleVector::const_iterator iter ;
-  unsigned int nP = 0 ;
-  for ( iter = particleList.begin() ; iter != particleList.end() ; ++iter ) 
-    if ( (*iter)->momentum().pz() > 0 ) nP++ ;
-  
-  return nP ;
-}
+unsigned int ExternalGenerator::nPositivePz( const ParticleVector& particleList ) const {
+  ParticleVector::const_iterator iter;
+  unsigned int                   nP = 0;
+  for ( iter = particleList.begin(); iter != particleList.end(); ++iter )
+    if ( ( *iter )->momentum().pz() > 0 ) nP++;
 
+  return nP;
+}
 
 //=============================================================================
 // Set up event
 //=============================================================================
-void ExternalGenerator::prepareInteraction( HepMC3::GenEventPtrs * theEvents ,
-    LHCb::GenCollisions * theCollisions , HepMC3::GenEventPtr & theGenEvent ,  
-    LHCb::GenCollision * & theGenCollision ) const {
-  theGenEvent = std::make_shared<HepMC3::GenEvent>(HepMC3::Units::MEV, HepMC3::Units::MM);
-  theEvents->push_back(theGenEvent);
-  theGenEvent->set_run_info(nullptr);
+void ExternalGenerator::prepareInteraction( HepMC3::GenEventPtrs* theEvents, LHCb::GenCollisions* theCollisions,
+                                            HepMC3::GenEventPtr& theGenEvent,
+                                            LHCb::GenCollision*& theGenCollision ) const {
+  theGenEvent = std::make_shared<HepMC3::GenEvent>( HepMC3::Units::MEV, HepMC3::Units::MM );
+  theEvents->push_back( theGenEvent );
+  theGenEvent->set_run_info( nullptr );
   theGenEvent->add_attribute( Gaussino::HepMC::Attributes::GeneratorName,
                               std::make_shared<HepMC3::StringAttribute>( m_hepMCName ) );
   // Little hack to make it thread-safe when reading later
-  theGenEvent->attribute<HepMC3::StringAttribute>(Gaussino::HepMC::Attributes::GeneratorName);
+  theGenEvent->attribute<HepMC3::StringAttribute>( Gaussino::HepMC::Attributes::GeneratorName );
 
-  //FIXME: Still need fix this, see header
+  // FIXME: Still need fix this, see header
   theGenCollision = new LHCb::GenCollision();
-  theCollisions->insert(theGenCollision);
-  //theGenCollision = &theCollisions->back();
-  // FIXME: Need to modify new GenCollisions class for persistency
-  //theGenCollision->setEvent( theHepMCEvent );
+  theCollisions->insert( theGenCollision );
+  // theGenCollision = &theCollisions->back();
+  //  FIXME: Need to modify new GenCollisions class for persistency
+  // theGenCollision->setEvent( theHepMCEvent );
   theGenCollision->setIsSignal( false );
 }
 
 //=============================================================================
 // Parse LHAPDF commands stored in a vector
 //=============================================================================
-StatusCode ExternalGenerator::parseLhaPdfCommands( const CommandVector & 
-                                                   theCommandVector ) const {
+StatusCode ExternalGenerator::parseLhaPdfCommands( const CommandVector& theCommandVector ) const {
   //
   // Parse Commands and Set Values from Properties Service...
   //
-  CommandVector::const_iterator iter ;
-  for ( iter = theCommandVector.begin() ; theCommandVector.end() != iter ; 
-        ++iter ) {
-    debug() << " Command is: " << (*iter) << endmsg ;
-    StringParse mystring( *iter ) ;
-    std::string block = mystring.piece(1);
-    std::string entry = mystring.piece(2);
-    std::string str   = mystring.piece(4);
-    int    int1  = mystring.intpiece(3);
-    double fl1   = mystring.numpiece(3);
-    
+  CommandVector::const_iterator iter;
+  for ( iter = theCommandVector.begin(); theCommandVector.end() != iter; ++iter ) {
+    debug() << " Command is: " << ( *iter ) << endmsg;
+    StringParse mystring( *iter );
+    std::string block = mystring.piece( 1 );
+    std::string entry = mystring.piece( 2 );
+    std::string str   = mystring.piece( 4 );
+    int         int1  = mystring.intpiece( 3 );
+    double      fl1   = mystring.numpiece( 3 );
+
     // Note that Pythia needs doubles hence the convert here
-    debug() << block << " block  " << entry << " item  " << int1 
-            << "  value " << fl1 << " str " << str << endmsg ;
-    if ( block == std::string("lhacontrol") )  
-      if      ( std::string("lhaparm") == entry ) 
-        LhaPdf::lhacontrol().setlhaparm( int1 , str ) ;
-      else if ( std::string("lhavalue") == entry ) 
-        LhaPdf::lhacontrol().setlhavalue( int1 , fl1 ) ;
-      else return Error( std::string( "LHAPDF ERROR, block LHACONTROL has " ) +
-                         std::string( "LHAPARM and LHAVALUE: YOU HAVE " ) + 
-                         std::string( "SPECIFIED " ) + std::string( entry ) ) ;
-    else return Error( std::string( " ERROR in LHAPDF PARAMETERS   " ) +
-                       std::string( block ) +
-                       std::string( " is and invalid common block name !" ) ) ;
+    debug() << block << " block  " << entry << " item  " << int1 << "  value " << fl1 << " str " << str << endmsg;
+    if ( block == std::string( "lhacontrol" ) )
+      if ( std::string( "lhaparm" ) == entry )
+        LhaPdf::lhacontrol().setlhaparm( int1, str );
+      else if ( std::string( "lhavalue" ) == entry )
+        LhaPdf::lhacontrol().setlhavalue( int1, fl1 );
+      else
+        return Error( std::string( "LHAPDF ERROR, block LHACONTROL has " ) +
+                      std::string( "LHAPARM and LHAVALUE: YOU HAVE " ) + std::string( "SPECIFIED " ) +
+                      std::string( entry ) );
+    else
+      return Error( std::string( " ERROR in LHAPDF PARAMETERS   " ) + std::string( block ) +
+                    std::string( " is and invalid common block name !" ) );
   }
-  
-  return StatusCode::SUCCESS ;
+
+  return StatusCode::SUCCESS;
 }
 //=============================================================================
 // Finalize method
 //=============================================================================
-StatusCode ExternalGenerator::finalize( ) {
-  if ( 0 != m_decayTool ) release( m_decayTool ).ignore() ;
-  if ( 0 != m_productionTool ) release( m_productionTool ).ignore() ;
-  if ( 0 != m_cutTool ) release( m_cutTool ).ignore() ;
-  if ( 0 != m_ppSvc ) release( m_ppSvc ).ignore() ;
+StatusCode ExternalGenerator::finalize() {
+  if ( 0 != m_decayTool ) release( m_decayTool ).ignore();
+  if ( 0 != m_productionTool ) release( m_productionTool ).ignore();
+  if ( 0 != m_cutTool ) release( m_cutTool ).ignore();
+  if ( 0 != m_ppSvc ) release( m_ppSvc ).ignore();
 
   // set the name of the method
-  m_xmlLogTool -> addMethod( this -> name() ) ;
+  m_xmlLogTool->addMethod( this->name() );
   // set the name of the generator
-  m_xmlLogTool -> addGenerator( m_hepMCName ) ;
+  m_xmlLogTool->addGenerator( m_hepMCName );
 
-  return GaudiTool::finalize() ;
+  return GaudiTool::finalize();
 }

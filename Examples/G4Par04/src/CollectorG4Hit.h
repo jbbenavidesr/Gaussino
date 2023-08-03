@@ -26,7 +26,7 @@ namespace Gaussino::G4Par04 {
     using Map = std::map<int, CollectorG4Hit*>;
 
     void* operator new( size_t );
-    void  operator delete( void* aHit );
+    void operator delete( void* aHit );
 
     inline void   SetKineticEnergy( double aEk ) { m_Ek = aEk; }
     inline double GetKineticEnergy() const { return m_Ek; }

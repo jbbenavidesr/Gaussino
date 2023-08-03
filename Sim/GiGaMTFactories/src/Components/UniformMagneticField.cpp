@@ -25,9 +25,9 @@ namespace Gaussino::MagneticField {
   };
 
   class UniformFieldFactory : public FieldFactory<UniformField> {
-    Gaudi::Property<double> m_x{this, "B_x", 0. * Gaudi::Units::tesla};
-    Gaudi::Property<double> m_y{this, "B_y", 0. * Gaudi::Units::tesla};
-    Gaudi::Property<double> m_z{this, "B_z", 0. * Gaudi::Units::tesla};
+    Gaudi::Property<double> m_x{ this, "B_x", 0. * Gaudi::Units::tesla };
+    Gaudi::Property<double> m_y{ this, "B_y", 0. * Gaudi::Units::tesla };
+    Gaudi::Property<double> m_z{ this, "B_z", 0. * Gaudi::Units::tesla };
 
   public:
     using FieldFactory<UniformField>::FieldFactory;
@@ -37,7 +37,7 @@ namespace Gaussino::MagneticField {
               << " x: " << m_x.value() / Gaudi::Units::tesla << " T,"
               << " y: " << m_y.value() / Gaudi::Units::tesla << " T,"
               << " z: " << m_z.value() / Gaudi::Units::tesla << " T." << endmsg;
-      Gaudi::XYZVector vector{m_x.value(), m_y.value(), m_z.value()};
+      Gaudi::XYZVector vector{ m_x.value(), m_y.value(), m_z.value() };
       field->setVector( vector );
       field->SetMessageInterface( message_interface() );
       return field;

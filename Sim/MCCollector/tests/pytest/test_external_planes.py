@@ -9,9 +9,17 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
-from Gaussino.pytest.options import events_1, em_physics, edm, debug, empty_world, photon
-from Gaussino.pytest.helpers import run_gaudi, reset_configurables
 import re
+
+from Gaussino.pytest.helpers import reset_configurables, run_gaudi
+from Gaussino.pytest.options import (
+    debug,
+    edm,
+    em_physics,
+    empty_world,
+    events_1,
+    photon,
+)
 
 
 @reset_configurables
@@ -24,12 +32,12 @@ import re
 def test_external_planes():
     ex = run_gaudi(
         # additional options
-        "$MCCOLLECTORROOT/tests/options/external_planes.py", )
+        "$MCCOLLECTORROOT/tests/options/external_planes.py",
+    )
     assert ex.returncode == 0
     for plane_no in range(1, 5):
         plane_regex = rf"#Hits\W*1\W*Energy=\W*0\[GeV\]\W*#Particles=\W*1\W*in\W+Plane{plane_no}SDet"
         if not re.findall(plane_regex, ex.stdout):
-            raise AssertionError(
-                f"Hit registration went wrong for plane #{plane_no}!")
+            raise AssertionError(f"Hit registration went wrong for plane #{plane_no}!")
     if "NTuples saved successfully" not in ex.stdout:
         raise AssertionError("NTuples were not created!")

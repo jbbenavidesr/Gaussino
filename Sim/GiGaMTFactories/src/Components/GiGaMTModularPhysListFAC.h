@@ -10,10 +10,10 @@
 \*****************************************************************************/
 #pragma once
 // G4
-#include "GaudiAlg/GaudiTool.h"
-#include "GaudiKernel/ToolHandle.h"
 #include "G4VPhysicsConstructor.hh"
 #include "G4VUserPhysicsList.hh"
+#include "GaudiAlg/GaudiTool.h"
+#include "GaudiKernel/ToolHandle.h"
 
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
@@ -27,13 +27,12 @@
 //
 //@author Dominik Muller <dominik.muller@cern.ch>
 
-class GiGaMTModularPhysListFAC : public extends<GiGaTool, GiGaFactoryBase<G4VUserPhysicsList>>
-{
+class GiGaMTModularPhysListFAC : public extends<GiGaTool, GiGaFactoryBase<G4VUserPhysicsList>> {
 public:
   typedef GiGaFactoryBase<G4VPhysicsConstructor> ConstructorFactory;
-  typedef std::vector<ConstructorFactory*> ConstructorFactories;
-  StatusCode initialize() override;
-  StatusCode finalize() override;
+  typedef std::vector<ConstructorFactory*>       ConstructorFactories;
+  StatusCode                                     initialize() override;
+  StatusCode                                     finalize() override;
 
   using extends::extends;
   virtual ~GiGaMTModularPhysListFAC(){};
@@ -41,14 +40,13 @@ public:
 public:
   virtual G4VUserPhysicsList* construct() const override;
 
-  //virtual void SetCuts();
+  // virtual void SetCuts();
 
 private:
-
-  ConstructorFactories m_constructors{};
-  Gaudi::Property<std::vector<std::string>> m_constructorNames{this, "PhysicsConstructors", {}};
-  Gaudi::Property<bool> m_dumpCutsTable{this, "DumpCutsTable", false};
-  Gaudi::Property<double> m_cutForGamma{this, "CutForGamma", -1 * CLHEP::km};
-  Gaudi::Property<double> m_cutForElectron{this, "CutForElectron", -1 * CLHEP::km};
-  Gaudi::Property<double> m_cutForPositron{this, "CutForPositron", -1 * CLHEP::km};
+  ConstructorFactories                      m_constructors{};
+  Gaudi::Property<std::vector<std::string>> m_constructorNames{ this, "PhysicsConstructors", {} };
+  Gaudi::Property<bool>                     m_dumpCutsTable{ this, "DumpCutsTable", false };
+  Gaudi::Property<double>                   m_cutForGamma{ this, "CutForGamma", -1 * CLHEP::km };
+  Gaudi::Property<double>                   m_cutForElectron{ this, "CutForElectron", -1 * CLHEP::km };
+  Gaudi::Property<double>                   m_cutForPositron{ this, "CutForPositron", -1 * CLHEP::km };
 };

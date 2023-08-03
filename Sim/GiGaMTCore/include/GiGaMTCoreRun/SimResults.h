@@ -8,10 +8,10 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "GiGaMTCoreRun/G4EventProxy.h"
+#include "GiGaMTCoreRun/MCTruthConverter.h"
 
 namespace Gaussino {
   typedef std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaSimReturn;
   typedef std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaSimReturns;
-}
+} // namespace Gaussino

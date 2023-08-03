@@ -21,9 +21,9 @@
 #include "Event/BeamParameters.h"
 #include "Event/GenHeader.h"
 #include "Event/ODIN.h"
+#include "GaudiKernel/Memory.h"
 #include "NewRnd/RndAlgSeeder.h"
 #include "Utils/LocalTL.h"
-#include "GaudiKernel/Memory.h"
 
 /** @class GenRndInit GenRndInit.h
  *
@@ -37,19 +37,20 @@
 class GenRndInit : public Gaudi::Functional::Producer<std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN>(),
                                                       Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>> {
 protected:
-  Gaudi::Property<long long> m_firstEvent{this, "FirstEventNumber", 1, "Number of the first event"};
-  Gaudi::Property<long long> m_firstTimingEvent{this, "TimingSkipAtStart", 1, "Number of the event to start the clock"};
-  Gaudi::Property<unsigned int> m_runNumber{this, "RunNumber", 1, "The run number"};
+  Gaudi::Property<long long>    m_firstEvent{ this, "FirstEventNumber", 1, "Number of the first event" };
+  Gaudi::Property<long long>    m_firstTimingEvent{ this, "TimingSkipAtStart", 1,
+                                                 "Number of the event to start the clock" };
+  Gaudi::Property<unsigned int> m_runNumber{ this, "RunNumber", 1, "The run number" };
 
-  mutable Gaudi::Accumulators::StatCounter<> m_totMem{this, "Total Memory [MB]"};
-  mutable Gaudi::Accumulators::StatCounter<> m_totMemPerThread{this, "Total Memory per Thread [MB]"};
+  mutable Gaudi::Accumulators::StatCounter<> m_totMem{ this, "Total Memory [MB]" };
+  mutable Gaudi::Accumulators::StatCounter<> m_totMemPerThread{ this, "Total Memory per Thread [MB]" };
 
 public:
   GenRndInit( const std::string& name, ISvcLocator* pSvcLocator )
       : Producer( name, pSvcLocator,
-                  {KeyValue{"GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration},
-                   KeyValue{"BeamParameters", LHCb::BeamParametersLocation::Default},
-                   KeyValue( "ODIN", LHCb::ODINLocation::Default )} ) {}
+                  { KeyValue{ "GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration },
+                    KeyValue{ "BeamParameters", LHCb::BeamParametersLocation::Default },
+                    KeyValue( "ODIN", LHCb::ODINLocation::Default ) } ) {}
 
   using Clock = std::chrono::high_resolution_clock;
 
@@ -79,11 +80,11 @@ protected:
    */
   virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
 
-  mutable std::atomic_long  m_evtCounter{0};
-  mutable std::atomic_long  m_evtTimingCounter{0};
+  mutable std::atomic_long  m_evtCounter{ 0 };
+  mutable std::atomic_long  m_evtTimingCounter{ 0 };
   mutable LocalTL<long>     m_localCounter;
   mutable Clock::time_point m_start_time;
-  long                      m_eventMax{0}; ///< Number of events requested (ApplicationMgr.EvtMax)
+  long                      m_eventMax{ 0 }; ///< Number of events requested (ApplicationMgr.EvtMax)
 
   class MTBarrier {
     std::mutex              _mutex;
@@ -104,8 +105,8 @@ protected:
   }
 
   MTBarrier*   m_barrier;
-  mutable bool m_wait_at_barrier{true};
+  mutable bool m_wait_at_barrier{ true };
 
 private:
-  ServiceHandle<IBeamInfoSvc> m_beamInfoSvc{this, "BeamInfoSvc", "BeamInfoSvc"};
+  ServiceHandle<IBeamInfoSvc> m_beamInfoSvc{ this, "BeamInfoSvc", "BeamInfoSvc" };
 };

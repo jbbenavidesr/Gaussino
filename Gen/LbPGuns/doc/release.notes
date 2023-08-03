@@ -6,13 +6,13 @@
 
 !========================== LbPGuns v6r1 2016-03-04 ==========================
 ! 2016-03-01 - Dan Johnson
- - Add FlatPtRapidity particle-gun, allowing also for mass-sampling of a 
+ - Add FlatPtRapidity particle-gun, allowing also for mass-sampling of a
    composite particle.
 
 !========================= LbPGuns v6r0p1 2015-01-26 =========================
 ! 2015-01-26 - Gloria Corti
  - Fix bug in particle guns that does not reject events that do not satisfy the
-   decay cuts but just clean the decay product. 
+   decay cuts but just clean the decay product.
    See https://its.cern.ch/jira/browse/LHCBGAUSS-349
 
 !========================== LbPGuns v6r0 2014-12-17 ==========================
@@ -43,7 +43,7 @@
 
 !========================== LbPGuns v4r3 2014-06-23 ==========================
 ! 2014-06-06 - Victor Coco
- - Modified MomentumSpectrum so that GetRandom from the TH2D and TH3D gets a 
+ - Modified MomentumSpectrum so that GetRandom from the TH2D and TH3D gets a
    seed from the event number and run number (same seed in each jobs otherwise)
 
 ! 2014-01-03 - Dan Johnson
@@ -60,7 +60,7 @@
 
 !========================= LbPGuns v4r1p1 2013-12-02 =========================
 ! 2013-11-15 - Michel De Cian
- - Added MomentumSpectrum.py and BSpectrum.root as example files for the class 
+ - Added MomentumSpectrum.py and BSpectrum.root as example files for the class
    MomentumSpectrum to options.
 
 !========================== LbPGuns v4r1 2013-10-10 ==========================
@@ -112,8 +112,8 @@
    . Rich1Cosmics.opts -> Rich1Cosmics.py
    . UpsilonGun.opts -> UpsilonGun.py
 ! 2009-10-28 - Magnus Lieng
- - Added Beam Shape tool. By defining beam centroid and optics parameters at 
-   the generation point a "beam-like" particle distribution (position and 
+ - Added Beam Shape tool. By defining beam centroid and optics parameters at
+   the generation point a "beam-like" particle distribution (position and
    momenta) is created.
    . BeamShape.py
    . BeamShape.cpp
@@ -134,25 +134,25 @@
 ! 2009-09-18 - Gloria CORTI
  - 'Rename' of the package ParticleGuns into LbPGuns to make it consistent
    with all othe generators and allow consistent way of selecting the options
-   in the production system. 
+   in the production system.
    The include of the IParticleGun.h is now taken from LbPGuns and a new
-   file Pguns.py to be included for event types with this generator is 
-   provided: it sets the appropriate options in Gauss() to execute the 
+   file Pguns.py to be included for event types with this generator is
+   provided: it sets the appropriate options in Gauss() to execute the
    ParticleGun algorithm.
    The release notes of ParticleGuns are kept here for historical reasons.
 
 !======================= ParticleGuns v7r1 2009-09-16 =======================
-! 2009-09-02 - Giulia Manca 
--  Updated the CosmicGun generator to generate particle through a 
+! 2009-09-02 - Giulia Manca
+-  Updated the CosmicGun generator to generate particle through a
 	 vertical surface, with the correct angular and momentum distribution.
 	 Also updated the CosmicGun option file to allow generation in a larger
 	 volume. Tested with Gauss v37r2.
- 
+
 ! 2009-07-15 - Chris Jones
  - Extend the Cosmic generator tool to allow the trajectories of the cosmics
-   to be defined by points in two planes, as well as the original point in a 
+   to be defined by points in two planes, as well as the original point in a
    single plane and direction. Useful for generating events for the RICH1
-   cosmic trigger which consists of two scintillator planes upstream and 
+   cosmic trigger which consists of two scintillator planes upstream and
    downstream of RICH1. The options file Rich1Cosmics.opts shows an example
    configuration.
 
@@ -165,7 +165,7 @@
 ! 2009-04-03 - Gloria CORTI
  - Fix bug #48912 reported by Aras Papadelis about smearing of primary vertex
    being applied only if a DecayTool is used (so not for stable particle
-   guns). 
+   guns).
 
 !======================= ParticleGuns v6r2 2008-12-08 =======================
 ! 2008-12-02 - Gloria CORTI
@@ -208,15 +208,15 @@
    . ParticleGuns/IParticleGunTool.h is the abstract interface of the tool
      used to generate particle guns.
    . ParticleGun.cpp is the main algorithm steering the generation of particle
-     guns (similar to Generation.cpp in the Generators package) and which 
+     guns (similar to Generation.cpp in the Generators package) and which
      calls the "ParticleGun" tool.
    . Existing particle gun codes have been migrated to the new structure
-     and job options in the options directory have been also modified to 
+     and job options in the options directory have been also modified to
      take into account the new syntax.
-   . FlatNParticles: new tool of type "PileUpTool" to generate a random 
+   . FlatNParticles: new tool of type "PileUpTool" to generate a random
      number of particles, with flat distribution between a min and a max
      value. To be called by the new ParticleGun algorithm.
-   . FlatSmearVertex: new tool of type "VertexSmearingTool" to generate 
+   . FlatSmearVertex: new tool of type "VertexSmearingTool" to generate
      random position of the vertex of the particle gun with a flat distribution
      within limits in x, y, z.
 
@@ -244,14 +244,14 @@
    grid in both eta-phi and on a plane at given distance (default at 10*m).
    New properties have been introduce to chose eta-phi or x-y plane, randomly
    uniform or regular grid, and min/max in eta-phi, plus steps in x-y and
-   eta-phi. 
+   eta-phi.
  - Introduce example options for both ParticleGun (moved from Gauss) and
    MaterialEvalGrid. Look there for specific list of available properties
    and default values.
  - Code changes
    . MaterialEvalGun.{h,cpp}      - modified
    . options/MaterialEvalGun.opts - NEW
-   . options/ParticleGun.opts     - NEW  
+   . options/ParticleGun.opts     - NEW
  - Change default of ParticleGun to uniform distributions in abs(P), theta,
    phi instead of fiex px,py,pz values.
    . ParticleGun.cpp              - modified
@@ -267,12 +267,12 @@
    loading and declaration file.
    . factories declared in ParticleGuns_load.cpp (modified)
    . remove ParticleGuns_entries.cpp and add ParticleGuns_dll.cpp
- 
+
 ! ==================== ParticleGuns v3r0 2006-04-04 =======================
 ! 2006-04-04 - Gloria CORTI
- - Adapt to change in base class for put method that no longer returns 
+ - Adapt to change in base class for put method that no longer returns
    StatusCode
-   . src/ParticleGunBaseAlg.cpp 
+   . src/ParticleGunBaseAlg.cpp
 
 ! 2006-03-29 - Florence RANJARD
  - remove use of HepEvt and CLHEP. GenEvent uses HepMC from lcg/external
@@ -286,14 +286,14 @@
 ! ===================== ParticleGuns v2r0 2006-01-19 =======================
 ! 2006-01-19 - Gloria CORTI
  - Modify ParticleGunBaseAlg to remove all unnecessary part regarding
-   physics event generation. 
+   physics event generation.
    Do not create a GenHeader but update the one already in TES.
 
 ! 2005-12-15 - Gloria CORTI
  - Modify necessary files to adapt to new event model and LHCb namespace
    In particular to collapse of HardInfo in GenCollisions.
    . src/MaterialEvalGun.cpp
-   . src/ParticleGunBaseAlg.{h,cpp} 
+   . src/ParticleGunBaseAlg.{h,cpp}
  - Remove unnecessary include of PhysicalConstants.h
    . src/ParticleGun.cpp
 
@@ -302,4 +302,3 @@
  - New package to contain Particle Guns
 
 ! ==========================================================================
- 

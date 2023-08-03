@@ -40,7 +40,7 @@ TModel* Gaussino::CustomSimulation::ModelFactory<TModel>::construct() const {
   }
 
   debug() << "Loading fast simulation model " << m_model.value() << endmsg;
-  auto model = new TModel{m_model.value(), region};
+  auto model = new TModel{ m_model.value(), region };
   model->SetMessageInterface( message_interface() );
 
   debug() << "Loaded fast simulation model " << m_model.value() << endmsg;

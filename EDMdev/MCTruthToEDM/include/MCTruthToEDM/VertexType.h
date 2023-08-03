@@ -9,10 +9,10 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "Event/MCVertex.h"
-#include "GiGaMTCoreRun/LinkedParticle.h"
 #include "GaudiKernel/MsgStream.h"
+#include "GiGaMTCoreRun/LinkedParticle.h"
 
 namespace Gaussino {
   LHCb::MCVertex::MCVertexType vertexType( int id );
-  LHCb::MCVertex::MCVertexType GetLinkedVertexType( LinkedVertex* lv, MsgStream* msgStream=nullptr);
-}
+  LHCb::MCVertex::MCVertexType GetLinkedVertexType( LinkedVertex* lv, MsgStream* msgStream = nullptr );
+} // namespace Gaussino

@@ -23,10 +23,10 @@
  *  @date   2018-01-30
  */
 
-static const InterfaceID IID_IRndSeedingTool("IRndSeedingTool", 2, 0);
+static const InterfaceID IID_IRndSeedingTool( "IRndSeedingTool", 2, 0 );
 
 class IRndSeedingTool : virtual public IAlgTool {
-  public:
+public:
   static const InterfaceID& interfaceID() { return IID_IRndSeedingTool; }
 
   /** seed the gaudi random generator
@@ -36,5 +36,6 @@ class IRndSeedingTool : virtual public IAlgTool {
    *  @param[in] Optional to allow obtaining the used seeds
    *  @return StatusCode
    */
-  virtual StatusCode seed(unsigned int seed1, unsigned long long seed2, std::shared_ptr<std::vector<long int>> seeds=nullptr) = 0;
+  virtual StatusCode seed( unsigned int seed1, unsigned long long seed2,
+                           std::shared_ptr<std::vector<long int>> seeds = nullptr ) = 0;
 };

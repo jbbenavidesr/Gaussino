@@ -59,7 +59,7 @@ public:
   StatusCode setupForcedFragmentation( const int ) override { return StatusCode::SUCCESS; }
 
 private:
-  ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
+  ServiceHandle<IReDecaySvc> m_redecaysvc{ this, "ReDecaySvc", "ReDecaySvc" };
 };
 
 DECLARE_COMPONENT( ReDecayProduction )
@@ -78,9 +78,9 @@ StatusCode ReDecayProduction::generateEvent( HepMC3::GenEventPtr theEvent, LHCb:
   auto& [orgevt, _counter, redids, _cols] = original_hepmcdata;
 
   auto momentum_unit = orgevt->momentum_unit();
-  auto length_unit = orgevt->length_unit();
-  theEvent->set_units(momentum_unit, length_unit);
-  HepMC3::GenVertexPtr dummy_vertex{nullptr};
+  auto length_unit   = orgevt->length_unit();
+  theEvent->set_units( momentum_unit, length_unit );
+  HepMC3::GenVertexPtr dummy_vertex{ nullptr };
   for ( auto partid : redids ) {
     // Get the particle from its ID. HepMC3 respect the position in the
     // internal particle vector but shifted by one, hence -1

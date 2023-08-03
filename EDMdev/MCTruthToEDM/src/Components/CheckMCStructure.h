@@ -12,9 +12,9 @@
 
 // Include files
 // from Gaudi
-#include <vector>
 #include "GaudiAlg/Consumer.h"
 #include "GaudiAlg/FunctionalUtilities.h"
+#include <vector>
 
 // Event.
 #include "Event/MCHeader.h"
@@ -32,27 +32,24 @@
  */
 
 namespace LHCb {
-class IParticlePropertySvc;
+  class IParticlePropertySvc;
 }
-class CheckMCStructure
-    : public Gaudi::Functional::Consumer<void(
-          const LHCb::MCParticles&, const LHCb::MCVertices&, const LHCb::MCHeader&),
-          Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
-  public:
+class CheckMCStructure : public Gaudi::Functional::Consumer<void( const LHCb::MCParticles&, const LHCb::MCVertices&,
+                                                                  const LHCb::MCHeader& ),
+                                                            Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
+public:
   /// Standard constructor
-  CheckMCStructure(const std::string& name, ISvcLocator* pSvcLocator)
-      : Consumer(name, pSvcLocator,
-                 {KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
-                  KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
-                  KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default}}){};
+  CheckMCStructure( const std::string& name, ISvcLocator* pSvcLocator )
+      : Consumer( name, pSvcLocator,
+                  { KeyValue{ "Particles", Gaussino::MCParticleLocation::Default },
+                    KeyValue{ "Vertices", Gaussino::MCVertexLocation::Default },
+                    KeyValue{ "MCHeader", LHCb::MCHeaderLocation::Default } } ){};
 
-  void operator()(const LHCb::MCParticles&, const LHCb::MCVertices&,
-                  const LHCb::MCHeader&) const override;
+  void operator()( const LHCb::MCParticles&, const LHCb::MCVertices&, const LHCb::MCHeader& ) const override;
 
-  private:
-  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
+private:
+  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{ this, "PropertyService", "LHCb::ParticlePropertySvc" };
 
-  int printMCParticlesTree(LHCb::MCVertex* vtx, unsigned int& n_particles,
-                           unsigned int& n_vertices, int level = 0,
-                           int counter = 0) const;
+  int printMCParticlesTree( LHCb::MCVertex* vtx, unsigned int& n_particles, unsigned int& n_vertices, int level = 0,
+                            int counter = 0 ) const;
 };

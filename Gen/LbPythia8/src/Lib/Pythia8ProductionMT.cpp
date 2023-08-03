@@ -34,11 +34,11 @@
 
 // HepMC conversion
 #include "Defaults/HepMCAttributes.h"
-#include "HepMCUser/Status.h"
 #include "HepMC3/Attribute.h"
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
+#include "HepMCUser/Status.h"
 #include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
 
 //-----------------------------------------------------------------------------
@@ -48,18 +48,16 @@
 //-----------------------------------------------------------------------------
 
 namespace {
-  constexpr LHCb::GenCountersFSR::CounterKey to_CounterKey( LHCb::CrossSectionsFSR::CrossSectionKey k) {
+  constexpr LHCb::GenCountersFSR::CounterKey to_CounterKey( LHCb::CrossSectionsFSR::CrossSectionKey k ) {
     return static_cast<LHCb::GenCountersFSR::CounterKey>( k + 100 );
   }
-}
+} // namespace
 
 std::mutex Pythia8ProductionMT::m_pythia_lock{};
 //=============================================================================
 // Default constructor.
 //=============================================================================
-Pythia8ProductionMT::Pythia8ProductionMT(const std::string& type,
-				     const std::string& name,
-                                     const IInterface* parent)
+Pythia8ProductionMT::Pythia8ProductionMT( const std::string& type, const std::string& name, const IInterface* parent )
     : GaudiTool( type, name, parent )
     , m_pythia( 0 )
     , m_hooks( 0 )
@@ -68,8 +66,7 @@ Pythia8ProductionMT::Pythia8ProductionMT(const std::string& type,
     , m_pythiaBeamTool( 0 )
     , m_nEvents( 0 )
     , m_showBanner( false )
-    , m_xmlLogTool( 0 )
-{
+    , m_xmlLogTool( 0 ) {
 
   // Declare the tool properties.
   declareInterface<IProductionTool>( this );
@@ -85,8 +82,7 @@ Pythia8ProductionMT::Pythia8ProductionMT(const std::string& type,
                    "will overwrite the default LHCb tune." );
   declareProperty( "ShowBanner", m_showBanner = false, "Flag to print the Pythia 8 banner at initialization." );
   declareProperty( "NThreads", m_nThreads = 1, "Delay the initialisation" );
-  declareProperty ( "GenFSRLocation", m_FSRName =
-                    LHCb::GenFSRLocation::Default);
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
 
   // Set the special particles.
   for ( int i = 1; i <= 8; ++i ) m_special.insert( i );
@@ -150,8 +146,7 @@ Pythia8ProductionMT::~Pythia8ProductionMT() {}
 //=============================================================================
 // Initialize the tool.
 //=============================================================================
-StatusCode Pythia8ProductionMT::initialize()
-{
+StatusCode Pythia8ProductionMT::initialize() {
 
   // Print the initialization banner.
   always() << "============================================================="
@@ -178,8 +173,7 @@ StatusCode Pythia8ProductionMT::initialize()
 //=============================================================================
 // Initialize the Pythia 8 generator.
 //=============================================================================
-StatusCode Pythia8ProductionMT::initializeGenerator()
-{
+StatusCode Pythia8ProductionMT::initializeGenerator() {
   StatusCode sc = StatusCode::SUCCESS;
   if ( !m_pythia() ) {
     debug() << "Skipping generator initialization for this thread" << endmsg;
@@ -247,34 +241,32 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
       id = m_pythia->particleData.nextId( id );
     }
   }
-  
+
   // Check the Breit-Wigner mass thresholds.
-  for (std::set<int>::iterator id = m_bws().begin(); id != m_bws().end(); ++id) {
-    Pythia8::ParticleDataEntry *pde = 
-      m_pythia->particleData.particleDataEntryPtr(*id);
-    if (pde->isResonance()) continue;
+  for ( std::set<int>::iterator id = m_bws().begin(); id != m_bws().end(); ++id ) {
+    Pythia8::ParticleDataEntry* pde = m_pythia->particleData.particleDataEntryPtr( *id );
+    if ( pde->isResonance() ) continue;
     pde->initBWmass();
-    if (pde->useBreitWigner()) continue;
-    double mThr(0), bRatSum(0), mThrSum(0);
-    for (int i = 0; i < int(pde->sizeChannels()); ++i)
-      if (pde->channel(i).onMode() > 0) {
-	bRatSum += pde->channel(i).bRatio();
-	double mChannelSum = 0.;
-	for (int j = 0; j < pde->channel(i).multiplicity(); ++j)
-	  mChannelSum += m_pythia->particleData.m0(pde->channel(i).product(j));
-	mThrSum += pde->channel(i).bRatio() * mChannelSum;
+    if ( pde->useBreitWigner() ) continue;
+    double mThr( 0 ), bRatSum( 0 ), mThrSum( 0 );
+    for ( int i = 0; i < int( pde->sizeChannels() ); ++i )
+      if ( pde->channel( i ).onMode() > 0 ) {
+        bRatSum += pde->channel( i ).bRatio();
+        double mChannelSum = 0.;
+        for ( int j = 0; j < pde->channel( i ).multiplicity(); ++j )
+          mChannelSum += m_pythia->particleData.m0( pde->channel( i ).product( j ) );
+        mThrSum += pde->channel( i ).bRatio() * mChannelSum;
       }
-    mThr = (bRatSum == 0.) ? 0. : mThrSum / bRatSum;
-    if (mThr > pde->m0()) {
-      warning() << "The threshold mass for particle with ID " << *id << " is "
-		<< mThr << " GeV but its nominal mass is " << pde->m0() 
-		<< " GeV; clearing its decay channels." << endmsg;
+    mThr = ( bRatSum == 0. ) ? 0. : mThrSum / bRatSum;
+    if ( mThr > pde->m0() ) {
+      warning() << "The threshold mass for particle with ID " << *id << " is " << mThr
+                << " GeV but its nominal mass is " << pde->m0() << " GeV; clearing its decay channels." << endmsg;
       pde->clearChannels();
     }
   }
 
   // Initialize.
-  if (m_lhaup.get()) m_pythia->settings.mode("Beams:frameType", 5);
+  if ( m_lhaup.get() ) m_pythia->settings.mode( "Beams:frameType", 5 );
   if ( m_pythia->init() )
     return sc;
   else
@@ -285,20 +277,17 @@ StatusCode Pythia8ProductionMT::initializeGenerator()
 // Generate an event.
 //=============================================================================
 StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
-                                               HepRandomEnginePtr& engine ) const
-{
+                                               HepRandomEnginePtr& engine ) const {
   if ( !m_pythia() ) {
     debug() << "Initializing Pythia8 in thread!" << endmsg;
     // This is supposed to only affect thread-local variables so while
     // not technically constant it is marked as such to be called here
     auto sc = InitializeThread();
-    if(sc.isFailure()){
-      return sc;
-    }
+    if ( sc.isFailure() ) { return sc; }
   }
 
-  auto pythia = m_pythia();
-  RndForPythia rnd_generator{engine.getref()};
+  auto         pythia = m_pythia();
+  RndForPythia rnd_generator{ engine.getref() };
   pythia->setRndmEnginePtr( &rnd_generator );
   // Generate the event (make 10 attempts).
   int tries( 0 );
@@ -307,35 +296,34 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHC
   if ( !m_pythia->flag( "HadronLevel:all" ) ) m_event = pythia->event;
   ++m_nEvents;
 
-  LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+  LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
   // Store the minimum bias cross-section in the GenFSR.
   std::vector<int> codes = m_pythia->info.codesHard();
-  auto key = LHCb::CrossSectionsFSR::MBCrossSection;
-  if (genFSR && genFSR->hasGenCounter( to_CounterKey(key) )) {
-    longlong count = genFSR->getGenCounterInfo( to_CounterKey(key) ).second;
-    count = m_pythia->info.nAccepted(key) - count;
-    if (count > 0) genFSR->incrementGenCounter( to_CounterKey(key) , count); 
-  } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
-    genFSR->addGenCounter( to_CounterKey(key), m_pythia->info.nAccepted(key));
-  if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
-  if(genFSR) genFSR->addCrossSection
-    (key, LHCb::GenFSR::CrossValues("Total cross-section", 
-				    m_pythia->info.sigmaGen(key)));
+  auto             key   = LHCb::CrossSectionsFSR::MBCrossSection;
+  if ( genFSR && genFSR->hasGenCounter( to_CounterKey( key ) ) ) {
+    longlong count = genFSR->getGenCounterInfo( to_CounterKey( key ) ).second;
+    count          = m_pythia->info.nAccepted( key ) - count;
+    if ( count > 0 ) genFSR->incrementGenCounter( to_CounterKey( key ), count );
+  } else if ( m_pythia->info.nAccepted( key ) != 0 && genFSR )
+    genFSR->addGenCounter( to_CounterKey( key ), m_pythia->info.nAccepted( key ) );
+  if ( genFSR && genFSR->hasCrossSection( key ) ) genFSR->eraseCrossSection( key );
+  if ( genFSR )
+    genFSR->addCrossSection( key, LHCb::GenFSR::CrossValues( "Total cross-section", m_pythia->info.sigmaGen( key ) ) );
 
   // Store the others cross-sections in the GenFSR.
-  for (unsigned int code = 0; code < codes.size(); ++code) {
-    key = static_cast<LHCb::CrossSectionsFSR::CrossSectionKey>(codes[code]);
-    if (genFSR && genFSR->hasGenCounter( to_CounterKey(key) )) {
-      longlong count = genFSR->getGenCounterInfo( to_CounterKey(key) ).second;
-      count = m_pythia->info.nAccepted(key) - count;
-      if (count > 0) genFSR->incrementGenCounter( to_CounterKey(key), count);
-    } else if (m_pythia->info.nAccepted(key) != 0 && genFSR)
-      genFSR->addGenCounter(to_CounterKey(key), m_pythia->info.nAccepted(key));
-    if (genFSR && genFSR->hasCrossSection(key)) genFSR->eraseCrossSection(key);
-    if(genFSR) genFSR->addCrossSection
-      (key, LHCb::GenFSR::CrossValues(m_pythia->info.nameProc(key), 
-				      m_pythia->info.sigmaGen(key)));    
+  for ( unsigned int code = 0; code < codes.size(); ++code ) {
+    key = static_cast<LHCb::CrossSectionsFSR::CrossSectionKey>( codes[code] );
+    if ( genFSR && genFSR->hasGenCounter( to_CounterKey( key ) ) ) {
+      longlong count = genFSR->getGenCounterInfo( to_CounterKey( key ) ).second;
+      count          = m_pythia->info.nAccepted( key ) - count;
+      if ( count > 0 ) genFSR->incrementGenCounter( to_CounterKey( key ), count );
+    } else if ( m_pythia->info.nAccepted( key ) != 0 && genFSR )
+      genFSR->addGenCounter( to_CounterKey( key ), m_pythia->info.nAccepted( key ) );
+    if ( genFSR && genFSR->hasCrossSection( key ) ) genFSR->eraseCrossSection( key );
+    if ( genFSR )
+      genFSR->addCrossSection(
+          key, LHCb::GenFSR::CrossValues( m_pythia->info.nameProc( key ), m_pythia->info.sigmaGen( key ) ) );
   }
 
   // Convert the event to HepMC and return.
@@ -348,78 +336,66 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHC
 //=============================================================================
 // Convert the Pythia 8 event to HepMC format.
 //=============================================================================
-StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEventPtr theEvent, 
-				      LHCb::GenCollision* theCollision) const {
+StatusCode Pythia8ProductionMT::toHepMC( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision ) const {
 
   // Convert to HepMC.
   HepMC3::Pythia8ToHepMC3 conversion;
-  auto old_momentum_unit = theEvent->momentum_unit();
-  auto old_length_unit = theEvent->length_unit();
-  conversion.set_print_inconsistency(m_validate_HEPEVT);
-  if (!(conversion.fill_next_event(*m_pythia(), theEvent.get()))) 
-    return Error("Failed to convert Pythia 8 event to HepMC3.");
-  theEvent->set_units(old_momentum_unit, old_length_unit);
+  auto                    old_momentum_unit = theEvent->momentum_unit();
+  auto                    old_length_unit   = theEvent->length_unit();
+  conversion.set_print_inconsistency( m_validate_HEPEVT );
+  if ( !( conversion.fill_next_event( *m_pythia(), theEvent.get() ) ) )
+    return Error( "Failed to convert Pythia 8 event to HepMC3." );
+  theEvent->set_units( old_momentum_unit, old_length_unit );
 
   // Convert status codes and IDs.
   int procID = m_pythia->info.code(); // process ID
 
   // Check that we have two beam particles
-  if(theEvent->beams().size() != 2){
-    warning() << "Event does not have exactly two beam particles" << endmsg;
-  }
+  if ( theEvent->beams().size() != 2 ) { warning() << "Event does not have exactly two beam particles" << endmsg; }
 
   for ( auto& p : theEvent->particles() ) {
     int status = p->status();
     int pid    = p->pdg_id();
-    if (status > 3){
-      if ( status == 21 && 
-	   ( ( procID > 200 && procID < 300 ) // electroweak event
-	     || ( procID > 600 && procID < 700)  )){ // top event
-	//p->set_status(LHCb::HepMCEvent::PythiaIncomingParton);
-	p->set_status(21);
-      }
-      else if ( ((status > 21 && status < 30)  // part of hard process
-		||(status > 40 && status < 50) // ISR
-		 || (status > 50 && status < 60)) // FSR
-		&& ( ( procID > 200 && procID < 300 ) // electroweak event
-		     || ( procID > 600 && procID < 700) )// top event
-		){
-	//p->set_status(LHCb::HepMCEvent::PythiaHardProcess);
-	p->set_status(22);
-	}
-      else if ((status == 71) || (status == 72) || 
-	  ((status == 62) && (abs(pid) >= 22) && (abs(pid) <= 37)))
-        p->set_status(LHCb::HepMCEvent::DecayedByProdGen);
+    if ( status > 3 ) {
+      if ( status == 21 && ( ( procID > 200 && procID < 300 )          // electroweak event
+                             || ( procID > 600 && procID < 700 ) ) ) { // top event
+        // p->set_status(LHCb::HepMCEvent::PythiaIncomingParton);
+        p->set_status( 21 );
+      } else if ( ( ( status > 21 && status < 30 )           // part of hard process
+                    || ( status > 40 && status < 50 )        // ISR
+                    || ( status > 50 && status < 60 ) )      // FSR
+                  && ( ( procID > 200 && procID < 300 )      // electroweak event
+                       || ( procID > 600 && procID < 700 ) ) // top event
+      ) {
+        // p->set_status(LHCb::HepMCEvent::PythiaHardProcess);
+        p->set_status( 22 );
+      } else if ( ( status == 71 ) || ( status == 72 ) ||
+                  ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
+        p->set_status( LHCb::HepMCEvent::DecayedByProdGen );
       else
-        p->set_status(LHCb::HepMCEvent::DocumentationParticle);
-    } else if (status != LHCb::HepMCEvent::DecayedByProdGen
-               && status != LHCb::HepMCEvent::StableInProdGen
-               && status != LHCb::HepMCEvent::DocumentationParticle)
-      {
-	warning() << "Unknown status rule " << status << " for particle" 
-		  << pid << endmsg;
-      }
+        p->set_status( LHCb::HepMCEvent::DocumentationParticle );
+    } else if ( status != LHCb::HepMCEvent::DecayedByProdGen && status != LHCb::HepMCEvent::StableInProdGen &&
+                status != LHCb::HepMCEvent::DocumentationParticle ) {
+      warning() << "Unknown status rule " << status << " for particle" << pid << endmsg;
+    }
   }
 
   // Convert to LHCb units.
-  for (auto & v:theEvent->vertices())
-    v->set_position(HepMC3::FourVector
-		       (v->position().x(), v->position().y(),
-			v->position().z(), 
-			(v->position().t() * Gaudi::Units::mm) 
-			/ Gaudi::Units::c_light));
+  for ( auto& v : theEvent->vertices() )
+    v->set_position( HepMC3::FourVector( v->position().x(), v->position().y(), v->position().z(),
+                                         ( v->position().t() * Gaudi::Units::mm ) / Gaudi::Units::c_light ) );
 
   // Set the process and collision info.
-  int code(m_pythia->info.hasSub() ? m_pythia->info.codeSub() : 
-	   m_pythia->info.code());
-  theEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessID, std::make_shared<HepMC3::IntAttribute>(code));
-  theCollision->setProcessType(code);
-  theCollision->setSHat(m_pythia->info.sHat());
-  theCollision->setTHat(m_pythia->info.tHat());
-  theCollision->setUHat(m_pythia->info.uHat());
-  theCollision->setPtHat(m_pythia->info.pTHat());
-  theCollision->setX1Bjorken(m_pythia->info.x1());
-  theCollision->setX2Bjorken(m_pythia->info.x2());
+  int code( m_pythia->info.hasSub() ? m_pythia->info.codeSub() : m_pythia->info.code() );
+  theEvent->add_attribute( Gaussino::HepMC::Attributes::SignalProcessID,
+                           std::make_shared<HepMC3::IntAttribute>( code ) );
+  theCollision->setProcessType( code );
+  theCollision->setSHat( m_pythia->info.sHat() );
+  theCollision->setTHat( m_pythia->info.tHat() );
+  theCollision->setUHat( m_pythia->info.uHat() );
+  theCollision->setPtHat( m_pythia->info.pTHat() );
+  theCollision->setX1Bjorken( m_pythia->info.x1() );
+  theCollision->setX2Bjorken( m_pythia->info.x2() );
   return StatusCode::SUCCESS;
 }
 
@@ -428,25 +404,22 @@ StatusCode Pythia8ProductionMT::toHepMC(HepMC3::GenEventPtr theEvent,
 //=============================================================================
 void Pythia8ProductionMT::setStable( const LHCb::ParticleProperty* thePP ) { m_stable_pp.push_back( thePP ); }
 
-void Pythia8ProductionMT::setStableImpl( const LHCb::ParticleProperty* thePP ) const
-{
+void Pythia8ProductionMT::setStableImpl( const LHCb::ParticleProperty* thePP ) const {
   m_pythia->particleData.mayDecay( pythia8Id( thePP ), false );
 }
 
 //=============================================================================
 // Update a particle.
 //=============================================================================
-void Pythia8ProductionMT::updateParticleProperties( const LHCb::ParticleProperty* thePP )
-{
+void Pythia8ProductionMT::updateParticleProperties( const LHCb::ParticleProperty* thePP ) {
   m_update_pp.push_back( thePP );
 }
-void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP ) const
-{
+void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProperty* thePP ) const {
 
   // Create the particle if needed.
-  int id                    = pythia8Id( thePP );
-  string name               = thePP->name();
-  Pythia8::ParticleData& pd = m_pythia->particleData;
+  int                    id   = pythia8Id( thePP );
+  string                 name = thePP->name();
+  Pythia8::ParticleData& pd   = m_pythia->particleData;
   if ( id == 0 ) {
     const LHCb::ParticleID pid = thePP->pid();
     id                         = pid.pid();
@@ -463,37 +436,33 @@ void Pythia8ProductionMT::updateParticlePropertiesImpl( const LHCb::ParticleProp
   if ( pd.name( id ) == "void" ) pd.name( id, name );
 
   // Set the mass, width and lifetime (only non-resonant).
-  pd.m0(id, thePP->mass() / Gaudi::Units::GeV);
-  if (id == 6 || (id >= 23 && id <= 37)) return;
-  double lifetime = thePP->lifetime()*Gaudi::Units::c_light;
-  if (lifetime >= 1.e16 * Gaudi::Units::mm) lifetime = 0;
-  double width = lifetime == 0 ? 0 : Gaudi::Units::hbarc / lifetime;
-  double min_mass = (thePP->mass() - (thePP->maxWidth() ? thePP->maxWidth() : 
-                15*width)) / Gaudi::Units::GeV;
+  pd.m0( id, thePP->mass() / Gaudi::Units::GeV );
+  if ( id == 6 || ( id >= 23 && id <= 37 ) ) return;
+  double lifetime = thePP->lifetime() * Gaudi::Units::c_light;
+  if ( lifetime >= 1.e16 * Gaudi::Units::mm ) lifetime = 0;
+  double width    = lifetime == 0 ? 0 : Gaudi::Units::hbarc / lifetime;
+  double min_mass = ( thePP->mass() - ( thePP->maxWidth() ? thePP->maxWidth() : 15 * width ) ) / Gaudi::Units::GeV;
   // Ensure that minimal mass is not negative
-  if(min_mass < 0){
-    min_mass = 0;
-  }
-  pd.mMin(id, min_mass); 
-  pd.mMax(id, (thePP->mass() + 15*width) / Gaudi::Units::GeV);
-  pd.mWidth(id, width / Gaudi::Units::GeV);
-  pd.tau0(id, lifetime / Gaudi::Units::mm);
+  if ( min_mass < 0 ) { min_mass = 0; }
+  pd.mMin( id, min_mass );
+  pd.mMax( id, ( thePP->mass() + 15 * width ) / Gaudi::Units::GeV );
+  pd.mWidth( id, width / Gaudi::Units::GeV );
+  pd.tau0( id, lifetime / Gaudi::Units::mm );
 }
 
 //=============================================================================
 // Turn on and off fragmentation.
 //=============================================================================
-void Pythia8ProductionMT::turnOnFragmentation() { 
+void Pythia8ProductionMT::turnOnFragmentation() {
   if ( !m_pythia() ) {
     debug() << "Initializing Pythia8 in thread!" << endmsg;
     // This is supposed to only affect thread-local variables so while
     // not technically constant it is marked as such to be called here
     auto sc = InitializeThread();
-    if(sc.isFailure()){
-      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
-    }
+    if ( sc.isFailure() ) { throw GaudiException( "Failed to initialize Pythia8", "InitializeThread", sc ); }
   }
-  m_pythia->settings.flag( "HadronLevel:Hadronize", true ); }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", true );
+}
 
 void Pythia8ProductionMT::turnOffFragmentation() {
   if ( !m_pythia() ) {
@@ -501,19 +470,18 @@ void Pythia8ProductionMT::turnOffFragmentation() {
     // This is supposed to only affect thread-local variables so while
     // not technically constant it is marked as such to be called here
     auto sc = InitializeThread();
-    if(sc.isFailure()){
-      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
-    }
+    if ( sc.isFailure() ) { throw GaudiException( "Failed to initialize Pythia8", "InitializeThread", sc ); }
   }
-  m_pythia->settings.flag( "HadronLevel:Hadronize", false ); }
+  m_pythia->settings.flag( "HadronLevel:Hadronize", false );
+}
 
 //=============================================================================
 // Hadronize an event.
 //=============================================================================
-StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision, HepRandomEnginePtr & engine )
-{
-  RndForPythia rnd_generator{engine.getref()};
-  m_pythia->setRndmEnginePtr(&rnd_generator);
+StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
+                                           HepRandomEnginePtr& engine ) {
+  RndForPythia rnd_generator{ engine.getref() };
+  m_pythia->setRndmEnginePtr( &rnd_generator );
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
 }
@@ -527,11 +495,10 @@ void Pythia8ProductionMT::savePartonEvent( HepMC3::GenEventPtr /*theEvent*/ ) {
     // This is supposed to only affect thread-local variables so while
     // not technically constant it is marked as such to be called here
     auto sc = InitializeThread();
-    if(sc.isFailure()){
-      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
-    }
+    if ( sc.isFailure() ) { throw GaudiException( "Failed to initialize Pythia8", "InitializeThread", sc ); }
   }
-  m_event = m_pythia->event; }
+  m_event = m_pythia->event;
+}
 
 //=============================================================================
 // Retrieve the Pythia 8 event record.
@@ -542,17 +509,15 @@ void Pythia8ProductionMT::retrievePartonEvent( HepMC3::GenEventPtr /*theEvent*/ 
     // This is supposed to only affect thread-local variables so while
     // not technically constant it is marked as such to be called here
     auto sc = InitializeThread();
-    if(sc.isFailure()){
-      throw GaudiException("Failed to initialize Pythia8", "InitializeThread", sc);
-    }
+    if ( sc.isFailure() ) { throw GaudiException( "Failed to initialize Pythia8", "InitializeThread", sc ); }
   }
-  m_pythia->event = m_event(); }
+  m_pythia->event = m_event();
+}
 
 //=============================================================================
 // Print the running conditions.
 //=============================================================================
-void Pythia8ProductionMT::printRunningConditions() const
-{
+void Pythia8ProductionMT::printRunningConditions() const {
   if ( !m_pythia() ) return;
   if ( m_nEvents == 0 && m_listAllParticles == true && msgLevel( MSG::DEBUG ) ) m_pythia->particleData.listAll();
   if ( msgLevel( MSG::VERBOSE ) )
@@ -564,16 +529,14 @@ void Pythia8ProductionMT::printRunningConditions() const
 //=============================================================================
 // Return whether a particle has special status.
 //=============================================================================
-bool Pythia8ProductionMT::isSpecialParticle( const LHCb::ParticleProperty* thePP ) const
-{
+bool Pythia8ProductionMT::isSpecialParticle( const LHCb::ParticleProperty* thePP ) const {
   return m_special.find( thePP->pid().abspid() ) != m_special.end();
 }
 
 //=============================================================================
 // Setup forced fragmentation.
 //=============================================================================
-StatusCode Pythia8ProductionMT::setupForcedFragmentation( const int /*thePdgId*/ )
-{
+StatusCode Pythia8ProductionMT::setupForcedFragmentation( const int /*thePdgId*/ ) {
   m_pythia->settings.flag( "PartonLevel:all", false );
   return StatusCode::SUCCESS;
 }
@@ -581,8 +544,7 @@ StatusCode Pythia8ProductionMT::setupForcedFragmentation( const int /*thePdgId*/
 //=============================================================================
 // Return the Pythia 8 ID.
 //=============================================================================
-int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP ) const
-{
+int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP ) const {
   int id( thePP->pid().pid() );
   if ( abs( id ) == 30221 ) return id > 0 ? 10221 : -10221;
   if ( abs( id ) == 104124 ) return id > 0 ? 4124 : -4124;
@@ -590,8 +552,7 @@ int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP ) const
   return 0;
 }
 
-StatusCode Pythia8ProductionMT::InitializeThread() const
-{
+StatusCode Pythia8ProductionMT::InitializeThread() const {
   debug() << "Initializing Pythia8 in thread" << endmsg;
   // Initialize the user hooks.
   if ( !m_hooks.get() ) m_hooks = new Pythia8::LhcbHooks();
@@ -603,18 +564,18 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
 
   // Create the Breit-Wigner map for checking particle widths later.
   m_bws().clear();
-  int id = m_pythia->particleData.nextId(1);
-  while (id != 0) {
-    if (!m_pythia->particleData.isResonance(id)) {
-      m_pythia->particleData.particleDataEntryPtr(id)->initBWmass();
-      if (m_pythia->particleData.useBreitWigner(id)) m_bws().insert(id);
+  int id = m_pythia->particleData.nextId( 1 );
+  while ( id != 0 ) {
+    if ( !m_pythia->particleData.isResonance( id ) ) {
+      m_pythia->particleData.particleDataEntryPtr( id )->initBWmass();
+      if ( m_pythia->particleData.useBreitWigner( id ) ) m_bws().insert( id );
     }
-    id = m_pythia->particleData.nextId(id);
+    id = m_pythia->particleData.nextId( id );
   }
 
   // Add LhcbHooks parameters.
   Pythia8::Settings& set = m_pythia->settings;
-  string sm( "StandardModel:" ), mpi( "MultiPartonInteractions:" ), pre( "LhcbHooks:" ), parm( "pT0Ref" );
+  string             sm( "StandardModel:" ), mpi( "MultiPartonInteractions:" ), pre( "LhcbHooks:" ), parm( "pT0Ref" );
   set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
   parm = "ecmRef";
   set.addParm( pre + parm, set.parm( mpi + parm ), false, false, 0, 0 );
@@ -636,21 +597,17 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   // As we need to do this per pythia instance once created within
   // the thread we have cached the arguments for the function call
   // and will now do it ourselfs
-  for ( auto pp : m_update_pp ) {
-    updateParticlePropertiesImpl( pp );
-  }
-  for ( auto pp : m_stable_pp ) {
-    setStableImpl( pp );
-  }
+  for ( auto pp : m_update_pp ) { updateParticlePropertiesImpl( pp ); }
+  for ( auto pp : m_stable_pp ) { setStableImpl( pp ); }
 
   // Now initialize the generator and hope for the best!
-  sc &= const_cast<Pythia8ProductionMT*>(this)->initializeGenerator();
+  sc &= const_cast<Pythia8ProductionMT*>( this )->initializeGenerator();
   if ( m_first_init ) {
     printRunningConditions();
     m_first_init = false;
   } else {
-    //GetInitBarrier( m_nThreads - 1 ).wait();
-    //std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
+    // GetInitBarrier( m_nThreads - 1 ).wait();
+    // std::call_once( m_init_flag, [&]() { info() << "All Pythia8 instances initialised" << endmsg; } );
   }
 
   // This is just a dumb hack to clean up after the threads
@@ -663,15 +620,14 @@ StatusCode Pythia8ProductionMT::InitializeThread() const
   // GarbageBin<BeamToolForPythia8*>::Add( m_pythiaBeamTool() );
 
   // Push this into the manager for later merging and cleanup of the used pythia instances
-  std::lock_guard<std::mutex> l{m_pythia_lock};
+  std::lock_guard<std::mutex> l{ m_pythia_lock };
   m_manager->store.emplace_back( m_pythia(), m_hooks(), m_lhaup(), m_pythiaBeamTool() );
   return sc;
 }
 
-StatusCode Pythia8ProductionMT::finalize()
-{
+StatusCode Pythia8ProductionMT::finalize() {
   // Print the statistics.
-  for ( auto[pythia, hooks, lhaup, beam] : m_manager->store ) {
+  for ( auto [pythia, hooks, lhaup, beam] : m_manager->store ) {
     pythia->stat();
 
     // Write the cross-sections to the XML log.
