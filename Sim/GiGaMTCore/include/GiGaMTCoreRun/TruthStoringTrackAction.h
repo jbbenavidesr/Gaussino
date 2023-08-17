@@ -21,10 +21,10 @@
 #include "HepMC3/FourVector.h"
 
 // STL
-#include <string>
-#include <unordered_set>
 #include <functional>
 #include <optional>
+#include <string>
+#include <unordered_set>
 
 // namespace LHCb {
 // class IParticlePropertySvc;
@@ -41,8 +41,7 @@
  *  @date   28/02/2019
  */
 
-class TruthStoringTrackAction : virtual public G4UserTrackingAction, virtual public Gsino::Message
-{
+class TruthStoringTrackAction : virtual public G4UserTrackingAction, virtual public Gsino::Message {
   /// friend factory for instantiation
   // friend class GiGaFactory<TruthStoringTrackAction>;
   ///
@@ -59,9 +58,12 @@ public:
 
   void PostUserTrackingAction( const G4Track* track ) override;
 
-  std::function<std::optional<int>(const std::string &)> m_fNameToID = [](const std::string &){return std::nullopt;};
+  std::function<std::optional<int>( const std::string& )> m_fNameToID = []( const std::string& ) {
+    return std::nullopt;
+  };
 
-  bool addEndVertices{false};
+  bool addEndVertices{ false };
+
 protected:
   // Function to return an integer ID for the process. Currently
   // implements the default LHCb behavior and codes but is declared

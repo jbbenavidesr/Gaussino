@@ -11,10 +11,10 @@
 #pragma once
 
 // Include files
-#include "GiGaMTFactories/GiGaTool.h"
 #include "G4EmStandardPhysics_option1.hh"
 #include "G4VPhysicsConstructor.hh"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
+#include "GiGaMTFactories/GiGaTool.h"
 
 /** GiGaMTPhysConstr
  *
@@ -28,13 +28,11 @@
 // Base object to encapsulate the call to the actual constructor. Implement to reduce the
 // amount of redudant code that needs to be written during template specialization if the
 // specific implementation of G4VPhysicsConstructor needs additional options
-class GiGaMTPhysConstr : public GiGaTool
-{
+class GiGaMTPhysConstr : public GiGaTool {
 protected:
   using GiGaTool::GiGaTool;
   virtual ~GiGaMTPhysConstr(){};
-  inline int verbosity() const
-  {
+  inline int verbosity() const {
     auto verb = msgLevel();
     if ( verb == MSG::DEBUG ) {
       return 1;
@@ -49,16 +47,14 @@ protected:
 template <typename T>
 using hasGiGaMessage = typename std::enable_if<std::is_base_of<Gsino::Message, T>::value>::type;
 
-template <typename PHYS, typename dummy=void>
-class GiGaMTG4PhysicsConstrFAC : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
-{
+template <typename PHYS, typename dummy = void>
+class GiGaMTG4PhysicsConstrFAC : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
   static_assert( std::is_base_of<G4VPhysicsConstructor, PHYS>::value );
   static_assert( std::is_default_constructible<PHYS>::value );
 
 public:
   using extends::extends;
-  PHYS* construct() const override
-  {
+  PHYS* construct() const override {
     auto tmp = new PHYS{};
     tmp->SetPhysicsName( name() );
     tmp->SetVerboseLevel( verbosity() );
@@ -67,15 +63,14 @@ public:
 };
 
 template <typename PHYS>
-class GiGaMTG4PhysicsConstrFAC<PHYS, hasGiGaMessage<PHYS>> : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>>
-{
+class GiGaMTG4PhysicsConstrFAC<PHYS, hasGiGaMessage<PHYS>>
+    : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
   static_assert( std::is_base_of<G4VPhysicsConstructor, PHYS>::value );
   static_assert( std::is_default_constructible<PHYS>::value );
 
 public:
   using extends::extends;
-  PHYS* construct() const override
-  {
+  PHYS* construct() const override {
     auto tmp = new PHYS{};
     tmp->SetPhysicsName( name() );
     tmp->SetVerboseLevel( verbosity() );

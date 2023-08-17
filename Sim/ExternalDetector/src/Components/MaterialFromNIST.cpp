@@ -19,7 +19,7 @@
 namespace ExternalDetector {
   class MaterialFromNIST : public extends<GiGaTool, GiGaFactoryBase<G4Material>> {
 
-    Gaudi::Property<std::string> m_name{this, "Name", {}, "Name as in G4/NIST"};
+    Gaudi::Property<std::string> m_name{ this, "Name", {}, "Name as in G4/NIST" };
 
   public:
     using extends::extends;

@@ -10,20 +10,22 @@
 \*****************************************************************************/
 #pragma once
 
-#include <vector>
-
-#include "Defaults/Locations.h"
-#include "GaudiAlg/Consumer.h"
+// Gaudi
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
 #include "GaudiKernel/ServiceHandle.h"
+
+// Gaussino
+#include "Defaults/Locations.h"
 #include "GiGaMT/IGiGaMTSvc.h"
-#include "HepMC3/GenEvent.h"
 #include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 
+// HepMC3
+#include "HepMC3/GenEvent.h"
+
 class IHepMC3ToMCTruthConverter;
-namespace LHCb
-{
+namespace LHCb {
   class IParticlePropertySvc;
 }
 
@@ -37,19 +39,19 @@ namespace LHCb
  *  @date   21.2.2019
  *
  */
-class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const HepMC3::GenEventPtrs& )>
-{
+class SkipSimAlg : public Gaudi::Functional::Transformer<Gaussino::MCTruthPtrs( const HepMC3::GenEventPtrs& ),
+                                                         Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
 public:
   /// Standard constructor
   SkipSimAlg( const std::string& name, ISvcLocator* pSvcLocator )
-      : Transformer( name, pSvcLocator, KeyValue{"Input", Gaussino::HepMCEventLocation::Default},
-                     KeyValue{"Output", Gaussino::MCTruthsLocation::Default} ){};
+      : Transformer( name, pSvcLocator, KeyValue{ "Input", Gaussino::HepMCEventLocation::Default },
+                     KeyValue{ "Output", Gaussino::MCTruthsLocation::Default } ){};
 
   virtual ~SkipSimAlg() = default;
 
   Gaussino::MCTruthPtrs operator()( const HepMC3::GenEventPtrs& ) const override;
 
 private:
-  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{this, "PropertyService", "LHCb::ParticlePropertySvc"};
-  ToolHandle<IHepMC3ToMCTruthConverter> m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
+  ServiceHandle<LHCb::IParticlePropertySvc> m_ppSvc{ this, "PropertyService", "LHCb::ParticlePropertySvc" };
+  ToolHandle<IHepMC3ToMCTruthConverter>     m_converterTool{ this, "HepMCConverter", "HepMC3ToMCTruthConverter" };
 };

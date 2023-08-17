@@ -122,7 +122,7 @@ private:
   // Internal strings to store different states of the processed event
   // FIXME: These should not be used in production version
   std::string           m_before_sim, m_after_sim, m_after_cleanup;
-  bool                  m_track_eventstructure{false};
+  bool                  m_track_eventstructure{ false };
   std::vector<G4Event*> m_for_cleanup{};
   std::mutex            m_cleanup_lock{};
 };

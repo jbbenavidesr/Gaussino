@@ -46,8 +46,8 @@ else()
 endif()
 list(APPEND ${CustomSimulationDirsName}
     Sim/CustomSimulation
-    Sim/GiGaMTExamples/CustomSimulationExamples
-    Sim/GiGaMTExamples/G4Par04
+    Examples/CustomSimulationExamples
+    Examples/G4Par04
 )
 
 gaussino_env(
@@ -77,9 +77,6 @@ gaussino_add_subdirectories(
     Sim/GiGaMTCore
     ${DD4hepDirs}
     Sim/GiGaMTDebug
-    Sim/GiGaMTExamples/FCCTest
-    Sim/GiGaMTExamples/IronBox
-    Sim/GiGaMTExamples/LHCbFromGDML
     Sim/GiGaMTFactories
     Sim/GiGaMTGeo
     Sim/GiGaMTPhoenix

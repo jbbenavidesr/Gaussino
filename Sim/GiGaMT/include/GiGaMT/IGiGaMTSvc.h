@@ -10,15 +10,14 @@
 \*****************************************************************************/
 #pragma once
 
-#include <vector>
 #include "GaudiKernel/IService.h"
 #include "GaudiKernel/Kernel.h"
 #include "GaudiKernel/StatusCode.h"
 #include "GiGaMTCoreRun/G4EventProxy.h"
-#include "NewRnd/RndCommon.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "HepMCUser/typedefs.h"
-
+#include "NewRnd/RndCommon.h"
+#include <vector>
 
 // Forward declaration from G4
 class G4Event;
@@ -42,11 +41,10 @@ namespace CLHEP {
  *  @author Dominik Muller
  */
 
-class IGiGaMTSvc : virtual public IService
-{
+class IGiGaMTSvc : virtual public IService {
 public:
   /// Retrieve interface ID
-  DeclareInterfaceID(IGiGaMTSvc, 1, 0);
+  DeclareInterfaceID( IGiGaMTSvc, 1, 0 );
 
   /**  initialize
    *   @return status code
@@ -63,12 +61,15 @@ public:
    *   should return the simulation result ...
    *   @return status code
    */
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate(const HepMC3::GenEventPtrs &, HepRandomEnginePtr &) const = 0;
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate(Gaussino::MCTruthConverterPtrs &&, HepRandomEnginePtr &) const = 0;
-  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay(const HepMC3::GenParticlePtr &, HepRandomEnginePtr &) const = 0;
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( const HepMC3::GenEventPtrs&,
+                                                                      HepRandomEnginePtr& ) const      = 0;
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( Gaussino::MCTruthConverterPtrs&&,
+                                                                      HepRandomEnginePtr& ) const      = 0;
+  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( const HepMC3::GenParticlePtr&,
+                                                                           HepRandomEnginePtr& ) const = 0;
 
 public:
-  virtual bool particleKnownToGeant4(int pdg_id) const = 0;
+  virtual bool particleKnownToGeant4( int pdg_id ) const = 0;
 
 protected:
   /// virtual destructor

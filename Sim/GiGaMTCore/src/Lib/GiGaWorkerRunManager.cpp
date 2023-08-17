@@ -66,7 +66,7 @@ void GiGaWorkerRunManager::Initialize() {
   for ( const auto& it : cmds ) {
     int retVal = uimgr->ApplyCommand( it );
     if ( retVal != fCommandSucceeded ) {
-      std::string errMsg{"Failed to apply command <"};
+      std::string errMsg{ "Failed to apply command <" };
       errMsg += ( it + ">. Return value " + std::to_string( retVal ) );
       error( errMsg );
       // throw GaudiException( errMsg, "GiGaWorkerRunManager::Initialize", StatusCode::FAILURE );

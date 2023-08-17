@@ -9,11 +9,8 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 import os
-from Configurables import (
-    GaussinoGeometry,
-    MCCollectorSensDet,
-)
 
+from Configurables import GaussinoGeometry, MCCollectorSensDet
 
 # Import GDML
 root = os.getenv("GIGAMTGEOROOT")
@@ -23,16 +20,16 @@ MCCollectorSensDet(
 )
 # here embedding of the geometry takes place
 GaussinoGeometry(
-    SensDetMap = {
+    SensDetMap={
         "MCCollectorSensDet/CubeToImportSDet": ["CubeToImportLVol"],
     },
-    ImportGDML = [
+    ImportGDML=[
         {
             "GDMLFileName": root + "/tests/data/cube_to_import.gdml",
         },
     ],
     # Export GDML
-    ExportGDML = {
+    ExportGDML={
         "GDMLFileName": "cube_to_export.gdml",
         "GDMLFileNameOverwrite": True,
         "GDMLExportEnergyCuts": True,

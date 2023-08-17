@@ -38,4 +38,3 @@ if(NOT @PROJECT_NAME@_FIND_QUIETLY)
 endif()
 
 cmake_policy(POP)
-

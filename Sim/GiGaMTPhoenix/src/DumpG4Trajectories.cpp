@@ -30,7 +30,7 @@
 
 namespace nlohmann {
 
-  void to_json( json& j, const G4ThreeVector& point ) { j = {point.x(), point.y(), point.z()}; }
+  void to_json( json& j, const G4ThreeVector& point ) { j = { point.x(), point.y(), point.z() }; }
 
   void to_json( json& j, std::pair<G4VTrajectory*, json> traj_params ) {
     auto                       trajectory            = traj_params.first;
@@ -49,40 +49,40 @@ namespace GiGa::Phoenix {
   class DumpG4Trajectories : public Gaudi::Functional::Consumer<void( const G4EventProxies& )> {
 
     // FIXME: move it from LHCb
-    mutable LHCb::Phoenix::Store              m_store{this, "G4Trajectories_store", "Phoenix:G4Trajectories"};
+    mutable LHCb::Phoenix::Store              m_store{ this, "G4Trajectories_store", "Phoenix:G4Trajectories" };
     Gaudi::Property<std::vector<std::string>> m_trajectory_properties{
-        this, "TrajectoryProperties", {"charge", "mom", "pT", "eta"}};
-    Gaudi::Property<std::string>                        m_trajectory_model{this, "TrajectoryModel", "DrawByCharge"};
+        this, "TrajectoryProperties", { "charge", "mom", "pT", "eta" } };
+    Gaudi::Property<std::string>                        m_trajectory_model{ this, "TrajectoryModel", "DrawByCharge" };
     Gaudi::Property<std::map<std::string, std::string>> m_charge_colors{
-        this, "ChargeColors", {{"Positive", "0000FF"}, {"Negative", "FF0000"}, {"Neutral", "00FF00"}}};
-    Gaudi::Property<std::map<std::string, std::string>>               m_particle_id_colors{this,
-                                                                             "ParticleIDColors",
-                                                                             {{"gamma", "00FF00"},
-                                                                              {"e-", "FF0000"},
-                                                                              {"e+", "0000FF"},
-                                                                              {"pi-", "FF00FF"},
-                                                                              {"pi+", "FF00FF"},
-                                                                              {"proton", "00FFFF"}}};
+        this, "ChargeColors", { { "Positive", "0000FF" }, { "Negative", "FF0000" }, { "Neutral", "00FF00" } } };
+    Gaudi::Property<std::map<std::string, std::string>>               m_particle_id_colors{ this,
+                                                                              "ParticleIDColors",
+                                                                                            { { "gamma", "00FF00" },
+                                                                                              { "e-", "FF0000" },
+                                                                                              { "e+", "0000FF" },
+                                                                                              { "pi-", "FF00FF" },
+                                                                                              { "pi+", "FF00FF" },
+                                                                                              { "proton", "00FFFF" } } };
     Gaudi::Property<std::map<std::string, std::pair<double, double>>> m_interval_colors{
         this,
         "IntervalColors",
-        {{"FFAA00", {0 * Gaudi::Units::MeV, 25 * Gaudi::Units::MeV}},
-         {"00AA00", {25 * Gaudi::Units::MeV, 100 * Gaudi::Units::MeV}},
-         {"000033", {150 * Gaudi::Units::MeV, 1000 * Gaudi::Units::MeV}}}};
-    Gaudi::Property<double>              m_min_p{this, "MinP", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_max_p{this, "MaxP", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_min_pt{this, "MinPT", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_max_pt{this, "MaxPT", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_min_ke{this, "MinKE", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_max_ke{this, "MaxKE", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double>              m_min_eta{this, "MinEta", 0};
-    Gaudi::Property<double>              m_max_eta{this, "MaxEta", 0};
-    Gaudi::Property<std::string>         m_trajectory_type{this, "TrajectoryType", ""};
-    Gaudi::Property<std::vector<double>> m_accepted_charges{this, "AcceptedCharges", {-1.0, 0.0, 1.0}};
+        { { "FFAA00", { 0 * Gaudi::Units::MeV, 25 * Gaudi::Units::MeV } },
+          { "00AA00", { 25 * Gaudi::Units::MeV, 100 * Gaudi::Units::MeV } },
+          { "000033", { 150 * Gaudi::Units::MeV, 1000 * Gaudi::Units::MeV } } } };
+    Gaudi::Property<double>              m_min_p{ this, "MinP", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_max_p{ this, "MaxP", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_min_pt{ this, "MinPT", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_max_pt{ this, "MaxPT", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_min_ke{ this, "MinKE", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_max_ke{ this, "MaxKE", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double>              m_min_eta{ this, "MinEta", 0 };
+    Gaudi::Property<double>              m_max_eta{ this, "MaxEta", 0 };
+    Gaudi::Property<std::string>         m_trajectory_type{ this, "TrajectoryType", "" };
+    Gaudi::Property<std::vector<double>> m_accepted_charges{ this, "AcceptedCharges", { -1.0, 0.0, 1.0 } };
 
   public:
     DumpG4Trajectories( const std::string& name, ISvcLocator* pSvcLocator )
-        : Consumer( name, pSvcLocator, {{"G4EventsLocation", Gaussino::G4EventsLocation::Default}} ) {}
+        : Consumer( name, pSvcLocator, { { "G4EventsLocation", Gaussino::G4EventsLocation::Default } } ) {}
 
     void operator()( const G4EventProxies& eventproxies ) const override {
       for ( auto& ep : eventproxies ) {
@@ -140,8 +140,11 @@ namespace GiGa::Phoenix {
                              [&charge]( double i ) { return i == charge; } ) )
             continue;
 
-          nlohmann::json available_trajectory_properties{
-              {"charge", (int)std::round( charge )}, {"mom", init_p}, {"pT", init_pt}, {"id", pid}, {"eta", init_eta}};
+          nlohmann::json available_trajectory_properties{ { "charge", (int)std::round( charge ) },
+                                                          { "mom", init_p },
+                                                          { "pT", init_pt },
+                                                          { "id", pid },
+                                                          { "eta", init_eta } };
           nlohmann::json used_trajectory_properties;
           for ( auto& key : m_trajectory_properties ) {
             auto property = available_trajectory_properties.find( key );
@@ -152,11 +155,11 @@ namespace GiGa::Phoenix {
           trajJSON.emplace_back( std::pair<G4VTrajectory*, nlohmann::json>( trajectory, used_trajectory_properties ) );
         }
 
-        m_store.storeEventData( {{"gps time", 1},   // TODO: for simulations it does not make sense (maybe rethink?)
-                                 {"run number", 1}, // TODO: we cannot get it from G4Event... (additional input variable
-                                                    // needed)
-                                 {"event number", eventID},
-                                 {"Content", {{"Tracks", {{"G4Trajectories", trajJSON}}}}}} );
+        m_store.storeEventData( { { "gps time", 1 },   // TODO: for simulations it does not make sense (maybe rethink?)
+                                  { "run number", 1 }, // TODO: we cannot get it from G4Event... (additional input
+                                                       // variable needed)
+                                  { "event number", eventID },
+                                  { "Content", { { "Tracks", { { "G4Trajectories", trajJSON } } } } } } );
       }
     }
 

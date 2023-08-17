@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTCoreMessage/IMessage.h"
-thread_local std::string Gsino::Message::NameTag{"Master"};
+thread_local std::string Gsino::Message::NameTag{ "Master" };
 
 using namespace std::string_literals;
 

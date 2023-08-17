@@ -71,24 +71,24 @@ class G4VUserDetectorConstruction;
 class GiGaMT : public Service, virtual public IGiGaMTSvc, virtual public IGiGaMTSetUpSvc {
   // TODO: GiGaActionInitializer is very modular. No idea if any other option might be used here.
   // Gaudi::Property<std::string> m_MTRunMgrFactoryName{this, "MTRunManagerFactory", "GiGaMTRunManagerFAC"};
-  ToolHandle<GiGaFactoryBase<GiGaMTRunManager>>   m_mTRunManagerFactory{this, "MTRunManagerFactory",
-                                                                      "GiGaMTRunManagerFAC"};
-  ToolHandle<GiGaFactoryBase<G4VUserPhysicsList>> m_physListFactory{this, "PhysicsListFactory", "GiGaMT_FTFP_BERT"};
-  ToolHandle<GiGaFactoryBase<GiGaWorkerPilot>> m_workerPilotFactory{this, "WorkerPilotFactory", "GiGaWorkerPilotFAC"};
-  ToolHandle<GiGaFactoryBase<G4VUserDetectorConstruction>> m_detConstFactory{this, "DetectorConstruction",
-                                                                             "GiGaMTDetectorConstructionFAC"};
-  ToolHandle<GiGaFactoryBase<G4VUserActionInitialization>> m_ActionInitializerFactory{this, "ActionInitializer",
-                                                                                      "GiGaActionInitializer"};
-  ToolHandle<IHepMC3ToMCTruthConverter>     m_converterTool{this, "HepMCConverter", "HepMC3ToMCTruthConverter"};
-  ToolHandleArray<IG4MonitoringTool>        m_MoniTools{this};
-  ToolHandle<GiGaFactoryBase<G4VisManager>> m_visMgrFactory{this, "VisManager", ""};
+  ToolHandle<GiGaFactoryBase<GiGaMTRunManager>>   m_mTRunManagerFactory{ this, "MTRunManagerFactory",
+                                                                       "GiGaMTRunManagerFAC" };
+  ToolHandle<GiGaFactoryBase<G4VUserPhysicsList>> m_physListFactory{ this, "PhysicsListFactory", "GiGaMT_FTFP_BERT" };
+  ToolHandle<GiGaFactoryBase<GiGaWorkerPilot>> m_workerPilotFactory{ this, "WorkerPilotFactory", "GiGaWorkerPilotFAC" };
+  ToolHandle<GiGaFactoryBase<G4VUserDetectorConstruction>> m_detConstFactory{ this, "DetectorConstruction",
+                                                                              "GiGaMTDetectorConstructionFAC" };
+  ToolHandle<GiGaFactoryBase<G4VUserActionInitialization>> m_ActionInitializerFactory{ this, "ActionInitializer",
+                                                                                       "GiGaActionInitializer" };
+  ToolHandle<IHepMC3ToMCTruthConverter>     m_converterTool{ this, "HepMCConverter", "HepMC3ToMCTruthConverter" };
+  ToolHandleArray<IG4MonitoringTool>        m_MoniTools{ this };
+  ToolHandle<GiGaFactoryBase<G4VisManager>> m_visMgrFactory{ this, "VisManager", "" };
   Gaudi::Property<std::vector<std::string>> m_MoniToolNames{
-      this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames )};
+      this, "MonitorTools", {}, tool_array_setter( m_MoniTools, m_MoniToolNames ) };
 
-  Gaudi::Property<size_t> m_nWorkerThreads{this, "NumberOfWorkerThreads", 1};
-  Gaudi::Property<bool>   m_splitPileUp{this, "SplitPileUp", false};
-  Gaudi::Property<bool>   m_printParticles{this, "PrintG4Particles", false};
-  Gaudi::Property<bool>   m_printMaterials{this, "PrintG4Materials", false};
+  Gaudi::Property<size_t> m_nWorkerThreads{ this, "NumberOfWorkerThreads", 1 };
+  Gaudi::Property<bool>   m_splitPileUp{ this, "SplitPileUp", false };
+  Gaudi::Property<bool>   m_printParticles{ this, "PrintG4Particles", false };
+  Gaudi::Property<bool>   m_printMaterials{ this, "PrintG4Materials", false };
 
 protected:
   using Service::Service;
@@ -144,7 +144,7 @@ private:
   mutable GiGaPayloadQueue         m_payloadQueue{};
 
 private:
-  ServiceHandle<IChronoStatSvc> m_chronoSvc{"ChronoStatSvc", "ChronoStatSvc"};
+  ServiceHandle<IChronoStatSvc> m_chronoSvc{ "ChronoStatSvc", "ChronoStatSvc" };
 
   typedef std::map<std::string, unsigned int> Counter;
   /// counter of errors

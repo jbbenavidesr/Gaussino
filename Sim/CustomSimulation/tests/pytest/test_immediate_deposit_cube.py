@@ -8,14 +8,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from Gaussino.pytest.helpers import run_gaudi, reset_configurables
-from Gaussino.pytest.options import (
-    events_1,
-    photon,
-    em_physics,
-    cube,
-    debug,
-)
+from Gaussino.pytest.helpers import reset_configurables, run_gaudi
+from Gaussino.pytest.options import cube, debug, em_physics, events_1, photon
 
 EXPECTED_STRINGS = [
     "#Hits=    1 Energy=       1[GeV] #Particles=    1 in ExternalDetectorEmbedder_0_CubeSDet",

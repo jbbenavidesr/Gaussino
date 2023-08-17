@@ -12,7 +12,7 @@
 
 DECLARE_COMPONENT( GiGaMTRunManagerFAC )
 
-/*static*/ std::atomic_bool GiGaMTRunManagerFAC::created{false};
+/*static*/ std::atomic_bool GiGaMTRunManagerFAC::created{ false };
 
 GiGaMTRunManager* GiGaMTRunManagerFAC::construct() const {
   if ( created ) {

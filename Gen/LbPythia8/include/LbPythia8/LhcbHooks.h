@@ -27,24 +27,21 @@ namespace Pythia8 {
   class LhcbHooks : public UserHooks {
 
   public:
-
     /// Constructor.
-    LhcbHooks() {isInit = false;}
+    LhcbHooks() { isInit = false; }
 
     /// Modifiy cross-section.
-    bool canModifySigma() override {return true;}
+    bool canModifySigma() override { return true; }
 
     /// Cross-section weight.
-    double multiplySigmaBy(const SigmaProcess* sigmaProcessPtr,
-				   const PhaseSpace* phaseSpacePtr, bool) override;
+    double multiplySigmaBy( const SigmaProcess* sigmaProcessPtr, const PhaseSpace* phaseSpacePtr, bool ) override;
 
   private:
-
     // Members.
-    bool   isInit;      ///< Flag whether the object has been initialized.
-    double pT20;        ///< Stored value of the pT damping parameter.
+    bool        isInit; ///< Flag whether the object has been initialized.
+    double      pT20;   ///< Stored value of the pT damping parameter.
     AlphaStrong alphaS; ///< Stored value of alpha strong.
   };
-}
+} // namespace Pythia8
 
 #endif // LBPYTHIA8_LHCBHOOKS_H

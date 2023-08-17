@@ -11,13 +11,13 @@
 #pragma once
 
 // Gaudi.
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
 #include "GaudiKernel/Vector4DTypes.h"
 
 // Event.
-#include "Event/MCHeader.h"
 #include "Event/GenHeader.h"
+#include "Event/MCHeader.h"
 
 // Event.
 #include "Event/MCParticle.h"
@@ -43,19 +43,20 @@
 
 class MCTruthToEDM : public Gaudi::Functional::MultiTransformer<
                          std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>(
-                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader &  )>
-{
+                             const Gaussino::MCTruthPtrs&, const LHCb::GenHeader& ),
+                         Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
 public:
   /// Standard constructor.
   MCTruthToEDM( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer(
-            name, pSvcLocator, {KeyValue{"MCTruthLocation", Gaussino::MCTruthsLocation::Default},
-                KeyValue{"GenHeaderLocation", Gaussino::GenHeaderLocation::Default}},
+            name, pSvcLocator,
+            { KeyValue{ "MCTruthLocation", Gaussino::MCTruthsLocation::Default },
+              KeyValue{ "GenHeaderLocation", Gaussino::GenHeaderLocation::Default } },
             {
-                KeyValue{"Particles", Gaussino::MCParticleLocation::Default},
-                KeyValue{"Vertices", Gaussino::MCVertexLocation::Default},
-                KeyValue{"MCHeader", LHCb::MCHeaderLocation::Default},
-                KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default},
+                KeyValue{ "Particles", Gaussino::MCParticleLocation::Default },
+                KeyValue{ "Vertices", Gaussino::MCVertexLocation::Default },
+                KeyValue{ "MCHeader", LHCb::MCHeaderLocation::Default },
+                KeyValue{ "LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default },
             } ){};
   virtual ~MCTruthToEDM() = default; ///< Destructor.
   virtual std::tuple<LHCb::MCParticles, LHCb::MCVertices, LHCb::MCHeader, LinkedParticleMCParticleLinks>
@@ -67,14 +68,11 @@ private:
   LHCb::MCVertex* FindPV( LinkedParticle* lp, VertexSet& pvs ) const;
 
   /// Convert a GenParticle either into a MCParticle or G4PrimaryParticle.
-  class Converter
-  {
+  class Converter {
   public:
     Converter( LHCb::MCParticles& mcparticles, LHCb::MCVertices& mcvertices, LinkedParticleMCParticleLinks& lpmcp_links,
                MsgStream& stm )
-        : msgStream( stm ), m_particles( mcparticles ), m_vertices( mcvertices ), m_links( lpmcp_links )
-    {
-    }
+        : msgStream( stm ), m_particles( mcparticles ), m_vertices( mcvertices ), m_links( lpmcp_links ) {}
     void convert( LinkedParticle* particle, LHCb::MCVertex* originVertex );
 
     LHCb::MCParticle* makeMCParticle( LinkedParticle* particle );
@@ -86,10 +84,10 @@ private:
     LHCb::MCVertex* createVertex( LinkedVertex* lv );
 
   private:
-    MsgStream& msgStream;
-    LHCb::MCParticles& m_particles;
-    LHCb::MCVertices& m_vertices;
+    MsgStream&                     msgStream;
+    LHCb::MCParticles&             m_particles;
+    LHCb::MCVertices&              m_vertices;
     LinkedParticleMCParticleLinks& m_links;
-    std::set<LinkedVertex*> already_converted{};
+    std::set<LinkedVertex*>        already_converted{};
   };
 };

@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedLuminosityForSpillOver.cpp,v 1.2 2009-04-07 16:11:21 gcorti Exp $
-// Include files 
+// Include files
 
 // local
 #include "FixedLuminosityForSpillOver.h"
@@ -19,16 +19,16 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
-#include "Event/GenCountersFSR.h"
 
 // From Generators
+#include "GenInterfaces/ICounterLogFile.h"
 #include "Generators/GenCounters.h"
-#include "GenInterfaces/ICounterLogFile.h" 
 
-#include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandPoisson.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FixedLuminosityForSpillOver
@@ -40,84 +40,70 @@
 
 DECLARE_COMPONENT( FixedLuminosityForSpillOver )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-FixedLuminosityForSpillOver::FixedLuminosityForSpillOver( const std::string& type,
-							  const std::string& name,
-							  const IInterface* parent )
-  : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_numberOfZeroInteraction( 0 ) ,
-    m_nEvents( 0 ) {
-    declareInterface< IPileUpTool >( this ) ;
-    declareProperty( "BeamParameters" , 
-                     m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
+FixedLuminosityForSpillOver::FixedLuminosityForSpillOver( const std::string& type, const std::string& name,
+                                                          const IInterface* parent )
+    : GaudiTool( type, name, parent ), m_xmlLogTool( 0 ), m_numberOfZeroInteraction( 0 ), m_nEvents( 0 ) {
+  declareInterface<IPileUpTool>( this );
+  declareProperty( "BeamParameters", m_beamParameters = LHCb::BeamParametersLocation::Default );
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
 }
 
 //=============================================================================
-// Destructor 
+// Destructor
 //=============================================================================
-FixedLuminosityForSpillOver::~FixedLuminosityForSpillOver( ) { ; }
+FixedLuminosityForSpillOver::~FixedLuminosityForSpillOver() { ; }
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode FixedLuminosityForSpillOver::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode FixedLuminosityForSpillOver::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
   // Log file XML
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
-  
-  info() << "Poisson distribution with fixed luminosity. " << endmsg ;
+  m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
 
-  return sc ;
+  info() << "Poisson distribution with fixed luminosity. " << endmsg;
+
+  return sc;
 }
 
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosityForSpillOver::numberOfPileUp( HepRandomEnginePtr & engine ) {
-  LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
-  if ( 0 == beam ) Exception( "No beam parameters registered" ) ;
-  
-  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
-  
-  unsigned int result = 0 ;
-  m_nEvents++ ;
-  if(genFSR) {
-	genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
+unsigned int FixedLuminosityForSpillOver::numberOfPileUp( HepRandomEnginePtr& engine ) {
+  LHCb::BeamParameters* beam = get<LHCb::BeamParameters>( m_beamParameters );
+  if ( 0 == beam ) Exception( "No beam parameters registered" );
+
+  auto genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
+
+  unsigned int result = 0;
+  m_nEvents++;
+  if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::AllEvt, 1 ); }
+
+  CLHEP::RandPoisson poissonGenerator{ engine.getref(), beam->nu() };
+  result = (unsigned int)poissonGenerator();
+  if ( 0 == result ) {
+    m_numberOfZeroInteraction++;
+    if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::ZeroInt, 1 ); }
   }
 
-  CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
-  result = (unsigned int) poissonGenerator() ;
-  if ( 0 == result ) {
-    m_numberOfZeroInteraction++ ;
-    if(genFSR) {
-	  genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::ZeroInt, 1);
-	}
-  }
-  
-  return result ;
+  return result;
 }
 
 //=============================================================================
 // Print the specific pile up counters
 //=============================================================================
-void FixedLuminosityForSpillOver::printPileUpCounters( ) {
-  using namespace GenCounters ;
-  printCounter( m_xmlLogTool , "all events (including empty events)", m_nEvents ) ;
-  printCounter( m_xmlLogTool , "events with 0 interaction" , 
-                m_numberOfZeroInteraction ) ;
+void FixedLuminosityForSpillOver::printPileUpCounters() {
+  using namespace GenCounters;
+  printCounter( m_xmlLogTool, "all events (including empty events)", m_nEvents );
+  printCounter( m_xmlLogTool, "events with 0 interaction", m_numberOfZeroInteraction );
 }
 
 //=============================================================================
 // Finalize method
 //=============================================================================
-StatusCode FixedLuminosityForSpillOver::finalize( ) {
-  return GaudiTool::finalize( ) ;
-}
+StatusCode FixedLuminosityForSpillOver::finalize() { return GaudiTool::finalize(); }

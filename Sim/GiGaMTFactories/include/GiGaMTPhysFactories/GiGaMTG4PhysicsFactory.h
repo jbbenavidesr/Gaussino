@@ -11,8 +11,8 @@
 #pragma once
 
 #include "G4VUserPhysicsList.hh"
-#include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GaudiAlg/GaudiTool.h"
+#include "GiGaMTFactories/GiGaFactoryBase.h"
 
 /** @class GiGaMTG4PhysicsFactory GiGaMTG4PhysicsFactory.h
  *
@@ -28,8 +28,7 @@
 // Only inherit from GaudiTool instead of GiGaTool as we do not care about
 // the extended messaging interface here
 template <class PHYSLIST>
-class GiGaMTG4PhysicsFactory : public extends<GaudiTool, GiGaFactoryBase<G4VUserPhysicsList>>
-{
+class GiGaMTG4PhysicsFactory : public extends<GaudiTool, GiGaFactoryBase<G4VUserPhysicsList>> {
   static_assert( std::is_base_of<G4VUserPhysicsList, PHYSLIST>::value );
   static_assert( std::is_default_constructible<PHYSLIST>::value );
 

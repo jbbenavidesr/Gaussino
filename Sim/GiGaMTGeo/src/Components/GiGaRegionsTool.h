@@ -16,7 +16,7 @@
 #include "SimInterfaces/IGaussinoTool.h"
 
 // forward declarations
-class IRegionsDefinitionSvc ;
+class IRegionsDefinitionSvc;
 
 /** @class GiGaRegionsTool GiGaRegionsTool.h Components/GiGaRegionsTool.h
  *
@@ -26,8 +26,7 @@ class IRegionsDefinitionSvc ;
  *  @author Dominik Muller
  */
 
-class GiGaRegionsTool : public extends<GaudiTool, IGaussinoTool>
-{
+class GiGaRegionsTool : public extends<GaudiTool, IGaussinoTool> {
 public:
   using extends::extends;
 
@@ -37,20 +36,17 @@ public:
    *  @param region region name
    *  @return status code
    */
-  StatusCode process ( const std::string& region  = "" ) const override;
+  StatusCode process( const std::string& region = "" ) const override;
 
 private:
-
   // default constructor  is disabled
   GiGaRegionsTool();
   // copy    constructor  is disabled
-  GiGaRegionsTool           ( const GiGaRegionsTool& ) ;
+  GiGaRegionsTool( const GiGaRegionsTool& );
   // assignement operator is disabled
-  GiGaRegionsTool& operator=( const GiGaRegionsTool& ) ;
+  GiGaRegionsTool& operator=( const GiGaRegionsTool& );
 
 private:
-
-  ServiceHandle<IRegionsDefinitionSvc> m_simSvc{this, "RegionsDefinitionService", "RegionsDefinitionSvc"};
-  Gaudi::Property<bool> m_overwrite{this, "Overwrite", true};
-
+  ServiceHandle<IRegionsDefinitionSvc> m_simSvc{ this, "RegionsDefinitionService", "RegionsDefinitionSvc" };
+  Gaudi::Property<bool>                m_overwrite{ this, "Overwrite", true };
 };

@@ -27,18 +27,18 @@ public:
   virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> operator()() const override;
 
 private:
-  ServiceHandle<IReDecaySvc>                              m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
-  mutable DataObjectWriteHandle<Gaussino::ReDecay::Token> m_tokenhandle{Gaussino::ReDecayToken::Default, this};
+  ServiceHandle<IReDecaySvc>                              m_redecaysvc{ this, "ReDecaySvc", "ReDecaySvc" };
+  mutable DataObjectWriteHandle<Gaussino::ReDecay::Token> m_tokenhandle{ Gaussino::ReDecayToken::Default, this };
 };
 
 DECLARE_COMPONENT( GenReDecayInit )
 
 std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenReDecayInit::operator()() const {
   debug() << "==> Execute" << endmsg;
-  auto ret                        = GenRndInit::operator()();
-  auto                   seedpair = GetSeedPair();
-  auto [event, run]               = seedpair;
-  auto token                      = m_redecaysvc->obtainToken( seedpair );
+  auto ret          = GenRndInit::operator()();
+  auto seedpair     = GetSeedPair();
+  auto [event, run] = seedpair;
+  auto token        = m_redecaysvc->obtainToken( seedpair );
   info() << "Evt " << event << ",  Run " << run;
   info() << ",  Nr. in job = " << eventCounter();
   if ( token.IsOriginal() ) {

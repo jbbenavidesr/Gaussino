@@ -8,13 +8,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
+from Configurables import FixedMomentum, FlatNParticles, GaussinoGeneration, ParticleGun
 from GaudiKernel import SystemOfUnits as units
-from Configurables import (
-    GaussinoGeneration,
-    ParticleGun,
-    FixedMomentum,
-    FlatNParticles,
-)
 
 GaussinoGeneration().ParticleGun = True
 pgun = ParticleGun("ParticleGun")

@@ -69,7 +69,7 @@ public:
   }
 
   /// flag to force the saving of track into traectory
-  inline bool storeTruth() const { return m_storeTruth; }
+  inline bool                      storeTruth() const { return m_storeTruth; }
   inline GaussinoTrackInformation& setToStoreTruth( const bool value ) {
     m_storeTruth = value;
     return *this;
@@ -77,7 +77,7 @@ public:
 
   /// Preliminary flag to store the truth, used when flagging children while
   // processing the parent track
-  inline bool prelStoreTruth() const { return m_prelStoreTruth; }
+  inline bool                      prelStoreTruth() const { return m_prelStoreTruth; }
   inline GaussinoTrackInformation& setToPrelStoreTruth( const bool value ) {
     m_prelStoreTruth = value;
     return *this;
@@ -152,7 +152,7 @@ public:
   inline static GaussinoTrackInformation* Get( G4Track* track = nullptr ) {
     if ( !track ) { track = G4EventManager::GetEventManager()->GetTrackingManager()->GetTrack(); }
     auto                      info = track->GetUserInformation();
-    GaussinoTrackInformation* finfo{nullptr};
+    GaussinoTrackInformation* finfo{ nullptr };
     if ( info ) {
       finfo = dynamic_cast<GaussinoTrackInformation*>( info );
       if ( !finfo ) {
@@ -171,26 +171,26 @@ public:
 
 private:
   /// flag indicating that TrajectoryPoint should be appended
-  bool m_appendStep{false};
+  bool m_appendStep{ false };
   /// flag indicating that track is forced to be stored into trajectory
-  bool m_storeTruth{false};
+  bool m_storeTruth{ false };
   /// flag indicating that track is forced to be stored into trajectory
-  bool m_prelStoreTruth{false};
+  bool m_prelStoreTruth{ false };
   /// flag indicating that track created a hit
-  bool m_createdHit{false};
+  bool m_createdHit{ false };
   /// flag indicating that the direct parent particle was not stored
   /// in HepMC event this will be represented by a special 'dummy' link
-  bool m_directParent{true};
+  bool m_directParent{ true };
   /// flag indicating that the this track was at some point suspended
   /// and already saved.
-  bool m_wasSuspended{false};
+  bool m_wasSuspended{ false };
 
   /// vector of pointers to hits created by that track
   Hits m_hits{};
 
   /// pointer to a specialised DetTrackInfo object containing detector-specific
   /// track information
-  DetTrackInfo* m_detInfo{nullptr};
+  DetTrackInfo* m_detInfo{ nullptr };
 };
 
 extern G4ThreadLocal G4Allocator<GaussinoTrackInformation>* aGaussinoTrackInformationAllocator;

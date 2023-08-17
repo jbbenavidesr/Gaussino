@@ -159,10 +159,10 @@ void GiGaWorkerPilot::operator()() {
     auto code = tracker->VerifyStructure();
     if ( code == 1 ) {
       error( m_before_sim );
-      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE };
     } else if ( code == 2 ) {
       error( m_before_sim );
-      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE };
     }
     evt->SetUserInformation( new GaussinoEventInformation( tracker.get() ) );
     debug( "Dequeued event with " + std::to_string( evt->GetNumberOfPrimaryVertex() ) + " vertices." );
@@ -192,11 +192,11 @@ void GiGaWorkerPilot::operator()() {
     if ( code == 1 ) {
       error( m_before_sim );
       error( m_after_sim );
-      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE };
     } else if ( code == 2 ) {
       error( m_before_sim );
       error( m_after_sim );
-      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE };
     }
     Gaussino::MCTruthPtr mctruth = std::make_unique<Gaussino::MCTruth>( std::move( *tracker.get() ) );
 
@@ -213,12 +213,12 @@ void GiGaWorkerPilot::operator()() {
       error( m_before_sim );
       error( m_after_sim );
       error( m_after_cleanup );
-      throw GaudiException{"Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from root particles", "MCTruth", StatusCode::FAILURE };
     } else if ( code == 2 ) {
       error( m_before_sim );
       error( m_after_sim );
       error( m_after_cleanup );
-      throw GaudiException{"Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE};
+      throw GaudiException{ "Not all particles reachable from final state particles", "MCTruth", StatusCode::FAILURE };
     }
     debug( "Geant4 finished processing the event." );
     G4EventProxyPtr proxy = std::make_shared<G4EventProxy>( evt, mctruth.get(), this );
@@ -241,7 +241,7 @@ void GiGaWorkerPilot::operator()() {
 void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt ) {
   // Need to lock access as multiple Gaudi TES destruction
   // could potentially add here in parallel
-  std::lock_guard<std::mutex> guard{m_cleanup_lock};
+  std::lock_guard<std::mutex> guard{ m_cleanup_lock };
   m_for_cleanup.push_back( evt );
 }
 
@@ -251,7 +251,7 @@ void GiGaWorkerPilot::CleanUp( bool force ) {
   if ( m_for_cleanup.size() == 0 ) return;
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
-  std::lock_guard<std::mutex> guard{m_cleanup_lock};
+  std::lock_guard<std::mutex> guard{ m_cleanup_lock };
   size_t                      localNToProcess = 0;
   auto evs_to_remove = std::remove_if( m_for_cleanup.begin(), m_for_cleanup.end(), [&]( G4Event* evt ) -> bool {
     if ( !force && m_postprocessing ) {

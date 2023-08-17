@@ -9,28 +9,28 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: SignalPlain.cpp,v 1.16 2007-02-22 13:30:24 robbep Exp $
-// Include files 
+// Include files
 
 // local
 #include "SignalPlain.h"
 
 // from Gaudi
 
-// Event 
+// Event
+#include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
-#include "Event/GenCountersFSR.h"
 
 // Kernel
-#include "GenInterfaces/IGenCutTool.h"
 #include "GenInterfaces/IDecayTool.h"
+#include "GenInterfaces/IGenCutTool.h"
 
 // from Generators
 #include "GenInterfaces/IProductionTool.h"
 #include "HepMCUtils/HepMCUtils.h"
 
-#include "HepMCUser/VertexAttribute.h"
 #include "Defaults/HepMCAttributes.h"
+#include "HepMCUser/VertexAttribute.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : SignalPlain
@@ -42,154 +42,130 @@
 
 DECLARE_COMPONENT( SignalPlain )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-SignalPlain::SignalPlain( const std::string& type, const std::string& name,
-                          const IInterface* parent )
-  : Signal( type, name , parent ) { ; }
+SignalPlain::SignalPlain( const std::string& type, const std::string& name, const IInterface* parent )
+    : Signal( type, name, parent ) {
+  ;
+}
 
 //=============================================================================
 // Destructor
 //=============================================================================
-SignalPlain::~SignalPlain( ) { ; }
+SignalPlain::~SignalPlain() { ; }
 
 //=============================================================================
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
-bool SignalPlain::generate( const unsigned int nPileUp , 
-                            HepMC3::GenEventPtrs & theEvents , 
-                            LHCb::GenCollisions & theCollisions ,
-                            HepRandomEnginePtr & engine ) const {
-  StatusCode sc ;
-  bool result = false ;
+bool SignalPlain::generate( const unsigned int nPileUp, HepMC3::GenEventPtrs& theEvents,
+                            LHCb::GenCollisions& theCollisions, HepRandomEnginePtr& engine ) const {
+  StatusCode sc;
+  bool       result = false;
   // Memorize if the particle is inverted
-  bool isInverted = false ;
-  bool hasFlipped = false ;
-  bool hasFailed = false ;
-  LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEventPtr theGenEvent( 0 ) ;
-  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+  bool                isInverted = false;
+  bool                hasFlipped = false;
+  bool                hasFailed  = false;
+  LHCb::GenCollision* theGenCollision( 0 );
+  HepMC3::GenEventPtr theGenEvent( 0 );
+  auto                genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
-  for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( &theEvents , &theCollisions , theGenEvent, 
-                        theGenCollision ) ;
-    
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
-    if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
+  for ( unsigned int i = 0; i < nPileUp; ++i ) {
+    prepareInteraction( &theEvents, &theCollisions, theGenEvent, theGenCollision );
 
-    if ( ! result ) {
+    sc = m_productionTool->generateEvent( theGenEvent, theGenCollision, engine );
+    if ( sc.isFailure() ) Exception( "Could not generate event" );
+
+    if ( !result ) {
       // Decay particles heavier than the particles to look at
-      decayHeavyParticles( theGenEvent , m_signalQuark , m_signalPID , engine).ignore() ;
-      
+      decayHeavyParticles( theGenEvent, m_signalQuark, m_signalPID, engine ).ignore();
+
       // Check if one particle of the requested list is present in event
-      ParticleVector theParticleList ;
-      if ( checkPresence( m_pids , theGenEvent , theParticleList ) ) {
+      ParticleVector theParticleList;
+      if ( checkPresence( m_pids, theGenEvent, theParticleList ) ) {
 
         // establish correct multiplicity of signal
-        if ( ensureMultiplicity( theParticleList.size() , engine ) ) {
+        if ( ensureMultiplicity( theParticleList.size(), engine ) ) {
 
           // choose randomly one particle and force the decay
-          hasFlipped = false ;
-          isInverted = false ;
-          hasFailed  = false ;
+          hasFlipped = false;
+          isInverted = false;
+          hasFailed  = false;
           HepMC3::GenParticlePtr theSignal =
-            chooseAndRevert( theParticleList , isInverted , hasFlipped , hasFailed , engine ) ;
+              chooseAndRevert( theParticleList, isInverted, hasFlipped, hasFailed, engine );
           if ( hasFailed ) {
-            HepMCUtils::RemoveDaughters( theSignal ) ;
-            Error( "Skip event" ).ignore() ;
-            return false ;
+            HepMCUtils::RemoveDaughters( theSignal );
+            Error( "Skip event" ).ignore();
+            return false;
           }
 
-          theParticleList.clear() ;
-          theParticleList.push_back( theSignal ) ;
+          theParticleList.clear();
+          theParticleList.push_back( theSignal );
 
-          if ( ! hasFlipped ) {
+          if ( !hasFlipped ) {
 
-            m_nEventsBeforeCut++ ;
-            if(genFSR) {
-              genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::BeforeLevelCut, 1);
-            }
+            m_nEventsBeforeCut++;
+            if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::BeforeLevelCut, 1 ); }
 
             // count particles in 4pi
-            updateCounters( theParticleList , m_nParticlesBeforeCut , 
-                            m_nAntiParticlesBeforeCut , false , false ) ;
-            
-            bool passCut = true ;
-            if ( 0 != m_cutTool ) 
-              passCut = m_cutTool -> applyCut( theParticleList , theGenEvent.get() ,
-                                               theGenCollision ) ;
-            
-            if ( passCut && ( ! theParticleList.empty() ) ) {
-              if ( ! isInverted ) {
-                m_nEventsAfterCut++ ;
-                if(genFSR) {
-                  genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AfterLevelCut, 1);
-                }
+            updateCounters( theParticleList, m_nParticlesBeforeCut, m_nAntiParticlesBeforeCut, false, false );
+
+            bool passCut = true;
+            if ( 0 != m_cutTool ) passCut = m_cutTool->applyCut( theParticleList, theGenEvent.get(), theGenCollision );
+
+            if ( passCut && ( !theParticleList.empty() ) ) {
+              if ( !isInverted ) {
+                m_nEventsAfterCut++;
+                if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::AfterLevelCut, 1 ); }
               }
 
               if ( isInverted ) {
-                ++m_nInvertedEvents ;
-                if(genFSR) {
-                  genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtInverted, 1);
-                }
+                ++m_nInvertedEvents;
+                if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::EvtInverted, 1 ); }
               }
 
-              // Count particles passing the generator level cut with pz > 0     
-              updateCounters( theParticleList , m_nParticlesAfterCut , 
-                              m_nAntiParticlesAfterCut , true , isInverted ) ;              
-              
+              // Count particles passing the generator level cut with pz > 0
+              updateCounters( theParticleList, m_nParticlesAfterCut, m_nAntiParticlesAfterCut, true, isInverted );
+
               if ( m_cleanEvents ) {
-                sc = isolateSignal( theSignal ) ;
-                if ( ! sc.isSuccess() ) Exception( "Cannot isolate signal" ) ;
+                sc = isolateSignal( theSignal );
+                if ( !sc.isSuccess() ) Exception( "Cannot isolate signal" );
               }
-              theGenEvent->add_attribute(Gaussino::HepMC::Attributes::SignalProcessVertex, std::make_shared<HepMC3::VertexAttribute>(theSignal->end_vertex()));
-              
-              theGenCollision -> setIsSignal( true ) ;
-              
+              theGenEvent->add_attribute( Gaussino::HepMC::Attributes::SignalProcessVertex,
+                                          std::make_shared<HepMC3::VertexAttribute>( theSignal->end_vertex() ) );
+
+              theGenCollision->setIsSignal( true );
+
               // Count signal B and signal Bbar
-              if ( theSignal -> pdg_id() > 0 ) {
-                ++m_nSig ;
-                if(genFSR) {
-                  genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtSignal, 1);
-                }
+              if ( theSignal->pdg_id() > 0 ) {
+                ++m_nSig;
+                if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::EvtSignal, 1 ); }
+              } else {
+                ++m_nSigBar;
+                if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::EvtantiSignal, 1 ); }
               }
-              else {
-                ++m_nSigBar ;
-                if(genFSR) {
-                  genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::EvtantiSignal, 1);
-                }
-              }
-              
 
               // Update counters
-              GenCounters::updateHadronCounters( theGenEvent.get() , m_bHadC , 
-                                                 m_antibHadC , m_cHadC , 
-                                                 m_anticHadC , m_bbCounter ,
-                                                 m_ccCounter ) ;
-              GenCounters::updateExcitedStatesCounters( theGenEvent.get() , 
-                                                        m_bExcitedC , 
-                                                        m_cExcitedC ) ;
-              
-              if(genFSR) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc");
-              
+              GenCounters::updateHadronCounters( theGenEvent.get(), m_bHadC, m_antibHadC, m_cHadC, m_anticHadC,
+                                                 m_bbCounter, m_ccCounter );
+              GenCounters::updateExcitedStatesCounters( theGenEvent.get(), m_bExcitedC, m_cExcitedC );
 
-              result = true ;
+              if ( genFSR ) GenCounters::updateHadronFSR( theGenEvent.get(), genFSR, "Acc" );
+
+              result = true;
             } else {
               // event does not pass cuts
-              HepMCUtils::RemoveDaughters( theSignal ) ;
+              HepMCUtils::RemoveDaughters( theSignal );
             }
           } else {
             // has flipped:
-            HepMCUtils::RemoveDaughters( theSignal ) ;
-            theSignal -> set_pdg_id( - ( theSignal -> pdg_id() ) ) ;
+            HepMCUtils::RemoveDaughters( theSignal );
+            theSignal->set_pdg_id( -( theSignal->pdg_id() ) );
           }
         }
       }
     }
-  }  
-  
-  return result ;
-}
+  }
 
+  return result;
+}

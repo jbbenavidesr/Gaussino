@@ -53,25 +53,25 @@ protected:
 
 private:
   // G4 geometry variables
-  G4VPhysicalVolume*               m_world_root{nullptr};
-  dd4hep::sim::Geant4GeometryInfo* geoinfo{nullptr};
+  G4VPhysicalVolume*               m_world_root{ nullptr };
+  dd4hep::sim::Geant4GeometryInfo* geoinfo{ nullptr };
   std::string                      m_world_material;
   std::string                      m_world_pv_name;
   std::string                      m_world_lv_name;
 
-  Gaudi::Property<bool>                               m_debugMaterials{this, "DebugMaterials", false};
-  Gaudi::Property<bool>                               m_debugElements{this, "DebugElements", false};
-  Gaudi::Property<bool>                               m_debugShapes{this, "DebugShapes", false};
-  Gaudi::Property<bool>                               m_debugVolumes{this, "DebugVolumes", false};
-  Gaudi::Property<bool>                               m_debugPlacements{this, "DebugPlacements", false};
-  Gaudi::Property<bool>                               m_debugRegions{this, "DebugRegions", false};
-  Gaudi::Property<std::map<std::string, std::string>> m_sensdetmappings{this, "SensDetMappings", {}};
-  Gaudi::Property<std::string>                        m_mag_field_mgr{this, "FieldManager", ""};
-  Gaudi::Property<std::string>                        m_detDescLocation{this, "DescriptionLocation",
-                                                 "${DETECTOR_PROJECT_ROOT}/compact/LHCb-no-GDML.xml",
-                                                 "Location of the XML detector description"};
+  Gaudi::Property<bool>                               m_debugMaterials{ this, "DebugMaterials", false };
+  Gaudi::Property<bool>                               m_debugElements{ this, "DebugElements", false };
+  Gaudi::Property<bool>                               m_debugShapes{ this, "DebugShapes", false };
+  Gaudi::Property<bool>                               m_debugVolumes{ this, "DebugVolumes", false };
+  Gaudi::Property<bool>                               m_debugPlacements{ this, "DebugPlacements", false };
+  Gaudi::Property<bool>                               m_debugRegions{ this, "DebugRegions", false };
+  Gaudi::Property<std::map<std::string, std::string>> m_sensdetmappings{ this, "SensDetMappings", {} };
+  Gaudi::Property<std::string>                        m_mag_field_mgr{ this, "FieldManager", "" };
+  Gaudi::Property<std::string>                        m_detDescLocation{ this, "DescriptionLocation",
+                                                  "${DETECTOR_PROJECT_ROOT}/compact/LHCb-no-GDML.xml",
+                                                  "Location of the XML detector description" };
 
-  Gaudi::Property<std::vector<std::string>> m_invisibleVolumes{this, "InvisibleVolumes", {}};
+  Gaudi::Property<std::vector<std::string>> m_invisibleVolumes{ this, "InvisibleVolumes", {} };
 
   StatusCode register_mag_field( const std::string& name, G4LogicalVolume* );
   StatusCode register_sensitive( const std::string& name, G4LogicalVolume* );
@@ -90,7 +90,7 @@ private:
   std::map<GiGaFactoryBase<G4VSensitiveDetector>*, std::set<G4LogicalVolume*>> mmap_sensdet_to_lvols;
   std::map<std::string, ToolHandle<GiGaFactoryBase<G4VSensitiveDetector>>>     mmap_name_to_sensdetfac;
 
-  std::atomic_bool                                                             m_found_global_fieldmgr{false};
+  std::atomic_bool                                                             m_found_global_fieldmgr{ false };
   std::map<GiGaFactoryBase<G4FieldManager, bool>*, std::set<G4LogicalVolume*>> mmap_fieldmgr_to_lvols;
   std::map<std::string, ToolHandle<GiGaFactoryBase<G4FieldManager, bool>>>     mmap_name_to_fieldmgrfac;
 };

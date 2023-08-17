@@ -32,19 +32,19 @@ namespace ExternalDetector {
 
   protected:
     // position of the volume
-    Gaudi::Property<double> m_xPos{this, "xPos", 0. * Gaudi::Units::mm};
-    Gaudi::Property<double> m_yPos{this, "yPos", 0. * Gaudi::Units::mm};
-    Gaudi::Property<double> m_zPos{this, "zPos", 0. * Gaudi::Units::mm};
+    Gaudi::Property<double> m_xPos{ this, "xPos", 0. * Gaudi::Units::mm };
+    Gaudi::Property<double> m_yPos{ this, "yPos", 0. * Gaudi::Units::mm };
+    Gaudi::Property<double> m_zPos{ this, "zPos", 0. * Gaudi::Units::mm };
     // rotation around x axis
-    Gaudi::Property<double> m_xAngle{this, "xAngle", 0. * Gaudi::Units::degree};
+    Gaudi::Property<double> m_xAngle{ this, "xAngle", 0. * Gaudi::Units::degree };
     // material of the volume
-    Gaudi::Property<std::string> m_materialName{this, "MaterialName", std::string()};
+    Gaudi::Property<std::string> m_materialName{ this, "MaterialName", std::string() };
     // name of the logical volume
-    Gaudi::Property<std::string> m_lVolName{this, "LogicalVolumeName", "CustomLVol"};
-    Gaudi::Property<std::string> m_pVolName{this, "PhysicalVolumeName", "CustomPVol"};
+    Gaudi::Property<std::string> m_lVolName{ this, "LogicalVolumeName", "CustomLVol" };
+    Gaudi::Property<std::string> m_pVolName{ this, "PhysicalVolumeName", "CustomPVol" };
     // (optional) provide the logical volume name of its mother, empty <=> world
     // note: the orderd of construction matters in this case (the mother must be constructed first)
-    Gaudi::Property<std::string> m_motherVolumeName{this, "MotherVolumeName", ""};
+    Gaudi::Property<std::string> m_motherVolumeName{ this, "MotherVolumeName", "" };
     // name of the sensitive detector
     GiGaFactoryBase<G4VSensitiveDetector>* m_sensDet = nullptr;
     Gaudi::Property<std::string>           m_sensDetName{
@@ -54,8 +54,8 @@ namespace ExternalDetector {
             toolSvc()->retrieveTool( m_sensDetName.value(), m_sensDet, this ).ignore();
           }
         },
-        Gaudi::Details::Property::ImmediatelyInvokeHandler{true}};
-    Gaudi::Property<std::vector<std::string>> m_extraVolumesToSensDet{this, "ExtraVolumesToSensDet", {}};
+        Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
+    Gaudi::Property<std::vector<std::string>> m_extraVolumesToSensDet{ this, "ExtraVolumesToSensDet", {} };
 
   public:
     using extends::extends;

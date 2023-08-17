@@ -17,15 +17,15 @@
 #include <cmath>
 
 // FromGaudi
+#include "GaudiKernel/PhysicalConstants.h"
+#include "GaudiKernel/SystemOfUnits.h"
 #include "Kernel/IParticlePropertySvc.h"
 #include "Kernel/ParticleProperty.h"
-#include "GaudiKernel/SystemOfUnits.h"
-#include "GaudiKernel/PhysicalConstants.h"
 
 #include "Event/GenHeader.h"
 
-#include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //===========================================================================
 // Implementation file for class: FlatPtRapidity
@@ -38,102 +38,95 @@ DECLARE_COMPONENT( FlatPtRapidity )
 //===========================================================================
 // Constructor
 //===========================================================================
-FlatPtRapidity::FlatPtRapidity( const std::string & type ,
-                              const std::string & name , 
-                              const IInterface * parent )
-  : GaudiTool( type , name, parent ) {
-    declareInterface< IParticleGunTool >( this ) ;
-    declareProperty( "PtMin"        , m_minPt       = 1.0 * Gaudi::Units::GeV ) ;
-    declareProperty( "PtMax"        , m_maxPt       = 10.0 * Gaudi::Units::GeV ) ;
-    declareProperty( "RapidityMin"  , m_minRapidity = 1.8 ) ;
-    declareProperty( "RapidityMax"  , m_maxRapidity = 4.7 ) ;
+FlatPtRapidity::FlatPtRapidity( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent ) {
+  declareInterface<IParticleGunTool>( this );
+  declareProperty( "PtMin", m_minPt = 1.0 * Gaudi::Units::GeV );
+  declareProperty( "PtMax", m_maxPt = 10.0 * Gaudi::Units::GeV );
+  declareProperty( "RapidityMin", m_minRapidity = 1.8 );
+  declareProperty( "RapidityMax", m_maxRapidity = 4.7 );
 
-    m_pdgCodes.push_back( -211 ); // default pi-
-    declareProperty("PdgCodes",m_pdgCodes);
+  m_pdgCodes.push_back( -211 ); // default pi-
+  declareProperty( "PdgCodes", m_pdgCodes );
 }
 
 //===========================================================================
 // Destructor
 //===========================================================================
-FlatPtRapidity::~FlatPtRapidity() { }
+FlatPtRapidity::~FlatPtRapidity() {}
 
 //===========================================================================
 // Initialize Particle Gun parameters
 //===========================================================================
 StatusCode FlatPtRapidity::initialize() {
-  StatusCode sc = GaudiTool::initialize() ;
-  if ( ! sc.isSuccess() ) return sc ;
+  StatusCode sc = GaudiTool::initialize();
+  if ( !sc.isSuccess() ) return sc;
   // Get the mass of the particle to be generated
   //
-  LHCb::IParticlePropertySvc* ppSvc = 
-    svc< LHCb::IParticlePropertySvc >( "LHCb::ParticlePropertySvc" , true ) ;
+  LHCb::IParticlePropertySvc* ppSvc = svc<LHCb::IParticlePropertySvc>( "LHCb::ParticlePropertySvc", true );
 
   // check pt and rapidity
-  if ( ( m_minPt         > m_maxPt ) || ( m_minRapidity > m_maxRapidity ) )
-    return Error( "Incorrect values for pT or rapidity" ) ;
-  
+  if ( ( m_minPt > m_maxPt ) || ( m_minRapidity > m_maxRapidity ) )
+    return Error( "Incorrect values for pT or rapidity" );
+
   // setup particle information
   info() << "Particle type chosen randomly from :" << endmsg;
-  PIDs::iterator icode ;
+  PIDs::iterator icode;
   for ( icode = m_pdgCodes.begin(); icode != m_pdgCodes.end(); ++icode ) {
-    const LHCb::ParticleProperty * particle = ppSvc->find( LHCb::ParticleID( *icode ) );
-    m_names.push_back( particle->particle() ) ;
-    info() << " " << particle->particle() ;
+    const LHCb::ParticleProperty* particle = ppSvc->find( LHCb::ParticleID( *icode ) );
+    m_names.push_back( particle->particle() );
+    info() << " " << particle->particle();
   }
-  
-  info() << endmsg ;
 
-  info() << "pT range: " << m_minPt / Gaudi::Units::GeV << " GeV <-> " 
-          << m_maxPt / Gaudi::Units::GeV << " GeV" << endmsg ;
-  info() << "Rapidity range: " << m_minRapidity << " <-> " 
-          << m_maxRapidity << endmsg ;
-  
-  release( ppSvc ).ignore() ;
+  info() << endmsg;
 
-  return sc ;
+  info() << "pT range: " << m_minPt / Gaudi::Units::GeV << " GeV <-> " << m_maxPt / Gaudi::Units::GeV << " GeV"
+         << endmsg;
+  info() << "Rapidity range: " << m_minRapidity << " <-> " << m_maxRapidity << endmsg;
+
+  release( ppSvc ).ignore();
+
+  return sc;
 }
 
 //===========================================================================
 // Generate the particles
 //===========================================================================
-void FlatPtRapidity::generateParticle( Gaudi::LorentzVector & momentum , 
-                                      Gaudi::LorentzVector & origin , 
-                                      int & pdgId , HepRandomEnginePtr& engine ) {  
-  
-  CLHEP::RandFlat flatGenerator{engine.getref(), 0, 1};
-  origin.SetCoordinates( 0. , 0. , 0. , 0.  );                                      
-  
+void FlatPtRapidity::generateParticle( Gaudi::LorentzVector& momentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                       HepRandomEnginePtr& engine ) {
+
+  CLHEP::RandFlat flatGenerator{ engine.getref(), 0, 1 };
+  origin.SetCoordinates( 0., 0., 0., 0. );
+
   // randomly choose a particle type
-  unsigned int currentType = 
-    (unsigned int)( m_pdgCodes.size() * flatGenerator() );
+  unsigned int currentType = (unsigned int)( m_pdgCodes.size() * flatGenerator() );
   // protect against funnies
-  if ( currentType >= m_pdgCodes.size() ) currentType = 0; 
- 
-  double px(0.), py(0.), pz(0.) ;
+  if ( currentType >= m_pdgCodes.size() ) currentType = 0;
+
+  double px( 0. ), py( 0. ), pz( 0. );
   // Generate values for energy, theta and phi
-  double pt       = m_minPt + flatGenerator() * (m_maxPt-m_minPt) ;
-  double rapidity = m_minRapidity + flatGenerator() * (m_maxRapidity-m_minRapidity) ;
-  
+  double pt       = m_minPt + flatGenerator() * ( m_maxPt - m_minPt );
+  double rapidity = m_minRapidity + flatGenerator() * ( m_maxRapidity - m_minRapidity );
+
   // Take particle mass generated by ParticleGun.cpp
-  double mass = momentum.M() ;
- 
+  double mass = momentum.M();
+
   // Transform to x,y,z coordinates
-  pz = sqrt( ( mass*mass + pt*pt ) ) * (exp(2*rapidity) - 1) / ( 2 * exp(rapidity) ) ;
+  pz = sqrt( ( mass * mass + pt * pt ) ) * ( exp( 2 * rapidity ) - 1 ) / ( 2 * exp( rapidity ) );
 
-  double phi = (-1.*Gaudi::Units::pi + flatGenerator() * Gaudi::Units::twopi) * Gaudi::Units::rad;
-  px = pt*cos(phi);
-  py = pt*sin(phi);
-    
-  momentum.SetPx( px ) ; momentum.SetPy( py ) ; momentum.SetPz( pz ) ;
-  momentum.SetE( std::sqrt( mass * mass + 
-                            momentum.P2() ) ) ;  
-  debug() << "Sampled mass:     " << mass << " and four-momentum mass:     " << momentum.M() << endmsg ;
-  debug() << "Sampled pt:       " << pt << " and four-momentum pt:       " << momentum.pt() << endmsg ;
-  debug() << "Sampled rapidity: " << rapidity << " and four-momentum rapidity: " << momentum.Rapidity() << endmsg ;
-                        
-  pdgId = m_pdgCodes[ currentType ] ;
-    
-  debug() << " -> " << m_names[ currentType ] << endmsg 
-          << "   P   = " << momentum << endmsg ;
+  double phi = ( -1. * Gaudi::Units::pi + flatGenerator() * Gaudi::Units::twopi ) * Gaudi::Units::rad;
+  px         = pt * cos( phi );
+  py         = pt * sin( phi );
+
+  momentum.SetPx( px );
+  momentum.SetPy( py );
+  momentum.SetPz( pz );
+  momentum.SetE( std::sqrt( mass * mass + momentum.P2() ) );
+  debug() << "Sampled mass:     " << mass << " and four-momentum mass:     " << momentum.M() << endmsg;
+  debug() << "Sampled pt:       " << pt << " and four-momentum pt:       " << momentum.pt() << endmsg;
+  debug() << "Sampled rapidity: " << rapidity << " and four-momentum rapidity: " << momentum.Rapidity() << endmsg;
+
+  pdgId = m_pdgCodes[currentType];
+
+  debug() << " -> " << m_names[currentType] << endmsg << "   P   = " << momentum << endmsg;
 }
-

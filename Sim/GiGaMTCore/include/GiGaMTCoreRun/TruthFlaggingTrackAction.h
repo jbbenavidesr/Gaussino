@@ -83,25 +83,25 @@ private:
 public:
   //  Flags:
   ///  all tracks to be stored
-  bool storeAll{false};
+  bool storeAll{ false };
   ///  all primaries are stored
-  bool storePrimaries{true};
+  bool storePrimaries{ true };
   /// all decays products are stored
-  bool storeDecayProducts{true};
+  bool storeDecayProducts{ true };
   /// all track with kinetic energy above some threshold are stored
-  bool storeByOwnEnergy{false};
+  bool storeByOwnEnergy{ false };
   ///  all tracks  with given type are stored
-  bool storeByOwnType{false};
+  bool storeByOwnType{ false };
   /** all tracks which has a daughter
    *  with kinetic energy over threshold are stored
    */
-  bool storeByChildEnergy{false};
+  bool storeByChildEnergy{ false };
   ///  all tracks which has a daughter of given type are stored
-  bool storeByChildType{false};
+  bool storeByChildType{ false };
   /// threshold for own kinetic energy
-  double ownEnergyThreshold{10 * Gaudi::Units::TeV};
+  double ownEnergyThreshold{ 10 * Gaudi::Units::TeV };
   /// threshold for child kinetic energy
-  double childEnergyThreshold{10 * Gaudi::Units::TeV};
+  double childEnergyThreshold{ 10 * Gaudi::Units::TeV };
 
   /// container of names of own   types
   TypeNames ownStoredTypesNames{};
@@ -110,33 +110,33 @@ public:
   ///
 
   /// store particles undorgoing specific process
-  bool storeBySecondariesProcess{false};
+  bool storeBySecondariesProcess{ false };
   /// container for the process names
   std::unordered_set<std::string> childStoredProcess{};
   /// store particles produced in specific process
-  bool storeByOwnProcess{false};
+  bool storeByOwnProcess{ false };
   /// container for own process names
   std::unordered_set<std::string> ownStoredProcess{};
 
   // FORWARD DETECTORS
   // for flags above beside primary, forced decays and marked store up
   // to a certain z
-  bool storeUpToZmax{true};
+  bool storeUpToZmax{ true };
   /// value of z max for storage
-  double zMaxToStore{10. * Gaudi::Units::km};
+  double zMaxToStore{ 10. * Gaudi::Units::km };
   /// tilt of zMax plane in degrees
-  double zMaxTilt{0. * Gaudi::Units::degree};
+  double zMaxTilt{ 0. * Gaudi::Units::degree };
   /// y shift of zMax plane
-  double zMaxYShift{0. * Gaudi::Units::mm};
+  double zMaxYShift{ 0. * Gaudi::Units::mm };
 
   // CYLINDRICAL DETECTORS
-  bool   storeUpToRhomax{false};
-  double rhoMaxToStore{10. * Gaudi::Units::km};
+  bool   storeUpToRhomax{ false };
+  double rhoMaxToStore{ 10. * Gaudi::Units::km };
 
   /// bool to keep or not RICHPhotoelectrons
-  bool rejectRICHphe{true};
+  bool rejectRICHphe{ true };
   /// bool to keep or not optical photons
-  bool rejectOptPhot{true};
+  bool rejectOptPhot{ true };
 
   /// container of definitions of own   types
   PartDefs ownStoredTypes{};

@@ -12,7 +12,7 @@
 template <class ParallelPhysics>
 ParallelPhysics* ParallelGeometry::PhysicsFactory<ParallelPhysics>::construct() const {
   debug() << "Constructing parallel physics: " << name() << endmsg;
-  auto physics = new Physics{m_worldName.value(), m_layeredMass.value()};
+  auto physics = new Physics{ m_worldName.value(), m_layeredMass.value() };
 
   physics->SetVerboseLevel( verbosity() );
   physics->SetMessageInterface( message_interface() );

@@ -9,9 +9,9 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 
+from Configurables import ExternalDetectorEmbedder
 from Gaudi.Configuration import DEBUG
 from GaudiKernel import SystemOfUnits as units
-from Configurables import ExternalDetectorEmbedder
 
 # number of planes to generate
 PLANES_NO = 4
@@ -24,27 +24,27 @@ sensitive = {}
 hit = {}
 moni = {}
 for plane in range(PLANES_NO):
-    shapes['Plane{}'.format(plane + 1)] = {
+    shapes["Plane{}".format(plane + 1)] = {
         "Type": "Cuboid",
-        "xPos": 0. * units.m,
-        "yPos": 0. * units.m,
-        "zPos": (1. + plane) * units.m,
-        "xSize": 10. * units.m,
-        "ySize": 10. * units.m,
-        "zSize": .01 * units.mm,
+        "xPos": 0.0 * units.m,
+        "yPos": 0.0 * units.m,
+        "zPos": (1.0 + plane) * units.m,
+        "xSize": 10.0 * units.m,
+        "ySize": 10.0 * units.m,
+        "zSize": 0.01 * units.mm,
         "OutputLevel": DEBUG,
     }
-    sensitive['Plane{}'.format(plane + 1)] = {
+    sensitive["Plane{}".format(plane + 1)] = {
         "Type": "MCCollectorSensDet",
         "RequireEDep": False,
         "PrintStats": True,
         "OutputLevel": DEBUG,
     }
-    hit['Plane{}'.format(plane + 1)] = {
+    hit["Plane{}".format(plane + 1)] = {
         "Type": "GetMCCollectorHitsAlg",
         "OutputLevel": DEBUG,
     }
-    moni['Plane{}'.format(plane + 1)] = {
+    moni["Plane{}".format(plane + 1)] = {
         "Type": "MCCollector",
         "HitsPropertyName": "CollectorHits",
         "OutputLevel": DEBUG,
@@ -55,6 +55,5 @@ external.Hit = hit
 external.Moni = moni
 
 from Configurables import NTupleSvc
-NTupleSvc().Output = [
-    "FILE1 DATAFILE='CaloCollector.root' TYP='ROOT' OPT='NEW'"
-]
+
+NTupleSvc().Output = ["FILE1 DATAFILE='CaloCollector.root' TYP='ROOT' OPT='NEW'"]

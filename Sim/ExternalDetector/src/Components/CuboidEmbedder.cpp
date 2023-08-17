@@ -18,11 +18,11 @@
 namespace ExternalDetector {
   class CuboidEmbedder : public Embedder<G4Box> {
     // size of the cuboid
-    Gaudi::Property<double> m_xSize{this, "xSize", 0. * Gaudi::Units::m};
-    Gaudi::Property<double> m_ySize{this, "ySize", 0. * Gaudi::Units::m};
-    Gaudi::Property<double> m_zSize{this, "zSize", 0. * Gaudi::Units::m};
+    Gaudi::Property<double> m_xSize{ this, "xSize", 0. * Gaudi::Units::m };
+    Gaudi::Property<double> m_ySize{ this, "ySize", 0. * Gaudi::Units::m };
+    Gaudi::Property<double> m_zSize{ this, "zSize", 0. * Gaudi::Units::m };
     // name of the cuboid box
-    Gaudi::Property<std::string> m_boxName{this, "BoxName", "Cuboid"};
+    Gaudi::Property<std::string> m_boxName{ this, "BoxName", "Cuboid" };
 
   public:
     using Embedder::Embedder;

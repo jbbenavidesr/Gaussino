@@ -9,8 +9,8 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #include "GiGaMTCoreRun/LinkedParticle.h"
-#include <map>
 #include "GiGaMTCoreRun/MCTruthConverter.h"
+#include <map>
 
 namespace Gaussino::ReDecay {
   typedef std::map<const LinkedParticle*, MCTruthPtr> SignalTruths;

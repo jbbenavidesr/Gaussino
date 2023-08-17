@@ -12,7 +12,7 @@
 Sim/GiGaMTReDecay
 -----------------
 
-This package contains all the optional ReDecay configuration to coordinate 
+This package contains all the optional ReDecay configuration to coordinate
 the re-use of parts over the event between multiple events.
 #]=======================================================================]
 

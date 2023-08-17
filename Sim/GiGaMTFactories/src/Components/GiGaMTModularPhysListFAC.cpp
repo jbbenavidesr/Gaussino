@@ -14,8 +14,7 @@
 
 DECLARE_COMPONENT( GiGaMTModularPhysListFAC )
 
-class GiGaMTModularPhysList : public Gsino::Message, public G4VModularPhysicsList
-{
+class GiGaMTModularPhysList : public Gsino::Message, public G4VModularPhysicsList {
   friend class GiGaMTModularPhysListFAC;
   void SetCuts() override;
 
@@ -24,41 +23,33 @@ private:
   double cutForGamma;
   double cutForElectron;
   double cutForPositron;
-  bool dumpCutsTable;
+  bool   dumpCutsTable;
 };
 
-StatusCode GiGaMTModularPhysListFAC::initialize(){
+StatusCode GiGaMTModularPhysListFAC::initialize() {
   auto sc = extends::initialize();
-  for(auto & name:m_constructorNames){
-    m_constructors.push_back(tool<ConstructorFactory>(name, this));
-  }
+  for ( auto& name : m_constructorNames ) { m_constructors.push_back( tool<ConstructorFactory>( name, this ) ); }
   return sc;
 }
 
-StatusCode GiGaMTModularPhysListFAC::finalize(){
-  for(auto & constr:m_constructors){
-    constr->release();
-  }
+StatusCode GiGaMTModularPhysListFAC::finalize() {
+  for ( auto& constr : m_constructors ) { constr->release(); }
 
   return extends::finalize();
 }
 
-G4VUserPhysicsList* GiGaMTModularPhysListFAC::construct() const
-{
+G4VUserPhysicsList* GiGaMTModularPhysListFAC::construct() const {
   auto plist = new GiGaMTModularPhysList{};
   plist->SetMessageInterface( message_interface() );
   plist->cutForGamma    = m_cutForGamma;
   plist->cutForElectron = m_cutForElectron;
   plist->cutForPositron = m_cutForPositron;
   plist->dumpCutsTable  = m_dumpCutsTable.value();
-  for ( auto& ctool : m_constructors ) {
-    plist->RegisterPhysics( ctool->construct() );
-  }
+  for ( auto& ctool : m_constructors ) { plist->RegisterPhysics( ctool->construct() ); }
   return plist;
 }
 
-void GiGaMTModularPhysList::SetCuts()
-{
+void GiGaMTModularPhysList::SetCuts() {
   // set cut values for gamma
   SetCutValue( cutForGamma, "gamma" );
   std::stringstream message;
@@ -67,19 +58,17 @@ void GiGaMTModularPhysList::SetCuts()
 
   // set cut values for electron
   SetCutValue( cutForElectron, "e-" );
-  message.str("");
+  message.str( "" );
   message.clear();
   message << "The production cut for electron is set to \t" << cutForElectron / CLHEP::mm << " mm ";
   info( message.str() );
 
   // set cut values for positron
   SetCutValue( cutForPositron, "e+" );
-  message.str("");
+  message.str( "" );
   message.clear();
   message << "The production cut for positron is set to \t" << cutForPositron / CLHEP::mm << " mm ";
   info( message.str() );
 
-  if ( dumpCutsTable ) {
-    DumpCutValuesTable();
-  }
+  if ( dumpCutsTable ) { DumpCutValuesTable(); }
 }

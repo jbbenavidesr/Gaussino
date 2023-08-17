@@ -12,9 +12,9 @@ from Gaussino.pytest.helpers import *
 from Gaussino.pytest.options import *
 
 EXPECTED_STRINGS = [
-    'Successfully embedded ExternalDetectorEmbedder_0_CubePVol in its mothers volume!',
-    'Registered sensitive ExternalDetectorEmbedder_0_CubeSDet for ExternalDetectorEmbedder_0_CubePVol',
-    'External world created!',
+    "Successfully embedded ExternalDetectorEmbedder_0_CubePVol in its mothers volume!",
+    "Registered sensitive ExternalDetectorEmbedder_0_CubeSDet for ExternalDetectorEmbedder_0_CubePVol",
+    "External world created!",
     "Constructing external uniform magnetic field with x: 1 T, y: 0 T, z: 0 T.",
     "Probing the magnetic field at: [ x: 0, y: 0, z: 0] (mm) is: [ B_x: 1, B_y: 0, B_z: 0] (T)",
 ]

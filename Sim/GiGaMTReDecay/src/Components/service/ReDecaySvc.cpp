@@ -17,13 +17,13 @@
 #include "HepMCUser/typedefs.h"
 #include "range/v3/all.hpp"
 #include <deque>
-#include <sstream>
 #include <future>
 #include <mutex>
+#include <sstream>
 
+#include "Defaults/HepMCAttributes.h"
 #include "GiGaMTCoreRun/SimResults.h"
 #include "GiGaMTCoreRun/SimResultsProxyAttribute.h"
-#include "Defaults/HepMCAttributes.h"
 #include "HepMCUser/Status.h"
 
 // ============================================================================
@@ -42,15 +42,15 @@ typedef std::map<Random::SeedPair, ReadyFlag> ReadyMap;
 
 class ReDecaySvc : public extends<Service, IReDecaySvc> {
 public:
-  Gaudi::Property<int> m_max_rd_counter{this, "nRedecay", 100};
-  Gaudi::Property<int> m_rd_mode{this, "RedecayMode", 0,
-                                 "0: Signal, 1: Everything heavier, 2: Heaviest ancestor of signal, 3: Heaviest "
-                                 "particles of at least signal flavour."};
+  Gaudi::Property<int> m_max_rd_counter{ this, "nRedecay", 100 };
+  Gaudi::Property<int> m_rd_mode{ this, "RedecayMode", 0,
+                                  "0: Signal, 1: Everything heavier, 2: Heaviest ancestor of signal, 3: Heaviest "
+                                  "particles of at least signal flavour." };
 
-  Gaudi::Property<int> m_parallel_original_events{this, "ParallelOriginal", 1};
+  Gaudi::Property<int> m_parallel_original_events{ this, "ParallelOriginal", 1 };
   // FIXME: Property that needs to be set to the evtmax. Should really get this from the ApplicationMgr somehow.
-  Gaudi::Property<unsigned int> m_evtMax{this, "EvtMax", std::numeric_limits<unsigned int>::max(),
-                                         "Number of events to be processed"};
+  Gaudi::Property<unsigned int> m_evtMax{ this, "EvtMax", std::numeric_limits<unsigned int>::max(),
+                                          "Number of events to be processed" };
   using extends::extends;
   virtual ~ReDecaySvc() = default;
 
@@ -60,34 +60,35 @@ public:
 
   virtual Gaussino::ReDecay::Token obtainToken( const Random::SeedPair& seedpair ) override;
   virtual void                     removeToken( Gaussino::ReDecay::Token& token ) override;
-  virtual void storeOriginalHepMC(const Gaussino::ReDecay::Token &, std::vector<HepMC3::GenEventPtr> &, LHCb::GenCollisions&) override;
-  virtual void storeOriginalSimResult(const Gaussino::ReDecay::Token &, const Gaussino::GiGaSimReturns &) override;
+  virtual void storeOriginalHepMC( const Gaussino::ReDecay::Token&, std::vector<HepMC3::GenEventPtr>&,
+                                   LHCb::GenCollisions& ) override;
+  virtual void storeOriginalSimResult( const Gaussino::ReDecay::Token&, const Gaussino::GiGaSimReturns& ) override;
 
   using IReDecaySvc::getOriginalHepMCData;
-  virtual std::vector<HepMCData> & getOriginalHepMCData(const Gaussino::ReDecay::Token &) override;
+  virtual std::vector<HepMCData>& getOriginalHepMCData( const Gaussino::ReDecay::Token& ) override;
   using IReDecaySvc::getOriginalSimResult;
-  virtual Gaussino::GiGaSimReturns getOriginalSimResult(const Gaussino::ReDecay::Token &) override;
+  virtual Gaussino::GiGaSimReturns getOriginalSimResult( const Gaussino::ReDecay::Token& ) override;
 
   using IReDecaySvc::getNPileUp;
-  virtual unsigned int getNPileUp(const Gaussino::ReDecay::Token &) override;
+  virtual unsigned int getNPileUp( const Gaussino::ReDecay::Token& ) override;
 
   using IReDecaySvc::getHepMCDataIterated;
-  virtual HepMCData getHepMCDataIterated(const Gaussino::ReDecay::Token &) override;
+  virtual HepMCData getHepMCDataIterated( const Gaussino::ReDecay::Token& ) override;
 
   using IReDecaySvc::getEncodedOriginalEvtInfo;
-  virtual unsigned long long getEncodedOriginalEvtInfo(const Gaussino::ReDecay::Token &) override;
+  virtual unsigned long long getEncodedOriginalEvtInfo( const Gaussino::ReDecay::Token& ) override;
 
 private:
   std::recursive_mutex                                             m_svclock;
-  std::atomic_uint                                                 m_processed{0};
+  std::atomic_uint                                                 m_processed{ 0 };
   SeedPairCounters                                                 m_original_events_available{};
   std::map<Random::SeedPair, std::promise<Random::SeedPair>>       m_promise_store{};
   std::map<Random::SeedPair, std::shared_future<Random::SeedPair>> m_future_store{};
-  std::map<Random::SeedPair, std::vector<HepMCData>> m_original_hepmc_store{};
-  std::map<Random::SeedPair, Gaussino::GiGaSimReturns> m_original_simresult_store{};
+  std::map<Random::SeedPair, std::vector<HepMCData>>               m_original_hepmc_store{};
+  std::map<Random::SeedPair, Gaussino::GiGaSimReturns>             m_original_simresult_store{};
   size_t                                                           QueuedEvents();
   void                                                             DumpQueue();
-  LocalTL<size_t> m_ipileup_counter;
+  LocalTL<size_t>                                                  m_ipileup_counter;
 };
 
 DECLARE_COMPONENT( ReDecaySvc )
@@ -104,9 +105,7 @@ void ReDecaySvc::DumpQueue() {
   for ( auto& s : m_original_events_available ) {
     debug() << " -- < " << s.first.first << " , " << s.first.second << " > Remaining: " << s.second.toprocess << " / "
             << s.second.tofinish;
-    if( s.second.tofinish == m_max_rd_counter ){
-      debug() << " Original in progress!" << endmsg;
-    }
+    if ( s.second.tofinish == m_max_rd_counter ) { debug() << " Original in progress!" << endmsg; }
     debug() << endmsg;
   }
 }
@@ -129,7 +128,7 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
   std::shared_future<Random::SeedPair> fut;
   // Entering critical code section that needs to be locked
   {
-    std::lock_guard<std::recursive_mutex> lck{m_svclock};
+    std::lock_guard<std::recursive_mutex> lck{ m_svclock };
     DumpQueue();
     auto nqueued     = QueuedEvents();
     token.m_original = false;
@@ -149,8 +148,8 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
         }
         auto ret = m_promise_store.insert( std::make_pair( seedpair, std::promise<Random::SeedPair>{} ) );
         m_future_store.insert(
-            std::make_pair( seedpair, std::future<Random::SeedPair>{ret.first->second.get_future()} ) );
-        m_original_events_available[seedpair] = {m_max_rd_counter - 1, m_max_rd_counter};
+            std::make_pair( seedpair, std::future<Random::SeedPair>{ ret.first->second.get_future() } ) );
+        m_original_events_available[seedpair] = { m_max_rd_counter - 1, m_max_rd_counter };
         token.m_original                      = true;
         token.m_original_event_seedpair       = seedpair;
       }
@@ -201,7 +200,7 @@ Gaussino::ReDecay::Token ReDecaySvc::obtainToken( const Random::SeedPair& seedpa
 }
 
 void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
-  std::lock_guard<std::recursive_mutex> lck{m_svclock};
+  std::lock_guard<std::recursive_mutex> lck{ m_svclock };
   if ( msgLevel( MSG::DEBUG ) ) { debug() << "Removing Token " << token << endmsg; }
   auto  orgseedpair = token.m_original_event_seedpair;
   auto& orginfo     = m_original_events_available[orgseedpair];
@@ -209,8 +208,8 @@ void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
   // Fulfill the promise if this was an original event. This should
   // wake up all other threads currently waiting for this original
   // event.
-  if ( token.m_original ){
-      m_promise_store[token.m_original_event_seedpair].set_value(token.m_original_event_seedpair);
+  if ( token.m_original ) {
+    m_promise_store[token.m_original_event_seedpair].set_value( token.m_original_event_seedpair );
   }
   if ( orginfo.tofinish == 0 ) {
     if ( msgLevel( MSG::DEBUG ) ) {
@@ -218,88 +217,88 @@ void ReDecaySvc::removeToken( Gaussino::ReDecay::Token& token ) {
       debug() << "Removing original event with < " << orgseedpair.first << " , " << orgseedpair.second << " > "
               << endmsg;
     }
-    m_original_events_available.erase(orgseedpair);
-    m_promise_store.erase(orgseedpair);
-    m_future_store.erase(orgseedpair);
+    m_original_events_available.erase( orgseedpair );
+    m_promise_store.erase( orgseedpair );
+    m_future_store.erase( orgseedpair );
     // FIXME: Clean up actual event data
-    m_original_hepmc_store.erase(orgseedpair);
-    m_original_simresult_store.erase(orgseedpair);
+    m_original_hepmc_store.erase( orgseedpair );
+    m_original_simresult_store.erase( orgseedpair );
   }
 }
 
-void ReDecaySvc::storeOriginalHepMC(const Gaussino::ReDecay::Token & token, std::vector<HepMC3::GenEventPtr> & events, LHCb::GenCollisions& collisions){
-  std::lock_guard<std::recursive_mutex> lck{m_svclock};
-    if ( m_original_hepmc_store.find(token.m_original_event_seedpair) != std::end(m_original_hepmc_store) ) {
-      std::stringstream sstr; 
-      auto [s1,s2] = token.m_original_event_seedpair;
-      sstr << "Already have HepMC for original event <"  << s1 << ", " << s2 << ">";
-      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
-    }
-    m_original_hepmc_store[token.m_original_event_seedpair] = std::vector<HepMCData>{};
-    auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
-    for(auto  [evt, col]: ranges::view::zip(events, collisions)){
-      auto & [_evt, counter, particles, collisions] = data.emplace_back(  );
-      counter = 0;
-      _evt = evt;
-      collisions = std::make_shared<LHCb::GenCollision>();
-      collisions->setIsSignal(col->isSignal());
-      collisions->setProcessType(col->processType());
-      collisions->setSHat(col->sHat());
-      collisions->setTHat(col->tHat());
-      collisions->setUHat(col->uHat());
-      collisions->setPtHat(col->ptHat());
-      collisions->setX1Bjorken(col->x1Bjorken());
-      collisions->setX2Bjorken(col->x2Bjorken());
-      for(auto & part: evt->particles()){
-        if(part->status() == HepMC3::Status::ReDecay){
-          counter++;
-          particles.push_back(part->id());
-        }
+void ReDecaySvc::storeOriginalHepMC( const Gaussino::ReDecay::Token& token, std::vector<HepMC3::GenEventPtr>& events,
+                                     LHCb::GenCollisions& collisions ) {
+  std::lock_guard<std::recursive_mutex> lck{ m_svclock };
+  if ( m_original_hepmc_store.find( token.m_original_event_seedpair ) != std::end( m_original_hepmc_store ) ) {
+    std::stringstream sstr;
+    auto [s1, s2] = token.m_original_event_seedpair;
+    sstr << "Already have HepMC for original event <" << s1 << ", " << s2 << ">";
+    throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+  }
+  m_original_hepmc_store[token.m_original_event_seedpair] = std::vector<HepMCData>{};
+  auto& data                                              = m_original_hepmc_store[token.m_original_event_seedpair];
+  for ( auto [evt, col] : ranges::view::zip( events, collisions ) ) {
+    auto& [_evt, counter, particles, collisions] = data.emplace_back();
+    counter                                      = 0;
+    _evt                                         = evt;
+    collisions                                   = std::make_shared<LHCb::GenCollision>();
+    collisions->setIsSignal( col->isSignal() );
+    collisions->setProcessType( col->processType() );
+    collisions->setSHat( col->sHat() );
+    collisions->setTHat( col->tHat() );
+    collisions->setUHat( col->uHat() );
+    collisions->setPtHat( col->ptHat() );
+    collisions->setX1Bjorken( col->x1Bjorken() );
+    collisions->setX2Bjorken( col->x2Bjorken() );
+    for ( auto& part : evt->particles() ) {
+      if ( part->status() == HepMC3::Status::ReDecay ) {
+        counter++;
+        particles.push_back( part->id() );
       }
     }
+  }
 }
 
-void ReDecaySvc::storeOriginalSimResult(const Gaussino::ReDecay::Token & token, const Gaussino::GiGaSimReturns & results){
-  std::lock_guard<std::recursive_mutex> lck{m_svclock};
-    if ( m_original_simresult_store.find(token.m_original_event_seedpair) != std::end(m_original_simresult_store) ) {
-      std::stringstream sstr; 
-      auto [s1,s2] = token.m_original_event_seedpair;
-      sstr << "Already have SimResults for original event <"  << s1 << ", " << s2 << ">";
-      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
-    }
-    m_original_simresult_store[token.m_original_event_seedpair] = results;
+void ReDecaySvc::storeOriginalSimResult( const Gaussino::ReDecay::Token& token,
+                                         const Gaussino::GiGaSimReturns& results ) {
+  std::lock_guard<std::recursive_mutex> lck{ m_svclock };
+  if ( m_original_simresult_store.find( token.m_original_event_seedpair ) != std::end( m_original_simresult_store ) ) {
+    std::stringstream sstr;
+    auto [s1, s2] = token.m_original_event_seedpair;
+    sstr << "Already have SimResults for original event <" << s1 << ", " << s2 << ">";
+    throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+  }
+  m_original_simresult_store[token.m_original_event_seedpair] = results;
 }
 
-unsigned int ReDecaySvc::getNPileUp(const Gaussino::ReDecay::Token & token) {
-  std::lock_guard<std::recursive_mutex> lck{m_svclock};
-  auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
-  unsigned int ret_counter = 0;
-  for(auto & [_evt, counter, particles, collisions]: data){
-    if(counter>0){
-      ret_counter++;
-    }
+unsigned int ReDecaySvc::getNPileUp( const Gaussino::ReDecay::Token& token ) {
+  std::lock_guard<std::recursive_mutex> lck{ m_svclock };
+  auto&                                 data        = m_original_hepmc_store[token.m_original_event_seedpair];
+  unsigned int                          ret_counter = 0;
+  for ( auto& [_evt, counter, particles, collisions] : data ) {
+    if ( counter > 0 ) { ret_counter++; }
   }
   return ret_counter;
 }
 
-std::vector<HepMCData> & ReDecaySvc::getOriginalHepMCData(const Gaussino::ReDecay::Token & token){
-    if ( m_original_hepmc_store.find(token.m_original_event_seedpair) == std::end(m_original_hepmc_store) ) {
-      std::stringstream sstr; 
-      auto [s1,s2] = token.m_original_event_seedpair;
-      sstr << "Could not find HepMC for original event <"  << s1 << ", " << s2 << ">";
-      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
-    }
-    return m_original_hepmc_store[token.m_original_event_seedpair];
+std::vector<HepMCData>& ReDecaySvc::getOriginalHepMCData( const Gaussino::ReDecay::Token& token ) {
+  if ( m_original_hepmc_store.find( token.m_original_event_seedpair ) == std::end( m_original_hepmc_store ) ) {
+    std::stringstream sstr;
+    auto [s1, s2] = token.m_original_event_seedpair;
+    sstr << "Could not find HepMC for original event <" << s1 << ", " << s2 << ">";
+    throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+  }
+  return m_original_hepmc_store[token.m_original_event_seedpair];
 }
 
-Gaussino::GiGaSimReturns ReDecaySvc::getOriginalSimResult(const Gaussino::ReDecay::Token & token){
-    if ( m_original_simresult_store.find(token.m_original_event_seedpair) == std::end(m_original_simresult_store) ) {
-      std::stringstream sstr; 
-      auto [s1,s2] = token.m_original_event_seedpair;
-      sstr << "Could not find SimResults for original event <"  << s1 << ", " << s2 << ">";
-      throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
-    }
-    return m_original_simresult_store[token.m_original_event_seedpair];
+Gaussino::GiGaSimReturns ReDecaySvc::getOriginalSimResult( const Gaussino::ReDecay::Token& token ) {
+  if ( m_original_simresult_store.find( token.m_original_event_seedpair ) == std::end( m_original_simresult_store ) ) {
+    std::stringstream sstr;
+    auto [s1, s2] = token.m_original_event_seedpair;
+    sstr << "Could not find SimResults for original event <" << s1 << ", " << s2 << ">";
+    throw GaudiException( sstr.str(), __PRETTY_FUNCTION__, StatusCode::FAILURE );
+  }
+  return m_original_simresult_store[token.m_original_event_seedpair];
 }
 
 unsigned long long ReDecaySvc::getEncodedOriginalEvtInfo( const Gaussino::ReDecay::Token& token ) {
@@ -309,20 +308,16 @@ unsigned long long ReDecaySvc::getEncodedOriginalEvtInfo( const Gaussino::ReDeca
   return paired;
 }
 
-HepMCData ReDecaySvc::getHepMCDataIterated(const Gaussino::ReDecay::Token & token){
-  std::lock_guard<std::recursive_mutex> lck{m_svclock};
-  auto & data = m_original_hepmc_store[token.m_original_event_seedpair];
-  std::vector<HepMCData> non_zero_data{};
-  for(auto & d: data){
-    if(std::get<1>(d)>0){
-      non_zero_data.push_back(d);
-    }
+HepMCData ReDecaySvc::getHepMCDataIterated( const Gaussino::ReDecay::Token& token ) {
+  std::lock_guard<std::recursive_mutex> lck{ m_svclock };
+  auto&                                 data = m_original_hepmc_store[token.m_original_event_seedpair];
+  std::vector<HepMCData>                non_zero_data{};
+  for ( auto& d : data ) {
+    if ( std::get<1>( d ) > 0 ) { non_zero_data.push_back( d ); }
   }
 
-  auto & ret_hepmcdata = non_zero_data.at(m_ipileup_counter.get());
+  auto& ret_hepmcdata = non_zero_data.at( m_ipileup_counter.get() );
   m_ipileup_counter.get()++;
-  if(m_ipileup_counter.get() == non_zero_data.size()){
-    m_ipileup_counter = 0;
-  }
+  if ( m_ipileup_counter.get() == non_zero_data.size() ) { m_ipileup_counter = 0; }
   return ret_hepmcdata;
 }

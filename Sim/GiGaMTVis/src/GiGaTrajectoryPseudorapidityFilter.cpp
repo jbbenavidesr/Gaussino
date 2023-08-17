@@ -56,8 +56,8 @@ namespace GiGa::TrajectoryInitialEta {
   };
 
   class FilterFactory : public extends<GiGaTool, GiGaFactoryBase<G4TrajFilterFactory>> {
-    Gaudi::Property<double> m_min_eta{this, "MinEta", 0.};
-    Gaudi::Property<double> m_max_eta{this, "MaxEta", 0.};
+    Gaudi::Property<double> m_min_eta{ this, "MinEta", 0. };
+    Gaudi::Property<double> m_max_eta{ this, "MaxEta", 0. };
 
   public:
     using extends::extends;
@@ -101,7 +101,7 @@ void GiGa::TrajectoryInitialEta::Filter::Print( std::ostream& ostr ) const {
 GiGa::TrajectoryInitialEta::FilterG4Factory::ModelAndMessengers
 GiGa::TrajectoryInitialEta::FilterG4Factory::Create( const G4String& placement, const G4String& name ) {
   using GiGa::TrajectoryInitialEta::Filter;
-  auto model = new Filter{name, m_min_eta, m_max_eta};
+  auto model = new Filter{ name, m_min_eta, m_max_eta };
   if ( MessageInterfacelevel() < 1 ) { model->SetVerbose( true ); }
   Messengers messengers = {};
   // TODO: here we do not allow setting of the properties through G4 UI,

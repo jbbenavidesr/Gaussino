@@ -137,7 +137,7 @@ LHCb::BeamParameters GenRndInit::createBeamParameters() const {
 }
 
 void GenRndInit::MTBarrier::wait() {
-  std::unique_lock<std::mutex> lock{_mutex};
+  std::unique_lock<std::mutex> lock{ _mutex };
   if ( --m_n_waiting <= 0 ) {
     _cv.notify_all();
   } else {

@@ -13,4 +13,5 @@
 ## one for Particle Guns: 'ParticleGun'
 ##
 from Gauss.Configuration import *
-Gauss().Production = 'PGUN'
+
+Gauss().Production = "PGUN"

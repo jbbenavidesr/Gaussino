@@ -52,12 +52,12 @@ namespace GiGa {
   };
 
   class EventActionCommandFactory : public extends<GiGaTool, GiGaFactoryBase<G4UserEventAction>> {
-    Gaudi::Property<EventCommands> m_beginCmds{this, "BeginOfEventCommands", {}};
-    Gaudi::Property<EventCommands> m_endCmds{this, "EndOfEventCommands", {}};
+    Gaudi::Property<EventCommands> m_beginCmds{ this, "BeginOfEventCommands", {} };
+    Gaudi::Property<EventCommands> m_endCmds{ this, "EndOfEventCommands", {} };
 
     // enable UI session
-    Gaudi::Property<bool> m_beginSession{this, "BeginOfEventUISession", false};
-    Gaudi::Property<bool> m_endSession{this, "EndOfEventUISession", false};
+    Gaudi::Property<bool> m_beginSession{ this, "BeginOfEventUISession", false };
+    Gaudi::Property<bool> m_endSession{ this, "EndOfEventUISession", false };
 
   public:
     using extends::extends;

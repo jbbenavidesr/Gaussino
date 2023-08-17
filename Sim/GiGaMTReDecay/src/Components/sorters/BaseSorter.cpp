@@ -15,30 +15,26 @@
 
 #include "HepMCUser/Status.h"
 
-void BaseSorter::RecursiveTagger(HepMC3::GenParticlePtr part) const {
-  if (part->status() != HepMC3::Status::ChildOfReDecay) {
-    part->set_status(HepMC3::Status::ReDecay);
-  }
+void BaseSorter::RecursiveTagger( HepMC3::GenParticlePtr part ) const {
+  if ( part->status() != HepMC3::Status::ChildOfReDecay ) { part->set_status( HepMC3::Status::ReDecay ); }
   auto ev = part->end_vertex();
-  if (ev) {
-    for (auto child : HepMC3::Relatives::CHILDREN(part)) {
-      child->set_status(HepMC3::Status::ChildOfReDecay);
-      RecursiveTagger(child);
+  if ( ev ) {
+    for ( auto child : HepMC3::Relatives::CHILDREN( part ) ) {
+      child->set_status( HepMC3::Status::ChildOfReDecay );
+      RecursiveTagger( child );
     }
   }
 }
 
-void BaseSorter::RemoveDecayTrees(std::vector<HepMC3::GenEventPtr> & events) const {
+void BaseSorter::RemoveDecayTrees( std::vector<HepMC3::GenEventPtr>& events ) const {
   std::set<HepMC3::GenParticlePtr> to_delete;
-  for(auto & evt: events){
-    for(auto& part: evt->particles()){
-      if (part->status() == HepMC3::Status::ReDecay) {
-        to_delete.insert(part);
-      }
+  for ( auto& evt : events ) {
+    for ( auto& part : evt->particles() ) {
+      if ( part->status() == HepMC3::Status::ReDecay ) { to_delete.insert( part ); }
     }
   }
-  for(auto & part: to_delete){
-    HepMCUtils::RemoveDaughters(part);
-    part->set_status(HepMC3::Status::ReDecay);
+  for ( auto& part : to_delete ) {
+    HepMCUtils::RemoveDaughters( part );
+    part->set_status( HepMC3::Status::ReDecay );
   }
 }

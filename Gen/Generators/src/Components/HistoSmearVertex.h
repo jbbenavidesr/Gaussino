@@ -25,25 +25,24 @@
  *  @date   2014-08-02
  */
 class HistoSmearVertex : public GaudiTool, virtual public IVertexSmearingTool {
- public:
+public:
   /// Standard constructor
-  HistoSmearVertex( const std::string& type , const std::string& name,
-                    const IInterface* parent ) ;
-  virtual ~HistoSmearVertex( ); ///< Destructor
+  HistoSmearVertex( const std::string& type, const std::string& name, const IInterface* parent );
+  virtual ~HistoSmearVertex(); ///< Destructor
 
   /// Initialize method
-  virtual StatusCode initialize( ) override;
+  virtual StatusCode initialize() override;
 
   /** Implements IVertexSmearingTool::smearVertex.
    */
-  virtual StatusCode smearVertex( HepMC3::GenEventPtr theEvent , HepRandomEnginePtr & engine ) override;
+  virtual StatusCode smearVertex( HepMC3::GenEventPtr theEvent, HepRandomEnginePtr& engine ) override;
 
- private:
+private:
   /// Direction of the beam to take into account TOF vs nominal IP8, can have
   /// only values -1 or 1, or 0 to switch off the TOF and set time of
   /// interaction to zero (default = 1, as for beam 1)
-  int m_zDir;
-  TH3* m_hist;
+  int         m_zDir;
+  TH3*        m_hist;
   std::string m_inputFileName;
   std::string m_histoPath;
 };

@@ -12,10 +12,9 @@
 
 #include "GaudiKernel/IService.h"
 
-//#include "GaudiKernel/Point3DTypes.h"
-#include "GaudiKernel/SystemOfUnits.h"
+// #include "GaudiKernel/Point3DTypes.h"
 #include "GaudiKernel/Point3DTypes.h"
-
+#include "GaudiKernel/SystemOfUnits.h"
 
 /** @class IBeamInfoSvc IBeamInfoSvc.h
  * Dummy service to store beam information.
@@ -25,8 +24,8 @@
  */
 
 class GAUDI_API IBeamInfoSvc : virtual public IService {
-  public:
-  DeclareInterfaceID(IBeamInfoSvc, 1, 0);
+public:
+  DeclareInterfaceID( IBeamInfoSvc, 1, 0 );
 
   virtual StatusCode initialize() override = 0;
 
@@ -89,7 +88,7 @@ class GAUDI_API IBeamInfoSvc : virtual public IService {
   /// Retrieve const  Luminosity
   virtual double luminosity() const = 0;
 
-  protected:
+protected:
   /// virtual destructor
   virtual ~IBeamInfoSvc() = default;
 };

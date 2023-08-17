@@ -27,17 +27,16 @@
  */
 class ReDecayPileUp : public GaudiTool, virtual public IPileUpTool {
 public:
-  public:
+public:
   /// Standard constructor
-  ReDecayPileUp( const std::string& type, const std::string& name,
-                   const IInterface* parent) ;
+  ReDecayPileUp( const std::string& type, const std::string& name, const IInterface* parent );
 
-  unsigned int numberOfPileUp( HepRandomEnginePtr & ) override;
+  unsigned int numberOfPileUp( HepRandomEnginePtr& ) override;
 
-  void printPileUpCounters() override {};
+  void printPileUpCounters() override{};
 
-  private:
-    ServiceHandle<IReDecaySvc> m_redecaysvc{this, "ReDecaySvc", "ReDecaySvc"};
+private:
+  ServiceHandle<IReDecaySvc> m_redecaysvc{ this, "ReDecaySvc", "ReDecaySvc" };
 };
 
 DECLARE_COMPONENT( ReDecayPileUp )
@@ -45,14 +44,9 @@ DECLARE_COMPONENT( ReDecayPileUp )
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-ReDecayPileUp::ReDecayPileUp( const std::string& type,
-                                  const std::string& name,
-                                  const IInterface* parent )
-  : GaudiTool ( type, name , parent )
-    {
-    declareInterface< IPileUpTool >( this ) ;
+ReDecayPileUp::ReDecayPileUp( const std::string& type, const std::string& name, const IInterface* parent )
+    : GaudiTool( type, name, parent ) {
+  declareInterface<IPileUpTool>( this );
 }
 
-unsigned int ReDecayPileUp::numberOfPileUp( HepRandomEnginePtr & ) {
-  return m_redecaysvc->getNPileUp();
-}
+unsigned int ReDecayPileUp::numberOfPileUp( HepRandomEnginePtr& ) { return m_redecaysvc->getNPileUp(); }

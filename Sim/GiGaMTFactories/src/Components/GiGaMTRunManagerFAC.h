@@ -23,5 +23,5 @@ public:
 
 private:
   static std::atomic_bool                   created;
-  Gaudi::Property<std::vector<std::string>> m_initCommands{this, "InitCommands", {}};
+  Gaudi::Property<std::vector<std::string>> m_initCommands{ this, "InitCommands", {} };
 };

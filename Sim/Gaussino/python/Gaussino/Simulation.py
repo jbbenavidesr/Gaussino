@@ -14,17 +14,16 @@ __email__ = "lhcb-simulation@cern.ch"
 
 from Gaudi.Configuration import log
 from GaudiKernel import SystemOfUnits
-
+from Gaussino.Geometry import GaussinoGeometry
 from Gaussino.Utilities import (
     GaussinoConfigurable,
-    get_set_configurable,
     add_constructors_with_names,
+    get_set_configurable,
 )
+from Gaussino.Visualization import GaussinoVisualization
 
 # Configurables
 from ParallelGeometry.Configuration import ParallelGeometry
-from Gaussino.Geometry import GaussinoGeometry
-from Gaussino.Visualization import GaussinoVisualization
 
 
 class GaussinoSimulation(GaussinoConfigurable):
@@ -79,8 +78,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         "TrackTruth": True,
         "PhysicsConstructors": [],
         # G4 commands
-        "G4BeginRunCommand":
-        ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
+        "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
         "G4BeginEventCommand": [],
         "G4EndEventCommand": [],
@@ -93,7 +91,6 @@ class GaussinoSimulation(GaussinoConfigurable):
         "CustomSimulation": "",  # name of the configurable
     }
 
-
     def __apply_configuration__(self):
         """Main configuration method for the simulation phase.
         It applies the properties of the simulation phase right after the main
@@ -102,6 +99,7 @@ class GaussinoSimulation(GaussinoConfigurable):
         the geometry configurable :class:`GaussinoGeometry <Gaussino.Geometry.GaussinoGeometry>`.
         """
         from Configurables import Gaussino
+
         log.debug("Configuring GaussinoSimulation")
         if "Simulation" not in Gaussino().getProp("Phases"):
             log.debug("-> No simulation phase, skipping.")
@@ -132,9 +130,9 @@ class GaussinoSimulation(GaussinoConfigurable):
         """
         from Configurables import (
             ApplicationMgr,
+            GiGaEventActionCommand,
             GiGaMT,
             GiGaRunActionCommand,
-            GiGaEventActionCommand,
         )
 
         log.debug("-> Configuring GiGa service: GiGaMT")
@@ -142,16 +140,14 @@ class GaussinoSimulation(GaussinoConfigurable):
         actioninit = get_set_configurable(giga, "ActionInitializer")
 
         actioninit.RunActions += ["GiGaRunActionCommand"]
-        run_commands = actioninit.addTool(GiGaRunActionCommand,
-                                          "GiGaRunActionCommand")
+        run_commands = actioninit.addTool(GiGaRunActionCommand, "GiGaRunActionCommand")
         run_commands.BeginOfRunCommands = self.getProp("G4BeginRunCommand")
         run_commands.EndOfRunCommands = self.getProp("G4EndRunCommand")
 
-        actioninit.EventActions += ['GiGaEventActionCommand']
+        actioninit.EventActions += ["GiGaEventActionCommand"]
         event_commands = actioninit.addTool(GiGaEventActionCommand)
-        event_commands.BeginOfEventCommands = self.getProp(
-            'G4BeginEventCommand')
-        event_commands.EndOfEventCommands = self.getProp('G4EndEventCommand')
+        event_commands.BeginOfEventCommands = self.getProp("G4BeginEventCommand")
+        event_commands.EndOfEventCommands = self.getProp("G4EndEventCommand")
 
         ApplicationMgr().ExtSvc += [giga]
 
@@ -181,10 +177,7 @@ class GaussinoSimulation(GaussinoConfigurable):
 
     def _set_physics(self):
         """Sets up the physics constructors and applies the cuts."""
-        from Configurables import (
-            GiGaMTModularPhysListFAC,
-            GiGaMT,
-        )
+        from Configurables import GiGaMT, GiGaMTModularPhysListFAC
 
         log.debug("-> Configuring physics constructors")
         giga = GiGaMT()
@@ -228,10 +221,7 @@ class GaussinoSimulation(GaussinoConfigurable):
             "TruthStoringTrackAction",
         ]
 
-        from Configurables import (
-            TruthFlaggingTrackAction,
-            TruthStoringTrackAction,
-        )
+        from Configurables import TruthFlaggingTrackAction, TruthStoringTrackAction
 
         flagging = actioninit.addTool(
             TruthFlaggingTrackAction,

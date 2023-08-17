@@ -37,13 +37,13 @@ public:
   StatusCode import( G4VPhysicalVolume* world ) const override;
 
 private:
-  Gaudi::Property<std::string> m_gdmlfile{this, "GDMLFileName", "", "Name of the GDML file to be loaded"};
-  Gaudi::Property<double>      m_tx{this, "GDMLTranslationX", 0. * Gaudi::Units::mm};
-  Gaudi::Property<double>      m_ty{this, "GDMLTranslationY", 0. * Gaudi::Units::mm};
-  Gaudi::Property<double>      m_tz{this, "GDMLTranslationZ", 0. * Gaudi::Units::mm};
-  Gaudi::Property<double>      m_rx{this, "GDMLRotationX", 0. * Gaudi::Units::deg};
-  Gaudi::Property<double>      m_ry{this, "GDMLRotationY", 0. * Gaudi::Units::deg};
-  Gaudi::Property<double>      m_rz{this, "GDMLRotationZ", 0. * Gaudi::Units::deg};
+  Gaudi::Property<std::string> m_gdmlfile{ this, "GDMLFileName", "", "Name of the GDML file to be loaded" };
+  Gaudi::Property<double>      m_tx{ this, "GDMLTranslationX", 0. * Gaudi::Units::mm };
+  Gaudi::Property<double>      m_ty{ this, "GDMLTranslationY", 0. * Gaudi::Units::mm };
+  Gaudi::Property<double>      m_tz{ this, "GDMLTranslationZ", 0. * Gaudi::Units::mm };
+  Gaudi::Property<double>      m_rx{ this, "GDMLRotationX", 0. * Gaudi::Units::deg };
+  Gaudi::Property<double>      m_ry{ this, "GDMLRotationY", 0. * Gaudi::Units::deg };
+  Gaudi::Property<double>      m_rz{ this, "GDMLRotationZ", 0. * Gaudi::Units::deg };
 };
 
 DECLARE_COMPONENT( GDMLReader )

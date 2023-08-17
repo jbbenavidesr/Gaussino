@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: FixedLuminosityForRareProcess.cpp,v 1.3 2009-04-07 16:11:21 gcorti Exp $
-// Include files 
+// Include files
 
 // local
 #include "FixedLuminosityForRareProcess.h"
@@ -19,16 +19,16 @@
 
 // From Event
 #include "Event/BeamParameters.h"
+#include "Event/GenCountersFSR.h"
 #include "Event/GenFSR.h"
 #include "Event/GenFSRMTManager.h"
-#include "Event/GenCountersFSR.h"
 
 // From Generators
-#include "Generators/GenCounters.h"
 #include "GenInterfaces/ICounterLogFile.h"
+#include "Generators/GenCounters.h"
 
-#include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandPoisson.h"
+#include "CLHEP/Random/RandomEngine.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : FixedLuminosityForRareProcess
@@ -40,68 +40,60 @@
 
 DECLARE_COMPONENT( FixedLuminosityForRareProcess )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-FixedLuminosityForRareProcess::FixedLuminosityForRareProcess( const std::string& type,
-                                  const std::string& name,
-                                  const IInterface* parent )
-  : GaudiTool ( type, name , parent ) ,
-    m_xmlLogTool( 0 ) ,
-    m_nEvents( 0 ) {
-    declareInterface< IPileUpTool >( this ) ;
-    declareProperty( "BeamParameters" , 
-                     m_beamParameters = LHCb::BeamParametersLocation::Default ) ;
-    declareProperty ( "GenFSRLocation", m_FSRName =
-                      LHCb::GenFSRLocation::Default);
+FixedLuminosityForRareProcess::FixedLuminosityForRareProcess( const std::string& type, const std::string& name,
+                                                              const IInterface* parent )
+    : GaudiTool( type, name, parent ), m_xmlLogTool( 0 ), m_nEvents( 0 ) {
+  declareInterface<IPileUpTool>( this );
+  declareProperty( "BeamParameters", m_beamParameters = LHCb::BeamParametersLocation::Default );
+  declareProperty( "GenFSRLocation", m_FSRName = LHCb::GenFSRLocation::Default );
 }
 
 //=============================================================================
-// Destructor 
+// Destructor
 //=============================================================================
-FixedLuminosityForRareProcess::~FixedLuminosityForRareProcess( ) { ; }
+FixedLuminosityForRareProcess::~FixedLuminosityForRareProcess() { ; }
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode FixedLuminosityForRareProcess::initialize( ) {
-  StatusCode sc = GaudiTool::initialize( ) ;
-  if ( sc.isFailure() ) return sc ;
+StatusCode FixedLuminosityForRareProcess::initialize() {
+  StatusCode sc = GaudiTool::initialize();
+  if ( sc.isFailure() ) return sc;
 
   // XML file for generator statistics
-  m_xmlLogTool = tool< ICounterLogFile >( "XmlCounterLogFile" ) ;
+  m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
 
-  info() << "Poisson distribution with fixed luminosity. " << endmsg ;
+  info() << "Poisson distribution with fixed luminosity. " << endmsg;
 
-  return sc ;
+  return sc;
 }
 
 //=============================================================================
 // Compute the number of pile up to generate according to beam parameters
 //=============================================================================
-unsigned int FixedLuminosityForRareProcess::numberOfPileUp( HepRandomEnginePtr & engine ) {
-  LHCb::BeamParameters * beam = get< LHCb::BeamParameters >( m_beamParameters ) ;
-  if ( 0 == beam ) Exception( "No beam parameters registered" ) ;  
+unsigned int FixedLuminosityForRareProcess::numberOfPileUp( HepRandomEnginePtr& engine ) {
+  LHCb::BeamParameters* beam = get<LHCb::BeamParameters>( m_beamParameters );
+  if ( 0 == beam ) Exception( "No beam parameters registered" );
 
-  auto genFSR = GenFSRMTManager::GetGenFSR(m_FSRName);
+  auto genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
-  unsigned int result = 0 ;
-  m_nEvents++ ;
-  if(genFSR) {
-    genFSR->incrementGenCounter(LHCb::GenCountersFSR::CounterKey::AllEvt, 1);
-  }
+  unsigned int result = 0;
+  m_nEvents++;
+  if ( genFSR ) { genFSR->incrementGenCounter( LHCb::GenCountersFSR::CounterKey::AllEvt, 1 ); }
 
-  CLHEP::RandPoisson poissonGenerator{engine.getref(), beam->nu()};
+  CLHEP::RandPoisson poissonGenerator{ engine.getref(), beam->nu() };
 
-  result = (unsigned int) ( poissonGenerator() + 1.0 ) ;
-  return result ;
+  result = (unsigned int)( poissonGenerator() + 1.0 );
+  return result;
 }
 
 //=============================================================================
 // Print the specific pile up counters
 //=============================================================================
-void FixedLuminosityForRareProcess::printPileUpCounters( ) {
-  using namespace GenCounters ;
-  printCounter( m_xmlLogTool , "all events (including empty events)", m_nEvents ) ;
+void FixedLuminosityForRareProcess::printPileUpCounters() {
+  using namespace GenCounters;
+  printCounter( m_xmlLogTool, "all events (including empty events)", m_nEvents );
 }

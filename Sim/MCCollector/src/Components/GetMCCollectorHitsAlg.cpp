@@ -10,7 +10,7 @@
 \*****************************************************************************/
 
 // Gaudi
-#include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
 
 // GiGaMT
@@ -28,19 +28,20 @@
 
 namespace MCCollector {
   class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits( const G4EventProxies&,
-                                                                      const LinkedParticleMCParticleLinks& )> {
+                                                                      const LinkedParticleMCParticleLinks& ),
+                                                        Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
         : Transformer(
               name, pSvcLocator,
-              {KeyValue{"Input", Gaussino::G4EventsLocation::Default},
-               KeyValue{"LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default}},
-              KeyValue{"MCHitsLocation", ""} ) {}
+              { KeyValue{ "Input", Gaussino::G4EventsLocation::Default },
+                KeyValue{ "LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default } },
+              KeyValue{ "MCHitsLocation", "" } ) {}
 
     virtual LHCb::MCHits operator()( const G4EventProxies&, const LinkedParticleMCParticleLinks& ) const override;
 
   protected:
-    Gaudi::Property<std::string> m_colName{this, "CollectionName", ""};
+    Gaudi::Property<std::string> m_colName{ this, "CollectionName", "" };
   };
 } // namespace MCCollector
 

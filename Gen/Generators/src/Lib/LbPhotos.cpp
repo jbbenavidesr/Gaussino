@@ -20,16 +20,16 @@
 
 extern "C" {
 #ifdef WIN32
-  void __stdcall SETPHOTOSOUTPUTUNIT( int * ) ;
+void __stdcall SETPHOTOSOUTPUTUNIT( int* );
 #else
-  void setphotosoutputunit_( int * ) ;
+void setphotosoutputunit_( int* );
 #endif
 }
 
 void LbPhotos::setOutputUnit( int outputUnit ) {
 #ifdef WIN32
-  SETPHOTOSOUTPUTUNIT( &outputUnit ) ;
+  SETPHOTOSOUTPUTUNIT( &outputUnit );
 #else
-  setphotosoutputunit_( &outputUnit ) ;
+  setphotosoutputunit_( &outputUnit );
 #endif
 }

@@ -20,8 +20,9 @@
 
 DECLARE_COMPONENT( ReDecaySimAlg )
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths> ReDecaySimAlg::
-                                                                                   operator()( const HepMC3::GenEventPtrs& originalhepmcevents, const HepMC3::GenEventPtrs& signalhepmcevents ) const {
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths>
+ReDecaySimAlg::operator()( const HepMC3::GenEventPtrs& originalhepmcevents,
+                           const HepMC3::GenEventPtrs& signalhepmcevents ) const {
   debug() << "==> Execute" << endmsg;
   auto& token = *m_tokenhandle.get();
   // Now we store a thread-local reference to this token in the service.
@@ -29,7 +30,7 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
   // subsequent tools without having to change all the interfaces again to explicitly pass
   // it around (this might be changed in the future)
   auto tokenguard = m_redecaysvc->setCurrentToken( token );
-  auto engine = createRndmEngine();
+  auto engine     = createRndmEngine();
   // Get the individual components, make copies instead of reference because
   // we will modify the g4proxies in a moment.
   Gaussino::GiGaSimReturns ret_tuple{};
@@ -105,5 +106,5 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruth
       } ) << endmsg;
     }
   }
-  return {std::move( g4proxies ), std::move( mctruths ), std::move( signal_truths )};
+  return { std::move( g4proxies ), std::move( mctruths ), std::move( signal_truths ) };
 }

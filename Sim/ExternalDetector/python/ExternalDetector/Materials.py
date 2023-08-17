@@ -31,9 +31,9 @@ LEAD = {
 SILICA = {
     "Type": "MaterialFromElements",
     "Symbols": ["Si"],
-    "AtomicNumbers": [14.],
+    "AtomicNumbers": [14.0],
     "MassNumbers": [27.9769 * units.g / units.mole],
-    "MassFractions": [1.],
+    "MassFractions": [1.0],
     "Density": 2.329 * units.g / units.cm3,
     "State": "Solid",
 }

@@ -10,8 +10,7 @@
 \*****************************************************************************/
 #include "GiGaMTCoreRun/Common.h"
 
-std::ostream& operator<<( std::ostream& out, const Gaussino::ConversionType& type )
-{
+std::ostream& operator<<( std::ostream& out, const Gaussino::ConversionType& type ) {
   switch ( type ) {
   case Gaussino::ConversionType::G4:
     return out << "G4";

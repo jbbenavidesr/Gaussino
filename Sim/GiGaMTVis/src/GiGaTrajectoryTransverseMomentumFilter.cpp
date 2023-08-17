@@ -54,8 +54,8 @@ namespace GiGa::TrajectoryInitialPT {
   };
 
   class FilterFactory : public extends<GiGaTool, GiGaFactoryBase<G4TrajFilterFactory>> {
-    Gaudi::Property<double> m_min_pt{this, "MinPT", 0 * Gaudi::Units::MeV};
-    Gaudi::Property<double> m_max_pt{this, "MaxPT", 0 * Gaudi::Units::MeV};
+    Gaudi::Property<double> m_min_pt{ this, "MinPT", 0 * Gaudi::Units::MeV };
+    Gaudi::Property<double> m_max_pt{ this, "MaxPT", 0 * Gaudi::Units::MeV };
 
   public:
     using extends::extends;
@@ -98,7 +98,7 @@ void GiGa::TrajectoryInitialPT::Filter::Print( std::ostream& ostr ) const {
 GiGa::TrajectoryInitialPT::FilterG4Factory::ModelAndMessengers
 GiGa::TrajectoryInitialPT::FilterG4Factory::Create( const G4String& placement, const G4String& name ) {
   using GiGa::TrajectoryInitialPT::Filter;
-  auto model = new Filter{name, m_min_pt, m_max_pt};
+  auto model = new Filter{ name, m_min_pt, m_max_pt };
   if ( MessageInterfacelevel() < 1 ) { model->SetVerbose( true ); }
   Messengers messengers = {};
   // TODO: here we do not allow setting of the properties through G4 UI,

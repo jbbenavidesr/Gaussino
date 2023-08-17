@@ -12,7 +12,7 @@
 
 // from Gaudi
 #include "GaudiKernel/IAlgTool.h"
-#include<type_traits>
+#include <type_traits>
 
 /** GiGaFactoryBase
  *
@@ -24,8 +24,7 @@
  */
 
 template <typename T, typename... Args>
-class GiGaFactoryBase : virtual public extend_interfaces<IAlgTool>
-{
+class GiGaFactoryBase : virtual public extend_interfaces<IAlgTool> {
 public:
   // Retrieve interface ID
   static const InterfaceID& interfaceID() { return iid::interfaceID(); }
@@ -34,5 +33,5 @@ public:
 
   using extend_interfaces::extend_interfaces;
 
-  virtual T* construct(std::conditional_t<std::is_pointer_v<Args>,Args,const Args&>...) const = 0;
+  virtual T* construct( std::conditional_t<std::is_pointer_v<Args>, Args, const Args&>... ) const = 0;
 };

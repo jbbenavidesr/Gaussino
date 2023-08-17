@@ -22,8 +22,8 @@ namespace Gaussino::CustomSimulation {
   class ModelFactory : public extends<GiGaTool, GiGaFactoryBase<G4VFastSimulationModel>> {
     static_assert( std::is_base_of<G4VFastSimulationModel, TModel>::value );
 
-    Gaudi::Property<std::string> m_region{this, "RegionName", ""};
-    Gaudi::Property<std::string> m_model{this, "Name", ""};
+    Gaudi::Property<std::string> m_region{ this, "RegionName", "" };
+    Gaudi::Property<std::string> m_model{ this, "Name", "" };
 
   public:
     using extends::extends;

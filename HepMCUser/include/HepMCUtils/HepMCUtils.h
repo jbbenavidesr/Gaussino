@@ -28,8 +28,7 @@
  *  @date   2006-02-14
  */
 
-namespace HepMCUtils
-{
+namespace HepMCUtils {
   /// Returns true if trees of vertices V1 and V2 belong to the same tree
   bool commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::ConstGenVertexPtr V2 );
 
@@ -49,12 +48,11 @@ namespace HepMCUtils
   void RemoveDaughters( const HepMC3::GenParticlePtr& thePart );
 
   /// Remove all daughters of a particle
-  std::string RelationToString( const HepMC3::Relatives & range );
+  std::string RelationToString( const HepMC3::Relatives& range );
 
   /// Comparison function as structure
   struct particleOrder {
-    bool operator()( const HepMC3::ConstGenParticlePtr& part1, const HepMC3::ConstGenParticlePtr& part2 ) const
-    {
+    bool operator()( const HepMC3::ConstGenParticlePtr& part1, const HepMC3::ConstGenParticlePtr& part2 ) const {
       return ( part1->id() < part2->id() );
     }
   };
@@ -65,7 +63,7 @@ namespace HepMCUtils
   HepMC3::ConstGenParticlePtr hasOscillated( HepMC3::ConstGenParticlePtr P );
 
   /// Type of HepMC particles container ordered with barcodes
-  typedef std::set<HepMC3::GenParticlePtr, particleOrder> ParticleSet;
+  typedef std::set<HepMC3::GenParticlePtr, particleOrder>      ParticleSet;
   typedef std::set<HepMC3::ConstGenParticlePtr, particleOrder> ConstParticleSet;
 
 } // namespace HepMCUtils
@@ -77,8 +75,7 @@ namespace HepMCUtils
 //=============================================================================
 // Function to test if vertices are in the same decay family
 //=============================================================================
-inline bool HepMCUtils::commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::ConstGenVertexPtr V2 )
-{
+inline bool HepMCUtils::commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::ConstGenVertexPtr V2 ) {
   if ( !V2 ) return false;
   if ( !V1 ) return false;
   if ( V1 == V2 ) return true;
@@ -99,13 +96,11 @@ inline bool HepMCUtils::commonTrees( HepMC3::ConstGenVertexPtr V1, HepMC3::Const
 // Function to sort HepMC3::GenParticles according to their barcode
 //=============================================================================
 inline bool HepMCUtils::compareHepMCParticles( const HepMC3::GenParticlePtr& part1,
-                                               const HepMC3::GenParticlePtr& part2 )
-{
+                                               const HepMC3::GenParticlePtr& part2 ) {
   return ( part1->id() < part2->id() );
 }
 inline bool HepMCUtils::compareConstHepMCParticles( const HepMC3::ConstGenParticlePtr& part1,
-                                                    const HepMC3::ConstGenParticlePtr& part2 )
-{
+                                                    const HepMC3::ConstGenParticlePtr& part2 ) {
   return ( part1->id() < part2->id() );
 }
 
@@ -113,8 +108,7 @@ inline bool HepMCUtils::compareConstHepMCParticles( const HepMC3::ConstGenPartic
 // Returns true if B is first B (removing oscillation B) and false
 // if the B is the B after oscillation
 //=============================================================================
-inline bool HepMCUtils::IsBAtProduction( const HepMC3::ConstGenParticlePtr& thePart )
-{
+inline bool HepMCUtils::IsBAtProduction( const HepMC3::ConstGenParticlePtr& thePart ) {
   if ( ( abs( thePart->pdg_id() ) != 511 ) && ( abs( thePart->pdg_id() ) != 531 ) ) return true;
   if ( !thePart->production_vertex() ) return true;
   HepMC3::ConstGenVertexPtr theVertex = thePart->production_vertex();
@@ -124,8 +118,7 @@ inline bool HepMCUtils::IsBAtProduction( const HepMC3::ConstGenParticlePtr& theP
   return true;
 }
 
-inline HepMC3::ConstGenParticlePtr HepMCUtils::hasOscillated( HepMC3::ConstGenParticlePtr P )
-{
+inline HepMC3::ConstGenParticlePtr HepMCUtils::hasOscillated( HepMC3::ConstGenParticlePtr P ) {
   auto ev = P->end_vertex();
   if ( !ev ) return nullptr;
   if ( 1 != ev->particles_out().size() ) return nullptr;
@@ -138,8 +131,7 @@ inline HepMC3::ConstGenParticlePtr HepMCUtils::hasOscillated( HepMC3::ConstGenPa
 //=============================================================================
 // Erase the daughters of one particle
 //=============================================================================
-inline void HepMCUtils::RemoveDaughters( const HepMC3::GenParticlePtr& theParticle )
-{
+inline void HepMCUtils::RemoveDaughters( const HepMC3::GenParticlePtr& theParticle ) {
   if ( 0 == theParticle ) return;
 
   auto&& EV = theParticle->end_vertex();
@@ -157,19 +149,13 @@ inline void HepMCUtils::RemoveDaughters( const HepMC3::GenParticlePtr& thePartic
     if ( 0 != part->end_vertex() ) tempList.push_back( part->end_vertex() );
   }
 
-  for ( auto& iter : tempList ) {
-    theEvent->remove_vertex( iter );
-  }
+  for ( auto& iter : tempList ) { theEvent->remove_vertex( iter ); }
 }
 
-inline std::string HepMCUtils::RelationToString( const HepMC3::Relatives & range ){
-  if( dynamic_cast<const HepMC3::Parents*>(&range) )
-    return "HepMC3::Parents";
-  if( dynamic_cast<const HepMC3::Ancestors*>(&range) )
-    return "HepMC3::Ancestors";
-  if( dynamic_cast<const HepMC3::Children*>(&range) )
-    return "HepMC3::Children";
-  if( dynamic_cast<const HepMC3::Descendants*>(&range) )
-    return "HepMC3::Descendants";
+inline std::string HepMCUtils::RelationToString( const HepMC3::Relatives& range ) {
+  if ( dynamic_cast<const HepMC3::Parents*>( &range ) ) return "HepMC3::Parents";
+  if ( dynamic_cast<const HepMC3::Ancestors*>( &range ) ) return "HepMC3::Ancestors";
+  if ( dynamic_cast<const HepMC3::Children*>( &range ) ) return "HepMC3::Children";
+  if ( dynamic_cast<const HepMC3::Descendants*>( &range ) ) return "HepMC3::Descendants";
   return "InvalidRange";
 }

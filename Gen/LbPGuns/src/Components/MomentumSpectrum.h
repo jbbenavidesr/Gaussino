@@ -22,10 +22,10 @@
 #include "Event/GenHeader.h"
 
 // from ROOT
+#include "TFile.h"
 #include "TH1.h"
 #include "TH2D.h"
 #include "TH3D.h"
-#include "TFile.h"
 
 /** @class MomentumSpectrum MomentumSpectrum.h "MomentumSpectrum.h"
  *
@@ -39,12 +39,10 @@
  *  @author Dan Johnson (adapted from Michel De Cian)
  *  @date   2014-02-03
  */
-class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
- public:
-
+class MomentumSpectrum : public GaudiTool, virtual public IParticleGunTool {
+public:
   /// Constructor
-  MomentumSpectrum( const std::string & type , const std::string& name,
-                 const IInterface * parent ) ;
+  MomentumSpectrum( const std::string& type, const std::string& name, const IInterface* parent );
 
   /// Destructor
   virtual ~MomentumSpectrum();
@@ -53,19 +51,18 @@ class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
   virtual StatusCode initialize() override;
 
   /// Generation of particles
-  virtual void generateParticle( Gaudi::LorentzVector & momentum , 
-                                 Gaudi::LorentzVector & origin , 
-                                 int & pdgId , HepRandomEnginePtr & engine ) override;
+  virtual void generateParticle( Gaudi::LorentzVector& momentum, Gaudi::LorentzVector& origin, int& pdgId,
+                                 HepRandomEnginePtr& engine ) override;
 
   /// Print counters
-  virtual void printCounters( ) override {};
+  virtual void printCounters() override{};
 
- private:
+private:
   /// Pdg Codes of particles to generate (Set by options)
-  std::vector<int>         m_pdgCodes;
+  std::vector<int> m_pdgCodes;
 
   /// Masses of particles to generate
-  std::vector<double>      m_masses;
+  std::vector<double> m_masses;
 
   /// Names of particles to generate
   std::vector<std::string> m_names;
@@ -80,16 +77,14 @@ class MomentumSpectrum : public GaudiTool , virtual public IParticleGunTool {
   std::string m_binningVars;
 
   /// Save run and event number
-  bool newEvent(const LHCb::GenHeader* evt);
+  bool     newEvent( const LHCb::GenHeader* evt );
   longlong m_runnumber = -1;
   longlong m_evtnumber = -1;
 
   /// Histogram pointers (ready for TH2D if using ptpz binning or TH3D if using pxpypz binning
-  TH1* m_hist;
+  TH1*  m_hist;
   TH2D* m_hist2d;
   TH3D* m_hist3d;
-
-
 };
 
 #endif // PARTICLEGUNS_MOMENTUMSPECTRUM_H

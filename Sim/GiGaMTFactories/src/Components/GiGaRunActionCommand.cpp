@@ -52,12 +52,12 @@ namespace GiGa {
   };
 
   class RunActionCommandFactory : public extends<GiGaTool, GiGaFactoryBase<G4UserRunAction>> {
-    Gaudi::Property<RunCommands> m_beginCmds{this, "BeginOfRunCommands", {}};
-    Gaudi::Property<RunCommands> m_endCmds{this, "EndOfRunCommands", {}};
+    Gaudi::Property<RunCommands> m_beginCmds{ this, "BeginOfRunCommands", {} };
+    Gaudi::Property<RunCommands> m_endCmds{ this, "EndOfRunCommands", {} };
 
     // enable UI session
-    Gaudi::Property<bool> m_beginSession{this, "BeginOfRunUISession", false};
-    Gaudi::Property<bool> m_endSession{this, "EndOfRunUISession", false};
+    Gaudi::Property<bool> m_beginSession{ this, "BeginOfRunUISession", false };
+    Gaudi::Property<bool> m_endSession{ this, "EndOfRunUISession", false };
 
   public:
     using extends::extends;

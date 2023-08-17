@@ -11,6 +11,7 @@
 from Gaussino.pytest.helpers import *
 from Gaussino.pytest.options import *
 
+
 @reset_configurables
 @events_10
 @only_generation

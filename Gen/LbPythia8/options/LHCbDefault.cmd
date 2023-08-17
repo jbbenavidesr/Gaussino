@@ -17,13 +17,13 @@ ParticleDecays:mixB = off
 # -------------------------------
 # control verbosity
 # -------------------------------
-Init:showAllSettings = off                   
-Init:showMultipartonInteractions = off 
-Init:showProcesses = off 
+Init:showAllSettings = off
+Init:showMultipartonInteractions = off
+Init:showProcesses = off
 Init:showChangedSettings = off
 Init:showChangedParticleData = off
-Next:numberShowInfo = 0 
-Next:numberShowProcess = 0 
+Next:numberShowInfo = 0
+Next:numberShowProcess = 0
 Next:numberShowEvent = 0
 Next:numberCount = 0
 # -------------------------------
@@ -93,13 +93,13 @@ StringFlav:etaPrimeSup = 0.4
 # -------------------------------
 # cross sections tuning (as in pythia6 default)
 # -------------------------------
-#SigmaProcess:renormMultFac = 0.075 
+#SigmaProcess:renormMultFac = 0.075
 #BeamRemnants:primordialKThard = 1.0
 # -------------------------------
 # Lund fragmentation tuning (as in pythia6 default)
 # -------------------------------
 #StringFragmentation:stopMass = 0.4
-#StringZ:aLund = 0.3 
-#StringZ:bLund = 0.58 
+#StringZ:aLund = 0.3
+#StringZ:bLund = 0.58
 #StringZ:rFactB = 1.
 #StringPT:sigma = 0.36

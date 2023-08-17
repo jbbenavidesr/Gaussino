@@ -9,13 +9,14 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Configurables import ExternalDetectorEmbedder
-from GaudiKernel import SystemOfUnits as units
 from Gaudi.Configuration import DEBUG
+from GaudiKernel import SystemOfUnits as units
+
 external = ExternalDetectorEmbedder("ExternalDetectorEmbedder_0")
 external.MagneticField = {
     "Type": "UniformMagneticField",
-    "B_x": 1. * units.tesla,
-    "B_y": 0. * units.tesla,
-    "B_z": 0. * units.tesla,
+    "B_x": 1.0 * units.tesla,
+    "B_y": 0.0 * units.tesla,
+    "B_z": 0.0 * units.tesla,
     "OutputLevel": DEBUG,
 }

@@ -11,15 +11,11 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
-from Gaudi.Configuration import log
-from GaudiKernel.ConfigurableMeta import ConfigurableMeta
-from Gaussino.Utilities import (
-    add_constructors_with_names,
-    GaussinoConfigurable,
-)
-
 # Configurables (do NOT use 'from Configurables' here)
 from ExternalDetector.Configuration import ExternalDetectorEmbedder
+from Gaudi.Configuration import log
+from GaudiKernel.ConfigurableMeta import ConfigurableMeta
+from Gaussino.Utilities import GaussinoConfigurable, add_constructors_with_names
 from ParallelGeometry.Configuration import ParallelGeometry
 
 
@@ -80,14 +76,12 @@ class GaussinoGeometry(GaussinoConfigurable):
         :class:`Gaussino <Gaussino.Configuration.Gaussino>`.
         """
         from Configurables import Gaussino
+
         log.debug("Configuring GaussinoGeometry")
         if "Simulation" not in Gaussino().getProp("Phases"):
             log.debug("-> Only the generation phase, skipping.")
             return
-        from Configurables import (
-            GiGaMTDetectorConstructionFAC,
-            GiGaMT,
-        )
+        from Configurables import GiGaMT, GiGaMTDetectorConstructionFAC
 
         giga = GiGaMT()
         dettool = giga.addTool(

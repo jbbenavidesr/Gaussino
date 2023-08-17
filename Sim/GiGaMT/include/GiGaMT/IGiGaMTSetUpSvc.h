@@ -32,11 +32,10 @@ class G4VPhysicalVolume;
  *  @author Dominik Muller
  */
 
-class IGiGaMTSetUpSvc : virtual public IService
-{
+class IGiGaMTSetUpSvc : virtual public IService {
 public:
   /// Retrieve interface ID
-  DeclareInterfaceID(IGiGaMTSetUpSvc, 1, 0);
+  DeclareInterfaceID( IGiGaMTSetUpSvc, 1, 0 );
 
   /** initialize method
    *  @return status code
@@ -49,7 +48,6 @@ public:
   virtual StatusCode finalize() override = 0;
 
 public:
-
 protected:
   /// virtual destructor
   virtual ~IGiGaMTSetUpSvc(){};

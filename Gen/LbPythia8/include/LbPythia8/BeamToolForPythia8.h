@@ -35,10 +35,10 @@ class BeamToolForPythia8 : public Pythia8::BeamShape {
 
 public:
   // Initialize beam parameters.
-  void init(Pythia8::Settings& settings, Pythia8::Rndm* rndmPtrIn) override;
+  void init( Pythia8::Settings& settings, Pythia8::Rndm* rndmPtrIn ) override;
 
   /// Constructor
-  BeamToolForPythia8( IBeamTool *i , Pythia8::Settings& settings, StatusCode &sc ) ;
+  BeamToolForPythia8( IBeamTool* i, Pythia8::Settings& settings, StatusCode& sc );
 
   /// pick parameterisation for the beam spread and direction
   void pick() override;
@@ -47,9 +47,8 @@ public:
   ~BeamToolForPythia8();
 
 private:
-  IBeamTool* m_iBeamTool;
+  IBeamTool*       m_iBeamTool;
   Gaudi::XYZVector m_meanBeam1;
   Gaudi::XYZVector m_meanBeam2;
-
-} ;
+};
 #endif // LBPYTHIA8_BEAMTOOLFORPYTHIA8_H

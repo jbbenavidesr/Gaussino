@@ -17,8 +17,7 @@
 // SimSvc
 class IRegionsDefinitionSvc;
 class G4LogicalVolume;
-namespace Gaussino
-{
+namespace Gaussino {
   class UserLimits;
 }
 // ============================================================================
@@ -32,8 +31,7 @@ namespace Gaussino
  *  @date   2003-04-06
  *  @author Dominik Muller
  */
-class GiGaSetSimAttributes : public extends<GaudiTool, IGaussinoTool>
-{
+class GiGaSetSimAttributes : public extends<GaudiTool, IGaussinoTool> {
   // friend factory for instantiation
   //  friend class GiGaFactory<GiGaSetSimAttributes>;
 public:
@@ -64,6 +62,6 @@ protected:
   inline bool overwrite() const { return m_overwrite; }
 
 private:
-  ServiceHandle<IRegionsDefinitionSvc> m_simSvc{this, "RegionsDefinitionService", "RegionsDefinitionSvc"};
-  Gaudi::Property<bool> m_overwrite{this, "Overwrite", true};
+  ServiceHandle<IRegionsDefinitionSvc> m_simSvc{ this, "RegionsDefinitionService", "RegionsDefinitionSvc" };
+  Gaudi::Property<bool>                m_overwrite{ this, "Overwrite", true };
 };

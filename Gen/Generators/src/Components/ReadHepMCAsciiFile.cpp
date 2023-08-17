@@ -10,75 +10,75 @@
 \*****************************************************************************/
 // $Id: ReadHepMCAsciiFile.cpp,v 1.5 2009-03-02 12:12:35 robbep Exp $
 // ===========================================================================
-// Include files 
+// Include files
 // ===========================================================================
 // GaudiKernel
 // ===========================================================================
-#include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/PhysicalConstants.h"
+#include "GaudiKernel/SystemOfUnits.h"
 // ===========================================================================
 // GaudiAlg
 // ===========================================================================
 #include "GaudiAlg/GaudiTool.h"
 // ===========================================================================
-// Generators 
+// Generators
 // ===========================================================================
 #include "GenInterfaces/IProductionTool.h"
 // ===========================================================================
-// HepMC 
+// HepMC
 // ===========================================================================
 #include "HepMC3/ReaderAscii.h"
 // ===========================================================================
-// Local 
+// Local
 // ===========================================================================
 #include "Generators/Scale.h"
 // ===========================================================================
 /** @class ReadHepMCAsciiFile ReadHepMCAsciiFile.cpp
  *
- *  Simple "production tool", which actually reads HepMC events 
- *  from  ascii input file. The tool could be useful to read 
- *  information from external generators, if their integration 
- *  into Gauss is impossible, difficult or not needed. 
- *  
+ *  Simple "production tool", which actually reads HepMC events
+ *  from  ascii input file. The tool could be useful to read
+ *  information from external generators, if their integration
+ *  into Gauss is impossible, difficult or not needed.
+ *
  *  The tool has 2 properties:
  *
- *    - <c>Input</c>  : The name of input fiel in HepMC Ascii format 
+ *    - <c>Input</c>  : The name of input fiel in HepMC Ascii format
  *                    ( the default value is <c>""</c> (empty string))
- *    - <c>Rescale<c> : Boolean flag to rescal the input event from 
+ *    - <c>Rescale<c> : Boolean flag to rescal the input event from
  *                     Pythia units to LHCb units.
  *                     The default value is <c>true</c>.
  *
  *  @author Vanya BELYAEV ibelyaev@physics.syr.edu
  *  @date 2005-10-05
  */
-class ReadHepMCAsciiFile 
-  :         public       GaudiTool
-  , virtual public IProductionTool 
-{
+class ReadHepMCAsciiFile : public GaudiTool, virtual public IProductionTool {
 public:
-  /// initialization of the tool 
-  virtual StatusCode initialize () override {
-    StatusCode sc = GaudiTool::initialize () ;
-    if ( sc.isFailure() ) { return sc ; }
-    /// check the output file 
-    if ( m_input.empty() ) 
-    { return Error ( "Input file name is not specified!" ) ; }
-    // open the file 
-    m_file = new HepMC3::ReaderAscii ( m_input.c_str() ) ;
-    return StatusCode::SUCCESS ;
+  /// initialization of the tool
+  virtual StatusCode initialize() override {
+    StatusCode sc = GaudiTool::initialize();
+    if ( sc.isFailure() ) { return sc; }
+    /// check the output file
+    if ( m_input.empty() ) { return Error( "Input file name is not specified!" ); }
+    // open the file
+    m_file = new HepMC3::ReaderAscii( m_input.c_str() );
+    return StatusCode::SUCCESS;
   }
-  /// finalization of the tool 
-  virtual StatusCode finalize () override {
+  /// finalization of the tool
+  virtual StatusCode finalize() override {
     // delete the stream  (close the file!)
-    if ( 0 != m_file ) { delete m_file ; m_file = 0 ; }
+    if ( 0 != m_file ) {
+      delete m_file;
+      m_file = 0;
+    }
     // finalize the base class ;
-    return GaudiTool::finalize() ;
+    return GaudiTool::finalize();
   }
+
 public:
-  virtual StatusCode initializeGenerator() override { return StatusCode::SUCCESS ; } 
-  
+  virtual StatusCode initializeGenerator() override { return StatusCode::SUCCESS; }
+
   // ===================================================================
-  /** Generate a primary interaction. 
+  /** Generate a primary interaction.
    *  The generated event contains all what happens up to the decay of
    *  hadrons. Decay of hadrons will be performed in general by the decay
    *  tool. Then all hadrons must be declared stable in the production
@@ -87,45 +87,44 @@ public:
    *  @param[out] theInfo   Informations about the hard process of the
    *                        generated interaction.
    */
-  virtual StatusCode generateEvent 
-  ( HepMC3::GenEventPtr theEvent , 
-    LHCb::GenCollision * theInfo , HepRandomEnginePtr & ) const override;
+  virtual StatusCode generateEvent( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theInfo,
+                                    HepRandomEnginePtr& ) const override;
   // ===================================================================
   /// Declare a particle stable to the production generator.
-  virtual void setStable( const LHCb::ParticleProperty* /* thePP */ ) override {};
+  virtual void setStable( const LHCb::ParticleProperty* /* thePP */ ) override{};
   // ===================================================================
   /** Update the properties of the particle in the production generator
    *  with values from the particle property service.
    */
   // ===================================================================
-  virtual void updateParticleProperties( const LHCb::ParticleProperty * /* thePP */ ) override {};
+  virtual void updateParticleProperties( const LHCb::ParticleProperty* /* thePP */ ) override{};
   // ===================================================================
   /// Turn off the fragmentation step in the generation.
-  virtual void turnOffFragmentation() override {};
+  virtual void turnOffFragmentation() override{};
   // ===================================================================
   /// Turn on the fragmentation step in the generation.
-  virtual void turnOnFragmentation() override {};
+  virtual void turnOnFragmentation() override{};
   // ===================================================================
   /** Hadronize the event.
    *  @param[in,out] theEvent  Unfragmented event to hadronize.
-   *  @param[out]    theInfo   Informations about the hard process of the 
+   *  @param[out]    theInfo   Informations about the hard process of the
    *                           generated interaction.
    */
-  virtual StatusCode hadronize
-  ( HepMC3::GenEventPtr     /* theEvent */ , 
-    LHCb::GenCollision * /* theInfo  */,
-    HepRandomEnginePtr & ) override { return StatusCode::SUCCESS; };
+  virtual StatusCode hadronize( HepMC3::GenEventPtr /* theEvent */, LHCb::GenCollision* /* theInfo  */,
+                                HepRandomEnginePtr& ) override {
+    return StatusCode::SUCCESS;
+  };
   // ===================================================================
   /// Save the parton level event (when the fragmentation is turned off)
-  virtual void savePartonEvent( HepMC3::GenEventPtr /* theEvent */ ) override {};
+  virtual void savePartonEvent( HepMC3::GenEventPtr /* theEvent */ ) override{};
   // ===================================================================
   /// Retrieve the previously saved parton event to re-hadronize it.
-  virtual void retrievePartonEvent( HepMC3::GenEventPtr /* theEvent */ ) override {};
+  virtual void retrievePartonEvent( HepMC3::GenEventPtr /* theEvent */ ) override{};
   // ===================================================================
-  /// Print configuration of production generator 
-  virtual void printRunningConditions( ) const override {};
+  /// Print configuration of production generator
+  virtual void printRunningConditions() const override{};
   // ===================================================================
-  /** Define special particles whose properties must not be updated from 
+  /** Define special particles whose properties must not be updated from
    *  the particle property service (like mass of top quark, ...)
    */
   virtual bool isSpecialParticle( const LHCb::ParticleProperty* /* thePP */ ) const override { return true; };
@@ -136,52 +135,53 @@ public:
   /** standard constructor
    *  @param type tool type(?)
    *  @param name tool name
-   *  @param parent parent  component 
+   *  @param parent parent  component
    */
-  ReadHepMCAsciiFile
-  ( const std::string& type,
-    const std::string& name,
-    const IInterface* parent )
-    : GaudiTool ( type , name , parent ) 
-    // no default 
-    , m_input () ///< no default input file name 
-    // rescale from Pythia units to LHCb units 
-    , m_rescale ( true ) ///< rescale from Pythia units to LHCb units 
-    // the fiel itself 
-    , m_file    ( 0    ) ///< the fiel itself 
+  ReadHepMCAsciiFile( const std::string& type, const std::string& name, const IInterface* parent )
+      : GaudiTool( type, name, parent )
+      // no default
+      , m_input() ///< no default input file name
+      // rescale from Pythia units to LHCb units
+      , m_rescale( true ) ///< rescale from Pythia units to LHCb units
+      // the fiel itself
+      , m_file( 0 ) ///< the fiel itself
   {
-    declareInterface<IProductionTool> ( this ) ;
-    
-    declareProperty  ( "Input"   , m_input   ) ;
-    declareProperty  ( "Rescale" , m_rescale ) ;
-  } 
+    declareInterface<IProductionTool>( this );
+
+    declareProperty( "Input", m_input );
+    declareProperty( "Rescale", m_rescale );
+  }
   /// virtual and protected destrcutor
-  virtual ~ReadHepMCAsciiFile() 
-  {
+  virtual ~ReadHepMCAsciiFile() {
     // delete the stream  (close the file!)
-    if ( 0 != m_file ) { delete m_file ; m_file = 0 ; }
+    if ( 0 != m_file ) {
+      delete m_file;
+      m_file = 0;
+    }
   };
-private: 
-  // defaut constructor is disabled 
-  ReadHepMCAsciiFile() ;
-  // defaut constructor is disabled 
-  ReadHepMCAsciiFile( const ReadHepMCAsciiFile& ) ;
-  // assignement operator is disabled 
-  ReadHepMCAsciiFile& operator=( const ReadHepMCAsciiFile& ) ;
+
 private:
-  // the name of the input file 
-  std::string      m_input ; ///< the name of the input file 
+  // defaut constructor is disabled
+  ReadHepMCAsciiFile();
+  // defaut constructor is disabled
+  ReadHepMCAsciiFile( const ReadHepMCAsciiFile& );
+  // assignement operator is disabled
+  ReadHepMCAsciiFile& operator=( const ReadHepMCAsciiFile& );
+
+private:
+  // the name of the input file
+  std::string m_input; ///< the name of the input file
   // rescale event from Pythia to LHCb units ?
-  bool             m_rescale ; ///< rescale event to LHCb units ?  
+  bool m_rescale; ///< rescale event to LHCb units ?
   // the output file ;
-  HepMC3::ReaderAscii* m_file   ; ///< the input file ;
-} ;
+  HepMC3::ReaderAscii* m_file; ///< the input file ;
+};
 // =====================================================================
 /// Declaration of the Tool Factory
 // =====================================================================
 DECLARE_COMPONENT( ReadHepMCAsciiFile )
 // =====================================================================
-/** Generate a primary interaction. 
+/** Generate a primary interaction.
  *  The generated event contains all what happens up to the decay of
  *  hadrons. Decay of hadrons will be performed in general by the decay
  *  tool. Then all hadrons must be declared stable in the production
@@ -192,28 +192,25 @@ DECLARE_COMPONENT( ReadHepMCAsciiFile )
  */
 
 // ===================================================================
-StatusCode ReadHepMCAsciiFile::generateEvent 
-( HepMC3::GenEventPtr    theEvent , 
-  LHCb::GenCollision * /* theInfo */ ,
-  HepRandomEnginePtr & /* engine */ ) const
-{
-  Assert ( 0 != m_file , "Invalid input file!" ) ;
+StatusCode ReadHepMCAsciiFile::generateEvent( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* /* theInfo */,
+                                              HepRandomEnginePtr& /* engine */ ) const {
+  Assert( 0 != m_file, "Invalid input file!" );
   //
-  if ( !m_file->read_event( *theEvent ) ) 
-  { if ( m_file->failed() ) 
-	return Error ( "Error in event reading!" ) ; 
-    else return Error( "No more events in input file, set correct number of events in options" ) ;
+  if ( !m_file->read_event( *theEvent ) ) {
+    if ( m_file->failed() )
+      return Error( "Error in event reading!" );
+    else
+      return Error( "No more events in input file, set correct number of events in options" );
     ;
   }
-  // rescale if needed (convert to LHCb units) 
-  if ( m_rescale ) 
-    { GeneratorUtils::scale ( theEvent.get() , Gaudi::Units::GeV ,
-                              Gaudi::Units::mm / Gaudi::Units::c_light ) ; }
+  // rescale if needed (convert to LHCb units)
+  if ( m_rescale ) {
+    GeneratorUtils::scale( theEvent.get(), Gaudi::Units::GeV, Gaudi::Units::mm / Gaudi::Units::c_light );
+  }
   //
-  return StatusCode::SUCCESS ;
-} 
-
+  return StatusCode::SUCCESS;
+}
 
 // =====================================================================
-// The END 
+// The END
 // =====================================================================

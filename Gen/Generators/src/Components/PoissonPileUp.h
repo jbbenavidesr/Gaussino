@@ -28,27 +28,26 @@ class ICounterLogFile;
  *  @date   2018-02-04
  */
 class PoissonPileUp : public GaudiTool, virtual public IPileUpTool {
-  public:
+public:
   /// Standard constructor
-  PoissonPileUp(const std::string& type, const std::string& name,
-                const IInterface* parent);
+  PoissonPileUp( const std::string& type, const std::string& name, const IInterface* parent );
 
   virtual ~PoissonPileUp() = default;
 
   /// Initialize method
   virtual StatusCode initialize() override;
 
-  virtual unsigned int numberOfPileUp(HepRandomEnginePtr & engine) override;
+  virtual unsigned int numberOfPileUp( HepRandomEnginePtr& engine ) override;
 
   /// Implements IPileUpTool::printPileUpCounters
   virtual void printPileUpCounters() override;
 
-  protected:
-  private:
+protected:
+private:
   ICounterLogFile* m_xmlLogTool = nullptr;
 
-  std::atomic_long m_numberOfZeroInteraction{0};
-  std::atomic_long m_nEvents{0};
+  std::atomic_long m_numberOfZeroInteraction{ 0 };
+  std::atomic_long m_nEvents{ 0 };
 
-  Gaudi::Property<double> m_mean{this, "PileUpNu", 1, "Pile-up nu"};
+  Gaudi::Property<double> m_mean{ this, "PileUpNu", 1, "Pile-up nu" };
 };

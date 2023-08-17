@@ -9,21 +9,13 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 from Gaussino.pytest.helpers import run_gaudi
-from Gaussino.pytest.options import (
-    debug,
-    events_1,
-    em_physics,
-    photon,
-    cube,
-)
+from Gaussino.pytest.options import cube, debug, em_physics, events_1, photon
+
 
 def config():
+    from Configurables import ExternalDetectorEmbedder, GaussinoVisualization
     from ExternalDetector.Materials import SILICA
     from GaudiKernel import SystemOfUnits as units
-    from Configurables import (
-        ExternalDetectorEmbedder,
-        GaussinoVisualization,
-    )
 
     external = ExternalDetectorEmbedder("ExternalDetectorEmbedder_0")
     external.Shapes["ExternalDetectorEmbedder_0_Cube"]["MaterialName"] = "Si"
@@ -39,10 +31,9 @@ def config():
         CameraTheta=40,
         TrajectoryModel="drawByParticleID",
         TrajectoryType="smooth",
-        TrajectoryFilters=[{
-            "FilterType": "momentumMagnitudeFilter",
-            "MinValue": 2 * units.MeV
-        }],
+        TrajectoryFilters=[
+            {"FilterType": "momentumMagnitudeFilter", "MinValue": 2 * units.MeV}
+        ],
         StoreTrajectories="All",
         Debug=True,
     )

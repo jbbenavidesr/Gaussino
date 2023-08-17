@@ -17,6 +17,7 @@
 #include "Defaults/Locations.h"
 #include "Event/GenCollision.h"
 #include "GaudiAlg/Consumer.h"
+#include "GaudiAlg/FunctionalUtilities.h"
 #include "HepMC3/GenEvent.h"
 
 class IFullGenEventCutTool;
@@ -29,21 +30,17 @@ class IFullGenEventCutTool;
  *  @date   2008-04-30
  */
 class MergedEventsFilter
-    : public Gaudi::Functional::Consumer<void(
-          const HepMC3::GenEventPtrs&, const LHCb::GenCollisions&)> {
-  ToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{
-      this, "FullGenEventCutTool", ""};
+    : public Gaudi::Functional::Consumer<void( const HepMC3::GenEventPtrs&, const LHCb::GenCollisions& ),
+                                         Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
+  ToolHandle<IFullGenEventCutTool> m_fullGenEventCutTool{ this, "FullGenEventCutTool", "" };
 
-  public:
+public:
   /// Standard constructor
-  MergedEventsFilter(const std::string& name, ISvcLocator* pSvcLocator)
-      : Consumer(name, pSvcLocator,
-                 {KeyValue{"HepMCEventLocation",
-                           Gaussino::HepMCEventLocation::Default},
-                  KeyValue{"GenCollisions",
-                           LHCb::GenCollisionLocation::Default}}) {}
+  MergedEventsFilter( const std::string& name, ISvcLocator* pSvcLocator )
+      : Consumer( name, pSvcLocator,
+                  { KeyValue{ "HepMCEventLocation", Gaussino::HepMCEventLocation::Default },
+                    KeyValue{ "GenCollisions", LHCb::GenCollisionLocation::Default } } ) {}
 
-  virtual void operator()(const HepMC3::GenEventPtrs&,
-                          const LHCb::GenCollisions&) const override;
+  virtual void operator()( const HepMC3::GenEventPtrs&, const LHCb::GenCollisions& ) const override;
 };
-#endif  // GENERATORS_MERGEDEVENTSFILTER_H
+#endif // GENERATORS_MERGEDEVENTSFILTER_H

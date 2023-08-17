@@ -32,18 +32,15 @@ class ICounterLogFile;
  *  @author Patrick Robbe
  *  @date   2005-11-14
  */
-class Special : public ExternalGenerator
-{
+class Special : public ExternalGenerator {
 public:
-  Gaudi::Property<bool> m_reinitialize{this, "ReinitializePileUpGenerator", true};
-  Gaudi::Property<std::string> m_pileUpProductionToolName{this, "PileUpProductionTool",
-                                                          "Pythia8Production/MinimumBiasPythia8Production"};
+  Gaudi::Property<bool>        m_reinitialize{ this, "ReinitializePileUpGenerator", true };
+  Gaudi::Property<std::string> m_pileUpProductionToolName{ this, "PileUpProductionTool",
+                                                           "Pythia8Production/MinimumBiasPythia8Production" };
 
 public:
   Special( const std::string& type, const std::string& name, const IInterface* parent )
-      : ExternalGenerator( type, name, parent )
-  {
-  }
+      : ExternalGenerator( type, name, parent ) {}
 
   virtual ~Special(); ///< Destructor
 
@@ -60,7 +57,7 @@ public:
    *  the generator level cut.
    */
   virtual bool generate( const unsigned int nPileUp, HepMC3::GenEventPtrs& theEvents,
-                         LHCb::GenCollisions& theCollisions , HepRandomEnginePtr & engine ) const override;
+                         LHCb::GenCollisions& theCollisions, HepRandomEnginePtr& engine ) const override;
 
   /// Implements ISampleGenerationTool::printCounters
   virtual void printCounters() const override;
@@ -85,7 +82,7 @@ private:
   mutable std::vector<LHCb::GenCollision*> m_pileUpCollisionsVector;
 
   /// function to generate a set of pile up events
-  void generatePileUp(HepRandomEnginePtr & engine ) const;
+  void generatePileUp( HepRandomEnginePtr& engine ) const;
 
   /// production tool which generates pile-up interactions
   IProductionTool* m_pileUpProductionTool = nullptr;

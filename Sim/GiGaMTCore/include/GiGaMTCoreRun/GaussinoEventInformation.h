@@ -30,30 +30,26 @@
  *  @date    07/02/2019
  */
 
-class GaussinoEventInformation : public G4VUserEventInformation
-{
+class GaussinoEventInformation : public G4VUserEventInformation {
 public:
-  GaussinoEventInformation( Gaussino::MCTruthTracker* converter ) : m_truthTrackerPtr{converter} {}
+  GaussinoEventInformation( Gaussino::MCTruthTracker* converter ) : m_truthTrackerPtr{ converter } {}
   /** No copy constructor allowed to avoid two objects referring to the
    * same conversion info by ptr because the G4 event is responsible for deleting this object.
    */
   GaussinoEventInformation( const GaussinoEventInformation& right ) = delete;
-  GaussinoEventInformation( GaussinoEventInformation&& right ) : m_truthTrackerPtr{right.m_truthTrackerPtr} {};
+  GaussinoEventInformation( GaussinoEventInformation&& right ) : m_truthTrackerPtr{ right.m_truthTrackerPtr } {};
 
   // Returns non-owning pointer to truth converter
   Gaussino::MCTruthTracker* TruthTracker() { return m_truthTrackerPtr; }
 
-  inline static GaussinoEventInformation* Get( G4Event* event = nullptr )
-  {
-    if ( !event ) {
-      event = G4EventManager::GetEventManager()->GetNonconstCurrentEvent();
-    }
+  inline static GaussinoEventInformation* Get( G4Event* event = nullptr ) {
+    if ( !event ) { event = G4EventManager::GetEventManager()->GetNonconstCurrentEvent(); }
     auto info = event->GetUserInformation();
     if ( !info ) {
       G4cerr << "No G4UserEventInformation set. Returning a nullptr. Good luck.";
       return nullptr;
     }
-    GaussinoEventInformation* finfo{nullptr};
+    GaussinoEventInformation* finfo{ nullptr };
     finfo = dynamic_cast<GaussinoEventInformation*>( info );
     if ( !finfo ) {
       // If cast failed we delete the existing info and create the correct one.
@@ -65,7 +61,7 @@ public:
     }
   }
 
-  virtual void Print() const override {};
+  virtual void Print() const override{};
 
 private:
   Gaussino::MCTruthTracker* m_truthTrackerPtr;

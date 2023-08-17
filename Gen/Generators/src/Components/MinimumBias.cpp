@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 // $Id: MinimumBias.cpp,v 1.4 2007-01-12 15:17:38 ranjard Exp $
-// Include files 
+// Include files
 
 // local
 #include "MinimumBias.h"
@@ -17,9 +17,9 @@
 
 #include "GenInterfaces/IProductionTool.h"
 
-// Event 
-#include "HepMC3/GenEvent.h"
+// Event
 #include "Event/GenCollision.h"
+#include "HepMC3/GenEvent.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : MinimumBias
@@ -31,43 +31,39 @@
 
 DECLARE_COMPONENT( MinimumBias )
 
-
 //=============================================================================
 // Standard constructor, initializes variables
 //=============================================================================
-MinimumBias::MinimumBias( const std::string & type , const std::string & name,
-                          const IInterface * parent )
-  : ExternalGenerator( type, name , parent ) { }
+MinimumBias::MinimumBias( const std::string& type, const std::string& name, const IInterface* parent )
+    : ExternalGenerator( type, name, parent ) {}
 
 //=============================================================================
 // Destructor
 //=============================================================================
-MinimumBias::~MinimumBias( ) { ; }
+MinimumBias::~MinimumBias() { ; }
 
 //=============================================================================
 // Initialize method
 //=============================================================================
-StatusCode MinimumBias::initialize( ) {
-  info() << "Generating Minimum Bias events." << endmsg ;
-  return ExternalGenerator::initialize( ) ;
+StatusCode MinimumBias::initialize() {
+  info() << "Generating Minimum Bias events." << endmsg;
+  return ExternalGenerator::initialize();
 }
 
 //=============================================================================
 // Generate Set of Event for Minimum Bias event type
 //=============================================================================
-bool MinimumBias::generate( const unsigned int nPileUp , 
-                            HepMC3::GenEventPtrs & theEvents , 
-                            LHCb::GenCollisions & theCollisions, HepRandomEnginePtr & engine ) const {
-  StatusCode sc ;
-  LHCb::GenCollision * theGenCollision( 0 ) ;
-  HepMC3::GenEventPtr theGenEvent( 0 ) ;
-  
-  for ( unsigned int i = 0 ; i < nPileUp ; ++i ) {
-    prepareInteraction( &theEvents , &theCollisions , theGenEvent , 
-                        theGenCollision ) ;
-    
-    sc = m_productionTool -> generateEvent( theGenEvent , theGenCollision , engine ) ;
-    if ( sc.isFailure() ) Exception( "Could not generate event" ) ;
-  } 
-  return true ;
+bool MinimumBias::generate( const unsigned int nPileUp, HepMC3::GenEventPtrs& theEvents,
+                            LHCb::GenCollisions& theCollisions, HepRandomEnginePtr& engine ) const {
+  StatusCode          sc;
+  LHCb::GenCollision* theGenCollision( 0 );
+  HepMC3::GenEventPtr theGenEvent( 0 );
+
+  for ( unsigned int i = 0; i < nPileUp; ++i ) {
+    prepareInteraction( &theEvents, &theCollisions, theGenEvent, theGenCollision );
+
+    sc = m_productionTool->generateEvent( theGenEvent, theGenCollision, engine );
+    if ( sc.isFailure() ) Exception( "Could not generate event" );
+  }
+  return true;
 }
