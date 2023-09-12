@@ -12,4 +12,8 @@
 Sim/SimInterfaces
 -----------------
 #]=======================================================================]
-gaudi_add_header_only_library(SimInterfacesLib)
+gaudi_add_header_only_library(SimInterfacesLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::HepMCUserLib
+)

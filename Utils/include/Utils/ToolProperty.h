@@ -9,7 +9,7 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 #pragma once
-#include "GaudiKernel/GaudiHandle.h"
+#include "GaudiKernel/ToolHandle.h"
 #include <string>
 #include <vector>
 namespace Gaudi::Details {

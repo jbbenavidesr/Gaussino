@@ -12,7 +12,11 @@
 Gen/LbPGuns
 -----------
 #]=======================================================================]
-gaudi_add_header_only_library(LbPGunsLib)
+gaudi_add_header_only_library(LbPGunsLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::NewRndLib
+)
 
 gaudi_add_module(LbPGuns
     SOURCES

@@ -12,4 +12,7 @@
 Utils
 -----
 #]=======================================================================]
-gaudi_add_header_only_library(UtilsLib)
+gaudi_add_header_only_library(UtilsLib
+    LINK
+        Gaudi::GaudiKernel
+)

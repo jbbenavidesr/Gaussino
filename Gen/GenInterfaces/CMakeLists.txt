@@ -15,5 +15,19 @@ Gen/GenInterfaces
 ################################################################################
 # Package: GenInterface
 ################################################################################
-gaudi_add_header_only_library(GenInterfacesLib)
-gaudi_add_header_only_library(EventLib)
+gaudi_add_header_only_library(GenInterfacesLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::HepMCUserLib
+        Gaussino::NewRndLib
+        HepMC3::HepMC3
+        LHCb::GenEvent
+)
+gaudi_add_header_only_library(EventLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::HepMCUserLib
+        Gaussino::NewRndLib
+        HepMC3::HepMC3
+        LHCb::GenEvent
+)
