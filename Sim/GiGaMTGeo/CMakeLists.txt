@@ -23,8 +23,14 @@ Sim/GiGaMTGeo
 #
 ###############################################################################
 
-gaudi_add_header_only_library(GiGaMTGeoLib)
-gaudi_add_header_only_library(GiGaMTRegionsLib)
+gaudi_add_header_only_library(GiGaMTGeoLib
+    LINK
+        Gaudi::GaudiKernel
+)
+gaudi_add_header_only_library(GiGaMTRegionsLib
+    LINK
+        Gaudi::GaudiKernel
+)
 
 gaudi_add_module(GiGaMTGeoUtils
     SOURCES

@@ -13,7 +13,12 @@ HepMCUser
 ---------
 #]=======================================================================]
 
-gaudi_add_header_only_library(HepMCUserLib)
+gaudi_add_header_only_library(HepMCUserLib
+    LINK
+        HepMC3::HepMC3
+	    LHCb::PartPropLib     # TODO: [LHCb DEPENDENCY]
+        Rangev3::rangev3
+)
 
 gaudi_add_library(HepMCUtilsLib
     SOURCES

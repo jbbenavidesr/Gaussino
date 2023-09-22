@@ -12,7 +12,10 @@
 Gen/GenBeam
 -----------
 #]=======================================================================]
-gaudi_add_header_only_library(GenBeamLib)
+gaudi_add_header_only_library(GenBeamLib
+    LINK
+        Gaudi::GaudiKernel
+)
 
 gaudi_add_module(GenBeam
     SOURCES

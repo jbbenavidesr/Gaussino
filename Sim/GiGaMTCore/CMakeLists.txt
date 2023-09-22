@@ -20,12 +20,34 @@ Sim/GiGaMTCore
 --------------
 #]=======================================================================]
 
-gaudi_add_header_only_library(GiGaMTCoreUtilsLib)
-gaudi_add_header_only_library(GiGaMTCoreDetLib)
+gaudi_add_header_only_library(GiGaMTCoreUtilsLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::HepMCUtilsLib
+        Gaussino::HepMCUserLib
+        Gaussino::NewRndLib
+        Gaussino::UtilsLib
+        Geant4::G4global
+        HepMC3::HepMC3
+)
+gaudi_add_header_only_library(GiGaMTCoreDetLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::HepMCUtilsLib
+        Gaussino::HepMCUserLib
+        Gaussino::NewRndLib
+        Gaussino::UtilsLib
+        Geant4::G4global
+        HepMC3::HepMC3
+)
 
 gaudi_add_library(GiGaMTCoreMessageLib
     SOURCES
         src/Lib/GiGaMessage.cpp
+    LINK
+        Gaudi::GaudiKernel
+        Geant4::G4global
+        HepMC3::HepMC3
 )
 
 gaudi_add_library(GiGaMTCoreCutLib
