@@ -8,7 +8,7 @@ Please note that Gaussino is an experiment-independent package. If you are looki
 
     **Gaussino currently builds only in the LHCb environment!** Feel free to test in another setup.
 
-    In the examples below, ee are going to use nightly build system in LHCb. You can check the status of nightly build by visiting the `LHCb nightly webpage <https://lhcb-nightlies.web.cern.ch/nightly/>`_. There are a few nightly slots currently available for Gaussino:
+    In the examples below, we are going to use nightly build system in LHCb. You can check the status of nightly build by visiting the `LHCb nightly webpage <https://lhcb-nightlies.web.cern.ch/nightly/>`_. There are a few nightly slots currently available for Gaussino:
 
     -  `lhcb-gaussino <https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/>`_ a stable slot with the most recent tags: *Gaussino/v0rX* and *Gauss/v60rX*,
     -  `lhcb-gaussino-dev <https://lhcb-nightlies.web.cern.ch/nightly/lhcb-gaussino/>`_ a nightly slot with all the pending developments tested with *Gaussino/master* and *Gauss/Futurev5*,
