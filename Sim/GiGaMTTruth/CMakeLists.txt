@@ -15,4 +15,9 @@ Sim/GiGaMTTruth
 This package contains all code related to the tracking and extraction of truth
 information from the Geant4 propagation
 #]=======================================================================]
-gaudi_add_header_only_library(GiGaMTTruthLib)
+gaudi_add_header_only_library(GiGaMTTruthLib
+    LINK
+        Gaudi::GaudiKernel
+        Gaussino::GiGaMTCoreUtilsLib
+        Gaussino::HepMCUtilsLib
+)

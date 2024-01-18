@@ -18,7 +18,7 @@ importOptions("$GAUSSINOOPTS/Geometry/ExternalDetector-SimpleCube.py")
 
 ## External Tracker Planes
 
-This test build `PLANES_NO=4` 10m x 10m x 0.01m planes. Each plane is a sensitive detecto of type `MCCollectorSensDet`.
+This test build `PLANES_NO=4` 10m x 10m x 0.01m planes. Each plane is a sensitive detector of type `MCCollectorSensDet`.
 
 ![externaltrackerplanes](/images/external_tracker_planes.png)
 

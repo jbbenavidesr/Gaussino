@@ -55,7 +55,7 @@ It will import the volumes from the two files: `path_to_your_gdml_file_1.gdml` a
 
 ### Making the imported volumes sensitive
 
-The sensitve detector classes have to be added manually to the imported sensitive volumes. Below you will find an example of how to add a generic `MCCollectorSensDet` factory to an imported volume `ImportedLVol`:
+The sensitive detector classes have to be added manually to the imported sensitive volumes. Below you will find an example of how to add a generic `MCCollectorSensDet` factory to an imported volume `ImportedLVol`:
 
 ```python
 GaussinoGeometry().SensDetMap = {
@@ -85,7 +85,7 @@ GaussinoGeometry().ExportGDML = {
     "GDMLRootVolumeName": "",
     # add unique references to the names
     "GDMLAddReferences": True,
-    # export auxilliary information
+    # export auxiliary information
     "GDMLExportEnergyCuts": True,
     "GDMLExportSD": True,
 }

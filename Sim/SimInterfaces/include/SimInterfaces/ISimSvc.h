@@ -10,7 +10,9 @@
 \*****************************************************************************/
 #pragma once
 
+#include "GaudiKernel/IAlgTool.h"
 #include "GaudiKernel/IService.h"
+#include "HepMCUser/typedefs.h"
 #include <vector>
 
 // Forward declaration

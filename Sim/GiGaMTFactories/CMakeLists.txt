@@ -17,6 +17,7 @@ gaudi_add_header_only_library(GiGaMTFactoriesLib
     LINK
 		Gaudi::GaudiKernel
 		Gaudi::GaudiAlgLib
+        Gaussino::GiGaMTCoreMessageLib
 )
 
 

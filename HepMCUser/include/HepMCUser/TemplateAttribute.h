@@ -8,6 +8,11 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+
+// FIXME: (MCl) this is needed here because Attribute.h includes GenParticle_fwd.h
+//        which does not compile by itself
+#include "HepMC3/GenParticle.h"
+
 #include "HepMC3/Attribute.h"
 #include "HepMC3/GenVertex.h"
 #include <string>

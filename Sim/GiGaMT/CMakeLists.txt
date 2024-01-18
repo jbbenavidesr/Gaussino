@@ -26,6 +26,9 @@ gaudi_add_library(GiGaMTLib
 	    Gaussino::GiGaMTFactoriesLib
 	    Gaussino::HepMCUserLib
 	    Gaussino::SimInterfacesLib
+        Gaussino::GiGaMTCoreUtilsLib
+        Gaussino::NewRndLib
+        Gaussino::UtilsLib
 )
 
 gaudi_add_module(GiGaMT
