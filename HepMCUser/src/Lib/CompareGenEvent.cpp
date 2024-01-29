@@ -109,7 +109,7 @@ namespace HepMC3 {
     }
     auto b1s = e1.beams();
     auto b2s = e2.beams();
-    for ( auto [e1b, e2b] : ranges::view::zip( b1s, b2s ) ) {
+    for ( auto [e1b, e2b] : ::ranges::view::zip( b1s, b2s ) ) {
       if ( *e1b != *e2b ) {
         std::cerr << "compareBeamParticles: beam particles differ " << std::endl;
         return false;
@@ -132,7 +132,7 @@ namespace HepMC3 {
     }
     if ( e1.particles().size() == 0 ) { return true; }
     HepMC3::GenParticlePtr p1, p2;
-    for ( const auto [p1, p2] : ranges::view::zip( e1.particles(), e2.particles() ) ) {
+    for ( const auto [p1, p2] : ::ranges::view::zip( e1.particles(), e2.particles() ) ) {
       // for ( auto [a, b] : ranges::view::zip( e1.particles(), e2.particles() ) ) {
       if ( *p1 != *p2 ) {
         std::cerr << "compareParticles: particle " << p1->id() << " differs from " << p2->id() << std::endl;
@@ -148,7 +148,7 @@ namespace HepMC3 {
       return false;
     }
     HepMC3::GenVertexPtr v1, v2;
-    for ( const auto [v1, v2] : ranges::view::zip( e1.vertices(), e2.vertices() ) ) {
+    for ( const auto [v1, v2] : ::ranges::view::zip( e1.vertices(), e2.vertices() ) ) {
       if ( ( *v1 ) != ( *v2 ) ) {
         std::cerr << "compareVertices: vertex " << v1->id() << " differs" << std::endl;
         return false;
@@ -171,7 +171,7 @@ namespace HepMC3 {
       return false;
     }
     // loop over the inlist and ensure particles are identical
-    for ( auto [ia, ib] : ranges::view::zip( v1.particles_in(), v2.particles_in() ) ) {
+    for ( auto [ia, ib] : ::ranges::view::zip( v1.particles_in(), v2.particles_in() ) ) {
       if ( *ia != *ib ) {
         std::cerr << "compareVertex: incoming particle " << v1.id() << " differs: " << ia->id() << " " << ib->id()
                   << std::endl;
@@ -185,7 +185,7 @@ namespace HepMC3 {
       return false;
     }
     // loop over the outlist and ensure particles are identical
-    for ( auto [ia, ib] : ranges::view::zip( v1.particles_out(), v2.particles_out() ) ) {
+    for ( auto [ia, ib] : ::ranges::view::zip( v1.particles_out(), v2.particles_out() ) ) {
       if ( *ia != *ib ) {
         std::cerr << "compareVertex: outgoing particle differs for vertices: " << v1 << v2 << *ia << " compared to \n "
                   << *ib << std::endl;
