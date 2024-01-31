@@ -26,7 +26,7 @@ ParallelGeometry::Physics::Physics( std::string parallelWorld, bool layeredMass 
 void ParallelGeometry::Physics::ConstructProcess() {
   if ( !m_process_constructor() ) { return; }
 
-  if ( m_particlePIDs.empty() ) {
+  if ( !m_forceNoPhysics && m_particlePIDs.empty() ) {
     debug( "Constructing the standard G4 process constructor" );
     G4ParallelWorldPhysics::ConstructProcess();
   } else {
@@ -54,3 +54,5 @@ void ParallelGeometry::Physics::setProcessConstructor( ParallelGeometry::Process
 }
 
 void ParallelGeometry::Physics::setParticlePIDs( std::vector<int> particlePIDs ) { m_particlePIDs = particlePIDs; }
+
+void ParallelGeometry::Physics::setForceNoPhysics( bool forceNoPhysics ) { m_forceNoPhysics = forceNoPhysics; }
