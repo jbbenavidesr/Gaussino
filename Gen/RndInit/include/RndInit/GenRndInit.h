@@ -38,7 +38,7 @@ class GenRndInit : public Gaudi::Functional::Producer<std::tuple<LHCb::GenHeader
                                                       Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>> {
 protected:
   Gaudi::Property<long long>    m_firstEvent{ this, "FirstEventNumber", 1, "Number of the first event" };
-  Gaudi::Property<long long>    m_firstTimingEvent{ this, "TimingSkipAtStart", 1,
+  Gaudi::Property<long long>    m_firstTimingEvent{ this, "FirstTimingEvent", 1,
                                                  "Number of the event to start the clock" };
   Gaudi::Property<unsigned int> m_runNumber{ this, "RunNumber", 1, "The run number" };
 
@@ -78,7 +78,7 @@ protected:
    *  @param[in] run run number
    *  @param[in] seeds (optional) vector of seeds
    */
-  virtual void printEventRun( long long evt, int run, std::vector<long int>* seeds = 0 ) const;
+  virtual void printEventRun( long long evt, int run ) const;
 
   mutable std::atomic_long  m_evtCounter{ 0 };
   mutable std::atomic_long  m_evtTimingCounter{ 0 };
@@ -86,26 +86,9 @@ protected:
   mutable Clock::time_point m_start_time;
   long                      m_eventMax{ 0 }; ///< Number of events requested (ApplicationMgr.EvtMax)
 
-  class MTBarrier {
-    std::mutex              _mutex;
-    std::condition_variable _cv;
-    std::size_t             m_n_waiting;
-
-  public:
-    explicit MTBarrier( std::size_t count ) : m_n_waiting( count ) {}
-    MTBarrier()                   = delete;
-    MTBarrier( const MTBarrier& ) = delete;
-    MTBarrier( MTBarrier&& )      = delete;
-    void wait();
-  };
-
-  static MTBarrier& GetInitBarrier( std::size_t num_threads = 0 ) {
-    static MTBarrier barrier( num_threads );
-    return barrier;
-  }
-
-  MTBarrier*   m_barrier;
-  mutable bool m_wait_at_barrier{ true };
+  mutable std::mutex              m_timingBarrierMutex;
+  mutable std::condition_variable m_timingBarrierCV;
+  mutable bool                    m_timingStarted{ false };
 
 private:
   ServiceHandle<IBeamInfoSvc> m_beamInfoSvc{ this, "BeamInfoSvc", "BeamInfoSvc" };
