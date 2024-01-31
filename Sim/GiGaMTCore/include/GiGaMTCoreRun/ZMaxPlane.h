@@ -11,6 +11,8 @@
 #pragma once
 
 #include "GaudiKernel/Plane3DTypes.h"
+#include "GaudiKernel/Point3DTypes.h"
+#include "GaudiKernel/Vector3DTypes.h"
 
 /** ZMaxPlane
  *
@@ -29,4 +31,7 @@ public:
 
   /// gives distance between zMax plane and point (0., y, z)
   double Distance( double y, double z ) const;
+
+  /// gives distance along non-normal direction between the zMax plane and a point
+  double DistanceAlongDirection( const Gaudi::XYZPoint& point, const Gaudi::XYZVector& direction ) const;
 };
