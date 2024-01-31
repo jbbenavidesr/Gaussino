@@ -8,6 +8,7 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
+
 // Gaudi
 #include "GaudiKernel/SystemOfUnits.h"
 #include "GaudiKernel/Transform3DTypes.h"
@@ -27,4 +28,10 @@ double ZMaxPlane::Distance( double y, double z ) const {
   // distance is (+) at the side where the normal vector is
   // and (-) on the other
   return this->m_plane.Distance( point );
+}
+
+double ZMaxPlane::DistanceAlongDirection( const Gaudi::XYZPoint& point, const Gaudi::XYZVector& direction ) const {
+  auto normal         = this->m_plane.Normal();
+  auto unitDotProduct = normal.Unit().Dot( direction.Unit() );
+  return this->m_plane.Distance( point ) / unitDotProduct;
 }
