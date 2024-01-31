@@ -35,6 +35,37 @@ def test_undefined_evt_max():
 
 
 @reset_configurables
+@em_physics
+@photon
+@cube
+@pytest.mark.parametrize(
+    "evtmax, threads, timing_event, correct",
+    [
+        (1, 1, 1, True),  # default, timing on the first event
+        (10, 1, 10, False),  # t. event must be < evtmax
+        (10, 1, 9, True),
+        (10, 3, 4, False),  # t. event must be > threads + 2
+        (10, 3, 5, True),
+    ],
+)
+def test_timing_barrier(evtmax, threads, timing_event, correct):
+    from Configurables import Gaussino
+
+    Gaussino(
+        EvtMax=evtmax,
+        EnableHive=True,
+        FirstTimingEvent=timing_event,
+        ThreadPoolSize=threads,
+        EventSlots=threads,
+    )
+    if correct:
+        applyConfigurableUsers()
+    else:
+        with pytest.raises(ValueError, match=r".*FirstTimingEvent.*"):
+            applyConfigurableUsers()
+
+
+@reset_configurables
 @events_1
 @em_physics
 @cube
