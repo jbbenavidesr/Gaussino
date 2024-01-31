@@ -22,8 +22,9 @@ namespace ParallelGeometry {
 
   protected:
     ProcessConstructor m_process_constructor;
-    bool               m_layeredMass  = false;
-    std::vector<int>   m_particlePIDs = {};
+    bool               m_layeredMass    = false;
+    bool               m_forceNoPhysics = false;
+    std::vector<int>   m_particlePIDs   = {};
 
   public:
     Physics( std::string, bool );
@@ -33,5 +34,6 @@ namespace ParallelGeometry {
 
     void setProcessConstructor( ProcessConstructor );
     void setParticlePIDs( std::vector<int> );
+    void setForceNoPhysics( bool );
   };
 } // namespace ParallelGeometry
