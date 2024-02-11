@@ -14,7 +14,7 @@ from GaudiKernel import SystemOfUnits as units
 GaussinoGeneration(
     BeamMomentum=900 * units.GeV,
     RevolutionFrequency=11.245 * units.kilohertz,
-    TotalCrossSection=101.5 * units.millibarn,
+    TotalCrossSection=65.3 * units.millibarn,
     InteractionPosition=[0.0] * 3,
     BeamHCrossingAngle=0.0 * units.mrad,
     BeamVCrossingAngle=0.0 * units.mrad,
