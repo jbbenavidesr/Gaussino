@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.15)
 set(LCG_LAYER LHCB_7 CACHE STRING "Specific set of version to use")
 option(LCG_USE_GENERATORS "enable/disable use of LCG generators" ON)
 
-project(Gaussino VERSION 0.1
+project(Gaussino VERSION 1.0
 	LANGUAGES CXX Fortran)
 
 # Enable testing with CTest/CDash
@@ -53,7 +53,7 @@ list(APPEND ${CustomSimulationDirsName}
 gaussino_env(
     SET GAUSSINOOPTS ${PROJECT_SOURCE_DIR}/Sim/Gaussino/options
     # FIXME: use non-LHCb LHAPDFSets
-    SET LHAPDF_DATA_PATH /cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/LHAPDFSets/v62r3/data
+    SET LHAPDF_DATA_PATH /cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/LHAPDFSets/v62r3p1/data
     SET PYTHIA8XML ${PYTHIA8_XML}
     SET PYTHIA8DATA ${PYTHIA8_XML}
 )
