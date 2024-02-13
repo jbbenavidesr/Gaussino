@@ -18,11 +18,11 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = "Gaussino"
-copyright = "2017-2022, CERN for the benefit of the LHCb and FCC collaborations"
+copyright = "2017-2024, CERN for the benefit of the LHCb and FCC collaborations"
 author = "LHCb Collaboration"
 
 # The full version, including alpha/beta/rc tags
-release = "v0r1"
+release = "v1r0"
 
 # -- General configuration ---------------------------------------------------
 
@@ -90,7 +90,7 @@ html_context["display_lower_left"] = True
 # visible versions
 versions = [
     "master",
-    "v0r0",
+    "v1r0",
     "FASTSIM",
 ]
 
