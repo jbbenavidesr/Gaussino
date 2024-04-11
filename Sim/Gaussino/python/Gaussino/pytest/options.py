@@ -34,3 +34,5 @@ empty_world = add_option("$GAUSSINOOPTS/Geometry/ExternalDetector-EmptyWorld.py"
 only_generation = add_option("$GAUSSINOOPTS/General/OnlyGeneration.py")
 minbias = add_option("$GAUSSINOOPTS/Generation/MinBias_Pythia8TL.py")
 pp = add_option("$GAUSSINOOPTS/Generation/pp-900GeV-HeadOn.py")
+pp_7_tev = add_option("$GAUSSINOOPTS/Generation/pp-7TeV-DefaultOptics.py")
+flat = add_option("$GAUSSINOOPTS/Generation/SetFlatOptics.py")

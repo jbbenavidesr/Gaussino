@@ -90,8 +90,14 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var BeamEmittance: default: ``0.0037 * units.mm``
     :vartype BeamEmittance: float, optional
 
-    :var BeamBetaStar: default: ``3.1 * units.m``
+    :var BeamBetaStar: default: ``3. * units.m``
     :vartype BeamBetaStar: float, optional
+
+    :var BeamBetaStarX: default: ``-1. * units.m``
+    :vartype BeamBetaStarX: float, optional
+
+    :var BeamBetaStarY: default: ``-1. * units.m``
+    :vartype BeamBetaStarY: float, optional
 
     :var BeamLineAngles: default:
         ``[0.0 * units.mrad, 0.0 * units.mrad]``
@@ -141,6 +147,8 @@ class GaussinoGeneration(GaussinoConfigurable):
         "BeamVCrossingAngle": 0.0 * units.mrad,
         "BeamEmittance": 0.0037 * units.mm,
         "BeamBetaStar": 3.1 * units.m,
+        "BeamBetaStarX": -1.0 * units.m,
+        "BeamBetaStarY": -1.0 * units.m,
         "BeamLineAngles": [0.0 * units.mrad, 0.0 * units.mrad],
         "InteractionPosition": [
             0.0 * units.mm,
@@ -244,7 +252,8 @@ class GaussinoGeneration(GaussinoConfigurable):
             HorizontalCrossingAngle=self.getProp("BeamHCrossingAngle"),
             VerticalCrossingAngle=self.getProp("BeamVCrossingAngle"),
             NormalizedEmittance=self.getProp("BeamEmittance"),
-            BetaStar=self.getProp("BeamBetaStar"),
+            BetaStarX=self.getProp("BeamBetaStarX"),
+            BetaStarY=self.getProp("BeamBetaStarY"),
             HorizontalBeamlineAngle=xAngleBeamLine,
             VerticalBeamlineAngle=yAngleBeamLine,
             Luminosity=self.getProp("Luminosity"),
