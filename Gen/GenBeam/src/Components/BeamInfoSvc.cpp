@@ -53,7 +53,7 @@ double BeamInfoSvc::totalXSec() const { return m_totalCrossSection; }
 
 double BeamInfoSvc::verticalBeamlineAngle() const { return m_verticalBeamlineAngle; }
 
-double BeamInfoSvc::betaStar() const { return m_betaStarX; }
+double BeamInfoSvc::betaStar() const { return m_betaStar; }
 
 double BeamInfoSvc::betaStarX() const { return m_betaStarX; }
 
