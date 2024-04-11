@@ -36,6 +36,9 @@ class GaussinoGeneration(GaussinoConfigurable):
     :var PileUpTool: default: ``'FixedLuminosityWithSvc'``
     :vartype PileUpTool: str, optional
 
+    :var VertexSmearingTool: default: ``'BeamSpotSmearVertexWithSvc'``
+    :vartype VertexSmearingTool: str, optional
+
     :var ProductionTool: default: ``'Pythia8ProductionMT'``,
         for Pythia8 there are 2 possibilities: ``'Pythia8Production'`` (shared)
         and ``'Pythia8ProductionMT'`` (thread-local) interface
@@ -120,6 +123,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         "SampleGenerationTool": "SignalPlain",
         "SampleGenerationToolOpts": {},
         "PileUpTool": "FixedLuminosityWithSvc",
+        "VertexSmearingTool": "BeamSpotSmearVertexWithSvc",
         "ProductionTool": "Pythia8ProductionMT",
         "ProductionToolOpts": {},
         "DecayTool": "",
@@ -367,7 +371,7 @@ class GaussinoGeneration(GaussinoConfigurable):
         Args:
             gen_alg (ConfigurableMeta): ``Generation`` or ``ReDecayGeneration`` algorithm
         """
-        gen_alg.VertexSmearingTool = "BeamSpotSmearVertexWithSvc"
+        gen_alg.VertexSmearingTool = self.getProp("VertexSmearingTool")
 
     def _set_redecay_signal_generation(self):
         """Sets up the ReDecay equivalent of the signal generation tool.
