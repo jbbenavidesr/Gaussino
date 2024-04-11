@@ -46,8 +46,11 @@ public:
   /// sigma Z of the luminous region
   virtual double sigmaZ() const = 0;
 
-  /// Smearing of the angle between the beams
-  virtual double angleSmear() const = 0;
+  /// Smearing of the angle between the beams in X
+  virtual double angleSmearX() const = 0;
+
+  /// Smearing of the angle between the beams in Y
+  virtual double angleSmearY() const = 0;
 
   /// Retrieve const  Beam energy
   virtual double energy() const = 0;
@@ -76,8 +79,14 @@ public:
   /// Retrieve const  Vertical beamline angle
   virtual double verticalBeamlineAngle() const = 0;
 
-  /// Retrieve const  Beta star
+  /// Retreive const beta star for round optics
   virtual double betaStar() const = 0;
+
+  /// Retrieve const  Beta star X
+  virtual double betaStarX() const = 0;
+
+  /// Retrieve const  Beta star Y
+  virtual double betaStarY() const = 0;
 
   /// Retrieve const  Bunch spacing
   virtual double bunchSpacing() const = 0;

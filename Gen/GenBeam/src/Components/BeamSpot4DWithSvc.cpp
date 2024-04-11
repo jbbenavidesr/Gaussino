@@ -96,21 +96,23 @@ ROOT::Math::SMatrix<double, 3, 3> rotY( const double angle ) {
 
 GaussGenerator<4> BeamSpot4DWithSvc::calculateInteractionDistribution() const {
   const auto emittance = m_beaminfoSvc->emittance();
-  const auto betastar  = m_beaminfoSvc->betaStar();
+  const auto betastarx = m_beaminfoSvc->betaStarX();
+  const auto betastary = m_beaminfoSvc->betaStarY();
   const auto ha        = m_beaminfoSvc->horizontalCrossingAngle();
   const auto va        = m_beaminfoSvc->verticalCrossingAngle();
   const auto ha_bl     = m_beaminfoSvc->horizontalBeamlineAngle();
   const auto va_bl     = m_beaminfoSvc->verticalBeamlineAngle();
   const auto sb        = m_beaminfoSvc->sigmaS();
   const auto c         = Gaudi::Units::c_light;
-  const auto st        = std::sqrt( emittance * betastar );
+  // const auto st        = std::sqrt( emittance * betastar );
 
-  const auto sx = st;
-  const auto sy = st;
+  const auto sx = std::sqrt( emittance * betastarx );
+  const auto sy = std::sqrt( emittance * betastary );
   debug() << "Transverse beam size = " << sx << " mm x << " << sy << "mm" << endmsg;
   debug() << "Bunch RMS = " << sb << "mm" << endmsg;
   debug() << "Emittance = " << emittance << endmsg;
-  debug() << "Betastar  = " << betastar << "m" << endmsg;
+  debug() << "BetastarX  = " << betastarx << "mm" << endmsg;
+  debug() << "BetastarY  = " << betastary << "mm" << endmsg;
   debug() << "Half Crossing angles: " << ha << " " << va << endmsg;
   debug() << "Beam line angles: " << ha_bl << " " << va_bl << endmsg;
   // this is the (inverse) covariance matrix of each beam

@@ -41,8 +41,11 @@ public:
   /// sigma Z of the luminous region
   virtual double sigmaZ() const override;
 
-  /// Smearing of the angle between the beams
-  virtual double angleSmear() const override;
+  /// Smearing of the angle between the beams in X
+  virtual double angleSmearX() const override;
+
+  /// Smearing of the angle between the beams in Y
+  virtual double angleSmearY() const override;
 
   /// Retrieve const  Beam energy
   virtual double energy() const override;
@@ -71,8 +74,13 @@ public:
   /// Retrieve const  Vertical beamline angle
   virtual double verticalBeamlineAngle() const override;
 
-  /// Retrieve const  Beta star
   virtual double betaStar() const override;
+
+  /// Retrieve const  Beta star
+  virtual double betaStarX() const override;
+
+  /// Retrieve const  Beta star
+  virtual double betaStarY() const override;
 
   /// Retrieve const  Bunch spacing
   virtual double bunchSpacing() const override;
@@ -95,10 +103,12 @@ private:
   Gaudi::Property<double> m_horizontalBeamlineAngle{ this, "HorizontalBeamlineAngle", 0.3 * Gaudi::Units::mrad };
   Gaudi::Property<double> m_verticalBeamlineAngle{ this, "VerticalBeamlineAngle", 0.3 * Gaudi::Units::mrad };
   Gaudi::Property<double> m_betaStar{ this, "BetaStar", 3. * Gaudi::Units::m };
+  Gaudi::Property<double> m_betaStarX{ this, "BetaStarX", -1. * Gaudi::Units::m };
+  Gaudi::Property<double> m_betaStarY{ this, "BetaStarY", -1. * Gaudi::Units::m };
   Gaudi::Property<double> m_bunchSpacing{ this, "BunchSpacing", 50. * Gaudi::Units::ns };
   Gaudi::Property<double> m_xLuminousRegion{ this, "XLuminousRegion", 0. };
   Gaudi::Property<double> m_yLuminousRegion{ this, "YLuminousRegion", 0. };
   Gaudi::Property<double> m_zLuminousRegion{ this, "ZLuminousRegion", 0. };
-  Gaudi::Property<double> m_luminosity{ this, "Luminosity", 1.e32 / ( Gaudi::Units::cm2 * Gaudi::Units::s ) };
+  Gaudi::Property<double> m_luminosity{ this, "Luminosity", 1.e34 / ( Gaudi::Units::cm2 * Gaudi::Units::s ) };
   Gaudi::Property<double> m_revolutionFrequency{ this, "RevolutionFrequency", 11.245 * Gaudi::Units::kilohertz };
 };

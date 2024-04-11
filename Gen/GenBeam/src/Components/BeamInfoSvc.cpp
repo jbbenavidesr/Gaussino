@@ -15,6 +15,8 @@ DECLARE_COMPONENT( BeamInfoSvc )
 StatusCode BeamInfoSvc::initialize() {
   auto sc = Service::initialize();
   m_beamspot.SetXYZ( m_xLuminousRegion, m_yLuminousRegion, m_zLuminousRegion );
+  if ( m_betaStarX < 0. ) m_betaStarX = m_betaStar;
+  if ( m_betaStarY < 0. ) m_betaStarY = m_betaStar;
   return sc;
 }
 
@@ -51,7 +53,11 @@ double BeamInfoSvc::totalXSec() const { return m_totalCrossSection; }
 
 double BeamInfoSvc::verticalBeamlineAngle() const { return m_verticalBeamlineAngle; }
 
-double BeamInfoSvc::betaStar() const { return m_betaStar; }
+double BeamInfoSvc::betaStar() const { return m_betaStarX; }
+
+double BeamInfoSvc::betaStarX() const { return m_betaStarX; }
+
+double BeamInfoSvc::betaStarY() const { return m_betaStarY; }
 
 double BeamInfoSvc::bunchSpacing() const { return m_bunchSpacing; }
 
@@ -68,15 +74,22 @@ double BeamInfoSvc::emittance() const {
   return epsilonN() / gamma / beta;
 }
 
-double BeamInfoSvc::sigmaX() const { return sqrt( betaStar() * emittance() / 2. ); }
+double BeamInfoSvc::sigmaX() const { return sqrt( betaStarX() * emittance() / 2. ); }
 
-double BeamInfoSvc::sigmaY() const { return sqrt( betaStar() * emittance() / 2. ); }
+double BeamInfoSvc::sigmaY() const { return sqrt( betaStarY() * emittance() / 2. ); }
 
 double BeamInfoSvc::sigmaZ() const { return sigmaS() / sqrt( 2. ); }
 
-double BeamInfoSvc::angleSmear() const {
-  if ( 0.0 != betaStar() )
-    return ( emittance() / betaStar() );
+double BeamInfoSvc::angleSmearX() const {
+  if ( 0.0 != betaStarX() )
+    return ( emittance() / betaStarX() );
+  else
+    return 0.0;
+}
+
+double BeamInfoSvc::angleSmearY() const {
+  if ( 0.0 != betaStarY() )
+    return ( emittance() / betaStarY() );
   else
     return 0.0;
 }
