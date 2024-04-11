@@ -48,8 +48,11 @@ struct GaussGenerator {
     std::array<real_t, N> p{ 0 };
     std::array<real_t, N> rt{ 0 };
     for ( unsigned i = 0; i != N * N; ++i ) {
-      if ( i % N == 0 ) p[i / N] = rnd();
-      rt[i % N] += m_decomp( i % N, i / N ) * p[i / N] + ( ( i % N == 0 ) ? m_mean[i % N] : 0 );
+      if ( i % N == 0 ){
+        p[i / N] = rnd();
+        rt[i / N] += m_mean[i/N];
+      }
+      rt[i % N] += m_decomp( i % N, i / N ) * p[i / N];
     }
     return rt;
   }
