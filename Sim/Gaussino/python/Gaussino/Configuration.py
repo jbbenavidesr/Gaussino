@@ -76,8 +76,8 @@ class Gaussino(GaussinoConfigurable):
     :var EventSlots: default: ``1``
     :vartype EventSlots: int, optional
 
-    :var TimingSkipAtStart: default: ``1``
-    :vartype TimingSkipAtStart: int, optional
+    :var FirstTimingEvent: default: ``1``
+    :vartype FirstTimingEvent: int, optional
 
     **Other**
 
@@ -117,7 +117,7 @@ class Gaussino(GaussinoConfigurable):
         "EnableHive": True,
         "ThreadPoolSize": 1,
         "EventSlots": 1,
-        "TimingSkipAtStart": 1,
+        "FirstTimingEvent": 1,
         # OTHER
         "Debug": False,
         "ReDecay": False,
@@ -189,10 +189,16 @@ class Gaussino(GaussinoConfigurable):
         Raises:
             ValueError: if ``EvtMax`` is not provided
         """
-        if self.getProp("EvtMax") <= 0:
-            msg = "EvtMax must be > 0"
-            log.error(msg)
-            raise ValueError(msg)
+        evtMax = self.getProp("EvtMax")
+        if evtMax <= 0:
+            raise ValueError("EvtMax must be > 0")
+
+        timing_event = self.getProp("FirstTimingEvent")
+        if timing_event != 1:
+            if timing_event >= evtMax:
+                raise ValueError("FirstTimingEvent must be < EvtMax")
+            if timing_event < self.getProp("ThreadPoolSize") + 2:
+                raise ValueError("FirstTimingEvent must be > ThreadPoolSize + 2")
 
     def _setup_hive(self):
         """Enables Hive event loop manager.
@@ -237,7 +243,7 @@ class Gaussino(GaussinoConfigurable):
         ApplicationMgr().EventLoop = eventloopmgr
 
         # propagate the barrier to GenRndInit
-        GenRndInit().TimingSkipAtStart = self.getProp("TimingSkipAtStart")
+        GenRndInit().FirstTimingEvent = self.getProp("FirstTimingEvent")
 
     def _configure_rnd_init(self):
         """Creates the algorithm responsible for the seed generation. It is either

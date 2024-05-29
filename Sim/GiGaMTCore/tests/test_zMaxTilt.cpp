@@ -51,3 +51,14 @@ BOOST_AUTO_TEST_CASE( withTiltTest ) {
   BOOST_CHECK( std::abs( dist_left - pred_left ) < eps );
   BOOST_CHECK( std::abs( dist_right - pred_right ) < eps );
 }
+
+BOOST_AUTO_TEST_CASE( distanceAlongDirectionTest ) {
+  // tilted plane at z = 1 * m. by +45.0 degrees
+  auto plane = ZMaxPlane();
+  plane.prepare( 1 * Gaudi::Units::m, 45. * Gaudi::Units::degree );
+  auto point     = Gaudi::XYZPoint( 0, 1 * Gaudi::Units::m, 0 );
+  auto direction = Gaudi::XYZVector( 0, 0, 1 );
+  auto dist      = plane.DistanceAlongDirection( point, direction );
+  auto pred      = -2 * Gaudi::Units::m;
+  BOOST_CHECK( std::abs( dist - pred ) < eps );
+}
