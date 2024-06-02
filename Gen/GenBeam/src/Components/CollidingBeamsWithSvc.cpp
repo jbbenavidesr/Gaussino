@@ -89,17 +89,17 @@ void CollidingBeamsWithSvc::getBeams( Gaudi::XYZVector& pBeam1, Gaudi::XYZVector
   CLHEP::RandGauss gaussianDist{ ThreadLocalEngine::Get(), 0, 1 };
   p1x = m_beaminfosvc->energy() *
         sin( m_beaminfosvc->horizontalCrossingAngle() + m_beaminfosvc->horizontalBeamlineAngle() +
-             gaussianDist() * m_beaminfosvc->angleSmear() );
+             gaussianDist() * m_beaminfosvc->angleSmearX() );
   p1y = m_beaminfosvc->energy() * sin( m_beaminfosvc->verticalCrossingAngle() + m_beaminfosvc->verticalBeamlineAngle() +
-                                       gaussianDist() * m_beaminfosvc->angleSmear() );
+                                       gaussianDist() * m_beaminfosvc->angleSmearY() );
   p1z = m_beaminfosvc->energy();
   pBeam1.SetXYZ( p1x, p1y, p1z );
 
   p2x = m_beaminfosvc->energy() *
         sin( m_beaminfosvc->horizontalCrossingAngle() - m_beaminfosvc->horizontalBeamlineAngle() +
-             gaussianDist() * m_beaminfosvc->angleSmear() );
+             gaussianDist() * m_beaminfosvc->angleSmearX() );
   p2y = m_beaminfosvc->energy() * sin( m_beaminfosvc->verticalCrossingAngle() - m_beaminfosvc->verticalBeamlineAngle() +
-                                       gaussianDist() * m_beaminfosvc->angleSmear() );
+                                       gaussianDist() * m_beaminfosvc->angleSmearY() );
   p2z = -m_beaminfosvc->energy();
   pBeam2.SetXYZ( p2x, p2y, p2z );
 }

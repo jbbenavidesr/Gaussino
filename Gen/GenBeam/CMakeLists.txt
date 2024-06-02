@@ -21,7 +21,8 @@ gaudi_add_module(GenBeam
     SOURCES
     	src/Components/BeamInfoSvc.cpp
 	src/Components/BeamSpotSmearVertexWithSvc.cpp
-	src/Components/CollidingBeamsWithSvc.cpp
+        src/Components/BeamSpot4DWithSvc.cpp
+        src/Components/CollidingBeamsWithSvc.cpp
 	src/Components/FixedLuminosityWithSvc.cpp
     LINK
         HepMC3::HepMC3

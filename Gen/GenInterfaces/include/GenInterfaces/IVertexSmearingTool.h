@@ -31,11 +31,9 @@ namespace CLHEP {
  *  @date   2005-08-17
  */
 
-static const InterfaceID IID_IVertexSmearingTool( "IVertexSmearingTool", 2, 0 );
-
 class IVertexSmearingTool : virtual public IAlgTool {
 public:
-  static const InterfaceID& interfaceID() { return IID_IVertexSmearingTool; }
+  DeclareInterfaceID( IVertexSmearingTool, 2, 0 );
 
   /// Smear the vertex of the interaction (independantly of the others)
   virtual StatusCode smearVertex( HepMC3::GenEventPtr theEvent, HepRandomEnginePtr& engine ) = 0;
