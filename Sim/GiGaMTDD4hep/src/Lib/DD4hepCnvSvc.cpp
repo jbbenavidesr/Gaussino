@@ -24,9 +24,13 @@
 StatusCode DD4hepCnvSvc::initialize() {
   auto  sc    = extends::initialize();
   auto& g4map = dd4hep::sim::Geant4Mapping::instance();
+  // FIXME: Setting the global print level for DD4hep
+  // does not work, i.e. it does get set to the correct
+  // value but the printout level is not changed.
+  // To be investigated.
   dd4hep::setPrintLevel( DD4hepGaudiMessaging::Convert( msgLevel() ) );
   dd4hep::DetElement           world = getDetector().world();
-  dd4hep::sim::Geant4Converter conv( dd4hep::Detector::getInstance(), DD4hepGaudiMessaging::Convert( msgLevel() ) );
+  dd4hep::sim::Geant4Converter conv( dd4hep::Detector::getInstance(), dd4hep::VERBOSE );
   conv.debugMaterials  = m_debugMaterials.value();
   conv.debugElements   = m_debugElements.value();
   conv.debugShapes     = m_debugShapes.value();
@@ -35,7 +39,7 @@ StatusCode DD4hepCnvSvc::initialize() {
   conv.debugRegions    = m_debugRegions.value();
 
   dd4hep::sim::Geant4GeometryInfo* geoinfo = conv.create( world ).detach();
-  geoinfo->printLevel                      = DD4hepGaudiMessaging::Convert( msgLevel() );
+  geoinfo->printLevel                      = dd4hep::VERBOSE;
 
   g4map.attach( geoinfo );
   m_world_root = geoinfo->world();
