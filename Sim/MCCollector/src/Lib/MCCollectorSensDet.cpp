@@ -105,9 +105,6 @@ bool MCCollector::SensDet::ProcessHits( const G4FastHit* fastHit, const G4FastTr
   newHit->SetMomentum( premom );
   
 
-  double timeof = preStep->GetGlobalTime();
-
-  newHit->SetTimeOfFlight( timeof );
 
 
   return true;
