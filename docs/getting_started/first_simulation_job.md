@@ -78,7 +78,7 @@ Below you will find instructions on how to prepare a configuration file with a m
 
     ```python
     from Configurables import GaussinoSimulation
-    
+
     GaussinoSimulation().PhysicsConstructors.append("GiGaMT_G4EmStandardPhysics")
     ```
 
