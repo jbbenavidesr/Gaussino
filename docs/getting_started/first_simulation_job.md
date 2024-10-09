@@ -77,6 +77,8 @@ Below you will find instructions on how to prepare a configuration file with a m
 4. Add a required Geant4 physics constructor, for example:
 
     ```python
+    from Configurables import GaussinoSimulation
+
     GaussinoSimulation().PhysicsConstructors.append("GiGaMT_G4EmStandardPhysics")
     ```
 
