@@ -103,9 +103,6 @@ bool MCCollector::SensDet::ProcessHits( const G4FastHit* fastHit, const G4FastTr
   newHit->SetEdep( edep );
   newHit->SetEntryPos( prepos );
   newHit->SetMomentum( premom );
-  
-
-
 
   return true;
 }
