@@ -12,6 +12,10 @@
 Gen/LbPytha8
 ------------
 #]=======================================================================]
+if(PYTHIA8_VERSION VERSION_LESS 310)
+    set(BUILD_TESTING false) # prevent headers build test
+endif()
+
 gaudi_add_library(LbPythia8Lib
     SOURCES
         src/Lib/BeamToolForPythia8.cpp
@@ -62,13 +66,15 @@ gaudi_add_executable(HepMCConverterTest
 )
 
 # FIXME: the version of Pythia8 we use does not work with -std=c++20
-set_property(
-    SOURCE
-        src/Lib/LhcbHooks.cpp
-	src/Lib/Pythia8Production.cpp
-        src/Lib/Pythia8ProductionMT.cpp
-        src/Components/Pythia8ProductionFactory.cpp
-        exec/minimal.cxx
-        exec/convtest.cxx
-    PROPERTY COMPILE_OPTIONS -std=c++17
-)
+if(PYTHIA8_VERSION VERSION_LESS 310)
+    set_property(
+        SOURCE
+            src/Lib/LhcbHooks.cpp
+        src/Lib/Pythia8Production.cpp
+            src/Lib/Pythia8ProductionMT.cpp
+            src/Components/Pythia8ProductionFactory.cpp
+            exec/minimal.cxx
+            exec/convtest.cxx
+        PROPERTY COMPILE_OPTIONS -std=c++17
+    )
+endif()
