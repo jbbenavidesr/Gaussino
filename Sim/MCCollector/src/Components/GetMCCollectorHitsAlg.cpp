@@ -66,6 +66,7 @@ LHCb::MCHits MCCollector::HitsAlg::operator()( const G4EventProxies&            
       newHit->setMomentum( mom );
       newHit->setEntry( entry );
       newHit->setEnergy( g4Hit->GetEdep() );
+      newHit->setTime( g4Hit->GetTimeOfFlight() );
       newHit->setP( g4Hit->GetMomentum().mag() );
       int trackID = g4Hit->GetTrackID();
       if ( auto lp = evtprx->truth()->GetParticleFromTrackID( trackID ); lp ) {
