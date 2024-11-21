@@ -34,10 +34,14 @@ namespace MCCollector {
     inline void          SetMomentum( G4ThreeVector p ) { m_momentum = p; }
     inline G4ThreeVector GetMomentum() { return m_momentum; }
 
+    inline void     SetTimeOfFlight( G4double time ) { m_hitTime = time; }
+    inline G4double GetTimeOfFlight() { return m_hitTime; }
+
   private:
     G4ThreeVector m_entryPos;
     G4ThreeVector m_exitPos;
     G4double      m_edep;
+    G4double      m_hitTime;
     G4ThreeVector m_momentum;
   };
 
