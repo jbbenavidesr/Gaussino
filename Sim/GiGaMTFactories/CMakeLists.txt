@@ -13,11 +13,16 @@ Sim/GiGaMTFactories
 -------------------
 #]=======================================================================]
 
+if(WITH_ADEPT) 
+set(adept_target AdePT::AdePT_G4_integration)
+endif()
+
 gaudi_add_header_only_library(GiGaMTFactoriesLib
     LINK
 		Gaudi::GaudiKernel
 		Gaudi::GaudiAlgLib
         Gaussino::GiGaMTCoreMessageLib
+		${adept_target}
 )
 
 

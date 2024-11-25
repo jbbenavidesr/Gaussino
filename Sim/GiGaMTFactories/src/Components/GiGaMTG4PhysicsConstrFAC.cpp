@@ -40,6 +40,12 @@
 // Optical physics
 #include "G4OpticalPhysics.hh"
 
+//AdePT
+#ifdef ADEPT
+#include "AdePT/integration/AdePTPhysics.hh"
+#include "AdePT/integration/HepEMPhysics.hh"
+#endif
+
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4DecayPhysics, "GiGaMT_G4DecayPhysics" )
 
@@ -56,6 +62,14 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmExtraPhysics, "GiGaMT_G4EmExtraPhysics" )
 
 typedef GiGaMTG4PhysicsConstrFAC<G4IonPhysics> GiGaMT_G4IonPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
+
+#ifdef ADEPT
+typedef GiGaMTG4PhysicsConstrFAC<AdePTPhysics> GiGaMT_AdePTPhysics;
+DECLARE_COMPONENT_WITH_ID( GiGaMT_AdePTPhysics, "GiGaMT_AdePTPhysics" )
+
+typedef GiGaMTG4PhysicsConstrFAC<HepEMPhysics> GiGaMT_HepEMPhysics;
+DECLARE_COMPONENT_WITH_ID( GiGaMT_HepEMPhysics, "GiGaMT_HepEMPhysics" )
+#endif
 
 template <typename PhysConstr>
 class GiGaMTG4PhysicsConstrFAC<

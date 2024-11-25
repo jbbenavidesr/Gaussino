@@ -63,3 +63,7 @@ if(WITH_Gaussino_PRIVATE_DEPENDENCIES)
         find_package(Boost REQUIRED unit_test_framework)
     endif()
 endif()
+
+if(WITH_ADEPT)
+    find_package(AdePT REQUIRED)
+endif()
