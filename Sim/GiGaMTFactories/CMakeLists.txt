@@ -14,6 +14,7 @@ Sim/GiGaMTFactories
 #]=======================================================================]
 
 if(WITH_ADEPT) 
+add_compile_definitions(WITH_ADEPT)
 set(adept_target AdePT::AdePT_G4_integration)
 endif()
 

@@ -41,7 +41,7 @@
 #include "G4OpticalPhysics.hh"
 
 //AdePT
-#ifdef ADEPT
+#ifdef WITH_ADEPT
 #include "AdePT/integration/AdePTPhysics.hh"
 #include "AdePT/integration/HepEMPhysics.hh"
 #endif
@@ -63,7 +63,7 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmExtraPhysics, "GiGaMT_G4EmExtraPhysics" )
 typedef GiGaMTG4PhysicsConstrFAC<G4IonPhysics> GiGaMT_G4IonPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
 
-#ifdef ADEPT
+#ifdef WITH_ADEPT
 typedef GiGaMTG4PhysicsConstrFAC<AdePTPhysics> GiGaMT_AdePTPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_AdePTPhysics, "GiGaMT_AdePTPhysics" )
 
