@@ -103,7 +103,7 @@ bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( G4Step* step, G4Touchable
   return RetrieveAndSetupHit( track );
 }
 
-bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( const G4FastHit* fastHit, const G4FastTrack* fastTrack,
+bool Gaussino::G4Par04::CollectorSensDet::ProcessHits( const G4FastHit* /* fastHit */, const G4FastTrack* fastTrack,
                                                        G4TouchableHistory* /* history */ ) {
   return RetrieveAndSetupHit( fastTrack->GetPrimaryTrack() );
 }

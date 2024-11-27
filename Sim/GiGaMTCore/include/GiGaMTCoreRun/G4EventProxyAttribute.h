@@ -18,9 +18,9 @@ namespace HepMC3 {
     MCTruthAttribute() : Attribute(), m_val( nullptr ) {}
     MCTruthAttribute( Gaussino::MCTruthPtr val ) : Attribute(), m_val( val ) {}
 
-    bool from_string( const string& ) { return true; };
+    bool from_string( const string& ) override { return true; };
 
-    bool to_string( string& ) const { return true; };
+    bool to_string( string& ) const override { return true; };
 
     Gaussino::MCTruthPtr value() const { return m_val; }
 
