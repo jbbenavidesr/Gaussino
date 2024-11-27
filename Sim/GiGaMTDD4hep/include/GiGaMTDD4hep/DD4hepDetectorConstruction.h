@@ -49,7 +49,7 @@ public:
    *   auxiliar 'SensDet' fields to the SensDet implementation, no
    *   general solution can be used and hence a function needs to be set.
    */
-  virtual void ConstructSDandField() override { m_sd_constructor( m_detector ); };
+  virtual void ConstructSDandField() override { m_sd_constructor( *m_detector ); };
   void         SetSDConstructor( sdConstructor constr ) { m_sd_constructor = constr; }
   void         setPrintLevel( dd4hep::PrintLevel level ) { m_printlevel = level; }
 
@@ -67,8 +67,8 @@ public:
   void SetDebugRegions( bool val = true ) { m_debugRegions = val; }
 
 private:
-  /// Reference to the detector handed over by the constructor for convenience.
-  const dd4hep::Detector& m_detector;
+  /// Pointer to the detector handed over by the constructor for convenience.
+  const dd4hep::Detector* m_detector;
   sdConstructor           m_sd_constructor = []( const dd4hep::Detector& ) {};
   dd4hep::PrintLevel      m_printlevel     = dd4hep::NOLOG;
 

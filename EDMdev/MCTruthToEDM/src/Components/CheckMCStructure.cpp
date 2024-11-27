@@ -60,7 +60,6 @@ int CheckMCStructure::printMCParticlesTree( LHCb::MCVertex* vtx, unsigned int& n
     for ( auto& ev : evs ) {
       // Verify the link back to mother was correctly set as well
       if ( ev->mother() != part ) { error() << "Inconsistent mother link of endVertex!" << endmsg; }
-      part->mother();
       counter = printMCParticlesTree( ev, n_particles, n_vertices, level + 1, counter );
     }
   }
