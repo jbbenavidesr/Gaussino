@@ -11,8 +11,8 @@
 #pragma once
 
 // LHCb
+#include "EDM/Hit.h"
 #include "Event/MCHeader.h"
-#include "Event/MCHit.h"
 // Gaudi
 #include "GaudiAlg/GaudiTupleAlg.h"
 
@@ -26,7 +26,7 @@ namespace MCCollector {
     using GaudiTupleAlg::GaudiTupleAlg;
 
   protected:
-    void                                   fillCollectorTuple( const LHCb::MCHeader&, const LHCb::MCHits& ) const;
+    void                                   fillCollectorTuple( const LHCb::MCHeader&, const Gsino::EDM::Hits& ) const;
     mutable Gaudi::Accumulators::Counter<> m_collHitsCounter{ this, "CollectorHitsCounter" };
   };
 

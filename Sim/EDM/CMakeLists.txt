@@ -1,5 +1,5 @@
 ###############################################################################
-# (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  #
+# (c) Copyright 2024 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
 # This software is distributed under the terms of the Apache License          #
 # version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
@@ -9,31 +9,11 @@
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
 #[=======================================================================[.rst:
-Sim/MCCollector
----------------
+EDM
+---
 #]=======================================================================]
-
-gaudi_add_library(MCCollectorLib
-    SOURCES
-        src/Lib/MCCollectorHit.cpp
-        src/Lib/MCCollectorSensDet.cpp
-        src/Lib/MCCollectorTuple.cpp
+gaudi_add_header_only_library(EDMLib
     LINK
-        PUBLIC
-            Gaussino::GiGaMTCoreRunLib
-            Gaussino::GiGaMTFactoriesLib
-            Gaussino::GiGaMTDetFactoriesLib
-            Gaussino::MCTruthToEDMLib
-            Gaussino::EDMLib
+        Gaudi::GaudiKernel
+        LHCb::MCEvent
 )
-
-gaudi_add_module(MCCollector
-    SOURCES
-        src/Components/GetMCCollectorHitsAlg.cpp
-        src/Components/MCCollector.cpp
-        src/Components/MCCollectorSensDetComponent.cpp
-    LINK
-    	Gaussino::MCCollectorLib
-)
-
-gaudi_add_pytest()

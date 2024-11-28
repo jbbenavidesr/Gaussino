@@ -70,6 +70,7 @@ gaussino_add_subdirectories(
     HepMCUser
     Moni/GaussMonitor
     NewRnd
+    Sim/EDM
     Sim/ExternalDetector
     ${CustomSimulationDirs}
     Sim/Gaussino
