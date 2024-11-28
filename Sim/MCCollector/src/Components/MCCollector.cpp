@@ -16,14 +16,14 @@
 namespace MCCollector {
   using TupleBaseClass = Gaudi::Functional::Traits::BaseClass_t<TupleAlg>;
   class Collector
-      : public Gaudi::Functional::Consumer<void( const LHCb::MCHeader&, const LHCb::MCHits& ), TupleBaseClass> {
+      : public Gaudi::Functional::Consumer<void( const LHCb::MCHeader&, const Gsino::EDM::Hits& ), TupleBaseClass> {
 
   public:
     Collector( const std::string& name, ISvcLocator* pSvcLocator )
         : Consumer( name, pSvcLocator,
                     { KeyValue{ "MCHeader", LHCb::MCHeaderLocation::Default }, KeyValue{ "CollectorHits", "" } } ){};
 
-    void operator()( const LHCb::MCHeader& evt, const LHCb::MCHits& collHits ) const override {
+    void operator()( const LHCb::MCHeader& evt, const Gsino::EDM::Hits& collHits ) const override {
       fillCollectorTuple( evt, collHits );
     }
   };
