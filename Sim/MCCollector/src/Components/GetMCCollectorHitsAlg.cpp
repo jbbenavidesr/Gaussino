@@ -58,9 +58,11 @@ Gsino::EDM::Hits MCCollector::HitsAlg::operator()( const G4EventProxies&        
       auto             newHit = Gsino::EDM::HitPtr( new Gsino::EDM::Hit() );
       auto             g4Hit  = ( *hitCollection )[iG4Hit];
       Gaudi::XYZPoint  entry( g4Hit->GetEntryPos() );
+      Gaudi::XYZPoint  exit( g4Hit->GetExitPos() );
       Gaudi::XYZVector mom( g4Hit->GetMomentum() );
       newHit->SetMomentum( mom );
       newHit->SetPosition( entry );
+      newHit->SetDisplacement( exit - entry );
       newHit->SetEnergy( g4Hit->GetEdep() );
       newHit->SetTime( g4Hit->GetTimeOfFlight() );
       int trackID = g4Hit->GetTrackID();
