@@ -78,6 +78,7 @@ bool MCCollector::SensDet::ProcessHits( G4Step* step, G4TouchableHistory* /* his
   newHit->SetEdep( edep );
   newHit->SetEntryPos( prepos );
   newHit->SetMomentum( premom );
+  newHit->SetExitPos( step->GetPostStepPoint()->GetPosition() );
 
   double timeof = preStep->GetGlobalTime();
 
