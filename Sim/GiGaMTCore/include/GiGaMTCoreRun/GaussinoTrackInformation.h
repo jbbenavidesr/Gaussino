@@ -149,7 +149,7 @@ public:
    * object has been assigned yet one will be created and assigned
    *  @param aDetInfo pointer to DetTrackInfo
    */
-  inline static GaussinoTrackInformation* Get( G4Track* track = nullptr ) {
+  inline static GaussinoTrackInformation* Get( const G4Track* track = nullptr ) {
     if ( !track ) { track = G4EventManager::GetEventManager()->GetTrackingManager()->GetTrack(); }
     auto                      info = track->GetUserInformation();
     GaussinoTrackInformation* finfo{ nullptr };

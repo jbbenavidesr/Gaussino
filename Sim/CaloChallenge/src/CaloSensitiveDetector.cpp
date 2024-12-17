@@ -157,7 +157,7 @@ Gsino::CaloChallenge::CaloG4Hit* Gsino::CaloChallenge::CaloSensDet::RetrieveAndS
   auto eventInfo = dynamic_cast<EventInformation*>( EventInformation::Get() );
   if ( !eventInfo ) { return nullptr; };
 
-  auto trackInfo = GaussinoTrackInformation::Get();
+  auto trackInfo = GaussinoTrackInformation::Get(track);
   if ( !trackInfo ) {
     throw GaudiException( "No TrackInformation available! Something is off with the configuration...",
                           "Gsino::CaloChallenge::CaloSensDet", StatusCode::FAILURE );
