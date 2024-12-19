@@ -43,7 +43,6 @@
 //AdePT
 #ifdef WITH_ADEPT
 #include "AdePT/integration/AdePTPhysics.hh"
-#include "AdePT/integration/HepEMPhysics.hh"
 #endif
 
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
