@@ -66,9 +66,6 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
 #ifdef WITH_ADEPT
 typedef GiGaMTG4PhysicsConstrFAC<AdePTPhysics> GiGaMT_AdePTPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_AdePTPhysics, "GiGaMT_AdePTPhysics" )
-
-typedef GiGaMTG4PhysicsConstrFAC<HepEMPhysics> GiGaMT_HepEMPhysics;
-DECLARE_COMPONENT_WITH_ID( GiGaMT_HepEMPhysics, "GiGaMT_HepEMPhysics" )
 #endif
 
 template <typename PhysConstr>
