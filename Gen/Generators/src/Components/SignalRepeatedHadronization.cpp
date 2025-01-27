@@ -248,6 +248,7 @@ bool SignalRepeatedHadronization::generate( const unsigned int nPileUp, HepMC3::
         info() << "Number of repetitions of hadronization exceeds the limit" << endmsg;
     } else if ( m_hepMCName == "Pythia8" ) {
       // hadronize the pile-up events for Pythia8 (already done above for pythia6)
+      Clear( theGenEvent );
       m_productionTool->hadronize( theGenEvent, theGenCollision, engine ).ignore();
     }
   }
