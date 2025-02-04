@@ -55,26 +55,35 @@ gaudi_add_executable(Pythia8Reproducibility
 	Gaussino::HepMCUtilsLib
 )
 
-gaudi_add_executable(HepMCConverterTest
-    SOURCES
-        exec/convtest.cxx
-    LINK
-    	Pythia8::Pythia8
-	HepMC3::HepMC3
-	HepMC::HepMC
-	Gaussino::HepMCUtilsLib
-)
-
 # FIXME: the version of Pythia8 we use does not work with -std=c++20
 if(PYTHIA8_VERSION VERSION_LESS 310)
     set_property(
         SOURCE
             src/Lib/LhcbHooks.cpp
-        src/Lib/Pythia8Production.cpp
+            src/Lib/Pythia8Production.cpp
             src/Lib/Pythia8ProductionMT.cpp
             src/Components/Pythia8ProductionFactory.cpp
             exec/minimal.cxx
-            exec/convtest.cxx
         PROPERTY COMPILE_OPTIONS -std=c++17
     )
+endif()
+
+if(TARGET HepMC::HepMC)
+    gaudi_add_executable(HepMCConverterTest
+        SOURCES
+            exec/convtest.cxx
+        LINK
+            Pythia8::Pythia8
+            HepMC3::HepMC3
+            HepMC::HepMC
+            Gaussino::HepMCUtilsLib
+    )
+
+    # FIXME: the version of Pythia8 we use does not work with -std=c++20
+    if(PYTHIA8_VERSION VERSION_LESS 310)
+        set_property(
+            SOURCE exec/convtest.cxx
+            PROPERTY COMPILE_OPTIONS -std=c++17
+        )
+    endif()
 endif()
