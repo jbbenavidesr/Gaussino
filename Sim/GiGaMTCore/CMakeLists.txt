@@ -87,7 +87,7 @@ gaudi_add_library(GiGaMTCoreRunLib
     LINK
         PUBLIC
 	    HepMC3::HepMC3
-	    HepMC3::HepMC3search
+	    HepMC3::search
 	    Geant4::G4event
 	    Geant4::G4geometry
 	    Geant4::G4global

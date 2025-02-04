@@ -28,7 +28,7 @@ gaudi_add_library(HepMCUtilsLib
     LINK
     	PUBLIC
             HepMC3::HepMC3
-            HepMC3::HepMC3search
+            HepMC3::search
 	    Gaudi::GaudiAlgLib
 	    LHCb::PartPropLib     # TODO: [LHCb DEPENDENCY]
 	    Gaussino::Defaults

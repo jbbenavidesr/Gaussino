@@ -33,7 +33,7 @@ if(NOT Gaussino_FOUND AND Geant4_VERSION VERSION_LESS "10.7")
   set(CUSTOMSIM OFF)
 endif()
 
-find_package(HepMC3 REQUIRED)
+find_package(HepMC3 CONFIG REQUIRED search)
 find_package(Pythia8 REQUIRED)
 
 if(USE_DD4HEP)

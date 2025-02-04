@@ -35,6 +35,7 @@ gaudi_add_library(LbPythia8Lib
 	    Gaussino::HepMCUserLib
 	    Gaussino::Defaults
 )
+target_include_directories(LbPythia8Lib SYSTEM PRIVATE ${HEPMC3_INTERFACES_DIR})
 
 gaudi_add_module(LbPythia8
     SOURCES
@@ -54,6 +55,7 @@ gaudi_add_executable(Pythia8Reproducibility
 	HepMC3::HepMC3
 	Gaussino::HepMCUtilsLib
 )
+target_include_directories(Pythia8Reproducibility SYSTEM PRIVATE ${HEPMC3_INTERFACES_DIR})
 
 # FIXME: the version of Pythia8 we use does not work with -std=c++20
 if(PYTHIA8_VERSION VERSION_LESS 310)
@@ -78,6 +80,7 @@ if(TARGET HepMC::HepMC)
             HepMC::HepMC
             Gaussino::HepMCUtilsLib
     )
+    target_include_directories(HepMCConverterTest SYSTEM PRIVATE ${HEPMC3_INTERFACES_DIR})
 
     # FIXME: the version of Pythia8 we use does not work with -std=c++20
     if(PYTHIA8_VERSION VERSION_LESS 310)
