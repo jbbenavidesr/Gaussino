@@ -11,7 +11,10 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
+import os
+import tempfile
 import time
+import urllib.request
 
 from Gaudi.Configuration import appendPostConfigAction, log
 from Gaussino.Generation import GaussinoGeneration
@@ -126,6 +129,8 @@ class Gaussino(GaussinoConfigurable):
         # FIXME: FSR not supported yet
         # "WriteFSR": True,
         # "MergeGenFSR": False,
+        # ML options
+        "MLOptions": {},
     }
 
     def __apply_configuration__(self):
@@ -154,6 +159,9 @@ class Gaussino(GaussinoConfigurable):
 
         # EDM conversion
         self._configure_edm_conversion()
+
+        # ML options
+        self._set_ML_options()
 
         from Configurables import ApplicationMgr
 
@@ -419,3 +427,79 @@ class Gaussino(GaussinoConfigurable):
         if self.getProp("EvtMax") > 0:
             output_name += f"-{self.getProp('EvtMax')}ev"
         return f"{output_name}-{time.strftime('%Y%m%d')}"
+
+    def _set_ML_options(self):
+        """Sets up the ML options."""
+        opts = self.getProp("MLOptions")
+        if not opts:
+            return
+        backend = opts.get("Backend")
+        if not backend:
+            raise ValueError("Backend must be provided in MLOptions.")
+        model_path = opts.get("ModelPath")
+        if not model_path:
+            raise ValueError("ModelPath must be provided in MLOptions.")
+        model_name = opts.get("ModelName")
+        if not model_name:
+            raise ValueError("ModelName must be provided in MLOptions.")
+        if backend not in ["torch", "onnx"]:
+            raise ValueError(f"Unknown backend '{backend}' in MLOptions.")
+        svc_name = None
+        if backend == "torch":
+            if not model_path.endswith(".pt"):
+                raise ValueError(
+                    f"File '{model_path}' does not end with '.pt' in MLOptions."
+                )
+            svc_name = "Gsino__ML__Torch__ModelServerSvc"
+        elif backend == "onnx":
+            if not model_path.endswith(".onnx"):
+                raise ValueError(
+                    f"File '{model_path}' does not end with '.onnx' in MLOptions."
+                )
+            svc_name = "Gsino__ML__ONNX__ModelServerSvc"
+
+        else:
+            raise ValueError(f"Unknown backend '{backend}' in MLOptions.")
+
+        import Configurables
+        from Configurables import ApplicationMgr
+
+        auto_input_types = opts.get("AutoInputTypes", True)
+        auto_output_types = opts.get("AutoOutputTypes", True)
+        interop_threads = opts.get("InterOpThreads", self.getProp("ThreadPoolSize"))
+        intraop_threads = opts.get("IntraOpThreads", 1)
+
+        svc = getattr(Configurables, svc_name)
+
+        # FIXME: for URLs, download the model to a temporary directory,
+        #        and then use that path (THIS IS JUST A TEMPORARY SOLUTION)
+        if model_path.startswith("http"):
+            log.warning(
+                f"Downloading the model from '{model_path}' to a temporary directory. "
+                "This is just a temporary solution. To be removed in the future."
+            )
+            root_dir = tempfile.gettempdir()
+            model_file_name = model_path.split("/")[-1]
+            model_dir = os.path.join(root_dir, "GaussinoModels", model_name)
+            os.makedirs(model_dir, exist_ok=True)
+            new_model_path = os.path.join(model_dir, model_file_name)
+            if os.path.isfile(new_model_path):
+                log.info(
+                    f"Model '{model_file_name}' already exists in '{model_dir}'."
+                    "Skipping download."
+                )
+            else:
+                log.info(f"Downloading model '{model_file_name}' to '{model_dir}'.")
+                urllib.request.urlretrieve(model_path, new_model_path)
+            model_path = new_model_path
+
+        ApplicationMgr().ExtSvc.append(
+            svc(
+                ModelPath=model_path,
+                ModelName=model_name,
+                AutoInputTypes=auto_input_types,
+                AutoOutputTypes=auto_output_types,
+                IntraOpThreads=intraop_threads,
+                InterOpThreads=interop_threads,
+            )
+        )

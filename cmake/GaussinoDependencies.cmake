@@ -36,6 +36,17 @@ endif()
 find_package(HepMC3 REQUIRED)
 find_package(Pythia8 REQUIRED)
 
+if(GSINO_USE_TORCH)
+  find_package(BLAS)
+  find_package(torch REQUIRED 1.13 torch c10 torch_cpu torch_python)
+  add_compile_definitions(GSINO_USE_TORCH)
+endif()
+
+if(GSINO_USE_ONNXRUNTIME)
+    find_package(onnxruntime REQUIRED 1.15 onnxruntime)
+    add_compile_definitions(GSINO_USE_ONNXRUNTIME)
+endif()
+
 if(USE_DD4HEP)
     set(CMAKE_CXX_STANDARD ${GAUDI_CXX_STANDARD})
     find_package(DD4hep REQUIRED DDCore)
