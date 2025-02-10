@@ -1,0 +1,29 @@
+pytorch2.0.1:ÿ
+Ÿ
+InputFloat0
+InputFloat1OutputFloat0/Add"Add2é/home/mimazure/stacks/sim11_ML/Gaussino/GaussinoML/scripts/onnx/sum_2_float_inputs_to_1_float_output_model.py(21): forward
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/jit/_trace.py(118): wrapper
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/jit/_trace.py(127): forward
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/jit/_trace.py(1268): _get_trace_graph
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/onnx/utils.py(893): _trace_and_get_graph_from_model
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/onnx/utils.py(989): _create_jit_graph
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/onnx/utils.py(1113): _model_to_graph
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/onnx/utils.py(1548): _export
+/home/mimazure/miniconda3/envs/pytorch_onnx/lib/python3.11/site-packages/torch/onnx/utils.py(506): export
+/home/mimazure/stacks/sim11_ML/Gaussino/GaussinoML/scripts/onnx/sum_2_float_inputs_to_1_float_output_model.py(43): <module>
+	torch_jitZ
+InputFloat0
+
+
+Z
+InputFloat1
+
+
+b
+OutputFloat0
+
+
+B
