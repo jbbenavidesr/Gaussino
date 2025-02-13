@@ -27,7 +27,6 @@
 
 // HepMC.
 #include "HepMC3/GenEvent.h"
-#include "HepMC3/HEPEVT_Wrapper.h"
 
 // LbPythia8.
 #include "LbPythia8/Pythia8ProductionMT.h"
