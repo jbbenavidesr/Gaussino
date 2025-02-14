@@ -1,8 +1,8 @@
 ###############################################################################
-# (c) Copyright 2000-2018 CERN for the benefit of the LHCb Collaboration      #
+# (c) Copyright 2025 CERN for the benefit of the LHCb and FCC Collaborations  #
 #                                                                             #
-# This software is distributed under the terms of the GNU General Public      #
-# Licence version 3 (GPL Version 3), copied verbatim in the file "COPYING".   #
+# This software is distributed under the terms of the Apache License          #
+# version 2 (Apache-2.0), copied verbatim in the file "COPYING".              #
 #                                                                             #
 # In applying this licence, CERN does not waive the privileges and immunities #
 # granted to it by virtue of its status as an Intergovernmental Organization  #
@@ -15,7 +15,6 @@ stages:
 
 variables:
   TARGET_BRANCH: master
-  BINARY_TAG: x86_64_v2-centos7-gcc11-opt
   NO_LBLOGIN: "1"
 
 
@@ -71,7 +70,7 @@ pre-commit-checks:
 
 .docs-base:
   stage: docs
-  image: gitlab-registry.cern.ch/lhcb-core/lbdocker/centos7-build:latest
+  image: gitlab-registry.cern.ch/lhcb-docker/os-base/alma9-devel:latest
   variables:
     DOCS_VERSION: $CI_COMMIT_REF_NAME
   rules:
@@ -85,22 +84,10 @@ pre-commit-checks:
 build-docs:
   extends: .docs-base
   variables:
-    NIGHTLIES_PATH: "/cvmfs/lhcbdev.cern.ch/nightlies/lhcb-gaussino/latest"
-    LOCAL_PYTHON: "InstallArea/$BINARY_TAG/python"
+    NIGHTLY_SLOT: "lhcb-gaussino/latest"
+    NIGHTLY_PLATFORM: "x86_64_v2-el9-gcc13-opt"
   script:
-    - . /cvmfs/lhcb.cern.ch/lib/LbEnv.sh
-    - pip install myst_parser graphviz docutils\<0.17
-    # -> adding python directories of the upstream projects
-    - export PYTHONPATHBKP=$PYTHONPATH
-    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Gaudi/$LOCAL_PYTHON:$PYTHONPATHBKP
-    - export PYTHONPATHBKP=$NIGHTLIES_PATH/LHCb/$LOCAL_PYTHON:$PYTHONPATHBKP
-    - export PYTHONPATHBKP=$NIGHTLIES_PATH/Run2Support/$LOCAL_PYTHON:$PYTHONPATHBKP
-    # -> adding python directories of Gaussino
-    - export PYTHONPATHBKP=$(find $PWD -type d \( -path ./InstallArea -o -path ./build \) -prune -false -o -name "python" -print | paste -sd ":" - ):$PYTHONPATHBKP
-    - echo "$PYTHONPATHBKP"
-    # -> building the docs with a custom pythonpath
-    - PYTHONPATH=$PYTHONPATHBKP make -C docs html
-    - test -f docs/_build/html/index.html || exit 2
+    - NIGHTLY_SLOT=$NIGHTLY_SLOT NIGHTLY_PLATFORM=$NIGHTLY_PLATFORM ./.gitlab/build_docs.sh
   artifacts:
     paths:
       - docs/_build/html/
