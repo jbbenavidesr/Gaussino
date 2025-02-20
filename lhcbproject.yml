@@ -1,4 +1,8 @@
 name: Gaussino
 licence: Apache-2.0
 dependencies:
-  - GaussinoExtLibs
+  - Gaudi
+  - LHCb
+  - DD4hepDDG4
+  - DD4hep
+  - Geant4

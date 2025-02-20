@@ -25,7 +25,11 @@ if(NOT COMMAND lhcb_find_package)
 endif()
 
 # -- Public dependencies
-lhcb_find_package(GaussinoExtLibs REQUIRED) # TODO: [NEW CMAKE] temporary project
+lhcb_find_package(Gaudi REQUIRED)
+
+# TODO: [LHCb DEPENDENCY]
+# This is needed until we get rid of GaudiAlg
+lhcb_find_package(LHCb REQUIRED)
 
 # custom simulations work only with G4 > 10.7
 # + make sure it is set once and only in Gaussino
