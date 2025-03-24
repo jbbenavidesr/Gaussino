@@ -19,9 +19,9 @@
 
 #include "G4VUserDetectorConstruction.hh"
 
-DD4hepDetectorConstruction::DD4hepDetectorConstruction( const dd4hep::Detector& detector ) : m_detector( detector ) {}
+DD4hepDetectorConstruction::DD4hepDetectorConstruction( const dd4hep::Detector& detector ) : m_detector( &detector ) {}
 
-DD4hepDetectorConstruction::DD4hepDetectorConstruction() : m_detector( dd4hep::Detector::getInstance() ) {}
+DD4hepDetectorConstruction::DD4hepDetectorConstruction() : m_detector( &dd4hep::Detector::getInstance() ) {}
 
 G4VPhysicalVolume* DD4hepDetectorConstruction::Construct() {
   // TODO: Review implementation which is currently just copied from
@@ -29,7 +29,7 @@ G4VPhysicalVolume* DD4hepDetectorConstruction::Construct() {
   static G4VPhysicalVolume* w{ nullptr };
   if ( w ) return w;
   auto&                        g4map = dd4hep::sim::Geant4Mapping::instance();
-  dd4hep::DetElement           world = m_detector.world();
+  dd4hep::DetElement           world = m_detector->world();
   dd4hep::sim::Geant4Converter conv( dd4hep::Detector::getInstance(), m_printlevel );
   conv.debugMaterials  = m_debugMaterials;
   conv.debugElements   = m_debugElements;

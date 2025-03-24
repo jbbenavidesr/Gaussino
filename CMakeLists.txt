@@ -10,7 +10,7 @@
 ###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
-set(LCG_LAYER LHCB_7 CACHE STRING "Specific set of version to use")
+set(LCG_LAYER LHCB_8 CACHE STRING "Specific set of version to use")
 option(LCG_USE_GENERATORS "enable/disable use of LCG generators" ON)
 
 project(Gaussino VERSION 1.0
@@ -24,7 +24,27 @@ list(PREPEND CMAKE_MODULE_PATH
 )
 
 option(CUSTOMSIM "Using custom simulations" ON)
-set(Gaussino_PERSISTENT_OPTIONS CUSTOMSIM)
+option(GSINO_USE_TORCH "Use pyTorch C++ API extenstions" ON)
+option(GSINO_USE_ONNXRUNTIME "Use ONNXRuntime C++ API extenstions" ON)
+
+# Disable automatically PyTorch and ONNXRuntime on ARM
+# (as long as they are provided by LCG)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+    if(GSINO_USE_TORCH)
+        message(INFO "Torch in Gaussino is not supported on ARM")
+        set(GSINO_USE_TORCH OFF)
+    endif()
+    if(GSINO_USE_ONNXRUNTIME)
+        message(INFO "ONNXRuntime in Gaussino is not supported on ARM")
+        set(GSINO_USE_ONNXRUNTIME OFF)
+    endif()
+endif()
+
+list(APPEND Gaussino_PERSISTENT_OPTIONS
+    CUSTOMSIM
+    GSINO_USE_TORCH
+    GSINO_USE_ONNXRUNTIME
+)
 
 set(WITH_Gaussino_PRIVATE_DEPENDENCIES TRUE)
 include(GaussinoDependencies)
@@ -50,17 +70,40 @@ list(APPEND ${CustomSimulationDirsName}
     Examples/G4Par04
 )
 
+if(GSINO_USE_ONNXRUNTIME)
+    set(ONNXRuntimeDirsName ONNXRuntimeDirs)
+else()
+    set(ONNXRuntimeDirsName GAUSSINO_IGNORE_SUBDIRS)
+endif()
+list(APPEND ${ONNXRuntimeDirsName}
+    GaussinoML/GaussinoONNX
+)
+
+if(GSINO_USE_TORCH)
+    set(TorchDirsName TorchDirs)
+else()
+    set(TorchDirsName GAUSSINO_IGNORE_SUBDIRS)
+endif()
+list(APPEND ${TorchDirsName}
+    GaussinoML/GaussinoTorch
+)
+
 gaussino_env(
     SET GAUSSINOOPTS ${PROJECT_SOURCE_DIR}/Sim/Gaussino/options
     # FIXME: use non-LHCb LHAPDFSets
     SET LHAPDF_DATA_PATH /cvmfs/lhcb.cern.ch/lib/lhcb/DBASE/LHAPDFSets/v62r3p1/data
     SET PYTHIA8XML ${PYTHIA8_XML}
     SET PYTHIA8DATA ${PYTHIA8_XML}
+    SET GSINO_USE_TORCH ${GSINO_USE_TORCH}
+    SET GSINO_USE_ONNXRUNTIME ${GSINO_USE_ONNXRUNTIME}
 )
 
 gaussino_add_subdirectories(
     Defaults
     EDMdev/MCTruthToEDM
+    GaussinoML/GaussinoMLBase
+    ${ONNXRuntimeDirs}
+    ${TorchDirs}
     Gen/GenBeam
     Gen/Generators
     Gen/GenInterfaces
@@ -70,6 +113,7 @@ gaussino_add_subdirectories(
     HepMCUser
     Moni/GaussMonitor
     NewRnd
+    Sim/EDM
     Sim/ExternalDetector
     ${CustomSimulationDirs}
     Sim/Gaussino
@@ -92,6 +136,8 @@ gaussino_add_subdirectories(
 gaudi_install(CMAKE
     # helpers to find external projects
     cmake/FindPythia8.cmake
+    cmake/Findtorch.cmake
+    cmake/Findonnxruntime.cmake
     cmake/GaussinoConfigUtils.cmake
     cmake/GaussinoConfig.cmake.in
 )

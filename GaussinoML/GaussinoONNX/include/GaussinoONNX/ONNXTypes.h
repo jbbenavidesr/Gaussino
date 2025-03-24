@@ -1,5 +1,5 @@
 /*****************************************************************************\
-* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+* (c) Copyright 2023 CERN for the benefit of the LHCb and FCC Collaborations  *
 *                                                                             *
 * This software is distributed under the terms of the Apache License          *
 * version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
@@ -8,13 +8,18 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-// $Id: HepMCUtils.h,v 1.8 2008-07-23 17:21:55 cattanem Exp $
-#ifndef GENERATORS_HEPMCUTILS_H
-#define GENERATORS_HEPMCUTILS_H 1
 
-// This include has been moved to Event/GenEvent package.
-// This file is provided for backward compatibility.
-#warning "You should now include GenEvent/HepMCUtils.h instead"
-#include "GenEvent/HepMCUtils.h"
+#pragma once
 
-#endif // GENERATORS_HEPMCUTILS_H
+// ONNX
+#include "core/session/onnxruntime_cxx_api.h"
+
+namespace Gsino::ML::ONNX {
+  using Tensor         = Ort::Value;
+  using Value          = Ort::Value;
+  using Session        = Ort::Session;
+  using SessionOptions = Ort::SessionOptions;
+  using Env            = Ort::Env;
+  using MemoryInfo     = Ort::MemoryInfo;
+  //   using SerializedModule = torch::jit::Module;
+} // namespace Gsino::ML::ONNX

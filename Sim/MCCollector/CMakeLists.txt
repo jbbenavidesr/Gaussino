@@ -24,6 +24,7 @@ gaudi_add_library(MCCollectorLib
             Gaussino::GiGaMTFactoriesLib
             Gaussino::GiGaMTDetFactoriesLib
             Gaussino::MCTruthToEDMLib
+            Gaussino::EDMLib
 )
 
 gaudi_add_module(MCCollector

@@ -13,8 +13,9 @@
 #include "GaudiAlg/FunctionalUtilities.h"
 #include "GaudiAlg/Transformer.h"
 
-// GiGaMT
+// Gaussino
 #include "Defaults/Locations.h"
+#include "EDM/Hit.h"
 #include "GiGaMTCoreRun/G4EventProxy.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "MCTruthToEDM/LinkedParticleMCParticleLink.h"
@@ -22,13 +23,9 @@
 // local
 #include "MCCollector/MCCollectorHit.h"
 
-// LHCb
-#include "Event/MCExtendedHit.h"
-#include "Event/MCHit.h"
-
 namespace MCCollector {
-  class HitsAlg : public Gaudi::Functional::Transformer<LHCb::MCHits( const G4EventProxies&,
-                                                                      const LinkedParticleMCParticleLinks& ),
+  class HitsAlg : public Gaudi::Functional::Transformer<Gsino::EDM::Hits( const G4EventProxies&,
+                                                                          const LinkedParticleMCParticleLinks& ),
                                                         Gaudi::Functional::Traits::useLegacyGaudiAlgorithm> {
   public:
     HitsAlg( const std::string& name, ISvcLocator* pSvcLocator )
@@ -38,17 +35,16 @@ namespace MCCollector {
                 KeyValue{ "LinkedParticleMCParticleLinks", Gaussino::LinkedParticleMCParticleLinksLocation::Default } },
               KeyValue{ "MCHitsLocation", "" } ) {}
 
-    virtual LHCb::MCHits operator()( const G4EventProxies&, const LinkedParticleMCParticleLinks& ) const override;
+    virtual Gsino::EDM::Hits operator()( const G4EventProxies&, const LinkedParticleMCParticleLinks& ) const override;
 
   protected:
     Gaudi::Property<std::string> m_colName{ this, "CollectionName", "" };
   };
 } // namespace MCCollector
 
-LHCb::MCHits MCCollector::HitsAlg::operator()( const G4EventProxies&                evtprxs,
-                                               const LinkedParticleMCParticleLinks& mclinks ) const {
-
-  LHCb::MCHits hits;
+Gsino::EDM::Hits MCCollector::HitsAlg::operator()( const G4EventProxies&                evtprxs,
+                                                   const LinkedParticleMCParticleLinks& mclinks ) const {
+  Gsino::EDM::Hits hits;
   for ( auto& evtprx : evtprxs ) {
     auto hitCollection = evtprx->GetHitCollection<HitsCollection>( m_colName.value() );
 
@@ -59,26 +55,27 @@ LHCb::MCHits MCCollector::HitsAlg::operator()( const G4EventProxies&            
 
     int numOfHits = hitCollection->entries();
     for ( int iG4Hit = 0; iG4Hit < numOfHits; ++iG4Hit ) {
-      LHCb::MCExtendedHit* newHit = new LHCb::MCExtendedHit();
-      auto                 g4Hit  = ( *hitCollection )[iG4Hit];
-      Gaudi::XYZPoint      entry( g4Hit->GetEntryPos() );
-      Gaudi::XYZVector     mom( g4Hit->GetMomentum() );
-      newHit->setMomentum( mom );
-      newHit->setEntry( entry );
-      newHit->setEnergy( g4Hit->GetEdep() );
-      newHit->setTime( g4Hit->GetTimeOfFlight() );
-      newHit->setP( g4Hit->GetMomentum().mag() );
+      auto             newHit = Gsino::EDM::HitPtr( new Gsino::EDM::Hit() );
+      auto             g4Hit  = ( *hitCollection )[iG4Hit];
+      Gaudi::XYZPoint  entry( g4Hit->GetEntryPos() );
+      Gaudi::XYZPoint  exit( g4Hit->GetExitPos() );
+      Gaudi::XYZVector mom( g4Hit->GetMomentum() );
+      newHit->SetMomentum( mom );
+      newHit->SetPosition( entry );
+      newHit->SetDisplacement( exit - entry );
+      newHit->SetEnergy( g4Hit->GetEdep() );
+      newHit->SetTime( g4Hit->GetTimeOfFlight() );
       int trackID = g4Hit->GetTrackID();
       if ( auto lp = evtprx->truth()->GetParticleFromTrackID( trackID ); lp ) {
         if ( auto it = mclinks.find( lp ); it != std::end( mclinks ) ) {
-          newHit->setMCParticle( it->second );
+          newHit->SetMCParticle( it->second );
         } else {
           warning() << "No pointer to MCParticle for MCHit associated to G4 trackID: " << trackID << endmsg;
         }
       } else {
         warning() << "No LinkedParticle found. Something went seriously wrong. trackID: " << trackID << endmsg;
       }
-      hits.add( newHit );
+      hits.emplace_back( newHit );
     }
   }
 

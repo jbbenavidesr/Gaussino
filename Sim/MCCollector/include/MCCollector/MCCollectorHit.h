@@ -31,6 +31,9 @@ namespace MCCollector {
     inline void          SetEntryPos( G4ThreeVector xyz ) { m_entryPos = xyz; }
     inline G4ThreeVector GetEntryPos() { return m_entryPos; }
 
+    inline void          SetExitPos( G4ThreeVector xyz ) { m_exitPos = xyz; }
+    inline G4ThreeVector GetExitPos() { return m_exitPos; }
+
     inline void          SetMomentum( G4ThreeVector p ) { m_momentum = p; }
     inline G4ThreeVector GetMomentum() { return m_momentum; }
 
