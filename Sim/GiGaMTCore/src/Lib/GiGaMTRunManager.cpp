@@ -45,6 +45,13 @@ void GiGaMTRunManager::Initialize() {
   G4RunManager::Initialize();
   // Construct scoring worlds
   ConstructScoringWorlds();
+  // Run all the commands that are needed to work before
+  // the run is initilized (this simulates commands that are
+  // added in a main function of Geant4)
+  for ( auto& cmd : m_initCommands ) {
+    info( "InitCommand(): execute '" + cmd + "'" );
+    applyUIcommand( cmd );
+  }
   // Run initialization in G4RunManager.
   // Normally done in BeamOn.
   RunInitialization();
@@ -55,47 +62,17 @@ void GiGaMTRunManager::Initialize() {
   PrepareCommandsStack();
 }
 
-// void GiGaMTRunManager::InitializeGeometry()
-//{
-////FIXME: This needs to do something ...
-
-//}
-
-// void GiGaMTRunManager::InitializePhysics()
-//{
-// kernel->InitializePhysics();
-
-// G4CascadeInterface::Initialize();
-// physicsInitialized = true;
-
-//}
-
-// I suspect a lot of this could just be delegated to the base class.
-// I wonder if something there breaks in Athena..
 void GiGaMTRunManager::RunTermination() {
-  // vanilla G4 calls a different method... why?
-  CleanUpPreviousEvents();
-  previousEvents->clear();
+  std::string msg = "Geant4 terminated the run internally. This should not have happened!";
+  throw std::runtime_error( msg );
+}
 
-  if ( userRunAction ) { userRunAction->EndOfRunAction( currentRun ); }
-
-  delete currentRun;
-  currentRun = nullptr;
-  runIDCounter++;
-
-  G4StateManager* stateManager = G4StateManager::GetStateManager();
-  stateManager->SetNewState( G4State_Idle );
-
-  G4GeometryManager::GetInstance()->OpenGeometry();
-
-  kernel->RunTermination();
-
-  userRunAction      = nullptr;
-  userEventAction    = nullptr;
-  userSteppingAction = nullptr;
-  userStackingAction = nullptr;
-  userTrackingAction = nullptr;
-  // physicsList = nullptr;
-  userDetector               = nullptr;
-  userPrimaryGeneratorAction = nullptr;
+void GiGaMTRunManager::SafeRunTermination() {
+  debug( "Geant4 Run terminated." );
+  // WaitForEndEventLoopWorkers();
+  // -> disabled as it won't do anything, as G4 barrier is disabled
+  // G4RunManager::TerminateEventLoop()
+  // -> disabled as the event loop is controlled by Gaussino
+  G4RunManager::RunTermination();
+  // -> this will call kernel->RunTermination() and any EndOfRunAction
 }

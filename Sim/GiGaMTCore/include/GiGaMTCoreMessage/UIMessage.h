@@ -1,5 +1,5 @@
 /*****************************************************************************\
-* (c) Copyright 2021 CERN for the benefit of the LHCb and FCC Collaborations  *
+* (c) Copyright 2022 CERN for the benefit of the LHCb and FCC Collaborations  *
 *                                                                             *
 * This software is distributed under the terms of the Apache License          *
 * version 2 (Apache-2.0), copied verbatim in the file "COPYING".              *
@@ -8,14 +8,26 @@
 * granted to it by virtue of its status as an Intergovernmental Organization  *
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
-#include "GiGaRunActionCommandFAC.h"
 
-DECLARE_COMPONENT_WITH_ID( GiGaRunActionCommandFAC, "GiGaRunActionCommand" )
+#pragma once
 
-G4UserRunAction* GiGaRunActionCommandFAC::construct() const {
-  auto ret         = new GiGaRunActionCommand{};
-  ret->m_beginCmds = m_beginCmds;
-  ret->m_endCmds   = m_endCmds;
-  ret->SetMessageInterface( message_interface() );
-  return ret;
-}
+// Gaussino
+#include "GiGaMTCoreMessage/IMessage.h"
+
+/**
+ * @class Gsino::UIMessage
+ *
+ * Extends standard Gsino::Message with additional method that calls the UI
+ * manager and parses the status of the command correctly.
+ *
+ *  @author Michał Mazurek
+ *  @date   28/07/2022
+ */
+
+namespace Gsino {
+  class UIMessage : public Message {
+  public:
+    using Message::Message;
+    void applyUIcommand( std::string command ) const;
+  };
+} // namespace Gsino

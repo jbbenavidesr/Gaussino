@@ -12,13 +12,13 @@
 
 // Geant4
 #include "G4ParallelWorldPhysics.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
 namespace ParallelGeometry {
 
   using ProcessConstructor = std::function<bool()>;
 
-  class Physics : public GiGaMessage, public G4ParallelWorldPhysics {
+  class Physics : public Gsino::Message, public G4ParallelWorldPhysics {
 
   protected:
     ProcessConstructor m_process_constructor;

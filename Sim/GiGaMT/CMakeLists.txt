@@ -40,6 +40,7 @@ gaudi_add_module(GiGaMT
 	src/Components/HepMC3ToMCTruthConverter.cpp
 	src/Components/SkipSimAlg.cpp
     LINK
+    	Geant4::G4vis_management
         Gaussino::GiGaMTCoreRunLib
         Gaussino::GiGaMTTruthLib
         Gaussino::GiGaMTLib

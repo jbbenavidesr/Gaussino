@@ -25,7 +25,7 @@ namespace MCCollector {
 #include "G4VSensitiveDetector.hh"
 
 // from Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTCoreRun/GaussinoTrackInformation.h"
 #include "GiGaMTDetFactories/GiGaMTG4SensDetFactory.h"
 #include "MCCollector/MCCollectorHit.h"
@@ -37,7 +37,7 @@ class G4TouchableHistory;
 class G4Track;
 
 namespace MCCollector {
-  class SensDet : public G4VSensitiveDetector, public G4VFastSimSensitiveDetector, public virtual GiGaMessage {
+  class SensDet : public G4VSensitiveDetector, public G4VFastSimSensitiveDetector, public virtual Gsino::Message {
 
   public:
     inline SensDet( const std::string& name ) : G4VSensitiveDetector( name ) { collectionName.insert( "Hits" ); }

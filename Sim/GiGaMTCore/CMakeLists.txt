@@ -43,10 +43,12 @@ gaudi_add_header_only_library(GiGaMTCoreDetLib
 
 gaudi_add_library(GiGaMTCoreMessageLib
     SOURCES
-        src/Lib/GiGaMessage.cpp
+        src/Lib/Message.cpp
+        src/Lib/UIMessage.cpp
     LINK
         Gaudi::GaudiKernel
         Geant4::G4global
+	    Geant4::G4intercoms
         HepMC3::HepMC3
 )
 
@@ -71,7 +73,6 @@ gaudi_add_library(GiGaMTCoreRunLib
         src/Lib/GaussinoPrimaryParticleInformation.cpp
         src/Lib/GaussinoTrackInformation.cpp
 	src/Lib/GiGaMTRunManager.cpp
-	src/Lib/GiGaRunActionCommand.cpp
 	src/Lib/GiGaWorkerPayload.cpp
 	src/Lib/GiGaWorkerPilot.cpp
 	src/Lib/GiGaWorkerRunManager.cpp

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "G4UserRunAction.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include <string>
 #include <vector>
 
@@ -28,7 +28,7 @@
 
 class GiGaRunActionCommandFAC;
 
-class GiGaRunActionCommand : public virtual G4UserRunAction, public GiGaMessage {
+class GiGaRunActionCommand : public virtual G4UserRunAction, public Gsino::Message {
   friend class GiGaRunActionCommandFAC;
 
 public:

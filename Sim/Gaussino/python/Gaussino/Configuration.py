@@ -23,6 +23,7 @@ from Gaussino.Simulation import GaussinoSimulation
 
 # Configurables (do NOT use 'from Configurables' here)
 from Gaussino.Utilities import GaussinoConfigurable
+from Gaussino.Visualization import GaussinoVisualization
 
 
 class Gaussino(GaussinoConfigurable):
@@ -101,6 +102,7 @@ class Gaussino(GaussinoConfigurable):
         GaussinoGeneration,
         GaussinoSimulation,
         GaussinoGeometry,
+        GaussinoVisualization,
     ]
 
     __slots__ = {

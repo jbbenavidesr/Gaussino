@@ -20,6 +20,7 @@ from Gaussino.Utilities import (
     add_constructors_with_names,
     get_set_configurable,
 )
+from Gaussino.Visualization import GaussinoVisualization
 
 # Configurables
 from ParallelGeometry.Configuration import ParallelGeometry
@@ -46,6 +47,12 @@ class GaussinoSimulation(GaussinoConfigurable):
     :var G4EndRunCommand: default: ``[]``
     :vartype G4EndRunCommand: bool, optional
 
+    :var G4BeginEventCommand: default: ``[]``
+    :vartype G4BeginEventCommand: list, optional
+
+    :var G4EndEventCommand: default: ``[]``
+    :vartype G4EndEventCommand: list, optional
+
     **Cuts**
 
     :var CutForElectron: default: ``-1. * km``
@@ -61,6 +68,11 @@ class GaussinoSimulation(GaussinoConfigurable):
     :vartype DumpCutsTable: bool, optional
     """
 
+    __used_configurables__ = [
+        GaussinoGeometry,
+        GaussinoVisualization,
+    ]
+
     __slots__ = {
         # MAIN
         "TrackTruth": True,
@@ -68,6 +80,8 @@ class GaussinoSimulation(GaussinoConfigurable):
         # G4 commands
         "G4BeginRunCommand": ["/tracking/verbose 0", "/process/eLoss/verbose 0"],
         "G4EndRunCommand": [],
+        "G4BeginEventCommand": [],
+        "G4EndEventCommand": [],
         # Cuts
         "CutForElectron": -1.0 * SystemOfUnits.km,
         "CutForPositron": -1 * SystemOfUnits.km,
@@ -114,15 +128,27 @@ class GaussinoSimulation(GaussinoConfigurable):
         """Sets up the main simulation service ``GiGaMT``. It will be
         available throughout the whole execution time of the simulation.
         """
-        from Configurables import ApplicationMgr, GiGaMT, GiGaRunActionCommand
+        from Configurables import (
+            ApplicationMgr,
+            GiGaEventActionCommand,
+            GiGaMT,
+            GiGaRunActionCommand,
+        )
 
         log.debug("-> Configuring GiGa service: GiGaMT")
         giga = GiGaMT()
         actioninit = get_set_configurable(giga, "ActionInitializer")
+
         actioninit.RunActions += ["GiGaRunActionCommand"]
-        commands = actioninit.addTool(GiGaRunActionCommand, "GiGaRunActionCommand")
-        commands.BeginOfRunCommands = self.getProp("G4BeginRunCommand")
-        commands.EndOfRunCommands = self.getProp("G4EndRunCommand")
+        run_commands = actioninit.addTool(GiGaRunActionCommand, "GiGaRunActionCommand")
+        run_commands.BeginOfRunCommands = self.getProp("G4BeginRunCommand")
+        run_commands.EndOfRunCommands = self.getProp("G4EndRunCommand")
+
+        actioninit.EventActions += ["GiGaEventActionCommand"]
+        event_commands = actioninit.addTool(GiGaEventActionCommand)
+        event_commands.BeginOfEventCommands = self.getProp("G4BeginEventCommand")
+        event_commands.EndOfEventCommands = self.getProp("G4EndEventCommand")
+
         ApplicationMgr().ExtSvc += [giga]
 
     def _set_giga_alg(self):

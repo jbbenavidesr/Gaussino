@@ -11,7 +11,6 @@
 #include "G4UserTrackingAction.hh"
 #include "G4VProcess.hh"
 
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
 #include "HepMC3/FourVector.h"
 #include <string>
 #include <unordered_set>

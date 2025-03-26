@@ -28,7 +28,7 @@
 namespace Gaussino::G4Par04 {
   struct CaloSensDet final : public G4VSensitiveDetector,
                              public G4VFastSimSensitiveDetector,
-                             public virtual GiGaMessage {
+                             public virtual Gsino::Message {
     CaloSensDet( G4String aName );
     virtual void   Initialize( G4HCofThisEvent* ) override;
     virtual void   EndOfEvent( G4HCofThisEvent* ) override;

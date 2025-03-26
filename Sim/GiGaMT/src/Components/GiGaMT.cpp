@@ -29,9 +29,10 @@
 #include "G4ParticlePropertyTable.hh"
 #include "G4ParticleTable.hh"
 #include "G4UIsession.hh"
+#include "G4UserRunAction.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4VUserPhysicsList.hh"
-#include "G4VVisManager.hh"
+#include "G4VisManager.hh"
 
 // from GiGaMT
 #include "CLHEP/Random/RandomEngine.h"
@@ -136,10 +137,47 @@ StatusCode GiGaMT::finalize() {
   // on an empty queue right now by pushing the sentinel the worker threads
   m_payloadQueue.enqueue( std::nullopt );
 
+  auto main_mgr = GiGaMTRunManager::GetGiGaMTRunManager();
+  if ( !m_visMgrFactory.name().empty() ) {
+    // additional 2 barriers are added here in case G4 will apply some postprocessing
+    // (in Gaussino it is used for now only in the case when we use G4VisManager)
+    // the reason for this is that postprocessing can be done on a separate thread and we have
+    // to make sure that the master and worker threads will wait with the deletion
+    auto& postProcBarrier = GiGaWorkerPilot::GetPostProcessingBarrier( m_nWorkerThreads + 1 );
+    auto& finalBarrier    = GiGaWorkerPilot::GetFinalBarrier( m_nWorkerThreads + 1 );
+    postProcBarrier.wait();
+    // now we call EndOfRunAction a bit eariler (normally it would be done in SafeRunTermination()
+    // the idea is that we do not want to delete G4 objects and end the event loop before
+    // any additional postprocessing and the use of kept events is done by G4
+    auto run_actions = const_cast<G4UserRunAction*>( main_mgr->GetUserRunAction() );
+    if ( run_actions ) {
+      auto run = main_mgr->GetNonConstCurrentRun();
+      if ( !run ) {
+        error() << "G4Run not available before terminating the event loop!" << endmsg;
+        return StatusCode::FAILURE;
+      }
+      run_actions->EndOfRunAction( run );
+      delete run_actions;
+      run_actions = nullptr;
+      main_mgr->SetUserAction( run_actions );
+    }
+    finalBarrier.wait();
+  }
+
+  //
   // Wait for the worker threads that will finalize now automatically
   for ( auto& t : m_workerThreads ) { t.join(); }
   always() << "Finalized all G4 worker threads" << endmsg;
-  delete GiGaMTRunManager::GetGiGaMTRunManager();
+  main_mgr->SafeRunTermination();
+  delete main_mgr;
+
+  if ( !m_visMgrFactory.name().empty() ) {
+    auto vis_mgr = G4VisManager::GetInstance();
+    if ( vis_mgr ) {
+      debug() << "Deleting G4VisManager: " << m_visMgrFactory.name() << endmsg;
+      delete vis_mgr;
+    }
+  }
 
   // error printout
   if ( 0 != m_errors.size() || 0 != m_warnings.size() || 0 != m_exceptions.size() ) {

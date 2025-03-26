@@ -22,5 +22,6 @@ public:
   GiGaMTRunManager* construct() const override;
 
 private:
-  static std::atomic_bool created;
+  static std::atomic_bool                   created;
+  Gaudi::Property<std::vector<std::string>> m_initCommands{ this, "InitCommands", {} };
 };

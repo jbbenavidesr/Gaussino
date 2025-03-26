@@ -16,7 +16,7 @@
 
 namespace Gaussino::CustomSimulation::ImmediateDeposit {
 
-  class Model : public G4VFastSimulationModel, public GiGaMessage {
+  class Model : public G4VFastSimulationModel, public Gsino::Message {
 
     // FIXME: change to G4FastSimHitMaker whenever possible
     std::unique_ptr<HitMaker> m_hitMaker;

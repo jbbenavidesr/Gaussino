@@ -17,7 +17,7 @@
 
 // Gaussino
 #include "G4UserTrackingAction.hh"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTCoreRun/ZMaxPlane.h"
 
 // Gaudi
@@ -43,7 +43,7 @@ class G4ParticleDefinition;
  *  @date    23/01/2001
  */
 
-class TruthFlaggingTrackAction : virtual public G4UserTrackingAction, virtual public GiGaMessage {
+class TruthFlaggingTrackAction : virtual public G4UserTrackingAction, virtual public Gsino::Message {
   /// friend factory for instantiation
   //  friend class GiGaFactory<TruthFlaggingTrackAction>;
 

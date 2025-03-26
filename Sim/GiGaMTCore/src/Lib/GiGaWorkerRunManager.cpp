@@ -23,10 +23,11 @@
 
 static std::mutex workerInitMutex;
 
-GiGaWorkerRunManager::GiGaWorkerRunManager()
-    : G4WorkerRunManager()
-// TODO: what if we need to make these configurable?
-{}
+GiGaWorkerRunManager::GiGaWorkerRunManager() : G4WorkerRunManager() {
+  // disable automatic behaviour, the decision on how to interpret
+  // the status of the command should be handled by Gaussino
+  G4UImanager::GetUIpointer()->SetIgnoreCmdNotFound( false );
+}
 
 GiGaWorkerRunManager* GiGaWorkerRunManager::GetGiGaWorkerRunManager() {
   // Grab thread-local pointer from base class
@@ -107,15 +108,11 @@ void GiGaWorkerRunManager::InitializePhysics() {
   G4RunManager::InitializePhysics();
 }
 
-bool GiGaWorkerRunManager::ProcessEvent( G4Event* event ) {
+bool GiGaWorkerRunManager::ProcessEvent( G4Event* currentEvent ) {
 
   G4StateManager* stateManager = G4StateManager::GetStateManager();
   stateManager->SetNewState( G4State_GeomClosed );
 
-  currentEvent = event;
-
-  eventManager->SetVerboseLevel( 3 );
-  // eventManager->GetTrackingManager()->SetVerboseLevel(3);
   eventManager->ProcessOneEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
@@ -124,13 +121,15 @@ bool GiGaWorkerRunManager::ProcessEvent( G4Event* event ) {
     return true;
   }
 
-  this->AnalyzeEvent( currentEvent );
+  AnalyzeEvent( currentEvent );
   if ( currentEvent->IsAborted() ) {
     warning( "GiGaWorkerRunManager::SimulateFADSEvent: "
              "Event Aborted at Analysis level" );
     currentEvent = nullptr;
     return true;
   }
+
+  UpdateScoring();
 
   // this->StackPreviousEvent( currentEvent );
   bool abort   = currentEvent->IsAborted();

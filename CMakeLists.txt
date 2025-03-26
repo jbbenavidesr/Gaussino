@@ -123,8 +123,10 @@ gaussino_add_subdirectories(
     Sim/GiGaMTDebug
     Sim/GiGaMTFactories
     Sim/GiGaMTGeo
+    Sim/GiGaMTPhoenix
     Sim/GiGaMTReDecay
     Sim/GiGaMTTruth
+    Sim/GiGaMTVis
     Sim/MCCollector
     Sim/ParallelGeometry
     Sim/SimInterfaces

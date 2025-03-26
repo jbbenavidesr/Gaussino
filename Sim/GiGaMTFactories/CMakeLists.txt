@@ -23,11 +23,13 @@ gaudi_add_header_only_library(GiGaMTFactoriesLib
 
 gaudi_add_module(GiGaMTRunFactories
     SOURCES
+	src/Components/GiGaEventActionCommand.cpp
         src/Components/GiGaMTRunManagerFAC.cpp
-	src/Components/GiGaRunActionCommandFAC.cpp
+	src/Components/GiGaRunActionCommand.cpp
 	src/Components/GiGaWorkerPilotFAC.cpp
     LINK
         HepMC3::HepMC3
+	Geant4::G4interfaces
         Gaussino::GiGaMTFactoriesLib
 	Gaussino::GiGaMTCoreRunLib
 )

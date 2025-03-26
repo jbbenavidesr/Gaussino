@@ -15,7 +15,7 @@
 #include "G4VProcess.hh"
 
 // Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
 // HepMC3
 #include "HepMC3/FourVector.h"
@@ -41,7 +41,7 @@
  *  @date   28/02/2019
  */
 
-class TruthStoringTrackAction : virtual public G4UserTrackingAction, virtual public GiGaMessage {
+class TruthStoringTrackAction : virtual public G4UserTrackingAction, virtual public Gsino::Message {
   /// friend factory for instantiation
   // friend class GiGaFactory<TruthStoringTrackAction>;
   ///

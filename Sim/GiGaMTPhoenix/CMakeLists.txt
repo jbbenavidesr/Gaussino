@@ -8,32 +8,16 @@
 # granted to it by virtue of its status as an Intergovernmental Organization  #
 # or submit itself to any jurisdiction.                                       #
 ###############################################################################
-from GaudiKernel import SystemOfUnits as units
+#[=======================================================================[.rst:
+Sim/GiGaMTPhoenix
+-----------------
+#]=======================================================================]
 
-OUTER_SPACE = {
-    "AtomicNumber": 1.0,
-    "MassNumber": 1.01 * units.g / units.mole,
-    "Density": 1.0e-25 * units.g / units.cm3,
-    "Pressure": 3.0e-18 * units.pascal,
-    "Temperature": 2.73 * units.kelvin,
-}
-
-LEAD = {
-    "Type": "MaterialFromElements",
-    "Symbols": ["Pb"],
-    "AtomicNumbers": [82.0],
-    "MassNumbers": [207.2 * units.g / units.mole],
-    "MassFractions": [1.0],
-    "Density": 11.29 * units.g / units.cm3,
-    "State": "Solid",
-}
-
-SILICA = {
-    "Type": "MaterialFromElements",
-    "Symbols": ["Si"],
-    "AtomicNumbers": [14.0],
-    "MassNumbers": [27.9769 * units.g / units.mole],
-    "MassFractions": [1.0],
-    "Density": 2.329 * units.g / units.cm3,
-    "State": "Solid",
-}
+gaudi_add_module(GiGaMTPhoenixAlgs
+    SOURCES
+        src/DumpG4Trajectories.cpp
+    LINK
+        Gaudi::GaudiAlgLib
+        LHCb::PhoenixLib
+        Gaussino::GiGaMTCoreRunLib
+)

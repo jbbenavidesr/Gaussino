@@ -12,12 +12,12 @@
 
 // from Gaudi
 #include "GaudiAlg/GaudiTool.h"
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
 /** GiGaFactoryBase
  *
  *  Base class for all factories of G4 objects which implements
- *  the Message/IGiGaMessage interface to allow the use of the Gaudi
+ *  the Message/IMessage interface to allow the use of the Gaudi
  *  messaging facilities from the factory within the G4 objects.
  *  TODO: That might actually be stupid but whatever ...
  *
@@ -25,7 +25,7 @@
  *  @date   2018-06-04
  */
 
-class GiGaMessageImpl : public IGiGaMessage {
+class GiGaMessageImpl : public Gsino::IMessage {
   friend class GiGaTool;
 
   GiGaMessageImpl() = delete;

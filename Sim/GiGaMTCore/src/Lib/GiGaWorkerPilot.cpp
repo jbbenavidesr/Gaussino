@@ -19,14 +19,17 @@
 
 #include "G4AutoDelete.hh"
 #include "G4Event.hh"
+#include "G4Run.hh"
 #include "G4UImanager.hh"
 #include "G4UserWorkerThreadInitialization.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4WorkerThread.hh"
 
-GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::move( right ) ) {
+GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : Gsino::Message( std::move( right ) ) {
   m_input_queue       = right.m_input_queue;
   right.m_input_queue = nullptr;
+
+  m_postprocessing = right.m_postprocessing;
 
   m_context       = right.m_context;
   right.m_context = nullptr;
@@ -35,13 +38,15 @@ GiGaWorkerPilot::GiGaWorkerPilot( GiGaWorkerPilot&& right ) : GiGaMessage( std::
   nWorkers               = right.nWorkers;
   nDeleted               = right.nDeleted;
   nCreated               = right.nCreated;
+  nKept                  = right.nKept;
+  nToProcess             = right.nToProcess;
   m_track_eventstructure = right.m_track_eventstructure;
   m_for_cleanup          = std::move( right.m_for_cleanup );
 }
 
 void GiGaWorkerPilot::InitializeWorker() {
   debug( "Initializing the worker for thread " + std::to_string( iWorker ) );
-  GiGaMessage::NameTag = "Worker #" + std::to_string( iWorker );
+  Gsino::Message::NameTag = "Worker #" + std::to_string( iWorker );
   // Following code is modelled based on the code in
   // G4UserWorkerThreadInitialization::CreateAndStartWorker and
   // G4MTRunManagerKernel::StartThread with slight modifications.
@@ -83,7 +88,7 @@ void GiGaWorkerPilot::InitializeWorker() {
 
 void GiGaWorkerPilot::FinalizeWorker() {
   debug( "Finalizing the worker for thread " + std::to_string( iWorker ) );
-  CleanUp(); // Delete any remaining events handled by this worker thread.
+  CleanUp( true ); // Delete any remaining events handled by this worker thread.
   debug( "Finished clean-up for thread " + std::to_string( iWorker ) );
   G4Threading::WorkerThreadLeavesPool(); // FIXME: necessary?
   delete GiGaWorkerRunManager::GetGiGaWorkerRunManager();
@@ -166,6 +171,15 @@ void GiGaWorkerPilot::operator()() {
     G4Random::setTheEngine( engine.get() );
 
     mgr->ProcessEvent( evt );
+
+    if ( m_postprocessing ) {
+      if ( evt->ToBeKept() ) {
+        debug( "Asked to keep this event by Geant4" );
+        GiGaMTRunManager::GetGiGaMTRunManager()->GetNonConstCurrentRun()->StoreEvent( evt );
+        nKept++;
+      }
+    }
+
     if ( m_track_eventstructure ) {
       std::stringstream sstr;
       sstr << "\nAfter simulation\n";
@@ -212,6 +226,15 @@ void GiGaWorkerPilot::operator()() {
     nCreated++;
   }
 
+  if ( m_postprocessing ) {
+    do {
+      CleanUp();
+      std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+    } while ( nToProcess > 0 );
+    GetPostProcessingBarrier().wait();
+    GetFinalBarrier().wait();
+  }
+
   FinalizeWorker();
 }
 
@@ -222,17 +245,31 @@ void GiGaWorkerPilot::RegisterForCleanUp( G4Event* evt ) {
   m_for_cleanup.push_back( evt );
 }
 
-void GiGaWorkerPilot::CleanUp() {
+void GiGaWorkerPilot::CleanUp( bool force ) {
   // Might be incorrect but avoids taking the lock. As this function
   // is also called during finalisation, no events can get lost.
   if ( m_for_cleanup.size() == 0 ) return;
   // Need to lock access to prevent additional events being
   // pushed into the vector during cleanup
   std::lock_guard<std::mutex> guard{ m_cleanup_lock };
-  for ( auto evt : m_for_cleanup ) {
+  size_t                      localNToProcess = 0;
+  auto evs_to_remove = std::remove_if( m_for_cleanup.begin(), m_for_cleanup.end(), [&]( G4Event* evt ) -> bool {
+    if ( !force && m_postprocessing ) {
+      auto postActions = evt->GetNumberOfGrips();
+      if ( postActions > 0 ) {
+        debug( "Not deleting G4Event yet. No. of postprocessing actions remaining: " + std::to_string( postActions ) );
+        localNToProcess++;
+        return false;
+      } else if ( evt->ToBeKept() ) {
+        debug( "Not deleting G4Event. Gaussino was asked to keep the event." );
+        return true;
+      }
+    }
     debug( "Deleting G4Event" );
     nDeleted++;
     delete evt;
-  }
-  m_for_cleanup.clear();
+    return true;
+  } );
+  nToProcess         = localNToProcess;
+  m_for_cleanup.erase( evs_to_remove, m_for_cleanup.end() );
 }

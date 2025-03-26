@@ -19,12 +19,12 @@
 #include "G4MagneticField.hh"
 
 // Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTFactories/GiGaFactoryBase.h"
 #include "GiGaMTFactories/GiGaTool.h"
 
 namespace Gaussino::MagneticField {
-  class Field : public G4MagneticField, public GiGaMessage {
+  class Field : public G4MagneticField, public Gsino::Message {
 
   public:
     using G4MagneticField::G4MagneticField;

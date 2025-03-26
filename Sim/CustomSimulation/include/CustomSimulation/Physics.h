@@ -14,13 +14,13 @@
 #include "G4FastSimulationPhysics.hh"
 
 // Gaussino
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 
 namespace Gaussino::CustomSimulation {
   using ParticlePIDs   = std::vector<int>;
   using ParticleWorlds = std::vector<std::string>;
 
-  class Physics : public GiGaMessage, public G4FastSimulationPhysics {
+  class Physics : public Gsino::Message, public G4FastSimulationPhysics {
 
   protected:
     ParticlePIDs   m_particlePIDs   = {};

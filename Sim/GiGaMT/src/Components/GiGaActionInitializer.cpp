@@ -37,14 +37,6 @@ void GiGaActionInitializer::BuildForMaster() const {
 }
 
 void GiGaActionInitializer::Build() const {
-  { // Sequence of UserRunActions
-    auto runseq = new G4MultiRunAction{};
-    for ( auto& fac : m_UserRunActionFactories ) {
-      runseq->push_back( std::unique_ptr<G4UserRunAction>( fac->construct() ) );
-    }
-    SetUserAction( runseq );
-  }
-
   { // Sequence of UserEventActions
     auto evtseq = new G4MultiEventAction{};
     for ( auto& fac : m_UserEventActionFactories ) {

@@ -26,6 +26,7 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4VUserPhysicsList.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4VisManager.hh"
 
 /// GiGa
 #include "GiGaMT/GiGaException.h"
@@ -57,11 +58,46 @@ StatusCode GiGaMT::InitializeMainThread() const {
   // This will instantiate call the singleton for the run manager and apply
   // any configuration given to the factory (none at the moment!).
   auto main_mgr = m_mTRunManagerFactory->construct();
+  main_mgr->SetNumberOfEventsToBeProcessed( m_nWorkerThreads );
   main_mgr->SetUserInitialization( m_physListFactory->construct() );
   main_mgr->SetUserInitialization( m_ActionInitializerFactory->construct() );
   main_mgr->G4RunManager::SetUserInitialization( m_detConstFactory->construct() );
 
+  // G4 Visualization
+  if ( !m_visMgrFactory.name().empty() ) {
+    debug() << "Constructing G4VisManager: " << m_visMgrFactory.name() << endmsg;
+    m_visMgrFactory->construct();
+  }
+
   main_mgr->Initialize();
+
+  // additional checks for G4 visualziation to ensure
+  // that the special thread G4VIS was created correctly
+  // must be checked after main_mgr->Initialize()
+  if ( !m_visMgrFactory.name().empty() ) {
+    auto vis_mgr = G4VisManager::GetInstance();
+    if ( !vis_mgr ) {
+      error() << "Global instance of G4VisManager was not created!" << endmsg;
+      return StatusCode::FAILURE;
+    }
+    auto currentSceneHandler = vis_mgr->GetCurrentSceneHandler();
+    if ( !currentSceneHandler ) {
+      error() << "Must create an instance of G4VSceneHandler for the visualization thread. "
+              << "Add it in the initCommands." << endmsg;
+      return StatusCode::FAILURE;
+    }
+    if ( !currentSceneHandler->GetScene() ) {
+      error() << "Must create an instance of G4Scene for the visualization thread. "
+              << "Add '/vis/scene/create' and '/vis/sceneHandler/attach' "
+              << "or a compound command to the initCommands." << endmsg;
+      return StatusCode::FAILURE;
+    }
+    if ( !vis_mgr->GetCurrentViewer() ) {
+      error() << "Must create an instance of G4VViewer for the visualization thread. "
+              << "Add it in the initCommands." << endmsg;
+      return StatusCode::FAILURE;
+    }
+  }
 
   return StatusCode::SUCCESS;
 }
@@ -77,6 +113,12 @@ StatusCode GiGaMT::InitializeWorkerThreads() const {
   for ( size_t iThread = 0; iThread < m_nWorkerThreads; iThread++ ) {
     auto pilot = m_workerPilotFactory->construct();
     pilot->SetInputQueue( &m_payloadQueue );
+
+    if ( !m_visMgrFactory.name().empty() ) {
+      // activate postprocessing of events if G4 visualization is on
+      pilot->setPostProcessing( true );
+    }
+
     // FIXME: Add call-back for converter to workerpilot
     // pilot->SetConverter(
     //[&]( const std::vector<const HepMC3::GenEventPtr>& evts ) { return m_conversionTool->g4Event( evts ); } );

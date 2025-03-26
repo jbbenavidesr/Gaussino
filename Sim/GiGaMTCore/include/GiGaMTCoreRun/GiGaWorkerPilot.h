@@ -12,7 +12,7 @@
 
 #include "GiGaMTCoreRun/GiGaWorkerRunManager.h"
 
-#include "GiGaMTCoreMessage/IGiGaMessage.h"
+#include "GiGaMTCoreMessage/IMessage.h"
 #include "GiGaMTCoreRun/GiGaWorkerPayload.h"
 #include "GiGaMTCoreRun/MCTruthConverter.h"
 #include "GiGaMTCoreUtils/GiGaMTUtils.h"
@@ -33,7 +33,7 @@ class GiGaWorkerPilotFAC;
 class G4EventProxy;
 class G4WorkerThread;
 
-class GiGaWorkerPilot : public GiGaMessage {
+class GiGaWorkerPilot : public Gsino::Message {
   friend class GiGaWorkerPilotFAC;
   friend class G4EventProxy;
 
@@ -72,6 +72,8 @@ public:
     m_input_queue = que;
   }
 
+  void setPostProcessing( bool postprocessing ) { m_postprocessing = postprocessing; }
+
   // Returns singleton instance of initialization barrier.
   // First call determines the created number of threads that
   // are have to arrive at the barrier before all are given
@@ -84,6 +86,10 @@ public:
     static GiGaMTBarrier barrier( num_threads );
     return barrier;
   }
+  static GiGaMTBarrier& GetPostProcessingBarrier( std::size_t num_threads = 0 ) {
+    static GiGaMTBarrier barrier( num_threads );
+    return barrier;
+  }
 
 private:
   // Adds the event to the internal cleanup list of this pilot.
@@ -93,7 +99,7 @@ private:
   // Marked private so only the Proxy objects have access to this function.
   // FIXME: ugly sadface
   void RegisterForCleanUp( G4Event* evt );
-  void CleanUp();
+  void CleanUp( bool forced = false );
 
   // Constructor is private as these objects are supposed to
   // only be created using the corresponding factories
@@ -103,11 +109,16 @@ private:
   GiGaPayloadQueue* m_input_queue = nullptr;
   G4WorkerThread*   m_context     = nullptr;
 
+  // Events post-processing
+  bool m_postprocessing = false;
+
   // Number of worker
-  size_t iWorker  = 0;
-  size_t nWorkers = 0;
-  size_t nDeleted = 0;
-  size_t nCreated = 0;
+  size_t iWorker    = 0;
+  size_t nWorkers   = 0;
+  size_t nDeleted   = 0;
+  size_t nCreated   = 0;
+  size_t nKept      = 0;
+  size_t nToProcess = 0;
   // Internal strings to store different states of the processed event
   // FIXME: These should not be used in production version
   std::string           m_before_sim, m_after_sim, m_after_cleanup;

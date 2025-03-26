@@ -45,7 +45,7 @@ protected:
 };
 
 template <typename T>
-using hasGiGaMessage = typename std::enable_if<std::is_base_of<GiGaMessage, T>::value>::type;
+using hasGiGaMessage = typename std::enable_if<std::is_base_of<Gsino::Message, T>::value>::type;
 
 template <typename PHYS, typename dummy = void>
 class GiGaMTG4PhysicsConstrFAC : public extends<GiGaMTPhysConstr, GiGaFactoryBase<G4VPhysicsConstructor>> {
