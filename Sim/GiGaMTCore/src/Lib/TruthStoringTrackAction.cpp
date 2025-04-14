@@ -87,7 +87,7 @@ void TruthStoringTrackAction::PostUserTrackingAction( const G4Track* track ) {
     return;
   }
 
-  auto               track_info = GaussinoTrackInformation::Get(track);
+  auto               track_info = GaussinoTrackInformation::Get( track );
   HepMC3::FourVector prodpos( track->GetVertexPosition().x(), track->GetVertexPosition().y(),
                               track->GetVertexPosition().z(), track->GetGlobalTime() - track->GetLocalTime() );
   // get the process type of the origin vertex

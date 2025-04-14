@@ -44,10 +44,10 @@ MCCollector::Hit* MCCollector::SensDet::RetrieveAndSetupHit( const G4Track* trac
   // track info
   int trid = track->GetTrackID();
   newHit->SetTrackID( trid );
-  //auto ui = track->GetUserInformation();
-  //auto gi = (GaussinoTrackInformation*)ui;
-  // the code above does not work for G4VTrackingManager, the line below is correct
-  auto gi = GaussinoTrackInformation::Get(track);
+  // auto ui = track->GetUserInformation();
+  // auto gi = (GaussinoTrackInformation*)ui;
+  //  the code above does not work for G4VTrackingManager, the line below is correct
+  auto gi = GaussinoTrackInformation::Get( track );
   gi->setCreatedHit( true );
   if ( m_forceStoreTruth ) { gi->setToStoreTruth( true ); }
   gi->addHit( newHit );

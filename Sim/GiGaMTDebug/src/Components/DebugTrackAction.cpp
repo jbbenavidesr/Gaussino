@@ -127,7 +127,7 @@ namespace Gaussino {
                                track->GetGlobalTime() );
     G4cout << "Decay Position: " << endpos << G4endl;
 
-    auto track_info = GaussinoTrackInformation::Get(track);
+    auto track_info = GaussinoTrackInformation::Get( track );
     // Now check if the particle is a primary particle, i.e. we have already created
     // a linked particle for it.
     if ( track->GetDynamicParticle() && track->GetDynamicParticle()->GetPrimaryParticle() ) {
