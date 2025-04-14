@@ -40,9 +40,9 @@
 // Optical physics
 #include "G4OpticalPhysics.hh"
 
-//AdePT
+// AdePT
 #ifdef WITH_ADEPT
-#include "AdePT/integration/AdePTPhysics.hh"
+#  include "AdePT/integration/AdePTPhysics.hh"
 #endif
 
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
