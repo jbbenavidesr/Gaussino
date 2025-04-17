@@ -402,7 +402,7 @@ class Gaussino(GaussinoConfigurable):
         return [
             conv(),
             CheckMCStructure(),
-            MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True),
+            MCTruthMonitor("MainMCTruthMonitor"),
         ]
 
     def _configure_generation_phase(self):

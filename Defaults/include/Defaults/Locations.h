@@ -13,34 +13,34 @@
 
 namespace Gaussino {
   namespace HepMCEventLocation {
-    const std::string Default = "Gen/HepMCEvents";
-    const std::string Signal  = "Gen/SignalDecayTree";
-    const std::string BInfo   = "Gen/BInfo";
+    const std::string Default = "/Event/Gen/HepMCEvents";
+    const std::string Signal  = "/Event/Gen/SignalDecayTree";
+    const std::string BInfo   = "/Event/Gen/BInfo";
   } // namespace HepMCEventLocation
 
   namespace MCParticleLocation {
-    const std::string Default = "MC/Particles";
+    const std::string Default = "/Event/MC/Particles";
   }
 
   namespace MCVertexLocation {
-    const std::string Default = "MC/Vertices";
+    const std::string Default = "/Event/MC/Vertices";
   }
 
   namespace GenHeaderLocation {
-    const std::string Default       = "Gen/Header";
-    const std::string PreGeneration = "Gen/HeaderPreGen";
+    const std::string Default       = "/Event/Gen/Header";
+    const std::string PreGeneration = "/Event/Gen/HeaderPreGen";
   } // namespace GenHeaderLocation
   namespace G4EventsLocation {
-    const std::string Default = "Sim/G4Events";
+    const std::string Default = "/Event/Sim/G4Events";
   }
   namespace MCTruthsLocation {
-    const std::string Default         = "MC/Truths";
-    const std::string SignalTruthsMap = "MC/SignalTruths";
+    const std::string Default         = "/Event/MC/Truths";
+    const std::string SignalTruthsMap = "/Event/MC/SignalTruths";
   } // namespace MCTruthsLocation
   namespace LinkedParticleMCParticleLinksLocation {
-    const std::string Default = "MC/LinkedParticleMCParticleLinksLocation";
+    const std::string Default = "/Event/MC/LinkedParticleMCParticleLinksLocation";
   }
   namespace ReDecayToken {
-    const std::string Default = "ReDecay/Token";
+    const std::string Default = "/Event/ReDecay/Token";
   }
 } // namespace Gaussino
