@@ -23,3 +23,8 @@ repos:
     rev: 5.12.0
     hooks:
     -   id: isort
+-   repo: "https://gitlab.cern.ch/lhcb-core/LbDevTools.git"
+    rev: 2.1.4
+    hooks:
+      - id: lb-add-copyright
+        exclude: "^lhcbproject.yml$"
