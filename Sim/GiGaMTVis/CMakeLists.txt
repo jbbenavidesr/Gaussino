@@ -33,8 +33,9 @@ gaudi_add_module(GiGaMTVis
         Gaussino::UtilsLib
 )
 
-if(GEANT4_USE_OPENGL_X11)
+if(Geant4_vis_opengl_x11_FOUND)
     target_link_libraries(GiGaMTVis PRIVATE Geant4::G4OpenGL)
+    target_compile_definitions(GiGaMTVis PRIVATE G4VIS_USE_OPENGLX)
 endif()
 
 gaudi_add_pytest()
