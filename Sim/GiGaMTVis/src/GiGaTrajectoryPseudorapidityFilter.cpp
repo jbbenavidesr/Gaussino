@@ -34,9 +34,9 @@ namespace GiGa::TrajectoryInitialEta {
 
   public:
     Filter( const std::string& name = "Unspecified", double min_eta = 0., double max_eta = 0. );
-    inline virtual bool Evaluate( const G4VTrajectory& traj ) const;
-    inline virtual void Print( std::ostream& ) const;
-    inline virtual void Clear(){};
+    inline virtual bool Evaluate( const G4VTrajectory& traj ) const override;
+    inline virtual void Print( std::ostream& ) const override;
+    inline virtual void Clear() override{};
   };
 
   using G4TrajFilter        = G4VFilter<G4VTrajectory>;
@@ -50,7 +50,7 @@ namespace GiGa::TrajectoryInitialEta {
     using Messengers         = std::vector<G4UImessenger*>;
     using ModelAndMessengers = std::pair<G4TrajFilter*, Messengers>;
     FilterG4Factory() : G4TrajFilterFactory( "initialEtaFilter" ){};
-    ModelAndMessengers Create( const G4String&, const G4String& );
+    ModelAndMessengers Create( const G4String&, const G4String& ) override;
     inline void        setMinEta( double min_eta ) { m_min_eta = min_eta; };
     inline void        setMaxEta( double max_eta ) { m_max_eta = max_eta; };
   };
