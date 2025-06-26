@@ -206,8 +206,8 @@ StatusCode GiGaMT::finalize() {
   return Service::finalize();
 }
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MCTruthConverterPtrs&& _in,
-                                                                    HepRandomEnginePtr&              engine ) const {
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs>
+GiGaMT::simulate( int eventNumber, Gaussino::MCTruthConverterPtrs&& _in, HepRandomEnginePtr& engine ) const {
   auto                                             start_time = Clock::now();
   std::list<std::promise<Gaussino::GiGaSimReturn>> promises;
   std::list<std::future<Gaussino::GiGaSimReturn>>  futures;
@@ -216,14 +216,15 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
     for ( auto& conv : _in ) {
       auto& prom = promises.emplace_back();
       futures.emplace_back( prom.get_future() );
-      m_payloadQueue.enqueue( GiGaWorkerPayload{ std::move( conv ), engine.createSubRndmEngine(), &prom } );
+      m_payloadQueue.enqueue(
+          GiGaWorkerPayload{ std::move( conv ), engine.createSubRndmEngine(), &prom, eventNumber } );
     }
   } else {
     auto& prom = promises.emplace_back();
     futures.emplace_back( prom.get_future() );
     Gaussino::MCTruthConverterPtr conv = Gaussino::MergeConverters( std::begin( _in ), std::end( _in ) );
     // Merge the individual pileup converters into one
-    m_payloadQueue.enqueue( GiGaWorkerPayload{ std::move( conv ), engine, &prom } );
+    m_payloadQueue.enqueue( GiGaWorkerPayload{ std::move( conv ), engine, &prom, eventNumber } );
   }
   G4EventProxies        return_events;
   Gaussino::MCTruthPtrs return_truths;
@@ -254,14 +255,14 @@ std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( Gaussino::MC
                                                                  std::move( return_truths ) );
 }
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( const HepMC3::GenEventPtrs& _in,
-                                                                    HepRandomEnginePtr&         engine ) const {
-  return simulate( m_converterTool->BuildConverter( _in ), engine );
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaMT::simulate( int eventNumber, const HepMC3::GenEventPtrs& _in,
+                                                                    HepRandomEnginePtr& engine ) const {
+  return simulate( eventNumber, m_converterTool->BuildConverter( _in ), engine );
 }
 
-std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> GiGaMT::simulateDecay( const HepMC3::GenParticlePtr& _in,
-                                                                         HepRandomEnginePtr&           engine ) const {
+std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr>
+GiGaMT::simulateDecay( int eventNumber, const HepMC3::GenParticlePtr& _in, HepRandomEnginePtr& engine ) const {
 
-  auto [proxies, truths] = simulate( { m_converterTool->BuildConverter( _in ) }, engine );
+  auto [proxies, truths] = simulate( eventNumber, { m_converterTool->BuildConverter( _in ) }, engine );
   return { *std::begin( proxies ), *std::begin( truths ) };
 }

@@ -23,6 +23,7 @@ gaudi_add_library(GiGaMTLib
 	src/Lib/GiGaUtil.cpp
     LINK
         PUBLIC
+        LHCb::GenEvent # TODO: [LHCb DEPENDENCY]
 	    Gaussino::GiGaMTFactoriesLib
 	    Gaussino::HepMCUserLib
 	    Gaussino::SimInterfacesLib

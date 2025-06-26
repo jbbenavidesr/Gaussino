@@ -24,6 +24,9 @@
 #include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 
+// Event.
+#include "Event/GenHeader.h"
+
 class IHepMC3ToMCTruthConverter;
 namespace LHCb {
   class IParticlePropertySvc;
@@ -41,14 +44,15 @@ namespace LHCb {
  */
 class ReDecaySimAlg : public Gaudi::Functional::MultiTransformer<
                           std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths>(
-                              const HepMC3::GenEventPtrs&, const HepMC3::GenEventPtrs& ),
+                              const HepMC3::GenEventPtrs&, const HepMC3::GenEventPtrs&, const LHCb::GenHeader& ),
                           Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>> {
 public:
   /// Standard constructor
   ReDecaySimAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
                           { KeyValue{ "InputOriginal", Gaussino::HepMCEventLocation::Default },
-                            KeyValue{ "InputSignal", Gaussino::HepMCEventLocation::Signal } },
+                            KeyValue{ "InputSignal", Gaussino::HepMCEventLocation::Signal },
+                            KeyValue{ "GenHeaderLocation", Gaussino::GenHeaderLocation::Default } },
                           { KeyValue{ "OutputG4Events", Gaussino::G4EventsLocation::Default },
                             KeyValue{ "OutputMCTruths", Gaussino::MCTruthsLocation::Default },
                             KeyValue{ "OutputSignalTruths", Gaussino::MCTruthsLocation::SignalTruthsMap } } ){};
@@ -56,7 +60,7 @@ public:
   virtual ~ReDecaySimAlg() = default;
 
   std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths>
-  operator()( const HepMC3::GenEventPtrs&, const HepMC3::GenEventPtrs& ) const override;
+  operator()( const HepMC3::GenEventPtrs&, const HepMC3::GenEventPtrs&, const LHCb::GenHeader& ) const override;
 
 private:
   ServiceHandle<IGiGaMTSvc>                      m_gigaSvc{ this, "GiGaMTSvc", "GiGaMT" };

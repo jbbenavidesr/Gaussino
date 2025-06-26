@@ -142,11 +142,13 @@ void GiGaWorkerPilot::operator()() {
       m_input_queue->enqueue( std::move( payload ) );
       break;
     }
-    auto& [truth_converter, engine, ret_promise] = *payload;
+    auto& [truth_converter, engine, ret_promise, eventID] = *payload;
     CleanUp();
     // We now have a list of MCTruthConverter. Each needs to be triggered to link their contents and fill the
     // Geant4 event to be simulated.
-    auto                        evt = new G4Event{};
+    auto evt = new G4Event{};
+    evt->SetEventID( eventID );
+
     Gaussino::MCTruthTrackerPtr tracker =
         std::make_unique<Gaussino::MCTruthTracker>( std::move( *truth_converter.get() ), evt );
     if ( m_track_eventstructure ) {

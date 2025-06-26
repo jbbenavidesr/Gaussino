@@ -22,7 +22,7 @@ DECLARE_COMPONENT( ReDecaySimAlg )
 
 std::tuple<G4EventProxies, Gaussino::MCTruthPtrs, Gaussino::ReDecay::SignalTruths>
 ReDecaySimAlg::operator()( const HepMC3::GenEventPtrs& originalhepmcevents,
-                           const HepMC3::GenEventPtrs& signalhepmcevents ) const {
+                           const HepMC3::GenEventPtrs& signalhepmcevents, const LHCb::GenHeader& genheader ) const {
   debug() << "==> Execute" << endmsg;
   auto& token = *m_tokenhandle.get();
   // Now we store a thread-local reference to this token in the service.
@@ -37,7 +37,7 @@ ReDecaySimAlg::operator()( const HepMC3::GenEventPtrs& originalhepmcevents,
 
   if ( m_redecaysvc->isCurrentOriginal() ) {
     if ( msgLevel( MSG::DEBUG ) ) { debug() << "Simulating original event " << endmsg; }
-    ret_tuple = m_gigaSvc->simulate( originalhepmcevents, engine );
+    ret_tuple = m_gigaSvc->simulate( genheader.evtNumber(), originalhepmcevents, engine );
     m_redecaysvc->storeOriginalSimResult( token, ret_tuple );
   } else {
     // In this stip the containers are copied so we can safely append
@@ -75,7 +75,7 @@ ReDecaySimAlg::operator()( const HepMC3::GenEventPtrs& originalhepmcevents,
         if ( msgLevel( MSG::DEBUG ) ) {
           debug() << "Going to simulate a redecayed decay for " << pid_to_name( p->pid() ) << endmsg;
         }
-        auto [g4proxy, sigmctruth] = m_gigaSvc->simulateDecay( p, engine );
+        auto [g4proxy, sigmctruth] = m_gigaSvc->simulateDecay( genheader.evtNumber(), p, engine );
         g4proxies.push_back( g4proxy );
         signal_truths[org_lp] = sigmctruth;
       }
