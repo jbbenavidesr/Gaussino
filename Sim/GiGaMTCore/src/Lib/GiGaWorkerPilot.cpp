@@ -174,8 +174,6 @@ void GiGaWorkerPilot::operator()() {
 
     mgr->ProcessEvent( evt );
 
-    std::cout << "GiGaWorkerPilot processed event " << evt->GetEventID() << std::endl;
-
     if ( m_postprocessing ) {
       if ( evt->ToBeKept() ) {
         debug( "Asked to keep this event by Geant4" );
