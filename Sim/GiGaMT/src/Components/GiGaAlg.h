@@ -21,8 +21,7 @@
 #include "HepMCUser/typedefs.h"
 #include "NewRnd/RndAlgSeeder.h"
 
-// Event.
-#include "Event/GenHeader.h"
+#include "EDM/SimHeader.h"
 
 class IHepMC3ToMCTruthConverter;
 namespace LHCb {
@@ -40,21 +39,21 @@ namespace LHCb {
  *
  */
 class GiGaAlg : public Gaudi::Functional::MultiTransformer<std::tuple<G4EventProxies, Gaussino::MCTruthPtrs>(
-                                                               const HepMC3::GenEventPtrs&, const LHCb::GenHeader& ),
+                                                               const HepMC3::GenEventPtrs&, const Gsino::SimHeader& ),
                                                            Gaudi::Functional::Traits::BaseClass_t<RndAlgSeeder>> {
 public:
   /// Standard constructor
   GiGaAlg( const std::string& name, ISvcLocator* pSvcLocator )
       : MultiTransformer( name, pSvcLocator,
                           { KeyValue{ "Input", Gaussino::HepMCEventLocation::Default },
-                            KeyValue{ "GenHeaderLocation", Gaussino::GenHeaderLocation::Default } },
+                            KeyValue{ "SimHeaderLocation", Gaussino::SimHeaderLocation::Default } },
                           { KeyValue{ "OutputG4Events", Gaussino::G4EventsLocation::Default },
                             KeyValue{ "OutputMCTruths", Gaussino::MCTruthsLocation::Default } } ){};
 
   virtual ~GiGaAlg() = default;
 
   std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> operator()( const HepMC3::GenEventPtrs&,
-                                                                const LHCb::GenHeader& ) const override;
+                                                                const Gsino::SimHeader& ) const override;
 
 private:
   ServiceHandle<IGiGaMTSvc>                 m_gigaSvc{ this, "GiGaMTSvc", "GiGaMT" };

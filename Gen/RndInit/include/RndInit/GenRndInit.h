@@ -25,6 +25,8 @@
 #include "NewRnd/RndAlgSeeder.h"
 #include "Utils/LocalTL.h"
 
+#include "EDM/SimHeader.h"
+
 /** @class GenRndInit GenRndInit.h
  *
  *  First TopAlg for Generator phase of Gaussino.
@@ -34,8 +36,9 @@
  *  @author Dominik Muller
  *  @date   2018-01-29
  */
-class GenRndInit : public Gaudi::Functional::Producer<std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN>(),
-                                                      Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>> {
+class GenRndInit : public Gaudi::Functional::Producer<
+                       std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN, Gsino::SimHeader>(),
+                       Gaudi::Functional::Traits::BaseClass_t<RndInitAlg>> {
 protected:
   Gaudi::Property<long long>    m_firstEvent{ this, "FirstEventNumber", 1, "Number of the first event" };
   Gaudi::Property<long long>    m_firstTimingEvent{ this, "FirstTimingEvent", 1,
@@ -50,14 +53,15 @@ public:
       : Producer( name, pSvcLocator,
                   { KeyValue{ "GenHeaderOutputLocation", Gaussino::GenHeaderLocation::PreGeneration },
                     KeyValue{ "BeamParameters", LHCb::BeamParametersLocation::Default },
-                    KeyValue( "ODIN", LHCb::ODINLocation::Default ) } ) {}
+                    KeyValue( "ODIN", LHCb::ODINLocation::Default ),
+                    KeyValue{ "SimHeaderLocation", Gaussino::SimHeaderLocation::Default } } ) {}
 
   using Clock = std::chrono::high_resolution_clock;
 
   virtual StatusCode initialize() override;
   virtual StatusCode finalize() override;
 
-  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> operator()() const override;
+  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN, Gsino::SimHeader> operator()() const override;
 
 protected:
   /// Increment atomic number of events processed and store result
