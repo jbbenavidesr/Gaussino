@@ -18,10 +18,13 @@ gaudi_add_module(GaussMonitor
         src/Components/GaussGenUtil.cpp
         src/Components/GenMonitorAlg.cpp
         src/Components/MCTruthMonitor.cpp
+	    src/Components/MonitorTiming.cpp
     LINK
         HepMC3::HepMC3
         LHCb::MCEvent     # TODO: [LHCb DEPENDENCY]
         LHCb::PartPropLib # TODO: [LHCb DEPENDENCY]
+	    Gaussino::GiGaMTCoreRunLib
+	    Gaussino::GiGaMTFactoriesLib
         Gaussino::Defaults
         Gaussino::HepMCUserLib
 )
