@@ -63,6 +63,7 @@ Gaussino can be used as the core project for more experiment specific projects o
    examples/pp
    examples/gdml
    examples/custom_simulation
+   examples/detailed_timing
 
 
 Indices and tables

@@ -11,11 +11,17 @@
 __author__ = "Dominik Muller, Michal Mazurek, and Gloria Corti"
 __email__ = "lhcb-simulation@cern.ch"
 
+import os
+
 # Configurables (do NOT use 'from Configurables' here)
 from ExternalDetector.Configuration import ExternalDetectorEmbedder
 from Gaudi.Configuration import log
 from GaudiKernel.ConfigurableMeta import ConfigurableMeta
-from Gaussino.Utilities import GaussinoConfigurable, add_constructors_with_names
+from Gaussino.Utilities import (
+    GaussinoConfigurable,
+    add_constructors_with_names,
+    get_set_configurable,
+)
 from ParallelGeometry.Configuration import ParallelGeometry
 
 
@@ -37,6 +43,15 @@ class GaussinoGeometry(GaussinoConfigurable):
         the geometry
     :vartype ExtraGeoTools: list, optional
 
+    **Monitoring**
+
+    :var DetailedTimingOpts: default: ``{}``, activates and passed the property to
+        the detailed timing user action to measure the time spent by simulation
+        in each volume. The absolute minimum is to provide a property
+        called "Detectors" with a list of detector volumes (can be just a substring
+        of the whole path in Geant4)
+    :vartype DetailedTimingOpts: dict, optional
+
     **Handling GDML files**
 
     :var ExportGDML: default: ``{}``
@@ -57,6 +72,8 @@ class GaussinoGeometry(GaussinoConfigurable):
         "GeometryService": "",
         "SensDetMap": {},
         "ExtraGeoTools": [],
+        # MONITORING
+        "DetailedTimingOpts": {},
         # HANDLING GDML FILES
         "ExportGDML": {},
         "ImportGDML": [],
@@ -97,11 +114,15 @@ class GaussinoGeometry(GaussinoConfigurable):
         add_constructors_with_names(dettool, extra_tools)
 
         algs = []
+        # CUSTOM SIMULATION AND GEOEMTRY
         algs += self._set_external_detector(dettool)
         algs += self._set_parallel_geometry(dettool)
         self._set_custom_simulation_regions(dettool)
+        # GDML
         self._set_gdml_import(dettool)
         self._set_gdml_export(dettool)
+        # MONITORING
+        self._set_detailed_timing()
 
         from Configurables import ApplicationMgr
 
@@ -212,3 +233,47 @@ class GaussinoGeometry(GaussinoConfigurable):
             reader = GDMLReader(name, **gdml_import)
             dettool.addTool(reader, name=name)
             dettool.GDMLReaders.append("GDMLReader/" + name)
+
+    def _set_detailed_timing(self):
+        """Sets up the detailed timing feature if requested.
+        It will compute the time spent by Geant4 in the provided volume names.
+        The output is in CSV files, as well as in the standard output.
+        If no DetectorPatterns are provided, then the timing is measured for
+        all Geant4 volumes.
+
+        Raises:
+            NotADirectoryError: if the output directory does not exist
+
+
+        :Example:
+
+            .. highlight:: python
+            .. code-block:: python
+
+                from Configurables import GaussinoGeometry
+                GaussinoGeometry().DetailedTimingOpts = {
+                    "DetectorPatterns": {
+                        "ExampleTracker": [
+                            "ExampleTrackerG4Path1",
+                            "ExampleTrackerG4Path2",
+                        ],
+                        "ExampleCalorimeter": ["ExampleCalorimeterG4Path"],
+                    },
+                    "OutputCSVDir": "./",
+                }
+
+        """
+
+        props = self.getProp("DetailedTimingOpts")
+        if not props:
+            return
+        log.debug("-> Configuring detailed timing")
+        csv_dir = props.setdefault("OutputCSVDir", "./")
+        if not os.path.isdir(csv_dir):
+            raise NotADirectoryError(f"OutputCSVDir {csv_dir} is not a directory!")
+        from Configurables import GiGaMT, Gsino__DetailedTimingActionFactory
+
+        actioninit = get_set_configurable(GiGaMT(), "ActionInitializer")
+        factory = Gsino__DetailedTimingActionFactory(**props)
+        actioninit.addTool(factory, name="DetailedTiming")
+        actioninit.SteppingActions.append(getattr(actioninit, "DetailedTiming"))
