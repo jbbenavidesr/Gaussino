@@ -67,7 +67,7 @@ endif()
 list(APPEND ${CustomSimulationDirsName}
     Sim/CustomSimulation
     Examples/CustomSimulationExamples
-    Examples/G4Par04
+    Sim/CaloChallenge
 )
 
 if(GSINO_USE_ONNXRUNTIME)
