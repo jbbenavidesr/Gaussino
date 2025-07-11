@@ -9,20 +9,19 @@
 * or submit itself to any jurisdiction.                                       *
 \*****************************************************************************/
 
-// Gaussino
 #include "CaloHit.h"
 #include "CollectorHit.h"
-#include "GaudiAlg/Consumer.h"
 
-// Gaudi
-#include "GaudiAlg/GaudiHistoAlg.h"
-#include "GaudiKernel/SystemOfUnits.h"
+#include <Gaudi/Accumulators/Histogram.h>
+#include <Gaudi/FSMCallbackHolder.h>
+#include <GaudiAlg/Consumer.h>
+#include <GaudiAlg/FixTESPath.h>
+#include <GaudiKernel/SystemOfUnits.h>
 
-// AIDA
-#include "AIDA/IHistogram1D.h"
+namespace Acc = Gaudi::Accumulators;
 
 namespace Gsino::CaloChallenge {
-  using BaseClass_t = Gaudi::Functional::Traits::BaseClass_t<GaudiHistoAlg>;
+  using BaseClass_t = Gaudi::Functional::Traits::BaseClass_t<Gaudi::FSMCallbackHolder<FixTESPath<Gaudi::Algorithm>>>;
 
   template <class... TCaloHits>
   using MonitoringBase = Gaudi::Functional::Consumer<void( const EDM::Hits&, const TCaloHits&... ), BaseClass_t>;
@@ -49,50 +48,50 @@ namespace Gsino::CaloChallenge {
     Gaudi::Property<int>    m_cellNumRho{ this, "CellNumRho", -1 };
     Gaudi::Property<int>    m_cellNumPhi{ this, "CellNumPhi", -1 };
 
-    // histograms
-    AIDA::IHistogram1D* h_energyParticle    = nullptr;
-    AIDA::IHistogram1D* h_energyDeposited   = nullptr;
-    AIDA::IHistogram1D* h_energyRatio       = nullptr;
-    AIDA::IHistogram1D* h_time              = nullptr;
-    AIDA::IHistogram1D* h_longProfile       = nullptr;
-    AIDA::IHistogram1D* h_transProfile      = nullptr;
-    AIDA::IHistogram1D* h_longFirstMoment   = nullptr;
-    AIDA::IHistogram1D* h_longSecondMoment  = nullptr;
-    AIDA::IHistogram1D* h_transFirstMoment  = nullptr;
-    AIDA::IHistogram1D* h_transSecondMoment = nullptr;
-    AIDA::IHistogram1D* h_hitType           = nullptr;
-    AIDA::IHistogram1D* h_phiProfile        = nullptr;
-    AIDA::IHistogram1D* h_numHits           = nullptr;
-    AIDA::IHistogram1D* h_cellEnergy        = nullptr;
-
-    // histogram properties
+    // histogram
     Gaudi::Property<double> m_maxEnergyHist{ this, "MaxEnergyHist", 1. * Gaudi::Units::GeV };
 
-    // counters
-    mutable Gaudi::Accumulators::StatCounter<> m_calohits{ this, "#CaloHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_collhits{ this, "#CollectorHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_fullMatched{ this, "#FullSimCollectorHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_fastMatched{ this, "#FastSimCollectorHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_numNonZeroThresholdCells{ this, "NonZeroThresholdCells (>.5 keV)" };
-    mutable Gaudi::Accumulators::StatCounter<> m_fastHits{ this, "#FastSimHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_fullHits{ this, "#FullSimHits" };
-    mutable Gaudi::Accumulators::StatCounter<> m_totalEnergy{ this, "Energy Deposit [MeV]" };
-    mutable Gaudi::Accumulators::StatCounter<> m_particleEnergy{ this, "Particle Energy [MeV]" };
+    mutable Acc::Histogram<1> h_energyParticle{ this, "energyParticle", "Primary energy;E_{MC} (GeV);Entries" };
+    mutable Acc::Histogram<1> h_energyDeposited{ this, "energyDeposited", "Deposited energy;E_{MC} (GeV);Entries" };
+    mutable Acc::StaticHistogram<1> h_energyRatio{
+        this, "energyRatio", "Ratio of energy deposited to primary;E_{dep} /  E_{MC};Entries", { 1024, 0, 1 } };
+    mutable Acc::ProfileHistogram<1> h_longProfile{ this, "longProfile", "Longitudinal profile;t (mm);#LTE#GT (MeV)" };
+    mutable Acc::ProfileHistogram<1> h_transProfile{ this, "transProfile", "Transverse profile;r (mm);#LTE#GT (MeV)" };
+    mutable Acc::Histogram<1>        h_longFirstMoment{
+        this, "longFirstMoment", "First moment of longitudinal distribution;#LT#lambda#GT (mm);Entries" };
+    mutable Acc::Histogram<1> h_longSecondMoment{
+        this, "longSecondMoment", "Second moment of longitudinal distribution;#LT#lambda^{2}#GT (mm^{2});Entries" };
+    mutable Acc::Histogram<1> h_transFirstMoment{ this, "transFirstMoment",
+                                                  "First moment of transverse distribution;#LTr#GT (mm);Entries" };
+    mutable Acc::Histogram<1> h_transSecondMoment{
+        this, "transSecondMoment", "Second moment of transverse distribution;#LTr^{2}#GT (mm^{2});Entries" };
+    mutable Acc::StaticHistogram<1> h_hitType{
+        this, "hitType", "hit type;type (0=full, 1= fast);Entries", { 2, -.5, 1.5 } };
+    mutable Acc::ProfileHistogram<1> h_phiProfile{ this, "phiProfile",
+                                                   "Azimuthal angle profile, centred at mean;phi;#LTE#GT (MeV)" };
+    mutable Acc::StaticHistogram<1>  h_numHits{ this, "numHits", "Number of hits above 0.5 keV", { 4048, 0, 40500 } };
+    mutable Acc::StaticHistogram<1>  h_cellEnergy{
+        this, "cellEnergy", "Cell energy distribution;log10(E/MeV);Entries", { 1024, -4, 2 } };
 
-  public:
-    using KeyValue = class MonitoringBase<TCaloHits...>::KeyValue;
+    mutable Acc::StatCounter<> m_calohits{ this, "#CaloHits" };
+    mutable Acc::StatCounter<> m_collhits{ this, "#CollectorHits" };
+    mutable Acc::StatCounter<> m_fullMatched{ this, "#FullSimCollectorHits" };
+    mutable Acc::StatCounter<> m_fastMatched{ this, "#FastSimCollectorHits" };
+    mutable Acc::StatCounter<> m_numNonZeroThresholdCells{ this, "NonZeroThresholdCells (>.5 keV)" };
+    mutable Acc::StatCounter<> m_fastHits{ this, "#FastSimHits" };
+    mutable Acc::StatCounter<> m_fullHits{ this, "#FullSimHits" };
+    mutable Acc::StatCounter<> m_totalEnergy{ this, "Energy Deposit [MeV]" };
+    mutable Acc::StatCounter<> m_particleEnergy{ this, "Particle Energy [MeV]" };
 
-    constexpr static std::size_t caloHitsContainersNo = sizeof...( TCaloHits );
-    Monitoring( const std::string& name, ISvcLocator* pSvcLocator )
+    template <size_t... I>
+    Monitoring( const std::string& name, ISvcLocator* pSvcLocator, std::integer_sequence<size_t, I...> )
         : MonitoringBase<TCaloHits...>(
               name, pSvcLocator,
-              std::tuple_cat( std::make_tuple( KeyValue{ "CollectorHitsLocation", "" } ), std::invoke( []() {
-                                std::array<KeyValue, caloHitsContainersNo> caloHitsLocs{};
-                                for ( size_t i = 0; i < caloHitsContainersNo; i++ ) {
-                                  caloHitsLocs[i] = KeyValue{ "CaloHitsLocation" + std::to_string( i ), "" };
-                                }
-                                return std::tuple_cat( caloHitsLocs );
-                              } ) ) ){};
+              { { "CollectorHitsLocation", "" }, { "CaloHitsLocation" + std::to_string( I ), "" }... } ) {}
+
+  public:
+    Monitoring( const std::string& name, ISvcLocator* pSvcLocator )
+        : Monitoring( name, pSvcLocator, std::make_integer_sequence<size_t, sizeof...( TCaloHits )>{} ) {}
 
     StatusCode initialize() override {
       return MonitoringBase<TCaloHits...>::initialize().andThen( [&]() -> StatusCode {
@@ -126,35 +125,17 @@ namespace Gsino::CaloChallenge {
           return StatusCode::FAILURE;
         }
 
-        h_energyParticle  = this->book( "energyParticle", "Primary energy;E_{MC} (GeV);Entries", 0,
-                                        1.1 * m_maxEnergyHist / Gaudi::Units::GeV, 1024 );
-        h_energyDeposited = this->book( "energyDeposited", "Deposited energy;E_{MC} (GeV);Entries", 0,
-                                        1.1 * m_maxEnergyHist / Gaudi::Units::GeV, 1024 );
-        h_energyRatio =
-            this->book( "energyRatio", "Ratio of energy deposited to primary;E_{dep} /  E_{MC};Entries", 0, 1, 1024 );
-        // h_time         = this->book( "time", "Simulation time; time (s);Entries", 0, 100, 1024 );
-        h_longProfile  = this->book( "longProfile", "Longitudinal profile;t (mm);#LTE#GT (MeV)", -.5 * m_cellSizeZ,
-                                     ( m_cellNumZ - .5 ) * m_cellSizeZ, m_cellNumZ );
-        h_transProfile = this->book( "transProfile", "Transverse profile;r (mm);#LTE#GT (MeV)", -.5 * m_cellSizeRho,
-                                     ( m_cellNumRho - .5 ) * m_cellSizeRho, m_cellNumRho );
-        h_longFirstMoment =
-            this->book( "longFirstMoment", "First moment of longitudinal distribution;#LT#lambda#GT (mm);Entries",
-                        -.5 * m_cellSizeZ, m_cellNumZ * m_cellSizeZ / 2., 1024 );
-        h_transFirstMoment =
-            this->book( "transFirstMoment", "First moment of transverse distribution;#LTr#GT (mm);Entries",
-                        -.5 * m_cellSizeRho, m_cellNumRho * m_cellSizeRho, 1024 );
-        h_longSecondMoment = this->book(
-            "longSecondMoment", "Second moment of longitudinal distribution;#LT#lambda^{2}#GT (mm^{2});Entries", 0,
-            std::pow( m_cellNumZ * m_cellSizeZ, 2 ) / 25, 1024 );
-        h_transSecondMoment =
-            this->book( "transSecondMoment", "Second moment of transverse distribution;#LTr^{2}#GT (mm^{2});Entries", 0,
-                        std::pow( m_cellNumRho * m_cellSizeRho, 2 ) / 5, 1024 );
-        h_hitType = this->book( "hitType", "hit type;type (0=full, 1= fast);Entries", -.5, 1.5, 2 );
-        h_phiProfile =
-            this->book( "phiProfile", "Azimuthal angle profile, centred at mean;phi;#LTE#GT (MeV)",
-                        -( m_cellNumPhi - .5 ) * m_cellSizePhi, ( m_cellNumPhi - 0.5 ) * m_cellSizePhi, m_cellNumPhi );
-        h_numHits    = this->book( "numHits", "Number of hits above 0.5 keV", 0, 40500, 4048 );
-        h_cellEnergy = this->book( "cellEnergy", "Cell energy distribution;log10(E/MeV);Entries", -4, 2, 1024 );
+        h_energyParticle.setAxis<0>( { 1024, 0, 1.1 * m_maxEnergyHist / Gaudi::Units::GeV } );
+        h_energyDeposited.setAxis<0>( { 1024, 1.1 * m_maxEnergyHist / Gaudi::Units::GeV } );
+        h_longProfile.setAxis<0>( { (unsigned int)m_cellNumZ, -.5 * m_cellSizeZ, ( m_cellNumZ - .5 ) * m_cellSizeZ } );
+        h_transProfile.setAxis<0>(
+            { (unsigned int)m_cellNumRho, -.5 * m_cellSizeRho, ( m_cellNumRho - .5 ) * m_cellSizeRho } );
+        h_longFirstMoment.setAxis<0>( { 1024, -.5 * m_cellSizeZ, m_cellNumZ * m_cellSizeZ / 2. } );
+        h_transFirstMoment.setAxis<0>( { 1024, -.5 * m_cellSizeRho, m_cellNumRho * m_cellSizeRho } );
+        h_longSecondMoment.setAxis<0>( { 1024, 0, std::pow( m_cellNumZ * m_cellSizeZ, 2 ) / 25 } );
+        h_transSecondMoment.setAxis<0>( { 1024, 0, std::pow( m_cellNumRho * m_cellSizeRho, 2 ) / 5 } );
+        h_phiProfile.setAxis<0>( { (unsigned int)m_cellNumPhi, -( m_cellNumPhi - .5 ) * m_cellSizePhi,
+                                   ( m_cellNumPhi - 0.5 ) * m_cellSizePhi } );
         return StatusCode::SUCCESS;
       } );
     }
@@ -185,7 +166,7 @@ namespace Gsino::CaloChallenge {
         fullMatched[hit->GetTrackID()] = false;
         fastMatched[hit->GetTrackID()] = false;
       }
-      h_energyParticle->fill( primaryEnergy / Gaudi::Units::GeV );
+      ++h_energyParticle[primaryEnergy / Gaudi::Units::GeV];
       m_particleEnergy += primaryEnergy;
 
       // calo hits
@@ -202,10 +183,10 @@ namespace Gsino::CaloChallenge {
           tFirstMoment += hitEn * tDistance;
           rFirstMoment += hitEn * rDistance;
           phiMean += hitEn * phiDistance;
-          h_longProfile->fill( tDistance, hitEn );
-          h_transProfile->fill( rDistance, hitEn );
+          h_longProfile[tDistance] += hitEn;
+          h_transProfile[rDistance] += hitEn;
           auto hitType = hit->GetType();
-          h_hitType->fill( hitType );
+          ++h_hitType[hitType];
           if ( hitType == 1 ) {
             fastHits += 1;
             fastMatched[hit->GetTrackID()] = true;
@@ -215,7 +196,7 @@ namespace Gsino::CaloChallenge {
           }
           if ( hitEn > 5e-4 * Gaudi::Units::MeV ) { // e > 0.5 keV
             numNonZeroThresholdCells++;
-            h_cellEnergy->fill( std::log10( hitEn ) );
+            ++h_cellEnergy[std::log10( hitEn )];
           }
         }
       }
@@ -234,12 +215,11 @@ namespace Gsino::CaloChallenge {
       tFirstMoment /= totalEnergy;
       rFirstMoment /= totalEnergy;
       phiMean /= totalEnergy;
-      h_energyDeposited->fill( totalEnergy / Gaudi::Units::GeV );
-      h_energyRatio->fill( totalEnergy / primaryEnergy );
-      // h_time->fill(fTimer.GetRealElapsed());
-      h_longFirstMoment->fill( tFirstMoment );
-      h_transFirstMoment->fill( rFirstMoment );
-      h_numHits->fill( numNonZeroThresholdCells );
+      ++h_energyDeposited[totalEnergy / Gaudi::Units::GeV];
+      ++h_energyRatio[totalEnergy / primaryEnergy];
+      ++h_longFirstMoment[tFirstMoment];
+      ++h_transFirstMoment[rFirstMoment];
+      ++h_numHits[numNonZeroThresholdCells];
       for ( const auto& caloHits : { caloHitsContainers... } ) {
         for ( const auto& thit : caloHits ) {
           auto hit   = std::dynamic_pointer_cast<CaloHit>( thit );
@@ -250,14 +230,14 @@ namespace Gsino::CaloChallenge {
             auto phiDistance = hit->GetPhiId() * m_cellSizePhi;
             tSecondMoment += hitEn * std::pow( tDistance - tFirstMoment, 2 );
             rSecondMoment += hitEn * std::pow( rDistance - rFirstMoment, 2 );
-            h_phiProfile->fill( phiDistance - phiMean, hitEn );
+            h_phiProfile[phiDistance - phiMean] += hitEn;
           }
         }
       }
       tSecondMoment /= totalEnergy;
       rSecondMoment /= totalEnergy;
-      h_longSecondMoment->fill( tSecondMoment );
-      h_transSecondMoment->fill( rSecondMoment );
+      ++h_longSecondMoment[tSecondMoment];
+      ++h_transSecondMoment[rSecondMoment];
     };
   };
   using DetailedSimMonitoring        = Monitoring<EDM::CaloHits>;

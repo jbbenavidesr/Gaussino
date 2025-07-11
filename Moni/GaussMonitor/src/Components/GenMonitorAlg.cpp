@@ -67,7 +67,8 @@ private:
   mutable Acc::StaticHistogram<1> m_hNSChEta{
       this, "4", "Multiplicity stable charged particles in LHCb eta", { 300, -0.5, 299.5 } };
   mutable Acc::StaticHistogram<1> m_hProcess{ this, "5", "Process type", { 5101, -0.5, 5100.5 } };
-  mutable Acc::StaticHistogram<1> m_hNPileUp{ this, "10", "Num. of primary interaction per bunch", { 11, -0.5, 100.5 } };
+  mutable Acc::StaticHistogram<1> m_hNPileUp{
+      this, "10", "Num. of primary interaction per bunch", { 101, -0.5, 100.5 } };
   mutable Acc::StaticHistogram<1> m_hPrimX{ this, "11", "PrimaryVertex x (mm)", { 200, -1.0, 1.0 } };
   mutable Acc::StaticHistogram<1> m_hPrimY{ this, "12", "PrimaryVertex y (mm)", { 200, -1.0, 1.0 } };
   mutable Acc::StaticHistogram<1> m_hPrimZ{ this, "13", "PrimaryVertex z (mm)", { 100, -200., 200. } };
