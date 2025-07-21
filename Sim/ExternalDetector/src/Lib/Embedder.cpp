@@ -110,11 +110,16 @@ namespace ExternalDetector {
       }
     }
 
-    auto lvol   = new G4LogicalVolume( box, material, m_lVolName.value() );
+    auto vol_store = G4LogicalVolumeStore::GetInstance();
+    if ( !vol_store ) { error() << "G4LogicalVolumeStore points to NULL" << endmsg; }
+
+    auto lvol = vol_store->GetVolume( m_lVolName.value() );
+    if ( !lvol ) { lvol = new G4LogicalVolume( box, material, m_lVolName.value() ); }
+
     auto rot    = new CLHEP::HepRotation( CLHEP::HepRotationX( m_xAngle.value() ) );
     auto transl = CLHEP::Hep3Vector( m_xPos.value(), m_yPos.value(), m_zPos.value() );
 
-    return new G4PVPlacement( rot, transl, lvol, m_pVolName.value(), motherLVolume, false, 0, false );
+    return new G4PVPlacement( rot, transl, lvol, m_pVolName.value(), motherLVolume, false, m_pCopyNo.value(), false );
   }
 
 } // namespace ExternalDetector
