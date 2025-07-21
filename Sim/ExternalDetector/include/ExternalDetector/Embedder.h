@@ -56,6 +56,8 @@ namespace ExternalDetector {
         },
         Gaudi::Details::Property::ImmediatelyInvokeHandler{ true } };
     Gaudi::Property<std::vector<std::string>> m_extraVolumesToSensDet{ this, "ExtraVolumesToSensDet", {} };
+    // Copy number of the physical volume
+    Gaudi::Property<int> m_pCopyNo{ this, "pCopyNo", 0 };
 
   public:
     using extends::extends;
