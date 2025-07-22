@@ -203,7 +203,7 @@ void GenMonitorAlg::bookHistos() {
   m_hNSCharg    = book( 3, "Multiplicity stable charged particles", -0.5, 299.5, 300 );
   m_hNSChEta    = book( 4, "Multiplicity stable charged particles in LHCb eta", -0.5, 299.5, 300 );
   m_hProcess    = book( 5, "Process type", -0.5, 5100.5, 5101 );
-  m_hNPileUp    = book( 10, "Num. of primary interaction per bunch", -0.5, 10.5, 11 );
+  m_hNPileUp    = book( 10, "Num. of primary interaction per bunch", -0.5, 100.5, 101 );
   m_hPrimX      = book( 11, "PrimaryVertex x (mm)", -1.0, 1.0, 200 );
   m_hPrimY      = book( 12, "PrimaryVertex y (mm)", -1.0, 1.0, 200 );
   m_hPrimZ      = book( 13, "PrimaryVertex z (mm)", -200., 200., 100 );
