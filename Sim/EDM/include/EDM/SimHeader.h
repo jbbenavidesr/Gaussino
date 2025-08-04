@@ -29,7 +29,7 @@ namespace Gsino {
   class SimHeader {
   public:
     /// Constructor
-    SimHeader(){};
+    SimHeader() = default;
 
     /// Retrieve const  Run number
     unsigned int runNumber() const { return m_runNumber; }
