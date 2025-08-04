@@ -19,7 +19,7 @@ namespace Gsino {
 
   /** @class SimHeader SimHeader.h
    *
-   * Header for event generator information
+   * Header containing metadata for simulation events
    *
    * @author Witek Pokorski
    *
