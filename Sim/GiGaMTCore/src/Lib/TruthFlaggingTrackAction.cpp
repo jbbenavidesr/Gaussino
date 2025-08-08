@@ -256,7 +256,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
         return;
       } /// RETURN
         //
-      if ( storeByChildType && ( childStoredTypes.count( tr->GetDefinition() ) > 0 ) && notrejected ) {
+      if ( storeByChildType && ( childStoredTypes.count( secondary_track->GetDefinition() ) > 0 ) && notrejected ) {
         // FIXME: setProcess( track );
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
