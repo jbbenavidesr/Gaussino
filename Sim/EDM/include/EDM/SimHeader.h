@@ -43,7 +43,7 @@ namespace Gsino {
     void setEvtNumber( long long value ) { m_evtNumber = value; }
 
   private:
-    unsigned int m_runNumber = 0;  ///< Run number
+    unsigned int m_runNumber = 0; ///< Run number
     long long    m_evtNumber = 0; ///< Event number
 
   }; // class SimHeader
