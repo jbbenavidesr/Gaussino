@@ -188,26 +188,28 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
     return;
   } /// RETURN !!!
 
+  // Getting a modifiable vector of the secondary tracks requires const_cast, as G4 does not provide a non-const getter.
+  // Note: Using trackMgr->GimmeSecondaries() is outdated and should not be used anymore, as it is not compatible with
+  // the G4VTrackingManager needed for offloading to specialized tracking on CPU or GPU
+  G4Step*              mutableStep = const_cast<G4Step*>( track->GetStep() );
+  const G4TrackVector* secondaries = mutableStep->GetfSecondary();
+
   // (3.5) store forced-decay products
-  if ( storeDecayProducts && track->GetDynamicParticle()->GetPreAssignedDecayProducts() ) {
-    if ( 0 != trackMgr->GimmeSecondaries() ) {
-      G4TrackVector* childrens = trackMgr->GimmeSecondaries();
-
-      for ( unsigned int index = 0; index < childrens->size(); ++index ) {
-        G4Track* dtr = ( *childrens )[index];
-        if ( !dtr ) { continue; }
-        if ( !( dtr->GetDynamicParticle()->GetPreAssignedDecayProducts() ) ) {
-          auto child_track_info = GaussinoTrackInformation::Get( dtr );
-          child_track_info->setToStoreTruth( true );
-        }
+  if ( storeDecayProducts && track->GetDynamicParticle()->GetPreAssignedDecayProducts() && secondaries ) {
+    for ( G4Track* secondary_track : *secondaries ) {
+      if ( !secondary_track ) continue;
+      if ( !( secondary_track->GetDynamicParticle()->GetPreAssignedDecayProducts() ) ) {
+        auto secondary_track_info = GaussinoTrackInformation::Get( secondary_track );
+        secondary_track_info->setToStoreTruth( true );
       }
-      // FIXME: trackMgr->SetStoreTrajectory( true );
-      this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
-
-      // FIXME: setProcess( track );
-      // FIXME: fillGaussTrackInformation( track );
-      return;
     }
+    // FIXME: trackMgr->SetStoreTrajectory( true );
+
+    this_track_info->setToStoreTruth( true ); // flag for storing in HepMC (Witek)
+
+    // FIXME: setProcess( track );
+    // FIXME: fillGaussTrackInformation( track );
+    return;
   }
 
   // (4) store  primary particles ?
@@ -243,13 +245,10 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
   // (7) store the particle if it has a certain type of daughter particle
   //     or at least one from secondaries  particle have kinetic energy over
   //     threshold
-  if ( storeByChildType || ( storeByChildEnergy && 0 != trackMgr->GimmeSecondaries() && notrejected ) ) {
-    const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
-    for ( unsigned int index = 0; index < childrens->size(); ++index ) {
-      const G4Track* tr = ( *childrens )[index];
-      if ( 0 == tr ) { continue; }
-      //
-      if ( storeByChildEnergy && ( tr->GetKineticEnergy() > childEnergyThreshold ) ) {
+  if ( secondaries && ( storeByChildType || ( storeByChildEnergy && notrejected ) ) ) {
+    for ( G4Track* secondary_track : *secondaries ) {
+      if ( !secondary_track ) { continue; }
+      if ( storeByChildEnergy && ( secondary_track->GetKineticEnergy() > childEnergyThreshold ) ) {
         // FIXME: setProcess( track );
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
@@ -268,13 +267,10 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
   }
 
   // (7.5) store tracks according to creator process of its daughters
-  if ( storeBySecondariesProcess && 0 != trackMgr->GimmeSecondaries() && notrejected ) {
-    const G4TrackVector* childrens = trackMgr->GimmeSecondaries();
-    for ( unsigned int index = 0; index < childrens->size(); ++index ) {
-      const G4Track* tr = ( *childrens )[index];
-      if ( 0 == tr ) { continue; }
-      //
-      if ( childStoredProcess.count( tr->GetCreatorProcess()->GetProcessName() ) > 0 ) {
+  if ( storeBySecondariesProcess && secondaries && notrejected ) {
+    for ( G4Track* secondary_track : *secondaries ) {
+      if ( !secondary_track ) { continue; }
+      if ( childStoredProcess.count( secondary_track->GetCreatorProcess()->GetProcessName() ) > 0 ) {
         // FIXME: setProcess( track );
         // FIXME: fillGaussTrackInformation( track );
         // FIXME: trackMgr()->SetStoreTrajectory( true );
@@ -318,22 +314,19 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
     if ( 0 == track->GetParentID() ) {
       G4cerr << __PRETTY_FUNCTION__ << " Dangerous: Primary Particle is not requested to be stored" << G4endl;
     }
-    if ( trackMgr->GimmeSecondaries() ) {
+    if ( secondaries ) {
+      for ( G4Track* secondary_track : *secondaries ) {
+        if ( !secondary_track ) { continue; }
 
-      G4TrackVector* childrens = trackMgr->GimmeSecondaries();
-      for ( unsigned int index = 0; index < childrens->size(); ++index ) {
-        G4Track* child_track = ( *childrens )[index];
-        if ( !child_track ) { continue; }
-
-        if ( child_track->GetParentID() != track->GetTrackID() ) {
+        if ( secondary_track->GetParentID() != track->GetTrackID() ) {
           G4cerr << __PRETTY_FUNCTION__ << " Child ID is not equal to track ID" << G4endl;
         }
         //
-        child_track->SetParentID( track->GetParentID() );
+        secondary_track->SetParentID( track->GetParentID() );
         // set the flag saying that the direct mother is not stored
-        auto child_track_info = GaussinoTrackInformation::Get( child_track );
+        auto secondary_track_info = GaussinoTrackInformation::Get( secondary_track );
         // FIXME: Is this really necessary? We shall see ...
-        child_track_info->setDirectParent( false );
+        secondary_track_info->setDirectParent( false );
       }
     }
     // also update the trackID in the hits. This loops over all hits associated
