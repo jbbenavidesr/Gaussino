@@ -161,7 +161,7 @@ Gsino::CaloChallenge::CollectorSensDet::RetrieveAndSetupHit( const G4Track* trac
     eventInfo->SetCollectorHitsMap( m_hitsMap );
   }
 
-  auto trackInfo = GaussinoTrackInformation::Get();
+  auto trackInfo = GaussinoTrackInformation::Get( track );
   int  trackID   = track->GetTrackID();
   int  strackID  = track->GetParentID();
   if ( !trackInfo->prelStoreTruth() && !trackInfo->storeTruth() ) { trackID = strackID; }
