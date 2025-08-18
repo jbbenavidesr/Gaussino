@@ -58,6 +58,9 @@ class Gaussino(GaussinoConfigurable):
     :var Histograms: default: ``"DEFAULT"``
     :vartype Histograms: str, optional
 
+    :var HistogramOutputFile: default: ``""``
+    :vartype HistogramOutputFile: str, optional
+
     :var DatasetName: default: ``"Gaussino"``
     :vartype DatasetName: str, optional
 
@@ -113,6 +116,7 @@ class Gaussino(GaussinoConfigurable):
         "RunNumber": 1,
         # OUTPUT
         "Histograms": "DEFAULT",
+        "HistogramOutputFile": "",
         "DatasetName": "Gaussino",
         "DatasetNameForced": False,
         "OutputType": "SIM",
@@ -344,12 +348,12 @@ class Gaussino(GaussinoConfigurable):
         """
         from Configurables import (
             ApplicationMgr,
-            HistogramPersistencySvc,
+            Gaudi__Histograming__Sink__Root,
             RootHistCnv__PersSvc,
         )
 
-        log.debug("Configuring HistogramPersistencySvc")
-        ApplicationMgr().HistogramPersistency = "ROOT"
+        log.debug("Configuring Histogram Persistency")
+        ApplicationMgr().HistogramPersistency = "ROOT"  # only for NTupleSvc
         RootHistCnv__PersSvc().ForceAlphaIds = True
         hist_opt = self.getProp("Histograms").upper()
         if hist_opt not in ["NONE", "DEFAULT"]:
@@ -361,10 +365,11 @@ class Gaussino(GaussinoConfigurable):
             return
 
         # Use a default histogram file name if not already set
-        hst_prs_svc = HistogramPersistencySvc()
-        if not hst_prs_svc.isPropertySet("OutputFile"):
-            histos_name = self._get_output_name() + "-histos.root"
-            hst_prs_svc.OutputFile = histos_name
+        histo_file_name = self.getProp("HistogramOutputFile")
+        if histo_file_name == "":
+            histo_file_name = self._get_output_name() + "-histos.root"
+        root_sink = Gaudi__Histograming__Sink__Root(FileName=histo_file_name)
+        ApplicationMgr().ExtSvc.append(root_sink)
 
     def _configure_edm_conversion(self):
         """Sets up EDM algorithms for Gaussino."""
@@ -402,7 +407,7 @@ class Gaussino(GaussinoConfigurable):
         return [
             conv(),
             CheckMCStructure(),
-            MCTruthMonitor("MainMCTruthMonitor", HistoProduce=True),
+            MCTruthMonitor("MainMCTruthMonitor"),
         ]
 
     def _configure_generation_phase(self):
