@@ -5,6 +5,61 @@ Project Coordinators: Gloria Corti @gcorti, Michal Mazurek @mimazure
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [v1r1](https://gitlab.cern.ch/gaussino/Gaussino/-/releases/v1r1) - 2025-08-22
+This is the second release of the Gaussino experiment-independent core software simulation framework.
+For more information refer to https://gaussino.docs.cern.ch/
+
+This release is customised for the LHCb experiment.
+
+The version of the libraries used are fixed in the
+[GaussinoExtLib]((https://gitlab.cern.ch/gaussino/GaussinoExtLib) project.
+It should be noted that at the moment Gaussino still depends on a few LHCb packages, hence it needs to be built
+againt the core LHCb project. Work is in progress to remove this dependecy.
+
+This release is based on
+Gaudi [v39r3](https://gitlab.cern.ch/gaudi/Gaudi/-/releases/v39r3)
+and LCG [105c_LHCB_8](https://lcginfo.cern.ch/release_packages/105c_LHCB_8/) with ROOT 6.30.08 and Pythia8 244.lhcb4
+
+It uses GaussinoExtLib [v1r1](https://gitlab.cern.ch/Gaussino/gaussinoextlibs/-/releases/v1r1):
+- HepMC [3.2.2](https://gitlab.cern.ch/hepmc/HepMC3/-/releases/3.2.2)
+with [patches](https://gitlab.cern.ch/Gaussino/HepMC3/-/tree/official_patched?ref_type=heads)
+- DD4hep [v01-26](https://github.com/AIDASoft/DD4hep/releases/tag/v01-29)
+with [patches](https://gitlab.cern.ch/Gaussino/DD4hep/-/commits/v01-29-patches/?ref_type=heads)
+- Geant4 [10.7.3 with patches](https://gitlab.cern.ch/lhcb/Geant4/-/releases/v10r7p3t2)
+
+
+### Added
+- Enable reuse of logical volume with multiple physical copies, (Gaussino/Gaussino!195)
+- Full CaloChallenge setup, (Gaussino/Gaussino!154)
+- Port MonitorTiming component to Gaussino, (Gaussino/Gaussino!35)
+- Geant4 & Phoenix Visualization, (Gaussino/Gaussino!70)
+- ML backends: pyTorch and ONNXRuntime, (Gaussino/Gaussino!155)
+- add displacement to MCCollector, (Gaussino/Gaussino!172)
+- Add time information for MCCollector Hits, (Gaussino/Gaussino!168)
+- Port of BeamSpot4D tool to Gaussino, (Gaussino/Gaussino!129)
+
+
+### Changed
+- Dropped usage of GaudiHistoAlg, (Gaussino/Gaussino!189)
+- Set boundary for pileup histo to cover up to higher lumi, (Gaussino/Gaussino!174)
+- Update particle table with the latest entries from DDDB/upgrade/master, (Gaussino/Gaussino!19)
+- Update LCG generators layer to LHCB_8, (Gaussino/Gaussino!184)
+- Use internal Gaussino's hit class in MCCollector instead of LHCb::MCHit, (Gaussino/Gaussino!150)
+- Hide Geant4Converter debug information, (Gaussino/Gaussino!160)
+
+
+###Fixed
+- Fix warnings, (Gaussino/Gaussino!187)
+- Fix the compilation of GiGaMTVis with OpenGLX, (Gaussino/Gaussino!193)
+- Fix copyright CI, (Gaussino/Gaussino!194)
+- Fix .gitlab-ci.yml, (Gaussino/Gaussino!178)
+- Add missing call to SignalRepeatedHadronization::Clear, (Gaussino/Gaussino!165)
+- Fix warnings, (Gaussino/Gaussino!173)
+- Remove testing of headers in Pythia8, (Gaussino/Gaussino!171)
+- Fix the first simulation example with missing import, (Gaussino/Gaussino!170)
+
+
+
 ## [v1r0](https://gitlab.cern.ch/gaussino/Gaussino/-/releases/v1r0) - 2024-02-12
 This is the first release of the Gaussino experiment-independent core software simulation framework.
 Gaussino is based on the [[Gaudi](https://cern.ch/gaudi) event data processing framework. It provide interfaces to generator and
