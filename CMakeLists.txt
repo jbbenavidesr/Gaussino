@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.15)
 set(LCG_LAYER LHCB_8 CACHE STRING "Specific set of version to use")
 option(LCG_USE_GENERATORS "enable/disable use of LCG generators" ON)
 
-project(Gaussino VERSION 1.0
+project(Gaussino VERSION 1.1
 	LANGUAGES CXX Fortran)
 
 # Enable testing with CTest/CDash

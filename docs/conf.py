@@ -18,11 +18,11 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = "Gaussino"
-copyright = "2017-2024, CERN for the benefit of the LHCb and FCC collaborations"
+copyright = "2017-2025, CERN for the benefit of the LHCb and FCC collaborations"
 author = "LHCb Collaboration"
 
 # The full version, including alpha/beta/rc tags
-release = "v1r0"
+release = "v1r1"
 
 # -- General configuration ---------------------------------------------------
 
