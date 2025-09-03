@@ -49,7 +49,7 @@ list(APPEND Gaussino_PERSISTENT_OPTIONS
 set(WITH_Gaussino_PRIVATE_DEPENDENCIES TRUE)
 include(GaussinoDependencies)
 
-option(WITH_ADEPT "Using AdePT" OFF)
+option(USE_ADEPT "Using AdePT" OFF)
 
 gaussino_initialize_configuration()
 
