@@ -10,6 +10,8 @@
 \*****************************************************************************/
 #pragma once
 
+#include "GaudiKernel/DataObject.h"
+
 namespace Gsino {
 
   // Namespace for locations in TDS
@@ -25,7 +27,7 @@ namespace Gsino {
    *
    */
 
-  class SimHeader {
+  class SimHeader : public DataObject {
   public:
     /// Constructor
     SimHeader() = default;
