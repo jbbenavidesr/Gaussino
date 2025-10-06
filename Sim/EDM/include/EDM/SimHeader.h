@@ -14,11 +14,6 @@
 
 namespace Gsino {
 
-  // Namespace for locations in TDS
-  namespace SimHeaderLocation {
-    inline const std::string Default = "Sim/Header";
-  }
-
   /** @class SimHeader SimHeader.h
    *
    * Header containing metadata for simulation events
