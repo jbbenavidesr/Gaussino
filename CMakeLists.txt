@@ -67,6 +67,8 @@ endif()
 list(APPEND ${CustomSimulationDirsName}
     Sim/CustomSimulation
     Examples/CustomSimulationExamples
+    Examples/SamplingCalorimeter
+    Examples/TargetTracker
     Sim/CaloChallenge
 )
 
