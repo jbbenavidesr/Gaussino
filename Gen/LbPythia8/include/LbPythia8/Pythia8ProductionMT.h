@@ -138,11 +138,11 @@ public:
   // The Pythia 8 members. Just to be sure will have all of them
   // thread local. All these pointers are initialised to zero in
   // the threadlocal storage.
-  mutable LocalTL<Pythia8::Pythia*>    m_pythia; ///< The Pythia 8 generator.
-  mutable LocalTL<Pythia8::UserHooks*> m_hooks;  ///< User hooks to veto events.
-  mutable LocalTL<Pythia8::LHAup*>     m_lhaup;  ///< User specified hard process.
-  mutable LocalTL<Pythia8::Event>      m_event;  ///< The Pythia 8 event record.
-  mutable LocalTL<std::set<int>>       m_bws;    ///< Set of particles with a valid BW.
+  mutable LocalTL<Pythia8::Pythia*>                    m_pythia; ///< The Pythia 8 generator.
+  mutable LocalTL<std::shared_ptr<Pythia8::UserHooks>> m_hooks;  ///< User hooks to veto events.
+  mutable LocalTL<std::shared_ptr<Pythia8::LHAup>>     m_lhaup;  ///< User specified hard process.
+  mutable LocalTL<Pythia8::Event>                      m_event;  ///< The Pythia 8 event record.
+  mutable LocalTL<std::set<int>>                       m_bws;    ///< Set of particles with a valid BW.
 
   std::vector<const LHCb::ParticleProperty*> m_update_pp;
   std::vector<const LHCb::ParticleProperty*> m_stable_pp;
@@ -167,20 +167,20 @@ protected:
   int pythia8Id( const LHCb::ParticleProperty* thePP ) const;
 
   // Additional members.
-  IBeamTool*                           m_beamTool;                ///< The Gaudi beam tool.
-  mutable LocalTL<BeamToolForPythia8*> m_pythiaBeamTool;          ///< The Pythia 8 beam tool.
-  mutable std::atomic_int              m_nEvents;                 ///< Number of generated events.
-  CommandVector                        m_userSettings;            ///< The user settings vector.
-  std::string                          m_tuningFile;              ///< The global tuning file.
-  std::string                          m_tuningUserFile;          ///< The user tuning file.
-  bool                                 m_validate_HEPEVT;         ///< Flag to validate the event.
-  bool                                 m_listAllParticles;        ///< Flag to list all the particles.
-  bool                                 m_checkParticleProperties; ///< Flag to check particle properties.
-  bool                                 m_showBanner;              ///< Flag to print the Pythia 8 banner.
-  ICounterLogFile*                     m_xmlLogTool;              ///< The XML log file.
-  std::set<unsigned int>               m_special;                 ///< The set of special particles.
-  static std::mutex                    m_pythia_lock;
-  mutable std::atomic_bool             m_first_init{ true };
+  IBeamTool*                                           m_beamTool;         ///< The Gaudi beam tool.
+  mutable LocalTL<std::shared_ptr<BeamToolForPythia8>> m_pythiaBeamTool;   ///< The Pythia 8 beam tool.
+  mutable std::atomic_int                              m_nEvents;          ///< Number of generated events.
+  CommandVector                                        m_userSettings;     ///< The user settings vector.
+  std::string                                          m_tuningFile;       ///< The global tuning file.
+  std::string                                          m_tuningUserFile;   ///< The user tuning file.
+  bool                                                 m_validate_HEPEVT;  ///< Flag to validate the event.
+  bool                                                 m_listAllParticles; ///< Flag to list all the particles.
+  bool                     m_checkParticleProperties;                      ///< Flag to check particle properties.
+  bool                     m_showBanner;                                   ///< Flag to print the Pythia 8 banner.
+  ICounterLogFile*         m_xmlLogTool;                                   ///< The XML log file.
+  std::set<unsigned int>   m_special;                                      ///< The set of special particles.
+  static std::mutex        m_pythia_lock;
+  mutable std::atomic_bool m_first_init{ true };
   /// Location where to store FSR counters (set by options)
   std::string m_FSRName;
 
@@ -190,12 +190,11 @@ protected:
     ~Pythia8ThreadManager() {
       for ( auto [pythia, hooks, lhaup, beam] : store ) {
         if ( pythia ) delete pythia;
-        if ( hooks ) delete hooks;
-        if ( lhaup ) delete lhaup;
-        if ( beam ) delete beam;
       }
     }
-    std::vector<std::tuple<Pythia8::Pythia*, Pythia8::UserHooks*, Pythia8::LHAup*, BeamToolForPythia8*>> store;
+    std::vector<std::tuple<Pythia8::Pythia*, std::shared_ptr<Pythia8::UserHooks>, std::shared_ptr<Pythia8::LHAup>,
+                           std::shared_ptr<BeamToolForPythia8>>>
+        store;
   };
   class RndForPythia : public Pythia8::RndmEngine {
   public:

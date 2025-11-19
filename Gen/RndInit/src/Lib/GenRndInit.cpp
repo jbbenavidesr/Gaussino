@@ -47,7 +47,8 @@ StatusCode GenRndInit::initialize() {
         return StatusCode::FAILURE;
       }
       if ( m_firstTimingEvent < Gaudi::Concurrency::ConcurrencyFlags::numThreads() + 2 ) {
-        error() << "FirstTimingEvent is < number of threads + 2 (=" << Gaudi::Concurrency::ConcurrencyFlags::numThreads() + 2 << ")!" << endmsg;
+        error() << "FirstTimingEvent is < number of threads + 2 (="
+                << Gaudi::Concurrency::ConcurrencyFlags::numThreads() + 2 << ")!" << endmsg;
         return StatusCode::FAILURE;
       }
     }

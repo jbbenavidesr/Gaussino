@@ -12,8 +12,7 @@
 #include "HepMC3/GenEvent.h"
 #include "Pythia8/Pythia.h"
 
-#include "Pythia8Plugins/HepMC2.h"
-#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
+#include "Pythia8Plugins/HepMC3.h"
 
 int main( int, char** ) {
   Pythia8::Pythia pythia{
