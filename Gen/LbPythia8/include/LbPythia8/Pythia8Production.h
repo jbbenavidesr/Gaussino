@@ -140,10 +140,10 @@ public:
   StatusCode setupForcedFragmentation( const int thePdgId ) override;
 
   // The Pythia 8 members (needed externally).
-  Pythia8::Pythia*                m_pythia; ///< The Pythia 8 generator.
-  Pythia8::UserHooks*             m_hooks;  ///< User hooks to veto events.
-  Pythia8::LHAup*                 m_lhaup;  ///< User specified hard process.
-  mutable LocalTL<Pythia8::Event> m_event;  ///< The Pythia 8 event record.
+  Pythia8::Pythia*                    m_pythia; ///< The Pythia 8 generator.
+  std::shared_ptr<Pythia8::UserHooks> m_hooks;  ///< User hooks to veto events.
+  std::shared_ptr<Pythia8::LHAup>     m_lhaup;  ///< User specified hard process.
+  mutable LocalTL<Pythia8::Event>     m_event;  ///< The Pythia 8 event record.
 
   // Members needed externally.
 
@@ -164,20 +164,20 @@ protected:
   int pythia8Id( const LHCb::ParticleProperty* thePP ) const;
 
   // Additional members.
-  IBeamTool*              m_beamTool;                ///< The Gaudi beam tool.
-  BeamToolForPythia8*     m_pythiaBeamTool;          ///< The Pythia 8 beam tool.
-  mutable std::atomic_int m_nEvents;                 ///< Number of generated events.
-  CommandVector           m_userSettings;            ///< The user settings vector.
-  std::string             m_tuningFile;              ///< The global tuning file.
-  std::string             m_tuningUserFile;          ///< The user tuning file.
-  bool                    m_validate_HEPEVT;         ///< Flag to validate the event.
-  bool                    m_listAllParticles;        ///< Flag to list all the particles.
-  bool                    m_checkParticleProperties; ///< Flag to check particle properties.
-  bool                    m_showBanner;              ///< Flag to print the Pythia 8 banner.
-  ICounterLogFile*        m_xmlLogTool;              ///< The XML log file.
-  std::set<unsigned int>  m_special;                 ///< The set of special particles.
-  mutable std::mutex      m_pythia_lock;
-  std::set<int>           m_bws; ///< Set of particles with a valid BW.
+  IBeamTool*                          m_beamTool;                ///< The Gaudi beam tool.
+  std::shared_ptr<BeamToolForPythia8> m_pythiaBeamTool;          ///< The Pythia 8 beam tool.
+  mutable std::atomic_int             m_nEvents;                 ///< Number of generated events.
+  CommandVector                       m_userSettings;            ///< The user settings vector.
+  std::string                         m_tuningFile;              ///< The global tuning file.
+  std::string                         m_tuningUserFile;          ///< The user tuning file.
+  bool                                m_validate_HEPEVT;         ///< Flag to validate the event.
+  bool                                m_listAllParticles;        ///< Flag to list all the particles.
+  bool                                m_checkParticleProperties; ///< Flag to check particle properties.
+  bool                                m_showBanner;              ///< Flag to print the Pythia 8 banner.
+  ICounterLogFile*                    m_xmlLogTool;              ///< The XML log file.
+  std::set<unsigned int>              m_special;                 ///< The set of special particles.
+  mutable std::mutex                  m_pythia_lock;
+  std::set<int>                       m_bws; ///< Set of particles with a valid BW.
   /// Location where to store FSR counters (set by options)
   std::string m_FSRName;
   class RndForPythia : public Pythia8::RndmEngine {

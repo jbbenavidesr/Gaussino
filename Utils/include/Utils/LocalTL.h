@@ -12,13 +12,21 @@
 
 // Thread Local storage details are in this header file
 #include <atomic>
+#include <memory>
 #include <type_traits>
 #include <vector>
 
+// Check if pointer or shared pointer with template specialization.
+template <class T>
+struct is_pointer : std::is_pointer<T> {};
+template <class T>
+struct is_pointer<std::shared_ptr<T>> : std::true_type {};
+
+// Use for template specialization if pointer or otherwise.
 template <typename T>
 using IsFundamental = typename std::enable_if<std::is_fundamental<T>::value>::type;
 template <typename T>
-using IsPointer = typename std::enable_if<std::is_pointer<T>::value>::type;
+using IsPointer = typename std::enable_if<is_pointer<T>::value>::type;
 
 // Primary template for the storage interface
 template <typename T, typename Sfinae = void>

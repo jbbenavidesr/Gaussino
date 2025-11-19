@@ -39,7 +39,7 @@
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMCUser/Status.h"
-#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
+#include "Pythia8Plugins/HepMC3.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8ProductionMT
@@ -244,7 +244,7 @@ StatusCode Pythia8ProductionMT::initializeGenerator() {
 
   // Check the Breit-Wigner mass thresholds.
   for ( std::set<int>::iterator id = m_bws().begin(); id != m_bws().end(); ++id ) {
-    Pythia8::ParticleDataEntry* pde = m_pythia->particleData.particleDataEntryPtr( *id );
+    Pythia8::ParticleDataEntryPtr pde = m_pythia->particleData.particleDataEntryPtr( *id );
     if ( pde->isResonance() ) continue;
     pde->initBWmass();
     if ( pde->useBreitWigner() ) continue;
@@ -286,9 +286,8 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHC
     if ( sc.isFailure() ) { return sc; }
   }
 
-  auto         pythia = m_pythia();
-  RndForPythia rnd_generator{ engine.getref() };
-  pythia->setRndmEnginePtr( &rnd_generator );
+  auto pythia = m_pythia();
+  pythia->setRndmEnginePtr( std::make_shared<RndForPythia>( engine.getref() ) );
   // Generate the event (make 10 attempts).
   int tries( 0 );
   while ( !pythia->next() && tries < 10 ) ++tries;
@@ -299,7 +298,7 @@ StatusCode Pythia8ProductionMT::generateEvent( HepMC3::GenEventPtr theEvent, LHC
   LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
   // Store the minimum bias cross-section in the GenFSR.
-  std::vector<int> codes = m_pythia->info.codesHard();
+  std::vector<int> codes = const_cast<Pythia8::Info&>( m_pythia->info ).codesHard();
   auto             key   = LHCb::CrossSectionsFSR::MBCrossSection;
   if ( genFSR && genFSR->hasGenCounter( to_CounterKey( key ) ) ) {
     longlong count = genFSR->getGenCounterInfo( to_CounterKey( key ) ).second;
@@ -480,8 +479,7 @@ void Pythia8ProductionMT::turnOffFragmentation() {
 //=============================================================================
 StatusCode Pythia8ProductionMT::hadronize( HepMC3::GenEventPtr theEvent, LHCb::GenCollision* theCollision,
                                            HepRandomEnginePtr& engine ) {
-  RndForPythia rnd_generator{ engine.getref() };
-  m_pythia->setRndmEnginePtr( &rnd_generator );
+  m_pythia->setRndmEnginePtr( std::make_shared<RndForPythia>( engine.getref() ) );
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
 }
@@ -555,7 +553,7 @@ int Pythia8ProductionMT::pythia8Id( const LHCb::ParticleProperty* thePP ) const 
 StatusCode Pythia8ProductionMT::InitializeThread() const {
   debug() << "Initializing Pythia8 in thread" << endmsg;
   // Initialize the user hooks.
-  if ( !m_hooks.get() ) m_hooks = new Pythia8::LhcbHooks();
+  if ( !m_hooks.get() ) m_hooks = (std::shared_ptr<Pythia8::UserHooks>)std::make_shared<Pythia8::LhcbHooks>();
 
   // Create the Pythia 8 generator.
   string xmlpath( "UNKNOWN" != System::getEnv( "PYTHIA8XML" ) ? System::getEnv( "PYTHIA8XML" ) : "" );
@@ -590,7 +588,7 @@ StatusCode Pythia8ProductionMT::InitializeThread() const {
 
   StatusCode sc;
   // Initialize the Pythia beam tool.
-  m_pythiaBeamTool = new BeamToolForPythia8( m_beamTool, m_pythia->settings, sc );
+  m_pythiaBeamTool = std::make_shared<BeamToolForPythia8>( m_beamTool, m_pythia->settings, sc );
   if ( !sc.isSuccess() ) return Error( "Failed to initialize the BeamToolForPythia8." );
 
   // Now the normal tools update settings via the provided interface
@@ -631,7 +629,7 @@ StatusCode Pythia8ProductionMT::finalize() {
     pythia->stat();
 
     // Write the cross-sections to the XML log.
-    std::vector<int> codes = pythia->info.codesHard();
+    std::vector<int> codes = const_cast<Pythia8::Info&>( pythia->info ).codesHard();
     for ( unsigned int code = 0; code < codes.size(); ++code )
       m_xmlLogTool->addCrossSection( pythia->info.nameProc( codes[code] ), codes[code],
                                      pythia->info.nAccepted( codes[code] ), pythia->info.sigmaGen( codes[code] ) );

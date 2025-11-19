@@ -17,7 +17,7 @@
 #include "HepMCUtils/CompareGenEvent.h"
 #include "Pythia8/Basics.h"
 #include "Pythia8/Pythia.h"
-#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
+#include "Pythia8Plugins/HepMC3.h"
 #include <map>
 #include <thread>
 
@@ -51,8 +51,7 @@ HepMC3::GenEvent* run_pythia( int seed, std::string dir, Pythia8::Pythia* pythia
   CLHEP::MixMaxRng engine;
   engine.setSeed( seed );
 
-  RndForPythia rnd_pythia{ engine };
-  pythia->setRndmEnginePtr( &rnd_pythia );
+  pythia->setRndmEnginePtr( std::make_shared<RndForPythia>( engine ) );
   pythia->next();
   auto evt = convert( pythia );
   // HepMC3::WriterAscii writer( outfilename.str() );
@@ -81,8 +80,7 @@ void run_seq( std::string name, const std::vector<int> seeds, STORE* store ) {
   // Create a random engine to be used during init()
   CLHEP::MixMaxRng engine;
   engine.setSeed( 42 );
-  RndForPythia rnd_pythia1{ engine };
-  pythia.setRndmEnginePtr( &rnd_pythia1 );
+  pythia.setRndmEnginePtr( std::make_shared<RndForPythia>( engine ) );
   pythia.init();
   for ( auto s1 : seeds ) {
     auto evt       = run_pythia( s1, name, &pythia );

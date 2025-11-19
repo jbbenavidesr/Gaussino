@@ -38,7 +38,7 @@
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMCUser/Status.h"
-#include "pythia8/include/Pythia8/Pythia8ToHepMC3.h"
+#include "Pythia8Plugins/HepMC3.h"
 
 //-----------------------------------------------------------------------------
 // Implementation file for class: Pythia8Production
@@ -58,10 +58,7 @@ namespace {
 Pythia8Production::Pythia8Production( const std::string& type, const std::string& name, const IInterface* parent )
     : GaudiTool( type, name, parent )
     , m_pythia( 0 )
-    , m_hooks( 0 )
-    , m_lhaup( 0 )
     , m_beamTool( 0 )
-    , m_pythiaBeamTool( 0 )
     , m_nEvents( 0 )
     , m_showBanner( false )
     , m_xmlLogTool( 0 ) {
@@ -161,7 +158,7 @@ StatusCode Pythia8Production::initialize() {
   if ( !m_beamTool ) Exception( "Failed to initialize the IBeamTool." );
 
   // Initialize the user hooks.
-  if ( !m_hooks ) m_hooks = new Pythia8::LhcbHooks();
+  if ( !m_hooks ) m_hooks = std::make_shared<Pythia8::LhcbHooks>();
 
   // Initialze the XML log file.
   m_xmlLogTool = tool<ICounterLogFile>( "XmlCounterLogFile" );
@@ -198,7 +195,7 @@ StatusCode Pythia8Production::initialize() {
   set.addMode( pre + parm, set.mode( sm + parm ), false, false, 0, 0 );
 
   // Initialize the Pythia beam tool.
-  m_pythiaBeamTool = new BeamToolForPythia8( m_beamTool, m_pythia->settings, sc );
+  m_pythiaBeamTool = std::make_shared<BeamToolForPythia8>( m_beamTool, m_pythia->settings, sc );
   if ( !sc.isSuccess() ) return Error( "Failed to initialize the BeamToolForPythia8." );
   return sc;
 }
@@ -273,7 +270,7 @@ StatusCode Pythia8Production::initializeGenerator() {
 
   // Check the Breit-Wigner mass thresholds.
   for ( std::set<int>::iterator id = m_bws.begin(); id != m_bws.end(); ++id ) {
-    Pythia8::ParticleDataEntry* pde = m_pythia->particleData.particleDataEntryPtr( *id );
+    Pythia8::ParticleDataEntryPtr pde = m_pythia->particleData.particleDataEntryPtr( *id );
     if ( pde->isResonance() ) continue;
     pde->initBWmass();
     if ( pde->useBreitWigner() ) continue;
@@ -311,15 +308,12 @@ StatusCode Pythia8Production::finalize() {
   m_pythia->stat();
 
   // Write the cross-sections to the XML log.
-  std::vector<int> codes = m_pythia->info.codesHard();
+  std::vector<int> codes = const_cast<Pythia8::Info&>( m_pythia->info ).codesHard();
   for ( unsigned int code = 0; code < codes.size(); ++code )
     m_xmlLogTool->addCrossSection( m_pythia->info.nameProc( codes[code] ), codes[code],
                                    m_pythia->info.nAccepted( codes[code] ), m_pythia->info.sigmaGen( codes[code] ) );
 
   // Clean up.
-  if ( m_pythiaBeamTool ) delete m_pythiaBeamTool;
-  if ( m_lhaup ) delete m_lhaup;
-  if ( m_hooks ) delete m_hooks;
   if ( m_pythia ) delete m_pythia;
   return GaudiTool::finalize();
 }
@@ -333,8 +327,7 @@ StatusCode Pythia8Production::generateEvent( HepMC3::GenEventPtr theEvent, LHCb:
   // Not very elegant but need to stop Pythia8 from being accessed concurrently
   std::lock_guard<std::mutex> lock( m_pythia_lock );
 
-  RndForPythia rnd_generator{ engine.getref() };
-  m_pythia->setRndmEnginePtr( &rnd_generator );
+  m_pythia->setRndmEnginePtr( std::make_shared<RndForPythia>( engine.getref() ) );
   // Generate the event (make 10 attempts).
   int tries( 0 );
   while ( !m_pythia->next() && tries < 10 ) ++tries;
@@ -345,7 +338,7 @@ StatusCode Pythia8Production::generateEvent( HepMC3::GenEventPtr theEvent, LHCb:
   LHCb::GenFSR* genFSR = GenFSRMTManager::GetGenFSR( m_FSRName );
 
   // Store the minimum bias cross-section in the GenFSR.
-  std::vector<int> codes = m_pythia->info.codesHard();
+  std::vector<int> codes = const_cast<Pythia8::Info&>( m_pythia->info ).codesHard();
   auto             key   = LHCb::CrossSectionsFSR::MBCrossSection;
   if ( genFSR && genFSR->hasGenCounter( to_CounterKey( key ) ) ) {
     longlong count = genFSR->getGenCounterInfo( to_CounterKey( key ) ).second;
@@ -505,8 +498,7 @@ StatusCode Pythia8Production::hadronize( HepMC3::GenEventPtr theEvent, LHCb::Gen
                                          HepRandomEnginePtr& engine ) {
   std::lock_guard<std::mutex> lock( m_pythia_lock );
 
-  RndForPythia rnd_generator{ engine.getref() };
-  m_pythia->setRndmEnginePtr( &rnd_generator );
+  m_pythia->setRndmEnginePtr( std::make_shared<RndForPythia>( engine.getref() ) );
   if ( !m_pythia->forceHadronLevel() ) return StatusCode::FAILURE;
   return toHepMC( theEvent, theCollision );
 }
