@@ -105,19 +105,20 @@ StatusCode ReDecayProduction::generateEvent( HepMC3::GenEventPtr theEvent, LHCb:
       dummy_vertex =
           std::make_shared<HepMC3::GenVertex>( HepMC3::FourVector( origin.x(), origin.y(), origin.z(), origin.t() ) );
       auto beam = std::make_shared<HepMC3::GenParticle>( HepMC3::FourVector( 0, 0, 1, 1 ), 0,
-                                                         LHCb::HepMCEvent::DocumentationParticle );
+                                                         3 /* LHCb::HepMCEvent::DocumentationParticle */
+      );
       dummy_vertex->add_particle_in( beam );
       theEvent->add_vertex( dummy_vertex );
       if ( theEvent->beams().size() == 0 ) { theEvent->set_beam_particles( beam, beam ); }
     }
     // create HepMC particle
     auto p = std::make_shared<HepMC3::GenParticle>( HepMC3::FourVector( mom.px(), mom.py(), mom.pz(), mom.e() ),
-                                                    thePdgId, LHCb::HepMCEvent::StableInProdGen );
+                                                    thePdgId, 1 /* LHCb::HepMCEvent::StableInProdGen */ );
     // Create tagging HepMC particle and attach to the same vertex
     // This particle is needed to link the actual production vertex of the particle
     // to the dummy PV vertex.
     auto tag = std::make_shared<HepMC3::GenParticle>( HepMC3::FourVector( mom.px(), mom.py(), mom.pz(), mom.e() ), 0,
-                                                      LHCb::HepMCEvent::StableInProdGen );
+                                                      1 /* LHCb::HepMCEvent::StableInProdGen */ );
     v->add_particle_in( tag );
     dummy_vertex->add_particle_out( tag );
 

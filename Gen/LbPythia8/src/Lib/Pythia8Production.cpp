@@ -26,7 +26,6 @@
 
 // HepMC.
 #include "HepMC3/GenEvent.h"
-#include "HepMC3/HEPEVT_Wrapper.h"
 
 // LbPythia8.
 #include "LbPythia8/Pythia8Production.h"
@@ -410,11 +409,14 @@ StatusCode Pythia8Production::toHepMC( HepMC3::GenEventPtr theEvent, LHCb::GenCo
         p->set_status( 22 );
       } else if ( ( status == 71 ) || ( status == 72 ) ||
                   ( ( status == 62 ) && ( abs( pid ) >= 22 ) && ( abs( pid ) <= 37 ) ) )
-        p->set_status( LHCb::HepMCEvent::DecayedByProdGen );
+        // p->set_status( LHCb::HepMCEvent::DecayedByProdGen );
+        p->set_status( 2 );
       else
-        p->set_status( LHCb::HepMCEvent::DocumentationParticle );
-    } else if ( status != LHCb::HepMCEvent::DecayedByProdGen && status != LHCb::HepMCEvent::StableInProdGen &&
-                status != LHCb::HepMCEvent::DocumentationParticle ) {
+        // p->set_status( LHCb::HepMCEvent::DocumentationParticle );
+        p->set_status( 3 );
+      // } else if ( status != LHCb::HepMCEvent::DecayedByProdGen && status != LHCb::HepMCEvent::StableInProdGen &&
+      //             status != LHCb::HepMCEvent::DocumentationParticle ) {
+    } else if ( status != 2 && status != 1 && status != 3 ) {
       warning() << "Unknown status rule " << status << " for particle" << pid << endmsg;
     }
   }
