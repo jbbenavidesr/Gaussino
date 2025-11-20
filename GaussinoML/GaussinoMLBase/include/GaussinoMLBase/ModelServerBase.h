@@ -10,9 +10,9 @@
 \*****************************************************************************/
 #pragma once
 
+#include <memory>
 #include <mutex>
 
-// Gaudi
 #include "GaudiKernel/MsgStream.h"
 
 namespace Gsino::ML {
