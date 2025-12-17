@@ -230,6 +230,22 @@ StatusCode Pythia8ProductionMT::initializeGenerator() {
       sc &= Warning( "Failed to read the command " + m_userSettings[setting] + "." );
   }
 
+  // Initialize.
+  if ( m_lhaup.get() ) m_pythia->settings.mode( "Beams:frameType", 5 );
+  if ( m_pythia->init() )
+    return sc;
+  else
+    return Error( "Failed to initialize Pythia 8." );
+
+  // Now the normal tools update settings via the provided interface
+  // As we need to do this per pythia instance once created within
+  // the thread we have cached the arguments for the function call
+  // and will now do it ourselfs
+  // This bit is moved to happen after m_pythia->init() because Pythia8
+  // code itself added update of hadron widths during init() function
+  for ( auto pp : m_update_pp ) { updateParticlePropertiesImpl( pp ); }
+  for ( auto pp : m_stable_pp ) { setStableImpl( pp ); }
+
   // Check particle properties if requested.
   if ( m_checkParticleProperties ) {
     int id = m_pythia->particleData.nextId( 0 );
@@ -263,13 +279,6 @@ StatusCode Pythia8ProductionMT::initializeGenerator() {
       pde->clearChannels();
     }
   }
-
-  // Initialize.
-  if ( m_lhaup.get() ) m_pythia->settings.mode( "Beams:frameType", 5 );
-  if ( m_pythia->init() )
-    return sc;
-  else
-    return Error( "Failed to initialize Pythia 8." );
 }
 
 //=============================================================================
@@ -592,13 +601,6 @@ StatusCode Pythia8ProductionMT::InitializeThread() const {
   // Initialize the Pythia beam tool.
   m_pythiaBeamTool = std::make_shared<BeamToolForPythia8>( m_beamTool, m_pythia->settings, sc );
   if ( !sc.isSuccess() ) return Error( "Failed to initialize the BeamToolForPythia8." );
-
-  // Now the normal tools update settings via the provided interface
-  // As we need to do this per pythia instance once created within
-  // the thread we have cached the arguments for the function call
-  // and will now do it ourselfs
-  for ( auto pp : m_update_pp ) { updateParticlePropertiesImpl( pp ); }
-  for ( auto pp : m_stable_pp ) { setStableImpl( pp ); }
 
   // Now initialize the generator and hope for the best!
   sc &= const_cast<Pythia8ProductionMT*>( this )->initializeGenerator();
