@@ -33,6 +33,9 @@ namespace Gaussino {
   namespace G4EventsLocation {
     const std::string Default = "/Event/Sim/G4Events";
   }
+  namespace SimHeaderLocation {
+    const std::string Default = "Sim/Header";
+  }
   namespace MCTruthsLocation {
     const std::string Default         = "/Event/MC/Truths";
     const std::string SignalTruthsMap = "/Event/MC/SignalTruths";

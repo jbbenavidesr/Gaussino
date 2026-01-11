@@ -20,6 +20,7 @@ gaudi_add_library(RndInitLib
         PUBLIC
 	    Gaudi::GaudiAlgLib
 	    LHCb::GenEvent # TODO: [LHCb DEPENDENCY]
+        Gaussino::EDMLib
 	    Gaussino::Defaults
 	    Gaussino::NewRndLib
 	    Gaussino::GenBeamLib

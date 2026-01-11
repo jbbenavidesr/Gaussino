@@ -24,7 +24,7 @@ class GenReDecayInit : public GenRndInit {
 public:
   using GenRndInit::GenRndInit;
 
-  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> operator()() const override;
+  virtual std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN, Gsino::SimHeader> operator()() const override;
 
 private:
   ServiceHandle<IReDecaySvc>                              m_redecaysvc{ this, "ReDecaySvc", "ReDecaySvc" };
@@ -33,7 +33,7 @@ private:
 
 DECLARE_COMPONENT( GenReDecayInit )
 
-std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenReDecayInit::operator()() const {
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN, Gsino::SimHeader> GenReDecayInit::operator()() const {
   debug() << "==> Execute" << endmsg;
   auto ret          = GenRndInit::operator()();
   auto seedpair     = GetSeedPair();

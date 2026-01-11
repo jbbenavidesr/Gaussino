@@ -16,11 +16,12 @@
 
 DECLARE_COMPONENT( GiGaAlg )
 
-std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents ) const {
+std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> GiGaAlg::operator()( const HepMC3::GenEventPtrs& hepmcevents,
+                                                                       const Gsino::SimHeader&     simheader ) const {
   auto engine = createRndmEngine();
 
   debug() << "==> Execute" << endmsg;
-  auto ret_tuple = m_gigaSvc->simulate( hepmcevents, engine );
+  auto ret_tuple = m_gigaSvc->simulate( simheader.evtNumber(), hepmcevents, engine );
 
   if ( msgLevel( MSG::DEBUG ) ) {
     auto& trackers = std::get<Gaussino::MCTruthPtrs>( ret_tuple );

@@ -57,7 +57,7 @@ StatusCode GenRndInit::initialize() {
   } );
 }
 
-std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenRndInit::operator()() const {
+std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN, Gsino::SimHeader> GenRndInit::operator()() const {
   debug() << "==> Execute" << endmsg;
 
   // Timing information
@@ -109,7 +109,12 @@ std::tuple<LHCb::GenHeader, LHCb::BeamParameters, LHCb::ODIN> GenRndInit::operat
   odin.setRunNumber( m_runNumber.value() );
   odin.setEventNumber( eventNumber );
 
-  return std::make_tuple( header, beam, odin );
+  // Create SimHeader
+  Gsino::SimHeader theSimHeader{};
+  theSimHeader.setEvtNumber( eventNumber );
+  theSimHeader.setRunNumber( m_runNumber.value() );
+
+  return std::make_tuple( header, beam, odin, theSimHeader );
 }
 
 StatusCode GenRndInit::finalize() {

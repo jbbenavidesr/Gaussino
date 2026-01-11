@@ -114,10 +114,10 @@ public:
    */
   virtual StatusCode queryInterface( const InterfaceID& iid, void** pI ) override;
 
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( Gaussino::MCTruthConverterPtrs&&,
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( int, Gaussino::MCTruthConverterPtrs&&,
                                                                       HepRandomEnginePtr& ) const override;
 
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( const HepMC3::GenEventPtrs& _in,
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( int, const HepMC3::GenEventPtrs& _in,
                                                                       HepRandomEnginePtr& ) const override;
 
   /** Simulate the particle and its decay products. Results of the simulation are attached to the particle
@@ -126,7 +126,7 @@ public:
    *  @param   eng   Random engine reference
    *  @return status code
    */
-  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( const HepMC3::GenParticlePtr& _in,
+  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( int, const HepMC3::GenParticlePtr& _in,
                                                                            HepRandomEnginePtr& ) const override;
 
   virtual bool particleKnownToGeant4( int pdg_id ) const override;

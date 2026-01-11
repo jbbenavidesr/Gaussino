@@ -61,11 +61,11 @@ public:
    *   should return the simulation result ...
    *   @return status code
    */
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( const HepMC3::GenEventPtrs&,
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( int, const HepMC3::GenEventPtrs&,
                                                                       HepRandomEnginePtr& ) const      = 0;
-  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( Gaussino::MCTruthConverterPtrs&&,
+  virtual std::tuple<G4EventProxies, Gaussino::MCTruthPtrs> simulate( int, Gaussino::MCTruthConverterPtrs&&,
                                                                       HepRandomEnginePtr& ) const      = 0;
-  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( const HepMC3::GenParticlePtr&,
+  virtual std::tuple<G4EventProxyPtr, Gaussino::MCTruthPtr> simulateDecay( int, const HepMC3::GenParticlePtr&,
                                                                            HepRandomEnginePtr& ) const = 0;
 
 public:

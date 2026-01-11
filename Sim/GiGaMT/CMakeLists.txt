@@ -23,6 +23,7 @@ gaudi_add_library(GiGaMTLib
 	src/Lib/GiGaUtil.cpp
     LINK
         PUBLIC
+        Gaussino::EDMLib
 	    Gaussino::GiGaMTFactoriesLib
 	    Gaussino::HepMCUserLib
 	    Gaussino::SimInterfacesLib
