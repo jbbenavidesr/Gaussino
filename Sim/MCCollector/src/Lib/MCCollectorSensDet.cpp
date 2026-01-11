@@ -44,8 +44,7 @@ MCCollector::Hit* MCCollector::SensDet::RetrieveAndSetupHit( const G4Track* trac
   // track info
   int trid = track->GetTrackID();
   newHit->SetTrackID( trid );
-  auto ui = track->GetUserInformation();
-  auto gi = (GaussinoTrackInformation*)ui;
+  auto gi = GaussinoTrackInformation::Get( track );
   gi->setCreatedHit( true );
   if ( m_forceStoreTruth ) { gi->setToStoreTruth( true ); }
   gi->addHit( newHit );

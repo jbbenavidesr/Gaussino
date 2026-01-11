@@ -49,6 +49,8 @@ list(APPEND Gaussino_PERSISTENT_OPTIONS
 set(WITH_Gaussino_PRIVATE_DEPENDENCIES TRUE)
 include(GaussinoDependencies)
 
+option(USE_ADEPT "Using AdePT" OFF)
+
 gaussino_initialize_configuration()
 
 # check if we have DD4hep support

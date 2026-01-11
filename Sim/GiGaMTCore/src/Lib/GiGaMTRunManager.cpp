@@ -22,6 +22,7 @@
 #include "G4ParticleTable.hh"
 
 #include "GaudiKernel/Bootstrap.h"
+#include "GaudiKernel/IProperty.h"
 #include "GaudiKernel/ISvcLocator.h"
 
 GiGaMTRunManager::GiGaMTRunManager() : G4MTRunManager() {}
@@ -60,6 +61,27 @@ void GiGaMTRunManager::Initialize() {
   GetMTMasterRunManagerKernel()->SetUpDecayChannels();
   // Setup UI commands
   PrepareCommandsStack();
+
+  // For offloading EM showers to GPUs via AdePT, the G4 worker threads must know the number of G4 workers
+  // Since this is so far known by the AvelancheSchedulerSvc and not the G4MTRunManager, we need to pass
+  // back the number of G4 worker threads to the G4MTRunManager, so that they are available in AdePT.
+  SmartIF<IProperty> schedulerSvc( Gaudi::svcLocator()->service( "AvalancheSchedulerSvc" ) );
+  if ( schedulerSvc.isValid() ) {
+    for ( const auto* p : schedulerSvc->getProperties() ) {
+      if ( p ) {
+        if ( p->name() == "ThreadPoolSize" ) {
+          try {
+            int threads = std::stoi( p->toString() );
+            this->SetNumberOfThreads( threads );
+          } catch ( const std::exception& e ) {
+            std::cerr << "[ERROR] Could not parse ThreadPoolSize: " << e.what() << std::endl;
+          }
+        }
+      }
+    }
+  } else {
+    std::cerr << "ERROR: Could not retrieve AvalancheSchedulerSvc" << std::endl;
+  }
 }
 
 void GiGaMTRunManager::RunTermination() {

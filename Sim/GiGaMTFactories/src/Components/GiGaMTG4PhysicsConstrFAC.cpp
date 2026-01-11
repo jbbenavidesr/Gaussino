@@ -40,6 +40,14 @@
 // Optical physics
 #include "G4OpticalPhysics.hh"
 
+// AdePT
+#ifdef USE_ADEPT
+#  include "G4EmStandardPhysics_option2_AdePT.hh"
+#  include "G4EmStandardPhysics_option2_HepEm.hh"
+#elif USE_G4HEPEM
+#  include "G4EmStandardPhysics_option2_HepEm.hh"
+#endif
+
 typedef GiGaMTG4PhysicsConstrFAC<G4DecayPhysics> GiGaMT_G4DecayPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4DecayPhysics, "GiGaMT_G4DecayPhysics" )
 
@@ -56,6 +64,16 @@ DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmExtraPhysics, "GiGaMT_G4EmExtraPhysics" )
 
 typedef GiGaMTG4PhysicsConstrFAC<G4IonPhysics> GiGaMT_G4IonPhysics;
 DECLARE_COMPONENT_WITH_ID( GiGaMT_G4IonPhysics, "GiGaMT_G4IonPhysics" )
+
+#ifdef USE_ADEPT
+typedef GiGaMTG4PhysicsConstrFAC<G4EmStandardPhysics_option2_AdePT> GiGaMT_G4EmStandardPhysics_option2_AdePT;
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmStandardPhysics_option2_AdePT, "GiGaMT_G4EmStandardPhysics_option2_AdePT" )
+#endif
+
+#ifdef USE_G4HEPEM
+typedef GiGaMTG4PhysicsConstrFAC<G4EmStandardPhysics_option2_HepEm> GiGaMT_G4EmStandardPhysics_option2_HepEm;
+DECLARE_COMPONENT_WITH_ID( GiGaMT_G4EmStandardPhysics_option2_HepEm, "GiGaMT_G4EmStandardPhysics_option2_HepEm" )
+#endif
 
 template <typename PhysConstr>
 class GiGaMTG4PhysicsConstrFAC<

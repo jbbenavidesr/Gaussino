@@ -117,7 +117,7 @@ void TruthFlaggingTrackAction::PreUserTrackingAction( const G4Track* track ) {
   // Get the GaussinoTrackInformation object. Will create and attach it if not
   // already done. Uses the Eventmanager -> trackmanager -> track to attach
   // the information as this gives a non-const track
-  auto ti = GaussinoTrackInformation::Get();
+  auto ti = GaussinoTrackInformation::Get( track );
 
   // Flag all primaries to be stored if requested
   if ( storePrimaries && 0 == track->GetParentID() ) {
@@ -151,7 +151,7 @@ void TruthFlaggingTrackAction::PostUserTrackingAction( const G4Track* track ) {
     return;
   }
 
-  auto this_track_info = GaussinoTrackInformation::Get();
+  auto this_track_info = GaussinoTrackInformation::Get( track );
 
   // if only to a certain z, check z and set flag
   bool notrejected = true;
