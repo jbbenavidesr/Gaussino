@@ -69,6 +69,8 @@ endif()
 list(APPEND ${CustomSimulationDirsName}
     Sim/CustomSimulation
     Examples/CustomSimulationExamples
+    Examples/SamplingCalorimeter
+    Examples/TargetTracker
     Sim/CaloChallenge
 )
 
@@ -130,6 +132,7 @@ gaussino_add_subdirectories(
     Sim/GiGaMTTruth
     Sim/GiGaMTVis
     Sim/MCCollector
+    Sim/ExampleCollectors
     Sim/ParallelGeometry
     Sim/SimInterfaces
     Utils
