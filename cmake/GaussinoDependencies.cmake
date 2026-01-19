@@ -33,9 +33,9 @@ lhcb_find_package(LHCb REQUIRED)
 
 # custom simulations work only with G4 > 10.7
 # + make sure it is set once and only in Gaussino
-if(NOT Gaussino_FOUND AND Geant4_VERSION VERSION_LESS "10.7")
-  set(CUSTOMSIM OFF)
-endif()
+# if(NOT Gaussino_FOUND AND Geant4_VERSION VERSION_LESS "10.7")
+#   set(CUSTOMSIM OFF)
+# endif()
 
 find_package(HepMC3 CONFIG REQUIRED search)
 find_package(Pythia8 REQUIRED)
