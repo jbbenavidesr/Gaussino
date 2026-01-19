@@ -132,7 +132,6 @@ gaussino_add_subdirectories(
     Sim/GiGaMTTruth
     Sim/GiGaMTVis
     Sim/MCCollector
-    Sim/ExampleCollectors
     Sim/ParallelGeometry
     Sim/SimInterfaces
     Utils
